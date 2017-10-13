@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,27 +41,27 @@ echo "<p>The Welcome message is (number 1 on the diagram)<textarea name=\"welcom
 
 echo "<p>The site text is (number 2 on the diagram)<textarea name=\"site_text\">Welcome to the toolkits front page, developed by the Apereo Foundation</textarea></p>";
 
-echo "<p>The news text is (number 5 on the diagram)<textarea name=\"news_text\"><p class=\"news_title\">Other resources</p><p class=\"news_story\"><a href=\"\">Site 1</a></p><p class=\"news_story\"><a href=\"\">Site 2</a></p><p class=\"news_story\"><a href=\"\">Site 3</a></p></textarea></p>";	
+echo "<p>The news text is (number 5 on the diagram)<textarea name=\"news_text\"><p class=\"news_title\">Other resources</p><p class=\"news_story\"><a href=\"\">Site 1</a></p><p class=\"news_story\"><a href=\"\">Site 2</a></p><p class=\"news_story\"><a href=\"\">Site 3</a></p></textarea></p>";
 
-echo "<p>The copyright message (number 6 on the diagram) is <textarea name=\"copyright\">Copyright Apereo Foundation 2015</textarea></p>";	
+echo "<p>The copyright message (number 6 on the diagram) is <textarea name=\"copyright\">Copyright Apereo Foundation 2015</textarea></p>";
 
-echo "<p>The demonstration page (linked to from number 7 on the diagram) URL is <textarea name=\"demonstration_page\">modules/xerte/training/toolkits.htm</textarea></p>";	
+echo "<p>The demonstration page (linked to from number 7 on the diagram) URL is <textarea name=\"demonstration_page\">modules/xerte/training/toolkits.htm</textarea></p>";
 
-echo "<p>The form string is (The code to handle the HTML format for the login box, this should only be changed by advanced users - number 8 on the diagram)<br/><br/><textarea name=\"form_string\"><html><body><center><p><form method=\"post\" action=\"\"><p>Username <input type=\"text\" size=\"20\" maxlength=\"12\" name=\"login\" /></p><p>Password <input type=\"password\" size=\"20\" maxlength=\"36\" name=\"password\" /></p><p><input type=\"image\" src=\"website_code/images/Bttn_LoginOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_LoginOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_LoginClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_LoginOff.gif'\" /></p></textarea></p>";	
+echo "<p>The form string is (The code to handle the HTML format for the login box, this should only be changed by advanced users - number 8 on the diagram)<br/><br/><textarea name=\"form_string\"><html><body><center><p><form method=\"post\" action=\"\"><p>Username <input type=\"text\" size=\"20\" maxlength=\"12\" name=\"login\" /></p><p>Password <input type=\"password\" size=\"20\" maxlength=\"36\" name=\"password\" /></p><p><input type=\"image\" src=\"website_code/images/Bttn_LoginOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_LoginOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_LoginClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_LoginOff.gif'\" /></p></textarea></p>";
 
 echo "<br><br><h3 style=\"clear:left\">Site formatting settings - Customising the logged in page</h3>";
 
-echo "<p>The content of pod one is (The first pod underneath the file area on the logged in page)<textarea name=\"pod_one\"><p class=\"news_title\">Resources</p><p class=\"demo\"><a href=\"http://www.xerte.org.uk\">Community Resources</a><br />The Xerte user community website.</p><p class=\"demo\"><a href=\"http://www.nottingham.ac.uk/toolkits/play_560\">Learning Object Demo</a><br />A comprehensive demo of all the page templates.</p></textarea></p>";	
+echo "<p>The content of pod one is (The first pod underneath the file area on the logged in page)<textarea name=\"pod_one\"><p class=\"news_title\">Resources</p><p class=\"demo\"><a href=\"http://www.xerte.org.uk\">Community Resources</a><br />The Xerte user community website.</p><p class=\"demo\"><a href=\"http://www.nottingham.ac.uk/toolkits/play_560\">Learning Object Demo</a><br />A comprehensive demo of all the page templates.</p></textarea></p>";
 
 echo "<p>The content of pod two is (The second pod underneath the file area on the logged in page)<textarea name=\"pod_two\"><p class=\"news_title\">Want to share some thoughts?</p><p class=\"general\">If you have any questions, requests for help, ideas for new projects or problems to report, then please get in touch.</p><p class=\"general\">Please use our <a href=\"feedback/\" style=\"color:#000\">Feedback Form</a></p></textarea></p>";
 
 echo "<br><br><h3 style=\"clear:left\">Server settings - some technical aspects for the site</h3>";
 
 echo "<p>The HTACCESS setting is (Whether or not you are using a .htaccess file on the site - the apache config must allow for overrides)<textarea name=\"apache\">false</textarea>
-    </p>";	
+    </p>";
 
 echo "<p>The PHP session name (you do not need to change this unless integrating with another service) is <textarea name=\"site_session_name\">XERTE_TOOLKITS</textarea>
-    </p>";	
+    </p>";
 echo "<p>The integration config path (for use if integrating with other systems is)<textarea name=\"integration_config_path\"></textarea></p>";
 
 echo "<p>The admin username is <textarea name=\"admin_username\">" . $_POST['account'] . "</textarea></p>";
@@ -69,18 +69,28 @@ echo "<p>The admin username is <textarea name=\"admin_username\">" . $_POST['acc
 echo "<p>The admin password is <textarea name=\"admin_password\">" . htmlspecialchars($_POST['password']) . "</textarea></p>";
 
 if (function_exists('mime_content_type')) {
-    echo "<p>Whether the MIME file type check should be applied to file uploads<textarea name=\"enable_mime_check\">false</textarea></p>";
+    echo "<p>Whether the file MIME type check should be enabled for imported files <textarea name=\"enable_mime_check\">false</textarea></p>";
 }
 else {
-    echo "<p>Whether the MIME file type check should be applied to file uploads<textarea name=\"enable_mime_check\" disabled=\"true\">False. The MIME check requires the PHP 'mime_content_type' function.</textarea></p>";
+    echo "<p>Whether the file MIME type check should be enabled for imported files <textarea name=\"enable_mime_check\" disabled=\"true\">False. The MIME check requires the PHP 'mime_content_type' function.</textarea></p>";
 }
 
-echo "<p>The allowed upload MIME types for the Media and quota page are <textarea name=\"mimetypes\">text/xml,text/rtf,application/msword,application/x-shockwave-flash,image/bmp,image/jpg,image/jpeg,image/pjpeg,image/png,image/gif,image/svg+xml,image/x-png,audio/mp3,audio/mpeg,application/vnd.ms-excel,application/pdf,application/svg,application/vnd.ms-powerpoint,video/x-ms-wmv,text/html,video/mp4,video/mpeg,video/avi,audio/wav,text/plain,video/quicktime,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/ogg</textarea>
+echo "<p>The allowed MIME types for imported files are <textarea name=\"mimetypes\">text/xml,text/rtf,application/msword,application/x-shockwave-flash,image/bmp,image/jpg,image/jpeg,image/pjpeg,image/png,image/gif,image/svg+xml,image/x-png,audio/mp3,audio/mpeg,application/vnd.ms-excel,application/pdf,application/svg,application/vnd.ms-powerpoint,video/x-ms-wmv,text/html,video/mp4,video/mpeg,video/avi,audio/wav,text/plain,video/quicktime,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/ogg</textarea>
     </p>";	
+
+if (function_exists('pathinfo')) {
+    echo "<p>Whether the file extension check should be enabled for imported files <textarea name=\"enable_file_ext_check\">false</textarea></p>";
+}
+else {
+    echo "<p>Whether the file extension check should be enabled for imported files <textarea name=\"enable_file_ext_check\" disabled=\"true\">False. The file extension check requires the PHP 'pathinfo' function.</textarea></p>";
+}
+
+echo "<p>The blacklisted file extensions for imported files are <textarea name=\"file_extensions\">php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm</textarea>
+    </p>";
 
 echo "<br><br><h3 style=\"clear:left\">RSS Feed and Syndication settings - formatting for the RSS feeds and for the syndication</h3>";
 
-echo "<p>The RSS Feed title is <textarea name=\"rss_title\">Xerte Online Toolkits RSS Feed</textarea></p>";	
+echo "<p>The RSS Feed title is <textarea name=\"rss_title\">Xerte Online Toolkits RSS Feed</textarea></p>";
 
 echo "<p>The institutional publisher as listed in the syndication feed is <textarea name=\"synd_publisher\">Put your institution's name here</textarea></p>";
 
@@ -90,13 +100,13 @@ echo "<p>The standard syndication license for the syndicated content is <textare
 
 echo "<br><br><h3 style=\"clear:left\">Server paths - where files will be hosted on the server</h3>";
 
-echo "<p>The module path is <textarea name=\"module_path\">modules/</textarea></p>";	
+echo "<p>The module path is <textarea name=\"module_path\">modules/</textarea></p>";
 
-echo "<p>The website code path is <textarea name=\"website_code_path\">website_code/</textarea></p>";	
+echo "<p>The website code path is <textarea name=\"website_code_path\">website_code/</textarea></p>";
 
-echo "<p>The short file area path is <textarea name=\"users_file_area_short\">USER-FILES/</textarea></p>";	
+echo "<p>The short file area path is <textarea name=\"users_file_area_short\">USER-FILES/</textarea></p>";
 
-echo "<p>The php library path is <textarea name=\"php_library_path\">website_code/php/</textarea></p>";	
+echo "<p>The php library path is <textarea name=\"php_library_path\">website_code/php/</textarea></p>";
 
 echo "<p>The root file path is <textarea name=\"root_file_path\">" . str_replace('\\', '/', substr(getcwd(),0,strlen(getcwd())-5)) . "</textarea></p>";
 
@@ -106,15 +116,15 @@ echo "<br><br><h3 style=\"clear:left\">MySQL query string - The default string f
 
 echo "<p>The play edit preview query is <textarea name=\"play_edit_preview_query\">select \" . \$xerte_toolkits_site->database_table_prefix . \"originaltemplatesdetails.template_name, \" . \$xerte_toolkits_site->database_table_prefix . \"logindetails.username, \" . \$xerte_toolkits_site->database_table_prefix . \"originaltemplatesdetails.template_framework, \" . \$xerte_toolkits_site->database_table_prefix . \"templaterights.user_id, \" . \$xerte_toolkits_site->database_table_prefix . \"templaterights.folder, \" . \$xerte_toolkits_site->database_table_prefix . \"templaterights.template_id, \" . \$xerte_toolkits_site->database_table_prefix . \"templatedetails.access_to_whom from \" . \$xerte_toolkits_site->database_table_prefix . \"originaltemplatesdetails, \" . \$xerte_toolkits_site->database_table_prefix . \"templaterights, \" . \$xerte_toolkits_site->database_table_prefix . \"templatedetails, \" . \$xerte_toolkits_site->database_table_prefix . \"logindetails where \" . \$xerte_toolkits_site->database_table_prefix . \"templatedetails.template_type_id = \" . \$xerte_toolkits_site->database_table_prefix . \"originaltemplatesdetails.template_type_id and \" . \$xerte_toolkits_site->database_table_prefix . \"templatedetails.creator_id = \" . \$xerte_toolkits_site->database_table_prefix . \"logindetails.login_id and \" . \$xerte_toolkits_site->database_table_prefix . \"templaterights.template_id = \" . \$xerte_toolkits_site->database_table_prefix . \"templatedetails.template_id and \" . \$xerte_toolkits_site->database_table_prefix . \"templaterights.template_id=\"TEMPLATE_ID_TO_REPLACE\" and role=\"creator\"</textarea></p>";
 
-echo "<br><br><h3 style=\"clear:left\">Error handling - where files will be hosted on the server</h3>";	
+echo "<br><br><h3 style=\"clear:left\">Error handling - where files will be hosted on the server</h3>";
 
-echo "<p>The error log path is <textarea name=\"error_log_path\">error_logs/</textarea></p>";	
+echo "<p>The error log path is <textarea name=\"error_log_path\">error_logs/</textarea></p>";
 
-echo "<p>The email error list is (Accounts to receive email messages from the error logger)<textarea name=\"email_error_list\"></textarea></p>";	
+echo "<p>The email error list is (Accounts to receive email messages from the error logger)<textarea name=\"email_error_list\"></textarea></p>";
 
-echo "<p>The error log message is (Set to true to log errors)<textarea name=\"error_log_message\">false</textarea></p>";	
+echo "<p>The error log message is (Set to true to log errors)<textarea name=\"error_log_message\">false</textarea></p>";
 
-echo "<p>The email error message is (Set to true to email errors)<textarea name=\"error_email_message\">false</textarea></p>";	
+echo "<p>The email error message is (Set to true to email errors)<textarea name=\"error_email_message\">false</textarea></p>";
 
 echo "<p>The maximum error size is (The maximum number of entries per error log)<textarea name=\"max_error_size\">10</textarea></p>";
 
@@ -132,13 +142,13 @@ echo "<p>The ldap base is <textarea name=\"basedn\"></textarea></p>";
 
 echo "<p>The ldap bind is <textarea name=\"bind_dn\"></textarea></p>";
 
-echo "<p>The first LDAP filter is <textarea name=\"LDAP_preference\">sAMAccountName</textarea></p>";	
+echo "<p>The first LDAP filter is <textarea name=\"LDAP_preference\">sAMAccountName</textarea></p>";
 
-echo "<p>The second LDAP filter is <textarea name=\"LDAP_filter\">cn=</textarea></p>";	
+echo "<p>The second LDAP filter is <textarea name=\"LDAP_filter\">cn=</textarea></p>";
 
 echo "<br><br><h3 style=\"clear:left\">Peer review settings - Customising the peer review page</h3>";
 
-echo "<p>The Peer form string is (The code to handle the HTML format for the peer review login box)<textarea name=\"peer_form_string\"><html><body><center><p><form method=\"post\" action=\"\"><p>Password <input type=\"password\" size=\"20\" maxlength=\"36\" name=\"password\" /></p><p><input type=\"image\" src=\"website_code/images/Bttn_LoginOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_LoginOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_LoginClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_LoginOff.gif'\" /></p></textarea></p>";	
+echo "<p>The Peer form string is (The code to handle the HTML format for the peer review login box)<textarea name=\"peer_form_string\"><html><body><center><p><form method=\"post\" action=\"\"><p>Password <input type=\"password\" size=\"20\" maxlength=\"36\" name=\"password\" /></p><p><input type=\"image\" src=\"website_code/images/Bttn_LoginOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_LoginOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_LoginClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_LoginOff.gif'\" /></p></textarea></p>";
 
 echo "<br><br><h3 style=\"clear:left\">Xerte Settings - some files Xerte uses to work on the server - you do not need to change any of these.</h3>";
 
