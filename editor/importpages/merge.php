@@ -87,7 +87,7 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 			{
 				$newId = "PG" . (substr($newId, 2)+1);
 			}
-			array_push($newId, $bannedLinkIDs);
+			array_push($bannedLinkIDs, $newId);
 			$mapping[$oldId] = $newId;
 				
 		}else{
