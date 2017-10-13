@@ -49,10 +49,10 @@ if(is_user_admin()) {
 
 
     $query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set site_url = ?, site_title = ?, site_name=?, site_logo=?, organisational_logo=?, welcome_message=?,
-        site_text=?, news_text=?, pod_one=?,  pod_two=?, copyright=?, demonstration_page=?, form_string=?, peer_form_string=?, feedback_list=?,
+        site_text=?, news_text=?, pod_one=?, pod_two=?, copyright=?, demonstration_page=?, form_string=?, peer_form_string=?, feedback_list=?,
         rss_title=?, module_path=?, website_code_path=?, users_file_area_short=?, php_library_path=?, root_file_path=?, play_edit_preview_query=?, email_error_list=?,
         error_log_message=?, max_error_size=?, authentication_method=?, ldap_host=?, ldap_port=?, bind_pwd=?, basedn=?, bind_dn=?, flash_save_path=?, flash_upload_path=?, flash_preview_check_path=?, flash_flv_skin=?,
-        site_email_account=?, headers=?, email_to_add_to_username=?, proxy1=?, port1=?, site_session_name=?, synd_publisher=?, synd_rights=?, synd_license=?, import_path=? ,
+        site_email_account=?, headers=?, email_to_add_to_username=?, proxy1=?, port1=?, site_session_name=?, synd_publisher=?, synd_rights=?, synd_license=?, import_path=?,
         apache=?, enable_mime_check=?, mimetypes=?, enable_file_ext_check=?, file_extensions=?, enable_clamav_check=?, clamav_cmd=?, clamav_opts=?, LDAP_preference=?, LDAP_filter=?, integration_config_path=?,
         admin_username=?, admin_password=?, LRS_Endpoint=?, LRS_Key=?, LRS_Secret=?";
 
