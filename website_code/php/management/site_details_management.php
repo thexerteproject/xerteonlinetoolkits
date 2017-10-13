@@ -48,6 +48,8 @@ if(is_user_admin()) {
     $clamav_opts = preg_replace('/(^|\s)[^-]\S*/', '', $clamav_opts);
 
 
+    $enable_file_ext_check = true_or_false($_POST['enable_file_ext_check']) ? 'true' : 'false';
+
     $query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set site_url = ?, site_title = ?, site_name=?, site_logo=?, organisational_logo=?, welcome_message=?,
         site_text=?, news_text=?, pod_one=?, pod_two=?, copyright=?, demonstration_page=?, form_string=?, peer_form_string=?, feedback_list=?,
         rss_title=?, module_path=?, website_code_path=?, users_file_area_short=?, php_library_path=?, root_file_path=?, play_edit_preview_query=?, email_error_list=?,

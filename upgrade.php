@@ -598,6 +598,8 @@ function upgrade_13()
     else
     {
         return "File extension blacklist field already present - ok ? true";
+    }
+}
 
 function upgrade_14()
 {

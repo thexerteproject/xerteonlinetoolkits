@@ -152,6 +152,7 @@ CREATE TABLE `$sitedetails` (
   `LRS_Endpoint` char(255) DEFAULT NULL,
   `LRS_Key` char(255) DEFAULT NULL,
   `LRS_Secret` char(255) DEFAULT NULL,
+  `file_extensions` text,
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

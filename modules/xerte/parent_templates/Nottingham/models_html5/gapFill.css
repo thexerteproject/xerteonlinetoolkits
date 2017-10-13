@@ -21,8 +21,7 @@
 		text-align:	center;
 	}
 	
-	
-	#targetHolder input[readonly], #targetHolder .target.correct {
+	#targetHolder input[readonly], #targetHolder .target.correct, #targetHolder input[correct] {
 		color:			green;
 		border-color:	transparent;
 	}
@@ -31,18 +30,20 @@
 		color:			red;
 		border-color:	transparent;
 	}
-
 	
-	#targetHolder input[incorrect]{
+	#targetHolder input.incorrect, #targetHolder input[incorrect] {
 		color: 			red;
+	}
+	
+	#targetHolder .target.incorrect {
+		color:			red;
 		border-color:	transparent;
 	}
 	
-	#targetHolder input[correct]{
-		color: 			green;
+	#targetHolder .target.answerShown, #targetHolder input.answerShown {
+		color:			#FF8C00;
 		border-color:	transparent;
 	}
-		
 	
 	#targetHolder select {
 		margin:	5px 0;
@@ -50,6 +51,10 @@
 	
 	#targetHolder select[disabled] {
 		color:	green;
+	}
+	
+	#targetHolder select[disabled].answerShown {
+		color:			#FF8C00;
 	}
 	
 	#labelHolder {
@@ -83,8 +88,12 @@
 		margin-top:	20px;
 	}
 	
-	#submitBtn {
+	#submitBtn, #showBtn {
 		float:	right;
 		margin-bottom:	10px;
+	}
+	
+	#showBtn {
+		margin-right: 1em;
 	}
 	
