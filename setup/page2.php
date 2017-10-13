@@ -81,7 +81,7 @@ if ( !isset($_POST['database_created']) )
             {
                 $query = $temp[$x++];
 
-                if ( $query !="" ) 
+                if ( strlen($query) > 1 ) 
                 {
                     $ok = $xot_setup->database->runQuery( $query );
 
