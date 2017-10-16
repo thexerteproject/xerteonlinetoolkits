@@ -210,8 +210,6 @@
 				$("#qTxt").html(x_addLineBreaks(infoString));
 
 				$("#feedback").html("");
-
-				debugger;
 				
 				if ($($thisQ).children().length == 0)
 				{
@@ -496,8 +494,8 @@
             $("#questionAudio").empty();
 
             $("#sliderHolder").hide();
-            $("#checkBtn").button("disable");
-			$("#restartBtn").button("disable");
+            $("#checkBtn").hide();
+			$("#restartBtn").hide();
             $("#qTxt").html("");
 
             XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph), x_currentPageXML.getAttribute("export"));
