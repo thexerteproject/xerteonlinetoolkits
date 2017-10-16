@@ -118,7 +118,7 @@
             }
 
             $("#sliderHolder").show();
-			$("#checkBtn, #restartBtn").button("disable");
+			$("#checkBtn").button("disable");
 			
 			this.currentQuestion = 0;
 			this.questions = []; // array of questions to use (index)
@@ -331,8 +331,12 @@
                         });
 
                         var labelsHidden = false;
-
-                        if ($labelHolder[0].childElementCount * $labelHolder[0].children[0].clientWidth > $labelHolder[0].clientWidth)
+						var labelWidth = 0;
+						for (var i = 0; i < $labelHolder[0].children.length; i++)
+						{
+						    labelWidth += ($labelHolder[0].children[i].clientWidth + 4)
+						}
+                        if (labelWidth > $labelHolder.width()) //+4 to counter inline-block built in margin
                         {
                             var numberOfOptions = $labelHolder[0].childElementCount;
                             for (var i = 1; i < numberOfOptions - 1; i++)
@@ -354,8 +358,8 @@
                         {
                             var index = $("#slider1")[0].valueAsNumber,
                                 sliderOutput = $("#sliderHolder").find("#sliderOutput1")[0];
-
-                            sliderOutput.value = $labelHolder[0].children[index].innerHTML;
+							
+                            sliderOutput.value = $labelHolder[0].children[index].text;
                             sliderOutput.style.left = (index / $labelHolder[0].children.length * 100) + "%";
                         }
 
@@ -495,7 +499,6 @@
 
             $("#sliderHolder").hide();
             $("#checkBtn").hide();
-			$("#restartBtn").hide();
             $("#qTxt").html("");
 
             XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph), x_currentPageXML.getAttribute("export"));
@@ -673,11 +676,6 @@
 			{
 				submitBtnText = "Submit";
 			}
-
-            var restartBtnText = x_currentPageXML.getAttribute("restartBtnText");
-            if (restartBtnText == undefined) {
-                restartBtnText = "Restart";
-            }
 			
 			var onCompletionText = x_currentPageXML.getAttribute("onCompletion");
 			if (onCompletionText == undefined)
@@ -697,16 +695,6 @@
 			.click(function() {
 				    opinion.trackQuestion();
                 });
-
-
-            $("#restartBtn")
-                .button({
-                    label: restartBtnText
-                })
-                .click(function() {
-                    opinion.startQuestions();
-                });
-
 
 			this.startQuestions();
 			this.sizeChanged();
@@ -741,7 +729,6 @@
 
 					<div id="buttonHolder">
 						<button id="checkBtn"></button>
-						<button id="restartBtn"></button>
 					</div>
 					
 					<div id="feedback" aria-live="polite"></div>

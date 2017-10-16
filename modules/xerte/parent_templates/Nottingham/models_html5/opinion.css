@@ -1,5 +1,10 @@
 /* opinion.html */
 
+
+    .qPanel {
+    overflow:	auto;
+    }
+
     #sliderHolder {
     margin-top:	15px;
     margin-bottom:	15px;
@@ -28,7 +33,7 @@
         display: inline-block;
         text-align: center;
         margin: 0 0.2em;
-        width: 4em;
+        max-width: 4em;
         text-decoration: none;
     }
 
