@@ -94,6 +94,16 @@ function iframe_check(){
 
 	if(window["upload_iframe"].document.body.innerHTML!=""){
 
+	    var string = document.getElementById("submitbutton").innerHTML;
+
+	    if(string.indexOf('fa-spin') != -1) {
+		// We have received a reply, so replace the spinner with the default upload button icon.
+		string = string.replace('<i class="fa fa-spinner fa-spin"></i> ' + WORKSPACE_UPLOADING, '<i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD);
+		document.getElementById('submitbutton').innerHTML = string;
+		document.getElementById('submitbutton').disabled = false;
+//		document.getElementById('importpopup').reset();
+	    }
+
 		if(window["upload_iframe"].document.body.innerHTML.indexOf("****")!=-1){
 
 			clearInterval(iframe_interval);
