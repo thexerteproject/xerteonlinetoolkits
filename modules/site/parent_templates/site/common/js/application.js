@@ -390,43 +390,62 @@ function setup(){
 	$('#overview div.logoR').data('defaultLogo', $('#overview .logoR img').attr('src'));
 	$('#overview div.logoL').data('defaultLogo', $('#overview .logoL img').attr('src'));
 	
-	var checkExists = function(logoClass, fallback) {
+	var checkExists = function(logoClass, type, fallback) {
 		$.ajax({
 			url: $('#overview .' + logoClass + ' img').attr('src'),
 			success: function() {
 				$('#overview').addClass(logoClass);
 				$('#overview div.' + logoClass).show();
+				
+				// the theme logo is being used - add a class that will allow for the different size windows to display different logos
+				if (type == 'theme') {
+					$('#overview .' + logoClass + ' img.' + logoClass).addClass('themeLogo');
+				}
 			},
 			error: function() {
-				if (fallback == 'theme') {
-					$('#overview .' + logoClass + ' img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo' + (logoClass == 'logoL' ? '_left' : '') + '.png');
-					checkExists(logoClass, 'default');
-				} else if (fallback == 'default') {
-					$('#overview .' + logoClass + ' img').attr('src', $('#overview div.' + logoClass).data('defaultLogo'));
-					checkExists(logoClass);
+				if ($(data).find('learningObject').attr(logoClass + 'Hide') == 'true') {
+					$('#overview .' + logoClass + ' img').removeAttr('src');
+				} else {
+					if (fallback == 'theme') {
+						$('#overview .' + logoClass + ' img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo' + (logoClass == 'logoL' ? '_left' : '') + '.png');
+						checkExists(logoClass, 'theme', 'default');
+					} else if (fallback == 'default') {
+						$('#overview .' + logoClass + ' img').attr('src', $('#overview div.' + logoClass).data('defaultLogo'));
+						checkExists(logoClass);
+					}
 				}
 			}
 		});
 	}
 	
-	var fallback;
+	var type, fallback;
 	if ($(data).find('learningObject').attr('logoR') != undefined && $(data).find('learningObject').attr('logoR') != '') {
 		$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
+		type = 'LO';
 		fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
-	} else if ($(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
-		fallback = 'default';
+	} else if ($(data).find('learningObject').attr('logoRHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
+		type = 'theme';
 		$('#overview .logoR img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo.png');
 	}
-	checkExists('logoR', fallback);
+	if ((type == undefined || type == 'theme') && $(data).find('learningObject').attr('logoRHide') == 'true') {
+		$('#overview .logoR img').removeAttr('src');
+	} else {
+		checkExists('logoR', type, fallback);
+	}
 	
 	if ($(data).find('learningObject').attr('logoL') != undefined && $(data).find('learningObject').attr('logoL') != '') {
 		$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
+		type = 'LO';
 		fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
-	} else if ($(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
-		fallback = 'default';
+	} else if ($(data).find('learningObject').attr('logoLHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
+		type = 'theme';
 		$('#overview .logoL img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo_left.png');
 	}
-    checkExists('logoL', fallback);
+	if ((type == undefined || type == 'theme') && $(data).find('learningObject').attr('logoLHide') == 'true') {
+		$('#overview .logoL img').removeAttr('src');
+	} else {
+		checkExists('logoL', type, fallback);
+	}
 	
     //---------------Optional Navbar properties--------------------
     
