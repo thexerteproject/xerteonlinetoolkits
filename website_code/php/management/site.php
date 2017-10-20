@@ -116,6 +116,33 @@ if(is_user_admin()){
     echo "<p>" . MANAGEMENT_SITE_FILE_EXTENSIONS . "<form><textarea id=\"file_extensions\">" . $row['file_extensions'] . "</textarea></form>
         </p>";
 
+    if (Xerte_Validate_FileExtension::canRun()) {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_FILE_EXT . "<form><textarea id=\"enable_file_ext_check\">" . $row['enable_file_ext_check'] . "</textarea></form>
+            </p>";
+    }
+    else {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_FILE_EXT . "<form><textarea id=\"enable_file_ext_check\" disabled=\"true\">False. The file extension check requires the PHP 'pathinfo' function.</textarea></form>
+            </p>";
+    }
+    echo "<p>" . MANAGEMENT_SITE_FILE_EXTENSIONS . "<form><textarea id=\"file_extensions\">" . $row['file_extensions'] . "</textarea></form>
+        </p>";
+
+    // Clear the file cache because of the file check below.
+    clearstatcache();
+
+    if ($xerte_toolkits_site->enable_clamav_check && (! is_file($xerte_toolkits_site->clamav_cmd) || ! is_executable($xerte_toolkits_site->clamav_cmd))) {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_CLAMAV_CHK . "<form><textarea id=\"enable_clamav_check\" disabled=\"true\">False. The ClamAV antivirus check requires a valid command pathname.</textarea></form>
+            </p>";
+    }
+    else {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_CLAMAV_CHK . "<form><textarea id=\"enable_clamav_check\">" . $row['enable_clamav_check'] . "</textarea></form>
+            </p>";
+    }
+    echo "<p>" . MANAGEMENT_SITE_CLAMAV_CMD . "<form><textarea id=\"clamav_cmd\">" . str_replace('\\', '/', $row['clamav_cmd']) . "</textarea></form>
+        </p>";
+    echo "<p>" . MANAGEMENT_SITE_CLAMAV_OPTS . "<form><textarea id=\"clamav_opts\">" . $row['clamav_opts'] . "</textarea></form>
+        </p>";
+
     echo "<p>" . MANAGEMENT_SITE_INTEGRATION . "<form><textarea id=\"integration_config_path\">" . $row['integration_config_path'] . "</textarea></form>
         </p>";	
 
