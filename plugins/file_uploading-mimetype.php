@@ -55,20 +55,24 @@ function filter_by_mimetype() {
     }
 
     foreach($files['temp_name'] as $key => $file) {
-        $validator = new Xerte_Validate_FileMimeType();
-        if(!$validator->isValid($file)) {
-	    if (file_exists($file)) {
+	$validator = new Xerte_Validate_FileMimeType();
+	if(!$validator->isValid($file)) {
+	    if (!$file) {
+		_debug("Mime check failed - no file selected");
+		error_log("Mime check failed - no file selected");
+	    }
+	    elseif (file_exists($file)) {
 		_debug("Mime check of {$files['file_name'][$key]} failed.");
 		error_log("Mime check of {$files['file_name'][$key]} ($file) failed");
 
-                unlink($file);
+		unlink($file);
 	    }
 	    else {
 		_debug("Mime check of {$files['file_name'][$key]} failed - file does not exist");
 		error_log("Mime check of {$files['file_name'][$key]} ($file) failed - file does not exist");
 	    }
 
-            $last_file_check_error = $validator->GetMessages();
+	    $last_file_check_error = $validator->GetMessages();
 
 	    return false;
 	}
