@@ -66,7 +66,11 @@ function virus_check_file() {
     foreach($files['temp_name'] as $key => $file) {
         $validator = new Xerte_Validate_VirusScanClamAv();
         if(!$validator->isValid($file)) {
-            if (file_exists($file)) {
+            if (!$file) {
+                _debug("Antivirus check failed - no file selected");
+                error_log("Antivirus check failed - no file selected");
+            }
+            elseif (file_exists($file)) {
                 _debug("Antivirus check of {$files['file_name'][$key]} failed.");
                 error_log("Antivirus check of {$files['file_name'][$key]} ($file) failed.");
 
@@ -80,8 +84,10 @@ function virus_check_file() {
             $last_file_check_error = $validator->GetMessages();
 
             /* Shorten the full pathname to something more user meaningful. */
-            $full_path = '/' . preg_quote($file, '/') . '/';
-            $last_file_check_error = preg_replace($full_path, $files['file_name'][$key], $last_file_check_error);
+            if ($file) {
+                $full_path = '/' . preg_quote($file, '/') . '/';
+                $last_file_check_error = preg_replace($full_path, $files['file_name'][$key], $last_file_check_error);
+            }
 
             return false;
         }

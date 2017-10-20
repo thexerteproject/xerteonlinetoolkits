@@ -36,8 +36,12 @@ class Xerte_Validate_VirusScanClamAv {
 
     public function isValid($filename) {
         $this->messages = array();
+
         if(self::canRun()) {
-            if(file_exists($filename)) {
+            if(!$filename) {
+                $this->messages['FILE_NO_FILE'] = "No file selected";
+            }
+            elseif(file_exists($filename)) {
                 /* If required, chmod the file to allow ClamAV access to it. */
                 clearstatcache();
                 $file_perms = fileperms($filename);
