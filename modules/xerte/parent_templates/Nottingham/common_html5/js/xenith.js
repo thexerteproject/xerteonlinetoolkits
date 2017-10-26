@@ -873,19 +873,58 @@ function x_continueSetUp1() {
 		}
 	}
 	
-	// get icon position
+	// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
+	// it's overridden by logo in theme folder
+	// default & theme logos can also be overridden by images uploaded via Icon optional property
+	$('#x_headerBlock img.x_icon').hide();
+	$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
+	
 	var icPosition = "x_floatLeft";
 	if (x_params.icPosition != undefined && x_params.icPosition != "") {
 		icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
 	}
-	if (x_params.ic != undefined && x_params.ic != "") {
-		x_checkMediaExists(x_evalURL(x_params.ic), function(mediaExists) {
-			if (mediaExists) {
-				var icTip = x_params.icTip != undefined && x_params.icTip != "" ? 'alt="' + x_params.icTip + '"' : 'aria-hidden="true"';
-				$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="' + icPosition + '" onload="if (x_firstLoad == false) {x_updateCss();}" ' + icTip + '/>');
+	$('#x_headerBlock img.x_icon').addClass(icPosition);
+	
+	var checkExists = function(type, fallback) {
+		$.ajax({
+			url: $('#x_headerBlock img.x_icon').attr('src'),
+			success: function() {
+				$('#x_headerBlock img.x_icon').show();
+				if (x_firstLoad == false) {x_updateCss();};
+				
+				// the theme logo is being used - add a class that will allow for the different size windows to display different logos
+				if (type == 'theme') {
+					$('#x_headerBlock img.x_icon').addClass('themeLogo');
+				}
+				
+				if (x_params.icTip != undefined && x_params.icTip != "") {
+					$('#x_headerBlock img.x_icon').attr('alt', x_params.icTip);
+				} else {
+					$('#x_headerBlock img.x_icon').attr('aria-hidden', 'true');
+				}
+			},
+			error: function() {
+				if (fallback == 'theme') {
+					$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
+					checkExists('theme', 'default');
+				} else if (fallback == 'default') {
+					$('#x_headerBlock img.x_icon').attr('src', $('#x_headerBlock img.x_icon').data('defaultLogo'));
+					checkExists();
+				}
 			}
 		});
 	}
+	
+	var type, fallback;
+	if (x_params.ic != undefined && x_params.ic != '') {
+		$('#x_headerBlock img.x_icon').attr('src', x_evalURL(x_params.ic));
+		type = 'LO';
+		fallback = x_params.theme != undefined && x_params.theme != "default" ? 'theme' : 'default';
+	} else if (x_params.theme != undefined && x_params.theme != "default") {
+		type = 'theme';
+		$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
+	}
+	checkExists(type, fallback);
 	
 	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 	$("#x_headerBlock h1").html(x_params.name);
@@ -896,7 +935,6 @@ function x_continueSetUp1() {
 	if (strippedText != "") {
 		document.title = strippedText;
 	}
-	
 	
 	var prevIcon = "x_prev";
 	if (x_params.navigation == "Historic") {
