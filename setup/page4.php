@@ -65,7 +65,7 @@ foreach(array('news_text', 'pod_one', 'pod_two', 'form_string', 'peer_form_strin
     $_POST[$key] = base64_encode(stripcslashes($_POST[$key])); 
 }
     
-foreach(array('site_url', 'apache', 'enable_mime_check', 'mimetypes', 'enable_file_ext_checks', 'file_extensions', 'enable_clamav_check', 'clamav_cmd', 'clamav_opts', 'LDAP_preference', 'LDAP_filter',
+foreach(array('site_url', 'apache', 'enable_mime_check', 'mimetypes', 'enable_file_ext_checks', 'file_extensions', 'enable_clamav_check', 'clamav_opts', 'LDAP_preference', 'LDAP_filter',
     'integration_config_path', 'admin_username', 'admin_password', 'site_session_name', 'site_title', 'site_name', 'site_logo', 'organisational_logo','welcome_message', 'site_text', 'news_text', 'pod_one', 'pod_two',
     'copyright', 'rss_title', 'synd_publisher', 'synd_rights', 'synd_license', 'demonstration_page', 'form_string', 'peer_form_string', 'module_path', 'website_code_path', 'users_file_area_short',
     'php_library_path', 'error_log_path', 'email_error_list', 'error_log_message', 'max_error_size', 'max_error_size', 'error_email_message', 'authentication_method',
