@@ -116,17 +116,6 @@ if(is_user_admin()){
     echo "<p>" . MANAGEMENT_SITE_FILE_EXTENSIONS . "<form><textarea id=\"file_extensions\">" . $row['file_extensions'] . "</textarea></form>
         </p>";
 
-    if (Xerte_Validate_FileExtension::canRun()) {
-        echo "<p>" . MANAGEMENT_SITE_ENABLE_FILE_EXT . "<form><textarea id=\"enable_file_ext_check\">" . $row['enable_file_ext_check'] . "</textarea></form>
-            </p>";
-    }
-    else {
-        echo "<p>" . MANAGEMENT_SITE_ENABLE_FILE_EXT . "<form><textarea id=\"enable_file_ext_check\" disabled=\"true\">False. The file extension check requires the PHP 'pathinfo' function.</textarea></form>
-            </p>";
-    }
-    echo "<p>" . MANAGEMENT_SITE_FILE_EXTENSIONS . "<form><textarea id=\"file_extensions\">" . $row['file_extensions'] . "</textarea></form>
-        </p>";
-
     // Clear the file cache because of the file check below.
     clearstatcache();
 
