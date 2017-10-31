@@ -530,6 +530,28 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 
         unlink($new_file_name);
 
+        /* Check the imported files. */
+        if (!apply_filters('editor_upload_file', $check_file_array)) {
+            delete_loop($xerte_toolkits_site->import_path . $this_dir);
+            while($delete_file = array_pop($delete_file_array)){
+                unlink($delete_file);
+            }
+
+            while($delete_folder = array_pop($delete_folder_array)){
+                rmdir($delete_folder);
+            }
+            rmdir($xerte_toolkits_site->import_path . $this_dir);
+
+            /* Show the last file check error if possible. */
+            if (isset($last_file_check_error) && !empty($last_file_check_error)) {
+                $err_string = implode("\n", $last_file_check_error);
+                die(IMPORT_CHECKS_FAILED . ": " . $err_string . ".****");
+            }
+            else {
+                die(IMPORT_CHECKS_FAILED . ".****");
+            }
+        }
+
         /*
          * use the template attributes to make the folders required and name them accordingly
          *

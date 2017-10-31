@@ -78,6 +78,7 @@ $LAUNCH = LTIX::requireData();
 
 		<div id="x_mobileScroll">
 			<div id="x_headerBlock" role="banner">
+				<img class="x_icon" src="%TEMPLATEPATH%common_html5/logo.png"/>
 				<div>
 					<h1> </h1>
 					<h2 aria-live="assertive"> </h2>
