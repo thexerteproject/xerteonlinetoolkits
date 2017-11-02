@@ -2,7 +2,7 @@
   <pageWizard remove="true" duplicate="false">
     <newNodes>  
       <cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
-	  navSetting="none"
+	  home="false" back="false" next="false"
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
 	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq>

@@ -739,7 +739,7 @@ function x_continueSetUp1() {
 					var $this = $(this),
 						myText = $this.text(),
 						myDefinition, i, len;
-						
+					
 					// Rip out the title attribute
 					$this.data('title', $this.attr('title'));
 					$this.attr('title', '');
@@ -1712,18 +1712,29 @@ function x_setUpPage() {
             .removeClass("ui-state-hover");
     }
 
-    if (x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) {
-        if (x_currentPageXML.getAttribute("navSetting") != undefined) {
-            if (x_currentPageXML.getAttribute("navSetting") != "all") {
-                $x_menuBtn.button("disable");
-            }
-            if (x_currentPageXML.getAttribute("navSetting") == "backonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
-                $x_nextBtn.button("disable");
-            }
-            if (x_currentPageXML.getAttribute("navSetting") == "nextonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
-                $x_prevBtn.button("disable");
-            }
-        }
+	// navigation buttons can be disabled on a page by page basis
+	if (x_currentPageXML.getAttribute("home") != undefined || x_currentPageXML.getAttribute("back") != undefined || x_currentPageXML.getAttribute("next") != undefined) {
+		if (x_currentPageXML.getAttribute("home") == "false") {
+			$x_menuBtn.button("disable");
+		}
+		if (x_currentPageXML.getAttribute("back") == "false") {
+			$x_prevBtn.button("disable");
+		}
+		if (x_currentPageXML.getAttribute("next") == "false") {
+			$x_nextBtn.button("disable");
+		}
+		
+	} else if ((x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) && x_currentPageXML.getAttribute("navSetting") != undefined) {
+		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
+		if (x_currentPageXML.getAttribute("navSetting") != "all") {
+			$x_menuBtn.button("disable");
+		}
+		if (x_currentPageXML.getAttribute("navSetting") == "backonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
+			$x_nextBtn.button("disable");
+		}
+		if (x_currentPageXML.getAttribute("navSetting") == "nextonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
+			$x_prevBtn.button("disable");
+		}
     }
 
 
