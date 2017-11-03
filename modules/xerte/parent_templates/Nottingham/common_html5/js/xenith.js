@@ -1713,7 +1713,7 @@ function x_setUpPage() {
     }
 
 	// navigation buttons can be disabled on a page by page basis
-	if (x_currentPageXML.getAttribute("home") != undefined || x_currentPageXML.getAttribute("back") != undefined || x_currentPageXML.getAttribute("next") != undefined) {
+	if ((x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) && (x_currentPageXML.getAttribute("home") != undefined || x_currentPageXML.getAttribute("back") != undefined || x_currentPageXML.getAttribute("next") != undefined)) {
 		if (x_currentPageXML.getAttribute("home") == "false") {
 			$x_menuBtn.button("disable");
 		}
