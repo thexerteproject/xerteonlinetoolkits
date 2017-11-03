@@ -163,6 +163,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
         $page_content = str_replace("%TITLE%", $title , $page_content);
         $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
+        $page_content = str_replace("%TEMPLATEID%", $_GET['template_id'], $page_content);
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
         $page_content = str_replace("%THEMEPATH%",$xerte_toolkits_site->site_url . "themes/" . $row['template_name'] . "/",$page_content);
