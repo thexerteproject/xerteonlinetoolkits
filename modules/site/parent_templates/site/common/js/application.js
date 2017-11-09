@@ -1270,13 +1270,12 @@ function findAnchor(name){
 }
 
 function loadXotContent($this) {
-	
 	// get link & store url parameters to add back in later if not overridden
 	var xotLink = $this.attr('link'),
 		params = [],
 		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
 	
-	xotLink = xotLink.slice(0,xotLink.indexOf('#resume='));
+	xotLink = xotLink.indexOf('#resume=') != -1 ? xotLink.slice(0,xotLink.indexOf('#resume=')) : xotLink;
 	
 	if (xotLink.indexOf(separator) != -1) {
 		params = xotLink.split(separator);
