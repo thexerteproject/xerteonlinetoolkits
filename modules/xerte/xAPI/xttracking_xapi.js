@@ -33,7 +33,7 @@ this.baseUrl = function()
     {
         urlPath += newPathname[i] + "/";
     }
-    if (newPathname[0] != "http:"){
+    if (newPathname[0] != "http:" && newPathname[0] != "localhost"){
         urlPath = "http://xerte.org.uk/";
     }
     console.log(urlPath);
@@ -682,7 +682,7 @@ function XTSetAttendance(page_nr, score)
                 id: "http://adlnet.gov/expapi/verbs/attended"
             },
             target: {
-                id: this.baseUrl + "questions/" + state.templateId + page_nr
+                id: this.baseUrl() + state.templateId + "/" +  page_nr
             },
             result:{
                 "score": {
@@ -713,7 +713,7 @@ function XTSetPageScore(page_nr, score)
                 id: "http://adlnet.gov/expapi/verbs/scored"
             },
             target: {
-                id: this.baseUrl + "questions/" + state.templateId + page_nr
+                id: this.baseUrl() + state.templateId + "/" + page_nr
             },
             result:{
                 "completion": true,
@@ -762,7 +762,7 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph, idName)
                     id: "http://adlnet.gov/expapi/verbs/scored"
                 },
                 target: {
-                    id: "http://xerte.org.uk/xapi/questions/" + idName
+                    id: this.baseUrl() + state.templateId + "/" + idName
                 },
                 result: {
                     "completion": true,

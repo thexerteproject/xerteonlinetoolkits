@@ -41,7 +41,6 @@ optional: feedback page synch play enable
 		var $target, $optHolder, $checkBtn, $feedbackDiv, media, selected, judge, autoEnable, questions;
 		
 		var finishTracking = function(options) {
-            debugger;
             var allValid = true;
             var ia_nr = Number(options.tracking_nr);
             var numOfQuestions = Number(options.total_questions);
@@ -412,7 +411,6 @@ optional: feedback page synch play enable
 			
 			start: function(event, options) {
 				// fire on options.start
-				debugger;
 				var correctOptions = [];
 				var correctAnswers = [];
 				var correctFeedback = [];
