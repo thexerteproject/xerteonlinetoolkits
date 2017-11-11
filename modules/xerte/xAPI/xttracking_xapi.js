@@ -24,6 +24,22 @@ function makeId(page_nr, ia_nr, ia_type, ia_name)
     return tmpid;
 }
 
+function baseUrl()
+{
+    var pathname = window.location.href;
+    var newPathname = pathname.split("/");
+    var urlPath = "";
+    for (var i = 0; i < newPathname.length -1; i++ )
+    {
+        urlPath += newPathname[i] + "/";
+    }
+    if (newPathname[0] != "http:"){
+        urlPath = "http://xerte.org.uk/";
+    }
+    console.log(urlPath);
+    return urlPath;
+}
+
 function XApiTrackingState()
 {
     this.initialised = false;
@@ -581,6 +597,9 @@ function XTSetOption(option, value)
             // Page timeout in seconds
             state.page_timeout = Number(value) * 1000;
             break;
+        case "templateId":
+            state.templateId = value;
+            break;
     }
 }
 
@@ -651,6 +670,8 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 
 function XTSetPageScore(page_nr, score)
 {
+    var installPath = baseUrl();
+    console.log(state.templateId);
     state.setPageScore(page_nr, score);
     this.pageEnd = new Date();
     var pageDuration = this.pageEnd.getTime() - this.pageStart.getTime();
@@ -674,7 +695,7 @@ function XTSetPageScore(page_nr, score)
                 id: "http://adlnet.gov/expapi/verbs/scored"
             },
             target: {
-                id: "http://xerte.org.uk/xapi/questions/" + page_nr
+                id: installPath + "questions/" + state.templateId + page_nr
             },
             result:{
                 "completion": true,
