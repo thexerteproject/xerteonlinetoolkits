@@ -24,7 +24,9 @@
 		var	$panelHolder,
 			plugins = ["textplus", "subtitleplus", "xot", "mediaplus", "mcq", "slides", "sortholder"], // list of popcorn plugins to load
 			css = ["subtitleplus", "mcq", "slides"], // list of popcorn plugin css to load
-			numLoaded = 0;
+			numLoaded = 0,
+			duration = 0,
+			timeWatched = [];
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -195,7 +197,12 @@
 		this.resizeVimeo = function($vimeo) {
 			this.resizeYouTube($vimeo);
 		}
-		
+
+
+		this.leavePage = function () {
+			console.log("Page Exit");
+			XTSetPageScore(x_currentPage, lookupTable());
+		}
 		// function called when page first loads
 		this.init = function() {
 			
@@ -492,6 +499,29 @@
 			// _____ SORT & CREATE SYNCH POINT EVENTS FOR EACH PANEL _____
 			
 			if (popcornInstance != undefined) {
+				debugger;
+				var lastTime = -1;
+				popcornInstance.media.addEventListener( "timeupdate", function() {
+					var popTime = popcornInstance.media.currentTime;
+					if (lastTime != popTime) {
+						lastTime = popcornInstance.media.currentTime;
+						updateTable(popcornInstance.media.currentTime);
+					}
+				});
+				popcornInstance.media.addEventListener( "play", function() {
+					console.log("play");
+					duration = popcornInstance.duration();
+				});
+				popcornInstance.media.addEventListener( "pause", function() {
+					var percentageTime = lookupTable();
+					console.log("xAPI");
+					XTSetPageScore(x_currentPage, percentageTime);
+				});
+				popcornInstance.media.addEventListener( "seeked", function() {
+					popcornInstance.pause();
+					popcornInstance.play();
+				});
+
 				panelData.each(function(i) {
 					mediaLesson.sortPopcorn($(this).children(), "panel" + i, popcornInstance, $(".mainMedia"));
 				});
@@ -499,7 +529,24 @@
 			
 			x_pageLoaded();
 		}
-		
+
+		updateTable = function (current) {
+			console.log("update" + current);
+			var i = Math.floor(current / duration * 100);
+			timeWatched[i] = true;
+		}
+
+		lookupTable = function () {
+			console.log("lookup");
+			var playedTime = 0;
+			for (var i = 0; i < 100; i++)
+			{
+				if (timeWatched[i]) {
+					++playedTime;
+				}
+			}
+			return playedTime;
+		}
 		// function loads media - can be either main media in media panel or additional media to appear in another panel (called from media plugin)
 		this.loadMedia = function($holder, mediaType, mediaData, mainMedia) {
 			var $mediaHolder,

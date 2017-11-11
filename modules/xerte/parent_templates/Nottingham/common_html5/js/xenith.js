@@ -287,7 +287,8 @@ x_projectDataLoaded = function(xmlData) {
     // Setup nr of pages for tracking
     XTSetOption('nrpages', x_pageInfo.length);
 	XTSetOption('toComplete', markedPages);
-	
+	XTSetOption('templateId', x_TemplateId);
+
     if (x_params.trackingMode != undefined) {
         XTSetOption('tracking-mode', x_params.trackingMode);
     }
