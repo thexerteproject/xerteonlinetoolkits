@@ -401,28 +401,28 @@ if ($scorm == "true") {
         lmsmanifest_create($row['zipname'], $useflash, $lo_name);
     }
     if ($useflash) {
-        scorm_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
+        scorm_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-            scorm_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage(), $need_download_url);
+            scorm_html5_page_create($_GET['template_id'], $row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage(), $need_download_url);
     }
 } else if ($scorm == "2004") {
     $useflash = ($export_flash && !$export_html5);
     lmsmanifest_2004_create($row['zipname'], $useflash, $lo_name);
     if ($export_flash && !$export_html5) {
-        scorm2004_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
+        scorm2004_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-        scorm2004_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage(), $need_download_url);
+        scorm2004_html5_page_create($_GET['template_id'], $row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage(), $need_download_url);
     }
 } else if($xAPI)
 	{
-		xAPI_html_page_create($row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage());
+		xAPI_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage());
 	}
 else {
     if ($export_flash) {
-        basic_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
+        basic_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
     if ($export_html5) {
-        basic_html5_page_create($row['template_framework'], $row['template_name'],$lo_name,  $tsugi, $export_offline, $offline_includes, $need_download_url);
+        basic_html5_page_create($_GET['template_id'], $row['template_framework'], $row['template_name'],$lo_name,  $tsugi, $export_offline, $offline_includes, $need_download_url);
     }
 }
 

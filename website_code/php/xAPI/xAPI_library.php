@@ -1,6 +1,6 @@
 <?php
 
-function xAPI_html_page_create($template_name, $type, $lo_name, $language) {
+function xAPI_html_page_create($id, $template_name, $type, $lo_name, $language) {
 
 global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -13,6 +13,7 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
     $xapi_html_page_content = str_replace("%TITLE%",$lo_name,$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%TEMPLATEPATH%","",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%XMLPATH%","",$xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%TEMPLATEID%", $id, $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%XMLFILE%","template.xml",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%THEMEPATH%", "themes/" . $template_name . "/",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%OFFLINESCRIPTS%", "",$xapi_html_page_content);

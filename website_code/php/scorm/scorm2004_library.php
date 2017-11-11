@@ -141,7 +141,7 @@ function lmsmanifest_2004_create_rich($row, $metadata, $users, $flash, $lo_name)
 * @author Patrick Lockley
 */
 
-function scorm2004_html_page_create($name, $type, $rlo_file, $lo_name, $language){
+function scorm2004_html_page_create($id, $name, $type, $rlo_file, $lo_name, $language){
 
 	global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -155,6 +155,7 @@ function scorm2004_html_page_create($name, $type, $rlo_file, $lo_name, $language
 	$scorm_html_page_content = str_replace("%HEIGHT%",$new_temp[1],$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%RLOFILE%",$rlo_file,$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%TEMPLATEID%", $id, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLPATH%","",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%JSDIR%","",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLFILE%","template.xml",$scorm_html_page_content);
@@ -180,7 +181,7 @@ function scorm2004_html_page_create($name, $type, $rlo_file, $lo_name, $language
 
 }
 
-function scorm2004_html5_page_create($type, $template_name, $lo_name, $language, $need_download_url=false){
+function scorm2004_html5_page_create($id, $type, $template_name, $lo_name, $language, $need_download_url=false){
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -191,6 +192,7 @@ function scorm2004_html5_page_create($type, $template_name, $lo_name, $language,
 	$scorm_html_page_content = str_replace("%VERSION%", $version , $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%VERSION_PARAM%", "" , $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%TEMPLATEID%", $id, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TEMPLATEPATH%","",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLPATH%","",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLFILE%","template.xml",$scorm_html_page_content);
