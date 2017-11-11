@@ -201,7 +201,7 @@
 
 		this.leavePage = function () {
 			console.log("Page Exit");
-			XTSetPageScore(x_currentPage, lookupTable());
+			XTSetAttendance(x_currentPage, lookupTable());
 		}
 		// function called when page first loads
 		this.init = function() {
@@ -515,7 +515,7 @@
 				popcornInstance.media.addEventListener( "pause", function() {
 					var percentageTime = lookupTable();
 					console.log("xAPI");
-					XTSetPageScore(x_currentPage, percentageTime);
+					XTSetAttendance(x_currentPage, percentageTime);
 				});
 				popcornInstance.media.addEventListener( "seeked", function() {
 					popcornInstance.pause();

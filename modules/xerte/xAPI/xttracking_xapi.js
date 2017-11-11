@@ -24,7 +24,7 @@ function makeId(page_nr, ia_nr, ia_type, ia_name)
     return tmpid;
 }
 
-function baseUrl()
+this.baseUrl = function()
 {
     var pathname = window.location.href;
     var newPathname = pathname.split("/");
@@ -668,23 +668,41 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 
 }
 
+function XTSetAttendance(page_nr, score)
+{
+    console.log(state.templateId);
+    this.pageEnd = new Date();
+
+    var statement = new TinCan.Statement(
+        {
+            actor: {
+                mbox: userEMail
+            },
+            verb: {
+                id: "http://adlnet.gov/expapi/verbs/attended"
+            },
+            target: {
+                id: this.baseUrl + "questions/" + state.templateId + page_nr
+            },
+            result:{
+                "score": {
+                    "scaled": score / 100
+                },
+                "duration": calcDuration(),
+            },
+            timestamp: this.pageEnd
+
+        }
+    );
+
+    SaveStatement(statement);
+}
+
 function XTSetPageScore(page_nr, score)
 {
-    var installPath = baseUrl();
     console.log(state.templateId);
     state.setPageScore(page_nr, score);
     this.pageEnd = new Date();
-    var pageDuration = this.pageEnd.getTime() - this.pageStart.getTime();
-
-    var delta = Math.abs(this.pageEnd.getTime() - this.pageStart.getTime()) / 1000;
-
-    var days = Math.floor(delta / 86400);
-    delta -= days * 86400;
-    var hours = Math.floor(delta / 3600) % 24;
-    delta -= hours * 3600;
-    var minutes = Math.floor(delta / 60) % 60;
-    delta -= minutes * 60;
-    var seconds = delta % 60;
 
     var statement = new TinCan.Statement(
         {
@@ -695,7 +713,7 @@ function XTSetPageScore(page_nr, score)
                 id: "http://adlnet.gov/expapi/verbs/scored"
             },
             target: {
-                id: installPath + "questions/" + state.templateId + page_nr
+                id: this.baseUrl + "questions/" + state.templateId + page_nr
             },
             result:{
                 "completion": true,
@@ -703,7 +721,7 @@ function XTSetPageScore(page_nr, score)
                 "score": {
                     "scaled": score / 100
                 },
-                "duration": "P" + 0 + "Y" + 0 + "M" + days + "DT" + hours + "H" + minutes + "M" + seconds + "S",
+                "duration": calcDuration(),
             },
             timestamp: this.pageEnd
 
@@ -713,11 +731,9 @@ function XTSetPageScore(page_nr, score)
     SaveStatement(statement);
 }
 
-function XTSetPageScoreJSON(page_nr, score, JSONGraph, idName)
+function calcDuration()
 {
-    state.setPageScore(page_nr, score);
-    this.pageEnd = new Date();
-    var pageDuration = this.pageEnd.getTime() - this.pageStart.getTime();
+    this.pageEnd.getTime() - this.pageStart.getTime();
 
     var delta = Math.abs(this.pageEnd.getTime() - this.pageStart.getTime()) / 1000;
 
@@ -728,6 +744,13 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph, idName)
     var minutes = Math.floor(delta / 60) % 60;
     delta -= minutes * 60;
     var seconds = delta % 60;
+    return "P" + 0 + "Y" + 0 + "M" + days + "DT" + hours + "H" + minutes + "M" + seconds + "S"
+}
+
+function XTSetPageScoreJSON(page_nr, score, JSONGraph, idName)
+{
+    state.setPageScore(page_nr, score);
+    this.pageEnd = new Date();
 
     if (!surf_mode) {
         var statement = new TinCan.Statement(
@@ -747,7 +770,7 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph, idName)
                     "score": {
                         "scaled": score / 100
                     },
-                    "duration": "P" + 0 + "Y" + 0 + "M" + days + "DT" + hours + "H" + minutes + "M" + seconds + "S",
+                    "duration": calcDuration(),
                     "extensions": {
                         "http://xerte.org.uk/xapi/JSONGraph": JSONGraph
                     }
