@@ -986,6 +986,10 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
     }
 }
 
+function XTSetAttendance(page_nr, name, score) {
+
+}
+
 function XTSetPageScore(page_nr, score)
 {
     if (state.scormmode == 'normal')
