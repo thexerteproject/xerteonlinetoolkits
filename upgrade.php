@@ -519,8 +519,15 @@ function upgrade_10()
         $sql = "UPDATE $table SET mimetypes = ?";
         $res = db_query($sql, array($new_str));
 
-        // A failed update is not fatal, so just report it.
-        return "Default allowed MIME type list updated - ok ? " . ($res ? 'true' : 'false');
+        if ($res) {
+            $new_str = implode(", ", $add_types);
+            echo "<p> New file MIME types added to the allowed type list: " . $new_str . "</p>";
+            return "Default allowed MIME type list updated - ok ? true";
+        }
+        else {
+            // A failed update is not fatal, so just report it.
+            return "Default allowed MIME type list updated - ok ? false";
+        }
     }
     else {
         return "Default allowed MIME type list up to date - ok ? true";
