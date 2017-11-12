@@ -414,7 +414,9 @@ var EDITOR = (function ($, parent) {
         var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
         var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true");
         var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');
-        var nodeText = $("#" + current_node.id + "_text").html();
+        // Be carefull. You cannot just find $("#" + current_node.id + "_text").html(), becuase if the node is collapsed this will return undefined!
+        // var nodeText = $("#" + current_node.id + "_text").html();
+        var nodeText = $("<div>").html(current_node.text).find("#" + current_node.id + "_text").html();
 
         var treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodeText + '</span>';
         // Create the tree node

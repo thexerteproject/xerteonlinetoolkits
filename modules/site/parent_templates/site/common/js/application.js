@@ -943,7 +943,6 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		pdf = [];
 	
 	node.children().each( function(index, value){
-	
 		if (index == 0){
 
 			tabs.append( $('<li class="active"><a href="#tab' + sectionIndex + '_' + itemIndex + '_' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>') );
@@ -1007,8 +1006,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			if (this.nodeName == 'pdf'){
 				
 				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '#page=1&view=fitH"></object>');
-				
-				pdf.push(i);
+				pdf.push(tab.find('object'));
 				
 			}
 			
@@ -1051,7 +1049,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 		// fix for issue where firefox doesn't zoom pdfs correctly if not on 1st pane of navigators
 		for (var i=0; i<pdf.length; i++) {
-			$pdfTabs = $pdfTabs.add($('a[data-toggle="tab"]:eq(' + pdf[i] + ')'));
+			$pdfTabs = $pdfTabs.add($(pdf[i]).parents('.tabbable').find('ul a[data-toggle="tab"]:eq(' + $(pdf[i]).parents('.tab-pane').index() + ')'));
 		}
 		
 		$pdfTabs.on('shown.bs.tab', function (e) {
@@ -1272,13 +1270,12 @@ function findAnchor(name){
 }
 
 function loadXotContent($this) {
-	
 	// get link & store url parameters to add back in later if not overridden
 	var xotLink = $this.attr('link'),
 		params = [],
 		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
 	
-	xotLink = xotLink.slice(0,xotLink.indexOf('#resume='));
+	xotLink = xotLink.indexOf('#resume=') != -1 ? xotLink.slice(0,xotLink.indexOf('#resume=')) : xotLink;
 	
 	if (xotLink.indexOf(separator) != -1) {
 		params = xotLink.split(separator);

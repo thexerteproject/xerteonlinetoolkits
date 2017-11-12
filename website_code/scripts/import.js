@@ -371,6 +371,7 @@ function import_template(){
 }
 
 
+
 /*
  * This function will replace the default icon on the media and quota
  * import button with a spinner icon. The 'iframe_check' function above
