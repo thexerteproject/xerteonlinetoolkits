@@ -1,5 +1,7 @@
 <language name="Italian">
 
+  <noPages label="Questo Progetto non contiene alcuna pagina."/>
+    
   <nextButton label="Avanti" description="Pulsante Pagina Succ."/>
   
   <backButton label="Indietro" description="Pulsante Pagina Prec"/>
@@ -18,18 +20,24 @@
   
   <continueButton label="Continua" description="Pulsante Continua."/>
   
-  <toc label="Indice dei contenuti" description="indice dei contenuti. Usa i tasti freccia per scegliere la pagina. Permi spazio per selezionarla.">
+  <progressBar label="COMPLETATO"/>
+  
+  <footerTools hide="Nascondi barra degli strumenti" show="Mostra barra degli strumenti"/>
+  
+  <toc label="Indice dei contenuti" description="Indice dei contenuti. Usa i tasti freccia per scegliere la pagina. Permi spazio per selezionarla." htmlDescription="Usa i tasti freccia per scegliere la pagina. Permi spazio per selezionarla.">
 	  <contentsList label="" description=""/>
-	  <closeButton label="" description="Pulsante per chiudere l'indice"/>
+	  <closeButton label="" description="Chiudi l'indice"/>
 	  <gotoPageButton label="Vai alla pagina" description="Pulsante Vai alla pagina"/>
   </toc>
   
+  <mediaWindow label="Visualizzatore Multimediale"/>
+  
   <glossary label="Glossario" description="Lista di parole completa delle definizioni.">
-	  <closeButton label="" description="Pulsante chiudi il glossario"/>
+	  <closeButton label="" description="Chiudi il glossario"/>
   </glossary>
   
   <kbLanguage label="Caratteri speciali" description="Una lista di pulsanti per inserire caratteri speciali nei testi">
-	  <closeButton label="" description="Pulsante chiudi lista dei caratteri speciali"/>
+	  <closeButton label="" description="Chiudi lista dei caratteri speciali"/>
 	  <dialog instruction="Usa Maiusc e SHIFT" on="ON" off="OFF" caps="Maiusc"/>
   </kbLanguage>
   
@@ -41,7 +49,19 @@
   
   <errorBrowser label="Il tuo browser non supporta completamente questo tipo di pagine."/>
   
+  <errorEmbed label="Hai integrato un'anteprima XOT. Devi rendere pubblico il progetto ed utilizzare il link pubblico per integrarlo."/>
+  
+  <pageDeprecatedCeased label="Questa pagina è stata deprecata ed il servizio terminato."/>
+  
+  <errorQuestions noQ="Nessuna domanda è stata aggiunta" noA="Nessuna opzione di risposta è stata aggiunta" />
+  
   <errorFlash label="Per vedere questo contenuto è necessario installare Flash Player." description="Installa Flash Player"/>
+  
+  <authorSupport label="Il supporto autore è abilitato: il testo mostrato in rosso non sarà visualizzato nella visualizzazione del progetto."/>
+  
+  <hiddenPage label="Questa pagina sarà nascosta nella visualizzazione del progetto"/>
+  
+  <hiddenSection label="Questa sezione sarà nascosta nella visualizzazione del progetto"/>
   
   <tick label="Segna"/>
   
@@ -60,10 +80,10 @@
   </themes>
  
   <sizes label="--Dimensioni schermo--" description="Opzioni dimensione schermo">
-	<item>default</item>
+	<item>Default</item>
 	<item>large</item>
 	<item>larger</item>
-	<item>full screen</item>
+	<item>Full Screen</item>
 	<item>fill window</item>
   </sizes>
   
@@ -105,7 +125,7 @@
 	<loader label="Sto caricando: "/>
   </movieController>
   
-  <mediaElementControls>
+  <mediaElementControls video="Video" audio="Audio">
 	<stopButton label="Stop" description="Pulsante Stop"/>
 	<playPauseButton label="Riproduci/Pausa" description="Pulsante Riproduci/Pausa"/>
 	<muteButton label="Togli Audio" description="Pulsante Togli Audio"/>
@@ -123,6 +143,7 @@
 	  <textEntry name="Casella di testo" selected="Selezionata casella di testo"/>
 	  <targetArea name="Area Destinazione" description="Zona di aggancio per" toSelect="Premi spazio per rilasciare l'oggetto selezionato."/>
 	  <draggableItem name="Oggetto Trascinabile" selected="Oggetto Selezionato" toSelect="Premi Spazio per selezionare" deSelected="Nessun oggetto selezionato." />
+          <moreInfoItem toSelect="Premi spazio per selezionare" selected="Selezionato" moreInfo="Premi spazio per saperne di più" />
   </interactions>
   
   <fetchResults label="Sto recuperando i risultati..."/>
@@ -138,6 +159,46 @@
 
   <colourChanger label="Cambiare Colore" description="Per cambiare i colori.">
 	  <closeButton label="" description="Chiudi la personalizzazione dei colori"/>
+          <selectTxt label="Seleziona una delle opzioni seguenti"/>
+	  <adviceTxt label="Servono maggiori consigli? Visita la &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;guida di accesibilità di Xerte Toolkits&lt;/a&gt;."/>
+	  <off label="Off"/>
+	  <noBg label="Rimuovi Immagini di sfondo"/>
+	  <invert label="Inverti"/>
+	  <blackYellow label="Nero su giallo"/>
   </colourChanger>
+
+<screenReaderInfo label="Informazioni Di Navigazione" newWindow="Questo link si aprirà in una nuova finestra" thisWindow="Questo link si aprirà in questa finestra" dialog="Questo pulsante aprirà una finestra di dialogo">
+	  <tabNav description="Questa pagina contiene un pannello di tabulazione dove la selezione di una tab modifica le informazioni visualizzate. Per selezionare una Tab: Premi invio due volte (Jaws) oppure clicca Shift-Invio (NVDA)."/>
+	  <accNav description="Questa pagina contiene un pannello a fisarmonica dove la selezione di una tab modifica le informazioni visualizzate. Per selezionare premi Invio o  Spazio."  click="Clicca per mostrare le informazioni"/>
+	  <buttonNav description="Questa pagina contiene una serie di pulsanti dove ognuno mostra alcune informazioni correlate." click="Clicca per mostrare le informazioni"/>
+	  <slideshow description="Questa pagina contiene una presentazione dove cliccando il pulsante successivo o precedente verranno modificate le informazioni visalizzate."/>
+	  <audioSlideshow description="Questa pagina mostra contenuti sincronizzati con un file audio. Un nuovo contenuto viene aggiunto alla pagina man mano che l'audio viene riprodotto."/>
+	  <videoSynch description="Questa pagina mostra dei contenuti sincronizzati con un video. Un nuovo contenuto viene aggiunto alla pagina man mano che il video viene riprodotto."/>
+	  <list description="Questa pagina contiene una serie di link dove ognuno di essi mostra alcune informazioni correlate." click="Clicca per mostrare le informazioni"/>
+	  <modelAnswerResults selected="Testo selezionato"/>
+	  <mcq description="Questa pagina contiene una domanda a scelta multipla. Usa il pulsante di tabulazione e le frecce su e giù per esplorare le possibili risposte e premi spazio per selezionare le tue risposte."/>
+	  <quiz description="Questa pagina contiene una serie di domande a scelta multipla. Usa il pulsante di tabulazione e le frecce su e giù per esplorare le possibili risposte e premi spazio per selezionare le tue risposte."/>
+  </screenReaderInfo>
+  
+  <authorVars label="Visualizza dati variabili">
+	<item>Name</item>
+	<item>Fixed Value</item>
+	<item>Random</item>
+	<item>Min</item>
+	<item>Max</item>
+	<item>Step</item>
+	<item>DP</item>
+	<item>SF</item>
+	<item>Trailing Zeros</item>
+	<item>Exclude</item>
+	<item>Default</item>
+	<item>Value</item>
+  </authorVars>
+  
+  <authorVarsInfo>
+	  <error unable="Impossibile da calcolare" invalid="Valore non consentito" none="Nessun dato variabile"/>
+	  <info undef="Si riferisce ad un valore non definito" minMax="min > max" valueMin="valore &lt; minimo" valueMax="value &gt; massimo" exclude="{n} è escluso" circular="Si riferisce ad una variabile circolare" none="Tutti i possibili valori sono esclusi o ricadono fuori range minimo e massimo" none2="{n} tentativi non hanno restituito un valore accettabile" attempts="{n} tenta di calcolare un valore valido" default="Reimposta i valori predefiniti"/>
+  </authorVarsInfo>
+
 
 </language>

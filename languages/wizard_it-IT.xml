@@ -1,10 +1,11 @@
 <language name="Italiano" code="it-IT">
     <layout closetooltip="Chiudi questo pannello" opentooltip="Apri questo pannello" resizetooltip="Ridimensiona questo pannello" />
     <edit label="Modifica ..." tooltip="Modifica l'opzione" description="Pulsante modifica" />
-    <insertDialog>
+    <insertDialog label="Inserisci Nuovo {i}" preview="Anteprima">
         <insertBefore label="Inserisci prima" tooltip="Inserisci prima del nodo selezionato"/>
         <insertAfter label="Inserisci dopo" tooltip="Inserisci dopo il nodo selezionato"/>
         <insertAtEnd label="Inserisci alla fine" tooltip="Inserisci alla fine"/>
+        <insertMerge label="Importa pagine" tooltip="Importa pagine dopo l'ultima pagina"/>
     </insertDialog>
     <btnSaveXerte label="Salva" tooltip="Salva il progetto" description="Pulsante Salva"/>
 	<btnPublishXot label="Pubblica" tooltip="Pubblica il progetto" description="Pulsante Pubblica"/>
@@ -26,6 +27,7 @@
     <btnAddColumn label="Aggiungi colonna" tooltip="Aggiungi una colonna a destra della griglia"/>
     <btnDelColumn label="Canc colonna" tooltip="Elimina la colonna selezionata"/>
 	<btnInsert label="Inserisci" tooltip="Inserisci"/>
+        <btnMerge label="Importa pagine" tooltip="Importa pagine"/>
 	<btnAddChild tooltip="aggiungi oggetti figlio"/>
 	<btnDuplicate label="Copia" tooltip="Copia"/>
 	<btnDelete label="Cancella" tooltip="Cancella"/>
@@ -37,11 +39,14 @@
 	<icDelete tooltip="Cancella" prompt="Cancella l'oggetto?"/>
 	<addProp label="Aggiungi" tooltip="Aggiungi"/>
 	<optionalProp label="Proprietà aggiuntive:"/>
+        <optionalPropHTML label="Proprietà Opziionali" general="Generali"/>
 	<chkShowLanguage label="Mostra le opzioni della lingua" tooltip="Se disponibili, mostra le opzioni per la lingua."/>
 	<chkShowAdvanced label="Mostra le opzioni avanzate" tooltip="Se disponibili, mostra le opzioni avanzate."/>
     <chkShowToolbar label="Mostra le barre strumenti" tooltip="Mostra tutte le barre strumenti per default."/>
 	<compMedia tooltip="Importa oggetto multimediale"/>
 	<compPreview tooltip="Anteprima"/>
+        <hidePage title="NASCOSTO" tooltip="Questa pagina è nascosta"/>
+	<unmarkForCompletion tooltip="Questa pagina non è richiesta per il completamento"/>
 	<filemenu title="File">
 		<menuNew>Nuovo Progetto...</menuNew>
 		<menuOpen>Apri...</menuOpen>
@@ -92,7 +97,7 @@
 		<oklabel>Ok</oklabel>
 		<cancellabel>Cancella</cancellabel>
 		<nolabel>No</nolabel>
-		<yeslabel>Sì</yeslabel>
+		<yeslabel>Si</yeslabel>
 		<linkhandler>
 			<prompt></prompt>
 			<title>Immetti l'URL per il link</title>
@@ -146,5 +151,14 @@
             </failed>
         </upload>
 		
+                <changeLanguage>
+			<prompt>Vuoi cambiare tutte le opzioni di lingua con quelle predefinite del linguaggio </prompt>
+		</changeLanguage>
 	</Alert>
+        <XotLinkRelativePages>
+		<firstpage>* prima pagina *</firstpage>
+		<lastpage>* ultima pagina *</lastpage>
+		<nextpage>* prossima pagina *</nextpage>
+		<prevpage>* pagina precedente *</prevpage>
+	</XotLinkRelativePages>
 </language>
