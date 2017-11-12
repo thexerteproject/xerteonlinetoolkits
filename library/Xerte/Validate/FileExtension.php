@@ -34,6 +34,11 @@ class Xerte_Validate_FileExtension
     {
         $this->messages = array();
 
+        if (!$filename) {
+            $this->messages['FILE_NO_FILE'] = "No file selected";
+            return false;
+        }
+
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
         if (strncasecmp(PHP_OS, 'Win', 3) == 0) {

@@ -40,8 +40,12 @@ class Xerte_Validate_FileMimeType {
      */
     public function isValid($file_name) {
         $this->messages = array();
+
         if(self::canRun()) {
-            if(file_exists($file_name)) {
+            if(!$file_name) {
+                $this->messages['FILE_NO_FILE'] = "No file selected";
+            }
+            elseif(file_exists($file_name)) {
                 $mime_type = mime_content_type($file_name);
                 if(in_array($mime_type, self::$allowableMimeTypeList)) {
                     return true;

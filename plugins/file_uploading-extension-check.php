@@ -56,10 +56,15 @@ function filter_by_extension_name() {
 
     foreach($files['file_name'] as $key => $file) {
         $validator = new Xerte_Validate_FileExtension();
+
         if(!$validator->isValid($file)) {
             $real_path = $files['temp_name'][$key];
 
-            if (file_exists($real_path)) {
+            if (!$file) {
+                _debug("File extension check failed - no file selected");
+                error_log("File extension check failed - no file selected");
+            }
+            elseif (file_exists($real_path)) {
                 _debug("Blacklisted file extension of uploaded file - $file");
                 error_log("Blacklisted file extension found for file $file ($real_path)");
 
