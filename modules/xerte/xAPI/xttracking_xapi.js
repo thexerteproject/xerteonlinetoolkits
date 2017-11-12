@@ -668,7 +668,7 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 
 }
 
-function XTSetAttendance(page_nr, score)
+function XTSetAttendance(page_nr, name, score)
 {
     console.log(state.templateId);
     this.pageEnd = new Date();
@@ -686,6 +686,7 @@ function XTSetAttendance(page_nr, score)
             },
             result:{
                 "score": {
+                    "name"  : name,
                     "scaled": score / 100
                 },
                 "duration": calcDuration(),

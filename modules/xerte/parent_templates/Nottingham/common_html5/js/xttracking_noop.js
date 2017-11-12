@@ -521,6 +521,11 @@ function XTSetPageScoreJSON(page_nr, score)
     state.setPageScore(page_nr, score);
 }
 
+function XTSetAttendance(page_nr, name, score)
+{
+    state.setPageScore(page_nr, score);
+}
+
 function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback)
 {
 	state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback);
