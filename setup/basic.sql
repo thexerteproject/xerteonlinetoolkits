@@ -93,6 +93,11 @@ CREATE TABLE `$sitedetails` (
   `apache` char(255) DEFAULT NULL,
   `enable_mime_check` char(255) DEFAULT NULL,
   `mimetypes` text,
+  `enable_file_ext_check` char(255) DEFAULT NULL,
+  `file_extensions` text,
+  `enable_clamav_check` char(255) DEFAULT NULL,
+  `clamav_cmd` char(255) DEFAULT NULL,
+  `clamav_opts` char(255) DEFAULT NULL,
   `site_session_name` char(255) DEFAULT NULL,
   `authentication_method` char(255) DEFAULT NULL,
   `LDAP_preference` char(255) DEFAULT NULL,
@@ -147,7 +152,6 @@ CREATE TABLE `$sitedetails` (
   `LRS_Endpoint` char(255) DEFAULT NULL,
   `LRS_Key` char(255) DEFAULT NULL,
   `LRS_Secret` char(255) DEFAULT NULL,
-  `file_extensions` text,
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

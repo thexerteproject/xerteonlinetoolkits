@@ -28,6 +28,7 @@
  */
 
 require_once("../../../config.php");
+require_once("../../../plugins.php");
 
 _load_language_file("/website_code/php/import/import.inc");
 
@@ -39,6 +40,7 @@ include "../template_status.php";
 $likelihood_array = array();
 $delete_folder_array = array();
 $delete_file_array = array();
+$check_file_array = array();
 $rlt_name = "";
 
 /**
@@ -437,6 +439,9 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
          * Look for an xml file linked to the RLO
          */
 
+        $data_xml = '';
+        $preview_xml = '';
+
         foreach($zip->compressedList as $x){
             foreach($x as $y){
                 if($y===$template_data_equivalent || $y==="template.xml"){
@@ -523,6 +528,9 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
                 chmod($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0],0777);
 
             }
+
+            $check_file_array['name'][] = $file_to_create[0];
+            $check_file_array['tmp_name'][] = $xerte_toolkits_site->import_path . $this_dir . $file_to_create[0];
 
         }
 
@@ -750,6 +758,8 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 
         }
         rmdir($xerte_toolkits_site->import_path . $this_dir);
+
+        error_log("Unable to move uploaded project file to imported file: From: " . $_FILES['filenameuploaded']['tmp_name'] . " To: " . $new_file_name);
 
     }
 

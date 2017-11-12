@@ -607,4 +607,56 @@ function upgrade_13()
         return "File extension blacklist field already present - ok ? true";
     }
 }
+
+function upgrade_14()
+{
+    // Create the ClamAV antivirus check settings.
+
+    if (! _db_field_exists('sitedetails', 'enable_clamav_check') || ! _db_field_exists('sitedetails', 'clamav_cmd') || ! _db_field_exists('sitedetails', 'clamav_opts')) {
+        if (! _db_field_exists('sitedetails', 'enable_clamav_check')) {
+            $error1 = _db_add_field('sitedetails', 'enable_clamav_check', 'char(255)', '', 'file_extensions');
+
+            if ($error1) {
+                $table = table_by_key('sitedetails');
+                $sql = "UPDATE $table SET enable_clamav_check = ?";
+                $error1 = db_query($sql, array('false'));
+            }
+        }
+        else {
+            $error1 = true;
+        }
+
+        if ($error1 && ! _db_field_exists('sitedetails', 'clamav_cmd')) {
+            $error2 = _db_add_field('sitedetails', 'clamav_cmd', 'char(255)', '', 'enable_clamav_check');
+
+            if ($error2) {
+                $table = table_by_key('sitedetails');
+                $sql = "UPDATE $table SET clamav_cmd = ?";
+                $error2 = db_query($sql, array('/usr/bin/clamscan'));
+            }
+        }
+        else {
+            $error2 = true;
+        }
+
+        if ($error1 && $error2 && ! _db_field_exists('sitedetails', 'clamav_opts')) {
+            $error3 = _db_add_field('sitedetails', 'clamav_opts', 'char(255)', '', 'clamav_cmd');
+
+            if ($error3) {
+                $table = table_by_key('sitedetails');
+                $sql = "UPDATE $table SET clamav_opts = ?";
+                $error3 = db_query($sql, array('--no-summary'));
+            }
+        }
+        else {
+            $error3 = true;
+        }
+
+        return "Creating the ClamAV antivirus check fields - ok ? " . ($error1 && $error2 && $error3 ? 'true' : 'false');
+    }
+    else
+    {
+        return "ClamAV antivirus check fields already present - ok ? true";
+    }
+}
 ?>
