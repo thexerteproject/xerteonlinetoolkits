@@ -202,7 +202,6 @@
 
 
 		this.leavePage = function () {
-			console.log("Page Exit");
 			sentXAPI(vidFullWatched, lookupTable(vidFullWatched));
 		}
 		// function called when page first loads
@@ -510,15 +509,15 @@
 				var lastTime = -1;
 				popcornInstance.media.addEventListener( "timeupdate", function() {
 					var popTime = popcornInstance.media.currentTime;
+					var block = getBlock(lastTime);
 					if (lastTime != popTime) {
 						lastTime = popcornInstance.media.currentTime;
                         updateTable(vidFullWatched, lastTime);
-						updateTable(getBlock(lastTime), lastTime);
+						updateTable(block, lastTime);
 					}
 
 				});
 				popcornInstance.media.addEventListener( "play", function() {
-					console.log("play");
 					if (vidFullWatched == null || vidFullWatched == undefined)
                     {
                         vidFullWatched = {
@@ -531,9 +530,9 @@
 				});
 				popcornInstance.media.addEventListener( "pause", function() {
 					var block = getBlock(popcornInstance.currentTime());
-					console.log("xAPI");
-					sentXAPI(block,lookupTable(block));
 					sentXAPI(vidFullWatched, lookupTable(vidFullWatched));
+					sentXAPI(block,lookupTable(block));
+
 				});
 				popcornInstance.media.addEventListener( "seeked", function() {
 					popcornInstance.pause();
@@ -548,7 +547,7 @@
         {
             for(var i = 0; i < blocks.length; i++)
             {
-                if (blocks[i].synchStart + blocks[i].duration > time)
+                if (parseFloat(blocks[i].synchStart) + parseFloat(blocks[i].duration) > time)
                 {
                     return blocks[i];
                 }
@@ -558,10 +557,15 @@
 
 		// helper function for lookupTable, called on time updates, checks what part of a video block is being watched (in %).
 		updateTable = function (block, current) {
-			console.log("update" + current);
-			var i = Math.floor((current - block.synchStart) / block.duration * 100);
+			if(block.duration < 30)
+			{
+				var i = Math.round((current - block.synchStart) / block.duration * 20) * 5;
+			}
+			else {
+				var i = Math.round((current - block.synchStart) / block.duration * 100);
+			}
 			block.watched[i] = 1;
-			if (block.watched.every(isTrue))
+			if (i == 100)
             {
                 sentXAPI(block, 100);
             }
@@ -574,17 +578,27 @@
 
 
 		function isTrue(element, index, array) {
-            return element == 1;
+			//return arr == 1;
         }
 
 		// function calculates the time watched within a video block based on an array (in %).
 		lookupTable = function (block) {
-		    console.log("lookup");
 			var playedTime = 0;
-			for (var i = 0; i < 100; i++)
+			if (block.duration >= 30)
 			{
-				if (block[i] == 1) {
-					++playedTime;
+				for (var i = 1; i < 100; i++)
+				{
+					if (block.watched[i] == 1) {
+						playedTime++;
+					}
+				}
+			}
+			else {
+				for (var i = 1; i < 100; i++)
+				{
+					if (block.watched[i] == 1) {
+						playedTime += 5;
+					}
 				}
 			}
 			return playedTime;

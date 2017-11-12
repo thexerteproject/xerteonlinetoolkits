@@ -33,10 +33,9 @@ this.baseUrl = function()
     {
         urlPath += newPathname[i] + "/";
     }
-    if (newPathname[0] != "http:" && newPathname[0] != "localhost"){
+    if (newPathname[0] != "http:" && newPathname[0] != "localhost") {
         urlPath = "http://xerte.org.uk/";
     }
-    console.log(urlPath);
     return urlPath;
 }
 
@@ -670,7 +669,6 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 
 function XTSetAttendance(page_nr, name, score)
 {
-    console.log(state.templateId);
     this.pageEnd = new Date();
 
     var statement = new TinCan.Statement(
@@ -686,10 +684,18 @@ function XTSetAttendance(page_nr, name, score)
             },
             result:{
                 "score": {
-                    "name"  : name,
                     "scaled": score / 100
                 },
                 "duration": calcDuration(),
+            },
+            object: {
+                objectType: "Activity",
+                id: this.baseUrl() + state.templateId + "/" +  page_nr,
+                definition: {
+                    name: {
+                        "en-US": name
+                    }
+                }
             },
             timestamp: this.pageEnd
 
@@ -701,7 +707,6 @@ function XTSetAttendance(page_nr, name, score)
 
 function XTSetPageScore(page_nr, score)
 {
-    console.log(state.templateId);
     state.setPageScore(page_nr, score);
     this.pageEnd = new Date();
 
