@@ -1516,7 +1516,7 @@ function x_changePageStep3(x_gotoPage) {
 		// show page background & hide main background
 		if ($(".pageBg#pageBg" + x_currentPage).length > 0) {
 			$(".pageBg#pageBg" + x_currentPage).show();
-			if (x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
+			if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
 				$("#x_bgDarken")
 					.css({
 						"opacity" :Number(x_currentPageXML.getAttribute("bgImageDark")/100),
@@ -1591,7 +1591,7 @@ function x_changePageStep3(x_gotoPage) {
 		}
 		
 		// show page background & hide main background
-		if (x_pageInfo[0].type != "menu" && x_currentPageXML.getAttribute("bgImage") != undefined) {
+		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImage") != undefined) {
 			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
 				if (mediaExists) {
 					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
