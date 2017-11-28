@@ -1442,11 +1442,11 @@ function lti_update(id)
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
         xmlHttp.send('template_id=' + id
-			+ '&tsugi_published=' + $("#pubChk").val()
+			+ '&tsugi_published=' + $("#pubChk").prop('checked')
 			+ '&tsugi_title=' + $("[name=tsugi_title]").val()
 			+ '&tsugi_key=' + $("[name=tsugi_key]").val()
             + '&tsugi_secret=' + $("[name=tsugi_secret]").val()
-			+ '&tsugi_xapi=' + $("#xChk").val()
+			+ '&tsugi_xapi=' + $("#xChk").prop('checked')
 			+ '&tsugi_xapi_endpoint=' + $("[name=tsugi_xapi_endpoint]").val()
             + '&tsugi_xapi_username=' + $("[name=tsugi_xapi_username]").val()
             + '&tsugi_xapi_password=' + $("[name=tsugi_xapi_password]").val());
