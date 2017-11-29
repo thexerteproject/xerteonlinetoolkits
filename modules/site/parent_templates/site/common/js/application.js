@@ -619,13 +619,13 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 	// First look for the fixed links
 	if ($.inArray(pageInfo.ID, links) > -1) {
 		parseContent(linkLocations[$.inArray(pageInfo.ID, links)]);
-		goToSection('top');
+		goToSection('topnav');
 	}
 	else { // Then look them up by ID
 		for (var i=0; i<pages.length; i++) {
 			if (pages[i].getAttribute("linkID") == pageInfo.ID) {
 				parseContent(i);
-				goToSection('top');
+				goToSection('topnav');
 				break;
 			}
 			if (pages[i].childNodes.length > 0) {
