@@ -1196,7 +1196,14 @@ function x_continueSetUp2() {
 function x_checkMediaExists(src, callback) {
 	$.get(src)
 		.done(function() { callback(true); })
-		.fail(function() { callback(false); });
+		.fail(function() {
+			// if it's an exported project being viewed locally $.get will always fail so force it to work anyway
+			if (location.hostname != "") {
+				callback(false);
+			} else {
+				callback(true);
+			}
+		});
 }
 
 function x_charmapLoaded(xml)
