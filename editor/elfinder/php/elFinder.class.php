@@ -9,6 +9,9 @@
  * @author Troex Nevelin
  * @author Alexey Sukhotin
  **/
+
+require_once("../../../plugins.php");
+
 class elFinder {
 	
 	/**
