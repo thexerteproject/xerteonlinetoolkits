@@ -999,8 +999,8 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 	}
 	
 	if (txtCol != ''){
-	
-		$('#overview').css('color', formatColour(headerTextColour));
+		
+		$('#overview').css('color', formatColour(txtCol));
 		
 	} else {
 		
