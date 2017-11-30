@@ -294,7 +294,7 @@
 
                         $checkBtn.button("disable");
                         var max = $($thisQ).children().length - 1;
-                        //TODO get the name of the label instead of the index as slideroutput
+                        //TODO get the name of the label instead of the index as slideroutput (? we already get that)
                         $rangeHolder.html('<form id="form1"> <input id="slider1" type="range" min="0" max = "' + max + '" step="1" /> </form> ');
 
                         $.each($($thisQ).children(), function(index, value)
@@ -332,10 +332,16 @@
 
                         var labelsHidden = false;
 						var labelWidth = 0;
+						//Hide and truncate labels
 						for (var i = 0; i < $labelHolder[0].children.length; i++)
 						{
-						    labelWidth += ($labelHolder[0].children[i].clientWidth + 4)
-						}
+						    labelWidth += ($labelHolder[0].children[i].clientWidth + 4);
+						    $labelHolder[0].children[i].origText = $labelHolder[0].children[i].text;
+							$labelHolder[0].children[i].text = truncateLabels($labelHolder[0].children[i].text);
+                        }
+
+
+
                         if (labelWidth > $labelHolder.width()) //+4 to counter inline-block built in margin
                         {
                             var numberOfOptions = $labelHolder[0].childElementCount;
@@ -354,13 +360,38 @@
                             };
                         }
 
+                        function truncateLabels(label)
+						{
+							    if(label.length >= 20)
+								{
+                                    var words = label.split(" ");
+                                    label = "";
+                                    var length = 0;
+                                    var index  = 0;
+                                    while (length + words[index].length < 18)
+                                    {
+                                        length += words[index].length;
+                                        index++;
+                                        label += words[index] + " ";
+                                    }
+                                    label += "...";
+								}
+								return label;
+						}
+
                         function updateBubble()
                         {
                             var index = $("#slider1")[0].valueAsNumber,
-                                sliderOutput = $("#sliderHolder").find("#sliderOutput1")[0];
-							
-                            sliderOutput.value = $labelHolder[0].children[index].text;
-                            sliderOutput.style.left = (index / $labelHolder[0].children.length * 100) + "%";
+								sliderOutput = $("#sliderHolder").find("#sliderOutput1")[0];
+
+
+                            sliderOutput.value = $labelHolder[0].children[index].origText;
+                            if (sliderOutput.value === $labelHolder[0].children[index].text) {
+                                sliderOutput.style.left = (index / $labelHolder[0].children.length * 100) + "%";
+                            }
+                            else {
+							    sliderOutput.style.left = "0%";
+							}
                         }
 
                         var name = $thisQ.getAttribute("prompt");
@@ -722,13 +753,15 @@
 					<legend id="qTxt"></legend>
 				
 					<div id="questionAudio"></div>
-					<div id="sliderHolder">
-						<div id="labelHolder"></div>
-						<div id="rangeHolder"></div>
-					</div>
+					<div id="wrapper">
+						<div id="sliderHolder">
+							<div id="labelHolder"></div>
+							<div id="rangeHolder"></div>
+						</div>
 
-					<div id="buttonHolder">
-						<button id="checkBtn"></button>
+						<div id="buttonHolder">
+							<button id="checkBtn"></button>
+						</div>
 					</div>
 					
 					<div id="feedback" aria-live="polite"></div>
