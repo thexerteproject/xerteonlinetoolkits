@@ -1,3 +1,13 @@
 <commonNodes>
+	
+	<headerGroup type="group" label="Header" optional="true">
+		<header type="Media" optional="true" label="Image"/>
+		<headerPos type="ComboBox" data="left,center,right" options="Left,Centre,Right" optional="true" label="Image Position" defaultValue="left" width="175"/>
+		<headerRepeat type="ComboBox" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" label="Image Repeat" defaultValue="repeat" width="175"/>
+		<headerColour type="ColourPicker" optional="true" label="Background Colour"/>
+		<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
+	</headerGroup>
+	
 	<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
+	
 </commonNodes>

@@ -321,130 +321,76 @@ function setup(){
 		
 	});
 	
-	var bgImg = ''; 
-	
-	//set the header image, if defined
-	if ($(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != ''){
-		$('#overview').css({filter:''}); //for IE8
-		
-		bgImg = "url(" + eval( $(data).find('learningObject').attr('header'))+ ")";
-		
-		$('#overview').css('background-image', bgImg);
-		
-		if ($(data).find('learningObject').attr('headerRepeat') != undefined && $(data).find('learningObject').attr('headerRepeat') != "") {
-			$('#overview').css('background-repeat', $(data).find('learningObject').attr('headerRepeat'));
-			
-			bgImg += ' ' + $(data).find('learningObject').attr('headerRepeat');
-		}
-		
-		if ($(data).find('learningObject').attr('headerPos') != undefined && $(data).find('learningObject').attr('headerPos') != "") {
-			$('#overview').css('background-position', $(data).find('learningObject').attr('headerPos') + ' top');
-			
-			bgImg += ' ' + $(data).find('learningObject').attr('headerPos');
-		}
-		
-		bgImg += ', ';
-	} 
-	
-	if ($(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != ''){
-	
-		var col = $(data).find('learningObject').attr('headerColour');
-		
-		//one or two?
-		if (col.indexOf(',') != -1){
-			col = col.split(',');
-		} else {
-			col = [col,col];
-		}
-		col[0] = formatColour(col[0]);
-		col[1] = formatColour(col[1]);
-		
-		$('#overview').css('background', col[0]);
-		$('#overview').css('background', bgImg + '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + col[0] + '), color-stop(100%,' + col[1] + '))');
-		$('#overview').css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-o-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-ms-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + col[1]+ ' 100%)');
-		$('#overview').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + col[0] + ', endColorstr=' + col[1] + ',GradientType=1 )');
-		
-	}
-	
-		
-	if ($(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != ''){
-	
-		$('#overview').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
-		
-	}
-    
-    if ($(data).find('learningObject').attr('headerHide') != undefined && $(data).find('learningObject').attr('headerHide') != 'false'){
+	if ($(data).find('learningObject').attr('headerHide') != undefined && $(data).find('learningObject').attr('headerHide') != 'false'){
 	
 		$(".jumbotron").remove();
 		
-	}
-	
-	// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
-	// they are overridden by any logos in theme folders
-	// they can also be overridden by images uploaded via Header Logo optional properties
-	$('#overview div.logoR, #overview div.logoL').hide();
-	$('#overview div.logoR').data('defaultLogo', $('#overview .logoR img').attr('src'));
-	$('#overview div.logoL').data('defaultLogo', $('#overview .logoL img').attr('src'));
-	
-	var checkExists = function(logoClass, type, fallback) {
-		$.ajax({
-			url: $('#overview .' + logoClass + ' img').attr('src'),
-			success: function() {
-				$('#overview').addClass(logoClass);
-				$('#overview div.' + logoClass).show();
-				
-				// the theme logo is being used - add a class that will allow for the different size windows to display different logos
-				if (type == 'theme') {
-					$('#overview .' + logoClass + ' img.' + logoClass).addClass('themeLogo');
-				}
-			},
-			error: function() {
-				if ($(data).find('learningObject').attr(logoClass + 'Hide') == 'true') {
-					$('#overview .' + logoClass + ' img').removeAttr('src');
-				} else {
-					if (fallback == 'theme') {
-						$('#overview .' + logoClass + ' img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo' + (logoClass == 'logoL' ? '_left' : '') + '.png');
-						checkExists(logoClass, 'theme', 'default');
-					} else if (fallback == 'default') {
-						$('#overview .' + logoClass + ' img').attr('src', $('#overview div.' + logoClass).data('defaultLogo'));
-						checkExists(logoClass);
+	} else {
+		// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
+		// they are overridden by any logos in theme folders
+		// they can also be overridden by images uploaded via Header Logo optional properties
+		$('#overview div.logoR, #overview div.logoL').hide();
+		$('#overview div.logoR').data('defaultLogo', $('#overview .logoR img').attr('src'));
+		$('#overview div.logoL').data('defaultLogo', $('#overview .logoL img').attr('src'));
+		
+		var checkExists = function(logoClass, type, fallback) {
+			$.ajax({
+				url: $('#overview .' + logoClass + ' img').attr('src'),
+				success: function() {
+					$('#overview').addClass(logoClass);
+					$('#overview div.' + logoClass).show();
+					
+					// the theme logo is being used - add a class that will allow for the different size windows to display different logos
+					if (type == 'theme') {
+						$('#overview .' + logoClass + ' img.' + logoClass).addClass('themeLogo');
+					}
+				},
+				error: function() {
+					if ($(data).find('learningObject').attr(logoClass + 'Hide') == 'true') {
+						$('#overview .' + logoClass + ' img').removeAttr('src');
+					} else {
+						if (fallback == 'theme') {
+							$('#overview .' + logoClass + ' img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo' + (logoClass == 'logoL' ? '_left' : '') + '.png');
+							checkExists(logoClass, 'theme', 'default');
+						} else if (fallback == 'default') {
+							$('#overview .' + logoClass + ' img').attr('src', $('#overview div.' + logoClass).data('defaultLogo'));
+							checkExists(logoClass);
+						}
 					}
 				}
-			}
-		});
-	}
-	
-	var type, fallback;
-	if ($(data).find('learningObject').attr('logoR') != undefined && $(data).find('learningObject').attr('logoR') != '') {
-		$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
-		type = 'LO';
-		fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
-	} else if ($(data).find('learningObject').attr('logoRHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
-		type = 'theme';
-		$('#overview .logoR img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo.png');
-	}
-	if ((type == undefined || type == 'theme') && $(data).find('learningObject').attr('logoRHide') == 'true') {
-		$('#overview .logoR img').removeAttr('src');
-	} else {
-		checkExists('logoR', type, fallback);
-	}
-	
-	if ($(data).find('learningObject').attr('logoL') != undefined && $(data).find('learningObject').attr('logoL') != '') {
-		$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
-		type = 'LO';
-		fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
-	} else if ($(data).find('learningObject').attr('logoLHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
-		type = 'theme';
-		$('#overview .logoL img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo_left.png');
-	}
-	if ((type == undefined || type == 'theme') && $(data).find('learningObject').attr('logoLHide') == 'true') {
-		$('#overview .logoL img').removeAttr('src');
-	} else {
-		checkExists('logoL', type, fallback);
+			});
+		}
+		
+		var type, fallback;
+		if ($(data).find('learningObject').attr('logoR') != undefined && $(data).find('learningObject').attr('logoR') != '') {
+			$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
+			type = 'LO';
+			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
+		} else if ($(data).find('learningObject').attr('logoRHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
+			type = 'theme';
+			$('#overview .logoR img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo.png');
+		}
+		if ((type == undefined || type == 'theme') && $(data).find('learningObject').attr('logoRHide') == 'true') {
+			$('#overview .logoR img').removeAttr('src');
+		} else {
+			checkExists('logoR', type, fallback);
+		}
+		
+		var type, fallback;
+		if ($(data).find('learningObject').attr('logoL') != undefined && $(data).find('learningObject').attr('logoL') != '') {
+			$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
+			type = 'LO';
+			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
+		} else if ($(data).find('learningObject').attr('logoLHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
+			type = 'theme';
+			$('#overview .logoL img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo_left.png');
+		}
+		if ((type == undefined || type == 'theme') && $(data).find('learningObject').attr('logoLHide') == 'true') {
+			$('#overview .logoL img').removeAttr('src');
+		} else {
+			checkExists('logoL', type, fallback);
+		}
+		
 	}
 	
     //---------------Optional Navbar properties--------------------
@@ -647,7 +593,7 @@ function goToSection(pageId) {
 }
 
 function parseContent(pageIndex){
-
+	
 	//clear out existing content
 	$('#mainContent').empty();
 	$('#toc').empty();
@@ -685,6 +631,10 @@ function parseContent(pageIndex){
 		
 		//set the main page title and subtitle
 		$('#pageTitle').html(page.attr('name'));
+		
+		if ($(".jumbotron").length > 0) {
+			setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'), "page");
+		}
 		
 		var msg = languageData.find("hiddenPage")[0] != undefined && languageData.find("hiddenPage")[0].getAttribute('label') != null ? languageData.find("hiddenPage")[0].getAttribute('label') : "This page will be hidden in live projects";
 		var extraTitle = page.attr('hidePage') == 'true' ? ' <span class="alertMsg">(' + msg + ')</span>' : '';
@@ -914,6 +864,147 @@ function parseContent(pageIndex){
 	} else {
 		
 		console.log("project contains no (unhidden) pages");
+		
+	}
+}
+
+function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTextColour, level) {
+	
+	// LO background settings will be overridden by individual page ones (& returned to LO settings if page contains no background properties)
+	var bgImg = ''; 
+	
+	//set the header image, if defined
+	if (header != undefined && header != '') {
+		
+		bgImg = "url(" + eval(header) + ")";
+		
+	} else if (level == 'page' && $(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != '') {
+		
+		bgImg = "url(" + eval($(data).find('learningObject').attr('header')) + ")";
+		
+	}
+	
+	if (bgImg != '') {
+		
+		$('#overview').css({
+			filter: '', //for IE8
+			'background-image': bgImg
+		});
+		
+		var bgRepeat = '';
+		
+		if (headerRepeat != undefined && headerRepeat != "") {
+			
+			bgRepeat = headerRepeat;
+			
+		} else if (level == 'page' && $(data).find('learningObject').attr('headerRepeat') != undefined && $(data).find('learningObject').attr('headerRepeat') != '') {
+			
+			bgRepeat = $(data).find('learningObject').attr('headerRepeat');
+			
+		}
+		
+		if (bgRepeat != '') {
+			
+			$('#overview').css('background-repeat', bgRepeat);
+			
+			bgImg += ' ' + bgRepeat;
+			
+		} else {
+			
+			$('#overview').css('background-repeat', 'initial');
+			
+		}
+		
+		var bgPos = '';
+		
+		if (headerPos != undefined && headerPos != "") {
+			
+			bgPos = headerPos;
+			
+		} else if (level == 'page' && $(data).find('learningObject').attr('headerPos') != undefined && $(data).find('learningObject').attr('headerPos') != '') {
+			
+			bgPos = $(data).find('learningObject').attr('headerPos');
+			
+		}
+		
+		if (bgPos != '') {
+			
+			$('#overview').css('background-position', bgPos + ' top');
+			
+			bgImg += ' ' + bgPos + ' top';
+			
+		} else {
+			
+			$('#overview').css('background-position', 'initial');
+			
+		}
+		
+		bgImg += ', ';
+		
+	} else {
+		
+		$('#overview').css('background-image', 'none');
+		
+	}
+	
+	var col = '';
+	
+	if (headerColour != undefined && headerColour != '') {
+	
+		col = headerColour;
+		
+	} else if (level == 'page' && $(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != '') {
+		
+		col = $(data).find('learningObject').attr('headerColour');
+		
+	}
+	
+	if (col != '') {
+		
+		//one or two?
+		if (col.indexOf(',') != -1){
+			col = col.split(',');
+		} else {
+			col = [col,col];
+		}
+		col[0] = formatColour(col[0]);
+		col[1] = formatColour(col[1]);
+		
+		$('#overview').css('background', col[0]);
+		$('#overview').css('background', bgImg + '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
+		$('#overview').css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + col[0] + '), color-stop(100%,' + col[1] + '))');
+		$('#overview').css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+		$('#overview').css('background', bgImg + '-o-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+		$('#overview').css('background', bgImg + '-ms-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+		$('#overview').css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + col[1]+ ' 100%)');
+		$('#overview').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + col[0] + ', endColorstr=' + col[1] + ',GradientType=1 )');
+		
+	} else {
+		
+		$('#overview').css('background', bgImg + 'none');
+		$('#overview').css('filter', '');
+		
+	}
+	
+	var txtCol = '';
+	
+	if (headerTextColour != undefined && headerTextColour != '') {
+		
+		txtCol = headerTextColour;
+		
+	} else if (level == 'page' && $(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != '') {
+		
+		txtCol = $(data).find('learningObject').attr('headerTextColour');
+		
+	}
+	
+	if (txtCol != ''){
+	
+		$('#overview').css('color', formatColour(headerTextColour));
+		
+	} else {
+		
+		$('#overview').css('color', '');
 		
 	}
 }
