@@ -295,14 +295,6 @@ function folder_rss_templates_template(){
 function import_templates_template(){
 
 	document.getElementById("dynamic_area").innerHTML = '<p class="header"><span>' + WORKSPACE_IMPORT + '</span></p><p><form target="upload_iframe" method="post" onsubmit="javascript:iframe_check_initialise();" enctype="multipart/form-data" id="importpopup" name="importform" action="website_code/php/import/import.php" ><input name="filenameuploaded" type="file" /><br /><br />' + WORKSPACE_NEW_PROJECTNAME + '<br /><br /><input name="templatename" type="text" onkeyup="new_template_name()" /><br /><span id="namewrong"></span><br /><button id="submitbutton" type="submit" name="submitBtn" onsubmit="javascript:iframe_check_initialise();" class="xerte_button"><i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD + '</button></form></p>';
-
-	$('#submitbutton').click(function() {
-		this.disabled = true;
-		// Replace the upload button icon with a spinner.
-		var string = this.innerHTML;
-		string = string.replace('<i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD, '<i class="fa fa-spinner fa-spin"></i> ' + WORKSPACE_UPLOADING);
-		this.innerHTML = string;
-	});
 }
 
 /**
