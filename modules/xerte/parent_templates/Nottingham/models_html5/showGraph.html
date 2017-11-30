@@ -41,12 +41,21 @@
 
         // function called every time the page is viewed after it has initially loaded
         this.pageChanged = function() {
-
+            this.sizeChanged();
         }
 
         // function called every time the size of the LO is changed
         this.sizeChanged = function() {
-
+            var width = $x_pageHolder.width();
+            var height = $x_pageHolder.height();
+            if(width > height) {
+                $("#diagram").width(height);
+                $("#diagram").height(height);
+            }
+            else {
+                $("#diagram").width(width);
+                $("#diagram").height(width);
+            }
         }
 
         this.createDiagram = function(data) {
@@ -114,7 +123,9 @@
                                 suggestedMin: 0,
                                 suggestedMax: 100
                             }
-                        }
+                        },
+                        responsive: false,
+                        maintainAspectRatio: false
                     }
                 });
             }
@@ -142,7 +153,9 @@
                                 suggestedMin: 0,
                                 suggestedMax: 100
                             }
-                        }
+                        },
+                        responsive: false,
+                        maintainAspectRatio: false
                     }
                 });
             }
@@ -159,7 +172,7 @@
             // call this function in every model once everything's loaded
             x_pageLoaded();
         }
-    }
+    };
 
     showGraph.init();
 
@@ -168,5 +181,11 @@
 
 
 <div id="pageContents">
-    <canvas id="diagram" aria-live="polite"></canvas>
+    <div id="infoHolder" class="right">
+        <div id="mainPanel" class="panel qPanel">
+            <fieldset class="noStyle">
+                <canvas id="diagram" aria-live="polite"></canvas>
+            </fieldset>
+        </div>
+    </div>
 </div>
