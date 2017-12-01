@@ -202,6 +202,13 @@
 
 
 		this.leavePage = function () {
+		    if (vidFullWatched == undefined)
+			{
+                vidFullWatched = {
+                    synchName: "full_video"
+                }
+                sentXAPI(vidFullWatched, 0);
+			}
 			sentXAPI(vidFullWatched, lookupTable(vidFullWatched));
 		}
 		// function called when page first loads
@@ -510,7 +517,7 @@
 				popcornInstance.media.addEventListener( "timeupdate", function() {
 					var popTime = popcornInstance.media.currentTime;
 					var block = getBlock(lastTime);
-					if (lastTime != popTime) {
+					if (lastTime != popTime && popTime > 0) {
 						lastTime = popcornInstance.media.currentTime;
                         updateTable(vidFullWatched, lastTime);
 						updateTable(block, lastTime);
@@ -576,14 +583,13 @@
             XTSetAttendance(x_currentPage, block.synchName, percentageWatched)
         }
 
-
-		function isTrue(element, index, array) {
-			//return arr == 1;
-        }
-
 		// function calculates the time watched within a video block based on an array (in %).
 		lookupTable = function (block) {
 			var playedTime = 0;
+			if (block.watched == undefined || block.duration == undefined)
+			{
+			    return 0;
+			}
 			if (block.duration >= 30)
 			{
 				for (var i = 1; i < 100; i++)
