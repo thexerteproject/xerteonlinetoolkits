@@ -131,7 +131,7 @@
 	  copypasteinfo="Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference."
 	  >Enter text for the page here</modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="Provide a prompt here" answer="Provide a model answer here"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Feedback"
-	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter a Description for Accessibility" url2="Select Image" tip2="Enter a Description for Accessibility" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><newWindow><![CDATA[<newWindow name="Enter Page Title" text="Enter text for the page" url="Enter a URL to launch" descrip="Enter link text" previewImage="Select a preview image" tip="Enter a Description for Accessibility" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" showfeedback="false" feedback="Provide feedback here"
+	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter a Description for Accessibility" url2="Select Image" tip2="Enter a Description for Accessibility" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><nav><![CDATA[<nav name="Enter Page Title" text="Enter text for the page here" type="Tab" nextBtnTip="Next" prevBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></nav><newWindow><![CDATA[<newWindow name="Enter Page Title" text="Enter text for the page" url="Enter a URL to launch" descrip="Enter link text" previewImage="Select a preview image" tip="Enter a Description for Accessibility" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" showfeedback="false" feedback="Provide feedback here"
 	  quesCount="Question {i} of {n}"
 	  onCompletion="You have completed the questionaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit" 
@@ -2411,7 +2411,56 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></morphImages><newWindow menu="Navigators" menuItem="New Window" hint="Allow the user to launch a new window to a URL." icon="icApplication" thumb="thumbs/newWindow.jpg" remove="true">
+	</background></morphImages><nav menu="Navigators" menuItem="Navigator" hint="Present related text and graphical content on a choice of navigators." icon="icPages" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
+	
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" height="250"/>
+	<type label="Navigator Type" options="Accordion,Buttons,Columns,Slideshow,Tabs" type="ComboBox" data="Acc,Button,Col,Slide,Tab" width="100"/>
+	
+	<nextBtnTip label="Slideshow Button Tip (Next)" type="TextInput" language="true"/>
+    <prevBtnTip label="Slideshow Button Tip (Previous)" type="TextInput" language="true"/>
+    <slideCount label="Slide {i} of {n}" type="TextInput" wysiwyg="true" language="true"/>
+    
+	<panelInfo type="group" label="Panel Layout" optional="true">
+		<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" optional="true"/>
+		<panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" width="100" optional="true"/>
+		<panelPos label="Panel Position" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Right" width="100" optional="true"/>
+		<buttonPos label="Button Position" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100" optional="true"/>
+		<collapsible label="Collapse Accordion" type="CheckBox" defaultValue="false" optional="true"/>
+	</panelInfo>
+	
+    <newNodes>
+      <navPage><![CDATA[<navPage name="Enter Title Here" text="Content for the pane"/>]]></navPage>
+    </newNodes>
+	
+  <narrate type="group" label="Narration" optional="true" common="true">
+		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
+		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true"/>
+		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true"/>
+	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled." common="true"/><navBtns type="group" label="Navigation Buttons" optional="true" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here." common="true">
+		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
+	</navBtns><pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" deprecated="This property is deprecated" common="true"/><hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true" common="true"/><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" common="true"/><styles label="Styles" type="script" height="200" optional="true" common="true"/><scripts type="group" label="Script" optional="true" common="true">
+		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
+		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
+	</scripts><background type="group" label="Background" optional="true" common="true">
+		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+	</background></nav><navPage menuItem="Nested Page" icon="icBullet" remove="true">
+
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <text label="Text" type="TextArea" height="250"/>
+	
+	<mediaInfo type="group" label="Media" optional="true">
+		<url label="Media" type="media" defaultValue="Select Media" optional="true"/>
+		<tip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		<align label="Media Position" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100" optional="true"/>
+	</mediaInfo>
+
+  </navPage><newWindow menu="Navigators" menuItem="New Window" hint="Allow the user to launch a new window to a URL." icon="icApplication" thumb="thumbs/newWindow.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="150"/>

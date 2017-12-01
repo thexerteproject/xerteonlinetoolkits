@@ -1489,8 +1489,9 @@ function x_changePageStep3(x_gotoPage) {
         x_addCountdownTimer();
 		
 		// add screen reader info for this page type (if exists)
-		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", undefined) != undefined) {
-			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", "") + '</p>');
+		var screenReaderInfo = x_pageInfo[x_currentPage].type != "nav" ? x_pageInfo[x_currentPage].type : x_currentPageXML.getAttribute("type") == "Acc" ? "accNav" : x_currentPageXML.getAttribute("type") == "Button" ? "buttonNav" : x_currentPageXML.getAttribute("type") == "Col" ? "columnPage" : x_currentPageXML.getAttribute("type") == "Slide" ? "slideshow" : "tabNav";
+		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", undefined) != undefined) {
+			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", "") + '</p>');
 		}
 		
 		var extraTitle = x_currentPageXML.getAttribute("hidePage") == "true" ? ' <span class="alert">' + (x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") : "This page will be hidden in live projects") + '</span>' : '';
@@ -2929,4 +2930,16 @@ function x_shuffleArray(array) {
 		array[j] = temp;
 	}
 	return array;
+}
+
+
+// function returns whether string is a url to a youtube or vimeo video
+function x_isYouTubeVimeo(url) {
+	if (url.indexOf("www.youtube.com") != -1 || url.indexOf("//youtu") != -1) {
+		return 'youtube';
+	} else if (url.indexOf("vimeo.com") != -1) {
+		return 'vimeo';
+	} else {
+		return false;
+	}
 }
