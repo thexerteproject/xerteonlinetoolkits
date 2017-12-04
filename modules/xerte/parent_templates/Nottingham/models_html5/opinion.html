@@ -10,6 +10,7 @@
 		var diagramAnswers = [];
 		var diagramLabels = [];
 		var JSONGraph;
+		var textSize;
 
         this.loadJS = function() {
             if (numLoaded < 1) {
@@ -80,10 +81,18 @@
 			if(width > height) {
 				$("#diagram").width(height);
 				$("#diagram").height(height);
+				textSize = (width - height) / 10;
 			}
 			else {
 				$("#diagram").width(width);
 				$("#diagram").height(width);
+				textSize = (height - width) / 10;
+			}
+			if (textSize > 20) {
+				textSize = 20;
+			}
+			else if (textSize < 12) {
+				textSize = 12;
 			}
 			$("#qTxt").width($panel.width());
 		};
@@ -615,7 +624,16 @@
 					scale: {
 						ticks: {
 							suggestedMin: 0,
-							suggestedMax: 100
+							suggestedMax: 100,
+							fontSize: textSize
+						},
+						pointLabels: {
+							fontSize: textSize
+						}
+					},
+					legend: {
+						labels: {
+							fontSize: textSize
 						}
 					}
 				}
