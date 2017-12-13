@@ -121,7 +121,9 @@
 	  />]]></inventory><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" />]]></links><list><![CDATA[<list name="Enter Page Title" text="Enter text for the page here" panelWidth="Large"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a Description for Accessibility" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" type="Single Answer" align="Left" panelWidth="Medium"
 	  feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
-	  checkBtnTxt="Check" />]]></mcq><mediaLesson><![CDATA[<mediaLesson name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediaLesson>]]></mediaLesson><memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"
+	  checkBtnTxt="Check" />]]></mcq><mediaLesson><![CDATA[<mediaLesson name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediaLesson>]]></mediaLesson>
+	  <mediasiteLesson><![CDATA[<mediasiteLesson name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediasiteLesson>]]></mediasiteLesson>
+	  <memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"
 	  feedbackBtnTxt="Feedback" 
 	  instructHeaderATxt="The instruction and question on page" instructHeaderBTxt="was:" responseHeaderTxt="Your response was:"
 	  noAnswerHeaderTxt="You didn't answer this question." exampleHeaderTxt="The example answer was:"
@@ -1785,7 +1787,36 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></mediaLesson><mediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
+	</background></mediaLesson>
+	<mediasiteLesson menu="Media" menuItem="Mediasite Lesson" hint="Synchronise a variety of types of content to a piece of media." icon="icApplicationTile" thumb="thumbs/mediaLesson.jpg" remove="true">
+
+    		<name label="Page Title" type="TextInput" wysiwyg="true"/>
+    		<layout label="Panel Layout" type="ComboBox" options="Grid,Tile Horizontally,Tile Vertically,Full Top - Tile Bottom,Tile Top - Full Bottom,Full Left - Tile Right,Tile Left - Full Right" data="grid,tileH,tileV,top,bottom,left,right" defaultValue="grid" width="200"/>
+
+    		<intro label="Introduction" type="TextArea" height="200" defaultValue="Enter Introduction Text" optional="true"/>
+
+    		<introTitle label="Introduction Title" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+    		<introClose label="Introduction Close" type="TextInput" wysiwyg="true" language="true"/>
+
+    		<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+    		<newNodes>
+    			<panel><![CDATA[<panel name="Enter Panel Title"/>]]></panel>
+    		</newNodes>
+
+    	<narrate type="group" label="Narration" optional="true" common="true">
+    		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
+    		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true"/>
+    		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true"/>
+    	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" common="true"/><pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" deprecated="This property is deprecated" common="true"/><hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true" common="true"/><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" common="true"/><styles label="Styles" type="script" height="200" optional="true" common="true"/><scripts type="group" label="Script" optional="true" common="true">
+    		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
+    		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
+    	</scripts><background type="group" label="Background" optional="true" common="true">
+    		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+    		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
+    		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
+    		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+    	</background></mediasiteLesson>
+    	<mediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
 		
 		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
 		<media label="Media" type="media"/>
