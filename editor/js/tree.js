@@ -829,8 +829,10 @@ var EDITOR = (function ($, parent) {
 			html.append(table);
 		};
 		if (table2.find("tr").length > 0) {
-			var tablerow = $('<tr>')
-				.append('<td class="optPropTitle">' + (language.optionalPropHTML && language.optionalPropHTML.$general ? language.optionalPropHTML.$general : "General") + '</td>');
+			var tablerow = $('<tr>');
+			if (templateframework != 'site') {
+				tablerow.append('<td class="optPropTitle">' + (language.optionalPropHTML && language.optionalPropHTML.$general ? language.optionalPropHTML.$general : "General") + '</td>');
+			}
 			table2.prepend(tablerow);
 			html.append(table2);
 		};
