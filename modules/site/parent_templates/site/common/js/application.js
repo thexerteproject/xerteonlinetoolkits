@@ -210,85 +210,125 @@ function setup(){
 				return a.word.length > b.word.length ? -1 : 1;
 			});
 			
-			// add link around all examples of glossary words in text
-			var insertText = function(node) {
-				var temp = document.createElement("pre");
-				temp.innerHTML = node;
-				var tempText = temp.innerHTML;
+			// show definition on hover
+			if ($(data).find('learningObject').attr('glossaryHover') == undefined || $(data).find('learningObject').attr('glossaryHover') == "true") {
 				
-				// check text for glossary words - if found replace with a link
-				if (glossary.length > 0) {
-					for (var k=0, len=glossary.length; k<len; k++) {
-						var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
-						tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+				// add link around all examples of glossary words in text
+				var insertText = function(node) {
+					var temp = document.createElement("pre");
+					temp.innerHTML = node;
+					var tempText = temp.innerHTML;
+					
+					// check text for glossary words - if found replace with a link
+					if (glossary.length > 0) {
+						for (var k=0, len=glossary.length; k<len; k++) {
+							var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+							tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+						}
+						for (var k=0, len=glossary.length; k<len; k++) {
+							var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+							tempText = tempText.replace(regExp, '$1<a class="glossary" href="#" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+						}
 					}
-					for (var k=0, len=glossary.length; k<len; k++) {
-						var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
-						tempText = tempText.replace(regExp, '$1<a class="glossary" href="#" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+					
+					return tempText;
+				}
+				
+				var checkForText = function(data) {
+					for (var i=0; i<data.length; i++) {
+						if (data[i].nodeName == 'text') {
+							if ($(data[i]).attr('disableGlossary') != 'true') {
+								data[i].childNodes[0].data = insertText(data[i].childNodes[0].data);
+							}
+							
+						} else {
+							checkForText(data[i].childNodes);
+						}
 					}
 				}
 				
-				return tempText;
-			}
-			
-			var checkForText = function(data) {
-				for (var i=0; i<data.length; i++) {
-					if (data[i].nodeName == 'text') {
-						if ($(data[i]).attr('disableGlossary') != 'true') {
-							data[i].childNodes[0].data = insertText(data[i].childNodes[0].data);
+				checkForText($(data).find('page'));
+				
+				// add events to control what happens when you rollover glossary words
+				$("body > .container")
+					.on("mouseenter", ".glossary", function(e) {
+						$(this).trigger("mouseleave");
+						
+						var $this = $(this),
+							myText = $this.text(),
+							myDefinition, i, len;
+						
+						for (i=0, len=glossary.length; i<len; i++) {
+							if (myText.toLowerCase() == glossary[i].word.toLowerCase()) {
+								myDefinition = "<b>" + myText + ":</b><br/>"
+								myDefinition += glossary[i].definition;
+							}
 						}
 						
-					} else {
-						checkForText(data[i].childNodes);
-					}
-				}
+						$(this).parents('.container').append('<div id="glossaryHover" class="glossaryTip">' + myDefinition + '</div>');
+						
+						$("#glossaryHover").css({
+							"left"	:$(this).offset().left + 20,
+							"top"	:$(this).offset().top + 20
+						});
+						$("#glossaryHover").fadeIn("slow");
+					})
+					.on("mouseleave", ".glossary", function(e) {
+						$(this).parent('.container').off("click.glossary");
+						
+						if ($("#glossaryHover") != undefined) {
+							$("#glossaryHover").remove();
+						}
+					})
+					.on("mousemove", ".glossary", function(e) {
+						$("#glossaryHover").css({
+							"left": e.pageX + 20,
+							"top": e.pageY + 20
+						});
+					})
+					.on("focus", ".glossary", function(e) { // called when link is tabbed to
+						$(this).trigger("mouseenter");
+					})
+					.on("focusout", ".glossary", function(e) {
+						$(this).trigger("mouseleave");
+					});
 			}
 			
-			checkForText($(data).find('page'));
-			
-			// add events to control what happens when you rollover glossary words
-			$("body > .container")
-				.on("mouseenter", ".glossary", function(e) {
-					$(this).trigger("mouseleave");
-					
-					var $this = $(this),
-						myText = $this.text(),
-						myDefinition, i, len;
-					
-					for (i=0, len=glossary.length; i<len; i++) {
-						if (myText.toLowerCase() == glossary[i].word.toLowerCase()) {
-							myDefinition = "<b>" + myText + ":</b><br/>"
-							myDefinition += glossary[i].definition;
-						}
+			// show glossary in its own page
+			if ($(data).find('learningObject').attr('glossaryPage') != undefined && $(data).find('learningObject').attr('glossaryPage') != 'none') {
+				
+				glossary.sort(function(a, b){ // sort alphabetically
+					if(a.word < b.word) return -1;
+					if(a.word > b.word) return 1;
+					return 0;
+				})
+				
+				var charList = [],
+					glossaryTxt = [];
+				
+				for (var i=0; i<glossary.length; i++) {
+					if (charList.length == 0 || charList[charList.length - 1] != glossary[i].word[0]) {
+						charList += glossary[i].word[0];
+						glossaryTxt.push('<h3>' + glossary[i].word + '</h3><div>' + glossary[i].definition + '</div>');
+					} else {
+						glossaryTxt.splice(glossaryTxt.length - 1, 1, glossaryTxt[glossaryTxt.length - 1] + '<h3>' + glossary[i].word + '</h3><div>' + glossary[i].definition + '</div>');
 					}
-					
-					$(this).parents('.container').append('<div id="glossaryHover" class="glossaryTip">' + myDefinition + '</div>');
-					
-					$("#glossaryHover").css({
-						"left"	:$(this).offset().left + 20,
-						"top"	:$(this).offset().top + 20
-					});
-					$("#glossaryHover").fadeIn("slow");
-				})
-				.on("mouseleave", ".glossary", function(e) {
-					$(this).parent('.container').off("click.glossary");
-					
-					if ($("#glossaryHover") != undefined) {
-						$("#glossaryHover").remove();
-					}
-				})
-				.on("mousemove", ".glossary", function(e) {
-					$("#glossaryHover").css({
-						"left": e.pageX + 20,
-						"top": e.pageY + 20
-					});
-				})
-				.on("focus", ".glossary", function(e) { // called when link is tabbed to
-					$(this).trigger("mouseenter");
-				})
-				.on("focusout", ".glossary", function(e) {
-					$(this).trigger("mouseleave");
-				});
+				}
+				
+				var $glossaryPage = $('<page name="Glossary" subtitle=""></page>');
+				for (var i=0; i<charList.length; i++) {
+					var cDataSection = data.createCDATASection(glossaryTxt[i]);
+					var $section = $('<section name="' + charList[i] + '"><text></text></section>');
+					$section.find('text').append(cDataSection);
+					$glossaryPage.append($section);
+				}
+				
+				if ($(data).find('learningObject').attr('glossaryPage') == "first") {
+					$glossaryPage.prependTo($(data).find('learningObject'));
+				} else {
+					$glossaryPage.appendTo($(data).find('learningObject'));
+				}
+			}
 		}
 	}
 	
