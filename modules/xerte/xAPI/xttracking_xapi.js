@@ -33,7 +33,7 @@ this.baseUrl = function()
     {
         urlPath += newPathname[i] + "/";
     }
-    if (newPathname[0] != "http:" && newPathname[0] != "localhost") {
+    if (newPathname[0] != "http:" && newPathname[0] != "https:" && newPathname[0] != "localhost") {
         urlPath = "http://xerte.org.uk/";
     }
     return urlPath;
@@ -440,7 +440,7 @@ function XTInitialise()
                         }
                     },
                     target: {
-                        id: "http://rusticisoftware.github.com/TinCanJS"
+                        id: this.baseUrl() + state.templateId
                         //TODO: get the name for this activity
                     },
                     timestamp: this.initStamp
@@ -478,6 +478,9 @@ function XTInitialise()
                             "http://lrs.surfuni.org/context/label": ""
                         }
                     },
+                    target: {
+                        id: this.baseUrl() + state.templateId
+                    },
                     timestamp: this.initStamp
                 }
             );
@@ -508,7 +511,7 @@ function XTLogin(login, passwd)
                     }
                 },
                 target: {
-                    id: "http://rusticisoftware.github.com/TinCanJS"
+                    id: this.baseUrl() + state.templateId
                 },
                 timestamp: this.loginStamp
             }
@@ -606,7 +609,11 @@ function XTEnterPage(page_nr, page_name)
 {
     state.enterPage(page_nr, -1, "page", page_name);
     this.pageStart = new Date();
-
+    var id = this.baseUrl() + state.templateId + "/" + page_nr;
+    if (page_name != null && page_name != "")
+    {
+        id = this.baseUrl() + state.templateId + "/" + page_name;
+    }
     if (! surf_mode) {
         var statement = new TinCan.Statement(
             {
@@ -620,7 +627,7 @@ function XTEnterPage(page_nr, page_name)
                     }
                 },
                 target: {
-                    id: "http://rusticisoftware.github.com/TinCanJS"
+                    id: id
                 },
                 timestamp: this.pageStart
 
@@ -633,7 +640,11 @@ function XTEnterPage(page_nr, page_name)
 
 function XTExitPage(page_nr, page_name)
 {
-
+    var id = this.baseUrl() + state.templateId + "/" + page_nr;
+    if (page_name != null && page_name != "")
+    {
+        id = this.baseUrl() + state.templateId + "/" + page_name;
+    }
     if (!surf_mode) {
         this.exitPageStamp = new Date();
 
@@ -649,7 +660,7 @@ function XTExitPage(page_nr, page_name)
                     }
                 },
                 target: {
-                    id: "http://rusticisoftware.github.com/TinCanJS"
+                    id: id
                 },
                 timestamp: this.exitPageStamp
             }
@@ -667,10 +678,14 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 
 }
 
-function XTSetAttendance(page_nr, name, score)
+function XTSetAttendance(page_nr, name, score, page_name)
 {
     this.pageEnd = new Date();
-
+    var id = this.baseUrl() + state.templateId + "/" + page_nr;
+    if (page_name != null && page_name != "")
+    {
+        id = this.baseUrl() + state.templateId + "/" + page_name;
+    }
     var statement = new TinCan.Statement(
         {
             actor: {
@@ -690,7 +705,7 @@ function XTSetAttendance(page_nr, name, score)
             },
             object: {
                 objectType: "Activity",
-                id: this.baseUrl() + state.templateId + "/" +  page_nr,
+                id: id,
                 definition: {
                     name: {
                         "en-US": name
@@ -705,11 +720,15 @@ function XTSetAttendance(page_nr, name, score)
     SaveStatement(statement);
 }
 
-function XTSetPageScore(page_nr, score)
+function XTSetPageScore(page_nr, score, page_name)
 {
     state.setPageScore(page_nr, score);
     this.pageEnd = new Date();
-
+    var id = this.baseUrl() + state.templateId + "/" + page_nr;
+    if (page_name != null && page_name != "")
+    {
+        id = this.baseUrl() + state.templateId + "/" + page_name;
+    }
     var statement = new TinCan.Statement(
         {
             actor: {
@@ -719,7 +738,7 @@ function XTSetPageScore(page_nr, score)
                 id: "http://adlnet.gov/expapi/verbs/scored"
             },
             target: {
-                id: this.baseUrl() + state.templateId + "/" + page_nr
+                id: id
             },
             result:{
                 "completion": true,
@@ -753,11 +772,15 @@ function calcDuration()
     return "P" + 0 + "Y" + 0 + "M" + days + "DT" + hours + "H" + minutes + "M" + seconds + "S"
 }
 
-function XTSetPageScoreJSON(page_nr, score, JSONGraph, idName)
+function XTSetPageScoreJSON(page_nr, score, JSONGraph, page_name)
 {
     state.setPageScore(page_nr, score);
     this.pageEnd = new Date();
-
+    var id = this.baseUrl() + state.templateId + "/" + page_nr;
+    if (page_name != null && page_name != "")
+    {
+        id = this.baseUrl() + state.templateId + "/" + page_name;
+    }
     if (!surf_mode) {
         var statement = new TinCan.Statement(
             {
@@ -768,7 +791,7 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph, idName)
                     id: "http://adlnet.gov/expapi/verbs/scored"
                 },
                 target: {
-                    id: this.baseUrl() + state.templateId + "/" + idName
+                    id: id
                 },
                 result: {
                     "completion": true,
@@ -789,11 +812,20 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph, idName)
     }
 }
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback, page_name)
 {
     state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback);
     this.enterInteractionStamp = new Date();
+    var id = this.baseUrl() + state.templateId + "/" + page_nr;
 
+    if (ia_nr >=0)
+    {
+        var id = this.baseUrl() + state.templateId + "/" + page_nr + "/" + ia_nr;
+    }
+    if (page_name != null && page_name != "")
+    {
+        id = this.baseUrl() + state.templateId + "/" + page_name;
+    }
     var statement = new TinCan.Statement(
         {
             actor: {
@@ -803,7 +835,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
                 id: "http://adlnet.gov/expapi/verbs/attempted"
             },
             target: {
-                id: "http://xerte.org.uk/xapi/questions/" + page_nr
+                id: id
             },
             timestamp : this.enterInteractionStamp
         }
@@ -826,7 +858,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
                     }
                 },
                 target: {
-                    id: "http://xerte.org.uk/xapi/questions/" + page_nr
+                    id: id
                 },
                 result: {
                     "completion": true,
@@ -894,74 +926,22 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
         }
     }
 */
-    function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback) {
-        state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback);
-        this.enterInteractionStamp = new Date();
 
-        if (!surf_mode) {
-            var statement = new TinCan.Statement(
-                {
-                    actor: {
-                        mbox: userEMail
-                    },
-                    verb: {
-                        id: "http://adlnet.gov/expapi/verbs/attempted",
-                        display: {
-                            "en-US": "Attempted"
-                        }
-                    },
-                    target: {
-                        id: "http://xerte.org.uk/xapi/questions/" + page_nr
-                    },
-                    timestamp: this.enterInteractionStamp
-                }
-            );
-
-
-            SaveStatement(statement);
-        }
-        if (surf_mode) {
-            var statement = new TinCan.Statement(
-                {
-                    actor: {
-                        mbox: userEMail
-                    },
-                    verb: {
-                        id: "http://lrs.surfuni.org/verb/accessed",
-                        display: {
-                            "en-US": "Accessed"
-                        }
-                    },
-                    object: {
-                        objectType: "Activity",
-                        id: "http://lrs.surfuni.org/object/assessment",
-                        definition: {
-                            name: {
-                                "en-US": "Assessment"
-                            }
-                        }
-                    },
-                    context: {
-                        extensions: {
-                            "http://lrs.surfuni.org/context/course": surf_course,
-                            "http://lrs.surfuni.org/context/recipe": surf_recipe,
-                            "http://lrs.surfuni.org/context/label": ""
-                        }
-                    },
-                    timestamp: this.initStamp
-                }
-            );
-            SaveStatement(statement);
-        }
-
-    }
-
-    function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback) {
+    function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback, page_name) {
         state.exitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback);
         if (($.inArray([page_nr, ia_nr], answeredQs) == -1 && state.scoremode == "first") || state.scoremode == "last") {
 
             this.exitInteractionStamp = new Date();
+            var id = this.baseUrl() + state.templateId + "/" + page_nr;
 
+            if (ia_nr >=0)
+            {
+                var id = this.baseUrl() + state.templateId + "/" + page_nr + "/" + ia_nr;
+            }
+            if (page_name != null && page_name != "")
+            {
+                id = this.baseUrl() + state.templateId + "/" + page_name;
+            }
             if (!surf_mode) {
                 var statement = new TinCan.Statement(
                     {
@@ -975,7 +955,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
                             }
                         },
                         target: {
-                            id: "http://xerte.org.uk/xapi/questions/" + page_nr
+                            id: id
                         },
                         result: {
                             "response": result + ""
@@ -1007,6 +987,9 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
                                     "en-US": "Assessment"
                                 }
                             }
+                        },
+                        target: {
+                            id: id
                         },
                         context: {
                             extensions: {
@@ -1042,6 +1025,9 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
                         result: {
                             "response": result[0]
                         },
+                        target: {
+                            id: id
+                        },
                         context: {
                             extensions: {
                                 "http://lrs.surfuni.org/context/course": surf_course,
@@ -1075,6 +1061,9 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
                         },
                         result: {
                             "response": result + ""
+                        },
+                        target: {
+                            id: id
                         },
                         context: {
                             extensions: {
@@ -1111,6 +1100,9 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
                             result: {
                                 "response": feedback[0]
                             },
+                            target: {
+                                id: id
+                            },
                             context: {
                                 extensions: {
                                     "http://lrs.surfuni.org/context/course": surf_course,
@@ -1127,11 +1119,22 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
         }
     }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName, callback)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, callback)
 {
     var stringObjects = [];
     //Get ID from the question
     //var idQ = this.x_currentPageXML.childNodes[ia_nr].getAttribute("linkID");
+
+    var id = this.baseUrl() + state.templateId + "/" + page_nr;
+
+    if (ia_nr >=0)
+    {
+        var id = this.baseUrl() + state.templateId + "/" + page_nr + "/" + ia_nr;
+    }
+    if (page_name != null && page_name != "")
+    {
+        id = this.baseUrl() + state.templateId + "/" + page_name;
+    }
     var x = lrsInstance.queryStatements(
         {
             params: {
@@ -1140,22 +1143,26 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName, callbac
                         id: "http://adlnet.gov/expapi/verbs/scored"
                     }
                 ),
-                activity: (
-                {
-                    id: "http://xerte.org.uk/xapi/questions/" + idName
-                }
+                activity: new TinCan.Activity(
+                    {
+                        id: id
+                    }
                 )
             },
             callback: function(err, sr) {
                 var lastSubmit = null;
                 for (x = 0; x < sr.statements.length; x++)
                 {
-                    if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
-                        lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
-                    }
-                    stringObjects[x] = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
+                    //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
+                    //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
+                    //}
+                    stringObjects[x] = {};
+                    stringObjects[x].timestamp = sr.statements[x].timestamp;
+                    stringObjects[x].actor = sr.statements[x].actor;
+                    stringObjects[x].result = sr.statements[x].result;
+                    stringObjects[x].graph = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                 }
-                stringObjects.push(lastSubmit);
+                //stringObjects.push(lastSubmit);
                 if (err !== null) {
                     console.log("Failed to query statements: " + err);
                     // TODO: do something with error, didn't get statements
