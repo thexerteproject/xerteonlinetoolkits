@@ -51,13 +51,13 @@
             var width = $x_pageHolder.width();
             var height = $x_pageHolder.height();
             if(width > height) {
-                $("#diagram").width(height);
-                $("#diagram").height(height);
+                $("#diagram").width(height*0.90);
+                $("#diagram").height(height*0.90);
                 textSize = (width - height) / 10;
             }
             else {
-                $("#diagram").width(width);
-                $("#diagram").height(width);
+                $("#diagram").width(width*0.90);
+                $("#diagram").height(width*0.90);
                 textSize = (height - width) / 10;
             }
             if (textSize > 20) {
@@ -138,44 +138,73 @@
                 return "rgba(" + r + ", " + g + ", " + b + ", " + opa + ")";
             }
             var ctx = $("#diagram");
-            var bgColourIn = "0x000000";
+            var bgColourIn = "0xff0000";
             if (x_currentPageXML.getAttribute("colour") != null) {
                 bgColourIn = x_currentPageXML.getAttribute("colour");
             }
             var bgColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 0.5);
             var lnColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 1);
 
+            var pavgbgColourIn = "0x0000ff";
+            if (x_currentPageXML.getAttribute("colourPersonalAvg") != null) {
+                pavgbgColourIn = x_currentPageXML.getAttribute("colourPersonalAvg");
+            }
+            var pavgbgColour = hexToRgb(pavgbgColourIn.substr(pavgbgColourIn.length - 6), 0.5);
+            var pavglnColour = hexToRgb(pavgbgColourIn.substr(pavgbgColourIn.length - 6), 1);
+
+            var avgbgColourIn = "0x0000ff";
+            if (x_currentPageXML.getAttribute("colourAvg") != null) {
+                avgbgColourIn = x_currentPageXML.getAttribute("colourAvg");
+            }
+            var avgbgColour = hexToRgb(avgbgColourIn.substr(avgbgColourIn.length - 6), 0.5);
+            var avglnColour = hexToRgb(avgbgColourIn.substr(avgbgColourIn.length - 6), 1);
+
+            var AvgAllLabelText = x_currentPageXML.getAttribute("AvgLabel");
+            if (AvgAllLabelText == undefined)
+            {
+                AvgAllLabelText = 'Avg. of all attempts';
+            }
+
+            var PersonalLabelText = x_currentPageXML.getAttribute("PersonalLastLabel");
+            if (PersonalLabelText == undefined) {
+                PersonalLabelText = 'Your last attempt';
+            }
+
+            var PersonalAvgLabelText = x_currentPageXML.getAttribute("PersonalAvgLabel");
+            if (PersonalAvgLabelText == undefined) {
+                PersonalAvgLabelText = 'Avg. of your attempts';
+            }
             var datasets = [];
             if (latest == null) {
                 // Only show mean_all
                 datasets = [{
-                    label: 'Avg. of all attempts',
+                    label: AvgAllLabelText,
                     data: mean_all,
-                    backgroundColor: bgColour,
-                    borderColor: lnColour
+                    backgroundColor: avgbgColour,
+                    borderColor: avglnColour
                 }];
             }
             else {
                 datasets = [
                     {
-                        label: 'Your last attempt',
+                        label: PersonalLabelText,
                         data: latest.graph.classvalues,
                         backgroundColor: bgColour,
                         borderColor: lnColour
                     }];
                 if (numUserSubmits > 1) {
                     datasets.push({
-                        label: 'Avg. of your attempts',
+                        label: PersonalAvgLabelText,
                         data: mean,
-                        backgroundColor: "rgba(" + 0 + ", " + 0 + ", " + 255 + ", " + 0.5 + ")",
-                        borderColor: "rgba(" + 0 + ", " + 0 + ", " + 255 + ", " + 1 + ")"
+                        backgroundColor: pavgbgColour,
+                        borderColor: pavglnColour
                     });
                 }
                 datasets.push({
-                    label: 'Avg. of all attempts',
+                    label: AvgAllLabelText,
                     data: mean_all,
-                    backgroundColor: "rgba(" + 0 + ", " + 255 + ", " + 0 + ", " + 0.5 + ")",
-                    borderColor: "rgba(" + 0 + ", " + 255 + ", " + 0 + ", " + 1 + ")"
+                    backgroundColor: avgbgColour,
+                    borderColor: avglnColour
                 });
             }
             // Show mean_all and latest
@@ -208,12 +237,14 @@
         }
         this.init = function() {
             var $pageContents = $("#pageContents");
-            XTGetInteractionScore(null, null, null, null, x_currentPageXML.getAttribute("import"), function(data) {
+            var id = x_currentPageXML.getAttribute("xerteurl") + x_currentPageXML.getAttribute("xertelo") + '/' + x_currentPageXML.getAttribute("import");
+            XTGetInteractionScore(null, null, null, null, id, function(data) {
                 showGraph.createDiagram(data);
             });
 
 
             // call this function in every model once everything's loaded
+            this.sizeChanged();
             x_pageLoaded();
         }
     };

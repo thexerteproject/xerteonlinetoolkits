@@ -1133,7 +1133,15 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, call
     }
     if (page_name != null && page_name != "")
     {
-        id = this.baseUrl() + state.templateId + "/" + page_name;
+        // If this is an url, use as is
+        if (page_name.substr(0, 4).toLowerCase() == "http")
+        {
+            id = page_name;
+        }
+        else
+        {
+            id = this.baseUrl() + state.templateId + "/" + page_name;
+        }
     }
     var x = lrsInstance.queryStatements(
         {

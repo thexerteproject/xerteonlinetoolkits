@@ -2192,7 +2192,22 @@ var EDITOR = (function ($, parent) {
 			}
         },
 
-        displayDataType = function (value, options, name, key) {
+    baseUrl = function()
+    {
+        var pathname = window.location.href;
+        var newPathname = pathname.split("/");
+        var urlPath = "";
+        for (var i = 0; i < newPathname.length -1; i++ )
+        {
+            urlPath += newPathname[i] + "/";
+        }
+        if (newPathname[0] != "http:" && newPathname[0] != "https:" && newPathname[0] != "localhost") {
+            urlPath = "http://xerte.org.uk/";
+        }
+        return urlPath;
+    },
+
+    displayDataType = function (value, options, name, key) {
             var html;                   //console.log(options);
 
             switch(options.type.toLowerCase())
@@ -2642,6 +2657,8 @@ var EDITOR = (function ($, parent) {
                     break;
                 case 'datefield': // Not used??
                 case 'webpage':  //Not used??
+                case 'xerteurl':
+                case 'xertelo':
                 default:
                     var id = 'textinput_' + form_id_offset;
                     form_id_offset++;
@@ -2656,6 +2673,16 @@ var EDITOR = (function ($, parent) {
                         textinputs_options.push({id: id, key: key, name: name, options: options});
                     }
                     else {
+                        if (options.type.toLowerCase() == 'xerteurl' && value.length==0)
+                        {
+                            value=baseUrl();
+                            setAttributeValue(key, [name], [value]);
+                        }
+                        if (options.type.toLowerCase() == 'xertelo' && value.length==0)
+                        {
+                            value=template_id;
+                            setAttributeValue(key, [name], [value]);
+                        }
                         html = $('<input>')
                             .attr('type', "text")
                             .addClass('inputtext')
