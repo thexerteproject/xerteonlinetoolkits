@@ -79,13 +79,13 @@
 			var width = $("#mainPanel").width();
 			var height = $("#mainPanel").height();
 			if(width > height) {
-				$("#diagram").width(height);
-				$("#diagram").height(height);
+				$("#diagram").width(height*0.90);
+				$("#diagram").height(height*0.90);
 				textSize = (width - height) / 10;
 			}
 			else {
-				$("#diagram").width(width);
-				$("#diagram").height(width);
+				$("#diagram").width(width*0.90);
+				$("#diagram").height(width*0.90);
 				textSize = (height - width) / 10;
 			}
 			if (textSize > 20) {
@@ -111,6 +111,7 @@
 		
 		this.startQuestions = function()
 		{
+
 			// If the language attricute is not defined in the xml, fall back to English.
 			this.questionNumberText = x_currentPageXML.getAttribute("quesCount");
 			
@@ -126,7 +127,9 @@
                 this.showfeedback = x_currentPageXML.getAttribute("showfeedback") == "true";
             }
 
+			$("#diagram").hide();
             $("#sliderHolder").show();
+			$("#checkBtn").show();
 			$("#checkBtn").button("disable");
 			
 			this.currentQuestion = 0;
@@ -537,6 +540,7 @@
             }
             $("#questionAudio").empty();
 
+			$("#diagram").show();
             $("#sliderHolder").hide();
             $("#checkBtn").hide();
             $("#qTxt").html("");
@@ -635,7 +639,9 @@
 						labels: {
 							fontSize: textSize
 						}
-					}
+					},
+					responsive: false,
+					maintainAspectRatio: false
 				}
             });
 		};
