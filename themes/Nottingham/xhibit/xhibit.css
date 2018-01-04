@@ -1,0 +1,73 @@
+/* XHIBIT BASE THEME - Applying this base theme ensures that your own custom theme from www.xhibitapp.com will work as intended. */
+
+
+/* Footer */
+
+#x_footerBg {
+	background-image: none;
+}
+
+#x_pageNo {
+	background:	none;
+}
+
+.filter_inv #x_pageNo {
+    color: black !important;
+}
+
+
+/* Use FontAwesome icons for buttons */
+
+#x_footerBlock button span {
+    background: none; /* Hide any PNG buttons */
+}
+
+.ui-button:after { /* Setup for FontAwesome icons */
+    font-family: FontAwesome;
+    color: white;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    font-size: 1.9em;
+    line-height: 1.5em;
+}
+
+.filter_inv .ui-button:after {
+    color: black; /* Ensures accessibility invert works */
+}
+
+.ui-button.ui-state-hover:after {
+    color: #ff9900;
+}
+
+#x_nextBtn:after {
+    content: "\f138"; 
+}
+
+#x_prevBtn:after {
+    content: "\f137"; 
+}
+
+#x_cssBtn:after {
+    content: "\f0b2"; 
+}
+
+#x_colourChangerBtn:after {
+    content: "\f06e"; 
+}
+
+#x_mediaBtn:after {
+    content: "\f16a"; 
+}
+
+#x_glossaryBtn:after {
+    content: "\f02d"; 
+}
+
+#x_helpBtn:after {
+    content: "\f128"; 
+}
+
+#x_menuBtn:after {
+    content: "\f0c9"; 
+}
