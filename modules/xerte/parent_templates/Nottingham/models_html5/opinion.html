@@ -605,7 +605,6 @@
 
 				return "rgba(" + r + "," + g + "," + b + "," + opa + ")";
 			}
-			var ctx = $("#diagram");
 			var bgColourIn = "0x000000";
 			if (x_currentPageXML.getAttribute("colour") != null) {
 				bgColourIn = x_currentPageXML.getAttribute("colour");
@@ -613,7 +612,8 @@
 			var bgColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 0.5);
 			var lnColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 1);
 			var ctx = $("#diagram");
-            var myRadarChart = new Chart(ctx, {
+
+			var myRadarChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
                     labels: classNames,
@@ -629,7 +629,7 @@
 						ticks: {
 							suggestedMin: 0,
 							suggestedMax: 100,
-							fontSize: textSize
+							fontSize: textSize - 4
 						},
 						pointLabels: {
 							fontSize: textSize
@@ -645,7 +645,7 @@
 				}
             });
 		};
-		
+
 		this.init = function()
 		{
             var loadFiles = true;
