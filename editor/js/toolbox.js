@@ -448,11 +448,7 @@ var EDITOR = (function ($, parent) {
         }
         return {found : true, value: attribute_value};
     },
-
-    xhibitTip = function () {
-        var message = "<i class='fa fa-info-circle' aria-hidden='true' style='margin: 0.8em'></i> Use this base theme alongside your own stylesheet from <a target='_blank' href='http://www.xhibitapp.com'>xhibitapp.com</a>.";
-        return message;
-    },
+	
 
     displayParameter = function (id, all_options, name, value, key, nodelabel)
     {
@@ -543,10 +539,7 @@ var EDITOR = (function ($, parent) {
                     .addClass("wizardvalue")
                     .append($('<div>')
                         .addClass("wizardvalue_inner")
-                        .append(displayDataType(value, options, name, key)))
-                        .append($( name === 'theme' ? '<p id="themeTip">' : '' )
-                        .html( value === 'xhibit' ? xhibitTip : '' ))
-                       );
+                        .append(displayDataType(value, options, name, key))));
 			
             $(id).append(tr);
             if (options.optional == 'true' && groupChild == false) {
@@ -2415,7 +2408,6 @@ var EDITOR = (function ($, parent) {
                         .change({id:id, key:key, name:name}, function(event)
                         {
                             selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                                $('#themeTip').html(this.value === 'xhibit' ? xhibitTip : '')
                         });
                     for (var i=0; i<theme_list.length; i++) {
                         var option = $('<option>')

@@ -673,10 +673,6 @@ td.wizardlabel {
 td.wizardvalue {
 }
 
-td.wizardvalue #themeTip {
-    margin: 0;
-}
-
 fieldset.wizardgroup {
 	border: 1px solid #ccc;
 }
