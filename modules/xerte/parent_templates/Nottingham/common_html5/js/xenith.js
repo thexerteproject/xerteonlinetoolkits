@@ -560,7 +560,7 @@ function x_cssSetUp(param) {
 
 	switch(param) {
         case "menu":
-        	x_insertCSS(x_templateLocation + "models_html5/menu.css", function() {x_cssSetUp("menu2")});
+        	x_insertCSS(x_templateLocation + "models_html5/menu.css", function() {x_cssSetUp("language")});
             break;
         case "menu2":
             if (x_params.theme != undefined && x_params.theme != "default") {
@@ -573,7 +573,7 @@ function x_cssSetUp(param) {
             break;
         case "language":
 			if (x_params.kblanguage != undefined) {
-				x_insertCSS(x_templateLocation + "models_html5/language.css", function() {x_cssSetUp("language2")});
+				x_insertCSS(x_templateLocation + "models_html5/language.css", function() {x_cssSetUp("glossary")});
 			} else {
 				x_cssSetUp("glossary");
 			}
@@ -589,7 +589,7 @@ function x_cssSetUp(param) {
             break;
         case "glossary":
 			if (x_params.glossary != undefined) {
-				x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("glossary2")});
+				x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("colourChanger")});
 			} else {
 				x_cssSetUp("colourChanger");
 			}
@@ -604,7 +604,7 @@ function x_cssSetUp(param) {
             }
             break;
         case "colourChanger":
-            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("colourChanger2")});
+            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("theme")});
             break;
         case "colourChanger2":
             if (x_params.theme != undefined && x_params.theme != "default") {
@@ -612,23 +612,24 @@ function x_cssSetUp(param) {
             }
             else
             {
-                x_cssSetUp("responsive");
+                x_cssSetUp("theme");
             }
             break;
         case "theme":
             $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
-            x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {x_cssSetUp("responsive")});
+            /*x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {x_cssSetUp("responsive")});*/
+            x_cssSetUp("responsive");
             break;
 		case "responsive":
             if (x_params.responsive == "true") {
 				// adds default responsiveText.css - in some circumstances this will be immediately disabled
 				if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_cssSetUp("responsive2")}, true);
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()}, true);
 				} else {
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_cssSetUp("responsive2")});
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()});
                 }
 			} else {
-				x_cssSetUp("stylesheet");
+                x_continueSetUp1();
 			}
             break;
         case "responsive2":
@@ -654,9 +655,9 @@ function x_cssSetUp(param) {
 }
 
 function x_continueSetUp1() {
-	if (x_params.styles != undefined){
-		$x_head.append('<style type="text/css">' +  x_params.styles + '</style>');
-	}
+	//if (x_params.styles != undefined){
+	//	$x_head.append('<style type="text/css">' +  x_params.styles + '</style>');
+	//}
 	
 	if (x_pageInfo[0].type == "menu") {
 		$x_pageNo.hide();
@@ -1373,9 +1374,14 @@ function x_changePage(x_gotoPage) {
 	// Prevent content from behaving weird as we remove css files
     $("#x_pageDiv").hide();
     // Setup css correctly
-	$("#page_model_css").remove();
-	$("#page_theme_css").remove();
-	var modelfile = x_pageInfo[x_gotoPage].type;
+	//$("#page_model_css").remove();
+    //$("#theme_css").remove();
+    //$("#theme_responsive_css").remove();
+    //$("#lo_sheet_css").remove();
+    //$("#lo_css").remove();
+    //$("#page_css").remove();
+
+    var modelfile = x_pageInfo[x_gotoPage].type;
 	
 	var classList = $x_mainHolder.attr('class') == undefined ? [] : $x_mainHolder.attr('class').split(/\s+/);
 	$.each(classList, function(index, item) {
@@ -1394,9 +1400,9 @@ function x_changePage(x_gotoPage) {
 function x_changePageStep2(x_gotoPage) {
 	if (x_params.theme != 'default') {
         var modelfile = x_pageInfo[x_gotoPage].type;
-		x_insertCSS(x_themePath + x_params.theme + '/css/' + modelfile + '.css', function () {
-			x_changePageStep3(x_gotoPage);
-		}, false, "page_theme_css");
+        x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
+                x_changePageStep3(x_gotoPage);
+        }, false, "theme_css", true);
 	}
 	else
     {
@@ -1405,9 +1411,41 @@ function x_changePageStep2(x_gotoPage) {
 }
 
 function x_changePageStep3(x_gotoPage) {
+    if (x_params.theme != undefined && x_params.theme != "default") {
+        // adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
+        if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
+            x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
+                x_changePageStep4(x_gotoPage);
+            }, true, "theme_responsive_css", true);
+        } else {
+            x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
+                x_changePageStep4(x_gotoPage);
+            }, false, "theme_responsive_css", true);
+        }
+    }
+    else {
+        x_changePageStep4(x_gotoPage);
+    }
+}
+function x_changePageStep4(x_gotoPage) {
+    if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
+        x_insertCSS(x_evalURL(x_params.stylesheet), function () {
+            x_changePageStep5(x_gotoPage);
+        }, false, "lo_sheet_css");
+    }
+    else {
+        x_changePageStep5(x_gotoPage);
+    }
+}
+
+function x_changePageStep5(x_gotoPage) {
 	var prevPage = x_currentPage;
 
-	// End page tracking of x_currentPage
+    if (x_params.styles != undefined){
+        $x_head.append('<style type="text/css" id="page_css">' +  x_params.styles + '</style>');
+    }
+
+    // End page tracking of x_currentPage
     if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_currentPage != x_gotoPage)
     {
         var pageObj;
@@ -2688,34 +2726,42 @@ function x_setFillWindow(updatePage) {
 
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
-function x_insertCSS(href, func, disable, id) {
+function x_insertCSS(href, func, disable, id, keep) {
     var css = document.createElement("link");
+    var element = null;
+    var donotreplace = false;
     css.rel = "stylesheet";
     css.href = href;
     css.type = "text/css";
     if (id != undefined)
 	{
 		css.id = id;
+		element = document.getElementById(id);
+		if (keep != undefined)
+        {
+           donotreplace=keep;
+        }
 	}
 	
 	// in some cases code is stopped until css loaded as some heights are done with js and depend on css being loaded
 	if (func != undefined) {
-		css.onload = function() {
-			if (x_cssFiles.indexOf(this) == -1) {
-				x_cssFiles.push(this);
-				if (href.indexOf("responsivetext.css") >= 0) {
-					x_responsive.push(this);
-					if (disable == true) {
-						$x_mainHolder.removeClass("x_responsive");
-						$(this).prop("disabled", true);
-					} else {
-						$x_mainHolder.addClass("x_responsive");
-					}
-				}
-				func();
-			}
-		};
-		
+        var f = function() {
+            if (x_cssFiles.indexOf(this) == -1) {
+                x_cssFiles.push(this);
+                if (href.indexOf("responsivetext.css") >= 0) {
+                    x_responsive.push(this);
+                    if (disable == true) {
+                        $x_mainHolder.removeClass("x_responsive");
+                        $(this).prop("disabled", true);
+                    } else {
+                        $x_mainHolder.addClass("x_responsive");
+                    }
+                }
+            }
+            func();
+        };
+		css.onload = f;
+
 		css.onerror = function(){
 			func();
 		};
@@ -2725,8 +2771,26 @@ function x_insertCSS(href, func, disable, id) {
 			$(this).prop("disabled", true);
 		}
 	}
-	
-    document.getElementsByTagName("head")[0].appendChild(css);
+
+	if (element != null)
+    {
+        // Update element
+        if (donotreplace != true) {
+            var parent = element.parentNode;
+            parent.replaceChild(css, element);
+        }
+        else
+        {
+            if (func != undefined)
+            {
+                func();
+            }
+        }
+    }
+    else {
+        // Create element
+        document.getElementsByTagName("head")[0].appendChild(css);
+    }
 }
 
 
