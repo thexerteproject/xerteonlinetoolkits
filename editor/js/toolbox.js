@@ -1835,6 +1835,16 @@ var EDITOR = (function ($, parent) {
             }
 
         }
+        setAttributeValue(key, [name], [value]);
+    },
+
+    themeChanged = function(id, key, name, value, obj)
+    {
+        // Set preview and description
+        var theme = theme_list[value];
+        $('img.theme_preview:first').attr('src', theme.preview);
+        $('div.theme_description:first').html(theme.description);
+        setAttributeValue(key, [name], [theme.name]);
     },
 
     selectChanged = function (id, key, name, value, obj)
@@ -2389,7 +2399,7 @@ var EDITOR = (function ($, parent) {
                         .change({id:id, key:key, name:name}, function(event)
                         {
                             changeLanguage(event.data.id, event.data.key, event.data.name, this.value, this);
-                            selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            //selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
                     for (var i=0; i<installed_languages.length; i++) {
                         var option = $('<option>')
@@ -2402,21 +2412,38 @@ var EDITOR = (function ($, parent) {
                     break;
                 case 'themelist':
                     var id = 'select_' + form_id_offset;
-                    form_id_offset++;
-                    html = $('<select>')
+                    var html = $('<div>')
+                        .attr('id', 'theme_div_' + form_id_offset);
+                    var currtheme = 0;
+                    var select = $('<select>')
                         .attr('id', id)
                         .change({id:id, key:key, name:name}, function(event)
                         {
-                            selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            themeChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
                     for (var i=0; i<theme_list.length; i++) {
                         var option = $('<option>')
-                            .attr('value', theme_list[i].name);
-                        if (theme_list[i].name==value)
+                            .attr('value', i);
+                        if (theme_list[i].name==value) {
                             option.prop('selected', true);
+                            currtheme = i;
+                        }
                         option.append(theme_list[i].display_name);
-                        html.append(option);
+                        select.append(option);
                     }
+                    html.append(select);
+                    var preview = $('<img>')
+                        .attr('id', 'theme_preview_' + form_id_offset)
+                        .addClass('theme_preview')
+                        .attr('src', theme_list[currtheme].preview);
+                    html.append(preview);
+                    var description = $('<div>')
+                        .attr('id', 'theme_description_' + form_id_offset)
+                        .addClass('theme_description')
+                        .append(theme_list[currtheme].description);
+                    html.append(description);
+                    form_id_offset++;
+
                     break;
                 case 'hotspot':
                     var id = 'hotspot_' + form_id_offset;

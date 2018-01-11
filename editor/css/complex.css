@@ -1004,6 +1004,18 @@ li.hiddenNode >a{
 li.deprecatedNode >a {
 	background: rgba(248, 103, 24, 0.33);
 }
+
+img.theme_preview
+{
+	float: left;
+	margin: 5px;
+	max-width: 200px;
+}
+
+div.theme_description
+{
+	width: 100%;
+}
 /* start of xertecss.css
 
 body {background: #b3b3b5; padding-bottom: 30px;}
