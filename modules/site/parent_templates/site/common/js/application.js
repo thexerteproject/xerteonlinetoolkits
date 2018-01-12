@@ -26,6 +26,7 @@ var authorSupport = false;
 var deepLink = "";
 var currentPage = 0;
 var glossary = [];
+var defaultHeaderCss;
 
 function init(){
 	loadContent();
@@ -366,6 +367,16 @@ function setup(){
 		$(".jumbotron").remove();
 		
 	} else {
+		
+		var $jumbotron = $(".jumbotron");
+		defaultHeaderCss = {
+			header: $jumbotron.css('background-image'),
+			headerPos: $jumbotron.css('background-position'),
+			headerRepeat: $jumbotron.css('background-repeat'),
+			headerColour: $jumbotron.css('background-color'),
+			headerTextColor: $jumbotron.css('color')
+		};
+		
 		// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
 		// they are overridden by any logos in theme folders
 		// they can also be overridden by images uploaded via Header Logo optional properties
@@ -908,6 +919,7 @@ function parseContent(pageIndex){
 	}
 }
 
+// ** issues with this when using themes & header property on page level
 function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTextColour, level) {
 	
 	// LO background settings will be overridden by individual page ones (& returned to LO settings if page contains no background properties)
@@ -951,7 +963,7 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 			
 		} else {
 			
-			$('#overview').css('background-repeat', 'initial');
+			$('#overview').css('background-repeat', defaultHeaderCss.headerRepeat);
 			
 		}
 		
@@ -975,7 +987,7 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 			
 		} else {
 			
-			$('#overview').css('background-position', 'initial');
+			$('#overview').css('background-position', defaultHeaderCss.headerPos);
 			
 		}
 		
@@ -983,7 +995,7 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 		
 	} else {
 		
-		$('#overview').css('background-image', 'none');
+		$('#overview').css('background-image', defaultHeaderCss.header);
 		
 	}
 	
@@ -999,8 +1011,7 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 		
 	}
 	
-	if (col != '') {
-		
+	if (col != '' && col != '0x') {
 		//one or two?
 		if (col.indexOf(',') != -1){
 			col = col.split(',');
@@ -1020,9 +1031,12 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 		$('#overview').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + col[0] + ', endColorstr=' + col[1] + ',GradientType=1 )');
 		
 	} else {
-		
-		$('#overview').css('background', bgImg + 'none');
 		$('#overview').css('filter', '');
+		
+		if (defaultHeaderCss.headerColour != undefined && defaultHeaderCss.headerColour != '') {
+			bgImg = defaultHeaderCss.headerColour;
+			$('#overview').css('background-color', defaultHeaderCss.headerColour);
+		}
 		
 	}
 	
@@ -1044,7 +1058,7 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 		
 	} else {
 		
-		$('#overview').css('color', '');
+		$('#overview').css('color', defaultHeaderCss.headerTextColor);
 		
 	}
 }
