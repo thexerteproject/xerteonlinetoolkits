@@ -6,16 +6,16 @@
 @import "scss/_animations";
 @import "scss/editorstyles";
 @import "scss/_webkitCustoms";
-/* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
-/*You should not edit the .css files directly or change values directly unless you wish to override something*/
-/*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
+//* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
+//*You should not edit the .css files directly or change values directly unless you wish to override something*/
+//*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
 
 body{
 	background:$bodybackgroundcolor;
 	color:$mainfontcolour;
 	font-family: $mainfonts;
 }
-/******Fonts******/
+//******Fonts******/
 .ui-button .ui-button-text {
 	font-family: $mainfonts;
 }
@@ -52,7 +52,7 @@ h3 {
   border-radius:$mediumroundedcorners;
   background: $brightcolor;
 }
-/*****panel all pages with a panel*****/
+//*****panel all pages with a panel*****/
 .panel {
   border-radius: $mediumroundedcorners;
   background:$brightcolor;
@@ -61,12 +61,12 @@ h3 {
 .panelPage{
 	padding:1%;
 }
-/*****all images*****/
+//*****all images*****/
 img {
   border-radius: $imageroundedcorners;
 }
 
-/******@media changes******/
+//******@media changes******/
 @media (min-width: 1366px) {
 	/*tablet and above css below here*/
 	#x_mainHolder{
@@ -81,7 +81,7 @@ img {
 	}
 }
 
-/* iPads (portrait) ----------- */
+//* iPads (portrait) ----------- */
 @media only screen
 and (min-device-width : 768px)
 and (max-device-width : 1024px)

@@ -1,12 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Varela+Round");
-/*define color pallette*/
-/*set background colors*/
 /* default #2196F3;*/
-/*set font family*/
-/*define font colors to match the background colors*/
-/*define rounded corner and other sizes*/
 /*start here and set the default values for all the variables*/
-/******Header******/
 #x_headerBlock {
   color: #ffffff;
   background-repeat: no-repeat;
@@ -19,18 +13,41 @@
   background: #426E86;
   box-shadow: 3px 3px 5px grey; }
 
-/*****menu connector*****/
-#subMenuItems .subMenuItem {
+#x_pageHolder {
+  overflow-y: hidden; }
+
+.titlePageTxt {
+  width: 98% !important;
+  overflow: hidden; }
+
+#thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3 {
+  /*font-size:1.6vmin;*/
+  color: #2F3131; }
+
+.highlight {
+  background: #F9BA32; }
+
+.ui-accordion .ui-accordion-content {
+  border-radius: 1vmin;
   background: #F9BA32;
   color: #2F3131; }
 
-.ui-icon-carat-1-e {
+.ui-accordion .ui-accordion-header {
+  border-radius: 1vmin;
+  background: #426E86;
   color: #ffffff; }
 
-.ui-icon-carat-1-w {
-  color: #ffffff; }
+.ui-accordion .ui-accordion-header a {
+  border-radius: 1vmin;
+  color: #ffffff !important;
+  background: #426E86; }
 
-/*****button navigator*****/
+.ui-accordion .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+  text-decoration: none;
+  background: #F8F1E5;
+  border-radius: 1vmin;
+  color: #2F3131; }
+
 .ui-button {
   border-radius: 1vmin;
   background: #426E86;
@@ -47,12 +64,40 @@
   border: none;
   color: #2F3131; }
 
-/****tabbed navigator****/
+.front.panel {
+  background: #426E86;
+  border: #426E86;
+  color: #ffffff; }
+
+.back.panel {
+  background: #F9BA32;
+  border: #F9BA32;
+  color: #2F3131; }
+
+#linkHolder a {
+  color: #2F3131; }
+
+#pageContents.button button.selected {
+  background-color: #F8F1E5; }
+
+#pageContents.slide #btnHolder button {
+  background: #426E86;
+  border-color: #426E86; }
+
 .ui-tabs .ui-tabs-nav li {
   border-radius: 1vmin;
   background: #426E86;
   border: none;
   color: #F8F1E5; }
+
+.paneInfo {
+  /*color:$fontcolorfobrightcolor;*/ }
+
+.paneList a, .paneList a:link, .paneList a:visited {
+  /*color: $linkcolor !important;*/ }
+
+.ui-tabs-panel a:link {
+  /*color: $linkcolor;*/ }
 
 .ui-tabs .ui-tabs-nav {
   border-radius: 1vmin;
@@ -64,119 +109,80 @@
 
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
   text-decoration: none;
-  background: #F8F1E5;
-  color: #426E86 !important;
+  background: #2F3131;
+  color: #426E86;
   border-radius: 1vmin; }
 
-/***Flash cards***/
-.front.panel {
-  background: #F8F1E5; }
-
-.back.panel {
+a.topic.highlight {
   background: #F9BA32; }
 
-/*****categories*****/
+a.topic.highlight:hover {
+  color: #2F3131; }
+
+div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
+  background: #F9BA32; }
+
+#listholder a.listitem, a:visited {
+  color: #426E86; }
+
 #categoryHolder .category {
-  border-radius: 2vmin; }
+  border-radius: 2vmin;
+  /*color:$whiteorlightest;*/ }
 
-.highlight {
+#categoryHolder h3 {
+  color: #ffffff; }
+
+.label.panel {
+  background: #F9BA32;
+  border: #F9BA32; }
+
+#categoryHolder .highlight {
   border-radius: 1vmin;
-  background: #F8F1E5; }
+  background: #426E86; }
 
-/*****dialogue*****/
 #pageContents .question input {
   border-radius: 1vmin; }
 
-/*****Dictation*****/
 #answerTxt {
   width: 100%;
   margin-bottom: 10px;
   border-radius: 2vmin; }
 
+#labelHolder .label.panel {
+  border: none; }
+
 #targetHolder .target {
   border-radius: 2vmin; }
 
-/*****model answer*****/
+#targetHolder .highlight {
+  background: #ffffff; }
+
+#labelHolder .label.panel {
+  background: #ffffff; }
+
+#targetHolder .target.correct {
+  color: green;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.2); }
+
+a.hotspot, a.hotspot.selected {
+  background: none; }
+
+.hsinfo {
+  padding: 1%; }
+
+#dragDropHolder {
+  background: #F9BA32;
+  padding: 10px;
+  border-radius: 2vmin; }
+
 #answerTxt {
   border-radius: 2vmin; }
 
-/*****modify exercise*****/
 #pageContents textarea {
-  border-radius: 2vmin; }
-
-/*****timeline matching pairs*****/
-#targetHolder .target {
-  border-radius: 2vmin; }
-
-/***Charts Table***/
-table tr.shaded {
-  background: #F8F1E5; }
-
-table.header.shaded tr:first-child {
-  background: #426E86;
-  color: #F8F1E5; }
-
-table.header.simple tr:first-child {
-  border: none !important; }
-
-table.simple {
-  border: none; }
-
-/*****games memory*****/
-#pageContents .card {
-  border-radius: 1vmin;
-  border-color: #426E86 !important; }
-
-#cardTopHolder .card {
-  border-color: #426E86 !important; }
-
-/*****games puzzle*****/
-#puzzle {
-  border-radius: 2vmin; }
-
-/*****RSS feed page*****/
-#resultsHolder div {
-  border-radius: 2vmin; }
-
-/*****youtube feed page*****/
-#resultsHolder div {
-  width: 97% !Important;
-  min-height: 50px;
-  padding-top: 5px;
   border-radius: 2vmin;
-  background-color: #F8F1E5;
-  margin: .5em; }
+  padding: 10px; }
 
-.shadedDiv {
-  background-color: #ffffff !important;
-  border-radius: 2vmin; }
-
-/*****results page*****/
-td, th {
-  border-radius: 2vmin; }
-
-/*****Accordion page*******/
-.ui-accordion .ui-accordion-content {
-  border-radius: 1vmin;
-  background: #F9BA32; }
-
-.ui-accordion .ui-accordion-header {
-  border-radius: 1vmin;
-  background: #F8F1E5;
-  color: #ffffff !important; }
-
-.ui-accordion .ui-accordion-header a {
-  border-radius: 1vmin;
-  color: #ffffff;
-  background: #426E86 !important; }
-
-.ui-accordion .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
-  text-decoration: none;
-  background: #F9BA32 !important;
-  border-radius: 1vmin;
-  color: #2F3131 !important; }
-
-/*****sortable grid*****/
 #gridBorders {
   border-radius: 1vmin; }
 
@@ -184,10 +190,101 @@ td, th {
   border-radius: 1vmin; }
 
 #grid ul li.header {
+  color: #ffffff;
+  background: #2F3131;
   color: #ffffff !important; }
 
 table.header.shaded tr:first-child {
-  background: #426E86; }
+  background: #2F3131; }
+
+#grid ul li {
+  color: #2F3131;
+  background: grey;
+  border: none; }
+
+table tr.shaded {
+  background: #426E86;
+  color: #2F3131; }
+
+tr {
+  background: #426E86;
+  color: #ffffff; }
+
+#grid ul li.static {
+  background: none;
+  border-color: transparent; }
+
+/*****timeline matching pairs*****/
+#targetHolder .target {
+  border-radius: 2vmin; }
+
+#subMenuItems .subMenuItem {
+  background: #F9BA32;
+  color: #2F3131; }
+
+table tr.shaded {
+  background: #F8F1E5; }
+
+table.header.shaded tr:first-child {
+  background: #2F3131;
+  color: #F8F1E5; }
+
+table.header.simple tr:first-child {
+  border: none; }
+
+table.simple {
+  border: none; }
+
+#pageContents .card {
+  border-radius: 1vmin;
+  border-color: #426E86; }
+
+#cardTopHolder .card {
+  border-color: #426E86; }
+
+#puzzle {
+  border-radius: 2vmin; }
+
+#pageContents .card {
+  color: #2F3131; }
+
+#cardTopHolder .card {
+  background-image: url("card_back.svg") !important; }
+
+#resultsHolder div {
+  width: 97%;
+  min-height: 50px;
+  padding-top: 5px;
+  border-radius: 2vmin;
+  background-color: #F8F1E5;
+  margin: .5em; }
+
+.shadedDiv {
+  background-color: grey !important;
+  border-radius: 2vmin; }
+
+div#shorturltodisplay a {
+  color: #2F3131; }
+
+#resultsHolder div {
+  border-radius: 2vmin;
+  background-color: #426E86; }
+
+#resultsHolder div p {
+  color: #ffffff; }
+
+#resultsHolder div a {
+  color: darkblue; }
+
+td, th {
+  border-radius: 2vmin; }
+
+tr.alt td {
+  background-color: #F9BA32; }
+
+@media (min-width: 768px) {
+  .tick, img.result {
+    width: 2.5vmin; } }
 
 #x_footerBlock {
   font-size: 1em;
@@ -210,7 +307,6 @@ table.header.shaded tr:first-child {
 .pbBar {
   background-color: #2196F3; }
 
-/* these buttons will use font awesome icons instead of pngs */
 .ui-button .ui-icon.x_help {
   background-image: none; }
 
@@ -293,14 +389,12 @@ table.header.shaded tr:first-child {
 #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button {
   padding: 0; }
 
-/*****footer tools chevron*****/
 #x_footerChevron {
   color: #ffffff; }
 
 #x_footerChevron:hover {
   color: #F9BA32; }
 
-/*****TOC****/
 .ui-dialog .ui-widget-header {
   border: 1px solid #426E86;
   background: #F9BA32;
@@ -315,8 +409,33 @@ table.header.shaded tr:first-child {
   color: #ffffff; }
 
 #menuItems .menuItem.current {
-  border: 2px solid #2F3131; }
+  border: 2px solid #ffffff; }
 
+@media only screen and (max-width: 500px) {
+  #x_pageNo {
+    vertical-align: top;
+    text-align: center;
+    display: inline-block;
+    padding: 12px 5px 0 5px;
+    margin-right: -5px;
+    height: 30px;
+    width: auto;
+    z-index: 100;
+    font-size: 12px; }
+
+  #x_footerBlock button {
+    font-size: 1em;
+    width: 1em;
+    margin-left: 5px; }
+
+  .pbContainer {
+    display: block;
+    margin-top: 1.2em; }
+
+  .pbTxt {
+    display: block;
+    font-size: 6px;
+    text-align: center; } }
 #x_pageHolder {
   /*#infoHolder p {
     animation: fadePop 0.25s linear;
@@ -343,7 +462,6 @@ table.header.shaded tr:first-child {
     opacity: 0; }
   to {
     opacity: 1; } }
-/*****editor styles*****/
 .marker {
   font: "Varela Round", sans-serif;
   background-color: #2F3131;
@@ -384,16 +502,12 @@ q {
   border-top: 1px solid #ccc;
   color: #333;
   display: block;
-  /*margin-left:20px;
-  margin-right:20px;*/
   padding: 10px; }
 
 cite {
   font-family: "Varela Round", sans-serif;
   font-size: 14px;
   font-style: normal;
-  /*font-weight:400;
-  margin-left:20px;*/
   padding: 10px; }
 
 tt {
@@ -405,18 +519,15 @@ tt {
   font-style: normal;
   padding: 10px; }
 
-/***** scrollbars *****/
 ::-webkit-scrollbar {
   width: 12px; }
 
-/* Track */
 ::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.8);
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   -webkit-border-radius: 10px;
   border-radius: 10px; }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 10px;
   border-radius: 10px;
@@ -426,15 +537,11 @@ tt {
 ::-webkit-scrollbar-thumb:window-inactive {
   background: rgba(255, 255, 255, 0.4); }
 
-/* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
-/*You should not edit the .css files directly or change values directly unless you wish to override something*/
-/*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
 body {
   background: #F8F1E5;
   color: #2F3131;
   font-family: "Varela Round", sans-serif; }
 
-/******Fonts******/
 .ui-button .ui-button-text {
   font-family: "Varela Round", sans-serif; }
 
@@ -471,7 +578,6 @@ h3 {
   border-radius: 2vmin;
   background: #F9BA32; }
 
-/*****panel all pages with a panel*****/
 .panel {
   border-radius: 2vmin;
   background: #F9BA32;
@@ -480,11 +586,9 @@ h3 {
 .panelPage {
   padding: 1%; }
 
-/*****all images*****/
 img {
   border-radius: 2vmin; }
 
-/******@media changes******/
 @media (min-width: 1366px) {
   /*tablet and above css below here*/
   #x_mainHolder {
@@ -496,7 +600,6 @@ img {
     left: 0;
     bottom: 0;
     right: 0; } }
-/* iPads (portrait) ----------- */
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
   #x_mainHolder {
     max-width: 98%;
