@@ -46,7 +46,7 @@ h3 {
 	padding-top: $defaultpagepadding;
 	padding-left: $defaultpagepadding;
 	padding-right:$defaultpagepadding;
-	padding-bottom:$defaultpagepadding;
+	padding-bottom:10px;
 }
 #infoHolder{
   border-radius:$mediumroundedcorners;
@@ -57,6 +57,7 @@ h3 {
   border-radius: $mediumroundedcorners;
   background:$brightcolor;
   box-shadow: none;
+  border-color: $brightcolor;
 }
 .panelPage{
 	padding:1%;

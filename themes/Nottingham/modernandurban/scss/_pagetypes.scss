@@ -1,6 +1,6 @@
 //seems to be needed to minimise vertical scroll bars showing
 #x_pageHolder{
-   overflow-y:hidden;
+   /*overflow-y:hidden;*/
  }
 
 //***********************************Text*************************************
@@ -137,7 +137,7 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   color:$whiteorlightest;
 }
 .label.panel{
-  background:$brightcolor;
+  background:$lightestcolor;
   border:$brightcolor;
 }
 #categoryHolder .highlight {
@@ -193,7 +193,7 @@ a.hotspot, a.hotspot.selected {
 //*****modify exercise*****/
 #pageContents textarea {
   border-radius: $mediumroundedcorners;
-  padding: 10px;
+  //*padding: 10px;*/
 }
 //*****sortable grid*****/
 #gridBorders {
@@ -212,15 +212,15 @@ table.header.shaded tr:first-child {
 }
 #grid ul li {
   color: $mainfontcolour ; //previously didn't work without important
-  /*background:grey;*/
-  border-color:none;
+  /*background:$brightcolor;*/
+  border-color:$whiteorlightest;
 }
 table tr.shaded {
   background: $contrastcolor;
   color:$blackordarkest;
 }
 tr {
-  background: $contrastcolor;
+  background: $brightcolor;
   color:$whiteorlightest;
 }
 #grid ul li.static {
@@ -283,8 +283,11 @@ table.simple {
   margin:.5em;
 }
 .shadedDiv {
-  background-color: grey !important; //doesn't work without important
-  border-radius: $mediumroundedcorners;
+   background-color: $lightestcolor !important; //doesn't work without important
+   border-radius: $mediumroundedcorners;
+ }
+.shadedDiv p{
+  color:$blackordarkest !important;
 }
 //*****qr code******/
 div#shorturltodisplay a{
@@ -293,13 +296,13 @@ div#shorturltodisplay a{
 //*****RSS feed******/
 #resultsHolder div {
   border-radius: $mediumroundedcorners;
-  background-color: $contrastcolor;
+  background-color: $lightestcolor;
+}
+#resultsHolder div p {
+  color: $blackordarkest;
 }
 #resultsHolder .shadedDiv {
   //set via .shadedDiv above for youtube feed page
-}
-#resultsHolder div p {
-  color: $whiteorlightest;
 }
 #resultsHolder div a {
   color: darkblue;
@@ -310,6 +313,17 @@ td, th {
 }
 tr.alt td {
   background-color: $brightcolor;
+}
+tr.alt td{
+  background: $contrastcolor;
+  color:$whiteorlightest;
+}
+.details th {
+  background: $lightestcolor;
+  color: $blackordarkest;
+}
+#general_summary th {
+  background: #ffffff;//hide otherwise black line at to of summary table
 }
 //***********************************Media query/responsive changes*************************************/
 //*****change tick/cross size on all pages where used******/
