@@ -102,7 +102,7 @@
         this.showFeedBackandTrackScore = function()
         {
             var answerFeedback = "",
-                    correct = true,
+                    correct = (x_currentPageXML.getAttribute("type") == "Multiple Answer"),
                     l_options = [],
                     l_answer = [],
                     l_feedback = [],
@@ -117,8 +117,16 @@
                 var optionIndex = $(selected[i]).parent().index(),
                         selectedOption = this.optionElements[optionIndex];
 
-                correct = correct && (	(selectedOption.correct == "true" && $(selected[i]).is(':checked')) ||
-                (selectedOption.correct == "false" && !$(selected[i]).is(':checked')));
+								if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
+									correct = correct && (
+										(selectedOption.correct == "true" && $(selected[i]).is(':checked')) ||
+										(selectedOption.correct == "false" && !$(selected[i]).is(':checked'))
+									);
+								}
+								else {
+									correct |= selectedOption.correct == "true" && $(selected[i]).is(':checked');
+                }
+
                 if ($(selected[i]).is(':checked')) {
                     answerFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback) + "</p>";
 					if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {

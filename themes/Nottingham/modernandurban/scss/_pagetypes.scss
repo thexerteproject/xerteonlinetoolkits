@@ -1,15 +1,49 @@
-/*****menu connector*****/
-#subMenuItems .subMenuItem {
+//seems to be needed to minimise vertical scroll bars showing
+#x_pageHolder{
+   overflow-y:hidden;
+ }
+
+//***********************************Text*************************************
+//*****title page******
+.titlePageTxt {
+  //*without reducing the width here horizontal scroll bars show when the theme selected isn't 100% width*/
+  width:98% !important;
+  overflow: hidden;
+}
+//***********************************Media*************************************
+//*****multiple perspectives******
+#thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3{
+  /*font-size:1.6vmin;*/
+  color: $darkestcolor;
+}
+//*****transcript reader******/
+.highlight {
   background: $brightcolor;
-  color:$darkestcolor;
 }
-.ui-icon-carat-1-e {
+//***********************************Navigators*************************************/
+//*****Accordion page*******/
+.ui-accordion .ui-accordion-content {
+  border-radius: $smallroundedcorners;
+  background: $brightcolor;
+  color:$blackordarkest;
+}
+.ui-accordion .ui-accordion-header {
+  border-radius: $smallroundedcorners;
+  background: $contrastcolor;
   color:#ffffff;
 }
-.ui-icon-carat-1-w {
-  color:#ffffff;
+.ui-accordion .ui-accordion-header a {
+  border-radius: $smallroundedcorners;
+  color: $whiteorlightest !important; //doesn't work without important
+  background: $contrastcolor;
 }
-/*****button navigator*****/
+.ui-accordion .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+  text-decoration: none;
+  background: $lightestcolor;
+  border-radius: $smallroundedcorners;
+  color: $blackordarkest;
+}
+//*****button navigator*****/
 .ui-button {
   border-radius: $smallroundedcorners;
   background: $contrastcolor;
@@ -26,13 +60,44 @@
   border: none;
   color: $darkestcolor;
 }
-
-/****tabbed navigator****/
+//***Flash cards***/
+.front.panel{
+  background:$contrastcolor;
+  border:$contrastcolor;
+  color:$whiteorlightest;
+}
+.back.panel{
+  background:$brightcolor;
+  border:$brightcolor;
+  color:$blackordarkest;
+}
+//*****hyperlinks******/
+#linkHolder a{
+  color:$darkestcolor;
+}
+//*****navigator*****/
+#pageContents.button button.selected {
+  background-color: $lightestcolor;
+}
+#pageContents.slide #btnHolder button {
+  background: $contrastcolor;
+  border-color: $contrastcolor;
+}
+//****tabbed navigator****/
 .ui-tabs .ui-tabs-nav li {
   border-radius: $smallroundedcorners;
   background: $contrastcolor;
   border:none;
   color:$fontcolorforcontrastcolor;
+}
+.paneInfo{
+  /*color:$fontcolorfobrightcolor;*/
+}
+.paneList a, .paneList a:link, .paneList a:visited{
+  /*color: $linkcolor !important;*/
+}
+.ui-tabs-panel a:link, /*.ui-accordion-content a:link*/ {
+  /*color: $linkcolor;*/
 }
 .ui-tabs .ui-tabs-nav {
   border-radius: $smallroundedcorners;
@@ -44,130 +109,93 @@
 }
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
   text-decoration: none;
-  background: $lightestcolor;
-  color:$fontcolorfobrightcolor !important;
+  background: $darkestcolor;
+  color:$fontcolorfobrightcolor;
   border-radius: $smallroundedcorners;
 }
 
-/***Flash cards***/
-.front.panel{
-  background:$lightestcolor;
+a.topic.highlight {
+  background: $brightcolor;
 }
-.back.panel{
+a.topic.highlight:hover {
+  color:$darkestcolor;
+}
+div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   background:$brightcolor;
 }
-
-/*****categories*****/
+//***********************************Interactivity*************************************/
+//*****annotated diagram******/
+#listholder a.listitem, a:visited {
+  color:$contrastcolor ; //removed !important didn't work without important
+}
+//*****categories*****/
 #categoryHolder .category {
   border-radius: $mediumroundedcorners;
+  /*color:$whiteorlightest;*/
 }
-.highlight {
+#categoryHolder h3 {
+  color:$whiteorlightest;
+}
+.label.panel{
+  background:$brightcolor;
+  border:$brightcolor;
+}
+#categoryHolder .highlight {
   border-radius: $smallroundedcorners;
-  background: $lightestcolor;
+  background: $contrastcolor;
 }
-/*****dialogue*****/
+//*****dialogue*****/
 #pageContents .question input {
   border-radius: $smallroundedcorners;
 }
-/*****Dictation*****/
+//*****Dictation*****/
 #answerTxt {
   width: 100%;
   margin-bottom: 10px;
   border-radius: $mediumroundedcorners;
 }
-
+//*****gap fill*****/
+#labelHolder .label.panel {
+  border: none;
+}
 #targetHolder .target {
   border-radius: $mediumroundedcorners;
 }
+#targetHolder .highlight {
+  background:$whiteorlightest;
+}
+#labelHolder .label.panel {
+  background: $whiteorlightest;
+}
+#targetHolder .target.correct{
+  color:green;
+  font-weight:bold;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+//*****hotspot image*****/
+a.hotspot, a.hotspot.selected {
+  background: none;
+}
+.hsinfo{
+  padding:1%;
+}
+//*********matching texts*********/
+#dragDropHolder {
+  background: $brightcolor;
+  padding:10px;
+  border-radius: $mediumroundedcorners;
+}
 
-/*****model answer*****/
+//*****model answer*****/
 #answerTxt {
   border-radius: $mediumroundedcorners;
 }
-/*****modify exercise*****/
+//*****modify exercise*****/
 #pageContents textarea {
   border-radius: $mediumroundedcorners;
+  padding: 10px;
 }
-
-/*****timeline matching pairs*****/
-#targetHolder .target {
-  border-radius: $mediumroundedcorners;
-}
-
-/***Charts Table***/
-table tr.shaded {
-  background: $lightestcolor;
-}
-table.header.shaded tr:first-child {
-  background: $contrastcolor;
-  color:$fontcolorforcontrastcolor;
-}
-table.header.simple tr:first-child {
-  border:none !important;
-}
-table.simple {
-  border: none;
-}
-
-/*****games memory*****/
-#pageContents .card {
-  border-radius: $smallroundedcorners;
-  border-color: $contrastcolor !important;
-}
-#cardTopHolder .card{
-  border-color: $contrastcolor !important;
-}
-/*****games puzzle*****/
-#puzzle {
-  border-radius: $mediumroundedcorners;
-}
-/*****RSS feed page*****/
-#resultsHolder div {
-  border-radius: $mediumroundedcorners;
-}
-
-/*****youtube feed page*****/
-#resultsHolder div {
-  width:97% !Important;
-  min-height: 50px;
-  padding-top: 5px;
-  border-radius: $mediumroundedcorners;
-  background-color: $lightestcolor;
-  margin:.5em;
-}
-.shadedDiv {
-  background-color: #ffffff !important;
-  border-radius: $mediumroundedcorners;
-}
-
-/*****results page*****/
-td, th {
-  border-radius: $mediumroundedcorners;
-}
-
-/*****Accordion page*******/
-.ui-accordion .ui-accordion-content {
-  border-radius: $smallroundedcorners;
-  background: $brightcolor;
-}
-.ui-accordion .ui-accordion-header {
-  border-radius: $smallroundedcorners;
-  background: $lightestcolor;
-  color:#ffffff !important;
-}
-.ui-accordion .ui-accordion-header a {
-  border-radius: $smallroundedcorners;
-  color: #ffffff;
-  background: $contrastcolor !important;
-}
-
-.ui-accordion .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
-  text-decoration: none;
-  background: $brightcolor !important;
-  border-radius: $smallroundedcorners;
-  color: $darkestcolor !important;
-}
-/*****sortable grid*****/
+//*****sortable grid*****/
 #gridBorders {
   border-radius: $smallroundedcorners;
 }
@@ -175,8 +203,122 @@ td, th {
   border-radius: $smallroundedcorners;
 }
 #grid ul li.header {
-  color: $whiteorlightest !important;
+  color: $whiteorlightest ; //previously didn't work without important
+  background:$darkestcolor;
+  color:$whiteorlightest !important;
 }
 table.header.shaded tr:first-child {
-  background: $contrastcolor;
+  background: $darkestcolor;
 }
+#grid ul li {
+  color: $mainfontcolour ; //previously didn't work without important
+  background:grey;
+  border:none;
+}
+table tr.shaded {
+  background: $contrastcolor;
+  color:$blackordarkest;
+}
+tr {
+  background: $contrastcolor;
+  color:$whiteorlightest;
+}
+#grid ul li.static {
+  background: none;
+  border-color: transparent;
+}
+/*****timeline matching pairs*****/
+#targetHolder .target {
+  border-radius: $mediumroundedcorners;
+}
+//***********************************Connectors*************************************/
+//*****menu connector*****/
+#subMenuItems .subMenuItem {
+  background: $brightcolor;
+  color:$darkestcolor;
+}
+//***********************************Charts*************************************/
+//***Charts Table***/
+table tr.shaded {
+  background: $lightestcolor;
+}
+table.header.shaded tr:first-child {
+  background: $blackordarkest;
+  color:$fontcolorforcontrastcolor;
+}
+table.header.simple tr:first-child {
+  border:none;
+}
+table.simple {
+  border: none;
+}
+//***********************************Games*************************************/
+//*****games memory*****/
+#pageContents .card {
+  border-radius: $smallroundedcorners;
+  border-color: $contrastcolor;
+}
+#cardTopHolder .card{
+  border-color: $contrastcolor;
+}
+//*****games puzzle*****/
+#puzzle {
+  border-radius: $mediumroundedcorners;
+}
+//*****memory******/
+#pageContents .card {
+  color: $darkestcolor;
+}
+#cardTopHolder .card {
+  background-image: url('card_back.svg') !important; //doesn't work without important
+}
+//***********************************Misc*************************************/
+//*****youtube feed page*****/
+#resultsHolder div {
+  width:97%;
+  min-height: 50px;
+  padding-top: 5px;
+  border-radius: $mediumroundedcorners;
+  background-color: $lightestcolor;
+  margin:.5em;
+}
+.shadedDiv {
+  background-color: grey !important; //doesn't work without important
+  border-radius: $mediumroundedcorners;
+}
+//*****qr code******/
+div#shorturltodisplay a{
+  color:$darkestcolor;
+}
+//*****RSS feed******/
+#resultsHolder div {
+  border-radius: $mediumroundedcorners;
+  background-color: $contrastcolor;
+}
+#resultsHolder .shadedDiv {
+  //set via .shadedDiv above for youtube feed page
+}
+#resultsHolder div p {
+  color: $whiteorlightest;
+}
+#resultsHolder div a {
+  color: darkblue;
+}
+//*****results page*****/
+td, th {
+  border-radius: $mediumroundedcorners;
+}
+tr.alt td {
+  background-color: $brightcolor;
+}
+//***********************************Media query/responsive changes*************************************/
+//*****change tick/cross size on all pages where used******/
+.tick, img.result{
+  @media (min-width: 768px) {
+    width: 2.5vmin;
+  }
+}
+
+
+
+

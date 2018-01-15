@@ -19,7 +19,7 @@
 .pbBar {
   background-color: $progressBarColor;
 }
-/* these buttons will use font awesome icons instead of pngs */
+//* these buttons will use font awesome icons instead of pngs */
 .ui-button .ui-icon.x_help { background-image: none; }
 .ui-button .ui-icon.x_info { background-image: none; }
 .ui-button .ui-icon.x_home { background-image: none; }
@@ -59,7 +59,7 @@
 #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button {
   padding: 0;
 }
-/*****footer tools chevron*****/
+//*****footer tools chevron*****/
 #x_footerChevron {
   color: $whiteorlightest;
 }
@@ -67,7 +67,7 @@
   color: $brightcolor;
 }
 
-/*****TOC****/
+//*****TOC****/
 .ui-dialog .ui-widget-header {
   border: 1px solid $contrastcolor;
   background: $brightcolor;
@@ -82,5 +82,36 @@
   color:$whiteorlightest;
 }
 #menuItems .menuItem.current {
-  border: 2px solid $darkestcolor;
+  border: 2px solid $defaultpagebackground;
 }
+
+//******** Smartphones (portrait) - change progress bar display for small screen-----------*/
+@media only screen
+and (max-width :500px) {
+  #x_pageNo {
+    vertical-align: top;
+    text-align: center;
+    display: inline-block;
+    padding: 12px 5px 0 5px;
+    margin-right: -5px;
+    height: 30px;
+    width: auto;
+    z-index: 100;
+    font-size: 12px;
+  }
+  #x_footerBlock button {
+    font-size: 1em;
+    width: 1em;
+    margin-left: 5px;
+  }
+  .pbContainer {
+    display:block;
+    margin-top: 1.2em;
+  }
+  .pbTxt {
+    display:block;
+    font-size: 6px;
+    text-align: center;
+  }
+}
+//----------------end of smartphones portrait---------------------------------

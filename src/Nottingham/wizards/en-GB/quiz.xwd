@@ -57,7 +57,7 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
 
     <newNodes>
-      <question><![CDATA[<question prompt="Enter question" name="Q - Tree/Tracking label" type="Single Answer" />]]></question>
+      <question><![CDATA[<question prompt="Enter question" name="Question" type="Single Answer" />]]></question>
 	</newNodes>
 	
   </quiz>
@@ -66,7 +66,7 @@
 
 
     <prompt label="Question" type="TextArea"  height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Q - Tree/Tracking label" wysiwyg="false" />
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" />
     <type label="Question Type" options="Single Answer,Multiple Answer"  type="ComboBox"  data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120" />
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
 	
@@ -78,14 +78,14 @@
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>
-      <option><![CDATA[<option text="Enter option" name="A - Tree/Tracking label" feedback="Feedback for this option" correct="false"/>]]></option>
+      <option><![CDATA[<option text="Enter option" name="Answer" feedback="Feedback for this option" correct="false"/>]]></option>
     </newNodes>
 
   </question>
 
   <option menuItem="Answer" icon="icBullet">
     <text label="Answer" type="TextArea"  height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="A - Tree/Tracking label" wysiwyg="false"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
     <feedback label="Feedback" type="TextArea"  height="100"/>
     <correct label="Correct" options="True,False" type="ComboBox"  data="true,false" defaultValue="false" width="100" />
 	<audioFB label="Audio Feedback" defaultValue="Select a Sound File" type="media" optional="true" />

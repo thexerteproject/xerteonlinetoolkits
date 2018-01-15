@@ -169,7 +169,7 @@
 		
 	define("PROPERTIES_LIBRARY_ACCESS_OTHER", "Other");
 		
-	define("PROPERTIES_LIBRARY_ACCESS_OTHER_EXPLAINED", "Using this setting restricts access to your content. Your content will only be visible to people following links to your content from the site you provide. Enter the site URL below.");
+	define("PROPERTIES_LIBRARY_ACCESS_OTHER_EXPLAINED", "Using this setting restricts access to your content. Your content will only be visible to people following links to your content from the sites you provide. Enter the site URLs below, separating individual URLs with commas.");
 		
 	define("PROPERTIES_LIBRARY_ACCESS_PRIVATE", "Private");
 		

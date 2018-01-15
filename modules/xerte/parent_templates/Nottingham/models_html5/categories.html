@@ -52,7 +52,7 @@
                 l_correct=0;
 
             $("#dragDropHolder .tick").remove();
-            $("#feedback").show();
+			
             $("#categoryHolder .category .label").each(function() {
                 var $this = $(this);
                 var l_answer, l_option = {};
@@ -77,8 +77,13 @@
                 }
 				l_options.push(l_option);
             });
-            XTExitInteraction(x_currentPage, 0, (l_correct == this.totaloptions), l_options, l_answers, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
-            XTSetPageScore(x_currentPage, (l_correct * 100.0)/this.totaloptions, x_currentPageXML.getAttribute("trackinglabel"));
+
+			$("#scoreTxt").html(l_correct);
+			$("#totalTxt").html(this.totaloptions);
+			$("#feedback").show();
+			
+            XTExitInteraction(x_currentPage, 0, (l_correct == this.totaloptions), l_options, l_answers, l_feedback);
+            XTSetPageScore(x_currentPage, (l_correct * 100.0)/this.totaloptions);
             this.checked = true;
         }
 
@@ -112,13 +117,15 @@
 				.addClass("transparent"); /* without the text having a bg the labels strangely aren't selectable in IE */
 			
 			var $feedback = $("#feedback");
-			if (x_currentPageXML.getAttribute("feedback") == undefined || x_currentPageXML.getAttribute("feedback") == "") {
-				$feedback.remove();
-			} else {
-				$feedback
-					.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
-					.hide();
+			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
+				$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 			}
+			if (x_currentPageXML.getAttribute("feedbackScore") != undefined && x_currentPageXML.getAttribute("feedbackScore") != "") {
+				$feedback.append('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedbackScore").replace("{i}", '<span id="scoreTxt"></span>').replace("{n}", '<span id="totalTxt"></span>')) + '</p>');
+			} else if ($feedback.html().length == 0) {
+				$feedback.remove();
+			}
+			$feedback.hide();
 			
 			// buttonWidth attribute not used as button will be sized automatically
 			var buttonLabel = x_currentPageXML.getAttribute("buttonLabel");

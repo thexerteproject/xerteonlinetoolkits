@@ -6,7 +6,11 @@
 		<name type="TextInput" label="Learning Object Title"/>
 		<theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default"/>
 		
-		<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition" optional="true"/>
+		<glossaryGroup type="group" label="Glossary" optional="true">
+			<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition" optional="true"/>
+			<glossaryHover label="Show Definition on Hover" type="Checkbox" defaultValue="true" optional="true"/>
+			<glossaryPage type="ComboBox" data="none,first,last" options="None,First Page,Last Page" optional="true" label="Glossary Page" defaultValue="none" width="175"/>
+		</glossaryGroup>
 		
 		<headerGroup type="group" label="Header" optional="true">
 			<header type="Media" optional="true" label="Image"/>
@@ -16,6 +20,8 @@
 			<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
 			<logoR type="Media" optional="true" label="Logo (Right)"/>
 			<logoL type="Media" optional="true" label="Logo (Left)"/>
+			<logoRHide label="Hide Default Logo (Right)" type="Checkbox" defaultValue="false" optional="true"/>
+			<logoLHide label="Hide Default Logo (Left)" type="Checkbox" defaultValue="false" optional="true"/>
             <headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
 		</headerGroup>
         
@@ -41,7 +47,7 @@
 		
         <footerGroup type="group" label="Footer" optional="true">
             <footerHide label="Hide Footer" type="Checkbox" defaultValue="false" optional="true"/>
-            <customFooter type="TextArea" height="60" label="Add custom footer content here"/>
+            <customFooter type="TextArea" height="60" label="Custom Footer Content"/>
 			<footerPos type="ComboBox" data="above,below,replace" options="Above Social Icons,Below Social Icons,Replace Social Icons" optional="true" label="Custom Footer Position" defaultValue="above" width="175"/>
             <footerColour type="ColourPicker" optional="true" label="Footer Background Colour"/>
 		</footerGroup>
@@ -51,7 +57,6 @@
 		<styles type="script" height="200" optional="true" label="Styles"/>
 		<script type="script" height="200" optional="true" label="Script" defaultValue="// JavaScript / jQuery"/>
 		<authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
-		<!--<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition" optional="true"/>-->
 		
 		<newNodes>
 		<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page></newNodes>
@@ -66,7 +71,13 @@
 			<section><![CDATA[<section name="Enter Section Title"/>]]></section>
 		</newNodes>
 
-	<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true" common="true"/></page><section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
+	<headerGroup type="group" label="Header" optional="true" common="true">
+		<header type="Media" optional="true" label="Image"/>
+		<headerPos type="ComboBox" data="left,center,right" options="Left,Centre,Right" optional="true" label="Image Position" defaultValue="left" width="175"/>
+		<headerRepeat type="ComboBox" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" label="Image Repeat" defaultValue="repeat" width="175"/>
+		<headerColour type="ColourPicker" optional="true" label="Background Colour"/>
+		<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
+	</headerGroup><hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true" common="true"/></page><section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
 
 		<name type="TextInput" label="Section Title" wysiwyg="true"/>
 		

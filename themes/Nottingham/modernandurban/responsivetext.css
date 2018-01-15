@@ -1,12 +1,4 @@
-/*previously 8vmin*/
-/*previously 5vmin*/
-/*previously 3vmin*/
-/*previously 2.5vmin*/
-/*previously 1.2vmin*/
-/*previously 8vmin*/
-/* --@media TABLETS and above-------------------------------------------------------------- */
 @media (min-width: 768px) {
-  /*--start of text size changes-----------------------------------------*/
   p {
     font-size: 2.5vmin; }
 
@@ -32,22 +24,18 @@
     font-size: 2.5vmin; }
 
   .splitScreen {
-    /*possibly better slightly smaller than other text e.g. 2.5vmin*/
     font-size: 2.5vmin; }
 
   #linkHolder .panel.linkBlock {
-    /*better slightly smaller than other text*/
     font-size: 2vmin; }
 
   .topic {
-    /*possibly better slightly smaller than other text e.g. 2.5vmin*/
     font-size: 2.5vmin; }
 
   #optionHolder {
     font-size: 2.5vmin; }
 
   .listItem {
-    /*possibly better slightly smaller than other text e.g. 2.5vmin*/
     font-size: 2.5vmin; }
 
   #categoryHolder {
@@ -66,6 +54,9 @@
     font-size: 2.5vmin; }
 
   #pageContents .question input {
+    font-size: 2.5vmin; }
+
+  #pageContents #mainText {
     font-size: 2.5vmin; }
 
   #labelHolder {
@@ -94,7 +85,6 @@
 
   #targetHolder .target {
     font-size: 2vmin;
-    /*remove padding in gap fill targets*/
     padding: 0.6vmin !important; }
 
   #targetHolder p {
@@ -119,35 +109,28 @@
     font-size: 2vmin; }
 
   .ui-accordion .ui-accordion-header a {
-    /*possibly better slightly smaller than other text e.g. 2.5vmin*/
     font-size: 2.5vmin; }
 
   .ui-button-text-only .ui-button-text {
-    /*reduce padding inside buttons e.g. zoom, submit, check etc*/
     padding: .1em 1em; }
 
   .ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
     padding: .1em; }
 
   #slideTxt {
-    /*possibly better slightly smaller than other text e.g. 2.5vmin*/
     font-size: 2.5vmin; }
 
   .ui-tabs .ui-tabs-nav li a {
-    /*possibly better slightly smaller than other text e.g. 2.5vmin*/
     font-size: 2.5vmin;
-    /*reduce padding in tabnave buttons*/
     padding: .4em .4em; }
 
   .ui-button-text-only .ui-button-text, .ui-button-text-icon-secondary .ui-button-text {
-    /*possibly better slightly smaller than other text e.g. 2.5vmin*/
     font-size: 2.5vmin; }
 
   .ui-button-text-icon-secondary .ui-button-text {
     padding-right: 1.2em; }
 
   #resultsHolder div p, #resultsHolder div a {
-    /*possibly better slightly smaller than other text e.g. 2.5vmin*/
     font-size: 2.5vmin; }
 
   #optionHolder input {
@@ -173,13 +156,36 @@
   .ui-dialog {
     font-size: 2.5vmin; }
 
-  /*--end of text size changes-----------------------------------------*/ }
-/*--end of TABLETS and above-----------------------------------------*/
-/*--other @media queries not used or disabled at moment-----------------------------------------*/
-/* --LARGE DESKTOP-------------------------------------------------------------- */
-/* --DESKTOP-------------------------------------------------------------- */
-/* --TABLETS TO DESKTOPS-------------------------------------------------------------- */
-/* --TABLETS-------------------------------------------------------------- */
-/* --LANDSCAPE PHONES-------------------------------------------------------------- */
+  #grid ul li {
+    font-size: 2vmin; }
+
+  #thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3 {
+    font-size: 1.5vmin; } }
+@media only screen and (max-width: 500px) {
+  #x_pageNo {
+    vertical-align: top;
+    text-align: center;
+    display: inline-block;
+    padding-top: 12px;
+    padding-right: 5px;
+    padding-bottom: 0px;
+    padding-left: 5px;
+    margin-right: -5px;
+    height: 30px;
+    width: auto;
+    z-index: 100;
+    font-size: 12px; }
+
+  #x_footerBlock button {
+    font-size: 1em;
+    width: 1em;
+    margin-left: 5px; }
+
+  .pbContainer {
+    margin-top: 1.2em; }
+
+  .pbTxt {
+    font-size: 6px;
+    text-align: center; } }
 
 /*# sourceMappingURL=responsivetext.css.map */

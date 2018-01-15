@@ -32,6 +32,9 @@ if(is_user_admin()){
 
     $res =db_query($query, $params);
     if($res) {
+        $msg = "User changes saved by user from " . $_SERVER['REMOTE_ADDR'];
+        receive_message("", "SYSTEM", "MGMT", "Changes saved", $msg);
+
         echo USERS_UPDATE_SUCCESS;
     }else{
         echo USERS_UPDATE_FAIL;

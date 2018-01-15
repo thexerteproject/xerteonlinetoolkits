@@ -34,5 +34,7 @@
 
     define("IMPORT_FAILED", "Import failed with a generic error. Is the file too large?");
 
+    define("IMPORT_CHECKS_FAILED", "Checks on the imported files have failed");
+
 
 ?>

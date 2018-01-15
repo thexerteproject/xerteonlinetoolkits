@@ -46,7 +46,7 @@ function database_setup($database_location) {
         $bits = explode(';', $schema);
         foreach ($bits as $bit) {
             $bit = trim($bit);
-            if(empty($bit)) {
+            if(strlen($bit) > 1) {
                 continue;
             }
             _debug("Db setup : About to run - $bit");
@@ -64,7 +64,7 @@ function database_setup($database_location) {
 
         foreach ($bits as $bit) {
             $bit = trim($bit);
-            if(empty($bit)) {
+            if(strlen($bit) > 1) {
                 continue;
             }
             $ok = $db->query($bit);

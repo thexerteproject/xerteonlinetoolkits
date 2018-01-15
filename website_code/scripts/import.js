@@ -94,6 +94,28 @@ function iframe_check(){
 
 	if(window["upload_iframe"].document.body.innerHTML!=""){
 
+		var string = document.getElementById("submitbutton").innerHTML;
+
+		if (string.indexOf('fa-spin') != -1) {
+			var found = false;
+
+			// We have received a reply and found a spinner, so replace the spinner with the default button icon.
+			if (typeof IMPORT_BUTTON_IMPORTING !== 'undefined' && string.indexOf('</i> ' + IMPORT_BUTTON_IMPORTING) != -1) {
+				found = true;
+				string = string.replace('<i class="fa fa-spinner fa-spin"></i> ' + IMPORT_BUTTON_IMPORTING, '<i class="fa fa-upload"></i> ' + IMPORT_BUTTON_IMPORT);
+			}
+			else if (typeof WORKSPACE_UPLOADING !== 'undefined' && string.indexOf('</i> ' + WORKSPACE_UPLOADING) != -1) {
+				found = true;
+				string = string.replace('<i class="fa fa-spinner fa-spin"></i> ' + WORKSPACE_UPLOADING, '<i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD);
+			}
+
+			if (found) {
+				document.getElementById('submitbutton').innerHTML = string;
+				document.getElementById('submitbutton').disabled = false;
+//				document.getElementById('importpopup').reset();
+			}
+		}
+
 		if(window["upload_iframe"].document.body.innerHTML.indexOf("****")!=-1){
 
 			clearInterval(iframe_interval);
@@ -346,4 +368,21 @@ function import_template(){
 
 	}
 	
+}
+
+
+
+/*
+ * This function will replace the default icon on the media and quota
+ * import button with a spinner icon. The 'iframe_check' function above
+ * will remove the spinner when required.
+ */
+
+function load_media_spinner(this1) {
+
+	this1.disabled = true;
+
+	var string = this1.innerHTML;
+	string = string.replace('<i class="fa fa-upload"></i> ' + IMPORT_BUTTON_IMPORT, '<i class="fa fa-spinner fa-spin"></i> ' + IMPORT_BUTTON_IMPORTING);
+	this1.innerHTML = string;
 }

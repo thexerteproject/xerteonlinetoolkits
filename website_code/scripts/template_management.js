@@ -1009,7 +1009,11 @@ function remove_this(){
             for(var i=0; i<ids.length; i++)
             {
                 var node = workspace.nodes[ids[i]];
-                if(node.xot_type=="file"){
+
+                if (ids[i] == workspace.workspace_id) {
+                    continue;
+                }
+                else if(node.xot_type=="file"){
                     if(node.parent==workspace.recyclebin_id){
                         var answer = confirm(DELETE_PERMENANT_PROMPT + " - " + node.text);
                         if(answer){

@@ -329,29 +329,50 @@ if($lti->valid) {
 } else if (substr($row_play['access_to_whom'], 0, 5) == "Other") {
 
     /*
-     * The Other attribute has been set - so break the string down to obtain the host
+     * The Other attribute has been set - so break the string down to obtain the host - this can now be a comma separated list to allow for more than one referrer
      */
 
     $test_string = substr($row_play['access_to_whom'], 6, strlen($row_play['access_to_whom']));
+	
     _debug("'Other' security is active for '" . $test_string . "', the current referrer is: '" . $_SERVER['HTTP_REFERER'] . "'");
+	
+	$test_string = explode(",", $test_string);
+	
     /*
      * Can only check against this variable, if I can't find it (say pop ups) no choice but to fail
      */
 
     if (strlen($_SERVER['HTTP_REFERER']) != 0) {
+		
+		$ok = false;
+		
+		foreach($test_string as $item) {
+			
+			if (strpos($_SERVER['HTTP_REFERER'], $item) === 0) {
+			
+				$ok = true;
+				
+				db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
-        if (strpos($_SERVER['HTTP_REFERER'], $test_string) == 0) {
-
-            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
-
-            show_template($row_play);
-
-        } else {
+				show_template($row_play);
+				
+				break;
+				
+			}
+		}
+		
+		if ($ok == false) {
+			
             dont_show_template('Doesnt Match Referer:' . $_SERVER['HTTP_REFERER']);
+			
         }
+		
     } else {
+		
       dont_show_template('No HTTP Referer');
+	  
     }
+	
 } else if (sizeof($query_for_security_content_response) > 0) {
 
     /*

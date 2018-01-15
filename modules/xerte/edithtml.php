@@ -150,7 +150,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 		}
 		array_multisort($display_name, SORT_ASC, $ThemeList);
 		// Add default theme to beginning
-		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => ""));
+		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => $xerte_toolkits_site->site_url . "modules/xerte/parent_templates/Nottingham/common_html5/default.jpg"));
     }
     /**
      * sort of the screen sies required for the preview window

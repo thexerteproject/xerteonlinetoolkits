@@ -40,19 +40,26 @@ class Xerte_Validate_FileMimeType {
      */
     public function isValid($file_name) {
         $this->messages = array();
+
         if(self::canRun()) {
-            if(file_exists($file_name)) {
+            if(!$file_name) {
+                $this->messages['FILE_NO_FILE'] = "No file selected";
+            }
+            elseif(file_exists($file_name)) {
                 $mime_type = mime_content_type($file_name);
                 if(in_array($mime_type, self::$allowableMimeTypeList)) {
                     return true;
                 }
-                $this->messages['INVALID_MIME_TYPE'] = "$mime_type is not in list of allowable types";
+                $this->messages['INVALID_MIME_TYPE'] = "MIME type $mime_type is not an allowed type";
             }
-            $this->messages['FILE_NOT_FOUND'] = "File not found - $file_name";
+            else {
+                $this->messages['FILE_NOT_FOUND'] = "File not found - $file_name";
+            }
         }
         else {
             $this->messages['UNSUPPORTED'] = "Can't run - function: mime_content_type not found";
         }
+
         return false;
     }
 
