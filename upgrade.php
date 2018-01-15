@@ -582,6 +582,21 @@ function upgrade_11()
     {
         $message .= "Tsugi xapi secret field already exists - ok ? true <br>";
     }
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_student_id_mode')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_student_id_mode', 'int(1)', '0', 'tsugi_xapi_secret');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        $message .= "Tsugi xapi student id mode field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        $message .= "Tsugi xapi student id mode field already exists - ok ? true <br>";
+    }
     return $message;
 
 }

@@ -182,6 +182,7 @@ CREATE TABLE `$templatedetails` (
   `tsugi_xapi_endpoint` text,
   `tsugi_xapi_key` text,
   `tsugi_xapi_secret` text,
+  `tsugi_xapi_student_id_mode` int DEFAULT 0,
   PRIMARY KEY (`template_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

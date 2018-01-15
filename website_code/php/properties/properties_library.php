@@ -905,6 +905,27 @@ function tsugi_display($id, $lti_def, $mesg = "")
             <label for="tsugi_xapi_endpoint"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_ENDPOINT; ?></label><input type="text" name="tsugi_xapi_endpoint" value="<?php echo $lti_def->xapi_endpoint;?>"><br>
             <label for="tsugi_xapi_username"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USERNAME; ?></label><input type="text" name="tsugi_xapi_username" value="<?php echo $lti_def->xapi_username;?>"><br>
             <label for="tsugi_xapi_password"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_PASSWORD; ?></label><input type="text" name="tsugi_xapi_password" value="<?php echo $lti_def->xapi_password;?>"><br>
+            <label for="tsugi_xapi_student_id_mode"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE; ?></label><select name="tsugi_xapi_student_id_mode">
+                <?php
+                for ($i=0; $i<3; $i++)
+                {
+                     echo "<option value=\"" . $i . "\" " . ($i == $lti_def->xapi_student_id_mode ? "selected>" : ">");
+                     switch($i)
+                     {
+                         case 0:
+                             echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_0;
+                             break;
+                         case 1:
+                             echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_1;
+                             break;
+                         case 2:
+                             echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_2;
+                             break;
+                     }
+                     echo "</option>\n";
+                }
+                ?>
+            </select><br>
         </div>
         <input type="button" value="<?php echo PROPERTIES_LIBRARY_TSUGI_UPDATE_BUTTON_LABEL; ?>" class="xerte_button" onclick="javascript:lti_update(<?php echo $id;?>)">
     </div>

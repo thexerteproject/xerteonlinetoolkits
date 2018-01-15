@@ -229,6 +229,14 @@
 
 	define("PROPERTIES_LIBRARY_TSUGI_XAPI_PASSWORD", "xAPI LRS password/secret:");
 
+	define("PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE", "xAPI LRS student id mode:");
+
+	define("PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_0", "e-mail address");
+
+	define("PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_1", "hashed e-mail address");
+
+	define("PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_2", "full name and e-mail address");
+
 	define("PROPERTIES_LIBRARY_TSUGI_UPDATE_BUTTON_LABEL", "Update");
 
 	define("PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL", "Your LTI launch url is:");

@@ -27,6 +27,8 @@ $lti_def->url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" 
 $lti_def->xapi_endpoint = (isset($_POST["tsugi_xapi_endpoint"]) ? htmlspecialchars($_POST["tsugi_xapi_endpoint"]) : "");
 $lti_def->xapi_username = (isset($_POST["tsugi_xapi_username"]) ? htmlspecialchars($_POST["tsugi_xapi_username"]) : "");
 $lti_def->xapi_password = (isset($_POST["tsugi_xapi_password"]) ? htmlspecialchars($_POST["tsugi_xapi_password"]) : "");
+$lti_def->xapi_student_id_mode = (isset($_POST["tsugi_xapi_student_id_mode"]) ? $_POST["tsugi_xapi_student_id_mode"] : "");
+
 
 $PDOX = LTIX::getConnection();
 $p = $CFG->dbprefix;
@@ -134,7 +136,7 @@ $params = array(
     ':path' => $lti_def->url
 );
 $link = $PDOX->queryDie($sql, $params);
-$sql = "UPDATE {$p}templatedetails SET tsugi_published = ?, tsugi_xapi_enabled = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ? WHERE template_id = ?";
+$sql = "UPDATE {$p}templatedetails SET tsugi_published = ?, tsugi_xapi_enabled = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ? WHERE template_id = ?";
 db_query($sql,
     array(
         $lti_def->published ? "1" : "0",
@@ -142,6 +144,7 @@ db_query($sql,
         $lti_def->xapi_enabled ? $lti_def->xapi_endpoint : "",
         $lti_def->xapi_enabled ? $lti_def->xapi_username : "",
         $lti_def->xapi_enabled ? $lti_def->xapi_password : "",
+        $lti_def->xapi_enabled ? $lti_def->xapi_student_id_mode : "0",
         $template_id
     )
 );
