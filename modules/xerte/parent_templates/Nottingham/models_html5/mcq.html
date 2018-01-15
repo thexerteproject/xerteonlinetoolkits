@@ -88,7 +88,7 @@
             // Create fallback label
             var questionTxt = (x_currentPageXML.getAttribute('questionTxt') != undefined ? x_currentPageXML.getAttribute('questionTxt') : "Multiple choice question");
             questionTxt += ' ' + (x_currentPage+1);
-            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), questionTxt), correctOptions, correctAnswer, correctFeedback);
+            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), questionTxt), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
         }
 
         this.leavePage = function() {
@@ -197,8 +197,8 @@
             // Queue reparsing of MathJax - fails if no network connection
             try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 
-            XTExitInteraction(x_currentPage, 0, correct, l_options, l_answer, l_feedback);
-            XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0));
+            XTExitInteraction(x_currentPage, 0, correct, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
+            XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
             if (XTGetMode() == "normal")
             {
                 // Disable all options

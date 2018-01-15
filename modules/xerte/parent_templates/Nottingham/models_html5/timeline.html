@@ -306,7 +306,7 @@
 					correct = true;
 				}
 				
-				XTExitInteraction(x_currentPage, $this.data("target").data("id"), correct, l_options, l_answer, $("#feedback").text());
+				XTExitInteraction(x_currentPage, $this.data("target").data("id"), correct, l_options, l_answer, $("#feedback").text(), x_currentPageXML.getAttribute("trackinglabel"));
 				l_total++;
 			});
             
@@ -318,7 +318,7 @@
              	$("#button").hide();
             }
 			
-         	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
+         	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total, x_currentPageXML.getAttribute("trackinglabel"));
 		}
 		
 		this.initTracking = function(){
@@ -340,7 +340,7 @@
                     correctOptions = [];
                     correctOptions.push(correctOption);
                     correctAnswer = draglabel + "-->" + placeholder;
-                    XTEnterInteraction(x_currentPage, i, 'match', placeholder, correctOptions, correctAnswer, "Correct");
+                    XTEnterInteraction(x_currentPage, i, 'match', placeholder, correctOptions, correctAnswer, "Correct", x_currentPageXML.getAttribute("trackinglabel"));
             	}
             );
            

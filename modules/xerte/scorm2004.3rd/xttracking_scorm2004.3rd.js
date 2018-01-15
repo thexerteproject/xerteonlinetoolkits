@@ -968,11 +968,11 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
     }
 }
 
-function XTSetAttendance(page_nr, name, score) {
+function XTSetAttendance(page_nr, name, score, page_name) {
     
 }
 
-function XTSetPageScore(page_nr, score)
+function XTSetPageScore(page_nr, score, page_name)
 {
     if (state.scormmode == 'normal')
     {
@@ -984,9 +984,12 @@ function XTSetPageScore(page_nr, score)
     }
 }
 
-function XTSetPageScoreJSON(page_nr, score) {}
+function XTSetPageScoreJSON(page_nr, score, JSONGraph, page_name) {
+    XTSetPage|Score(page_nr, score, page_name);
+}
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
+
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, page_name)
 {
     if (state.scormmode == 'normal')
     {
@@ -998,7 +1001,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, co
     }
 }
 
-function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
+function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, page_name)
 {
     if (state.scormmode == 'normal')
     {
@@ -1006,7 +1009,7 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
     }
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, callback)
 {
     return 0;
 }

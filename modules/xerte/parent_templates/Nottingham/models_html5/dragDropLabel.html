@@ -197,7 +197,7 @@
 
                             correctOptions.push({source: tempData[labelNum].name, target: tempData[labelNum].name});
 
-                            XTEnterInteraction(x_currentPage, i, 'match', tempData[labelNum].name, correctOptions, correctAnswer, correctFeedback);
+                            XTEnterInteraction(x_currentPage, i, 'match', tempData[labelNum].name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
                             dragDropLabel.checked = false;
                         }
                         tempData.splice(labelNum, 1);
@@ -737,14 +737,14 @@
                     }
 
                     // Track answer
-                    XTExitInteraction(x_currentPage, i, result, l_options, l_answer, l_feedback);
+                    XTExitInteraction(x_currentPage, i, result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
                 });
 
                 if ($(x_currentPageXML).children().length === 0) {
-                    XTSetPageScore(x_currentPage, 100);
+                    XTSetPageScore(x_currentPage, 100, x_currentPageXML.getAttribute("trackinglabel"));
                 }
                 else {
-                    XTSetPageScore(x_currentPage, numCorrect * 100 /  $(x_currentPageXML).children().length);
+                    XTSetPageScore(x_currentPage, numCorrect * 100 /  $(x_currentPageXML).children().length, x_currentPageXML.getAttribute("trackinglabel"));
                 }
                 if (XTGetMode() != "normal") {
                     if (numCorrect == $(x_currentPageXML).children().length) {

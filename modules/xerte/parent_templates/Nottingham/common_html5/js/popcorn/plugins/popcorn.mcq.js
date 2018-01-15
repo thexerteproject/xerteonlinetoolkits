@@ -69,7 +69,7 @@ optional: feedback page synch play enable
             });
             mediaLesson.questions[ia_nr] = true;
 
-            XTExitInteraction(x_currentPage, ia_nr, allValid, l_options, l_answers, l_feedback);
+            XTExitInteraction(x_currentPage, ia_nr, allValid, l_options, l_answers, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
             if (ia_nr == numOfQuestions-1) {
             	var score = 0;
             	for (var i=0; i<numOfQuestions; i++)
@@ -80,7 +80,7 @@ optional: feedback page synch play enable
 					}
 				}
                 var scormScore = Math.ceil(score / numOfQuestions * 100);
-                XTSetPageScore(x_currentPage, scormScore);
+                XTSetPageScore(x_currentPage, scormScore, x_currentPageXML.getAttribute("trackinglabel"));
             }
             mediaLesson.enableControls(media.media, true);
         }
@@ -423,7 +423,7 @@ optional: feedback page synch play enable
 						correctFeedback.push("Correct");
 					}
 				});
-				XTEnterInteraction(x_currentPage, ia_nr, 'multiplechoice', x_GetTrackingTextFromHTML(options.text, ia_nr + ""), correctOptions, correctAnswers, correctFeedback );
+				XTEnterInteraction(x_currentPage, ia_nr, 'multiplechoice', x_GetTrackingTextFromHTML(options.text, ia_nr + ""), correctOptions, correctAnswers, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
 				if ($(options.childNodes).length > 0) {
 					// reset any previous answers given
 					if (options.type == "radio") {

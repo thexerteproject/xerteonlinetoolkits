@@ -244,7 +244,7 @@
 				for (var interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {				
 					var name = "interaction number" + " " + interactionNumber;
 					var correctAnswer = answerData[interactionNumber];
-					XTEnterInteraction(x_currentPage,  interactionNumber , 'fill-in', name, [], correctAnswer, "Correct");
+					XTEnterInteraction(x_currentPage,  interactionNumber , 'fill-in', name, [], correctAnswer, "Correct", x_currentPageXML.getAttribute("trackinglabel"));
 				}
 			}
 			else if(x_currentPageXML.getAttribute("interactivity") == "Drag Drop"){
@@ -255,7 +255,7 @@
 					var correctOption = {source: answerData[interactionNumber][0], target: answerData[interactionNumber][0]}
 					var correctOptions = [];
 					correctOptions.push(correctOption);
-					XTEnterInteraction(x_currentPage,  interactionNumber , 'match', name, correctOptions, correctAnswer, "Correct");
+					XTEnterInteraction(x_currentPage,  interactionNumber , 'match', name, correctOptions, correctAnswer, "Correct", x_currentPageXML.getAttribute("trackinglabel"));
 				}
 			}
 			
@@ -784,7 +784,7 @@
                     }
 
                     total++;
-                    XTExitInteraction(x_currentPage, $this.data("index") , correct, [], answer, feedback);
+                    XTExitInteraction(x_currentPage, $this.data("index") , correct, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
 
                 });
 
@@ -878,7 +878,7 @@
                             feedback = "Incorrect";
                         //console.log(l_answer);
                         //console.log(interactionNumber);
-                        XTExitInteraction(x_currentPage, interactionNumber, correct, l_options, l_answer, feedback);
+                        XTExitInteraction(x_currentPage, interactionNumber, correct, l_options, l_answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
                         total++;
                     }
                 }
@@ -914,11 +914,11 @@
 		this.finishTracking = function() {
 			if(total != 0)
 			{
-				XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total));
+				XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total), x_currentPageXML.getAttribute("trackinglabel"));
 			}
 			else
 			{
-				XTSetPageScore(x_currentPage, 0.0);
+				XTSetPageScore(x_currentPage, 0.0, x_currentPageXML.getAttribute("trackinglabel"));
 			}
 
 		}

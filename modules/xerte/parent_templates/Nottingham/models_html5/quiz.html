@@ -260,7 +260,7 @@
 						name = $thisQ.getAttribute("name");
 					}
 
-					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback);
+					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
 					quiz.checked = false;
 				}
 			}
@@ -342,7 +342,7 @@
                 }
                 // Track answer
                 
-                XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], correct, l_options, l_answer, l_feedback);
+                XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], correct, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
                 quiz.myProgress.splice(quiz.currentQ, 1, correct);
             }
             generalFeedback += rightWrongTxt;
@@ -423,7 +423,7 @@
             }
             $("#qTxt").html("");
 
-            var scormScore = Math.ceil(myScore / quiz.questions.length * 100);
+            var scormScore = Math.ceil(myScore / quiz.questions.length * 100, x_currentPageXML.getAttribute("trackinglabel"));
             XTSetPageScore(x_currentPage, scormScore);
         }
 /*

@@ -418,7 +418,7 @@
                             updateBubble();
                         }
                     }
-					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctAnswer, null);
+					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctAnswer, null, x_currentPageXML.getAttribute("trackinglabel"));
 					opinion.checked = false;
 				}
 			}
@@ -488,7 +488,7 @@
             diagramAnswers[opinion.currentQuestion] = (Math.round(currentQuestionValue * 10) / 10);
 
 
-			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], correct, l_options, l_answer, null);
+			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], correct, l_options, l_answer, null, x_currentPageXML.getAttribute("trackinglabel"));
             opinion.myProgress.splice(opinion.currentQuestion, 1, correct);
             
 			// Continue to next question
@@ -545,7 +545,7 @@
             $("#checkBtn").hide();
             $("#qTxt").html("");
 
-            XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph), x_currentPageXML.getAttribute("export"));
+            XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph), x_currentPageXML.getAttribute("trackinglabel"));
             opinion.checked = true;
 		};
 		

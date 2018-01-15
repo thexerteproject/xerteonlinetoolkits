@@ -77,8 +77,8 @@
                 }
 				l_options.push(l_option);
             });
-            XTExitInteraction(x_currentPage, 0, (l_correct == this.totaloptions), l_options, l_answers, l_feedback);
-            XTSetPageScore(x_currentPage, (l_correct * 100.0)/this.totaloptions);
+            XTExitInteraction(x_currentPage, 0, (l_correct == this.totaloptions), l_options, l_answers, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
+            XTSetPageScore(x_currentPage, (l_correct * 100.0)/this.totaloptions, x_currentPageXML.getAttribute("trackinglabel"));
             this.checked = true;
         }
 
@@ -166,7 +166,7 @@
 					});
 				});
 
-            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback);
+            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
 			var $pageContents = $("#pageContents");
 			$pageContents.data("labels", labels);
 			

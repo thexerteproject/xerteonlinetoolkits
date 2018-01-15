@@ -712,7 +712,7 @@
 								$("#more").hide();
 							}
 
-                            XTExitInteraction(x_currentPage, mcqCurrentQ, correct, l_options, l_answer, l_feedback);
+                            XTExitInteraction(x_currentPage, mcqCurrentQ, correct, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
 
 							$(this)
 								.button({"label":$pageContents.data("phrases").mcqBtnTxt2})
@@ -938,7 +938,7 @@
             correctAnswer.push(correct['text']);
             correctFeedback.push($pageContents.data("phrases").mcqCorrect);
 
-            XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback);
+            XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
 
 			x_shuffleArray(options);
 			
@@ -993,11 +993,11 @@
 
             if (numQs === 0)
             {
-                XTSetPageScore(x_currentPage, score);
+                XTSetPageScore(x_currentPage, score, x_currentPageXML.getAttribute("trackinglabel"));
             }
             else
             {
-                XTSetPageScore(x_currentPage, score * 100 / numQs);
+                XTSetPageScore(x_currentPage, score * 100 / numQs, x_currentPageXML.getAttribute("trackinglabel"));
             }
 
             interactiveText.checked = true;

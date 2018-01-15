@@ -93,14 +93,14 @@
                 l_feedbacks.push(l_feedback);
                 counter++;
             });
-            XTExitInteraction(x_currentPage, 0, this.allCorrect, l_options, l_answers, l_feedbacks);
+            XTExitInteraction(x_currentPage, 0, this.allCorrect, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
 
 
             if(XTGetMode() == "normal") {
                 $("#checkBtn").hide();
                 $(".ui-draggable").draggable("disable");
             }
-            XTSetPageScore(x_currentPage, ((correct/numOfQuestions)*100));
+            XTSetPageScore(x_currentPage, ((correct/numOfQuestions)*100), x_currentPageXML.getAttribute("trackinglabel"));
         };
 
 		this.init = function() {
@@ -804,7 +804,7 @@
 			rowCount++;
 		}
 		XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
-		XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback);
+		XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
 		/*
 		for(var i = 0; i < correctOptions.length; i++)
 		{
