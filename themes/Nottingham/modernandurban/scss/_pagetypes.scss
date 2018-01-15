@@ -212,8 +212,8 @@ table.header.shaded tr:first-child {
 }
 #grid ul li {
   color: $mainfontcolour ; //previously didn't work without important
-  background:grey;
-  border:none;
+  /*background:grey;*/
+  border-color:none;
 }
 table tr.shaded {
   background: $contrastcolor;

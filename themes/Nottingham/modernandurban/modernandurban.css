@@ -199,8 +199,8 @@ table.header.shaded tr:first-child {
 
 #grid ul li {
   color: #2F3131;
-  background: grey;
-  border: none; }
+  /*background:grey;*/
+  border-color: none; }
 
 table tr.shaded {
   background: #426E86;
