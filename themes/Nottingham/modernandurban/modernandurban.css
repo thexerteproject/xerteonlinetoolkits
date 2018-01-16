@@ -20,12 +20,15 @@
   width: 98% !important;
   overflow: hidden; }
 
+.slide {
+  margin-left: 5px; }
+
 #thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3 {
   /*font-size:1.6vmin;*/
   color: #2F3131; }
 
 .highlight {
-  background: #F9BA32; }
+  background: #F8F1E5; }
 
 .ui-accordion .ui-accordion-content {
   border-radius: 1vmin;
@@ -124,6 +127,9 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
 
 #listholder a.listitem, a:visited {
   color: #426E86; }
+
+.target.ui-droppable.border.highlight {
+  background-color: rgba(248, 241, 229, 0.4) !important; }
 
 #categoryHolder .category {
   border-radius: 2vmin;

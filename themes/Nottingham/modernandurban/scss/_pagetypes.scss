@@ -11,14 +11,23 @@
   overflow: hidden;
 }
 //***********************************Media*************************************
+//*****audio slideshow********/
+.slide {
+  margin-left: 5px;
+}
 //*****multiple perspectives******
 #thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3{
   /*font-size:1.6vmin;*/
   color: $darkestcolor;
 }
+//*******synced video********* if extra class added in future/
+//.videosynch {
+//  padding-top: 10px !important;
+//  color: orange;
+//}
 //*****transcript reader******/
 .highlight {
-  background: $brightcolor;
+  background: $lightestcolor;
 }
 //***********************************Navigators*************************************/
 //*****Accordion page*******/
@@ -127,6 +136,11 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
 //*****annotated diagram******/
 #listholder a.listitem, a:visited {
   color:$contrastcolor ; //removed !important didn't work without important
+}
+//*******Drag and Drop Labelling*********/
+.target.ui-droppable.border.highlight {
+  //show transparent background when clicking target hotspots
+  background-color: transparentize($lightestcolor, .6) !important;
 }
 //*****categories*****/
 #categoryHolder .category {
