@@ -164,6 +164,10 @@
 			});
 			
 			$infoHolder.accordion({
+				icons: {
+					header: "fa fa-caret-right",
+					activeHeader: "fa fa-caret-down"
+				},
 				fillSpace:	true,
 				heightStyle: x_currentPageXML.getAttribute("panelHeight") != "fit" ? "fill" : "content",
 				activate:	function(e, ui) {

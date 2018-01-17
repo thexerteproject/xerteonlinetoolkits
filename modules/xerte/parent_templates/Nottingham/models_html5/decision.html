@@ -124,7 +124,7 @@
 				// _____ HISTORY BACK BTN _____
 				$backBtn
 					.button({
-						icons: { primary: "ui-icon-triangle-1-w" },
+						icons: { primary: "fa fa-fw fa-chevron-left" },
 						label:	x_currentPageXML.getAttribute("backBtn") ? x_currentPageXML.getAttribute("backBtn") : "Previous Step",
 						text:	false
 					})
@@ -149,7 +149,7 @@
 				// _____ HISTORY FWD BTN _____
 				$fwdBtn
 					.button({
-						icons: { primary: "ui-icon-triangle-1-e" },
+						icons: { primary: "fa fa-fw fa-chevron-right" },
 						label:	x_currentPageXML.getAttribute("fwdBtn") ? x_currentPageXML.getAttribute("fwdBtn") : "Next Step",
 						text:	false
 					})
@@ -174,7 +174,7 @@
 				// _____ NEW BTN _____
 				$("#newBtn")
 					.button({
-						icons: { primary: "ui-icon-refresh" },
+						icons: { primary: "fa fa-fw fa-refresh" },
 						label:	x_currentPageXML.getAttribute("newBtnLabel") ? x_currentPageXML.getAttribute("newBtnLabel") : "Restart",
 						text:	false
 					})
@@ -282,6 +282,7 @@
 				// _____ HELP BTN _____
 				$helpBtn
 					.button({
+						icons: { primary: "fa fa-fw fa-info-circle" },
 						label:	x_currentPageXML.getAttribute("helpString") ? x_currentPageXML.getAttribute("helpString") : "More information"
 					})
 					.click(function() {
@@ -313,7 +314,7 @@
 				// _____ COPY BTN _____
 				$("#copyBtn")
 					.button({
-						icons: { primary: "ui-icon-copy" },
+						icons: { primary: "fa fa-fw fa-copy" },
 						label:	x_currentPageXML.getAttribute("copyBtn") ? x_currentPageXML.getAttribute("copyBtn") : "Copy Overview",
 						text:	false
 					})
@@ -882,7 +883,7 @@
 				
 				if (thisStep.type == "mcqStep" || thisStep.type == "sliderStep") {
 					if (type == "html") {
-						string += '<div><span class="ui-icon ui-icon-help"/>' + $text.prop('outerHTML') + '</div>';
+						string += '<div><i class="fa fa-fw fa-question"/> &nbsp;' + $text.prop('outerHTML') + '</div>';
 					} else {
 						string += '<p>' + $text.text() + '</p>';
 					}
@@ -890,8 +891,8 @@
 					if (thisStep.type == "mcqStep") {
 						if (type == "html") {
 							// include details of answers which weren't chosen too
-							string += '<div class="overviewAnswer"><span class="ui-icon ui-icon-carat-1-e"/>' + x_addLineBreaks($(thisStep.options[decisionHistory[i].option]).attr("name")) + '</div>';
-							string += '<div class="extraInfo"><span class="ui-icon ui-icon-carat-1-e"/>' + (x_currentPageXML.getAttribute("posAnswerString") ? x_currentPageXML.getAttribute("posAnswerString") : "Other possible answers") + ': ';
+							string += '<div class="overviewAnswer"><i class="fa fa-fw fa-chevron-right"></i> &nbsp;' + x_addLineBreaks($(thisStep.options[decisionHistory[i].option]).attr("name")) + '</div>';
+							string += '<div class="extraInfo"><i class="fa fa-fw fa-chevron-right"/> &nbsp;' + (x_currentPageXML.getAttribute("posAnswerString") ? x_currentPageXML.getAttribute("posAnswerString") : "Other possible answers") + ': ';
 							
 							thisStep.options.each(function(j) {
 								if (j != decisionHistory[i].option) {
@@ -921,8 +922,8 @@
 						}
 						
 						if (type == "html") {
-							string += '<div class="overviewAnswer"><span class="ui-icon ui-icon-carat-1-e"/>' + answer + '</div>';
-							string += '<div class="extraInfo"><span class="ui-icon ui-icon-carat-1-e"/>' + (x_currentPageXML.getAttribute("fromRangeString") ? x_currentPageXML.getAttribute("fromRangeString") : "From range") + ' ' + posAnswer + '</div>';
+							string += '<div class="overviewAnswer"><i class="fa fa-fw fa-chevron-right"/> &nbsp;' + answer + '</div>';
+							string += '<div class="extraInfo"><i class="fa fa-fw fa-chevron-right"/> &nbsp;' + (x_currentPageXML.getAttribute("fromRangeString") ? x_currentPageXML.getAttribute("fromRangeString") : "From range") + ' ' + posAnswer + '</div>';
 						} else {
 							string += '<p> >> ' + answer + '</p>';
 							string += '<p>-------------------------------------------------</p>';
@@ -932,7 +933,7 @@
 					
 				} else if (thisStep.type == "infoStep") {
 					if (type == "html") {
-						string += '<div><span class="ui-icon ui-icon-notice"/>' + $text.prop('outerHTML') + '</div>';
+						string += '<div><i class="fa fa-fw fa-info"/> &nbsp' + $text.prop('outerHTML') + '</div>';
 					} else {
 						string += '<p>' + $text.text() + '</p>';
 						string += '<p>-------------------------------------------------</p>';
@@ -940,7 +941,9 @@
 					
 				} else if (thisStep.type == "resultStep") {
 					if (type == "html") {
-						string += '<div><span class="ui-icon ui-icon-lightbulb"/>' + $text.prop('outerHTML') + '</div>';
+						console.log($text);
+						console.log($text.prop('outerHTML'));
+						string += '<div><i class="fa fa-fw fa-lightbulb-o"/> &nbsp;' + $text.prop('outerHTML') + '</div>';
 					} else {
 						string += '<p>' + (x_currentPageXML.getAttribute("resultString") ? x_currentPageXML.getAttribute("resultString") : "Result") + ':</p>';
 						string += '<p>' + $text.text() + '</p>';

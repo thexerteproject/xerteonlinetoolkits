@@ -104,24 +104,33 @@
 			$("#prevBtn")
 				.button({
 					icons: {
-						primary: "ui-icon-carat-1-w"
+						primary: "fa fa-chevron-left"
 					},
-					label:	prevBtnTxt,
-					text:	false
+					label: prevBtnTxt,
+					text: false,
+					disabled: true
 				})
 				.click(function() {
+					$("#nextBtn").button("enable");
+					if (x_pageInfo[x_currentPage].savedData.pictureIndex-1 == 0) {
+						$("#prevBtn").button("disable");
+					}
 					flickr.proceed(Math.max(0, x_pageInfo[x_currentPage].savedData.pictureIndex-1));
 				});
 			
 			$("#nextBtn")
 				.button({
 					icons: {
-						primary: "ui-icon-carat-1-e"
+						primary: "fa fa-chevron-right"
 					},
-					label:	nextBtnTxt,
-					text:	false
+					label: nextBtnTxt,
+					text: false
 				})
 				.click(function() {
+					$("#prevBtn").button("enable");
+					if (x_pageInfo[x_currentPage].savedData.pictureIndex+1 == x_pageInfo[x_currentPage].savedData.pictureFeed.length-1) {
+						$("#nextBtn").button("disable");
+					}
 					flickr.proceed(Math.min(x_pageInfo[x_currentPage].savedData.pictureIndex+1, x_pageInfo[x_currentPage].savedData.pictureFeed.length-1));
 				});
 			
@@ -208,8 +217,10 @@
 
 		this.getPictureInfo = function () {
 			var data = x_pageInfo[x_currentPage].savedData.pictureStore[x_pageInfo[x_currentPage].savedData.pictureIndex];
+			
 			if (data != undefined) {
 				this.displayPicture(
+					data.url,
 					data.source,
 					data.info,
 					data.size
@@ -284,6 +295,7 @@
 
 			// Store picture details in store so we don't need to do the work again
 			x_pageInfo[x_currentPage].savedData.pictureStore[x_pageInfo[x_currentPage].savedData.pictureIndex] = {
+				'url': data.sizes.size[sizeIndex].url,
 				'source': data.sizes.size[sizeIndex].source,
 				'info': x_pageInfo[x_currentPage].savedData.pictureInfo,
 				'size': size,

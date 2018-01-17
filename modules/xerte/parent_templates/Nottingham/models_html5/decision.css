@@ -13,6 +13,18 @@
 		overflow:		auto;
 	}
 	
+	#btnHolder {
+		margin-top: 0.5em;
+		/*float: right;*/
+	}
+	
+	#btnHolder .ui-icon {
+		width: auto;
+		height: auto;
+		margin-left: -0.4em;
+		margin-top: -0.45em;
+	}
+	
 	#pageContents #btnFloatR {
 		float:		right;
 	}
@@ -84,7 +96,7 @@
 	}
 	
 	#overviewHolder .overviewAnswer, #overviewHolder .extraInfo {
-		margin-left:	10px;
+		margin-left: 1em;
 	}
 	
 	#overviewHolder .overviewAnswer .ui-icon, #overviewHolder .extraInfo .ui-icon {
@@ -98,5 +110,13 @@
 	#overviewHolder .overviewStep, #overviewHolder .overviewAnswer {
 		padding-top:	10px;
 		padding-bottom:	10px;
+	}
+	
+	#overviewHolder .overviewStep p {
+		display: inline;
+	}
+	
+	i[class*='fa-chevron'] {
+		font-size: 0.8em;
 	}
 

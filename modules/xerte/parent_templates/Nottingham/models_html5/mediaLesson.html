@@ -346,6 +346,10 @@
 				$infoHolder.find(".accTitle a").html(x_currentPageXML.getAttribute("introTitle"));
 				
 				$infoHolder.accordion({
+					icons: {
+						header: "fa fa-caret-right",
+						activeHeader: "fa fa-caret-down"
+					},
 					collapsible:	true,
 					heightStyle:	"content",
 					beforeActivate:function(event, ui){
@@ -598,15 +602,18 @@
 				$mediaHolder.find(".transcript").hide();
 				$mediaHolder.find(".transcriptBtn")
 					.button({
+						icons:	{secondary:"fa fa-caret-up"},
 						label:	mediaData.transcriptBtnTxt != undefined && mediaData.transcriptBtnTxt != "" ? mediaData.transcriptBtnTxt : "Transcript"
 					})
 					.click(function() {
 						// transcript slides in and out of view on click
 						var $transcript = $(this).prev(".transcript");
 						if ($transcript.is(":hidden") == true) {
+							$(this).button({icons: {secondary:"fa fa-caret-down"}});
 							$transcript.slideDown();
 						} else {
 							$transcript.slideUp();
+							$(this).button({icons: {secondary:"fa fa-caret-up"}});
 						}
 					});
 				
