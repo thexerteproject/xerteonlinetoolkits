@@ -1,8 +1,3 @@
-//seems to be needed to minimise vertical scroll bars showing
-#x_pageHolder{
-   /*overflow-y:hidden;*/
- }
-
 //***********************************Text*************************************
 //*****title page******
 .titlePageTxt {
@@ -11,23 +6,27 @@
   overflow: hidden;
 }
 //***********************************Media*************************************
-//*****audio slideshow********/
-.slide {
-  margin-left: 5px;
-}
-//*****multiple perspectives******
-#thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3{
-  /*font-size:1.6vmin;*/
-  color: $darkestcolor;
-}
-//*******synced video********* if extra class added in future/
-//.videosynch {
-//  padding-top: 10px !important;
-//  color: orange;
-//}
-//*****transcript reader******/
+//default highlight if not overriden
 .highlight {
   background: $lightestcolor;
+}
+//*****audio slideshow********/
+.x_audioSlideshow_page .slide {
+  margin-left: 5px;
+}
+//*****multiple perspectives******/
+#thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3{
+  color: $darkestcolor;
+}
+//*****Synched Video*******/
+//add padding to right holder
+#x_mainHolder.x_videoSynch_page .right{
+  padding-top: 10px;
+  padding-left: 20px;
+}
+//*****transcript reader******/
+.x_transcriptReader_page .highlight {
+  background:transparentize($lightestcolor, .6);
 }
 //***********************************Navigators*************************************/
 //*****Accordion page*******/
@@ -133,45 +132,70 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   background:$brightcolor;
 }
 //***********************************Interactivity*************************************/
+//most text areas unless changed for specifc pages
+#pageContents textarea {
+  border-radius: $mediumroundedcorners;
+  padding: 10px;
+}
+//most input boxes unless changed for specifc pages
+#pageContents input {
+  border-radius: $smallroundedcorners;
+  padding-left: 10px;
+}
 //*****annotated diagram******/
 #listholder a.listitem, a:visited {
-  color:$contrastcolor ; //removed !important didn't work without important
+  color:$contrastcolor ;
+}
+.x_annotatedDiagram_page .highlight{
+  background:$brightcolor;
+}
+.x_annotatedDiagram_page .hotspot{
+  background:none;
+}
+.x_annotatedDiagram_page #infoHolder{
+  background:$brightcolor;
+  margin-left:10px;
 }
 //*******Drag and Drop Labelling*********/
 .target.ui-droppable.border.highlight {
   //show transparent background when clicking target hotspots
   background-color: transparentize($lightestcolor, .6) !important;
 }
+.x_dragDropLabel_page #infoHolder{
+  padding:20px;
+  margin-right:20px;
+}
+.x_dragDropLabel_page .label.panel{
+  background:transparentize($lightestcolor, .1 )!important;
+  border-color:$lightestcolor;
+}
 //*****categories*****/
 #categoryHolder .category {
   border-radius: $mediumroundedcorners;
-  /*color:$whiteorlightest;*/
 }
 #categoryHolder h3 {
   color:$whiteorlightest;
 }
-.label.panel{
+.x_categories_page .label.panel{
   background:$lightestcolor;
-  border:$brightcolor;
+  border:$lightestcolor;
 }
 #categoryHolder .highlight {
   border-radius: $smallroundedcorners;
   background: $contrastcolor;
 }
-//*****dialogue*****/
-#pageContents .question input {
-  border-radius: $smallroundedcorners;
+//*******decision tree********//
+.x_decision_page .highlight{
+  background: $lightestcolor;
 }
 //*****Dictation*****/
-#answerTxt {
-  width: 100%;
+.x_dictation_page #answerTxt {
+  width: 98%;
   margin-bottom: 10px;
   border-radius: $mediumroundedcorners;
+  padding:10px;
 }
 //*****gap fill*****/
-#labelHolder .label.panel {
-  border: none;
-}
 #targetHolder .target {
   border-radius: $mediumroundedcorners;
 }
@@ -179,12 +203,19 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   background:$whiteorlightest;
 }
 #labelHolder .label.panel {
-  background: $whiteorlightest;
+  //background: purple;
 }
-#targetHolder .target.correct{
+.x_gapFill_page #targetHolder .highlight {
+  background:transparentize($whiteorlightest, .5);
+}
+.x_gapFill_page .label.panel {
+  background: $lightestcolor;
+  border-color:$lightestcolor !important;
+}
+.x_gapFill_page .target.correct{
   color:green;
   font-weight:bold;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color:transparentize($whiteorlightest, .8);
 }
 //*****hotspot image*****/
 a.hotspot, a.hotspot.selected {
@@ -193,21 +224,29 @@ a.hotspot, a.hotspot.selected {
 .hsinfo{
   padding:1%;
 }
+//******Interactive lists*******/
+.x_interactiveText_page .highlight{
+  background: $lightestcolor;
+}
+//******Interactive lists*******/
+.x_list_page .highlight{
+  background: $brightcolor;
+}
 //*********matching texts*********/
 #dragDropHolder {
   background: $brightcolor;
   padding:10px;
   border-radius: $mediumroundedcorners;
 }
+.x_textMatch_page .label.panel{
+  background:$lightestcolor;
+  border-color:$lightestcolor;
+}
 
 //*****model answer*****/
-#answerTxt {
+.x_modelAnswer_page #answerTxt {
   border-radius: $mediumroundedcorners;
-}
-//*****modify exercise*****/
-#pageContents textarea {
-  border-radius: $mediumroundedcorners;
-  //*padding: 10px;*/
+  width: 98%;
 }
 //*****sortable grid*****/
 #gridBorders {
@@ -217,7 +256,7 @@ a.hotspot, a.hotspot.selected {
   border-radius: $smallroundedcorners;
 }
 #grid ul li.header {
-  color: $whiteorlightest ; //previously didn't work without important
+  color: $whiteorlightest ;
   background:$darkestcolor;
   color:$whiteorlightest !important;
 }
@@ -225,9 +264,14 @@ table.header.shaded tr:first-child {
   background: $darkestcolor;
 }
 #grid ul li {
-  color: $mainfontcolour ; //previously didn't work without important
+  color: $mainfontcolour ;
   /*background:$brightcolor;*/
+  background:red;
   border-color:$whiteorlightest;
+}
+.x_grid_page #grid ul li{
+  background:$lightestcolor;
+  border-color: transparent;
 }
 table tr.shaded {
   background: $contrastcolor;
@@ -244,6 +288,9 @@ tr {
 /*****timeline matching pairs*****/
 #targetHolder .target {
   border-radius: $mediumroundedcorners;
+}
+.x_timeline_page .label.panel.ui-draggable {
+  background: $lightestcolor;
 }
 //***********************************Connectors*************************************/
 //*****menu connector*****/
