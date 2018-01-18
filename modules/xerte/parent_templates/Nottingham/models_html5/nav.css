@@ -122,21 +122,23 @@
 	}
 	
 	#pageContents.slide #btnHolder button {
-		background: #111;
+		/*background: #111;
 		border-color: #111;
-		border-radius: 10%;
+		border-radius: 10%;*/
 	}
 	
 	#pageContents.slide #btnHolder .ui-icon {
-		color: white;
+		/*color: white;*/
 		width: auto;
 		height: auto;
+		margin-left: -0.3em;
+		margin-top: -0.45em;
 	}
 	
 	#pageContents.slide #slideTxt {
 		float: left;
 		font-weight: bold;
-		margin-top: 10px;
+		padding-top: 0.7em;
 	}
 	
 	#pageContents.slide .clearBoth {
@@ -145,8 +147,8 @@
 	
 	#pageContents.slide #btnHolder {
 		border-top: 1px solid #ccc;
-		padding-top: 10px;
-		margin-top: 10px;
+		padding-top: 0.5em;
+		margin-top: 0.5em;
 	}
 		
 	#pageContents.slide #btnHolder.top {
