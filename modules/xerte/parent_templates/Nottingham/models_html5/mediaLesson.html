@@ -347,8 +347,8 @@
 				
 				$infoHolder.accordion({
 					icons: {
-						header: "fa fa-caret-right",
-						activeHeader: "fa fa-caret-down"
+						header: "fa fa-x-acc-hide",
+						activeHeader: "fa fa-x-acc-show"
 					},
 					collapsible:	true,
 					heightStyle:	"content",
@@ -602,18 +602,18 @@
 				$mediaHolder.find(".transcript").hide();
 				$mediaHolder.find(".transcriptBtn")
 					.button({
-						icons:	{secondary:"fa fa-caret-up"},
+						icons:	{secondary:"fa fa-x-btn-hide"},
 						label:	mediaData.transcriptBtnTxt != undefined && mediaData.transcriptBtnTxt != "" ? mediaData.transcriptBtnTxt : "Transcript"
 					})
 					.click(function() {
 						// transcript slides in and out of view on click
 						var $transcript = $(this).prev(".transcript");
 						if ($transcript.is(":hidden") == true) {
-							$(this).button({icons: {secondary:"fa fa-caret-down"}});
+							$(this).button({icons: {secondary:"fa fa-x-btn-show"}});
 							$transcript.slideDown();
 						} else {
 							$transcript.slideUp();
-							$(this).button({icons: {secondary:"fa fa-caret-up"}});
+							$(this).button({icons: {secondary:"fa fa-x-btn-hide"}});
 						}
 					});
 				

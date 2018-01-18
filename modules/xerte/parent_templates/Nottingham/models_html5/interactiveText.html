@@ -448,7 +448,7 @@
 				$("#nextBtn")
 					.button({
 						icons: {
-							primary: "fa fa-chevron-right"
+							primary: "fa fa-x-next"
 						},
 						label:	btnTxt[0],
 						text:	false
@@ -483,7 +483,7 @@
 				$("#prevBtn")
 					.button({
 						icons: {
-							primary: "fa fa-chevron-left"
+							primary: "fa fa-x-prev"
 						},
 						label:	btnTxt[1],
 						text:	false,
@@ -646,7 +646,7 @@
 				$("#questionHolder").html('<h3 id="qNum" tabindex="' + (tabIndex+1) + '"></h3><div id="qText" tabindex="' + (tabIndex+2) + '"><p>' + phrases.mcqText + '</p></div><div id="optionHolder"></div>');
 				
 				$("#feedback")
-					.html('<div id="marking"><a id="more" class="fa fa-info-circle fa-lg" title="' + phrases.mcqMore + '" href="#"/></div>')
+					.html('<div id="marking"><a id="more" class="fa fa-x-info-circle fa-lg" title="' + phrases.mcqMore + '" href="#"/></div>')
 					.appendTo($("#questionHolder"))
 					.attr("tabindex", tabIndex+3)
 					.on("click", "#more", function() {

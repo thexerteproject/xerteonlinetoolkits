@@ -91,7 +91,7 @@
 			}
 			$("#zoomBtn") // doesn't use zoomBtnWidth attribute as it will size automatically
 				.button({
-					icons: {primary:"fa fa-search-plus"},
+					icons: {primary:"fa fa-x-zoom-in"},
 					label: buttonLabel
 				})
 				.on("click", function() {
@@ -195,10 +195,10 @@
 					complete: function() {
 						if ($img2.data("zoom") == 0) {
 							$img2.data("zoom", 1);
-							$("#zoomBtn").button({ icons: {primary:"fa fa-search-plus"} });
+							$("#zoomBtn").button({ icons: {primary:"fa fa-x-zoom-in"} });
 						} else {
 							$img2.data("zoom", 0);
-							$("#zoomBtn").button({ icons: {primary:"fa fa-search-minus"} });
+							$("#zoomBtn").button({ icons: {primary:"fa fa-x-zoom-out"} });
 						}
 					}
 				});

@@ -124,7 +124,7 @@
 				// _____ HISTORY BACK BTN _____
 				$backBtn
 					.button({
-						icons: { primary: "fa fa-fw fa-chevron-left" },
+						icons: { primary: "fa fa-fw fa-x-prev" },
 						label:	x_currentPageXML.getAttribute("backBtn") ? x_currentPageXML.getAttribute("backBtn") : "Previous Step",
 						text:	false
 					})
@@ -149,7 +149,7 @@
 				// _____ HISTORY FWD BTN _____
 				$fwdBtn
 					.button({
-						icons: { primary: "fa fa-fw fa-chevron-right" },
+						icons: { primary: "fa fa-fw fa-x-next" },
 						label:	x_currentPageXML.getAttribute("fwdBtn") ? x_currentPageXML.getAttribute("fwdBtn") : "Next Step",
 						text:	false
 					})
@@ -174,7 +174,7 @@
 				// _____ NEW BTN _____
 				$("#newBtn")
 					.button({
-						icons: { primary: "fa fa-fw fa-refresh" },
+						icons: { primary: "fa fa-fw fa-x-refresh" },
 						label:	x_currentPageXML.getAttribute("newBtnLabel") ? x_currentPageXML.getAttribute("newBtnLabel") : "Restart",
 						text:	false
 					})
@@ -282,7 +282,7 @@
 				// _____ HELP BTN _____
 				$helpBtn
 					.button({
-						icons: { primary: "fa fa-fw fa-info-circle" },
+						icons: { primary: "fa fa-fw fa-x-info-circle" },
 						label:	x_currentPageXML.getAttribute("helpString") ? x_currentPageXML.getAttribute("helpString") : "More information"
 					})
 					.click(function() {
@@ -314,7 +314,7 @@
 				// _____ COPY BTN _____
 				$("#copyBtn")
 					.button({
-						icons: { primary: "fa fa-fw fa-copy" },
+						icons: { primary: "fa fa-fw fa-x-copy" },
 						label:	x_currentPageXML.getAttribute("copyBtn") ? x_currentPageXML.getAttribute("copyBtn") : "Copy Overview",
 						text:	false
 					})
@@ -883,7 +883,7 @@
 				
 				if (thisStep.type == "mcqStep" || thisStep.type == "sliderStep") {
 					if (type == "html") {
-						string += '<div><i class="fa fa-fw fa-question"/> &nbsp;' + $text.prop('outerHTML') + '</div>';
+						string += '<div><i class="fa fa-fw fa-x-question"/> &nbsp;' + $text.prop('outerHTML') + '</div>';
 					} else {
 						string += '<p>' + $text.text() + '</p>';
 					}
@@ -933,7 +933,7 @@
 					
 				} else if (thisStep.type == "infoStep") {
 					if (type == "html") {
-						string += '<div><i class="fa fa-fw fa-info"/> &nbsp' + $text.prop('outerHTML') + '</div>';
+						string += '<div><i class="fa fa-fw fa-x-info"/> &nbsp' + $text.prop('outerHTML') + '</div>';
 					} else {
 						string += '<p>' + $text.text() + '</p>';
 						string += '<p>-------------------------------------------------</p>';
@@ -941,7 +941,7 @@
 					
 				} else if (thisStep.type == "resultStep") {
 					if (type == "html") {
-						string += '<div><i class="fa fa-fw fa-lightbulb-o"/> &nbsp;' + $text.prop('outerHTML') + '</div>';
+						string += '<div><i class="fa fa-fw fa-x-lightbulb"/> &nbsp;' + $text.prop('outerHTML') + '</div>';
 					} else {
 						string += '<p>' + (x_currentPageXML.getAttribute("resultString") ? x_currentPageXML.getAttribute("resultString") : "Result") + ':</p>';
 						string += '<p>' + $text.text() + '</p>';
