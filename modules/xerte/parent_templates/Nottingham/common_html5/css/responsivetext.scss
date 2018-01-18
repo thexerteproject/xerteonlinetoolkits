@@ -130,6 +130,9 @@ h3 {
 .ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
     padding: .1em;
 }
+.panel button {
+	font-size: $pagecontentsmedium;
+}
 #slideTxt {
     font-size: $pagecontentslarge;
 }
@@ -142,7 +145,7 @@ h3 {
     font-size: $pagecontentslarge;
 }
 .ui-button-text-icon-secondary .ui-button-text {
-	padding-right: 1.2em;
+	/*padding-right: 1.2em;*/
 }
 
 #resultsHolder div p, #resultsHolder div a {

@@ -568,7 +568,7 @@
 							} else {
 								var $parent = $thisStep;
 								if (i == 0) {
-									$parent = $('<div class="radioAnswers"/>').appendTo($thisStep);
+									$parent = $('<div id="optionHolder" class="radioAnswers"/>').appendTo($thisStep);
 								} else {
 									$parent = $thisStep.find(".radioAnswers");
 								}
@@ -625,9 +625,9 @@
 					} else if (currentStepInfo.type == "sliderStep") {
 						
 						// _____ SLIDER _____
-						var answerBox = '<input type="text" id="amount"/><label for="amount">' + currentStepInfo.unit + '</label>';
+						var answerBox = '<input type="text" id="amount" class="question"/><label for="amount">' + currentStepInfo.unit + '</label>';
 						if (currentStepInfo.unitPos == "start") {
-							answerBox = '<label for="amount">' + currentStepInfo.unit + '</label><input type="text" id="amount"/>';
+							answerBox = '<label for="amount">' + currentStepInfo.unit + '</label><input type="text" id="amount" class="question"/>';
 						}
 						
 						// work out max length of answer string - depends on max value & increment & takes decimals into account if needed
@@ -941,8 +941,6 @@
 					
 				} else if (thisStep.type == "resultStep") {
 					if (type == "html") {
-						console.log($text);
-						console.log($text.prop('outerHTML'));
 						string += '<div><i class="fa fa-fw fa-lightbulb-o"/> &nbsp;' + $text.prop('outerHTML') + '</div>';
 					} else {
 						string += '<p>' + (x_currentPageXML.getAttribute("resultString") ? x_currentPageXML.getAttribute("resultString") : "Result") + ':</p>';

@@ -371,9 +371,9 @@
 			
 			// --- HOTSPOTS ---
 			if (intType == "Hotspots") {
-				var instructions = x_currentPageXML.getAttribute("hotspotsTxt");
+				var instructions = "<p>" + x_currentPageXML.getAttribute("hotspotsTxt") + "</p>";
 				if (instructions == undefined) {
-					instructions = "Explore the diagram. Click on the various parts to learn more.";
+					instructions = "<p>Explore the diagram. Click on the various parts to learn more.</p>";
 				}
 				$("#instructions").html(instructions);
 				
@@ -452,9 +452,9 @@
 			
 			// --- LABELS ---
 			} else if (intType == "Labels") {
-				var instructions = x_currentPageXML.getAttribute("labelsTxt");
+				var instructions = "<p>" + x_currentPageXML.getAttribute("labelsTxt") + "</p>";
 				if (instructions == undefined) {
-					instructions = "Drag the pins for each label to the correct position in the diagram. You can re-position the labels if required.";
+					instructions = "<p>Drag the pins for each label to the correct position in the diagram. You can re-position the labels if required.</p>";
 				}
 				$("#instructions").html(instructions);
 				
@@ -690,9 +690,9 @@
 			// --- SHOW ME ---
 			} else if (intType == "Show Me") {
 				// next/prev buttons below diagram that highlight hotspot and show info for it
-				var instructions = x_currentPageXML.getAttribute("showMeTxt");
+				var instructions = "<p>" + x_currentPageXML.getAttribute("showMeTxt") + "</p>";
 				if (instructions == undefined) {
-					instructions = "Use the arrows to learn more.";
+					instructions = "<p>Use the arrows to learn more.</p>";
 				}
 				instructions = '<button id="prevBtn"></button><button id="nextBtn"></button>' + instructions;
 				
@@ -711,7 +711,7 @@
 				$("#nextBtn")
 					.button({
 						icons: {
-							primary: "ui-icon-carat-1-e"
+							primary: "fa fa-chevron-right"
 						},
 						label:	btnTxt[0],
 						text:	false
@@ -754,7 +754,7 @@
 				$("#prevBtn")
 					.button({
 						icons: {
-							primary: "ui-icon-carat-1-w"
+							primary: "fa fa-chevron-left"
 						},
 						label:	btnTxt[1],
 						text:	false,

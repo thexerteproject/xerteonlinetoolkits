@@ -56,7 +56,7 @@
 			$groupInfo
 				.html("")
 				.removeAttr("tabindex");
-			$("#buttons .listItem").removeClass("highlight");
+			$("#btnHolder .listItem").removeClass("highlight");
 			
 			if (x_currentPageXML.getAttribute("interactivity") == "explore") {
 				$("#showBtn").hide();
@@ -318,7 +318,7 @@
 			// click any subgroup - you then get info about the group it falls into, with the option of showing all related subgroups
 			if (intType == "explore") {
 				$('<button id="showBtn"></button>')
-					.appendTo("#buttons")
+					.appendTo("#btnHolder")
 					.hide();
 				
 				var instructions = x_currentPageXML.getAttribute("exploreTxt") != undefined ? x_currentPageXML.getAttribute("exploreTxt") : "Explore the text. Click on a section to learn more.";
@@ -389,8 +389,8 @@
 			} else if (intType == "show") {
 				$instructions.html('<p>' + (x_currentPageXML.getAttribute("showMeTxt2") != undefined ? x_currentPageXML.getAttribute("showMeTxt2") : "Click a group to learn more.") + '</p>');
 				
-				var $buttons = $("#buttons");
-				$buttons.insertBefore($("#passage"));
+				var $btnHolder = $("#btnHolder");
+				$btnHolder.insertBefore($("#passage"));
 				
 				for (var i=0; i<groupInfo.length; i++) {
 					var $groupBtn = $('<a/>');
@@ -403,15 +403,15 @@
 							})
 						.data("index", i);
 					
-					$buttons.append($groupBtn);
+					$btnHolder.append($groupBtn);
 				}
 				
-				$buttons.find(".listItem")
+				$btnHolder.find(".listItem")
 					.click(function() {
 						var index = $(this).data("index");
 						
 						if ($pageContents.data("currentGroup") != index) {
-							$("#buttons .listItem.highlight").removeClass("highlight");
+							$("#btnHolder .listItem.highlight").removeClass("highlight");
 							$("#passage .group")
 								.removeClass("on")
 								.removeAttr("title");
@@ -436,7 +436,7 @@
 			// next/prev buttons show details of each group in turn, highlighting relevant subgroups
 			} else if (intType == "show2") {
 				$instructions.html('<p>' + (x_currentPageXML.getAttribute("showMeTxt") != undefined ? x_currentPageXML.getAttribute("showMeTxt") : "Click the arrow buttons to learn more.") + '</p>');
-				$("#buttons")
+				$("#btnHolder")
 					.html('<button id="nextBtn"></button><button id="prevBtn"></button>')
 					.insertAfter($("#passage"));
 				
@@ -528,8 +528,8 @@
 					"findTxt2" : x_currentPageXML.getAttribute("findTxt2") != undefined ? x_currentPageXML.getAttribute("findTxt2") : "You have found {i} of {n}"
 				});
 				
-				var $buttons = $("#buttons");
-				$buttons.insertBefore($("#passage"));
+				var $btnHolder = $("#btnHolder");
+				$btnHolder.insertBefore($("#passage"));
 				$("#questionHolder").hide();
 				
 				var count = this.setUpFind(true);
@@ -541,8 +541,8 @@
 				
 				// there's only one group marked up - no need for listItems
 				if (count == 1) {
-					var currentGroup = $("#buttons .listItem").data("index");
-					$("#buttons .listItem").remove();
+					var currentGroup = $("#btnHolder .listItem").data("index");
+					$("#btnHolder .listItem").remove();
 					$instructions.html('<p>' + (x_currentPageXML.getAttribute("findTxt3") != undefined ? x_currentPageXML.getAttribute("findTxt3") : "Can you find all of the examples?") + '</p>');
 					
 					$groupInfo
@@ -560,14 +560,14 @@
 					$instructions.html('<p>' + (x_currentPageXML.getAttribute("findTxt") != undefined ? x_currentPageXML.getAttribute("findTxt") : "Click a group to begin, then click the text to find all examples.") + '</p>');
 				}
 				
-				$("#buttons .listItem").click(function() {
+				$("#btnHolder .listItem").click(function() {
 					var index = $(this).data("index"),
 						currentGroup = $pageContents.data("currentGroup");
 					
 					if (currentGroup != index) {
 						currentGroup = index;
 						
-						$("#buttons .listItem.highlight").removeClass("highlight");
+						$("#btnHolder .listItem.highlight").removeClass("highlight");
 						$(this).addClass("highlight");
 						
 						$groupInfo
@@ -667,7 +667,7 @@
 						x_setDialogSize($dialog);
 					});
 				
-				$("#buttons")
+				$("#btnHolder")
 					.html('<button id="quizBtn"></button>')
 					.appendTo($("#questionHolder"))
 					.after($groupInfo);
@@ -816,7 +816,7 @@
 								})
 							.data("index", i);
 						
-						$("#buttons").append($groupBtn);
+						$("#btnHolder").append($groupBtn);
 					}
 					
 					count++;
@@ -1021,7 +1021,7 @@
 	<div id="pageTxt" tabindex="1"/>
 	<div id="instructions" tabindex="2"/>
 	<div id="groupInfo"/>
-	<div id="buttons"/>
+	<div id="btnHolder"/>
 	<div id="questionHolder"/>
 	<div id="feedback"/>
 	

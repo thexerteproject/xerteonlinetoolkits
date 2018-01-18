@@ -90,7 +90,10 @@
 				buttonLabel = "Zoom"
 			}
 			$("#zoomBtn") // doesn't use zoomBtnWidth attribute as it will size automatically
-				.button({ label: buttonLabel })
+				.button({
+					icons: {primary:"fa fa-search-plus"},
+					label: buttonLabel
+				})
 				.on("click", function() {
 					morphImages.zoom();
 					});
@@ -176,22 +179,29 @@
 					marginLeft	:img1AnimationData[1] + "px",
 					marginTop	:img1AnimationData[2] + "px",
 					opacity		:img1AnimationData[3]
-					}, $img2.data("speed"), "linear"
-				);
+					}, {
+					duration: $img2.data("speed"),
+					easing: "linear"
+					});
 				
 				$img2.animate({
 					width	:img2AnimationData[0] + "px",
 					left	:img2AnimationData[1] + "px",
 					top		:img2AnimationData[2] + "px",
 					opacity	:img2AnimationData[3]
-					}, $img2.data("speed"), "linear", function() {
+					}, {
+					duration: $img2.data("speed"),
+					easing: "linear",
+					complete: function() {
 						if ($img2.data("zoom") == 0) {
 							$img2.data("zoom", 1);
+							$("#zoomBtn").button({ icons: {primary:"fa fa-search-plus"} });
 						} else {
 							$img2.data("zoom", 0);
+							$("#zoomBtn").button({ icons: {primary:"fa fa-search-minus"} });
 						}
 					}
-				);
+				});
 			}
 		}
 	}
