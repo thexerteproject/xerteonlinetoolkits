@@ -83,13 +83,6 @@
 		margin-right: 0.5em;
 	}
 	
-	#pageContents.show2 #btnHolder button .ui-icon {
-		width: auto;
-		height: auto;
-		margin-left: -0.3em;
-		margin-top: -0.45em;
-	}
-	
 	#pageContents .listItem {
 		cursor:			pointer;
 		font-weight:	bold;

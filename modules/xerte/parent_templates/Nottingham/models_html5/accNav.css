@@ -13,10 +13,3 @@
 		opacity:	0;
 		filter:		alpha(opacity=0);
 	}
-	
-	#infoHolder .ui-icon {
-		width: auto;
-		height: auto;
-		margin-top: -0.5em;
-	}
-	

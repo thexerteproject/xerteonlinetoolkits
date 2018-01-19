@@ -50,6 +50,10 @@
 		margin: 1em;
 	}
 	
+	button.flipBtn.ui-button-icon-only .ui-icon[class*=" fa-"] {
+		margin-left: -0.4em;
+	}
+	
 	.card .panel {
 		padding: 0px;
 		text-align: left;

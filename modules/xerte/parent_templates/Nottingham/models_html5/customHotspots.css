@@ -23,13 +23,6 @@
 		display: inline;
 	}
 	
-	#instructions .ui-icon {
-		width: auto;
-		height: auto;
-		margin-left: -0.3em;
-		margin-top: -0.45em;
-	}
-	
 	#prevBtn, #nextBtn {
 		margin-right: 0.5em;
 	}
