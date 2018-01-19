@@ -2092,7 +2092,12 @@ function x_openDialog(type, title, close, position, load) {
                         closeOnEscape:  true,
                         title:          title,
                         closeText:      close,
-                        close: function() {$x_popupDialog.parent().detach();}
+                        close: function() {$x_popupDialog.parent().detach();},
+						create: function(event, ui) {
+							$(this).parent(".ui-dialog").find(".ui-dialog-titlebar-close .ui-icon")
+								.removeClass("ui-icon-closethick")
+								.addClass("fa fa-x-close");
+							}
                         })
                     .parent().hide();
 

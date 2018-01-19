@@ -223,6 +223,21 @@ button.ui-button-icon-only {
 	background: 	#dadada url(smoothness/images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;
 }
 
+.ui-dialog .ui-dialog-titlebar-close {
+	width: 1.5em;
+	height: 1.5em;
+	float: right;
+	position: relative;
+	margin: 0;
+	right: -0.5em;
+	top: -0.1em;
+}
+
+.ui-dialog button.ui-dialog-titlebar-close.ui-button-icon-only .ui-icon[class*=" fa-"] {
+	margin-left: -0.4em;
+	margin-top: -0.5em;
+}
+
 /* standard link style - overrides the way links are styled on tab navigator */
 .ui-tabs-panel a:link, .ui-accordion-content a:link			{ color:	#0000FF; }
 .ui-tabs-panel a:visited, .ui-accordion-content a:visited	{ color:	#800080; }
@@ -544,7 +559,7 @@ table.headerCol.simple td:first-child {
 	margin-top: -0.5em;
 }
 
-button.ui-button-icon-only .ui-icon.ui-icon[class*=" fa-"] {
+button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	width: auto;
 	height: auto;
 	margin-left: -0.3em;

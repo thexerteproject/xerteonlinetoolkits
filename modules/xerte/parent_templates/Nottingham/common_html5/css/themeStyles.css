@@ -205,6 +205,7 @@ h3 {
 .fa-x-next-circle:before { content: "\f0a9"; }
 .fa-x-prev-circle:before { content: "\f0a8"; }
 */
+.fa-x-close:before { content: "\f00d"; }
 .fa-x-refresh:before { content: "\f021"; }
 .fa-x-acc-hide:before { content: "\f0da"; }
 .fa-x-acc-show:before { content: "\f0d7"; }
@@ -218,3 +219,4 @@ h3 {
 .fa-x-question:before { content:"\f128"}
 .fa-x-lightbulb:before { content:"\f0eb"}
 .fa-x-copy:before { content:"\f0c5"}
+.fa-x-tick-circle:before { content:"\f058"}
