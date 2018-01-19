@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import "scss/_allvariables"; //*start here and set the default values for all the variables*/
+@import "scss/_header";
+@import "scss/_pagetypes";
+@import "scss/_footer";
+/*@import "scss/_animations";*/
+@import "scss/editorstyles";
+@import "scss/_webkitCustoms";
+//* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
+//*You should not edit the .css files directly or change values directly unless you wish to override something*/
+//*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
+
+body{
+	background:$bodybackgroundcolor;
+	color:$mainfontcolour;
+	font-family: $mainfonts;
+}
+//set default colour for fa icons in pageContents
+#pageContents .fa{
+	color:$mainfontcolour;
+	//set width and height to auto for replacing ui icons
+	//ideally need to set in central css?
+	width: auto;
+	height: auto;
+}
+//******Fonts******/
+.ui-button .ui-button-text {
+	font-family: $mainfonts;
+	color:$fontcolorfobrightcolor;
+	border:none;
+}
+button.ui-button-icon-only {
+	background: $brightcolor;
+	border: none;
+}
+.ui-button {
+	border-radius: $smallroundedcorners;
+	background: $brightcolor;
+	border: none;
+	color: $fontcolorfobrightcolor;
+}
+.ui-state-active{
+	border-radius: $smallroundedcorners;
+	background: $lightestcolor;
+	border: none;
+	color: $darkestcolor;
+}
+
+//*Note: these font-sizes will be ignored when responsive text is on*/
+p{
+	font-size:1.1em;
+}
+h1 {
+	font-size:	1em;
+	margin:		0;
+}
+h2 {
+	font-size:	1.2em;
+	margin:		5px 0 0 0;
+}
+h3 {
+	font-size:	1.2em;
+	margin:		0;
+}
+a{
+color:$linkcolor;
+}
+a:visited{
+	color:$linkvisited;
+}
+a:hover{
+	color:$linkhover;
+}
+
+#x_mainHolder{
+	background:$defaultpagebackground;
+	border-top-right-radius:$largeroundedcorners;
+	border-bottom-left-radius:$largeroundedcorners;
+	border: none !important;//*remove this to restore the default border*/
+}
+#x_pageDiv {
+	padding-top: $defaultpagepadding;
+	padding-left: $defaultpagepadding;
+	padding-right:$defaultpagepadding;
+	padding-bottom:10px;
+}
+#infoHolder{
+	border-radius:$mediumroundedcorners;
+	background: $contrastcolor;
+}
+
+//*****panel all pages with a panel*****/
+.panel {
+	border-radius: $mediumroundedcorners;
+	border: 1px solid $panelbordercolor;
+	background:$contrastcolor;
+	box-shadow: none;
+	color:$whiteorlightest;
+}
+.panelPage{
+	padding:1%;
+	color:$whiteorlightest;
+}
+//*****all images*****/
+img {
+	border-radius: $imageroundedcorners;
+}
+
+//******@media changes******/
+@media (min-width: 1366px) {
+	//*tablet and above css below here*/
+	#x_mainHolder{
+		max-width:90%;
+		max-height:92%;
+		margin:auto;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+}
+
+//* iPads (portrait) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : portrait) {
+	#x_mainHolder{
+		max-width:98%;
+		max-height:98%;
+		margin:auto;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+}
+
+/* chevron */
+.fa-x-next:before { content: "\f054"; }
+.fa-x-prev:before { content: "\f053"; }
+.fa-x-next-circle:before { content: "\f138"; }
+.fa-x-prev-circle:before { content: "\f137"; }
+
+/* arrow */
+/*
+.fa-x-next:before { content: "\f061"; }
+.fa-x-prev:before { content: "\f060"; }
+.fa-x-next-circle:before { content: "\f0a9"; }
+.fa-x-prev-circle:before { content: "\f0a8"; }
+*/
+.fa-x-refresh:before { content: "\f021"; }
+.fa-x-acc-hide:before { content: "\f0da"; }
+.fa-x-acc-show:before { content: "\f0d7"; }
+.fa-x-btn-hide:before { content: "\f0d8"; }
+.fa-x-btn-show:before { content: "\f0d7"; }
+.fa-x-zoom-in:before { content: "\f00e"; }
+.fa-x-zoom-out:before { content: "\f010"; }
+.fa-x-download:before { content: "\f019"; }
+.fa-x-info-circle:before { content:"\f05a"}
+.fa-x-info:before { content:"\f129"}
+.fa-x-question:before { content:"\f128"}
+.fa-x-lightbulb:before { content:"\f0eb"}
+.fa-x-copy:before { content:"\0c5"}

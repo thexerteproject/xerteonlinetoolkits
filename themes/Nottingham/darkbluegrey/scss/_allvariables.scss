@@ -1,0 +1,36 @@
+//*define color pallette*/
+$darkestcolor: #1D202D;
+$lightestcolor:#FCBC2B;
+$brightcolor:#018CCF;
+$contrastcolor:#9A9A9A;
+$whiteorlightest:#ffffff;
+$blackordarkest:#000000;
+
+//*set background colors*/
+$bodybackgroundcolor:#3F4957;
+$defaultpagebackground:#3F4957;
+$progressBarColor: #2196F3; //* default #2196F3;*/
+$panelbordercolor:$contrastcolor;
+
+//*set font family*/
+$mainfonts: Roboto, 'Segoe UI', Tahoma, sans-serif;
+$secondaryfonts:Roboto, 'Segoe UI', Tahoma, sans-serif;
+
+//*define font colors to match the background colors*/
+$mainfontcolour: $whiteorlightest;
+$fontcolorfordarkestcolor:#ffffff;
+$fontcolorforlightestcolor:#ffffff;
+$fontcolorfobrightcolor:#ffffff;
+$fontcolorforcontrastcolor:#ffffff;
+$linkcolor:#F8A302;
+$linkvisited:#F8A302;
+$linkhover:#ffffff;
+
+//*define rounded corner and other sizes*/
+$largeroundedcorners: 0;//*6vmin;*/
+$mediumroundedcorners: 0;//*2vmin;*/
+$smallroundedcorners: 0;//*1vmin;*/
+$imageroundedcorners: 0;//*2vmin;*/
+$contentmargin: 2%;
+$interfaceboxshadow:none; //*3px 3px 5px grey*/
+$defaultpagepadding:2%;
