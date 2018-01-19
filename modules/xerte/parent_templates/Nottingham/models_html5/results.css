@@ -43,6 +43,9 @@
 		background: black;
 		color: #ffffff;
 	}
+	#questionScores th:not(:first-child) {
+		text-align: center;
+	}
 	.details th {
 		background: darkgray;
 		color: #ffffff;
@@ -70,17 +73,7 @@
 	#specific{
 		display:none;
 	}
-
-.red
-{
-	color: #ff0000;
-}
-
-.green
-{
-	color: #62c562;
-}
-
+	
 .blue
 {
 	color: #0000ff;
