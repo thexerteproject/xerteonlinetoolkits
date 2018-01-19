@@ -29,4 +29,10 @@
 		margin:		10px;
 		float:		right;
 	}
+	
+	.result {
+		float: right;
+		line-height: 1.5em;
+		padding-left: 0.5em;
+	}
 

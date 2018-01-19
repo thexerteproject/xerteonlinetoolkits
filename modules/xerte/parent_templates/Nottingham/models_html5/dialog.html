@@ -21,10 +21,13 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var dialog = new function() {
-		var casesensitive;	
+		var casesensitive,
+			tick;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+			tick = x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick");
+			
 			// reset questions
 			$("#pageContents").data("currentQ", 0);
 			$("#submitBtn")
@@ -35,7 +38,10 @@
 				})
 				.show();
 
-			$("#pageContents .result").addClass("hidden");
+			$("#pageContents .result")
+				.addClass("hidden")
+				.parent().find(".tickTxt").html("");
+			
 			$("#pageContents input")
 				.prop("readonly", false)
 				.val("");
@@ -53,6 +59,8 @@
 		}
 
 		this.init = function() {
+			tick = x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick");
+			
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
 			if (panelWidth == "Full") {
 				$("#pageContents .right div:first").appendTo($("#pageContents"));
@@ -108,11 +116,8 @@
 
 			var $question = $("#pageContents .question:first");
 			$question.find(".result")
-				.attr({
-					"src": x_templateLocation + "common_html5/tick.png",
-					"alt":	x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick")
-				})
-				.addClass("hidden");
+				.addClass("hidden")
+				.parent().find(".tickTxt").html("");
 
 			$(x_currentPageXML).children()
 				.each(function(i) {
@@ -185,7 +190,10 @@
 									.val($.trim($thisInput.val()))
 									.prop("readonly", true);
 								
-								$thisInput.parent().find(".result").removeClass("hidden");
+								$thisInput.parent().find(".result")
+									.removeClass("hidden")
+									.parent().find(".tickTxt").html(tick);
+								
 								$feedback.html("");
 								$this.focus();
 								if (qNo + 1 != $(x_currentPageXML).children().length) {
@@ -213,7 +221,7 @@
 									var correctAnswer = $('<div/>').html($(x_currentPageXML).children()[qNo].getAttribute("answer")).text();
 									if (correctAnswer.indexOf(answerDelimeter) != -1) {
 										correctAnswer = $.trim(correctAnswer.split(answerDelimeter)[0]);
-									}console.log(correctAnswer);
+									}
 									$thisInput
 										.val(correctAnswer)
 										.prop("readonly", true);
@@ -241,7 +249,10 @@
 								.button({label:	$("#pageContents").data("submitTxt")});
 							
 							var qNo = $pageContents.data("currentQ");
-							$("#pageContents .question:eq(" + qNo + ") .result").removeClass("hidden");
+							$("#pageContents .question:eq(" + qNo + ") .result")
+								.removeClass("hidden")
+								.parent().find(".tickTxt").html(tick);
+							
 							$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
 							$pageContents.data("currentQ", qNo + 1);
 						}
@@ -290,7 +301,7 @@
 				<div id="questionGroup">
 					<div class="question">
 						<div></div>
-						<img class="result"></img>
+						<span class="tickTxt ui-helper-hidden-accessible"></span><span class="result fa fa-fw fa-x-tick"></span>
 						<input/>
 					</div>
 
