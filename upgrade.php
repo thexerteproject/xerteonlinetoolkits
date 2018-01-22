@@ -493,7 +493,7 @@ function upgrade_9()
 }
 
 
-function upgrade_10()
+function upgrade_12()
 {
     // Update the list of allowed MIME types.
 
@@ -535,7 +535,7 @@ function upgrade_10()
     }
 }
 
-function upgrade_11()
+function upgrade_13()
 {
     // Create, and initialize, the field for enabling MIME upload checks.
 
@@ -559,7 +559,7 @@ function upgrade_11()
     }
 }
 
-function upgrade_12()
+function upgrade_14()
 {
     // Create the field for enabling file extension file upload checks.
 
@@ -583,7 +583,7 @@ function upgrade_12()
     }
 }
 
-function upgrade_13()
+function upgrade_15()
 {
     // Create the file_extensions blacklist field.
 
@@ -609,7 +609,7 @@ function upgrade_13()
     }
 }
 
-function upgrade_14()
+function upgrade_16()
 {
     // Create the ClamAV antivirus check settings.
 
