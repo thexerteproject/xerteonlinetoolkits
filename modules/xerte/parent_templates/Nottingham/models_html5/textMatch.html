@@ -386,7 +386,7 @@
                 success: l_correct == l_total,
                 score: (l_correct * 100.0)/l_total
             };
-            XTExitInteraction(x_currentPage, $this.data("target").data("id"), result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+            XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
 
             if(XTGetMode() == "normal"){
 	            $("#dragDropHolder .label")
@@ -423,7 +423,7 @@
                     correctOptions.push(correctOption);
             	}
             );
-            XTEnterInteraction(x_currentPage, i, 'match', placeholder, correctOptions, correctAnswers, correctFeedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswers, correctFeedbacks, x_currentPageXML.getAttribute("trackinglabel"));
 
 		}
 		

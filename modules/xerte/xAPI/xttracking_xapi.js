@@ -1376,7 +1376,7 @@ function XTInitialise()
         }else{
             userEMail = username;
         }
-        if (fullusername == undefined)
+        if (typeof fullusername == 'undefined')
             fullusername = "Unknown";
         switch(studentidmode)
         {
@@ -1403,7 +1403,7 @@ function XTInitialise()
                 actor = {
                         objectType: "Group",
                         account: {
-                            name: group,
+                            name: groupname,
                             homePage: baseUrl() + state.templateId
                         }
                     };
@@ -1692,36 +1692,39 @@ function XTSetAttendance(page_nr, name, score, page_name)
     {
         id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
     }
-    var statement = new TinCan.Statement(
-        {
-            actor: actor,
-            verb: {
-                id: "http://adlnet.gov/expapi/verbs/attended",
-                display: {
-                    "en-US": "attended"
-                }
-            },
-            result:{
-                "score": {
-                    "scaled": score / 100
-                },
-                "duration": calcDuration(),
-            },
-            object: {
-                objectType: "Activity",
-                id: id,
-                definition: {
-                    name: {
-                        "en": name
+    var sit = state.findPage(page_nr);
+    if (sit != null) {
+        var statement = new TinCan.Statement(
+            {
+                actor: actor,
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/attended",
+                    display: {
+                        "en-US": "attended"
                     }
-                }
-            },
-            timestamp: this.pageEnd
+                },
+                result: {
+                    "score": {
+                        "scaled": score / 100
+                    },
+                    "duration": calcDuration(sit.start, this.pageEnd),
+                },
+                object: {
+                    objectType: "Activity",
+                    id: id,
+                    definition: {
+                        name: {
+                            "en": name
+                        }
+                    }
+                },
+                timestamp: this.pageEnd
 
-        }
-    );
+            }
+        );
 
-    SaveStatement(statement);
+        SaveStatement(statement);
+    }
 }
 
 function XTSetPageScore(page_nr, score, page_name)
