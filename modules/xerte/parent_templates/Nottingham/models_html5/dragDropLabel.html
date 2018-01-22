@@ -661,7 +661,7 @@
         }
 
         this.showFeedBackandTrackResults = function() {
-            var result = "",
+            var correct = false,
                     numCorrect = 0,
                     l_options = [],
                     l_answer = [],
@@ -701,7 +701,7 @@
                             //add tick
                             $this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
                             //l_feedback = "The label for " + $this.html() + " was placed in the correct hotspot.";
-                            result = true;
+                            correct = true;
                         }
                     }
                     else {
@@ -723,7 +723,7 @@
                             // add cross
                             $this.append('<img class="cross" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Cross") + '"></img>');
                             //l_feedback = "The label for " + $this.html() + " was placed in the wrong hotspot.";
-                            result = false;
+                            correct = false;
                         }
                     }
 
@@ -737,6 +737,11 @@
                     }
 
                     // Track answer
+                    var result =
+                        {
+                            success: correct,
+                            score: $(x_currentPageXML).children().length === 0 ? 100.0 : numCorrect * 100.0 /  $(x_currentPageXML).children().length
+                        };
                     XTExitInteraction(x_currentPage, i, result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
                 });
 

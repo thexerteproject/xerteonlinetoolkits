@@ -1468,7 +1468,7 @@ function x_changePageStep5(x_gotoPage) {
                 customHTML.leavePage();
             }
         }
-        XTExitPage(x_currentPage, x_currentPageXML.getAttribute("name"));
+        XTExitPage(x_currentPage, x_currentPageXML.getAttribute("trackinglabel"));
     }
     x_currentPage = x_gotoPage;
     x_currentPageXML = x_pages[x_currentPage];
@@ -1548,7 +1548,7 @@ function x_changePageStep5(x_gotoPage) {
     if (x_pageInfo[x_currentPage].built != false) {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
 		// Use a clean text version of the page title
-        XTEnterPage(x_currentPage, $('<div>').html(pageTitle).text(), x_pageInfo[x_currentPage].type);
+        XTEnterPage(x_currentPage, x_currentPageXML.getAttribute("trackinglabel"), x_pageInfo[x_currentPage].type);
 
         var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);
@@ -1624,7 +1624,8 @@ function x_changePageStep5(x_gotoPage) {
 			}
 
 			// Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
-			XTEnterPage(x_currentPage, pageTitle);
+            var label = x_currentPageXML.getAttribute("trackinglabel");
+            XTEnterPage(x_currentPage, label);
 
 			var modelfile = x_pageInfo[x_currentPage].type;
 			if (typeof modelfilestrs[modelfile] != 'undefined')

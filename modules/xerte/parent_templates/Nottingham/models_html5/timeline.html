@@ -276,9 +276,10 @@
 		{
 			var tracked = true;
 			var l_options = [],
-            l_correct = 0,
-            l_total = 0,
-            correct = false;
+				l_answers = [],
+				l_feedbacks = [],
+            	l_correct = 0,
+            	l_total = 0;
 
             $("#labelHolder .label").each(function(i) {
             	
@@ -295,21 +296,23 @@
 				
 				
         		var l_draglabel	= $this.text().trim();
-        		
-        		l_options = [];
+        		var option = {};
         		option = {source:l_draglabel, target:l_placeholder};
-        		l_answer = l_draglabel + "-->" + l_placeholder;
-        		l_options.push(option);
-        		correct = false;
-				if ($this.data("target").is($this.data("currentTarget"))) {
+                l_options.push(option);
+        		l_answers.push(l_draglabel + "-->" + l_placeholder);
+        		l_feedbacks.push($("#feedback").text());
+        		if ($this.data("target").is($this.data("currentTarget"))) {
 					l_correct++;
-					correct = true;
 				}
-				
-				XTExitInteraction(x_currentPage, $this.data("target").data("id"), correct, l_options, l_answer, $("#feedback").text(), x_currentPageXML.getAttribute("trackinglabel"));
 				l_total++;
 			});
-            
+            var result =
+				{
+				    success: l_correct == l_total,
+					score: (l_correct * 100.0)/l_total
+				}
+            XTExitInteraction(x_currentPage, $this.data("target").data("id"), result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+
                   
             
             if (XTGetMode() == "normal")
@@ -330,21 +333,25 @@
             }
             
             XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
+            var correctOptions = [],
+                correctAnswers = [],
+                correctFeedbacks = [];
             $(x_currentPageXML).children().each(
             	function(i)
             	{
 					var placeholder = $("<div/>").html(this.getAttribute("name")).text().trim();
 					var draglabel	= $("<div/>").html(this.getAttribute("text")).text().trim();
-					options = [];
+					var correctOption = {};
                     correctOption = {source:draglabel, target:placeholder};
-                    correctOptions = [];
                     correctOptions.push(correctOption);
-                    correctAnswer = draglabel + "-->" + placeholder;
-                    XTEnterInteraction(x_currentPage, i, 'match', placeholder, correctOptions, correctAnswer, "Correct", x_currentPageXML.getAttribute("trackinglabel"));
+                    correctAnswers.push(draglabel + "-->" + placeholder);
+                    correctFeedbacks.push("Correct");
             	}
             );
-           
-		}
+            XTEnterInteraction(x_currentPage, i, 'match', placeholder, correctOptions, correctAnswers, correctFeedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+
+
+        }
 		
 		
 		

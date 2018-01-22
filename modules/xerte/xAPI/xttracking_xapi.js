@@ -17,14 +17,14 @@ function makeId(page_nr, ia_nr, ia_type, ia_name)
         // ia_nam can be HTML, just extract text from it
         var div = $("<div>").html(ia_name);
         var strippedName = div.text();
-        tmpid += ':' + encodeURIComponent(strippedName.replace(/ /g, "_"));
+        tmpid += ':' + encodeURIComponent(strippedName.replace(/^[a-zA-Z0-9_ ]/g, "").replace(/ /g, "_"));
         // Truncate to max 255 chars, this should be 4000
         tmpid = tmpid.substr(0,255);
     }
     return tmpid;
 }
 
-this.baseUrl = function()
+baseUrl = function()
 {
     var pathname = window.location.href;
     var newPathname = pathname.split("/");
@@ -53,6 +53,9 @@ function XApiTrackingState()
     this.lo_completed = 0;
     this.lo_passed = 0;
     this.page_timeout = 5000;
+    this.templateId = -1;
+    this.templateName = "";
+    this.debug = false;
 
 
 
@@ -74,12 +77,33 @@ function XApiTrackingState()
     this.findInteraction = findInteraction;
     this.findCreate = findCreate;
     this.enterPage = enterPage;
+    this.formatDate = formatDate;
+    this.verifyResult = verifyResult;
+    this.verifyEnterInteractionParameters = verifyEnterInteractionParameters;
+    this.verifyExitInteractionParameters = verifyExitInteractionParameters;
 
     function initialise()
     {
 
     }
 
+    function formatDate(d)
+    {
+        // Build a string of the form YYYY-MM-DDThh:mm:ss+hh:mm, where +hh:mm is the timezone offset
+        var twoDigitMonth = d.getMonth()+1+"";
+        if(twoDigitMonth.length==1)  twoDigitMonth="0" +twoDigitMonth;
+        var twoDigitDate = d.getDate() + "";
+        if(twoDigitDate.length==1) twoDigitDate="0" +twoDigitDate;
+        var twoDigitHours = d.getHours()+1+"";
+        if (twoDigitHours.length==1) twoDigitHours = "0"+twoDigitHours;
+        var twoDigitMinutes = d.getMinutes()+1+"";
+        if (twoDigitMinutes.length==1) twoDigitMinutes = "0"+twoDigitMinutes;
+        var twoDigitSeconds = d.getSeconds()+1+"";
+        if (twoDigitSeconds.length==1) twoDigitSeconds = "0"+twoDigitSeconds;
+        var tzoffset = new Date().toString().match(/([-\+][0-9]+)\s/)[1];
+
+        return d.getFullYear() + '-' + twoDigitMonth + '-' + twoDigitDate + 'T' + twoDigitHours + ':' + twoDigitMinutes + ':' + twoDigitSeconds + tzoffset;
+    }
 
     function getdScaledScore()
     {
@@ -191,20 +215,20 @@ function XApiTrackingState()
         return true;
     }
 
-    function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
+    function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, page_name)
     {
+        this.verifyEnterInteractionParameters(ia_type, ia_name, correctoptions, correctanswer, feedback);
         interaction = new XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name);
-        interaction.enterInteraction(correctanswer, correctoptions);
+        interaction.enterInteraction(correctanswer, correctoptions, page_name);
         this.interactions.push(interaction);
     }
 
-    function exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
+    function exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, page_name)
     {
         var sit = this.findInteraction(page_nr, ia_nr);
-        if(ia_nr != -1){
-            sit.exitInteraction(result,learneranswer, learneroptions, feedback);
-        }
-        sit.exit();
+        this.verifyExitInteractionParameters(sit, result, learneroptions, learneranswer, feedback);
+
+        sit.exitInteraction(result,learneranswer, learneroptions, feedback, page_name);
 
         var temp = false;
         var i = 0;
@@ -251,7 +275,6 @@ function XApiTrackingState()
         if (sit != null && (state.scoremode != 'first' || sit.count < 1))
         {
             sit.score = score;
-            sit.count++;
         }
     }
 
@@ -283,8 +306,6 @@ function XApiTrackingState()
         return null;
     }
 
-
-
     function findCreate(page_nr, ia_nr, ia_type, ia_name)
     {
         var tmpid = makeId(page_nr, ia_nr, ia_type, ia_name);
@@ -314,8 +335,484 @@ function XApiTrackingState()
         var sit = this.findCreate(page_nr, ia_nr, ia_type, ia_name);
         return sit;
     }
+    /**
+     * Check whether result has the valid structure and contents
+     * @param result
+     *
+     * result should be an object with a boolean field success and a float field score
+     */
+    function verifyResult(result)
+    {
+        if (this.debug)
+        {
+            if (typeof result != 'object' || typeof result['success'] != 'boolean' || typeof result['score'] != 'number' || result['score'] < 0.0 || result['score'] > 100.0)
+            {
+                console.log("Invalid result structure: " + result);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param ia_type
+     * @param ia_name
+     * @param correctoptions
+     * @param correctanswer
+     * @param feedback
+     *
+     *  correctoptions and correctanswer depends on the sit_iatype
+     *
+     *  1. matching
+     *      correctoptions: array of objects with source and target strings
+     *              [
+     *              {
+     *                  source: 'lettuce',
+     *                  target: 'vegetable'
+     *              },
+     *              {
+     *                  source: 'apple',
+     *                  target: 'fruit'
+     *              },
+     *              {
+     *                  source: 'pear',
+     *                  target: 'vegetable'
+     *              }
+     *              ]
+     *      correctanswer: array of matching representation
+     *              [
+     *              'lettuce --> vegetable',
+     *              'apple --> fruit',
+     *              'pear --> fruit'
+     *              ]
+     *
+     *   2. multiplechoice
+     *       correctoptions: array of objects containg all possible options numbered "1" to max nr of options.
+     *              [
+     *              {
+     *                  id: '1',
+     *                  answer: 'London',
+     *                  result: true
+     *              },
+     *              {
+     *                  id: '2',
+     *                  answer: 'Paris',
+     *                  result: false
+     *              },
+     *              {
+     *                  id: '3',
+     *                  answer: 'Amsterdam',
+     *                  result: false
+     *              }
+     *              ]
+     *       correctanswers contains an array with the answer string of the above structure
+     *              [
+     *                  'London',
+     *                  'Paris',
+     *                  'Amsterdam'
+     *              ]
+     *
+     *    3. numeric
+     *        correctoptions is ignored
+     *        correctanswers is ignored
+     *
+     *    4. text, fill-in
+     *        correctoptions contains an array of strings that are correct. With type text, array is assumed to be empty
+     *        correctanswers is ignored
+     *
+     *    5. page
+     *         correctoptions is ignored
+     *         correctanswers is ignored
+     *
+     *    6. default
+     *          flag warning
+     *
+     */
+    function verifyEnterInteractionParameters(ia_type, ia_name, correctoptions, correctanswer, feedback)
+    {
+        if (this.debug) {
+            switch(ia_type)
+            {
+                case 'match':
+                    /*
+                    *  1. matching
+                    *      correctoptions: array of objects with source and target strings
+                    *              [
+                    *              {
+                    *                  source: 'lettuce',
+                    *                  target: 'vegetable'
+                    *              },
+                    *              {
+                    *                  source: 'apple',
+                    *                  target: 'fruit'
+                    *              },
+                    *              {
+                    *                  source: 'pear',
+                    *                  target: 'fruit'
+                    *              }
+                    *              ]
+                    *      learneranswer: array of matching representation
+                    *              [
+                    *              'lettuce --> vegetable',
+                    *              'apple --> fruit',
+                    *              'pear --> fruit'
+                    *              ]
+                    */
+                    if (typeof correctoptions == 'object')
+                    {
+                        for (var i=0; i<correctoptions.length; i++)
+                        {
+                            var item = correctoptions[i];
+                            if (typeof item != 'object' || typeof item['source'] != 'string' || typeof item['target'] != 'string')
+                            {
+                                console.log("Invalid structure for correctoptions for type match: " + correctoptions);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for correctoptions for type match: " + correctoptions);
+                    }
+                    if (typeof correctanswer == 'object')
+                    {
+                        for (var i=0; i<correctanswer.length; i++)
+                        {
+                            var item = correctanswer[i];
+                            if (typeof item != 'string')
+                            {
+                                console.log("Invalid structure for correctanswer for type match: " + correctanswer);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for correctanswer for type match: " + correctanswer);
+                    }
+                    break;
+                case 'multiplechoice':
+                    /*
+                     * 2. multiplechoice
+                     *       correctoptions: array of objects containg all possible options numbered "1" to max nr of options.
+                     *              [
+                     *              {
+                     *                  id: '1',
+                     *                  answer: 'London',
+                     *                  result: true
+                     *              },
+                     *              {
+                     *                  id: '2',
+                     *                  answer: 'Paris',
+                     *                  result: false
+                     *              },
+                     *              {
+                     *                  id: '3',
+                     *                  answer: 'Amsterdam',
+                     *                  result: false
+                     *              }
+                     *              ]
+                     *       correctanswers contains an array with the answer string of the above structure
+                     *              [
+                     *                  'London',
+                     *                  'Paris',
+                     *                  'Amsterdam'
+                     *              ]
+                     */
+                    if (typeof correctoptions == 'object')
+                    {
+                        for (var i=0; i<correctoptions.length; i++)
+                        {
+                            var item = correctoptions[i];
+                            if (typeof item != 'object' || typeof item['id'] != 'string' || typeof item['answer'] != 'string' || typeof item['result'] != 'boolean')
+                            {
+                                console.log("Invalid structure for correctoptions for type multiplechoice: " + correctoptions);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for correctoptions for type multiplechoice: " + correctoptions);
+                    }
+                    if (typeof correctanswer == 'object')
+                    {
+                        for (var i=0; i<correctanswer.length; i++)
+                        {
+                            var item = correctanswer[i];
+                            if (typeof item != 'string')
+                            {
+                                console.log("Invalid structure for correctanswer for type multiplechoice: " + correctanswer);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for correctanswer for type multiplechoice: " + correctanswer);
+                    }
+                    break;
+                case 'numeric':
+                    /**
+                     * 3. numeric
+                     *        correctoptions is ignored
+                     *        correctanswers is ignored
+                     */
+                    // Nothing to check
+                    break;
+                case 'text':
+                case 'fill-in':
+                    /**
+                     * 4. text, fill-in
+                     *        correctoptions contains an array of strings that are correct. With type text, array is assumed to be empty
+                     *        correctanswers is ignored
+                     *
+                     */
+                    if (typeof correctoptions == 'object')
+                    {
+                        for (var i=0; i<correctoptions.length; i++)
+                        {
+                            var item = correctoptions[i];
+                            if (typeof item != 'string')
+                            {
+                                console.log("Invalid structure for correctoptions for type multiplechoice: " + correctoptions);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for correctoptions for type multiplechoice: " + correctoptions);
+                    }
+                    break;
+                case 'page':
+                case 'result':
+                    /**
+                     * 5. page
+                     *         correctoptions is ignored
+                     *         correctanswers is ignored
+                     */
+                    // Nothing to check
+                    break;
+
+                default:
+                    console.log("Invalid ia_type " + ia_type + " entering interaction.");
+                    break;
+            }
+        }
+    }
 
 
+    /**
+     * Routine to verify the structures of result, learneroptions and learneranswer given sit.ia_type
+     * @param sit
+     * @param result
+     * @param learneroptions
+     * @param learneranswer
+     * @param feedback
+     *
+     *  result should be an object
+     *          {
+     *              success: true,
+     *              score: 100.0
+     *          }
+     *
+     *  learneroptions and learneranswer depends on the sit_iatype
+     *
+     *  1. matching
+     *      learneroptions: array of objects with source and target strings
+     *              [
+     *              {
+     *                  source: 'lettuce',
+     *                  target: 'vegetable'
+     *              },
+     *              {
+     *                  source: 'apple',
+     *                  target: 'fruit'
+     *              },
+     *              {
+     *                  source: 'pear',
+     *                  target: 'vegetable'
+     *              }
+     *              ]
+     *      learneranswer: array of matching representation
+     *              [
+     *              'lettuce --> vegetable',
+     *              'apple --> fruit',
+     *              'pear --> vegetable'
+     *              ]
+     *
+     *   2. multiplechoice
+     *       learneroptions: array of objects indicating selected options numbered "1" to max nr of options. Therer are only more than one entries, if there are multiple answers allowed
+     *              [
+     *              {
+     *                  id: '2',
+     *                  answer: 'Paris'
+     *                  result: false
+     *              }
+     *              ]
+     *       learneranswers contains an array with the answer string of the above structure
+     *              [
+     *                  'Paris'
+     *              ]
+     *
+     *    3. numeric
+     *        learneroptions: ignored
+     *        learneranswer contains a number between 0 and 100
+     *
+     *    4. text, fill-in
+     *        learneroptions is ignored
+     *        learneranswers contains the selected/entered text
+     *
+     *    5. page
+     *         learneroptions is ignored
+     *         learneranswers is ignored
+     *
+     *    6. default
+     *          flag warning
+     *
+     */
+    function verifyExitInteractionParameters(sit, result, learneroptions, learneranswer, feedback)
+    {
+        if (this.debug) {
+            verifyResult(result);
+            switch(sit.ia_type)
+            {
+                case 'match':
+                    /*
+                    *  1. matching
+                    *      learneroptions: array of objects with source and target strings
+                    *              [
+                    *              {
+                    *                  source: 'lettuce',
+                    *                  target: 'vegetable'
+                    *              },
+                    *              {
+                    *                  source: 'apple',
+                    *                  target: 'fruit'
+                    *              },
+                    *              {
+                    *                  source: 'pear',
+                    *                  target: 'vegetable'
+                    *              }
+                    *              ]
+                    *      learneranswer: array of matching representation
+                    *              [
+                    *              'lettuce --> vegetable',
+                    *              'apple --> fruit',
+                    *              'pear --> vegetable'
+                    *              ]
+                    */
+                    if (typeof learneroptions == 'object')
+                    {
+                        for (var i=0; i<learneroptions.length; i++)
+                        {
+                            var item = learneroptions[i];
+                            if (typeof item != 'object' || typeof item['source'] != 'string' || typeof item['target'] != 'string')
+                            {
+                                console.log("Invalid structure for learneroptions for type match: " + learneroptions);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for learneroptions for type match: " + learneroptions);
+                    }
+                    if (typeof learneranswer == 'object')
+                    {
+                        for (var i=0; i<learneranswer.length; i++)
+                        {
+                            var item = learneranswer[i];
+                            if (typeof item != 'string')
+                            {
+                                console.log("Invalid structure for learneranswer for type match: " + learneranswer);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for learneranswers for type match: " + learneranswer);
+                    }
+                    break;
+                case 'multiplechoice':
+                    /*
+                     * 2. multiplechoice
+                     *       learneroptions: array of objects indicating selected options numbered "1" to max nr of options. Therer are only more than one entries, if there are multiple answers allowed
+                     *              [
+                     *              {
+                     *                  id: '2',
+                     *                  answer: 'Paris'
+                     *                  result: false
+                     *              }
+                     *              ]
+                     *       learneranswers contains an array with the answer string of the above structure
+                     *              [
+                     *                  'Paris'
+                     *              ]
+                     */
+                    if (typeof learneroptions == 'object')
+                    {
+                        for (var i=0; i<learneroptions.length; i++)
+                        {
+                            var item = learneroptions[i];
+                            if (typeof item != 'object' || typeof item['id'] != 'string' || typeof item['answer'] != 'string' || typeof item['result'] != 'boolean')
+                            {
+                                console.log("Invalid structure for learneroptions for type multiplechoice: " + learneroptions);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for learneroptions for type multiplechoice: " + learneroptions);
+                    }
+                    if (typeof learneranswer == 'object')
+                    {
+                        for (var i=0; i<learneranswer.length; i++)
+                        {
+                            var item = learneranswer[i];
+                            if (typeof item != 'string')
+                            {
+                                console.log("Invalid structure for learneranswer for type multiplechoice: " + learneranswer);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for learneranswers for type multiplechoice: " + learneranswer);
+                    }
+                    break;
+                case 'numeric':
+                    /**
+                     * 3. numeric
+                     *        learneroptions: ignored
+                     *        learneranswer contains a number between 0 and 100
+                     */
+                    if (typeof learneranswer != 'number')
+                    {
+                        console.log("Invalid structure for learneranswers for type numeric: " + learneranswer);
+                    }
+                    break;
+                case 'text':
+                case 'fill-in':
+                    /**
+                     * 4. text, fill-in
+                     *        learneroptions is ignored
+                     *        learneranswers contains the selected/entered text
+                     *
+                     */
+                    if (typeof learneranswer != 'string')
+                    {
+                        console.log("Invalid structure for learneranswers for type fill-in: " + learneranswer);
+                    }
+                case 'page':
+                case 'result':
+                    /**
+                     * 5. page
+                     *         learneroptions is ignored
+                     *         learneranswers is ignored
+                     */
+                    // Nothing to check
+                    break;
+                default:
+                    console.log("Invalid ia_type " + sit.ia_type + " exiting interaction.");
+                    break;
+            }
+        }
+    }
 }
 
 function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
@@ -357,24 +854,492 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
 
     }
 
-    function enterInteraction(correctAnswers, correctOptions)
+    function enterInteraction(correctAnswers, correctOptions, page_name)
     {
         this.correctAnswers = correctAnswers;
         this.correctOptions = correctOptions;
     }
 
-    function exitInteraction(result, learnerAnswers, learnerOptions, feedback)
+    function exitInteraction(result, learnerAnswers, learnerOptions, feedback, page_name)
     {
         this.learnerAnswers = learnerAnswers;
         this.learnerOptions = learnerOptions;
         this.result = result;
         this.feedback = feedback;
+
+        this.exitInteractionStamp = new Date();
+        var id = baseUrl() + state.templateId + "/" + this.page_nr;
+        var description = "Page " + page_nr;
+
+        if (ia_nr >=0)
+        {
+            if (page_name != null && page_name != "") {
+                if (ia_name != null && ia_name != "") {
+                    id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_") + "/" + ia_name.replace(/ /g,"_");
+                }
+                else
+                {
+                    id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_") + "/" + ia_nr;
+                }
+            }
+            else
+            {
+                if (ia_name != null && ia_name != "") {
+                    id = baseUrl() + state.templateId + "/" + page_nr + "/" + ia_name.replace(/ /g,"_");
+                }
+                else
+                {
+                    id = state.baseUrl() + state.templateId + "/" + page_nr + "/" + ia_nr;
+                }
+            }
+        }
+        else
+        {
+            if (page_name != null && page_name != "")
+            {
+                id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
+                description = page_name;
+            }
+        }
+        var pageref = " page " + page_nr + " of object " + state.templateId + " of Xerte Installation " + baseUrl();
+        if (page_name != null && page_name != "")
+        {
+            pageref = " page " + page_name + "(page " + page_nr + ") of object " + state.templateId + " of Xerte Installation " + baseUrl();
+        }
+
+        if (this.exit())
+        {
+
+
+            if (state.scoremode != 'first' || this.count <= 1) {
+
+                if (!state.trackingmode != 'none'
+                    && ((this.ia_nr < 0 && (state.trackingmode != 'full' || this.nrinteractions == 0))
+                        || (this.ia_nr >= 0 && state.trackingmode == 'full'))) {
+                    var statement = {
+                        timestamp: this.end,
+                        actor: actor,
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/answered",
+                            display: {
+                                "en-US": "answered"
+                            }
+                        },
+                        object: {
+                            objectType: "Activity",
+                            id: id
+                        }
+                    };
+
+                    var psit = state.findPage(this.page_nr);
+                    if (psit != null) {
+                        var pweighting = psit.weighting;
+                        var nrinteractions = psit.nrinteractions;
+                    }
+                    else {
+                        var pweighting = 1.0;
+                        var nrinteractions = 1.0;
+                    }
+                    switch (this.ia_type) {
+                        case 'match':
+                            // We have an options as an array of objects with source and target
+                            // and we have corresponding array of answers strings
+                            // Construct answers like a:Answerstring
+                            var scormAnswerArray = [];
+                            var i = 0;
+                            for (i = 0; i < learnerOptions.length; i++) {
+                                // Create ascii characters from option number and ignore answer string
+                                var entry = learnerOptions[i];
+                                if (typeof(entry.source) == "undefined")
+                                    entry.source = "";
+                                scormAnswerArray.push(entry.source.replace(/ /g, "_") + "[.]" + entry.target.replace(/ /g, "_"));
+                            }
+                            var scorm_lanswer = scormAnswerArray.join('[,]');
+
+                            // Do the same for the answer pattern
+                            var sourceArray = [];
+                            var targetArray = [];
+                            var scormCorrectArray = [];
+                            var i = 0;
+                            for (i = 0; i < this.correctOptions.length; i++) {
+                                // Create ascii characters from option number and ignore answer string
+                                var entry = this.correctOptions[i];
+                                sourceArray.push({
+                                    id: entry.source.replace(/ /g, "_"),
+                                    description: {
+                                        "en-US": entry.source
+                                    }
+                                });
+                                // Only add to target array if not already present
+                                var found = false;
+                                var targetid = entry.target.replace(/ /g, "_");
+                                for (var j = 0; j < targetArray.length; j++) {
+                                    if (targetid == targetArray[j]['id']) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (!found) {
+                                    targetArray.push({
+                                        id: entry.target.replace(/ /g, "_"),
+                                        description: {
+                                            "en-US": entry.target
+                                        }
+                                    });
+                                }
+                                scormCorrectArray.push(entry.source.replace(/ /g, "_") + "[.]" + entry.target.replace(/ /g, "_"));
+                            }
+                            var scorm_canswer = scormCorrectArray.join('[,]');
+                            statement.object.definition =
+                                {
+                                    name: {
+                                        "en-US": ia_name
+                                    },
+                                    description:
+                                        {
+                                            "en-US": "Matching interaction " + ia_name + " of " + pageref
+                                        },
+                                    type: "http://adlnet.gov/expapi/activities/cmi.interaction",
+                                    interactionType: "matching",
+                                    source: sourceArray,
+                                    target: targetArray,
+                                    correctResponsesPattern: scorm_canswer
+                                };
+                            statement.result = {
+                                duration: calcDuration(this.start, this.end),
+                                score: {
+                                    raw: result.score,
+                                    min: 0.0,
+                                    max: 100.0,
+                                    scaled: result.score / 100.0
+                                },
+                                response: scorm_lanswer,
+                                success: result.success,
+                                completion: true,
+                                extensions:
+                                    {
+                                        "http://xerte.org.uk/result/match": scorm_lanswer
+                                    }
+                            };
+                            break;
+                        case 'multiplechoice':
+                            // We have an options as an array of numbers
+                            // and we have corresponding array of answers strings
+                            // Construct answers like a:Answerstring
+                            var scormAnswerArray = [];
+                            var i = 0;
+                            for (i = 0; i < learnerOptions.length; i++) {
+                                var entry = learnerOptions[i]['answer'].replace(/ /g, "_");
+                                scormAnswerArray.push(entry);
+                            }
+                            var scorm_lanswer = scormAnswerArray.join('[,]');
+
+                            // Do the same for the answer pattern
+                            var scormArray = [];
+                            var scormCorrectArray = []
+                            var i = 0;
+                            for (i = 0; i < this.correctOptions.length; i++) {
+                                var entry = {
+                                    id: this.correctOptions[i].answer.replace(/ /g, "_"),
+                                    description: {
+                                        "en-US": this.correctOptions[i]['answer']
+                                    }
+                                };
+                                scormArray.push(entry);
+                                if (this.correctOptions[i].result) {
+                                    scormCorrectArray.push(this.correctOptions[i].answer.replace(/ /g, "_"));
+                                }
+                            }
+                            var scorm_canswer = [scormCorrectArray.join('[,]')];
+
+                            statement.object.definition =
+                                {
+                                    name: {
+                                        "en-US": ia_name
+                                    },
+                                    description:
+                                        {
+                                            "en-US": "Choice interaction " + ia_name + " of " + pageref
+                                        },
+                                    type: "http://adlnet.gov/expapi/activities/cmi.interaction",
+                                    interactionType: "choice",
+                                    choices: scormArray,
+                                    correctResponsesPattern: scorm_canswer
+                                };
+                            statement.result = {
+                                duration: calcDuration(this.start, this.end),
+                                score: {
+                                    raw: result.score,
+                                    min: 0.0,
+                                    max: 100.0,
+                                    scaled: result.score / 100.0
+                                },
+                                response: scorm_lanswer,
+                                success: result.success,
+                                completion: true,
+                                extensions:
+                                    {
+                                        "http://xerte.org.uk/result/multiplichoice": scorm_lanswer
+                                    }
+                            };
+                            break;
+                        case 'numeric':
+                            statement.object.definition =
+                                {
+                                    name: {
+                                        "en-US": ia_name
+                                    },
+                                    description:
+                                        {
+                                            "en-US": "Numeric interaction " + ia_name + " of " + pageref
+                                        },
+                                    type: "http://adlnet.gov/expapi/activities/cmi.interaction",
+                                    interactionType: "numeric",
+                                    correctResponsesPattern: ["0[:]100"]
+                                };
+                            if (ia_nr < 0)  // Page mode
+                            {
+                                statement.result = {
+                                    duration: calcDuration(this.start, this.end),
+                                    score: {
+                                        raw: this.score,
+                                        min: 0.0,
+                                        max: 100.0,
+                                        scaled: this.score / 100.0,
+                                        response: this.score
+                                    },
+                                    success: (this.score >= state.lo_passed),
+                                    completion: true
+                                };
+                            }
+                            else { // Interaction mode
+                                statement.result = {
+                                    duration: calcDuration(this.start, this.end),
+                                    score: {
+                                        raw: result.score,
+                                        min: 0.0,
+                                        max: 100.0,
+                                        scaled: result.score / 100.0
+                                    },
+                                    response: this.learnerAnswers,
+                                    success: result.success,
+                                    completion: true
+                                };
+                            }
+                            break;
+                        case 'text':
+                        case 'fill-in':
+
+                            // Hmmm is this the page or the interaction itself
+                            if (ia_nr < 0) {
+                                //This is the page
+                                // Get the interaction, it is always assumed to be 0
+                                var siti = state.findInteraction(page_nr, 0);
+                                this.correctAnswers = siti.correctAnswers;
+                                this.learnerAnswers = siti.learnerAnswers;
+                            }
+                            statement.object.definition =
+                                {
+                                    name: {
+                                        "en-US": ia_name
+                                    },
+                                    description:
+                                        {
+                                            "en-US": "Fill-in interaction " + ia_name + " of " + pageref
+                                        },
+                                    type: "http://adlnet.gov/expapi/activities/cmi.interaction",
+                                    interactionType: "fill-in",
+                                    correctResponsesPattern: this.correctAnswers
+                                };
+                            if (sit.ia_type == 'text') {
+                                statement.result = {
+                                    duration: calcDuration(this.start, this.end),
+                                    success: result.success,
+                                    completion: true
+                                };
+                            }
+                            else {
+                                statement.result = {
+                                    duration: calcDuration(this.start, this.end),
+                                    score: {
+                                        raw: result.score,
+                                        min: 0.0,
+                                        max: 100.0,
+                                        scaled: result.score / 100.0,
+                                    },
+                                    response: this.learnerAnswers,
+                                    success: result.success,
+                                    completion: true,
+                                    extensions:
+                                        {
+                                            "http://xerte.org.uk/result/fill-in": this.learnerAnswers
+                                        }
+                                };
+                            }
+                            break;
+                        case 'page':
+                        default:
+                            statement.verb = {
+                                id: "http://adlnet.gov/expapi/verbs/interacted",
+                                display: {
+                                    "en-US": "interacted"
+                                }
+                            };
+                            statement.object.definition =
+                                {
+                                    name: {
+                                        "en": description
+                                    },
+                                    description:
+                                        {
+                                            "en": "Interaction with " + pageref
+                                        }
+                                };
+                            var duration = calcDuration(this.start, this.end);
+                            statement.result = {
+                                duration: duration,
+                                success: result.success,
+                                completion: Math.abs(this.end.getTime() - this.start.getTime()) > state.page_timeout
+                            };
+                    }
+                    statement = new TinCan.Statement(statement);
+                    SaveStatement(statement);
+                }
+
+                if (!surf_mode) {
+                    var statement;
+                    if (ia_nr >= 0) {
+                        statement =
+                            {
+                                actor: actor,
+                                verb: {
+                                    id: "http://adlnet.gov/expapi/verbs/exited",
+                                    display: {
+                                        "en": "exited"
+                                    }
+                                },
+                                object: {
+                                    objectType: "Activity",
+                                    id: id,
+                                    definition: {
+                                        name: {
+                                            "en": ia_name
+                                        }
+                                    }
+                                },
+                                timestamp: new Date()
+                            };
+
+                    }
+                    else
+                    {
+                        statement =
+                            {
+                                actor: actor,
+                                verb: {
+                                    id: "http://adlnet.gov/expapi/verbs/exited",
+                                    display: {
+                                        "en": "exited"
+                                    }
+                                },
+                                object: {
+                                    objectType: "Activity",
+                                    id: id,
+                                    definition: {
+                                        name: {
+                                            "en": description
+                                        }
+                                    }
+                                },
+                                timestamp: new Date()
+                            };
+                    }
+                    statement = new TinCan.Statement(statement);
+                    SaveStatement(statement);
+                }
+                if (surf_mode) {
+                    var statement = new TinCan.Statement(
+                        {
+                            actor: actor,
+                            verb: {
+                                id: "http://lrs.surfuni.org/verb/submitted",
+                                display: {
+                                    "en-US": "Submitted"
+                                }
+                            },
+                            object: {
+                                objectType: "Activity",
+                                id: "http://lrs.surfuni.org/object/assessment",
+                                definition: {
+                                    name: {
+                                        "en-US": "Assessment"
+                                    }
+                                }
+                            },
+                            object: {
+                                objectType: "Activity",
+                                id: id
+                            },
+                            context: {
+                                extensions: {
+                                    "http://lrs.surfuni.org/context/course": surf_course,
+                                    "http://lrs.surfuni.org/context/recipe": surf_recipe,
+                                    "http://lrs.surfuni.org/context/label": ""
+                                }
+                            },
+                            timestamp: new Date()
+                        }
+                    );
+                    SaveStatement(statement);
+                    // If not a page
+                    if (ia_nr >= 0) {
+                        var statement = new TinCan.Statement(
+                            {
+                                actor: actor,
+                                verb: {
+                                    id: "http://adlnet.gov/expapi/verbs/scored",
+                                    display: {
+                                        "en-US": "Scored"
+                                    }
+                                },
+                                object: {
+                                    objectType: "Activity",
+                                    id: id
+                                },
+                                result: {
+                                    duration: calcDuration(this.start, this.end),
+                                    completion: true,
+                                    success: result.success,
+                                    score: {
+                                        scaled: result.score / 100.0,
+                                        raw: result.score,
+                                        min: 0.0,
+                                        max: 100.0
+                                    },
+                                    duration: calcDuration(sit.start, sit.end),
+                                },
+                                context: {
+                                    extensions: {
+                                        "http://lrs.surfuni.org/context/course": surf_course,
+                                        "http://lrs.surfuni.org/context/recipe": surf_recipe,
+                                        "http://lrs.surfuni.org/context/label": ""
+                                    }
+                                },
+                                timestamp: new Date()
+                            });
+                    }
+                    SaveStatement(statement);
+                }
+            }
+        }
     }
 
 }
 
 
 var state = new XApiTrackingState();
+// enable debug for now
+state.debug = true;
 
 var scorm=false,
     lrsInstance,
@@ -387,17 +1352,71 @@ var answeredQs = [];
 
 function XTInitialise()
 {
-    if(username == undefined || username == "")
+    // Initialise actor object
+    if (studentidmode != undefined && typeof studentidmode == 'string')
     {
-       userEMail = "mailto:email@test.com"
-    }else{
-        userEMail = username;
+        studentidmode = parseInt(studentidmode);
     }
+    if (studentidmode == undefined || (studentidmode <= 0 && studentidmode > 3))
+    {
+        // set actor to global group
+        actor = {
+                objectType: "Group",
+                account: {
+                    name: "global",
+                    homePage: baseUrl() + state.templateId
+                }
+            };
+    }
+    else
+    {
+        if(username == undefined || username == "")
+        {
+            userEMail = "mailto:email@test.com"
+        }else{
+            userEMail = username;
+        }
+        if (fullusername == undefined)
+            fullusername = "Unknown";
+        switch(studentidmode)
+        {
+            case 0: //mbox
+                actor = {
+                        objectType: "Agent",
+                        mbox: userEMail
+                    };
+                break;
+            case 1:
+                actor = {
+                        objectType: "Agent",
+                        mbox_sha1sum: mboxsha1
+                    };
+                break;
+            case 2:
+                actor = {
+                        objectType: "Agent",
+                        mbox: userEMail,
+                        name: fullusername
+                    };
+                break;
+            case 3:
+                actor = {
+                        objectType: "Group",
+                        account: {
+                            name: group,
+                            homePage: baseUrl() + state.templateId
+                        }
+                    };
+
+        }
+    }
+
     if (! state.initialised)
     {
         state.initialised = true;
         state.initialise();
     }
+    state.mode = "normal";
 
     if(lrsInstance == undefined){
         try{
@@ -415,6 +1434,7 @@ function XTInitialise()
         catch(ex)
         {
             //alert("Failed LRS setup. Error: " + ex);
+            state.mode = "none";
         }
         TinCan.enableDebug();
     }
@@ -430,17 +1450,16 @@ function XTInitialise()
         if (! surf_mode) {
             var statement = new TinCan.Statement(
                 {
-                    actor: {
-                        mbox: userEMail
-                    },
+                    actor: actor,
                     verb: {
                         id: "http://adlnet.gov/expapi/verbs/launched",
                         display: {
                             "en-US": "Launched"
                         }
                     },
-                    target: {
-                        id: this.baseUrl() + state.templateId
+                    object: {
+                        objectType: "Activity",
+                        id: baseUrl() + state.templateId
                         //TODO: get the name for this activity
                     },
                     timestamp: this.initStamp
@@ -453,9 +1472,7 @@ function XTInitialise()
         {
             var statement = new TinCan.Statement(
                 {
-                    actor: {
-                        mbox: userEMail
-                    },
+                    actor: actor,
                     verb: {
                         id: "http://lrs.surfuni.org/verb/joined",
                         display: {
@@ -479,7 +1496,7 @@ function XTInitialise()
                         }
                     },
                     target: {
-                        id: this.baseUrl() + state.templateId
+                        id: baseUrl() + state.templateId
                     },
                     timestamp: this.initStamp
                 }
@@ -501,9 +1518,7 @@ function XTLogin(login, passwd)
     if (! surf_mode) {
         var statement = new TinCan.Statement(
             {
-                actor: {
-                    mbox: userEMail
-                },
+                actor: actor,
                 verb: {
                     id: "http://adlnet.gov/expapi/verbs/logged-in",
                     display: {
@@ -511,7 +1526,7 @@ function XTLogin(login, passwd)
                     }
                 },
                 target: {
-                    id: this.baseUrl() + state.templateId
+                    id: baseUrl() + state.templateId
                 },
                 timestamp: this.loginStamp
             }
@@ -602,32 +1617,42 @@ function XTSetOption(option, value)
         case "templateId":
             state.templateId = value;
             break;
+        case "templateName":
+            state.templateName = value;
+            break;
     }
 }
 
-function XTEnterPage(page_nr, page_name)
+function XTEnterPage(page_nr, page_name, page_type)
 {
     state.enterPage(page_nr, -1, "page", page_name);
     this.pageStart = new Date();
-    var id = this.baseUrl() + state.templateId + "/" + page_nr;
+    var id = baseUrl() + state.templateId + "/" + page_nr;
+    var description = "Page " + page_nr;
     if (page_name != null && page_name != "")
     {
-        id = this.baseUrl() + state.templateId + "/" + page_name;
+        id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
+        description = page_name;
     }
     if (! surf_mode) {
         var statement = new TinCan.Statement(
             {
-                actor: {
-                    mbox: userEMail
-                },
+                actor: actor,
                 verb: {
                     id: "http://adlnet.gov/expapi/verbs/initialized",
                     display: {
-                        "en-US": "Initialized"
+                        "en": "initialized"
                     }
                 },
-                target: {
-                    id: id
+                object: {
+                    objectType: "Activity",
+                    id: id,
+                    definition:{
+                        name:{
+                            "en": description
+                        }
+                    }
+
                 },
                 timestamp: this.pageStart
 
@@ -640,36 +1665,17 @@ function XTEnterPage(page_nr, page_name)
 
 function XTExitPage(page_nr, page_name)
 {
-    var id = this.baseUrl() + state.templateId + "/" + page_nr;
+    var id = baseUrl() + state.templateId + "/" + page_nr;
+    var description = "Page " + page_nr;
     if (page_name != null && page_name != "")
     {
-        id = this.baseUrl() + state.templateId + "/" + page_name;
+        id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
+        description = page_name;
     }
-    if (!surf_mode) {
-        this.exitPageStamp = new Date();
-
-        var statement = new TinCan.Statement(
-            {
-                actor: {
-                    mbox: userEMail
-                },
-                verb: {
-                    id: "http://adlnet.gov/expapi/verbs/exited",
-                    display: {
-                        "en-US": "Exited"
-                    }
-                },
-                target: {
-                    id: id
-                },
-                timestamp: this.exitPageStamp
-            }
-        );
-
-        SaveStatement(statement);
+    var sit = state.findPage(page_nr);
+    if (sit != undefined && sit != null) {
+        state.exitInteraction(page_nr, -1, false, "", sit.score, "", false, page_name);
     }
-    return state.exitInteraction(page_nr, -1, false, "", "", "", false);
-
 }
 
 function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
@@ -681,21 +1687,19 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 function XTSetAttendance(page_nr, name, score, page_name)
 {
     this.pageEnd = new Date();
-    var id = this.baseUrl() + state.templateId + "/" + page_nr;
+    var id = baseUrl() + state.templateId + "/" + page_nr;
     if (page_name != null && page_name != "")
     {
-        id = this.baseUrl() + state.templateId + "/" + page_name;
+        id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
     }
     var statement = new TinCan.Statement(
         {
-            actor: {
-                mbox: userEMail
-            },
+            actor: actor,
             verb: {
-                id: "http://adlnet.gov/expapi/verbs/attended"
-            },
-            target: {
-                id: this.baseUrl() + state.templateId + "/" +  page_nr
+                id: "http://adlnet.gov/expapi/verbs/attended",
+                display: {
+                    "en-US": "attended"
+                }
             },
             result:{
                 "score": {
@@ -708,7 +1712,7 @@ function XTSetAttendance(page_nr, name, score, page_name)
                 id: id,
                 definition: {
                     name: {
-                        "en-US": name
+                        "en": name
                     }
                 }
             },
@@ -724,29 +1728,38 @@ function XTSetPageScore(page_nr, score, page_name)
 {
     state.setPageScore(page_nr, score);
     this.pageEnd = new Date();
-    var id = this.baseUrl() + state.templateId + "/" + page_nr;
+    var id = baseUrl() + state.templateId + "/" + page_nr;
+    var description = "Page " + page_nr;
     if (page_name != null && page_name != "")
     {
-        id = this.baseUrl() + state.templateId + "/" + page_name;
+        id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
+        description = page_name;
     }
     var statement = new TinCan.Statement(
         {
-            actor: {
-                mbox: userEMail
-            },
+            actor: actor,
             verb: {
-                id: "http://adlnet.gov/expapi/verbs/scored"
+                id: "http://adlnet.gov/expapi/verbs/scored",
+                display: {
+                    "en-US": "scored"
+                }
             },
-            target: {
-                id: id
+            object: {
+                objectType: "Activity",
+                id: id,
+                definition:{
+                    name:{
+                        "en": description
+                    }
+                }
             },
             result:{
-                "completion": true,
-                "success": score >= state.lo_passed,
-                "score": {
-                    "scaled": score / 100
+                completion: true,
+                success: score >= state.lo_passed,
+                score: {
+                    scaled: score / 100
                 },
-                "duration": calcDuration(),
+                duration: calcDuration(this.pageStart, this.pageEnd),
             },
             timestamp: this.pageEnd
 
@@ -756,11 +1769,9 @@ function XTSetPageScore(page_nr, score, page_name)
     SaveStatement(statement);
 }
 
-function calcDuration()
+function calcDuration(s, e)
 {
-    this.pageEnd.getTime() - this.pageStart.getTime();
-
-    var delta = Math.abs(this.pageEnd.getTime() - this.pageStart.getTime()) / 1000;
+    var delta = Math.abs(e.getTime() - s.getTime()) / 1000;
 
     var days = Math.floor(delta / 86400);
     delta -= days * 86400;
@@ -768,39 +1779,48 @@ function calcDuration()
     delta -= hours * 3600;
     var minutes = Math.floor(delta / 60) % 60;
     delta -= minutes * 60;
-    var seconds = delta % 60;
-    return "P" + 0 + "Y" + 0 + "M" + days + "DT" + hours + "H" + minutes + "M" + seconds + "S"
+    var seconds = delta;
+    return "PT" + hours + "H" + minutes + "M" + seconds + "S"
 }
 
 function XTSetPageScoreJSON(page_nr, score, JSONGraph, page_name)
 {
     state.setPageScore(page_nr, score);
     this.pageEnd = new Date();
-    var id = this.baseUrl() + state.templateId + "/" + page_nr;
+    var id = baseUrl() + state.templateId + "/" + page_nr;
+    var description = "Page " + page_nr;
     if (page_name != null && page_name != "")
     {
-        id = this.baseUrl() + state.templateId + "/" + page_name;
+        id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
+        description = page_name;
     }
     if (!surf_mode) {
         var statement = new TinCan.Statement(
             {
-                actor: {
-                    mbox: userEMail
-                },
+                actor: actor,
                 verb: {
-                    id: "http://adlnet.gov/expapi/verbs/scored"
+                    id: "http://adlnet.gov/expapi/verbs/scored",
+                    display: {
+                        "en-US": "scored"
+                    }
                 },
-                target: {
-                    id: id
+                object: {
+                    objectType: "Activity",
+                    id: id,
+                    description:{
+                        name:{
+                            "en": description
+                        }
+                    }
                 },
                 result: {
-                    "completion": true,
-                    "success": score >= state.lo_passed,
-                    "score": {
-                        "scaled": score / 100
+                    completion: true,
+                    success: score >= state.lo_passed,
+                    score: {
+                        scaled: score / 100
                     },
-                    "duration": calcDuration(),
-                    "extensions": {
+                    duration: calcDuration(this.pageStart, this.pageEnd),
+                    extensions: {
                         "http://xerte.org.uk/xapi/JSONGraph": JSONGraph
                     }
                 },
@@ -812,30 +1832,64 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph, page_name)
     }
 }
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback, page_name)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, page_name)
 {
-    state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback);
+    state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, page_name);
     this.enterInteractionStamp = new Date();
-    var id = this.baseUrl() + state.templateId + "/" + page_nr;
+    var id = baseUrl() + state.templateId + "/" + page_nr;
+    var description = "Page " + page_nr;
 
     if (ia_nr >=0)
     {
-        var id = this.baseUrl() + state.templateId + "/" + page_nr + "/" + ia_nr;
+        if (page_name != null && page_name != "") {
+            if (ia_name != null && ia_name != "") {
+                id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_") + "/" + ia_name.replace(/ /g,"_");
+                description = ia_name;
+            }
+            else
+            {
+                baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_") + "/" + ia_nr;
+                description = "";
+            }
+        }
+        else
+        {
+            if (ia_name != null && ia_name != "") {
+                id = baseUrl() + state.templateId + "/" + page_nr + "/" + ia_name.replace(/ /g,"_");
+                description = ia_name;
+            }
+            else
+            {
+                baseUrl() + state.templateId + "/" + page_nr + "/" + ia_nr;
+                description = "";
+            }
+        }
     }
-    if (page_name != null && page_name != "")
+    else
     {
-        id = this.baseUrl() + state.templateId + "/" + page_name;
+        if (page_name != null && page_name != "")
+        {
+            id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
+            description = page_name;
+        }
     }
     var statement = new TinCan.Statement(
         {
-            actor: {
-                mbox: userEMail
-            },
+            actor: actor,
             verb: {
-                id: "http://adlnet.gov/expapi/verbs/attempted"
+                id: "http://adlnet.gov/expapi/verbs/initialized",
+                display: {
+                    "en-US": "initialized"
+                }
             },
-            target: {
-                id: id
+            object: {
+                objectType: "Activity",
+                id: id,
+                definition:{
+                    name:{
+                        "en": description
+                    }
+                }
             },
             timestamp : this.enterInteractionStamp
         }
@@ -844,280 +1898,13 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
 
     SaveStatement(statement);
 
-    if(surf_mode)
-    {
-        var statement = new TinCan.Statement(
-            {
-                actor: {
-                    mbox: userEMail
-                },
-                verb: {
-                    id: "http://adlnet.gov/expapi/verbs/scored",
-                    display: {
-                        "en-US": "Scored"
-                    }
-                },
-                target: {
-                    id: id
-                },
-                result: {
-                    "completion": true,
-                    "success": score >= state.lo_passed,
-                    "score": {
-                        "scaled": score / 100
-                    },
-                    "duration": "P" + 0 + "Y" + 0 + "M" + days + "DT" + hours + "H" + minutes + "M" + seconds + "S",
-                },
-                timestamp: this.pageEnd
 
-            }
-        );
-
-        SaveStatement(statement);
-    }
 
 }
-/*
-    function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
-        state.setPageScore(page_nr, score);
-        this.pageEnd = new Date();
-        var pageDuration = this.pageEnd.getTime() - this.pageStart.getTime();
 
-        var delta = Math.abs(this.pageEnd.getTime() - this.pageStart.getTime()) / 1000;
-
-        var days = Math.floor(delta / 86400);
-        delta -= days * 86400;
-        var hours = Math.floor(delta / 3600) % 24;
-        delta -= hours * 3600;
-        var minutes = Math.floor(delta / 60) % 60;
-        delta -= minutes * 60;
-        var seconds = delta % 60;
-        if (!surf_mode) {
-            var statement = new TinCan.Statement(
-                {
-                    actor: {
-                        mbox: userEMail
-                    },
-                    verb: {
-                        id: "http://adlnet.gov/expapi/verbs/scored",
-                        display: {
-                            "en-US": "Scored"
-                        }
-                    },
-                    target: {
-                        id: "http://xerte.org.uk/xapi/questions/" + page_nr
-                    },
-                    result: {
-                        "completion": true,
-                        "success": score >= state.lo_passed,
-                        "score": {
-                            "scaled": score / 100
-                        },
-                        "duration": "P" + 0 + "Y" + 0 + "M" + days + "DT" + hours + "H" + minutes + "M" + seconds + "S",
-                        "extensions": {
-                            "http://xerte.org.uk/xapi/JSONGraph": JSONGraph
-                        }
-                    },
-                    timestamp: this.pageEnd
-                }
-            );
-
-            SaveStatement(statement);
-        }
-    }
-*/
-
-    function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback, page_name) {
-        state.exitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback);
-        if (($.inArray([page_nr, ia_nr], answeredQs) == -1 && state.scoremode == "first") || state.scoremode == "last") {
-
-            this.exitInteractionStamp = new Date();
-            var id = this.baseUrl() + state.templateId + "/" + page_nr;
-
-            if (ia_nr >=0)
-            {
-                var id = this.baseUrl() + state.templateId + "/" + page_nr + "/" + ia_nr;
-            }
-            if (page_name != null && page_name != "")
-            {
-                id = this.baseUrl() + state.templateId + "/" + page_name;
-            }
-            if (!surf_mode) {
-                var statement = new TinCan.Statement(
-                    {
-                        actor: {
-                            mbox: userEMail
-                        },
-                        verb: {
-                            id: "http://adlnet.gov/expapi/verbs/answered",
-                            display: {
-                                "en-US": "Answered"
-                            }
-                        },
-                        target: {
-                            id: id
-                        },
-                        result: {
-                            "response": result + ""
-                        },
-                        timestamp: this.exitInteractionStamp
-                    }
-                );
-
-                answeredQs.push([page_nr, ia_nr]);
-                SaveStatement(statement);
-            }
-            if (surf_mode) {
-                var statement = new TinCan.Statement(
-                    {
-                        actor: {
-                            mbox: userEMail
-                        },
-                        verb: {
-                            id: "http://lrs.surfuni.org/verb/submitted",
-                            display: {
-                                "en-US": "Submitted"
-                            }
-                        },
-                        object: {
-                            objectType: "Activity",
-                            id: "http://lrs.surfuni.org/object/assessment",
-                            definition: {
-                                name: {
-                                    "en-US": "Assessment"
-                                }
-                            }
-                        },
-                        target: {
-                            id: id
-                        },
-                        context: {
-                            extensions: {
-                                "http://lrs.surfuni.org/context/course": surf_course,
-                                "http://lrs.surfuni.org/context/recipe": surf_recipe,
-                                "http://lrs.surfuni.org/context/label": ""
-                            }
-                        },
-                        timestamp: this.initStamp
-                    }
-                );
-                SaveStatement(statement);
-                var statement = new TinCan.Statement(
-                    {
-                        actor: {
-                            mbox: userEMail
-                        },
-                        verb: {
-                            id: "http://lrs.surfuni.org/verb/accessed",
-                            display: {
-                                "en-US": "Accessed"
-                            }
-                        },
-                        object: {
-                            objectType: "Activity",
-                            id: "http://lrs.surfuni.org/object/grade",
-                            definition: {
-                                name: {
-                                    "en-US": "Grade"
-                                }
-                            }
-                        },
-                        result: {
-                            "response": result[0]
-                        },
-                        target: {
-                            id: id
-                        },
-                        context: {
-                            extensions: {
-                                "http://lrs.surfuni.org/context/course": surf_course,
-                                "http://lrs.surfuni.org/context/recipe": surf_recipe,
-                                "http://lrs.surfuni.org/context/label": ""
-                            }
-                        },
-                        timestamp: this.initStamp
-                    }
-                );
-                SaveStatement(statement);
-                var statement = new TinCan.Statement(
-                    {
-                        actor: {
-                            mbox: userEMail
-                        },
-                        verb: {
-                            id: "http://lrs.surfuni.org/verb/accessed",
-                            display: {
-                                "en-US": "Accessed"
-                            }
-                        },
-                        object: {
-                            objectType: "Activity",
-                            id: "http://lrs.surfuni.org/object/gradepoint",
-                            definition: {
-                                name: {
-                                    "en-US": "Grade point"
-                                }
-                            }
-                        },
-                        result: {
-                            "response": result + ""
-                        },
-                        target: {
-                            id: id
-                        },
-                        context: {
-                            extensions: {
-                                "http://lrs.surfuni.org/context/course": surf_course,
-                                "http://lrs.surfuni.org/context/recipe": surf_recipe,
-                                "http://lrs.surfuni.org/context/label": ""
-                            }
-                        },
-                        timestamp: this.initStamp
-                    }
-                );
-                SaveStatement(statement);
-                if (feedback != null) {
-                    var statement = new TinCan.Statement(
-                        {
-                            actor: {
-                                mbox: userEMail
-                            },
-                            verb: {
-                                id: "http://lrs.surfuni.org/verb/accessed",
-                                display: {
-                                    "en-US": "Accessed"
-                                }
-                            },
-                            object: {
-                                objectType: "Activity",
-                                id: "http://lrs.surfuni.org/object/feedback",
-                                definition: {
-                                    name: {
-                                        "en-US": "Feedback"
-                                    }
-                                }
-                            },
-                            result: {
-                                "response": feedback[0]
-                            },
-                            target: {
-                                id: id
-                            },
-                            context: {
-                                extensions: {
-                                    "http://lrs.surfuni.org/context/course": surf_course,
-                                    "http://lrs.surfuni.org/context/recipe": surf_recipe,
-                                    "http://lrs.surfuni.org/context/label": ""
-                                }
-                            },
-                            timestamp: this.initStamp
-                        }
-                    );
-                    SaveStatement(statement);
-                }
-            }
-        }
-    }
+function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback, page_name) {
+    state.exitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback, page_name);
+}
 
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, callback)
 {
@@ -1125,22 +1912,22 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, call
     //Get ID from the question
     //var idQ = this.x_currentPageXML.childNodes[ia_nr].getAttribute("linkID");
 
-    var id = this.baseUrl() + state.templateId + "/" + page_nr;
+    var id = baseUrl() + state.templateId + "/" + page_nr;
 
     if (ia_nr >=0)
     {
-        var id = this.baseUrl() + state.templateId + "/" + page_nr + "/" + ia_nr;
+        var id = baseUrl() + state.templateId + "/" + page_nr + "/" + ia_nr;
     }
     if (page_name != null && page_name != "")
     {
         // If this is an url, use as is
         if (page_name.substr(0, 4).toLowerCase() == "http")
         {
-            id = page_name;
+            id = page_name.replace(/ /g,"_");
         }
         else
         {
-            id = this.baseUrl() + state.templateId + "/" + page_name;
+            id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
         }
     }
     var x = lrsInstance.queryStatements(
@@ -1308,7 +2095,7 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                 var learnerAnswer, correctAnswer;
                 switch (state.interactions[i].ia_type) {
                     case "match":
-                        var resultCorrect;
+                        var resultCorrect=false;
                         for (var c = 0; c < state.interactions[i].correctOptions.length; c++) {
                             var matchSub = {}; //Create a subinteraction here for every match sub instead
                             correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
@@ -1341,13 +2128,17 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                         correctAnswer = state.interactions[i].correctAnswers.join(", ");
                         break;
                     case "multiplechoice":
-                        learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
+                        learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0].answer : "";
                         for (var j = 1; j < state.interactions[i].learnerAnswers.length; j++) {
-                            learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
+                            learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j.answer];
                         }
-                        correctAnswer = state.interactions[i].correctAnswers[0];
-                        for (var j = 1; j < state.interactions[i].correctAnswers.length; j++) {
-                            correctAnswer += "\n" + state.interactions[i].correctAnswers[j];
+                        correctAnswer = "";
+                        for (var j = 0; j < state.interactions[i].correctAnswers.length; j++) {
+                            if (state.interactions[i].correctAnswers[j].result) {
+                                if (correctAnswer.length > 0)
+                                    correctAnswer += "\n";
+                                correctAnswer += state.interactions[i].correctAnswers[j].answer;
+                            }
                         }
                         break;
                     case "numeric":
@@ -1363,7 +2154,7 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                 }
                 if (state.interactions[i].ia_type != "match") {
                     subinteraction.question = state.interactions[i].ia_name;
-                    subinteraction.correct = state.interactions[i].result;
+                    subinteraction.correct = state.interactions[i].result.success;
                     subinteraction.learnerAnswer = learnerAnswer;
                     subinteraction.correctAnswer = correctAnswer;
                     results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
@@ -1371,19 +2162,20 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
             }
         }
         results.completion = completion;
-        results.completion = completion;
         results.score = score;
         results.nrofquestions = nrofquestions;
         results.averageScore = state.getScaledScore() * 100;
         results.totalDuration = Math.round(totalDuration / 1000);
         results.start = state.start.toLocaleString();
-        $.ajax({
-            type: "POST",
-            url: window.location.href,
-            data: {
-                grade: results.averageScore / 100
-            }
-        });
+
+        //$.ajax({
+        //    type: "POST",
+        //    url: window.location.href,
+        //    data: {
+        //        grade: results.averageScore / 100
+        //    }
+        //});
+
         return results;
     }
 

@@ -418,7 +418,7 @@
                             updateBubble();
                         }
                     }
-					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctAnswer, null, x_currentPageXML.getAttribute("trackinglabel"));
+					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctOptions, correctAnswer, null, x_currentPageXML.getAttribute("trackinglabel"));
 					opinion.checked = false;
 				}
 			}
@@ -477,7 +477,7 @@
        			currentQuestionValue = 100 - currentQuestionValue;           		
        		}
 			
-            l_answer.push(Math.round(currentQuestionValue * 10) / 10);
+            l_answer = Math.round(currentQuestionValue * 10.0) / 10.0;
             
             var currentQuestionString = opinion.currentQuestion + "";
             answeredValues[currentQuestionString] = currentQuestionValue;
@@ -485,10 +485,14 @@
 
 
             diagramLabels[opinion.currentQuestion] = currentQ;
-            diagramAnswers[opinion.currentQuestion] = (Math.round(currentQuestionValue * 10) / 10);
+            diagramAnswers[opinion.currentQuestion] = (Math.round(currentQuestionValue * 10.0) / 10.0);
 
 
-			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], correct, l_options, l_answer, null, x_currentPageXML.getAttribute("trackinglabel"));
+            var result = {
+                success: correct,
+                score: Math.round(currentQuestionValue * 10.0) / 10.0
+            };
+			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], result, l_options, l_answer, null, x_currentPageXML.getAttribute("trackinglabel"));
             opinion.myProgress.splice(opinion.currentQuestion, 1, correct);
             
 			// Continue to next question

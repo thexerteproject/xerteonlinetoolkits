@@ -81,8 +81,11 @@
 			$("#scoreTxt").html(l_correct);
 			$("#totalTxt").html(this.totaloptions);
 			$("#feedback").show();
-			
-            XTExitInteraction(x_currentPage, 0, (l_correct == this.totaloptions), l_options, l_answers, l_feedback);
+			var result = {
+			    success: (l_correct == this.totaloptions),
+			    score: (l_correct * 100.0)/this.totaloptions
+			}
+            XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedback);
             XTSetPageScore(x_currentPage, (l_correct * 100.0)/this.totaloptions);
             this.checked = true;
         }

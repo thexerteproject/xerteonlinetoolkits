@@ -219,7 +219,12 @@
 							$("#incorrect").show();
 						}
 					}
-					XTExitInteraction(x_currentPage, $pageContents.data("current"), correct, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"))
+					var result =
+						{
+						    success: correct,
+							score: (correct ? 100.0 : 0.0)
+						};
+					XTExitInteraction(x_currentPage, $pageContents.data("current"), result, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
 					total++;
 
 					if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {

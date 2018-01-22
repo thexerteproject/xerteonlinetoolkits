@@ -62,26 +62,35 @@ optional: feedback page synch play enable
             var l_answers = [];
             var l_feedback = [];
             $(selected).each(function (i, v) {
-                l_options.push((v + 1) + "");
+                l_options.push({
+					id: (v + 1) + "",
+					answer: x_GetTrackingTextFromHTML(options.childNodes[v].getAttribute("text"), (v+1) + ""),
+					result: options.childNodes[i].getAttribute("correct") === "true"
+            	});
 
                 l_answers.push(x_GetTrackingTextFromHTML(options.childNodes[v].getAttribute("text"), (v+1) + ""));
                 l_feedback.push("");
             });
             mediaLesson.questions[ia_nr] = true;
-
-            XTExitInteraction(x_currentPage, ia_nr, allValid, l_options, l_answers, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
+            var scormScore = 0;
             if (ia_nr == numOfQuestions-1) {
-            	var score = 0;
-            	for (var i=0; i<numOfQuestions; i++)
-				{
-					if (mediaLesson.questions[i])
-					{
-						score++;
-					}
-				}
-                var scormScore = Math.ceil(score / numOfQuestions * 100);
-                XTSetPageScore(x_currentPage, scormScore, x_currentPageXML.getAttribute("trackinglabel"));
+                var score = 0;
+                for (var i=0; i<numOfQuestions; i++)
+                {
+                    if (mediaLesson.questions[i])
+                    {
+                        score++;
+                    }
+                }
+                scormScore = Math.ceil(score / numOfQuestions * 100);
             }
+			var result =
+				{
+					success: allValid,
+					score: scormScore
+				};
+            XTExitInteraction(x_currentPage, ia_nr, result, l_options, l_answers, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
+            XTSetPageScore(x_currentPage, scormScore, x_currentPageXML.getAttribute("trackinglabel"));
             mediaLesson.enableControls(media.media, true);
         }
 		
@@ -416,12 +425,15 @@ optional: feedback page synch play enable
 				var correctFeedback = [];
 				var ia_nr = Number(options.tracking_nr);
 				$(options.childNodes).each(function(i, v){
-					if(v.getAttribute("correct") == "true")
-					{
-						correctOptions.push((i+1)+"");
-						correctAnswers.push(x_GetTrackingTextFromHTML(v.getAttribute("text"), (i+1)+""));
-						correctFeedback.push("Correct");
-					}
+					correctOptions.push(
+						{
+							id: (i+1)+"",
+							answer: x_GetTrackingTextFromHTML(v.getAttribute("text"), (i+1)+""),
+							result: v.getAttribute("correct") == "true"
+						}
+						);
+					correctAnswers.push(x_GetTrackingTextFromHTML(v.getAttribute("text"), (i+1)+""));
+					correctFeedback.push(v.getAttribute("correct") == "true" ? "Correct" : "Incorrect");
 				});
 				XTEnterInteraction(x_currentPage, ia_nr, 'multiplechoice', x_GetTrackingTextFromHTML(options.text, ia_nr + ""), correctOptions, correctAnswers, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
 				if ($(options.childNodes).length > 0) {

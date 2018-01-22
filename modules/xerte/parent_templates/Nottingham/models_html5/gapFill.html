@@ -904,7 +904,11 @@
                     }
 
                     total++;
-                    XTExitInteraction(x_currentPage, $this.data("index") , correct, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
+                    var result = {
+                        success: correct,
+						score: (correct ? 100.0 : 0.0)
+					};
+                    XTExitInteraction(x_currentPage, $this.data("index") , result, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
 
                 });
 
@@ -1038,7 +1042,11 @@
 					var feedback = "Correct";
 					if (!correct)
 						feedback = "Incorrect";
-					XTExitInteraction(x_currentPage, interactionNumber, correct, l_options, l_answer, feedback);
+                    var result = {
+                        success: correct,
+                        score: (correct ? 100.0 : 0.0)
+                    };
+					XTExitInteraction(x_currentPage, interactionNumber, result, l_options, l_answer, feedback);
 					total++;
 				}
 				

@@ -23,7 +23,7 @@
 
 
 	if(is_numeric($id)){
-		if(true || is_user_creator($id)||is_user_admin()){
+		if(is_user_creator_or_coauthor($id)||is_user_admin()){
 
             $database_id = database_connect("template database connect success","template change database connect failed");
             $template_id = $id;
@@ -37,12 +37,13 @@
 
             $lti_def = new stdClass();
 
-            $lti_def->title = "Name";
+            $lti_def->title = str_replace('_', ' ', $row['tempate_name']);
             $lti_def->xapi_enabled = $row["tsugi_xapi_enabled"];
-            $lti_def->key = "12345";
-            $lti_def->secret = "secret";
+            $lti_def->key = "";
+            $lti_def->secret = "";
             $lti_def->published = $row["tsugi_published"];
             $lti_def->url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
+            $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $row['template_id'] . "&group=groupname";
             $lti_def->xapi_endpoint = $xerte_toolkits_site->LRS_Endpoint;
             $lti_def->xapi_username = $xerte_toolkits_site->LRS_Key;
             $lti_def->xapi_password = $xerte_toolkits_site->LRS_Secret;
@@ -67,8 +68,16 @@
                 $lti_def->xapi_username = $row["tsugi_xapi_key"];
                 $lti_def->xapi_password = $row["tsugi_xapi_secret"];
                 $lti_def->xapi_student_id_mode = $row["tsugi_xapi_student_id_mode"];
+                if ($lti_def->published != 1)
+                {
+                    // Force groupmode
+                    $lti_def->xapi_student_id_mode = 3;
+                }
             }
-
+            if ($lti_def->xapi_student_id_mode == 3)
+            {
+                $lti_def->url  .= "&group=groupname";
+            }
             tsugi_display($id, $lti_def,"");
 
 

@@ -1,0 +1,30 @@
+/**
+ *
+
+
+function InteractionTracking(page_nr, ia_nr, ia_type, ia_name)
+{
+    this.page_nr = page_nr;
+    this.page_ref = page_nr+1;
+    this.ia_nr = ia_nr;
+    this.ia_ref = ia_nr+1;
+    this.ia_type = ia_type;
+    this.ia_name = ia_name;
+    this.state = "entered";
+    this.start = new Date();
+    this.end = this.start;
+    this.count = 0;
+    this.duration = 0;
+    this.nrinteractions = 0;
+    this.weighting = 0.0;
+    this.score = 0.0;
+    this.result = 'unknown';
+    this.complete = false;
+    this.correctoptions = "";
+    this.correctanswer = "";
+    this.correctfeedback = "";
+    this.learneroptions = "";
+    this.learneranswer = "";
+    this.answerfeedback = "";
+    this.id = makeId(page_nr, ia_nr, ia_type, ia_name);
+    this.idx = -1;

@@ -907,7 +907,7 @@ function tsugi_display($id, $lti_def, $mesg = "")
             <label for="tsugi_xapi_password"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_PASSWORD; ?></label><input type="text" name="tsugi_xapi_password" value="<?php echo $lti_def->xapi_password;?>"><br>
             <label for="tsugi_xapi_student_id_mode"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE; ?></label><select name="tsugi_xapi_student_id_mode">
                 <?php
-                for ($i=0; $i<3; $i++)
+                for ($i=0; $i<4; $i++)
                 {
                      echo "<option value=\"" . $i . "\" " . ($i == $lti_def->xapi_student_id_mode ? "selected>" : ">");
                      switch($i)
@@ -920,6 +920,9 @@ function tsugi_display($id, $lti_def, $mesg = "")
                              break;
                          case 2:
                              echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_2;
+                             break;
+                         case 3:
+                             echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_3;
                              break;
                      }
                      echo "</option>\n";
@@ -941,6 +944,14 @@ function tsugi_display($id, $lti_def, $mesg = "")
     if($lti_def->published)
     {
         echo PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br><span class='lti_launch_url'>" . $lti_def->url . "</span>";
+    }
+    else
+    {
+        if ($lti_def->xapi_enabled)
+        {
+            // Show xapionly url
+            echo PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br><span class='lti_launch_url'>" . $lti_def->xapionly_url . "</span>";
+        }
     }
     ?>
     </p>
