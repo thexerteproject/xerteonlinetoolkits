@@ -24,7 +24,7 @@ $lti_def->title = (isset($_POST["tsugi_title"]) ? htmlspecialchars($_POST["tsugi
 $lti_def->xapi_enabled = isset($_POST["tsugi_xapi"]) && $_POST["tsugi_xapi"] == "true";
 $lti_def->published = isset($_POST["tsugi_published"]) && $_POST["tsugi_published"] == "true";
 $lti_def->url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
-$lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $row['template_id'] . "&group=groupname";
+$lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
 $lti_def->xapi_endpoint = (isset($_POST["tsugi_xapi_endpoint"]) ? htmlspecialchars($_POST["tsugi_xapi_endpoint"]) : "");
 $lti_def->xapi_username = (isset($_POST["tsugi_xapi_username"]) ? htmlspecialchars($_POST["tsugi_xapi_username"]) : "");
 $lti_def->xapi_password = (isset($_POST["tsugi_xapi_password"]) ? htmlspecialchars($_POST["tsugi_xapi_password"]) : "");
