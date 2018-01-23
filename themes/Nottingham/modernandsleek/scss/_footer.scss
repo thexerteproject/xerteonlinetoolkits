@@ -1,0 +1,94 @@
+#x_footerBlock {
+  font-size:		1em;
+  color:			$whiteorlightest;
+  background-image:	none;
+  width: 98%;
+  border-top-left-radius: $largeroundedcorners;
+  border-bottom-left-radius: $largeroundedcorners;
+  margin-left: 2%;
+  margin-bottom:1%;
+  background: $contrastcolor;
+  box-shadow: $interfaceboxshadow;
+}
+#x_footerBg {
+  background-image:none;
+}
+#x_pageNo {
+  background:	none;
+}
+.pbBar {
+  background-color: $progressBarColor;
+}
+/* these buttons will use font awesome icons instead of pngs */
+.ui-button .ui-icon.x_help { background-image: none; }
+.ui-button .ui-icon.x_info { background-image: none; }
+.ui-button .ui-icon.x_home { background-image: none; }
+.ui-button .ui-icon.x_glossary { background-image: none; }
+.ui-button .ui-icon.x_maximise { background-image: none; }
+.ui-button .ui-icon.x_minimise {	background-image: none; }
+.ui-button .ui-icon.x_media { background-image: none; }
+.ui-button .ui-icon.x_next { background-image: none; }
+.ui-button .ui-icon.x_prev {	background-image: none; }
+.ui-button .ui-icon.x_prev_hist { background-image: none; }
+.ui-button .ui-icon.x_colourChanger { background-image: none; }
+
+#x_nextBtn:after { content: "\f138"; }
+#x_prevBtn:after { content: "\f137"; }
+#x_cssBtn:after { content: "\f066"; }
+#x_colourChangerBtn:after { content: "\f042"; }
+#x_mediaBtn:after { content: "\f16a"; }
+#x_glossaryBtn:after { content: "\f02d"; }
+#x_helpBtn:after { content: "\f128"; }
+#x_menuBtn:after { content: "\f0c9"; }
+
+#x_footerBlock button { color: $whiteorlightest; }
+#x_footerBlock button.ui-state-hover { color: $brightcolor; }
+#x_footerBlock button.ui-state-focus { color: $lightestcolor; }
+#x_footerBlock button.ui-state-active { color: $darkestcolor; }
+
+#x_footerBlock button {
+  font-family: FontAwesome, sans-serif;
+  font-size: 1.9em;
+  width: 1.5em;
+  padding-right: 0;
+  margin-left: 5px;
+}
+#x_footerBlock button span {
+  display: none;
+}
+#x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button {
+  padding: 0;
+}
+/*****footer tools chevron*****/
+#x_footerChevron {
+  color: $whiteorlightest;
+}
+#x_footerChevron:hover {
+  color: $brightcolor;
+}
+
+/*****TOC****/
+.ui-dialog .ui-widget-header {
+  border: 1px solid $contrastcolor;
+  background: $darkestcolor;
+  color: $fontcolorfordarkestcolor;
+  font-weight: bold;
+}
+#menuItems .menuItem {
+  background: $lightestcolor;
+}
+
+#menuItems .menuItem .ui-button-text{
+  color:$fontcolorforlightestcolor;
+}
+
+#menuItems .menuItem:hover {
+  background: $contrastcolor;
+}
+#menuItems .menuItem:hover .ui-button-text{
+  color:$whiteorlightest;
+}
+
+#menuItems .menuItem.current {
+  border: 2px solid $darkestcolor;
+}
