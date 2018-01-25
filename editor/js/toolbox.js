@@ -1842,7 +1842,11 @@ var EDITOR = (function ($, parent) {
     {
         // Set preview and description
         var theme = theme_list[value];
-        $('img.theme_preview:first').attr('src', theme.preview);
+        $('img.theme_preview:first')
+			.attr({
+				'src': theme.preview,
+				'alt': obj[value].label
+			});
         $('div.theme_description:first').html(theme.description);
         setAttributeValue(key, [name], [theme.name]);
     },
@@ -1982,16 +1986,28 @@ var EDITOR = (function ($, parent) {
         window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable, 'Browse file', "height=600, width=800");
     },
 	
-	previewFile = function(label, src)
+	previewFile = function(alt, src, title)
 	{
 		// ** currently only previews images - need to allow other file types too
-		var $preview = $('<img class="previewFile"/>')
+		src = src.indexOf("FileLocation + '") == 0 ? rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1) : src;
+		
+		var $previewImg = $('<img class="previewFile"/>')
 				.on("error", function() {
 						$('.featherlight .previewFile')
 							.after('<p>' + language.compPreview.$error + '</p>')
 							.remove();
 					})
-				.attr("src", rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1))
+				.attr({
+					"src": src,
+					"alt": alt
+				})
+		
+		var $preview = $('<div/>')
+				.append($previewImg);
+		
+		if (title != undefined && title != '') {
+			$preview.prepend('<div class="preview_title">' + title + '</div>');
+		}
 		
 		$.featherlight($preview);
 	},
@@ -2435,7 +2451,14 @@ var EDITOR = (function ($, parent) {
                     var preview = $('<img>')
                         .attr('id', 'theme_preview_' + form_id_offset)
                         .addClass('theme_preview')
-                        .attr('src', theme_list[currtheme].preview);
+                        .attr({
+							'src': theme_list[currtheme].preview,
+							'alt': theme_list[currtheme].display_name
+						})
+						.click(function() {
+							previewFile($(this).attr('alt'), $(this).attr('src'), $(this).attr('alt'));
+						});
+						
                     html.append(preview);
                     var description = $('<div>')
                         .attr('id', 'theme_description_' + form_id_offset)

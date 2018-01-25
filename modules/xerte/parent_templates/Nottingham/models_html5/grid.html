@@ -75,14 +75,14 @@
                 l_option = {source: $this.text().trim(),target: "[" + xPos + "," + yPos + "]"};
 
                 if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html()) {
-                    $this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></img>');
+					$this.append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '</span><span class="result fa fa-fw fa-x-tick"></span></span>');
                     numOfQuestions++;
                     correct++;
                     l_option.result = true;
                     l_feedback = "Correct";
                 } else {
                     Correct = false;
-                    $this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></img>');
+					$this.append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Incorrect") + '</span><span class="result fa fa-fw fa-x-cross"></span></span>');
                     numOfQuestions++;
                     l_option.result = false;
                     l_feedback = "Incorrect";

@@ -2665,6 +2665,17 @@ function x_insertText(node, exclude) {
         }
     }
 	
+	// if project is being viewed as https then force iframe src to be https too
+	if (window.location.protocol == "https:" && exclude.indexOf("iframe") == -1) {
+		function changeProtocol(iframe) {
+			if (/src="http:/.test(iframe)){
+				iframe = iframe.replace(/src="http:/g, 'src="https:').replace(/src='http:/g, "src='https:");
+			}
+			return iframe;
+		}
+		tempText = tempText.replace(/(<iframe.*?>.*?<\/iframe>)/g, changeProtocol);
+	}
+	
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0 && exclude.indexOf("glossary") == -1) {
         for (var k=0, len=x_glossary.length; k<len; k++) {

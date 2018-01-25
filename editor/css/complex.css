@@ -1010,6 +1010,14 @@ img.theme_preview
 	float: left;
 	margin: 5px;
 	max-width: 200px;
+	cursor: pointer;
+}
+
+.preview_title
+{
+	font-size: 1.2em;
+	font-weight: bold;
+	margin-bottom: 0.5em;
 }
 
 div.theme_description
