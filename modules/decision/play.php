@@ -56,7 +56,7 @@ function show_template($row_play)
     $page_content = str_replace("%TEMPLATEPATH%", $template_path_string, $page_content);
     $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
     $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
-	$page_content = str_replace("%THEMEPATH%",$xerte_toolkits_site->site_url . "themes/" . $row_play['template_name'] . "/",$page_content);
+	$page_content = str_replace("%THEMEPATH%", "themes/" . $row_play['template_name'] . "/",$page_content);
     $page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $page_content);
 
     echo $page_content;
