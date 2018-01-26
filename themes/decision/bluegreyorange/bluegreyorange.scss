@@ -192,8 +192,12 @@ a[href="#"]:visited {
 		width:2vmin;
 		height:2vmin;
 	}
-
-
+	#amount { //text input on slider etc
+		font-size: 2.0vmin;
+	}
+	#overviewHolder .decisionInfo .fa {
+		font-size: 3.0vmin;
+	}
 }
 //----------------end of tablets and above---------------------------------
 
