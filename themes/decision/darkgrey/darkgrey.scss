@@ -31,7 +31,7 @@ $resultsHolderwidth:8vmin;/*previously 8vmin*/
 
 body{
 	font-family: $mainfonts;
-	font-size:		$pagecontentsmedium;
+	font-size:		12pt;//vmin size set in in media query below
 	color: $fontcolorfordarkestcolor;
 }
 
