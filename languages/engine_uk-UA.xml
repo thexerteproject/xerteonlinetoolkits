@@ -1,0 +1,329 @@
+<language name="Українська">
+
+<noPages label="Цей проект не містить жодної сторінки."/>
+
+<nextButton label="Далі" description="Кнопка наступної сторінки"/>
+
+<backButton label="Назад" description="Кнопка попередньої сторінки"/>
+
+<tocButton label="Зміст" description="Кнопка змісту"/>
+
+<helpButton label="Допомога" description="Кнопка допомоги"/>
+
+<mediaButton label="Медіа" description="Кнопка медіа"/>
+
+<homeButton label="Головна" description="Кнопка головної"/>
+
+<pageHelp name="Сторінка допомоги" description="Сторінка допомоги" toClose="Натисніть пробіл, щоб закрити допомогу"/>
+
+<glossaryButton label="Словник" description="Кнопка словника"/>
+
+<continueButton label="Продовжити" description="Кнопа продовжити"/>
+
+<progressBar label="ЗАВЕРШЕНО"/>
+
+<footerTools show="Показати інструменти нижнього колонтитулу" hide="Сховати інструменти нижнього колонтитулу"/>
+
+
+-<toc label="Зміст" description="Зміст. Використовуйте клавіші зі стрілками, щоб вибрати сторінку. Натисніть пробіл, щоб перейти на цю сторінку." htmlDescription="Використовуйте клавішу Tab, щоб вибрати сторінку. Натисніть пробіл, щоб перейти на цю сторінку.">
+
+<contentsList label="" description=""/>
+
+<closeButton label="" description="Закрити зміст"/>
+
+<gotoPageButton label="Перейти на сторінку" description="Кнопка перейти на сторінку"/>
+
+</toc>
+
+<mediaWindow label="Media Viewer"/>
+
+
+-<glossary label="Словник" description="Список слів та їхні визначення.">
+
+<closeButton label="" description="Закрити словник"/>
+
+</glossary>
+
+
+-<kbLanguage label="Спеціальні символи" description="Список кнопок, які додають спеціальні символи до текстових областей">
+
+<closeButton label="" description="Закрити спеціальні символи"/>
+
+<dialog caps="Caps" off="OFF" on="ON" instruction="Використовуйте CAPS та SHIFT"/>
+
+</kbLanguage>
+
+<textToSpeech label="нуль" description="Промовити текст"/>
+
+<errorProject label="Дані проекту не завантажені."/>
+
+<errorPage label="Зараз для цього типу сторінки немає шаблону."/>
+
+<errorBrowser label="Ваш браузер не повністю підтримує цей тип сторінки."/>
+
+<errorEmbed label="Ви вставили попередній перегляд проекту XOT. Ви повинні зробити проект відкритим та вбудувати загальнодоступну URL-адресу."/>
+
+<pageDeprecatedCeased label="Ця сторінка застаріла, оскільки сервіс припинився."/>
+
+<errorQuestions noA="Немає варіантів відповіді" noQ="Питання не були додані"/>
+
+<errorFlash label="Вам потрібно встановити Flash Player для перегляду цього вмісту." description="Скачайте Flash Player"/>
+
+<authorSupport label="Підтримка автора ввімкнена: текст, показаний червоним кольором, не відображатиметься в реальних проектах."/>
+
+<hiddenPage label="Ця сторінка буде схована в реальних проектах"/>
+
+<hiddenSection label="Ця сторінка буде схована в живих проектах"/>
+
+<tick label="Галочка"/>
+
+<cross label="Хрестик"/>
+
+
+<themes label="--Кольорові схеми--" description="Параметри колірної схеми">
+
+<item>відмова</item>
+
+<item>синій</item>
+
+<item>зелений</item>
+
+<item>червоний</item>
+
+<item>помаранчевий</item>
+
+<item>рожевий</item>
+
+<item>сірий</item>
+
+<item>високий контраст 1</item>
+
+<item>високий контраст 2</item>
+</themes>
+
+
+<sizes label="--Розмір Екрану--" description="Параметри розміру екрана">
+
+<item>відмова</item>
+
+<item>великий</item>
+
+<item>більший</item>
+
+<item>Повний Екран</item>
+
+<item>заповнити вікно</item>
+
+</sizes>
+
+
+<fonts label="--Текстовий шрифт--" description="Параметри набору тексту">
+
+<item>відмова</item>
+
+</fonts>
+
+
+<textSizes label="--Розмір Тексту--" description="Парамаетри Розміру Тексту">
+
+<item>відмова</item>
+
+<item>малий</item>
+
+<item>середній</item>
+
+<item>великий</item>
+
+<item>більший</item>
+
+</textSizes>
+
+<volumeControl label="Гучн:" description="Регулятор гучності"/>
+
+<volumeControlSlider label="" description="Повзунок керування гучністю"/>
+
+
+<vocab>
+
+<page>Сторінка</page>
+
+<of>of</of>
+
+</vocab>
+
+
+<soundController>
+
+<stopButton label="Зупинити звук" description="Кнопка зупинки звуку"/>
+
+<playButton label="Відтворити аудіо" description="Кнопка відтворення аудіо"/>
+
+<pauseButton label="Призупинити звук" description="Кнопка призупинення звуку"/>
+
+<rwndButton label="Перемотати аудіо" description="Кнопка перемотування аудіо"/>
+
+<ffwdButton label="Переслати аудіо" description="Кнопка пересилання аудіо"/>
+
+<loader label="Завантаження: "/>
+
+</soundController>
+
+
+<movieController>
+
+<stopButton label="Скинути відео" description="Кнопка зупинки відео"/>
+
+<playButton label="Відтворити відео" description="Кнопка відтворення відео"/>
+
+<pauseButton label="Зупинка відео" description="Кнопка зупинки відео"/>
+
+<rwndButton label="Перемотати відео" description="Кнопка перемотування відео"/>
+
+<ffwdButton label="Продовжити відео" description="Кнопка продовження відео"/>
+
+<loader label="Завантаження: "/>
+
+</movieController>
+
+
+<mediaElementControls audio="Аудіо" video="Відео">
+
+<stopButton label="Стоп" description="Кнопка зупинки медіа"/>
+
+<playPauseButton label="Грати/Пауза" description="Кнопка Програвання/Зупинки Медіа"/>
+
+<muteButton label="Вимкнути звук" description="Кнопка вимкнення звуку"/>
+
+<fullscreenButton label="На повний екран" description="Кнопрка повноекранного режиму"/>
+
+<captionsButton label="Підписи / Субтитри" description="Кнопка показати/сховати підписи"/>
+
+</mediaElementControls>
+
+
+<interactions>
+
+<button name="Кнопка"/>
+
+<radioButton selected="обрано. Використовуйте клавіші зі стрілками, щоб вибрати опції"/>
+
+<checkBox selected="обрано" deselected="не вибрано"/>
+
+<comboBox name="ComboBox" selected="обрано." selectedOptions="обрано. Використовуйте клавіші зі стрілками для вибору" options="Параметри."/>
+
+<hotSpot name="HotSpot" selected="Hot Spot обрано" toSelect="Hot Spot. Натисніть пробіл, щоб вибрати."/>
+
+<hotObject name="HotObject" selected="Hot Object обрано" toSelect="Натисніть пробіл, щоб вибрати."/>
+
+<textEntry name="Текстовий вхідний блок" selected="TТекстовий вхідний блок обрано"/>
+
+<targetArea name="Цільова область" description="Знизити зону для" toSelect="Натисніть пробіл, щоб опустити вибраний елемент."/>
+
+<draggableItem name="Draggable Item" selected="Елемент обрано" toSelect="Натисніть пробіл, щоб вибрати" deSelected="Не вибрано жодного елемента."/>
+
+<moreInfoItem selected="Обрано" toSelect="Натисніть пробіл, щоб вибрати" moreInfo="Натисніть пробіл, щоб дізнатися більше"/>
+
+</interactions>
+
+<fetchResults label="Отримання результатів..."/>
+
+<errorResults label="Під час завантаження результатів виникла помилка"/>
+
+<loadError label="Помилка при завантаженні"/>
+
+<noResults label="Немає результатів"/>
+
+
+<timer>
+
+<remaining name="Час, що залишився"/>
+
+<timeUp name="Час вийшов"/>
+
+<seconds name="секунди"/>
+
+</timer>
+
+
+<colourChanger label="Змінювач кольору" description="Змінити кольори." tooltip="Змінити кольори">
+
+<closeButton label="" description="Закрити змінювач кольору"/>
+
+<selectTxt label="Будь-ласка, виберіть з наведених нижче варіантів"/>
+
+<adviceTxt label="Потрібна додаткова порада? Відвідайте &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Xerte Toolkits accessibility guide&lt;/a&gt;."/>
+
+<off label="Off"/>
+
+<noBg label="Видалити фонові зображення"/>
+
+<invert label="Інвертувати"/>
+
+<blackYellow label="Чорний на жовтому"/>
+
+</colourChanger>
+
+
+<screenReaderInfo label="Інформація про програму читання екрана" dialog="Ця кнопка відкриє діалогове вікно" thisWindow="Це посилання відкриється у цьому вікні" newWindow="Це посилання відкриється в новому вікні">
+
+<tabNav description="Ця сторінка містить панель із вкладками, де вибір вкладки змінює надану інформацію. Щоб вибрати вкладку: двічі клацніть Enter або натисніть Shift-Enter (NVDA)."/>
+
+<accNav description="Ця сторінка містить панель, де вибір вкладки змінює надану інформацію. Щоб вибрати вкладку, натисніть Enter або Space." click="Натисніть, щоб відкрити інформацію"/>
+
+<buttonNav description="Ця сторінка містить ряд кнопок, де кожна з них розкриває відповідну інформацію." click="Натисніть, щоб відкрити інформацію"/>
+
+<slideshow description="Ця сторінка містить слайд-шоу, де натискання наступної та попередньої клавіш змінює представлену інформацію."/>
+
+<audioSlideshow description="Ця сторінка відображає вміст синхронно з аудіофайлами. Новий вміст додається на сторінку, коли програється аудіо."/>
+
+<videoSynch description="Ця сторінка відображає вміст у поєднанні з відео. Новий вміст додається на сторінку під час відтворення відео."/>
+
+<list description="Ця сторінка містить ряд посилань, де кожна з них розкриває відповідну інформацію." click="Натисніть, щоб відкрити інформацію"/>
+
+<modelAnswerResults selected="Текст обрано"/>
+
+<mcq description="Ця сторінка містить запитання з кількома варіантами вибору. Використовуйте вкладку і клавіші вгору стрілками вгору / вниз, щоб вивчити можливі варіанти відповідей і натисніть Пробіл, щоб вибрати свою відповідь."/>
+
+<quiz description="Ця сторінка містить ряд питань множинного вибору. Використовуйте вкладку і клавіші стрілок вгору/вниз, щоб вивчити можливі варіанти відповідей і натисніть Пробіл, щоб вибрати свою відповідь."/>
+
+</screenReaderInfo>
+
+
+<authorVars label="Перегляд змінних даних">
+
+<item>Назва</item>
+
+<item>Фіксоване значення</item>
+
+<item>Випадкове</item>
+
+<item>Мін</item>
+
+<item>Макс</item>
+
+<item>Крок</item>
+
+<item>DP</item>
+
+<item>SF</item>
+
+<item>кінцеві нулі</item>
+
+<item>Виключити</item>
+
+<item>Відмінити</item>
+
+<item>Значення</item>
+
+</authorVars>
+
+
+<authorVarsInfo>
+
+<error none="Немає змінних даних" invalid="Невірне значення" unable="Неможливо підрахувати"/>
+
+<info none="Усі можливі значення виключені або виходять за межі діапазону min &amp; max" default="Відхилення до значення за замовчуванням" attempts="{n} спроби обчислити дійсне значення" none2="{n} спроби не повернули прийнятне значення" circular="Циркулярна змінна посилання" exclude="{n} виключена" valueMax="значення &gt; макс" valueMin="значення &lt; мін" minMax="мін > макс" undef="Посилання на невизначену змінну"/>
+
+</authorVarsInfo>
+
+</language>
