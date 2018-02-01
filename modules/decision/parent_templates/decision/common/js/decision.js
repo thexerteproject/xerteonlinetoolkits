@@ -1587,7 +1587,7 @@ function iFrameCheck(txt) {
 			}
 			return iframe;
 		}
-		txt = txt.replace(/(<iframe.*?>.*?<\/iframe>)/g, changeProtocol);
+		txt = txt.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
 	}
 	
 	return txt;

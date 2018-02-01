@@ -612,7 +612,7 @@ function x_checkForText(data, type) {
 					}
 					return iframe;
 				}
-				data[i].childNodes[0].data = data[i].childNodes[0].data.replace(/(<iframe.*?>.*?<\/iframe>)/g, changeProtocol);
+				data[i].childNodes[0].data = data[i].childNodes[0].data.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
 			}
 			
 		} else {

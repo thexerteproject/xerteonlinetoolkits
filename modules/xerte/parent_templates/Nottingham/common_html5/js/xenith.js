@@ -2673,7 +2673,7 @@ function x_insertText(node, exclude) {
 			}
 			return iframe;
 		}
-		tempText = tempText.replace(/(<iframe.*?>.*?<\/iframe>)/g, changeProtocol);
+		tempText = tempText.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
 	}
 	
     // check text for glossary words - if found replace with a link
