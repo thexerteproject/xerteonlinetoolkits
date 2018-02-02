@@ -253,6 +253,9 @@ a {
 .footer p {
   color: #ffffff; }
 
+.footer a {
+  color: #89C2C0; }
+
 .alertMsg {
   color: red; }
 

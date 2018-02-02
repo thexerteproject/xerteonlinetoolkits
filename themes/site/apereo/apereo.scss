@@ -183,6 +183,9 @@ background-image: linear-gradient(3deg, $darkestcolor 0%, $darkestcolor 100%);
 .footer p {
   color: $whiteorlightest;
 }
+.footer a {
+  color: $accent1;
+}
 
 .alertMsg {
 	color: $alertcolor;
