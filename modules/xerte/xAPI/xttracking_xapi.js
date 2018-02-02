@@ -56,7 +56,7 @@ function XApiTrackingState()
     this.templateId = -1;
     this.templateName = "";
     this.debug = false;
-
+    this.sessionId = "";
 
 
     this.initialise = initialise;
@@ -1352,6 +1352,7 @@ var answeredQs = [];
 
 function XTInitialise()
 {
+    state.sessionId = new Date().getTime() + "" + Math.round(Math.random() * 10000000);
     // Initialise actor object
     if (studentidmode != undefined && typeof studentidmode == 'string')
     {
@@ -1996,6 +1997,20 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
     }
 
     function SaveStatement(statement) {
+        
+        var key = baseUrl() + "sessionId";
+        keyValuePairs = {};
+        keyValuePairs[key] = state.sessionId;
+        extens = {"extensions" : keyValuePairs};
+        contextExtens = new TinCan.Context(extens);
+        if(statement.context == undefined)
+        {
+            statement.context = contextExtens;
+        }else if(statement.context.extensions == undefined){
+            statement.context.extensions = keyValuePairs;
+        }else{
+            statement.context.extenstions[key] = state.sessionId;
+        }
         statement.id = null;
         lrsInstance.saveStatement(
             statement,
