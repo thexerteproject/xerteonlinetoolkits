@@ -1,0 +1,38 @@
+//*define color pallette*/
+$darkestcolor: #3C3C3C;
+$lightestcolor:#F4F4F4;
+$brightcolor:#0098C3;
+$contrastcolor:#005172;
+$whiteorlightest:#ffffff;
+$blackordarkest:black;
+$mainhovercolor:white;
+$hintcolor:red;
+$alertcolor:$hintcolor;
+$linkcolor: $brightcolor;
+$panelcolor:#666666;
+$accent1:#89C2C0;
+
+//*set background colors*/
+$bodybackgroundcolor:$lightestcolor;
+$defaultpagebackground:$lightestcolor;
+
+//*set font family*/
+$mainfonts: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$secondaryfonts:"Helvetica Neue", Helvetica, Arial, sans-serif;
+
+//*define font colors to match the background colors*/
+$mainfontcolour: $darkestcolor;
+$fontcolorfordarkestcolor:$whiteorlightest;
+$fontcolorforlightestcolor:$darkestcolor;
+$fontcolorfobrightcolor:$whiteorlightest;
+$fontcolorforcontrastcolor:$whiteorlightest;
+$fontcolorformainhovercolor:$whiteorlightest;
+
+//*define rounded corner and other sizes*/
+$largeroundedcorners: 6vmin;
+$mediumroundedcorners: 2vmin;
+$smallroundedcorners: 1vmin;
+$imageroundedcorners: 2vmin;
+$contentmargin: 2%;
+$interfaceboxshadow:3px 3px 5px grey;;
+$defaultpagepadding:2%;
