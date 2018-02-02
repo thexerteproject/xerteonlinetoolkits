@@ -1,0 +1,223 @@
+@import "scss/_allvariables"; /*start here and set the default values for all the variables*/
+@import "scss/editorstyles";
+@import "scss/_webkitCustoms";/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* --BODY------------------------------------------------*/
+body {
+  font-family: $mainfonts;
+  color: $lightestcolor;
+  background-color: $darkestcolor;
+}
+/*--Heading and other text changes---------------------------------------*/
+h1 {
+  color:$brightcolor;
+}
+h2, h3, h4, h5, h6 {
+  color: $whiteorlightest;
+}
+a{
+   color:$linkcolor;
+ }
+a:hover{
+  color:$whiteorlightest;
+}
+
+/* --JUMBOTRON-------------------------------------------------------------------- */
+.jumbotron {
+  color: $whiteorlightest;
+  background: $blackordarkest; /* Old browsers */
+  background-color: $blackordarkest;
+  background-image: linear-gradient(3deg, $blackordarkest 0%, $darkestcolor 100%);
+}
+
+.jumbotron h1 {
+  color: $brightcolor;
+}
+//* --NAVBAR-------------------------------------------------------------- */
+.navbar-inverse .navbar-inner {
+  background-color: $blackordarkest;
+  background-image: -moz-linear-gradient(top, $blackordarkest, $blackordarkest);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from($blackordarkest), to($blackordarkest));
+  background-image: -webkit-linear-gradient(top, $blackordarkest, $blackordarkest);
+  background-image: -o-linear-gradient(top, $blackordarkest, $blackordarkest);
+  background-image: linear-gradient(to bottom, $blackordarkest, $blackordarkest);
+  background-repeat: repeat-x;
+  border-color: $blackordarkest;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$blackordarkest', endColorstr='$blackordarkest', GradientType=0);
+}
+
+.navbar-inverse .brand, .navbar-inverse .nav > li > a {
+  color: $whiteorlightest;
+  //*text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);*/
+
+}
+.navbar-inverse .nav-collapse .nav > li > a, .navbar-inverse .nav-collapse .dropdown-menu a {
+  color: $whiteorlightest;
+  //*border-left:solid 1px;*/
+  //*border-right:solid 1px;*/
+  //*border-color: black;*/
+}
+
+.navbar-inverse .brand, .navbar-inverse .nav > li > a:hover{
+  color: $whiteorlightest;
+  //*background-color:$contrastcolor;*/
+}
+.navbar-inverse .nav-collapse .nav > li > a:hover, .navbar-inverse .nav-collapse .dropdown-menu a:hover {
+  color: $whiteorlightest;
+  background-color:$panelcolor;
+}
+
+.nav-list > .active > a, .nav-list > .active > a:hover, .nav-list > .active > a:focus {
+  background-color: $panelcolor;
+}
+
+/* --TABLE OF CONTENTS-------------------------------------------------------------- */
+.bs-docs-sidenav {
+  background-color: $darkestcolor;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+
+}
+.nav-list > li > a, .nav-list .nav-header {
+  text-shadow: none;
+}
+.bs-docs-sidenav > li > a {
+  border: 1px solid $darkestcolor;
+}
+.bs-docs-sidenav > li:first-child > a {
+  -webkit-border-radius: 6px 6px 0 0;
+  -moz-border-radius: 6px 6px 0 0;
+  border-radius: 6px 6px 0 0;
+}
+.bs-docs-sidenav > li:last-child > a {
+  -webkit-border-radius: 0 0 6px 6px;
+  -moz-border-radius: 0 0 6px 6px;
+  border-radius: 0 0 6px 6px;
+}
+.bs-docs-sidenav > .active > a {
+  text-shadow: 0 1px 0 rgba(0,0,0,.15);
+  -webkit-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+  -moz-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+  box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+}
+.bs-docs-sidenav > li > a:hover {
+  background-color: $blackordarkest;
+  color: $whiteorlightest;
+}
+.bs-docs-sidenav a:hover .icon-chevron-right {
+  opacity: .5;
+}
+.bs-docs-sidenav .active .icon-chevron-right,
+.bs-docs-sidenav .active a:hover .icon-chevron-right {
+  //background-image: url(../img/glyphicons-halflings-white.png);
+  opacity: 1;
+}
+.bs-docs-sidenav a:hover .icon-chevron-right {
+  opacity: .5;
+}
+.bs-docs-sidenav .active .icon-chevron-right,
+.bs-docs-sidenav .active a:hover .icon-chevron-right {
+ // background-image: url(../img/glyphicons-halflings-white.png);
+  opacity: 1;
+}
+
+.accordion-heading a{
+  border-bottom: 0;
+  background: $panelcolor;
+  color:$fontcolorfordarkestcolor;
+}
+.accordion-group {
+  margin-bottom: 2px;
+ // border: 1px solid $panelcolor;
+ // -webkit-border-radius: 4px;
+ // -moz-border-radius: 4px;
+ // border-radius: 4px;
+  border:none;
+}
+
+.table-striped tbody > tr:nth-child(odd) > td, .table-striped tbody > tr:nth-child(odd) > th {
+  background-color: $panelcolor;
+}
+
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus {
+  color: $fontcolorforcontrastcolor;
+  cursor: default;
+  background-color: $panelcolor;
+  border: 1px solid $panelcolor;
+  border-bottom-color: transparent;
+}
+
+/* --PANELS-------------------------------------------------------------- */
+.panel {
+  background-color: $panelcolor;
+  border: 1px solid $panelcolor;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  color:$whiteorlightest;
+}
+/* Echo out a label for the example */
+.panel:after {
+  font-size: 12px;
+  font-weight: bold;
+  background-color: $panelcolor;
+  border: 1px solid $panelcolor;
+  color: $whiteorlightest;
+  -webkit-border-radius: 4px 0 4px 0;
+  -moz-border-radius: 4px 0 4px 0;
+  border-radius: 4px 0 4px 0;
+}
+
+.well {
+  background-color: $brightcolor;
+  border: 1px solid $brightcolor;
+  color:$blackordarkest;
+}
+
+/* --FOOTER-------------------------------------------------------------- */
+.footer {
+  border-top: 1px solid $whiteorlightest;
+  background-color: $blackordarkest;
+  background-image: linear-gradient(3deg, $blackordarkest 0%, $darkestcolor 100%);
+}
+.footer p {
+  color: $whiteorlightest;
+}
+
+.alertMsg {
+  color: $alertcolor;
+}
+
+/* --GLOSSARY-------------------------------------------------------------- */
+
+a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
+  color: $whiteorlightest;
+}
+
+.glossaryTip {
+  background-color: $brightcolor;
+  color: $blackordarkest;
+}
+
+.nav-pills > .active > a, .nav-pills > .active > a:hover, .nav-pills > .active > a:focus {
+  color: $whiteorlightest;
+  background-color: $panelcolor;
+}
