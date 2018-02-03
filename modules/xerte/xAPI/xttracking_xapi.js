@@ -1461,7 +1461,13 @@ function XTInitialise()
                     object: {
                         objectType: "Activity",
                         id: baseUrl() + state.templateId
+                       
                         //TODO: get the name for this activity
+                    },
+                    context: {
+                         extensions: {
+                            "http://xerte.org.uk/xapi/title" : x_params.name
+                        }
                     },
                     timestamp: this.initStamp
                 }
@@ -1992,11 +1998,28 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
     }
 
     function XTTerminate() {
+        var statement = new TinCan.Statement(
+            {
+                actor: actor,
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/exited",
+                    display: {
+                        "en": "Exited"
+                    }
+                },
+                object: {
+                    objectType: "Activity",
+                    id: baseUrl() + state.templateId
+                },
+                timestamp: new Date()
+            }
+        );
+        SaveStatement(statement, false);
         window.opener.innerWidth += 2;
         window.opener.innerWidth -= 2;
     }
 
-    function SaveStatement(statement) {
+    function SaveStatement(statement, async = true) {
         
         var key = baseUrl() + "sessionId";
         keyValuePairs = {};
@@ -2009,28 +2032,35 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
         }else if(statement.context.extensions == undefined){
             statement.context.extensions = keyValuePairs;
         }else{
-            statement.context.extenstions[key] = state.sessionId;
+            statement.context.extensions[key] = state.sessionId;
         }
         statement.id = null;
-        lrsInstance.saveStatement(
-            statement,
-            {
-                callback: function (err, xhr) {
-                    if (err !== null) {
-                        if (xhr !== null) {
-                            //alert("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
+        if(async){
+            lrsInstance.saveStatement(
+                statement,
+                {
+                    callback: function (err, xhr) {
+                        if (err !== null) {
+                            if (xhr !== null) {
+                                //alert("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
+                                // TODO: handle error accordingly when needed
+                                return;
+                            }
+
+                            //alert("Failed to save statement: " + err);
                             // TODO: handle error accordingly when needed
                             return;
                         }
 
-                        //alert("Failed to save statement: " + err);
-                        // TODO: handle error accordingly when needed
-                        return;
                     }
-
                 }
-            }
-        );
+            );
+        }else{
+            lrsInstance.saveStatement(
+                statement
+            );
+        }
+
     }
 
     function XTResults(fullcompletion) {
