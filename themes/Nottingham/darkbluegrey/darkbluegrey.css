@@ -349,9 +349,6 @@ div#shorturltodisplay a {
 .x_results_page td, th {
   border-radius: 0; }
 
-.x_results_page .td-right {
-  text-align: left; }
-
 .x_results_page tr td {
   background-color: #018CCF; }
 
@@ -503,6 +500,9 @@ div#shorturltodisplay a {
   border: 2px solid #3F4957; }
 
 @media only screen and (max-width: 500px) {
+  #x_footerProgress {
+    display: block; }
+
   #x_pageNo {
     vertical-align: top;
     text-align: center;
@@ -771,4 +771,4 @@ img {
 .fa-x-copy:before {
   content: "\0c5"; }
 
-/*# sourceMappingURL=greyblueorange.css.map */
+/*# sourceMappingURL=darkbluegrey.css.map */
