@@ -477,6 +477,9 @@ tr.alt td {
   border: 2px solid #ffffff; }
 
 @media only screen and (max-width: 500px) {
+  #x_footerProgress {
+    display: block; }
+
   #x_pageNo {
     vertical-align: top;
     text-align: center;

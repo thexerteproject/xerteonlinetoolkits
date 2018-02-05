@@ -88,6 +88,11 @@
 //******** Smartphones (portrait) - change progress bar display for small screen-----------*/
 @media only screen
 and (max-width :500px) {
+  //show progress bar in mobile portrait mode with this theme
+  //but also reduce font/button sizes to fit//
+  #x_footerProgress {
+    display: block;
+  }
   #x_pageNo {
     vertical-align: top;
     text-align: center;
