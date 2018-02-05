@@ -229,3 +229,12 @@ h3 {
 /* marking on interactivity pages */
 .fa-x-tick:before { content: "\f00c"; color: #62c562; }
 .fa-x-cross:before { content: "\f00d"; color: #ff0000; }
+
+@media only screen
+and (max-width :500px) {
+	/*hide progress bar by default when viewed in portrait mode on mobiles*/
+	/*if required change to display:block on themes where FA buttons are used*/
+	#x_footerProgress {
+		display: none;
+	}
+}
