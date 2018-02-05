@@ -526,6 +526,34 @@ div#shorturltodisplay a {
 #menuItems .menuItem.current {
   border: 2px solid #3A5199; }
 
+@media only screen and (max-width: 500px) {
+  #x_footerProgress {
+    display: block; }
+
+  #x_pageNo {
+    vertical-align: top;
+    text-align: center;
+    display: inline-block;
+    padding: 12px 5px 0 5px;
+    margin-right: -5px;
+    height: 30px;
+    width: auto;
+    z-index: 100;
+    font-size: 12px; }
+
+  #x_footerBlock button {
+    font-size: 1em;
+    width: 1em;
+    margin-left: 5px; }
+
+  .pbContainer {
+    display: block;
+    margin-top: 1.2em; }
+
+  .pbTxt {
+    display: block;
+    font-size: 6px;
+    text-align: center; } }
 #x_pageHolder {
   /*#infoHolder p {
     animation: fadePop 0.25s linear;
