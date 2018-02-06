@@ -1,0 +1,37 @@
+//*define color pallette*/
+$darkestcolor: #353C3F;
+$lightestcolor:#d6c338;
+$brightcolor:#FF8D3F;
+$contrastcolor:#756867;
+$whiteorlightest:#ffffff;
+$blackordarkest:$darkestcolor;
+$accent1: #00700c;
+$accent2:#D5D6D2;// light grey #D5D6D2 // yellowy #d6c338
+
+//*set background colors*/
+$bodybackgroundcolor:$accent2;
+$defaultpagebackground:$whiteorlightest;
+$progressBarColor: #2196F3; /* default #2196F3;*/
+
+//*set font family*/
+$mainfonts: 'Varela Round', sans-serif;
+$secondaryfonts:'Varela Round', sans-serif;
+
+//*define font colors to match the background colors*/
+$mainfontcolour: $darkestcolor;
+$fontcolorfordarkestcolor:$lightestcolor;
+$fontcolorforlightestcolor:$darkestcolor;
+$fontcolorfobrightcolor:$contrastcolor;
+$fontcolorforcontrastcolor:$lightestcolor;
+$linkcolor:#00700c;
+$linkvisited: #00560c;
+$linkhover:#756867;
+
+//*define rounded corner and other sizes*/
+$largeroundedcorners: 6vmin;
+$mediumroundedcorners: 2vmin;
+$smallroundedcorners: 1vmin;
+$imageroundedcorners: 2vmin;
+$contentmargin: 2%;
+$interfaceboxshadow:3px 3px 5px grey;;
+$defaultpagepadding:2%;
