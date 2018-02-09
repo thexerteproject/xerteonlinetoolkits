@@ -28,6 +28,7 @@
 	#pageContents button {
 		margin:		10px;
 		float:		right;
+		clear: both;
 	}
 	
 	.result {
