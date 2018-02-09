@@ -21,26 +21,30 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var textGraphics = new function() {
-		var $pageContents;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$pageContents = $("#pageContents");
-			this.loadAudio();
+			
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			var $pageImg = $("#pageImg");
 			
-			if (x_currentPageXML.getAttribute("imagesize") == "full screen") { // set image size for full screen
-				var hidePanel = $pageContents.data("hidePanel");
-				if (hidePanel == "true") {
-					x_scaleImg($pageImg, $x_pageHolder.width() - 20, $x_pageHolder.height() - 20, true, false);
-				} else {
-					var offset = this.calculateOffset();
-					x_scaleImg($pageImg, $x_pageHolder.width() - offset[0], $x_pageHolder.height() - offset[1], true, false);
+			if (x_currentPageXML.getAttribute("imagesize") != "actual size") {
+				if ($("#transcriptHolder").length > 0 && $("#transcriptBtn").attr("aria-expanded") == "true") {
+					$("#transcriptBtn").click();
+					$("#transcript").css("display", "none");
 				}
+				
+				var offset = textGraphics.calculateOffset();
+				$("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "60%");
+				$pageImg.css("max-height", $("#x_pageHolder").height() - offset[1]);
+				
+				if ($("#imgCaption").length > 0) {
+					$("#imgCaption").width($pageImg.width());
+				}
+				
 				if ($("#transcriptHolder").length > 0) {
 					$("#transcript").width($pageImg.width());
 				}
@@ -56,14 +60,16 @@
 		}
 		
 		this.init = function() {
-			$pageContents = $("#pageContents");
-			
-			var $textHolder	= $("#textHolder"),
-				$panel		= $("#pageContents .panel"),
-				imageSize	= x_currentPageXML.getAttribute("imagesize"),
+			var $pageContents = $("#pageContents"),
+				$textHolder = $("#textHolder"),
+				$imgHolder = $("#imgHolder"),
+				$imgCaption = $("#imgCaption"),
+				$imgInnerDiv = $("#imgInnerDiv"),
+				$transcript = $("#transcript"),
+				imageSize = x_currentPageXML.getAttribute("imagesize"),
 				transcriptTxt = x_currentPageXML.getAttribute("transcript"),
-				hidePanel	= x_currentPageXML.getAttribute("hidePanel");
-				
+				hidePanel = x_currentPageXML.getAttribute("hidePanel");
+			
 			if (hidePanel == undefined || (hidePanel == "true" && x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "")) {
 				hidePanel = "false";
 			}
@@ -77,23 +83,24 @@
 					if (textAlign == "Top") {
 						$pageContents.prepend($textHolder);
 					}
-					$("#imgHolder").addClass("centerAlign");
+					$imgHolder
+						.addClass("centerAlign")
+						.addClass(textAlign);
 				} else if (textAlign == "Right") {
-					$panel.addClass("x_floatLeft");
+					$imgInnerDiv.addClass("x_floatLeft");
 				} else {
-					$panel.addClass("x_floatRight");
+					$imgInnerDiv.addClass("x_floatRight");
 				}
 			} else {
-				$("#imgHolder").addClass("centerAlign");
+				$imgHolder.addClass("centerAlign fullScreen");
 				$textHolder.remove();
 			}
 			
-			
 			// transcript stuff
 			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "") {
-				$("#imgCaption").addClass("transcript");
+				$imgCaption.addClass("transcript");
 				
-				$("#transcript")
+				$transcript
 					.hide()
 					.html(x_addLineBreaks(transcriptTxt));
 				
@@ -106,12 +113,12 @@
 					.click(function() {
 						$this = $(this);
 						if ($this.attr("aria-expanded") == "false") {
-							$("#transcript").slideDown();
+							$transcript.slideDown();
 							$this
 								.attr("aria-expanded", true)
 								.button({icons: {secondary:"fa fa-x-btn-show"}});
 						} else {
-							$("#transcript").slideUp();
+							$transcript.slideUp();
 							$this
 								.attr("aria-expanded", false)
 								.button({icons: {secondary:"fa fa-x-btn-hide"}});
@@ -122,13 +129,13 @@
 			}
 			
 			if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
-				$("#imgCaption").html(x_currentPageXML.getAttribute("caption"));
+				$imgCaption.html(x_currentPageXML.getAttribute("caption"));
 			} else {
-				$("#imgCaption").remove();
+				$imgCaption.remove();
 			}
 			
 			if (hidePanel == "true") {
-				$panel
+				$imgInnerDiv
 					.addClass("noBorder")
 					.removeClass("panel")
 					.removeClass("inline");
@@ -136,43 +143,47 @@
 			
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			
-			
-			// image scaling
-			var scale = true,
-				imgMaxW,
-				imgMaxH;
-			
-			if (imageSize == "actual size") {
-				scale = false;
-			} else if (imageSize == "full screen") {
-				if (parseInt($x_pageHolder.css("margin-top")) != 0) {
-					if (hidePanel == "true") {
-						imgMaxW = $x_pageHolder.width() - 20;
-						imgMaxH = $x_pageHolder.height() - 20;
-					} else {
-						var offset = textGraphics.calculateOffset();
-						imgMaxW = $x_pageHolder.width() - offset[0];
-						imgMaxH = $x_pageHolder.height() - offset[1];
-					}
-				}
-			} else { // auto
-				imgMaxW = 500; // desktop / tablet
-				imgMaxH = 400;
-				if (x_browserInfo.mobile == true) {
-					imgMaxW = 250; // mobile
-					imgMaxH = 250;
-				}
-			}
-			
 			$("#pageImg")
 				.one("load", function() {
-					x_scaleImg(this, imgMaxW, imgMaxH, scale, true);
-					textGraphics.imgLoaded();
+					var $this = $(this);
+					$this.data("origSize", [$this.width(), $this.height()]);
+					
+					var offset = textGraphics.calculateOffset();
+					if (imageSize == "actual size") {
+						// no scaling
+					} else {
+						$this.css({
+							"max-width": "100%",
+							"max-height": $x_pageHolder.height() - offset[1]
+						});
+						
+						if (imageSize == "full screen") {
+							$imgInnerDiv.css({
+								"max-width": "100%"
+							});
+						} else { // auto
+							$imgInnerDiv.css({
+								"max-width": textAlign == "Top" || textAlign == "Bottom" ? $x_pageHolder.width() - offset[0] : "60%"
+							});
+						}
+					}
+					
+					$this.css("visibility", "visible");
+					
+					if ($("#transcriptHolder").length > 0) {
+						$transcript.width($this.width());
+					}
+					if ($imgCaption.length > 0) {
+						$imgCaption.width($this.width());
+					}
+					textGraphics.setUpMagnifier();
+					textGraphics.loadAudio();
+					x_pageLoaded(); // call this function in every model once everything's loaded
 				})
 				.attr({
-					"src":	x_evalURL(x_currentPageXML.getAttribute("url")),
-					"alt":	x_currentPageXML.getAttribute("tip"),
-					"title":	x_currentPageXML.getAttribute("tip")
+					"src": x_evalURL(x_currentPageXML.getAttribute("url")),
+					"alt": x_currentPageXML.getAttribute("tip"),
+					"title": x_currentPageXML.getAttribute("tip")
 				})
 				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 					if (this.complete) {
@@ -181,44 +192,36 @@
 				});
 		}
 		
-		this.imgLoaded = function() {
-			var $pageImg = $("#pageImg");
-			if ($("#transcriptHolder").length > 0) {
-				$("#transcript").width($pageImg.width());
-			}
-			if ($("#imgCaption").length > 0) {
-				$("#imgCaption").width($pageImg.width());
-			}
-			textGraphics.setUpMagnifier();
-			textGraphics.loadAudio();
-			x_pageLoaded(); // call this function in every model once everything's loaded
-		}
-		
 		this.loadAudio = function() {
 			var soundFile = x_currentPageXML.getAttribute("sound");
 			if (soundFile != undefined && soundFile != "") {
 				$("#pageAudio").mediaPlayer({
-					type		:"audio",
-					source		:soundFile,
-					width		:$("#pageImg").width()
+					type: "audio",
+					source: soundFile,
+					width: $("#pageImg").width()
 				});
 			}
 		}
 		
 		this.calculateOffset = function() {
-			// calculates available space when image is full screen
-			var offset = [20, 20];
-			if ($pageContents.data("hidePanel") != "true") {
-				var $panel = $(".panel");
-				offset.splice(0, 1, offset[0] + parseInt($panel.css("padding-left")) + 20 * 2);
-				offset.splice(1, 1, offset[1] + parseInt($panel.css("padding-top")) + 20 * 2);
-			}
+			// calculates available space for image
+			var $imgInnerDiv = $("#imgInnerDiv");
+			var offset = [
+				$imgInnerDiv.outerWidth() - $imgInnerDiv.width() + $("#x_pageDiv").outerWidth() - $("#x_pageDiv").width() + 10,
+				$imgInnerDiv.outerHeight() - $imgInnerDiv.height() + $("#x_pageDiv").outerHeight() - $("#x_pageDiv").height() + 10
+			];
+			
 			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
 				offset.splice(1, 1, offset[1] + x_audioBarH);
 				if (x_currentPageXML.getAttribute("transcript") != undefined && x_currentPageXML.getAttribute("transcript") != "") {
-					offset.splice(1, 1, offset[1] + 35);
+					offset.splice(1, 1, offset[1] + $("#transcriptHolder").outerHeight());
 				}
 			}
+			
+			if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+				offset.splice(1, 1, offset[1] + $("#imgCaption").outerHeight());
+			}
+			
 			return offset;
 		}
 		
@@ -244,7 +247,7 @@
 <div id="pageContents">
 	
 	<div id="imgHolder" class="mobileAlign">
-		<div class="panel inline">
+		<div id="imgInnerDiv" class="panel inline">
 			<img id="pageImg" style="visibility: hidden" />
 			<div id="pageAudio"></div>
 			<p id="imgCaption"></p>
