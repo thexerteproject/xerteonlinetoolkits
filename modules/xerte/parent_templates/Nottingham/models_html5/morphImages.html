@@ -52,27 +52,59 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			var $img1 = $("#pageImg1");
+			var offset = morphImages.calculateOffset();
 			
+			$("#pageImg2").remove();
+			$("#imgDiv")
+				.width("auto")
+				.height("auto");
+			
+			$("#imgInnerDiv").css("max-width", x_browserInfo.mobile == true ? $x_pageHolder.width() - offset[0] : "60%");
+			$img1.stop().css({
+				marginLeft: "0px",
+				marginTop: "0px",
+				opacity: 1,
+				width: "auto",
+				"max-width": "100%",
+				"max-height": x_browserInfo.mobile == true ? $x_mobileScroll.height() - $x_footerBlock.height() - offset[1] : $x_pageHolder.height() - offset[1]
+			});
+			
+			morphImages.setUpImg2();
 		}
 		
 		this.init = function() {
+			var $imgInnerDiv = $("#imgInnerDiv");
+			
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			
-			var imgMaxW1 = 500,
-				imgMaxH1 = 400;
-			if (x_browserInfo.mobile == true) {
-				imgMaxW1 = 250;
-				imgMaxH1 = 250;
-			}
+			$("#zoomBtn") // doesn't use zoomBtnWidth attribute as it will size automatically
+				.button({
+					icons: {primary:"fa fa-x-zoom-in"},
+					label: x_currentPageXML.getAttribute("buttonLabel") != undefined ? x_currentPageXML.getAttribute("buttonLabel") : "Zoom"
+				})
+				.on("click", function() {
+					morphImages.zoom();
+				});
 			
-			var imgMaxW2 = imgMaxW1,
-				imgMaxH2 = imgMaxH1;
-			
-			var $img1 = $("#pageImg1");
-			$img1
+			// make images responsive initially
+			var $img1 = $("#pageImg1")
 				.one("load", function() {
-					x_scaleImg(this, imgMaxW1, imgMaxH1, true, true);
-					morphImages.setUpZoom();
+					var $this = $(this);
+					$this.data("origSize", [$this.width(), $this.height()]);
+					
+					var offset = morphImages.calculateOffset();
+					
+					$this.css({
+						"max-width": "100%",
+						"max-height": x_browserInfo.mobile == true ? $x_mobileScroll.height() - $x_footerBlock.height() - offset[1] : $x_pageHolder.height() - offset[1]
+					});
+					
+					$imgInnerDiv.css({
+						"max-width": x_browserInfo.mobile == true ? $x_pageHolder.width() - offset[0] : "60%"
+					});
+					
+					morphImages.setUpImg2();
 				})
 				.attr({
 					"src":	x_evalURL(x_currentPageXML.getAttribute("url")),
@@ -83,30 +115,36 @@
 						$(this).trigger("load");
 					}
 				});
-			
-			// if language attributes aren't in xml will have to use english fall back
-			var buttonLabel = x_currentPageXML.getAttribute("buttonLabel");
-			if (buttonLabel == undefined) {
-				buttonLabel = "Zoom"
-			}
-			$("#zoomBtn") // doesn't use zoomBtnWidth attribute as it will size automatically
-				.button({
-					icons: {primary:"fa fa-x-zoom-in"},
-					label: buttonLabel
-				})
-				.on("click", function() {
-					morphImages.zoom();
-					});
 		}
 		
-		this.setUpZoom = function() {
-			var $img1 = $("#pageImg1");
-			$img1.hide().fadeIn(1000);
+		this.calculateOffset = function() {
+			// calculates available space for image
+			var $imgInnerDiv = $("#imgInnerDiv");
 			
-			$imgDiv = $("#imgDiv");
+			var offset = [
+				$imgInnerDiv.outerWidth() - $imgInnerDiv.width() + $x_pageDiv.outerWidth() - $x_pageDiv.width() + 10,
+				$imgInnerDiv.outerHeight() - $imgInnerDiv.height() + $x_pageDiv.outerHeight() - $x_pageDiv.height() + 10 + $("#zoomBtn").outerHeight(true)
+			];
+			
+			return offset;
+		}
+		
+		this.setUpImg2 = function() {
+			var $img1 = $("#pageImg1")
+				.css("visibility", "visible")
+				.hide().fadeIn(1000);
+			
+			// fix sizes or iamge now otherwise animation won't work
+			var $imgDiv = $("#imgDiv");
 			$imgDiv
 				.width($imgDiv.width())
 				.height($imgDiv.height());
+			
+			$img1.css({
+				"width": $img1.width(),
+				"max-width": "none",
+				"max-height": "none"
+			});
 			
 			var scale = $img1.width() / $img1.data("origSize")[0], // xywh to be scaled with image
 				$hotspotInfo = $(x_currentPageXML).find("hotspot")[0],
@@ -170,11 +208,12 @@
 		this.zoom = function() {
 			if ($("#pageImg2:animated").length == 0) {
 				var $img1 = $("#pageImg1"),
-					$img2 = $("#pageImg2"),
-					img1AnimationData = $img1.data("state" + $img2.data("zoom")),
+					$img2 = $("#pageImg2");
+				
+				var img1AnimationData = $img1.data("state" + $img2.data("zoom")),
 					img2AnimationData = $img2.data("state" + $img2.data("zoom"));
 				
-				$("#pageImg1").animate({
+				$img1.animate({
 					width		:img1AnimationData[0] + "px",
 					marginLeft	:img1AnimationData[1] + "px",
 					marginTop	:img1AnimationData[2] + "px",
@@ -212,9 +251,9 @@
 
 
 <div id="imgHolder" class="mobileAlign">
-	<div class="panel inline x_floatLeft">
+	<div id="imgInnerDiv" class="panel inline x_floatLeft">
 		<div id="imgDiv">
-			<img id="pageImg1" />
+			<img id="pageImg1" style="visibility: hidden"/>
 		</div>
 		<button id="zoomBtn"></button>
 	</div>
