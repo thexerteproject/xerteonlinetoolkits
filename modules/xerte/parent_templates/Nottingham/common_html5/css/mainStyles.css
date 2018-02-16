@@ -26,8 +26,13 @@ body {
 }
 
 p {
-    padding: 4px;
+    padding: 0.3em;
     margin: 0;
+}
+
+h3 {
+	padding-left: 0.3em;
+    padding-right: 0.3em;
 }
 
 ul, ol {
