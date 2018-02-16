@@ -158,6 +158,9 @@
     font-size: 2vmin !important; }
 
   .ui-dialog {
-    font-size: 2.5vmin; } }
+    font-size: 2.5vmin; }
+
+  #hint {
+    font-size: 2vmin; } }
 
 /*# sourceMappingURL=responsivetext.css.map */
