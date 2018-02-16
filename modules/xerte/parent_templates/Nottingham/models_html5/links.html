@@ -28,7 +28,9 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad) {
-
+			if (x_browserInfo.mobile == false) {
+				links.setRowHeight();
+			}
 		}
 
 		this.init = function() {
@@ -56,7 +58,7 @@
 					.attr("id", "link" + i)
 					.html(this.getAttribute("name"));
 				
-				$thisLink.find("p").html(x_addLineBreaks(this.getAttribute("text")));
+				$thisLink.find(".info").html(x_addLineBreaks(this.getAttribute("text")));
 				
 				$thisLink.find("a")
 					.html(this.getAttribute("url") + linkWarning)
@@ -71,11 +73,13 @@
 					$thisLink.addClass("clear");
 				}
 			});
-
+			
+			
+			
 			// set column widths
 			if (x_browserInfo.mobile == false) {
-				var numColumns = Number(x_currentPageXML.getAttribute("cols")),
-					spacerWidth = (numColumns + 1) * 2,	// 2% gap between columns
+				var numColumns = Number(x_currentPageXML.getAttribute("cols"));
+				var spacerWidth = (numColumns + 1) * 2,	// 2% gap between columns
 					paddingWidth = numColumns * 2,		// 1% padding inside panel
 					columnWidth = Math.floor((100 - spacerWidth - paddingWidth) / numColumns);
 
@@ -85,9 +89,39 @@
 						"padding"		:"1%",
 						"margin-left"	:"2%"
 					});
+				
+				links.setRowHeight();
 			}
 
 			x_pageLoaded();
+		}
+		
+		// set link height for each row
+		this.setRowHeight = function() {
+			
+			var maxH = 0,
+				numColumns = Number(x_currentPageXML.getAttribute("cols"));
+			
+			$(".linkBlock .info").each(function(i) {
+				$(this).height("auto");
+				var remainder = i % numColumns;
+				if (remainder == 0) {
+					if (i != 0) {
+						for (var j=0; j<numColumns; j++) {
+							$(".linkBlock .info:eq(" + (i-1-j) + ")").height(maxH);
+						}
+					}
+					// 1st in row so start maxH again from 0
+					maxH = $(this).height() > 0 ? $(this).height() : 0;
+				} else {
+					maxH = $(this).height() > maxH ? $(this).height() : maxH;
+					if (i == $(".linkBlock .info").length - 1) {
+						for (var j=0; j<numColumns; j++) {
+							$(".linkBlock .info:eq(" + (i-j) + ")").height(maxH);
+						}
+					}
+				}
+			});
 		}
 	}
 
@@ -103,7 +137,7 @@
 <div id="linkHolder">
 	<div class="panel linkBlock">
 		<h3></h3>
-		<p></p>
-		<a></a>
+		<div class="info"></div>
+		<p><a></a></p>
 	</div>
 </div>
