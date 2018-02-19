@@ -105,6 +105,64 @@ function XApiTrackingState()
         return d.getFullYear() + '-' + twoDigitMonth + '-' + twoDigitDate + 'T' + twoDigitHours + ':' + twoDigitMinutes + ':' + twoDigitSeconds + tzoffset;
     }
 
+    function getCompletionStatus()
+    {
+        var completed = true;
+        for(var i = 0; i<state.completedPages.length; i++)
+        {
+            if(state.completedPages[i] == false)
+            {
+                completed = false;
+                break;
+            }
+            //if( i == state.completedPages.length-1 && state.completedPages[i] == true)
+            //{
+            //completed = true;
+            //
+        }
+
+        if (completed)
+        {
+            return "completed";
+
+        }
+        else if(!completed)
+        {
+            return 'incomplete';
+        }
+        else
+        {
+            return "unknown"
+        }
+    }
+
+    function getSuccessStatus()
+    {
+        if (this.lo_type != "pages only")
+        {
+            if (state.getScaledScore() > this.lo_passed)
+            {
+                return "passed";
+            }
+            else
+            {
+                return "failed";
+            }
+        }
+        else
+        {
+            if (getCompletionStatus() == 'completed')
+            {
+                return "passed";
+            }
+            else
+            {
+                return "unknown";
+            }
+        }
+    }
+
+
     function getdScaledScore()
     {
         return this.getdRawScore() / (this.getdMaxScore() - this.getdMinScore());

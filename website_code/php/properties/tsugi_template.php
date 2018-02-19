@@ -28,7 +28,7 @@
             $database_id = database_connect("template database connect success","template change database connect failed");
             $template_id = $id;
             $safe_template_id = (int)$id;
-            $query_for_preview_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags,";
+            $query_for_preview_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td_template_name as name, td.access_to_whom, td.extra_flags,";
             $query_for_preview_content .= "td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode";
             $query_for_preview_content .= " from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "logindetails ld";
             $query_for_preview_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=" . $safe_template_id .  " and role='creator'";
@@ -37,7 +37,7 @@
 
             $lti_def = new stdClass();
 
-            $lti_def->title = str_replace('_', ' ', $row['tempate_name']);
+            $lti_def->title = str_replace('_', ' ', $row['name']);
             $lti_def->xapi_enabled = $row["tsugi_xapi_enabled"];
             $lti_def->key = "";
             $lti_def->secret = "";
