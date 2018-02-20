@@ -1061,7 +1061,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                     interactionType: "matching",
                                     source: sourceArray,
                                     target: targetArray,
-                                    correctResponsesPattern: scorm_canswer
+                                    correctResponsesPattern: [scorm_canswer]
                                 };
                             statement.result = {
                                 duration: calcDuration(this.start, this.end),
@@ -1209,7 +1209,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                     interactionType: "fill-in",
                                     correctResponsesPattern: this.correctAnswers
                                 };
-                            if (sit.ia_type == 'text') {
+                            if (this.ia_type == 'text') {
                                 statement.result = {
                                     duration: calcDuration(this.start, this.end),
                                     success: result.success,
@@ -1260,8 +1260,32 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                 completion: Math.abs(this.end.getTime() - this.start.getTime()) > state.page_timeout
                             };
                     }
-                    statement = new TinCan.Statement(statement);
-                    SaveStatement(statement);
+                    var statementChecked = new TinCan.Statement(statement);
+                    SaveStatement(statementChecked);
+                    if (typeof statement.result.score != 'undefined')
+                    {
+                        var scoredstatement = {
+                            timestamp: new Date(),
+                            actor: actor,
+                            verb: {
+                                id: "http://adlnet.gov/expapi/verbs/scored",
+                                display: {
+                                    "en-US": "scored"
+                                }
+                            },
+                            object: {
+                                objectType: "Activity",
+                                definition: {
+                                    name: statement.object.definition.name,
+                                    description: statement.object.definition.description
+                                },
+                                id: id
+                            },
+                            result: statement.result
+                        };
+                        var statementChecked = new TinCan.Statement(scoredstatement);
+                        SaveStatement(statementChecked);
+                    }
                 }
 
                 if (!surf_mode) {
