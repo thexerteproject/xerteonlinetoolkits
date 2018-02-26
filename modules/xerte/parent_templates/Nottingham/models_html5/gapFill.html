@@ -28,6 +28,7 @@
 			targetTxt2,
 			tabIndex = 1,
 			answerData,
+            allDropDownAnswers,
 			delimiter,
 			casesensitive,
 			currvalue,
@@ -148,8 +149,9 @@
 			// add passage with spaces/comboboxes for marked words
 			var gapFillStr = "",
 				decodedAnswer;
-			
-			for (var i=0; i<passageArray.length; i++) {
+
+            allDropDownAnswers = [];
+            for (var i=0; i<passageArray.length; i++) {
 				tabIndex++;
 				if (markedWord == false) {
 					gapFillStr += '<span tabindex="' + tabIndex + '">' + passageArray[i] + '</span>';
@@ -178,7 +180,7 @@
 								allAnswers.splice(j+1,1);
 							}
 						}
-						
+						allDropDownAnswers.push(allAnswers);
 						gapFillStr += '<select id="gap' + (i-1)/2 + '" class="menu" tabindex="' + tabIndex + '">';
 						gapFillStr += '<option value=" "> </option>';
 						for (var j=0; j<allAnswers.length; j++) {
@@ -244,23 +246,60 @@
 			}
 			
 			// Enter the interactions for this page.
+            var interactionNumber,
+				name,
+				correctAnswer,
+				correctAnswers,
+				correctOption,
+				correctOptions;
 			if(x_currentPageXML.getAttribute("interactivity") == "Fill in Blank"){			
-				for (var interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {				
-					var name = "interaction number" + " " + interactionNumber;
-					var correctAnswer = answerData[interactionNumber];
+				for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
+					name = "interaction number" + " " + interactionNumber;
+					correctAnswer = answerData[interactionNumber];
 					XTEnterInteraction(x_currentPage,  interactionNumber , 'fill-in', name, [], correctAnswer, "Correct", x_currentPageXML.getAttribute("trackinglabel"));
 				}
 			}
 			else if(x_currentPageXML.getAttribute("interactivity") == "Drag Drop"){
-				for (var interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
-					var name = "interaction number" + " " + interactionNumber;
-					var correctAnswer = answerData[interactionNumber][0];
+			    correctAnswers = [];
+                correctOptions = [];
+				for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
+					name = "interaction number" + " " + interactionNumber;
+					correctAnswer = answerData[interactionNumber][0];
 					correctAnswer = correctAnswer + "-->" + correctAnswer;
-					var correctOption = {source: answerData[interactionNumber][0], target: answerData[interactionNumber][0]}
-					var correctOptions = [];
+					correctAnswers.push(correctAnswer);
+					correctOption = {source: answerData[interactionNumber][0], target: answerData[interactionNumber][0]}
 					correctOptions.push(correctOption);
-					XTEnterInteraction(x_currentPage,  interactionNumber , 'match', name, correctOptions, correctAnswer, "Correct", x_currentPageXML.getAttribute("trackinglabel"));
 				}
+                XTEnterInteraction(x_currentPage,  0 , 'match', name, correctOptions, correctAnswers, "", x_currentPageXML.getAttribute("trackinglabel"));
+
+            }
+			else
+			{
+                for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
+                    correctAnswers = [];
+                    correctOptions = [];
+                    name = "interaction number" + " " + interactionNumber;
+                    for (var i=0; i<answerData[interactionNumber].length; i++) {
+                        correctAnswers.push(answerData[interactionNumber][i]);
+                    }
+                    for (var i=0; i<allDropDownAnswers[interactionNumber].length; i++)
+					{
+					    var correctAnswer = false;
+
+					    var p = answerData[interactionNumber].indexOf(allDropDownAnswers[interactionNumber][i]);
+                        if (p >=0)
+                        {
+                            correctAnswer = true;
+                        }
+
+                        correctOptions.push({
+                            id: (i + 1) + "",
+                            answer: allDropDownAnswers[interactionNumber][i],
+                            result: correctAnswer
+                        });
+					}
+                    XTEnterInteraction(x_currentPage,  interactionNumber , 'multiplechoice', name, correctOptions, correctAnswers, "Correct", x_currentPageXML.getAttribute("trackinglabel"));
+                }
 			}
 			
 			this.sizeChanged();
@@ -278,14 +317,38 @@
 				})
 				.attr("tabindex",tabIndex)
 				.click(function() {
-					var wrong = 0;
+					var wrong = 0,
+						correct,
+						result,
+						answer,
+                        answers,
+						feedback,
+						options;
+
 					$targetHolder.find("select").each(function(i) {
 						var $this = $(this);
+						answers = [];
+						options = [];
+						feedback= [];
 						if ($.inArray($this.val(), answerData[i]) != -1) {
 							$this.attr("disabled", "disabled");
+							answer = $this.val();
+							correct = true;
 						} else {
 							wrong++;
+							correct = false;
 						}
+                        result = {
+                            success: correct,
+                            score: (correct ? 100.0 : 0.0)
+                        };
+                        options.push({
+                            id :i+1+"",
+                            answer: answer,
+                            result: correct
+                        });
+                        answers.push(answer);
+						XTExitInteraction(x_currentPage, i, result, options, answers, feedback, x_currentPageXML.getAttribute("trackinglabel"));
 					});
 					
 					if (wrong == 0) {
@@ -870,7 +933,7 @@
                 }
             });
 			
-			if (empty == $targetHolder.find("input").length || this.isTracked) {
+			if (empty > 0) {
 				$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise."));
                 $feedbackTxt.fadeIn();
 			} else {
@@ -1026,31 +1089,35 @@
 				$feedbackTxt.fadeIn();
 				
 				//TODO: input veranderen.
+                var l_options = [];
+                var l_answers = [];
 				for (var interactionNumber = 0; interactionNumber < answerData.length; interactionNumber++) {
 					var correctAnswer = answerData[interactionNumber][0];
-					var correct = false;
-					var l_options = [];
+
 					var labelSource = labelAnswers[correctAnswer];
 					var option = {source: labelSource, target: correctAnswer};
 					l_options.push(option);
 					if (option.source == option.target) {
-						correct = true;
 						correct_answers++;
 					}
 
 					var l_answer = labelSource + "-->" + correctAnswer;
+					l_answers.push(l_answer);
 					var feedback = "Correct";
 					if (!correct)
 						feedback = "Incorrect";
-                    var result = {
-                        success: correct,
-                        score: (correct ? 100.0 : 0.0)
-                    };
-					XTExitInteraction(x_currentPage, interactionNumber, result, l_options, l_answer, feedback);
 					total++;
 				}
-				
-			} else {
+				var correct = (total == correct_answers);
+                var result = {
+                    success: correct,
+                    score: (correct ? 100.0 : 0.0)
+                };
+
+                XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, feedback);
+
+
+            } else {
 				// if tracking is on then you must fully complete before checking answers
 				$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise."));
 				$feedbackTxt.fadeIn();
