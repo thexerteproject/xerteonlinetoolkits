@@ -302,6 +302,9 @@
                 var player = new Mediasite.Player( "panelHolder",
                     {
                         url: "https://deltion.mediamission.nl/Mediasite/Play/c550ff4fee9d493b8f5efebe45b777271d?player=MediasiteIntegration",
+                        events: {
+                            ready: showStreams
+                        },
                         layoutOptions: {
                             BackgroundColor: "#ffffff",
                             Gutter: 2
@@ -313,6 +316,36 @@
                         imageSprite: "url(" + ctrlPng + ")"
                     }
                 );
+
+                function showStreams() {
+                    var visiblestreams = [];
+                    if (x_currentPageXML.getAttribute("showVideo1") === "true")
+                    {
+                        visiblestreams.push(Mediasite.StreamType.Video1 );
+                    }
+                    if (x_currentPageXML.getAttribute("showDoc") === "true")
+                    {
+                        visiblestreams.push(Mediasite.StreamType.Document);
+                    }
+                    if (x_currentPageXML.getAttribute("showSlides") === "true")
+                    {
+                        visiblestreams.push(Mediasite.StreamType.Slide);
+                    }
+                    if (x_currentPageXML.getAttribute("showPres") === "true")
+                    {
+                        visiblestreams.push(Mediasite.StreamType.Presentation);
+                    }
+                    if (x_currentPageXML.getAttribute("showVideo2") === "true")
+                    {
+                        visiblestreams.push(Mediasite.StreamType.Video2);
+                    }
+                    if (x_currentPageXML.getAttribute("showVideo3") === "true")
+                    {
+                        visiblestreams.push(Mediasite.StreamType.Video3);
+                    }
+                    player.setVisibleStreamTypes(visiblestreams);
+                }
+
                 //TODO verander height naar relatief
                 $panelHolder = $("#panelHolder");
 
@@ -362,6 +395,11 @@
                     }
                     panelData.splice(maxPanels, panelData.length - maxPanels);
                 }
+
+                // Hide certain aspects of the presentation
+                console.log(x_currentPageXML.getAttribute("hideSlides"));
+
+
 
                 // set up accordion if there's some intro text
                 if (x_currentPageXML.getAttribute("intro") != "" && x_currentPageXML.getAttribute("intro") != undefined) {
@@ -531,6 +569,7 @@
                 x_pageLoaded();
 
             };
+
 
             function getBlock(time)
             {
