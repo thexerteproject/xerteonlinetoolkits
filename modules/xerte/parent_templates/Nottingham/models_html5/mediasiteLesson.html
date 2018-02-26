@@ -213,8 +213,7 @@
             }
             // function called when page first loads
             this.init = function() {
-
-                if (!!document.createElement("canvas").getContext) {
+                if (!!document.createElement("canvas").getContext) { //!! Cast to bool (not not)
                     // load popcorn library and plugins
                     var loadFiles = true;
                     if(xot_offline) {
@@ -230,7 +229,7 @@
                     }
 
                     if (loadFiles == true ) {
-                        this.loadJS();
+                        this.loadJS(); //Loads Mediasite Player
                     } else {
                         this.setUp();
                     }
@@ -267,7 +266,7 @@
                 XTSetPageType(x_currentPage, 'numeric',numOfQuestions , this.weighting);
             }
 
-            // function loads the popcorn files
+            // function loads the mediasite files
             this.loadJS = function() {
                 if (numLoaded == plugins.length + 1) {
                     // all files have loaded
@@ -275,6 +274,9 @@
                 } else {
                     var fileToLoad;
                     if (numLoaded == 0) {
+                        $.getScript(x_templateLocation + "common_html5/js/popcorn/plugins/MediasitePlayerIFrameAPI.js");
+                        $.getScript(x_templateLocation + "common_html5/js/popcorn/plugins/MediasitePlayerControls.js");
+
                         fileToLoad = "popcorn-complete.min";
                     } else {
                         fileToLoad = "plugins/popcorn." + plugins[numLoaded - 1];
@@ -289,15 +291,29 @@
                             mediasiteLesson.loadJS();
                         })
                         .fail(function( jqxhr, settings, exception ) {
-                            console.log("Failed to load Popcorn.js & plugins");
+                            console.log("Failed to load Mediasite.js & plugins");
                         });
                 }
             }
 
-            // function called when popcorn.js & plugin files have all loaded
+            // function called when mediasitePlayerIFRame.js & plugin files have all loaded
             this.setUp = function() {
                 // _____ SORT PAGE LAYOUT _____
-
+                var player = new Mediasite.Player( "panelHolder",
+                    {
+                        url: "https://deltion.mediamission.nl/Mediasite/Play/c550ff4fee9d493b8f5efebe45b777271d?player=MediasiteIntegration",
+                        layoutOptions: {
+                            BackgroundColor: "#ffffff",
+                            Gutter: 2
+                        }
+                    });
+                var ctrlPng = x_templateLocation + "common_html5/MediasitePlayerControls.png";
+                var controls = new Mediasite.PlayerControls(player, "controlHolder",
+                    {
+                        imageSprite: "url(" + ctrlPng + ")"
+                    }
+                );
+                //TODO verander height naar relatief
                 $panelHolder = $("#panelHolder");
 
                 var	panelData = $(x_currentPageXML).children(),
@@ -307,7 +323,7 @@
                     mediaType = "video",
                     maxPanels = 4,
                     mediaPanelIndex,
-                    popcornInstance;
+                    popcornInstance; //TODO kan niet helemaal weg
 
                 // get index of media panel
                 for (var i=0; i<panelData.length; i++) {
@@ -482,23 +498,7 @@
 
                 var mediaPanelData = $(x_currentPageXML).children("mediaPanel");
 
-                if (mediaPanelIndex != -1) {
-                    popcornInstance = this.loadMedia(
-                        $("#panel" + mediaPanelIndex),
-                        mediaType,
-                        {	tip: mediaPanelData.attr("tip"),
-                            width: mediaPanelData.attr("width"),
-                            height: mediaPanelData.attr("height"),
-                            media: mediaPanelData.attr("media"),
-                            autoplay: mediaPanelData.attr("autoplay"),
-                            transcript: mediaPanelData.attr("transcript"),
-                            transcriptBtnTxt: mediaPanelData.attr("transcriptBtnTxt"),
-                            audioImage: mediaPanelData.attr("audioImage"),
-                            audioImageTip: mediaPanelData.attr("audioImageTip")
-                        },
-                        true
-                    );
-                }
+
 
                 $(".panel").each(function(i) {
                     $('<div id="panelContent' + i + '" class="panelContent"/>').appendTo($(this));
@@ -506,48 +506,30 @@
 
                 // _____ SORT & CREATE SYNCH POINT EVENTS FOR EACH PANEL _____
 
-                if (popcornInstance != undefined) {
+                //if (popcornInstance != undefined) {
 
-                    panelData.each(function(i) {
-                        mediasiteLesson.sortPopcorn($(this).children(), "panel" + i, popcornInstance, $(".mainMedia"));
-                    });
+                    //panelData.each(function(i) {
+                    //    mediasiteLesson.sortPopcorn($(this).children(), "panel" + i, popcornInstance, $(".mainMedia"));
+                    //});
 
                     //Adds events to popcorn
+                    //TODO NEEDED: TIMEUPDATE & PAUSED & PLAY, Maybe seeked, might be IE hack.
+                    //TODO gettime -> getblock -> updatetable -> sentXAPI (Blocks are impossible for now have to check later (editor issues))
+                    //getblock in general herschrijven vanwege de .duration, deze is specifiek voor de sync points die we bij popcorn gebruiken, herintegratie is daarmee wonderbaarlijk vervelend
                     var lastTime = -1;
-                    popcornInstance.media.addEventListener( "timeupdate", function() {
-                        var popTime = popcornInstance.media.currentTime;
-                        var block = getBlock(lastTime);
-                        if (lastTime != popTime && popTime > 0) {
-                            lastTime = popcornInstance.media.currentTime;
-                            updateTable(vidFullWatched, lastTime);
-                            updateTable(block, lastTime);
-                        }
-
-                    });
-                    popcornInstance.media.addEventListener( "play", function() {
-                        if (vidFullWatched == null || vidFullWatched == undefined)
+                    player.addHandler({"currenttimechanged": function (eventData) {
+                        var currentTime = eventData.currentTime;
+                        if(currentTime != lastTime && currentTime > 0)
                         {
-                            vidFullWatched = {
-                                synchStart: 0,
-                                duration: popcornInstance.duration(),
-                                synchName: "full_video",
-                                watched: []
-                            }}
-                        duration = popcornInstance.duration();
-                    });
-                    popcornInstance.media.addEventListener( "pause", function() {
-                        var block = getBlock(popcornInstance.currentTime());
-                        sentXAPI(vidFullWatched, lookupTable(vidFullWatched));
-                        sentXAPI(block,lookupTable(block));
+                            lastTime = currentTime;
+                            console.log(lastTime);
 
-                    });
-                    popcornInstance.media.addEventListener( "seeked", function() {
-                        popcornInstance.pause();
-                        popcornInstance.play();
-                    });
-                }
+                        }
+                    }});
+                    player.addHandler({"playstatechanged": function (eventData) {console.log(eventData); }});
 
                 x_pageLoaded();
+
             };
 
             function getBlock(time)
@@ -609,125 +591,7 @@
                 }
                 return playedTime;
             }
-            // function loads media - can be either main media in media panel or additional media to appear in another panel (called from media plugin)
-            this.loadMedia = function($holder, mediaType, mediaData, mainMedia) {
-                var $mediaHolder,
-                    popcornInstance,
-                    classes = "popcornMedia";
 
-                if (mainMedia == true) {
-                    classes += " mainMedia";
-                }
-
-                if (mediaType == "video") {
-                    // load video - max dimensions set in mediaMetaData function below when dimensions received
-                    $mediaHolder = $holder;
-                    var $myVideo = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
-
-                    // is it from youtube or vimeo?
-                    if (mediaData.media.indexOf("www.youtube.com") != -1 || mediaData.media.indexOf("//youtu") != -1) {
-                        var $youTube = $holder.find(".popcornMedia").addClass("youTube");
-                        mediasiteLesson.resizeYouTube($youTube);
-                        popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .youTube", mediaData.media + "&controls=2"); // force controls to appear
-                        $youTube.data("popcornInstance", popcornInstance);
-
-                        if (mediaData.autoplay == "true") {
-                            popcornInstance.play();
-                        }
-
-                    } else if (mediaData.media.indexOf("vimeo.com") != -1) {
-                        var $vimeo = $holder.find(".popcornMedia").addClass("vimeo");
-                        mediasiteLesson.resizeVimeo($vimeo);
-
-                        popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .vimeo", mediaData.media); // force controls to appear
-                        $vimeo.data("popcornInstance", popcornInstance);
-
-                        if (mediaData.autoplay == "true") {
-                            popcornInstance.play();
-                        }
-
-                    } else {
-                        $myVideo
-                            .attr("title", mediaData.tip)
-                            .css("margin", "0 auto")
-                            .mediaPlayer({
-                                type		:"video",
-                                source		:mediaData.media,
-                                width		:"100%",
-                                height		:"100%",
-                                autoPlay	:mediaData.autoplay,
-                                pageName	:"mediasiteLesson"
-                            });
-
-                        popcornInstance = Popcorn("#" +$holder.attr("id") + " video");
-                    }
-
-                } else if (mediaType == "audio") {
-                    // load audio in panel - width is either with of audioImage (if exists) or full width of panel
-                    $mediaHolder = $('<div class="mediaHolder"></div>').appendTo($holder);
-                    var $myAudio = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
-
-                    $myAudio
-                        .attr("title", mediaData.tip)
-                        .mediaPlayer({
-                            type		:"audio",
-                            source		:mediaData.media,
-                            width       :"100%",
-                            autoPlay    :mediaData.autoplay
-                        });
-
-                    popcornInstance = Popcorn("#" + $holder.attr("id") + " audio");
-
-                    if (mediaData.audioImage != "" && mediaData.audioImage != undefined) {
-                        var $imgHolder = $('<div class="audioImgHolder"></div>').insertBefore($myAudio),
-                            $img = $('<img class="audioImg" style="visibility: hidden" />').appendTo($imgHolder);
-
-                        $img
-                            .one("load", function() {
-                                x_scaleImg(this, $holder.width(), $holder.height() - x_audioBarH, true, true);
-                                $mediaHolder.width($(this).width());
-                                mediasiteLesson.resizeMedia();
-                            })
-                            .attr("src", x_evalURL(mediaData.audioImage))
-                            .each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-                                if (this.complete) {
-                                    $(this).trigger("load");
-                                }
-                            });
-
-                        if (mediaData.audioImageTip != "" && mediaData.audioImageTip != undefined) {
-                            $img.attr("alt", mediaData.audioImageTip);
-                        }
-                    }
-                }
-
-                // add transcript to media panel if required
-                if (mediaData.transcript != "" && mediaData.transcript != undefined) {
-                    $mediaHolder.append('<div class="transcriptHolder"><div class="transcript">' + x_addLineBreaks(mediaData.transcript) + '</div><button class="transcriptBtn"></button></div>');
-                    $mediaHolder.find(".transcript").hide();
-                    $mediaHolder.find(".transcriptBtn")
-                        .button({
-                            label:	mediaData.transcriptBtnTxt != undefined && mediaData.transcriptBtnTxt != "" ? mediaData.transcriptBtnTxt : "Transcript"
-                        })
-                        .click(function() {
-                            // transcript slides in and out of view on click
-                            var $transcript = $(this).prev(".transcript");
-                            if ($transcript.is(":hidden") == true) {
-                                $transcript.slideDown();
-                            } else {
-                                $transcript.slideUp();
-                            }
-                        });
-
-                    if (mediaType == "video") {
-                        $mediaHolder.find(".transcriptHolder")
-                            .width($mediaHolder.find(".popcornMedia").width())
-                            .css("margin", "0 auto");
-                    }
-                }
-
-                return popcornInstance;
-            }
 
             // function loads audio in the footer bar (like narration) when it doesn't go in a panel
             this.loadAudioInFooter = function() {
@@ -799,6 +663,7 @@
                 return synch;
             }
 
+            //Function not necesarry for now
             this.sortPopcornNow = function(synchData, targetRef, popcornInstance, $mediaDiv) {
                 var data = new Array(), // array of objects containing details of a synch point event
                     prevStart = 0,
@@ -1046,39 +911,6 @@
                 });
             }
 
-            function calcIndex(time) {
-                for (var i = 0; i < blocks.length; i++)
-                {
-                    if (parseInt(time) < parseInt(blocks[i].synchStart))
-                    {
-                        return i;
-                    }
-                }
-                return i+1;
-            }
-
-            // function sets up the popcorn sync events for pausing and skipping the media
-            this.setUpPopcornCue = function(popcornInstance, synchData) {
-                popcornInstance.cue(Number(synchData.getAttribute("synch")), function() {
-                    // pause / play media
-                    if (synchData.getAttribute("pauseMedia") == "true") {
-                        this.pause();
-                    } else {
-                        this.play();
-                    }
-
-                    // disable media controls
-                    if (synchData.getAttribute("disable") == "true") {
-                        mediasiteLesson.enableControls(this.media, false);
-                    }
-
-                    // skip media
-                    if (synchData.getAttribute("destination") != undefined && $.isNumeric(synchData.getAttribute("destination"))) {
-                        this.currentTime(synchData.getAttribute("destination"));
-                    }
-                });
-            }
-
             // function disables / enables media controls
             this.enableControls = function(media, enable) {
                 if (enable == true) {
@@ -1130,7 +962,6 @@
 
 
 <div id="pageContents">
-
     <div id="infoHolder">
         <h3 class="accTitle"><a href="#"></a></h3>
         <div class="accContent"></div>
@@ -1139,5 +970,6 @@
     <div id="contentCover"></div>
 
     <div id="panelHolder"></div>
+    <div id="controlHolder"></div>
 
 </div>

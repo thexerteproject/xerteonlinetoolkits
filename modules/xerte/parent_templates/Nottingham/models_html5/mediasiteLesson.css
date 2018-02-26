@@ -12,6 +12,10 @@
 }
 
 /* PANEL LAYOUT */
+#panelHolder {
+    width: 100%;
+    height: 400px;
+}
 
 #panelHolder .panel.tileH {
     display:	inline-block;
