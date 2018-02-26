@@ -561,7 +561,7 @@ function x_cssSetUp(param) {
 
 	switch(param) {
         case "menu":
-        	x_insertCSS(x_templateLocation + "models_html5/menu.css", function() {x_cssSetUp("menu2")});
+        	x_insertCSS(x_templateLocation + "models_html5/menu.css", function() {x_cssSetUp("language")});
             break;
         case "menu2":
             if (x_params.theme != undefined && x_params.theme != "default") {
@@ -574,7 +574,7 @@ function x_cssSetUp(param) {
             break;
         case "language":
 			if (x_params.kblanguage != undefined) {
-				x_insertCSS(x_templateLocation + "models_html5/language.css", function() {x_cssSetUp("language2")});
+				x_insertCSS(x_templateLocation + "models_html5/language.css", function() {x_cssSetUp("glossary")});
 			} else {
 				x_cssSetUp("glossary");
 			}
@@ -590,7 +590,7 @@ function x_cssSetUp(param) {
             break;
         case "glossary":
 			if (x_params.glossary != undefined) {
-				x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("glossary2")});
+				x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("colourChanger")});
 			} else {
 				x_cssSetUp("colourChanger");
 			}
@@ -605,7 +605,7 @@ function x_cssSetUp(param) {
             }
             break;
         case "colourChanger":
-            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("colourChanger2")});
+            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("theme")});
             break;
         case "colourChanger2":
             if (x_params.theme != undefined && x_params.theme != "default") {
@@ -613,23 +613,24 @@ function x_cssSetUp(param) {
             }
             else
             {
-                x_cssSetUp("responsive");
+                x_cssSetUp("theme");
             }
             break;
         case "theme":
             $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
-            x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {x_cssSetUp("responsive")});
+            /*x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {x_cssSetUp("responsive")});*/
+            x_cssSetUp("responsive");
             break;
 		case "responsive":
             if (x_params.responsive == "true") {
 				// adds default responsiveText.css - in some circumstances this will be immediately disabled
 				if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_cssSetUp("responsive2")}, true);
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()}, true);
 				} else {
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_cssSetUp("responsive2")});
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()});
                 }
 			} else {
-				x_cssSetUp("stylesheet");
+                x_continueSetUp1();
 			}
             break;
         case "responsive2":
@@ -655,9 +656,9 @@ function x_cssSetUp(param) {
 }
 
 function x_continueSetUp1() {
-	if (x_params.styles != undefined){
-		$x_head.append('<style type="text/css">' +  x_params.styles + '</style>');
-	}
+	//if (x_params.styles != undefined){
+	//	$x_head.append('<style type="text/css">' +  x_params.styles + '</style>');
+	//}
 	
 	if (x_pageInfo[0].type == "menu") {
 		$x_pageNo.hide();
@@ -740,13 +741,13 @@ function x_continueSetUp1() {
 					var $this = $(this),
 						myText = $this.text(),
 						myDefinition, i, len;
-						
+					
 					// Rip out the title attribute
 					$this.data('title', $this.attr('title'));
 					$this.attr('title', '');
 					
 					for (i=0, len=x_glossary.length; i<len; i++) {
-						if (myText.toLowerCase() == x_glossary[i].word.toLowerCase()) {
+						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>"
 							if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
 								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
@@ -755,6 +756,7 @@ function x_continueSetUp1() {
 							}
 						}
 					}
+					
 					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
 					$x_glossaryHover = $("#x_glossaryHover");
 					$x_glossaryHover.css({
@@ -874,19 +876,58 @@ function x_continueSetUp1() {
 		}
 	}
 	
-	// get icon position
+	// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
+	// it's overridden by logo in theme folder
+	// default & theme logos can also be overridden by images uploaded via Icon optional property
+	$('#x_headerBlock img.x_icon').hide();
+	$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
+	
 	var icPosition = "x_floatLeft";
 	if (x_params.icPosition != undefined && x_params.icPosition != "") {
 		icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
 	}
-	if (x_params.ic != undefined && x_params.ic != "") {
-		x_checkMediaExists(x_evalURL(x_params.ic), function(mediaExists) {
-			if (mediaExists) {
-				var icTip = x_params.icTip != undefined && x_params.icTip != "" ? 'alt="' + x_params.icTip + '"' : 'aria-hidden="true"';
-				$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="' + icPosition + '" onload="if (x_firstLoad == false) {x_updateCss();}" ' + icTip + '/>');
+	$('#x_headerBlock img.x_icon').addClass(icPosition);
+	
+	var checkExists = function(type, fallback) {
+		$.ajax({
+			url: $('#x_headerBlock img.x_icon').attr('src'),
+			success: function() {
+				$('#x_headerBlock img.x_icon').show();
+				if (x_firstLoad == false) {x_updateCss();};
+				
+				// the theme logo is being used - add a class that will allow for the different size windows to display different logos
+				if (type == 'theme') {
+					$('#x_headerBlock img.x_icon').addClass('themeLogo');
+				}
+				
+				if (x_params.icTip != undefined && x_params.icTip != "") {
+					$('#x_headerBlock img.x_icon').attr('alt', x_params.icTip);
+				} else {
+					$('#x_headerBlock img.x_icon').attr('aria-hidden', 'true');
+				}
+			},
+			error: function() {
+				if (fallback == 'theme') {
+					$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
+					checkExists('theme', 'default');
+				} else if (fallback == 'default') {
+					$('#x_headerBlock img.x_icon').attr('src', $('#x_headerBlock img.x_icon').data('defaultLogo'));
+					checkExists();
+				}
 			}
 		});
 	}
+	
+	var type, fallback;
+	if (x_params.ic != undefined && x_params.ic != '') {
+		$('#x_headerBlock img.x_icon').attr('src', x_evalURL(x_params.ic));
+		type = 'LO';
+		fallback = x_params.theme != undefined && x_params.theme != "default" ? 'theme' : 'default';
+	} else if (x_params.theme != undefined && x_params.theme != "default") {
+		type = 'theme';
+		$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
+	}
+	checkExists(type, fallback);
 	
 	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 	$("#x_headerBlock h1").html(x_params.name);
@@ -897,7 +938,6 @@ function x_continueSetUp1() {
 	if (strippedText != "") {
 		document.title = strippedText;
 	}
-	
 	
 	var prevIcon = "x_prev";
 	if (x_params.navigation == "Historic") {
@@ -1086,6 +1126,7 @@ function x_continueSetUp1() {
 	}
 	
 	if (x_params.background != undefined && x_params.background != "") {
+		
 		x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
 			if (mediaExists) {
 				var alpha = 30;
@@ -1122,6 +1163,7 @@ function x_continueSetUp1() {
 				x_continueSetUp2();
 			}
 		});
+		
 	} else {
 		x_continueSetUp2();
 	}
@@ -1156,7 +1198,14 @@ function x_continueSetUp2() {
 function x_checkMediaExists(src, callback) {
 	$.get(src)
 		.done(function() { callback(true); })
-		.fail(function() { callback(false); });
+		.fail(function() {
+			// if it's an exported project being viewed locally $.get will always fail so force it to work anyway
+			if (location.hostname != "") {
+				callback(false);
+			} else {
+				callback(true);
+			}
+		});
 }
 
 function x_charmapLoaded(xml)
@@ -1326,9 +1375,14 @@ function x_changePage(x_gotoPage) {
 	// Prevent content from behaving weird as we remove css files
     $("#x_pageDiv").hide();
     // Setup css correctly
-	$("#page_model_css").remove();
-	$("#page_theme_css").remove();
-	var modelfile = x_pageInfo[x_gotoPage].type;
+	//$("#page_model_css").remove();
+    //$("#theme_css").remove();
+    //$("#theme_responsive_css").remove();
+    //$("#lo_sheet_css").remove();
+    //$("#lo_css").remove();
+    //$("#page_css").remove();
+
+    var modelfile = x_pageInfo[x_gotoPage].type;
 	
 	var classList = $x_mainHolder.attr('class') == undefined ? [] : $x_mainHolder.attr('class').split(/\s+/);
 	$.each(classList, function(index, item) {
@@ -1347,9 +1401,9 @@ function x_changePage(x_gotoPage) {
 function x_changePageStep2(x_gotoPage) {
 	if (x_params.theme != 'default') {
         var modelfile = x_pageInfo[x_gotoPage].type;
-		x_insertCSS(x_themePath + x_params.theme + '/css/' + modelfile + '.css', function () {
-			x_changePageStep3(x_gotoPage);
-		}, false, "page_theme_css");
+        x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
+                x_changePageStep3(x_gotoPage);
+        }, false, "theme_css", true);
 	}
 	else
     {
@@ -1358,9 +1412,41 @@ function x_changePageStep2(x_gotoPage) {
 }
 
 function x_changePageStep3(x_gotoPage) {
+    if (x_params.theme != undefined && x_params.theme != "default") {
+        // adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
+        if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
+            x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
+                x_changePageStep4(x_gotoPage);
+            }, true, "theme_responsive_css", true);
+        } else {
+            x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
+                x_changePageStep4(x_gotoPage);
+            }, false, "theme_responsive_css", true);
+        }
+    }
+    else {
+        x_changePageStep4(x_gotoPage);
+    }
+}
+function x_changePageStep4(x_gotoPage) {
+    if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
+        x_insertCSS(x_evalURL(x_params.stylesheet), function () {
+            x_changePageStep5(x_gotoPage);
+        }, false, "lo_sheet_css");
+    }
+    else {
+        x_changePageStep5(x_gotoPage);
+    }
+}
+
+function x_changePageStep5(x_gotoPage) {
 	var prevPage = x_currentPage;
 
-	// End page tracking of x_currentPage
+    if (x_params.styles != undefined){
+        $x_head.append('<style type="text/css" id="page_css">' +  x_params.styles + '</style>');
+    }
+
+    // End page tracking of x_currentPage
     if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_currentPage != x_gotoPage)
     {
         var pageObj;
@@ -1382,7 +1468,7 @@ function x_changePageStep3(x_gotoPage) {
                 customHTML.leavePage();
             }
         }
-        XTExitPage(x_currentPage, x_currentPageXML.getAttribute("name"));
+        XTExitPage(x_currentPage, x_currentPageXML.getAttribute("trackinglabel"));
     }
     x_currentPage = x_gotoPage;
     x_currentPageXML = x_pages[x_currentPage];
@@ -1442,8 +1528,9 @@ function x_changePageStep3(x_gotoPage) {
         x_addCountdownTimer();
 		
 		// add screen reader info for this page type (if exists)
-		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", undefined) != undefined) {
-			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", "") + '</p>');
+		var screenReaderInfo = x_pageInfo[x_currentPage].type != "nav" ? x_pageInfo[x_currentPage].type : x_currentPageXML.getAttribute("type") == "Acc" ? "accNav" : x_currentPageXML.getAttribute("type") == "Button" ? "buttonNav" : x_currentPageXML.getAttribute("type") == "Col" ? "columnPage" : x_currentPageXML.getAttribute("type") == "Slide" ? "slideshow" : "tabNav";
+		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", undefined) != undefined) {
+			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", "") + '</p>');
 		}
 		
 		var extraTitle = x_currentPageXML.getAttribute("hidePage") == "true" ? ' <span class="alert">' + (x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") : "This page will be hidden in live projects") + '</span>' : '';
@@ -1461,7 +1548,7 @@ function x_changePageStep3(x_gotoPage) {
     if (x_pageInfo[x_currentPage].built != false) {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
 		// Use a clean text version of the page title
-        XTEnterPage(x_currentPage, $('<div>').html(pageTitle).text(), x_pageInfo[x_currentPage].type);
+        XTEnterPage(x_currentPage, x_currentPageXML.getAttribute("trackinglabel"), x_pageInfo[x_currentPage].type);
 
         var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);
@@ -1474,9 +1561,9 @@ function x_changePageStep3(x_gotoPage) {
 		}
 		
 		// show page background & hide main background
-		if ($(".pageBg#page" + x_currentPage).length > 0) {
-			$(".pageBg#page" + x_currentPage).show();
-			if (x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
+		if ($(".pageBg#pageBg" + x_currentPage).length > 0) {
+			$(".pageBg#pageBg" + x_currentPage).show();
+			if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
 				$("#x_bgDarken")
 					.css({
 						"opacity" :Number(x_currentPageXML.getAttribute("bgImageDark")/100),
@@ -1487,7 +1574,7 @@ function x_changePageStep3(x_gotoPage) {
 				$("#x_bgDarken").hide();
 			}
 			
-			if ($("#x_mainBg").length > 0 && $(".pageBg#page" + x_currentPage).length > 0) {
+			if ($("#x_mainBg").length > 0) {
 				$("#x_mainBg").hide();
 			}
 		}
@@ -1537,7 +1624,8 @@ function x_changePageStep3(x_gotoPage) {
 			}
 
 			// Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
-			XTEnterPage(x_currentPage, pageTitle);
+            var label = x_currentPageXML.getAttribute("trackinglabel");
+            XTEnterPage(x_currentPage, label);
 
 			var modelfile = x_pageInfo[x_currentPage].type;
 			if (typeof modelfilestrs[modelfile] != 'undefined')
@@ -1551,7 +1639,7 @@ function x_changePageStep3(x_gotoPage) {
 		}
 		
 		// show page background & hide main background
-		if (x_pageInfo[0].type != "menu" && x_currentPageXML.getAttribute("bgImage") != undefined) {
+		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImage") != undefined) {
 			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
 				if (mediaExists) {
 					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
@@ -1672,27 +1760,42 @@ function x_setUpPage() {
             .removeClass("ui-state-hover");
     }
 
-    if (x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) {
-        if (x_currentPageXML.getAttribute("navSetting") != undefined) {
-            if (x_currentPageXML.getAttribute("navSetting") != "all") {
-                $x_menuBtn.button("disable");
-            }
-            if (x_currentPageXML.getAttribute("navSetting") == "backonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
-                $x_nextBtn.button("disable");
-            }
-            if (x_currentPageXML.getAttribute("navSetting") == "nextonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
-                $x_prevBtn.button("disable");
-            }
-        }
+	// navigation buttons can be disabled on a page by page basis
+	if ((x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) && (x_currentPageXML.getAttribute("home") != undefined || x_currentPageXML.getAttribute("back") != undefined || x_currentPageXML.getAttribute("next") != undefined)) {
+		if (x_currentPageXML.getAttribute("home") == "false") {
+			$x_menuBtn.button("disable");
+		}
+		if (x_currentPageXML.getAttribute("back") == "false") {
+			$x_prevBtn.button("disable");
+		}
+		if (x_currentPageXML.getAttribute("next") == "false") {
+			$x_nextBtn.button("disable");
+		}
+		
+	} else if ((x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) && x_currentPageXML.getAttribute("navSetting") != undefined) {
+		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
+		if (x_currentPageXML.getAttribute("navSetting") != "all") {
+			$x_menuBtn.button("disable");
+		}
+		if (x_currentPageXML.getAttribute("navSetting") == "backonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
+			$x_nextBtn.button("disable");
+		}
+		if (x_currentPageXML.getAttribute("navSetting") == "nextonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
+			$x_prevBtn.button("disable");
+		}
     }
 
 
     if (x_firstLoad == true) {
         $x_mainHolder.css("visibility", "visible");
 		if (x_params.backgroundGrey == "true") {
+			$("#x_mainBg").show();
 			$("#x_mainBg").gray(); // won't work properly if called when hidden
 			if ($("#x_mainBg").length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
-				$(".grayscale:not(#x_mainBg):not([id])").attr("id", "x_mainBg");
+				$(".grayscale:not(.pageBg)").attr("id", "x_mainBg");
+			}
+			if ($(".pageBg#pageBg" + x_currentPage).length > 0) {
+				$("#x_mainBg").hide();
 			}
 		}
         x_firstLoad = false;
@@ -1822,7 +1925,7 @@ function x_loadPageBg(loadModel) {
 		hConstrain = x_currentPageXML.getAttribute("bgImageHConstrain"),
 		alpha = x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "" ? x_currentPageXML.getAttribute("bgImageAlpha") : 100;
 	
-	var $pageBg = $('<img id="page' + x_currentPage + '" class="pageBg"/>');
+	var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg"/>');
 	$pageBg
 		.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))
 		.css({
@@ -1908,9 +2011,9 @@ function x_loadPageBg(loadModel) {
 	
 	if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
 		$pageBg.gray();
-		if ($("#pageBg").length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
-			$(".grayscale:not(#pageBg):not([id])").attr("id", "pageBg");
-			$pageBg = $("#pageBg");
+		if ($("#pageBg" + x_currentPage).length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
+			$(".grayscale:not(#x_mainBg):not('[id]')").addClass("pageBg").attr("id", "pageBg" + x_currentPage);
+			$pageBg = $("#pageBg" + x_currentPage);
 			$pageBg.css("visibility", "visible");
 		}
 	}
@@ -2438,6 +2541,26 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 	return thisVar;
 }
 
+function x_getVariable(name)
+{
+    for (var i=0; i<x_variables.length; i++)
+    {
+        if (x_variables[i].name == name)
+            return x_variables[i].value;
+    }
+    return null;
+}
+
+function x_setVariable(name, value)
+{
+    for (var i=0; i<x_variables.length; i++)
+    {
+        if (x_variables[i].name == name) {
+            x_variables[i].value = value;
+            break;
+        }
+    }
+}
 
 // function gets values of other variables needed for calculation and evals the value when everything's ready
 function x_getVarValues(thisValue, thisName) {
@@ -2625,34 +2748,42 @@ function x_setFillWindow(updatePage) {
 
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
-function x_insertCSS(href, func, disable, id) {
+function x_insertCSS(href, func, disable, id, keep) {
     var css = document.createElement("link");
+    var element = null;
+    var donotreplace = false;
     css.rel = "stylesheet";
     css.href = href;
     css.type = "text/css";
     if (id != undefined)
 	{
 		css.id = id;
+		element = document.getElementById(id);
+		if (keep != undefined)
+        {
+           donotreplace=keep;
+        }
 	}
 	
 	// in some cases code is stopped until css loaded as some heights are done with js and depend on css being loaded
 	if (func != undefined) {
-		css.onload = function() {
-			if (x_cssFiles.indexOf(this) == -1) {
-				x_cssFiles.push(this);
-				if (href.indexOf("responsivetext.css") >= 0) {
-					x_responsive.push(this);
-					if (disable == true) {
-						$x_mainHolder.removeClass("x_responsive");
-						$(this).prop("disabled", true);
-					} else {
-						$x_mainHolder.addClass("x_responsive");
-					}
-				}
-				func();
-			}
-		};
-		
+        var f = function() {
+            if (x_cssFiles.indexOf(this) == -1) {
+                x_cssFiles.push(this);
+                if (href.indexOf("responsivetext.css") >= 0) {
+                    x_responsive.push(this);
+                    if (disable == true) {
+                        $x_mainHolder.removeClass("x_responsive");
+                        $(this).prop("disabled", true);
+                    } else {
+                        $x_mainHolder.addClass("x_responsive");
+                    }
+                }
+            }
+            func();
+        };
+		css.onload = f;
+
 		css.onerror = function(){
 			func();
 		};
@@ -2662,8 +2793,26 @@ function x_insertCSS(href, func, disable, id) {
 			$(this).prop("disabled", true);
 		}
 	}
-	
-    document.getElementsByTagName("head")[0].appendChild(css);
+
+	if (element != null)
+    {
+        // Update element
+        if (donotreplace != true) {
+            var parent = element.parentNode;
+            parent.replaceChild(css, element);
+        }
+        else
+        {
+            if (func != undefined)
+            {
+                func();
+            }
+        }
+    }
+    else {
+        // Create element
+        document.getElementsByTagName("head")[0].appendChild(css);
+    }
 }
 
 
@@ -2867,4 +3016,16 @@ function x_shuffleArray(array) {
 		array[j] = temp;
 	}
 	return array;
+}
+
+
+// function returns whether string is a url to a youtube or vimeo video
+function x_isYouTubeVimeo(url) {
+	if (url.indexOf("www.youtube.com") != -1 || url.indexOf("//youtu") != -1) {
+		return 'youtube';
+	} else if (url.indexOf("vimeo.com") != -1) {
+		return 'vimeo';
+	} else {
+		return false;
+	}
 }

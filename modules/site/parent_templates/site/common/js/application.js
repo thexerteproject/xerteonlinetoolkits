@@ -26,6 +26,7 @@ var authorSupport = false;
 var deepLink = "";
 var currentPage = 0;
 var glossary = [];
+var defaultHeaderCss;
 
 function init(){
 	loadContent();
@@ -210,85 +211,125 @@ function setup(){
 				return a.word.length > b.word.length ? -1 : 1;
 			});
 			
-			// add link around all examples of glossary words in text
-			var insertText = function(node) {
-				var temp = document.createElement("pre");
-				temp.innerHTML = node;
-				var tempText = temp.innerHTML;
+			// show definition on hover
+			if ($(data).find('learningObject').attr('glossaryHover') == undefined || $(data).find('learningObject').attr('glossaryHover') == "true") {
 				
-				// check text for glossary words - if found replace with a link
-				if (glossary.length > 0) {
-					for (var k=0, len=glossary.length; k<len; k++) {
-						var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
-						tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+				// add link around all examples of glossary words in text
+				var insertText = function(node) {
+					var temp = document.createElement("pre");
+					temp.innerHTML = node;
+					var tempText = temp.innerHTML;
+					
+					// check text for glossary words - if found replace with a link
+					if (glossary.length > 0) {
+						for (var k=0, len=glossary.length; k<len; k++) {
+							var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+							tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+						}
+						for (var k=0, len=glossary.length; k<len; k++) {
+							var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+							tempText = tempText.replace(regExp, '$1<a class="glossary" href="#" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+						}
 					}
-					for (var k=0, len=glossary.length; k<len; k++) {
-						var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
-						tempText = tempText.replace(regExp, '$1<a class="glossary" href="#" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+					
+					return tempText;
+				}
+				
+				var checkForText = function(data) {
+					for (var i=0; i<data.length; i++) {
+						if (data[i].nodeName == 'text') {
+							if ($(data[i]).attr('disableGlossary') != 'true') {
+								data[i].childNodes[0].data = insertText(data[i].childNodes[0].data);
+							}
+							
+						} else {
+							checkForText(data[i].childNodes);
+						}
 					}
 				}
 				
-				return tempText;
-			}
-			
-			var checkForText = function(data) {
-				for (var i=0; i<data.length; i++) {
-					if (data[i].nodeName == 'text') {
-						if ($(data[i]).attr('disableGlossary') != 'true') {
-							data[i].childNodes[0].data = insertText(data[i].childNodes[0].data);
+				checkForText($(data).find('page'));
+				
+				// add events to control what happens when you rollover glossary words
+				$("body > .container")
+					.on("mouseenter", ".glossary", function(e) {
+						$(this).trigger("mouseleave");
+						
+						var $this = $(this),
+							myText = $this.text(),
+							myDefinition, i, len;
+						
+						for (i=0, len=glossary.length; i<len; i++) {
+							if (myText.toLowerCase() == glossary[i].word.toLowerCase()) {
+								myDefinition = "<b>" + myText + ":</b><br/>"
+								myDefinition += glossary[i].definition;
+							}
 						}
 						
-					} else {
-						checkForText(data[i].childNodes);
-					}
-				}
+						$(this).parents('.container').append('<div id="glossaryHover" class="glossaryTip">' + myDefinition + '</div>');
+						
+						$("#glossaryHover").css({
+							"left"	:$(this).offset().left + 20,
+							"top"	:$(this).offset().top + 20
+						});
+						$("#glossaryHover").fadeIn("slow");
+					})
+					.on("mouseleave", ".glossary", function(e) {
+						$(this).parent('.container').off("click.glossary");
+						
+						if ($("#glossaryHover") != undefined) {
+							$("#glossaryHover").remove();
+						}
+					})
+					.on("mousemove", ".glossary", function(e) {
+						$("#glossaryHover").css({
+							"left": e.pageX + 20,
+							"top": e.pageY + 20
+						});
+					})
+					.on("focus", ".glossary", function(e) { // called when link is tabbed to
+						$(this).trigger("mouseenter");
+					})
+					.on("focusout", ".glossary", function(e) {
+						$(this).trigger("mouseleave");
+					});
 			}
 			
-			checkForText($(data).find('page'));
-			
-			// add events to control what happens when you rollover glossary words
-			$("body > .container")
-				.on("mouseenter", ".glossary", function(e) {
-					$(this).trigger("mouseleave");
-					
-					var $this = $(this),
-						myText = $this.text(),
-						myDefinition, i, len;
-					
-					for (i=0, len=glossary.length; i<len; i++) {
-						if (myText.toLowerCase() == glossary[i].word.toLowerCase()) {
-							myDefinition = "<b>" + myText + ":</b><br/>"
-							myDefinition += glossary[i].definition;
-						}
+			// show glossary in its own page
+			if ($(data).find('learningObject').attr('glossaryPage') != undefined && $(data).find('learningObject').attr('glossaryPage') != 'none') {
+				
+				glossary.sort(function(a, b){ // sort alphabetically
+					if(a.word < b.word) return -1;
+					if(a.word > b.word) return 1;
+					return 0;
+				})
+				
+				var charList = [],
+					glossaryTxt = [];
+				
+				for (var i=0; i<glossary.length; i++) {
+					if (charList.length == 0 || charList[charList.length - 1] != glossary[i].word[0]) {
+						charList += glossary[i].word[0];
+						glossaryTxt.push('<h3>' + glossary[i].word + '</h3><div>' + glossary[i].definition + '</div>');
+					} else {
+						glossaryTxt.splice(glossaryTxt.length - 1, 1, glossaryTxt[glossaryTxt.length - 1] + '<h3>' + glossary[i].word + '</h3><div>' + glossary[i].definition + '</div>');
 					}
-					
-					$(this).parents('.container').append('<div id="glossaryHover" class="glossaryTip">' + myDefinition + '</div>');
-					
-					$("#glossaryHover").css({
-						"left"	:$(this).offset().left + 20,
-						"top"	:$(this).offset().top + 20
-					});
-					$("#glossaryHover").fadeIn("slow");
-				})
-				.on("mouseleave", ".glossary", function(e) {
-					$(this).parent('.container').off("click.glossary");
-					
-					if ($("#glossaryHover") != undefined) {
-						$("#glossaryHover").remove();
-					}
-				})
-				.on("mousemove", ".glossary", function(e) {
-					$("#glossaryHover").css({
-						"left": e.pageX + 20,
-						"top": e.pageY + 20
-					});
-				})
-				.on("focus", ".glossary", function(e) { // called when link is tabbed to
-					$(this).trigger("mouseenter");
-				})
-				.on("focusout", ".glossary", function(e) {
-					$(this).trigger("mouseleave");
-				});
+				}
+				
+				var $glossaryPage = $('<page name="Glossary" subtitle=""></page>');
+				for (var i=0; i<charList.length; i++) {
+					var cDataSection = data.createCDATASection(glossaryTxt[i]);
+					var $section = $('<section name="' + charList[i] + '"><text></text></section>');
+					$section.find('text').append(cDataSection);
+					$glossaryPage.append($section);
+				}
+				
+				if ($(data).find('learningObject').attr('glossaryPage') == "first") {
+					$glossaryPage.prependTo($(data).find('learningObject'));
+				} else {
+					$glossaryPage.appendTo($(data).find('learningObject'));
+				}
+			}
 		}
 	}
 	
@@ -321,112 +362,87 @@ function setup(){
 		
 	});
 	
-	var bgImg = ''; 
-	
-	//set the header image, if defined
-	if ($(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != ''){
-		$('#overview').css({filter:''}); //for IE8
-		
-		bgImg = "url(" + eval( $(data).find('learningObject').attr('header'))+ ")";
-		
-		$('#overview').css('background-image', bgImg);
-		
-		if ($(data).find('learningObject').attr('headerRepeat') != undefined && $(data).find('learningObject').attr('headerRepeat') != "") {
-			$('#overview').css('background-repeat', $(data).find('learningObject').attr('headerRepeat'));
-			
-			bgImg += ' ' + $(data).find('learningObject').attr('headerRepeat');
-		}
-		
-		if ($(data).find('learningObject').attr('headerPos') != undefined && $(data).find('learningObject').attr('headerPos') != "") {
-			$('#overview').css('background-position', $(data).find('learningObject').attr('headerPos') + ' top');
-			
-			bgImg += ' ' + $(data).find('learningObject').attr('headerPos');
-		}
-		
-		bgImg += ', ';
-	} 
-	
-	if ($(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != ''){
-	
-		var col = $(data).find('learningObject').attr('headerColour');
-		
-		//one or two?
-		if (col.indexOf(',') != -1){
-			col = col.split(',');
-		} else {
-			col = [col,col];
-		}
-		col[0] = formatColour(col[0]);
-		col[1] = formatColour(col[1]);
-		
-		$('#overview').css('background', col[0]);
-		$('#overview').css('background', bgImg + '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + col[0] + '), color-stop(100%,' + col[1] + '))');
-		$('#overview').css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-o-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-ms-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + col[1]+ ' 100%)');
-		$('#overview').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + col[0] + ', endColorstr=' + col[1] + ',GradientType=1 )');
-		
-	}
-	
-		
-	if ($(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != ''){
-	
-		$('#overview').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
-		
-	}
-    
-    if ($(data).find('learningObject').attr('headerHide') != undefined && $(data).find('learningObject').attr('headerHide') != 'false'){
+	if ($(data).find('learningObject').attr('headerHide') != undefined && $(data).find('learningObject').attr('headerHide') != 'false'){
 	
 		$(".jumbotron").remove();
 		
-	}
-	
-	// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
-	// they are overridden by any logos in theme folders
-	// they can also be overridden by images uploaded via Header Logo optional properties
-	$('#overview div.logoR, #overview div.logoL').hide();
-	$('#overview div.logoR').data('defaultLogo', $('#overview .logoR img').attr('src'));
-	$('#overview div.logoL').data('defaultLogo', $('#overview .logoL img').attr('src'));
-	
-	var checkExists = function(logoClass, fallback) {
-		$.ajax({
-			url: $('#overview .' + logoClass + ' img').attr('src'),
-			success: function() {
-				$('#overview').addClass(logoClass);
-				$('#overview div.' + logoClass).show();
-			},
-			error: function() {
-				if (fallback == 'theme') {
-					$('#overview .' + logoClass + ' img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo' + (logoClass == 'logoL' ? '_left' : '') + '.png');
-					checkExists(logoClass, 'default');
-				} else if (fallback == 'default') {
-					$('#overview .' + logoClass + ' img').attr('src', $('#overview div.' + logoClass).data('defaultLogo'));
-					checkExists(logoClass);
+	} else {
+		
+		var $jumbotron = $(".jumbotron");
+		defaultHeaderCss = {
+			header: $jumbotron.css('background-image'),
+			headerPos: $jumbotron.css('background-position'),
+			headerRepeat: $jumbotron.css('background-repeat'),
+			headerColour: $jumbotron.css('background-color'),
+			headerTextColor: $jumbotron.css('color')
+		};
+		
+		// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
+		// they are overridden by any logos in theme folders
+		// they can also be overridden by images uploaded via Header Logo optional properties
+		$('#overview div.logoR, #overview div.logoL').hide();
+		$('#overview div.logoR').data('defaultLogo', $('#overview .logoR img').attr('src'));
+		$('#overview div.logoL').data('defaultLogo', $('#overview .logoL img').attr('src'));
+		
+		var checkExists = function(logoClass, type, fallback) {
+			$.ajax({
+				url: $('#overview .' + logoClass + ' img').attr('src'),
+				success: function() {
+					$('#overview').addClass(logoClass);
+					$('#overview div.' + logoClass).show();
+					
+					// the theme logo is being used - add a class that will allow for the different size windows to display different logos
+					if (type == 'theme') {
+						$('#overview .' + logoClass + ' img.' + logoClass).addClass('themeLogo');
+					}
+				},
+				error: function() {
+					if ($(data).find('learningObject').attr(logoClass + 'Hide') == 'true') {
+						$('#overview .' + logoClass + ' img').removeAttr('src');
+					} else {
+						if (fallback == 'theme') {
+							$('#overview .' + logoClass + ' img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo' + (logoClass == 'logoL' ? '_left' : '') + '.png');
+							checkExists(logoClass, 'theme', 'default');
+						} else if (fallback == 'default') {
+							$('#overview .' + logoClass + ' img').attr('src', $('#overview div.' + logoClass).data('defaultLogo'));
+							checkExists(logoClass);
+						}
+					}
 				}
-			}
-		});
+			});
+		}
+		
+		var type, fallback;
+		if ($(data).find('learningObject').attr('logoR') != undefined && $(data).find('learningObject').attr('logoR') != '') {
+			$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
+			type = 'LO';
+			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
+		} else if ($(data).find('learningObject').attr('logoRHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
+			type = 'theme';
+			$('#overview .logoR img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo.png');
+		}
+		if ((type == undefined || type == 'theme') && $(data).find('learningObject').attr('logoRHide') == 'true') {
+			$('#overview .logoR img').removeAttr('src');
+		} else {
+			checkExists('logoR', type, fallback);
+		}
+		
+		var type, fallback;
+		if ($(data).find('learningObject').attr('logoL') != undefined && $(data).find('learningObject').attr('logoL') != '') {
+			$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
+			type = 'LO';
+			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
+		} else if ($(data).find('learningObject').attr('logoLHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
+			type = 'theme';
+			$('#overview .logoL img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo_left.png');
+		}
+		if ((type == undefined || type == 'theme') && $(data).find('learningObject').attr('logoLHide') == 'true') {
+			$('#overview .logoL img').removeAttr('src');
+		} else {
+			checkExists('logoL', type, fallback);
+		}
+		
 	}
-	
-	var fallback;
-	if ($(data).find('learningObject').attr('logoR') != undefined && $(data).find('learningObject').attr('logoR') != '') {
-		$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
-		fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
-	} else if ($(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
-		fallback = 'default';
-		$('#overview .logoR img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo.png');
-	}
-	checkExists('logoR', fallback);
-	
-	if ($(data).find('learningObject').attr('logoL') != undefined && $(data).find('learningObject').attr('logoL') != '') {
-		$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
-		fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
-	} else if ($(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
-		fallback = 'default';
-		$('#overview .logoL img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo_left.png');
-	}
-    checkExists('logoL', fallback);
 	
     //---------------Optional Navbar properties--------------------
     
@@ -600,13 +616,13 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 	// First look for the fixed links
 	if ($.inArray(pageInfo.ID, links) > -1) {
 		parseContent(linkLocations[$.inArray(pageInfo.ID, links)]);
-		goToSection('top');
+		goToSection('topnav');
 	}
 	else { // Then look them up by ID
 		for (var i=0; i<pages.length; i++) {
 			if (pages[i].getAttribute("linkID") == pageInfo.ID) {
 				parseContent(i);
-				goToSection('top');
+				goToSection('topnav');
 				break;
 			}
 			if (pages[i].childNodes.length > 0) {
@@ -628,7 +644,7 @@ function goToSection(pageId) {
 }
 
 function parseContent(pageIndex){
-
+	
 	//clear out existing content
 	$('#mainContent').empty();
 	$('#toc').empty();
@@ -666,6 +682,10 @@ function parseContent(pageIndex){
 		
 		//set the main page title and subtitle
 		$('#pageTitle').html(page.attr('name'));
+		
+		if ($(".jumbotron").length > 0) {
+			setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'), "page");
+		}
 		
 		var msg = languageData.find("hiddenPage")[0] != undefined && languageData.find("hiddenPage")[0].getAttribute('label') != null ? languageData.find("hiddenPage")[0].getAttribute('label') : "This page will be hidden in live projects";
 		var extraTitle = page.attr('hidePage') == 'true' ? ' <span class="alertMsg">(' + msg + ')</span>' : '';
@@ -899,6 +919,150 @@ function parseContent(pageIndex){
 	}
 }
 
+// ** issues with this when using themes & header property on page level
+function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTextColour, level) {
+	
+	// LO background settings will be overridden by individual page ones (& returned to LO settings if page contains no background properties)
+	var bgImg = ''; 
+	
+	//set the header image, if defined
+	if (header != undefined && header != '') {
+		
+		bgImg = "url(" + eval(header) + ")";
+		
+	} else if (level == 'page' && $(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != '') {
+		
+		bgImg = "url(" + eval($(data).find('learningObject').attr('header')) + ")";
+		
+	}
+	
+	if (bgImg != '') {
+		
+		$('#overview').css({
+			filter: '', //for IE8
+			'background-image': bgImg
+		});
+		
+		var bgRepeat = '';
+		
+		if (headerRepeat != undefined && headerRepeat != "") {
+			
+			bgRepeat = headerRepeat;
+			
+		} else if (level == 'page' && $(data).find('learningObject').attr('headerRepeat') != undefined && $(data).find('learningObject').attr('headerRepeat') != '') {
+			
+			bgRepeat = $(data).find('learningObject').attr('headerRepeat');
+			
+		}
+		
+		if (bgRepeat != '') {
+			
+			$('#overview').css('background-repeat', bgRepeat);
+			
+			bgImg += ' ' + bgRepeat;
+			
+		} else {
+			
+			$('#overview').css('background-repeat', defaultHeaderCss.headerRepeat);
+			
+		}
+		
+		var bgPos = '';
+		
+		if (headerPos != undefined && headerPos != "") {
+			
+			bgPos = headerPos;
+			
+		} else if (level == 'page' && $(data).find('learningObject').attr('headerPos') != undefined && $(data).find('learningObject').attr('headerPos') != '') {
+			
+			bgPos = $(data).find('learningObject').attr('headerPos');
+			
+		}
+		
+		if (bgPos != '') {
+			
+			$('#overview').css('background-position', bgPos + ' top');
+			
+			bgImg += ' ' + bgPos + ' top';
+			
+		} else {
+			
+			$('#overview').css('background-position', defaultHeaderCss.headerPos);
+			
+		}
+		
+		bgImg += ', ';
+		
+	} else {
+		
+		$('#overview').css('background-image', defaultHeaderCss.header);
+		
+	}
+	
+	var col = '';
+	
+	if (headerColour != undefined && headerColour != '') {
+	
+		col = headerColour;
+		
+	} else if (level == 'page' && $(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != '') {
+		
+		col = $(data).find('learningObject').attr('headerColour');
+		
+	}
+	
+	if (col != '' && col != '0x') {
+		//one or two?
+		if (col.indexOf(',') != -1){
+			col = col.split(',');
+		} else {
+			col = [col,col];
+		}
+		col[0] = formatColour(col[0]);
+		col[1] = formatColour(col[1]);
+		
+		$('#overview').css('background', col[0]);
+		$('#overview').css('background', bgImg + '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
+		$('#overview').css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + col[0] + '), color-stop(100%,' + col[1] + '))');
+		$('#overview').css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+		$('#overview').css('background', bgImg + '-o-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+		$('#overview').css('background', bgImg + '-ms-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+		$('#overview').css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + col[1]+ ' 100%)');
+		$('#overview').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + col[0] + ', endColorstr=' + col[1] + ',GradientType=1 )');
+		
+	} else {
+		$('#overview').css('filter', '');
+		
+		if (defaultHeaderCss.headerColour != undefined && defaultHeaderCss.headerColour != '') {
+			bgImg = defaultHeaderCss.headerColour;
+			$('#overview').css('background-color', defaultHeaderCss.headerColour);
+		}
+		
+	}
+	
+	var txtCol = '';
+	
+	if (headerTextColour != undefined && headerTextColour != '') {
+		
+		txtCol = headerTextColour;
+		
+	} else if (level == 'page' && $(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != '') {
+		
+		txtCol = $(data).find('learningObject').attr('headerTextColour');
+		
+	}
+	
+	if (txtCol != ''){
+		
+		$('#overview').css('color', formatColour(txtCol));
+		
+	} else {
+		
+		$('#overview').css('color', defaultHeaderCss.headerTextColor);
+		
+	}
+}
+
 function makeNav(node,section,type, sectionIndex, itemIndex){
 
 	var sectionIndex = sectionIndex;
@@ -924,7 +1088,6 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		pdf = [];
 	
 	node.children().each( function(index, value){
-	
 		if (index == 0){
 
 			tabs.append( $('<li class="active"><a href="#tab' + sectionIndex + '_' + itemIndex + '_' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>') );
@@ -988,8 +1151,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			if (this.nodeName == 'pdf'){
 				
 				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '#page=1&view=fitH"></object>');
-				
-				pdf.push(i);
+				pdf.push(tab.find('object'));
 				
 			}
 			
@@ -1032,7 +1194,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 		// fix for issue where firefox doesn't zoom pdfs correctly if not on 1st pane of navigators
 		for (var i=0; i<pdf.length; i++) {
-			$pdfTabs = $pdfTabs.add($('a[data-toggle="tab"]:eq(' + pdf[i] + ')'));
+			$pdfTabs = $pdfTabs.add($(pdf[i]).parents('.tabbable').find('ul a[data-toggle="tab"]:eq(' + $(pdf[i]).parents('.tab-pane').index() + ')'));
 		}
 		
 		$pdfTabs.on('shown.bs.tab', function (e) {
@@ -1253,13 +1415,12 @@ function findAnchor(name){
 }
 
 function loadXotContent($this) {
-	
 	// get link & store url parameters to add back in later if not overridden
 	var xotLink = $this.attr('link'),
 		params = [],
 		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
 	
-	xotLink = xotLink.slice(0,xotLink.indexOf('#resume='));
+	xotLink = xotLink.indexOf('#resume=') != -1 ? xotLink.slice(0,xotLink.indexOf('#resume=')) : xotLink;
 	
 	if (xotLink.indexOf(separator) != -1) {
 		params = xotLink.split(separator);

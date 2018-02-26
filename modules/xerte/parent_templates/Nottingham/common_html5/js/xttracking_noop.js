@@ -577,18 +577,15 @@ function XTTerminate()
 	window.opener.innerWidth-=2;
 }
 
-function XTResults(fullcompletion)
-{
+function XTResults(fullcompletion) {
     var completion = 0;
     var nrcompleted = 0;
     var nrvisited = 0;
     var completed;
-    $.each(state.completedPages, function(i, completed)
-    {
+    $.each(state.completedPages, function (i, completed) {
         // indices not defined will be visited anyway.
         // In that case 'completed' will be undefined
-        if (completed)
-        {
+        if (completed) {
             nrcompleted++;
         }
         if (typeof(completed) != "undefined") {
@@ -596,18 +593,15 @@ function XTResults(fullcompletion)
         }
     })
 
-    if(nrcompleted != 0)
-    {
-        if (! fullcompletion) {
+    if (nrcompleted != 0) {
+        if (!fullcompletion) {
             completion = Math.round((nrcompleted / nrvisited) * 100);
         }
-        else
-        {
+        else {
             completion = Math.round((nrcompleted / state.toCompletePages.length) * 100);
         }
     }
-    else
-    {
+    else {
         completion = 0;
     }
 
@@ -615,16 +609,16 @@ function XTResults(fullcompletion)
     results.mode = x_currentPageXML.getAttribute("resultmode");
 
     var score = 0,
-    nrofquestions = 0,
-    totalWeight = 0,
-    totalDuration = 0;
+        nrofquestions = 0,
+        totalWeight = 0,
+        totalDuration = 0;
     results.interactions = Array();
 
-    for(i = 0; i < state.interactions.length-1; i++){
+    for (i = 0; i < state.interactions.length - 1; i++) {
 
 
         score += state.interactions[i].score * state.interactions[i].weighting;
-        if(state.interactions[i].ia_nr < 0 || state.interactions[i].nrinteractions > 0) {
+        if (state.interactions[i].ia_nr < 0 || state.interactions[i].nrinteractions > 0) {
 
             var interaction = {};
             interaction.score = Math.round(state.interactions[i].score);
@@ -634,7 +628,7 @@ function XTResults(fullcompletion)
             interaction.duration = Math.round(state.interactions[i].duration / 1000);
             interaction.weighting = state.interactions[i].weighting;
             interaction.subinteractions = Array();
-            
+
             var j = 0;
             for (j; j < state.toCompletePages.length; j++) {
                 var currentPageNr = state.toCompletePages[j];
@@ -650,38 +644,34 @@ function XTResults(fullcompletion)
                     }
                 }
             }
-            
+
             results.interactions[nrofquestions] = interaction;
             totalDuration += state.interactions[i].duration;
             nrofquestions++;
             totalWeight += state.interactions[i].weighting;
 
         }
-        else if(results.mode == "full-results")
-        {
+        else if (results.mode == "full-results") {
             var subinteraction = {};
 
             var learnerAnswer, correctAnswer;
-            switch (state.interactions[i].ia_type){
+            switch (state.interactions[i].ia_type) {
                 case "match":
-                    var resultCorrect;
-                    for(var c = 0; c< state.interactions[i].correctOptions.length;c++)
-                    {
+                    var resultCorrect=false;
+                    for (var c = 0; c < state.interactions[i].correctOptions.length; c++) {
                         var matchSub = {}; //Create a subinteraction here for every match sub instead
                         correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
                         source = state.interactions[i].correctOptions[c].source;
-                        if(state.interactions[i].learnerOptions.length == 0)
-                        {
+                        if (state.interactions[i].learnerOptions.length == 0) {
                             learnerAnswer = source + ' --> ' + ' ';
                         }
-                        else{
-                            for(var d=0; d < state.interactions[i].learnerOptions.length;d++)
-                            {
-                                if(source == state.interactions[i].learnerOptions[d].source) {
+                        else {
+                            for (var d = 0; d < state.interactions[i].learnerOptions.length; d++) {
+                                if (source == state.interactions[i].learnerOptions[d].source) {
                                     learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
                                     break;
                                 }
-                                else{
+                                else {
                                     learnerAnswer = source + ' --> ' + ' ';
                                 }
                             }
@@ -691,7 +681,7 @@ function XTResults(fullcompletion)
                         matchSub.correct = resultCorrect;
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
-                        results.interactions[nrofquestions-1].subinteractions.push(matchSub);
+                        results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
 
                     break;
@@ -700,15 +690,17 @@ function XTResults(fullcompletion)
                     correctAnswer = state.interactions[i].correctAnswers.join(", ");
                     break;
                 case "multiplechoice":
-                    learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
-                    for(var j = 1; j < state.interactions[i].learnerAnswers.length; j++)
-                    {
-                        learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
+                    learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0].answer : "";
+                    for (var j = 1; j < state.interactions[i].learnerAnswers.length; j++) {
+                        learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j.answer];
                     }
-                    correctAnswer = state.interactions[i].correctAnswers[0];
-                    for(var j = 1; j < state.interactions[i].correctAnswers.length; j++)
-                    {
-                        correctAnswer += "\n" + state.interactions[i].correctAnswers[j];
+                    correctAnswer = "";
+                    for (var j = 0; j < state.interactions[i].correctAnswers.length; j++) {
+                        if (state.interactions[i].correctAnswers[j].result) {
+                            if (correctAnswer.length > 0)
+                                correctAnswer += "\n";
+                            correctAnswer += state.interactions[i].correctAnswers[j].answer;
+                        }
                     }
                     break;
                 case "numeric":
@@ -722,9 +714,9 @@ function XTResults(fullcompletion)
                     correctAnswer = state.interactions[i].correctAnswers;
                     break;
             }
-            if(state.interactions[i].ia_type != "match") {
+            if (state.interactions[i].ia_type != "match") {
                 subinteraction.question = state.interactions[i].ia_name;
-                subinteraction.correct = state.interactions[i].result;
+                subinteraction.correct = state.interactions[i].result.success;
                 subinteraction.learnerAnswer = learnerAnswer;
                 subinteraction.correctAnswer = correctAnswer;
                 results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
@@ -732,18 +724,19 @@ function XTResults(fullcompletion)
         }
     }
     results.completion = completion;
-    results.completion = completion;
     results.score = score;
     results.nrofquestions = nrofquestions;
-    results.averageScore = state.getScaledScore()*100;
+    results.averageScore = state.getScaledScore() * 100;
     results.totalDuration = Math.round(totalDuration / 1000);
     results.start = state.start.toLocaleString();
-	$.ajax({
-		type: "POST",
-		url: window.location.href,
-		data: {
-			grade: results.averageScore/100
-		}
-	});
+
+    //$.ajax({
+    //    type: "POST",
+    //    url: window.location.href,
+    //    data: {
+    //        grade: results.averageScore / 100
+    //    }
+    //});
+
     return results;
 }

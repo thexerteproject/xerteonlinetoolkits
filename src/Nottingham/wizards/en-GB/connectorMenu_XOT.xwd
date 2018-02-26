@@ -1,7 +1,7 @@
 <wizard menus="Connectors" restrict="template" modelFile="connectorMenu">
   <pageWizard remove="true" duplicate="false">
     <newNodes>    
-      <connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" navSetting="none" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu>
+      <connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu>
     </newNodes>  	  
   </pageWizard>
   

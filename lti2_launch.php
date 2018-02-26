@@ -20,6 +20,10 @@ if(is_numeric($id))
     _debug("LTI user: " . print_r($USER, true));
     $xerte_toolkits_site->lti_user = $USER;
 
+    if (isset($_REQUEST['group']))
+    {
+        $xerte_toolkits_site->group = $_REQUEST{'group'};
+    }
 
 	require("play.php");
 

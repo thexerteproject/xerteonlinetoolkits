@@ -182,6 +182,9 @@
                     });
 
             // randomise order and create labels
+            var correctOptions = [],
+                correctAnswer = [],
+                correctFeedback = "";
             $(x_currentPageXML).children()
                     .each(function(i) {
                         var labelNum = Math.floor(Math.random() * tempData.length);
@@ -191,13 +194,8 @@
                                 .data("correct", tempData[labelNum].correct);
 
                         if (interactivity == "Match") {
-                            var correctOptions = [],
-                                    correctAnswer = [],
-                                    correctFeedback = "";
-
                             correctOptions.push({source: tempData[labelNum].name, target: tempData[labelNum].name});
-
-                            XTEnterInteraction(x_currentPage, i, 'match', tempData[labelNum].name, correctOptions, correctAnswer, correctFeedback);
+                            correctAnswer.push(tempData[labelNum].name + " --> " + tempData[labelNum].name);
                             dragDropLabel.checked = false;
                         }
                         tempData.splice(labelNum, 1);
@@ -205,6 +203,7 @@
 
             // set up drag events (mouse and keyboard controlled)
             if (interactivity == "Match") {
+                XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
                 $("#labelHolder .label")
                         .draggable({
                             containment: "#x_pageHolder",
@@ -661,7 +660,7 @@
         }
 
         this.showFeedBackandTrackResults = function() {
-            var result = "",
+            var correct = false,
                     numCorrect = 0,
                     l_options = [],
                     l_answer = [],
@@ -701,7 +700,7 @@
                             //add tick
                             $this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
                             //l_feedback = "The label for " + $this.html() + " was placed in the correct hotspot.";
-                            result = true;
+                            correct = true;
                         }
                     }
                     else {
@@ -723,28 +722,33 @@
                             // add cross
                             $this.append('<img class="cross" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Cross") + '"></img>');
                             //l_feedback = "The label for " + $this.html() + " was placed in the wrong hotspot.";
-                            result = false;
+                            correct = false;
                         }
                     }
 
-                    l_options = [];
                     if($this.data("target") === undefined || $this.data("target") === "")
                     {
                         l_options.push({source: $this.html(), target: " "});
+                        l_answer.push($this.html() + " -->  ");
                     }
                     else {
                         l_options.push({source: $this.html(), target: $(x_currentPageXML).children()[$this.data("target")].getAttribute("name")});
+                        l_answer.push($this.html() + " --> " + $(x_currentPageXML).children()[$this.data("target")].getAttribute("name"));
                     }
-
-                    // Track answer
-                    XTExitInteraction(x_currentPage, i, result, l_options, l_answer, l_feedback);
                 });
+                // Track answer
+                var result =
+                    {
+                        success: numCorrect == $(x_currentPageXML).children().length,
+                        score: $(x_currentPageXML).children().length === 0 ? 100.0 : numCorrect * 100.0 /  $(x_currentPageXML).children().length
+                    };
+                XTExitInteraction(x_currentPage, 0, result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
 
                 if ($(x_currentPageXML).children().length === 0) {
-                    XTSetPageScore(x_currentPage, 100);
+                    XTSetPageScore(x_currentPage, 100, x_currentPageXML.getAttribute("trackinglabel"));
                 }
                 else {
-                    XTSetPageScore(x_currentPage, numCorrect * 100 /  $(x_currentPageXML).children().length);
+                    XTSetPageScore(x_currentPage, numCorrect * 100 /  $(x_currentPageXML).children().length, x_currentPageXML.getAttribute("trackinglabel"));
                 }
                 if (XTGetMode() != "normal") {
                     if (numCorrect == $(x_currentPageXML).children().length) {

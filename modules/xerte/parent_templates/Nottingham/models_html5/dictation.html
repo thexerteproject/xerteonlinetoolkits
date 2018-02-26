@@ -219,7 +219,12 @@
 							$("#incorrect").show();
 						}
 					}
-					XTExitInteraction(x_currentPage, $pageContents.data("current"), correct, [], answer, feedback)
+					var result =
+						{
+						    success: correct,
+							score: (correct ? 100.0 : 0.0)
+						};
+					XTExitInteraction(x_currentPage, $pageContents.data("current"), result, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
 					total++;
 
 					if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
@@ -317,7 +322,7 @@
 				name = x_currentPageXML.getAttribute("name");
 			}
 			var trackedAnswer = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer).text().replace(/(\r\n|\n|\r)/gm,"");
-			XTEnterInteraction(x_currentPage, $pageContents.data("current"), 'fill-in', name, [], trackedAnswer, "Correct");
+			XTEnterInteraction(x_currentPage, $pageContents.data("current"), 'fill-in', name, [], trackedAnswer, "Correct", x_currentPageXML.getAttribute("trackinglabel"));
 		}
 
 		this.loadAudio = function(caption) {
@@ -361,7 +366,7 @@
 		}
 		//Stopping the tracking
 		this.finishTracking = function() {
-			XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total));
+			XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total), x_currentPageXML.getAttribute("trackinglabel"));
 		}
 		//Starting the tracking
 		this.initTracking = function() {

@@ -22,3 +22,7 @@
 	#menuItems .menuItem .notvisited {
 		display: none;
 	}
+	
+	#menuHolder #pageImg {
+		max-width: 80%;
+	}

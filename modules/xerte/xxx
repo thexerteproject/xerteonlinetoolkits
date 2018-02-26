@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<!--
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ -->
+
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lt-ie9"><![endif]-->
+<!--[if IE 9]><html class="no-js ie9"><![endif]-->
+<!--[if (gt IE 9)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<!--[if !HTML5]>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<![endif]-->
+
+	<script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script><!--http://bit.ly/17XnmNe-->
+
+	<title>Interactive Learning Object</title>
+	<link rel="icon" href="favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
+	<meta name="viewport" id="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=10.0, initial-scale=1.0" />
+
+	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css?version=unstable - installed from github" type="text/css" />
+	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/css/themeStyles.css?version=unstable - installed from github" type="text/css" />
+	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css?version=unstable - installed from github" type="text/css" />
+	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/mediaelementplayer.min.css?version=unstable - installed from github" />
+	
+	<link href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=unstable - installed from github" rel="stylesheet">
+    <link href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css" rel="stylesheet">
+	<script>
+		var username = "";
+	</script>
+    
+
+</head>
+
+<body onload = "XTInitialise();" onbeforeunload = "XTTerminate();">
+	<noscript>This Learning Object requires JavaScript!</noscript>
+	<div id="x_mainHolder" style="visibility:hidden;">
+
+		<div id="x_mobileScroll">
+			<div id="x_headerBlock" role="banner">
+				<img class="x_icon" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/logo.png"/>
+				<div>
+					<h1> </h1>
+					<h2 aria-live="assertive"> </h2>
+				</div>
+			</div>
+
+			<div id="x_pageHolder" role="main">
+				<div id="x_helperText" class="ui-helper-hidden-accessible"></div>
+				<div id="x_pageDiv"></div>
+			</div>
+		</div>
+
+		<div id="x_footerBlock" role="navigation">
+			<div id="x_footerBg"></div>
+			<div class="x_floatLeft">
+				<button id="x_colourChangerBtn"></button>
+			</div>
+			<div id="x_footerRight" class="x_floatRight">
+				<button id="x_menuBtn"></button>
+				<div id="x_pageControls">
+					<button id="x_prevBtn"></button>
+					<div id="x_pageNo"></div>
+					<button id="x_nextBtn"></button>
+				</div>
+			</div>
+		</div>
+
+		<div id="x_background" aria-hidden="true"></div>
+
+    </div>
+
+    
+
+    <script src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/jquery-1.9.1.min.js"></script>
+
+	<!-- <script>window.jQuery || document.write('<script src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/jquery-1.7.1.min.js"><\/script>')</script> -->
+    <!-- <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/jquery-ui-1.8.18.custom.min.js"></script> -->
+    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/jquery-ui-1.10.4.min.js"></script>
+
+    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/jquery.ui.touch-punch.min.js?version=unstable - installed from github"></script>			<!-- allows jQuery components to work on touchscreen devices -->
+    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/imageLens.js?version=unstable - installed from github"></script>							<!-- for creating magnifiers on images -->
+	<script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/gray-gh-pages/js/jquery.gray.min.js?version=unstable - installed from github"></script>	<!-- for greyscale on images -->
+    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/mediaelement-and-player.js?version=unstable - installed from github"></script>	<!-- for audio & video players -->
+    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/mediaPlayer.js?version=unstable - installed from github"></script>
+    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/swfobject.js"></script>
+	<script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/xenith.js?version=unstable - installed from github"></script>
+	<script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/chart.js?version=unstable - installed from github"></script>
+
+    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/xAPI/xttracking_xapi.js?version=unstable - installed from github"></script>
+<script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte//xAPI/tincan.js?"></script>
+<script>
+  var lrsEndpoint = 'https://lrw.integrat-ed.com/data/xAPI';
+  var lrsUsername = 'ca854e1a0da546952c1fabefdc90fcd771a6239c';
+  var lrsPassword  = 'fc9e9e12f4dc88a93df53d0bf491c609c16b6bac';
+   var username = 'i.donkervoort@tor.nl';
+   var fullusername = 'Inge Donkervoort';
+   var studentidmode = '1';
+  var mboxsha1 = 'b6cec0c2ca34344e116c7ee7a93ac5380f03f3c7';
+</script>
+
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
+
+    <script type="text/javascript">
+        function getUrlVars() {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/);
+            for(var i = 0; i < hashes.length; i++)
+            {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+        var FileLocation = "https://server.tor.nl/~tom/xapi/USER-FILES/95-katber-Nottingham/";
+        var x_templateLocation = "https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/";
+        var x_projectXML = "https://server.tor.nl/~tom/xapi/USER-FILES/95-katber-Nottingham/data.xml?time=1516481105";
+        var x_themePath = "https://server.tor.nl/~tom/xapi/themes/Nottingham/";
+        var x_TemplateId = "95";
+        var x_startPage = {type : "page", ID : "1"};
+		if (getUrlVars()['resume'])
+        {
+            x_startPage = {type : "resume", ID : getUrlVars()['resume']};
+        }
+        else if (getUrlVars()['linkID'])
+        {
+            x_startPage = {type : "linkID", ID : getUrlVars()['linkID']};
+        }
+        else if (getUrlVars()['pageID'])
+        {
+            x_startPage = {type : "pageID", ID : getUrlVars()['pageID']};
+        }
+        else if (getUrlVars()['page'])
+        {
+            x_startPage = {type : "page", ID : getUrlVars()['page']};
+        }
+        var x_youtube_api_key = "";
+		var x_Version = "unstable - installed from github";
+    </script>
+</body>
+</html>

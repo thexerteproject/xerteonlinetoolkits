@@ -79,13 +79,13 @@
 			var width = $("#mainPanel").width();
 			var height = $("#mainPanel").height();
 			if(width > height) {
-				$("#diagram").width(height);
-				$("#diagram").height(height);
+				$("#diagram").width(height*0.90);
+				$("#diagram").height(height*0.90);
 				textSize = (width - height) / 10;
 			}
 			else {
-				$("#diagram").width(width);
-				$("#diagram").height(width);
+				$("#diagram").width(width*0.90);
+				$("#diagram").height(width*0.90);
 				textSize = (height - width) / 10;
 			}
 			if (textSize > 20) {
@@ -111,6 +111,7 @@
 		
 		this.startQuestions = function()
 		{
+
 			// If the language attricute is not defined in the xml, fall back to English.
 			this.questionNumberText = x_currentPageXML.getAttribute("quesCount");
 			
@@ -126,7 +127,9 @@
                 this.showfeedback = x_currentPageXML.getAttribute("showfeedback") == "true";
             }
 
+			$("#diagram").hide();
             $("#sliderHolder").show();
+			$("#checkBtn").show();
 			$("#checkBtn").button("disable");
 			
 			this.currentQuestion = 0;
@@ -415,7 +418,7 @@
                             updateBubble();
                         }
                     }
-					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctAnswer, null);
+					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctOptions, correctAnswer, null, x_currentPageXML.getAttribute("trackinglabel"));
 					opinion.checked = false;
 				}
 			}
@@ -474,7 +477,7 @@
        			currentQuestionValue = 100 - currentQuestionValue;           		
        		}
 			
-            l_answer.push(Math.round(currentQuestionValue * 10) / 10);
+            l_answer = Math.round(currentQuestionValue * 10.0) / 10.0;
             
             var currentQuestionString = opinion.currentQuestion + "";
             answeredValues[currentQuestionString] = currentQuestionValue;
@@ -482,10 +485,14 @@
 
 
             diagramLabels[opinion.currentQuestion] = currentQ;
-            diagramAnswers[opinion.currentQuestion] = (Math.round(currentQuestionValue * 10) / 10);
+            diagramAnswers[opinion.currentQuestion] = (Math.round(currentQuestionValue * 10.0) / 10.0);
 
 
-			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], correct, l_options, l_answer, null);
+            var result = {
+                success: correct,
+                score: Math.round(currentQuestionValue * 10.0) / 10.0
+            };
+			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], result, l_options, l_answer, null, x_currentPageXML.getAttribute("trackinglabel"));
             opinion.myProgress.splice(opinion.currentQuestion, 1, correct);
             
 			// Continue to next question
@@ -537,11 +544,12 @@
             }
             $("#questionAudio").empty();
 
+			$("#diagram").show();
             $("#sliderHolder").hide();
             $("#checkBtn").hide();
             $("#qTxt").html("");
 
-            XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph), x_currentPageXML.getAttribute("export"));
+            XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph), x_currentPageXML.getAttribute("trackinglabel"));
             opinion.checked = true;
 		};
 		
@@ -601,7 +609,6 @@
 
 				return "rgba(" + r + "," + g + "," + b + "," + opa + ")";
 			}
-			var ctx = $("#diagram");
 			var bgColourIn = "0x000000";
 			if (x_currentPageXML.getAttribute("colour") != null) {
 				bgColourIn = x_currentPageXML.getAttribute("colour");
@@ -609,7 +616,8 @@
 			var bgColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 0.5);
 			var lnColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 1);
 			var ctx = $("#diagram");
-            var myRadarChart = new Chart(ctx, {
+
+			var myRadarChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
                     labels: classNames,
@@ -625,7 +633,7 @@
 						ticks: {
 							suggestedMin: 0,
 							suggestedMax: 100,
-							fontSize: textSize
+							fontSize: textSize - 4
 						},
 						pointLabels: {
 							fontSize: textSize
@@ -635,11 +643,13 @@
 						labels: {
 							fontSize: textSize
 						}
-					}
+					},
+					responsive: false,
+					maintainAspectRatio: false
 				}
             });
 		};
-		
+
 		this.init = function()
 		{
             var loadFiles = true;

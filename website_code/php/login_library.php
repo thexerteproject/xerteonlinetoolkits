@@ -361,6 +361,11 @@ function login_processing($exit = true) {
 
     if ($exit === true) {
       if (!$success || !empty($errors)) {
+        if (in_array(INDEX_USERNAME_AND_PASSWORD_EMPTY, $errors) == false) {
+          $msg = "User '" . $_POST['login'] . "' attempted to login from " . $_SERVER['REMOTE_ADDR'];
+          receive_message("", "SYSTEM", "LOGINS", "Failed login", $msg);
+        }
+
         login_form($errors, $xerte_toolkits_site);
         exit(0);
       }
@@ -412,4 +417,7 @@ function login_processing2($firstname = false, $surname = false, $username = fal
 
     update_user_logon_time();
   }
+
+  $msg = "User " . $_SESSION['toolkits_logon_username'] . " logged in successfully from " . $_SERVER['REMOTE_ADDR'];
+  receive_message($_SESSION['toolkits_logon_username'], "SYSTEM", "LOGINS", "Successful login", $msg);
 }

@@ -91,7 +91,13 @@ CREATE TABLE `$sitedetails` (
   `site_id` int(11) NOT NULL AUTO_INCREMENT,
   `site_url` char(255) DEFAULT NULL,
   `apache` char(255) DEFAULT NULL,
+  `enable_mime_check` char(255) DEFAULT NULL,
   `mimetypes` text,
+  `enable_file_ext_check` char(255) DEFAULT NULL,
+  `file_extensions` text,
+  `enable_clamav_check` char(255) DEFAULT NULL,
+  `clamav_cmd` char(255) DEFAULT NULL,
+  `clamav_opts` char(255) DEFAULT NULL,
   `site_session_name` char(255) DEFAULT NULL,
   `authentication_method` char(255) DEFAULT NULL,
   `LDAP_preference` char(255) DEFAULT NULL,
@@ -182,6 +188,7 @@ CREATE TABLE `$templatedetails` (
   `tsugi_xapi_endpoint` text,
   `tsugi_xapi_key` text,
   `tsugi_xapi_secret` text,
+  `tsugi_xapi_student_id_mode` int DEFAULT 0,
   PRIMARY KEY (`template_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

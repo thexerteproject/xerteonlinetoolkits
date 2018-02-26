@@ -5,13 +5,21 @@
 		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true"/>
 	</narrate>
 	
-    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled."/>
+	
+	<navBtns type="group" label="Navigation Buttons" optional="true" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here.">
+		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
+	</navBtns>
+	
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" deprecated="This property is deprecated"/>
 	<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 	<unmarkForCompletion label="Completion Not Required" type ="CheckBox" defaultValue="false" optional="true"/>
 	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 	<styles label="Styles" type="script" height="200" optional="true"/>
-	
+	<trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use in stead of page number in (xAPI) tracking identifier"/>
+
 	<scripts type="group" label="Script" optional="true">
 		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>

@@ -712,7 +712,11 @@
 								$("#more").hide();
 							}
 
-                            XTExitInteraction(x_currentPage, mcqCurrentQ, correct, l_options, l_answer, l_feedback);
+                            var result = {
+                                success: correct,
+                                score: correct ? 100.0 : 0.0
+                            };
+                            XTExitInteraction(x_currentPage, mcqCurrentQ, result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
 
 							$(this)
 								.button({"label":$pageContents.data("phrases").mcqBtnTxt2})
@@ -934,20 +938,36 @@
                 name = $('#passage .on').html();
 			}
 
-            correctOptions.push(correct['index'] + 1 + "");
+			// Push the correct answers to correctOptions array
+            correctOptions.push({
+                id: correct['index'] + 1 + "",
+				answer: correct['text'],
+                result: true
+            });
             correctAnswer.push(correct['text']);
             correctFeedback.push($pageContents.data("phrases").mcqCorrect);
 
-            XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback);
-
 			x_shuffleArray(options);
-			
 			var numOptions = x_currentPageXML.getAttribute("mcqNumAs") == undefined ? 3 : x_currentPageXML.getAttribute("mcqNumAs") == "*" ? options.length + 1 : isNaN(x_currentPageXML.getAttribute("mcqNumAs")) ? 3 : Number(x_currentPageXML.getAttribute("mcqNumAs"));
 			options = options.length <= numOptions - 1 ? options : options.slice(0, numOptions - 1);
+
+			// options conatins the added answers, add them to correctOptions, correctAnswers and correctDeedback
+            $.each(options, function(i, thisOption){
+                correctOptions.push({
+                    id: thisOption['index'] + 1 + "",
+                    answer: thisOption['text'],
+                    result: false
+                });
+                correctAnswer.push(thisOption['text']);
+                correctFeedback.push($pageContents.data("phrases").mcqWrong);
+			});
 			options.push(correct);
+
 			x_shuffleArray(options);
-			
-			var $optionHolder = $("#questionHolder #optionHolder")
+
+            XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
+
+            var $optionHolder = $("#questionHolder #optionHolder")
 					.html('<div class="optionGroup"><input type="radio" name="option" /><label class="optionTxt"></label></div>')
 					.show();
 			
@@ -993,11 +1013,11 @@
 
             if (numQs === 0)
             {
-                XTSetPageScore(x_currentPage, score);
+                XTSetPageScore(x_currentPage, score, x_currentPageXML.getAttribute("trackinglabel"));
             }
             else
             {
-                XTSetPageScore(x_currentPage, score * 100 / numQs);
+                XTSetPageScore(x_currentPage, score * 100 / numQs, x_currentPageXML.getAttribute("trackinglabel"));
             }
 
             interactiveText.checked = true;

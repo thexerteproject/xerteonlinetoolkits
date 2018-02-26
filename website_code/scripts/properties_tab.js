@@ -1449,7 +1449,8 @@ function lti_update(id)
 			+ '&tsugi_xapi=' + $("#xChk").prop('checked')
 			+ '&tsugi_xapi_endpoint=' + $("[name=tsugi_xapi_endpoint]").val()
             + '&tsugi_xapi_username=' + $("[name=tsugi_xapi_username]").val()
-            + '&tsugi_xapi_password=' + $("[name=tsugi_xapi_password]").val());
+            + '&tsugi_xapi_password=' + $("[name=tsugi_xapi_password]").val()
+            + '&tsugi_xapi_student_id_mode=' + $("[name=tsugi_xapi_student_id_mode]").val());
     }
 }
 

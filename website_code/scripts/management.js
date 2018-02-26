@@ -397,7 +397,6 @@ function update_site(){
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
 		copyright = document.getElementById("copyright").value;
-
 		copyright = copyright.split("�").join("AAA");
 
 		xmlHttp.send('site_url=' + document.getElementById("site_url").value + 
@@ -408,11 +407,11 @@ function update_site(){
 					 '&organisational_logo=' + document.getElementById("organisational_logo").value + 
 					 '&welcome_message=' + document.getElementById("welcome_message").value + 
 					 '&site_text=' + document.getElementById("site_text").value +
-                     '&tutorial_text=' + document.getElementById("tutorial_text").value +
-                     '&news_text=' + document.getElementById("news_text").value +
+					 '&tutorial_text=' + document.getElementById("tutorial_text").value +
+					 '&news_text=' + document.getElementById("news_text").value +
 					 '&pod_one=' + document.getElementById("pod_one").value + 
 					 '&pod_two=' + document.getElementById("pod_two").value + 
-					 '&copyright=' + document.getElementById("copyright").value + 
+					 '&copyright=' + encodeURIComponent(document.getElementById("copyright").value) +
 					 '&demonstration_page=' + document.getElementById("demonstration_page").value + 
 					 '&form_string=' + document.getElementById("form_string").value + 
 					 '&peer_form_string=' + document.getElementById("peer_form_string").value + 
@@ -430,7 +429,7 @@ function update_site(){
 					 '&authentication_method=' + document.getElementById("authentication_method").value + 
 					 '&ldap_host=' + document.getElementById("ldap_host").value	+ 
 					 '&ldap_port=' + document.getElementById("ldap_port").value + 
-					 '&bind_pwd=' + document.getElementById("bind_pwd").value + 
+					 '&bind_pwd=' + encodeURIComponent(document.getElementById("bind_pwd").value) +
 					 '&base_dn=' + document.getElementById("base_dn").value + 
 					 '&bind_dn=' + document.getElementById("bind_dn").value + 
 					 '&flash_save_path=' + document.getElementById("flash_save_path").value + 
@@ -446,13 +445,19 @@ function update_site(){
 					 '&synd_publisher=' + document.getElementById("synd_publisher").value + 
 					 '&synd_rights=' + document.getElementById("synd_rights").value + 
 					 '&synd_license=' + document.getElementById("synd_license").value + 
-					 '&import_path=' + document.getElementById("import_path").value + 
-					 '&mimetypes=' + document.getElementById("mimetypes").value + 
+					 '&import_path=' + document.getElementById("import_path").value +
+					 '&enable_mime_check=' + document.getElementById("enable_mime_check").value +
+					 '&mimetypes=' + document.getElementById("mimetypes").value +
+					 '&enable_file_ext_check=' + document.getElementById("enable_file_ext_check").value +
+					 '&file_extensions=' + document.getElementById("file_extensions").value +
+					 '&enable_clamav_check=' + document.getElementById("enable_clamav_check").value +
+					 '&clamav_cmd=' + document.getElementById("clamav_cmd").value +
+					 '&clamav_opts=' + document.getElementById("clamav_opts").value +
 					 '&LDAP_preference=' + document.getElementById("LDAP_preference").value + 
 					 '&LDAP_filter=' + document.getElementById("LDAP_filter").value + 
 					 '&integration_config_path=' + document.getElementById("integration_config_path").value + 
 					 '&admin_username=' + document.getElementById("admin_username").value + 
-					 '&admin_password=' + document.getElementById("admin_password").value +
+					 '&admin_password=' + encodeURIComponent(document.getElementById("admin_password").value) +
 					 '&site_xapi_endpoint=' + document.getElementById("site_xapi_endpoint").value +
 					 '&site_xapi_key=' + document.getElementById("site_xapi_key").value +
 					 '&site_xapi_secret=' + document.getElementById("site_xapi_secret").value);

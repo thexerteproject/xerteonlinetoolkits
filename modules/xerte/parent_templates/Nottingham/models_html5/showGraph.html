@@ -51,13 +51,13 @@
             var width = $x_pageHolder.width();
             var height = $x_pageHolder.height();
             if(width > height) {
-                $("#diagram").width(height);
-                $("#diagram").height(height);
+                $("#diagram").width(height*0.90);
+                $("#diagram").height(height*0.90);
                 textSize = (width - height) / 10;
             }
             else {
-                $("#diagram").width(width);
-                $("#diagram").height(width);
+                $("#diagram").width(width*0.90);
+                $("#diagram").height(width*0.90);
                 textSize = (height - width) / 10;
             }
             if (textSize > 20) {
@@ -71,33 +71,63 @@
         this.createDiagram = function(data) {
             var importData = data;
             var numSubmits = importData.length;
-            var classvalues = [];
+            var latest_ts = "";
+            var mean_all = [];
+            var mean = [];
+            var latest = null;
             var objlabel = null;
             var classnames = [];
-            var lastSubmit = importData.pop();
+            var numUserSubmits = 0;
+
+            // We assume the data contains identical data sets
+            // TODO: Check this
+            if (numSubmits == 0)
+            {
+                return;
+            }
             importData.forEach(function(obj)
             {
                 if (objlabel == null) {
-                    objlabel = obj.label;
+                    objlabel = obj.graph.label;
                 }
-                for(var i = 0; i < obj.classvalues.length; i++)
+                for(var i = 0; i < obj.graph.classvalues.length; i++)
                 {
-                    if(classvalues[i] == null) {
-                        classvalues[i] = obj.classvalues[i];
+                    if(mean_all[i] == null) {
+                        mean_all[i] = obj.graph.classvalues[i];
                     }
                     else {
-                        classvalues[i] += obj.classvalues[i];
+                        mean_all[i] += obj.graph.classvalues[i];
                     }
 
                     if(classnames[i] == null) {
-                        classnames[i] = obj.classnames[i];
+                        classnames[i] = obj.graph.classnames[i];
                     }
-
+                }
+                if (obj.actor.mbox == 'mailto:' + username)
+                {
+                    if (obj.timestamp > latest_ts)
+                    {
+                        latest_ts = obj.timestamp;
+                        latest = obj;
+                    }
+                    for(var i = 0; i < obj.graph.classvalues.length; i++)
+                    {
+                        if(mean[i] == null) {
+                            mean[i] = obj.graph.classvalues[i];
+                        }
+                        else {
+                            mean[i] += obj.graph.classvalues[i];
+                        }
+                    }
+                    numUserSubmits++;
                 }
             });
-            for(var x = 0; x < classvalues.length; x++)
+            for(var x = 0; x < mean_all.length; x++)
             {
-                classvalues[x] = classvalues[x]/numSubmits;
+                if (mean_all[x] != null)
+                    mean_all[x] = mean_all[x]/numSubmits;
+                if (mean[x] != null)
+                    mean[x] = mean[x]/numUserSubmits;
             }
             function hexToRgb(hex, opa) {
                 var bigint = parseInt(hex, 16);
@@ -105,99 +135,116 @@
                 var g = (bigint >> 8) & 255;
                 var b = bigint & 255;
 
-                return "rgba(" + r + "," + g + "," + b + "," + opa + ")";
+                return "rgba(" + r + ", " + g + ", " + b + ", " + opa + ")";
             }
             var ctx = $("#diagram");
-            var bgColourIn = "0x000000";
+            var bgColourIn = "0xff0000";
             if (x_currentPageXML.getAttribute("colour") != null) {
                 bgColourIn = x_currentPageXML.getAttribute("colour");
             }
             var bgColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 0.5);
             var lnColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 1);
 
-            if (lastSubmit == null) {
-                var myRadarChart = new Chart(ctx, {
-                    type: 'radar',
-                    data: {
-                        labels: classnames,
-                        datasets: [{
-                            label: objlabel,
-                            data: classvalues,
-                            backgroundColor: bgColour,
-                            borderColor: lnColour
-                        }]
-                    },
-                    options: {
-                        scale: {
-                            ticks: {
-                                suggestedMin: 0,
-                                suggestedMax: 100,
-                                fontSize: textSize
-                            },
-                            pointLabels: {
-                                fontSize: textSize
-                            }
-                        },
-                        legend: {
-                            labels: {
-                                fontSize: textSize
-                            }
-                        },
-                        responsive: false,
-                        maintainAspectRatio: false
-                    }
-                });
+            var pavgbgColourIn = "0x0000ff";
+            if (x_currentPageXML.getAttribute("colourPersonalAvg") != null) {
+                pavgbgColourIn = x_currentPageXML.getAttribute("colourPersonalAvg");
+            }
+            var pavgbgColour = hexToRgb(pavgbgColourIn.substr(pavgbgColourIn.length - 6), 0.5);
+            var pavglnColour = hexToRgb(pavgbgColourIn.substr(pavgbgColourIn.length - 6), 1);
+
+            var avgbgColourIn = "0x0000ff";
+            if (x_currentPageXML.getAttribute("colourAvg") != null) {
+                avgbgColourIn = x_currentPageXML.getAttribute("colourAvg");
+            }
+            var avgbgColour = hexToRgb(avgbgColourIn.substr(avgbgColourIn.length - 6), 0.5);
+            var avglnColour = hexToRgb(avgbgColourIn.substr(avgbgColourIn.length - 6), 1);
+
+            var AvgAllLabelText = x_currentPageXML.getAttribute("AvgLabel");
+            if (AvgAllLabelText == undefined)
+            {
+                AvgAllLabelText = 'Avg. of all attempts';
+            }
+
+            var PersonalLabelText = x_currentPageXML.getAttribute("PersonalLastLabel");
+            if (PersonalLabelText == undefined) {
+                PersonalLabelText = 'Your last attempt';
+            }
+
+            var PersonalAvgLabelText = x_currentPageXML.getAttribute("PersonalAvgLabel");
+            if (PersonalAvgLabelText == undefined) {
+                PersonalAvgLabelText = 'Avg. of your attempts';
+            }
+            var datasets = [];
+            if (latest == null) {
+                // Only show mean_all
+                datasets = [{
+                    label: AvgAllLabelText,
+                    data: mean_all,
+                    backgroundColor: avgbgColour,
+                    borderColor: avglnColour
+                }];
             }
             else {
-                var myRadarChart = new Chart(ctx, {
-                    type: 'radar',
-                    data: {
-                        labels: classnames,
-                        datasets: [{
-                            label: objlabel,
-                            data: classvalues,
-                            backgroundColor: bgColour,
-                            borderColor: lnColour
-                        },
-                            {
-                                label: lastSubmit.label,
-                                data: lastSubmit.classvalues,
-                                backgroundColor: bgColour,
-                                borderColor: lnColour
-                            }]
-                    },
-                    options: {
-                        scale: {
-                            ticks: {
-                                suggestedMin: 0,
-                                suggestedMax: 100,
-                                fontSize: textSize
-                            },
-                            pointLabels: {
-                                fontSize: textSize
-                            }
-                        },
-                        legend: {
-                            labels: {
-                                fontSize: textSize
-                            }
-                        },
-                        responsive: false,
-                        maintainAspectRatio: false
-                    }
+                datasets = [
+                    {
+                        label: PersonalLabelText,
+                        data: latest.graph.classvalues,
+                        backgroundColor: bgColour,
+                        borderColor: lnColour
+                    }];
+                if (numUserSubmits > 1) {
+                    datasets.push({
+                        label: PersonalAvgLabelText,
+                        data: mean,
+                        backgroundColor: pavgbgColour,
+                        borderColor: pavglnColour
+                    });
+                }
+                datasets.push({
+                    label: AvgAllLabelText,
+                    data: mean_all,
+                    backgroundColor: avgbgColour,
+                    borderColor: avglnColour
                 });
             }
-
-
+            // Show mean_all and latest
+            var myRadarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: classnames,
+                    datasets: datasets
+                },
+                options: {
+                    scale: {
+                        ticks: {
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            fontSize: textSize - 4
+                        },
+                        pointLabels: {
+                            fontSize: textSize
+                        }
+                    },
+                    legend: {
+                        labels: {
+                            fontSize: textSize
+                        }
+                    },
+                    responsive: false,
+                    maintainAspectRatio: false
+                }
+            });
         }
         this.init = function() {
             var $pageContents = $("#pageContents");
-            XTGetInteractionScore(null, null, null, null, x_currentPageXML.getAttribute("import"), function(data) {
+            var id = x_currentPageXML.getAttribute("xerteurl") + x_currentPageXML.getAttribute("xertelo") + '/' + x_currentPageXML.getAttribute("import");
+            XTGetInteractionScore(null, null, null, null, id, function(data) {
                 showGraph.createDiagram(data);
             });
 
 
             // call this function in every model once everything's loaded
+            this.sizeChanged();
             x_pageLoaded();
         }
     };
