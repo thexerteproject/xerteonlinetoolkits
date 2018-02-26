@@ -23,6 +23,7 @@ $lti_def->key = (isset($_POST["tsugi_key"]) ? htmlspecialchars($_POST["tsugi_key
 $lti_def->title = (isset($_POST["tsugi_title"]) ? htmlspecialchars($_POST["tsugi_title"]) : "");
 $lti_def->xapi_enabled = isset($_POST["tsugi_xapi"]) && $_POST["tsugi_xapi"] == "true";
 $lti_def->published = isset($_POST["tsugi_published"]) && $_POST["tsugi_published"] == "true";
+$lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
 $lti_def->url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
 $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
 $lti_def->xapi_endpoint = (isset($_POST["tsugi_xapi_endpoint"]) ? htmlspecialchars($_POST["tsugi_xapi_endpoint"]) : "");
@@ -46,7 +47,7 @@ if($tsugi_publish) {
 
     $key_count = $PDOX->rowDie("SELECT COUNT(*) as count FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE k.key_sha256 = :KEY and c.key_id = k.key_id and l.context_id=c.context_id and l.path != :URL", array(
         ':KEY' => lti_sha256($lti_def->key),
-        ':URL' => $lti_def->url));
+        ':URL' => $lti_def->tsugi_url));
     if($key_count['count'] > 0)
     {
         $mesg = "Key already in use, use another key.";
@@ -61,7 +62,7 @@ if($tsugi_publish) {
 //link -> context -> key
 $sql = "SELECT * FROM {$p}lti_link WHERE path = :PATH";
 $link_row = $PDOX->rowDie($sql, array(
-    ':PATH' => $lti_def->url
+    ':PATH' => $lti_def->tsugi_url
 ));
 $sql = "DELETE FROM {$p}lti_link WHERE link_id = :LINK_ID";
 $PDOX->queryDie($sql, array(

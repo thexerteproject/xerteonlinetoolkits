@@ -1207,7 +1207,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                         },
                                     type: "http://adlnet.gov/expapi/activities/cmi.interaction",
                                     interactionType: "fill-in",
-                                    correctResponsesPattern: this.correctAnswers
+                                    correctResponsesPattern: [this.correctAnswers]
                                 };
                             if (this.ia_type == 'text') {
                                 statement.result = {
