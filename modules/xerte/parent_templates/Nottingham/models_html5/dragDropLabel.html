@@ -698,7 +698,7 @@
                         if ($this.hasClass("correct") == false) {
                             $this.addClass("correct");
                             //add tick
-                            $this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+							$this.append('<span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '</span><span class="result fa fa-fw fa-x-tick"></span>');
                             //l_feedback = "The label for " + $this.html() + " was placed in the correct hotspot.";
                             correct = true;
                         }
@@ -706,13 +706,13 @@
                     else {
                         if (XTGetMode() != "normal") {
                             $this
-                                    .attr({"tabindex": i + 3})
-                                    .removeAttr( 'style' )
-                                    .css({
-                                        "position": "relative",
-                                        "z-index": 0,
-                                        "top": "auto"
-                                    });
+								.attr({"tabindex": i + 3})
+								.removeAttr( 'style' )
+								.css({
+									"position": "relative",
+									"z-index": 0,
+									"top": "auto"
+								});
 
                             if($this.data("target") !== undefined && $this.data("target") !== "") {
                                 $("#targetHolder .target").eq($this.data("target")).droppable('enable');
@@ -720,7 +720,7 @@
                         } else {
                             $this.addClass("incorrect");
                             // add cross
-                            $this.append('<img class="cross" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Cross") + '"></img>');
+							$this.append('<span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Cross") + '</span><span class="result fa fa-fw fa-x-cross"></span>')
                             //l_feedback = "The label for " + $this.html() + " was placed in the wrong hotspot.";
                             correct = false;
                         }

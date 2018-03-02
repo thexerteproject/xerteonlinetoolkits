@@ -161,7 +161,7 @@
 							var $this = $(this);
 							if ($this.data("target").is($this.data("currentTarget"))) {
 								// correct - show tick
-								$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+								$this.find(".labelTxt").append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '</span><span class="fa fa-fw fa-x-tick"></span></span>');
 								$this.find(".audioHolder").show();
 								
 							} else{							
@@ -203,10 +203,10 @@
 								var $this = $(this);
 								if ($this.data("target").is($this.data("currentTarget"))) {
 									// correct - show tick
-									$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+									$this.find(".labelTxt").append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '</span><span class="fa fa-fw fa-x-tick"></span></span>');
 									$this.find(".audioHolder").show();								
 								} else{	
-									$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Cross") + '"></img>');	
+									$this.find(".labelTxt").append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Cross") + '</span><span class="fa fa-fw fa-x-cross"></span></span>');
 								}
 							});
 							textMatch.finishTracking();

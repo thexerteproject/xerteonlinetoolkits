@@ -1,0 +1,38 @@
+/*define color pallette*/
+$darkestcolor: #005172;
+$lightestcolor:#F4F4F4;
+$brightcolor:#0098C3;
+$contrastcolor:#69BE28;
+$whiteorlightest:#ffffff;
+$blackordarkest:#000000;
+$mainhovercolor:#ffa500;
+$hintcolor:red;
+$alertcolor:$hintcolor;
+$linkcolor:#0000EE;
+
+/*set background colors*/
+$bodybackgroundcolor:$lightestcolor;
+$defaultpagebackground:$whiteorlightest;
+
+/*set font family*/
+//If google font required set to 'Varela Round', sans-serif;
+//If default font required set to Arial, sans-serif;
+$mainfonts: 'Varela Round', sans-serif;
+$secondaryfonts:'Varela Round', sans-serif;
+
+/*define font colors to match the background colors*/
+$mainfontcolour: $darkestcolor;
+$fontcolorfordarkestcolor:$whiteorlightest;
+$fontcolorforlightestcolor:$darkestcolor;
+$fontcolorfobrightcolor:$whiteorlightest;
+$fontcolorforcontrastcolor:$whiteorlightest;
+$fontcolorformainhovercolor:$whiteorlightest;
+
+/*define rounded corner and other sizes*/
+$largeroundedcorners: 6vmin;
+$mediumroundedcorners: 2vmin;
+$smallroundedcorners: 1vmin;
+$imageroundedcorners: 2vmin;
+$contentmargin: 2%;
+$interfaceboxshadow:3px 3px 5px grey;;
+$defaultpagepadding:2%;

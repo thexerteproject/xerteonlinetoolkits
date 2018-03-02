@@ -214,41 +214,7 @@ function setup(){
 			// show definition on hover
 			if ($(data).find('learningObject').attr('glossaryHover') == undefined || $(data).find('learningObject').attr('glossaryHover') == "true") {
 				
-				// add link around all examples of glossary words in text
-				var insertText = function(node) {
-					var temp = document.createElement("pre");
-					temp.innerHTML = node;
-					var tempText = temp.innerHTML;
-					
-					// check text for glossary words - if found replace with a link
-					if (glossary.length > 0) {
-						for (var k=0, len=glossary.length; k<len; k++) {
-							var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
-							tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
-						}
-						for (var k=0, len=glossary.length; k<len; k++) {
-							var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
-							tempText = tempText.replace(regExp, '$1<a class="glossary" href="#" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
-						}
-					}
-					
-					return tempText;
-				}
-				
-				var checkForText = function(data) {
-					for (var i=0; i<data.length; i++) {
-						if (data[i].nodeName == 'text') {
-							if ($(data[i]).attr('disableGlossary') != 'true') {
-								data[i].childNodes[0].data = insertText(data[i].childNodes[0].data);
-							}
-							
-						} else {
-							checkForText(data[i].childNodes);
-						}
-					}
-				}
-				
-				checkForText($(data).find('page'));
+				x_checkForText($(data).find('page'), 'glossary');
 				
 				// add events to control what happens when you rollover glossary words
 				$("body > .container")
@@ -333,6 +299,12 @@ function setup(){
 		}
 	}
 	
+	// if project is being viewed as https then force any iframe src to be https too
+	if (window.location.protocol == "https:") {
+		
+		x_checkForText($(data).find('page'), 'iframe');	
+		
+	}	
 	
 	if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && $(data).find('learningObject').attr('authorSupport') == 'true' ) {
 		
@@ -605,6 +577,49 @@ function setup(){
 	}, 2000);
 }
 
+// add link around all examples of glossary words in text
+function x_insertGlossaryText(node) {
+	var temp = document.createElement("pre");
+	temp.innerHTML = node;
+	var tempText = temp.innerHTML;
+	
+	if (glossary.length > 0) {
+		for (var k=0, len=glossary.length; k<len; k++) {
+			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+		}
+		for (var k=0, len=glossary.length; k<len; k++) {
+			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			tempText = tempText.replace(regExp, '$1<a class="glossary" href="#" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+		}
+	}
+	
+	return tempText;
+}
+
+// check through text nodes for text that needs replacing with something lese (e.g. glossary)
+function x_checkForText(data, type) {
+	for (var i=0; i<data.length; i++) {
+		if (data[i].nodeName == 'text') {
+			if (type == 'glossary') {
+				if ($(data[i]).attr('disableGlossary') != 'true') {
+					data[i].childNodes[0].data = x_insertGlossaryText(data[i].childNodes[0].data);
+				}
+			} else if (type == 'iframe') {
+				function changeProtocol(iframe) {
+					if (/src="http:/.test(iframe)){
+						iframe = iframe.replace(/src="http:/g, 'src="https:').replace(/src='http:/g, "src='https:");
+					}
+					return iframe;
+				}
+				data[i].childNodes[0].data = data[i].childNodes[0].data.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
+			}
+			
+		} else {
+			x_checkForText(data[i].childNodes, type);
+		}
+	}
+}
 
 // this is the format of links added through the wysiwyg editor button
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
@@ -919,7 +934,6 @@ function parseContent(pageIndex){
 	}
 }
 
-// ** issues with this when using themes & header property on page level
 function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTextColour, level) {
 	
 	// LO background settings will be overridden by individual page ones (& returned to LO settings if page contains no background properties)
@@ -1453,6 +1467,11 @@ function loadXotContent($this) {
 		if (xotLink.indexOf(separator + params[i][0] + '=') == -1) {
 			xotLink += separator + params[i][0] + '=' + params[i][1];
 		}
+	}
+	
+	// if project is being viewed as https then force iframe src to be https too
+	if (window.location.protocol == "https:" && xotLink.indexOf("http:") == 0) {
+		xotLink = "https:" + xotLink.substring(xotLink.indexOf("http:") + 5);
 	}
 	
 	var warning = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && (xotLink.indexOf('preview_') != -1 || xotLink.indexOf('preview.php?') != -1) ? '<p class="alertMsg">' + (languageData.find("errorEmbed")[0] != undefined && languageData.find("errorEmbed")[0].getAttribute('label') != null ? languageData.find("errorEmbed")[0].getAttribute('label') : "You have embedded an XOT project preview. You must make the project public and embed the public facing URL.") + '</p>' : '',

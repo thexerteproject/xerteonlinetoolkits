@@ -189,3 +189,52 @@ h3 {
 .pbBar {
 	background-color: #2196F3;
 }
+
+/* FONT AWESOME BUTTON ICONS */
+
+/* chevron */
+.fa-x-next:before { content: "\f054"; }
+.fa-x-prev:before { content: "\f053"; }
+.fa-x-next-circle:before { content: "\f138"; } /* circle versions are used in multiple perspectives & thumbnail viewer pages */
+.fa-x-prev-circle:before { content: "\f137"; }
+
+/* arrow */
+/*
+.fa-x-next:before { content: "\f061"; }
+.fa-x-prev:before { content: "\f060"; }
+.fa-x-next-circle:before { content: "\f0a9"; }
+.fa-x-prev-circle:before { content: "\f0a8"; }
+*/
+.fa-x-close:before { content: "\f00d"; }
+.fa-x-refresh:before { content: "\f021"; }
+.fa-x-acc-hide:before { content: "\f0da"; }
+.fa-x-acc-show:before { content: "\f0d7"; }
+.fa-x-btn-hide:before { content: "\f0d8"; } /* btn-hide/show used on transcript buttons */
+.fa-x-btn-show:before { content: "\f0d7"; }
+.fa-x-zoom-in:before { content: "\f00e"; }
+.fa-x-zoom-out:before { content: "\f010"; }
+.fa-x-download:before { content: "\f019"; }
+.fa-x-copy:before { content:"\f0c5" }
+.fa-x-info-circle:before { content:"\f05a" }
+.fa-x-circle:before { content:"\f111" }
+.fa-x-circle-o:before { content:"\f10c" }
+
+/* decision tree overview icons */
+.fa-x-info:before { content:"\f129" }
+.fa-x-question:before { content:"\f128" }
+.fa-x-lightbulb:before { content:"\f0eb" }
+
+.fa-x-tick-circle:before { content:"\f058"} /* used for visited ticks in table of contents */
+
+/* marking on interactivity pages */
+.fa-x-tick:before { content: "\f00c"; color: #62c562; }
+.fa-x-cross:before { content: "\f00d"; color: #ff0000; }
+
+@media only screen
+and (max-width :500px) {
+	/*hide progress bar by default when viewed in portrait mode on mobiles*/
+	/*if required change to display:block on themes where FA buttons are used*/
+	#x_footerProgress {
+		display: none;
+	}
+}

@@ -36,15 +36,6 @@
 	}
 	
 	
-	/* __accordion__ */
-	
-	#pageContents.acc .ui-icon {
-		width: auto;
-		height: auto;
-		margin-top: -0.5em;
-	}
-	
-	
 	/* __buttons__ */
 	
 	#pageContents.button #btnHolder {
@@ -121,22 +112,10 @@
 		float: right;
 	}
 	
-	#pageContents.slide #btnHolder button {
-		background: #111;
-		border-color: #111;
-		border-radius: 10%;
-	}
-	
-	#pageContents.slide #btnHolder .ui-icon {
-		color: white;
-		width: auto;
-		height: auto;
-	}
-	
 	#pageContents.slide #slideTxt {
 		float: left;
 		font-weight: bold;
-		margin-top: 10px;
+		padding-top: 0.7em;
 	}
 	
 	#pageContents.slide .clearBoth {
@@ -145,8 +124,8 @@
 	
 	#pageContents.slide #btnHolder {
 		border-top: 1px solid #ccc;
-		padding-top: 10px;
-		margin-top: 10px;
+		padding-top: 0.5em;
+		margin-top: 0.5em;
 	}
 		
 	#pageContents.slide #btnHolder.top {
@@ -175,4 +154,3 @@
 		border-color: #d3d3d3;
 		border-bottom: 1px solid white !important;
 	}
-	

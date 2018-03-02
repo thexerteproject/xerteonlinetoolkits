@@ -180,6 +180,7 @@ function getLangInfo(node, attribute, fallBack) {
 
 // _____ SET UP INTERFACE _____
 function setUpInterface() {
+	
 	if (allParams.theme != undefined && allParams.theme != "default") {
 		
 		$('head').append('<link rel="stylesheet" href="' + themePath + allParams.theme + '/' + allParams.theme + '.css' + '" type="text/css" />');
@@ -293,7 +294,7 @@ function setUpInterface() {
 	
 	// _____ INTRO BTN _____
 	if (allQParams.text != undefined && allQParams.text != "") {
-		$introHolder.append('<h3>' + allQParams.title + '</h3>' + addLineBreaks(allQParams.text));
+		$introHolder.append('<h3>' + allQParams.title + '</h3>' + addLineBreaks(iFrameCheck(allQParams.text)));
 		
 		$infoBtn
 			.click(function() {
@@ -667,7 +668,7 @@ function setUpQ(isNew) {
 		
 		var mediaInfo = checkForMedia();
 		
-		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="instruction">' + mediaInfo[0] + authorSupport + addLineBreaks(currentStepInfo.text) + '</div></div>');
+		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="instruction">' + mediaInfo[0] + authorSupport + addLineBreaks(iFrameCheck(currentStepInfo.text)) + '</div></div>');
 		
 		var $thisStep = $stepHolder.children(".step");
 		
@@ -882,7 +883,7 @@ function setUpI() {
 		
 		var mediaInfo = checkForMedia();
 		
-		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="info">' + mediaInfo[0] + authorSupport + addLineBreaks(currentStepInfo.text) + collateResult(currentStepInfo.collate, currentDecision, "html") + '</div></div>');
+		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="info">' + mediaInfo[0] + authorSupport + addLineBreaks(iFrameCheck(currentStepInfo.text)) + collateResult(currentStepInfo.collate, currentDecision, "html") + '</div></div>');
 		
 		var $thisStep = $stepHolder.children(".step");
 		
@@ -945,7 +946,7 @@ function setUpR() {
 		
 		var mediaInfo = checkForMedia();
 		
-		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="result">' + mediaInfo[0] + authorSupport + addLineBreaks(currentStepInfo.text) + collateResult(currentStepInfo.collate, currentDecision, "html") + resultEndString + '</div><a id="viewThisBtn" href="javascript:viewThisClickFunct()" class="floatL">' + allParams.viewThisBtn + '</a></div>');
+		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="result">' + mediaInfo[0] + authorSupport + addLineBreaks(iFrameCheck(currentStepInfo.text)) + collateResult(currentStepInfo.collate, currentDecision, "html") + resultEndString + '</div><a id="viewThisBtn" href="javascript:viewThisClickFunct()" class="floatL">' + allParams.viewThisBtn + '</a></div>');
 		
 		if (mediaInfo[1] != undefined) {
 			var $stepMedia = $(".stepAudio, .stepVideo");
@@ -1072,7 +1073,7 @@ function collateResult(collate, dec, type) {
 		for (var i=0; i<storedResultTxt[dec].length; i++) {
 			if (storedResultTxt[dec][i] != "" && storedResultTxt[dec][i] != undefined) {
 				if (type == "html") {
-					string += '<div class="collatedResult">' + addLineBreaks(storedResultTxt[dec][i]) + '</div>';
+					string += '<div class="collatedResult">' + addLineBreaks(iFrameCheck(storedResultTxt[dec][i])) + '</div>';
 				} else {
 					string += '\n\n' + storedResultTxt[dec][i];
 				}
@@ -1205,7 +1206,7 @@ function createDecStr(dec, type) {
 				if (thisStep.faIcon != undefined && thisStep.faIcon != "") {
 					icon = "fa-" + thisStep.faIcon;
 				}
-				string += '<div><span class="fa ' + icon + ' fa-fw"/>' + media + addLineBreaks(thisStep.text) + '</div>';
+				string += '<div><span class="fa ' + icon + ' fa-fw"/>' + media + addLineBreaks(iFrameCheck(thisStep.text)) + '</div>';
 			} else {
 				string += '\n' + thisStep.text;
 			}
@@ -1257,7 +1258,7 @@ function createDecStr(dec, type) {
 				if (thisStep.faIcon != undefined && thisStep.faIcon != "") {
 					icon = "fa-" + thisStep.faIcon;
 				}
-				string += '<div><span class="fa ' + icon + ' fa-fw"/>' + media + addLineBreaks(thisStep.text) + '</div>';
+				string += '<div><span class="fa ' + icon + ' fa-fw"/>' + media + addLineBreaks(iFrameCheck(thisStep.text)) + '</div>';
 			} else {
 				string += '\n' + thisStep.text;
 			}
@@ -1274,7 +1275,7 @@ function createDecStr(dec, type) {
 				string += '\n' + allParams.resultString + ':';
 			}
 			if (type == "html") {
-				string += media + addLineBreaks(thisStep.text) + '</div>';
+				string += media + addLineBreaks(iFrameCheck(thisStep.text)) + '</div>';
 			} else {
 				string += '\n' + thisStep.text;
 			}
@@ -1321,7 +1322,7 @@ function setUpHelp($thisStep) {
 					title:		allParams.helpString,
 					closeText:	allParams.closeBtn
 					})
-				.html(addLineBreaks(currentStepInfo.helpTxt));
+				.html(addLineBreaks(iFrameCheck(currentStepInfo.helpTxt)));
 		}
 	});
 }
@@ -1389,7 +1390,7 @@ function setUpSection(section, $step) {
 										title:		allSections[i].name,
 										closeText:	allParams.closeBtn
 										})
-									.html(addLineBreaks(allSections[i].description));
+									.html(addLineBreaks(iFrameCheck(allSections[i].description)));
 								
 								if (allSections[i].img != undefined && allSections[i].img != "") {
 									if (allSections[i].img.substr(0,3) == "fa-") {
@@ -1575,5 +1576,21 @@ function makeURLsAbsolute(html){
     return html.replace(/FileLocation \+ \'([^\']*)\'/g, FileLocation + '$1');
 }
 
+
+// if project is being viewed as https then force iframe src to be https too
+function iFrameCheck(txt) {
+	// if project is being viewed as https then force iframe src to be https too
+	if (window.location.protocol == "https:") {
+		function changeProtocol(iframe) {
+			if (/src="http:/.test(iframe)){
+				iframe = iframe.replace(/src="http:/g, 'src="https:').replace(/src='http:/g, "src='https:");
+			}
+			return iframe;
+		}
+		txt = txt.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
+	}
+	
+	return txt;
+}
 
 $(document).ready(init);

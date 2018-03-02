@@ -2094,7 +2094,12 @@ function x_openDialog(type, title, close, position, load) {
                         closeOnEscape:  true,
                         title:          title,
                         closeText:      close,
-                        close: function() {$x_popupDialog.parent().detach();}
+                        close: function() {$x_popupDialog.parent().detach();},
+						create: function(event, ui) {
+							$(this).parent(".ui-dialog").find(".ui-dialog-titlebar-close .ui-icon")
+								.removeClass("ui-icon-closethick")
+								.addClass("fa fa-x-close");
+							}
                         })
                     .parent().hide();
 
@@ -2681,6 +2686,17 @@ function x_insertText(node, exclude) {
 			tempText = tempText.replace(regExp, x_variables[k].value);
         }
     }
+	
+	// if project is being viewed as https then force iframe src to be https too
+	if (window.location.protocol == "https:" && exclude.indexOf("iframe") == -1) {
+		function changeProtocol(iframe) {
+			if (/src="http:/.test(iframe)){
+				iframe = iframe.replace(/src="http:/g, 'src="https:').replace(/src='http:/g, "src='https:");
+			}
+			return iframe;
+		}
+		tempText = tempText.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
+	}
 	
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0 && exclude.indexOf("glossary") == -1) {

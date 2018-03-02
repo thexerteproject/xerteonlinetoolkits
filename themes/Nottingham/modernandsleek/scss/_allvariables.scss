@@ -1,0 +1,36 @@
+/*---colours to use - sleek and modern:  #2f2E33, #D5D6D2, #FFFF, #3A5199---*/
+/*define color pallette*/
+$darkestcolor: #3A5199;
+$lightestcolor:#EDEDED;
+$brightcolor:#D5D6D2;
+$contrastcolor:#2f2E33;
+$whiteorlightest:#ffffff;
+$blackordarkest:$darkestcolor;
+
+/*set background colors*/
+$bodybackgroundcolor:$brightcolor;
+$defaultpagebackground:$whiteorlightest;
+$progressBarColor: #2196F3; /* default #2196F3;*/
+
+/*set font family*/
+$mainfonts: 'Libre Franklin', sans-serif;
+$secondaryfonts:'Libre Franklin', sans-serif;
+
+/*define font colors to match the background colors*/
+$mainfontcolour: $darkestcolor;
+$fontcolorfordarkestcolor:#ffffff;
+$fontcolorforlightestcolor:$darkestcolor;
+$fontcolorfobrightcolor:$contrastcolor;
+$fontcolorforcontrastcolor:$darkestcolor;
+$linkcolor:#3A5199;
+$linkvisited:#F8A302;
+$linkhover:#F8A302;
+
+/*define rounded corner and other sizes*/
+$largeroundedcorners: 6vmin;
+$mediumroundedcorners: 2vmin;
+$smallroundedcorners: 1vmin;
+$imageroundedcorners: 2vmin;
+$contentmargin: 2%;
+$interfaceboxshadow:3px 3px 5px grey;;
+$defaultpagepadding:2%;

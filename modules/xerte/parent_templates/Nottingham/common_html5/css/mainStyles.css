@@ -26,8 +26,13 @@ body {
 }
 
 p {
-    padding: 4px;
+    padding: 0.3em;
     margin: 0;
+}
+
+h3 {
+	padding-left: 0.3em;
+    padding-right: 0.3em;
 }
 
 ul, ol {
@@ -107,6 +112,10 @@ ul, ol {
 
 .x_floatRight {
 	float:		right;
+}
+
+button.ui-button-icon-only {
+	height: 2.4em; /* so height & width are the same in responsive projects - 2.4em matches width set in jquery-ui css) */
 }
 
 #x_pageHolder button:disabled {
@@ -217,6 +226,21 @@ ul, ol {
 
 .ui-dialog-titlebar-close {
 	background: 	#dadada url(smoothness/images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+	width: 1.5em;
+	height: 1.5em;
+	float: right;
+	position: relative;
+	margin: 0;
+	right: -0.5em;
+	top: -0.1em;
+}
+
+.ui-dialog button.ui-dialog-titlebar-close.ui-button-icon-only .ui-icon[class*=" fa-"] {
+	margin-left: -0.4em;
+	margin-top: -0.5em;
 }
 
 /* standard link style - overrides the way links are styled on tab navigator */
@@ -403,7 +427,7 @@ fieldset.noStyle {
 }
 
 fieldset.noStyle legend {
-	display:	table;
+	display: table;
 }
 
 /* TABLE STYLES */
@@ -532,6 +556,19 @@ table.headerCol.simple td:first-child {
 
 .ui-button-icon-only .ui-icon[class*=" fa-"] {
     margin-left: -7px;
+}
+
+.ui-accordion-header-icon.ui-icon[class*=" fa-"] {
+	width: auto;
+	height: auto;
+	margin-top: -0.5em;
+}
+
+button.ui-button-icon-only .ui-icon[class*=" fa-"] {
+	width: auto;
+	height: auto;
+	margin-left: -0.3em;
+	margin-top: -0.45em;
 }
 
 /*styling for optional show/hider footer tools*/

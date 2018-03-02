@@ -1,0 +1,5 @@
+name: sectionpages
+display name: Experimental: Section pages
+description: Experimental theme: Splits your sections into separate pages and provides horizontal navigation. Note: only create one page with this template and use sections for the content you want on separate pages.
+enabled: yes
+preview: sectionpages.jpg

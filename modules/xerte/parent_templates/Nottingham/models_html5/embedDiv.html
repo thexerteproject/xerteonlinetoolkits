@@ -67,6 +67,10 @@
 					$iFrameHolder.addClass("centre");
 				}
 			} else { // use iframe to load web page
+				// if project is being viewed as https then force iframe to be https too
+				if (window.location.protocol == "https:" && pageSrc.indexOf("http:") == 0) {
+					pageSrc = "https:" + pageSrc.substring(pageSrc.indexOf("http:") + 5);
+				}
 				var iFrameTag = '<iframe id="iFrame" src="' + pageSrc + '" width="100%" height="' + embedDiv.calcHeight() + '" frameBorder="0"></iframe>';
 				$iFrameHolder.html(iFrameTag);
 				$iFrameHolder.addClass("centerAlign");

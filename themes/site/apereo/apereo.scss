@@ -1,0 +1,208 @@
+@import "scss/_allvariables"; /*start here and set the default values for all the variables*/
+@import "scss/editorstyles";
+@import "scss/_webkitCustoms";/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* --BODY------------------------------------------------*/
+body {
+    font-family: "Open Sans","Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: $blackordarkest;
+    background-color: $lightestcolor;
+}
+/*--Heading and other text changes---------------------------------------*/
+h1 {
+    color:$brightcolor;
+    font-weight:400;
+}
+h2, h3, h4, h5, h6 {
+    font-weight:400;
+  color: $blackordarkest;
+}
+a{
+    color:$linkcolor;
+}
+
+/* --JUMBOTRON-------------------------------------------------------------------- */
+.jumbotron {
+  color: $whiteorlightest;
+  background: $darkestcolor; /* Old browsers */
+background-color: $darkestcolor;
+background-image: linear-gradient(3deg, $darkestcolor 0%, $darkestcolor 100%);
+}
+
+.jumbotron h1 {
+    color: $whiteorlightest;
+    font-weight:400;
+}
+/* --NAVBAR-------------------------------------------------------------- */
+.navbar-inverse .navbar-inner {
+    background-color: $contrastcolor;
+    background-image: -moz-linear-gradient(top, $contrastcolor, $contrastcolor);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from($contrastcolor), to($contrastcolor));
+    background-image: -webkit-linear-gradient(top, $contrastcolor, $contrastcolor);
+    background-image: -o-linear-gradient(top, $contrastcolor, $contrastcolor);
+    background-image: linear-gradient(to bottom, $contrastcolor, $contrastcolor);
+    background-repeat: repeat-x;
+    border-color: black;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$contrastcolor', endColorstr='$contrastcolor', GradientType=0);
+}
+
+.navbar-inverse .brand, .navbar-inverse .nav > li > a {
+color: $whiteorlightest;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+
+}
+.navbar-inverse .nav-collapse .nav > li > a, .navbar-inverse .nav-collapse .dropdown-menu a {
+color: $whiteorlightest;
+    border-left:solid 1px;
+    border-right:solid 1px;
+    border-color: black;
+}
+
+.navbar-inverse .brand, .navbar-inverse .nav > li > a:hover{
+color: $whiteorlightest;
+    background-color:$contrastcolor;
+}
+.navbar-inverse .nav-collapse .nav > li > a:hover, .navbar-inverse .nav-collapse .dropdown-menu a:hover {
+color: $whiteorlightest;
+    background-color:$contrastcolor;
+}
+
+.nav-list > .active > a, .nav-list > .active > a:hover, .nav-list > .active > a:focus {
+	background-color: $contrastcolor;
+}
+
+/* --TABLE OF CONTENTS-------------------------------------------------------------- */
+.bs-docs-sidenav {
+    background-color: $lightestcolor;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  
+}
+.nav-list > li > a, .nav-list .nav-header {
+    text-shadow: none;
+}
+.bs-docs-sidenav > li > a {
+  border: 1px solid $brightcolor;
+}
+.bs-docs-sidenav > li:first-child > a {
+  -webkit-border-radius: 6px 6px 0 0;
+     -moz-border-radius: 6px 6px 0 0;
+          border-radius: 6px 6px 0 0;
+}
+.bs-docs-sidenav > li:last-child > a {
+  -webkit-border-radius: 0 0 6px 6px;
+     -moz-border-radius: 0 0 6px 6px;
+          border-radius: 0 0 6px 6px;
+}
+.bs-docs-sidenav > .active > a {
+  text-shadow: 0 1px 0 rgba(0,0,0,.15);
+  -webkit-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+     -moz-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+          box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+}
+.bs-docs-sidenav > li > a:hover {
+    background-color: $brightcolor;
+    color: white;
+}
+.bs-docs-sidenav a:hover .icon-chevron-right {
+  opacity: .5;
+}
+.bs-docs-sidenav .active .icon-chevron-right,
+.bs-docs-sidenav .active a:hover .icon-chevron-right {
+  background-image: url(../img/glyphicons-halflings-white.png);
+  opacity: 1;
+}
+.bs-docs-sidenav a:hover .icon-chevron-right {
+  opacity: .5;
+}
+.bs-docs-sidenav .active .icon-chevron-right,
+.bs-docs-sidenav .active a:hover .icon-chevron-right {
+  background-image: url(../img/glyphicons-halflings-white.png);
+  opacity: 1;
+}
+
+.accordion-heading a{
+    border-bottom: 0;
+    background: $contrastcolor;
+  color:$fontcolorforcontrastcolor;
+}
+
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus {
+  color: $fontcolorforcontrastcolor;
+  cursor: default;
+  background-color: $contrastcolor;
+  border: 1px solid $contrastcolor;
+  border-bottom-color: transparent;
+}
+
+/* --PANELS-------------------------------------------------------------- */
+.panel {
+  background-color: $panelcolor;
+  border: 1px solid $blackordarkest;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+    color:$accent1;
+}
+/* Echo out a label for the example */
+.panel:after {
+  font-size: 12px;
+  font-weight: bold;
+  background-color: $panelcolor;
+  border: 1px solid $panelcolor;
+  color: $whiteorlightest;
+  -webkit-border-radius: 4px 0 4px 0;
+     -moz-border-radius: 4px 0 4px 0;
+          border-radius: 4px 0 4px 0;
+}
+
+/* --FOOTER-------------------------------------------------------------- */
+.footer {
+   border-top: 1px solid $blackordarkest;
+    background-color: $darkestcolor;
+background-image: linear-gradient(3deg, $darkestcolor 0%, $darkestcolor 100%);
+}
+.footer p {
+  color: $whiteorlightest;
+}
+.footer a {
+  color: $accent1;
+}
+
+.alertMsg {
+	color: $alertcolor;
+}
+
+/* --GLOSSARY-------------------------------------------------------------- */
+
+a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
+	color: $brightcolor;
+}
+
+.glossaryTip {
+	background-color: $darkestcolor;
+	color: $whiteorlightest;
+}
+
+.nav-pills > .active > a, .nav-pills > .active > a:hover, .nav-pills > .active > a:focus {
+    color: $whiteorlightest;
+    background-color: $contrastcolor;
+}

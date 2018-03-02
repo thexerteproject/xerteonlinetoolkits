@@ -1,0 +1,68 @@
+/*****editor styles*****/
+.marker {
+  font:$mainfonts;
+  background-color:$darkestcolor;
+  color:$lightestcolor;
+  border-radius:$smallroundedcorners;
+  display:table;
+  padding:10px;
+}
+
+var {
+  font-family:$mainfonts;
+  background-color:$brightcolor;
+  color:$darkestcolor;
+  display:table;
+  border-radius:$smallroundedcorners;
+  font-style:normal;
+  padding:10px;
+}
+
+kbd {
+  font-family:$mainfonts;
+  background-color:#EDEDED;
+  color:$darkestcolor;
+  display:table;
+  border-radius:$smallroundedcorners;
+  font-style:normal;
+  padding:10px;
+}
+
+samp {
+  font-family:$mainfonts;
+  background-color:$contrastcolor;
+  color:$lightestcolor;
+  display:table;
+  border-radius:$smallroundedcorners;
+  font-style:normal;
+  padding:10px;
+}
+
+q {
+  border-bottom:1px solid #ccc;
+  border-top:1px solid #ccc;
+  color:#333;
+  display:block;
+  /*margin-left:20px;
+  margin-right:20px;*/
+  padding:10px;
+}
+
+cite {
+  font-family:$secondaryfonts;
+  font-size:14px;
+  font-style:normal;
+  /*font-weight:400;
+  margin-left:20px;*/
+  padding:10px;
+}
+
+tt {
+  font-family:$mainfonts;
+  background-color:#2196F3;
+  color:$whiteorlightest;
+  display:table;
+  border-radius:$smallroundedcorners;
+  font-style:normal;
+  padding:10px;
+}

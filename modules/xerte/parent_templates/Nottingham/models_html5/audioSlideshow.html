@@ -213,7 +213,9 @@
 						$currentSlide.fadeOut({
 							complete:
 								function() {
-									$("#infoHolder").scrollTop(0);
+									if (x_browserInfo.mobile != true) {
+										$("#infoHolder").scrollTop(0);
+									}
 									$visibleSlide.fadeIn();
 									audioSlideshow.scaleImages();
 								}

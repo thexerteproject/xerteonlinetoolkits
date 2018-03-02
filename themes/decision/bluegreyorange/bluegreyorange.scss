@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css?family=Varela+Round');
+@import "scss/_allvariables"; /*start here and set the default values for all the variables*/
+@import "scss/editorstyles";
+@import "scss/_webkitCustoms";
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+$headerblockh1:2.5vmin;
+$headerblockh2:3.5vmin;/*previously 5vmin*/
+$pagecontentslarge:2.2vmin;/*previously 3vmin*/
+$pagecontentsmedium:2vmin;/*previously 2.5vmin*/
+$pagecontentssmall:1.5vmin;/*previously 1.2vmin*/
+$resultsHolderwidth:8vmin;/*previously 8vmin*/
+
+
+body{
+	font-family: $mainfonts;
+	font-size:		12pt;//vmin size set in in media query below
+	color: $fontcolorforlightestcolor;
+}
+
+
+#mainHolder {
+	//*border: 2px solid $whiteorlightest;*/
+	border:none;
+}
+
+.bgColour {
+	background-color: $lightestcolor;
+}
+
+.ui-widget {
+    font-family: $mainfonts;
+}
+
+.stepImg {
+	background-color: $whiteorlightest;
+}
+
+#submitBtn {
+	background: $brightcolor;
+	color: $fontcolorfobrightcolor;
+	border-color:$brightcolor;
+}
+
+/* _____HEADER_&_TITLES_____ */
+
+#headerBlock {
+	background:	$darkestcolor;
+}
+#headerBlock #titles {
+	color: $lightestcolor;
+}
+
+#btnHolder { //navbar under header
+	border-top: 2px solid #f0f0f0;//#f0f0f0
+	background-color: #f9f9f9;//#f9f9f9
+}
+#btnHolder button, #overviewBtnHolder button {
+	color: $brightcolor;
+}
+#btnHolder button:hover, #btnHolder button:focus, #overviewBtnHolder button:hover, #overviewBtnHolder button:focus {
+	color: $mainhovercolor;
+}
+#btnHolder button:active, #overviewBtnHolder button:active {
+	color:	#999999;//#999999
+}
+
+#btnHolder button:disabled:hover, #btnHolder button:disabled:focus, #overviewBtnHolder button:disabled:hover, #overviewBtnHolder button:disabled:focus {
+	color: #cccccc;//#cccccc
+}
+
+#btnHolder #group2 button {
+	border-left: 2px solid $lightestcolor;
+}
+a[href="#"]:visited { 
+   color: $linkcolor;//#0000EE
+}
+.light {
+	color: $whiteorlightest;
+}
+.dark {
+	color: $blackordarkest;
+}
+
+/* _____STEPS_____ */
+
+#stepHolder .step .fa-border { //icons for questions etc
+	background-color: $mainhovercolor;//default #e0e0e0 mid grey
+	border-color: $whiteorlightest;
+	color: $whiteorlightest;
+	border-radius:		$smallroundedcorners;
+}
+
+#labelHolder input { //input box on slider etc
+	border:	1px solid #e0e0e0;//#e0e0e0
+}
+
+#amount { //text input on slider etc
+	color: $mainhovercolor;
+}
+
+/* _____OVERVIEW_____ */
+
+#overviewHolder .decisionInfo .fa {
+	border-radius:	$smallroundedcorners;
+}
+
+#overviewHolder .overviewStep {
+	background-color: $whiteorlightest;
+	border-radius:	$mediumroundedcorners;
+}
+
+#overviewHolder .extraInfo { //the alternative options shown when more is clicked
+	color: gray;//default gray
+}
+
+
+/* _____FOOTER_____ */
+
+#footerBlock {
+	background: $whiteorlightest;
+}
+
+.highlight {
+	background-color: $whiteorlightest;
+}
+
+.hint {
+	color: $hintcolor;
+	font-weight: bold;
+}
+
+.alert {
+	font-weight: bold;
+	color: $alertcolor;
+}
+
+// --@media TABLETS and above--------------------------------------------------------------
+@media (min-width: 768px) {
+	//--start of text size changes-----------------------------------------
+	body{
+		font-size:		$pagecontentsmedium;
+	}
+	.optionTxt{
+		font-size:		$pagecontentsmedium;
+	}
+	#headerBlock #titles h1{
+		font-size:	$headerblockh1;
+	}
+	#headerBlock #titles h2{
+		font-size:	$headerblockh2;
+	}
+	h1 {
+		font-size:	$pagecontentssmall;// default is 1em
+	}
+	h2 {
+		font-size:	$pagecontentslarge; // default is 1.4em
+	}
+	h3 {
+		font-size:	$pagecontentsmedium; //default is 1.1em
+	}
+	#btnHolder button, #overviewBtnHolder button {
+		font-size: 2.0vmin;
+	}
+	#overviewHolder .stepImg {
+		max-width:	30%;
+		max-height:	30%;
+	}
+	.stepImg {
+		max-width:	40%;
+		max-height:	40%;
+	}
+	input[type="radio" i] {
+		margin: 10px 10px 0px 20px;
+		width:2vmin;
+		height:2vmin;
+	}
+	#amount { //text input on slider etc
+		font-size: 2.0vmin;
+	}
+	#overviewHolder .decisionInfo .fa {
+		font-size: 3.0vmin;
+	}
+}
+//----------------end of tablets and above---------------------------------
+
+//--other @media queries not used or disabled at moment-----------------------------------------
+// --LARGE DESKTOP--------------------------------------------------------------
+//@media (min-width: 1200px) {
+
+//}
+// --DESKTOP--------------------------------------------------------------
+//@media (max-width: 980px) {
+
+//}
+// --TABLETS TO DESKTOPS--------------------------------------------------------------
+//@media (min-width: 768px) and (max-width: 980px) {
+
+//}
+// --TABLETS--------------------------------------------------------------
+//@media (max-width: 767px) {
+
+//}
+
+// --LANDSCAPE PHONES--------------------------------------------------------------
+//@media (max-width: 480px) {
+
+//}
