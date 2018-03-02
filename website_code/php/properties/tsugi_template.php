@@ -2,12 +2,15 @@
 	require_once("../../../config.php");
 	global $xerte_toolkits_site;
 
-    require_once($xerte_toolkits_site->tsugi_dir . "config.php");
-    require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
+	if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+        require_once($xerte_toolkits_site->tsugi_dir . "config.php");
+        require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
+    }
 
     use \Tsugi\Util\LTI;
     use \Tsugi\Core\LTIX;
     use \Tsugi\Config\ConfigInfo;
+
 
 	require_once("../../../functions.php");
 	
