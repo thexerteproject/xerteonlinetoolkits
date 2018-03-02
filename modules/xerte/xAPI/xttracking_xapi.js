@@ -105,6 +105,64 @@ function XApiTrackingState()
         return d.getFullYear() + '-' + twoDigitMonth + '-' + twoDigitDate + 'T' + twoDigitHours + ':' + twoDigitMinutes + ':' + twoDigitSeconds + tzoffset;
     }
 
+    function getCompletionStatus()
+    {
+        var completed = true;
+        for(var i = 0; i<state.completedPages.length; i++)
+        {
+            if(state.completedPages[i] == false)
+            {
+                completed = false;
+                break;
+            }
+            //if( i == state.completedPages.length-1 && state.completedPages[i] == true)
+            //{
+            //completed = true;
+            //
+        }
+
+        if (completed)
+        {
+            return "completed";
+
+        }
+        else if(!completed)
+        {
+            return 'incomplete';
+        }
+        else
+        {
+            return "unknown"
+        }
+    }
+
+    function getSuccessStatus()
+    {
+        if (this.lo_type != "pages only")
+        {
+            if (state.getScaledScore() > this.lo_passed)
+            {
+                return "passed";
+            }
+            else
+            {
+                return "failed";
+            }
+        }
+        else
+        {
+            if (getCompletionStatus() == 'completed')
+            {
+                return "passed";
+            }
+            else
+            {
+                return "unknown";
+            }
+        }
+    }
+
+
     function getdScaledScore()
     {
         return this.getdRawScore() / (this.getdMaxScore() - this.getdMinScore());
@@ -1003,7 +1061,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                     interactionType: "matching",
                                     source: sourceArray,
                                     target: targetArray,
-                                    correctResponsesPattern: scorm_canswer
+                                    correctResponsesPattern: [scorm_canswer]
                                 };
                             statement.result = {
                                 duration: calcDuration(this.start, this.end),
@@ -1149,9 +1207,9 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                         },
                                     type: "http://adlnet.gov/expapi/activities/cmi.interaction",
                                     interactionType: "fill-in",
-                                    correctResponsesPattern: this.correctAnswers
+                                    correctResponsesPattern: [this.correctAnswers]
                                 };
-                            if (sit.ia_type == 'text') {
+                            if (this.ia_type == 'text') {
                                 statement.result = {
                                     duration: calcDuration(this.start, this.end),
                                     success: result.success,
@@ -1202,8 +1260,32 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                 completion: Math.abs(this.end.getTime() - this.start.getTime()) > state.page_timeout
                             };
                     }
-                    statement = new TinCan.Statement(statement);
-                    SaveStatement(statement);
+                    var statementChecked = new TinCan.Statement(statement);
+                    SaveStatement(statementChecked);
+                    if (typeof statement.result.score != 'undefined')
+                    {
+                        var scoredstatement = {
+                            timestamp: new Date(),
+                            actor: actor,
+                            verb: {
+                                id: "http://adlnet.gov/expapi/verbs/scored",
+                                display: {
+                                    "en-US": "scored"
+                                }
+                            },
+                            object: {
+                                objectType: "Activity",
+                                definition: {
+                                    name: statement.object.definition.name,
+                                    description: statement.object.definition.description
+                                },
+                                id: id
+                            },
+                            result: statement.result
+                        };
+                        var statementChecked = new TinCan.Statement(scoredstatement);
+                        SaveStatement(statementChecked);
+                    }
                 }
 
                 if (!surf_mode) {

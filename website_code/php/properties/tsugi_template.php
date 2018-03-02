@@ -28,20 +28,22 @@
             $database_id = database_connect("template database connect success","template change database connect failed");
             $template_id = $id;
             $safe_template_id = (int)$id;
-            $query_for_preview_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags,";
+            $query_for_preview_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.template_name as name, td.access_to_whom, td.extra_flags,";
             $query_for_preview_content .= "td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode";
             $query_for_preview_content .= " from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "logindetails ld";
-            $query_for_preview_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=" . $safe_template_id .  " and role='creator'";
+            $query_for_preview_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=? and (role='creator' || role='co-author')";
 
-            $row = db_query_one($query_for_preview_content);
+            $params=array($safe_template_id);
+            $row = db_query_one($query_for_preview_content, $params);
 
             $lti_def = new stdClass();
 
-            $lti_def->title = str_replace('_', ' ', $row['tempate_name']);
+            $lti_def->title = str_replace('_', ' ', $row['name']);
             $lti_def->xapi_enabled = $row["tsugi_xapi_enabled"];
             $lti_def->key = "";
             $lti_def->secret = "";
             $lti_def->published = $row["tsugi_published"];
+            $lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
             $lti_def->url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
             $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $row['template_id'] . "&group=groupname";
             $lti_def->xapi_endpoint = $xerte_toolkits_site->LRS_Endpoint;
@@ -56,7 +58,7 @@
                     "	SELECT l.title, k.key_key, k.secret 
 						FROM {$CFG->dbprefix}lti_key AS k, {$CFG->dbprefix}lti_context AS c, lti_link AS l  
 							WHERE k.key_id = c.key_id AND c.context_id = l.context_id AND l.path = :DPATH",
-                    array(':DPATH' => $lti_def->url));
+                    array(':DPATH' => $lti_def->tsugi_url));
                 $lti_def->key = $tsugirow["key_key"];
                 $lti_def->secret = $tsugirow["secret"];
                 $lti_def->title = $tsugirow["title"];

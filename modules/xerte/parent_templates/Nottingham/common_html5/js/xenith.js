@@ -2541,6 +2541,26 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 	return thisVar;
 }
 
+function x_getVariable(name)
+{
+    for (var i=0; i<x_variables.length; i++)
+    {
+        if (x_variables[i].name == name)
+            return x_variables[i].value;
+    }
+    return null;
+}
+
+function x_setVariable(name, value)
+{
+    for (var i=0; i<x_variables.length; i++)
+    {
+        if (x_variables[i].name == name) {
+            x_variables[i].value = value;
+            break;
+        }
+    }
+}
 
 // function gets values of other variables needed for calculation and evals the value when everything's ready
 function x_getVarValues(thisValue, thisName) {
