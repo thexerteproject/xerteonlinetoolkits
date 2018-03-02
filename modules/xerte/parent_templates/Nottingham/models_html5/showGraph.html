@@ -103,7 +103,30 @@
                         classnames[i] = obj.graph.classnames[i];
                     }
                 }
-                if (obj.actor.mbox == 'mailto:' + username)
+                var matchactor = false;
+                switch(studentidmode)
+                {
+                    case 0:
+                    case 2:
+                        if (obj.actor.mbox == 'mailto:' + username)
+                        {
+                            matchactor = true;
+                        }
+                        break;
+                    case 1:
+                        if (obj.actor.mbox_sha1sum == mboxsha1)
+                        {
+                            matchactor = true;
+                        }
+                        break;
+                    case 3:
+                        if (obj.actor.account.name == groupname)
+                        {
+                            matchactor = true;
+                        }
+                        break;
+                }
+                if (matchactor)
                 {
                     if (obj.timestamp > latest_ts)
                     {
