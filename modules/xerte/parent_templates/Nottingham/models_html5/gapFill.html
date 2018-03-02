@@ -325,6 +325,8 @@
 						feedback,
 						options;
 
+					total=0;
+					correct_answers=0;
 					$targetHolder.find("select").each(function(i) {
 						var $this = $(this);
 						answers = [];
@@ -334,10 +336,12 @@
 							$this.attr("disabled", "disabled");
 							answer = $this.val();
 							correct = true;
+							correct_answers++;
 						} else {
 							wrong++;
 							correct = false;
 						}
+						total++;
                         result = {
                             success: correct,
                             score: (correct ? 100.0 : 0.0)
@@ -350,7 +354,10 @@
                         answers.push(answer);
 						XTExitInteraction(x_currentPage, i, result, options, answers, feedback, x_currentPageXML.getAttribute("trackinglabel"));
 					});
-					
+
+                    gapFill.finishTracking();
+                    this.hasBeenTracked = true;
+
 					if (wrong == 0) {
 						$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						$feedbackTxt.fadeIn();
