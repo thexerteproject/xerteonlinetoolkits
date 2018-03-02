@@ -475,22 +475,23 @@ function upgrade_9()
         }
 
         if (($error2 === false)) {
-            $error1_returned = false;
+            $error2_returned = false;
             // echo "creating LRS_Key field FAILED";
         }
 
         if (($error3 === false)) {
-            $error1_returned = false;
+            $error3_returned = false;
             // echo "creating LRS_Secret field FAILED";
         }
 
-        return "Creating LRS Endpoint settings fields - ok ? " . ($error1_returned && $error2_returned && $error3_returned? 'true' : 'false');
+        return "Creating LRS Endpoint settings fields - ok ? " . ($error1_returned && $error2_returned && $error3_returned? 'true' : 'false'). "<br>";
     }
     else
     {
-        return "LRS Endpoint settings fields already present - ok ? true";
+        return "LRS Endpoint settings fields already present - ok ? true". "<br>";
     }
 }
+
 
 function upgrade_10()
 {
@@ -659,4 +660,125 @@ function upgrade_14()
         return "ClamAV antivirus check fields already present - ok ? true";
     }
 }
+
+function upgrade_15()
+{
+    if (! _db_field_exists('sitedetails', 'tsugi_dir')) {
+        $error1 = _db_add_field('sitedetails', 'tsugi_dir', 'text', '', 'LRS_Secret');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        return "Tsugi directory field - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Tsugi directory already exists - ok ? true". "<br>";
+    }
+}
+
+function upgrade_16()
+{
+    $message = "";
+    if (! _db_field_exists('templatedetails', 'tsugi_published')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_published', 'int(1)', '0', 'extra_flags');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        $message .= "Tsugi published field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        $message .= "Tsugi published field already exists - ok ? true". "<br>";
+    }
+
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_enabled')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_enabled', 'int(1)', '0', 'tsugi_published');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        $message .= "Tsugi xapi enabled field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        $message .= "Tsugi xapi enabled field already exists - ok ? true". "<br>";
+    }
+
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_endpoint')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_endpoint', 'varchar(255)', '', 'tsugi_xapi_enabled');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        $message .= "Tsugi xapi endpoint field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        $message .= "Tsugi xapi endpoint field already exists - ok ? true". "<br>";
+    }
+
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_key')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_key', 'varchar(255)', '', 'tsugi_xapi_endpoint');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        $message .= "Tsugi xapi key field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        $message .= "Tsugi xapi key field already exists - ok ? true". "<br>";
+    }
+
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_secret')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_secret', 'varchar(255)', '', 'tsugi_xapi_key');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        $message .= "Tsugi xapi secret field added - ok ? " . ($error1_returned ? 'true' : 'false') . "<br>";
+    }
+    else
+    {
+        $message .= "Tsugi xapi secret field already exists - ok ? true <br>";
+    }
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_student_id_mode')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_student_id_mode', 'int(1)', '0', 'tsugi_xapi_secret');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        $message .= "Tsugi xapi student id mode field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        $message .= "Tsugi xapi student id mode field already exists - ok ? true <br>";
+    }
+    return $message;
+
+}
+
 ?>

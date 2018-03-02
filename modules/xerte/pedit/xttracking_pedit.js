@@ -50,9 +50,10 @@ function makeId(page_nr, ia_nr, ia_type, ia_name)
     return tmpid;
 }
 
-function NoopTrackingState()
+function PedITTrackingState()
 {
 	this.initialised = false;
+    this.ALOConnectionPoint = null;
     this.trackingmode = "full";
     this.mode = "normal";
     this.scoremode = 'first';
@@ -69,6 +70,9 @@ function NoopTrackingState()
 
     this.initialise = initialise;
     this.pageCompleted = pageCompleted;
+    this.getCompletionStatus = getCompletionStatus;
+    this.getCompletionPercentage = getCompletionPercentage;
+    this.getSuccessStatus = getSuccessStatus;
     this.getdScaledScore = getdScaledScore;
     this.getdRawScore = getdRawScore;
     this.getdMinScore = getdMinScore;
@@ -89,7 +93,84 @@ function NoopTrackingState()
 
     function initialise()
     {
+        this.ALOConnectionPoint = new ALOConnection();
 
+        this.ALOConnectionPoint.handshake();
+    }
+
+    function getCompletionStatus()
+    {
+        var completed = true;
+        for(var i = 0; i<state.completedPages.length; i++)
+        {
+            if(state.completedPages[i] == false)
+            {
+                completed = false;
+                break;
+            }
+            //if( i == state.completedPages.length-1 && state.completedPages[i] == true)
+            //{
+            //completed = true;
+            //
+        }
+
+        if (completed)
+        {
+            return "completed";
+
+        }
+        else if(!completed)
+        {
+            return 'incomplete';
+        }
+        else
+        {
+            return "unknown"
+        }
+    }
+
+    function getCompletionPercentage()
+    {
+        var completed = true;
+        var completedpages = 0;
+        if (state.completedPages.length == 0)
+        {
+            return 0;
+        }
+        for(var i = 0; i<state.completedPages.length; i++)
+        {
+            if(state.completedPages[i] == true)
+            {
+                completedpages++;
+            }
+        }
+        return (completedpages / state.completedPages.length) * 100.0;
+    }
+
+    function getSuccessStatus()
+    {
+        if (this.lo_type != "pages only")
+        {
+            if (state.getScaledScore() > this.lo_passed)
+            {
+                return "passed";
+            }
+            else
+            {
+                return "failed";
+            }
+        }
+        else
+        {
+            if (getCompletionStatus() == 'completed')
+            {
+                return "passed";
+            }
+            else
+            {
+                return "unknown";
+            }
+        }
     }
 
     function getdScaledScore()
@@ -397,7 +478,7 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
 
 
 
-var state = new NoopTrackingState();
+var state = new PedITTrackingState();
 
 function XTInitialise()
 {
@@ -420,10 +501,7 @@ function XTLogin(login, passwd)
 
 function XTGetMode()
 {
-    if (state.forcetrackingmode === 'true')
-        return "normal";
-    else
-        return "";
+    return "normal";
 }
 
 function XTStartPage()
@@ -504,6 +582,7 @@ function XTEnterPage(page_nr, page_name)
 function XTExitPage(page_nr, pageName)
 {
     state.exitInteraction(page_nr, -1, false, "", "", "", false);
+    XTSendScoreToPedIT();
 }
 
 function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
@@ -514,6 +593,7 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 function XTSetPageScore(page_nr, score)
 {
 	state.setPageScore(page_nr, score);
+    XTSendScoreToPedIT();
 }
 
 function XTSetPageScoreJSON(page_nr, score)
@@ -534,6 +614,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
 function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
 {
 	state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback);
+	//XTSendScoreToPedIT();
 }
 
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName)
@@ -571,10 +652,45 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
     return "";
 }
 
+function XTSendScoreToPedIT()
+{
+    // Duration
+    var end = new Date();
+    var delta = Math.abs(end.getTime() - state.start.getTime()) / 1000;
+    var completion, nrvisited=0, nrcompleted=0;
+
+    // Get Full completion (like in results)
+    $.each(state.completedPages, function (i, completed) {
+        // indices not defined will be visited anyway.
+        // In that case 'completed' will be undefined
+        if (completed) {
+            nrcompleted++;
+        }
+        if (typeof(completed) != "undefined") {
+            nrvisited++;
+        }
+    })
+
+    if (nrcompleted != 0) {
+        completion = Math.round((nrcompleted / state.toCompletePages.length) * 100);
+    }
+    else {
+        completion = 0;
+    }
+
+    // Send results to PedIT
+    state.ALOConnectionPoint.notify("activity",
+        {
+            completed: completion,
+            score: Math.round(state.getRawScore()),
+            passed: (state.getSuccessStatus() == "passed"),
+            duration: Math.round(delta)
+        });
+}
+
 function XTTerminate()
 {
-    window.opener.innerWidth+=2;
-	window.opener.innerWidth-=2;
+    XTSendScoreToPedIT();
 }
 
 function XTResults(fullcompletion) {

@@ -18,7 +18,8 @@
 	<unmarkForCompletion label="Completion Not Required" type ="CheckBox" defaultValue="false" optional="true"/>
 	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 	<styles label="Styles" type="script" height="200" optional="true"/>
-	
+	<trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use in stead of page number in (xAPI) tracking identifier"/>
+
 	<scripts type="group" label="Script" optional="true">
 		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>

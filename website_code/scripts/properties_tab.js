@@ -1114,6 +1114,7 @@ function gift_this_template(tutorial_id, user_id, action){
 
 }
 
+
      /**
 	 * 
 	 * Function name select gift template
@@ -1294,8 +1295,6 @@ function tsugi_template(){
         	if (xmlHttp.readyState == 4) {
         		document.getElementById('dynamic_area').innerHTML=xmlHttp.responseText;
                 showOptions();
-                $('#pubChk').change(showOptions);
-                $('#xChk').change(showOptions);
             }
         }
 		xmlHttp.send('template_id=' + window.name);
@@ -1319,6 +1318,8 @@ function showOptions() {
 	{
         $('#publish').hide();
 	}
+    $('#xApi').show();
+    $('#publish').show();
 }
 
      /**
@@ -1422,5 +1423,34 @@ function setup_download_link(path, buttonlbl, file)
     var button = '<button type="button" class="xerte_button" onclick="property_tab_file_download(\'download_frame\', \'getfile.php?file=' + file + '\')">' + buttonlbl +  '</button>';
     document.getElementById('linktext').value=path;
     document.getElementById('download_link').innerHTML=button;
+}
+
+
+function lti_update(id)
+{
+    if(setup_ajax()!=false){
+
+        var url="lti_update.php";
+
+        xmlHttp.open("post",properties_ajax_php_path + url,true);
+        xmlHttp.onreadystatechange=function () {
+            if (xmlHttp.readyState == 4) {
+                document.getElementById('dynamic_area').innerHTML = xmlHttp.responseText;
+                showOptions();
+            }
+        };
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xmlHttp.send('template_id=' + id
+			+ '&tsugi_published=' + $("#pubChk").prop('checked')
+			+ '&tsugi_title=' + $("[name=tsugi_title]").val()
+			+ '&tsugi_key=' + $("[name=tsugi_key]").val()
+            + '&tsugi_secret=' + $("[name=tsugi_secret]").val()
+			+ '&tsugi_xapi=' + $("#xChk").prop('checked')
+			+ '&tsugi_xapi_endpoint=' + $("[name=tsugi_xapi_endpoint]").val()
+            + '&tsugi_xapi_username=' + $("[name=tsugi_xapi_username]").val()
+            + '&tsugi_xapi_password=' + $("[name=tsugi_xapi_password]").val()
+            + '&tsugi_xapi_student_id_mode=' + $("[name=tsugi_xapi_student_id_mode]").val());
+    }
 }
 

@@ -24,7 +24,11 @@
 		var	$panelHolder,
 			plugins = ["textplus", "subtitleplus", "xot", "mediaplus", "mcq", "slides", "sortholder"], // list of popcorn plugins to load
 			css = ["subtitleplus", "mcq", "slides"], // list of popcorn plugin css to load
-			numLoaded = 0;
+			numLoaded = 0,
+			duration = 0,
+            blocks = new Array (),
+		    vidFullWatched;
+
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -195,7 +199,18 @@
 		this.resizeVimeo = function($vimeo) {
 			this.resizeYouTube($vimeo);
 		}
-		
+
+
+		this.leavePage = function () {
+		    if (vidFullWatched == undefined)
+			{
+                vidFullWatched = {
+                    synchName: "full_video"
+                }
+                sentXAPI(vidFullWatched, 0);
+			}
+			sentXAPI(vidFullWatched, lookupTable(vidFullWatched));
+		}
 		// function called when page first loads
 		this.init = function() {
 			
@@ -494,16 +509,110 @@
 			});
 			
 			// _____ SORT & CREATE SYNCH POINT EVENTS FOR EACH PANEL _____
-			
+
 			if (popcornInstance != undefined) {
-				panelData.each(function(i) {
-					mediaLesson.sortPopcorn($(this).children(), "panel" + i, popcornInstance, $(".mainMedia"));
+
+                panelData.each(function(i) {
+                    mediaLesson.sortPopcorn($(this).children(), "panel" + i, popcornInstance, $(".mainMedia"));
+                });
+
+                //Adds events to popcorn
+				var lastTime = -1;
+				popcornInstance.media.addEventListener( "timeupdate", function() {
+					var popTime = popcornInstance.media.currentTime;
+					var block = getBlock(lastTime);
+					if (lastTime != popTime && popTime > 0) {
+						lastTime = popcornInstance.media.currentTime;
+                        updateTable(vidFullWatched, lastTime);
+						updateTable(block, lastTime);
+					}
+
+				});
+				popcornInstance.media.addEventListener( "play", function() {
+					if (vidFullWatched == null || vidFullWatched == undefined)
+                    {
+                        vidFullWatched = {
+                            synchStart: 0,
+                            duration: popcornInstance.duration(),
+                            synchName: "full_video",
+                            watched: []
+                    }}
+					duration = popcornInstance.duration();
+				});
+				popcornInstance.media.addEventListener( "pause", function() {
+					var block = getBlock(popcornInstance.currentTime());
+					sentXAPI(vidFullWatched, lookupTable(vidFullWatched));
+					sentXAPI(block,lookupTable(block));
+
+				});
+				popcornInstance.media.addEventListener( "seeked", function() {
+					popcornInstance.pause();
+					popcornInstance.play();
 				});
 			}
 			
 			x_pageLoaded();
+		};
+
+		 function getBlock(time)
+        {
+            for(var i = 0; i < blocks.length; i++)
+            {
+                if (parseFloat(blocks[i].synchStart) + parseFloat(blocks[i].duration) > time)
+                {
+                    return blocks[i];
+                }
+            }
+            return blocks[i];
+        }
+
+		// helper function for lookupTable, called on time updates, checks what part of a video block is being watched (in %).
+		updateTable = function (block, current) {
+			if(block.duration < 30)
+			{
+				var i = Math.round((current - block.synchStart) / block.duration * 20) * 5;
+			}
+			else {
+				var i = Math.round((current - block.synchStart) / block.duration * 100);
+			}
+			block.watched[i] = 1;
+			if (i == 100)
+            {
+                sentXAPI(block, 100);
+            }
 		}
-		
+
+		function sentXAPI(block, percentageWatched)
+        {
+            XTSetAttendance(x_currentPage, block.synchName, percentageWatched)
+        }
+
+		// function calculates the time watched within a video block based on an array (in %).
+		lookupTable = function (block) {
+			var playedTime = 0;
+			if (block.watched == undefined || block.duration == undefined)
+			{
+			    return 0;
+			}
+			if (block.duration >= 30)
+			{
+				for (var i = 1; i < 100; i++)
+				{
+					if (block.watched[i] == 1) {
+						playedTime++;
+					}
+				}
+			}
+			else {
+				for (var i = 1; i < 100; i++)
+				{
+					if (block.watched[i] == 1) {
+						playedTime += 5;
+					}
+				}
+			}
+			return playedTime;
+		}
 		// function loads media - can be either main media in media panel or additional media to appear in another panel (called from media plugin)
 		this.loadMedia = function($holder, mediaType, mediaData, mainMedia) {
 			var $mediaHolder,
@@ -701,26 +810,26 @@
 			var data = new Array(), // array of objects containing details of a synch point event
 				prevStart = 0,
 				start, end;
-			
 			$(synchData).each(function(j) {
-				// ignore the media synchCues as they will be set up separately
-				if (this.nodeName != "synchCue") {
-					if (this.nodeName != "synchSubtitlePlus") {
-						start = mediaLesson.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStart);
-						end = mediaLesson.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, undefined);
-						prevStart = start;
-					} else {
-						// there's no start or end synch on subtitle holder - store previous sibling's start for relative synching to be done against
-						start = 0;
-					}
-					
-					data.push({
-						type:		this.nodeName,
-						start:		start,
-						end:		end,
-						target:		targetRef + "_" + j,
-						allInfo:	this
-					});
+                        // ignore the media synchCues as they will be set up separately
+                        if (this.nodeName != "synchCue") {
+                            if (this.nodeName != "synchSubtitlePlus") {
+                                start = mediaLesson.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStart);
+                                end = mediaLesson.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, undefined);
+                                prevStart = start;
+                            } else {
+                                // there's no start or end synch on subtitle holder - store previous sibling's start for relative synching to be done against
+                                start = 0;
+                            }
+
+                            data.push({
+                                type:		this.nodeName,
+                                start:		start,
+                                end:		end,
+                                target:		targetRef + "_" + j,
+                                allInfo:	this
+                            });
+
 					
 					if ($(this).children().length > 0) {
 						if (this.nodeName == "synchMediaPlus") {
@@ -771,8 +880,9 @@
 						this.setAttribute("destination", Number(this.getAttribute("destination").slice(1)) + start);
 					}
 				}
+
 			});
-			
+
 			// fixes any end points that weren't calculated right because of relative synching
 			for (var j=0; j<data.length; j++) {
 				if (data[j].end != undefined && data[j].end[0] == "+") {
@@ -889,17 +999,71 @@
 						// plugin is being called from popcorn-complete.min.js - need to call this too (gets holder in correct state with titles & visibility)
 						popcornInstance["sortholder"](pluginAttributes);
 					}
-					
+
 					// pauses media at synch point if needed
 					if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
 						popcornInstance.cue(thisContent.start, function() {
 							this.pause();
 						});
 					}
+
+					if (data[0].type == "synchMCQ")
+                    {
+                        $(data).each(function (e){
+                            var testSynch = this.allInfo.getAttribute("synchStart");
+                            var isJump = this.allInfo.children[0].getAttribute("synch");
+                            if (testSynch !== null && isJump !== null)
+                            {
+                                $(this.childNodes).each(function(jmp)
+                                {
+                                    var syn = this.getAttribute("synch");
+                                    var nam = this.getAttribute("text");
+                                    if (!isDuplicate(blocks,syn))
+                                    {
+                                        blocks.splice(calcIndex(syn), 0, {
+                                            synchStart: syn,
+                                            synchName:  nam,
+                                            watched:[]
+                                        });
+                                    }
+                                });
+                            }
+                        });
+
+                        for (var i = 0; i < blocks.length; i++)
+                        {
+                            var start1 = blocks[i].synchStart;
+                            if (i < blocks.length - 1) {
+                                var end1 = blocks[i + 1].synchStart;
+                            }
+                            else {
+                                end1 = popcornInstance.duration();
+                            }
+                            var durat1 = end1 - start1;
+                            blocks[i]["duration"] = durat1;
+                        }
+                    }
 				}
 			}
 		}
-		
+
+		function isDuplicate(testArr, time){
+		    return testArr.some(function (el) {
+		        return el.synchStart == time;
+            });
+        }
+
+        function calcIndex(time) {
+            for (var i = 0; i < blocks.length; i++)
+            {
+                if (parseInt(time) < parseInt(blocks[i].synchStart))
+                {
+                    return i;
+                }
+            }
+            return i+1;
+        }
+
 		// function sets up the popcorn sync events for pausing and skipping the media
 		this.setUpPopcornCue = function(popcornInstance, synchData) {
 			popcornInstance.cue(Number(synchData.getAttribute("synch")), function() {

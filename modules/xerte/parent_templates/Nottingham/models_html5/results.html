@@ -601,7 +601,7 @@
                     vertpos = pdf.autoTable.previous.finalY;
                 }
             }
-            var name = x_params.name + "_" + XTResults().start;
+            var name = x_params.name + "_" + XTResults().start + ".pdf";
             pdf.save(name.replace(/ /g, "_"));
         }
     };

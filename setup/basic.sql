@@ -152,6 +152,7 @@ CREATE TABLE `$sitedetails` (
   `LRS_Endpoint` char(255) DEFAULT NULL,
   `LRS_Key` char(255) DEFAULT NULL,
   `LRS_Secret` char(255) DEFAULT NULL,
+  `tsugi_dir` text,
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -182,6 +183,12 @@ CREATE TABLE `$templatedetails` (
   `number_of_uses` bigint(20) DEFAULT NULL,
   `access_to_whom` text,
   `extra_flags` varchar(45) DEFAULT NULL,
+  `tsugi_published` int DEFAULT 0,
+  `tsugi_xapi_enabled` int DEFAULT 0,
+  `tsugi_xapi_endpoint` text,
+  `tsugi_xapi_key` text,
+  `tsugi_xapi_secret` text,
+  `tsugi_xapi_student_id_mode` int DEFAULT 0,
   PRIMARY KEY (`template_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

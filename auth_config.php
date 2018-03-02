@@ -36,10 +36,12 @@ if (!isset($xerte_toolkits_site->authentication_method) || $xerte_toolkits_site-
 /*
 * Note: see moodle_restrictions.php for additional Moodle specific options
 */
-
-if($xerte_toolkits_site->authentication_method == "Moodle") {
-    // skip session_start() as we'll probably stomp on Moodle's session if we do. 
-}
-else {
-    session_start();
+if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true)
+	{
+	if($xerte_toolkits_site->authentication_method == "Moodle") {
+		// skip session_start() as we'll probably stomp on Moodle's session if we do. 
+	}
+	else {
+		session_start();
+	}
 }

@@ -287,7 +287,8 @@ x_projectDataLoaded = function(xmlData) {
     // Setup nr of pages for tracking
     XTSetOption('nrpages', x_pageInfo.length);
 	XTSetOption('toComplete', markedPages);
-	
+	XTSetOption('templateId', x_TemplateId);
+
     if (x_params.trackingMode != undefined) {
         XTSetOption('tracking-mode', x_params.trackingMode);
     }
@@ -1183,13 +1184,13 @@ function x_continueSetUp2() {
 		{label: x_getLangInfo(x_languageData.find("mediaElementControls")[0], "audio", "")}
 	);
 
-	XTInitialise(); // initialise here, because of XTStartPage in next function
-	
 	// script optional property added after all interface set up & before any pages load
 	if (x_params.script != undefined && x_params.script != "") {
 		$x_head.append('<script>' +  x_params.script + '</script>');
 	}
-	
+
+    XTInitialise(); // initialise here, because of XTStartPage in next function
+
 	x_navigateToPage(true, x_startPage);
 }
 
@@ -1467,7 +1468,7 @@ function x_changePageStep5(x_gotoPage) {
                 customHTML.leavePage();
             }
         }
-        XTExitPage(x_currentPage, x_currentPageXML.getAttribute("name"));
+        XTExitPage(x_currentPage, x_currentPageXML.getAttribute("trackinglabel"));
     }
     x_currentPage = x_gotoPage;
     x_currentPageXML = x_pages[x_currentPage];
@@ -1547,7 +1548,7 @@ function x_changePageStep5(x_gotoPage) {
     if (x_pageInfo[x_currentPage].built != false) {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
 		// Use a clean text version of the page title
-        XTEnterPage(x_currentPage, $('<div>').html(pageTitle).text(), x_pageInfo[x_currentPage].type);
+        XTEnterPage(x_currentPage, x_currentPageXML.getAttribute("trackinglabel"), x_pageInfo[x_currentPage].type);
 
         var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);
@@ -1623,7 +1624,8 @@ function x_changePageStep5(x_gotoPage) {
 			}
 
 			// Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
-			XTEnterPage(x_currentPage, pageTitle);
+            var label = x_currentPageXML.getAttribute("trackinglabel");
+            XTEnterPage(x_currentPage, label);
 
 			var modelfile = x_pageInfo[x_currentPage].type;
 			if (typeof modelfilestrs[modelfile] != 'undefined')
@@ -2544,6 +2546,26 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 	return thisVar;
 }
 
+function x_getVariable(name)
+{
+    for (var i=0; i<x_variables.length; i++)
+    {
+        if (x_variables[i].name == name)
+            return x_variables[i].value;
+    }
+    return null;
+}
+
+function x_setVariable(name, value)
+{
+    for (var i=0; i<x_variables.length; i++)
+    {
+        if (x_variables[i].name == name) {
+            x_variables[i].value = value;
+            break;
+        }
+    }
+}
 
 // function gets values of other variables needed for calculation and evals the value when everything's ready
 function x_getVarValues(thisValue, thisName) {

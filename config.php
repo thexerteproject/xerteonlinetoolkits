@@ -124,6 +124,11 @@ foreach ($row as $key => $value) {
     $xerte_toolkits_site->$key = $value;
 }
 
+if($xerte_toolkits_site->tsugi_dir == "" || $xerte_toolkits_site->tsugi_dir == null)
+{
+	$xerte_toolkits_site->tsugi_dir = $xerte_toolkits_site->root_file_path . "tsugi/";
+}
+
 // awkward ones.
 $xerte_toolkits_site->enable_mime_check = true_or_false($row['enable_mime_check']);
 $xerte_toolkits_site->mimetypes = explode(",", $row['mimetypes']);

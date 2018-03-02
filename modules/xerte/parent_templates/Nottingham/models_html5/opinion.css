@@ -1,5 +1,15 @@
 /* opinion.html */
 
+
+    .qPanel {
+    overflow:	auto;
+    }
+
+    #sliderHolder {
+    margin-top:	15px;
+    margin-bottom:	15px;
+    }
+
     #sliderHolder #labelHolder
     {
         text-align: justify;
@@ -16,6 +26,7 @@
         width: 100%;
         padding: 0;
         margin: 0;
+        height: 20px;
     }
 
     #sliderHolder #labelHolder a
@@ -23,7 +34,7 @@
         display: inline-block;
         text-align: center;
         margin: 0 0.2em;
-        width: 4em;
+        max-width: 4em;
         text-decoration: none;
     }
 
@@ -46,12 +57,28 @@
     #sliderHolder #rangeHolder
     {
         margin-bottom: 2em;
-        background-color: #d3d3d3;
+       
         border-radius: 2em;
-        height: 20px;
     }
 
     #sliderHolder #rangeHolder output
     {
         position: relative;
+    }
+
+    #sliderHolder .optionGroup
+    {
+    padding-top:	5px !important ;
+    padding-bottom:	5px !important ;
+    }
+
+    #buttonHolder
+    {
+    float:	right;
+    margin-bottom:	10px;
+    }
+
+    .optionTxt p
+    {
+        display: inline;
     }

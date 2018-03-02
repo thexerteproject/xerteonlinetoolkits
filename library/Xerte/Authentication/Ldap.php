@@ -158,6 +158,8 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
             }
 
             @ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+            @ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+
             if ($bind_dn != '') {
                 $ldapbind = @ldap_bind($ds, $bind_dn, $bind_pwd);
                 if (!$ldapbind) {

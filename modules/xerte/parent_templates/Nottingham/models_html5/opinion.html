@@ -9,7 +9,8 @@
 		var	answeredValues = {};
 		var diagramAnswers = [];
 		var diagramLabels = [];
-
+		var JSONGraph;
+		var textSize;
 
         this.loadJS = function() {
             if (numLoaded < 1) {
@@ -17,7 +18,6 @@
                 if (numLoaded == 0) {
                     fileToLoad = "common_html5/js/chart.min.js";
                 }
-                debugger;
                 $.getScript(x_templateLocation + fileToLoad)
                     .done(function(script, textStatus) {
                         numLoaded++;
@@ -76,7 +76,24 @@
 					}
 				}
 			}
-			
+			var width = $("#mainPanel").width();
+			var height = $("#mainPanel").height();
+			if(width > height) {
+				$("#diagram").width(height*0.90);
+				$("#diagram").height(height*0.90);
+				textSize = (width - height) / 10;
+			}
+			else {
+				$("#diagram").width(width*0.90);
+				$("#diagram").height(width*0.90);
+				textSize = (height - width) / 10;
+			}
+			if (textSize > 20) {
+				textSize = 20;
+			}
+			else if (textSize < 12) {
+				textSize = 12;
+			}
 			$("#qTxt").width($panel.width());
 		};
 		
@@ -94,6 +111,7 @@
 		
 		this.startQuestions = function()
 		{
+
 			// If the language attricute is not defined in the xml, fall back to English.
 			this.questionNumberText = x_currentPageXML.getAttribute("quesCount");
 			
@@ -109,8 +127,10 @@
                 this.showfeedback = x_currentPageXML.getAttribute("showfeedback") == "true";
             }
 
+			$("#diagram").hide();
             $("#sliderHolder").show();
-			$("#checkBtn, #nextBtn, #restartBtn").button("disable");
+			$("#checkBtn").show();
+			$("#checkBtn").button("disable");
 			
 			this.currentQuestion = 0;
 			this.questions = []; // array of questions to use (index)
@@ -202,8 +222,6 @@
 				$("#qTxt").html(x_addLineBreaks(infoString));
 
 				$("#feedback").html("");
-
-
 				
 				if ($($thisQ).children().length == 0)
 				{
@@ -211,97 +229,196 @@
 				}
 				else
 				{
-					var $sliderHolder = $("#sliderHolder"),
-						$labelHolder = $("#labelHolder"),
-						$rangeHolder = $("#rangeHolder");
+                    if($thisQ.getAttribute("interactivity") == "radio-buttons") {
+                        var $optionHolder = $("#sliderHolder");
+                        $optionHolder.html('<div class="optionGroup"><input type="radio" name="option" /><label class="optionTxt"></label></div>');
 
-					$labelHolder.html('<a href="#" onclick="" class="optionTxt"></a> ');
-					var $optionTxt = $labelHolder.find(".optionTxt"),
-						$checkBtn = $("#checkBtn"),
-						correctOptions = [],
-						correctAnswer = [];
+                        var $optionGroup = $optionHolder.find(".optionGroup"),
+                            $checkBtn = $("#checkBtn"),
+                            correctOptions = [],
+                            correctAnswer = [];
 
-					$checkBtn.button("disable");
-					var max = $($thisQ).children().length - 1;
-					//TODO get the name of the label instead of the index as slideroutput
-					$rangeHolder.html('<form id="form1"> <input id="slider1" type="range" min="0" max = "' + max + '" step="1" /> <form> ');
+                        $checkBtn.button("disable");
 
-					$.each($($thisQ).children(), function(index, value)
-					{
-						var $thisOptionTxt;
+                        this.currentAnswers = [];
+                        $($thisQ).children().each(function () {
+                            opinion.currentAnswers.push(
+                                {
+                                    text: this.getAttribute("text"),
+                                    correct: this.getAttribute("correct")
+                                }
+                            );
+                        });
 
-						if (index != 0)
-						{
-							$thisOptionTxt = $optionTxt.clone().appendTo($labelHolder);
-							$thisOptionTxt.after(" ");
-						}
-						else
-						{
-							$thisOptionTxt = $optionTxt;
-						}
+                        $.each(this.currentAnswers, function (index, value) {
+                            var $thisOptionGroup, $thisOption, $thisOptionTxt;
 
-						$checkBtn.button("enable");
-						$("#nextBtn").button("disable");
+                            if (index != 0) {
+                                $thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
+                            }
+                            else {
+                                $thisOptionGroup = $optionGroup;
+                            }
 
-						$thisOptionTxt
-							.attr("for", "option" + index)
-							.html(x_addLineBreaks(value.getAttribute("name")));
+                            $thisOption = $thisOptionGroup.find("input");
+                            $thisOptionTxt = $thisOptionGroup.find(".optionTxt");
 
-						$thisOptionTxt[0].onclick = function()
-						{
-						    $("#slider1")[0].value = index;
-						    if (labelsHidden)
-							{
-							    updateBubble();
-							}
-						};
+                            opinion.currNrOptions = index + 1;
 
-						correctOptions.push(index + 1 + "");
-						correctAnswer.push(value.getAttribute("name"));
-					});
-					
-					var labelsHidden = false;
+                            correctOptions.push((index + 1) + "");
+                            correctAnswer.push(value.text);
 
-					if ($labelHolder[0].childElementCount * $labelHolder[0].children[0].clientWidth > $labelHolder[0].clientWidth)
-					{
-						var numberOfOptions = $labelHolder[0].childElementCount;
-						for (var i = 1; i < numberOfOptions - 1; i++)
-						{
-							$labelHolder[0].children[i].style.display = "none";
-						}
-						labelsHidden = true;
-						
-						$labelHolder[0].children[0].className += " leftLabel";
-						$labelHolder[0].children[numberOfOptions - 1].className += " rightLabel";
-                        $("#slider1").after('<output id="sliderOutput1" for="slider1" /> ');
-						$rangeHolder.find("#form1")[0].oninput = function()
-						{
-						    updateBubble();
-						};
-					}
+                            $thisOption
+                                .attr({
+                                    "value": value.text,
+                                    "id": "option" + index
+                                })
+                                .change(function () {
+                                    $checkBtn.button("enable");
+                                });
+                            $thisOption[0].score = index;
+                            $thisOptionTxt
+                                .attr("for", "option" + index)
+                                .data("option", $thisOption)
+                                .html(x_addLineBreaks(value.text));
 
-					function updateBubble()
-					{
-                        var index = $("#slider1")[0].valueAsNumber,
-							sliderOutput = $("#sliderHolder").find("#sliderOutput1")[0];
+                        });
 
-                        sliderOutput.value = $labelHolder[0].children[index].innerHTML;
-                        sliderOutput.style.left = (index / $labelHolder[0].children.length * 100) + "%";
-					}
-					
-					var name = $thisQ.getAttribute("prompt");
-					
-					if ($thisQ.getAttribute("name"))
-					{
-						name = $thisQ.getAttribute("name");
-					}
+                        var labelsHidden = false;
+                        var name = $thisQ.getAttribute("prompt");
 
-					if (labelsHidden)
-					{
-					    updateBubble();
+                        if ($thisQ.getAttribute("name")) {
+                            name = $thisQ.getAttribute("name");
+                        }
                     }
+                    else if($thisQ.getAttribute("interactivity") == null || $thisQ.getAttribute("interactivity") == "slider")
+					{
+                        var $sliderHolder = $("#sliderHolder");
+						$sliderHolder.html('<div id="labelHolder"></div><div id="rangeHolder"></div>');
+						var $labelHolder = $("#labelHolder"),
+                            $rangeHolder = $("#rangeHolder");
 
-					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctOptions, correctAnswer, null);
+						$labelHolder.html('<a href="#" onclick="" class="optionTxt"></a> ');
+                        var $optionTxt = $labelHolder.find(".optionTxt"),
+                            $checkBtn = $("#checkBtn"),
+                            correctOptions = [],
+                            correctAnswer = [];
+
+                        $checkBtn.button("disable");
+                        var max = $($thisQ).children().length - 1;
+                        //TODO get the name of the label instead of the index as slideroutput (? we already get that)
+                        $rangeHolder.html('<form id="form1"> <input id="slider1" type="range" min="0" max = "' + max + '" step="1" /> </form> ');
+
+                        $.each($($thisQ).children(), function(index, value)
+                        {
+                            var $thisOptionTxt;
+
+                            if (index != 0)
+                            {
+                                $thisOptionTxt = $optionTxt.clone().appendTo($labelHolder);
+                                $thisOptionTxt.after(" ");
+                            }
+                            else
+                            {
+                                $thisOptionTxt = $optionTxt;
+                            }
+
+                            $checkBtn.button("enable");
+
+                            $thisOptionTxt
+                                .attr("for", "option" + index)
+                                .html(x_addLineBreaks(value.getAttribute("text")));
+
+                            $thisOptionTxt[0].onclick = function()
+                            {
+                                $("#slider1")[0].value = index;
+                                if (labelsHidden)
+                                {
+                                    updateBubble();
+                                }
+                            };
+
+                            correctOptions.push(index + 1 + "");
+                            correctAnswer.push(value.getAttribute("text"));
+                        });
+
+                        var labelsHidden = false;
+						var labelWidth = 0;
+						//Hide and truncate labels
+						for (var i = 0; i < $labelHolder[0].children.length; i++)
+						{
+						    labelWidth += ($labelHolder[0].children[i].clientWidth + 4);
+						    $labelHolder[0].children[i].origText = $labelHolder[0].children[i].text;
+							$labelHolder[0].children[i].text = truncateLabels($labelHolder[0].children[i].text);
+                        }
+
+
+
+                        if (labelWidth > $labelHolder.width()) //+4 to counter inline-block built in margin
+                        {
+                            var numberOfOptions = $labelHolder[0].childElementCount;
+                            for (var i = 1; i < numberOfOptions - 1; i++)
+                            {
+                                $labelHolder[0].children[i].style.display = "none";
+                            }
+                            labelsHidden = true;
+
+                            $labelHolder[0].children[0].className += " leftLabel";
+                            $labelHolder[0].children[numberOfOptions - 1].className += " rightLabel";
+                            $("#slider1").after('<output id="sliderOutput1" for="slider1" /> ');
+                            $rangeHolder.find("#form1")[0].oninput = function()
+                            {
+                                updateBubble();
+                            };
+                        }
+
+                        function truncateLabels(label)
+						{
+							    if(label.length >= 20)
+								{
+                                    var words = label.split(" ");
+                                    label = "";
+                                    var length = 0;
+                                    var index  = 0;
+                                    while (length + words[index].length < 18)
+                                    {
+                                        length += words[index].length;
+                                        index++;
+                                        label += words[index] + " ";
+                                    }
+                                    label += "...";
+								}
+								return label;
+						}
+
+                        function updateBubble()
+                        {
+                            var index = $("#slider1")[0].valueAsNumber,
+								sliderOutput = $("#sliderHolder").find("#sliderOutput1")[0];
+
+
+                            sliderOutput.value = $labelHolder[0].children[index].origText;
+                            if (sliderOutput.value === $labelHolder[0].children[index].text) {
+                                sliderOutput.style.left = (index / $labelHolder[0].children.length * 100) + "%";
+                            }
+                            else {
+							    sliderOutput.style.left = "0%";
+							}
+                        }
+
+                        var name = $thisQ.getAttribute("prompt");
+
+                        if ($thisQ.getAttribute("name"))
+                        {
+                            name = $thisQ.getAttribute("name");
+                        }
+
+                        if (labelsHidden)
+                        {
+                            updateBubble();
+                        }
+                    }
+					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctOptions, correctAnswer, null, x_currentPageXML.getAttribute("trackinglabel"));
 					opinion.checked = false;
 				}
 			}
@@ -336,13 +453,18 @@
 			var currentQ = $(x_currentPageXML).children().children()[opinion.questions[opinion.currentQuestion]];
 
 
-            var selected = $('#slider1')[0].valueAsNumber,
+            var selected = 0,
             	options = currentQ.children;
 				correct = true,
 				l_options = [],
 				l_answer = [],
 				currentQuestionValue = 0;
-            
+
+			if (currentQ.getAttribute("interactivity") == null || currentQ.getAttribute("interactivity") == "slider")
+                selected = $('#slider1')[0].valueAsNumber;
+			else if (currentQ.getAttribute("interactivity") == "radio-buttons")
+			    if ($("#sliderHolder input:checked")[0] != null)
+                selected = $("#sliderHolder input:checked")[0].score;
             for (var i = 0; i < options.length; i++)
            	{
            		l_options.push(i + "");
@@ -355,7 +477,7 @@
        			currentQuestionValue = 100 - currentQuestionValue;           		
        		}
 			
-            l_answer.push(Math.round(currentQuestionValue * 10) / 10);
+            l_answer = Math.round(currentQuestionValue * 10.0) / 10.0;
             
             var currentQuestionString = opinion.currentQuestion + "";
             answeredValues[currentQuestionString] = currentQuestionValue;
@@ -363,10 +485,14 @@
 
 
             diagramLabels[opinion.currentQuestion] = currentQ;
-            diagramAnswers[opinion.currentQuestion] = (Math.round(currentQuestionValue * 10) / 10);
+            diagramAnswers[opinion.currentQuestion] = (Math.round(currentQuestionValue * 10.0) / 10.0);
 
 
-			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], correct, l_options, l_answer, null);
+            var result = {
+                success: correct,
+                score: Math.round(currentQuestionValue * 10.0) / 10.0
+            };
+			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], result, l_options, l_answer, null, x_currentPageXML.getAttribute("trackinglabel"));
             opinion.myProgress.splice(opinion.currentQuestion, 1, correct);
             
 			// Continue to next question
@@ -395,6 +521,7 @@
             // Last question answered - show results
             if (x_currentPageXML.getAttribute("diagram") == "true"){
                 opinion.createDiagram();
+				this.sizeChanged();
 			}
 
             var $pageContents = $("#pageContents");
@@ -417,11 +544,12 @@
             }
             $("#questionAudio").empty();
 
+			$("#diagram").show();
             $("#sliderHolder").hide();
-			$("#checkBtn").hide();
+            $("#checkBtn").hide();
             $("#qTxt").html("");
 
-            XTSetPageScore(x_currentPage, myScore);
+            XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph), x_currentPageXML.getAttribute("trackinglabel"));
             opinion.checked = true;
 		};
 		
@@ -450,7 +578,7 @@
 			var classNames = [];
 			var classValues = [];
 			var classWeighting = [];
-			debugger;
+
 			for(var i = 0; i< diagramLabels.length; i++){
 				var q = diagramLabels[i];
 				classNames[q.parentNode.classId] = q.parentNode.getAttribute("name");
@@ -467,19 +595,61 @@
 			    classValues[j] = classValues[j] / classWeighting[j];
 			}
 
+			JSONGraph = {
+				label: x_currentPageXML.getAttribute("name"),
+				classnames: classNames,
+				classvalues: classValues
+			};
+
+			function hexToRgb(hex, opa) {
+				var bigint = parseInt(hex, 16);
+				var r = (bigint >> 16) & 255;
+				var g = (bigint >> 8) & 255;
+				var b = bigint & 255;
+
+				return "rgba(" + r + "," + g + "," + b + "," + opa + ")";
+			}
+			var bgColourIn = "0x000000";
+			if (x_currentPageXML.getAttribute("colour") != null) {
+				bgColourIn = x_currentPageXML.getAttribute("colour");
+			}
+			var bgColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 0.5);
+			var lnColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 1);
 			var ctx = $("#diagram");
-            var myRadarChart = new Chart(ctx, {
+
+			var myRadarChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
                     labels: classNames,
                     datasets: [{
 						label: x_currentPageXML.getAttribute("name"),
-                        data: classValues
+                        data: classValues,
+						backgroundColor: bgColour,
+						borderColor: lnColour
                     }]
-                }
+                },
+				options: {
+					scale: {
+						ticks: {
+							suggestedMin: 0,
+							suggestedMax: 100,
+							fontSize: textSize - 4
+						},
+						pointLabels: {
+							fontSize: textSize
+						}
+					},
+					legend: {
+						labels: {
+							fontSize: textSize
+						}
+					},
+					responsive: false,
+					maintainAspectRatio: false
+				}
             });
 		};
-		
+
 		this.init = function()
 		{
             var loadFiles = true;
@@ -585,7 +755,6 @@
 				    opinion.trackQuestion();
                 });
 
-
 			this.startQuestions();
 			this.sizeChanged();
 			x_pageLoaded();			
@@ -612,13 +781,15 @@
 					<legend id="qTxt"></legend>
 				
 					<div id="questionAudio"></div>
-					<div id="sliderHolder">
-						<div id="labelHolder"></div>
-						<div id="rangeHolder"></div>
-					</div>
-					
-					<div id="buttonHolder">
-						<button id="checkBtn"></button>
+					<div id="wrapper">
+						<div id="sliderHolder">
+							<div id="labelHolder"></div>
+							<div id="rangeHolder"></div>
+						</div>
+
+						<div id="buttonHolder">
+							<button id="checkBtn"></button>
+						</div>
 					</div>
 					
 					<div id="feedback" aria-live="polite"></div>
