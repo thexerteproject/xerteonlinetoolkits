@@ -2106,6 +2106,8 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
         var key = baseUrl() + "sessionId";
         keyValuePairs = {};
         keyValuePairs[key] = state.sessionId;
+        key = baseUrl() + "learningObject";
+        keyValuePairs[key] = baseUrl() + state.templateId;
         extens = {"extensions" : keyValuePairs};
         contextExtens = new TinCan.Context(extens);
         if(statement.context == undefined)
