@@ -1288,57 +1288,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                     }
                 }
 
-                if (!surf_mode) {
-                    var statement;
-                    if (ia_nr >= 0) {
-                        statement =
-                            {
-                                actor: actor,
-                                verb: {
-                                    id: "http://adlnet.gov/expapi/verbs/exited",
-                                    display: {
-                                        "en": "exited"
-                                    }
-                                },
-                                object: {
-                                    objectType: "Activity",
-                                    id: id,
-                                    definition: {
-                                        name: {
-                                            "en": ia_name
-                                        }
-                                    }
-                                },
-                                timestamp: new Date()
-                            };
 
-                    }
-                    else
-                    {
-                        statement =
-                            {
-                                actor: actor,
-                                verb: {
-                                    id: "http://adlnet.gov/expapi/verbs/exited",
-                                    display: {
-                                        "en": "exited"
-                                    }
-                                },
-                                object: {
-                                    objectType: "Activity",
-                                    id: id,
-                                    definition: {
-                                        name: {
-                                            "en": description
-                                        }
-                                    }
-                                },
-                                timestamp: new Date()
-                            };
-                    }
-                    statement = new TinCan.Statement(statement);
-                    SaveStatement(statement);
-                }
                 if (surf_mode) {
                     var statement = new TinCan.Statement(
                         {
@@ -1413,6 +1363,57 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                     SaveStatement(statement);
                 }
             }
+        }
+        if (!surf_mode) {
+            var statement;
+            if (ia_nr >= 0) {
+                statement =
+                    {
+                        actor: actor,
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/exited",
+                            display: {
+                                "en": "exited"
+                            }
+                        },
+                        object: {
+                            objectType: "Activity",
+                            id: id,
+                            definition: {
+                                name: {
+                                    "en": ia_name
+                                }
+                            }
+                        },
+                        timestamp: new Date()
+                    };
+
+            }
+            else
+            {
+                statement =
+                    {
+                        actor: actor,
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/exited",
+                            display: {
+                                "en": "exited"
+                            }
+                        },
+                        object: {
+                            objectType: "Activity",
+                            id: id,
+                            definition: {
+                                name: {
+                                    "en": description
+                                }
+                            }
+                        },
+                        timestamp: new Date()
+                    };
+            }
+            statement = new TinCan.Statement(statement);
+            SaveStatement(statement);
         }
     }
 
@@ -1763,7 +1764,7 @@ function XTExitPage(page_nr, page_name)
     }
     var sit = state.findPage(page_nr);
     if (sit != undefined && sit != null) {
-        state.exitInteraction(page_nr, -1, false, "", sit.score, "", false, page_name);
+        state.exitInteraction(page_nr, -1, false, "", sit.score, "", page_name);
     }
 }
 
@@ -2101,7 +2102,7 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
         window.opener.innerWidth -= 2;
     }
 
-    function SaveStatement(statement, async = true) {
+    function SaveStatement(statement, async) {
         
         var key = baseUrl() + "sessionId";
         keyValuePairs = {};
@@ -2119,6 +2120,10 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
             statement.context.extensions[key] = state.sessionId;
         }
         statement.id = null;
+        if (typeof async == 'undefined')
+        {
+            async = true;
+        }
         if(async){
             lrsInstance.saveStatement(
                 statement,
