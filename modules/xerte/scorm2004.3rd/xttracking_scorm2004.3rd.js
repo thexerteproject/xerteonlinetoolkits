@@ -1366,7 +1366,7 @@ function XTSetOption(option, value)
             //completedPages = new Array(length(toCompletePages));
             for(i = 0; i< state.toCompletePages.length;i++)
             {
-                state.completedPages[i] = "false";
+                state.completedPages[i] = false;
             }
             break;
         case "tracking-mode":

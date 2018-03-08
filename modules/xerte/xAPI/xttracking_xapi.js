@@ -60,6 +60,8 @@ function XApiTrackingState()
 
 
     this.initialise = initialise;
+    this.getCompletionStatus = getCompletionStatus;
+    this.getCompletionPercentage = getCompletionPercentage;
     this.pageCompleted = pageCompleted;
     this.getdScaledScore = getdScaledScore;
     this.getdRawScore = getdRawScore;
@@ -134,6 +136,24 @@ function XApiTrackingState()
         {
             return "unknown"
         }
+    }
+
+    function getCompletionPercentage()
+    {
+        var completed = true;
+        var completedpages = 0;
+        if (state.completedPages.length == 0)
+        {
+            return 0;
+        }
+        for(var i = 0; i<state.completedPages.length; i++)
+        {
+            if(state.completedPages[i] == true)
+            {
+                completedpages++;
+            }
+        }
+        return (completedpages / state.completedPages.length) * 100.0;
     }
 
     function getSuccessStatus()
@@ -1661,7 +1681,7 @@ function XTSetOption(option, value)
             //completedPages = new Array(length(toCompletePages));
             for(i = 0; i< state.toCompletePages.length;i++)
             {
-                state.completedPages[i] = "false";
+                state.completedPages[i] = false;
             }
 
             break;
