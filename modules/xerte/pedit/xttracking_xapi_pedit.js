@@ -56,14 +56,14 @@ function XApiTrackingState()
     this.templateId = -1;
     this.templateName = "";
     this.debug = false;
-
+    this.sessionId = "";
 
 
     this.initialise = initialise;
-    this.pageCompleted = pageCompleted;
     this.getCompletionStatus = getCompletionStatus;
     this.getCompletionPercentage = getCompletionPercentage;
     this.getSuccessStatus = getSuccessStatus;
+    this.pageCompleted = pageCompleted;
     this.getdScaledScore = getdScaledScore;
     this.getdRawScore = getdRawScore;
     this.getdMinScore = getdMinScore;
@@ -87,7 +87,8 @@ function XApiTrackingState()
 
     function initialise()
     {
-
+        this.ALOConnectionPoint = new ALOConnection();
+        this.ALOConnectionPoint.handshake();
     }
 
     function formatDate(d)
@@ -1082,7 +1083,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                     interactionType: "matching",
                                     source: sourceArray,
                                     target: targetArray,
-                                    correctResponsesPattern: scorm_canswer
+                                    correctResponsesPattern: [scorm_canswer]
                                 };
                             statement.result = {
                                 duration: calcDuration(this.start, this.end),
@@ -1228,9 +1229,9 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                         },
                                     type: "http://adlnet.gov/expapi/activities/cmi.interaction",
                                     interactionType: "fill-in",
-                                    correctResponsesPattern: this.correctAnswers
+                                    correctResponsesPattern: [this.correctAnswers]
                                 };
-                            if (sit.ia_type == 'text') {
+                            if (this.ia_type == 'text') {
                                 statement.result = {
                                     duration: calcDuration(this.start, this.end),
                                     success: result.success,
@@ -1281,61 +1282,35 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                 completion: Math.abs(this.end.getTime() - this.start.getTime()) > state.page_timeout
                             };
                     }
-                    statement = new TinCan.Statement(statement);
-                    SaveStatement(statement);
-                }
-
-                if (!surf_mode) {
-                    var statement;
-                    if (ia_nr >= 0) {
-                        statement =
-                            {
-                                actor: actor,
-                                verb: {
-                                    id: "http://adlnet.gov/expapi/verbs/exited",
-                                    display: {
-                                        "en": "exited"
-                                    }
-                                },
-                                object: {
-                                    objectType: "Activity",
-                                    id: id,
-                                    definition: {
-                                        name: {
-                                            "en": ia_name
-                                        }
-                                    }
-                                },
-                                timestamp: new Date()
-                            };
-
-                    }
-                    else
+                    var statementChecked = new TinCan.Statement(statement);
+                    SaveStatement(statementChecked);
+                    if (typeof statement.result.score != 'undefined')
                     {
-                        statement =
-                            {
-                                actor: actor,
-                                verb: {
-                                    id: "http://adlnet.gov/expapi/verbs/exited",
-                                    display: {
-                                        "en": "exited"
-                                    }
+                        var scoredstatement = {
+                            timestamp: new Date(),
+                            actor: actor,
+                            verb: {
+                                id: "http://adlnet.gov/expapi/verbs/scored",
+                                display: {
+                                    "en-US": "scored"
+                                }
+                            },
+                            object: {
+                                objectType: "Activity",
+                                definition: {
+                                    name: statement.object.definition.name,
+                                    description: statement.object.definition.description
                                 },
-                                object: {
-                                    objectType: "Activity",
-                                    id: id,
-                                    definition: {
-                                        name: {
-                                            "en": description
-                                        }
-                                    }
-                                },
-                                timestamp: new Date()
-                            };
+                                id: id
+                            },
+                            result: statement.result
+                        };
+                        var statementChecked = new TinCan.Statement(scoredstatement);
+                        SaveStatement(statementChecked);
                     }
-                    statement = new TinCan.Statement(statement);
-                    SaveStatement(statement);
                 }
+
+
                 if (surf_mode) {
                     var statement = new TinCan.Statement(
                         {
@@ -1411,6 +1386,57 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                 }
             }
         }
+        if (!surf_mode) {
+            var statement;
+            if (ia_nr >= 0) {
+                statement =
+                    {
+                        actor: actor,
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/exited",
+                            display: {
+                                "en": "exited"
+                            }
+                        },
+                        object: {
+                            objectType: "Activity",
+                            id: id,
+                            definition: {
+                                name: {
+                                    "en": ia_name
+                                }
+                            }
+                        },
+                        timestamp: new Date()
+                    };
+
+            }
+            else
+            {
+                statement =
+                    {
+                        actor: actor,
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/exited",
+                            display: {
+                                "en": "exited"
+                            }
+                        },
+                        object: {
+                            objectType: "Activity",
+                            id: id,
+                            definition: {
+                                name: {
+                                    "en": description
+                                }
+                            }
+                        },
+                        timestamp: new Date()
+                    };
+            }
+            statement = new TinCan.Statement(statement);
+            SaveStatement(statement);
+        }
     }
 
 }
@@ -1431,6 +1457,7 @@ var answeredQs = [];
 
 function XTInitialise()
 {
+    state.sessionId = new Date().getTime() + "" + Math.round(Math.random() * 10000000);
     // Initialise actor object
     if (studentidmode != undefined && typeof studentidmode == 'string')
     {
@@ -1539,7 +1566,13 @@ function XTInitialise()
                     object: {
                         objectType: "Activity",
                         id: baseUrl() + state.templateId
+                       
                         //TODO: get the name for this activity
+                    },
+                    context: {
+                         extensions: {
+                            "http://xerte.org.uk/xapi/title" : x_params.name
+                        }
                     },
                     timestamp: this.initStamp
                 }
@@ -1650,7 +1683,7 @@ function XTSetOption(option, value)
             //completedPages = new Array(length(toCompletePages));
             for(i = 0; i< state.toCompletePages.length;i++)
             {
-                state.completedPages[i] = "false";
+                state.completedPages[i] = false;
             }
 
             break;
@@ -1753,8 +1786,10 @@ function XTExitPage(page_nr, page_name)
     }
     var sit = state.findPage(page_nr);
     if (sit != undefined && sit != null) {
-        state.exitInteraction(page_nr, -1, false, "", sit.score, "", false, page_name);
+        state.exitInteraction(page_nr, -1, false, "", sit.score, "", page_name);
     }
+    XTSendScoreToPedIT();
+
 }
 
 function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
@@ -1841,7 +1876,7 @@ function XTSetPageScore(page_nr, score, page_name)
                 score: {
                     scaled: score / 100
                 },
-                duration: calcDuration(this.pageStart, this.pageEnd),
+                duration: calcDuration(this.pageStart, this.pageEnd)
             },
             timestamp: this.pageEnd
 
@@ -1849,6 +1884,8 @@ function XTSetPageScore(page_nr, score, page_name)
     );
 
     SaveStatement(statement);
+    XTSendScoreToPedIT();
+
 }
 
 function calcDuration(s, e)
@@ -2069,49 +2106,113 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
         return "";
     }
 
-    function XTTerminate() {
-        window.opener.innerWidth += 2;
-        window.opener.innerWidth -= 2;
-
+    function XTSendScoreToPedIT()
+    {
         // Duration
         var end = new Date();
         var delta = Math.abs(end.getTime() - state.start.getTime()) / 1000;
+        var completion, nrvisited=0, nrcompleted=0;
+
+        // Get Full completion (like in results)
+        $.each(state.completedPages, function (i, completed) {
+            // indices not defined will be visited anyway.
+            // In that case 'completed' will be undefined
+            if (completed) {
+                nrcompleted++;
+            }
+            if (typeof(completed) != "undefined") {
+                nrvisited++;
+            }
+        })
+
+        if (nrcompleted != 0) {
+            completion = Math.round((nrcompleted / state.toCompletePages.length) * 100);
+        }
+        else {
+            completion = 0;
+        }
 
         // Send results to PedIT
-        var ALOConnectionPoint = new ALOConnection();
-
-        ALOConnectionPoint.handshake();
-
-        ALOConnectionPoint.notify("activity",
+        state.ALOConnectionPoint.notify("activity",
             {
-                completed: state.getCompletedPercetage(),
-                score: state.getRawScore(),
-                passed: state.getSuccessStatus(),
-                duration: delta
+                completed: completion,
+                score: Math.round(state.getRawScore()),
+                passed: (state.getSuccessStatus() == "passed"),
+                duration: Math.round(delta)
             });
     }
 
-    function SaveStatement(statement) {
-        statement.id = null;
-        lrsInstance.saveStatement(
-            statement,
+    function XTTerminate() {
+        XTSendScoreToPedIT();
+        var statement = new TinCan.Statement(
             {
-                callback: function (err, xhr) {
-                    if (err !== null) {
-                        if (xhr !== null) {
-                            //alert("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
+                actor: actor,
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/exited",
+                    display: {
+                        "en": "Exited"
+                    }
+                },
+                object: {
+                    objectType: "Activity",
+                    id: baseUrl() + state.templateId
+                },
+                timestamp: new Date()
+            }
+        );
+        SaveStatement(statement, false);
+        window.opener.innerWidth += 2;
+        window.opener.innerWidth -= 2;
+    }
+
+    function SaveStatement(statement, async) {
+        
+        var key = baseUrl() + "sessionId";
+        keyValuePairs = {};
+        keyValuePairs[key] = state.sessionId;
+        key = baseUrl() + "learningObject";
+        keyValuePairs[key] = baseUrl() + state.templateId;
+        extens = {"extensions" : keyValuePairs};
+        contextExtens = new TinCan.Context(extens);
+        if(statement.context == undefined)
+        {
+            statement.context = contextExtens;
+        }else if(statement.context.extensions == undefined){
+            statement.context.extensions = keyValuePairs;
+        }else{
+            statement.context.extensions[key] = state.sessionId;
+        }
+        statement.id = null;
+        if (typeof async == 'undefined')
+        {
+            async = true;
+        }
+        if(async){
+            lrsInstance.saveStatement(
+                statement,
+                {
+                    callback: function (err, xhr) {
+                        if (err !== null) {
+                            if (xhr !== null) {
+                                //alert("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
+                                // TODO: handle error accordingly when needed
+                                return;
+                            }
+
+                            //alert("Failed to save statement: " + err);
                             // TODO: handle error accordingly when needed
                             return;
                         }
 
-                        //alert("Failed to save statement: " + err);
-                        // TODO: handle error accordingly when needed
-                        return;
                     }
-
                 }
-            }
-        );
+            );
+        }else{
+            lrsInstance.saveStatement(
+                statement
+            );
+        }
+
     }
 
     function XTResults(fullcompletion) {
