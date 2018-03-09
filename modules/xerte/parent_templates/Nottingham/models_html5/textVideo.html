@@ -41,7 +41,7 @@
 				
 				if (x_browserInfo.mobile != true && height > maxH) {
 					height = maxH;
-					width = (height / Number($("#pageVideo").data('iframeRatio')[1])) * Number($("#pageVideo").data('iframeRatio')[0]);
+					width = ((height - 35) / Number($("#pageVideo").data('iframeRatio')[1])) * Number($("#pageVideo").data('iframeRatio')[0]);
 				}
 				$pageVideo
 					.width(width)
