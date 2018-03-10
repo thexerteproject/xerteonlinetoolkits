@@ -23,14 +23,30 @@
 	var textVideo = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			if (x_currentPageXML.getAttribute("url").substr(0,7) != "<iframe") {
+			if ($("#pageVideo").hasClass('iframe') != true) {
 				this.loadVideo();
 			}
 		}
 		
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function(pageChg) {
-			
+		this.sizeChanged = function() {
+			var $pageVideo = $("#pageVideo");
+			if ($pageVideo.hasClass('iframe')) {
+				// scale the iframe so it stays the right aspect ratio
+				var maxW = x_browserInfo.mobile == true ? 1 : 0.6,
+					maxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height()) - ($('.x_floatRight').outerHeight() - $('.x_floatRight').height());
+				
+				var width = $x_pageDiv.width() * maxW;
+				var height = (width / Number($("#pageVideo").data('iframeRatio')[0])) * Number($("#pageVideo").data('iframeRatio')[1]) + 35;
+				
+				if (x_browserInfo.mobile != true && height > maxH) {
+					height = maxH;
+					width = ((height - 35) / Number($("#pageVideo").data('iframeRatio')[1])) * Number($("#pageVideo").data('iframeRatio')[0]);
+				}
+				$pageVideo
+					.width(width)
+					.height(height);
+			}
 		}
 		
 		this.init = function() {
@@ -87,11 +103,20 @@
 			if (videoSrc.substr(0,7) == "<iframe") {
 				$("#pageContents .panel").removeClass("panel inline");
 				
-				$pageVideo.append(videoSrc);
+				$pageVideo
+					.addClass('iframe')
+					.append(videoSrc);
 				
 				if ($("#transcriptHolder").length > 0) {
 					$("#transcript").width($pageVideo.width());
 				}
+				
+				var iframeRatio = x_currentPageXML.getAttribute("iframeRatio") != "" && x_currentPageXML.getAttribute("iframeRatio") != undefined ? x_currentPageXML.getAttribute("iframeRatio") : '16:9';
+				iframeRatio = iframeRatio.split(':');
+				if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
+					iframeRatio = [16,9];
+				}
+				$pageVideo.data('iframeRatio', iframeRatio);
 				
 			} else {
 				var videoDimensions = [320,240];
@@ -125,6 +150,7 @@
 				}
 			}
 			
+			textVideo.sizeChanged();
 			x_pageLoaded();
 		}
 		
