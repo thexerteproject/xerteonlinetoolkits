@@ -44,7 +44,7 @@ function makeId(page_nr, ia_nr, ia_type, ia_name)
         // ia_nam can be HTML, just extract text from it
         var div = $("<div>").html(ia_name);
         var strippedName = div.text();
-        tmpid += ':' + encodeURIComponent(strippedName.replace(/ /g, "_"));
+        tmpid += ':' + encodeURIComponent(strippedName.replace(/[^a-zA-Z0-9_ ]/g, "").replace(/ /g, "_"));
         // Truncate to max 255 chars, this should be 4000
         tmpid = tmpid.substr(0,255);
     }
@@ -116,7 +116,7 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
         this.end = new Date();
         var duration = this.end.getTime() - this.start.getTime();
         this.state = "exited";
-        if (duration > 1000)
+        if (duration > 100)
         {
             this.duration += duration;
             this.count++;
@@ -194,13 +194,13 @@ function ScormTrackingState()
     {
         for (i=0; i<sit.nrinteractions; i++)
         {
-            var sit2 = state.findInteraction(sit.page_nr, i);
-            if (sit2 == null || sit2.duration < 100)
+            var sit2 = this.findInteraction(sit.page_nr, i);
+            if (sit2 == null)
             {
                 return false;
             }
         }
-        if (sit.ia_type=="page" && sit.duration < state.page_timeout)
+        if (sit.ia_type=="page" && sit.duration < this.page_timeout)
         {
             return false;
         }
@@ -567,32 +567,30 @@ function ScormTrackingState()
             }
             res = persistData();
 
-            var temp = false;
-            var i = 0;
+            if (ia_nr < 0) {
+                var temp = false;
+                var i = 0;
 
-            for(i=0; i<state.toCompletePages.length;i++)
-            {
-                var currentPageNr = state.toCompletePages[i];
-                if(currentPageNr == page_nr)
-                {
-                    temp = true;
-                    break;
+                for (i = 0; i < state.toCompletePages.length; i++) {
+                    var currentPageNr = state.toCompletePages[i];
+                    if (currentPageNr == page_nr) {
+                        temp = true;
+                        break;
+                    }
                 }
-            }
-            if(temp)
-            {
-                if (! state.completedPages[i]) {
-                    var sit = state.findInteraction(page_nr, -1);
+                if (temp) {
+                    if (!state.completedPages[i]) {
+                        var sit = state.findInteraction(page_nr, -1);
 
-                    if (sit != null) {
-                        //Skip results page completely
-                        if (sit.ia_type != "result") {
-                          state.completedPages[i] = state.pageCompleted(page_nr);
+                        if (sit != null) {
+                            //Skip results page completely
+                            if (sit.ia_type != "result") {
+                                state.completedPages[i] = state.pageCompleted(page_nr);
+                            }
                         }
                     }
                 }
             }
-
 
         }
     }
@@ -669,7 +667,7 @@ function ScormTrackingState()
     {
         if (this.lo_type == "pages only")
         {
-            if (getSuccessStatus() == 'completed')
+            if (getCompletionStatus() == 'completed')
                 return 100;
             else
                 return 0;
@@ -1489,7 +1487,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, co
         sit.correctOptions = correctoptions;
         sit.correctAnswers = correctanswer;
         sit.correctfeedback = feedback;
-        sit.currentid = sit.id;
+        state.currentid = sit.id;
     }
 }
 
@@ -1526,42 +1524,6 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
     return "";
 }
 
-
-
-function XTTerminate()
-{
-    if (state.finished) return;
-    if (state.scormmode == 'normal')
-    {
-        if (!state.finished)
-        {
-            var currentpageid = "";
-            state.finished = true;
-            if (state.currentid)
-            {
-                var sit = state.find(currentid);
-                // there is still an interaction open, close it
-                if (sit != null)
-                {
-                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-                }
-            }
-            if (state.currentpageid)
-            {
-                currentpageid = state.currentpageid;
-                var sit = state.find(currentpageid);
-                // there is still an interaction open, close it
-                if (sit != null)
-                {
-                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-                }
-
-            }
-            state.finishTracking(currentpageid);
-        }
-    }
-    terminateCommunication();
-}
 
 function XTResults(fullcompletion) {
     var completion = 0;
@@ -1643,7 +1605,6 @@ function XTResults(fullcompletion) {
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type) {
                 case "match":
-                    var resultCorrect=false;
                     for (var c = 0; c < state.interactions[i].correctOptions.length; c++) {
                         var matchSub = {}; //Create a subinteraction here for every match sub instead
                         correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
@@ -1664,7 +1625,7 @@ function XTResults(fullcompletion) {
                         }
 
                         matchSub.question = state.interactions[i].ia_name;
-                        matchSub.correct = resultCorrect;
+                        matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
@@ -1676,17 +1637,15 @@ function XTResults(fullcompletion) {
                     correctAnswer = state.interactions[i].correctAnswers.join(", ");
                     break;
                 case "multiplechoice":
-                    learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0].answer : "";
+                    learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
                     for (var j = 1; j < state.interactions[i].learnerAnswers.length; j++) {
-                        learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j.answer];
+                        learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
                     }
                     correctAnswer = "";
                     for (var j = 0; j < state.interactions[i].correctAnswers.length; j++) {
-                        if (state.interactions[i].correctAnswers[j].result) {
-                            if (correctAnswer.length > 0)
-                                correctAnswer += "\n";
-                            correctAnswer += state.interactions[i].correctAnswers[j].answer;
-                        }
+                        if (correctAnswer.length > 0)
+                            correctAnswer += "\n";
+                        correctAnswer += state.interactions[i].correctAnswers[j];
                     }
                     break;
                 case "numeric":
@@ -1726,3 +1685,4 @@ function XTResults(fullcompletion) {
 
     return results;
 }
+

@@ -309,8 +309,8 @@
 				{
 				    success: l_correct == l_total,
 					score: (l_correct * 100.0)/l_total
-				}
-            XTExitInteraction(x_currentPage, $this.data("target").data("id"), result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+				};
+            XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
 
                   
             
@@ -331,7 +331,7 @@
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
             
-            XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
+            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
             var correctOptions = [],
                 correctAnswers = [],
                 correctFeedbacks = [];

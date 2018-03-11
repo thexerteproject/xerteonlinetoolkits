@@ -85,7 +85,9 @@
 					answer: answerTxt,
 					result: this.optionElements[i].correct == 'true'
 				});
-				correctAnswer.push(answerTxt);
+				if (this.optionElements[i].correct == 'true') {
+                    correctAnswer.push(answerTxt);
+                }
 				correctFeedback.push(x_GetTrackingTextFromHTML(this.optionElements[i].feedback, ""));
 				mcq.correctOption = true;
             }

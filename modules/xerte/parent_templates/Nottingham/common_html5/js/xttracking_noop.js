@@ -43,7 +43,7 @@ function makeId(page_nr, ia_nr, ia_type, ia_name)
         // ia_nam can be HTML, just extract text from it
         var div = $("<div>").html(ia_name);
         var strippedName = div.text();
-        tmpid += ':' + encodeURIComponent(strippedName.replace(/ /g, "_"));
+        tmpid += ':' + encodeURIComponent(strippedName.replace(/[^a-zA-Z0-9_ ]/g, "").replace(/ /g, "_"));
         // Truncate to max 255 chars, this should be 4000
         tmpid = tmpid.substr(0,255);
     }
@@ -69,6 +69,8 @@ function NoopTrackingState()
 
     this.initialise = initialise;
     this.pageCompleted = pageCompleted;
+    this.getCompletionStatus = getCompletionStatus;
+    this.getSuccessStatus = getSuccessStatus;
     this.getdScaledScore = getdScaledScore;
     this.getdRawScore = getdRawScore;
     this.getdMinScore = getdMinScore;
@@ -92,6 +94,63 @@ function NoopTrackingState()
 
     }
 
+    function getCompletionStatus()
+    {
+        var completed = true;
+        for(var i = 0; i<state.completedPages.length; i++)
+        {
+            if(state.completedPages[i] == false)
+            {
+                completed = false;
+                break;
+            }
+            //if( i == state.completedPages.length-1 && state.completedPages[i] == true)
+            //{
+            //completed = true;
+            //
+        }
+
+        if (completed)
+        {
+            return "completed";
+
+        }
+        else if(!completed)
+        {
+            return 'incomplete';
+        }
+        else
+        {
+            return "unknown"
+        }
+    }
+
+    function getSuccessStatus()
+    {
+        if (this.lo_type != "pages only")
+        {
+            if (state.getScaledScore() > this.lo_passed)
+            {
+                return "passed";
+            }
+            else
+            {
+                return "failed";
+            }
+        }
+        else
+        {
+            if (getCompletionStatus() == 'completed')
+            {
+                return "passed";
+            }
+            else
+            {
+                return "unknown";
+            }
+        }
+    }
+
     function getdScaledScore()
     {
         return this.getdRawScore() / (this.getdMaxScore() - this.getdMinScore());
@@ -106,7 +165,7 @@ function NoopTrackingState()
     {
         if (this.lo_type == "pages only")
         {
-            if (getSuccessStatus() == 'completed')
+            if (getCompletionStatus() == 'completed')
                 return 100;
             else
                 return 0;
@@ -190,13 +249,13 @@ function NoopTrackingState()
     {
         for (i=0; i<sit.nrinteractions; i++)
         {
-            var sit2 = state.findInteraction(sit.page_nr, i);
-            if (sit2 == null || sit2.duration < 1000)
+            var sit2 = this.findInteraction(sit.page_nr, i);
+            if (sit2 == null)
             {
                 return false;
             }
         }
-        if (sit.ia_type=="page" && sit.duration < state.page_timeout)
+        if (sit.ia_type=="page" && sit.duration < this.page_timeout)
         {
             return false;
         }
@@ -217,30 +276,28 @@ function NoopTrackingState()
     		sit.exitInteraction(result,learneranswer, learneroptions, feedback);
     	}
     	sit.exit();
-        var temp = false;
-        var i = 0;
-        for(i=0; i<state.toCompletePages.length;i++)
-        {
-            var currentPageNr = state.toCompletePages[i];
-            if(currentPageNr == page_nr)
-            {
-                temp = true;
-                break;
+    	if (ia_nr < 0) {
+            var temp = false;
+            var i = 0;
+            for (i = 0; i < state.toCompletePages.length; i++) {
+                var currentPageNr = state.toCompletePages[i];
+                if (currentPageNr == page_nr) {
+                    temp = true;
+                    break;
+                }
             }
-        }
-        if(temp)
-        {
-            if (! state.completedPages[i]) {
-                var sit = state.findInteraction(page_nr, -1);
-                if (sit != null) {
-                    // Skip results page completely
-                    if (sit.ia_type != "result") {
-                        state.completedPages[i] = state.pageCompleted(sit);
+            if (temp) {
+                if (!state.completedPages[i]) {
+                    var sit = state.findInteraction(page_nr, -1);
+                    if (sit != null) {
+                        // Skip results page completely
+                        if (sit.ia_type != "result") {
+                            state.completedPages[i] = state.pageCompleted(sit);
+                        }
                     }
                 }
             }
         }
-
     }
 
     function setPageType(page_nr, page_type, nrinteractions, weighting)
@@ -364,7 +421,7 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
     {
         this.end = new Date();
         var duration = this.end.getTime() - this.start.getTime();
-        if (duration > 1000)
+        if (duration > 100)
         {
             this.duration += duration;
             this.count++;
@@ -657,7 +714,6 @@ function XTResults(fullcompletion) {
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type) {
                 case "match":
-                    var resultCorrect=false;
                     for (var c = 0; c < state.interactions[i].correctOptions.length; c++) {
                         var matchSub = {}; //Create a subinteraction here for every match sub instead
                         correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
@@ -678,7 +734,7 @@ function XTResults(fullcompletion) {
                         }
 
                         matchSub.question = state.interactions[i].ia_name;
-                        matchSub.correct = resultCorrect;
+                        matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
@@ -690,17 +746,15 @@ function XTResults(fullcompletion) {
                     correctAnswer = state.interactions[i].correctAnswers.join(", ");
                     break;
                 case "multiplechoice":
-                    learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0].answer : "";
+                    learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
                     for (var j = 1; j < state.interactions[i].learnerAnswers.length; j++) {
-                        learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j.answer];
+                        learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
                     }
                     correctAnswer = "";
                     for (var j = 0; j < state.interactions[i].correctAnswers.length; j++) {
-                        if (state.interactions[i].correctAnswers[j].result) {
-                            if (correctAnswer.length > 0)
-                                correctAnswer += "\n";
-                            correctAnswer += state.interactions[i].correctAnswers[j].answer;
-                        }
+                        if (correctAnswer.length > 0)
+                            correctAnswer += "\n";
+                        correctAnswer += state.interactions[i].correctAnswers[j];
                     }
                     break;
                 case "numeric":
@@ -740,3 +794,4 @@ function XTResults(fullcompletion) {
 
     return results;
 }
+
