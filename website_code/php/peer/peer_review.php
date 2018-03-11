@@ -44,7 +44,7 @@ if(isset($_POST['retouremail'])){
 
 	$subject = PEER_REVIEW_FEEDBACK . " - \"" . str_replace("_"," ",$row_template_name['template_name']) ."\"";
 	
-	$message = PEER_REVIEW_EMAIL_GREETING . " <br><br> " . PEER_REVIEW_EMAIL_INTRO . "<br><br><br>" . $_POST['feedback'] . "<br><br><br>" . PEER_REVIEW_EMAIL_YOURS . "<br><br>" . PEER_REVIEW_EMAIL_SIGNATURE;
+	$message = PEER_REVIEW_EMAIL_GREETING . " <br><br> " . PEER_REVIEW_EMAIL_INTRO . "<br><br><br><a href='" . $xerte_toolkits_site->site_url . "/play.php?template_id=" . $_POST['template_id'] . "'>" . $xerte_toolkits_site->site_url . "/play.php?template_id=" . $_POST['template_id'] . "</a><br><br><br>" . str_replace("\n", "<br>\n", $_POST['feedback']) . "<br><br><br>" . PEER_REVIEW_EMAIL_YOURS . "<br><br>" . PEER_REVIEW_EMAIL_SIGNATURE;
 
     if(mail( $_POST['retouremail'], $subject, $message, $headers)){
 

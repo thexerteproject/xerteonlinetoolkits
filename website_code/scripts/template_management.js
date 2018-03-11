@@ -909,7 +909,96 @@ function duplicate_stateChanged(){
 
     }
 
-} 
+}
+
+/**
+ *
+ * Function duplicate template
+ * This function duplicates a template
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function duplicate_folder(){
+    var tree = $.jstree.reference("#workspace"),
+        ids = tree.get_selected();
+
+    if(ids.length==1){
+
+        var node = workspace.nodes[ids[0]];
+        if(node.xot_type=="folder"){
+
+            if(node.parent!= workspace.recyclebin_id){
+
+                /*
+                 * code to prevent folders being dupped
+                 */
+
+                if(setup_ajax()!=false){
+
+                    var url="website_code/php/templates/duplicate_folder.php";
+
+                    folder_id = node.xot_id;
+
+                    folder_name = node.text;
+
+                    parentfolder_id = workspace.nodes[node.parent].xot_id;
+
+                    xmlHttp.open("post",url,true);
+                    xmlHttp.onreadystatechange=duplicatefolder_stateChanged;
+                    xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xmlHttp.send('folder_id=' + folder_id + '&folder_name=' + folder_name + '&parentfolder_id=' + parentfolder_id);
+
+                }
+
+            }else{
+
+                alert(RECYCLE_DUPLICATE);
+
+            }
+
+        }else{
+
+            alert(DUPLICATE_PROMPT);
+        }
+
+    }else if(ids.length==0){
+
+        alert(DUPLICATE_PROMPT_OTHER);
+
+    }else{
+
+        alert(DUPLICATE_LIMIT);
+
+    }
+
+}
+
+/**
+ *
+ * Function duplicate state changed
+ * This function redisplays the file area are a file is duplicate
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function duplicatefolder_stateChanged(){
+
+    if (xmlHttp.readyState==4){
+        response = xmlHttp.responseText.trim();
+
+        if(response!=""){
+            alert(DUPLICATE_ERROR + ' "' + response + '"');
+
+        }
+
+        //screen_refresh();
+        refresh_workspace();
+
+    }
+
+}
+
 
 function publish_project(template_id){
 
