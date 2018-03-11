@@ -705,6 +705,8 @@ function access_info($template_id){
 
 function access_display($xerte_toolkits_site, $change){
 
+    global $row_access;
+
     $prefix =  $xerte_toolkits_site->database_table_prefix ;
     $query_for_template_access = "select access_to_whom from {$prefix}templatedetails where template_id= ? ";
     $params = array($_POST['template_id']);

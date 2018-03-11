@@ -30,6 +30,7 @@
 
 
 require_once(dirname(__FILE__) . "/config.php");
+require_once(dirname(__FILE__) . "/pedit_config.php");
 
 _load_language_file("/play.inc");
 
@@ -54,9 +55,63 @@ if (!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
     exit(0);
 }
 
+//Decrypt Function
+function decrypt($decrypt) {
+    global $pedit_config;
+    $key_hex = $pedit_config->key;
+    $key_bin = hex2bin($key_hex);
+
+    $decoded = base64_decode($decrypt);
+    $iv = str_repeat("\x00", openssl_cipher_iv_length ('des-cbc'));
+    $decrypted = openssl_decrypt($decoded, 'des-cbc', $key_bin, OPENSSL_RAW_DATA, $iv);
+    return $decrypted;
+}
+
 $id = $_GET['template_id'];
 if (is_numeric($id))
 {
+
+    if (!isset($_REQUEST['param']))
+    {
+        $xerte_toolkits_site->lti_user->first_name = "Guest";
+        $xerte_toolkits_site->lti_user->last_name = "User";
+        $xerte_toolkits_site->lti_user->email = "info@cowsignals.com";
+        $xerte_toolkits_site->lti_user->displayname = "Guest User";
+    }
+    else
+    {
+        $decoded = decrypt($_REQUEST['param']);
+
+        $temp = explode('&', $decoded);
+        $params['actor'] = explode('=', $temp[0])[1];
+        $params['timestamp'] = explode('=', $temp[1])[1];
+
+
+        $client = new SoapClient($pedit_config->soapUrl);
+
+        $soapresult = $client->GetSystemUserByActorId(array(
+            'sKey' => $pedit_config->soapKey,
+            'iActorID' => $params['actor']
+        ));
+
+        $userxml = $soapresult->GetSystemUserByActorIdResult;
+        $user = simplexml_load_string($userxml);
+        $members = $user->xpath('//member');
+
+        $attrs = $members[0]->attributes();
+
+        $xerte_toolkits_site->lti_user->first_name = (string) $members[0]['firstName'];
+        if (strlen($members[0]['middleName']) > 0)
+        {
+            $xerte_toolkits_site->lti_user->last_name = (string)$members[0]['middleName'] . ' ' . (string)$members[0]['lastName'];
+        }
+        else {
+            $xerte_toolkits_site->lti_user->last_name = (string)$members[0]['lastName'];
+        }
+        $xerte_toolkits_site->lti_user->email = (string)$members[0]['emailAddressPrivate'];
+        $xerte_toolkits_site->lti_user->displayname = $xerte_toolkits_site->lti_user->first_name . ' ' . $xerte_toolkits_site->lti_user->last_name;
+
+    }
     $pedit_enabled = true;
     $tsugi_enabled = true;
     require(dirname(__FILE__) . "/play.php");

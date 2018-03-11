@@ -154,6 +154,7 @@ x_projectDataLoaded = function(xmlData) {
 
     x_pages = xmlData.children();
 	var pageToHide = [];
+	var currActPage = 0;
     x_pages.each(function (i) {
 		if ($(this)[0].getAttribute("hidePage") != "true" || (x_params.authorSupport == "true" && window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1)) {
 			var linkID = $(this)[0].getAttribute("linkID"),
@@ -186,15 +187,19 @@ x_projectDataLoaded = function(xmlData) {
 			}
 			allChildIDs($(this), page.childIDs);
 			x_pageInfo.push(page);
-			
+            if(($(this)[0].getAttribute("unmarkForCompletion") === "false" || $(this)[0].getAttribute("unmarkForCompletion") == undefined) && this.nodeName !== "results" )
+            {
+                markedPages.push(currActPage);
+                currActPage++;
+            }
+            else {
+                currActPage++;
+            }
 		}
 		else {
 			pageToHide.push(i);
 		}
-		if(($(this)[0].getAttribute("unmarkForCompletion") === "false" || $(this)[0].getAttribute("unmarkForCompletion") == undefined) && this.nodeName !== "result" )
-		{
-			markedPages.push(i);
-		}
+
     });
 	
 	// removes hidden pages from array
@@ -288,6 +293,7 @@ x_projectDataLoaded = function(xmlData) {
     XTSetOption('nrpages', x_pageInfo.length);
 	XTSetOption('toComplete', markedPages);
 	XTSetOption('templateId', x_TemplateId);
+	XTSetOption('templateName', x_params.name);
 
     if (x_params.trackingMode != undefined) {
         XTSetOption('tracking-mode', x_params.trackingMode);
@@ -1189,6 +1195,8 @@ function x_continueSetUp2() {
 		$x_head.append('<script>' +  x_params.script + '</script>');
 	}
 
+	// Setup beforeunload
+    window.onbeforeunload = XTTerminate;
     XTInitialise(); // initialise here, because of XTStartPage in next function
 
 	x_navigateToPage(true, x_startPage);
@@ -1468,7 +1476,12 @@ function x_changePageStep5(x_gotoPage) {
                 customHTML.leavePage();
             }
         }
-        XTExitPage(x_currentPage, x_currentPageXML.getAttribute("trackinglabel"));
+        var label = $('<div>').html(pageTitle).text();
+        if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+        {
+            label = x_currentPageXML.getAttribute("trackinglabel");
+        }
+        XTExitPage(x_currentPage, label);
     }
     x_currentPage = x_gotoPage;
     x_currentPageXML = x_pages[x_currentPage];
@@ -1548,7 +1561,12 @@ function x_changePageStep5(x_gotoPage) {
     if (x_pageInfo[x_currentPage].built != false) {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
 		// Use a clean text version of the page title
-        XTEnterPage(x_currentPage, x_currentPageXML.getAttribute("trackinglabel"), x_pageInfo[x_currentPage].type);
+        var label = $('<div>').html(pageTitle).text();
+        if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+        {
+            label = x_currentPageXML.getAttribute("trackinglabel");
+        }
+        XTEnterPage(x_currentPage, label, x_pageInfo[x_currentPage].type);
 
         var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);
@@ -1624,7 +1642,11 @@ function x_changePageStep5(x_gotoPage) {
 			}
 
 			// Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
-            var label = x_currentPageXML.getAttribute("trackinglabel");
+            var label = $('<div>').html(pageTitle).text();
+            if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+            {
+                label = x_currentPageXML.getAttribute("trackinglabel");
+            }
             XTEnterPage(x_currentPage, label);
 
 			var modelfile = x_pageInfo[x_currentPage].type;

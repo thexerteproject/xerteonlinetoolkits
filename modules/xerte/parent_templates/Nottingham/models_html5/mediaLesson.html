@@ -79,13 +79,13 @@
 			$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseInt($("#infoHolder .accTitle").css("padding-top")) * 2);
 			
 			$panelHolder.find(".panel.tileV")
-				.height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - parseInt($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseInt($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2);
-			
+				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - parseInt($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseInt($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2);
+
 			$panelHolder.find(".panel.fullH")
-				.height($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - 5);
+				.height($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - 5);
 			
 			$panelHolder.find(".panel.halfH")
-				.height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
+				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
 			
 			$x_pageHolder.css("overflow", "auto");
 			
@@ -556,6 +556,10 @@
 
 		 function getBlock(time)
         {
+            if (blocks.length == 0)
+			{
+			    return null;
+			}
             for(var i = 0; i < blocks.length; i++)
             {
                 if (parseFloat(blocks[i].synchStart) + parseFloat(blocks[i].duration) > time)
@@ -568,29 +572,29 @@
 
 		// helper function for lookupTable, called on time updates, checks what part of a video block is being watched (in %).
 		updateTable = function (block, current) {
-			if(block.duration < 30)
-			{
-				var i = Math.round((current - block.synchStart) / block.duration * 20) * 5;
-			}
-			else {
-				var i = Math.round((current - block.synchStart) / block.duration * 100);
-			}
-			block.watched[i] = 1;
-			if (i == 100)
-            {
-                sentXAPI(block, 100);
-            }
+		     if (block != null) {
+                 if (block.duration < 30) {
+                     var i = Math.round((current - block.synchStart) / block.duration * 20) * 5;
+                 }
+                 else {
+                     var i = Math.round((current - block.synchStart) / block.duration * 100);
+                 }
+                 block.watched[i] = 1;
+                 if (i == 100) {
+                     sentXAPI(block, 100);
+                 }
+             }
 		}
 
 		function sentXAPI(block, percentageWatched)
         {
-            XTSetAttendance(x_currentPage, block.synchName, percentageWatched)
+            XTSetViewed(x_currentPage, block.synchName, percentageWatched)
         }
 
 		// function calculates the time watched within a video block based on an array (in %).
 		lookupTable = function (block) {
 			var playedTime = 0;
-			if (block.watched == undefined || block.duration == undefined)
+			if (block == null || block.watched == undefined || block.duration == undefined)
 			{
 			    return 0;
 			}
@@ -645,7 +649,8 @@
 					
 					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .vimeo", mediaData.media); // force controls to appear
 					$vimeo.data("popcornInstance", popcornInstance);
-					
+
+
 					if (mediaData.autoplay == "true") {
 						popcornInstance.play();
 					}

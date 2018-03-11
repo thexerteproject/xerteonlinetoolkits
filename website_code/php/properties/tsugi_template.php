@@ -59,7 +59,7 @@
                 $PDOX = LTIX::getConnection();
                 $tsugirow = $PDOX->rowDie(
                     "	SELECT l.title, k.key_key, k.secret 
-						FROM {$CFG->dbprefix}lti_key AS k, {$CFG->dbprefix}lti_context AS c, lti_link AS l  
+						FROM {$CFG->dbprefix}lti_key AS k, {$CFG->dbprefix}lti_context AS c, {$CFG->dbprefix}lti_link AS l  
 							WHERE k.key_id = c.key_id AND c.context_id = l.context_id AND l.path = :DPATH",
                     array(':DPATH' => $lti_def->tsugi_url));
                 $lti_def->key = $tsugirow["key_key"];

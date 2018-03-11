@@ -165,7 +165,7 @@
         this.startTracking = function() {
             var numHotspots = $(x_currentPageXML).children().length,
                     weighting = (x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
-            XTSetPageType(x_currentPage, 'numeric', numHotspots, weighting);
+            XTSetPageType(x_currentPage, 'numeric', 1, weighting);
         };
 
         this.createLabels = function() {
