@@ -361,8 +361,8 @@
 				
 				$("#infoHolder").accordion({
 					icons: {
-						header: "fa fa-caret-right",
-						activeHeader: "fa fa-caret-down"
+						header: "fa fa-x-acc-hide",
+						activeHeader: "fa fa-x-acc-show"
 					},
 					collapsible: x_currentPageXML.getAttribute("collapsible") == "true" ? true : false,
 					active: x_currentPageXML.getAttribute("collapsible") == "true" ? false : 0,
@@ -428,7 +428,7 @@
 				
 				$("#prevBtn")
 					.button({
-						icons: { primary: "fa fa-arrow-left" },
+						icons: { primary: "fa fa-x-prev" },
 						label: x_currentPageXML.getAttribute("prevBtnTip") == undefined || x_currentPageXML.getAttribute("prevBtnTip") == "" ? "Previous" : x_currentPageXML.getAttribute("prevBtnTip"),
 						text: false
 					})
@@ -438,7 +438,7 @@
 				
 				$("#nextBtn")
 					.button({
-						icons: { primary: "fa fa-arrow-right" },
+						icons: { primary: "fa fa-x-next" },
 						label: x_currentPageXML.getAttribute("nextBtnTip") == undefined || x_currentPageXML.getAttribute("nextBtnTip") == "" ? "Next" : x_currentPageXML.getAttribute("nextBtnTip"),
 						text: false
 					})

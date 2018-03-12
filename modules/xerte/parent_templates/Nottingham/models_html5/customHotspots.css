@@ -16,11 +16,15 @@
 	}
 	
 	#instructions {
-		margin-top:	10px;
+		margin-top:	0.5em;
 	}
 	
-	#instructions button {
-		margin-right:	5px;
+	#instructions p {
+		display: inline;
+	}
+	
+	#prevBtn, #nextBtn {
+		margin-right: 0.5em;
 	}
 	
 	#hsInfo {
@@ -99,7 +103,7 @@
 	#optionHolder .optionTxt {
 		cursor:			pointer;
 		position:		relative;
-		margin-left:	30px;
+		margin-left:	2em;
 		margin-bottom:	10px;
 		display:		block;
 	}

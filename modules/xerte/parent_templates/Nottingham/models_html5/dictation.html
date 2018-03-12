@@ -309,11 +309,11 @@
 			// Show incorrect if requested
 			$("#incorrect")
 					.hide()
-					.html('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '">' + x_addLineBreaks(" " + incorrectText));
+					.html('<span class="tick fa fa-fw fa-x-cross"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Incorrect") + '</span></span>' + x_addLineBreaks(" " + incorrectText));
 			//Show correct if requested
 			$("#correct")
 					.hide()
-					.html('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '">' + x_addLineBreaks(" " + correctText));
+					.html('<span class="tick fa fa-fw fa-x-tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '</span></span>' + x_addLineBreaks(" " + correctText));
 
 			this.loadAudio($pageContents.data("captionInfo")[$pageContents.data("current")]);
 			var name = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].name).text().replace(/(\r\n|\n|\r)/gm,"");

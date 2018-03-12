@@ -14,4 +14,5 @@
     <language name="Portugues (pt-BR)" code="pt-BR" file="engine_pt-BR.xml" wizardfile="wizard_pt-BR.xml" editorfile="editor_pt-BR.xml" />
     <language name="Deutsch (de-DE)" code="de-DE" file="engine_de-DE.xml" wizardfile="wizard_de-DE.xml" editorfile="editor_de-DE.xml" />
     <language name="Türkçe (tr-TR)" code="tr-TR" file="engine_tr-TR.xml" wizardfile="wizard_tr-TR.xml" editorfile="editor_tr-TR.xml" />
+    <language name="Українська (uk-UA)" code = "uk-UA" file="engine_uk-UA.xml" wizardfile="wizard_uk-UA.xml" editorfile="editor_uk-UA.xml" />
 </languages>

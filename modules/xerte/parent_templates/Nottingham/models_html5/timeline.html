@@ -154,10 +154,9 @@
 						$("#labelHolder .label").each(function() {
 							var $this = $(this);
 							if ($this.data("target").is($this.data("currentTarget"))) {
-								
-								$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+								$this.html($this.html() + '<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '</span><span class="fa fa-fw fa-x-tick"></span></span>');
 							}else{
-								$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+								$this.html($this.html() + '<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Cross") + '</span><span class="fa fa-fw fa-x-cross"></span></span>');
 							}
 						});
 					}
@@ -310,8 +309,8 @@
 				{
 				    success: l_correct == l_total,
 					score: (l_correct * 100.0)/l_total
-				}
-            XTExitInteraction(x_currentPage, $this.data("target").data("id"), result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+				};
+            XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
 
                   
             
@@ -332,7 +331,7 @@
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
             
-            XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
+            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
             var correctOptions = [],
                 correctAnswers = [],
                 correctFeedbacks = [];

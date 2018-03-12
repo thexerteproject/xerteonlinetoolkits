@@ -98,7 +98,7 @@
 			
 			$("#prevBtn")
 				.button({
-					icons: {primary: 'fa fa-chevron-circle-left'},
+					icons: {primary: 'fa fa-x-prev-circle'},
 					label: x_currentPageXML.getAttribute("backBtnTip") == undefined ? "Back" : x_currentPageXML.getAttribute("backBtnTip"),
 					text: false
 				})
@@ -117,7 +117,7 @@
 			
 			$("#nextBtn")
 				.button({
-					icons: {primary: 'fa fa-chevron-circle-right'},
+					icons: {primary: 'fa fa-x-next-circle'},
 					label: x_currentPageXML.getAttribute("nextBtnTip") == undefined ? "Forward" : x_currentPageXML.getAttribute("nextBtnTip"),
 					text: false
 				})
@@ -661,7 +661,7 @@
 	</div>
 	
 	<div id="mainInfoHolder">
-		<div id="gridBack"><span class="fa fa-arrow-circle-o-left"></span></div>
+		<div id="gridBack"><span class="fa fa-x-prev-circle"></span></div>
 		<div id="mediaPanel" class="panel inline x_floatLeft"></div>
 		<div id="mainTxt"></div>
 	</div>

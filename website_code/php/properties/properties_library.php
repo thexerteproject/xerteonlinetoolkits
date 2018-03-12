@@ -705,6 +705,8 @@ function access_info($template_id){
 
 function access_display($xerte_toolkits_site, $change){
 
+    global $row_access;
+
     $prefix =  $xerte_toolkits_site->database_table_prefix ;
     $query_for_template_access = "select access_to_whom from {$prefix}templatedetails where template_id= ? ";
     $params = array($_POST['template_id']);
@@ -887,6 +889,9 @@ function tsugi_display($id, $lti_def, $mesg = "")
     global $xerte_toolkits_site;
 
 
+
+    if (file_exists($xerte_toolkits_site->tsugi_dir))
+    {
     ?>
     <p class="header"><span><?php echo PROPERTIES_LIBRARY_TSUGI; ?></span></p>
     <p><?php echo PROPERTIES_LIBRARY_TSUGI_DESCRIPTION; ?></p>
@@ -898,7 +903,18 @@ function tsugi_display($id, $lti_def, $mesg = "")
         <label for="tsugi_title"><?php echo PROPERTIES_LIBRARY_TSUGI_NAME; ?></label><input name="tsugi_title" type="text" value="<?php echo $lti_def->title ?>"><br>
         <label for="tsugi_key"><?php echo PROPERTIES_LIBRARY_TSUGI_KEY; ?></label><input name="tsugi_key" type="text" value="<?php echo $lti_def->key ?>"><br>
         <label for="tsugi_secret"><?php echo PROPERTIES_LIBRARY_TSUGI_SECRET; ?></label><input name="tsugi_secret" type="text" value="<?php echo $lti_def->secret ?>"><br>
+        <?php
+    }
+    else
+    {
+        ?>
+    <p class="header"><span><?php echo PROPERTIES_LIBRARY_TSUGI; ?></span></p>
+    <p><?php echo PROPERTIES_LIBRARY_TSUGI_NOTAVAILABLE_DESCRIPTION; ?></p>
 
+    <div id="publish">
+    <?php
+    }
+    ?>
 
         <label for="tsugi_xapi"><?php echo PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI; ?></label><input id="xChk" type="checkbox" name="tsugi_xapi" <?php echo ($lti_def->xapi_enabled ? "checked" : "");?>><br>
         <div id="xApi">

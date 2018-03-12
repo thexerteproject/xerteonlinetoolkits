@@ -118,6 +118,9 @@
   .ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
     padding: .1em; }
 
+  .panel button {
+    font-size: 2vmin; }
+
   #slideTxt {
     font-size: 2.5vmin; }
 
@@ -129,7 +132,7 @@
     font-size: 2.5vmin; }
 
   .ui-button-text-icon-secondary .ui-button-text {
-    padding-right: 1.2em; }
+    /*padding-right: 1.2em;*/ }
 
   #resultsHolder div p, #resultsHolder div a {
     font-size: 2.5vmin; }
@@ -155,6 +158,9 @@
     font-size: 2vmin !important; }
 
   .ui-dialog {
-    font-size: 2.5vmin; } }
+    font-size: 2.5vmin; }
+
+  #hint {
+    font-size: 2vmin; } }
 
 /*# sourceMappingURL=responsivetext.css.map */

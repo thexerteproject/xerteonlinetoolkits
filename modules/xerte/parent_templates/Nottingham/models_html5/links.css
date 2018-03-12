@@ -22,4 +22,9 @@
 	.clear {
 		clear:	both;
 	}
+	
+	#x_mainHolder.x_mobile  .linkBlock {
+		margin-right: 0;
+		width: 90%;
+	}
 

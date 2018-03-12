@@ -40,6 +40,28 @@ function iframe_check_upload(){
 
 	if(window["upload_iframe"].document.body.innerHTML!=""){
 
+		var string = document.getElementById("submitbutton").innerHTML;
+
+		if (string.indexOf('fa-spin') != -1) {
+			var found = false;
+
+			// We have received a reply and found a spinner, so replace the spinner with the default button icon.
+			if (typeof IMPORT_BUTTON_IMPORTING !== 'undefined' && string.indexOf('</i> ' + IMPORT_BUTTON_IMPORTING) != -1) {
+				found = true;
+				string = string.replace('<i class="fa fa-spinner fa-spin"></i> ' + IMPORT_BUTTON_IMPORTING, '<i class="fa fa-upload"></i> ' + IMPORT_BUTTON_IMPORT);
+			}
+			else if (typeof WORKSPACE_UPLOADING !== 'undefined' && string.indexOf('</i> ' + WORKSPACE_UPLOADING) != -1) {
+				found = true;
+				string = string.replace('<i class="fa fa-spinner fa-spin"></i> ' + WORKSPACE_UPLOADING, '<i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD);
+			}
+
+			if (found) {
+				document.getElementById('submitbutton').innerHTML = string;
+				document.getElementById('submitbutton').disabled = false;
+//				document.getElementById('importpopup').reset();
+			}
+		}
+
 		if(window["upload_iframe"].document.body.innerHTML.indexOf("****")!=-1){
 
 			clearInterval(iframe_interval);
@@ -185,7 +207,11 @@ function iframe_check(){
 	 * @author Patrick Lockley
 	 */
 
-function iframe_upload_check_initialise(){
+function iframe_upload_check_initialise(disable_btn){
+
+	if (typeof disable_btn !== 'undefined') {
+		document.getElementById('submitbutton').disabled = true;
+	}
 
 	iframe_interval = setInterval("iframe_check_upload()",500);
 
@@ -200,7 +226,11 @@ function iframe_upload_check_initialise(){
 	 * @author Patrick Lockley
 	 */
 
-function iframe_check_initialise(){
+function iframe_check_initialise(disable_btn){
+
+	if (typeof disable_btn !== 'undefined') {
+		document.getElementById('submitbutton').disabled = true;
+	}
 
 	iframe_interval = setInterval("iframe_check()",500);
 
@@ -371,18 +401,24 @@ function import_template(){
 }
 
 
-
 /*
- * This function will replace the default icon on the media and quota
- * import button with a spinner icon. The 'iframe_check' function above
- * will remove the spinner when required.
+ * This function will replace the default icon on the project import button, and
+ * the media and quota import button, with a spinner icon. The iframe check functions
+ * above will remove the spinner when required.
  */
 
-function load_media_spinner(this1) {
-
-	this1.disabled = true;
+function load_button_spinner(this1) {
 
 	var string = this1.innerHTML;
-	string = string.replace('<i class="fa fa-upload"></i> ' + IMPORT_BUTTON_IMPORT, '<i class="fa fa-spinner fa-spin"></i> ' + IMPORT_BUTTON_IMPORTING);
+
+	if (string.indexOf('fa-upload') != -1) {
+		if (typeof IMPORT_BUTTON_IMPORT !== 'undefined' && string.indexOf('</i> ' + IMPORT_BUTTON_IMPORT) != -1) {
+			string = string.replace('<i class="fa fa-upload"></i> ' + IMPORT_BUTTON_IMPORT, '<i class="fa fa-spinner fa-spin"></i> ' + IMPORT_BUTTON_IMPORTING);
+		}
+		else if (typeof WORKSPACE_UPLOAD !== 'undefined' && string.indexOf('</i> ' + WORKSPACE_UPLOAD) != -1) {
+			string = string.replace('<i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD, '<i class="fa fa-spinner fa-spin"></i> ' + WORKSPACE_UPLOADING);
+		}
+	}
+
 	this1.innerHTML = string;
 }

@@ -38,6 +38,7 @@ if ($lti_def->xapi_student_id_mode == 3)
 
 $PDOX = LTIX::getConnection();
 $p = $CFG->dbprefix;
+$xp = $xerte_toolkits_site->database_table_prefix;
 _debug("Data init " . print_r($_POST, true));
 $url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
 _debug("Detele " . $url);
@@ -94,8 +95,7 @@ if($context_count == 0)
 if(!$tsugi_publish)
 {
     if (!$lti_def->xapi_enabled) {
-        $p = $xerte_toolkits_site->database_table_prefix;
-        $sql = "UPDATE {$p}templatedetails SET tsugi_published = 0  WHERE template_id = ?";
+        $sql = "UPDATE {$xp}templatedetails SET tsugi_published = 0  WHERE template_id = ?";
         db_query($sql, array($template_id));
         $mesg = "Object is no longer published.";
         tsugi_display($template_id, $lti_def, $mesg);
@@ -127,20 +127,22 @@ if ($tsugi_publish) {
 
 
     $sql = "INSERT INTO {$p}lti_context
-            ( context_id, context_sha256, title, key_id, created_at, updated_at ) VALUES
-            ( :context_id, :context_sha256, :title, :key_id, NOW(), NOW() );";
+            ( context_id, context_sha256, context_key, title, key_id, created_at, updated_at ) VALUES
+            ( :context_id, :context_sha256, :context_key, :title, :key_id, NOW(), NOW() );";
     $PDOX->queryDie($sql, array(
         ':context_id' => $context_id,
         ':context_sha256' => lti_sha256($context_id),
+        ':context_key' => $context_id,
         ':title' => $lti_def->title,
         ':key_id' => $key_id));
     $sql = "INSERT INTO {$p}lti_link
-            ( link_id, link_sha256, title, context_id, path, created_at, updated_at ) VALUES
-                ( :link_id, :link_sha256, :title, :context_id, :path, NOW(), NOW() );";
+            ( link_id, link_sha256, link_key, title, context_id, path, created_at, updated_at ) VALUES
+                ( :link_id, :link_sha256, :link_key, :title, :context_id, :path, NOW(), NOW() );";
 
     $params = array(
         ':link_id' => $link_id,
         ':link_sha256' => lti_sha256($link_id),
+        ':link_key' => $link_id,
         ':title' => $lti_def->title,
         ':context_id' => $context_id,
         ':path' => $lti_def->url
@@ -148,7 +150,7 @@ if ($tsugi_publish) {
     $link = $PDOX->queryDie($sql, $params);
 
 }
-$sql = "UPDATE {$p}templatedetails SET tsugi_published = ?, tsugi_xapi_enabled = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ? WHERE template_id = ?";
+$sql = "UPDATE {$xp}templatedetails SET tsugi_published = ?, tsugi_xapi_enabled = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ? WHERE template_id = ?";
 db_query($sql,
     array(
         $lti_def->published ? "1" : "0",

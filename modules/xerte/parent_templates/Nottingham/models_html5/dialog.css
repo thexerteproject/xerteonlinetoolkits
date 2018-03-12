@@ -28,5 +28,12 @@
 	#pageContents button {
 		margin:		10px;
 		float:		right;
+		clear: both;
+	}
+	
+	.result {
+		float: right;
+		line-height: 1.5em;
+		padding-left: 0.5em;
 	}
 

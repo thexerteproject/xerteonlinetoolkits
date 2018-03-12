@@ -17,7 +17,7 @@ function makeId(page_nr, ia_nr, ia_type, ia_name)
         // ia_nam can be HTML, just extract text from it
         var div = $("<div>").html(ia_name);
         var strippedName = div.text();
-        tmpid += ':' + encodeURIComponent(strippedName.replace(/^[a-zA-Z0-9_ ]/g, "").replace(/ /g, "_"));
+        tmpid += ':' + encodeURIComponent(strippedName.replace(/[^a-zA-Z0-9_ ]/g, "").replace(/ /g, "_"));
         // Truncate to max 255 chars, this should be 4000
         tmpid = tmpid.substr(0,255);
     }
@@ -42,6 +42,8 @@ baseUrl = function()
 function XApiTrackingState()
 {
     this.initialised = false;
+    this.currentid = "";
+    this.currentpageid = "";
     this.trackingmode = "full";
     this.mode = "normal";
     this.scoremode = 'first';
@@ -51,7 +53,8 @@ function XApiTrackingState()
     this.start = new Date();
     this.interactions = new Array();
     this.lo_completed = 0;
-    this.lo_passed = 0;
+    this.lo_type = "pages only";
+    this.lo_passed = -1.0;
     this.page_timeout = 5000;
     this.templateId = -1;
     this.templateName = "";
@@ -60,6 +63,9 @@ function XApiTrackingState()
 
 
     this.initialise = initialise;
+    this.getCompletionStatus = getCompletionStatus;
+    this.getCompletionPercentage = getCompletionPercentage;
+    this.getSuccessStatus = getSuccessStatus;
     this.pageCompleted = pageCompleted;
     this.getdScaledScore = getdScaledScore;
     this.getdRawScore = getdRawScore;
@@ -73,6 +79,7 @@ function XApiTrackingState()
     this.setPageScore = setPageScore;
     this.enterInteraction = enterInteraction;
     this.exitInteraction = exitInteraction;
+    this.find = find;
     this.findPage = findPage;
     this.findInteraction = findInteraction;
     this.findCreate = findCreate;
@@ -108,9 +115,9 @@ function XApiTrackingState()
     function getCompletionStatus()
     {
         var completed = true;
-        for(var i = 0; i<state.completedPages.length; i++)
+        for(var i = 0; i<this.completedPages.length; i++)
         {
-            if(state.completedPages[i] == false)
+            if(this.completedPages[i] == false)
             {
                 completed = false;
                 break;
@@ -136,11 +143,29 @@ function XApiTrackingState()
         }
     }
 
+    function getCompletionPercentage()
+    {
+        var completed = true;
+        var completedpages = 0;
+        if (this.completedPages.length == 0)
+        {
+            return 0;
+        }
+        for(var i = 0; i<this.completedPages.length; i++)
+        {
+            if(this.completedPages[i] == true)
+            {
+                completedpages++;
+            }
+        }
+        return (completedpages / this.completedPages.length) * 100.0;
+    }
+
     function getSuccessStatus()
     {
         if (this.lo_type != "pages only")
         {
-            if (state.getScaledScore() > this.lo_passed)
+            if (this.getScaledScore() > this.lo_passed)
             {
                 return "passed";
             }
@@ -151,7 +176,7 @@ function XApiTrackingState()
         }
         else
         {
-            if (getCompletionStatus() == 'completed')
+            if (this.getCompletionStatus() == 'completed')
             {
                 return "passed";
             }
@@ -177,7 +202,7 @@ function XApiTrackingState()
     {
         if (this.lo_type == "pages only")
         {
-            if (getSuccessStatus() == 'completed')
+            if (this.getCompletionStatus() == 'completed')
                 return 100;
             else
                 return 0;
@@ -260,13 +285,13 @@ function XApiTrackingState()
     {
         for (i=0; i<sit.nrinteractions; i++)
         {
-            var sit2 = state.findInteraction(sit.page_nr, i);
-            if (sit2 == null || sit2.duration < 1000)
+            var sit2 = this.findInteraction(sit.page_nr, i);
+            if (sit2 == null)
             {
                 return false;
             }
         }
-        if (sit.ia_type=="page" && sit.duration < state.page_timeout)
+        if (sit.ia_type=="page" && sit.duration < this.page_timeout)
         {
             return false;
         }
@@ -279,61 +304,85 @@ function XApiTrackingState()
         interaction = new XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name);
         interaction.enterInteraction(correctanswer, correctoptions, page_name);
         this.interactions.push(interaction);
+        this.currentid = interaction.id;
     }
 
     function exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, page_name)
     {
+        if (ia_nr <0)
+        {
+            this.currentpageid = "";
+        }
+        else
+        {
+            this.currentid = "";
+        }
+
         var sit = this.findInteraction(page_nr, ia_nr);
         this.verifyExitInteractionParameters(sit, result, learneroptions, learneranswer, feedback);
 
         sit.exitInteraction(result,learneranswer, learneroptions, feedback, page_name);
 
-        var temp = false;
-        var i = 0;
-        for(i; i<state.toCompletePages.length;i++)
-        {
-            var currentPageNr = state.toCompletePages[i];
-            if(currentPageNr == page_nr)
-            {
-                temp = true;
-                break;
+        if (ia_nr < 0) {
+            var temp = false;
+            var i = 0;
+            for (i; i < state.toCompletePages.length; i++) {
+                var currentPageNr = state.toCompletePages[i];
+                if (currentPageNr == page_nr) {
+                    temp = true;
+                    break;
+                }
             }
-        }
-        if(temp)
-        {
-            if (! state.completedPages[i]) {
-                var sit = state.findInteraction(page_nr, -1);
-                if (sit != null) {
-                    // Skip result page completely
-                    if (sit.ia_type == "result") {
-                        state.completedPages[i] = state.pageCompleted(sit);
+            if (temp) {
+                if (!this.completedPages[i]) {
+                    var sit = this.findInteraction(page_nr, -1);
+                    if (sit != null) {
+                        // Skip result page completely
+                        if (sit.ia_type != "result") {
+                            this.completedPages[i] = this.pageCompleted(sit);
+                        }
                     }
                 }
             }
         }
 
-
     }
 
     function setPageType(page_nr, page_type, nrinteractions, weighting)
     {
-        var sit = state.findPage(page_nr);
+        var sit = this.findPage(page_nr);
         if (sit != null)
         {
             sit.ia_type = page_type;
 
             sit.nrinteractions = nrinteractions;
             sit.weighting = parseFloat(weighting);
+            if (page_type != 'page')
+            {
+                state.lo_type = 'interactive';
+            }
         }
     }
 
     function setPageScore(page_nr, score)
     {
-        var sit = state.findPage(page_nr);
+        var sit = this.findPage(page_nr);
         if (sit != null && (state.scoremode != 'first' || sit.count < 1))
         {
             sit.score = score;
         }
+    }
+
+    function find(id)
+    {
+        var i=0;
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].id == id)
+                return this.interactions[i];
+        }
+
+        return null;
     }
 
     function findPage(page_nr)
@@ -391,6 +440,7 @@ function XApiTrackingState()
     function enterPage(page_nr, ia_nr, ia_type, ia_name)
     {
         var sit = this.findCreate(page_nr, ia_nr, ia_type, ia_name);
+        this.currentpageid = sit.id;
         return sit;
     }
     /**
@@ -899,7 +949,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
     {
         this.end = new Date();
         var duration = this.end.getTime() - this.start.getTime();
-        if (duration > 1000)
+        if (duration > 100)
         {
             this.duration += duration;
             this.count++;
@@ -927,27 +977,27 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
 
         this.exitInteractionStamp = new Date();
         var id = baseUrl() + state.templateId + "/" + this.page_nr;
-        var description = "Page " + page_nr;
+        var description = "Page " + this.page_nr;
 
-        if (ia_nr >=0)
+        if (this.ia_nr >=0)
         {
             if (page_name != null && page_name != "") {
-                if (ia_name != null && ia_name != "") {
-                    id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_") + "/" + ia_name.replace(/ /g,"_");
+                if (this.ia_name != null && this.ia_name != "") {
+                    id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_") + "/" + this.ia_name.replace(/ /g,"_");
                 }
                 else
                 {
-                    id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_") + "/" + ia_nr;
+                    id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_") + "/" + this.ia_nr;
                 }
             }
             else
             {
-                if (ia_name != null && ia_name != "") {
-                    id = baseUrl() + state.templateId + "/" + page_nr + "/" + ia_name.replace(/ /g,"_");
+                if (this.ia_name != null && this.ia_name != "") {
+                    id = baseUrl() + state.templateId + "/" + this.page_nr + "/" + this.ia_name.replace(/ /g,"_");
                 }
                 else
                 {
-                    id = state.baseUrl() + state.templateId + "/" + page_nr + "/" + ia_nr;
+                    id = state.baseUrl() + state.templateId + "/" + this.page_nr + "/" + this.ia_nr;
                 }
             }
         }
@@ -959,10 +1009,10 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                 description = page_name;
             }
         }
-        var pageref = " page " + page_nr + " of object " + state.templateId + " of Xerte Installation " + baseUrl();
+        var pageref = " page " + this.page_nr + " of object " + state.templateId + " of Xerte Installation " + baseUrl();
         if (page_name != null && page_name != "")
         {
-            pageref = " page " + page_name + "(page " + page_nr + ") of object " + state.templateId + " of Xerte Installation " + baseUrl();
+            pageref = " page " + page_name + "(page " + this.page_nr + ") of object " + state.templateId + " of Xerte Installation " + baseUrl();
         }
 
         if (this.exit())
@@ -1051,11 +1101,11 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                             statement.object.definition =
                                 {
                                     name: {
-                                        "en-US": ia_name
+                                        "en-US": this.ia_name
                                     },
                                     description:
                                         {
-                                            "en-US": "Matching interaction " + ia_name + " of " + pageref
+                                            "en-US": "Matching interaction " + this.ia_name + " of " + pageref
                                         },
                                     type: "http://adlnet.gov/expapi/activities/cmi.interaction",
                                     interactionType: "matching",
@@ -1113,11 +1163,11 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                             statement.object.definition =
                                 {
                                     name: {
-                                        "en-US": ia_name
+                                        "en-US": this.ia_name
                                     },
                                     description:
                                         {
-                                            "en-US": "Choice interaction " + ia_name + " of " + pageref
+                                            "en-US": "Choice interaction " + this.ia_name + " of " + pageref
                                         },
                                     type: "http://adlnet.gov/expapi/activities/cmi.interaction",
                                     interactionType: "choice",
@@ -1145,17 +1195,17 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                             statement.object.definition =
                                 {
                                     name: {
-                                        "en-US": ia_name
+                                        "en-US": this.ia_name
                                     },
                                     description:
                                         {
-                                            "en-US": "Numeric interaction " + ia_name + " of " + pageref
+                                            "en-US": "Numeric interaction " + this.ia_name + " of " + pageref
                                         },
                                     type: "http://adlnet.gov/expapi/activities/cmi.interaction",
                                     interactionType: "numeric",
                                     correctResponsesPattern: ["0[:]100"]
                                 };
-                            if (ia_nr < 0)  // Page mode
+                            if (this.ia_nr < 0)  // Page mode
                             {
                                 statement.result = {
                                     duration: calcDuration(this.start, this.end),
@@ -1189,21 +1239,21 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                         case 'fill-in':
 
                             // Hmmm is this the page or the interaction itself
-                            if (ia_nr < 0) {
+                            if (this.ia_nr < 0) {
                                 //This is the page
                                 // Get the interaction, it is always assumed to be 0
-                                var siti = state.findInteraction(page_nr, 0);
+                                var siti = state.findInteraction(this.page_nr, 0);
                                 this.correctAnswers = siti.correctAnswers;
                                 this.learnerAnswers = siti.learnerAnswers;
                             }
                             statement.object.definition =
                                 {
                                     name: {
-                                        "en-US": ia_name
+                                        "en-US": this.ia_name
                                     },
                                     description:
                                         {
-                                            "en-US": "Fill-in interaction " + ia_name + " of " + pageref
+                                            "en-US": "Fill-in interaction " + this.ia_name + " of " + pageref
                                         },
                                     type: "http://adlnet.gov/expapi/activities/cmi.interaction",
                                     interactionType: "fill-in",
@@ -1288,57 +1338,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                     }
                 }
 
-                if (!surf_mode) {
-                    var statement;
-                    if (ia_nr >= 0) {
-                        statement =
-                            {
-                                actor: actor,
-                                verb: {
-                                    id: "http://adlnet.gov/expapi/verbs/exited",
-                                    display: {
-                                        "en": "exited"
-                                    }
-                                },
-                                object: {
-                                    objectType: "Activity",
-                                    id: id,
-                                    definition: {
-                                        name: {
-                                            "en": ia_name
-                                        }
-                                    }
-                                },
-                                timestamp: new Date()
-                            };
 
-                    }
-                    else
-                    {
-                        statement =
-                            {
-                                actor: actor,
-                                verb: {
-                                    id: "http://adlnet.gov/expapi/verbs/exited",
-                                    display: {
-                                        "en": "exited"
-                                    }
-                                },
-                                object: {
-                                    objectType: "Activity",
-                                    id: id,
-                                    definition: {
-                                        name: {
-                                            "en": description
-                                        }
-                                    }
-                                },
-                                timestamp: new Date()
-                            };
-                    }
-                    statement = new TinCan.Statement(statement);
-                    SaveStatement(statement);
-                }
                 if (surf_mode) {
                     var statement = new TinCan.Statement(
                         {
@@ -1347,15 +1347,6 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                 id: "http://lrs.surfuni.org/verb/submitted",
                                 display: {
                                     "en-US": "Submitted"
-                                }
-                            },
-                            object: {
-                                objectType: "Activity",
-                                id: "http://lrs.surfuni.org/object/assessment",
-                                definition: {
-                                    name: {
-                                        "en-US": "Assessment"
-                                    }
                                 }
                             },
                             object: {
@@ -1374,7 +1365,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                     );
                     SaveStatement(statement);
                     // If not a page
-                    if (ia_nr >= 0) {
+                    if (this.ia_nr >= 0) {
                         var statement = new TinCan.Statement(
                             {
                                 actor: actor,
@@ -1398,7 +1389,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                         min: 0.0,
                                         max: 100.0
                                     },
-                                    duration: calcDuration(sit.start, sit.end),
+                                    duration: calcDuration(sit.start, sit.end)
                                 },
                                 context: {
                                     extensions: {
@@ -1413,6 +1404,57 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                     SaveStatement(statement);
                 }
             }
+        }
+        if (!surf_mode) {
+            var statement;
+            if (this.ia_nr >= 0) {
+                statement =
+                    {
+                        actor: actor,
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/exited",
+                            display: {
+                                "en": "exited"
+                            }
+                        },
+                        object: {
+                            objectType: "Activity",
+                            id: id,
+                            definition: {
+                                name: {
+                                    "en": this.ia_name
+                                }
+                            }
+                        },
+                        timestamp: new Date()
+                    };
+
+            }
+            else
+            {
+                statement =
+                    {
+                        actor: actor,
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/exited",
+                            display: {
+                                "en": "exited"
+                            }
+                        },
+                        object: {
+                            objectType: "Activity",
+                            id: id,
+                            definition: {
+                                name: {
+                                    "en": description
+                                }
+                            }
+                        },
+                        timestamp: new Date()
+                    };
+            }
+            statement = new TinCan.Statement(statement);
+            SaveStatement(statement);
         }
     }
 
@@ -1500,7 +1542,6 @@ function XTInitialise()
         state.initialise();
     }
     state.mode = "normal";
-
     if(lrsInstance == undefined){
         try{
             lrsInstance = new TinCan.LRS(
@@ -1537,18 +1578,16 @@ function XTInitialise()
                     verb: {
                         id: "http://adlnet.gov/expapi/verbs/launched",
                         display: {
-                            "en-US": "Launched"
+                            "en-US": "launched"
                         }
                     },
                     object: {
                         objectType: "Activity",
-                        id: baseUrl() + state.templateId
-                       
-                        //TODO: get the name for this activity
-                    },
-                    context: {
-                         extensions: {
-                            "http://xerte.org.uk/xapi/title" : x_params.name
+                        id: baseUrl() + state.templateId,
+                        description: {
+                            name: {
+                                "en": x_params.name
+                            }
                         }
                     },
                     timestamp: this.initStamp
@@ -1660,7 +1699,7 @@ function XTSetOption(option, value)
             //completedPages = new Array(length(toCompletePages));
             for(i = 0; i< state.toCompletePages.length;i++)
             {
-                state.completedPages[i] = "false";
+                state.completedPages[i] = false;
             }
 
             break;
@@ -1723,6 +1762,7 @@ function XTEnterPage(page_nr, page_name, page_type)
         id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
         description = page_name;
     }
+
     if (! surf_mode) {
         var statement = new TinCan.Statement(
             {
@@ -1763,7 +1803,7 @@ function XTExitPage(page_nr, page_name)
     }
     var sit = state.findPage(page_nr);
     if (sit != undefined && sit != null) {
-        state.exitInteraction(page_nr, -1, false, "", sit.score, "", false, page_name);
+        state.exitInteraction(page_nr, -1, false, "", sit.score, "", page_name);
     }
 }
 
@@ -1773,7 +1813,7 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 
 }
 
-function XTSetAttendance(page_nr, name, score, page_name)
+function XTSetViewed(page_nr, name, score, page_name)
 {
     this.pageEnd = new Date();
     var id = baseUrl() + state.templateId + "/" + page_nr;
@@ -1787,16 +1827,16 @@ function XTSetAttendance(page_nr, name, score, page_name)
             {
                 actor: actor,
                 verb: {
-                    id: "http://adlnet.gov/expapi/verbs/attended",
+                    id: "http://id.tincanapi.com/verb/viewed",
                     display: {
-                        "en-US": "attended"
+                        "en-US": "viewed"
                     }
                 },
                 result: {
                     "score": {
                         "scaled": score / 100
                     },
-                    "duration": calcDuration(sit.start, this.pageEnd),
+                    "duration": calcDuration(sit.start, this.pageEnd)
                 },
                 object: {
                     objectType: "Activity",
@@ -1813,6 +1853,7 @@ function XTSetAttendance(page_nr, name, score, page_name)
         );
 
         SaveStatement(statement);
+        state.setPageScore(page_nr, score);
     }
 }
 
@@ -1851,7 +1892,7 @@ function XTSetPageScore(page_nr, score, page_name)
                 score: {
                     scaled: score / 100
                 },
-                duration: calcDuration(this.pageStart, this.pageEnd),
+                duration: calcDuration(this.pageStart, this.pageEnd)
             },
             timestamp: this.pageEnd
 
@@ -1994,8 +2035,8 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, co
 
 }
 
-function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback, page_name) {
-    state.exitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback, page_name);
+function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswers, feedback, page_name) {
+    state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswers, feedback, page_name);
 }
 
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, callback)
@@ -2080,43 +2121,243 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
     }
 
     function XTTerminate() {
-        var statement = new TinCan.Statement(
-            {
-                actor: actor,
-                verb: {
-                    id: "http://adlnet.gov/expapi/verbs/exited",
-                    display: {
-                        "en": "Exited"
-                    }
-                },
-                object: {
-                    objectType: "Activity",
-                    id: baseUrl() + state.templateId
-                },
-                timestamp: new Date()
+        if (!state.finished) {
+            var currentpageid = "";
+            state.finished = true;
+            if (state.currentid) {
+                var sit = state.find(currentid);
+                // there is still an interaction open, close it
+                if (sit != null) {
+                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+                }
             }
-        );
-        SaveStatement(statement, false);
+            if (state.currentpageid) {
+                currentpageid = state.currentpageid;
+                var sit = state.find(currentpageid);
+                // there is still an interaction open, close it
+                if (sit != null) {
+                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+                }
+
+            }
+
+            // Save completed when a learning object is completed
+            if (state.getCompletionStatus() == "completed") {
+                var statement = new TinCan.Statement(
+                    {
+                        actor: actor,
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/completed",
+                            display: {
+                                "en-US": "completed"
+                            }
+                        },
+                        object: {
+                            objectType: "Activity",
+                            id: baseUrl() + state.templateId,
+                            description: {
+                                name: {
+                                    "en": state.templateName
+                                }
+                            }
+                        },
+                        result: {
+                            completion: true,
+                            success: (state.getSuccessStatus() == "passed"),
+                            score: {
+                                min: 0.0,
+                                max: 100.0,
+                                raw: state.getdRawScore(),
+                                scaled: state.getdScaledScore()
+                            },
+                            duration: calcDuration(state.start, new Date()),
+                            extensions: {
+                                "http://xerte.org.uk/xapi/trackingstate": JSON.stringify(state)
+                            }
+                        },
+                        timestamp: new Date()
+                    }
+                );
+                SaveStatement(statement, false);
+                if (state.getSuccessStatus() == "passed") {
+                    // Sen passsed
+                    var statement = new TinCan.Statement(
+                        {
+                            actor: actor,
+                            verb: {
+                                id: "http://adlnet.gov/expapi/verbs/passed",
+                                display: {
+                                    "en-US": "passed"
+                                }
+                            },
+                            object: {
+                                objectType: "Activity",
+                                id: baseUrl() + state.templateId,
+                                description: {
+                                    name: {
+                                        "en": state.templateName
+                                    }
+                                }
+                            },
+                            result: {
+                                completion: true,
+                                success: true,
+                                score: {
+                                    min: 0.0,
+                                    max: 100.0,
+                                    raw: state.getdRawScore(),
+                                    scaled: state.getdScaledScore()
+
+                                },
+                                duration: calcDuration(state.start, new Date())
+                            },
+                            timestamp: new Date()
+                        }
+                    );
+                    SaveStatement(statement, false);
+                }
+                else
+                {
+                    // Send failed
+                    var statement = new TinCan.Statement(
+                        {
+                            actor: actor,
+                            verb: {
+                                id: "http://adlnet.gov/expapi/verbs/failed",
+                                display: {
+                                    "en-US": "failed"
+                                }
+                            },
+                            object: {
+                                objectType: "Activity",
+                                id: baseUrl() + state.templateId,
+                                description: {
+                                    name: {
+                                        "en": state.templateName
+                                    }
+                                }
+                            },
+                            result: {
+                                completion: true,
+                                success: false,
+                                score: {
+                                    min: 0.0,
+                                    max: 100.0,
+                                    raw: state.getdRawScore(),
+                                    scaled: state.getdScaledScore()
+
+                                },
+                                duration: calcDuration(state.start, new Date()),
+                            },
+                            timestamp: new Date()
+                        }
+                    );
+                    SaveStatement(statement, false);
+                }
+                // Save scored
+                var statement = new TinCan.Statement(
+                    {
+                        actor: actor,
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/scored",
+                            display: {
+                                "en-US": "scored"
+                            }
+                        },
+                        object: {
+                            objectType: "Activity",
+                            id: baseUrl() + state.templateId,
+                            description: {
+                                name: {
+                                    "en": state.templateName
+                                }
+                            }
+                        },
+                        result: {
+                            completion: true,
+                            success: (state.getSuccessStatus() == "passed"),
+                            score: {
+                                min: 0.0,
+                                max: 100.0,
+                                raw: state.getdRawScore(),
+                                scaled: state.getdScaledScore()
+
+                            },
+                            duration: calcDuration(state.start, new Date())
+                        },
+                        timestamp: new Date()
+                    }
+                );
+                SaveStatement(statement, false);
+
+            }
+
+            // Save exited
+            var statement = new TinCan.Statement(
+                {
+                    actor: actor,
+                    verb: {
+                        id: "http://adlnet.gov/expapi/verbs/exited",
+                        display: {
+                            "en": "exited"
+                        }
+                    },
+                    object: {
+                        objectType: "Activity",
+                        id: baseUrl() + state.templateId,
+                        description: {
+                            name: {
+                                "en": state.templateName
+                            }
+                        }
+                    },
+                    result: {
+                        completion: state.getCompletionStatus(),
+                        success: state.getSuccessStatus(),
+                        score: {
+                            min: 0.0,
+                            max: 100.0,
+                            raw: state.getdRawScore(),
+                            scaled: state.getdScaledScore()
+                        },
+                        extensions: {
+                            "http://xerte.org.uk/xapi/trackingstate": JSON.stringify(state)
+                        },
+                        duration: calcDuration(state.start, new Date())
+                    },
+                    timestamp: new Date()
+                }
+            );
+            SaveStatement(statement, false);
+        }
         window.opener.innerWidth += 2;
         window.opener.innerWidth -= 2;
     }
 
-    function SaveStatement(statement, async = true) {
+    function SaveStatement(statement, async) {
         
-        var key = baseUrl() + "sessionId";
-        keyValuePairs = {};
-        keyValuePairs[key] = state.sessionId;
-        extens = {"extensions" : keyValuePairs};
-        contextExtens = new TinCan.Context(extens);
+        var key = "http://xerte.org.uk/sessionId";
+        extension = {
+            "http://xerte.org.uk/sessionId" : state.sessionId,
+            "http://xerte.org.uk/learningObjectId" : baseUrl() + state.templateId,
+            "http://xerte.org.uk/learningObjectTitle" : x_params.name + "(" + state.templateId + ")"
+        };
         if(statement.context == undefined)
         {
-            statement.context = contextExtens;
+            statement.context = new TinCan.Context({"extensions" : extension});
         }else if(statement.context.extensions == undefined){
-            statement.context.extensions = keyValuePairs;
+            statement.context.extensions = extension;
         }else{
-            statement.context.extensions[key] = state.sessionId;
+            // Loop over all keys in extension and add to existing extension
+            $each(extension, function(key, value){
+                statement.context.extensions[key] = value;
+            });
         }
         statement.id = null;
+        if (typeof async == 'undefined')
+        {
+            async = true;
+        }
         if(async){
             lrsInstance.saveStatement(
                 statement,
@@ -2225,7 +2466,6 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                 var learnerAnswer, correctAnswer;
                 switch (state.interactions[i].ia_type) {
                     case "match":
-                        var resultCorrect=false;
                         for (var c = 0; c < state.interactions[i].correctOptions.length; c++) {
                             var matchSub = {}; //Create a subinteraction here for every match sub instead
                             correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
@@ -2246,7 +2486,7 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                             }
 
                             matchSub.question = state.interactions[i].ia_name;
-                            matchSub.correct = resultCorrect;
+                            matchSub.correct = (learnerAnswer === correctAnswer);
                             matchSub.learnerAnswer = learnerAnswer;
                             matchSub.correctAnswer = correctAnswer;
                             results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
@@ -2258,17 +2498,15 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                         correctAnswer = state.interactions[i].correctAnswers.join(", ");
                         break;
                     case "multiplechoice":
-                        learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0].answer : "";
+                        learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
                         for (var j = 1; j < state.interactions[i].learnerAnswers.length; j++) {
-                            learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j.answer];
+                            learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
                         }
                         correctAnswer = "";
                         for (var j = 0; j < state.interactions[i].correctAnswers.length; j++) {
-                            if (state.interactions[i].correctAnswers[j].result) {
-                                if (correctAnswer.length > 0)
-                                    correctAnswer += "\n";
-                                correctAnswer += state.interactions[i].correctAnswers[j].answer;
-                            }
+                            if (correctAnswer.length > 0)
+                                correctAnswer += "\n";
+                            correctAnswer += state.interactions[i].correctAnswers[j];
                         }
                         break;
                     case "numeric":

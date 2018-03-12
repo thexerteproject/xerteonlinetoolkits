@@ -29,3 +29,22 @@
 		padding-bottom:	10px;
 	}
 	
+	#imgHolder.fullScreen .panel {
+		margin: 0;
+	}
+	
+	#imgHolder.Top #imgInnerDiv, #imgHolder.Bottom #imgInnerDiv {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	
+	#imgHolder.Top #imgInnerDiv {
+		margin-top: 1em;
+		margin-bottom: 0;
+	}
+	
+	#imgHolder.Bottom #imgInnerDiv {
+		margin-top: 0;
+		margin-bottom: 1em;
+	}
+	

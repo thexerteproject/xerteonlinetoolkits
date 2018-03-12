@@ -215,6 +215,8 @@
 
 	define("PROPERTIES_LIBRARY_TSUGI_DESCRIPTION", "<p>Here you can publish your project as an LTI1 tool. You need to specify the name, and you need to specify the key and secret which you need to give to the persons who want to use the LTI tool in their environment. The key identifies the project within this Xerte installation, so it has to be unique. You can also choose to track activities through xAPI. If you want to do that you need to specify the end-point, the username and the password of the LRS that is going to receive the xAPI events.</p><p>If you want to track activities without LTI, the only option you have as a student id is using a group. The group will need to be specified in the launch URL (substitute groupname by the groupname you want to used).</p>");
 
+	define("PROPERTIES_LIBRARY_TSUGI_NOTAVAILABLE_DESCRIPTION", "<p>Here you can publish your project as an LTI1 tool if you install and configure TSUGI as part of your installation. You can also choose to track activities through xAPI. If you want to do that you need to specify the end-point, the username and the password of the LRS that is going to receive the xAPI events.</p><p>As LTI to identify the learner is not installed, the only option you have as a student id is using a group. The group will need to be specified in the launch URL (substitute groupname by the groupname you want to used).</p>");
+
 	define("PROPERTIES_LIBRARY_TSUGI_PUBLISH", "Publish project through Tsugi as an LTI1 tool");
 
 	define("PROPERTIES_LIBRARY_TSUGI_NAME", "Name:");

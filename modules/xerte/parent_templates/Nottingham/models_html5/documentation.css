@@ -13,18 +13,17 @@
 	}
 	
 	#btnHolder {
+		margin-top: 0.5em;
 		float: right;
-		margin-top: 0.7em;
-	}
-	
-	#btnHolder .ui-icon {
-		width:	auto;
-		height:	auto;
 	}
 	
 	#downloadBtn .ui-icon {
 		width:	auto;
 		height:	auto;
+	}
+	
+	#downloadBtn {
+		margin-top: 0.5em;
 	}
 	
 	#slideTxt {
@@ -91,9 +90,5 @@
 
 	.optionGroup.horizontal:not(:first-of-type) .optionTxt {
 		margin-left: 3.5em;
-	}
-	
-	#downloadBtn {
-		margin-top: 0.5em;
 	}
 	
