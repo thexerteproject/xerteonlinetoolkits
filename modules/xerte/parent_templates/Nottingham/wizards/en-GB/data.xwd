@@ -1969,26 +1969,50 @@
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
 	</background></mediaLesson><mediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
-
+		
 		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
 		<media label="Media" type="media"/>
 		<tip label="Media Description" type="TextInput"/>
 		<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
-
+		
 		<audioImg type="group" label="Image (Audio only)" optional="true">
 			<audioImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
 			<audioImageTip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
 		</audioImg>
-
+		
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<audioPosition label="Audio Player Position" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
-
+		
+		<newNodes>
+			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
+			<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>
+			<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchGoogleFeed>
+			<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchWebpage>
+			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="button" answerType="single" overlay="false" synchStart="0" clearPanel="false" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
+			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" overlay="false" clearPanel="false" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
+			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchTextPlus>
+			<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>
+			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
+			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
+		</newNodes>
+		
 	</mediaPanel><panel menuItem="Panel" icon="icApplication" remove="true" max="3">
-
+		
 		<name label="Panel Title" type="TextInput" wysiwyg="true"/>
-
-
+		
+		<newNodes>
+			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
+			<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>
+			<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchGoogleFeed>
+			<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchWebpage>
+			<synchMediaPlus><![CDATA[<synchMediaPlus name="Enter Title" media="Select Media" width="800" height="600" tip="Enter a Description for Accessibility" synchStart="0" autoplay="false" clearPanel="false" pauseMedia="true" transcriptBtnTxt="Transcript"/>]]></synchMediaPlus>
+			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearPanel="false" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
+			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" clearPanel="false" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
+			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchTextPlus>
+			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
+		</newNodes>
+		
 	</panel><synchCue menuItem="Pause/Jump Point" icon="icPause" remove="true">
 		<synch label="Synch Point" type="TextInput" defaultValue="0"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
@@ -2240,9 +2264,6 @@
 		<showPres label="Show Presentation" optional="true" type="checkBox" defaultValue="true"/>
 		<showVideo2 label="Show Video 2" optional="true" type="checkBox" defaultValue="true"/>
 		<showVideo3 label="Show Video 3" optional="true" type="checkBox" defaultValue="true"/>
-		<newNodes>
-			<panel><![CDATA[<panel name="Enter Panel Title"/>]]></panel>
-		</newNodes>
 
 	<narrate type="group" label="Narration" optional="true" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>

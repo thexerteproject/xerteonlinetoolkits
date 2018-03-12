@@ -13,8 +13,17 @@
 
 /* PANEL LAYOUT */
 #panelHolder {
-    width: 100%;
+    width: 60%;
     height: 400px;
+    display: inline-block;
+}
+
+
+#mcqPanel {
+    background-color: #0a001f;
+    height: 200px;
+    width: 200px;
+    display: inline-block;
 }
 
 #panelHolder .panel.tileH {

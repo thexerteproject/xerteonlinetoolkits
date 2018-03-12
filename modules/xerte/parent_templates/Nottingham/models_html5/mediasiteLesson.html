@@ -21,7 +21,7 @@
         // pageChanged & sizeChanged functions are needed in every model file
         // other functions for model should also be in here to avoid conflicts
     var mediasiteLesson = new function() {
-            var	$panelHolder,
+            var	$panelHolder, $mcqHolder,
                 plugins = ["textplus", "subtitleplus", "xot", "mediaplus", "mcq", "slides", "sortholder"], // list of popcorn plugins to load
                 css = ["subtitleplus", "mcq", "slides"], // list of popcorn plugin css to load
                 numLoaded = 0,
@@ -299,7 +299,7 @@
             // function called when mediasitePlayerIFRame.js & plugin files have all loaded
             this.setUp = function() {
                 // _____ SORT PAGE LAYOUT _____
-                var player = new Mediasite.Player( "panelHolder",
+                var apiInstance = new Mediasite.Player( "panelHolder",
                     {
                         url: "https://deltion.mediamission.nl/Mediasite/Play/c550ff4fee9d493b8f5efebe45b777271d?player=MediasiteIntegration",
                         events: {
@@ -311,13 +311,14 @@
                         }
                     });
                 var ctrlPng = x_templateLocation + "common_html5/MediasitePlayerControls.png";
-                var controls = new Mediasite.PlayerControls(player, "controlHolder",
+                var controls = new Mediasite.PlayerControls(apiInstance, "controlHolder",
                     {
                         imageSprite: "url(" + ctrlPng + ")"
                     }
                 );
 
                 function showStreams() {
+                    preSortPopcorn();
                     var visiblestreams = [];
                     if (x_currentPageXML.getAttribute("showVideo1") === "true")
                     {
@@ -341,14 +342,15 @@
                     }
                     if (x_currentPageXML.getAttribute("showVideo3") === "true")
                     {
-                        visiblestreams.push(Mediasite.StreamType.Video3);
+                        playervisiblestreams.push(Mediasite.StreamType.Video3);
                     }
-                    player.setVisibleStreamTypes(visiblestreams);
+                    apiInstance.setVisibleStreamTypes(visiblestreams);
                 }
+
 
                 //TODO verander height naar relatief
                 $panelHolder = $("#panelHolder");
-
+                $mcqHolder = $("#mcqPanel");
                 var	panelData = $(x_currentPageXML).children(),
                     panelLayout = x_currentPageXML.getAttribute("layout");
 
@@ -357,6 +359,8 @@
                     maxPanels = 4,
                     mediaPanelIndex,
                     popcornInstance; //TODO kan niet helemaal weg
+
+                debugger;
 
                 // get index of media panel
                 for (var i=0; i<panelData.length; i++) {
@@ -395,9 +399,6 @@
                     }
                     panelData.splice(maxPanels, panelData.length - maxPanels);
                 }
-
-                // Hide certain aspects of the presentation
-                console.log(x_currentPageXML.getAttribute("hideSlides"));
 
 
 
@@ -444,9 +445,11 @@
                     if (panelData[i].getAttribute("name") != "") {
                         title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
                     }
+                    debugger;
                     $('<div class="panel">' + title + '</div>')
-                        .appendTo($panelHolder)
+                        .appendTo($mcqHolder)
                         .attr("id", "panel" + i);
+                    debugger;
                 }
 
                 // layouts where panels are roughly the same size - either in grid or stacked vertically/horizontally
@@ -544,28 +547,30 @@
 
                 // _____ SORT & CREATE SYNCH POINT EVENTS FOR EACH PANEL _____
 
-                //if (popcornInstance != undefined) {
-
+                function preSortPopcorn() {
                     //panelData.each(function(i) {
-                    //    mediasiteLesson.sortPopcorn($(this).children(), "panel" + i, popcornInstance, $(".mainMedia"));
-                    //});
+                    apiInstance.duration = apiInstance.getDuration();
+                    mediasiteLesson.sortPopcorn(panelData.context.children[0].children, "panel" + 0, apiInstance, $(".mainMedia"));
+                }
 
                     //Adds events to popcorn
                     //TODO NEEDED: TIMEUPDATE & PAUSED & PLAY, Maybe seeked, might be IE hack.
-                    //TODO gettime -> getblock -> updatetable -> sentXAPI (Blocks are impossible for now have to check later (editor issues))
+                    //TODO gettime -> (getblock -> updatetable) -> sentXAPI (Blocks are impossible for now have to check later (editor issues))
                     //getblock in general herschrijven vanwege de .duration, deze is specifiek voor de sync points die we bij popcorn gebruiken, herintegratie is daarmee wonderbaarlijk vervelend
                     var lastTime = -1;
-                    player.addHandler({"currenttimechanged": function (eventData) {
+                    apiInstance.addHandler({"currenttimechanged": function (eventData) {
                         var currentTime = eventData.currentTime;
                         if(currentTime != lastTime && currentTime > 0)
                         {
                             lastTime = currentTime;
-                            console.log(lastTime);
+                            //console.log(lastTime);
+                            if (lastTime > 50 && lastTime < 51)
+                            {
 
+                                apiInstance.pause()
+                            }
                         }
                     }});
-                    player.addHandler({"playstatechanged": function (eventData) {console.log(eventData); }});
-
                 x_pageLoaded();
 
             };
@@ -653,11 +658,11 @@
             // the following three functions sort synchData (so events have correct start / end points), creates popcorn instance and calls plugins to create synch points
 
             // function can be called for mainMedia & additional media from mediaPlus plugin
-            this.sortPopcorn = function(synchData, targetRef, popcornInstance, $mediaDiv) {
+            this.sortPopcorn = function(synchData, targetRef, apiInstance, $mediaDiv) {
                 // wait until metadata has loaded before continuing
-                if (popcornInstance.duration()) {
-                    mediasiteLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
-                } else if (popcornInstance.media._util != undefined && popcornInstance.media._util.type == "Vimeo") {
+                if (apiInstance.duration) {
+                    mediasiteLesson.sortPopcornNow(synchData, targetRef, apiInstance, $mediaDiv);
+                } else if (apiInstance.media._util != undefined && apiInstance.media._util.type == "Vimeo") {
                     function onMessageReceived(event) {
                         if (!(/^https?:\/\/player.vimeo.com/).test(event.origin)) {
                             return false;
@@ -673,8 +678,8 @@
                     }
                     window.addEventListener("message", onMessageReceived, false);
                 } else {
-                    popcornInstance.on("loadedmetadata", function() {
-                        mediasiteLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
+                    apiInstance.on("loadedmetadata", function() {
+                        mediasiteLesson.sortPopcornNow(synchData, targetRef, apiInstance, $mediaDiv);
                     });
                 }
             }
@@ -702,8 +707,7 @@
                 return synch;
             }
 
-            //Function not necesarry for now
-            this.sortPopcornNow = function(synchData, targetRef, popcornInstance, $mediaDiv) {
+            this.sortPopcornNow = function(synchData, targetRef, apiInstance, $mediaDiv) {
                 var data = new Array(), // array of objects containing details of a synch point event
                     prevStart = 0,
                     start, end;
@@ -726,7 +730,6 @@
                             target:		targetRef + "_" + j,
                             allInfo:	this
                         });
-
 
                         if ($(this).children().length > 0) {
                             if (this.nodeName == "synchMediaPlus") {
@@ -811,20 +814,15 @@
                         }
                     }
                 }
-
+                //TODO popcorn
                 // set end point to end of media if still undefined
                 for (var j=0; j<data.length; j++) {
                     if (data[j].end == undefined && data[j].type != "synchEmpty" && data[j].type != "synchCue") {
-                        if (popcornInstance.media._util != undefined && (popcornInstance.media._util.type == "Vimeo" || popcornInstance.media._util.type == "YouTube")) {
-                            if (popcornInstance.duration()) {
-                                data[j].end = popcornInstance.duration() - 1;
+                            if (apiInstance.duration) {
+                                data[j].end = apiInstance.duration - 1;
                             } else {
                                 data[j].end = $mediaDiv.data("duration") - 1;
                             }
-                        } else {
-                            // apart from vimeo it works better if end is set to after the end of media
-                            data[j].end = popcornInstance.duration() + 10;
-                        }
                         data[j].autoEnd = true;
                     }
                 }
@@ -832,12 +830,11 @@
 
                 // _____ ADD EVENTS FOR EACH SYNCH POINT _____
 
-                // add pause points for mainMedia/mediaPlus
-                for (var j=0; j<synchData.length; j++) {
-                    if (synchData[j].nodeName == "synchCue") {
-                        mediasiteLesson.setUpPopcornCue(popcornInstance, synchData[j]);
-                    }
-                }
+                // add pause points for mainMedia/mediaPlus dit kan niet op deze manier zo
+                //TODO popcorn
+                mediasiteLesson.setUpPopcornCue(apiInstance, synchData);
+
+
 
                 // add all other synch events
                 for (var j=0; j<data.length; j++) {
@@ -888,21 +885,22 @@
                             pluginAttributes.name = pluginAttributes.name + ' <span class="alert">[' + authorSupportTxt + ']</span>';
                         }
 
-                        popcornInstance[pluginName](pluginAttributes);
+
+                        //TODO apiInstance[pluginName](pluginAttributes);
                         // ^^ plugins called are either bespoke ones in popcorn/plugins folder or from popcorn-complete.min.js
                         // ^^ for those from popcorn-complete.min.js, the xwd node names & values must match the expected popcorn properties for the plugin
 
-                        if ($.inArray(pluginName, plugins) == -1) {
-                            // plugin is being called from popcorn-complete.min.js - need to call this too (gets holder in correct state with titles & visibility)
-                            popcornInstance["sortholder"](pluginAttributes);
-                        }
+                        //if ($.inArray(pluginName, plugins) == -1) {
+                        //    // plugin is being called from popcorn-complete.min.js - need to call this too (gets holder in correct state with titles & visibility)
+                        //    popcornInstance["sortholder"](pluginAttributes);
+                        //}
 
                         // pauses media at synch point if needed
-                        if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
-                            popcornInstance.cue(thisContent.start, function() {
-                                this.pause();
-                            });
-                        }
+                        //if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
+                        //    apiInstance.cue(thisContent.start, function() {
+                        //        this.pause();
+                        //    });
+                        //}
 
                         if (data[0].type == "synchMCQ")
                         {
@@ -934,7 +932,7 @@
                                     var end1 = blocks[i + 1].synchStart;
                                 }
                                 else {
-                                    end1 = popcornInstance.duration();
+                                    end1 = apiInstance.duration;
                                 }
                                 var durat1 = end1 - start1;
                                 blocks[i]["duration"] = durat1;
@@ -944,11 +942,59 @@
                 }
             }
 
-            function isDuplicate(testArr, time){
+            function isDuplicate(id, testArr, time){
                 return testArr.some(function (el) {
                     return el.synchStart == time;
                 });
             }
+
+            this.setUpPopcornCue = function(apiInstance, synchData) {
+                apiInstance.addHandler({"currenttimechanged": function (eventData) {
+                    var currentTime = eventData.currentTime;
+                    var lastTime = 0;
+                    if(currentTime != lastTime && currentTime > 0)
+                    {
+                        lastTime = currentTime;
+                        console.log(lastTime);
+                    }
+                    for (var i = 0; i < synchData.length; i++) {
+                        //niet netjes geen idee waarom getAttribute niet werkt.
+                        var timeStamp = synchData[i].attributes[6].value
+                        if(timeStamp >= currentTime && timeStamp <= currentTime + 0.3 )
+                        {
+                            apiInstance.pause();
+                        }
+                    }
+
+                }});
+                //TODO if popcorn instance.cue
+                /*this.enqueue(apiInstance, Number(synchData.getAttribute("synchstart")), function() {
+                    // pause / play media
+                    if (synchData.getAttribute("pauseMedia") == "true") {
+                        apiInstance.pause();
+                    } else {
+                        apiInstance.play();
+                    }
+
+                    // disable media controls
+                    //if (synchData.getAttribute("disable") == "true") {
+                    //    mediaLesson.enableControls(this.media, false);
+                    //}
+
+                    // skip media
+                    if (synchData.getAttribute("destination") != undefined && $.isNumeric(synchData.getAttribute("destination"))) {
+                        this.currentTime(synchData.getAttribute("destination"));
+                    }
+                });*/
+            };
+
+            //time in seeconds
+            this.enqueue = function (apiInstance, time, fn) {
+                apiInstance.addEventHandler()
+                var temp = apiInstance.getTimedEvents();
+            };
+
+
 
             // function disables / enables media controls
             this.enableControls = function(media, enable) {
@@ -1007,8 +1053,9 @@
     </div>
 
     <div id="contentCover"></div>
-
-    <div id="panelHolder"></div>
-    <div id="controlHolder"></div>
-
+    <div id="MediasiteHolder">
+        <div id="panelHolder"></div>
+        <div id="mcqPanel"></div>
+        <div id="controlHolder"></div>
+    </div>
 </div>
