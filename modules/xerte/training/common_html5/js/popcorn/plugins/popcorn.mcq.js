@@ -29,7 +29,7 @@ childNodes (synchMCQOption):
 required: text correct
 optional: feedback page synch play enable
 
-*dealt with in mediaLesson.html
+*dealt with in mediasiteLesson.html
 
 */
 
@@ -102,12 +102,12 @@ optional: feedback page synch play enable
 			
 			if (options.childNodes[index].getAttribute("enable") == "true" || (enable == true && ((options.childNodes[index].getAttribute("page") == undefined || options.childNodes[index].getAttribute("page") == "") && (options.childNodes[index].getAttribute("synch") == undefined || options.childNodes[index].getAttribute("synch") == "")))) {
 				// controls will be enabled if correct answer selected unless there is a 'go to page' or 'go to synch point' action associated with it
-				mediaLesson.enableControls(media.media, true);
+				mediasiteLesson.enableControls(media.media, true);
 			}
 			
 			// automatically enable if the question has been set up so there's no answer that will enable them
 			if (autoEnable == true) {
-				mediaLesson.enableControls(media.media, true);
+				mediasiteLesson.enableControls(media.media, true);
 			}
 			
 			// show feedback if there is some, with button to do action afterwards (change page, media current time, play media)
@@ -156,7 +156,7 @@ optional: feedback page synch play enable
 					media.play();
 				}
 			}
-			mediaLesson.enableControls(media.media, true);
+			mediasiteLesson.enableControls(media.media, true);
 		}
 		
 		return {
@@ -379,9 +379,9 @@ optional: feedback page synch play enable
 					}
 					
 					if (options.disable == "true") {
-						mediaLesson.enableControls(this.media, false);
+						mediasiteLesson.enableControls(this.media, false);
 					} else {
-						mediaLesson.enableControls(this.media, true);
+						mediasiteLesson.enableControls(this.media, true);
 					}
 				}
 				
@@ -390,7 +390,7 @@ optional: feedback page synch play enable
 			
 			end: function(event, options) {
 				// fire on options.end
-				mediaLesson.enableControls(this.media, true);
+				mediasiteLesson.enableControls(this.media, true);
 				$target.hide();
 			}
 		};

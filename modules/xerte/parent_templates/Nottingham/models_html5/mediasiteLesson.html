@@ -294,7 +294,7 @@
                             console.log("Failed to load Mediasite.js & plugins");
                         });
                 }
-            }
+            };
 
             // function called when mediasitePlayerIFRame.js & plugin files have all loaded
             this.setUp = function() {
@@ -342,7 +342,7 @@
                     }
                     if (x_currentPageXML.getAttribute("showVideo3") === "true")
                     {
-                        playervisiblestreams.push(Mediasite.StreamType.Video3);
+                        visiblestreams.push(Mediasite.StreamType.Video3);
                     }
                     apiInstance.setVisibleStreamTypes(visiblestreams);
                 }
@@ -360,7 +360,7 @@
                     mediaPanelIndex,
                     popcornInstance; //TODO kan niet helemaal weg
 
-                debugger;
+
 
                 // get index of media panel
                 for (var i=0; i<panelData.length; i++) {
@@ -445,46 +445,44 @@
                     if (panelData[i].getAttribute("name") != "") {
                         title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
                     }
-                    debugger;
                     $('<div class="panel">' + title + '</div>')
                         .appendTo($mcqHolder)
                         .attr("id", "panel" + i);
-                    debugger;
                 }
 
                 // layouts where panels are roughly the same size - either in grid or stacked vertically/horizontally
                 if (panelLayout == "tileH") {
-                    $panelHolder.find(".panel").addClass("tileH fullH");
+                    $mcqHolder.find(".panel").addClass("tileH fullH");
 
                 } else if (panelLayout == "tileV") {
-                    $panelHolder.find(".panel").addClass("tileV fullW");
+                    $mcqHolder.find(".panel").addClass("tileV fullW");
 
                 } else if (panelLayout == "grid") {
                     if (panelData.length > 2) {
-                        $panelHolder.append('<div class="top"></div><div class="bottom"></div>');
+                        $mcqHolder.append('<div class="top"></div><div class="bottom"></div>');
 
-                        var panels = $panelHolder.find(".panel");
+                        var panels = $mcqHolder.find(".panel");
 
                         for (var i=0; i<panels.length; i++) {
                             if (i < 2) {
-                                $(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH halfH");
+                                $(panels[i]).appendTo($mcqHolder.find(".top")).addClass("tileH halfH");
                             } else {
-                                $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
+                                $(panels[i]).appendTo($mcqHolder.find(".bottom")).addClass("tileH halfH");
                             }
                         }
 
                     } else if (panelData.length > 1) {
-                        $panelHolder.find(".panel").addClass("tileH fullH");
+                        $mcqHolder.find(".panel").addClass("tileH fullH");
 
                     } else {
-                        $panelHolder.find(".panel").addClass("fullH");
+                        $mcqHolder.find(".panel").addClass("fullH");
                     }
 
                     // layouts where screen is split with large panel on one side and smaller panels on other side - can be horizontally or vertically
                 } else if (panelLayout == "top" || panelLayout == "bottom") {
-                    $panelHolder.append('<div class="top"></div><div class="bottom"></div>');
+                    $mcqHolder.append('<div class="top"></div><div class="bottom"></div>');
 
-                    var panels = $panelHolder.find(".panel");
+                    var panels = $mcqHolder.find(".panel");
 
                     if (panelLayout == "top") {
                         for (var i=0; i<panels.length; i++) {
@@ -506,25 +504,25 @@
                     }
 
                 } else {
-                    $panelHolder.append('<div class="splitScreen"><div class="left"></div><div class="right"></div></div>');
+                    $mcqHolder.append('<div class="splitScreen"><div class="left"></div><div class="right"></div></div>');
 
-                    var panels = $panelHolder.find(".panel");
+                    var panels = $mcqHolder.find(".panel");
 
                     if (panelLayout == "left") {
                         for (var i=0; i<panels.length; i++) {
                             if (i == 0) {
-                                $(panels[i]).appendTo($panelHolder.find(".left")).addClass("fullH");
+                                $(panels[i]).appendTo($mcqHolder.find(".left")).addClass("fullH");
                             } else {
-                                $(panels[i]).appendTo($panelHolder.find(".right")).addClass("tileV");
+                                $(panels[i]).appendTo($mcqHolder.find(".right")).addClass("tileV");
                             }
                         }
 
                     } else if (panelLayout == "right") {
                         for (var i=0; i<panels.length; i++) {
                             if (i == panels.length - 1) {
-                                $(panels[i]).appendTo($panelHolder.find(".right")).addClass("fullH");
+                                $(panels[i]).appendTo($mcqHolder.find(".right")).addClass("fullH");
                             } else {
-                                $(panels[i]).appendTo($panelHolder.find(".left")).addClass("tileV");
+                                $(panels[i]).appendTo($mcqHolder.find(".left")).addClass("tileV");
                             }
                         }
                     }
@@ -538,20 +536,41 @@
                 // _____ LOAD MEDIA _____
 
                 var mediaPanelData = $(x_currentPageXML).children("mediaPanel");
-
+                if (mediaPanelIndex != -1) {
+                    popcornInstance = this.loadMedia(
+                        $("#panel" + mediaPanelIndex),
+                        mediaType,
+                        {	tip: mediaPanelData.attr("tip"),
+                            width: mediaPanelData.attr("width"),
+                            height: mediaPanelData.attr("height"),
+                            media: mediaPanelData.attr("media"),
+                            autoplay: mediaPanelData.attr("autoplay"),
+                            transcript: mediaPanelData.attr("transcript"),
+                            transcriptBtnTxt: mediaPanelData.attr("transcriptBtnTxt"),
+                            audioImage: mediaPanelData.attr("audioImage"),
+                            audioImageTip: mediaPanelData.attr("audioImageTip")
+                        },
+                        true
+                    );
+                }
 
 
                 $(".panel").each(function(i) {
                     $('<div id="panelContent' + i + '" class="panelContent"/>').appendTo($(this));
                 });
 
+                function preSortPopcorn() {
+                    panelData.each(function(i) {
+                        apiInstance.duration = apiInstance.getDuration();
+                        mediasiteLesson.sortPopcorn($(this).children(), "panel" + 1, apiInstance, $(".mainMedia"), popcornInstance);
+                    });
+                }
+                $("#panel0").hide();
+
+
                 // _____ SORT & CREATE SYNCH POINT EVENTS FOR EACH PANEL _____
 
-                function preSortPopcorn() {
-                    //panelData.each(function(i) {
-                    apiInstance.duration = apiInstance.getDuration();
-                    mediasiteLesson.sortPopcorn(panelData.context.children[0].children, "panel" + 0, apiInstance, $(".mainMedia"));
-                }
+
 
                     //Adds events to popcorn
                     //TODO NEEDED: TIMEUPDATE & PAUSED & PLAY, Maybe seeked, might be IE hack.
@@ -573,6 +592,129 @@
                     }});
                 x_pageLoaded();
 
+            }
+
+            this.loadMedia = function($holder, mediaType, mediaData, mainMedia) {
+                var $mediaHolder,
+                    popcornInstance,
+                    classes = "popcornMedia";
+
+                if (mainMedia == true) {
+                    classes += " mainMedia";
+                }
+
+                if (mediaType == "video") {
+                    // load video - max dimensions set in mediaMetaData function below when dimensions received
+                    $mediaHolder = $holder;
+                    var $myVideo = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
+
+                    // is it from youtube or vimeo?
+                    if (mediaData.media.indexOf("www.youtube.com") != -1 || mediaData.media.indexOf("//youtu") != -1) {
+                        var $youTube = $holder.find(".popcornMedia").addClass("youTube");
+                        mediasiteLesson.resizeYouTube($youTube);
+                        popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .youTube", mediaData.media + "&controls=2"); // force controls to appear
+                        $youTube.data("popcornInstance", popcornInstance);
+
+                        if (mediaData.autoplay == "true") {
+                            popcornInstance.play();
+                        }
+
+                    } else if (mediaData.media.indexOf("vimeo.com") != -1) {
+                        var $vimeo = $holder.find(".popcornMedia").addClass("vimeo");
+                        mediasiteLesson.resizeVimeo($vimeo);
+
+                        popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .vimeo", mediaData.media); // force controls to appear
+                        $vimeo.data("popcornInstance", popcornInstance);
+
+
+                        if (mediaData.autoplay == "true") {
+                            popcornInstance.play();
+                        }
+
+                    } else {
+                        $myVideo
+                            .attr("title", mediaData.tip)
+                            .css("margin", "0 auto")
+                            .mediaPlayer({
+                                type		:"video",
+                                source		:mediaData.media,
+                                width		:"100%",
+                                height		:"100%",
+                                autoPlay	:mediaData.autoplay,
+                                pageName	:"mediasiteLesson"
+                            });
+
+                        popcornInstance = Popcorn("#" +$holder.attr("id") + " video");
+                    }
+
+                } else if (mediaType == "audio") {
+                    // load audio in panel - width is either with of audioImage (if exists) or full width of panel
+                    $mediaHolder = $('<div class="mediaHolder"></div>').appendTo($holder);
+                    var $myAudio = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
+
+                    $myAudio
+                        .attr("title", mediaData.tip)
+                        .mediaPlayer({
+                            type		:"audio",
+                            source		:mediaData.media,
+                            width       :"100%",
+                            autoPlay    :mediaData.autoplay
+                        });
+
+                    popcornInstance = Popcorn("#" + $holder.attr("id") + " audio");
+
+                    if (mediaData.audioImage != "" && mediaData.audioImage != undefined) {
+                        var $imgHolder = $('<div class="audioImgHolder"></div>').insertBefore($myAudio),
+                            $img = $('<img class="audioImg" style="visibility: hidden" />').appendTo($imgHolder);
+
+                        $img
+                            .one("load", function() {
+                                x_scaleImg(this, $holder.width(), $holder.height() - x_audioBarH, true, true);
+                                $mediaHolder.width($(this).width());
+                                mediasiteLesson.resizeMedia();
+                            })
+                            .attr("src", x_evalURL(mediaData.audioImage))
+                            .each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+                                if (this.complete) {
+                                    $(this).trigger("load");
+                                }
+                            });
+
+                        if (mediaData.audioImageTip != "" && mediaData.audioImageTip != undefined) {
+                            $img.attr("alt", mediaData.audioImageTip);
+                        }
+                    }
+                }
+
+                // add transcript to media panel if required
+                if (mediaData.transcript != "" && mediaData.transcript != undefined) {
+                    $mediaHolder.append('<div class="transcriptHolder"><div class="transcript">' + x_addLineBreaks(mediaData.transcript) + '</div><button class="transcriptBtn"></button></div>');
+                    $mediaHolder.find(".transcript").hide();
+                    $mediaHolder.find(".transcriptBtn")
+                        .button({
+                            icons:	{secondary:"fa fa-x-btn-hide"},
+                            label:	mediaData.transcriptBtnTxt != undefined && mediaData.transcriptBtnTxt != "" ? mediaData.transcriptBtnTxt : "Transcript"
+                        })
+                        .click(function() {
+                            // transcript slides in and out of view on click
+                            var $transcript = $(this).prev(".transcript");
+                            if ($transcript.is(":hidden") == true) {
+                                $(this).button({icons: {secondary:"fa fa-x-btn-show"}});
+                                $transcript.slideDown();
+                            } else {
+                                $transcript.slideUp();
+                                $(this).button({icons: {secondary:"fa fa-x-btn-hide"}});
+                            }
+                        });
+
+                    if (mediaType == "video") {
+                        $mediaHolder.find(".transcriptHolder")
+                            .width($mediaHolder.find(".popcornMedia").width())
+                            .css("margin", "0 auto");
+                    }
+                }
+
+                return popcornInstance;
             };
 
 
@@ -658,10 +800,10 @@
             // the following three functions sort synchData (so events have correct start / end points), creates popcorn instance and calls plugins to create synch points
 
             // function can be called for mainMedia & additional media from mediaPlus plugin
-            this.sortPopcorn = function(synchData, targetRef, apiInstance, $mediaDiv) {
+            this.sortPopcorn = function(synchData, targetRef, apiInstance, $mediaDiv, popcornInstance) {
                 // wait until metadata has loaded before continuing
                 if (apiInstance.duration) {
-                    mediasiteLesson.sortPopcornNow(synchData, targetRef, apiInstance, $mediaDiv);
+                    mediasiteLesson.sortPopcornNow(synchData, targetRef, apiInstance, $mediaDiv, popcornInstance);
                 } else if (apiInstance.media._util != undefined && apiInstance.media._util.type == "Vimeo") {
                     function onMessageReceived(event) {
                         if (!(/^https?:\/\/player.vimeo.com/).test(event.origin)) {
@@ -671,7 +813,7 @@
                         var data = JSON.parse(event.data);
                         if (data.event == "loadProgress") {
                             $mediaDiv.data("duration", data.data.duration);
-                            mediasiteLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
+                            mediasiteLesson.sortPopcornNow(synchData, targetRef, apiInstance, $mediaDiv, popcornInstance);
                             window.removeEventListener("message", onMessageReceived, false);
                             // ** vimeo events are unreliable. Sometimes they only start working after play/pause/play again - can't work out why. Possible issue in popcorn.js itself
                         }
@@ -679,7 +821,7 @@
                     window.addEventListener("message", onMessageReceived, false);
                 } else {
                     apiInstance.on("loadedmetadata", function() {
-                        mediasiteLesson.sortPopcornNow(synchData, targetRef, apiInstance, $mediaDiv);
+                        mediasiteLesson.sortPopcornNow(synchData, targetRef, apiInstance, $mediaDiv, popcornInstance);
                     });
                 }
             }
@@ -707,7 +849,7 @@
                 return synch;
             }
 
-            this.sortPopcornNow = function(synchData, targetRef, apiInstance, $mediaDiv) {
+            this.sortPopcornNow = function(synchData, targetRef, apiInstance, $mediaDiv, popcornInstance) {
                 var data = new Array(), // array of objects containing details of a synch point event
                     prevStart = 0,
                     start, end;
@@ -834,8 +976,6 @@
                 //TODO popcorn
                 mediasiteLesson.setUpPopcornCue(apiInstance, synchData);
 
-
-
                 // add all other synch events
                 for (var j=0; j<data.length; j++) {
                     // each synch event
@@ -886,7 +1026,8 @@
                         }
 
 
-                        //TODO apiInstance[pluginName](pluginAttributes);
+                        popcornInstance[pluginName](pluginAttributes);
+
                         // ^^ plugins called are either bespoke ones in popcorn/plugins folder or from popcorn-complete.min.js
                         // ^^ for those from popcorn-complete.min.js, the xwd node names & values must match the expected popcorn properties for the plugin
 
@@ -949,6 +1090,7 @@
             }
 
             this.setUpPopcornCue = function(apiInstance, synchData) {
+                var synchpointsHit = 0;
                 apiInstance.addHandler({"currenttimechanged": function (eventData) {
                     var currentTime = eventData.currentTime;
                     var lastTime = 0;
@@ -957,18 +1099,21 @@
                         lastTime = currentTime;
                         console.log(lastTime);
                     }
+
                     for (var i = 0; i < synchData.length; i++) {
                         //niet netjes geen idee waarom getAttribute niet werkt.
-                        var timeStamp = synchData[i].attributes[6].value
-                        if(timeStamp >= currentTime && timeStamp <= currentTime + 0.3 )
+                        var timeStamp = synchData[i].attributes[5].value
+                        if(timeStamp >= currentTime && timeStamp <= currentTime + 0.3 && synchpointsHit <= i)
                         {
+                            console.log(synchpointsHit);
                             apiInstance.pause();
+                            synchpointsHit++;
                         }
                     }
 
                 }});
                 //TODO if popcorn instance.cue
-                /*this.enqueue(apiInstance, Number(synchData.getAttribute("synchstart")), function() {
+                /*this.cue(apiInstance, Number(synchData.getAttribute("synchstart")), function() {
                     // pause / play media
                     if (synchData.getAttribute("pauseMedia") == "true") {
                         apiInstance.pause();
@@ -986,12 +1131,6 @@
                         this.currentTime(synchData.getAttribute("destination"));
                     }
                 });*/
-            };
-
-            //time in seeconds
-            this.enqueue = function (apiInstance, time, fn) {
-                apiInstance.addEventHandler()
-                var temp = apiInstance.getTimedEvents();
             };
 
 
