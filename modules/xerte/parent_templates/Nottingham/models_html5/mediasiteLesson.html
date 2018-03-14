@@ -864,7 +864,6 @@
                             // there's no start or end synch on subtitle holder - store previous sibling's start for relative synching to be done against
                             start = 0;
                         }
-
                         data.push({
                             type:		this.nodeName,
                             start:		start,
@@ -1036,7 +1035,7 @@
                         //    popcornInstance["sortholder"](pluginAttributes);
                         //}
 
-                        // pauses media at synch point if needed
+                         //pauses media at synch point if needed
                         //if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
                         //    apiInstance.cue(thisContent.start, function() {
                         //        this.pause();
@@ -1091,19 +1090,23 @@
 
             this.setUpPopcornCue = function(apiInstance, synchData) {
                 var synchpointsHit = 0;
+                var lastTime = 0;
                 apiInstance.addHandler({"currenttimechanged": function (eventData) {
                     var currentTime = eventData.currentTime;
-                    var lastTime = 0;
-                    if(currentTime != lastTime && currentTime > 0)
+
+                    if(currentTime > lastTime + 0.9 && currentTime > 0)
                     {
                         lastTime = currentTime;
                         console.log(lastTime);
                     }
+                    else{
+                        return;
+                    }
 
                     for (var i = 0; i < synchData.length; i++) {
                         //niet netjes geen idee waarom getAttribute niet werkt.
-                        var timeStamp = synchData[i].attributes[5].value
-                        if(timeStamp >= currentTime && timeStamp <= currentTime + 0.3 && synchpointsHit <= i)
+                        var timeStamp = synchData[i].attributes[5].value;
+                        if(timeStamp >= lastTime && timeStamp <= lastTime + 1 && synchpointsHit <= i)
                         {
                             console.log(synchpointsHit);
                             apiInstance.pause();

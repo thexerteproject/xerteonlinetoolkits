@@ -20,10 +20,11 @@
 
 
 #mcqPanel {
-    background-color: #0a001f;
-    height: 200px;
+    height: 400px;
     width: 200px;
     display: inline-block;
+    top: 15px;
+    position: absolute;
 }
 
 #panelHolder .panel.tileH {
