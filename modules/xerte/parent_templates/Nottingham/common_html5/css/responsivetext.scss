@@ -5,6 +5,9 @@ $pagecontentslarge:2.5vmin;//previously 3vmin
 $pagecontentsmedium:2vmin;//previously 2.5vmin
 $pagecontentssmall:1.5vmin;//previously 1.2vmin
 $resultsHolderwidth:8vmin;//previously 8vmin
+$perspectiveslarge:7.5vmin;
+$perspectivesmedium:5.2vmin;
+$perspectivessmall:3.1vmin;
 
 // --@media TABLETS and above--------------------------------------------------------------
 @media (min-width: 768px) {
@@ -176,6 +179,24 @@ table {
 }
 #hint {
 	font-size: $pagecontentsmedium;
+}
+#thumbBar #thumbHolder .thumbBox h3 {
+	font-size: $pagecontentsmedium;
+}
+#thumbBar.large #thumbHolder .thumbBox h3 {
+	font-size: $pagecontentslarge;
+}
+#gridBack {
+	font-size: $pagecontentslarge;
+}
+#thumbHolder .playAll h3 {
+	font-size: $perspectivesmedium !important;
+}
+#thumbBar.small #thumbHolder .playAll h3 {
+	font-size: $perspectivessmall !important;
+}
+#thumbBar.large #thumbHolder .playAll h3 {
+	font-size: $perspectiveslarge !important;
 }
 //--end of text size changes-----------------------------------------
 }

@@ -268,7 +268,7 @@
 				.click(function(e, playAll) {
 					var $this = $(this);
 					
-					playAll = playAll && $this.data("index") + 2 < $("#thumbHolder .thumbBox").length ? true : false;
+					playAll = playAll && $this.data("index") + 2 <= $("#thumbHolder .thumbBox").length ? true : false;
 					if (playAll == false) { $(".playAll").removeClass("playing"); }
 					$("#pageContents").data("playAll", playAll);
 					
@@ -589,7 +589,11 @@
 		this.mediaFunct = function(mediaElement) {
 			mediaElement.addEventListener("ended", function(e) {
 				if ($("#pageContents").data("playAll") == true) {
-					$("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").trigger("click", true);
+					if ($("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").length > 0) {
+						$("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").trigger("click", true);
+					} else {
+						$("#pageContents").data("playAll", false);
+					}
 				}
 			});
 		}
