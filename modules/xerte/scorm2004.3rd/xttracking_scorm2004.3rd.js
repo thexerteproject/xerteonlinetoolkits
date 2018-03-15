@@ -1457,8 +1457,15 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
     }
 }
 
-function XTSetAttendance(page_nr, name, score, page_name) {
-    
+function XTSetViewed(page_nr, name, score, page_name) {
+    if (state.scormmode == 'normal')
+    {
+        var sit = state.findPage(page_nr);
+        if (sit != null && (state.scoremode != 'first' || sit.count < 1))
+        {
+            sit.score = score;
+        }
+    }
 }
 
 function XTSetPageScore(page_nr, score, page_name)
