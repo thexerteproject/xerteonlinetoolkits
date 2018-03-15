@@ -273,12 +273,13 @@
 		
 		this.finishTracking = function()
 		{
-			var tracked = true;
 			var l_options = [],
 				l_answers = [],
 				l_feedbacks = [],
             	l_correct = 0,
             	l_total = 0;
+
+			tracked = true;
 
             $("#labelHolder .label").each(function(i) {
             	
@@ -310,7 +311,12 @@
 				    success: l_correct == l_total,
 					score: (l_correct * 100.0)/l_total
 				};
-            XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+            var label = $('<div>').html(pageTitle).text();
+            if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+            {
+                label = x_currentPageXML.getAttribute("trackinglabel");
+            }
+            XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, label);
 
                   
             
@@ -347,9 +353,12 @@
                     correctFeedbacks.push("Correct");
             	}
             );
-            XTEnterInteraction(x_currentPage, i, 'match', placeholder, correctOptions, correctAnswers, correctFeedbacks, x_currentPageXML.getAttribute("trackinglabel"));
-
-
+            var label = $('<div>').html(pageTitle).text();
+            if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+            {
+                label = x_currentPageXML.getAttribute("trackinglabel");
+            }
+            XTEnterInteraction(x_currentPage, 0, 'match', label, correctOptions, correctAnswers, correctFeedbacks);
         }
 		
 		
