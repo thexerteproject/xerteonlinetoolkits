@@ -99,9 +99,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
     if($tsugi_enabled) {
         $rlo_object_file = "rloObject.htm";
 
-        if($row["tsugi_xapi_enabled"] == 1) {
-            $tracking_js_file = array($flash_js_dir . "xAPI/xttracking_xapi.js");
-        }
+
         if ($pedit_enabled)
         {
             if($row["tsugi_xapi_enabled"] == 1) {
@@ -110,6 +108,12 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
             else
             {
                 $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $flash_js_dir . "pedit/xttracking_pedit.js");
+            }
+        }
+        else
+        {
+            if($row["tsugi_xapi_enabled"] == 1) {
+                $tracking_js_file = array($flash_js_dir . "xAPI/xttracking_xapi.js");
             }
         }
     }else{

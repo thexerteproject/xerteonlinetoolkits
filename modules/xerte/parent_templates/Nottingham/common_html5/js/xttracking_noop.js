@@ -578,7 +578,7 @@ function XTSetPageScoreJSON(page_nr, score)
     state.setPageScore(page_nr, score);
 }
 
-function XTSetAttendance(page_nr, name, score)
+function XTSetViewed(page_nr, name, score)
 {
     state.setPageScore(page_nr, score);
 }
