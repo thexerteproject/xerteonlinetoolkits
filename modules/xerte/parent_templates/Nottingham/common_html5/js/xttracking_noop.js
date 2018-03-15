@@ -272,10 +272,12 @@ function NoopTrackingState()
     function exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
     {
     	var sit = this.findInteraction(page_nr, ia_nr);
-    	if(ia_nr != -1){
-    		sit.exitInteraction(result,learneranswer, learneroptions, feedback);
-    	}
-    	sit.exit();
+    	if (sit != null) {
+            if (ia_nr != -1) {
+                sit.exitInteraction(result, learneranswer, learneroptions, feedback);
+            }
+            sit.exit();
+        }
     	if (ia_nr < 0) {
             var temp = false;
             var i = 0;
