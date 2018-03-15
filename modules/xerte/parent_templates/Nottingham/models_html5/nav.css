@@ -154,3 +154,8 @@
 		border-color: #d3d3d3;
 		border-bottom: 1px solid white !important;
 	}
+	
+	#pageContents.tab #paneHolder {
+		overflow: hidden;
+	}
+	
