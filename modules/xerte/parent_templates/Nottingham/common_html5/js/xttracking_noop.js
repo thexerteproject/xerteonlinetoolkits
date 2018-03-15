@@ -272,10 +272,12 @@ function NoopTrackingState()
     function exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
     {
     	var sit = this.findInteraction(page_nr, ia_nr);
-    	if(ia_nr != -1){
-    		sit.exitInteraction(result,learneranswer, learneroptions, feedback);
-    	}
-    	sit.exit();
+    	if (sit != null) {
+            if (ia_nr != -1) {
+                sit.exitInteraction(result, learneranswer, learneroptions, feedback);
+            }
+            sit.exit();
+        }
     	if (ia_nr < 0) {
             var temp = false;
             var i = 0;
@@ -583,14 +585,14 @@ function XTSetViewed(page_nr, name, score)
     state.setPageScore(page_nr, score);
 }
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, page_name)
 {
-	state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback);
+	state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback);
 }
 
-function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
+function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, page_name)
 {
-	state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback);
+	state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, page_name);
 }
 
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName)
