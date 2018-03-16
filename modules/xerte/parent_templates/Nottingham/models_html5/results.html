@@ -113,9 +113,6 @@
 		};
 
         this.init = function() {
-
-
-
             var loadFiles = true;
             if(xot_offline) {
 				/* files are already loaded statically */
@@ -292,7 +289,10 @@
 				}
 			});
 			// call this function in every model once everything's loaded
-			x_pageLoaded();
+			if ($("#pageContents").data("setUp") == undefined) {
+				x_pageLoaded();
+				$("#pageContents").data("setUp", true);
+			}
 		};
 
         this.getLabels = function(){
