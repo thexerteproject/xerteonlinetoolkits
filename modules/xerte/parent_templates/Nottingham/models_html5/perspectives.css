@@ -74,6 +74,7 @@
 	
 	#thumbHolder .thumbBox {
 		display: inline-block;
+		vertical-align: top;
 		overflow: hidden;
 		width: 6.5em;
 		height: 6.5em;
