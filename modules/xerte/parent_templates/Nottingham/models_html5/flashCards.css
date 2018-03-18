@@ -61,6 +61,7 @@
 	
 	.cardInner {
 		overflow: auto;
+		backface-visibility: hidden;
 		padding: 1em;
 	}
 	
@@ -105,7 +106,7 @@
 		overflow: visible !important;
 	}
 	
-	#cards.hideOverflow, #cards.hideOverflow .cardInner {
+	#cards.hideOverflow .cardInner {
 		overflow: hidden;
 	}
 	

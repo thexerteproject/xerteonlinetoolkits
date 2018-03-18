@@ -28,7 +28,10 @@
 		border: none;
 		width: 5em;
 		height: 5em;
-		margin: 1.5em;
+		margin-left: 1.5em;
+		margin-right: 1.5em;
+		margin-top: -2.5em;
+		top: 50%;
 	}
 	
 	#thumbBar button .ui-icon {
@@ -46,10 +49,8 @@
 	#thumbBar button:hover, #thumbBar button:focus, #gridBack:hover, #gridBack:focus { color: #666666; }
 	#thumbBar button:active, #gridBack:active { color: #FF9900; }
 	
-	#thumbBar.small button { width: 3em; height: 3em; margin: 1em; }
-	#thumbBar.large button { width: 7em; height: 7em; margin: 2em; }
+	#thumbBar.small button { width: 3em; height: 3em; margin-top: -1.5em; }
 	#thumbBar.small button .ui-icon { font-size: 3em; }
-	#thumbBar.large button .ui-icon { font-size: 7em; }
 	
 	#thumbBar.hidden {
 		height: 0 !important;
@@ -73,6 +74,7 @@
 	
 	#thumbHolder .thumbBox {
 		display: inline-block;
+		vertical-align: top;
 		overflow: hidden;
 		width: 6.5em;
 		height: 6.5em;
@@ -207,11 +209,4 @@
 	.x_responsive #thumbHolder .thumbBox { width: 18.0vmin !important; height: 18.0vmin !important; }
 	.x_responsive #thumbBar.small #thumbHolder .thumbBox { width: 9.7vmin !important; height: 9.7vmin !important; }
 	.x_responsive #thumbBar.large #thumbHolder .thumbBox { width: 26.3vmin !important; height: 26.3vmin !important; }
-
-	.x_responsive #thumbBar button { width: 12.5vmin; height: 12.5vmin; margin: 3.75vmin; }
-	.x_responsive #thumbBar.small button { width: 7.9vmin; height: 7.9vmin; margin: 2.3vmin; }
-	.x_responsive #thumbBar.large button { width: 17.5vmin; height: 17.5vmin; margin: 5vmin; }
-	.x_responsive #thumbBar button .ui-icon { font-size: 12.5vmin; }
-	.x_responsive #thumbBar.small button .ui-icon { font-size: 7.9vmin; }
-	.x_responsive #thumbBar.large button .ui-icon { font-size: 17.5vmin; }
 }
