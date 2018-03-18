@@ -81,13 +81,13 @@
 					});
 				}
 			});
-		}
+		};
 		
 		this.leavePage = function() {
 			if ($(x_currentPageXML).children().length > 0 && tracked != true) {
 				this.finishTracking();
 			}
-        }
+        };
 		
 		this.init = function() {
 			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
@@ -159,7 +159,13 @@
 								$this.html($this.html() + '<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Cross") + '</span><span class="fa fa-fw fa-x-cross"></span></span>');
 							}
 						});
-					}
+                        if (XTGetMode() == "normal")
+                        {
+                            $("#dragDropHolder .label").draggable("disable");
+                            $("#button").hide();
+                        }
+
+                    }
 					$("#feedback").show();
 				});
 				
@@ -289,7 +295,7 @@
         		var l_placeholder;
         		if(tData != "")
        			{
-        			l_placeholder = tData.text().trim(); 
+        			l_placeholder = tData.text().trim();
        			}else{
        				l_placeholder = "";
        			}
@@ -311,22 +317,13 @@
 				    success: l_correct == l_total,
 					score: (l_correct * 100.0)/l_total
 				};
-            var label = $('<div>').html(pageTitle).text();
-            if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
-            {
-                label = x_currentPageXML.getAttribute("trackinglabel");
-            }
-            XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, label);
+
+            XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks);
 
                   
             
-            if (XTGetMode() == "normal")
-            {
-                $("#dragDropHolder .label").draggable("disable");
-             	$("#button").hide();
-            }
-			
-         	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total, x_currentPageXML.getAttribute("trackinglabel"));
+
+         	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
 		}
 		
 		this.initTracking = function(){

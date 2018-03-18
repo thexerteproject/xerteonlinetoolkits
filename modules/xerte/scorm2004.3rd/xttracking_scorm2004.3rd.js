@@ -1404,7 +1404,7 @@ function XTSetOption(option, value)
     }
 }
 
-function XTEnterPage(page_nr, page_name, page_type)
+function XTEnterPage(page_nr, page_name)
 {
     if (state.scormmode == 'normal')
     {
@@ -1430,7 +1430,7 @@ function XTEnterPage(page_nr, page_name, page_type)
 
 
 
-function XTExitPage(page_nr, pageName)
+function XTExitPage(page_nr)
 {
     if (state.scormmode == 'normal')
     {
@@ -1457,7 +1457,7 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
     }
 }
 
-function XTSetViewed(page_nr, name, score, page_name) {
+function XTSetViewed(page_nr, name, score) {
     if (state.scormmode == 'normal')
     {
         var sit = state.findPage(page_nr);
@@ -1468,7 +1468,7 @@ function XTSetViewed(page_nr, name, score, page_name) {
     }
 }
 
-function XTSetPageScore(page_nr, score, page_name)
+function XTSetPageScore(page_nr, score)
 {
     if (state.scormmode == 'normal')
     {
@@ -1480,12 +1480,12 @@ function XTSetPageScore(page_nr, score, page_name)
     }
 }
 
-function XTSetPageScoreJSON(page_nr, score, JSONGraph, page_name) {
-    XTSetPage|Score(page_nr, score, page_name);
+function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
+    XTSetPageScore(page_nr, score);
 }
 
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, page_name)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
 {
     if (state.scormmode == 'normal')
     {
@@ -1498,7 +1498,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, co
     }
 }
 
-function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, page_name)
+function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
 {
     if (state.scormmode == 'normal')
     {
@@ -1508,6 +1508,7 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
 
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, callback)
 {
+    callback(null);
     return 0;
 }
 
@@ -1640,8 +1641,8 @@ function XTResults(fullcompletion) {
 
                     break;
                 case "text":
-                    learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
-                    correctAnswer = state.interactions[i].correctAnswers.join(", ");
+                    learnerAnswer = state.interactions[i].learnerAnswers;
+                    correctAnswer = state.interactions[i].correctAnswers;
                     break;
                 case "multiplechoice":
                     learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
