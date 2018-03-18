@@ -583,7 +583,7 @@ function XTEnterPage(page_nr, page_name)
 	state.enterPage(page_nr, -1, "page", page_name);
 }
 
-function XTExitPage(page_nr, pageName)
+function XTExitPage(page_nr)
 {
     state.exitInteraction(page_nr, -1, false, "", "", "", false);
     XTSendScoreToPedIT();
@@ -621,7 +621,7 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
 	//XTSendScoreToPedIT();
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName, callback)
 {
     var JSONGraph = {
         label: "Enter Page Title",
@@ -633,9 +633,10 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName)
         classnames: ["C-1", "C-2", "C-3"],
         classvalues: [100, 30, 40]
     };
-    var JSONGraphArray = [JSONGraph, JSONGraph2]
-    return JSONGraphArray;
+    var JSONGraphArray = [JSONGraph, JSONGraph2];
+    callback(JSONGraphArray);
 }
+
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
 {
     return "";
@@ -805,8 +806,8 @@ function XTResults(fullcompletion) {
 
                     break;
                 case "text":
-                    learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
-                    correctAnswer = state.interactions[i].correctAnswers.join(", ");
+                    learnerAnswer = state.interactions[i].learnerAnswers;
+                    correctAnswer = state.interactions[i].correctAnswers;
                     break;
                 case "multiplechoice":
                     learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";

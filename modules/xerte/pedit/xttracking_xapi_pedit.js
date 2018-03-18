@@ -299,11 +299,11 @@ function XApiTrackingState()
         return true;
     }
 
-    function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, page_name)
+    function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
     {
         this.verifyEnterInteractionParameters(ia_type, ia_name, correctoptions, correctanswer, feedback);
         interaction = new XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name);
-        interaction.enterInteraction(correctanswer, correctoptions, page_name);
+        interaction.enterInteraction(correctanswer, correctoptions);
         this.interactions.push(interaction);
         this.currentid = interaction.id;
     }
@@ -368,7 +368,7 @@ function XApiTrackingState()
     function setPageScore(page_nr, score)
     {
         var sit = this.findPage(page_nr);
-        if (sit != null && (state.scoremode != 'first' || sit.count < 1))
+        if (sit != null && (this.scoremode != 'first' || sit.count < 1))
         {
             sit.score = score;
         }
@@ -543,29 +543,29 @@ function XApiTrackingState()
             {
                 case 'match':
                     /*
-                     *  1. matching
-                     *      correctoptions: array of objects with source and target strings
-                     *              [
-                     *              {
-                     *                  source: 'lettuce',
-                     *                  target: 'vegetable'
-                     *              },
-                     *              {
-                     *                  source: 'apple',
-                     *                  target: 'fruit'
-                     *              },
-                     *              {
-                     *                  source: 'pear',
-                     *                  target: 'fruit'
-                     *              }
-                     *              ]
-                     *      learneranswer: array of matching representation
-                     *              [
-                     *              'lettuce --> vegetable',
-                     *              'apple --> fruit',
-                     *              'pear --> fruit'
-                     *              ]
-                     */
+                    *  1. matching
+                    *      correctoptions: array of objects with source and target strings
+                    *              [
+                    *              {
+                    *                  source: 'lettuce',
+                    *                  target: 'vegetable'
+                    *              },
+                    *              {
+                    *                  source: 'apple',
+                    *                  target: 'fruit'
+                    *              },
+                    *              {
+                    *                  source: 'pear',
+                    *                  target: 'fruit'
+                    *              }
+                    *              ]
+                    *      learneranswer: array of matching representation
+                    *              [
+                    *              'lettuce --> vegetable',
+                    *              'apple --> fruit',
+                    *              'pear --> fruit'
+                    *              ]
+                    */
                     if (typeof correctoptions == 'object')
                     {
                         for (var i=0; i<correctoptions.length; i++)
@@ -783,29 +783,29 @@ function XApiTrackingState()
             {
                 case 'match':
                     /*
-                     *  1. matching
-                     *      learneroptions: array of objects with source and target strings
-                     *              [
-                     *              {
-                     *                  source: 'lettuce',
-                     *                  target: 'vegetable'
-                     *              },
-                     *              {
-                     *                  source: 'apple',
-                     *                  target: 'fruit'
-                     *              },
-                     *              {
-                     *                  source: 'pear',
-                     *                  target: 'vegetable'
-                     *              }
-                     *              ]
-                     *      learneranswer: array of matching representation
-                     *              [
-                     *              'lettuce --> vegetable',
-                     *              'apple --> fruit',
-                     *              'pear --> vegetable'
-                     *              ]
-                     */
+                    *  1. matching
+                    *      learneroptions: array of objects with source and target strings
+                    *              [
+                    *              {
+                    *                  source: 'lettuce',
+                    *                  target: 'vegetable'
+                    *              },
+                    *              {
+                    *                  source: 'apple',
+                    *                  target: 'fruit'
+                    *              },
+                    *              {
+                    *                  source: 'pear',
+                    *                  target: 'vegetable'
+                    *              }
+                    *              ]
+                    *      learneranswer: array of matching representation
+                    *              [
+                    *              'lettuce --> vegetable',
+                    *              'apple --> fruit',
+                    *              'pear --> vegetable'
+                    *              ]
+                    */
                     if (typeof learneroptions == 'object')
                     {
                         for (var i=0; i<learneroptions.length; i++)
@@ -945,6 +945,91 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
     this.exit = exit;
     this.enterInteraction = enterInteraction;
     this.exitInteraction = exitInteraction;
+    this.getPageId = getPageId;
+    this.getPageDescription = getPageDescription;
+    this.getxApiId = getxApiId;
+    this.getxApiDescription = getxApiDescription;
+
+    function getPageId()
+    {
+        if (this.ia_nr < 0)
+        {
+            // This is a page, use ia_name if set
+            if (this.ia_name != null && this.ia_name != "")
+            {
+                return baseUrl() + state.templateId + "/" + this.ia_name.replace(/ /g,"_");
+            }
+        }
+        else
+        {
+            var sitp = state.findPage(this.page_nr);
+            if (sitp != null)
+            {
+                return sitp.getPageId();
+            }
+        }
+        return baseUrl() + state.templateId + "/" + this.page_nr;
+    }
+
+    function getPageDescription()
+    {
+        if (this.ia_nr < 0)
+        {
+            // This is a page, use ia_name if set
+            if (this.ia_name != null && this.ia_name != "")
+            {
+                return this.ia_name;
+            }
+        }
+        else
+        {
+            var sitp = state.findPage(this.page_nr);
+            if (sitp != null)
+            {
+                return sitp.getPageDescription();
+            }
+        }
+        return "Page " + this.page_nr;
+    }
+
+    function getxApiId()
+    {
+        var id = this.getPageId();
+        if (this.ia_nr >= 0)
+        {
+            if (this.ia_name != null && this.ia_name != "")
+            {
+                return id + "/" + this.ia_name.replace(/ /g,"_");
+            }
+            else
+            {
+                return id + "/" + this.ia_nr;
+            }
+        }
+        else
+        {
+            return id;
+        }
+    }
+
+    function getxApiDescription()
+    {
+        if (this.ia_nr >= 0)
+        {
+            if (this.ia_name != null && this.ia_name != "")
+            {
+                return this.ia_name;
+            }
+            else
+            {
+                return "Interactivity " + this.ia_nr;
+            }
+        }
+        else
+        {
+            return this.getPageDescription();
+        }
+    }
 
     function exit()
     {
@@ -963,68 +1048,66 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
 
     }
 
-    function enterInteraction(correctAnswers, correctOptions, page_name)
+    function enterInteraction(correctAnswers, correctOptions)
     {
         this.correctAnswers = correctAnswers;
         this.correctOptions = correctOptions;
+
+        var id = this.getxApiId();
+        var description = this.getxApiDescription();
+
+        var statement = new TinCan.Statement(
+            {
+                actor: actor,
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/initialized",
+                    display: {
+                        "en-US": "initialized"
+                    }
+                },
+                object: {
+                    objectType: "Activity",
+                    id: id,
+                    definition:{
+                        name:{
+                            "en": description
+                        }
+                    }
+                },
+                timestamp : this.enterInteractionStamp
+            }
+        );
+
+
+        SaveStatement(statement);
+
     }
 
-    function exitInteraction(result, learnerAnswers, learnerOptions, feedback, page_name)
+    function exitInteraction(result, learnerAnswers, learnerOptions, feedback)
     {
         this.learnerAnswers = learnerAnswers;
         this.learnerOptions = learnerOptions;
         this.result = result;
         this.feedback = feedback;
 
-        this.exitInteractionStamp = new Date();
-        var id = baseUrl() + state.templateId + "/" + this.page_nr;
-        var description = "Page " + this.page_nr;
+        var pagename = this.getPageDescription();
 
-        if (this.ia_nr >=0)
-        {
-            if (page_name != null && page_name != "") {
-                if (this.ia_name != null && this.ia_name != "") {
-                    id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_") + "/" + this.ia_name.replace(/ /g,"_");
-                }
-                else
-                {
-                    id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_") + "/" + this.ia_nr;
-                }
-            }
-            else
-            {
-                if (this.ia_name != null && this.ia_name != "") {
-                    id = baseUrl() + state.templateId + "/" + this.page_nr + "/" + this.ia_name.replace(/ /g,"_");
-                }
-                else
-                {
-                    id = state.baseUrl() + state.templateId + "/" + this.page_nr + "/" + this.ia_nr;
-                }
-            }
-        }
-        else
-        {
-            if (page_name != null && page_name != "")
-            {
-                id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
-                description = page_name;
-            }
-        }
         var pageref = " page " + this.page_nr + " of object " + state.templateId + " of Xerte Installation " + baseUrl();
-        if (page_name != null && page_name != "")
+        if (pagename.substr(0,4) != "Page")
         {
-            pageref = " page " + page_name + "(page " + this.page_nr + ") of object " + state.templateId + " of Xerte Installation " + baseUrl();
+            pageref = " page \"" + pagename + "\" (page " + this.page_nr + ") of object " + state.templateId + " of Xerte Installation " + baseUrl();
         }
+        var id = this.getxApiId();
+        var description = this.getxApiDescription();
 
         if (this.exit())
         {
-
-
             if (state.scoremode != 'first' || this.count <= 1) {
 
                 if (!state.trackingmode != 'none'
                     && ((this.ia_nr < 0 && (state.trackingmode != 'full' || this.nrinteractions == 0))
-                    || (this.ia_nr >= 0 && state.trackingmode == 'full'))) {
+                        || (this.ia_nr >= 0 && state.trackingmode == 'full'))) {
+
                     var statement = {
                         timestamp: this.end,
                         actor: actor,
@@ -1263,9 +1346,24 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                             if (this.ia_type == 'text') {
                                 statement.result = {
                                     duration: calcDuration(this.start, this.end),
+                                    score: {
+                                        raw: result.score,
+                                        min: 0.0,
+                                        max: 100.0,
+                                        scaled: result.score / 100.0,
+                                    },
+                                    response: this.learnerAnswers,
                                     success: result.success,
-                                    completion: true
+                                    completion: true,
+                                    extensions:
+                                        {
+                                            "http://xerte.org.uk/result/text": this.learnerAnswers
+                                        }
                                 };
+                                statement.object.definition.description =
+                                    {
+                                        "en-US": "Model answer interaction " + this.ia_name + " of " + pageref
+                                    }
                             }
                             else {
                                 statement.result = {
@@ -1487,12 +1585,12 @@ function XTInitialise()
     {
         // set actor to global group
         actor = {
-            objectType: "Group",
-            account: {
-                name: "global",
-                homePage: baseUrl() + state.templateId
-            }
-        };
+                objectType: "Group",
+                account: {
+                    name: "global",
+                    homePage: baseUrl() + state.templateId
+                }
+            };
     }
     else
     {
@@ -1508,31 +1606,31 @@ function XTInitialise()
         {
             case 0: //mbox
                 actor = {
-                    objectType: "Agent",
-                    mbox: userEMail
-                };
+                        objectType: "Agent",
+                        mbox: userEMail
+                    };
                 break;
             case 1:
                 actor = {
-                    objectType: "Agent",
-                    mbox_sha1sum: mboxsha1
-                };
+                        objectType: "Agent",
+                        mbox_sha1sum: mboxsha1
+                    };
                 break;
             case 2:
                 actor = {
-                    objectType: "Agent",
-                    mbox: userEMail,
-                    name: fullusername
-                };
+                        objectType: "Agent",
+                        mbox: userEMail,
+                        name: fullusername
+                    };
                 break;
             case 3:
                 actor = {
-                    objectType: "Group",
-                    account: {
-                        name: groupname,
-                        homePage: baseUrl() + state.templateId
-                    }
-                };
+                        objectType: "Group",
+                        account: {
+                            name: groupname,
+                            homePage: baseUrl() + state.templateId
+                        }
+                    };
 
         }
     }
@@ -1752,17 +1850,12 @@ function XTSetOption(option, value)
     }
 }
 
-function XTEnterPage(page_nr, page_name, page_type)
+function XTEnterPage(page_nr, page_name)
 {
-    state.enterPage(page_nr, -1, "page", page_name);
+    var sitp = state.enterPage(page_nr, -1, "page", page_name);
     this.pageStart = new Date();
-    var id = baseUrl() + state.templateId + "/" + page_nr;
-    var description = "Page " + page_nr;
-    if (page_name != null && page_name != "")
-    {
-        id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
-        description = page_name;
-    }
+    var id = sitp.getPageId();
+    var description = sitp.getPageDescription();
 
     if (! surf_mode) {
         var statement = new TinCan.Statement(
@@ -1793,18 +1886,11 @@ function XTEnterPage(page_nr, page_name, page_type)
     }
 }
 
-function XTExitPage(page_nr, page_name)
+function XTExitPage(page_nr)
 {
-    var id = baseUrl() + state.templateId + "/" + page_nr;
-    var description = "Page " + page_nr;
-    if (page_name != null && page_name != "")
-    {
-        id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
-        description = page_name;
-    }
     var sit = state.findPage(page_nr);
     if (sit != undefined && sit != null) {
-        state.exitInteraction(page_nr, -1, false, "", sit.score, "", page_name);
+        state.exitInteraction(page_nr, -1, false, "", sit.score, "");
     }
     XTSendScoreToPedIT();
 }
@@ -1815,16 +1901,12 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 
 }
 
-function XTSetViewed(page_nr, name, score, page_name)
+function XTSetViewed(page_nr, name, score)
 {
     this.pageEnd = new Date();
-    var id = baseUrl() + state.templateId + "/" + page_nr;
-    if (page_name != null && page_name != "")
-    {
-        id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
-    }
     var sit = state.findPage(page_nr);
     if (sit != null) {
+        var id = sit.getPageId();
         var statement = new TinCan.Statement(
             {
                 actor: actor,
@@ -1859,53 +1941,51 @@ function XTSetViewed(page_nr, name, score, page_name)
     }
 }
 
-function XTSetPageScore(page_nr, score, page_name)
+function XTSetPageScore(page_nr, score)
 {
     state.setPageScore(page_nr, score);
     this.pageEnd = new Date();
-    var id = baseUrl() + state.templateId + "/" + page_nr;
-    var description = "Page " + page_nr;
-    if (page_name != null && page_name != "")
-    {
-        id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
-        description = page_name;
-    }
-    var statement = new TinCan.Statement(
-        {
-            actor: actor,
-            verb: {
-                id: "http://adlnet.gov/expapi/verbs/scored",
-                display: {
-                    "en-US": "scored"
-                }
-            },
-            object: {
-                objectType: "Activity",
-                id: id,
-                definition:{
-                    name:{
-                        "en": description
+    var sitp = state.findPage(page_nr);
+    if (sitp != null) {
+        var id = sitp.getPageId();
+        var description = sitp.getPageDescription();
+        var statement = new TinCan.Statement(
+            {
+                actor: actor,
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/scored",
+                    display: {
+                        "en-US": "scored"
                     }
-                }
-            },
-            result:{
-                completion: true,
-                success: score >= state.lo_passed,
-                score: {
-                    min: 0.0,
-                    max: 100.0,
-                    raw: score,
-                    scaled: score / 100
                 },
-                duration: calcDuration(this.pageStart, this.pageEnd)
-            },
-            timestamp: this.pageEnd
+                object: {
+                    objectType: "Activity",
+                    id: id,
+                    definition: {
+                        name: {
+                            "en": description
+                        }
+                    }
+                },
+                result: {
+                    completion: true,
+                    success: score >= state.lo_passed,
+                    score: {
+                        min: 0.0,
+                        max: 100.0,
+                        raw: state.getdRawScore(),
+                        scaled: score / 100
+                    },
+                    duration: calcDuration(this.pageStart, this.pageEnd)
+                },
+                timestamp: this.pageEnd
 
-        }
-    );
+            }
+        );
 
-    SaveStatement(statement);
-    XTSendScoreToPedIT();
+        SaveStatement(statement);
+        XTSendScoreToPedIT();
+    }
 }
 
 function calcDuration(s, e)
@@ -1922,133 +2002,66 @@ function calcDuration(s, e)
     return "PT" + hours + "H" + minutes + "M" + seconds + "S"
 }
 
-function XTSetPageScoreJSON(page_nr, score, JSONGraph, page_name)
-{
+function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
     state.setPageScore(page_nr, score);
     this.pageEnd = new Date();
-    var id = baseUrl() + state.templateId + "/" + page_nr;
-    var description = "Page " + page_nr;
-    if (page_name != null && page_name != "")
-    {
-        id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
-        description = page_name;
-    }
-    if (!surf_mode) {
-        var statement = new TinCan.Statement(
-            {
-                actor: actor,
-                verb: {
-                    id: "http://adlnet.gov/expapi/verbs/scored",
-                    display: {
-                        "en-US": "scored"
-                    }
-                },
-                object: {
-                    objectType: "Activity",
-                    id: id,
-                    description:{
-                        name:{
-                            "en": description
+    var sitp = state.findPage(page_nr);
+    if (sitp != null) {
+        var id = sitp.getPageId();
+        var description = sitp.getPageDescription();
+        if (!surf_mode) {
+            var statement = new TinCan.Statement(
+                {
+                    actor: actor,
+                    verb: {
+                        id: "http://adlnet.gov/expapi/verbs/scored",
+                        display: {
+                            "en-US": "scored"
                         }
-                    }
-                },
-                result: {
-                    completion: true,
-                    success: score >= state.lo_passed,
-                    score: {
-                        min: 0.0,
-                        max: 100.0,
-                        raw: score,
-                        scaled: score / 100
                     },
-                    duration: calcDuration(this.pageStart, this.pageEnd),
-                    extensions: {
-                        "http://xerte.org.uk/xapi/JSONGraph": JSONGraph
-                    }
-                },
-                timestamp: this.pageEnd
-            }
-        );
+                    object: {
+                        objectType: "Activity",
+                        id: id,
+                        description: {
+                            name: {
+                                "en": description
+                            }
+                        }
+                    },
+                    result: {
+                        completion: true,
+                        success: score >= state.lo_passed,
+                        score: {
+                            min: 0.0,
+                            max: 100.0,
+                            raw: state.getdRawScore(),
+                            scaled: score / 100
+                        },
+                        duration: calcDuration(this.pageStart, this.pageEnd),
+                        extensions: {
+                            "http://xerte.org.uk/xapi/JSONGraph": JSONGraph
+                        }
+                    },
+                    timestamp: this.pageEnd
+                }
+            );
 
-        SaveStatement(statement);
+            SaveStatement(statement);
+            XTSendScoreToPedIT();
+        }
     }
 }
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, page_name)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
 {
-    state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, page_name);
-    this.enterInteractionStamp = new Date();
-    var id = baseUrl() + state.templateId + "/" + page_nr;
-    var description = "Page " + page_nr;
-
-    if (ia_nr >=0)
-    {
-        if (page_name != null && page_name != "") {
-            if (ia_name != null && ia_name != "") {
-                id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_") + "/" + ia_name.replace(/ /g,"_");
-                description = ia_name;
-            }
-            else
-            {
-                baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_") + "/" + ia_nr;
-                description = "";
-            }
-        }
-        else
-        {
-            if (ia_name != null && ia_name != "") {
-                id = baseUrl() + state.templateId + "/" + page_nr + "/" + ia_name.replace(/ /g,"_");
-                description = ia_name;
-            }
-            else
-            {
-                baseUrl() + state.templateId + "/" + page_nr + "/" + ia_nr;
-                description = "";
-            }
-        }
-    }
-    else
-    {
-        if (page_name != null && page_name != "")
-        {
-            id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
-            description = page_name;
-        }
-    }
-    var statement = new TinCan.Statement(
-        {
-            actor: actor,
-            verb: {
-                id: "http://adlnet.gov/expapi/verbs/initialized",
-                display: {
-                    "en-US": "initialized"
-                }
-            },
-            object: {
-                objectType: "Activity",
-                id: id,
-                definition:{
-                    name:{
-                        "en": description
-                    }
-                }
-            },
-            timestamp : this.enterInteractionStamp
-        }
-    );
-
-
-    SaveStatement(statement);
-
-
-
+    state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback);
 }
 
-function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswers, feedback, page_name) {
-    state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswers, feedback, page_name);
+function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswers, feedback) {
+    state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswers, feedback);
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, callback)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback)
 {
     var stringObjects = [];
     //Get ID from the question
@@ -2060,16 +2073,16 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, call
     {
         var id = baseUrl() + state.templateId + "/" + page_nr + "/" + ia_nr;
     }
-    if (page_name != null && page_name != "")
+    if (full_id != null && full_id != "")
     {
         // If this is an url, use as is
-        if (page_name.substr(0, 4).toLowerCase() == "http")
+        if (full_id.substr(0, 4).toLowerCase() == "http")
         {
-            id = page_name.replace(/ /g,"_");
+            id = full_id.replace(/ /g,"_");
         }
         else
         {
-            id = baseUrl() + state.templateId + "/" + page_name.replace(/ /g,"_");
+            id = baseUrl() + state.templateId + "/" + full_id.replace(/ /g,"_");
         }
     }
     var x = lrsInstance.queryStatements(
@@ -2117,124 +2130,84 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
     return "";
 }
 
-function XTGetInteractionCorrectAnswerFeedback(page_nr, ia_nr, ia_type, ia_name) {
-    return "";
-}
-
-function XTGetInteractionLearnerAnswer(page_nr, ia_nr, ia_type, ia_name) {
-    return "";
-}
-
-function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name) {
-    return "";
-}
-
-function XTSendScoreToPedIT()
-{
-    // Duration
-    var end = new Date();
-    var delta = Math.abs(end.getTime() - state.start.getTime()) / 1000;
-    var completion, nrvisited=0, nrcompleted=0;
-
-    // Get Full completion (like in results)
-    $.each(state.completedPages, function (i, completed) {
-        // indices not defined will be visited anyway.
-        // In that case 'completed' will be undefined
-        if (completed) {
-            nrcompleted++;
-        }
-        if (typeof(completed) != "undefined") {
-            nrvisited++;
-        }
-    })
-
-    if (nrcompleted != 0) {
-        completion = Math.round((nrcompleted / state.toCompletePages.length) * 100);
-    }
-    else {
-        completion = 0;
+    function XTGetInteractionCorrectAnswerFeedback(page_nr, ia_nr, ia_type, ia_name) {
+        return "";
     }
 
-    // Send results to PedIT
-    state.ALOConnectionPoint.notify("activity",
-        {
-            completed: completion,
-            score: Math.round(state.getRawScore()),
-            passed: (state.getSuccessStatus() == "passed"),
-            duration: Math.round(delta)
-        });
-}
+    function XTGetInteractionLearnerAnswer(page_nr, ia_nr, ia_type, ia_name) {
+        return "";
+    }
 
+    function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name) {
+        return "";
+    }
 
-function XTTerminate() {
+    function XTSendScoreToPedIT()
+    {
+        // Duration
+        var end = new Date();
+        var delta = Math.abs(end.getTime() - state.start.getTime()) / 1000;
+        var completion, nrvisited=0, nrcompleted=0;
 
-    if (!state.finished) {
-        var currentpageid = "";
-        state.finished = true;
-        if (state.currentid) {
-            var sit = state.find(currentid);
-            // there is still an interaction open, close it
-            if (sit != null) {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+        // Get Full completion (like in results)
+        $.each(state.completedPages, function (i, completed) {
+            // indices not defined will be visited anyway.
+            // In that case 'completed' will be undefined
+            if (completed) {
+                nrcompleted++;
             }
-        }
-        if (state.currentpageid) {
-            currentpageid = state.currentpageid;
-            var sit = state.find(currentpageid);
-            // there is still an interaction open, close it
-            if (sit != null) {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+            if (typeof(completed) != "undefined") {
+                nrvisited++;
             }
+        })
 
+        if (nrcompleted != 0) {
+            completion = Math.round((nrcompleted / state.toCompletePages.length) * 100);
+        }
+        else {
+            completion = 0;
         }
 
-        // Save completed when a learning object is completed
-        if (state.getCompletionStatus() == "completed") {
-            var statement = new TinCan.Statement(
-                {
-                    actor: actor,
-                    verb: {
-                        id: "http://adlnet.gov/expapi/verbs/completed",
-                        display: {
-                            "en-US": "completed"
-                        }
-                    },
-                    object: {
-                        objectType: "Activity",
-                        id: baseUrl() + state.templateId,
-                        description: {
-                            name: {
-                                "en": state.templateName
-                            }
-                        }
-                    },
-                    result: {
-                        completion: true,
-                        success: (state.getSuccessStatus() == "passed"),
-                        score: {
-                            min: 0.0,
-                            max: 100.0,
-                            raw: state.getdRawScore(),
-                            scaled: state.getdScaledScore()
-                        },
-                        duration: calcDuration(state.start, new Date()),
-                        extensions: {
-                            "http://xerte.org.uk/xapi/trackingstate": JSON.stringify(state)
-                        }
-                    },
-                    timestamp: new Date()
+        // Send results to PedIT
+        state.ALOConnectionPoint.notify("activity",
+            {
+                completed: completion,
+                score: Math.round(state.getRawScore()),
+                passed: (state.getSuccessStatus() == "passed"),
+                duration: Math.round(delta)
+            });
+    }
+
+    function XTTerminate() {
+        if (!state.finished) {
+            var currentpageid = "";
+            state.finished = true;
+            if (state.currentid) {
+                var sit = state.find(currentid);
+                // there is still an interaction open, close it
+                if (sit != null) {
+                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
                 }
-            );
-            SaveStatement(statement, false);
-            if (state.getSuccessStatus() == "passed") {
-                // Sen passsed
+            }
+            if (state.currentpageid) {
+                currentpageid = state.currentpageid;
+                var sit = state.find(currentpageid);
+                // there is still an interaction open, close it
+                if (sit != null) {
+                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+                }
+
+            }
+
+            // Save completed when a learning object is completed
+            if (state.getCompletionStatus() == "completed") {
                 var statement = new TinCan.Statement(
                     {
                         actor: actor,
                         verb: {
-                            id: "http://adlnet.gov/expapi/verbs/passed",
+                            id: "http://adlnet.gov/expapi/verbs/completed",
                             display: {
-                                "en-US": "passed"
+                                "en-US": "completed"
                             }
                         },
                         object: {
@@ -2248,7 +2221,119 @@ function XTTerminate() {
                         },
                         result: {
                             completion: true,
-                            success: true,
+                            success: (state.getSuccessStatus() == "passed"),
+                            score: {
+                                min: 0.0,
+                                max: 100.0,
+                                raw: state.getdRawScore(),
+                                scaled: state.getdScaledScore()
+                            },
+                            duration: calcDuration(state.start, new Date()),
+                            extensions: {
+                                "http://xerte.org.uk/xapi/trackingstate": JSON.stringify(state)
+                            }
+                        },
+                        timestamp: new Date()
+                    }
+                );
+                SaveStatement(statement, false);
+                if (state.getSuccessStatus() == "passed") {
+                    // Sen passsed
+                    var statement = new TinCan.Statement(
+                        {
+                            actor: actor,
+                            verb: {
+                                id: "http://adlnet.gov/expapi/verbs/passed",
+                                display: {
+                                    "en-US": "passed"
+                                }
+                            },
+                            object: {
+                                objectType: "Activity",
+                                id: baseUrl() + state.templateId,
+                                description: {
+                                    name: {
+                                        "en": state.templateName
+                                    }
+                                }
+                            },
+                            result: {
+                                completion: true,
+                                success: true,
+                                score: {
+                                    min: 0.0,
+                                    max: 100.0,
+                                    raw: state.getdRawScore(),
+                                    scaled: state.getdScaledScore()
+
+                                },
+                                duration: calcDuration(state.start, new Date())
+                            },
+                            timestamp: new Date()
+                        }
+                    );
+                    SaveStatement(statement, false);
+                }
+                else
+                {
+                    // Send failed
+                    var statement = new TinCan.Statement(
+                        {
+                            actor: actor,
+                            verb: {
+                                id: "http://adlnet.gov/expapi/verbs/failed",
+                                display: {
+                                    "en-US": "failed"
+                                }
+                            },
+                            object: {
+                                objectType: "Activity",
+                                id: baseUrl() + state.templateId,
+                                description: {
+                                    name: {
+                                        "en": state.templateName
+                                    }
+                                }
+                            },
+                            result: {
+                                completion: true,
+                                success: false,
+                                score: {
+                                    min: 0.0,
+                                    max: 100.0,
+                                    raw: state.getdRawScore(),
+                                    scaled: state.getdScaledScore()
+
+                                },
+                                duration: calcDuration(state.start, new Date()),
+                            },
+                            timestamp: new Date()
+                        }
+                    );
+                    SaveStatement(statement, false);
+                }
+                // Save scored
+                var statement = new TinCan.Statement(
+                    {
+                        actor: actor,
+                        verb: {
+                            id: "http://adlnet.gov/expapi/verbs/scored",
+                            display: {
+                                "en-US": "scored"
+                            }
+                        },
+                        object: {
+                            objectType: "Activity",
+                            id: baseUrl() + state.templateId,
+                            description: {
+                                name: {
+                                    "en": state.templateName
+                                }
+                            }
+                        },
+                        result: {
+                            completion: true,
+                            success: (state.getSuccessStatus() == "passed"),
                             score: {
                                 min: 0.0,
                                 max: 100.0,
@@ -2262,53 +2347,17 @@ function XTTerminate() {
                     }
                 );
                 SaveStatement(statement, false);
-            }
-            else
-            {
-                // Send failed
-                var statement = new TinCan.Statement(
-                    {
-                        actor: actor,
-                        verb: {
-                            id: "http://adlnet.gov/expapi/verbs/failed",
-                            display: {
-                                "en-US": "failed"
-                            }
-                        },
-                        object: {
-                            objectType: "Activity",
-                            id: baseUrl() + state.templateId,
-                            description: {
-                                name: {
-                                    "en": state.templateName
-                                }
-                            }
-                        },
-                        result: {
-                            completion: true,
-                            success: false,
-                            score: {
-                                min: 0.0,
-                                max: 100.0,
-                                raw: state.getdRawScore(),
-                                scaled: state.getdScaledScore()
 
-                            },
-                            duration: calcDuration(state.start, new Date()),
-                        },
-                        timestamp: new Date()
-                    }
-                );
-                SaveStatement(statement, false);
             }
-            // Save scored
+
+            // Save exited
             var statement = new TinCan.Statement(
                 {
                     actor: actor,
                     verb: {
-                        id: "http://adlnet.gov/expapi/verbs/scored",
+                        id: "http://adlnet.gov/expapi/verbs/exited",
                         display: {
-                            "en-US": "scored"
+                            "en": "exited"
                         }
                     },
                     object: {
@@ -2321,14 +2370,16 @@ function XTTerminate() {
                         }
                     },
                     result: {
-                        completion: true,
-                        success: (state.getSuccessStatus() == "passed"),
+                        completion: state.getCompletionStatus(),
+                        success: state.getSuccessStatus(),
                         score: {
                             min: 0.0,
                             max: 100.0,
                             raw: state.getdRawScore(),
                             scaled: state.getdScaledScore()
-
+                        },
+                        extensions: {
+                            "http://xerte.org.uk/xapi/trackingstate": JSON.stringify(state)
                         },
                         duration: calcDuration(state.start, new Date())
                     },
@@ -2336,262 +2387,222 @@ function XTTerminate() {
                 }
             );
             SaveStatement(statement, false);
-
         }
-
-        // Save exited
-        var statement = new TinCan.Statement(
-            {
-                actor: actor,
-                verb: {
-                    id: "http://adlnet.gov/expapi/verbs/exited",
-                    display: {
-                        "en": "exited"
-                    }
-                },
-                object: {
-                    objectType: "Activity",
-                    id: baseUrl() + state.templateId,
-                    description: {
-                        name: {
-                            "en": state.templateName
-                        }
-                    }
-                },
-                result: {
-                    completion: state.getCompletionStatus(),
-                    success: state.getSuccessStatus(),
-                    score: {
-                        min: 0.0,
-                        max: 100.0,
-                        raw: state.getdRawScore(),
-                        scaled: state.getdScaledScore()
-                    },
-                    extensions: {
-                        "http://xerte.org.uk/xapi/trackingstate": JSON.stringify(state)
-                    },
-                    duration: calcDuration(state.start, new Date())
-                },
-                timestamp: new Date()
-            }
-        );
-        SaveStatement(statement, false);
+        XTSendScoreToPedIT();
+        window.opener.innerWidth += 2;
+        window.opener.innerWidth -= 2;
     }
-    XTSendScoreToPedIT();
-    window.opener.innerWidth += 2;
-    window.opener.innerWidth -= 2;
-}
 
-function SaveStatement(statement, async) {
+    function SaveStatement(statement, async) {
+        
+        var key = "http://xerte.org.uk/sessionId";
+        extension = {
+            "http://xerte.org.uk/sessionId" : state.sessionId,
+            "http://xerte.org.uk/learningObjectId" : baseUrl() + state.templateId,
+            "http://xerte.org.uk/learningObjectTitle" : x_params.name + "(" + state.templateId + ")"
+        };
+        if(statement.context == undefined)
+        {
+            statement.context = new TinCan.Context({"extensions" : extension});
+        }else if(statement.context.extensions == undefined){
+            statement.context.extensions = extension;
+        }else{
+            // Loop over all keys in extension and add to existing extension
+            $each(extension, function(key, value){
+                statement.context.extensions[key] = value;
+            });
+        }
+        statement.id = null;
+        if (typeof async == 'undefined')
+        {
+            async = true;
+        }
+        if(async){
+            lrsInstance.saveStatement(
+                statement,
+                {
+                    callback: function (err, xhr) {
+                        if (err !== null) {
+                            if (xhr !== null) {
+                                //alert("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
+                                // TODO: handle error accordingly when needed
+                                return;
+                            }
 
-    var key = "http://xerte.org.uk/sessionId";
-    extension = {
-        "http://xerte.org.uk/sessionId" : state.sessionId,
-        "http://xerte.org.uk/learningObjectId" : baseUrl() + state.templateId,
-        "http://xerte.org.uk/learningObjectTitle" : x_params.name + "(" + state.templateId + ")"
-    };
-    if(statement.context == undefined)
-    {
-        statement.context = new TinCan.Context({"extensions" : extension});
-    }else if(statement.context.extensions == undefined){
-        statement.context.extensions = extension;
-    }else{
-        // Loop over all keys in extension and add to existing extension
-        $each(extension, function(key, value){
-            statement.context.extensions[key] = value;
-        });
-    }
-    statement.id = null;
-    if (typeof async == 'undefined')
-    {
-        async = true;
-    }
-    if(async){
-        lrsInstance.saveStatement(
-            statement,
-            {
-                callback: function (err, xhr) {
-                    if (err !== null) {
-                        if (xhr !== null) {
-                            //alert("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
+                            //alert("Failed to save statement: " + err);
                             // TODO: handle error accordingly when needed
                             return;
                         }
 
-                        //alert("Failed to save statement: " + err);
-                        // TODO: handle error accordingly when needed
-                        return;
                     }
-
                 }
-            }
-        );
-    }else{
-        lrsInstance.saveStatement(
-            statement
-        );
+            );
+        }else{
+            lrsInstance.saveStatement(
+                statement
+            );
+        }
+
     }
 
-}
+    function XTResults(fullcompletion) {
+        var completion = 0;
+        var nrcompleted = 0;
+        var nrvisited = 0;
+        var completed;
+        $.each(state.completedPages, function (i, completed) {
+            // indices not defined will be visited anyway.
+            // In that case 'completed' will be undefined
+            if (completed) {
+                nrcompleted++;
+            }
+            if (typeof(completed) != "undefined") {
+                nrvisited++;
+            }
+        })
 
-function XTResults(fullcompletion) {
-    var completion = 0;
-    var nrcompleted = 0;
-    var nrvisited = 0;
-    var completed;
-    $.each(state.completedPages, function (i, completed) {
-        // indices not defined will be visited anyway.
-        // In that case 'completed' will be undefined
-        if (completed) {
-            nrcompleted++;
-        }
-        if (typeof(completed) != "undefined") {
-            nrvisited++;
-        }
-    })
-
-    if (nrcompleted != 0) {
-        if (!fullcompletion) {
-            completion = Math.round((nrcompleted / nrvisited) * 100);
+        if (nrcompleted != 0) {
+            if (!fullcompletion) {
+                completion = Math.round((nrcompleted / nrvisited) * 100);
+            }
+            else {
+                completion = Math.round((nrcompleted / state.toCompletePages.length) * 100);
+            }
         }
         else {
-            completion = Math.round((nrcompleted / state.toCompletePages.length) * 100);
+            completion = 0;
         }
-    }
-    else {
-        completion = 0;
-    }
 
-    var results = {};
-    results.mode = x_currentPageXML.getAttribute("resultmode");
+        var results = {};
+        results.mode = x_currentPageXML.getAttribute("resultmode");
 
-    var score = 0,
-        nrofquestions = 0,
-        totalWeight = 0,
-        totalDuration = 0;
-    results.interactions = Array();
+        var score = 0,
+            nrofquestions = 0,
+            totalWeight = 0,
+            totalDuration = 0;
+        results.interactions = Array();
 
-    for (i = 0; i < state.interactions.length - 1; i++) {
+        for (i = 0; i < state.interactions.length - 1; i++) {
 
 
-        score += state.interactions[i].score * state.interactions[i].weighting;
-        if (state.interactions[i].ia_nr < 0 || state.interactions[i].nrinteractions > 0) {
+            score += state.interactions[i].score * state.interactions[i].weighting;
+            if (state.interactions[i].ia_nr < 0 || state.interactions[i].nrinteractions > 0) {
 
-            var interaction = {};
-            interaction.score = Math.round(state.interactions[i].score);
-            interaction.title = state.interactions[i].ia_name;
-            interaction.type = state.interactions[i].ia_type;
-            interaction.correct = state.interactions[i].result;
-            interaction.duration = Math.round(state.interactions[i].duration / 1000);
-            interaction.weighting = state.interactions[i].weighting;
-            interaction.subinteractions = Array();
+                var interaction = {};
+                interaction.score = Math.round(state.interactions[i].score);
+                interaction.title = state.interactions[i].ia_name;
+                interaction.type = state.interactions[i].ia_type;
+                interaction.correct = state.interactions[i].result;
+                interaction.duration = Math.round(state.interactions[i].duration / 1000);
+                interaction.weighting = state.interactions[i].weighting;
+                interaction.subinteractions = Array();
 
-            var j = 0;
-            for (j; j < state.toCompletePages.length; j++) {
-                var currentPageNr = state.toCompletePages[j];
-                if (currentPageNr == state.interactions[i].page_nr) {
-                    if (state.completedPages[j]) {
-                        interaction.completed = "true";
-                    }
-                    else if (!state.completedPages[j]) {
-                        interaction.completed = "false";
-                    }
-                    else {
-                        interaction.completed = "unknown";
-                    }
-                }
-            }
-
-            results.interactions[nrofquestions] = interaction;
-            totalDuration += state.interactions[i].duration;
-            nrofquestions++;
-            totalWeight += state.interactions[i].weighting;
-
-        }
-        else if (results.mode == "full-results") {
-            var subinteraction = {};
-
-            var learnerAnswer, correctAnswer;
-            switch (state.interactions[i].ia_type) {
-                case "match":
-                    for (var c = 0; c < state.interactions[i].correctOptions.length; c++) {
-                        var matchSub = {}; //Create a subinteraction here for every match sub instead
-                        correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
-                        source = state.interactions[i].correctOptions[c].source;
-                        if (state.interactions[i].learnerOptions.length == 0) {
-                            learnerAnswer = source + ' --> ' + ' ';
+                var j = 0;
+                for (j; j < state.toCompletePages.length; j++) {
+                    var currentPageNr = state.toCompletePages[j];
+                    if (currentPageNr == state.interactions[i].page_nr) {
+                        if (state.completedPages[j]) {
+                            interaction.completed = "true";
+                        }
+                        else if (!state.completedPages[j]) {
+                            interaction.completed = "false";
                         }
                         else {
-                            for (var d = 0; d < state.interactions[i].learnerOptions.length; d++) {
-                                if (source == state.interactions[i].learnerOptions[d].source) {
-                                    learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
-                                    break;
-                                }
-                                else {
-                                    learnerAnswer = source + ' --> ' + ' ';
+                            interaction.completed = "unknown";
+                        }
+                    }
+                }
+
+                results.interactions[nrofquestions] = interaction;
+                totalDuration += state.interactions[i].duration;
+                nrofquestions++;
+                totalWeight += state.interactions[i].weighting;
+
+            }
+            else if (results.mode == "full-results") {
+                var subinteraction = {};
+
+                var learnerAnswer, correctAnswer;
+                switch (state.interactions[i].ia_type) {
+                    case "match":
+                        for (var c = 0; c < state.interactions[i].correctOptions.length; c++) {
+                            var matchSub = {}; //Create a subinteraction here for every match sub instead
+                            correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
+                            source = state.interactions[i].correctOptions[c].source;
+                            if (state.interactions[i].learnerOptions.length == 0) {
+                                learnerAnswer = source + ' --> ' + ' ';
+                            }
+                            else {
+                                for (var d = 0; d < state.interactions[i].learnerOptions.length; d++) {
+                                    if (source == state.interactions[i].learnerOptions[d].source) {
+                                        learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
+                                        break;
+                                    }
+                                    else {
+                                        learnerAnswer = source + ' --> ' + ' ';
+                                    }
                                 }
                             }
+
+                            matchSub.question = state.interactions[i].ia_name;
+                            matchSub.correct = (learnerAnswer === correctAnswer);
+                            matchSub.learnerAnswer = learnerAnswer;
+                            matchSub.correctAnswer = correctAnswer;
+                            results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                         }
 
-                        matchSub.question = state.interactions[i].ia_name;
-                        matchSub.correct = (learnerAnswer === correctAnswer);
-                        matchSub.learnerAnswer = learnerAnswer;
-                        matchSub.correctAnswer = correctAnswer;
-                        results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
-                    }
+                        break;
+                    case "text":
+                        learnerAnswer = state.interactions[i].learnerAnswers;
+                        correctAnswer = state.interactions[i].correctAnswers;
+                        break;
+                    case "multiplechoice":
+                        learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
+                        for (var j = 1; j < state.interactions[i].learnerAnswers.length; j++) {
+                            learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
+                        }
+                        correctAnswer = "";
+                        for (var j = 0; j < state.interactions[i].correctAnswers.length; j++) {
+                            if (correctAnswer.length > 0)
+                                correctAnswer += "\n";
+                            correctAnswer += state.interactions[i].correctAnswers[j];
+                        }
+                        break;
+                    case "numeric":
 
-                    break;
-                case "text":
-                    learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
-                    correctAnswer = state.interactions[i].correctAnswers.join(", ");
-                    break;
-                case "multiplechoice":
-                    learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
-                    for (var j = 1; j < state.interactions[i].learnerAnswers.length; j++) {
-                        learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
-                    }
-                    correctAnswer = "";
-                    for (var j = 0; j < state.interactions[i].correctAnswers.length; j++) {
-                        if (correctAnswer.length > 0)
-                            correctAnswer += "\n";
-                        correctAnswer += state.interactions[i].correctAnswers[j];
-                    }
-                    break;
-                case "numeric":
-
-                    learnerAnswer = state.interactions[i].learnerAnswers;
-                    correctAnswer = "-";  // Not applicable
-                    //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
-                    break;
-                case "fill-in":
-                    learnerAnswer = state.interactions[i].learnerAnswers;
-                    correctAnswer = state.interactions[i].correctAnswers;
-                    break;
-            }
-            if (state.interactions[i].ia_type != "match") {
-                subinteraction.question = state.interactions[i].ia_name;
-                subinteraction.correct = state.interactions[i].result.success;
-                subinteraction.learnerAnswer = learnerAnswer;
-                subinteraction.correctAnswer = correctAnswer;
-                results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
+                        learnerAnswer = state.interactions[i].learnerAnswers;
+                        correctAnswer = "-";  // Not applicable
+                        //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
+                        break;
+                    case "fill-in":
+                        learnerAnswer = state.interactions[i].learnerAnswers;
+                        correctAnswer = state.interactions[i].correctAnswers;
+                        break;
+                }
+                if (state.interactions[i].ia_type != "match") {
+                    subinteraction.question = state.interactions[i].ia_name;
+                    subinteraction.correct = state.interactions[i].result.success;
+                    subinteraction.learnerAnswer = learnerAnswer;
+                    subinteraction.correctAnswer = correctAnswer;
+                    results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
+                }
             }
         }
+        results.completion = completion;
+        results.score = score;
+        results.nrofquestions = nrofquestions;
+        results.averageScore = state.getScaledScore() * 100;
+        results.totalDuration = Math.round(totalDuration / 1000);
+        results.start = state.start.toLocaleString();
+
+        //$.ajax({
+        //    type: "POST",
+        //    url: window.location.href,
+        //    data: {
+        //        grade: results.averageScore / 100
+        //    }
+        //});
+
+        return results;
     }
-    results.completion = completion;
-    results.score = score;
-    results.nrofquestions = nrofquestions;
-    results.averageScore = state.getScaledScore() * 100;
-    results.totalDuration = Math.round(totalDuration / 1000);
-    results.start = state.start.toLocaleString();
-
-    //$.ajax({
-    //    type: "POST",
-    //    url: window.location.href,
-    //    data: {
-    //        grade: results.averageScore / 100
-    //    }
-    //});
-
-    return results;
-}
 
