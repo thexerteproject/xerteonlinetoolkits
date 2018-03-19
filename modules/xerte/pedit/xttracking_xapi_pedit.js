@@ -91,7 +91,8 @@ function XApiTrackingState()
 
     function initialise()
     {
-
+        this.ALOConnectionPoint = new ALOConnection();
+        this.ALOConnectionPoint.handshake();
     }
 
     function formatDate(d)
@@ -1891,6 +1892,9 @@ function XTSetPageScore(page_nr, score, page_name)
                 completion: true,
                 success: score >= state.lo_passed,
                 score: {
+                    min: 0.0,
+                    max: 100.0,
+                    raw: score,
                     scaled: score / 100
                 },
                 duration: calcDuration(this.pageStart, this.pageEnd)
@@ -1952,6 +1956,9 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph, page_name)
                     completion: true,
                     success: score >= state.lo_passed,
                     score: {
+                        min: 0.0,
+                        max: 100.0,
+                        raw: score,
                         scaled: score / 100
                     },
                     duration: calcDuration(this.pageStart, this.pageEnd),
@@ -2160,7 +2167,7 @@ function XTSendScoreToPedIT()
 
 
 function XTTerminate() {
-    XTSendScoreToPedIT();
+
     if (!state.finished) {
         var currentpageid = "";
         state.finished = true;
@@ -2370,6 +2377,7 @@ function XTTerminate() {
         );
         SaveStatement(statement, false);
     }
+    XTSendScoreToPedIT();
     window.opener.innerWidth += 2;
     window.opener.innerWidth -= 2;
 }

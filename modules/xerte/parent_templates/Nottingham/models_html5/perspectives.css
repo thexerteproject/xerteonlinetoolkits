@@ -101,6 +101,7 @@
 	}
 	
 	#thumbHolder .thumbBox h3 {
+		font-size: 0.8em;
 		text-align: center;
 		overflow: hidden;
 		margin-bottom: 5px;
@@ -196,35 +197,21 @@
 	
 	
 	/* RESPONSIVE STYLES */
-	
+	/* font-size stuff is in responsivetext.css */
+
+@media (min-width: 768px) {
 	.x_responsive #thumbBar:not(.grid):not(.hidden) { height: 20.0vmin !important; }
 	.x_responsive #thumbBar.small:not(.grid):not(.hidden) { height: 12.5vmin !important; }
 	.x_responsive #thumbBar.large:not(.grid):not(.hidden) { height: 27.5vmin !important; }
 
-	.x_responsive #thumbHolder .thumbBox h3 {
-		font-size: 2.5vmin;
-	}
 	.x_responsive #thumbHolder .thumbBox { width: 18.0vmin !important; height: 18.0vmin !important; }
 	.x_responsive #thumbBar.small #thumbHolder .thumbBox { width: 9.7vmin !important; height: 9.7vmin !important; }
 	.x_responsive #thumbBar.large #thumbHolder .thumbBox { width: 26.3vmin !important; height: 26.3vmin !important; }
 
-	.x_responsive #thumbBar button {
-		width: 12.5vmin;
-		height: 12.5vmin;
-		margin: 3.75vmin;
-	}
-	.x_responsive #thumbBar button .ui-icon {
-		font-size: 12.5vmin;
-	}
+	.x_responsive #thumbBar button { width: 12.5vmin; height: 12.5vmin; margin: 3.75vmin; }
 	.x_responsive #thumbBar.small button { width: 7.9vmin; height: 7.9vmin; margin: 2.3vmin; }
 	.x_responsive #thumbBar.large button { width: 17.5vmin; height: 17.5vmin; margin: 5vmin; }
+	.x_responsive #thumbBar button .ui-icon { font-size: 12.5vmin; }
 	.x_responsive #thumbBar.small button .ui-icon { font-size: 7.9vmin; }
 	.x_responsive #thumbBar.large button .ui-icon { font-size: 17.5vmin; }
-
-	.x_responsive #gridBack {
-		font-size: 2.5vmin;
-	}
-	
-	.x_responsive #thumbHolder .playAll h3 { font-size: 5.2vmin; }
-	.x_responsive #thumbBar.small #thumbHolder .playAll h3 { font-size: 3.1vmin; }
-	.x_responsive #thumbBar.large #thumbHolder .playAll h3 { font-size: 7.5vmin; }
+}
