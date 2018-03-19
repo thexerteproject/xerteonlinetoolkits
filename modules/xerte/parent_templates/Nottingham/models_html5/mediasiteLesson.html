@@ -311,7 +311,7 @@
                         }
                     });
                 var ctrlPng = x_templateLocation + "common_html5/MediasitePlayerControls.png";
-                var controls = new Mediasite.PlayerControls(apiInstance, "controlHolder",
+                new Mediasite.PlayerControls(apiInstance, "controlHolder",
                     {
                         imageSprite: "url(" + ctrlPng + ")"
                     }
@@ -565,12 +565,14 @@
                         mediasiteLesson.sortPopcorn($(this).children(), "panel" + 1, apiInstance, $(".mainMedia"), popcornInstance);
                     });
                 }
-                $("#panel0").hide();
+                $("#panel0").css({"position": "absolute", "top": "-9999px", "left": "-9999px"});
 
 
                 // _____ SORT & CREATE SYNCH POINT EVENTS FOR EACH PANEL _____
 
-
+                popcornInstance.media.addEventListener( "timeupdate", function() {
+                        console.log(popcornInstance.currentTime());
+                    });
 
                     //Adds events to popcorn
                     //TODO NEEDED: TIMEUPDATE & PAUSED & PLAY, Maybe seeked, might be IE hack.
@@ -582,12 +584,8 @@
                         if(currentTime != lastTime && currentTime > 0)
                         {
                             lastTime = currentTime;
-                            //console.log(lastTime);
-                            if (lastTime > 50 && lastTime < 51)
-                            {
-
-                                apiInstance.pause()
-                            }
+                            popcornInstance.currentTime(lastTime);
+                            console.log(popcornInstance.currentTime());
                         }
                     }});
                 x_pageLoaded();
@@ -971,9 +969,13 @@
 
                 // _____ ADD EVENTS FOR EACH SYNCH POINT _____
 
-                // add pause points for mainMedia/mediaPlus dit kan niet op deze manier zo
+                // add pause points for mainMedia/mediaPlus dit kan niet op deze manier zo helaas
                 //TODO popcorn
-                mediasiteLesson.setUpPopcornCue(apiInstance, synchData);
+                for (var j=0; j<synchData.length; j++) {
+                    if (synchData[j].nodeName == "synchCue") {
+                        mediasiteLesson.setUpPopcornCue(popcornInstance, synchData[j], apiInstance);
+                    }
+                }
 
                 // add all other synch events
                 for (var j=0; j<data.length; j++) {
@@ -1036,11 +1038,12 @@
                         //}
 
                          //pauses media at synch point if needed
-                        //if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
-                        //    apiInstance.cue(thisContent.start, function() {
-                        //        this.pause();
-                        //    });
-                        //}
+                        if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
+                            popcornInstance.cue(thisContent.start, function() {
+                                popcornInstance.pause();
+                                apiInstance.pause();
+                            });
+                        }
 
                         if (data[0].type == "synchMCQ")
                         {
@@ -1088,8 +1091,8 @@
                 });
             }
 
-            this.setUpPopcornCue = function(apiInstance, synchData) {
-                var synchpointsHit = 0;
+            this.setUpPopcornCue = function(popcornInstance, synchData, apiInstance) {
+            /*    var synchpointsHit = 0;
                 var lastTime = 0;
                 apiInstance.addHandler({"currenttimechanged": function (eventData) {
                     var currentTime = eventData.currentTime;
@@ -1115,25 +1118,28 @@
                     }
 
                 }});
+            */
                 //TODO if popcorn instance.cue
-                /*this.cue(apiInstance, Number(synchData.getAttribute("synchstart")), function() {
+                popcornInstance.cue(popcornInstance, Number(synchData.getAttribute("synchstart")), function() {
                     // pause / play media
                     if (synchData.getAttribute("pauseMedia") == "true") {
+                        //popcornInstance.pause();
                         apiInstance.pause();
                     } else {
+                        popcornInstance.play();
                         apiInstance.play();
                     }
 
                     // disable media controls
-                    //if (synchData.getAttribute("disable") == "true") {
-                    //    mediaLesson.enableControls(this.media, false);
-                    //}
+                    if (synchData.getAttribute("disable") == "true") {
+                        mediasiteLesson.enableControls(this.media, false);
+                    }
 
                     // skip media
                     if (synchData.getAttribute("destination") != undefined && $.isNumeric(synchData.getAttribute("destination"))) {
                         this.currentTime(synchData.getAttribute("destination"));
                     }
-                });*/
+                });
             };
 
 
