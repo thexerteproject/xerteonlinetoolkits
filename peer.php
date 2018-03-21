@@ -81,10 +81,9 @@ if(!empty($query_for_peer_response)) {
         else
         {
             $retouremail = $_SESSION['toolkits_logon_username'];
-            $retouremail .= '@';
             if (strlen($xerte_toolkits_site->email_to_add_to_username)>0)
             {
-                $retouremail .= $xerte_toolkits_site->email_to_add_to_username;
+                $retouremail .= '@' . $xerte_toolkits_site->email_to_add_to_username;
             }
 
         }
