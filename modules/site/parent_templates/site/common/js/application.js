@@ -900,7 +900,7 @@ function parseContent(pageIndex){
 						val = $this.attr('src') || $this.attr('href'),
 						attr_name = $this.attr('src') ? 'src' : 'href';
 
-					if (val.substring(0, 16) == "FileLocation + '") {
+					if (val != undefined && val.substring(0, 16) == "FileLocation + '") {
 						$this.attr(attr_name, eval(val));
 					}
 				});
