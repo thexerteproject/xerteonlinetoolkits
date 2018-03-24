@@ -1,6 +1,8 @@
 LTI Documentation
 =================
 
+Please note this is the older Moodle LTI instructions and not part of the newer TSUGI/LTI developments made availavle from XOT v3.6.
+
 Very quick & brief documentation.
 
 adds 4 new tables lti_context, lti_keys, lti_resource & lti_user
