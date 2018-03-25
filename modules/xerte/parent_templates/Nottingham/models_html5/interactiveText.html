@@ -965,7 +965,7 @@
 
 			x_shuffleArray(options);
 
-            XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
+            XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 
             var $optionHolder = $("#questionHolder #optionHolder")
 					.html('<div class="optionGroup"><input type="radio" name="option" /><label class="optionTxt"></label></div>')

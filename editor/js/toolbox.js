@@ -2483,6 +2483,88 @@ var EDITOR = (function ($, parent) {
                     form_id_offset++;
 
                     break;
+                case 'category':
+                    var id = 'select_' + form_id_offset;
+                    var html = $('<div>')
+                        .attr('id', 'category_div_' + form_id_offset);
+                    var currselected=false;
+                    var select = $('<select>')
+                        .attr('id', id)
+                        .change({id:id, key:key, name:name}, function(event)
+                        {
+                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        });
+                    // Add empty option
+                    var option = $('<option>')
+                        .attr('value', "");
+                    if (value=="") {
+                        option.prop('selected', true);
+                        currselected=true;
+                    }
+                    option.append("");
+                    select.append(option);
+                    for (var i=0; i<category_list.length; i++) {
+                        var option = $('<option>')
+                            .attr('value', category_list[i].category_name);
+                        if (category_list[i].category_name==value) {
+                            option.prop('selected', true);
+                            curreselected = true;
+                        }
+                        option.append(category_list[i].category_name);
+                        select.append(option);
+                    }
+                    if (value != "" && !currselected)
+                    {
+                        //  Add current value as option, even though it is not in the list
+                        var option = $('<option>')
+                            .attr('value', value);
+                        option.prop('selected', true);
+                        option.append(value);
+                        select.append(option);
+                    }
+                    html.append(select);
+                break;
+                case 'grouping':
+                    var id = 'select_' + form_id_offset;
+                    var html = $('<div>')
+                        .attr('id', 'grouping_div_' + form_id_offset);
+                    var currselected = false;
+                    var select = $('<select>')
+                        .attr('id', id)
+                        .change({id:id, key:key, name:name}, function(event)
+                        {
+                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        });
+                    // Add empty option
+                    var option = $('<option>')
+                        .attr('value', "");
+                    if (value=="") {
+                        option.prop('selected', true);
+                        currselected = true;
+                    }
+                    option.append("");
+                    select.append(option);
+                    for (var i=0; i<grouping_list.length; i++) {
+                        var option = $('<option>')
+                            .attr('value', grouping_list[i].grouping_name);
+                        if (grouping_list[i].grouping_name==value) {
+                            option.prop('selected', true);
+                            currselected = true;
+                        }
+                        option.append(grouping_list[i].grouping_name);
+                        select.append(option);
+                    }
+                    if (value != "" && !currselected)
+                    {
+                        //  Add current value as option, even though it is not in the list
+                        var option = $('<option>')
+                            .attr('value', value);
+                        option.prop('selected', true);
+                        option.append(value);
+                        select.append(option);
+                    }
+                    html.append(select);
+                    break;
                 case 'hotspot':
                     var id = 'hotspot_' + form_id_offset;
                     form_id_offset++;

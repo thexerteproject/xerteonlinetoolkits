@@ -1279,7 +1279,7 @@ function setValue(elementName, value){
     return result;
 }
 
-function XTInitialise()
+function XTInitialise(category)
 {
     if (! state.initialised)
     {
@@ -1485,7 +1485,7 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
 }
 
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, category)
 {
     if (state.scormmode == 'normal')
     {

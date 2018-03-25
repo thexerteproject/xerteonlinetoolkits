@@ -263,7 +263,7 @@
 				for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
 					name = "interaction number" + " " + interactionNumber;
 					correctAnswer = answerData[interactionNumber];
-					XTEnterInteraction(x_currentPage,  interactionNumber , 'fill-in', name, [], correctAnswer, "Correct", x_currentPageXML.getAttribute("trackinglabel"));
+					XTEnterInteraction(x_currentPage,  interactionNumber , 'fill-in', name, [], correctAnswer, "Correct", x_currentPageXML.getAttribute("grouping"));
 				}
 			}
 			else if(x_currentPageXML.getAttribute("interactivity") == "Drag Drop"){
@@ -277,7 +277,7 @@
 					correctOption = {source: answerData[interactionNumber][0], target: answerData[interactionNumber][0]}
 					correctOptions.push(correctOption);
 				}
-                XTEnterInteraction(x_currentPage,  0 , 'match', name, correctOptions, correctAnswers, "", x_currentPageXML.getAttribute("trackinglabel"));
+                XTEnterInteraction(x_currentPage,  0 , 'match', name, correctOptions, correctAnswers, "", x_currentPageXML.getAttribute("grouping"));
 
             }
 			else
@@ -305,7 +305,7 @@
                             result: correctAnswer
                         });
 					}
-                    XTEnterInteraction(x_currentPage,  interactionNumber , 'multiplechoice', name, correctOptions, correctAnswers, "Correct", x_currentPageXML.getAttribute("trackinglabel"));
+                    XTEnterInteraction(x_currentPage,  interactionNumber , 'multiplechoice', name, correctOptions, correctAnswers, "Correct", x_currentPageXML.getAttribute("grouping"));
                 }
 			}
 			

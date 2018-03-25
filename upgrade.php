@@ -781,4 +781,23 @@ function upgrade_16()
 
 }
 
+function upgrade_17()
+{
+    $table = table_by_key('grouping');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+      `grouping_id` int(11) NOT NULL AUTO_INCREMENT,
+      `grouping_name` char(255) DEFAULT NULL,
+      PRIMARY KEY (`grouping_id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+    ");
+
+    $message =  "Creating grouping table - ok ? " . ( $ok ? 'true' : 'false' );
+
+    $ok = db_query("insert  into `$table` (`grouping_id`,`grouping_name`) values (1,'Grouping 1'),(2,'Grouping 2'),(3,'Grouping 3'),(4,'Grouping 4'),(5,'Grouping 5'),(6,'Grouping 6'),(7,'Grouping 7'),(8,'Grouping 8'),(9,'Grouping 9'),(10,'Grouping 10')");
+
+    $message .= "Filling default groupings into groupings table - ok ? " . ( $ok ? 'true' : 'false' );
+
+    return $message;
+}
+
 ?>
