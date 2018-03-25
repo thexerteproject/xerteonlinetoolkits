@@ -2,9 +2,11 @@
 	require_once("../../../config.php");
 	global $xerte_toolkits_site;
 
+    $tsugi_installed = false;
 	if (file_exists($xerte_toolkits_site->tsugi_dir)) {
         require_once($xerte_toolkits_site->tsugi_dir . "config.php");
         require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
+        $tsugi_installed = true;
     }
 
     use \Tsugi\Util\LTI;
@@ -21,7 +23,13 @@
 	require_once "../user_library.php";
 	
 	require_once "properties_library.php";
-	
+
+    function generatePwd($length){
+        $a = str_split("abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXY0123456789");
+        shuffle($a);
+        return substr( implode($a), 0, $length );
+    }
+
 	$id = $_REQUEST['template_id'];
 
 
@@ -40,11 +48,11 @@
             $row = db_query_one($query_for_preview_content, $params);
 
             $lti_def = new stdClass();
-
+            $lti_def->tsugi_installed = $tsugi_installed;
             $lti_def->title = str_replace('_', ' ', $row['name']);
             $lti_def->xapi_enabled = $row["tsugi_xapi_enabled"];
-            $lti_def->key = "";
-            $lti_def->secret = "";
+            $lti_def->key = $row['name'] . "_" . $id;
+            $lti_def->secret = generatePwd(16);
             $lti_def->published = $row["tsugi_published"];
             $lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
             $lti_def->url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
@@ -54,19 +62,19 @@
             $lti_def->xapi_password = $xerte_toolkits_site->LRS_Secret;
             $lti_def->xapi_student_id_mode = 0; // e-mail address
 
-            if($lti_def->published == 1)
-            {
-                $PDOX = LTIX::getConnection();
-                $tsugirow = $PDOX->rowDie(
-                    "	SELECT l.title, k.key_key, k.secret 
+            if ($tsugi_installed) {
+                if ($lti_def->published == 1) {
+                    $PDOX = LTIX::getConnection();
+                    $tsugirow = $PDOX->rowDie(
+                        "	SELECT l.title, k.key_key, k.secret 
 						FROM {$CFG->dbprefix}lti_key AS k, {$CFG->dbprefix}lti_context AS c, {$CFG->dbprefix}lti_link AS l  
 							WHERE k.key_id = c.key_id AND c.context_id = l.context_id AND l.path = :DPATH",
-                    array(':DPATH' => $lti_def->tsugi_url));
-                $lti_def->key = $tsugirow["key_key"];
-                $lti_def->secret = $tsugirow["secret"];
-                $lti_def->title = $tsugirow["title"];
+                        array(':DPATH' => $lti_def->tsugi_url));
+                    $lti_def->key = $tsugirow["key_key"];
+                    $lti_def->secret = $tsugirow["secret"];
+                    $lti_def->title = $tsugirow["title"];
+                }
             }
-
             if($lti_def->xapi_enabled == 1)
             {
                 $lti_def->xapi_endpoint = $row["tsugi_xapi_endpoint"];
