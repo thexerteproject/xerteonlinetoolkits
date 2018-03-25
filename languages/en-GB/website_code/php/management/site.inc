@@ -160,7 +160,7 @@
 
   define("MANAGEMENT_SITE_AUTH_METHOD", "The authentication method to use");
 
-  define("MANAGEMENT_SITE_LTI","LTI settings");
+  define("MANAGEMENT_SITE_LTI","LTI/Moodle settings. (Not Tsugi/LTI)");
   
   define("MANAGEMENT_SITE_XAPI", "xAPI settings");
   

@@ -522,7 +522,7 @@
 							return thisHelper;
 						},
 						cursor:			"none",
-						cursorAt:		{left: -1, top: 7},
+						cursorAt:		{left: -1, top: 16},
 						start:			function() {
 							// reset any info shown and hide pin on label
 							$("#hsHolder canvas")
@@ -615,19 +615,18 @@
 					.droppable({
 						accept:	$("#labelHolder .label"),
 						drop:	function(e, ui) {
-							// helper pin has been dropped on mainCanvas
-							var $thisHSCanvas = ui.draggable.data("correct");
+							var $thisHSCanvas = ui.draggable.data("correct")[0];
 							
-							for (var i=0; i<$thisHSCanvas.length; i++) {
-								var xyCoords = [e.pageX - $thisHSCanvas[i].offset().left, e.pageY - $thisHSCanvas[i].offset().top];
-								
-								// get pixel data from the whole canvas - and then from pixel dropped on
-								var pix = $thisHSCanvas[i][0].getContext("2d").getImageData(0, 0, $thisHSCanvas[i].width(), $thisHSCanvas[i].height()),
-									dataPos = ((xyCoords[1] * $thisHSCanvas[i].width()) + xyCoords[0]) * 4;
-								
-								if (pix.data[Math.round(dataPos)+3] > 0) { // is it transparent?
-									customHotspots.dropLabel($thisHSCanvas[i], ui.draggable, ui.helper);
-								}
+							// get xy pos of click relative to position of canvas
+							var xyCoords = {x : Math.floor(e.pageX - $thisHSCanvas.offset().left), y : Math.floor(e.pageY - $thisHSCanvas.offset().top)};
+							
+							// get pixel data from the whole canvas - and then from pixel clicked
+							var pix = $thisHSCanvas[0].getContext("2d").getImageData(0, 0, $thisHSCanvas.width(), $thisHSCanvas.height()),
+								dataPos = (((xyCoords.y - 1) * $thisHSCanvas.width()) + xyCoords.x) * 4;
+							
+							// is it transparent?
+							if (pix.data[dataPos] > 0) {
+								customHotspots.dropLabel($thisHSCanvas, ui.draggable, ui.helper);
 							}
 						}
 					});
@@ -675,7 +674,7 @@
 										.removeClass("selected")
 										.attr("title", labelTxt1);
 									// only accept drops for correct answers
-									if ($selectedLabel.data("correct").is($this) == true) {
+									if ($selectedLabel.data("correct")[0].is($this) == true) {
 										customHotspots.dropLabel($this, $selectedLabel);
 									} else {
 										$this.removeClass("visible");
@@ -1036,7 +1035,7 @@
 						
 						$pin.css({
 							left:	x + $hsHolder.position().left - 8,
-							top:	y + $hsHolder.position().top - 15
+							top:	y + $hsHolder.position().top - 26
 						});
 						break;
 					}

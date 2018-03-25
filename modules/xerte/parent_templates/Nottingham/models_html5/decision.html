@@ -630,21 +630,12 @@
 							answerBox = '<label for="amount">' + currentStepInfo.unit + '</label><input type="text" id="amount" class="question"/>';
 						}
 						
-						// work out max length of answer string - depends on max value & increment & takes decimals into account if needed
-						var inputW;
-						if (currentStepInfo.step.split('.').length > 1) {
-							if (currentStepInfo.max.split('.').length > 1) {
-								if (currentStepInfo.max.split('.')[1].length > currentStepInfo.step.split('.')[1].length) {
-									inputW = currentStepInfo.max.length;
-								} else {
-									inputW = currentStepInfo.max.split('.')[0].length + 1 + currentStepInfo.step.split('.')[1].length;
-								}
-							} else {
-								inputW = currentStepInfo.max.length + 1 + currentStepInfo.step.split('.')[1].length;
-							}
-						} else {
-							inputW = currentStepInfo.max.length;
-						}
+						// work out max length of answer string
+						var stepDec = currentStepInfo.step.split('.').length > 1 ? currentStepInfo.step.split('.')[1].length : 0,
+							minDec = currentStepInfo.min.split('.').length > 1 ? currentStepInfo.min.split('.')[1].length : 0,
+							maxDec = currentStepInfo.max.split('.').length > 1 ? currentStepInfo.max.split('.')[1].length : 0;
+						var maxDecimals = Math.max(stepDec, minDec, maxDec);
+						var inputW = currentStepInfo.max.split('.')[0].length + (maxDecimals > 0 ? 1 + maxDecimals : 0);
 						
 						var authorSupport = "";
 						if (x_params.authorSupport == "true") {
@@ -678,12 +669,21 @@
 						$amount
 							.val($slider.slider("value"))
 							.change(function() {
-								var value = $(this).val();
-								if (value > currentStepInfo.max) {
-									value = currentStepInfo.max;
+								var value = Number($(this).val()),
+									step = Number(currentStepInfo.step),
+									min = Number(currentStepInfo.min),
+									max = Number(currentStepInfo.max);
+								if (value > max) {
+									value = max;
 									$amount.val(value);
-								} else if (value < currentStepInfo.min) {
-									value = currentStepInfo.min;
+								} else if (value < min) {
+									value = min;
+									$amount.val(value);
+								} else {
+									// check the value is one allowed according to step
+									var rounded = Math.round((value - min) / step);
+									var calcValue = rounded * step + min;
+									value = Number(calcValue.toFixed(maxDecimals));
 									$amount.val(value);
 								}
 								$slider.slider({value: value});
