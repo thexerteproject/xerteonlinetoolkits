@@ -250,7 +250,9 @@
 								answer: thisOption.name,
 								result: thisOption.correct == 'true'
 							});
-							correctAnswer.push(thisOption.text);
+							if (thisOption.correct == 'true') {
+                                correctAnswer.push(thisOption.name);
+                            }
 							correctFeedback.push(thisOption.feedback);
 
 							$thisOption
@@ -291,7 +293,7 @@
 						name = $thisQ.getAttribute("name");
 					}
 
-					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
+					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 					quiz.checked = false;
 				}
 			}
@@ -347,7 +349,7 @@
 					answer: selectedOption.name,
 					result: correct
                 });
-                l_answer.push(selectedOption.text);
+                l_answer.push(selectedOption.name);
                 l_feedback.push(selectedOption.feedback);
             }
             generalFeedback += optionFeedback;

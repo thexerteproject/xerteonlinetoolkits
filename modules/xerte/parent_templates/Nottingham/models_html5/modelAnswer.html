@@ -91,7 +91,7 @@
             XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
 
             var modelAnswerTxt = $('<div>').html(x_currentPageXML.getAttribute("feedback")).text();
-			XTEnterInteraction(x_currentPage, 0, 'text', label, [], modelAnswerTxt, []);
+			XTEnterInteraction(x_currentPage, 0, 'text', label, [], modelAnswerTxt, [], x_currentPageXML.getAttribute("grouping"));
 			
 			// feedbackBtnWidth attribute not used as button will be sized automatically
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
@@ -279,6 +279,7 @@
                 };
 
             XTExitInteraction(x_currentPage, 0, result, [], answerTxt, []);
+            XTSetPageScore(x_currentPage, (answerTxt.trim() == "" ? 0.0 : 100.0));
             this.tracked = true;
         };
 

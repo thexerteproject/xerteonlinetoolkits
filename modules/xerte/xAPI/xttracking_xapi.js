@@ -60,7 +60,7 @@ function XApiTrackingState()
     this.templateName = "";
     this.debug = false;
     this.sessionId = "";
-
+    this.category = "";
 
     this.initialise = initialise;
     this.getCompletionStatus = getCompletionStatus;
@@ -298,11 +298,11 @@ function XApiTrackingState()
         return true;
     }
 
-    function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
+    function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping)
     {
         this.verifyEnterInteractionParameters(ia_type, ia_name, correctoptions, correctanswer, feedback);
         interaction = new XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name);
-        interaction.enterInteraction(correctanswer, correctoptions);
+        interaction.enterInteraction(correctanswer, correctoptions, grouping);
         this.interactions.push(interaction);
         this.currentid = interaction.id;
     }
@@ -441,6 +441,7 @@ function XApiTrackingState()
     {
         var sit = this.findCreate(page_nr, ia_nr, ia_type, ia_name);
         this.currentpageid = sit.id;
+
         return sit;
     }
     /**
@@ -937,6 +938,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
     this.nrinteractions = 0;
     this.weighting = 0.0;
     this.score = 0.0;
+    this.grouping = "";
     this.correctAnswers = [];
     this.learnerAnswers = [];
     this.learnerOptions = [];
@@ -1047,15 +1049,24 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
 
     }
 
-    function enterInteraction(correctAnswers, correctOptions)
+    function enterInteraction(correctAnswers, correctOptions, grouping)
     {
         this.correctAnswers = correctAnswers;
         this.correctOptions = correctOptions;
 
+        if (typeof grouping != "undefined" && grouping != "")
+        {
+            this.grouping = grouping;
+        }
+        else
+        {
+            this.grouping = "";
+        }
+
         var id = this.getxApiId();
         var description = this.getxApiDescription();
 
-        var statement = new TinCan.Statement(
+        var statement =
             {
                 actor: actor,
                 verb: {
@@ -1074,10 +1085,24 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                     }
                 },
                 timestamp : this.enterInteractionStamp
-            }
-        );
+            };
 
-
+        if (this.grouping != "")
+        {
+            statement.context =
+            {
+                contextActivities:
+                {
+                    grouping:
+                    [
+                        {
+                            id: baseUrl() + state.templateId + '/' + this.grouping.replace(/ /g, "_"),
+                            objectType: "Activity"
+                        }
+                    ]
+                }
+            };
+        }
         SaveStatement(statement);
 
     }
@@ -1408,8 +1433,23 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                 completion: Math.abs(this.end.getTime() - this.start.getTime()) > state.page_timeout
                             };
                     }
-                    var statementChecked = new TinCan.Statement(statement);
-                    SaveStatement(statementChecked);
+                    if (this.grouping != "")
+                    {
+                        statement.context =
+                        {
+                            contextActivities:
+                            {
+                                grouping:
+                                [
+                                    {
+                                        id: baseUrl() + state.templateId + '/' + this.grouping.replace(/ /g, "_"),
+                                        objectType: "Activity"
+                                    }
+                                ]
+                            }
+                        };
+                    }
+                    SaveStatement(statement);
                     if (typeof statement.result.score != 'undefined')
                     {
                         var scoredstatement = {
@@ -1431,14 +1471,29 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                             },
                             result: statement.result
                         };
-                        var statementChecked = new TinCan.Statement(scoredstatement);
-                        SaveStatement(statementChecked);
+                        if (this.grouping != "")
+                        {
+                            scoredstatement.context =
+                            {
+                                contextActivities:
+                                {
+                                    grouping:
+                                    [
+                                        {
+                                            id: baseUrl() + state.templateId + '/' + this.grouping.replace(/ /g, "_"),
+                                            objectType: "Activity"
+                                        }
+                                    ]
+                                }
+                            };
+                        }
+                        SaveStatement(scoredstatement);
                     }
                 }
 
 
                 if (surf_mode) {
-                    var statement = new TinCan.Statement(
+                    var statement =
                         {
                             actor: actor,
                             verb: {
@@ -1459,12 +1514,24 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                 }
                             },
                             timestamp: new Date()
-                        }
-                    );
+                        };
+                    if (this.grouping != "")
+                    {
+                        statement.context.contextActinities =
+                        {
+                            grouping:
+                            [
+                                {
+                                    id: baseUrl() + state.templateId + '/' + this.grouping.replace(/ /g, "_"),
+                                    objectType: "Activity"
+                                }
+                            ]
+                        };
+                    }
                     SaveStatement(statement);
                     // If not a page
                     if (this.ia_nr >= 0) {
-                        var statement = new TinCan.Statement(
+                        var statement =
                             {
                                 actor: actor,
                                 verb: {
@@ -1497,9 +1564,22 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                     }
                                 },
                                 timestamp: new Date()
-                            });
+                            };
+                        if (this.grouping != "")
+                        {
+                            statement.context.contextActivities =
+                            {
+                                grouping:
+                                [
+                                    {
+                                        id: baseUrl() + state.templateId + '/' + this.grouping.replace(/ /g, "_"),
+                                        objectType: "Activity"
+                                    }
+                                ]
+                            };
+                        }
+                        SaveStatement(statement);
                     }
-                    SaveStatement(statement);
                 }
             }
         }
@@ -1551,11 +1631,26 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                         timestamp: new Date()
                     };
             }
-            statement = new TinCan.Statement(statement);
+            if (this.grouping != "")
+            {
+                statement.context =
+                {
+                    contextActivities:
+                    {
+                        grouping:
+                        [
+                            {
+                                id: baseUrl() + state.templateId + '/' + this.grouping.replace(/ /g, "_"),
+                                objectType: "Activity"
+                            }
+                        ]
+                    }
+                };
+            }
             SaveStatement(statement);
         }
     }
-
+    this.grouping = "";
 }
 
 
@@ -1572,7 +1667,7 @@ var surf_recipe, surf_course;
 
 var answeredQs = [];
 
-function XTInitialise()
+function XTInitialise(category)
 {
     state.sessionId = new Date().getTime() + "" + Math.round(Math.random() * 10000000);
     // Initialise actor object
@@ -1640,17 +1735,36 @@ function XTInitialise()
         state.initialise();
     }
     state.mode = "normal";
-    if(lrsInstance == undefined){
+    if (typeof category != "undefined" && category != "")
+    {
+        state.category = category;
+    }
+    else
+    {
+        state.category = "";
+    }
+
+//    if(lrsInstance == undefined){
         try{
+            /*
             lrsInstance = new TinCan.LRS(
                 {
                     endpoint: lrsEndpoint,
                     username: lrsUsername,
                     password: lrsPassword,
                     allowFail: false,
-                    version: "1.0.1"
+                    version: "1.0.2"
                 }
             );
+            */
+            var conf = {
+                "endpoint" : lrsEndpoint + '/',
+                "user" : lrsUsername,
+                "password" : lrsPassword,
+                "strictCallbacks" : true
+            };
+            ADL.XAPIWrapper.changeConfig(conf);
+            ADL.XAPIWrapper.log.debug = true;
 
         }
         catch(ex)
@@ -1658,19 +1772,19 @@ function XTInitialise()
             //alert("Failed LRS setup. Error: " + ex);
             state.mode = "none";
         }
-        TinCan.enableDebug();
-    }
+        //TinCan.enableDebug();
+//    }
     if(surf_course != undefined && surf_recipe != undefined)
     {
         surf_mode = true;
     }
 
-    if(lrsInstance != undefined)
-    {
+//    if(lrsInstance != undefined)
+//    {
         this.initStamp = new Date();
 
         if (! surf_mode) {
-            var statement = new TinCan.Statement(
+            var statement =
                 {
                     actor: actor,
                     verb: {
@@ -1682,21 +1796,20 @@ function XTInitialise()
                     object: {
                         objectType: "Activity",
                         id: baseUrl() + state.templateId,
-                        description: {
+                        definition: {
                             name: {
                                 "en": x_params.name
                             }
                         }
                     },
                     timestamp: this.initStamp
-                }
-            );
+                };
 
             SaveStatement(statement);
         }
         if(surf_mode)
         {
-            var statement = new TinCan.Statement(
+            var statement =
                 {
                     actor: actor,
                     verb: {
@@ -1725,11 +1838,10 @@ function XTInitialise()
                         id: baseUrl() + state.templateId
                     },
                     timestamp: this.initStamp
-                }
-            );
+                };
             SaveStatement(statement);
         }
-    }
+//    }
 }
 
 function XTTrackingSystem()
@@ -1742,7 +1854,7 @@ function XTLogin(login, passwd)
     this.loginStamp = new Date();
 
     if (! surf_mode) {
-        var statement = new TinCan.Statement(
+        var statement =
             {
                 actor: actor,
                 verb: {
@@ -1755,8 +1867,7 @@ function XTLogin(login, passwd)
                     id: baseUrl() + state.templateId
                 },
                 timestamp: this.loginStamp
-            }
-        );
+            };
 
         SaveStatement(statement);
     }
@@ -1857,7 +1968,7 @@ function XTEnterPage(page_nr, page_name)
     var description = sitp.getPageDescription();
 
     if (! surf_mode) {
-        var statement = new TinCan.Statement(
+        var statement =
             {
                 actor: actor,
                 verb: {
@@ -1878,8 +1989,7 @@ function XTEnterPage(page_nr, page_name)
                 },
                 timestamp: this.pageStart
 
-            }
-        );
+            };
 
         SaveStatement(statement);
     }
@@ -1905,7 +2015,7 @@ function XTSetViewed(page_nr, name, score)
     var sit = state.findPage(page_nr);
     if (sit != null) {
         var id = sit.getPageId();
-        var statement = new TinCan.Statement(
+        var statement =
             {
                 actor: actor,
                 verb: {
@@ -1931,8 +2041,7 @@ function XTSetViewed(page_nr, name, score)
                 },
                 timestamp: this.pageEnd
 
-            }
-        );
+            };
 
         SaveStatement(statement);
         state.setPageScore(page_nr, score);
@@ -1947,7 +2056,7 @@ function XTSetPageScore(page_nr, score)
     if (sitp != null) {
         var id = sitp.getPageId();
         var description = sitp.getPageDescription();
-        var statement = new TinCan.Statement(
+        var statement =
             {
                 actor: actor,
                 verb: {
@@ -1978,8 +2087,7 @@ function XTSetPageScore(page_nr, score)
                 },
                 timestamp: this.pageEnd
 
-            }
-        );
+            };
 
         SaveStatement(statement);
     }
@@ -2007,7 +2115,7 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
         var id = sitp.getPageId();
         var description = sitp.getPageDescription();
         if (!surf_mode) {
-            var statement = new TinCan.Statement(
+            var statement =
                 {
                     actor: actor,
                     verb: {
@@ -2040,17 +2148,16 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
                         }
                     },
                     timestamp: this.pageEnd
-                }
-            );
+                };
 
             SaveStatement(statement);
         }
     }
 }
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping)
 {
-    state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback);
+    state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping);
 }
 
 function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswers, feedback) {
@@ -2081,6 +2188,7 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callba
             id = baseUrl() + state.templateId + "/" + full_id.replace(/ /g,"_");
         }
     }
+    /*
     var x = lrsInstance.queryStatements(
         {
             params: {
@@ -2116,6 +2224,40 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callba
                 }
                 if (sr.more !== null) {
                 }
+                callback(stringObjects);
+            }
+        }
+    );
+    */
+    var search = ADL.XAPIWrapper.searchParams();
+    search['verb'] = "http://adlnet.gov/expapi/verbs/scored";
+    search['activity'] = id;
+    ADL.XAPIWrapper.getStatements(search, null,
+        function getmore(err, res, body) {
+            var lastSubmit = null;
+
+            for (x = 0; x < body.statements.length; x++)
+            {
+                //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
+                //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
+                //}
+                stringObjects[x] = {};
+                stringObjects[x].timestamp = sr.statements[x].timestamp;
+                stringObjects[x].actor = sr.statements[x].actor;
+                stringObjects[x].result = sr.statements[x].result;
+                stringObjects[x].graph = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
+            }
+            //stringObjects.push(lastSubmit);
+            if (err !== null) {
+                console.log("Failed to query statements: " + err);
+                // TODO: do something with error, didn't get statements
+                return;
+            }
+            if (res.more && res.more !== "") {
+                ADL.XAPIWrapper.getStatements(null, res.more, getmore);
+            }
+            else
+            {
                 callback(stringObjects);
             }
         }
@@ -2161,7 +2303,7 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
 
             // Save completed when a learning object is completed
             if (state.getCompletionStatus() == "completed") {
-                var statement = new TinCan.Statement(
+                var statement =
                     {
                         actor: actor,
                         verb: {
@@ -2173,9 +2315,9 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                         object: {
                             objectType: "Activity",
                             id: baseUrl() + state.templateId,
-                            description: {
+                            definition: {
                                 name: {
-                                    "en": state.templateName
+                                    "en": x_params.name
                                 }
                             }
                         },
@@ -2194,12 +2336,11 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                             }
                         },
                         timestamp: new Date()
-                    }
-                );
+                    };
                 SaveStatement(statement, false);
                 if (state.getSuccessStatus() == "passed") {
                     // Sen passsed
-                    var statement = new TinCan.Statement(
+                    var statement =
                         {
                             actor: actor,
                             verb: {
@@ -2211,9 +2352,9 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                             object: {
                                 objectType: "Activity",
                                 id: baseUrl() + state.templateId,
-                                description: {
+                                definition: {
                                     name: {
-                                        "en": state.templateName
+                                        "en": x_params.name
                                     }
                                 }
                             },
@@ -2230,14 +2371,13 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                                 duration: calcDuration(state.start, new Date())
                             },
                             timestamp: new Date()
-                        }
-                    );
+                        };
                     SaveStatement(statement, false);
                 }
                 else
                 {
                     // Send failed
-                    var statement = new TinCan.Statement(
+                    var statement =
                         {
                             actor: actor,
                             verb: {
@@ -2249,9 +2389,9 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                             object: {
                                 objectType: "Activity",
                                 id: baseUrl() + state.templateId,
-                                description: {
+                                definition: {
                                     name: {
-                                        "en": state.templateName
+                                        "en": x_params.name
                                     }
                                 }
                             },
@@ -2268,12 +2408,11 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                                 duration: calcDuration(state.start, new Date()),
                             },
                             timestamp: new Date()
-                        }
-                    );
+                        };
                     SaveStatement(statement, false);
                 }
                 // Save scored
-                var statement = new TinCan.Statement(
+                var statement =
                     {
                         actor: actor,
                         verb: {
@@ -2285,9 +2424,9 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                         object: {
                             objectType: "Activity",
                             id: baseUrl() + state.templateId,
-                            description: {
+                            definition: {
                                 name: {
-                                    "en": state.templateName
+                                    "en": x_params.name
                                 }
                             }
                         },
@@ -2304,14 +2443,13 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                             duration: calcDuration(state.start, new Date())
                         },
                         timestamp: new Date()
-                    }
-                );
+                    };
                 SaveStatement(statement, false);
 
             }
 
             // Save exited
-            var statement = new TinCan.Statement(
+            var statement =
                 {
                     actor: actor,
                     verb: {
@@ -2323,15 +2461,15 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                     object: {
                         objectType: "Activity",
                         id: baseUrl() + state.templateId,
-                        description: {
+                        definition: {
                             name: {
-                                "en": state.templateName
+                                "en": x_params.name
                             }
                         }
                     },
                     result: {
-                        completion: state.getCompletionStatus(),
-                        success: state.getSuccessStatus(),
+                        completion: (state.getCompletionStatus() == 'completed'),
+                        success: (state.getSuccessStatus() == 'passed'),
                         score: {
                             min: 0.0,
                             max: 100.0,
@@ -2344,12 +2482,9 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                         duration: calcDuration(state.start, new Date())
                     },
                     timestamp: new Date()
-                }
-            );
+                };
             SaveStatement(statement, false);
         }
-        window.opener.innerWidth += 2;
-        window.opener.innerWidth -= 2;
     }
 
     function SaveStatement(statement, async) {
@@ -2358,11 +2493,11 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
         extension = {
             "http://xerte.org.uk/sessionId" : state.sessionId,
             "http://xerte.org.uk/learningObjectId" : baseUrl() + state.templateId,
-            "http://xerte.org.uk/learningObjectTitle" : x_params.name + "(" + state.templateId + ")"
+            "http://xerte.org.uk/learningObjectTitle" : x_params.name + " (" + state.templateId + ")"
         };
         if(statement.context == undefined)
         {
-            statement.context = new TinCan.Context({"extensions" : extension});
+            statement.context = {"extensions" : extension};
         }else if(statement.context.extensions == undefined){
             statement.context.extensions = extension;
         }else{
@@ -2371,6 +2506,41 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
                 statement.context.extensions[key] = value;
             });
         }
+        var parentId = baseUrl() + state.templateId;
+        if (statement.object.id != parentId)
+        {
+            if (statement.context.contextActivities == undefined)
+            {
+                statement.context.contextActivities = {};
+            }
+            statement.context.contextActivities.parent =
+                [
+                    {
+                        "definition": {
+                            "name": {
+                                "en-US": x_params.name + " (" + state.templateId + ")"
+                            },
+                        },
+                        "id": parentId,
+                        "objectType": "Activity"
+                    }
+                ];        }
+        if (state.category != "")
+        {
+            if (statement.context.contextActivities == undefined)
+            {
+                statement.context.contextActivities = {};
+            }
+            statement.context.contextActivities.category =
+                [
+                    {
+                        id: parentId + '/' + state.category.replace(/ /g, "_")
+                    }
+                ];
+        }
+
+        /*
+        statement = new TinCan.Statement(statement);
         statement.id = null;
         if (typeof async == 'undefined')
         {
@@ -2400,6 +2570,23 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
             lrsInstance.saveStatement(
                 statement
             );
+        }
+        */
+        statement.id = null;
+        if (typeof async == 'undefined')
+        {
+            async = true;
+        }
+        if(async) {
+            ADL.XAPIWrapper.sendStatement(statement, function(err, res, body)
+            {
+                ADL.XAPIWrapper.log("[" + body.id + "]: " + res.status + " - " + res.statusText);
+            });
+        }
+        else
+        {
+            var res = ADL.XAPIWrapper.sendStatement(statement);
+            ADL.XAPIWrapper.log("[" + res.id + "]: " + res.xhr.status + " - " + res.xhr.statusText);
         }
 
     }

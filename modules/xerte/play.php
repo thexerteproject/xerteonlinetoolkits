@@ -103,11 +103,11 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         if ($pedit_enabled)
         {
             if($row["tsugi_xapi_enabled"] == 1) {
-                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $flash_js_dir . "pedit/xttracking_xapi_pedit.js");
+                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $flash_js_dir . "xAPI/xttracking_xapi.js");
             }
             else
             {
-                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $flash_js_dir . "pedit/xttracking_pedit.js");
+                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $template_path . "common_html5/js/xttracking_noop.js");
             }
         }
         else
@@ -216,7 +216,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
             $tracking .= "<script type=\"text/javascript\" src=\"$jsfile?version=" . $version . "\"></script>\n";
         }
         if ($tsugi_enabled && $row["tsugi_xapi_enabled"] == 1) {
-            $tracking .= "<script type=\"text/javascript\" src=\"$flash_js_dir/xAPI/tincan.js?\"></script>\n";
+            $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapiwrapper.min.js?version=" . $version . "\"></script>\n";
         }
         if($tsugi_enabled)
         {

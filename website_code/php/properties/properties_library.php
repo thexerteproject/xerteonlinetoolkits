@@ -890,7 +890,7 @@ function tsugi_display($id, $lti_def, $mesg = "")
 
 
 
-    if (file_exists($xerte_toolkits_site->tsugi_dir))
+    if ($lti_def->tsugi_installed)
     {
     ?>
     <p class="header"><span><?php echo PROPERTIES_LIBRARY_TSUGI; ?></span></p>
@@ -925,23 +925,27 @@ function tsugi_display($id, $lti_def, $mesg = "")
                 <?php
                 for ($i=0; $i<4; $i++)
                 {
-                     echo "<option value=\"" . $i . "\" " . ($i == $lti_def->xapi_student_id_mode ? "selected>" : ">");
-                     switch($i)
-                     {
-                         case 0:
-                             echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_0;
-                             break;
-                         case 1:
-                             echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_1;
-                             break;
-                         case 2:
-                             echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_2;
-                             break;
-                         case 3:
-                             echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_3;
-                             break;
-                     }
-                     echo "</option>\n";
+                    if (! $lti_def->tsugi_installed && $i<3)
+                    {
+                        continue;
+                    }
+                    echo "<option value=\"" . $i . "\" " . ($i == $lti_def->xapi_student_id_mode ? "selected>" : ">");
+                    switch($i)
+                    {
+                        case 0:
+                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_0;
+                            break;
+                        case 1:
+                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_1;
+                            break;
+                        case 2:
+                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_2;
+                            break;
+                        case 3:
+                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_3;
+                            break;
+                    }
+                    echo "</option>\n";
                 }
                 ?>
             </select><br>

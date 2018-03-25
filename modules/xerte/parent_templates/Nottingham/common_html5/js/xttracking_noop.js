@@ -944,7 +944,7 @@ var state = new NoopTrackingState();
 // Enable debugging for now
 state.debug = true;
 
-function XTInitialise()
+function XTInitialise(category)
 {
 	if (! state.initialised)
     {
@@ -1071,7 +1071,7 @@ function XTSetViewed(page_nr, name, score)
     state.setPageScore(page_nr, score);
 }
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping)
 {
 	state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback);
 }
@@ -1118,8 +1118,26 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 
 function XTTerminate()
 {
-    window.opener.innerWidth+=2;
-	window.opener.innerWidth-=2;
+    if (!state.finished) {
+        var currentpageid = "";
+        state.finished = true;
+        if (state.currentid) {
+            var sit = state.find(currentid);
+            // there is still an interaction open, close it
+            if (sit != null) {
+                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+            }
+        }
+        if (state.currentpageid) {
+            currentpageid = state.currentpageid;
+            var sit = state.find(currentpageid);
+            // there is still an interaction open, close it
+            if (sit != null) {
+                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+            }
+
+        }
+    }
 }
 
 function XTResults(fullcompletion) {

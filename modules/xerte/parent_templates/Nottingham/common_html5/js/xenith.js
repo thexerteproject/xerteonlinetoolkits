@@ -1197,7 +1197,8 @@ function x_continueSetUp2() {
 
 	// Setup beforeunload
     window.onbeforeunload = XTTerminate;
-    XTInitialise(); // initialise here, because of XTStartPage in next function
+
+    XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
 
 	x_navigateToPage(true, x_startPage);
 }
@@ -1476,12 +1477,7 @@ function x_changePageStep5(x_gotoPage) {
                 customHTML.leavePage();
             }
         }
-        var label = $('<div>').html(pageTitle).text();
-        if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
-        {
-            label = x_currentPageXML.getAttribute("trackinglabel");
-        }
-        XTExitPage(x_currentPage, label);
+        XTExitPage(x_currentPage);
     }
     x_currentPage = x_gotoPage;
     x_currentPageXML = x_pages[x_currentPage];
@@ -1566,7 +1562,7 @@ function x_changePageStep5(x_gotoPage) {
         {
             label = x_currentPageXML.getAttribute("trackinglabel");
         }
-        XTEnterPage(x_currentPage, label, x_pageInfo[x_currentPage].type);
+        XTEnterPage(x_currentPage, label);
 
         var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);
