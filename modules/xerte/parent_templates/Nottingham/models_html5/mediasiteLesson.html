@@ -299,13 +299,12 @@
             // function called when mediasitePlayerIFRame.js & plugin files have all loaded
             this.setUp = function() {
                 // _____ SORT PAGE LAYOUT _____
+                var videoURL = x_currentPageXML.getAttribute("videoSource")
                 var apiInstance = new Mediasite.Player( "panelHolder",
                     {
-                        //https://deltion.mediamission.nl/Mediasite/Play/c550ff4fee9d493b8f5efebe45b777271d?player=MediasiteIntegration
-                        //var src = mediasuteLesson.videoSource
-                        url: "https://deltion.mediamission.nl/Mediasite/Play/c550ff4fee9d493b8f5efebe45b777271d?player=MediasiteIntegration",
+                        url: videoURL,
                         events: {
-                            ready: onReady()
+                            ready: onReady
                         },
                         layoutOptions: {
                             BackgroundColor: "#ffffff",
@@ -318,14 +317,12 @@
                         imageSprite: "url(" + ctrlPng + ")"
                     }
                 );
-
-                function onReady() {
+                function onReady(){
                     showStreams();
                     preSortPopcorn();
                 }
 
                 function showStreams() {
-                    preSortPopcorn();
                     var visiblestreams = [];
                     if (x_currentPageXML.getAttribute("showVideo1") === "true")
                     {
@@ -590,7 +587,6 @@
                         {
                             lastTime = currentTime;
                             popcornInstance.currentTime(lastTime);
-                            console.log(popcornInstance.currentTime());
                         }
                     }});
                 x_pageLoaded();

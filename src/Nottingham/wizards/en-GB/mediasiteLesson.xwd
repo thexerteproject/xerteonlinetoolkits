@@ -9,10 +9,9 @@
   <mediasiteLesson menu="Media" menuItem="Mediasite Lesson" hint="Synchronise a variety of types of content to a piece of media." icon="icApplicationTile" thumb="thumbs/mediaLesson.jpg" remove="true">
 
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
-
-		<videoSource label="Medialesson Video URL" type="TextInput" wysiwyg="false" />
-
 		<layout label="Panel Layout" type="ComboBox" options="Grid,Tile Horizontally,Tile Vertically,Full Top - Tile Bottom,Tile Top - Full Bottom,Full Left - Tile Right,Tile Left - Full Right" data="grid,tileH,tileV,top,bottom,left,right" defaultValue="grid" width="200"/>
+
+        <videoSource label="Lesson URL" optional="false" type="TextInput" width="120" defaultValue="mediales link"/>
 
 		<intro label="Introduction" type="TextArea" height="200" defaultValue="Enter Introduction Text" optional="true"/>
 
