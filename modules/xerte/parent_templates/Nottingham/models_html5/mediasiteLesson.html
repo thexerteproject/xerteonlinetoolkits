@@ -301,9 +301,11 @@
                 // _____ SORT PAGE LAYOUT _____
                 var apiInstance = new Mediasite.Player( "panelHolder",
                     {
+                        //https://deltion.mediamission.nl/Mediasite/Play/c550ff4fee9d493b8f5efebe45b777271d?player=MediasiteIntegration
+                        //var src = mediasuteLesson.videoSource
                         url: "https://deltion.mediamission.nl/Mediasite/Play/c550ff4fee9d493b8f5efebe45b777271d?player=MediasiteIntegration",
                         events: {
-                            ready: showStreams
+                            ready: onReady()
                         },
                         layoutOptions: {
                             BackgroundColor: "#ffffff",
@@ -316,6 +318,11 @@
                         imageSprite: "url(" + ctrlPng + ")"
                     }
                 );
+
+                function onReady() {
+                    showStreams();
+                    preSortPopcorn();
+                }
 
                 function showStreams() {
                     preSortPopcorn();
@@ -358,7 +365,7 @@
                     mediaType = "video",
                     maxPanels = 4,
                     mediaPanelIndex,
-                    popcornInstance; //TODO kan niet helemaal weg
+                    popcornInstance;
 
 
 
@@ -575,8 +582,6 @@
                     });
 
                     //Adds events to popcorn
-                    //TODO NEEDED: TIMEUPDATE & PAUSED & PLAY, Maybe seeked, might be IE hack.
-                    //TODO gettime -> (getblock -> updatetable) -> sentXAPI (Blocks are impossible for now have to check later (editor issues))
                     //getblock in general herschrijven vanwege de .duration, deze is specifiek voor de sync points die we bij popcorn gebruiken, herintegratie is daarmee wonderbaarlijk vervelend
                     var lastTime = -1;
                     apiInstance.addHandler({"currenttimechanged": function (eventData) {
