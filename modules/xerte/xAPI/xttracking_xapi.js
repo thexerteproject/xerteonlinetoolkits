@@ -1054,7 +1054,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
         this.correctAnswers = correctAnswers;
         this.correctOptions = correctOptions;
 
-        if (typeof grouping != "undefined" && grouping != "")
+        if (typeof grouping != "undefined" && grouping != "" && grouping != null)
         {
             this.grouping = grouping;
         }
