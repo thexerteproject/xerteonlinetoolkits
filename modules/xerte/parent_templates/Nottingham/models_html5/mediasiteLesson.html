@@ -21,7 +21,7 @@
         // pageChanged & sizeChanged functions are needed in every model file
         // other functions for model should also be in here to avoid conflicts
     var mediasiteLesson = new function() {
-            var	$panelHolder, $mcqHolder,
+            var	$panelHolder,
                 plugins = ["textplus", "subtitleplus", "xot", "mediaplus", "mcq", "slides", "sortholder"], // list of popcorn plugins to load
                 css = ["subtitleplus", "mcq", "slides"], // list of popcorn plugin css to load
                 numLoaded = 0,
@@ -67,6 +67,7 @@
                 var numTileH = $("#panelHolder .panel.tileH").length,
                     numTileV = $("#panelHolder .panel.tileV").length;
 
+
                 if (x_currentPageXML.getAttribute("layout") == "grid" && $("#panelHolder .top").length > 0) {
                     numTileH = $("#panelHolder .top .panel.tileH").length;
                 }
@@ -82,7 +83,9 @@
                     .height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - parseInt($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseInt($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2);
 
                 $panelHolder.find(".panel.fullH")
-                    .height($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - 5);
+                    .height($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - parseInt($("#controlHolder").height()) - 5);
+
+                debugger;
 
                 $panelHolder.find(".panel.halfH")
                     .height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
@@ -299,8 +302,8 @@
             // function called when mediasitePlayerIFRame.js & plugin files have all loaded
             this.setUp = function() {
                 // _____ SORT PAGE LAYOUT _____
-                var videoURL = x_currentPageXML.getAttribute("videoSource")
-                var apiInstance = new Mediasite.Player( "panelHolder",
+                var videoURL = x_currentPageXML.getAttribute("videoSource");
+                var apiInstance = new Mediasite.Player( "presentationHolder",
                     {
                         url: videoURL,
                         events: {
@@ -320,6 +323,7 @@
                 function onReady(){
                     showStreams();
                     preSortPopcorn();
+                    //$("#presentationHolder").hide();
                 }
 
                 function showStreams() {
@@ -354,7 +358,6 @@
 
                 //TODO verander height naar relatief
                 $panelHolder = $("#panelHolder");
-                $mcqHolder = $("#mcqPanel");
                 var	panelData = $(x_currentPageXML).children(),
                     panelLayout = x_currentPageXML.getAttribute("layout");
 
@@ -450,43 +453,43 @@
                         title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
                     }
                     $('<div class="panel">' + title + '</div>')
-                        .appendTo($mcqHolder)
+                        .appendTo($panelHolder)
                         .attr("id", "panel" + i);
                 }
 
                 // layouts where panels are roughly the same size - either in grid or stacked vertically/horizontally
                 if (panelLayout == "tileH") {
-                    $mcqHolder.find(".panel").addClass("tileH fullH");
+                    $panelHolder.find(".panel").addClass("tileH fullH");
 
                 } else if (panelLayout == "tileV") {
-                    $mcqHolder.find(".panel").addClass("tileV fullW");
+                    $panelHolder.find(".panel").addClass("tileV fullW");
 
                 } else if (panelLayout == "grid") {
                     if (panelData.length > 2) {
-                        $mcqHolder.append('<div class="top"></div><div class="bottom"></div>');
+                        $panelHolder.append('<div class="top"></div><div class="bottom"></div>');
 
-                        var panels = $mcqHolder.find(".panel");
+                        var panels = $panelHolder.find(".panel");
 
                         for (var i=0; i<panels.length; i++) {
                             if (i < 2) {
-                                $(panels[i]).appendTo($mcqHolder.find(".top")).addClass("tileH halfH");
+                                $(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH halfH");
                             } else {
-                                $(panels[i]).appendTo($mcqHolder.find(".bottom")).addClass("tileH halfH");
+                                $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
                             }
                         }
 
                     } else if (panelData.length > 1) {
-                        $mcqHolder.find(".panel").addClass("tileH fullH");
+                        $panelHolder.find(".panel").addClass("tileH fullH");
 
                     } else {
-                        $mcqHolder.find(".panel").addClass("fullH");
+                        $panelHolder.find(".panel").addClass("fullH");
                     }
 
                     // layouts where screen is split with large panel on one side and smaller panels on other side - can be horizontally or vertically
                 } else if (panelLayout == "top" || panelLayout == "bottom") {
-                    $mcqHolder.append('<div class="top"></div><div class="bottom"></div>');
+                    $panelHolder.append('<div class="top"></div><div class="bottom"></div>');
 
-                    var panels = $mcqHolder.find(".panel");
+                    var panels = $panelHolder.find(".panel");
 
                     if (panelLayout == "top") {
                         for (var i=0; i<panels.length; i++) {
@@ -508,25 +511,25 @@
                     }
 
                 } else {
-                    $mcqHolder.append('<div class="splitScreen"><div class="left"></div><div class="right"></div></div>');
+                    $panelHolder.append('<div class="splitScreen"><div class="left"></div><div class="right"></div></div>');
 
-                    var panels = $mcqHolder.find(".panel");
+                    var panels = $panelHolder.find(".panel");
 
                     if (panelLayout == "left") {
                         for (var i=0; i<panels.length; i++) {
                             if (i == 0) {
-                                $(panels[i]).appendTo($mcqHolder.find(".left")).addClass("fullH");
+                                $(panels[i]).appendTo($panelHolder.find(".left")).addClass("fullH");
                             } else {
-                                $(panels[i]).appendTo($mcqHolder.find(".right")).addClass("tileV");
+                                $(panels[i]).appendTo($panelHolder.find(".right")).addClass("tileV");
                             }
                         }
 
                     } else if (panelLayout == "right") {
                         for (var i=0; i<panels.length; i++) {
                             if (i == panels.length - 1) {
-                                $(panels[i]).appendTo($mcqHolder.find(".right")).addClass("fullH");
+                                $(panels[i]).appendTo($panelHolder.find(".right")).addClass("fullH");
                             } else {
-                                $(panels[i]).appendTo($mcqHolder.find(".left")).addClass("tileV");
+                                $(panels[i]).appendTo($panelHolder.find(".left")).addClass("tileV");
                             }
                         }
                     }
@@ -1203,8 +1206,9 @@
 
     <div id="contentCover"></div>
     <div id="MediasiteHolder">
+        <div id="presentationHolder"></div>
         <div id="panelHolder"></div>
-        <div id="mcqPanel"></div>
-        <div id="controlHolder"></div>
+
     </div>
+    <div id="controlHolder"></div>
 </div>

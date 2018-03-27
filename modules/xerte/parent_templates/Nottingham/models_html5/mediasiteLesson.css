@@ -10,29 +10,27 @@
 .popcornMedia.youTube {
     position:	relative;
 }
+#MediaSiteholder {
+    overflow: hidden;
+}
+
+#presentationHolder {
+    display: inline-block;
+    width: 49%;
+    height: 428px;
+}
 
 /* PANEL LAYOUT */
 #panelHolder {
-    width: 60%;
-    height: 400px;
     display: inline-block;
-}
-
-
-#mcqPanel {
-    height: 400px;
-    width: 200px;
-    display: inline-block;
-    top: 15px;
-    position: absolute;
 }
 
 #panelHolder .panel.tileH {
-    display:	inline-block;
+    float: right;
 }
 
 #panelHolder .panel.fullW {
-    display:	block;
+    float: right;
 }
 
 #panelHolder .panel {
