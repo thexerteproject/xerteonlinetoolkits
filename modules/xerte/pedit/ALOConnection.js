@@ -49,7 +49,7 @@ var ALOConnection = function (options) {
 
 var ALOConnectionPoint = new ALOConnection({
     messageReceived: function (messageData) {
-        alert("Request received");
+        //alert("Request received");
         XTTerminate();
 
         var end = new Date();
