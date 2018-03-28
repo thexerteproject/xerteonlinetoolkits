@@ -152,7 +152,7 @@ if ($tsugi_installed) {
             ':link_key' => $link_id,
             ':title' => $lti_def->title,
             ':context_id' => $context_id,
-            ':path' => $lti_def->url
+            ':path' => $lti_def->tsugi_url
         );
         $link = $PDOX->queryDie($sql, $params);
 

@@ -761,7 +761,7 @@ function XApiTrackingState()
      *
      *    3. numeric
      *        learneroptions: ignored
-     *        learneranswer contains a number between 0 and 100
+     *        learneranswer contains a number between 0 and 100 as a string
      *
      *    4. text, fill-in
      *        learneroptions is ignored
@@ -1322,7 +1322,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                         min: 0.0,
                                         max: 100.0,
                                         scaled: this.score / 100.0,
-                                        response: this.score
+                                        response: this.score + ""
                                     },
                                     success: (this.score >= state.lo_passed),
                                     completion: true
@@ -1337,7 +1337,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                         max: 100.0,
                                         scaled: result.score / 100.0
                                     },
-                                    response: this.learnerAnswers,
+                                    response: this.learnerAnswers + "",
                                     success: result.success,
                                     completion: true
                                 };
@@ -1384,9 +1384,15 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                             "http://xerte.org.uk/result/text": this.learnerAnswers
                                         }
                                 };
-                                statement.object.definition.description =
+                                statement.object.definition =
                                     {
-                                        "en-US": "Model answer interaction " + this.ia_name + " of " + pageref
+                                        name: {
+                                            "en-US": this.ia_name
+                                        },
+                                        description:
+                                        {
+                                            "en-US": "Model answer interaction " + this.ia_name + " of " + pageref
+                                        }
                                     }
                             }
                             else {
@@ -1692,7 +1698,7 @@ function XTInitialise(category)
         {
             userEMail = "mailto:email@test.com"
         }else{
-            userEMail = username;
+            userEMail = "mailto:" + username;
         }
         if (typeof fullusername == 'undefined')
             fullusername = "Unknown";
@@ -2127,7 +2133,7 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
                     object: {
                         objectType: "Activity",
                         id: id,
-                        description: {
+                        definition: {
                             name: {
                                 "en": description
                             }
@@ -2241,11 +2247,12 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callba
                 //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
                 //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                 //}
-                stringObjects[x] = {};
-                stringObjects[x].timestamp = sr.statements[x].timestamp;
-                stringObjects[x].actor = sr.statements[x].actor;
-                stringObjects[x].result = sr.statements[x].result;
-                stringObjects[x].graph = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
+                var stringObject = {};
+                stringObject.timestamp = body.statements[x].timestamp;
+                stringObject.actor = body.statements[x].actor;
+                stringObject.result = body.statements[x].result;
+                stringObject.graph = JSON.parse(body.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
+                stringObjects.push(stringObject);
             }
             //stringObjects.push(lastSubmit);
             if (err !== null) {
@@ -2285,7 +2292,7 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
             var currentpageid = "";
             state.finished = true;
             if (state.currentid) {
-                var sit = state.find(currentid);
+                var sit = state.find(state.currentid);
                 // there is still an interaction open, close it
                 if (sit != null) {
                     state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
@@ -2293,7 +2300,7 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
             }
             if (state.currentpageid) {
                 currentpageid = state.currentpageid;
-                var sit = state.find(currentpageid);
+                var sit = state.find(state.currentpageid);
                 // there is still an interaction open, close it
                 if (sit != null) {
                     state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
