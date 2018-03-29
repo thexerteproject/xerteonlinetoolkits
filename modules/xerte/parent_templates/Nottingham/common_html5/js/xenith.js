@@ -1639,7 +1639,7 @@ function x_changePageStep5(x_gotoPage) {
 
 			// Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
             var label = $('<div>').html(pageTitle).text();
-            if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+            if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
             {
                 label = x_currentPageXML.getAttribute("trackinglabel");
             }
