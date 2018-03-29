@@ -2032,7 +2032,10 @@ function XTSetViewed(page_nr, name, score)
                 },
                 result: {
                     "score": {
-                        "scaled": score / 100
+                        min: 0.0,
+                        max: 100.0,
+                        raw: score,
+                        scaled: score / 100
                     },
                     "duration": calcDuration(sit.start, this.pageEnd)
                 },
@@ -2086,7 +2089,7 @@ function XTSetPageScore(page_nr, score)
                     score: {
                         min: 0.0,
                         max: 100.0,
-                        raw: state.getdRawScore(),
+                        raw: score,
                         scaled: score / 100
                     },
                     duration: calcDuration(this.pageStart, this.pageEnd)
