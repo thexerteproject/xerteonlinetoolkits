@@ -85,14 +85,16 @@
 					answer: answerTxt,
 					result: this.optionElements[i].correct == 'true'
 				});
-				correctAnswer.push(answerTxt);
+				if (this.optionElements[i].correct == 'true') {
+                    correctAnswer.push(answerTxt);
+                }
 				correctFeedback.push(x_GetTrackingTextFromHTML(this.optionElements[i].feedback, ""));
 				mcq.correctOption = true;
             }
             // Create fallback label
             var questionTxt = (x_currentPageXML.getAttribute('questionTxt') != undefined ? x_currentPageXML.getAttribute('questionTxt') : "Multiple choice question");
             questionTxt += ' ' + (x_currentPage+1);
-            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), questionTxt), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
+            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), questionTxt), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
         }
 
         this.leavePage = function() {

@@ -199,6 +199,7 @@
 					}
 					else{
 						if (!labelOffTarget){
+                            textMatch.finishTracking();
 							$("#labelHolder .label").each(function() {
 								var $this = $(this);
 								if ($this.data("target").is($this.data("currentTarget"))) {
@@ -209,7 +210,6 @@
 									$this.find(".labelTxt").append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Cross") + '</span><span class="fa fa-fw fa-x-cross"></span></span>');
 								}
 							});
-							textMatch.finishTracking();
 						}
 						else{					
 							$feedback.html(x_currentPageXML.getAttribute("incomplete") != undefined ? x_currentPageXML.getAttribute("incomplete") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));	
@@ -359,7 +359,7 @@
             l_total = 0;
 			this.tracked = true;
 
-            $("#labelHolder .label").each(function(i) {
+			$("#labelHolder .label").each(function(i) {
             	var $this = $(this);
 				l_total++;
 				var l_option={};
@@ -404,7 +404,7 @@
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
             
-            XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
+            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
             var correctOptions 		= [];
             var correctAnswers 		= [];
             var correctFeedbacks 	= [];
@@ -414,8 +414,8 @@
             	{
             		
             		var correctOption={};
-            		var placeholder = $("<div/>").html(this.getAttribute("p1")).text();
-            		var draglabel	= $("<div/>").html(this.getAttribute("p2")).text();
+            		var placeholder = $("<div/>").html(this.getAttribute("p1")).text().trim();
+            		var draglabel	= $("<div/>").html(this.getAttribute("p2")).text().trim();
             		correctOption.source = draglabel;
                     correctOption.target = placeholder;
 					correctAnswers.push(draglabel + "-->" + placeholder);
@@ -423,7 +423,7 @@
                     correctOptions.push(correctOption);
             	}
             );
-            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswers, correctFeedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswers, correctFeedbacks, x_currentPageXML.getAttribute("grouping"));
 
 		}
 		

@@ -165,7 +165,7 @@
         this.startTracking = function() {
             var numHotspots = $(x_currentPageXML).children().length,
                     weighting = (x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
-            XTSetPageType(x_currentPage, 'numeric', numHotspots, weighting);
+            XTSetPageType(x_currentPage, 'numeric', 1, weighting);
         };
 
         this.createLabels = function() {
@@ -203,7 +203,7 @@
 
             // set up drag events (mouse and keyboard controlled)
             if (interactivity == "Match") {
-                XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
+                XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
                 $("#labelHolder .label")
                         .draggable({
                             containment: "#x_pageHolder",

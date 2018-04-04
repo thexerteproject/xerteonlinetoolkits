@@ -185,6 +185,23 @@ function categories_list(){
 	}
 }
 
+// Function categories list
+//
+// remove a share, and check who did it
+
+function grouping_list(){
+
+    if(setup_ajax()!=false){
+
+        var url="grouping.php";
+
+        management_ajax_send_prepare(url)
+
+        xmlHttp.send('no_id=1');
+
+    }
+}
+
 // Function remove category
 //
 // remove a share, and check who did it

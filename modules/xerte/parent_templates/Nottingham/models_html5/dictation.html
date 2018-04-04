@@ -322,7 +322,7 @@
 				name = x_currentPageXML.getAttribute("name");
 			}
 			var trackedAnswer = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer).text().replace(/(\r\n|\n|\r)/gm,"");
-			XTEnterInteraction(x_currentPage, $pageContents.data("current"), 'fill-in', name, [], trackedAnswer, "Correct", x_currentPageXML.getAttribute("trackinglabel"));
+			XTEnterInteraction(x_currentPage, $pageContents.data("current"), 'fill-in', name, [], trackedAnswer, "Correct", x_currentPageXML.getAttribute("grouping"));
 		}
 
 		this.loadAudio = function(caption) {

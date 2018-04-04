@@ -50,7 +50,6 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			// ** check all these for unnecessary scrollbars
 			if (x_currentPageXML.getAttribute("type") != "Col" && x_browserInfo.mobile == false && x_currentPageXML.getAttribute("panelHeight") != "fit") {
 				if (x_currentPageXML.getAttribute("type") == "Acc") {
 					$("#infoHolder")
@@ -61,21 +60,21 @@
 						$paneHolder = $("#paneHolder");
 					
 					$infoHolder
-						.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 10)
+						.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 13)
 						.tabs("refresh");
 					
 					$paneHolder.height($infoHolder.height() - $("#tabHolder").outerHeight());
 					$paneHolder.find(".navChild").height($paneHolder.height() - parseInt($paneHolder.find(".navChild").css("padding-top")) * 2);
 					
 					// forces tabindexes to be different to jquery ui default so it's consistent with controls on other page types
-					//$infoHolder.find(".tabHeader").attr("tabindex", 0); // **
+					$infoHolder.find(".navChildTitle").attr("tabindex", 0);
 					
 				} else {
 					var $panel = $("#navHolder .panel").length > 0 ? $("#navHolder .panel") : $("#pageContents > div.panel");
 					$("#infoHolder").height($x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - $("#btnHolder").outerHeight(true) - (parseInt($panel.css("padding-top")) * 2) - 5);
 				}
 			}
-			console.log("Size changed");
+			
 			this.resizeMedia();
 		}
 		
@@ -84,7 +83,14 @@
 			// resize if the media is now the wrong size for its holder
 			// this is done by manually triggering the window resize event (mediaelement.js listens to this event)
 			
+			if ($("iframe.navMedia").length > 0 && x_currentPageXML.getAttribute("type") != "Tab" && x_currentPageXML.getAttribute("type") != "Acc") {
+				// manually resize height of iframes
+				$("iframe.navMedia").height($("#infoHolder").height() - 12);
+			}
+			
 			$(".navChild:visible .navMedia.video, .navChild:visible .navMedia.audio").each(function(i) {
+				
+				var availSpace = $("#infoHolder").width() - parseInt($(this).closest(".navChild").css('padding-left')) - parseInt($(this).closest(".navChild").css('padding-right'));
 				
 				if ($(this).hasClass("audio")) {
 					var audioBarW = 0;
@@ -92,16 +98,20 @@
 						audioBarW += $(this).outerWidth();
 					});
 					
-					var availSpace = $("#infoHolder").width() - parseInt($(this).closest(".navChild").css('padding-left')) - parseInt($(this).closest(".navChild").css('padding-right'));
-					console.log([audioBarW, availSpace]);
+					//var availSpace = $("#infoHolder").width() - parseInt($(this).closest(".navChild").css('padding-left')) - parseInt($(this).closest(".navChild").css('padding-right'));
 					if (audioBarW > availSpace || audioBarW < availSpace - 50) {
 						$x_window.resize();
 						return false;
 					}
 				} else {
-					// ** resize video
+					var $video = $(this).find('video'),
+						$videoDiv = $(this).find('.mejs-video');
+					
+					if ($videoDiv.width() > availSpace || ($videoDiv.width() < availSpace - 50 && ($video.data('width') == 0 || $videoDiv.width() < $video.data('width')))) {
+						$x_window.resize();
+						return false;
+					}
 				}
-				
 			});
 		}
 		
@@ -263,7 +273,6 @@
 					
 					var $media,
 						fileExt = this.getAttribute("url").split('.').pop().toLowerCase();
-					//console.log(fileExt + " " + this.getAttribute("url"));
 					
 					// audio
 					if (fileExt == "mp3") {
@@ -313,7 +322,6 @@
 						}
 						
 						if ($media.hasClass('video')) {
-							console.log("calling mediaPlayer");
 							$media
 								.mediaPlayer({
 									type: "video",
@@ -333,8 +341,6 @@
 									title: $media.data('title')
 								});
 						
-						} else if ($media.is('iframe')) {
-							console.log("this is loading an iframe - sort out the dimensions?");
 						}
 					}
 				}
@@ -458,8 +464,8 @@
 						ui.newPanel.find('.navMedia.audio .mejs-inner').show();
 						nav.resizeMedia();
 						
-						//$("#infoHolder").find(".tabHeader").attr("tabindex", 0); // ** check the tab index stuff works
-						$("#paneHolder").scrollTop(0);
+						$("#infoHolder").find(".navChildTitle").attr("tabindex", 0);
+						ui.newPanel.scrollTop(0);
 					},
 					beforeActivate: function(e, ui) {
 						ui.newPanel.find('.navMedia.audio .mejs-inner').hide();
@@ -497,6 +503,20 @@
 				$prevBtn.button("enable");
 				$nextBtn.button("enable");
 			}
+		}
+		
+		this.mediaMetadata = function($video, wh) {
+			$video.data({
+				width: wh[0],
+				height: wh[1]
+			});
+			
+			$video.closest(".mejs-video").css({
+				"maxWidth": wh[0],
+				"maxHeight": wh[1]
+			});
+			
+			this.sizeChanged();
 		}
 		
 	}

@@ -55,7 +55,7 @@ if(is_user_admin()){
 
             }
 
-            echo "<p>" . str_replace("*","",file_get_contents($path . $file)) . "</p>";
+            echo "<p>" . str_replace("*","",str_replace("\n", "<br>\n", file_get_contents($path . $file))) . "</p>";
 
             echo "</div>";
 

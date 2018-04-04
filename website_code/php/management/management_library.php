@@ -42,7 +42,30 @@
 		}
 	
 	}
-	
+
+    function grouping_list(){
+
+        global $xerte_toolkits_site;
+
+        $query="select * from " . $xerte_toolkits_site->database_table_prefix . "grouping order by grouping_name ASC";
+
+        echo "<p>" . MANAGEMENT_LIBRARY_ADD_GROUPING . "</p>";
+
+        echo "<p>" . MANAGEMENT_LIBRARY_NEW_GROUPING . "<form><textarea cols=\"100\" rows=\"2\" id=\"newgrouping\">" . MANAGEMENT_LIBRARY_NEW_GROUPING_NAME . "</textarea></form></p>";
+        echo "<p><form action=\"javascript:new_grouping();\"><button class=\"xerte_button\" type=\"submit\"><i class=\"fa fa-plus-circle\"></i> " . MANAGEMENT_LIBRARY_NEW_LABEL . "</button></form></p>";
+
+        echo "<p>" . MANAGEMENT_LIBRARY_EXISTING_GROUPINGS . "</p>";
+
+        $query_response = db_query($query);
+
+        foreach($query_response as $row) {
+
+            echo "<p>" . $row['grouping_name'] . " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_grouping('" . $row['grouping_id'] .  "')\"><i class=\"fa fa-minus-circle\"></i> " . MANAGEMENT_LIBRARY_REMOVE . " </button></p>";
+
+        }
+
+    }
+
 	function syndication_list(){
 	
 		global $xerte_toolkits_site;

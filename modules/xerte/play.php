@@ -41,7 +41,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
     _load_language_file("/modules/xerte/preview.inc");
 
     $version = getVersion();
-    $string_for_flash = $xerte_toolkits_site->site_url . $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
+    $string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 
     if (strlen($datafile) > 0)
     {
@@ -65,8 +65,8 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
     }
     $string_for_flash_xml = $xmlfile . "?time=" . time();
 
-    $flash_js_dir = $xerte_toolkits_site->site_url . "modules/" . $row['template_framework'] . "/";
-    $template_path = $xerte_toolkits_site->site_url . "modules/" . $row['template_framework'] . "/parent_templates/" . $row['template_name'] . "/";
+    $flash_js_dir = "modules/" . $row['template_framework'] . "/";
+    $template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['template_name'] . "/";
     $rlo_file = $template_path . $row['template_name'] . ".rlt";
 
     list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
@@ -99,17 +99,21 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
     if($tsugi_enabled) {
         $rlo_object_file = "rloObject.htm";
 
-        if($row["tsugi_xapi_enabled"] == 1) {
-            $tracking_js_file = array($flash_js_dir . "xAPI/xttracking_xapi.js");
-        }
+
         if ($pedit_enabled)
         {
             if($row["tsugi_xapi_enabled"] == 1) {
-                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $flash_js_dir . "pedit/xttracking_xapi_pedit.js");
+                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $flash_js_dir . "xAPI/xttracking_xapi.js");
             }
             else
             {
-                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $flash_js_dir . "pedit/xttracking_pedit.js");
+                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $template_path . "common_html5/js/xttracking_noop.js");
+            }
+        }
+        else
+        {
+            if($row["tsugi_xapi_enabled"] == 1) {
+                $tracking_js_file = array($flash_js_dir . "xAPI/xttracking_xapi.js");
             }
         }
     }else{
@@ -212,7 +216,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
             $tracking .= "<script type=\"text/javascript\" src=\"$jsfile?version=" . $version . "\"></script>\n";
         }
         if ($tsugi_enabled && $row["tsugi_xapi_enabled"] == 1) {
-            $tracking .= "<script type=\"text/javascript\" src=\"$flash_js_dir/xAPI/tincan.js?\"></script>\n";
+            $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapiwrapper.min.js?version=" . $version . "\"></script>\n";
         }
         if($tsugi_enabled)
         {

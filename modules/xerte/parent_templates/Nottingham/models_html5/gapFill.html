@@ -62,6 +62,12 @@
 		            this.fillInSubmit(true);
 				}
 			}
+			else if (x_currentPageXML.getAttribute("interactivity") == "Drop Down Menu")
+            {
+                if (!this.hasBeenTracked && this.isTracked){
+                    this.dropDownSubmit(true);
+                }
+            }
         };
 		
 		// function called every time the size of the LO is changed
@@ -74,7 +80,7 @@
 				));
 			}
 			$pageContents.find("#hint").remove();
-			
+
 			var audioBarW = 0;
 			$("#pageContents #audioHolder .mejs-inner .mejs-controls").children().each(function() {
 				audioBarW += $(this).outerWidth();
@@ -82,7 +88,7 @@
 			if (audioBarW - $("#pageContents #audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents #audioHolder").parents("#mainPanel").width() > 2) {
 				$x_window.resize();
 			}
-			
+
 			$targetHolder.find("input, select").css("font-size", $("#dragDropHolder").css("font-size"));
 		}
 		
@@ -99,12 +105,7 @@
             this.hasBeenTracked = false;
             this.isTracked = false;
 
-			this.initTracking();
-			if(XTGetMode() == "normal")
-			{
-				this.isTracked = true;
-			}
-			
+
 			$("#showBtn").hide();
 			
 			// set panel appearance
@@ -244,8 +245,14 @@
 			} else {
 				$("#pageContents #audioHolder").remove();
 			}
-			
-			// Enter the interactions for this page.
+
+            this.initTracking();
+            if(XTGetMode() == "normal")
+            {
+                this.isTracked = true;
+            }
+
+            // Enter the interactions for this page.
             var interactionNumber,
 				name,
 				correctAnswer,
@@ -256,7 +263,7 @@
 				for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
 					name = "interaction number" + " " + interactionNumber;
 					correctAnswer = answerData[interactionNumber];
-					XTEnterInteraction(x_currentPage,  interactionNumber , 'fill-in', name, [], correctAnswer, "Correct", x_currentPageXML.getAttribute("trackinglabel"));
+					XTEnterInteraction(x_currentPage,  interactionNumber , 'fill-in', name, [], correctAnswer, "Correct", x_currentPageXML.getAttribute("grouping"));
 				}
 			}
 			else if(x_currentPageXML.getAttribute("interactivity") == "Drag Drop"){
@@ -270,7 +277,7 @@
 					correctOption = {source: answerData[interactionNumber][0], target: answerData[interactionNumber][0]}
 					correctOptions.push(correctOption);
 				}
-                XTEnterInteraction(x_currentPage,  0 , 'match', name, correctOptions, correctAnswers, "", x_currentPageXML.getAttribute("trackinglabel"));
+                XTEnterInteraction(x_currentPage,  0 , 'match', name, correctOptions, correctAnswers, "", x_currentPageXML.getAttribute("grouping"));
 
             }
 			else
@@ -298,7 +305,7 @@
                             result: correctAnswer
                         });
 					}
-                    XTEnterInteraction(x_currentPage,  interactionNumber , 'multiplechoice', name, correctOptions, correctAnswers, "Correct", x_currentPageXML.getAttribute("trackinglabel"));
+                    XTEnterInteraction(x_currentPage,  interactionNumber , 'multiplechoice', name, correctOptions, correctAnswers, "Correct", x_currentPageXML.getAttribute("grouping"));
                 }
 			}
 			
@@ -317,71 +324,10 @@
 				})
 				.attr("tabindex",tabIndex)
 				.click(function() {
-					var wrong = 0,
-						correct,
-						result,
-						answer,
-                        answers,
-						feedback,
-						options;
+                    if(!this.hasBeenTracked){
+                        gapFill.dropDownSubmit();
+                    }
 
-					total=0;
-					correct_answers=0;
-					$targetHolder.find("select").each(function(i) {
-						var $this = $(this);
-						answers = [];
-						options = [];
-						feedback= [];
-						if ($.inArray($this.val(), answerData[i]) != -1) {
-							$this.attr("disabled", "disabled");
-							answer = $this.val();
-							correct = true;
-							correct_answers++;
-						} else {
-							wrong++;
-							correct = false;
-						}
-						total++;
-                        result = {
-                            success: correct,
-                            score: (correct ? 100.0 : 0.0)
-                        };
-                        options.push({
-                            id :i+1+"",
-                            answer: answer,
-                            result: correct
-                        });
-                        answers.push(answer);
-						XTExitInteraction(x_currentPage, i, result, options, answers, feedback, x_currentPageXML.getAttribute("trackinglabel"));
-					});
-
-                    gapFill.finishTracking();
-                    this.hasBeenTracked = true;
-
-					if (wrong == 0) {
-						$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-						$feedbackTxt.fadeIn();
-						$(this).hide();
-					} else {
-						if (x_currentPageXML.getAttribute("showHint") != "false") {
-							$targetHolder.find("select").each(function() {
-								if ($(this).val() != " ") {
-									$pageContents.data("attempts", $pageContents.data("attempts")+1);
-									if ($pageContents.data("attempts") >= (x_currentPageXML.getAttribute("attemptsBeforeHint") != undefined && $.isNumeric(x_currentPageXML.getAttribute("attemptsBeforeHint")) ? Number(x_currentPageXML.getAttribute("attemptsBeforeHint")) : 2)) {
-										$("#showBtn").show();
-									}
-									return false;
-								}
-							});
-						}
-						
-						if (wrong == $targetHolder.find("select").length) {
-							$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillWrong") != undefined && x_currentPageXML.getAttribute("gapFillWrong") != "" ? x_currentPageXML.getAttribute("gapFillWrong") : "You have not filled any gaps correctly. Try again."));
-						} else {
-							$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillPartWrong") != undefined && x_currentPageXML.getAttribute("gapFillPartWrong") != "" ? x_currentPageXML.getAttribute("gapFillPartWrong") : "Your correct answers are shown in green. Try again with those you have got wrong."));
-						}
-						$feedbackTxt.fadeIn();
-					}
 				});
 			
 			$("#showBtn")
@@ -930,7 +876,81 @@
 					.attr("title", labelTxt1 + ' - ' + labelTxt2);
 				$pageContents.data("selectedLabel", $this);
 			}
-		}
+		};
+
+		this.dropDownSubmit = function()
+        {
+            var wrong = 0,
+                correct,
+                result,
+                answer,
+                answers,
+                feedback,
+                options;
+
+            total=0;
+            correct_answers=0;
+            $targetHolder.find("select").each(function(i) {
+                var $this = $(this);
+                answers = [];
+                options = [];
+                feedback= [];
+                answer = $this.val();
+                total++;
+                if ($.inArray($this.val(), answerData[i]) != -1) {
+                    $this.attr("disabled", "disabled");
+                    correct = true;
+                    correct_answers++;
+                } else {
+                    wrong++;
+                    correct = false;
+                }
+                answers.push(answer);
+                result = {
+                    success: correct,
+                    score: (correct ? 100.0 : 0.0)
+                };
+                // Loop over options
+                $this.find(":selected").each(function(j) {
+                    $this = $(this);
+                    options.push({
+                        id: $.inArray($this.val(), allDropDownAnswers[i]) + 1 + "",
+                        answer: $this.val(),
+                        result: ($.inArray($this.val(), answerData[i]) != -1)
+                    });
+                });
+                XTExitInteraction(x_currentPage, i, result, options, answers, feedback, x_currentPageXML.getAttribute("trackinglabel"));
+            });
+
+
+            gapFill.finishTracking();
+            this.hasBeenTracked = true;
+
+            if (wrong == 0) {
+                $("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+                $feedbackTxt.fadeIn();
+                $(this).hide();
+            } else {
+                if (x_currentPageXML.getAttribute("showHint") != "false") {
+                    $targetHolder.find("select").each(function() {
+                        if ($(this).val() != " ") {
+                            $pageContents.data("attempts", $pageContents.data("attempts")+1);
+                            if ($pageContents.data("attempts") >= (x_currentPageXML.getAttribute("attemptsBeforeHint") != undefined && $.isNumeric(x_currentPageXML.getAttribute("attemptsBeforeHint")) ? Number(x_currentPageXML.getAttribute("attemptsBeforeHint")) : 2)) {
+                                $("#showBtn").show();
+                            }
+                            return false;
+                        }
+                    });
+                }
+
+                if (wrong == $targetHolder.find("select").length) {
+                    $("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillWrong") != undefined && x_currentPageXML.getAttribute("gapFillWrong") != "" ? x_currentPageXML.getAttribute("gapFillWrong") : "You have not filled any gaps correctly. Try again."));
+                } else {
+                    $("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillPartWrong") != undefined && x_currentPageXML.getAttribute("gapFillPartWrong") != "" ? x_currentPageXML.getAttribute("gapFillPartWrong") : "Your correct answers are shown in green. Try again with those you have got wrong."));
+                }
+                $feedbackTxt.fadeIn();
+            }
+        };
 
 		this.fillInSubmit = function(){
             var empty = 0;
@@ -1017,7 +1037,7 @@
                 }
 				this.hasBeenTracked = true;
             }
-		}
+		};
 		this.dragDropSubmit = function(forceTracking) {
 			var score = $pageContents.data("score"),
 				completeItPlease = false;
@@ -1144,7 +1164,13 @@
             {
 				this.weighting = x_currentPageXML.getAttribute("trackingWeight");
 			}
-			XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+			if (x_currentPageXML.getAttribute("interactivity") == "Drop Down Menu")
+			{
+                XTSetPageType(x_currentPage, 'numeric', answerData.length, this.weighting);
+			}
+			else {
+                XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+            }
 		}
 		
 		//Stopping the tracking

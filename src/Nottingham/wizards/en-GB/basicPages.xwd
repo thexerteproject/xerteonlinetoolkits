@@ -18,7 +18,8 @@
 	<unmarkForCompletion label="Completion Not Required" type ="CheckBox" defaultValue="false" optional="true"/>
 	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 	<styles label="Styles" type="script" height="200" optional="true"/>
-	<trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use in stead of page number in (xAPI) tracking identifier"/>
+	<trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use instead of page number in (xAPI) tracking identifier"/>
+	<grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
 
 	<scripts type="group" label="Script" optional="true">
 		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>

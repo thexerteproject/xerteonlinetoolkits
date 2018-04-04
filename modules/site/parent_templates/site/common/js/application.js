@@ -334,20 +334,13 @@ function setup(){
 		
 	});
 	
-	if ($(data).find('learningObject').attr('headerHide') != undefined && $(data).find('learningObject').attr('headerHide') != 'false'){
+	// --------------- Optional Header properties --------------------
+	
+	if ($(data).find('learningObject').attr('headerHide') != undefined && $(data).find('learningObject').attr('headerHide') != 'false') {
 	
 		$(".jumbotron").remove();
 		
 	} else {
-		
-		var $jumbotron = $(".jumbotron");
-		defaultHeaderCss = {
-			header: $jumbotron.css('background-image'),
-			headerPos: $jumbotron.css('background-position'),
-			headerRepeat: $jumbotron.css('background-repeat'),
-			headerColour: $jumbotron.css('background-color'),
-			headerTextColor: $jumbotron.css('color')
-		};
 		
 		// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
 		// they are overridden by any logos in theme folders
@@ -414,167 +407,221 @@ function setup(){
 			checkExists('logoL', type, fallback);
 		}
 		
+		// apply all the header css optional properties
+		var $jumbotron = $(".jumbotron");
+		if ($(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != '' && $(data).find('learningObject').attr('headerColour') != '0x') {
+			if ($(data).find('learningObject').attr('headerColour').indexOf('rgb(') >= 0) {
+				$jumbotron.css('background-color', formatColour($(data).find('learningObject').attr('headerColour')));
+			} else {
+				// gradients can be entered in colour picker in format '#FF0000,#FFFF00'
+				var tempCol = $(data).find('learningObject').attr('headerColour');
+				tempCol = tempCol.split(',');
+				if (tempCol.length == 1) {
+					tempCol.push(tempCol[0]);
+				}
+				tempCol[0] = formatColour(tempCol[0]);
+				tempCol[1] = formatColour(tempCol[1]);
+				$jumbotron.css('background', tempCol[0]);
+				$jumbotron.css('background', '-moz-linear-gradient(45deg,  ' + tempCol[0] + ' 0%, ' + tempCol[1] + ' 100%)');
+				$jumbotron.css('background', '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + tempCol[0] + '), color-stop(100%,' + tempCol[1] + '))');
+				$jumbotron.css('background', '-webkit-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$jumbotron.css('background', '-o-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$jumbotron.css('background', '-ms-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$jumbotron.css('background', 'linear-gradient(45deg,  ' + + ' 0%,' + tempCol[1]+ ' 100%)');
+				$jumbotron.css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + tempCol[0] + ', endColorstr=' + tempCol[1] + ',GradientType=1 )');
+			}
+		}
+		if ($(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != '') {
+			$jumbotron.css('background-image', "url('" + eval($(data).find('learningObject').attr('header')) + "')");
+		}
+		if ($(data).find('learningObject').attr('headerPos') != undefined) {
+			$jumbotron.css('background-position', $(data).find('learningObject').attr('headerPos'));
+		}
+		if ($(data).find('learningObject').attr('headerRepeat') != undefined) {
+			$jumbotron.css('background-repeat', $(data).find('learningObject').attr('headerRepeat'));
+		}
+		if ($(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != '' && $(data).find('learningObject').attr('headerTextColour') != '0x') {
+			$jumbotron.find('#pageTitle, #pageSubTitle').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
+		}
+		
 	}
 	
-    //---------------Optional Navbar properties--------------------
+	// store initial header css as it might be needed later if page level header optional property is used
+	var $jumbotron = $(".jumbotron");
+	defaultHeaderCss = {
+		header: $jumbotron.css('background-image'),
+		headerPos: $jumbotron.css('background-position'),
+		headerRepeat: $jumbotron.css('background-repeat'),
+		headerColour: $jumbotron.css('background-color'),
+		headerTextColour: $jumbotron.find('#pageTitle').css('color')
+	};
+	
+    // --------------- Optional Navigation Bar properties --------------------
     
-    //Hide the Navbar position if defined
     if ($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false'){
 	
 		$(".navbar-inner").remove();
 		
-	}
-    
-    //Position the Navbar position if defined
-    if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') == 'below'){
+	} else {
 	
-		$('#overview').after('<div id="pageLinks"></div>');
-        $('.navbar').appendTo('#pageLinks');
-
-	}
-    
-    //Change navbar background colour
-    if ($(data).find('learningObject').attr('navbarColour') != undefined && $(data).find('learningObject').attr('navbarColour') != ''){
-	
-		var navbarcol = $(data).find('learningObject').attr('navbarColour');
-        
-        //one or two?
-		if (navbarcol.indexOf(',') != -1){
-			navbarcol = navbarcol.split(',');
-		} else {
-			navbarcol = [navbarcol,navbarcol];
-		}
-		navbarcol[0] = formatColour(navbarcol[0]);
-		navbarcol[1] = formatColour(navbarcol[1]);
+		// nav bar can be moved below header bar
+		if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') == 'below'){
 		
-		$('.navbar-inverse .navbar-inner').css('background', navbarcol[0]);
-		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-moz-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%, ' + navbarcol[1] + ' 100%)');
-		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + navbarcol[0] + '), color-stop(100%,' + navbarcol[1] + '))');
-		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%,' + navbarcol[1] + ' 100%)');
-		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-o-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%,' + navbarcol[1] + ' 100%)');
-		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-ms-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%,' + navbarcol[1] + ' 100%)');
-		$('.navbar-inverse .navbar-inner').css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + navbarcol[1]+ ' 100%)');
-		$('.navbar-inverse .navbar-inner').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + navbarcol[0] + ', endColorstr=' + navbarcol[1] + ',GradientType=1 )');
-        
-    }
-    
-    //Change navbar text/link colour
-    var navbarTextColour = $('.nav li a').css('color');
-    if ($(data).find('learningObject').attr('navbarTextColour') != undefined && $(data).find('learningObject').attr('navbarTextColour') != '') {
-			navbarTextColour = formatColour($(data).find('learningObject').attr('navbarTextColour'));
-			$('.nav li a').css('color', navbarTextColour);
-		}
+			$('#overview').after('<div id="pageLinks"></div>');
+			$('.navbar').appendTo('#pageLinks');
 
-  	//Change navbar text/link Hover colour
-  	var navbarTextHoverColour;
-  	if ($(data).find('learningObject').attr('navbarTextHoverColour') != undefined && $(data).find('learningObject').attr('navbarTextHoverColour') != '') {
-  		navbarTextHoverColour = formatColour($(data).find('learningObject').attr('navbarTextHoverColour'));
-    	$('.nav li a').hover(function(){
-      	$(this).css('color', navbarTextHoverColour);
-    	},
-    	function(){
-      	$(this).css('color', navbarTextColour);
-    	});
 		}
-    
-    //---------------Optional footer properties--------------------
-    
-    // remove footer
+		
+		// apply all the nav bar css optional properties
+		if ($(data).find('learningObject').attr('navbarColour') != undefined && $(data).find('learningObject').attr('navbarColour') != '' && $(data).find('learningObject').attr('navbarColour') != '0x') {
+			var $navBar = $('.navbar-inverse .navbar-inner');
+			
+			if ($(data).find('learningObject').attr('navbarColour').indexOf('rgb(') >= 0) {
+				$navBar.css('background-color', formatColour($(data).find('learningObject').attr('navbarColour')));
+			} else {
+				// gradients can be entered in colour picker in format '#FF0000,#FFFF00'
+				var tempCol = $(data).find('learningObject').attr('navbarColour');
+				tempCol = tempCol.split(',');
+				if (tempCol.length == 1) {
+					tempCol.push(tempCol[0]);
+				}
+				tempCol[0] = formatColour(tempCol[0]);
+				tempCol[1] = formatColour(tempCol[1]);
+				$navBar.css('background', tempCol[0]);
+				$navBar.css('background', '-moz-linear-gradient(45deg,  ' + tempCol[0] + ' 0%, ' + tempCol[1] + ' 100%)');
+				$navBar.css('background', '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + tempCol[0] + '), color-stop(100%,' + tempCol[1] + '))');
+				$navBar.css('background', '-webkit-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$navBar.css('background', '-o-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$navBar.css('background', '-ms-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$navBar.css('background', 'linear-gradient(45deg,  ' + + ' 0%,' + tempCol[1]+ ' 100%)');
+				$navBar.css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + tempCol[0] + ', endColorstr=' + tempCol[1] + ',GradientType=1 )');
+			}
+		}
+		
+		var navBarText = $('.nav li a').css('color');
+		if ($(data).find('learningObject').attr('navbarTextColour') != undefined && $(data).find('learningObject').attr('navbarTextColour') != '' && $(data).find('learningObject').attr('navbarTextColour') != '0x') {
+			navBarText = formatColour($(data).find('learningObject').attr('navbarTextColour'));
+			$('.nav li a').css('color', navBarText);
+		}
+		if ($(data).find('learningObject').attr('navbarTextHoverColour') != undefined && $(data).find('learningObject').attr('navbarTextHoverColour') != '' && $(data).find('learningObject').attr('navbarTextHoverColour') != '0x') {
+			var navBarTextHover = formatColour($(data).find('learningObject').attr('navbarTextHoverColour'));
+			$('.nav li a').hover(
+				function() { $(this).css('color', navBarTextHover); },
+				function() { $(this).css('color', navBarText); }
+			);
+		}
+	}
+	
+	// --------------- Optional Footer properties --------------------    
+	
     if ($(data).find('learningObject').attr('footerHide') != undefined && $(data).find('learningObject').attr('footerHide') != 'false'){
 	
 		$('.footer').remove();
 		
-	}
+	} else {
     
-    //add custom footer
-    if ($(data).find('learningObject').attr('customFooter') != undefined && $(data).find('learningObject').attr('customFooter') != ''){
-        var customFooterContent=$(data).find('learningObject').attr('customFooter');
-        
-        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'above'){
-        
-        $('.footer .container .row-fluid').before('<div id="customFooter">'+customFooterContent+'</div>');
-        $("#customFooter").css({"margin-bottom": "10px"});
-        } 
+		// add & position custom footer
+		if ($(data).find('learningObject').attr('customFooter') != undefined && $(data).find('learningObject').attr('customFooter') != ''){
+			var customFooterContent=$(data).find('learningObject').attr('customFooter');
+			
+			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'above'){
+			
+			$('.footer .container .row-fluid').before('<div id="customFooter">'+customFooterContent+'</div>');
+			$("#customFooter").css({"margin-bottom": "10px"});
+			} 
 
-        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'below'){
-        
-        $('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
-        $("#customFooter").css({"margin-top": "40px"});
-        } 
-        
-        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'replace'){
-        $('.footer .container').remove();
-        $('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
-            $("#customFooter").css({"margin-left": "10px"});
-        } 
-        
-        //convert img paths
-        $('#customFooter img').each(function() {
-        	if ($(this).attr('src').substring(0, 16) == "FileLocation + '") {
-						$(this).attr('src', eval($(this).attr('src')));
-					}
-				});
-        
-    }
-    
-    //Change footer background colour
-    if ($(data).find('learningObject').attr('footerColour') != undefined && $(data).find('learningObject').attr('footerColour') != ''){
-	
-		var footercol = $(data).find('learningObject').attr('footerColour');
-        
-        if (footercol.indexOf(',') != -1){
-			footercol = footercol.split(',');
-		} else {
-			footercol = [footercol,footercol];
+			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'below'){
+			
+			$('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
+			$("#customFooter").css({"margin-top": "40px"});
+			} 
+			
+			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'replace'){
+			$('.footer .container').remove();
+			$('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
+				$("#customFooter").css({"margin-left": "10px"});
+			} 
+			
+			// convert img paths
+			$('#customFooter img').each(function() {
+				if ($(this).attr('src').substring(0, 16) == "FileLocation + '") {
+							$(this).attr('src', eval($(this).attr('src')));
+						}
+					});
+			
 		}
-		footercol[0] = formatColour(footercol[0]);
-		footercol[1] = formatColour(footercol[1]);
-        $('.footer').css('background', footercol[0]);
-        
-    }
+		
+		// Change footer background colour
+		if ($(data).find('learningObject').attr('footerColour') != undefined && $(data).find('learningObject').attr('footerColour') != ''){
+			var $footer = $('.footer');
+			if ($(data).find('learningObject').attr('footerColour').indexOf('rgb(') >= 0) {
+				$footer.css('background-color', formatColour($(data).find('learningObject').attr('footerColour')));
+			} else {
+				// gradients can be entered in colour picker in format '#FF0000,#FFFF00'
+				var tempCol = $(data).find('learningObject').attr('footerColour');
+				tempCol = tempCol.split(',');
+				if (tempCol.length == 1) {
+					tempCol.push(tempCol[0]);
+				}
+				tempCol[0] = formatColour(tempCol[0]);
+				tempCol[1] = formatColour(tempCol[1]);
+				$footer.css('background', tempCol[0]);
+				$footer.css('background', '-moz-linear-gradient(45deg,  ' + tempCol[0] + ' 0%, ' + tempCol[1] + ' 100%)');
+				$footer.css('background', '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + tempCol[0] + '), color-stop(100%,' + tempCol[1] + '))');
+				$footer.css('background', '-webkit-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$footer.css('background', '-o-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$footer.css('background', '-ms-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$footer.css('background', 'linear-gradient(45deg,  ' + + ' 0%,' + tempCol[1]+ ' 100%)');
+				$footer.css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + tempCol[0] + ', endColorstr=' + tempCol[1] + ',GradientType=1 )');
+			}
+			
+		}
+		
+		
+		// Hide or show the social media buttons
+		$(".addthis_sharing_toolbox").hide();
+		setTimeout(function () {
+			var count_hidden = count_undef = 0,
+					value, social = [
+						'facebook',
+						'twitter',
+						['google', 'google_plusone_share'],
+						'linkedin',
+						'scoopit',
+						['pinterest', 'pinterest_share'],
+						'email',
+						'yammer',
+						['addthis', 'compact']
+					];
+
+			$(social).each(function(i, item) {
+				value = $.isArray(item) ? $(data).find('learningObject').attr(item[0]) : $(data).find('learningObject').attr(item);
+				
+				if (value == undefined) {
+					count_undef++;
+				}
+				else if (value == 'false') {
+					$(".at-svc-" + ($.isArray(item) ? item[1] : item)).hide();
+					count_hidden++;
+				}
+			});
+
+			if (
+				(count_hidden > 0 && count_hidden < social.length) ||
+				(count_hidden == 0 && count_undef == 0) ||
+				count_undef == social.length
+			) {
+				$(".addthis_sharing_toolbox").show();
+			}
+		}, 2000);
+		
+	}
 	
 	// script optional property added before any content loads
 	var script = $(data).find('learningObject').attr('script');
 	if (script != undefined && script != "") {
 		$("head").append('<script>' +  script + '</script>');
 	}
-	
-	// Hide or show the social media buttons
-	$(".addthis_sharing_toolbox").hide();
-	setTimeout(function () {
-		var count_hidden = count_undef = 0,
-				value, social = [
-					'facebook',
-					'twitter',
-					['google', 'google_plusone_share'],
-					'linkedin',
-					'scoopit',
-					['pinterest', 'pinterest_share'],
-					'email',
-					'yammer',
-					['addthis', 'compact']
-				];
-
-		$(social).each(function(i, item) {
-			value = $.isArray(item) ? $(data).find('learningObject').attr(item[0]) : $(data).find('learningObject').attr(item);
-			
-			if (value == undefined) {
-				count_undef++;
-			}
-			else if (value == 'false') {
-				$(".at-svc-" + ($.isArray(item) ? item[1] : item)).hide();
-				count_hidden++;
-			}
-		});
-
-		if (
-			(count_hidden > 0 && count_hidden < social.length) ||
-			(count_hidden == 0 && count_undef == 0) ||
-			count_undef == social.length
-		) {
-			$(".addthis_sharing_toolbox").show();
-		}
-	}, 2000);
 }
 
 // add link around all examples of glossary words in text
@@ -699,7 +746,7 @@ function parseContent(pageIndex){
 		$('#pageTitle').html(page.attr('name'));
 		
 		if ($(".jumbotron").length > 0) {
-			setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'), "page");
+			setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'));
 		}
 		
 		var msg = languageData.find("hiddenPage")[0] != undefined && languageData.find("hiddenPage")[0].getAttribute('label') != null ? languageData.find("hiddenPage")[0].getAttribute('label') : "This page will be hidden in live projects";
@@ -900,7 +947,7 @@ function parseContent(pageIndex){
 						val = $this.attr('src') || $this.attr('href'),
 						attr_name = $this.attr('src') ? 'src' : 'href';
 
-					if (val.substring(0, 16) == "FileLocation + '") {
+					if (val != undefined && val.substring(0, 16) == "FileLocation + '") {
 						$this.attr(attr_name, eval(val));
 					}
 				});
@@ -934,147 +981,121 @@ function parseContent(pageIndex){
 	}
 }
 
-function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTextColour, level) {
+// LO level header background settings will be overridden by individual page ones (& returned to LO settings if page contains no background properties)
+function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTextColour) {
 	
-	// LO background settings will be overridden by individual page ones (& returned to LO settings if page contains no background properties)
-	var bgImg = ''; 
+	var $overview = $('#overview'),
+		bgImg = '';
 	
-	//set the header image, if defined
 	if (header != undefined && header != '') {
 		
-		bgImg = "url(" + eval(header) + ")";
-		
-	} else if (level == 'page' && $(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != '') {
-		
-		bgImg = "url(" + eval($(data).find('learningObject').attr('header')) + ")";
-		
-	}
-	
-	if (bgImg != '') {
-		
-		$('#overview').css({
-			filter: '', //for IE8
-			'background-image': bgImg
-		});
-		
-		var bgRepeat = '';
-		
-		if (headerRepeat != undefined && headerRepeat != "") {
+		if (header != 'none') {
 			
-			bgRepeat = headerRepeat;
-			
-		} else if (level == 'page' && $(data).find('learningObject').attr('headerRepeat') != undefined && $(data).find('learningObject').attr('headerRepeat') != '') {
-			
-			bgRepeat = $(data).find('learningObject').attr('headerRepeat');
+			bgImg = "url('" + eval(header) + "')";
 			
 		}
-		
-		if (bgRepeat != '') {
-			
-			$('#overview').css('background-repeat', bgRepeat);
-			
-			bgImg += ' ' + bgRepeat;
-			
-		} else {
-			
-			$('#overview').css('background-repeat', defaultHeaderCss.headerRepeat);
-			
-		}
-		
-		var bgPos = '';
-		
-		if (headerPos != undefined && headerPos != "") {
-			
-			bgPos = headerPos;
-			
-		} else if (level == 'page' && $(data).find('learningObject').attr('headerPos') != undefined && $(data).find('learningObject').attr('headerPos') != '') {
-			
-			bgPos = $(data).find('learningObject').attr('headerPos');
-			
-		}
-		
-		if (bgPos != '') {
-			
-			$('#overview').css('background-position', bgPos + ' top');
-			
-			bgImg += ' ' + bgPos + ' top';
-			
-		} else {
-			
-			$('#overview').css('background-position', defaultHeaderCss.headerPos);
-			
-		}
-		
-		bgImg += ', ';
 		
 	} else {
 		
-		$('#overview').css('background-image', defaultHeaderCss.header);
+		bgImg = defaultHeaderCss.header;
+		
+	}
+	
+	// bgImg could be a colour gradient & not image - only do repeat & position if it's an image
+	if (bgImg.indexOf('url(') >= 0) {
+		
+		if (headerRepeat != undefined && headerRepeat != "") {
+			
+			bgImg += ' ' + headerRepeat;
+			
+		} else if (defaultHeaderCss.headerRepeat) {
+			
+			bgImg += ' ' + defaultHeaderCss.headerRepeat;
+			
+		} else {
+			
+			bgImg += ' repeat';
+			
+		}
+		
+		if (headerPos != undefined && headerPos != "") {
+			
+			bgImg += ' ' + headerPos;
+			
+		} else if (defaultHeaderCss.headerPos) {
+			
+			bgImg += ' ' + $(data).find('learningObject').attr('headerPos');
+			
+		} else {
+			
+			bgImg += ' 0% 0%';
+			
+		}
 		
 	}
 	
 	var col = '';
 	
 	if (headerColour != undefined && headerColour != '') {
-	
+		
 		col = headerColour;
 		
-	} else if (level == 'page' && $(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != '') {
+	} else if (defaultHeaderCss.headerColour != undefined && defaultHeaderCss.headerColour != '' && defaultHeaderCss.headerColour != '0x') {
 		
-		col = $(data).find('learningObject').attr('headerColour');
+		col = defaultHeaderCss.headerColour;
 		
 	}
 	
-	if (col != '' && col != '0x') {
-		//one or two?
-		if (col.indexOf(',') != -1){
-			col = col.split(',');
-		} else {
-			col = [col,col];
-		}
-		col[0] = formatColour(col[0]);
-		col[1] = formatColour(col[1]);
+	if (col != '' && col != '0x' && col != 'rgba(0, 0, 0, 0)') {
 		
-		$('#overview').css('background', col[0]);
-		$('#overview').css('background', bgImg + '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + col[0] + '), color-stop(100%,' + col[1] + '))');
-		$('#overview').css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-o-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-ms-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + col[1]+ ' 100%)');
-		$('#overview').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + col[0] + ', endColorstr=' + col[1] + ',GradientType=1 )');
+		if (col.indexOf('rgb(') >= 0) {
+			
+			$overview.css('background', formatColour(col) + ' ' + bgImg );
+			
+		} else {
+			
+			// gradients can be entered in colour picker in format '#FF0000,#FFFF00'
+			var tempCol = col.split(',');
+			if (tempCol.length == 1) {
+				tempCol.push(tempCol[0]);
+			}
+			tempCol[0] = formatColour(tempCol[0]);
+			tempCol[1] = formatColour(tempCol[1]);
+			bgImg += ', ';
+			
+			$overview.css('background', tempCol[0]);
+			$overview.css('background', bgImg + '-moz-linear-gradient(45deg,  ' + tempCol[0] + ' 0%, ' + tempCol[1] + ' 100%)');
+			$overview.css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + tempCol[0] + '), color-stop(100%,' + tempCol[1] + '))');
+			$overview.css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+			$overview.css('background', bgImg + '-o-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+			$overview.css('background', bgImg + '-ms-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+			$overview.css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + tempCol[1]+ ' 100%)');
+			$overview.css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + tempCol[0] + ', endColorstr=' + tempCol[1] + ',GradientType=1 )');
+		}
 		
 	} else {
-		$('#overview').css('filter', '');
 		
-		if (defaultHeaderCss.headerColour != undefined && defaultHeaderCss.headerColour != '') {
-			bgImg = defaultHeaderCss.headerColour;
-			$('#overview').css('background-color', defaultHeaderCss.headerColour);
-		}
+		$overview.css({
+			'filter': '',
+			'background': bgImg
+		});
 		
 	}
 	
 	var txtCol = '';
 	
-	if (headerTextColour != undefined && headerTextColour != '') {
+	if (headerTextColour != undefined && headerTextColour != '' && headerTextColour != '0x') {
 		
 		txtCol = headerTextColour;
 		
-	} else if (level == 'page' && $(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != '') {
+	} else {
 		
-		txtCol = $(data).find('learningObject').attr('headerTextColour');
+		txtCol = defaultHeaderCss.headerTextColour;
 		
 	}
 	
-	if (txtCol != ''){
-		
-		$('#overview').css('color', formatColour(txtCol));
-		
-	} else {
-		
-		$('#overview').css('color', defaultHeaderCss.headerTextColor);
-		
-	}
+	$overview.find('#pageTitle, #pageSubTitle').css('color', formatColour(txtCol));
+	
 }
 
 function makeNav(node,section,type, sectionIndex, itemIndex){

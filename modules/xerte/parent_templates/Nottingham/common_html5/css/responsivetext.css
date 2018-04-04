@@ -63,6 +63,9 @@
   #labelHolder {
     font-size: 2.5vmin; }
 
+  #pinHolder {
+    font-size: 2.5vmin; }
+
   #mainPanel .panel {
     font-size: 2.5vmin; }
 
@@ -161,6 +164,24 @@
     font-size: 2.5vmin; }
 
   #hint {
-    font-size: 2vmin; } }
+    font-size: 2vmin; }
+
+  #thumbBar #thumbHolder .thumbBox h3 {
+    font-size: 2vmin; }
+
+  #thumbBar.large #thumbHolder .thumbBox h3 {
+    font-size: 2.5vmin; }
+
+  #gridBack {
+    font-size: 2.5vmin; }
+
+  #thumbHolder .playAll h3 {
+    font-size: 5.2vmin !important; }
+
+  #thumbBar.small #thumbHolder .playAll h3 {
+    font-size: 3.1vmin !important; }
+
+  #thumbBar.large #thumbHolder .playAll h3 {
+    font-size: 7.5vmin !important; } }
 
 /*# sourceMappingURL=responsivetext.css.map */

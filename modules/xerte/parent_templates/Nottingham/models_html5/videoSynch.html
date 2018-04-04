@@ -23,7 +23,7 @@
 	var videoSynch = new function() {
 		var $infoHolder,
 			$pageContents,
-			attendance = 0,
+			viewed = 0,
 			lastMileStone = 0,
 			blocks = new Array();
 
@@ -250,7 +250,7 @@
         };
 
         this.sentXAPI = function () {
-			XTSetAttendance(x_currentPage, "video", attendance);
+			XTSetViewed(x_currentPage, "video", viewed);
         };
 
         this.leavePage = function () {
@@ -264,10 +264,10 @@
 				duration    = mediaElement.duration;
 
 			this.AttendanceUpdate(duration, currentTime);
-			attendance = this.AttendanceCalculate(duration);
+			viewed = this.AttendanceCalculate(duration);
 
-			if (attendance % 10 === 0 && attendance > lastMileStone) {
-                lastMileStone = attendance;
+			if (viewed % 10 === 0 && viewed > lastMileStone) {
+                lastMileStone = viewed;
                 this.sentXAPI();
             }
 

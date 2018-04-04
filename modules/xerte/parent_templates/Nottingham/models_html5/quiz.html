@@ -26,7 +26,8 @@
 			currentQ,
 			qNoTxt,
 			myProgress,
-            resultsShown;
+            resultsShown = false,
+			tracked = false;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -36,7 +37,7 @@
 			if (x_currentPageXML.getAttribute("panelWidth") != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
 				this.loadVideo();
 			}
-		}
+		};
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
@@ -75,7 +76,20 @@
 			}
 			
 			$("#qTxt").width($panel.width());
+		};
+
+
+		this.leavePage = function() {
+			if ($(x_currentPageXML).children().length > 0) {
+				if (!this.tracked) {
+					this.showFeedBackandTrackResults();
+				}
+				if (!this.resultsShown) {
+					this.showResults();
+				}
+			}
 		}
+
 
 		this.startQs = function() {
 			// if language attributes aren't in xml will have to use english fall back
@@ -131,6 +145,9 @@
 		}
 
 		this.loadQ = function() {
+		    // Reset tracking flag
+			this.tracked = false;
+
 			if ($(x_currentPageXML).children().length == 0) {
 				$("#optionHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noQ", "No questions have been added") + '</span>');
 				
@@ -233,7 +250,9 @@
 								answer: thisOption.name,
 								result: thisOption.correct == 'true'
 							});
-							correctAnswer.push(thisOption.text);
+							if (thisOption.correct == 'true') {
+                                correctAnswer.push(thisOption.name);
+                            }
 							correctFeedback.push(thisOption.feedback);
 
 							$thisOption
@@ -274,7 +293,7 @@
 						name = $thisQ.getAttribute("name");
 					}
 
-					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
+					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 					quiz.checked = false;
 				}
 			}
@@ -282,6 +301,8 @@
 
         this.showFeedBackandTrackResults = function()
         {
+            this.tracked = true;
+
             var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
 
             var selected = $("#optionHolder input:checked"),
@@ -328,7 +349,7 @@
 					answer: selectedOption.name,
 					result: correct
                 });
-                l_answer.push(selectedOption.text);
+                l_answer.push(selectedOption.name);
                 l_feedback.push(selectedOption.feedback);
             }
             generalFeedback += optionFeedback;
@@ -448,19 +469,8 @@
 
             var scormScore = Math.ceil(myScore / quiz.questions.length * 100, x_currentPageXML.getAttribute("trackinglabel"));
             XTSetPageScore(x_currentPage, scormScore);
+            this.resultsShown = true;
         }
-/*
-        this.leavePage = function() {
-			if ($(x_currentPageXML).children().length > 0) {
-				if (!this.checked) {
-					this.showFeedBackandTrackResults();
-				}
-				if (!this.resultsShown) {
-					this.showResults();
-				}
-			}
-        }
-        */
 
 		this.loadVideo = function() {
 			var $video = $("#pageVideo"),
