@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="84"
+   height="20"
+   id="svg3021"
+   version="1.1"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="home-min.svg">
+  <defs
+     id="defs3023">
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lstart"
+       style="overflow:visible">
+      <path
+         id="path4028"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt"
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="4"
+     inkscape:cx="60.017371"
+     inkscape:cy="30.304159"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1718"
+     inkscape:window-height="863"
+     inkscape:window-x="30"
+     inkscape:window-y="30"
+     inkscape:window-maximized="0"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       orientation="1,0"
+       position="-52.21226,21.465742"
+       id="guide3767"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata3026">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-291,-532.36218)">
+    <rect
+       style="fill:none;fill-opacity:1;stroke:none;stroke-width:0.49946952"
+       id="rect3777"
+       width="84.392998"
+       height="19.911102"
+       x="291"
+       y="532.6297" />
+    <g
+       id="g3764"
+       transform="matrix(0.50116731,0,0,0.49777754,145.16031,277.49839)">
+      <rect
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+         y="512.36218"
+         x="291"
+         height="40"
+         width="42"
+         id="next"
+         style="fill:none;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none" />
+      <rect
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+         style="fill:none;fill-opacity:1;stroke:none"
+         id="rect3766"
+         width="42"
+         height="40"
+         x="333"
+         y="512.36218" />
+      <rect
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+         y="512.36218"
+         x="375"
+         height="40"
+         width="42"
+         id="rect3768"
+         style="fill:none;fill-opacity:1;stroke:none" />
+      <rect
+         inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         style="fill:none;fill-opacity:1;stroke:none"
+         id="rect3770"
+         width="42"
+         height="40"
+         x="417"
+         y="512.36218" />
+    </g>
+    <ellipse
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.49946952;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path3807"
+       inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       cx="301.52451"
+       cy="542.49634"
+       rx="8.7704277"
+       ry="8.7111073" />
+    <ellipse
+       id="path3809"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.49946952;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       cx="322.57355"
+       cy="542.49634"
+       rx="8.7704277"
+       ry="8.7111073" />
+    <ellipse
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.49946952;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path3811"
+       inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       cx="343.62256"
+       cy="542.49634"
+       rx="8.7704277"
+       ry="8.7111073" />
+    <ellipse
+       id="path3813"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.49946952;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:export-filename="H:\svgs\xerte_buttons_test.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       cx="364.6716"
+       cy="542.49634"
+       rx="8.7704277"
+       ry="8.7111073" />
+    <path
+       style="fill:#000000;stroke:none;stroke-width:0.49946952"
+       d="m 301.66547,536.67079 -5.76343,5.80222 h 2.03599 v 4.83777 h 2.94436 v -2.62888 h 1.59747 v 2.62888 h 2.7251 v -4.83777 h 1.94202 z m 0.81439,10.63999 h -1.59747 v 0.0155 h 1.59747 z"
+       id="path3034"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3043"
+       d="m 322.71449,536.67079 -5.76342,5.80222 h 2.03599 v 4.83777 h 2.94436 v -2.62888 h 1.59747 v 2.62888 h 2.7251 v -4.83777 h 1.94202 z m 0.8144,10.63999 h -1.59747 v 0.0155 h 1.59747 z"
+       style="fill:#cc0000;stroke:none;stroke-width:0.49946952" />
+    <path
+       style="fill:#cc0000;stroke:none;stroke-width:0.49946952"
+       d="m 343.76352,536.67079 -5.76342,5.80222 h 2.03599 v 4.83777 h 2.94436 v -2.62888 h 1.59747 v 2.62888 h 2.72509 v -4.83777 h 1.94203 z m 0.8144,10.63999 h -1.59747 v 0.0155 h 1.59747 z"
+       id="path3045"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3047"
+       d="m 364.81255,536.67079 -5.76343,5.80222 h 2.036 v 4.83777 h 2.94435 v -2.62888 h 1.59747 v 2.62888 h 2.7251 v -4.83777 h 1.94202 z m 0.81439,10.63999 h -1.59747 v 0.0155 h 1.59747 z"
+       style="fill:#000000;stroke:none;stroke-width:0.49946952" />
+  </g>
+</svg>
