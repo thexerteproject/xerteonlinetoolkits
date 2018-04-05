@@ -1984,6 +1984,7 @@
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<audioPosition label="Audio Player Position" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
+		<aspectRatio label="Media aspect ration" type="ComboBox" data="1.333333,1.777777,2.333333" options="4:3,16:9,21:9" defaultValue="1.777777" optional="true"/>
 		
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
@@ -2140,7 +2141,7 @@
 		
 	</synchMCQ><synchMCQOption menuItem="Answer" icon="icBullet" remove="true">
 
-		<text label="Answer" type="TextInput" wysiwyg="true"/>
+		<text label="Answer" type="TextArea" wysiwyg="true"/>
 	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
 	    <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
 		
