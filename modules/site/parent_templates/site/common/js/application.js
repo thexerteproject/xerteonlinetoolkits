@@ -73,8 +73,8 @@ function loadContent(){
 				
 			}
 			
-			//step one - libraries?
-			loadLibraries();
+			//step one - css	
+			cssSetUp('theme');
 			
 		}
 	});
@@ -89,23 +89,55 @@ function loadContent(){
 
 }
 
-function loadLibraries(){
+function cssSetUp(param) {
+	param = (typeof param !== 'undefined') ?  param : "theme";
 
-	//load stylesheet and libraries...
+	switch(param) {
+        case 'theme':
+			if ( $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default") {
+				$('head').append('<script src="'+ themePath + $(data).find('learningObject').attr('theme') + '/'+ $(data).find('learningObject').attr('theme')+ '.js"' + '</script>');
+				insertCSS(themePath + $(data).find('learningObject').attr('theme') + '/' + $(data).find('learningObject').attr('theme') + '.css', function() {cssSetUp('stylesheet')});
+			} else {
+				cssSetUp('stylesheet');
+			}
+            break;
+        case 'stylesheet':
+			if ( $(data).find('learningObject').attr('stylesheet') != undefined) {
+				insertCSS(eval( $(data).find('learningObject').attr('stylesheet') ), function() { loadLibraries(); });
+			} else {
+				loadLibraries();
+			}
+            break;
+	}
 	
-	if ( $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default") {
+}
+
+function insertCSS(href, func) {
+	
+	var css = document.createElement("link");
+	var element = null;
+	var donotreplace = false;
+	css.rel = "stylesheet";
+	css.type = "text/css";
+	css.href = href;
+	
+	// don't continue until css has loaded as otherwise css priorities can be messed up
+	if (func != undefined) {
 		
-		$('head').append('<link rel="stylesheet" href="' + themePath + $(data).find('learningObject').attr('theme') + '/' + $(data).find('learningObject').attr('theme') + '.css' + '" type="text/css" />');
-        
-        $('head').append('<script src="'+ themePath + $(data).find('learningObject').attr('theme') + '/'+ $(data).find('learningObject').attr('theme')+ '.js"' + '</script>');
+		css.onload = function(){
+			func();
+		};
+
+		css.onerror = function(){
+			func();
+		};
 		
 	}
 	
-	if ( $(data).find('learningObject').attr('stylesheet') != undefined) {
-		
-		$('head').append('<link rel="stylesheet" href="' + eval( $(data).find('learningObject').attr('stylesheet') ) + '" type="text/css" />');
-		
-	}
+	document.getElementsByTagName("head")[0].appendChild(css);
+}	
+
+function loadLibraries() {
 	
 	if ( $(data).find('learningObject').attr('styles') != undefined){
 	
@@ -144,7 +176,6 @@ function loadLibraries(){
 		getLangData(lang)
 		
 	}
-	
 
 }
 
