@@ -208,21 +208,42 @@ function grouping_list(){
 
 function remove_category(id){
 
-	if (confirm(REMOVE_PROMPT)) {
+    if (confirm(REMOVE_PROMPT)) {
 
-		if(setup_ajax()!=false){
+        if(setup_ajax()!=false){
 
-			var url="remove_category.php";
+            var url="remove_category.php";
 
-			management_ajax_send_prepare(url)
+            management_ajax_send_prepare(url)
 
-			xmlHttp.send('remove=' + id); 
+            xmlHttp.send('remove=' + id);
 
-		}
-	
-	}
+        }
+
+    }
 }
 
+
+// Function remove category
+//
+// remove a share, and check who did it
+
+function remove_grouping(id){
+
+    if (confirm(REMOVE_PROMPT)) {
+
+        if(setup_ajax()!=false){
+
+            var url="remove_grouping.php";
+
+            management_ajax_send_prepare(url)
+
+            xmlHttp.send('remove=' + id);
+
+        }
+
+    }
+}
 // Function user templates list
 //
 // remove a share, and check who did it
@@ -643,6 +664,26 @@ function new_category(){
 		xmlHttp.send('newcategory=' + document.getElementById("newcategory").value);
 
 	}
+
+}
+
+// Function new grouping
+//
+// remove a share, and check who did it
+
+function new_grouping(){
+
+    if(setup_ajax()!=false){
+
+        var url="new_grouping.php";
+
+        xmlHttp.open("post",management_ajax_php_path + url,true);
+        xmlHttp.onreadystatechange=management_stateChanged;
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xmlHttp.send('newgrouping=' + document.getElementById("newgrouping").value);
+
+    }
 
 }
 
