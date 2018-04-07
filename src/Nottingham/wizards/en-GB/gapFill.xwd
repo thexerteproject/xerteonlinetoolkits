@@ -33,11 +33,14 @@
 	
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
     <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
-	<showHint label="Show Hint/Correct Answers Button" type="CheckBox" defaultValue="true" optional="true"/>
-	<attemptsBeforeHint label="Attempts Before Hint" defaultValue="2" type="NumericStepper" min="0" max="10" step="1" width="100" optional="true" />
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>
 	<audioFeedback label="Audio Feedback" type="media" optional="true"/>
-	
+
+    <hints type="group" label="Hints" optional="true">
+		<showHint label="Show Hint/Correct Answers Button" type="CheckBox" defaultValue="true" optional="true"/>
+    	<attemptsBeforeHint label="Attempts Before Hint" defaultValue="2" type="NumericStepper" min="0" max="10" step="1" width="100" optional="true" />
+    </hints>
+
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
 	<casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat fill in the gap exercise answers as case sensitive"/>
 
