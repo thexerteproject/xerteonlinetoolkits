@@ -1090,15 +1090,12 @@ var EDITOR = (function ($, parent) {
             if (wizard_data[treeLabel].menu_options.menuItem)
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
         }
-        if (key == 'treeroot')
-        {
-            // Add icons to the node, all should be switched off
-            // Create node text based on xml, do not use text of original node, as this is not correct
-            var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
-            var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
+        // Add icons to the node, all should be switched off
+        // Create node text based on xml, do not use text of original node, as this is not correct
+        var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
+        var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
 
-            var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
-        }
+        var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
         var this_json = {
             id : lkey,
             text : treeLabel,
