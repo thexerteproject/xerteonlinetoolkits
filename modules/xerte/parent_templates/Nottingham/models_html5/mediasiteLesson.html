@@ -890,13 +890,13 @@
                                     data[j].end = end;
                                     data[j].allInfo = this;
                                 }
-                                $parent.children().each(function(){
+                                /*$parent.children().each(function(){
                                     if (this.getAttribute("synchStart") == undefined) {
                                         syncChildren = false;
                                     }
-                                });
+                                });*/
 
-                                /*$parent.children().each(function(k) {
+                                $parent.children().each(function(k) {
                                     // if child nodes have a synch point then include their details too - with ref. to the parent as this will create the holder for the child
                                     // e.g. for subtitles the parent creates a holder and 1st caption - the children then have their own synch points and load in the same holder
                                     if (this.getAttribute("synchStart") == undefined) {
@@ -942,7 +942,7 @@
                                             allInfo:	this
                                         });
                                     }
-                                });*/
+                                });
 
                                 // store child data if children aren't being synced to media so plugin can use it
                                 if (syncChildren == false) {
