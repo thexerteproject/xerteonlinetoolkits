@@ -85,8 +85,6 @@
                 $panelHolder.find(".panel.fullH")
                     .height($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - parseInt($("#controlHolder").height()) - 5);
 
-                debugger;
-
                 $panelHolder.find(".panel.halfH")
                     .height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
 
@@ -847,9 +845,10 @@
                     } else {
                         synch = $.isNumeric(thisSynch) ? Number(thisSynch) : defaultEnd;
                     }
+                    synch = $.isNumeric(synch) ? synch - 0.3 : undefined;
                 }
                 return synch;
-            }
+            };
 
             this.sortPopcornNow = function(synchData, targetRef, apiInstance, $mediaDiv, popcornInstance) {
                 var data = new Array(), // array of objects containing details of a synch point event
@@ -884,16 +883,52 @@
                                     syncChildren = true,
                                     prevStartII = prevStart;
 
-                                $parent.children().each(function(k) {
+                                if (data[j].end == undefined && this.nextSibling != undefined) {
+                                    var nextStart = this.nextSibling.getAttribute("synchStart") ;
+                                    end = mediasiteLesson.sortRelativeSynchPoints("end", undefined, undefined, nextStart);
+
+                                    data[j].end = end;
+                                    data[j].allInfo = this;
+                                }
+                                $parent.children().each(function(){
+                                    if (this.getAttribute("synchStart") == undefined) {
+                                        syncChildren = false;
+                                    }
+                                });
+
+                                /*$parent.children().each(function(k) {
                                     // if child nodes have a synch point then include their details too - with ref. to the parent as this will create the holder for the child
                                     // e.g. for subtitles the parent creates a holder and 1st caption - the children then have their own synch points and load in the same holder
                                     if (this.getAttribute("synchStart") == undefined) {
                                         syncChildren = false;
-
                                     } else {
                                         // if no end point is set force it to be at the start of the next child - otherwise it won't revert if rewinding (if no next child then use parent synchEnd)
                                         // this won't be right if the next child is using relative synching so it's fixed later after that has been calculated
-                                        var defaultEnd = $parent.children()[k+1] ? $parent.children()[k+1].getAttribute("synchStart") : $.isNumeric($parent[0].getAttribute("synchEnd")) ? ($parent[0].getAttribute("synchEnd")[0] == "+" ? end : Number($parent[0].getAttribute("synchEnd"))) : undefined;
+                                        var defaultEnd;
+                                        if($parent.children()[k+1])
+                                        {
+                                            defaultEnd = $parent.children()[k+1].getAttribute("synchStart");
+                                        }
+                                        else
+                                        {
+                                            if ($.isNumeric($parent[0].getAttribute("synchEnd")))
+                                            {
+                                                if ($parent[0].getAttribute("synchEnd")[0] == "+")
+                                                {
+                                                    defaultEnd = end;
+                                                }
+                                                else
+                                                {
+                                                    defaultEnd = Number($parent[0].getAttribute("synchEnd"));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                defaultEnd = undefined;
+                                            }
+                                        }
+
+                                        //defaultEnd = $parent.children()[k+1] ? $parent.children()[k+1].getAttribute("synchStart") : $.isNumeric($parent[0].getAttribute("synchEnd")) ? ($parent[0].getAttribute("synchEnd")[0] == "+" ? end : Number($parent[0].getAttribute("synchEnd"))) : undefined;
                                         this.setAttribute("child", true);
 
                                         var start = mediasiteLesson.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStartII),
@@ -907,7 +942,7 @@
                                             allInfo:	this
                                         });
                                     }
-                                });
+                                });*/
 
                                 // store child data if children aren't being synced to media so plugin can use it
                                 if (syncChildren == false) {
@@ -923,7 +958,6 @@
                             this.setAttribute("destination", Number(this.getAttribute("destination").slice(1)) + start);
                         }
                     }
-
                 });
 
                 // fixes any end points that weren't calculated right because of relative synching
@@ -973,7 +1007,7 @@
 
                 // _____ ADD EVENTS FOR EACH SYNCH POINT _____
 
-                // add pause points for mainMedia/mediaPlus dit kan niet op deze manier zo helaas
+                // add pause points for mainMedia
                 //TODO popcorn
                 for (var j=0; j<synchData.length; j++) {
                     if (synchData[j].nodeName == "synchCue") {
@@ -993,7 +1027,6 @@
                             end		:thisContent.end,
                             target	:thisContent.target
                         };
-
                         // add other info to pluginAttributes
                         $.each(thisContent.allInfo.attributes, function(i, attrib) {
                             // ignore attributes that aren't needed or are dealt with here rather than in individual plugins
@@ -1001,6 +1034,7 @@
                                 pluginAttributes[attrib.name] = attrib.value;
                             }
                         });
+
                         if (thisContent.childNodes) { // used in some plugins e.g. mediaPlus
                             pluginAttributes.childNodes = thisContent.childNodes;
                         }
