@@ -330,10 +330,9 @@ function peer_display($xerte_toolkits_site,$change, $template_id){
     else
     {
         $retouremail = $_SESSION['toolkits_logon_username'];
-        $retouremail .= '@';
         if (strlen($xerte_toolkits_site->email_to_add_to_username)>0)
         {
-            $retouremail .= $xerte_toolkits_site->email_to_add_to_username;
+            $retouremail .= '@' . $xerte_toolkits_site->email_to_add_to_username;
         }
 
     }
