@@ -6,6 +6,17 @@
   overflow: hidden;
 }
 //***********************************Media*************************************
+//change panel margin because theme is % width and greater padding
+.x_mediaLesson_page #panelHolder  .panel.tileH:not(:last-of-type){
+  //margin-right: 0px;
+}
+/* --change media lesson panel padding for LANDSCAPE PHONES----- */
+@media screen and (max-width: 736px){
+  .x_mediaLesson_page .panel{
+    padding: 2px;
+  }
+}
+
 //default highlight if not overriden
 .highlight {
   background: $lightestcolor;
@@ -104,7 +115,7 @@
 .paneList a, .paneList a:link, .paneList a:visited{
   /*color: $linkcolor !important;*/
 }
-.ui-tabs-panel a:link, /*.ui-accordion-content a:link*/ {
+.ui-tabs-panel a:link {
   /*color: $linkcolor;*/
 }
 .ui-tabs .ui-tabs-nav {

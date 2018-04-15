@@ -17,6 +17,10 @@
   width: 98% !important;
   overflow: hidden; }
 
+/* --change media lesson panel padding for LANDSCAPE PHONES----- */
+@media screen and (max-width: 736px) {
+  .x_mediaLesson_page .panel {
+    padding: 2px; } }
 .highlight {
   background: #F8F1E5; }
 

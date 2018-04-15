@@ -2651,7 +2651,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale.">
+	</background></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
     <name label="Opinion Title" type="TextInput" wysiwyg="true"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
@@ -3252,7 +3252,7 @@
 	<scoreComp label="Score / Counter Comparison" defaultValue="LT" data="LT,GT,EQ" type="ComboBox" options="Less Than,Greater Than,Equal To" width="100" optional="true"/>
 	<chanceAct label="Out of 10" type="NumericStepper" min="1" max="9" step="1" width="100" optional="true" defaultValue="5"/>
 
-	</outcomeCondition><showGraph menu="Interactivity" menuItem="Show Graph" hint="A page where you can import data data to create a graph" icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
+	</outcomeCondition><showGraph menu="Interactivity" menuItem="Show Graph" hint="A page where you can pull in data via xAPI to display a graph." icon="icPageWhiteText" thumb="thumbs/showGraph.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue=""/>
