@@ -6,8 +6,8 @@
     }
 
     .sliderHolder {
-    margin-top:	15px;
-    margin-bottom:	15px;
+    margin-top:	5px;
+    margin-bottom:	20px;
     }
 
     .sliderHolder .labelHolder
@@ -48,7 +48,7 @@
         width: 100%;
         display: inline-block;
         text-align: center;
-        margin: 0 0.2em;
+        margin: 0;
         text-decoration: none;
         font-size: 0.8em;
         color: #000;
@@ -96,6 +96,7 @@
     .optionTxt p
     {
         display: inline;
+        padding:0;
     }
 
     .optionGroup .optionTxt {
