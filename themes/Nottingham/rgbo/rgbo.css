@@ -264,6 +264,20 @@ a.hotspot, a.hotspot.selected {
   border-radius: 2vmin;
   width: 98%; }
 
+.x_opinion_page #pageContents input {
+  padding-left: 0; }
+
+.qPanel {
+  overflow-x: hidden; }
+
+.qSeparator hr {
+  background-color: #ffc04d;
+  border-color: #ffc04d;
+  border: solid 1px #ffc04d; }
+
+.sliderHolder .labelHolder a p {
+  color: #000000; }
+
 .x_grid_page #gridBorders {
   border-radius: 1vmin; }
 
