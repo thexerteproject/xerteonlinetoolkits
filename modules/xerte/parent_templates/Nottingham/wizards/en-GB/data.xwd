@@ -3257,7 +3257,7 @@
 	<scoreComp label="Score / Counter Comparison" defaultValue="LT" data="LT,GT,EQ" type="ComboBox" options="Less Than,Greater Than,Equal To" width="100" optional="true"/>
 	<chanceAct label="Out of 10" type="NumericStepper" min="1" max="9" step="1" width="100" optional="true" defaultValue="5"/>
 
-	</outcomeCondition><showGraph menu="Interactivity" menuItem="Show Graph" hint="A page where you can pull in data via xAPI to display a graph." icon="icPageWhiteText" thumb="thumbs/showGraph.jpg" remove="true">
+	</outcomeCondition><showGraph menu="Interactivity" menuItem="Show Graph" hint="Use this page together with the opinion page to display a graph with collated results. Note: This separate show graph page will only work with xAPI configured." icon="icPageWhiteText" thumb="thumbs/showGraph.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue=""/>
