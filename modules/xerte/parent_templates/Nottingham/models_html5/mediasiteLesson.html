@@ -567,7 +567,7 @@
                 function preSortPopcorn() {
                     panelData.each(function(i) {
                         apiInstance.duration = apiInstance.getDuration();
-                        mediasiteLesson.sortPopcorn($(this).children(), "panel" + 1, apiInstance, $(".mainMedia"), popcornInstance);
+                        mediasiteLesson.sortPopcorn($(this).children(), "panel" + i, apiInstance, $(".mainMedia"), popcornInstance);
                     });
                 }
                 $("#panel0").css({"position": "absolute", "top": "-9999px", "left": "-9999px"});
