@@ -87,6 +87,10 @@
     padding-bottom:	5px;
     }
 
+    #qNo {
+        padding-top: 5px;
+        padding-bottom: 10px;
+    }
     #buttonHolder
     {
     float:	right;
