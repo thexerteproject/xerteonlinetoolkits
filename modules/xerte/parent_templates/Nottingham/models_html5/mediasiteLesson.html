@@ -64,29 +64,31 @@
                 // make sure no scroll bars are on screen during panel sizing
                 $x_pageHolder.css("overflow", "hidden");
 
-                var numTileH = $("#panelHolder .panel.tileH").length,
-                    numTileV = $("#panelHolder .panel.tileV").length;
+                var numTileH = $("#panelHolder .panel.tileH").length;
+                var numTileV = $("#panelHolder .panel.tileV").length;
 
+                numTileH = numTileH == 0 ? 0 : numTileH - 1;
+                numTileV = numTileV == 0 ? 0 : numTileV - 1;
 
                 if (x_currentPageXML.getAttribute("layout") == "grid" && $("#panelHolder .top").length > 0) {
                     numTileH = $("#panelHolder .top .panel.tileH").length;
                 }
-
+                //(marginright == 0) ? margin = 15 : getMarginRight (in an ideal world)
                 var marginR = parseInt($panelHolder.find(".panel.tileH").css("margin-right")) == 0 ? 15 : parseInt($panelHolder.find(".panel.tileH").css("margin-right"));
-
+                marginR = isNaN(marginR) ? 15 : marginR;
+                // tileH.width = holderWidth - padding - allPanelPadding - MarginR - 2
                 $panelHolder.find(".panel.tileH")
-                    .width(Math.floor(($x_pageHolder.width() - (parseInt($x_pageDiv.css("padding-left")) * 2) - (parseInt($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * (numTileH - 1))) / numTileH) - 2);
-
+                    .width(Math.floor(($x_pageHolder.width() - (parseInt($x_pageDiv.css("padding-left")) * 2) - (parseInt($panelHolder.find(".panel.tileH").css("padding-left")) * (numTileH + 1) * 2) - marginR * (numTileH + 1)) / (numTileH + 1)) - 2);
+                $panelHolder.find(".panel.fullW")
+                    .width(Math.floor(($x_pageHolder.width() - (parseInt($x_pageDiv.css("padding-left")) * 2) - (parseInt($panelHolder.find(".panel.fullW").css("padding-left")) * (numTileV + 1) * 2) - marginR * (numTileV + 1)) / (numTileV + 1)) - 2);
                 $panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseInt($("#infoHolder .accTitle").css("padding-top")) * 2);
-
+                //tileV.height = (Height - margin - padding) / num Panels) - tilePadding - marginBottom - controlholderHeight
                 $panelHolder.find(".panel.tileV")
-                    .height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - parseInt($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseInt($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2);
-
+                    .height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - parseInt($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseInt($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - (parseInt($("#controlHolder").height()) / numTileV) - 2);
                 $panelHolder.find(".panel.fullH")
                     .height($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - parseInt($("#controlHolder").height()) - 5);
-
                 $panelHolder.find(".panel.halfH")
-                    .height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
+                    .height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - parseInt($("#controlHolder").height())/2 - 2);
 
                 $x_pageHolder.css("overflow", "auto");
 
@@ -321,7 +323,6 @@
                 function onReady(){
                     showStreams();
                     preSortPopcorn();
-                    //$("#presentationHolder").hide();
                 }
 
                 function showStreams() {
@@ -371,12 +372,11 @@
                 for (var i=0; i<panelData.length; i++) {
                     if (panelData[i].nodeName == "mediaPanel") {
                         mediaPanelIndex = i;
-                        break;
                     }
                 }
 
-                // get type of media (video/audio)
-                if (mediaFile.indexOf(".mp3") != -1) {
+                    // get type of media (video/audio)
+                    if (mediaFile.indexOf(".mp3") != -1) {
                     mediaType = "audio";
 
                     // will audio appear in its own panel or across the bottom like narration?
@@ -492,7 +492,7 @@
                     if (panelLayout == "top") {
                         for (var i=0; i<panels.length; i++) {
                             if (i == 0) {
-                                $(panels[i]).appendTo($panelHolder.find(".top")).addClass("fullW halfH");
+                                $(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH fullH");
                             } else {
                                 $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
                             }
@@ -501,9 +501,9 @@
                     } else if (panelLayout == "bottom") {
                         for (var i=0; i<panels.length; i++) {
                             if (i == panels.length - 1) {
-                                $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("fullW halfH");
+                                $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
                             } else {
-                                $(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH halfH");
+                                $(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH fullH");
                             }
                         }
                     }
