@@ -15,6 +15,7 @@
 		var	answeredValues = {};
 		var diagramAnswers = [];
 		var diagramLabels = [];
+        var radioButtonQuestions = [];
 		var JSONGraph;
 		var textSize;
 
@@ -195,6 +196,8 @@
 		this.loadQuestions = function()
 		{
 		    debugger;
+            $("#checkBtn").button("disable");
+            this.radioButtonQuestions = [];
 		    if (this.listMode)
 			{
 			    if (this.pageMode)
@@ -208,6 +211,17 @@
 					    this.loadQuestion(i);
 					}
 				}
+				else
+				{
+                    $("#qNo").html(this.questionNumberText.replace("{i}", (this.currentQuestion + 1) + " - " + opinion.questions.length).replace("{n}", this.questions.length));
+                    $("#qHolder").html("");
+                    for (i=this.currentQuestion; i<opinion.questions.length; i++)
+                    {
+                        $("#qHolder").append('<legend id="qTxt' + i + '" class="qTxt"></legend><div id="questionAudio'+ i + '" class="questionAudio"></div><div id="sliderHolder' + i
+                            + '" class="sliderHolder"><div id="labelHolder' + i + '" class="labelHolder"></div><div id="rangeHolder' + i + '" class="rangeHolder"></div></div><div class="qSeparator"><hr></div>');
+                        this.loadQuestion(i);
+                    }
+				}
 			}
 			else
 			{
@@ -217,6 +231,21 @@
 
 
                 this.loadQuestion(this.currentQuestion);
+			}
+			this.checkButtonState();
+		};
+
+		this.checkButtonState = function()
+		{
+		    var checked = true;
+		    $.each(this.radioButtonQuestions, function(key, value){
+		    	if (value == false) {
+                    checked = false;
+                }
+			});
+		    if (checked)
+			{
+                $("#checkBtn").button("enable");
 			}
 		};
 
@@ -267,15 +296,14 @@
 				{
                     if($thisQ.getAttribute("interactivity") == "radio-buttons") {
                         var $optionHolder = $("#sliderHolder" + currQuestion);
-                        $optionHolder.html('<div class="optionGroup"><input type="radio" name="option" /><label class="optionTxt"></label></div>');
+                        $optionHolder.html('<div class="optionGroup"><input type="radio" name="option' + currQuestion + '" /><label class="optionTxt"></label></div>');
 
                         var $optionGroup = $optionHolder.find(".optionGroup"),
-                            $checkBtn = $("#checkBtn"),
                             correctOptions = [],
                             correctAnswer = [];
 
-                        $checkBtn.button("disable");
 
+						this.radioButtonQuestions[currQuestion] = false;
                         this.currentAnswers = [];
                         $($thisQ).children().each(function () {
                             opinion.currentAnswers.push(
@@ -307,14 +335,15 @@
                             $thisOption
                                 .attr({
                                     "value": value.text,
-                                    "id": "option" + index
+                                    "id": "option" + currQuestion + "_" + index
                                 })
                                 .change(function () {
-                                    $checkBtn.button("enable");
+                                    opinion.radioButtonQuestions[currQuestion] = true;
+                                    opinion.checkButtonState();
                                 });
                             $thisOption[0].score = index;
                             $thisOptionTxt
-                                .attr("for", "option" + index)
+                                .attr("for", "option" +currQuestion + "_" + index)
                                 .data("option", $thisOption)
                                 .html(x_addLineBreaks(value.text));
 
@@ -337,11 +366,9 @@
 						$labelHolder.html('<td class="labelCell"><a href="#" onclick="" class="optionTxt"></a></td>');
                         var $optionTxt = $labelHolder.find(".optionTxt"),
                             $optionCell = $labelHolder.find(".labelCell");
-                            $checkBtn = $("#checkBtn"),
                             correctOptions = [],
                             correctAnswer = [];
 
-                        $checkBtn.button("disable");
                         var max = $($thisQ).children().length - 1;
                         var numberOfOptions = max + 1;
 
@@ -363,7 +390,6 @@
                                 $thisOptionTxt = $optionTxt;
                             }
 
-                            $checkBtn.button("enable");
 
                             $thisOptionTxt
                                 .attr("for", "option" + index)
@@ -382,10 +408,10 @@
                             correctAnswer.push(value.getAttribute("text"));
                         });
 
-                        var cellWidth = Math.round(100.0/numberOfOptions);
+                        var cellWidth = 100.0/numberOfOptions;
                         $("td.labelCell").css("width", cellWidth + "%");
                         $("#slider" + currQuestion).css("width", 100-cellWidth + "%");
-                        $("#slider" + currQuestion).css("margin-left", Math.round(cellWidth/2) + "%");
+                        $("#slider" + currQuestion).css("margin-left", cellWidth/2 + "%");
 
 
 
@@ -497,10 +523,39 @@
 				}
 			}
 		};
-		
-		this.trackQuestion = function()
+
+		this.trackQuestions = function()
 		{
-			var currentQ = $(x_currentPageXML).children().children()[opinion.questions[opinion.currentQuestion]];
+            if (this.listMode)
+            {
+                if (this.pageMode)
+                {
+                    for (i=this.currentQuestion; i<Math.min(this.currentQuestion + this.pageSize, opinion.questions.length); i++)
+                    {
+                        this.trackQuestion(i);
+                    }
+                }
+                else
+                {
+                    for (i=this.currentQuestion; i<opinion.questions.length; i++)
+                    {
+                        this.trackQuestion(i);
+                    }
+                }
+            }
+            else
+            {
+                this.trackQuestion(this.currentQuestion);
+            }
+            if (! this.resultShown)
+			{
+			    this.loadQuestions();
+			}
+		};
+
+		this.trackQuestion = function(currQuestion)
+		{
+			var currentQ = $(x_currentPageXML).children().children()[opinion.questions[currQuestion]];
 
 
             var selected = 0,
@@ -511,10 +566,10 @@
 				currentQuestionValue = 0;
 
 			if (currentQ.getAttribute("interactivity") == null || currentQ.getAttribute("interactivity") == "slider")
-                selected = $('#slider' + this.currentQuestion)[0].valueAsNumber;
+                selected = $('#slider' + currQuestion)[0].valueAsNumber;
 			else if (currentQ.getAttribute("interactivity") == "radio-buttons")
-			    if ($("#sliderHolder input:checked")[0] != null)
-                selected = $("#sliderHolder input:checked")[0].score;
+			    if ($("#sliderHolder" + currQuestion + " input:checked")[0] != null)
+                selected = $("#sliderHolder" + currQuestion + " input:checked")[0].score;
             for (var i = 0; i < options.length; i++)
            	{
            		l_options.push(i + "");
@@ -529,21 +584,21 @@
 			
             l_answer = Math.round(currentQuestionValue * 10.0) / 10.0;
             
-            var currentQuestionString = opinion.currentQuestion + "";
+            var currentQuestionString = currQuestion + "";
             answeredValues[currentQuestionString] = currentQuestionValue;
 
 
 
-            diagramLabels[opinion.currentQuestion] = currentQ;
-            diagramAnswers[opinion.currentQuestion] = (Math.round(currentQuestionValue * 10.0) / 10.0);
+            diagramLabels[currQuestion] = currentQ;
+            diagramAnswers[currQuestion] = (Math.round(currentQuestionValue * 10.0) / 10.0);
 
 
             var result = {
                 success: correct,
                 score: Math.round(currentQuestionValue * 10.0) / 10.0
             };
-			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], result, l_options, l_answer, null, x_currentPageXML.getAttribute("trackinglabel"));
-            opinion.myProgress.splice(opinion.currentQuestion, 1, correct);
+			XTExitInteraction(x_currentPage, opinion.questions[currQuestion], result, l_options, l_answer, null, x_currentPageXML.getAttribute("trackinglabel"));
+            opinion.myProgress.splice(currQuestion, 1, correct);
             
 			// Continue to next question
 			opinion.currentQuestion++;
@@ -554,10 +609,7 @@
 				opinion.trackOpinion();
 				opinion.resultShown = true;
 			}
-			else
-			{
-				opinion.loadQuestions();
-			}
+
 
             // Queue reparsing of MathJax - fails if no network connection
             try
@@ -819,7 +871,7 @@
 				label: submitBtnText
 				})
 			.click(function() {
-				    opinion.trackQuestion();
+				    opinion.trackQuestions();
                 });
 
 			this.startQuestions();

@@ -49,6 +49,9 @@ h3 {
 #optionHolder {
     font-size: $pagecontentslarge;
 }
+.sliderHolder {
+    font-size: $pagecontentslarge;
+}
 .listItem {
     font-size: $pagecontentslarge;
 }
@@ -158,6 +161,10 @@ h3 {
     font-size: $pagecontentslarge;
 }
 #optionHolder input {
+    width: $pagecontentslarge;
+    height: $pagecontentslarge;
+}
+.sliderHolder input {
     width: $pagecontentslarge;
     height: $pagecontentslarge;
 }

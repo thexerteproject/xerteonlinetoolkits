@@ -83,8 +83,8 @@
 
     .sliderHolder .optionGroup
     {
-    padding-top:	5px !important ;
-    padding-bottom:	5px !important ;
+    padding-top:	5px;
+    padding-bottom:	5px;
     }
 
     #buttonHolder
@@ -109,8 +109,10 @@
     .optionGroup input
     {
         float: left;
+        display: block;
     }
 
     #x_pageDiv .labelCell {
         vertical-align: bottom;
     }
+
