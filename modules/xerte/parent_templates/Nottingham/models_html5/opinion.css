@@ -5,23 +5,33 @@
     overflow:	auto;
     }
 
-    #sliderHolder {
+    .sliderHolder {
     margin-top:	15px;
     margin-bottom:	15px;
     }
 
-    #sliderHolder #labelHolder
+    .sliderHolder .labelHolder
     {
         text-align: justify;
     }
 
 
-    #sliderHolder #inputHolder
+    .sliderHolder .inputHolder
     {
         width: 100%;
     }
 
-    #sliderHolder #rangeHolder #slider1
+    .qSeparator {
+        height:15px;
+    }
+
+    .qSeparator hr{
+        background-color: #eeeeee;
+        border-color: #eeeeee;
+        border: solid 1px #eeeeee;
+    }
+
+    .sliderHolder .rangeHolder .slider
     {
         width: 100%;
         padding: 0;
@@ -29,44 +39,49 @@
         height: 20px;
     }
 
-    #sliderHolder #labelHolder a
+    .labelHolder table {
+        width: 100%;
+    }
+
+    .sliderHolder .labelHolder a p
     {
+        width: 100%;
         display: inline-block;
         text-align: center;
         margin: 0 0.2em;
-        max-width: 4em;
         text-decoration: none;
+        font-size: 0.8em;
+        color: #000;
     }
 
-    #sliderHolder #labelHolder .leftLabel
+    .sliderHolder .labelHolder .leftLabel
     {
-        text-align: left;
+        /* text-align: left; */
     }
 
-    #sliderHolder #labelHolder .rightLabel
+    .sliderHolder .labelHolder .rightLabel
     {
-        text-align: right;
+        /* text-align: right; */
     }
 
-    #sliderHolder #labelHolder:after {
+    .sliderHolder .labelHolder:after {
         content: '';
         width: 100%;
-        display: inline-block;
     }
 
-    #sliderHolder #rangeHolder
+    .sliderHolder .rangeHolder
     {
         margin-bottom: 2em;
        
         border-radius: 2em;
     }
 
-    #sliderHolder #rangeHolder output
+    .sliderHolder .rangeHolder output
     {
         position: relative;
     }
 
-    #sliderHolder .optionGroup
+    .sliderHolder .optionGroup
     {
     padding-top:	5px !important ;
     padding-bottom:	5px !important ;
@@ -81,4 +96,20 @@
     .optionTxt p
     {
         display: inline;
+    }
+
+    .optionGroup .optionTxt {
+        cursor:			pointer;
+        position:		relative;
+        margin-left:	2em;
+        display:		block;
+    }
+
+    .optionGroup input
+    {
+        float: left;
+    }
+
+    #x_pageDiv .labelCell {
+        vertical-align: bottom;
     }

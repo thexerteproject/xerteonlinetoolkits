@@ -2672,7 +2672,12 @@
 	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
 	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
-    <diagram label="Show diagram" type="CheckBox" defaultValue="true" optional="true"/>
+    <diagram label="Hide diagram" type="CheckBox" defaultValue="false" optional="true"/>
+    <layout label="Layout options" type="group" optional="true">
+      <list label="Show questions in list" type="checkbox" optional="true" tooltip="Show more than one question per page" defaultValue="false"/>
+      <paging label="Use paging" type="checkbox" optional="true" tooltip="Group question list in pages if using list mode" defaultValue="true"/>
+      <pagesize label="Max. page size" type="textinput" wysiwyg="false" optional="true" tooltip="Maximum number of questions shown per page if page mode is used." defaultValue="10"/>
+    </layout>
 
       <newNodes>
         <opinionClass><![CDATA[<opinionClass  name="C - Tree/Tracking label"/>]]></opinionClass>
