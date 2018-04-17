@@ -526,18 +526,19 @@
 
 		this.trackQuestions = function()
 		{
+		    var currQuestion = this.currentQuestion;
             if (this.listMode)
             {
                 if (this.pageMode)
                 {
-                    for (i=this.currentQuestion; i<Math.min(this.currentQuestion + this.pageSize, opinion.questions.length); i++)
+                    for (i=currQuestion; i<Math.min(currQuestion+ this.pageSize, opinion.questions.length); i++)
                     {
                         this.trackQuestion(i);
                     }
                 }
                 else
                 {
-                    for (i=this.currentQuestion; i<opinion.questions.length; i++)
+                    for (i=currQuestion; i<opinion.questions.length; i++)
                     {
                         this.trackQuestion(i);
                     }
@@ -545,7 +546,7 @@
             }
             else
             {
-                this.trackQuestion(this.currentQuestion);
+                this.trackQuestion(currQuestionn);
             }
             if (! this.resultShown)
 			{
