@@ -94,8 +94,10 @@ $(document).keydown(function(e) {
 
 $(document).ready(function() {
 	// Load the script.js dependency loader
-	// TODO - we should move this to play/preview and let it kickstart the loading of all files
-	$.getScript(x_templateLocation + "common_html5/js/script.js");
+    if (!xot_offline) {
+        // TODO - we should move this to play/preview and let it kickstart the loading of all files
+        $.getScript(x_templateLocation + "common_html5/js/script.js");
+    }
 
     $x_mainHolder = $("#x_mainHolder");
 
@@ -399,7 +401,22 @@ function x_evalURL(url)
     var trimmedURL = $.trim(url);
     if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("FileLocation + ") >=0)
     {
-        return eval(url)
+        if (xot_offline)
+        {
+            if (url.indexOf("FileLocation + ") >=0)
+            {
+                var pos = url.indexOf("FileLocation + ");
+                url = url.substr(0,pos) + url.substr(pos + 16);
+                return eval(url);
+            }
+            else
+            {
+                return eval(url);
+            }
+        }
+        else {
+            return eval(url)
+        }
     }
     else
     {
@@ -623,7 +640,9 @@ function x_cssSetUp(param) {
             }
             break;
         case "theme":
-            $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
+            if (!xot_offline) {
+                $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
+            }
             x_cssSetUp("responsive");
             break;
 		case "responsive":
@@ -875,6 +894,10 @@ function x_continueSetUp1() {
 	$('#x_headerBlock img.x_icon').addClass(icPosition);
 	
 	var checkExists = function(type, fallback) {
+	    if (type == 'LO') {
+            $('#x_headerBlock img.x_icon').show();
+            return;
+        }
 		$.ajax({
 			url: $('#x_headerBlock img.x_icon').attr('src'),
 			success: function() {
