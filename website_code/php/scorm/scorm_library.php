@@ -498,16 +498,13 @@ function xerte_zip_files($fullArchive = false, $dir_path) {
                 if ($skipfile)
                     continue;
             }
-            if (!$fullArchive && strpos($file[0], "/media/") !== false) {
-
+            $string = str_replace($dir_path, "", $file[0]);
+            if (!$fullArchive && strpos($string, "/media/") !== false) {
                 /* only add file if used */
-                $string = str_replace($dir_path, "", $file[0]);
-
                 if (strpos($data3, $string) !== false) {
                     $zipfile->add_files($string);
                 }
             } else {
-                $string = str_replace($dir_path, "", $file[0]);
                 $zipfile->add_files($string);
             }
         }
