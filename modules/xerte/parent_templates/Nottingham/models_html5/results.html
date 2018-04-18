@@ -137,7 +137,7 @@
             dialog_buttons[okButtonTxt] = function(){ results.userNameEntered(); };
             var dialog = $( "#dialog-form" ).dialog({
                 autoOpen: false,
-                height: 150,
+                height: 250,
                 width: 350,
                 modal: true,
                 buttons: dialog_buttons,
@@ -320,8 +320,8 @@
 			NACompleteTooltip = x_currentPageXML.getAttribute("NACompleteTooltip") != undefined && x_currentPageXML.getAttribute("NACompleteTooltip") != "" ? x_currentPageXML.getAttribute("NACompleteTooltip") : "Not applicable";
 			detailsTooltip = x_currentPageXML.getAttribute("detailsTooltip") != undefined && x_currentPageXML.getAttribute("detailsTooltip") != "" ? x_currentPageXML.getAttribute("detailsTooltip") : "Details available";
             noDetailsTooltip = x_currentPageXML.getAttribute("noDetailsTooltip") != undefined && x_currentPageXML.getAttribute("noDetailsTooltip") != "" ? x_currentPageXML.getAttribute("noDetailsTooltip") : "No details available";
-            userNameDialogTitle = x_currentPageXML.getAttribute("userNameDialogTitle") != undefined && x_currentPageXML.getAttribute("userNameDialogTitle") != "" ? x_currentPageXML.getAttribute("userNameDialogTitle") : "Enter user name";
-            userNamePrompt = x_currentPageXML.getAttribute("userNamePrompt") != undefined && x_currentPageXML.getAttribute("userNamePrompt") != "" ? x_currentPageXML.getAttribute("userNamePrompt") : "User name:";
+            userNameDialogTitle = x_currentPageXML.getAttribute("userNameDialogTitle") != undefined && x_currentPageXML.getAttribute("userNameDialogTitle") != "" ? x_currentPageXML.getAttribute("userNameDialogTitle") : "Enter Full Name";
+            userNamePrompt = x_currentPageXML.getAttribute("userNamePrompt") != undefined && x_currentPageXML.getAttribute("userNamePrompt") != "" ? x_currentPageXML.getAttribute("userNamePrompt") : "Your name:";
             okButtonTxt = x_currentPageXML.getAttribute("okButtonTxt") != undefined && x_currentPageXML.getAttribute("okButtonTxt") != "" ? x_currentPageXML.getAttribute("okButtonTxt") : "OK";
             $("#dialog-form").attr("title", userNameDialogTitle);
             $("#namelabel").html(userNamePrompt);
@@ -387,7 +387,7 @@
             if (x_currentPageXML.getAttribute("givename"))
 			{
                 pdf.text(username, 10, vertpos);
-                vertpos += 5;
+                vertpos += 7;
 			}
             pdf.text(generalResultsTxt, 10, vertpos);
             vertpos += 0.2;
