@@ -90,7 +90,7 @@ function lmsmanifest_2004_create_rich($row, $metadata, $users, $flash, $lo_name)
 
 	$keyword = explode(",",$metadata['keywords']);
 	while($word = array_pop($keyword)){
-		$scorm_top_string .= "<imsmd:keyword><imsmd:string language=\"en-GB\">" . $word . "</imsmd:string></imsmd:keyword>";
+		$scorm_top_string .= "<imsmd:keyword><imsmd:langstring xml:lang=\"en-GB\">" . $word . "</imsmd:langstring></imsmd:keyword>";
 	}
 
 	while($user = mysql_fetch_array($users)){
@@ -98,7 +98,7 @@ function lmsmanifest_2004_create_rich($row, $metadata, $users, $flash, $lo_name)
 	}
 
 	$scorm_top_string .= "<imsmd:technical><imsmd:format>text/html</imsmd:format><imsmd:location>" . url_return("play", $_GET['template_id']) . "</imsmd:location></imsmd:technical>";
-	$scorm_top_string .= "<imsmd:rights><imsmd:copyrightAndOtherRestrictions><imsmd:source>LOMv1.0</imsmd:source><imsmd:value>yes</imsmd:value></imsmd:copyrightAndOtherRestrictions><imsmd:description><imsmd:string language=\"en-GB\">" . $metadata['licenses'] . "</imsmd:string><imsmd:string language=\"x-t-cc-url\">" . $metadata['licenses'] . "</imsmd:string></imsmd:description></imsmd:rights>";
+	$scorm_top_string .= "<imsmd:rights><imsmd:copyrightAndOtherRestrictions><imsmd:source>LOMv1.0</imsmd:source><imsmd:value>yes</imsmd:value></imsmd:copyrightAndOtherRestrictions><imsmd:description><imsmd:langstring xml:lang=\"en-GB\">" . $metadata['licenses'] . "<imsmd:langstring xml:lang=\"x-t-cc-url\">" . $metadata['licenses'] . "</imsmd:string></imsmd:description></imsmd:rights>";
 	$scorm_top_string .= "</imsmd:lom></metadata>";
 
 	$date = time();
