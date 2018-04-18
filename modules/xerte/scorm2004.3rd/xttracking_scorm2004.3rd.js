@@ -1532,6 +1532,40 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
     return "";
 }
 
+function XTTerminate()
+{
+    if (state.finished) return;
+    if (state.scormmode == 'normal')
+    {
+        if (!state.finished)
+        {
+            var currentpageid = "";
+            state.finished = true;
+            if (state.currentid)
+            {
+                var sit = state.find(currentid);
+                // there is still an interaction open, close it
+                if (sit != null)
+                {
+                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+                }
+            }
+            if (state.currentpageid)
+            {
+                currentpageid = state.currentpageid;
+                var sit = state.find(currentpageid);
+                // there is still an interaction open, close it
+                if (sit != null)
+                {
+                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+                }
+
+            }
+            state.finishTracking(currentpageid);
+        }
+    }
+    terminateCommunication();
+}
 
 function XTResults(fullcompletion) {
     var completion = 0;
