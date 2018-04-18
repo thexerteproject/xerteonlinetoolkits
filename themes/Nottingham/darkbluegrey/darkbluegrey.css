@@ -17,13 +17,6 @@
 a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
   color: #FCBC2B; }
 
-.x_mediaLesson_page #panelHolder .panel.tileH:not(:last-of-type) {
-  margin-right: 0px; }
-
-/* --change media lesson panel padding for LANDSCAPE PHONES----- */
-@media screen and (max-width: 736px) {
-  .x_mediaLesson_page .panel {
-    padding: 2px; } }
 .highlight {
   background: #FCBC2B; }
 
