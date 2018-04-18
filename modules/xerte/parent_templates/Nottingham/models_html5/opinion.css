@@ -5,23 +5,33 @@
     overflow:	auto;
     }
 
-    #sliderHolder {
-    margin-top:	15px;
-    margin-bottom:	15px;
+    .sliderHolder {
+    margin-top:	5px;
+    margin-bottom:	20px;
     }
 
-    #sliderHolder #labelHolder
+    .sliderHolder .labelHolder
     {
         text-align: justify;
     }
 
 
-    #sliderHolder #inputHolder
+    .sliderHolder .inputHolder
     {
         width: 100%;
     }
 
-    #sliderHolder #rangeHolder #slider1
+    .qSeparator {
+        height:15px;
+    }
+
+    .qSeparator hr{
+        background-color: #eeeeee;
+        border-color: #eeeeee;
+        border: solid 1px #eeeeee;
+    }
+
+    .sliderHolder .rangeHolder .slider
     {
         width: 100%;
         padding: 0;
@@ -29,49 +39,58 @@
         height: 20px;
     }
 
-    #sliderHolder #labelHolder a
-    {
-        display: inline-block;
-        text-align: center;
-        margin: 0 0.2em;
-        max-width: 4em;
-        text-decoration: none;
+    .labelHolder table {
+        width: 100%;
     }
 
-    #sliderHolder #labelHolder .leftLabel
+    .sliderHolder .labelHolder a p
     {
-        text-align: left;
-    }
-
-    #sliderHolder #labelHolder .rightLabel
-    {
-        text-align: right;
-    }
-
-    #sliderHolder #labelHolder:after {
-        content: '';
         width: 100%;
         display: inline-block;
+        text-align: center;
+        margin: 0;
+        text-decoration: none;
+        font-size: 0.8em;
+        color: #000;
     }
 
-    #sliderHolder #rangeHolder
+    .sliderHolder .labelHolder .leftLabel
+    {
+        /* text-align: left; */
+    }
+
+    .sliderHolder .labelHolder .rightLabel
+    {
+        /* text-align: right; */
+    }
+
+    .sliderHolder .labelHolder:after {
+        content: '';
+        width: 100%;
+    }
+
+    .sliderHolder .rangeHolder
     {
         margin-bottom: 2em;
        
         border-radius: 2em;
     }
 
-    #sliderHolder #rangeHolder output
+    .sliderHolder .rangeHolder output
     {
         position: relative;
     }
 
-    #sliderHolder .optionGroup
+    .sliderHolder .optionGroup
     {
-    padding-top:	5px !important ;
-    padding-bottom:	5px !important ;
+    padding-top:	5px;
+    padding-bottom:	5px;
     }
 
+    #qNo {
+        padding-top: 5px;
+        padding-bottom: 10px;
+    }
     #buttonHolder
     {
     float:	right;
@@ -81,4 +100,23 @@
     .optionTxt p
     {
         display: inline;
+        padding:0;
     }
+    
+    .optionGroup .optionTxt {
+        cursor:			pointer;
+        position:		relative;
+        margin-left:	2em;
+        display:		block;
+    }
+
+    .optionGroup input
+    {
+        float: left;
+        display: block;
+    }
+
+    #x_pageDiv .labelCell {
+        vertical-align: bottom;
+    }
+

@@ -3,9 +3,10 @@
 @import "scss/_header";
 @import "scss/_pagetypes";
 @import "scss/_footer";
-/*@import "scss/_animations";*/
+@import "scss/_animations";
 @import "scss/editorstyles";
 @import "scss/_webkitCustoms";
+@import "scss/_sliders";
 //* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
 //*You should not edit the .css files directly or change values directly unless you wish to override something*/
 //*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/

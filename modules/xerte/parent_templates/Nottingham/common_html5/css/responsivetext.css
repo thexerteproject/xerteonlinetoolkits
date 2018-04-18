@@ -36,6 +36,9 @@
   #optionHolder {
     font-size: 2.5vmin; }
 
+  .sliderHolder {
+    font-size: 2.5vmin; }
+
   .listItem {
     font-size: 2.5vmin; }
 
@@ -141,6 +144,10 @@
     font-size: 2.5vmin; }
 
   #optionHolder input {
+    width: 2.5vmin;
+    height: 2.5vmin; }
+
+  .sliderHolder .optionGroup input {
     width: 2.5vmin;
     height: 2.5vmin; }
 

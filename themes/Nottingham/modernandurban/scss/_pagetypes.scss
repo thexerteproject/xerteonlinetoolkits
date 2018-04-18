@@ -104,7 +104,7 @@
 .paneList a, .paneList a:link, .paneList a:visited{
   /*color: $linkcolor !important;*/
 }
-.ui-tabs-panel a:link, /*.ui-accordion-content a:link*/ {
+.ui-tabs-panel a:link {
   /*color: $linkcolor;*/
 }
 .ui-tabs .ui-tabs-nav {
@@ -248,6 +248,22 @@ a.hotspot, a.hotspot.selected {
   border-radius: $mediumroundedcorners;
   width: 98%;
 }
+//*****opinion********/
+.x_opinion_page #pageContents input {
+  padding-left: 0;
+}
+.qPanel {
+  overflow-x:hidden;
+}
+.qSeparator hr {
+  background-color: lighten($brightcolor, 15%);
+  border-color: lighten($brightcolor, 15%);
+  border: solid 1px lighten($brightcolor, 15%);
+}
+.sliderHolder .labelHolder a p {
+  color: $blackordarkest;
+}
+
 //*****sortable grid*****/
 #gridBorders {
   border-radius: $smallroundedcorners;
