@@ -624,7 +624,6 @@ function x_cssSetUp(param) {
             break;
         case "theme":
             $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
-            /*x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {x_cssSetUp("responsive")});*/
             x_cssSetUp("responsive");
             break;
 		case "responsive":
@@ -636,27 +635,8 @@ function x_cssSetUp(param) {
 					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()});
                 }
 			} else {
-                x_continueSetUp1();
+                x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()}, true);
 			}
-            break;
-        case "responsive2":
-            if (x_params.theme != undefined && x_params.theme != "default") {
-				// adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
-                if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-                    x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {x_cssSetUp("stylesheet")}, true);
-                } else {
-                    x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {x_cssSetUp("stylesheet")});
-                }
-            } else {
-                x_cssSetUp("stylesheet");
-            }
-            break;
-        case "stylesheet":
-            if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
-                x_insertCSS(x_evalURL(x_params.stylesheet), x_continueSetUp1);
-            } else {
-                x_continueSetUp1();
-            }
             break;
     }
 }
@@ -1383,13 +1363,7 @@ function x_lookupPage(pageType, pageID) {
 function x_changePage(x_gotoPage) {
 	// Prevent content from behaving weird as we remove css files
     $("#x_pageDiv").hide();
-    // Setup css correctly
-	//$("#page_model_css").remove();
-    //$("#theme_css").remove();
-    //$("#theme_responsive_css").remove();
-    //$("#lo_sheet_css").remove();
-    //$("#lo_css").remove();
-    //$("#page_css").remove();
+
 
     var modelfile = x_pageInfo[x_gotoPage].type;
 	
@@ -1430,7 +1404,7 @@ function x_changePageStep3(x_gotoPage) {
         } else {
             x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
                 x_changePageStep4(x_gotoPage);
-            }, false, "theme_responsive_css", true);
+            }, (x_params.responsive == "false"), "theme_responsive_css", true);
         }
     }
     else {
