@@ -691,7 +691,8 @@
 				if (mediaData.media.indexOf("www.youtube.com") != -1 || mediaData.media.indexOf("//youtu") != -1) {
 					var $youTube = $holder.find(".popcornMedia").addClass("youTube");
 					mediaLesson.resizeYouTube($youTube);
-					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .youTube", mediaData.media + "&controls=2"); // force controls to appear
+					var urlsep = (mediaData.media.indexOf("?") < 0 ? "?" : "&");
+					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .youTube", mediaData.media + urlsep + "controls=2&playsinline=1"); // force controls to appear, and force online play on iPhone
 					$youTube.data("popcornInstance", popcornInstance);
 					
 					if (mediaData.autoplay == "true") {
@@ -702,7 +703,7 @@
 					var $vimeo = $holder.find(".popcornMedia").addClass("vimeo");
 					mediaLesson.resizeVimeo($vimeo);
 					
-					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .vimeo", mediaData.media); // force controls to appear
+					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .vimeo", mediaData.media);
 					$vimeo.data("popcornInstance", popcornInstance);
 
 
