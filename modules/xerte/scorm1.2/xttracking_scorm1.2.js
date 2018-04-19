@@ -757,8 +757,15 @@ function ScormTrackingState()
             setValue('cmi.core.lesson_status', lessonStatus);
             state.currentpageid = currentid;
             var suspend_str = JSON.stringify(this);
-            setValue('cmi.core.exit', 'suspend');
-            setValue('cmi.suspend_data', suspend_str);
+            if (lessonStatus == 'incomplete') {
+                setValue('cmi.core.exit', 'suspend');
+                setValue('cmi.suspend_data', suspend_str);
+            }
+            else
+            {
+                setValue('cmi.core.exit', '');
+                setValue('cmi.suspend_data', suspend_str);
+            }
 
             var supported = getValue('cmi.core.score._children');
             setValue('cmi.core.score.raw', this.getRawScore());
