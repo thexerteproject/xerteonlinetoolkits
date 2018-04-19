@@ -1,57 +1,122 @@
 /* opinion.html */
 
-    #sliderHolder #labelHolder
+
+    .qPanel {
+    overflow:	auto;
+    }
+
+    .sliderHolder {
+    margin-top:	5px;
+    margin-bottom:	20px;
+    }
+
+    .sliderHolder .labelHolder
     {
         text-align: justify;
     }
 
 
-    #sliderHolder #inputHolder
+    .sliderHolder .inputHolder
     {
         width: 100%;
     }
 
-    #sliderHolder #rangeHolder #slider1
+    .qSeparator {
+        height:15px;
+    }
+
+    .qSeparator hr{
+        background-color: #eeeeee;
+        border-color: #eeeeee;
+        border: solid 1px #eeeeee;
+    }
+
+    .sliderHolder .rangeHolder .slider
     {
         width: 100%;
         padding: 0;
         margin: 0;
-    }
-
-    #sliderHolder #labelHolder a
-    {
-        display: inline-block;
-        text-align: center;
-        margin: 0 0.2em;
-        width: 4em;
-        text-decoration: none;
-    }
-
-    #sliderHolder #labelHolder .leftLabel
-    {
-        text-align: left;
-    }
-
-    #sliderHolder #labelHolder .rightLabel
-    {
-        text-align: right;
-    }
-
-    #sliderHolder #labelHolder:after {
-        content: '';
-        width: 100%;
-        display: inline-block;
-    }
-
-    #sliderHolder #rangeHolder
-    {
-        margin-bottom: 2em;
-        background-color: #d3d3d3;
-        border-radius: 2em;
         height: 20px;
     }
 
-    #sliderHolder #rangeHolder output
+    .labelHolder table {
+        width: 100%;
+    }
+
+    .sliderHolder .labelHolder a p
+    {
+        width: 100%;
+        display: inline-block;
+        text-align: center;
+        margin: 0;
+        text-decoration: none;
+        font-size: 0.8em;
+        color: #000;
+    }
+
+    .sliderHolder .labelHolder .leftLabel
+    {
+        /* text-align: left; */
+    }
+
+    .sliderHolder .labelHolder .rightLabel
+    {
+        /* text-align: right; */
+    }
+
+    .sliderHolder .labelHolder:after {
+        content: '';
+        width: 100%;
+    }
+
+    .sliderHolder .rangeHolder
+    {
+        margin-bottom: 2em;
+       
+        border-radius: 2em;
+    }
+
+    .sliderHolder .rangeHolder output
     {
         position: relative;
     }
+
+    .sliderHolder .optionGroup
+    {
+    padding-top:	5px;
+    padding-bottom:	5px;
+    }
+
+    #qNo {
+        padding-top: 5px;
+        padding-bottom: 10px;
+    }
+    #buttonHolder
+    {
+    float:	right;
+    margin-bottom:	10px;
+    }
+
+    .optionTxt p
+    {
+        display: inline;
+        padding:0;
+    }
+    
+    .optionGroup .optionTxt {
+        cursor:			pointer;
+        position:		relative;
+        margin-left:	2em;
+        display:		block;
+    }
+
+    .optionGroup input
+    {
+        float: left;
+        display: block;
+    }
+
+    #x_pageDiv .labelCell {
+        vertical-align: bottom;
+    }
+

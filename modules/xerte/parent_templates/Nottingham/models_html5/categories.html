@@ -1,4 +1,22 @@
 <script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -52,7 +70,7 @@
                 l_correct=0;
 
             $("#dragDropHolder .tick").remove();
-            $("#feedback").show();
+			
             $("#categoryHolder .category .label").each(function() {
                 var $this = $(this);
                 var l_answer, l_option = {};
@@ -64,20 +82,27 @@
 
                 l_total++;
                 if ($this.data("category").is($this.parent())) {
-                    $this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></img>');
+					$this.html($this.html() + '<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '</span><span class="fa fa-fw fa-x-tick"></span></span>');
                     l_feedback.push("correct");
 					l_option.result = true;
                     l_correct++;
                 }
-                else
-                {
-					$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></img>');
+                else {
+					$this.html($this.html() + '<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Incorrect") + '</span><span class="fa fa-fw fa-x-cross"></span></span>');
 					l_feedback.push("incorrect");
 					l_option.result = false;
                 }
 				l_options.push(l_option);
             });
-            XTExitInteraction(x_currentPage, 0, (l_correct == this.totaloptions), l_options, l_answers, l_feedback);
+
+			$("#scoreTxt").html(l_correct);
+			$("#totalTxt").html(this.totaloptions);
+			$("#feedback").show();
+			var result = {
+			    success: (l_correct == this.totaloptions),
+			    score: (l_correct * 100.0)/this.totaloptions
+			}
+            XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedback);
             XTSetPageScore(x_currentPage, (l_correct * 100.0)/this.totaloptions);
             this.checked = true;
         }
@@ -112,13 +137,15 @@
 				.addClass("transparent"); /* without the text having a bg the labels strangely aren't selectable in IE */
 			
 			var $feedback = $("#feedback");
-			if (x_currentPageXML.getAttribute("feedback") == undefined || x_currentPageXML.getAttribute("feedback") == "") {
-				$feedback.remove();
-			} else {
-				$feedback
-					.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
-					.hide();
+			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
+				$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 			}
+			if (x_currentPageXML.getAttribute("feedbackScore") != undefined && x_currentPageXML.getAttribute("feedbackScore") != "") {
+				$feedback.append('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedbackScore").replace("{i}", '<span id="scoreTxt"></span>').replace("{n}", '<span id="totalTxt"></span>')) + '</p>');
+			} else if ($feedback.html().length == 0) {
+				$feedback.remove();
+			}
+			$feedback.hide();
 			
 			// buttonWidth attribute not used as button will be sized automatically
 			var buttonLabel = x_currentPageXML.getAttribute("buttonLabel");
@@ -166,7 +193,7 @@
 					});
 				});
 
-            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback);
+            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 			var $pageContents = $("#pageContents");
 			$pageContents.data("labels", labels);
 			

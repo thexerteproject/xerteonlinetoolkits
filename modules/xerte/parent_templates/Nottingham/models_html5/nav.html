@@ -1,0 +1,535 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var nav = new function() {
+		
+		// Called from xenith if tab level deeplinking is available
+		this.deepLink = function(item) {
+			if (x_currentPageXML.getAttribute("type") != "Col") {
+				if (x_currentPageXML.getAttribute("type") == "Slide") {
+					if ($.isNumeric(item)) {
+						nav.slideshowChange(parseInt(item, 10));
+					} else {
+						$(x_currentPageXML).children().each(function(i) {
+							if (item.toLowerCase() === this.getAttribute("name").toLowerCase()) {
+								nav.slideshowChange(i);
+								return false;
+							}
+						});
+					}
+				} else {
+					var $btns = x_currentPageXML.getAttribute("type") == "Button" ? $('.navChildTitle') : $('.navChildTitle a');
+					$btns.each(function(i) {
+						if ( ($.isNumeric(item) && i === parseInt(item)) || (item.toLowerCase() === $(this).text().toLowerCase()) ) {
+							$(this).click();
+							return false;
+						}
+					});
+				}
+			}
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			if (x_currentPageXML.getAttribute("type") != "Col" && x_browserInfo.mobile == false && x_currentPageXML.getAttribute("panelHeight") != "fit") {
+				if (x_currentPageXML.getAttribute("type") == "Acc") {
+					$("#infoHolder")
+						.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 1)
+						.accordion("refresh");
+				} else if (x_currentPageXML.getAttribute("type") == "Tab") {
+					var $infoHolder = $("#infoHolder"),
+						$paneHolder = $("#paneHolder");
+					
+					$infoHolder
+						.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 13)
+						.tabs("refresh");
+					
+					$paneHolder.height($infoHolder.height() - $("#tabHolder").outerHeight());
+					$paneHolder.find(".navChild").height($paneHolder.height() - parseInt($paneHolder.find(".navChild").css("padding-top")) * 2);
+					
+					// forces tabindexes to be different to jquery ui default so it's consistent with controls on other page types
+					$infoHolder.find(".navChildTitle").attr("tabindex", 0);
+					
+				} else {
+					var $panel = $("#navHolder .panel").length > 0 ? $("#navHolder .panel") : $("#pageContents > div.panel");
+					$("#infoHolder").height($x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - $("#btnHolder").outerHeight(true) - (parseInt($panel.css("padding-top")) * 2) - 5);
+				}
+			}
+			
+			this.resizeMedia();
+		}
+		
+		// function resizes media controls
+		this.resizeMedia = function() {
+			// resize if the media is now the wrong size for its holder
+			// this is done by manually triggering the window resize event (mediaelement.js listens to this event)
+			
+			if ($("iframe.navMedia").length > 0 && x_currentPageXML.getAttribute("type") != "Tab" && x_currentPageXML.getAttribute("type") != "Acc") {
+				// manually resize height of iframes
+				$("iframe.navMedia").height($("#infoHolder").height() - 12);
+			}
+			
+			$(".navChild:visible .navMedia.video, .navChild:visible .navMedia.audio").each(function(i) {
+				
+				var availSpace = $("#infoHolder").width() - parseInt($(this).closest(".navChild").css('padding-left')) - parseInt($(this).closest(".navChild").css('padding-right'));
+				
+				if ($(this).hasClass("audio")) {
+					var audioBarW = 0;
+					$(this).find(".mejs-inner").find(".mejs-controls").children().each(function() {
+						audioBarW += $(this).outerWidth();
+					});
+					
+					//var availSpace = $("#infoHolder").width() - parseInt($(this).closest(".navChild").css('padding-left')) - parseInt($(this).closest(".navChild").css('padding-right'));
+					if (audioBarW > availSpace || audioBarW < availSpace - 50) {
+						$x_window.resize();
+						return false;
+					}
+				} else {
+					var $video = $(this).find('video'),
+						$videoDiv = $(this).find('.mejs-video');
+					
+					if ($videoDiv.width() > availSpace || ($videoDiv.width() < availSpace - 50 && ($video.data('width') == 0 || $videoDiv.width() < $video.data('width')))) {
+						$x_window.resize();
+						return false;
+					}
+				}
+			});
+		}
+		
+		this.init = function() {
+			var $pageContents = $('#pageContents'),
+				$textHolder = $('#textHolder'),
+				$navHolder = $('#navHolder');
+			
+			$pageContents.addClass(x_currentPageXML.getAttribute("type").toLowerCase());
+			
+			// set up basic structure of page - different for each navigator type
+			if (x_currentPageXML.getAttribute("type") != "Col") {
+				
+				var $navHolderInner = $('<div/>');
+				if (x_currentPageXML.getAttribute("type") != "Acc" && x_currentPageXML.getAttribute("type") != "Tab") {
+					$navHolderInner.addClass('panel');
+				}
+				
+				var panelWidth = x_currentPageXML.getAttribute("panelWidth") == undefined ? "Medium" : x_currentPageXML.getAttribute("panelWidth");
+				
+				// full width - get rid of everything else
+				if (panelWidth == "Full") {
+					$navHolderInner.appendTo($pageContents);
+					$textHolder.remove();
+					$navHolder.remove();
+					
+				} else {
+					$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+					
+					$navHolderInner.appendTo($navHolder);
+					
+					var $splitScreen = $('<div class="splitScreen"/>');
+					
+					$splitScreen
+						.prependTo($pageContents)
+						.append($textHolder)
+						.append($navHolder);
+					
+					// panel layout (left/right small/medium/large)
+					if (x_currentPageXML.getAttribute("panelPos") == "Left") {
+						$textHolder.addClass('right');
+						$navHolder
+							.prependTo($splitScreen)
+							.addClass('left');
+					} else {
+						$textHolder.addClass('left');
+						$navHolder.addClass('right');
+					}
+					
+					if (panelWidth == "Small") {
+						$("#pageContents .splitScreen").addClass(x_currentPageXML.getAttribute("panelPos") == "Left" ? "medium" : "large");
+					} else if (panelWidth == "Large") {
+						$("#pageContents .splitScreen").addClass(x_currentPageXML.getAttribute("panelPos") == "Left" ? "xlarge" : "small");
+					} else {
+						$("#pageContents .splitScreen").addClass(x_currentPageXML.getAttribute("panelPos") == "Left" ? "large" : "medium");
+					}
+				}
+				
+				// set up all the html elements
+				var $infoHolder = $('<div id="infoHolder"/>').appendTo($navHolderInner);
+				
+				if (x_currentPageXML.getAttribute("type") == "Slide") {
+					$(x_currentPageXML).children().each(function(i) {
+						$infoHolder.append('<div class="panelPage"><h3 class="navChildTitle" id="navChildTitle' + i + '"></h3><div id="navChild' + i + '" class="navChild"></div></div>');
+					});
+					
+					var $btnHolder = $('<div id="btnHolder"><p id="slideTxt" aria-live="polite"></p><div id="btns"><button id="prevBtn">1</button><button id="nextBtn">2</button></div><div class="clearBoth"></div></div>');
+					
+					if (x_currentPageXML.getAttribute("buttonPos") != "Top" && x_browserInfo.mobile != true) {
+						$btnHolder.appendTo($navHolderInner);
+					} else {
+						$btnHolder
+							.prependTo($navHolderInner)
+							.addClass("top");
+					}
+					
+				} else if (x_currentPageXML.getAttribute("type") == "Button") {
+					// screen reader info
+					$pageContents.data("clickTxt", x_getLangInfo(x_languageData.find("screenReaderInfo").find("buttonNav")[0], "click", ""));
+					if ($pageContents.data("clickTxt") == null) {
+						$pageContents.data("clickTxt", "");
+					}
+					
+					var $btnHolder = $('<div id="btnHolder"></div>');
+					if (x_currentPageXML.getAttribute("buttonPos") != "Bottom" || x_browserInfo.mobile == true) {
+						$btnHolder.prependTo($navHolderInner);
+					} else {
+						$btnHolder
+							.appendTo($navHolderInner)
+							.addClass("bottom");
+					}
+					
+					$(x_currentPageXML).children().each(function(i) {
+						$btnHolder.append('<button id="navChildTitle' + i + '" class="navChildTitle"></button>');
+						$infoHolder.append('<div id="navChild' + i + '" class="navChild"/>');
+					});
+					
+				} else if (x_currentPageXML.getAttribute("type") == "Acc") {
+					// screen reader info
+					$pageContents.data("clickTxt", x_getLangInfo(x_languageData.find("screenReaderInfo").find("accNav")[0], "click", ""));
+					if ($pageContents.data("clickTxt") == null) {
+						$pageContents.data("clickTxt", "");
+					}
+					
+					$(x_currentPageXML).children().each(function(i) {
+						$infoHolder.append('<h3 class="navChildTitle"><a id="navChildTitle' + i + '" href="#"></a></h3> <div id="navChild' + i + '" class="navChild"></div>');
+					});
+				} else if (x_currentPageXML.getAttribute("type") == "Tab") {
+					var $tabHolder = $('<ul id="tabHolder"/>').appendTo($infoHolder),
+						$paneHolder = $('<div id="paneHolder"/>').appendTo($infoHolder);
+					
+					$(x_currentPageXML).children().each(function(i) {
+						$tabHolder.append('<li class="navChildTitle"><a id="navChildTitle' + i + '" href="#navChild' + i + '"></a></li>');
+						$paneHolder.append('<div id="navChild' + i + '" class="navChild"/>');
+					});
+				}
+				
+			// column page
+			} else {
+				if (x_currentPageXML.getAttribute("text") == "") {
+					$textHolder.remove();
+				} else {
+					$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				}
+				
+				// set up column contents
+				$(x_currentPageXML).children().each(function(i) {
+					$navHolder.append('<div id="navChild' + i + '" class="navChild">' + (this.getAttribute("name") != "" ? '<h3 id="navChildTitle' + i + '" class="navChildTitle"></h3>' : '') + '</div>');
+				});
+				
+				if (x_browserInfo.mobile == false) {
+					var numColumns = $(x_currentPageXML).children().length,
+						spacerWidth = (numColumns - 1) * 2, // 2% gap between columns
+						columnWidth = Math.floor((100 - spacerWidth) / numColumns),
+						edgeWidth = Math.floor((100 - spacerWidth - (columnWidth * numColumns)) / 2);
+					
+					$navHolder.find(".navChild")
+						.addClass("x_floatLeft")
+						.css({
+							width : columnWidth + "%",
+							"padding-left" : "2%"
+						});
+					
+					$navHolder.find(".navChild:first").css("padding-left", edgeWidth + "%");
+					$navHolder.find(".navChild:last").css("padding-right", edgeWidth + "%");
+					
+				}
+			}
+			
+			// add content to each column/pane
+			$(x_currentPageXML).children().each(function(i) {
+				
+				// column/pane text
+				$("#navChildTitle" + i).html(this.getAttribute("name"));
+				var $navChild = $("#navChild" + i).append(x_addLineBreaks(this.getAttribute("text")));
+				
+				// column/pane media
+				if (this.getAttribute("url") != undefined && this.getAttribute("url") != "") {
+					
+					var $media,
+						fileExt = this.getAttribute("url").split('.').pop().toLowerCase();
+					
+					// audio
+					if (fileExt == "mp3") {
+						$media = $('<div class="navMedia audio"></div>');
+						
+						$media.data({
+							source: this.getAttribute("url"),
+							title: this.getAttribute("tip") != undefined && this.getAttribute("tip") != "" ? this.getAttribute("tip") : ''
+						});
+						
+					// image
+					} else if (fileExt == "jpeg" || fileExt == "jpg" || fileExt == "png" || fileExt == "gif") {
+						$media = $('<div class="navMedia"><img src="' + this.getAttribute("url") + '" ' + (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "" ? 'alt="' + this.getAttribute("tip") + '"' : '') + '/></div>');
+						
+					// iframe
+					} else if (this.getAttribute("url").substr(0,7) == "<iframe") {
+						if ($(this.getAttribute("url")).first().is("[srcdoc]") == false) {
+							$media = $(this.getAttribute("url")).first();
+							$media
+								.removeAttr('width')
+								.removeAttr('height')
+								.addClass('navMedia');
+						}
+						
+					// uploaded video / youtube / vimeo
+					} else if (fileExt == "mp4" || x_isYouTubeVimeo(this.getAttribute("url")) != false) {
+						$media = $('<div class="navMedia video"></div>');
+						
+						$media.data({
+							source: this.getAttribute("url"),
+							title: this.getAttribute("tip") != undefined && this.getAttribute("tip") != "" ? this.getAttribute("tip") : ''
+						});
+						
+						var yt = x_isYouTubeVimeo(this.getAttribute("url"));
+						if (yt != false) {
+							$media.addClass(yt);
+						}
+					}
+					
+					if ($media != "" && $media != undefined) {
+						if (this.getAttribute("align") == "Bottom") {
+							$media.appendTo($navChild);
+						} else if ($navChild.find('.navChildTitle').length > 0) {
+							$media.insertAfter($navChild.find('.navChildTitle'));
+						} else {
+							$media.prependTo($navChild);
+						}
+						
+						if ($media.hasClass('video')) {
+							$media
+								.mediaPlayer({
+									type: "video",
+									source: $media.data('source'),
+									width: "100%",
+									height: "100%",
+									title: $media.data('title')
+								});
+							
+						} else if ($media.hasClass('audio')) {
+							$media
+								.mediaPlayer({
+									type: "audio",
+									source: $media.data('source'),
+									width: "100%",
+									height: "100%",
+									title: $media.data('title')
+								});
+						
+						}
+					}
+				}
+				
+				// type specific stuff
+				if (x_currentPageXML.getAttribute("type") == "Acc") {
+					$("#navChildTitle" + i).parent('.navChildTitle')
+						.data("name", this.getAttribute("name"))
+						.attr("aria-label", this.getAttribute("name") + (i != 0 ? " " + $pageContents.data("clickTxt") : ""));
+					
+				} else if (x_currentPageXML.getAttribute("type") == "Tab") {
+					$("#navChildTitle" + i).parent('.navChildTitle').attr("aria-hidden", "true");
+					
+				} else if (x_currentPageXML.getAttribute("type") == "Button") {
+					$("#navChildTitle" + i)
+						.data("name", this.getAttribute("name"))
+						.attr("aria-label", this.getAttribute("name") + " " + $("#pageContents").data("clickTxt"));
+				}
+				
+			});
+			
+			// set up interactions to change nested page
+			if (x_currentPageXML.getAttribute("type") == "Acc") {
+				
+				$("#infoHolder").accordion({
+					icons: {
+						header: "fa fa-x-acc-hide",
+						activeHeader: "fa fa-x-acc-show"
+					},
+					collapsible: x_currentPageXML.getAttribute("collapsible") == "true" ? true : false,
+					active: x_currentPageXML.getAttribute("collapsible") == "true" ? false : 0,
+					heightStyle: x_currentPageXML.getAttribute("panelHeight") != "fit" && x_browserInfo.mobile != true ? "fill" : "content",
+					activate: function(e, ui) {
+						ui.newPanel.find('.navMedia.audio .mejs-inner').show();
+						nav.resizeMedia();
+						
+						if ($("#pageContents").data("clickTxt") != "" && $("#pageContents").data("clickTxt") != null) {
+							ui.oldHeader.attr("aria-label", ui.oldHeader.data("name") + " " + $("#pageContents").data("clickTxt"));
+							ui.newHeader.attr("aria-label", ui.newHeader.data("name"));
+						}
+						
+						ui.oldPanel
+							.data("height", ui.oldPanel.height())
+							.css({ display: "block", height: "0px;" }) // it won't do scrollTop when display is none
+							.scrollTop(0)
+							.css({ display: "none", height: ui.oldPanel.data("height") });
+					},
+					beforeActivate: function(e, ui) {
+						ui.newPanel.scrollTop(0);
+						ui.newPanel.find('.navMedia.audio .mejs-inner').hide();
+					}
+				});
+				
+			} else if (x_currentPageXML.getAttribute("type") == "Button") {
+				$('.navChild').hide();
+				
+				$('.navChildTitle')
+					.button()
+					.on("click", function() {
+						var $thisNavChild = $('#navChild' + $(this).index());
+						if ($thisNavChild.is(":hidden")) {
+							if ($("#pageContents").data("clickTxt") != "") {
+								var $oldSelected = $("#btnHolder .navChildTitle:eq(" + $("#infoHolder .navChild:visible").index() + ")");
+								$oldSelected
+									.removeClass("selected")
+									.attr("aria-label", $oldSelected.data("name") + " " + $("#pageContents").data("clickTxt"));
+								
+								var $newSelected = $("#btnHolder .navChildTitle:eq(" + $thisNavChild.index() + ")");
+								$newSelected
+									.addClass("selected")
+									.attr("aria-label", $newSelected.data("name"));
+							}
+							
+							$('.navChild').hide();
+							$thisNavChild.show();
+							nav.resizeMedia();
+							$("#infoHolder").scrollTop(0);
+						}
+					});
+				
+				$('.navChildTitle:eq(0)').click();
+				
+			} else if (x_currentPageXML.getAttribute("type") == "Slide") {
+				$('.panelPage').hide();
+				
+				$("#pageContents").data({
+					"slideTxt": x_currentPageXML.getAttribute("slideCount") == undefined || x_currentPageXML.getAttribute("slideCount") == "" ? "Slide {i} of {n}" : x_currentPageXML.getAttribute("slideCount"),
+					"totalPages": $("#infoHolder .panelPage").length,
+					"currentPage": -1
+				});
+				
+				$("#prevBtn")
+					.button({
+						icons: { primary: "fa fa-x-prev" },
+						label: x_currentPageXML.getAttribute("prevBtnTip") == undefined || x_currentPageXML.getAttribute("prevBtnTip") == "" ? "Previous" : x_currentPageXML.getAttribute("prevBtnTip"),
+						text: false
+					})
+					.click(function() {
+						nav.slideshowChange($("#pageContents").data("currentPage") - 1);
+					});
+				
+				$("#nextBtn")
+					.button({
+						icons: { primary: "fa fa-x-next" },
+						label: x_currentPageXML.getAttribute("nextBtnTip") == undefined || x_currentPageXML.getAttribute("nextBtnTip") == "" ? "Next" : x_currentPageXML.getAttribute("nextBtnTip"),
+						text: false
+					})
+					.click(function() {
+						nav.slideshowChange($("#pageContents").data("currentPage") + 1);
+					})
+					.trigger("click");
+				
+				if ($("#pageContents").data("totalPages") < 2) {
+					$("#btnHolder").remove();
+				}
+				
+			} else if (x_currentPageXML.getAttribute("type") == "Tab") {
+				$("#infoHolder").tabs({
+					heightStyle: x_currentPageXML.getAttribute("panelHeight") != "fit" && x_browserInfo.mobile != true ? "fill" : "content",
+					activate: function(e, ui) {
+						ui.newPanel.find('.navMedia.audio .mejs-inner').show();
+						nav.resizeMedia();
+						
+						$("#infoHolder").find(".navChildTitle").attr("tabindex", 0);
+						ui.newPanel.scrollTop(0);
+					},
+					beforeActivate: function(e, ui) {
+						ui.newPanel.find('.navMedia.audio .mejs-inner').hide();
+					}
+				});
+				
+			}
+			
+			this.sizeChanged();
+			
+			x_pageLoaded();
+		}
+		
+		this.slideshowChange = function(newPage) {
+			var $pageContents = $("#pageContents"),
+				$prevBtn = $("#prevBtn"),
+				$nextBtn = $("#nextBtn");
+			
+			var prevPage = $pageContents.data("currentPage");
+			$pageContents.data("currentPage", newPage);
+			$("#infoHolder").scrollTop(0);
+			$("#infoHolder .panelPage:visible").hide();
+			$("#infoHolder .panelPage:eq(" + newPage + ")").show();
+			$("#slideTxt").html($pageContents.data("slideTxt").replace("{i}", newPage + 1).replace("{n}", $pageContents.data("totalPages")));
+			
+			nav.resizeMedia();
+			
+			if (newPage == 0) {
+				$prevBtn.button("disable").removeClass("ui-state-focus").removeClass("ui-state-hover");
+				$nextBtn.button("enable");
+			} else if (newPage + 1 == $pageContents.data("totalPages")) {
+				$prevBtn.button("enable");
+				$nextBtn.button("disable").removeClass("ui-state-focus").removeClass("ui-state-hover");
+			} else {
+				$prevBtn.button("enable");
+				$nextBtn.button("enable");
+			}
+		}
+		
+		this.mediaMetadata = function($video, wh) {
+			$video.data({
+				width: wh[0],
+				height: wh[1]
+			});
+			
+			$video.closest(".mejs-video").css({
+				"maxWidth": wh[0],
+				"maxHeight": wh[1]
+			});
+			
+			this.sizeChanged();
+		}
+		
+	}
+	
+	nav.init();
+	
+</script>
+
+
+<div id="pageContents">
+	
+	<div id="textHolder"></div>
+	
+	<div id="navHolder"></div>
+	
+</div>

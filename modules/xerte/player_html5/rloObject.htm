@@ -47,17 +47,20 @@
 	
 	<link href="%TEMPLATEPATH%common_html5/font-awesome/css/font-awesome.min.css%VERSION_PARAM%" rel="stylesheet">
     <link href="%TEMPLATEPATH%common_html5/font-awesome-4.3.0/css/font-awesome.min.css" rel="stylesheet">
-
+	<script>
+		var username = "";
+	</script>
     %OFFLINESCRIPTS%
 
 </head>
 
-<body onload = "XTInitialise();" onbeforeunload = "XTTerminate();">
+<body>
 	<noscript>This Learning Object requires JavaScript!</noscript>
 	<div id="x_mainHolder" style="visibility:hidden;">
 
 		<div id="x_mobileScroll">
 			<div id="x_headerBlock" role="banner">
+				<img class="x_icon" src="%TEMPLATEPATH%common_html5/logo.png"/>
 				<div>
 					<h1> </h1>
 					<h2 aria-live="assertive"> </h2>
@@ -103,7 +106,9 @@
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/mediaelement/mediaelement-and-player.js%VERSION_PARAM%"></script>	<!-- for audio & video players -->
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/mediaPlayer.js%VERSION_PARAM%"></script>
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/swfobject.js"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/xenith.js%VERSION_PARAM%"></script>
+	<script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/xenith.js%VERSION_PARAM%"></script>
+	<script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/chart.js%VERSION_PARAM%"></script>
+
     %TRACKING_SUPPORT%
     <script type="text/javascript" async src="%MATHJAXPATH%MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
 
@@ -123,6 +128,7 @@
         var x_templateLocation = "%TEMPLATEPATH%";
         var x_projectXML = "%XMLFILE%";
         var x_themePath = "%THEMEPATH%";
+        var x_TemplateId = "%TEMPLATEID%";
         var x_startPage = {type : "page", ID : "1"};
 		if (getUrlVars()['resume'])
         {

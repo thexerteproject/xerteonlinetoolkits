@@ -94,8 +94,10 @@ $(document).keydown(function(e) {
 
 $(document).ready(function() {
 	// Load the script.js dependency loader
-	// TODO - we should move this to play/preview and let it kickstart the loading of all files
-	$.getScript(x_templateLocation + "common_html5/js/script.js");
+    if (!xot_offline) {
+        // TODO - we should move this to play/preview and let it kickstart the loading of all files
+        $.getScript(x_templateLocation + "common_html5/js/script.js");
+    }
 
     $x_mainHolder = $("#x_mainHolder");
 
@@ -154,6 +156,7 @@ x_projectDataLoaded = function(xmlData) {
 
     x_pages = xmlData.children();
 	var pageToHide = [];
+	var currActPage = 0;
     x_pages.each(function (i) {
 		if ($(this)[0].getAttribute("hidePage") != "true" || (x_params.authorSupport == "true" && window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1)) {
 			var linkID = $(this)[0].getAttribute("linkID"),
@@ -186,15 +189,19 @@ x_projectDataLoaded = function(xmlData) {
 			}
 			allChildIDs($(this), page.childIDs);
 			x_pageInfo.push(page);
-			
+            if(($(this)[0].getAttribute("unmarkForCompletion") === "false" || $(this)[0].getAttribute("unmarkForCompletion") == undefined) && this.nodeName !== "results" )
+            {
+                markedPages.push(currActPage);
+                currActPage++;
+            }
+            else {
+                currActPage++;
+            }
 		}
 		else {
 			pageToHide.push(i);
 		}
-		if(($(this)[0].getAttribute("unmarkForCompletion") === "false" || $(this)[0].getAttribute("unmarkForCompletion") == undefined) && this.nodeName !== "result" )
-		{
-			markedPages.push(i);
-		}
+
     });
 	
 	// removes hidden pages from array
@@ -228,7 +235,15 @@ x_projectDataLoaded = function(xmlData) {
     for (i = 0; i < tempUrlParams.length; i++) {
         urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
     }
-
+	
+	// url embed parameter uses ideal setup for embedding in iframes - can be overridden with other parameters below
+	if (urlParams.embed == 'true') {
+		x_params.embed = true;
+		x_params.displayMode = 'full screen';
+		x_params.responsive = 'false';
+		// css button also won't appear
+	}
+	
     // url display parameter will set size of LO (display=fixed|full|fill - or a specified size e.g. display=200,200)
     if (urlParams.display != undefined) {
         if ($.isNumeric(urlParams.display.split(",")[0]) == true && $.isNumeric(urlParams.display.split(",")[1]) == true) {
@@ -268,13 +283,20 @@ x_projectDataLoaded = function(xmlData) {
             x_params.hideFooter = "false";
         }
     }
-
+	
+	// url parameter to turn responsive on / off
+	if (urlParams.responsive != undefined && (urlParams.responsive == "true" || urlParams.responsive == "false")) {
+		x_params.responsive = urlParams.responsive;
+	}
+	
     x_getLangData(x_params.language);
 
     // Setup nr of pages for tracking
     XTSetOption('nrpages', x_pageInfo.length);
 	XTSetOption('toComplete', markedPages);
-	
+	XTSetOption('templateId', x_TemplateId);
+	XTSetOption('templateName', x_params.name);
+
     if (x_params.trackingMode != undefined) {
         XTSetOption('tracking-mode', x_params.trackingMode);
     }
@@ -379,7 +401,22 @@ function x_evalURL(url)
     var trimmedURL = $.trim(url);
     if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("FileLocation + ") >=0)
     {
-        return eval(url)
+        if (xot_offline)
+        {
+            if (url.indexOf("FileLocation + ") >=0)
+            {
+                var pos = url.indexOf("FileLocation + ");
+                url = url.substr(0,pos) + url.substr(pos + 16);
+                return eval(url);
+            }
+            else
+            {
+                return eval(url);
+            }
+        }
+        else {
+            return eval(url)
+        }
     }
     else
     {
@@ -437,7 +474,7 @@ function x_setUp() {
 		
 		// author support should only work in preview mode (not play)
 		if (x_params.authorSupport == "true") {
-			if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("play") != -1) {
+			if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") == -1) {
 				x_params.authorSupport = "false";
 			} else {
 				var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
@@ -481,53 +518,55 @@ function x_setUp() {
 }
 
 function x_desktopSetUp() {
-	$x_footerL.prepend('<button id="x_cssBtn"></button>');
-	$("#x_cssBtn")
-		.button({
-			icons:	{primary: "x_maximise"},
-			label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
-			text:	false
-		})
-		.click(function() {
-			// Post flag to containing page for iframe resizing
-			if (window && window.parent && window.parent.postMessage) {
-				window.parent.postMessage((String)(!x_fillWindow), "*");
-			}
-
-			if (x_fillWindow == false) {
-				x_setFillWindow();
-			} else {
-				for (var i=0; i<x_responsive.length; i++) {
-					$x_mainHolder.removeClass("x_responsive");
-					$(x_responsive[i]).prop("disabled", true);
-				};
-				
-				// minimised size to come from display size specified in xml or url param
-				if ($.isArray(x_params.displayMode)) {
-					$x_mainHolder.css({
-						"width"		:x_params.displayMode[0],
-						"height"	:x_params.displayMode[1]
-					});
-				// minimised size to come from css (800,600)
-				} else {
-					$x_mainHolder.css({
-						"width"		:"",
-						"height"	:""
-						});
+	if (x_params.embed != true || x_params.displayMode != 'full screen') {
+		$x_footerL.prepend('<button id="x_cssBtn"></button>');
+		$("#x_cssBtn")
+			.button({
+				icons:	{primary: "x_maximise"},
+				label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
+				text:	false
+			})
+			.click(function() {
+				// Post flag to containing page for iframe resizing
+				if (window && window.parent && window.parent.postMessage) {
+					window.parent.postMessage((String)(!x_fillWindow), "*");
 				}
-				$x_body.css("overflow", "auto");
-				$(this).button({
-					icons:	{primary: "x_maximise"},
-					label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
-				});
-				x_fillWindow = false;
-				x_updateCss();
-			}
-			$(this)
-				.blur()
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
-		});
+
+				if (x_fillWindow == false) {
+					x_setFillWindow();
+				} else {
+					for (var i=0; i<x_responsive.length; i++) {
+						$x_mainHolder.removeClass("x_responsive");
+						$(x_responsive[i]).prop("disabled", true);
+					};
+					
+					// minimised size to come from display size specified in xml or url param
+					if ($.isArray(x_params.displayMode)) {
+						$x_mainHolder.css({
+							"width"		:x_params.displayMode[0],
+							"height"	:x_params.displayMode[1]
+						});
+					// minimised size to come from css (800,600)
+					} else {
+						$x_mainHolder.css({
+							"width"		:"",
+							"height"	:""
+							});
+					}
+					$x_body.css("overflow", "auto");
+					$(this).button({
+						icons:	{primary: "x_maximise"},
+						label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
+					});
+					x_fillWindow = false;
+					x_updateCss();
+				}
+				$(this)
+					.blur()
+					.removeClass("ui-state-focus")
+					.removeClass("ui-state-hover");
+			});
+	}
 	
 	if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
 		x_fillWindow = true;
@@ -545,7 +584,7 @@ function x_cssSetUp(param) {
 
 	switch(param) {
         case "menu":
-        	x_insertCSS(x_templateLocation + "models_html5/menu.css", function() {x_cssSetUp("menu2")});
+        	x_insertCSS(x_templateLocation + "models_html5/menu.css", function() {x_cssSetUp("language")});
             break;
         case "menu2":
             if (x_params.theme != undefined && x_params.theme != "default") {
@@ -558,7 +597,7 @@ function x_cssSetUp(param) {
             break;
         case "language":
 			if (x_params.kblanguage != undefined) {
-				x_insertCSS(x_templateLocation + "models_html5/language.css", function() {x_cssSetUp("language2")});
+				x_insertCSS(x_templateLocation + "models_html5/language.css", function() {x_cssSetUp("glossary")});
 			} else {
 				x_cssSetUp("glossary");
 			}
@@ -574,7 +613,7 @@ function x_cssSetUp(param) {
             break;
         case "glossary":
 			if (x_params.glossary != undefined) {
-				x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("glossary2")});
+				x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("colourChanger")});
 			} else {
 				x_cssSetUp("colourChanger");
 			}
@@ -589,7 +628,7 @@ function x_cssSetUp(param) {
             }
             break;
         case "colourChanger":
-            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("colourChanger2")});
+            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("theme")});
             break;
         case "colourChanger2":
             if (x_params.theme != undefined && x_params.theme != "default") {
@@ -597,51 +636,34 @@ function x_cssSetUp(param) {
             }
             else
             {
-                x_cssSetUp("responsive");
+                x_cssSetUp("theme");
             }
             break;
         case "theme":
-            $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
-            x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {x_cssSetUp("responsive")});
+            if (!xot_offline) {
+                $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
+            }
+            x_cssSetUp("responsive");
             break;
 		case "responsive":
             if (x_params.responsive == "true") {
 				// adds default responsiveText.css - in some circumstances this will be immediately disabled
 				if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_cssSetUp("responsive2")}, true);
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()}, true);
 				} else {
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_cssSetUp("responsive2")});
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()});
                 }
 			} else {
-				x_cssSetUp("stylesheet");
+                x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()}, true);
 			}
-            break;
-        case "responsive2":
-            if (x_params.theme != undefined && x_params.theme != "default") {
-				// adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
-                if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-                    x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {x_cssSetUp("stylesheet")}, true);
-                } else {
-                    x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {x_cssSetUp("stylesheet")});
-                }
-            } else {
-                x_cssSetUp("stylesheet");
-            }
-            break;
-        case "stylesheet":
-            if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
-                x_insertCSS(x_evalURL(x_params.stylesheet), x_continueSetUp1);
-            } else {
-                x_continueSetUp1();
-            }
             break;
     }
 }
 
 function x_continueSetUp1() {
-	if (x_params.styles != undefined){
-		$x_head.append('<style type="text/css">' +  x_params.styles + '</style>');
-	}
+	//if (x_params.styles != undefined){
+	//	$x_head.append('<style type="text/css">' +  x_params.styles + '</style>');
+	//}
 	
 	if (x_pageInfo[0].type == "menu") {
 		$x_pageNo.hide();
@@ -724,13 +746,13 @@ function x_continueSetUp1() {
 					var $this = $(this),
 						myText = $this.text(),
 						myDefinition, i, len;
-						
+					
 					// Rip out the title attribute
 					$this.data('title', $this.attr('title'));
 					$this.attr('title', '');
 					
 					for (i=0, len=x_glossary.length; i<len; i++) {
-						if (myText.toLowerCase() == x_glossary[i].word.toLowerCase()) {
+						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>"
 							if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
 								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
@@ -739,6 +761,7 @@ function x_continueSetUp1() {
 							}
 						}
 					}
+					
 					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
 					$x_glossaryHover = $("#x_glossaryHover");
 					$x_glossaryHover.css({
@@ -819,9 +842,9 @@ function x_continueSetUp1() {
 	}
 	
 	//add optional progress bar
-    if (x_params.progressBar != undefined && x_params.progressBar != "") {
+    if (x_params.progressBar != undefined && x_params.progressBar != "" && x_params.hideFooter != "true") {
 		//add a div for the progress bar
-		$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; padding:20; width:20%; diaply:inline-block; text-align:center"></div>');
+		$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; width:20%; text-align:center"></div>');
 		//add the progress bar
 		$('#x_footerProgress').append('<div class="pbContainer"><div class="pbPercent pbBar">&nbsp;</div></div><p class="pbTxt"></p>');
 		if (x_params.progressBar =="pBarNoCounter") {
@@ -831,7 +854,7 @@ function x_continueSetUp1() {
 	}
 	
 	//add show/hide footer tools
-	if (x_params.footerTools != "none") {
+	if (x_params.footerTools != "none" && x_params.hideFooter != "true") {
 		var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
 		var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
 		//add a div for the show/hide chevron
@@ -858,19 +881,62 @@ function x_continueSetUp1() {
 		}
 	}
 	
-	// get icon position
+	// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
+	// it's overridden by logo in theme folder
+	// default & theme logos can also be overridden by images uploaded via Icon optional property
+	$('#x_headerBlock img.x_icon').hide();
+	$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
+	
 	var icPosition = "x_floatLeft";
 	if (x_params.icPosition != undefined && x_params.icPosition != "") {
 		icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
 	}
-	if (x_params.ic != undefined && x_params.ic != "") {
-		x_checkMediaExists(x_evalURL(x_params.ic), function(mediaExists) {
-			if (mediaExists) {
-				var icTip = x_params.icTip != undefined && x_params.icTip != "" ? 'alt="' + x_params.icTip + '"' : 'aria-hidden="true"';
-				$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="' + icPosition + '" onload="if (x_firstLoad == false) {x_updateCss();}" ' + icTip + '/>');
+	$('#x_headerBlock img.x_icon').addClass(icPosition);
+	
+	var checkExists = function(type, fallback) {
+	    if (type == 'LO') {
+            $('#x_headerBlock img.x_icon').show();
+            return;
+        }
+		$.ajax({
+			url: $('#x_headerBlock img.x_icon').attr('src'),
+			success: function() {
+				$('#x_headerBlock img.x_icon').show();
+				if (x_firstLoad == false) {x_updateCss();};
+				
+				// the theme logo is being used - add a class that will allow for the different size windows to display different logos
+				if (type == 'theme') {
+					$('#x_headerBlock img.x_icon').addClass('themeLogo');
+				}
+				
+				if (x_params.icTip != undefined && x_params.icTip != "") {
+					$('#x_headerBlock img.x_icon').attr('alt', x_params.icTip);
+				} else {
+					$('#x_headerBlock img.x_icon').attr('aria-hidden', 'true');
+				}
+			},
+			error: function() {
+				if (fallback == 'theme') {
+					$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
+					checkExists('theme', 'default');
+				} else if (fallback == 'default') {
+					$('#x_headerBlock img.x_icon').attr('src', $('#x_headerBlock img.x_icon').data('defaultLogo'));
+					checkExists();
+				}
 			}
 		});
 	}
+	
+	var type, fallback;
+	if (x_params.ic != undefined && x_params.ic != '') {
+		$('#x_headerBlock img.x_icon').attr('src', x_evalURL(x_params.ic));
+		type = 'LO';
+		fallback = x_params.theme != undefined && x_params.theme != "default" ? 'theme' : 'default';
+	} else if (x_params.theme != undefined && x_params.theme != "default") {
+		type = 'theme';
+		$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
+	}
+	checkExists(type, fallback);
 	
 	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 	$("#x_headerBlock h1").html(x_params.name);
@@ -881,7 +947,6 @@ function x_continueSetUp1() {
 	if (strippedText != "") {
 		document.title = strippedText;
 	}
-	
 	
 	var prevIcon = "x_prev";
 	if (x_params.navigation == "Historic") {
@@ -1128,13 +1193,16 @@ function x_continueSetUp2() {
 		{label: x_getLangInfo(x_languageData.find("mediaElementControls")[0], "audio", "")}
 	);
 
-	XTInitialise(); // initialise here, because of XTStartPage in next function
-	
 	// script optional property added after all interface set up & before any pages load
 	if (x_params.script != undefined && x_params.script != "") {
 		$x_head.append('<script>' +  x_params.script + '</script>');
 	}
-	
+
+	// Setup beforeunload
+    window.onbeforeunload = XTTerminate;
+
+    XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
+
 	x_navigateToPage(true, x_startPage);
 }
 
@@ -1142,7 +1210,14 @@ function x_continueSetUp2() {
 function x_checkMediaExists(src, callback) {
 	$.get(src)
 		.done(function() { callback(true); })
-		.fail(function() { callback(false); });
+		.fail(function() {
+			// if it's an exported project being viewed locally $.get will always fail so force it to work anyway
+			if (location.hostname != "") {
+				callback(false);
+			} else {
+				callback(true);
+			}
+		});
 }
 
 function x_charmapLoaded(xml)
@@ -1311,10 +1386,9 @@ function x_lookupPage(pageType, pageID) {
 function x_changePage(x_gotoPage) {
 	// Prevent content from behaving weird as we remove css files
     $("#x_pageDiv").hide();
-    // Setup css correctly
-	$("#page_model_css").remove();
-	$("#page_theme_css").remove();
-	var modelfile = x_pageInfo[x_gotoPage].type;
+
+
+    var modelfile = x_pageInfo[x_gotoPage].type;
 	
 	var classList = $x_mainHolder.attr('class') == undefined ? [] : $x_mainHolder.attr('class').split(/\s+/);
 	$.each(classList, function(index, item) {
@@ -1333,9 +1407,9 @@ function x_changePage(x_gotoPage) {
 function x_changePageStep2(x_gotoPage) {
 	if (x_params.theme != 'default') {
         var modelfile = x_pageInfo[x_gotoPage].type;
-		x_insertCSS(x_themePath + x_params.theme + '/css/' + modelfile + '.css', function () {
-			x_changePageStep3(x_gotoPage);
-		}, false, "page_theme_css");
+        x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
+                x_changePageStep3(x_gotoPage);
+        }, false, "theme_css", true);
 	}
 	else
     {
@@ -1344,9 +1418,41 @@ function x_changePageStep2(x_gotoPage) {
 }
 
 function x_changePageStep3(x_gotoPage) {
+    if (x_params.theme != undefined && x_params.theme != "default") {
+        // adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
+        if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
+            x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
+                x_changePageStep4(x_gotoPage);
+            }, true, "theme_responsive_css", true);
+        } else {
+            x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
+                x_changePageStep4(x_gotoPage);
+            }, (x_params.responsive == "false"), "theme_responsive_css", true);
+        }
+    }
+    else {
+        x_changePageStep4(x_gotoPage);
+    }
+}
+function x_changePageStep4(x_gotoPage) {
+    if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
+        x_insertCSS(x_evalURL(x_params.stylesheet), function () {
+            x_changePageStep5(x_gotoPage);
+        }, false, "lo_sheet_css");
+    }
+    else {
+        x_changePageStep5(x_gotoPage);
+    }
+}
+
+function x_changePageStep5(x_gotoPage) {
 	var prevPage = x_currentPage;
 
-	// End page tracking of x_currentPage
+    if (x_params.styles != undefined){
+        $x_head.append('<style type="text/css" id="page_css">' +  x_params.styles + '</style>');
+    }
+
+    // End page tracking of x_currentPage
     if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_currentPage != x_gotoPage)
     {
         var pageObj;
@@ -1368,7 +1474,7 @@ function x_changePageStep3(x_gotoPage) {
                 customHTML.leavePage();
             }
         }
-        XTExitPage(x_currentPage, x_currentPageXML.getAttribute("name"));
+        XTExitPage(x_currentPage);
     }
     x_currentPage = x_gotoPage;
     x_currentPageXML = x_pages[x_currentPage];
@@ -1428,8 +1534,9 @@ function x_changePageStep3(x_gotoPage) {
         x_addCountdownTimer();
 		
 		// add screen reader info for this page type (if exists)
-		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", undefined) != undefined) {
-			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", "") + '</p>');
+		var screenReaderInfo = x_pageInfo[x_currentPage].type != "nav" ? x_pageInfo[x_currentPage].type : x_currentPageXML.getAttribute("type") == "Acc" ? "accNav" : x_currentPageXML.getAttribute("type") == "Button" ? "buttonNav" : x_currentPageXML.getAttribute("type") == "Col" ? "columnPage" : x_currentPageXML.getAttribute("type") == "Slide" ? "slideshow" : "tabNav";
+		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", undefined) != undefined) {
+			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", "") + '</p>');
 		}
 		
 		var extraTitle = x_currentPageXML.getAttribute("hidePage") == "true" ? ' <span class="alert">' + (x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") : "This page will be hidden in live projects") + '</span>' : '';
@@ -1447,7 +1554,12 @@ function x_changePageStep3(x_gotoPage) {
     if (x_pageInfo[x_currentPage].built != false) {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
 		// Use a clean text version of the page title
-        XTEnterPage(x_currentPage, $('<div>').html(pageTitle).text(), x_pageInfo[x_currentPage].type);
+        var label = $('<div>').html(pageTitle).text();
+        if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+        {
+            label = x_currentPageXML.getAttribute("trackinglabel");
+        }
+        XTEnterPage(x_currentPage, label);
 
         var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);
@@ -1462,7 +1574,7 @@ function x_changePageStep3(x_gotoPage) {
 		// show page background & hide main background
 		if ($(".pageBg#pageBg" + x_currentPage).length > 0) {
 			$(".pageBg#pageBg" + x_currentPage).show();
-			if (x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
+			if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
 				$("#x_bgDarken")
 					.css({
 						"opacity" :Number(x_currentPageXML.getAttribute("bgImageDark")/100),
@@ -1523,7 +1635,12 @@ function x_changePageStep3(x_gotoPage) {
 			}
 
 			// Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
-			XTEnterPage(x_currentPage, pageTitle);
+            var label = $('<div>').html(pageTitle).text();
+            if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+            {
+                label = x_currentPageXML.getAttribute("trackinglabel");
+            }
+            XTEnterPage(x_currentPage, label);
 
 			var modelfile = x_pageInfo[x_currentPage].type;
 			if (typeof modelfilestrs[modelfile] != 'undefined')
@@ -1537,7 +1654,7 @@ function x_changePageStep3(x_gotoPage) {
 		}
 		
 		// show page background & hide main background
-		if (x_pageInfo[0].type != "menu" && x_currentPageXML.getAttribute("bgImage") != undefined) {
+		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImage") != undefined) {
 			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
 				if (mediaExists) {
 					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
@@ -1658,18 +1775,29 @@ function x_setUpPage() {
             .removeClass("ui-state-hover");
     }
 
-    if (x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) {
-        if (x_currentPageXML.getAttribute("navSetting") != undefined) {
-            if (x_currentPageXML.getAttribute("navSetting") != "all") {
-                $x_menuBtn.button("disable");
-            }
-            if (x_currentPageXML.getAttribute("navSetting") == "backonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
-                $x_nextBtn.button("disable");
-            }
-            if (x_currentPageXML.getAttribute("navSetting") == "nextonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
-                $x_prevBtn.button("disable");
-            }
-        }
+	// navigation buttons can be disabled on a page by page basis
+	if ((x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) && (x_currentPageXML.getAttribute("home") != undefined || x_currentPageXML.getAttribute("back") != undefined || x_currentPageXML.getAttribute("next") != undefined)) {
+		if (x_currentPageXML.getAttribute("home") == "false") {
+			$x_menuBtn.button("disable");
+		}
+		if (x_currentPageXML.getAttribute("back") == "false") {
+			$x_prevBtn.button("disable");
+		}
+		if (x_currentPageXML.getAttribute("next") == "false") {
+			$x_nextBtn.button("disable");
+		}
+		
+	} else if ((x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) && x_currentPageXML.getAttribute("navSetting") != undefined) {
+		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
+		if (x_currentPageXML.getAttribute("navSetting") != "all") {
+			$x_menuBtn.button("disable");
+		}
+		if (x_currentPageXML.getAttribute("navSetting") == "backonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
+			$x_nextBtn.button("disable");
+		}
+		if (x_currentPageXML.getAttribute("navSetting") == "nextonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
+			$x_prevBtn.button("disable");
+		}
     }
 
 
@@ -1981,7 +2109,12 @@ function x_openDialog(type, title, close, position, load) {
                         closeOnEscape:  true,
                         title:          title,
                         closeText:      close,
-                        close: function() {$x_popupDialog.parent().detach();}
+                        close: function() {$x_popupDialog.parent().detach();},
+						create: function(event, ui) {
+							$(this).parent(".ui-dialog").find(".ui-dialog-titlebar-close .ui-icon")
+								.removeClass("ui-icon-closethick")
+								.addClass("fa fa-x-close");
+							}
                         })
                     .parent().hide();
 
@@ -2428,6 +2561,26 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 	return thisVar;
 }
 
+function x_getVariable(name)
+{
+    for (var i=0; i<x_variables.length; i++)
+    {
+        if (x_variables[i].name == name)
+            return x_variables[i].value;
+    }
+    return null;
+}
+
+function x_setVariable(name, value)
+{
+    for (var i=0; i<x_variables.length; i++)
+    {
+        if (x_variables[i].name == name) {
+            x_variables[i].value = value;
+            break;
+        }
+    }
+}
 
 // function gets values of other variables needed for calculation and evals the value when everything's ready
 function x_getVarValues(thisValue, thisName) {
@@ -2549,6 +2702,17 @@ function x_insertText(node, exclude) {
         }
     }
 	
+	// if project is being viewed as https then force iframe src to be https too
+	if (window.location.protocol == "https:" && exclude.indexOf("iframe") == -1) {
+		function changeProtocol(iframe) {
+			if (/src="http:/.test(iframe)){
+				iframe = iframe.replace(/src="http:/g, 'src="https:').replace(/src='http:/g, "src='https:");
+			}
+			return iframe;
+		}
+		tempText = tempText.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
+	}
+	
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0 && exclude.indexOf("glossary") == -1) {
         for (var k=0, len=x_glossary.length; k<len; k++) {
@@ -2615,34 +2779,42 @@ function x_setFillWindow(updatePage) {
 
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
-function x_insertCSS(href, func, disable, id) {
+function x_insertCSS(href, func, disable, id, keep) {
     var css = document.createElement("link");
+    var element = null;
+    var donotreplace = false;
     css.rel = "stylesheet";
     css.href = href;
     css.type = "text/css";
     if (id != undefined)
 	{
 		css.id = id;
+		element = document.getElementById(id);
+		if (keep != undefined)
+        {
+           donotreplace=keep;
+        }
 	}
 	
 	// in some cases code is stopped until css loaded as some heights are done with js and depend on css being loaded
 	if (func != undefined) {
-		css.onload = function() {
-			if (x_cssFiles.indexOf(this) == -1) {
-				x_cssFiles.push(this);
-				if (href.indexOf("responsivetext.css") >= 0) {
-					x_responsive.push(this);
-					if (disable == true) {
-						$x_mainHolder.removeClass("x_responsive");
-						$(this).prop("disabled", true);
-					} else {
-						$x_mainHolder.addClass("x_responsive");
-					}
-				}
-				func();
-			}
-		};
-		
+        var f = function() {
+            if (x_cssFiles.indexOf(this) == -1) {
+                x_cssFiles.push(this);
+                if (href.indexOf("responsivetext.css") >= 0) {
+                    x_responsive.push(this);
+                    if (disable == true) {
+                        $x_mainHolder.removeClass("x_responsive");
+                        $(this).prop("disabled", true);
+                    } else {
+                        $x_mainHolder.addClass("x_responsive");
+                    }
+                }
+            }
+            func();
+        };
+		css.onload = f;
+
 		css.onerror = function(){
 			func();
 		};
@@ -2652,8 +2824,26 @@ function x_insertCSS(href, func, disable, id) {
 			$(this).prop("disabled", true);
 		}
 	}
-	
-    document.getElementsByTagName("head")[0].appendChild(css);
+
+	if (element != null)
+    {
+        // Update element
+        if (donotreplace != true) {
+            var parent = element.parentNode;
+            parent.replaceChild(css, element);
+        }
+        else
+        {
+            if (func != undefined)
+            {
+                func();
+            }
+        }
+    }
+    else {
+        // Create element
+        document.getElementsByTagName("head")[0].appendChild(css);
+    }
 }
 
 
@@ -2857,4 +3047,16 @@ function x_shuffleArray(array) {
 		array[j] = temp;
 	}
 	return array;
+}
+
+
+// function returns whether string is a url to a youtube or vimeo video
+function x_isYouTubeVimeo(url) {
+	if (url.indexOf("www.youtube.com") != -1 || url.indexOf("//youtu") != -1) {
+		return 'youtube';
+	} else if (url.indexOf("vimeo.com") != -1) {
+		return 'vimeo';
+	} else {
+		return false;
+	}
 }

@@ -50,6 +50,10 @@
 		margin: 1em;
 	}
 	
+	button.flipBtn.ui-button-icon-only .ui-icon[class*=" fa-"] {
+		margin-left: -0.4em;
+	}
+	
 	.card .panel {
 		padding: 0px;
 		text-align: left;
@@ -57,6 +61,7 @@
 	
 	.cardInner {
 		overflow: auto;
+		backface-visibility: hidden;
 		padding: 1em;
 	}
 	
@@ -101,7 +106,7 @@
 		overflow: visible !important;
 	}
 	
-	#cards.hideOverflow, #cards.hideOverflow .cardInner {
+	#cards.hideOverflow .cardInner {
 		overflow: hidden;
 	}
 	

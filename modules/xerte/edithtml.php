@@ -150,8 +150,22 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 		}
 		array_multisort($display_name, SORT_ASC, $ThemeList);
 		// Add default theme to beginning
-		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => ""));
+		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => $xerte_toolkits_site->site_url . "modules/xerte/parent_templates/Nottingham/common_html5/default.jpg"));
     }
+
+    /**
+     * Build CategoryList
+     */
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}syndicationcategories";
+    $categories = db_query($sql);
+
+    /**
+     * Build Grouping List
+     */
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}grouping";
+    $grouping = db_query($sql);
+
+
     /**
      * sort of the screen sies required for the preview window
      */
@@ -329,6 +343,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
+    echo "category_list=" . json_encode($categories) . ";\n";
+    echo "grouping_list=" . json_encode($grouping) . ";\n";
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     ?>
 

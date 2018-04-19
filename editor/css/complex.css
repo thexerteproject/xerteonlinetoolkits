@@ -696,6 +696,10 @@ fieldset.wizardgroup legend span, fieldset.wizardgroup legend span i.fa {
 	padding-left: 6px;
 }
 
+fieldset.wizardgroup .group_info {
+	padding: 0 15px 15px 15px;
+}
+
 #parameter_checkboxes span {
     margin-right: 15px;
 }
@@ -944,6 +948,11 @@ div.wizardvalue_inner {
 	margin-right: 1em;
 }
 
+.wizardgroup_table_box {
+	margin: 2px;
+	border: #ccc 1px dashed;
+}
+
 .media_browse {
     cursor: pointer;
 }
@@ -994,6 +1003,27 @@ li.hiddenNode >a{
 
 li.deprecatedNode >a {
 	background: rgba(248, 103, 24, 0.33);
+}
+
+img.theme_preview
+{
+	float: left;
+	margin: 5px;
+	max-width: 200px;
+	cursor: pointer;
+}
+
+.preview_title
+{
+	font-size: 1.2em;
+	font-weight: bold;
+	margin-bottom: 0.5em;
+}
+
+div.theme_description
+{
+	width: 100%;
+	margin-top:3px;
 }
 /* start of xertecss.css
 

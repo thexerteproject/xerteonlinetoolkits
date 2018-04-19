@@ -91,6 +91,16 @@ copy_parent_files();
 export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/', false, '.xml');
 copy_extra_files();
 
+/*
+ * Theme support
+ */
+$theme = $xml->getTheme();
+if ($theme != "" && $theme != "default")
+{
+    export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['template_name'] . '/' . $theme . '/');
+    copy_extra_files();
+}
+
 // Copy the favicon file
 copy($xerte_toolkits_site->root_file_path . "favicon.ico", $dir_path . "favicon.ico");
 array_push($delete_file_array, $dir_path . "favicon.ico");

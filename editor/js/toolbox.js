@@ -636,7 +636,25 @@ var EDITOR = (function ($, parent) {
 			}
 		});
 		
-		group.append('<div class="table_holder"><table id="groupTable_' + name + '" class="wizardgroup_table"/></div>');
+		var info = "";
+		if (options.info) info = '<div class="group_info">' + options.info + '</div>';
+		
+		group.append('<div class="table_holder">' + info + '</div>');
+		group.find('.table_holder').append(
+			$('<table width="100%" class="column_table"><tr></table>')
+		);
+
+		var group_table, columns = (options.cols ? Math.min(options.cols, 3) : 1);
+		for (var w = 0; w < columns; w++) {
+			group_table = $('<table id="groupTable_' + name + (w == 0 ? '' : '_' + w ) + '" class="wizardgroup_table"/>');
+
+			if (columns > 1) group_table.addClass('wizardgroup_table_box');
+
+			group.find('.column_table tr').append(
+				$('<td width="' + parseInt(100 / columns, 10) + '%"/>')
+					.append(group_table)
+			);
+		}
 		
 		$(id).append(tr);
 		
@@ -1317,8 +1335,11 @@ var EDITOR = (function ($, parent) {
     convertColorPickers = function ()
     {
         $.each(colorpickers, function (i, options){
-            var myPicker = new jscolor.color(document.getElementById(options.id), {})
-            myPicker.fromString(Array(7-options.value.length).join('0') + options.value)  // now you can access API via 'myPicker' variable
+			var myPicker = new jscolor.color(document.getElementById(options.id), {'required':false});
+			
+			if (options.value != undefined) {
+				myPicker.fromString(Array(7-options.value.length).join('0') + options.value);
+			}
         });
     },
 
@@ -1791,21 +1812,25 @@ var EDITOR = (function ($, parent) {
                         // Get the default node
                         // Search in array newnodes for node_name
                         i = $.inArray(node_name, wizard_data[p_node_name].new_nodes);
-                        node_xml = wizard_data[p_node_name].new_nodes_defaults[i];
+                        if (i>=0) {
+                            node_xml = wizard_data[p_node_name].new_nodes_defaults[i];
+                            if (node_xml != "undefined") {
 
-                        // Parse XML
-                        var x2js = new X2JS({
-                            // XML attributes. Default is "_"
-                            attributePrefix: "$"
-                        });
-                        var defaults = x2js.xml_str2json(node_xml)[node_name];
+                                // Parse XML
+                                var x2js = new X2JS({
+                                    // XML attributes. Default is "_"
+                                    attributePrefix: "$"
+                                });
+                                var defaults = x2js.xml_str2json(node_xml)[node_name];
 
-                        $.each(node_options.language, function (index, lang_attr) {
-                            // search
-                            if (typeof defaults['$' + lang_attr.name] !== 'undefined') {
-                                setAttributeValue(key, [lang_attr.name], [defaults['$' + lang_attr.name]])
+                                $.each(node_options.language, function (index, lang_attr) {
+                                    // search
+                                    if (typeof defaults['$' + lang_attr.name] !== 'undefined') {
+                                        setAttributeValue(key, [lang_attr.name], [defaults['$' + lang_attr.name]])
+                                    }
+                                });
                             }
-                        });
+                        }
 
                     }
 
@@ -1814,6 +1839,20 @@ var EDITOR = (function ($, parent) {
             }
 
         }
+        setAttributeValue(key, [name], [value]);
+    },
+
+    themeChanged = function(id, key, name, value, obj)
+    {
+        // Set preview and description
+        var theme = theme_list[value];
+        $('img.theme_preview:first')
+			.attr({
+				'src': theme.preview,
+				'alt': obj[value].label
+			});
+        $('div.theme_description:first').html(theme.description);
+        setAttributeValue(key, [name], [theme.name]);
     },
 
     selectChanged = function (id, key, name, value, obj)
@@ -1951,16 +1990,28 @@ var EDITOR = (function ($, parent) {
         window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable, 'Browse file', "height=600, width=800");
     },
 	
-	previewFile = function(label, src)
+	previewFile = function(alt, src, title)
 	{
 		// ** currently only previews images - need to allow other file types too
-		var $preview = $('<img class="previewFile"/>')
+		src = src.indexOf("FileLocation + '") == 0 ? rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1) : src;
+		
+		var $previewImg = $('<img class="previewFile"/>')
 				.on("error", function() {
 						$('.featherlight .previewFile')
 							.after('<p>' + language.compPreview.$error + '</p>')
 							.remove();
 					})
-				.attr("src", rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1))
+				.attr({
+					"src": src,
+					"alt": alt
+				})
+		
+		var $preview = $('<div/>')
+				.append($previewImg);
+		
+		if (title != undefined && title != '') {
+			$preview.prepend('<div class="preview_title">' + title + '</div>');
+		}
 		
 		$.featherlight($preview);
 	},
@@ -2070,11 +2121,13 @@ var EDITOR = (function ($, parent) {
 									var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
 									var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
 									var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+									var hidden = lo_data[key]['attributes'].hidePage;
+									
 									if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
 									{
 											var page = [];
 											// Also make sure we only take the text from the name, and not the full HTML
-											page.push(getTextFromHTML(name.value));
+											page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
 											page.push(pageID.found ? pageID.value : linkID.value);
 											pages.push(page);
 
@@ -2134,7 +2187,7 @@ var EDITOR = (function ($, parent) {
 					while (newText.indexOf("<math", mathNum) != -1) {
 						var text1 = newText.substring(mathNum, newText.indexOf("<math", mathNum)),
 							tableNum = 0;
-						while (text1.indexOf("<table", tableNum) != -1) { // check for table tags before/between math tags
+						while (text1.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) { // check for table tags before/between math tags
 							tempText += text1.substring(tableNum, text1.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
 							tempText += text1.substring(text1.indexOf("<table", tableNum), text1.indexOf("</table>", tableNum) + 8);
 							tableNum = text1.indexOf("</table>", tableNum) + 8;
@@ -2146,7 +2199,7 @@ var EDITOR = (function ($, parent) {
 
 					var text2 = newText.substring(mathNum),
 						tableNum = 0;
-					while (text2.indexOf("<table", tableNum) != -1) { // check for table tags after math tags
+					while (text2.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) { // check for table tags after math tags
 						tempText += text2.substring(tableNum, text2.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
 						tempText += text2.substring(text2.indexOf("<table", tableNum), text2.indexOf("</table>", tableNum) + 8);
 						tableNum = text2.indexOf("</table>", tableNum) + 8;
@@ -2157,7 +2210,8 @@ var EDITOR = (function ($, parent) {
 				} else if (newText.indexOf("<table") != -1) { // no math tags - so just check table tags
 					var tempText = "",
 						tableNum = 0;
-					while (newText.indexOf("<table", tableNum) != -1) {
+					
+					while (newText.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) {
 						tempText += newText.substring(tableNum, newText.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
 						tempText += newText.substring(newText.indexOf("<table", tableNum), newText.indexOf("</table>", tableNum) + 8);
 						tableNum = newText.indexOf("</table>", tableNum) + 8;
@@ -2170,7 +2224,22 @@ var EDITOR = (function ($, parent) {
 			}
         },
 
-        displayDataType = function (value, options, name, key) {
+    baseUrl = function()
+    {
+        var pathname = window.location.href;
+        var newPathname = pathname.split("/");
+        var urlPath = "";
+        for (var i = 0; i < newPathname.length -1; i++ )
+        {
+            urlPath += newPathname[i] + "/";
+        }
+        if (newPathname[0] != "http:" && newPathname[0] != "https:" && newPathname[0] != "localhost") {
+            urlPath = "http://xerte.org.uk/";
+        }
+        return urlPath;
+    },
+
+    displayDataType = function (value, options, name, key) {
             var html;                   //console.log(options);
 
             switch(options.type.toLowerCase())
@@ -2334,7 +2403,6 @@ var EDITOR = (function ($, parent) {
                         html = $('<input>')
                             .attr('id', id)
                             .attr('type', 'color')
-                            .attr('value', colorvalue)
                             .change({id:id, key:key, name:name}, function(event)
                             {
                                 inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
@@ -2345,12 +2413,17 @@ var EDITOR = (function ($, parent) {
                         html = $('<input>')
                             .attr('id', id)
                             .addClass('color')
-                            .attr('value', colorvalue)
                             .change({id:id, key:key, name:name}, function(event)
                             {
                                 inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                             });
-                        colorpickers.push({id: id, value: colorvalue, options: options});
+						
+						colorpickers.push({id: id, options: options});
+						
+						if (colorvalue != '') {
+							html.attr('value', colorvalue);
+							colorpickers[colorpickers.length-1].value = colorvalue;
+						}
                     }
                     break;
                 case 'languagelist':
@@ -2361,7 +2434,7 @@ var EDITOR = (function ($, parent) {
                         .change({id:id, key:key, name:name}, function(event)
                         {
                             changeLanguage(event.data.id, event.data.key, event.data.name, this.value, this);
-                            selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            //selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
                     for (var i=0; i<installed_languages.length; i++) {
                         var option = $('<option>')
@@ -2374,21 +2447,127 @@ var EDITOR = (function ($, parent) {
                     break;
                 case 'themelist':
                     var id = 'select_' + form_id_offset;
-                    form_id_offset++;
-                    html = $('<select>')
+                    var html = $('<div>')
+                        .attr('id', 'theme_div_' + form_id_offset);
+                    var currtheme = 0;
+                    var select = $('<select>')
                         .attr('id', id)
                         .change({id:id, key:key, name:name}, function(event)
                         {
-                            selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            themeChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
                     for (var i=0; i<theme_list.length; i++) {
                         var option = $('<option>')
-                            .attr('value', theme_list[i].name);
-                        if (theme_list[i].name==value)
+                            .attr('value', i);
+                        if (theme_list[i].name==value) {
                             option.prop('selected', true);
+                            currtheme = i;
+                        }
                         option.append(theme_list[i].display_name);
-                        html.append(option);
+                        select.append(option);
                     }
+                    html.append(select);
+                    var preview = $('<img>')
+                        .attr('id', 'theme_preview_' + form_id_offset)
+                        .addClass('theme_preview')
+                        .attr({
+							'src': theme_list[currtheme].preview,
+							'alt': theme_list[currtheme].display_name
+						})
+						.click(function() {
+							previewFile($(this).attr('alt'), $(this).attr('src'), $(this).attr('alt'));
+						});
+						
+                    html.append(preview);
+                    var description = $('<div>')
+                        .attr('id', 'theme_description_' + form_id_offset)
+                        .addClass('theme_description')
+                        .append(theme_list[currtheme].description);
+                    html.append(description);
+                    form_id_offset++;
+
+                    break;
+                case 'category':
+                    var id = 'select_' + form_id_offset;
+                    var html = $('<div>')
+                        .attr('id', 'category_div_' + form_id_offset);
+                    var currselected=false;
+                    var select = $('<select>')
+                        .attr('id', id)
+                        .change({id:id, key:key, name:name}, function(event)
+                        {
+                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        });
+                    // Add empty option
+                    var option = $('<option>')
+                        .attr('value', "");
+                    if (value=="") {
+                        option.prop('selected', true);
+                        currselected=true;
+                    }
+                    option.append("");
+                    select.append(option);
+                    for (var i=0; i<category_list.length; i++) {
+                        var option = $('<option>')
+                            .attr('value', category_list[i].category_name);
+                        if (category_list[i].category_name==value) {
+                            option.prop('selected', true);
+                            curreselected = true;
+                        }
+                        option.append(category_list[i].category_name);
+                        select.append(option);
+                    }
+                    if (value != "" && !currselected)
+                    {
+                        //  Add current value as option, even though it is not in the list
+                        var option = $('<option>')
+                            .attr('value', value);
+                        option.prop('selected', true);
+                        option.append(value);
+                        select.append(option);
+                    }
+                    html.append(select);
+                break;
+                case 'grouping':
+                    var id = 'select_' + form_id_offset;
+                    var html = $('<div>')
+                        .attr('id', 'grouping_div_' + form_id_offset);
+                    var currselected = false;
+                    var select = $('<select>')
+                        .attr('id', id)
+                        .change({id:id, key:key, name:name}, function(event)
+                        {
+                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        });
+                    // Add empty option
+                    var option = $('<option>')
+                        .attr('value', "");
+                    if (value=="") {
+                        option.prop('selected', true);
+                        currselected = true;
+                    }
+                    option.append("");
+                    select.append(option);
+                    for (var i=0; i<grouping_list.length; i++) {
+                        var option = $('<option>')
+                            .attr('value', grouping_list[i].grouping_name);
+                        if (grouping_list[i].grouping_name==value) {
+                            option.prop('selected', true);
+                            currselected = true;
+                        }
+                        option.append(grouping_list[i].grouping_name);
+                        select.append(option);
+                    }
+                    if (value != "" && !currselected)
+                    {
+                        //  Add current value as option, even though it is not in the list
+                        var option = $('<option>')
+                            .attr('value', value);
+                        option.prop('selected', true);
+                        option.append(value);
+                        select.append(option);
+                    }
+                    html.append(select);
                     break;
                 case 'hotspot':
                     var id = 'hotspot_' + form_id_offset;
@@ -2616,6 +2795,8 @@ var EDITOR = (function ($, parent) {
                     break;
                 case 'datefield': // Not used??
                 case 'webpage':  //Not used??
+                case 'xerteurl':
+                case 'xertelo':
                 default:
                     var id = 'textinput_' + form_id_offset;
                     form_id_offset++;
@@ -2630,6 +2811,16 @@ var EDITOR = (function ($, parent) {
                         textinputs_options.push({id: id, key: key, name: name, options: options});
                     }
                     else {
+                        if (options.type.toLowerCase() == 'xerteurl' && value.length==0)
+                        {
+                            value=baseUrl();
+                            setAttributeValue(key, [name], [value]);
+                        }
+                        if (options.type.toLowerCase() == 'xertelo' && value.length==0)
+                        {
+                            value=template_id;
+                            setAttributeValue(key, [name], [value]);
+                        }
                         html = $('<input>')
                             .attr('type', "text")
                             .addClass('inputtext')

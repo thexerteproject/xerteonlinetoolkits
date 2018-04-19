@@ -44,11 +44,13 @@
 				pdfWidth = x_currentPageXML.getAttribute("pdfWidth");
 			
 			// Full screen or not?
-			console.log([pdfWidth, textContents]);
-			if (pdfWidth == undefined || pdfWidth == "" || textContents == undefined || textContents == "") {
-				pdfWidth = "full";
+			if (pdfWidth == undefined || pdfWidth == "") {
+				if (textContents == undefined || textContents == "") {
+					pdfWidth = "full";
+				} else {
+					pdfWidth = "medium";
+				}
 			}
-			console.log([pdfWidth, textContents]);
 
 			// Set the with of the pdf
 			if (pdfWidth == "full") {
@@ -56,7 +58,11 @@
 				$("#pageContents .splitScreen").remove();
 			}
 			else {
-				$("#textHolder").html(textContents);
+				if (textContents != undefined && textContents != "") {
+					$("#textHolder").html(textContents);
+				} else {
+					$("#textHolder").remove();
+				}
 				if (pdfWidth == "small") {
 					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
 				} else if (pdfWidth == "large") {
@@ -90,18 +96,22 @@
 		}
 		
 		this.calcWidth = function() {
-			return $x_pageHolder.width() - 10;
+			if ($("#textHolder").length > 0 && x_browserInfo.mobile == false) {
+				return $x_pageHolder.width() - $("#textHolder").width() - parseInt($("div.right").css("margin-left")) - (parseInt($x_pageDiv.css("padding-left")) * 2) - (parseInt($("div.panel").css("padding-left")) * 2);
+			} else {
+				return $x_pageHolder.width() - (parseInt($x_pageDiv.css("padding-left")) * 2) - (parseInt($("div.panel").css("padding-left")) * 2);
+			}
 		}
 		
 		this.calcHeight = function() {
 			var height;
 			
 			if (x_browserInfo.mobile == false) {
-				height = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
+				height = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("div.panel").css("padding-top")) * 2) - (parseInt($("div.panel").css("border-top-width")) * 2) - 10;
 			} else {
 				height = $x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
 			}
-
+			
 			return height;
 		}
 	}

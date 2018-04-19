@@ -128,7 +128,6 @@
 				highlightStyle.lineW	= x_currentPageXML.getAttribute("lineWidth");
 				highlightStyle.stroke	= "#" + colour;
 				
-				
 				// draw everything on canvas - predominately John Smith's code
 				// Setup queue
 				jobQueue = [];
@@ -372,9 +371,9 @@
 			
 			// --- HOTSPOTS ---
 			if (intType == "Hotspots") {
-				var instructions = x_currentPageXML.getAttribute("hotspotsTxt");
+				var instructions = "<p>" + x_currentPageXML.getAttribute("hotspotsTxt") + "</p>";
 				if (instructions == undefined) {
-					instructions = "Explore the diagram. Click on the various parts to learn more.";
+					instructions = "<p>Explore the diagram. Click on the various parts to learn more.</p>";
 				}
 				$("#instructions").html(instructions);
 				
@@ -387,8 +386,8 @@
 					var $hsHolder = $("#hsHolder");
 					
 					// get xy pos of click relative to position of canvas
-					var offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))],
-						xyCoords = [e.pageX - offset[0], e.pageY - offset[1]],
+					var //offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))],
+						xyCoords = [e.offsetX, e.offsetY],
 						hit = false,
 						group;
 					
@@ -453,9 +452,9 @@
 			
 			// --- LABELS ---
 			} else if (intType == "Labels") {
-				var instructions = x_currentPageXML.getAttribute("labelsTxt");
+				var instructions = "<p>" + x_currentPageXML.getAttribute("labelsTxt") + "</p>";
 				if (instructions == undefined) {
-					instructions = "Drag the pins for each label to the correct position in the diagram. You can re-position the labels if required.";
+					instructions = "<p>Drag the pins for each label to the correct position in the diagram. You can re-position the labels if required.</p>";
 				}
 				$("#instructions").html(instructions);
 				
@@ -523,7 +522,7 @@
 							return thisHelper;
 						},
 						cursor:			"none",
-						cursorAt:		{left: -1, top: 7},
+						cursorAt:		{left: -1, top: 16},
 						start:			function() {
 							// reset any info shown and hide pin on label
 							$("#hsHolder canvas")
@@ -616,22 +615,18 @@
 					.droppable({
 						accept:	$("#labelHolder .label"),
 						drop:	function(e, ui) {
-							// helper pin has been dropped on mainCanvas
-							var $hsHolder = $("#hsHolder");
+							var $thisHSCanvas = ui.draggable.data("correct")[0];
 							
-							// get xy pos of drop relative to position of canvas
-							var offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))],
-								xyCoords = [e.pageX - offset[0], e.pageY - offset[1]],
-								$thisHSCanvas = ui.draggable.data("correct");
+							// get xy pos of click relative to position of canvas
+							var xyCoords = {x : Math.floor(e.pageX - $thisHSCanvas.offset().left), y : Math.floor(e.pageY - $thisHSCanvas.offset().top)};
 							
-							for (var i=0; i<$thisHSCanvas.length; i++) {
-								// get pixel data from the whole canvas - and then from pixel dropped on
-								var pix = $thisHSCanvas[i][0].getContext("2d").getImageData(0, 0, $thisHSCanvas[i].width(), $thisHSCanvas[i].height()),
-									dataPos = ((xyCoords[1] * $thisHSCanvas[i].width()) + xyCoords[0]) * 4;
-								
-								if (pix.data[dataPos+3] > 0) { // is it transparent?
-									customHotspots.dropLabel($thisHSCanvas[i], ui.draggable, ui.helper);
-								}
+							// get pixel data from the whole canvas - and then from pixel clicked
+							var pix = $thisHSCanvas[0].getContext("2d").getImageData(0, 0, $thisHSCanvas.width(), $thisHSCanvas.height()),
+								dataPos = (((xyCoords.y - 1) * $thisHSCanvas.width()) + xyCoords.x) * 4;
+							
+							// is it transparent?
+							if (pix.data[dataPos] > 0) {
+								customHotspots.dropLabel($thisHSCanvas, ui.draggable, ui.helper);
 							}
 						}
 					});
@@ -679,7 +674,7 @@
 										.removeClass("selected")
 										.attr("title", labelTxt1);
 									// only accept drops for correct answers
-									if ($selectedLabel.data("correct").is($this) == true) {
+									if ($selectedLabel.data("correct")[0].is($this) == true) {
 										customHotspots.dropLabel($this, $selectedLabel);
 									} else {
 										$this.removeClass("visible");
@@ -694,9 +689,9 @@
 			// --- SHOW ME ---
 			} else if (intType == "Show Me") {
 				// next/prev buttons below diagram that highlight hotspot and show info for it
-				var instructions = x_currentPageXML.getAttribute("showMeTxt");
+				var instructions = "<p>" + x_currentPageXML.getAttribute("showMeTxt") + "</p>";
 				if (instructions == undefined) {
-					instructions = "Use the arrows to learn more.";
+					instructions = "<p>Use the arrows to learn more.</p>";
 				}
 				instructions = '<button id="prevBtn"></button><button id="nextBtn"></button>' + instructions;
 				
@@ -715,7 +710,7 @@
 				$("#nextBtn")
 					.button({
 						icons: {
-							primary: "ui-icon-carat-1-e"
+							primary: "fa fa-x-next"
 						},
 						label:	btnTxt[0],
 						text:	false
@@ -758,7 +753,7 @@
 				$("#prevBtn")
 					.button({
 						icons: {
-							primary: "ui-icon-carat-1-w"
+							primary: "fa fa-x-prev"
 						},
 						label:	btnTxt[1],
 						text:	false,
@@ -1040,7 +1035,7 @@
 						
 						$pin.css({
 							left:	x + $hsHolder.position().left - 8,
-							top:	y + $hsHolder.position().top - 15
+							top:	y + $hsHolder.position().top - 26
 						});
 						break;
 					}

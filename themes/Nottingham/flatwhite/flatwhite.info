@@ -1,5 +1,5 @@
 name: flatwhite
-display name: Flat White (no borders)
-description: Flat white with no border and white background, round buttons
+display name: Flat: White
+description: Flat white header and footer, white background and no border, round buttons.
 enabled: yes
 preview: flatwhite.jpg

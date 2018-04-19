@@ -43,8 +43,6 @@
 	}
 
 	#btnHolder {
-		text-align:		right;
-		margin-top:		10px;
-		margin-right:	0px; /* over-ride ui style */
+		margin-top: 0.5em;
+		float: right;
 	}
-

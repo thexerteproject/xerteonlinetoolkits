@@ -30,9 +30,9 @@
         margin:		10px;
     }
 
-    #labelHolder .label.correct
-
-    #labelHolder .label.incorrect
+    #labelHolder .label.correct .result, #labelHolder .label.incorrect .result {
+		padding-left: 0.5em;
+	}
 
     #labelHolder .label.focus {
         border:		2px solid yellow;
@@ -70,4 +70,6 @@
         background-color: #CCCCCC;
         height: 1px;
     }
+	
+	
 

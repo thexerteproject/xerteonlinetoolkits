@@ -9,6 +9,9 @@
  * @author Troex Nevelin
  * @author Alexey Sukhotin
  **/
+
+require_once("../../../plugins.php");
+
 class elFinder {
 	
 	/**
@@ -927,15 +930,27 @@ class elFinder {
 				$this->uploadDebug = 'Upload error code: '.$error;
 				break;
 			}
-			
+
 			$tmpname = $files['tmp_name'][$i];
-			
+
+			if (!apply_filters('editor_upload_file', array('name' => array($name), 'tmp_name' => array($tmpname)))) {
+				$result['warning'] = $this->error(self::ERROR_UPLOAD_FILE, $name, self::ERROR_UPLOAD_TRANSFER) . " Virus checks failed.";
+				$this->uploadDebug = 'Upload error: file failed virus checks';
+				break;
+			}
+
+			if (substr($files['type'][$i], -4) === '/xml' && !apply_filters('editor_save_data', file_get_contents($tmpname))) {
+				$result['warning'] = $this->error(self::ERROR_UPLOAD_FILE, $name, self::ERROR_UPLOAD_TRANSFER) . " XML checks failed.";
+				$this->uploadDebug = 'Upload error: file failed XML checks';
+				break;
+			}
+
 			if (($fp = fopen($tmpname, 'rb')) == false) {
 				$result['warning'] = $this->error(self::ERROR_UPLOAD_FILE, $name, self::ERROR_UPLOAD_TRANSFER) . " Unable to open tmp file.";
 				$this->uploadDebug = 'Upload error: unable open tmp file';
 				break;
 			}
-			
+
 			if (($file = $volume->upload($fp, $target, $name, $tmpname)) === false) {
 				$result['warning'] = $this->error(self::ERROR_UPLOAD_FILE, $name, $volume->error());
 				fclose($fp);

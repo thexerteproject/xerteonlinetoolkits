@@ -21,12 +21,14 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var modelAnswer = new function() {
+	    var tracked = false;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$("#button").show();
 			$("#fbTxt").empty();
 			$("#copyBtn, #copyTxt").hide();
-		}
+		};
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
@@ -34,8 +36,14 @@
 				var $panel = $("#pageContents .panel");
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 			}
-		}
-		
+		};
+
+        this.leavePage = function() {
+            if (tracked != true) {
+                this.finishTracking();
+            }
+        };
+
 		this.init = function() {
 			// if language attributes aren't in xml will have to use english fall back
 			var instructA = x_currentPageXML.getAttribute("instructHeaderATxt");
@@ -66,8 +74,24 @@
 			$("#pageContents").data({
 				"dataString"	:instructA + ' ' + pageNo + ' ' + instructB + '</br>' + x_addLineBreaks(x_currentPageXML.getAttribute("prompt")) + '</br>' + x_addLineBreaks(responseTxt) + '</br>' + '{A}' + '</br></br>' + x_addLineBreaks(exampleTxt) + '</br>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")),
 				"noAnswerTxt"	:noAnswerTxt
-			})
-			
+			});
+
+            var label = $('<div>').html(pageTitle).text();
+            if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+            {
+                label = x_currentPageXML.getAttribute("trackinglabel");
+            }
+
+            this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+
+            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+
+            var modelAnswerTxt = $('<div>').html(x_currentPageXML.getAttribute("feedback")).text();
+			XTEnterInteraction(x_currentPage, 0, 'text', label, [], modelAnswerTxt, [], x_currentPageXML.getAttribute("grouping"));
 			
 			// feedbackBtnWidth attribute not used as button will be sized automatically
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
@@ -203,7 +227,9 @@
 					$this.hide();
 					$("#fbTxt").html($("#pageContents").data("feedback"));
 					$("#copyBtn, #copyTxt").show();
-					
+
+					modelAnswer.tracked = true;
+					modelAnswer.finishTracking();
 					if (x_currentPageXML.getAttribute("copypasteinfo") != undefined && x_currentPageXML.getAttribute("copypasteinfo") != "") {
 						
 					}
@@ -226,25 +252,41 @@
 			this.sizeChanged();
 			this.saveData();
 			x_pageLoaded();
-		}
-		
+		};
+
+
 		// function saves data to pageData array in xenith.js so it can be used later by modelAnswerResults page
 		this.saveData = function() {
 			var $pageContents = $("#pageContents"),
 				stringToSave = $pageContents.data("dataString"),
 				answerTxt = $("#answerTxt").val();
 			
-			if (answerTxt == "") {
+			if (answerTxt.trim() == "") {
 				answerTxt = $pageContents.data("noAnswerTxt");
 			}
 			
 			stringToSave = stringToSave.replace("{A}", x_addLineBreaks(answerTxt, true));
 			x_pageInfo[x_currentPage].savedData = stringToSave;
-		}
-	}
+		};
+
+        this.finishTracking = function()
+        {
+            var answerTxt = $("#answerTxt").val();
+            result =
+                {
+                    success: (answerTxt.trim() == "" ? false : true),
+                    score: (answerTxt.trim() == "" ? 0.0 : 100.0)
+                };
+
+            XTExitInteraction(x_currentPage, 0, result, [], answerTxt, []);
+            XTSetPageScore(x_currentPage, (answerTxt.trim() == "" ? 0.0 : 100.0));
+            this.tracked = true;
+        };
+
+    };
 	
 	modelAnswer.init();
-	
+
 </script>
 
 

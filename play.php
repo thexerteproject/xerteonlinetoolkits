@@ -36,7 +36,10 @@ _load_language_file("/play.inc");
 require_once $xerte_toolkits_site->php_library_path . "display_library.php";
 require_once $xerte_toolkits_site->php_library_path . "template_library.php";
 
-
+if(!isset($tsugi_enabled))
+{
+    $tsugi_enabled = false;
+}
 
 //error_reporting(E_ALL);
 //ini_set('display_errors',"ON");
@@ -169,7 +172,8 @@ $safe_template_id = (int) $_GET['template_id'];
  */
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
-$sql = "SELECT otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags, td.template_name as zipname " .
+$sql = "SELECT otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags, td.template_name as zipname, " .
+    " td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, tsugi_xapi_student_id_mode ".
     " FROM {$prefix}originaltemplatesdetails otd, {$prefix}templaterights tr, {$prefix}templatedetails td, {$prefix}logindetails ld " .
     " WHERE td.template_type_id = otd.template_type_id AND td.creator_id = ld.login_id AND tr.template_id = td.template_id AND tr.template_id= ? AND (role=? OR role=?)";
 
@@ -204,8 +208,19 @@ db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SE
  * Start to check the access_to_whom settings from templatedetails for this template
  */
 
+if ($tsugi_enabled) {
+    /* Tsugi enabled */
+    if ($row_play["tsugi_published"] == 1 || $row_play["tsugi_xapi_enabled"] == 1) {
+        // Actually published for Tsugi
+        db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
-if ($row_play['access_to_whom'] == "Private") {
+        show_template($row_play, $tsugi_enabled);
+    }
+    else{
+
+        dont_show_template();
+    }
+} else if ($row_play['access_to_whom'] == "Private") {
     /*
      * Private - so do nothing
      */
@@ -314,29 +329,50 @@ if($lti->valid) {
 } else if (substr($row_play['access_to_whom'], 0, 5) == "Other") {
 
     /*
-     * The Other attribute has been set - so break the string down to obtain the host
+     * The Other attribute has been set - so break the string down to obtain the host - this can now be a comma separated list to allow for more than one referrer
      */
 
     $test_string = substr($row_play['access_to_whom'], 6, strlen($row_play['access_to_whom']));
+	
     _debug("'Other' security is active for '" . $test_string . "', the current referrer is: '" . $_SERVER['HTTP_REFERER'] . "'");
+	
+	$test_string = explode(",", $test_string);
+	
     /*
      * Can only check against this variable, if I can't find it (say pop ups) no choice but to fail
      */
 
     if (strlen($_SERVER['HTTP_REFERER']) != 0) {
+		
+		$ok = false;
+		
+		foreach($test_string as $item) {
+			
+			if (strpos($_SERVER['HTTP_REFERER'], $item) === 0) {
+			
+				$ok = true;
+				
+				db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
-        if (strpos($_SERVER['HTTP_REFERER'], $test_string) == 0) {
-
-            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
-
-            show_template($row_play);
-
-        } else {
+				show_template($row_play);
+				
+				break;
+				
+			}
+		}
+		
+		if ($ok == false) {
+			
             dont_show_template('Doesnt Match Referer:' . $_SERVER['HTTP_REFERER']);
+			
         }
+		
     } else {
+		
       dont_show_template('No HTTP Referer');
+	  
     }
+	
 } else if (sizeof($query_for_security_content_response) > 0) {
 
     /*

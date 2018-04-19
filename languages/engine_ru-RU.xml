@@ -1,109 +1,203 @@
-﻿<language name="Russian">
-<nextButton label="Следующий" description="Кнопка следующий"/>
-<backButton label="Предыдущий" description="Кнопка предыдущий"/>
-<tocButton label="Содержание" description="Кнопка содержание"/>
-<helpButton label="Помощь" description="Кнопка помощь"/>
-<mediaButton label="Мультимедиа" description="Кнопка мультимедиа. "/>
-<homeButton label="Главная" description="Кнопка главная страница. "/>
-<pageHelp name="Страница помощь" description="Страница помощь" toClose="Нажмите пробел для закрытия"/>
-<glossaryButton label="Глоссарий" description="Кнопка глоссарий. "/>
-<continueButton label="Продолжить" description="Кнопка продолжить"/>
-<toc label="Содержание" description="Содержание. Используйте стрелки для выбора страницы. Нажмите пробел для перехода на страницу.">
-<contentsList label="" description=""/>
-<closeButton label="" description="Кнопка закрыть содержание"/>
-<gotoPageButton label="Перейти на страницу" description="Кнопка перехода"/>
+<language name="Russian">
+
+<noPageslabel="Этот проект не содержит страниц."/>
+	
+<nextButtonlabel="Дальше"description="Кнопка следующей страницы"/>
+
+<backButtonlabel="Назад"description="Кнопка предыдущей страницы"/>
+
+<tocButtonlabel="Содержание"description="Кнопка содержания"/>
+
+<helpButtonlabel="Помощь"description="Кнопка помощи"/>
+
+<mediaButtonlabel="Медиа"description="Кнопка медиа"/>
+
+<homeButtonlabel="Домашняя страница"description="Кнопка домашней страницы"/>
+
+<pageHelpname="Страница помощи"description="Страница помощи"toClose="Нажмите пробел, чтобы закрыть страницу помощи"/>
+
+<glossaryButtonlabel="Словарь"description="Кнопка словаря"/>
+
+<continueButtonlabel="Продолжить"description="Кнопка продолжить"/>
+
+<progressBarlabel="ЗАВЕРШИТЬ"/>
+
+<footerToolshide="Скрыть нижние колонтитулы"show="Открыть нижние колонтитулы"/>
+
+<toclabel="Содержание"description="Содержание. С помощью клавиш со стрелками выберите страницу. Нажмите пробел, чтобы перейти на эту страницу."htmlDescription="Используйте клавишу табуляции, чтобы выбрать страницу. Нажмите пробел, чтобы перейти на эту страницу.">
+<contentsListlabel=""description=""/>
+<closeButtonlabel=""description="Закрыть содержание"/>
+<gotoPageButtonlabel="Перейти на страницу"description="Кнопка перехода на страницу"/>
 </toc>
-<glossary label="Глоссарий" description="Список терминов и их определений.">
-<closeButton label="" description="Кнопка закрыть глоссарий"/>
+
+<mediaWindowlabel="Средство просмотра мультимедиа"/>
+
+<glossarylabel="Glossary"description="Список слов и их определения.">
+<closeButtonlabel=""description="Закрыть словарь"/>
 </glossary>
-<kbLanguage label="Специальные символы" description="Список специальных символов для вставки к текст">
-<closeButton label="" description="Кнопка закрыть список специальных терминов"/>
-<dialog instruction="Используйте CAPS и SHIFT" on="On" off="Off" caps="Caps"/>
+
+<kbLanguagelabel="Специальные характеристики"description="Список кнопок, добавляющих специальные символы в текстовые области">
+<closeButtonlabel=""description="Закрыть специальные характеристики"/>
+<dialoginstruction="Используйте CAPS и SHIFT"on="ВКЛ"off="ВЫКЛ"caps="Caps"/>
 </kbLanguage>
-<textToSpeech label="null" description="Текст в речь"/>
-<errorProject label="Данные проекта не были загружены."/>
-<errorPage label="В настоящее время шаблон недоступен для этого типа страниц."/>
-<errorBrowser label="Ваш браузер не поддерживает полностью данный тип страниц."/>
-<errorFlash label="Для просмотра элемента вам необходимо установить Flash Player." description="Установить Flash Player"/>
-<tick label="Галочка"/>
-<cross label="Крестик"/>
-<themes label="--Цветовая схема--" description="Настройки цветовой схемы">
-<item>стандартный</item>
-<item>голубой</item>
+
+<textToSpeechlabel="null"description="Преобразование текста в речь"/>
+
+<errorProjectlabel="Данные проекта не загружены."/>
+
+<errorPagelabel="В настоящий момент для этого типа страницы нет шаблона."/>
+
+<errorBrowserlabel="Ваш браузер не полностью поддерживает этот тип страницы."/>
+
+<errorEmbedlabel="Вы включили предварительный просмотр проекта XOT. Вы должны сделать проект общедоступным и включить публичный URL."/>
+
+<pageDeprecatedCeasedlabel="Эта страница устарела, поскольку завершился ее сервис."/>
+
+<errorQuestionsnoQ="Никаких вопросов не было добавлено"noA="Никаких вариантов ответа не было добавлено"/>
+
+<errorFlashlabel="Для просмотра этого содержимого вам необходимо установить Flash Player."description="Установить Flash Player"/>
+
+<authorSupportlabel="Поддержка автора включена: текст, отображаемый красным цветом, не будет отображаться в живых проектах."/>
+
+<hiddenPagelabel="Эта страница будет скрыта в живых проектах"/>
+
+<hiddenSectionlabel="Этот раздел будет скрыт в живых проектах"/>
+
+<ticklabel="Поставить галочку"/>
+
+<crosslabel="Крестик"/>
+
+<themeslabel="--Цветовые схемы--"description="Параметры цветовой схемы">
+<item>по умолчанию</item>
+<item>синий</item>
 <item>зеленый</item>
 <item>красный</item>
 <item>оранжевый</item>
-<item>фиолетовый</item>
+<item>розовый</item>
 <item>серый</item>
-<item>Высокий контраст 1</item>
-<item>Высокий контраст 2</item>
+<item>высокий контраст 1</item>
+<item>высокий контраст 2</item>
 </themes>
-<sizes label="--Размер экрана--" description="Настройки размера экрана">
-<item>стандартный</item>
+
+<sizeslabel="--Размер экрана--"description="Параметры экрана">
+<item>по умолчанию</item>
 <item>большой</item>
-<item>больше</item>
-<item>на весь экран</item>
-<item>на все окно</item>
+<item>больще</item>
+<item>Полный экран</item>
+<item>заполнить окно</item>
 </sizes>
-<fonts label="--Шрифт--" description="Настройки шрифта">
-<item>стандартный</item>
+
+<fontslabel="--Текстовый шрифт--"description="Варианты шрифтов">
+<item>по умолчанию</item>
 </fonts>
-<textSizes label="--Размер текста--" description="Настройки размера текста">
-<item>стандартный</item>
+
+<textSizeslabel="--Размер текста--"description="Параметры размера текста">
+<item>по умолчанию</item>
 <item>маленький</item>
 <item>средний</item>
 <item>большой</item>
 <item>больше</item>
 </textSizes>
-<volumeControl label="Звук:" description="Настройки звука"/>
-<volumeControlSlider label="" description="Регулятор громкости"/>
+
+<volumeControllabel="Громк:"description="Контроль громкости"/>
+<volumeControlSliderlabel=""description="Ползунок регулировки громкости"/>
+
 <vocab>
 <page>Страница</page>
-<of>z</of>
+<of>of</of>
 </vocab>
+
 <soundController>
-<stopButton label="Остановить" description="Кнопка остановить аудио"/>
-<playButton label="Проиграть" description="Кнопка проиграть аудио"/>
-<pauseButton label="Приостановить" description="Кнопка приостановить аудио "/>
-<rwndButton label="Вперед" description="Кнопка перемотки аудио"/>
-<ffwdButton label="Назад" description="Кнопка перемотки аудио"/>
-<loader label="Загрузка: "/>
+<stopButtonlabel="Остановить ацдио"description="Кнопка остановки аудио"/>
+<playButtonlabel="Играть удио"description="Кнопка воспроизведения аудио"/>
+<pauseButtonlabel="Пауза аудио"description="Кнопка Пауза аудио"/>
+<rwndButtonlabel="Перемотка аудио"description="Кнопка Перемотка аудио"/>
+<ffwdButtonlabel="Прямое аудио"description="Кнопка Прямое аудио"/>
+<loaderlabel="Загрузка: "/>
 </soundController>
+
 <movieController>
-<stopButton label="Остановить" description="Кнопка остановить фильм"/>
-<playButton label="Проиграть" description="Кнопка проиграть фильм"/>
-<pauseButton label="Приостановить" description="Кнопка приостановить фильм"/>
-<rwndButton label="Вперед" description="Кнопка перемотки видео"/>
-<ffwdButton label="Назад" description="Кнопка перемотки видео"/>
-<loader label="Загрузка: "/>
+<stopButtonlabel="Сбросить видео"description="Кнопка остановки видео"/>
+<playButtonlabel="Воспроизвести видео"description="Кнопка воспр. видео"/>
+<pauseButtonlabel="Пауза видео"description="Кнопка паузы видео"/>
+<rwndButtonlabel="Пересотать видео"description="Кнопка Пересотать видео"/>
+<ffwdButtonlabel="Промотать видео"description="Кнопка Промотать видео"/>
+<loaderlabel="Загрузка: "/>
 </movieController>
-<mediaElementControls>
-<stopButton label="Остановить" description="Кнопка остановить"/>
-<playPauseButton label="Воспроизвести/Приостановить" description="Кнопка воспроизвести/приостановить"/>
-<muteButton label="Переключить звук" description="Кнопка включения/выключения звука"/>
-<fullscreenButton label="На весь экран" description="Кнопка просмотра во весь экран"/><captionsButton label="Подписи/Субтитры" description="Кнопка показать/скрыть подписи"/>
+
+<mediaElementControlsvideo="Видео"audio="Аудио">
+<stopButtonlabel="Стоп"description="Кнопка остановки медиа"/>
+<playPauseButtonlabel="Играть/Пауза"description="Кнопка играть/пауза медиа"/>
+<muteButtonlabel="Отключить звук"description="Кнопка отключения звука"/>
+<fullscreenButtonlabel="Полноэкранный"description="Кнопка видео на полный экран"/>
+<captionsButtonlabel="Подписи / Субтитры"description="Кнопка Открыть/Спрятать субтитры"/>
 </mediaElementControls>
+
 <interactions>
-<button name="Кнопка"/>
-<radioButton selected="выбрано. Используйте стрелки для перехода между опциями"/>
-<checkBox selected="выбрано" deselected="не выбрано"/>
-<comboBox name="ComboBox" options="Настройки." selected="selected." selectedOptions="выбрано. Используйте стрелки для выбора"/>
-<hotSpot name="HotSpot" toSelect="Hot Spot. Нажмите пробел для выбора." selected="Выбран Hot Spot"/>
-<hotObject name="HotObject" toSelect="Нажмите пробел для выбора." selected="Выбран Hot Object"/>
-<textEntry name="Текстовое поле" selected="Текстовое поле выбрано"/>
-<targetArea name="Заданная область" description="Drop область" toSelect="Для просмотра выбранных параметров нажмите пробел."/>
-<draggableItem name="Подвижный элемент" selected="Элемент выбран" toSelect="Нажмите пробел для выбора" deSelected="Элемент не выбран."/>
+<buttonname="Кнопка"/>
+<radioButtonselected="выбрано. Используйте клавиши со стрелками для выбора параметров"/>
+<checkBoxselected="выбрано"deselected="отменено"/>
+<comboBoxname="ComboBox"options="Параметры."selected="выбрано."selectedOptions="выбрано. Используйте клавиши со стрелками для выбора"/>
+<hotSpotname="HotSpot"toSelect="Hot Spot. Нажмите пробел для выбора."selected="Hot Spot выбран"/>
+<hotObjectname="HotObject"toSelect="Нажмите пробел для выбора."selected="Hot Object выбран"/>
+<textEntryname="Блок ввода текста"selected="Блок ввода текста выбран"/>
+<targetAreaname="Целевая область"description="Опасная зона для"toSelect="Нажмите пробел, чтобы удалить выбранный элемент."/>
+<draggableItemname="Перетаскиваемый элемент"selected="Элемент выбран"toSelect="Нажмите пробел для выбора"deSelected="Элемент не выбран."/>
+<moreInfoItemtoSelect="Нажмите пробел для выбора"selected="Выбрано"moreInfo="Нажмите пробел, чтобы узнать больше"/>
 </interactions>
-<fetchResults label="Выборка результатов..."/>
-<errorResults label="Ошибка при загрузке результатов"/>
-<loadError label="Ошибка загрузки"/>
-<noResults label="Нет результатов"/>
+
+<fetchResultslabel="Получение результатов..."/>
+<errorResultslabel="Ошибка при загрузке результатов"/>
+<loadErrorlabel="Ошибка загрузки"/>
+<noResultslabel="Результаты не возвращены"/>
+
 <timer>
-<remaining name="Оставшееся время"/>
-<timeUp name="Время истекло"/>
-<seconds name="секунд"/>
+<remainingname="Времени осталось"/>
+<timeUpname="Время вышло"/>
+<secondsname="секунды"/>
 </timer>
-<colourChanger label="Изменение цвета" description="Изменение цвета.">
-<closeButton label="" description="Закрыть"/>
+
+<colourChangerlabel="Цветной чейнджер"description="Изменение цвета."tooltip="Изменение цвета">
+<closeButtonlabel=""description="Закрыть цветной чейнджер"/>
+<selectTxtlabel="Пожалуйста, выберите один из следующих вариантов:"/>
+<adviceTxtlabel="Нужно польше советов? Посетите &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Xerte Справочное пособие по инструментариям&lt;/a&gt;."/>
+<offlabel="Выключить"/>
+<noBglabel="Удаление фоновых изображений"/>
+<invertlabel="инвертировать"/>
+<blackYellowlabel="Черный на желтом"/>
 </colourChanger>
+
+<screenReaderInfolabel="Информация о считывателе экрана"newWindow="Эта ссылка будет открыта в новом окне"thisWindow="Эта ссылка откроется в этом окне"dialog="Эта кнопка откроет диалоговое окно">
+<tabNavdescription="Эта страница содержит панель с вкладками, в которой выбор вкладки изменяет представленную информацию. Чтобы выбрать вкладку: дважды нажмите Enter (Челюсти) или нажмите Shift-Enter (NVDA)."/>
+<accNavdescription="Эта страница содержит панель, в которой выбор вкладки изменяет представленную информацию. Чтобы выбрать вкладку, нажмите Enter или Space."click="Нажмите, чтобы раскрыть информацию"/>
+<buttonNavdescription="Эта страница содержит ряд кнопок, где каждый из них раскрывает некоторую соответствующую информацию."click="Нажмите, чтобы раскрыть информацию"/>
+<slideshowdescription="Эта страница содержит слайд-шоу, в котором нажатие следующей и предыдущей кнопок изменяет представленную информацию."/>
+<audioSlideshowdescription="На этой странице отображается содержимое, синхронизированное с аудиофайлами. Новый контент добавляется на страницу при воспроизведении аудио."/>
+<videoSynchdescription="На этой странице отображается содержимое, синхронизированное с видео. Новый контент добавляется на страницу при воспроизведении видео."/>
+<listdescription="Эта страница содержит серию ссылок, в которых каждый из них показывает некоторую связанную информацию."click="Нажмите, чтобы раскрыть информацию"/>
+<modelAnswerResultsselected="Текст выбран"/>
+<mcqdescription="Эта страница содержит вопрос с несколькими вариантами выбора. Используйте клавиши со стрелками вверх и вниз для поиска возможных ответов и нажмите «Пробел», чтобы выбрать свой ответ.."/>
+<quizdescription="Эта страница содержит ряд вопросов с множественным выбором. Используйте клавиши со стрелками вверх и вниз для поиска возможных ответов и нажмите «Пробел», чтобы выбрать свой ответ.."/>
+</screenReaderInfo>
+
+<authorVarslabel="Просмотр переменных данных">
+<item>Название</item>
+<item>Фиксированная стоимость</item>
+<item>Рандом</item>
+<item>Мин</item>
+<item>Макс</item>
+<item>Шаг</item>
+<item>DP</item>
+<item>SF</item>
+<item>Конечные нули</item>
+<item>Исключить</item>
+<item>По умолчанию</item>
+<item>Стоимость</item>
+</authorVars>
+
+<authorVarsInfo>
+<errorunable="Не удалось вычислить"invalid="Неверное значение"none="Нет переменных данных"/>
+<infoundef="Ссылки на неопределенный переменном"minMax="мин > макс"valueMin="стоимость &lt; мин"valueMax="стоимость > макс"exclude="{n} исключается"circular="Ссылка на круговую переменную"none="Все возможные значения исключаются или выходят за пределы мин & amp; максимальный диапазон"none2="{n} попытки не вернули принятое значение"attempts="{n} попытки рассчитать действительное значение"default="Значение возврата к значению по умолчанию"/>
+</authorVarsInfo>
+
 </language>

@@ -245,3 +245,19 @@ div#menu_tabs{
 	overflow:hidden; 
 	border-right:1px #ededed solid;
 }
+
+div#publish label{
+	display:inline-block;
+	width:150px;
+	margin-left: 10px;
+	padding: 4px;
+}
+
+div#publish input {
+	margin-left: 10px;
+	padding: 4px;
+
+}
+p#result_message {
+	color:#ff0000;
+}

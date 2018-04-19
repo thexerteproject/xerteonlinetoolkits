@@ -17,47 +17,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var videoSynch = new function() {
 		var $infoHolder,
-			$pageContents;
-		
+			$pageContents,
+			viewed = 0,
+			lastMileStone = 0,
+			blocks = new Array();
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$infoHolder = $("#infoHolder");
 			$pageContents = $("#pageContents");
-			
+
 			$infoHolder
 				.scrollTop(0)
 				.children("div").hide();
-			
+
 			var $captionAtStart = $($pageContents.data("captions")).filter( function(){ return $(this).data("synch") == 0; });
 			if ($captionAtStart.length > 0) {
 				$captionAtStart.show();
 			}
-			
+
 			this.loadVideo();
 		}
-		
+
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function(pageChg) {
+		this.sizeChanged = function() {
 			$infoHolder.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2);
-			
+
 			if ($infoHolder.children("div:visible").last().length > 0) {
 				$infoHolder.children("div:visible").last()[0].scrollIntoView(true);
 			}
 		}
-		
+
 		this.init = function() {
 			$infoHolder = $("#infoHolder");
 			$pageContents = $("#pageContents");
-			
-			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));	
-			
+
+			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
 			var	captionInfo = new Array();
-			
+
 			// uses data from timedText file if there is one - otherwise use nested page info
 			if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined) {
 				$.ajax({
@@ -197,20 +200,90 @@
 				}
 			}
 		}
-		
-		this.timeUpdate = function(mediaElement, currentTime, mediaSrc) {
+
+		//This stores the pieces of the video which have been watched.
+		this.AttendanceUpdate = function (duration, time) {
+            //this shouldn't happen, but it might on the first frame of the video.
+            if (duration == null || duration == undefined || duration == 0) {
+                return;
+            }
+            if (duration < 30) {
+                var i = Math.round(time / duration * 20) * 5;
+            }
+            else {
+                var i = Math.round(time / duration * 100);
+            }
+            blocks[i] = 1;
+            if (i == 100)
+            {
+                this.sentXAPI();
+            }
+        };
+
+		//This calculates the percentage of the video that has been watched.
+        this.AttendanceCalculate = function (duration) {
+            var playedTime = 0;
+            if (duration == undefined || duration == null)
+            {
+                return 0;
+            }
+            if (duration >= 30)
+            {
+                for (var i = 1; i < 100; i++)
+                {
+                    if (blocks[i] == 1) {
+                        playedTime++;
+                    }
+                }
+                playedTime++;
+            }
+            else {
+                for (var i = 1; i < 100; i++)
+                {
+                    if (blocks[i] == 1) {
+                        playedTime += 5;
+                    }
+                }
+                playedTime += 5;
+            }
+            return playedTime;
+        };
+
+        this.sentXAPI = function () {
+			XTSetViewed(x_currentPage, "video", viewed);
+        };
+
+        this.leavePage = function () {
+			this.sentXAPI();
+        };
+
+		this.timeUpdate = function(mediaElement, currentTime) {
 			var $captions 	= $($pageContents.data("captions")),
 				pause 		= x_currentPageXML.getAttribute("pause"),
-				erase    	= x_currentPageXML.getAttribute("erase");
-			
-			$captions.each(function(){
+				erase    	= x_currentPageXML.getAttribute("erase"),
+				duration    = mediaElement.duration;
+
+			this.AttendanceUpdate(duration, currentTime);
+			viewed = this.AttendanceCalculate(duration);
+
+			if (viewed % 10 === 0 && viewed > lastMileStone) {
+                lastMileStone = viewed;
+                this.sentXAPI();
+            }
+
+            //if (pause && attendance !== 0)
+			//{
+			//    console.log("paused")
+			//}
+
+            $captions.each(function(){
 				var $thisCaption = $(this);
 				if (erase == "False") {
 					if (currentTime > $thisCaption.data("synch")) {
 						if ($thisCaption.is(":hidden") == true) {
 							$thisCaption.show();
 							$thisCaption[0].scrollIntoView(true);
-							
+
 							if (pause == "True") {
 								mediaElement.pause();
 							}

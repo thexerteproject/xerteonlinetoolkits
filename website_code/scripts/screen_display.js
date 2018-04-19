@@ -375,6 +375,11 @@ function button_check(){
                 deletebtn.onclick = function () {
                     remove_this()
                 };
+                duplicatebtn.removeAttribute("disabled");
+                duplicatebtn.className = "xerte_workspace_button";
+                duplicatebtn.onclick = function () {
+                    duplicate_folder()
+                };
                 break;
             default:
                 propertiesbtn.removeAttribute("disabled");

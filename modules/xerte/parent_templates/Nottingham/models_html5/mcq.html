@@ -68,27 +68,33 @@
             }
             XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
             for (var i = 0; i < this.optionElements.length; i++) {
-                if (this.optionElements[i].correct == 'true') {
-                    correctOptions.push((i+1)+"");
-                    if (this.optionElements[i].label != undefined)
-					{
-					    correctAnswer.push(this.optionElements[i].label);
-					}
-					else
-					{
-                        // Create fallback label
-                        var answerTxt = (x_currentPageXML.getAttribute('answerTxt') != undefined ? x_currentPageXML.getAttribute('answerTxt') : "Option");
-                        answerTxt += ' ' + (i+1);
-                        correctAnswer.push(x_GetTrackingTextFromHTML(this.optionElements[i].text, answerTxt));
-                    }
-                    correctFeedback.push(x_GetTrackingTextFromHTML(this.optionElements[i].feedback, ""));
-                    mcq.correctOption = true;
+				var answerTxt;
+				if (this.optionElements[i].label != undefined)
+				{
+					var answerTxt=this.optionElements[i].label;
+				}
+				else
+				{
+					// Create fallback label
+					var answerTxt = (x_currentPageXML.getAttribute('answerTxt') != undefined ? x_currentPageXML.getAttribute('answerTxt') : "Option");
+					answerTxt += ' ' + (i+1);
+					answerTxt = x_GetTrackingTextFromHTML(this.optionElements[i].text, answerTxt);
+				}
+				correctOptions.push({
+					id: (i+1)+"",
+					answer: answerTxt,
+					result: this.optionElements[i].correct == 'true'
+				});
+				if (this.optionElements[i].correct == 'true') {
+                    correctAnswer.push(answerTxt);
                 }
+				correctFeedback.push(x_GetTrackingTextFromHTML(this.optionElements[i].feedback, ""));
+				mcq.correctOption = true;
             }
             // Create fallback label
             var questionTxt = (x_currentPageXML.getAttribute('questionTxt') != undefined ? x_currentPageXML.getAttribute('questionTxt') : "Multiple choice question");
             questionTxt += ' ' + (x_currentPage+1);
-            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), questionTxt), correctOptions, correctAnswer, correctFeedback);
+            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), questionTxt), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
         }
 
         this.leavePage = function() {
@@ -102,10 +108,10 @@
         this.showFeedBackandTrackScore = function()
         {
             var answerFeedback = "",
-                    correct = true,
+                    correct = (x_currentPageXML.getAttribute("type") == "Multiple Answer"),
                     l_options = [],
-                    l_answer = [],
-                    l_feedback = [],
+                    l_answers = [],
+                    l_feedbacks = [],
                     selected = $("#optionHolder input"),
                     generalFeedback = "";
 
@@ -115,28 +121,45 @@
 
             for (var i=0; i<selected.length; i++) {
                 var optionIndex = $(selected[i]).parent().index(),
-                        selectedOption = this.optionElements[optionIndex];
+					selectedOption = this.optionElements[optionIndex],
+				currCorrect;
 
-                correct = correct && (	(selectedOption.correct == "true" && $(selected[i]).is(':checked')) ||
-                (selectedOption.correct == "false" && !$(selected[i]).is(':checked')));
+				if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
+					currCorrect = (
+						(selectedOption.correct == "true" && $(selected[i]).is(':checked')) ||
+						(selectedOption.correct == "false" && !$(selected[i]).is(':checked'))
+					);
+					correct = correct && currCorrect;
+				}
+				else {
+					currCorrect = selectedOption.correct == "true" && $(selected[i]).is(':checked');
+					correct = correct || currCorrect;
+                }
+
                 if ($(selected[i]).is(':checked')) {
                     answerFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback) + "</p>";
 					if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
 						answerFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '"></div>';
 					}
-					
-                    l_options.push(optionIndex+1+"");
+					var answerTxt = "";
 					if (selectedOption.label != undefined) {
-                        l_answer.push(selectedOption.label);
+                        answerTxt = selectedOption.label;
                     }
                     else
 					{
                         // Create fallback label
-                        var answerTxt = (x_currentPageXML.getAttribute('answerTxt') != undefined ? x_currentPageXML.getAttribute('answerTxt') : "Option");
+                        answerTxt = (x_currentPageXML.getAttribute('answerTxt') != undefined ? x_currentPageXML.getAttribute('answerTxt') : "Option");
                         answerTxt += ' ' + (optionIndex+1);
-                        l_answer.push(x_GetTrackingTextFromHTML(selectedOption.text, answerTxt));
+                        answerTxt = x_GetTrackingTextFromHTML(selectedOption.text, answerTxt);
 					}
-                    l_feedback.push(x_GetTrackingTextFromHTML(selectedOption.feedback, ""));
+
+                    l_options.push({
+						id :optionIndex+1+"",
+						answer: answerTxt,
+						result: currCorrect
+                        });
+					l_answers.push(answerTxt);
+                    l_feedbacks.push(x_GetTrackingTextFromHTML(selectedOption.feedback, ""));
                 }
             }
             generalFeedback += answerFeedback;
@@ -197,8 +220,12 @@
             // Queue reparsing of MathJax - fails if no network connection
             try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 
-            XTExitInteraction(x_currentPage, 0, correct, l_options, l_answer, l_feedback);
-            XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0));
+            var result = {
+                success: correct,
+                score: correct ? 100.0 : 0.0
+            };
+            XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+            XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
             if (XTGetMode() == "normal")
             {
                 // Disable all options

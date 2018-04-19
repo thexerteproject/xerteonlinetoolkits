@@ -1,0 +1,9 @@
+/* showGraph.html */
+
+.qPanel {
+    overflow:	auto;
+}
+
+#pageContents p:first-child {
+    margin-top: 0px;
+}

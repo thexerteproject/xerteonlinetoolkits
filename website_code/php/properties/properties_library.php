@@ -23,6 +23,7 @@
 require_once("../../../config.php");
 require_once("../template_library.php");
 
+
 _load_language_file("/website_code/php/properties/publish.inc");
 _load_language_file("/website_code/php/properties/properties_library.inc");
 _load_language_file("/website_code/php/properties/sharing_status_template.inc");
@@ -329,10 +330,9 @@ function peer_display($xerte_toolkits_site,$change, $template_id){
     else
     {
         $retouremail = $_SESSION['toolkits_logon_username'];
-        $retouremail .= '@';
         if (strlen($xerte_toolkits_site->email_to_add_to_username)>0)
         {
-            $retouremail .= $xerte_toolkits_site->email_to_add_to_username;
+            $retouremail .= '@' . $xerte_toolkits_site->email_to_add_to_username;
         }
 
     }
@@ -704,6 +704,8 @@ function access_info($template_id){
 
 function access_display($xerte_toolkits_site, $change){
 
+    global $row_access;
+
     $prefix =  $xerte_toolkits_site->database_table_prefix ;
     $query_for_template_access = "select access_to_whom from {$prefix}templatedetails where template_id= ? ";
     $params = array($_POST['template_id']);
@@ -878,5 +880,107 @@ function rss_display_public(){
 function rss_display_fail(){
 
     echo "<p>" . PROPERTIES_LIBRARY_RSS_FAIL . "</p>";
+
+}
+
+function tsugi_display($id, $lti_def, $mesg = "")
+{
+    global $xerte_toolkits_site;
+
+
+
+    if ($lti_def->tsugi_installed)
+    {
+    ?>
+    <p class="header"><span><?php echo PROPERTIES_LIBRARY_TSUGI; ?></span></p>
+    <p><?php echo PROPERTIES_LIBRARY_TSUGI_DESCRIPTION; ?></p>
+
+    <p>
+    <label for="tsugi_published"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH; ?></label><input id="pubChk" type="checkbox" name="tsugi_published" <?php echo ($lti_def->published ? "checked" : ""); ?>>
+    </p>
+    <div id="publish">
+        <label for="tsugi_title"><?php echo PROPERTIES_LIBRARY_TSUGI_NAME; ?></label><input name="tsugi_title" type="text" value="<?php echo $lti_def->title ?>"><br>
+        <label for="tsugi_key"><?php echo PROPERTIES_LIBRARY_TSUGI_KEY; ?></label><input name="tsugi_key" type="text" value="<?php echo $lti_def->key ?>"><br>
+        <label for="tsugi_secret"><?php echo PROPERTIES_LIBRARY_TSUGI_SECRET; ?></label><input name="tsugi_secret" type="text" value="<?php echo $lti_def->secret ?>"><br>
+        <?php
+    }
+    else
+    {
+        ?>
+    <p class="header"><span><?php echo PROPERTIES_LIBRARY_TSUGI; ?></span></p>
+    <p><?php echo PROPERTIES_LIBRARY_TSUGI_NOTAVAILABLE_DESCRIPTION; ?></p>
+
+    <div id="publish">
+    <?php
+    }
+    ?>
+
+        <label for="tsugi_xapi"><?php echo PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI; ?></label><input id="xChk" type="checkbox" name="tsugi_xapi" <?php echo ($lti_def->xapi_enabled ? "checked" : "");?>><br>
+        <div id="xApi">
+            <label for="tsugi_xapi_endpoint"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_ENDPOINT; ?></label><input type="text" name="tsugi_xapi_endpoint" value="<?php echo $lti_def->xapi_endpoint;?>"><br>
+            <label for="tsugi_xapi_username"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USERNAME; ?></label><input type="text" name="tsugi_xapi_username" value="<?php echo $lti_def->xapi_username;?>"><br>
+            <label for="tsugi_xapi_password"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_PASSWORD; ?></label><input type="text" name="tsugi_xapi_password" value="<?php echo $lti_def->xapi_password;?>"><br>
+            <label for="tsugi_xapi_student_id_mode"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE; ?></label><select name="tsugi_xapi_student_id_mode">
+                <?php
+                for ($i=0; $i<4; $i++)
+                {
+                    if (! $lti_def->tsugi_installed && $i<3)
+                    {
+                        continue;
+                    }
+                    echo "<option value=\"" . $i . "\" " . ($i == $lti_def->xapi_student_id_mode ? "selected>" : ">");
+                    switch($i)
+                    {
+                        case 0:
+                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_0;
+                            break;
+                        case 1:
+                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_1;
+                            break;
+                        case 2:
+                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_2;
+                            break;
+                        case 3:
+                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_3;
+                            break;
+                    }
+                    echo "</option>\n";
+                }
+                ?>
+            </select><br>
+        </div>
+        <input type="button" value="<?php echo PROPERTIES_LIBRARY_TSUGI_UPDATE_BUTTON_LABEL; ?>" class="xerte_button" onclick="javascript:lti_update(<?php echo $id;?>)">
+    </div>
+    <?php
+    if (strlen($mesg)>0) { ?>
+        <p id="result_message"><?php echo $mesg; ?></p>
+    <?php
+    }
+    ?>
+    <p class="lti_launch_url">
+    <?php
+
+    if($lti_def->published)
+    {
+        echo PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br><span class='lti_launch_url'>" . $lti_def->url . "</span>";
+    }
+    else
+    {
+        if ($lti_def->xapi_enabled)
+        {
+            // Show xapionly url
+            echo PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br><span class='lti_launch_url'>" . $lti_def->xapionly_url . "</span>";
+        }
+    }
+    ?>
+    </p>
+
+    <?php
+
+}
+
+function tsugi_display_fail(){
+
+    echo "<p>" . PROPERTIES_LIBRARY_TSUGI_FAIL . "</p>";
 
 }

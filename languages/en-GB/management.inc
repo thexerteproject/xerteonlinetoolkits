@@ -36,12 +36,14 @@
 	
 	define("MANAGEMENT_MENUBAR_TEMPLATES","Users projects");
 	
-	define("MANAGEMENT_MENUBAR_ERRORS","Errors");
+	define("MANAGEMENT_MENUBAR_LOGS","Log files");
 	
 	define("MANAGEMENT_MENUBAR_PLAY","Play security");
 	
 	define("MANAGEMENT_MENUBAR_CATEGORIES","Categories");
-	
+
+	define("MANAGEMENT_MENUBAR_GROUPINGS","Groupings");
+
 	define("MANAGEMENT_MENUBAR_LICENCES","Licences");
 	
 	define("MANAGEMENT_MENUBAR_FEEDS","Feeds");

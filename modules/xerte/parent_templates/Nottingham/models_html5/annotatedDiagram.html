@@ -71,7 +71,7 @@
 			if (x_currentPageXML.getAttribute("align") == "Top") {
 				var imgIndent = ($x_pageDiv.width() - ($("#imageHolder img").width() + (padding * 4))) / 2;
 				$("#imageHolder").css("margin-left", imgIndent);
-				$("#hsHolder").css("margin-left", imgIndent);
+				$("#hsHolder").css("margin-left", imgIndent + padding);
 			}
 		}
 		
@@ -327,21 +327,13 @@
 		
 		this.drawLine = function(context, $hs, $listItem, shape) {
 			// startX/Y = centre of hotspot
-			var startX = $hs.position().left + ($hs.width() / 2) + $hs.parents("#hsHolder").position().left;
-			if (x_currentPageXML.getAttribute("align") == "Top") {
-				startX += parseInt($("#imageHolder").css("margin-left"));
-			}
-			var startY = $hs.position().top + ($hs.height() / 2) + parseInt($x_pageDiv.css("padding-top"));
+			var startX = $hs.offset().left - $(context.canvas).offset().left + ($hs.width() / 2);
+			var startY = $hs.offset().top - $(context.canvas).offset().top + ($hs.height() / 2);
 			
 			// endX/Y = selected link
-			var endX, endY;
-			if (x_currentPageXML.getAttribute("align") == "Top") {
-				endX = $listItem.width() / 2;
-				endY = parseInt($("#textContents").css("margin-top")) + $listItem.position().top - 10;
-			} else {
-				endX = parseInt($("#textContents").css("margin-left")) + $listItem.width() + $listItem.position().left;
-				endY = $listItem.position().top;
-			}
+			var endX = $listItem.offset().left + $listItem.outerWidth() - $(context.canvas).offset().left;
+			var endY = $listItem.offset().top + ($listItem.outerHeight() / 2) - $(context.canvas).offset().top;
+			
 			context.beginPath();
 			context.moveTo(startX, startY);
 			context.lineTo(endX, endY);

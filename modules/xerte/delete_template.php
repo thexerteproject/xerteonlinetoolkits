@@ -1,5 +1,4 @@
 <?PHP     
-
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
@@ -18,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 /**
 * 
@@ -55,18 +53,16 @@ function delete_folder_loop($path){
 	
 		if(($f!=".")&&($f!="..")){
 
-			if(is_dir($path . $f)){
-		
+			$string = $path . DIRECTORY_SEPARATOR . $f;
 
-				array_push($folder_array, $path . "/" . $f);	
+			if(is_dir($string)){
+
+				array_push($folder_array, $string);	
 				
-				delete_folder_loop($path . $f);
-
+				delete_folder_loop($string);
 			
 			}else{
 	
-				$string = $path . "/" . $f;
-
 				array_push($file_array, $string);
 			
 			}

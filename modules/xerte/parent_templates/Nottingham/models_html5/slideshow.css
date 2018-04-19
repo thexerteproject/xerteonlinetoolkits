@@ -1,9 +1,5 @@
 /* slideshow.html */
 	
-	#pageContents .panel {
-		padding-bottom:	5px;
-	}
-	
 	#infoHolder {
 		overflow:	auto;
 		border-bottom:	1px solid #CCCCCC;
@@ -19,20 +15,14 @@
 		filter:		alpha(opacity=0);
 	}
 	
-	#btnHolder {
-		float:			right;
-		margin-top:		5px;
-		margin-right:	0px; /* over-ride ui style */
-	}
-	
-	#btnHolder .ui-icon {
-		width:	auto;
-		height:	auto;
-	}
-	
 	#slideTxt {
-		float:			left;
-		font-weight:	bold;
-		margin-top:		10px;
+		float: left;
+		font-weight: bold;
+		margin-top: 0.5em;
+		padding-top: 0.7em;
 	}
 	
+	#btnHolder {
+		margin-top: 0.5em;
+		float: right;
+	}

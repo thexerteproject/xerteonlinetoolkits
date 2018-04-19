@@ -1,53 +1,73 @@
-<language name="Francais" code="fr-fr">
+<language name="Français">
 
-  <nextButton label="Suivante" description="Bouton page suivante"/>
-  
-  <backButton label="Précédente" description="bouton page précédente"/>
-  
-  <tocButton label="Contenu" description="Tableau de bouton de contenu"/>
-  
-  <helpButton label="Aide" description="bouton d'aide"/>
+  <noPages label="Ce projet ne contient aucune page."/>
 
-  <mediaButton label="Média" description="Media Button. "/>
+  <nextButton label="Suivant" description="Bouton de la page suivante"/>
   
-  <homeButton label="Home" description="Home Button. "/>
+  <backButton label="Retour" description="Bouton de la page précédente"/>
   
-  <pageHelp name="Page d'aide" description="la page d'aide" toClose="Appuyez sur la touche espace pour fermer l’aide"/>
+  <tocButton label="Contenu" description="Bouton de table des matières"/>
+  
+  <helpButton label="Aide" description="Bouton d’aide"/>
 
-  <glossaryButton label="Glossaire" description="Bouton qui accède au glossaire »/>
+  <mediaButton label="Média" description="Bouton pour les médias"/>
   
-  <continueButton label="Continuer" description="le bouton Continuer"/>
+  <homeButton label="Accueil" description="Bouton d’accueil"/>
   
-  <toc label="Table des matières" description="Table des matières. utilisez les touches fléchées pour sélectionner une page. Appuyer sur espace pour aller à cette page.">
-	  <contentsList label="" description=""/>
-	  <closeButton label="" description="bouton pour fermer la table de contenu"/>
-	  <gotoPageButton label="Aller à la page" description="aller au bouton de la page"/>
-  </toc> 
-
-  <glossary label="Glossaire" description="Une liste de mots et leur définition">
-	  <closeButton label="" description="Close glossary list button"/>
+  <pageHelp name="Page d’aide" description="Page d’aide" toClose="Appuyer sur Espace pour fermer l’aide"/>
+  
+  <glossaryButton label="Glossaire" description="Bouton de glossaire"/>
+  
+  <continueButton label="Continuer" description="Bouton pour continuer"/>
+  
+  <progressBar label="TERMINER"/>
+  
+  <footerTools hide="Masquer les outils en bas de page" show="Afficher les outils en bas de page"/>
+  
+  <toc label="Table des matières" description="Table des matières. Servez-vous des flèches directionnelles de votre clavier pour sélectionner une page. Appuyez sur Espace pour vous rendre sur cette page." htmlDescription="Servez-vous de la touche de tabulation pour sélectionner une page. Appuyez sur Espace pour vous rendre sur cette page.">
+      <contentsList label="" description=""/>
+      <closeButton label="" description="Fermer la table des matières"/>
+      <gotoPageButton label="Se rendre sur la page" description="Bouton pour se rendre sur une page"/>
+  </toc>
+  
+  <mediaWindow label="Visionneuse de médias"/>
+  
+  <glossary label="Glossaire" description="Une liste de mots avec leurs définitions.">
+      <closeButton label="" description="Fermer le glossaire"/>
   </glossary>
   
-  <kbLanguage label="Caractères spéciaux" description="Une liste de bouton qui ajoute des caractères spéciaux dans une zone de texte">
-	  <closeButton label="" description="bouton pour fermer la liste des caractères spéciaux"/>
+  <kbLanguage label="Caractères spéciaux" description="Une liste de boutons qui permettent d’ajouter des caractères spéciaux à des champs de texte">
+      <closeButton label="" description="Fermer les caractères spéciaux"/>
+      <dialog instruction="Utiliser MAJ et SHIFT" on="ACTIVÉ" off="DÉSACTIVÉ" caps="Majuscules"/>
   </kbLanguage>
   
-  <textToSpeech label="Conversion" description="Conversion du texte en parole"/>
+  <textToSpeech label="nul" description="Du texte à la parole"/>
   
-  <errorProject label="Les données du projet n'ont pas été chargées."/>
+  <errorProject label="Les données du projet n’ont pas été chargées."/>
   
-  <errorPage label="Aucun modèle n'est disponible pour ce type de page."/>
+  <errorPage label="Pour l’instant, aucun modèle n’est disponible pour ce type de page."/>
   
-  <errorBrowser label="Votre navigateur ne supporte pas ce type de page."/>
+  <errorBrowser label="Votre navigateur ne prend pas complètement en charge ce type de page."/>
   
-  <errorFlash label="Vous avez besoin d'installer Flash Player pour voir ce contenu." description="Get the Flash Player"/>
+  <errorEmbed label="Vous avez intégré l’aperçu d’un projet XOT. Vous devez rendre le projet public et intégrer l’URL destiné au public."/>
   
-  <tick label="Tick"/>
+  <pageDeprecatedCeased label="Cette page a été rendue obsolète car le service n’est plus assuré."/>
   
-  <cross label="Cross"/>
+  <errorQuestions noQ="Aucune question n’a été ajoutée" noA="Aucune option de réponse n’a été ajoutée" />
+  
+  <errorFlash label="Vous devez installer le lecteur Flash pour visualiser ce contenu." description="Obtenir le lecteur Flash"/>
+  
+  <authorSupport label="L’assistance des auteurs est ACTIVÉE : le texte affiché en rouge n’apparaîtra pas dans les projets en direct."/>
+  
+  <hiddenPage label="Cette page sera masquées dans les projets en direct"/>
+  
+  <hiddenSection label="Cette section sera masquée dans les projets en direct"/>
+  
+  <tick label="Cocher"/>
+  
+  <cross label="Barrer"/>
 
-
-  <themes label="—-Couleurs--" description="options de couleurs">
+  <themes label="--Palette de couleurs--" description="Options pour la palette de couleur">
     <item>défaut</item>
     <item>bleu</item>
     <item>vert</item>
@@ -59,74 +79,126 @@
     <item>contraste élevé 2</item>
   </themes>
  
-  <sizes label="—-Taille de l'écran—-" description="Screen Size Options">
-	<item>défaut</item>
-	<item>moyenne</item>
-	<item>grande</item>
-	<item>plein écran</item>
-	<item>remplir la fenêtre</item>
+  <sizes label="--Taille de l’écran--" description="Options de taille de l’écran">
+    <item>Défaut</item>
+    <item>grande</item>
+    <item>plus grande</item>
+    <item>Plein écran</item>
+    <item>remplir la fenêtre</item>
   </sizes>
   
-  <fonts label="—Fonte du texte—-" description="Options de caractères">
-	  <item>défaut</item>
+  <fonts label="--Police du texte--" description="Options pour les polices de caractère">
+      <item>défaut</item>
   </fonts>
   
-  <textSizes label="--Taille du texte--" description="Options taille du texte">
-	  <item>défaut</item>
-	  <item>petite</item>
-	  <item>moyenne</item>
-	  <item>grande</item>
-	  <item>plus grande</item>
+  <textSizes label="--Taille du texte--" description="Options pour la taille du texte">
+      <item>défaut</item>
+      <item>petite</item>
+      <item>moyenne</item>
+      <item>grande</item>
+      <item>plus grande</item>
   </textSizes>
   
-  <volumeControl label="Vol:" description="Contrôle du volume"/>
-  <volumeControlSlider label="" description="Curseur du contrôle du volume"/>
+  <volumeControl label="Vol. :" description="Contrôle du volume"/>
+  <volumeControlSlider label="" description="Curseur de contrôle du volume"/>
   
   <vocab>
-	  <page>Page</page>
-	  <of>sur</of>
+      <page>Page</page>
+      <of>de</of>
   </vocab>
   
   <soundController>
-	<stopButton label="Désactiver le son" description="bouton qui stop le son"/>
-	<playButton label="Activer le son" description="Play Audio Button"/>
-	<pauseButton label="Pause du son" description="Pause Audio Button"/>
-	<rwndButton label="Rembobiner le son" description="Rewind Audio Button"/>
-	<ffwdButton label="Avancer le son" description="Forward Audio Button"/>
-	<loader label="Chargement: "/>
+    <stopButton label="Arrêter l’Audio" description="Bouton pour arrêter l’audio"/>
+    <playButton label="Lire l’audio" description="Bouton pour lire l’audio"/>
+    <pauseButton label="Mettre l’audio sur pause" description="Bouton pour mettre l’audio sur pause"/>
+    <rwndButton label="Rembobiner l’	audio" description="Bouton pour rembobiner l’audio"/>
+    <ffwdButton label="Avancer l’audio" description="Bouton pour avancer l’audio"/>
+    <loader label="En cours de chargement : "/>
   </soundController>
   
   <movieController>
-	<stopButton label="Stopper la vidéo" description="Stop Movie Button"/>
-	<playButton label="Démarrer la vidéo" description="Play Movie Button"/>
-	<pauseButton label="Pause" description="Pause Movie Button"/>
-	<rwndButton label="Rembobiner" description="Rewind Movie Button"/>
-	<ffwdButton label="Avancer" description="Forward Movie Button"/>
-	<loader label="Chargement: "/>
+    <stopButton label="Arrêter le film" description="Bouton pour arrêter le film"/>
+    <playButton label="Regarder le film" description="Bouton pour regarder le film"/>
+    <pauseButton label="Mettre le film sur pause" description="Bouton pour mettre le film sur pause"/>
+    <rwndButton label="Rembobiner le film" description="Bouton pour rembobiner le film"/>
+    <ffwdButton label="Avancer le film" description="Bouton pour avancer le film"/>
+    <loader label="En cours de chargement : "/>
   </movieController>
   
+  <mediaElementControls video="Vidéo" audio="Audio">
+    <stopButton label="Stop" description="Bouton pour arrêter la lecture du média"/>
+    <playPauseButton label="Lecture/Pause" description="Bouton pour lire/mettre le média sur pause"/>
+    <muteButton label="Activation du mode silencieux" description="Bouton pour activer le mode silencieux"/>
+    <fullscreenButton label="Plein écran" description="Bouton de plein écran du film"/>
+    <captionsButton label="Légende/Sous-titres" description="Bouton pour afficher/masquer la légende"/>
+  </mediaElementControls>
+  
   <interactions>
-	  <button name="Bouton"/>
-	  <radioButton selected="sélectionné. Utilisez les touches fléchées pour choisir parmi les options."/>
-	  <checkBox selected="sélectionnée" deselected="dee selected"/>
-	  <comboBox name="ComboBox" options="Options." selected="sélectionné." selectedOptions="sélectionné. Utilisez les touches fléchées pour sélectionner." />
-	  <hotSpot name="HotSpot" toSelect="Hot Spot. Appuyez sur espace pour sélectionner." selected="Hot Spot sélectionné"/>
-	  <hotObject name="HotObject" toSelect="Appuyez sur espace pour sélectionner." selected="Hot Object sélectionné"/>
-	  <textEntry name="Boite de saisi de texte" selected="Boite de saisi de texte sélectionnée."/>
-	  <targetArea name="Cibler des zones" description="Zone de dépôt pour " toSelect="Appuyer sur espace pour déposer l'élément sélectionné."/>
-	  <draggableItem name="Faire glisser l'article" selected="Article sélectionné" toSelect="Appuyer sur espace pour sélectionner" deSelected="aucun article sélectionné" />
-	  
+      <button name="Bouton"/>
+      <radioButton selected="sélectionné. Servez-vous des flèches directionnelles de votre clavier pour choisir parmi l’une des options"/>
+      <checkBox selected="sélectionné" deselected="désélectionné"/>
+      <comboBox name="Boîte combinée" options="Options." selected="sélectionnée." selectedOptions="sélectionnées. Servez-vous des flèches directionnelles de votre clavier pour sélectionner" />
+      <hotSpot name="HotSpot" toSelect="HotSpot. Appuyez sur Espace pour sélectionner." selected="Hot Spot sélectionné"/>
+      <hotObject name="Hot Object" toSelect="Appuyez sur Espace pour sélectionner." selected="Hot Object sélectionné"/>
+      <textEntry name="Champ de saisie de texte" selected="Champ de saisie de texte sélectionné"/>
+      <targetArea name="Zone cible" description="Libérer la zone pour" toSelect="Appuyez sur Espace pour libérer l’article sélectionné."/>
+      <draggableItem name="Article à faire glisser" selected="Article sélectionné" toSelect="Appuyez sur Espace pour sélectionner" deSelected="Aucun article sélectionné." />
+      <moreInfoItem toSelect="Appuyez sur Espace pour sélectionner" selected="Sélectionné" moreInfo="Appuyez sur Espace pour en savoir plus" />
   </interactions>
-
-  <fetchResults label="Récupération des résultats.."/>
-  <errorResults label="Erreur lors du chargement des résultats"/>
-  <loadError label="Erreur lors du chargement/>
-  <noResults label="Aucun résultat n'a été retourné"/>
+  
+  <fetchResults label="Recherche des résultats en cours..."/>
+  <errorResults label="Une erreur est survenue lors du chargement des résultats"/>
+  <loadError label="Erreur lors du chargement"/>
+  <noResults label="Aucun résultat retourné"/>
   
   <timer>
-	  <remaining name="Temps restant"/>
-	  <timeUp name="temps jusqu'à"/>
-	  <seconds name="secondes"/>
+      <remaining name="Temps restant"/>
+      <timeUp name="Temps écoulé"/>
+      <seconds name="secondes"/>
   </timer>
 
+  <colourChanger label="Modificateur de couleur" description="Modifier les couleurs." tooltip="Modifier les couleurs">
+      <closeButton label="" description="Fermer le modificateur de couleur"/>
+      <selectTxt label="Merci de choisir parmi l’une des options ci-dessous"/>
+      <adviceTxt label="Besoin d’autres conseils ? Rendez-vous sur le &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt; guide d’accessibilité à la trousse à outils Xerte &lt;/a&gt;."/>
+      <off label="Désactivé"/>
+      <noBg label="Retirer les mages en arrière-plan"/>
+      <invert label="Inverser"/>
+      <blackYellow label="Noir sur jaune"/>
+  </colourChanger>
+  
+  <screenReaderInfo label="Information sur le lecteur d’écran" newWindow="Ce lien s’ouvrira dans une nouvelle fenêtre" thisWindow="Ce lien s’ouvrira dans cette fenêtre" dialog="Ce bouton ouvrira une boîte de dialogue">
+      <tabNav description="Cette page contient un panneau à onglets dans lequel la sélection d’un onglet modifie l’information présentée. Pour sélectionner un onglet : Cliquez deux fois sur Entrée (Jaws) ou cliquez sur Shift-Entrée (NVDA)."/>
+      <accNav description="Cette page contient un panneau accordéon dans lequel la sélection d’un onglet modifie l’information présentée. Pour sélectionner un onglet, cliquez sur Entrée ou sur Espace."  click="Cliquez pour afficher des informations"/>
+      <buttonNav description="Cette page contient une série de boutons qui révèlent chacun des informations connexes." click="Cliquez pour afficher des informations"/>
+      <slideshow description="Cette page contient un diaporama dans lequel on peut modifier l’information présentée en cliquant sur les boutons suivant ou précédent."/>
+      <audioSlideshow description="Cette page affiche un contenu synchronisé avec un fichier audio. Du nouveau contenu s’ajoute à la page pendant la lecture du contenu audio."/>
+      <videoSynch description="Cette page affiche du contenu synchronisé avec une vidéo. Du nouveau contenu s’ajoute à la page pendant la lecture du contenu vidéo."/>
+      <list description="Cette page contient une série de liens qui révèlent chacune des informations connexes." click="Cliquez pour afficher des informations"/>
+      <modelAnswerResults selected="Texte sélectionné"/>
+      <mcq description="Cette page contient une question à choix multiples. Servez-vous de la touche de tabulation et des flèches directionnelles haut et bas pour explorer les réponses envisageables et cliquez sur Espace pour sélectionner votre réponse."/>
+      <quiz description="Cette page contient une série de questions à choix multiples. Servez-vous de la touche de tabulation et des flèches directionnelles haut et bas pour explorer les réponses envisageables et cliquez sur Espace pour sélectionner votre réponse."/>
+  </screenReaderInfo>
+  
+  <authorVars label="Voir les données variables">
+    <item>Nom</item>
+    <item>Valeur fixée</item>
+    <item>Aléatoire</item>
+    <item>Min</item>
+    <item>Max</item>
+    <item>Étape</item>
+    <item>DP</item>
+    <item>SF</item>
+    <item>Zéros de remplissage</item>
+    <item>Exclure</item>
+    <item>Défaut</item>
+    <item>Valeur</item>
+  </authorVars>
+  
+  <authorVarsInfo>
+      <error unable="Calcul impossible" invalid="Valeur invalide" none="Aucune donnée variable"/>
+      <info undef="Indique une variable non définie" minMax="min. > max." valueMin="valeur &lt; min." valueMax="valeur > max." exclude="{n} est exclu(e)" circular="Référence de variable circulaire" none="Toutes les valeurs possibles sont exclues ou ne rentrent pas dans le champ min. &amp; max." none2="{n} tentatives n’ont pas retourné une valeur acceptée" attempts="{n} tentatives de calculer une valeur valide" default="Revenir à la valeur de défaut"/>
+  </authorVarsInfo>
+
 </language>
+

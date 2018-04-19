@@ -26,6 +26,10 @@
 
 	var IMPORT_CONFIRM = "You are about to import a new template - are you sure?";
 
-    var IMPORT_BUTTON_UPLOAD = "Upload";
+	var IMPORT_BUTTON_UPLOAD = "Upload";
 
-    var IMPORT_BUTTON_CLOSE = "Close";
+	var IMPORT_BUTTON_CLOSE = "Close";
+
+	var IMPORT_BUTTON_IMPORT = "Import";
+
+	var IMPORT_BUTTON_IMPORTING = "Importing...";

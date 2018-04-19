@@ -35,7 +35,7 @@
 		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true"/>
 		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true"/>
 		<menuImage optional="true" type="media" label="Page Image" defaultValue="Select an Image"/>
-		<menuImageProperties optional="true" type="ComboBox" label="Page Image Style" options="Use Panel,Full Screen" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel"/>
+		<menuImageProperties optional="true" type="ComboBox" label="Page Image Style" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel"/>
 	</toc>
 	
 	<mediaFile type="group" label="Media" optional="true">
@@ -69,6 +69,7 @@
 		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage when tracking"/>
         <trackingPageTimeout label="Page timeout for completion" type="NumericStepper" min="1" max="1000" step="1" optional="true" defaultValue="5" tooltip="The number of seconds a page has to be viewed to count as completed" />
         <forceTrackingMode label="Force tracking mode behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracking LO's. This changes the behaviour of some pagetypes, i.e. in Quiz the restart button will be disabled and in drag/drop exercises, the labels will stick, even if the answer is wrong" />
+       	<category label="Tracking Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object, stored in xAPI events, to be used for categorising in xAPI reports"/>
 	</tracking>
 	
     <newNodes>

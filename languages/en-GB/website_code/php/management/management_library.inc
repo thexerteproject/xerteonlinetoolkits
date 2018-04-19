@@ -19,7 +19,12 @@
 	define("MANAGEMENT_LIBRARY_NEW_LABEL", "Add");
 	define("MANAGEMENT_LIBRARY_EXISTING_CATEGORIES", "Manage existing categories");
 
-	define("MANAGEMENT_LIBRARY_FEEDS_NO_FEEDS", "No projects have been added to the feeds yet.");
+    define("MANAGEMENT_LIBRARY_ADD_GROUPING", "Add a new grouping");
+    define("MANAGEMENT_LIBRARY_NEW_GROUPING", "The new grouping is");
+    define("MANAGEMENT_LIBRARY_NEW_GROUPING_NAME", "Enter name here");
+    define("MANAGEMENT_LIBRARY_EXISTING_GROUPINGS", "Manage existing groupings");
+
+    define("MANAGEMENT_LIBRARY_FEEDS_NO_FEEDS", "No projects have been added to the feeds yet.");
 	define("MANAGEMENT_LIBRARY_REMOVE_RSS", "Remove from RSS");
 	define("MANAGEMENT_LIBRARY_REMOVE_EXPORT", "Remove from Export");
 	define("MANAGEMENT_LIBRARY_REMOVE_SYNDICATION", "Remove from Syndication");

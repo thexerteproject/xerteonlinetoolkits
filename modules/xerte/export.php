@@ -41,7 +41,6 @@ require_once ($xerte_toolkits_site->root_file_path . "website_code/php/screen_si
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/user_library.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/url_library.php");
 
-
 function create_offline_file($varname, $sourcefile, $destfile)
 {
     global $dir_path, $delete_file_array;
@@ -80,8 +79,8 @@ $export_html5 = false;
 $export_flash = false;
 $export_offline = false;
 $xAPI = false;
-$tsugi = false;
 $offline_includes="";
+$need_download_url = false;
 
 if (isset($_REQUEST['html5'])) {
     $export_html5 = ($_REQUEST['html5'] == 'true' ? true : false);
@@ -113,12 +112,6 @@ if (isset($_REQUEST['offline']))
 if (isset($_REQUEST['xAPI']) && $_REQUEST['xAPI'] == "true")
 {
 	$xAPI = true;
-}
-
-if (isset($_REQUEST['tsugi']) && $_REQUEST['tsugi'] == "true")
-{
-	$xAPI = true;
-	$tsugi = true;
 }
 
 /*
@@ -192,14 +185,18 @@ if ($fullArchive) {
 
             // Offline dialogs
             create_offline_file("modelfilestrs['colourChanger']", $parent_template_path . "models_html5/colourChanger.html", "offline/offline_colourChanger.js");
+            array_push($file_array, array($parent_template_path . "models_html5/colourChanger.css", ""));
             $offline_includes .= "   <!-- Offline dialogs -->\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_colourChanger.js\"></script>\n";
             create_offline_file("modelfilestrs['menu']", $parent_template_path . "models_html5/menu.html", "offline/offline_menu.js");
+            array_push($file_array, array($parent_template_path . "models_html5/menu.css", ""));
             $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_menu.js\"></script>\n";
             create_offline_file("modelfilestrs['language']", $parent_template_path . "models_html5/language.html", "offline/offline_language.js");
+            array_push($file_array, array($parent_template_path . "models_html5/language.css", ""));
             $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_language.js\"></script>\n";
             if ($xml->glossaryUsed()) {
                 create_offline_file("modelfilestrs['glossary']", $parent_template_path . "models_html5/glossary.html", "offline/offline_glossary.js");
+                array_push($file_array, array($parent_template_path . "models_html5/glossary.css", ""));
                 $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_glossary.js\"></script>\n";
             }
             $offline_includes .= "\n";
@@ -209,11 +206,13 @@ if ($fullArchive) {
             foreach($models as $model)
             {
                 create_offline_file("modelfilestrs['" . $model . "']", $parent_template_path . "models_html5/" . $model . ".html", "offline/" . $model . ".js");
+                array_push($file_array, array($parent_template_path . "models_html5/" .$model . ".css", ""));
                 $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/" . $model . ".js\"></script>\n";
             }
 
             // Extra include files normally loaded dynamically
             $offline_includes .= "   <!-- extra files, normally loaded dynamically -->\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/script.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/popcorn-complete.min.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.textplus.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.subtitleplus.js\"></script>\n";
@@ -222,6 +221,10 @@ if ($fullArchive) {
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.mcq.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.slides.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.sortholder.js\"></script>\n";
+
+            // Offline theme js file
+            $offline_includes .= "   <!-- theme file, normally loaded dynamically -->\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"theme/Nottingham/" . $xml->getTheme() . "/" . $xml->getTheme() . ".js\"></script>\n";
         }
         else {
             foreach ($models as $model) {
@@ -229,7 +232,7 @@ if ($fullArchive) {
                 array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".html", ""));
                 array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".css", ""));
             }
-            /* Always add menu.rlm */
+            /* Always add menu.html */
             _debug("copy model " . $parent_template_path . "models_html5/menu.html");
             array_push($file_array, array($parent_template_path . "models_html5/menu.html", ""));
             array_push($file_array, array($parent_template_path . "models_html5/menu.css", ""));
@@ -340,6 +343,7 @@ if($xAPI)
 	export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/en-GB/' . $xAPI_language_relpath, false, null, "/languages/js/en-GB/");
 	copy_extra_files();
 }
+
 // Copy the favicon file
 copy($xerte_toolkits_site->root_file_path . "favicon.ico", $dir_path . "favicon.ico");
 array_push($delete_file_array, $dir_path . "favicon.ico");
@@ -369,6 +373,11 @@ if ($xml->mediaIsUsed()) {
     export_folder_loop($xerte_toolkits_site->root_file_path . "mediaViewer/");
     copy_extra_files();
 }
+/* 
+ * documentation
+ */
+ if ($xml->modelUsed("documentation")) $need_download_url = true;
+
 
 export_folder_loop($dir_path);
 
@@ -402,32 +411,30 @@ if ($scorm == "true") {
         lmsmanifest_create($row['zipname'], $useflash, $lo_name);
     }
     if ($useflash) {
-        scorm_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
+        scorm_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-            scorm_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
+            scorm_html5_page_create($_GET['template_id'], $row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage(), $need_download_url);
     }
 } else if ($scorm == "2004") {
     $useflash = ($export_flash && !$export_html5);
     lmsmanifest_2004_create($row['zipname'], $useflash, $lo_name);
     if ($export_flash && !$export_html5) {
-        scorm2004_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
+        scorm2004_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-        scorm2004_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
+        scorm2004_html5_page_create($_GET['template_id'], $row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage(), $need_download_url);
     }
 } else if($xAPI)
 	{
-		xAPI_html_page_create($row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage(), $tsugi);
+		xAPI_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage());
 	}
 else {
-	
     if ($export_flash) {
-        basic_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
+        basic_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
     if ($export_html5) {
-        basic_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $export_offline, $offline_includes);
+        basic_html5_page_create($_GET['template_id'], $row['template_framework'], $row['template_name'],$lo_name,  $tsugi, $export_offline, $offline_includes, $need_download_url);
     }
 }
-
 
 /*
  * Improve the naming of the exported zip file
@@ -461,29 +468,9 @@ $row['zipname'] .= $export_engine . $export_type;
 
 xerte_zip_files($fullArchive, $dir_path);
 $zipfile->create_archive();
+$zipfile->download_file($row['zipname']);
 
-if($tsugi)
-{
-	$tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
-	$tsugi_dir = $xerte_toolkits_site->root_file_path . "tsugi/mod/$tsugi_project_dir/";
-	if (!file_exists($tsugi_dir)) {
-		mkdir($tsugi_dir, 0777, true);
-	}
-	$zipdir = $zipfile->GetFilename();
-	
-	copy($zipdir, $tsugi_dir . "archive.zip");
-	$zipArchive = new ZipArchive();
-	$result = $zipArchive->open($tsugi_dir. "archive.zip");
-	if ($result === TRUE) {
-		$zipArchive ->extractTo($tsugi_dir);
-		$zipArchive ->close();
-		
-	}
-	
-}else{
-	// This outputs http headers etc.
-	$zipfile->download_file($row['zipname']);
-}
+
 _debug("Zip file errors? " . implode(',', $zipfile->error));
 
 /*
@@ -494,8 +481,5 @@ clean_up_files();
 @unlink($dir_path . "template.xml");
 
 @unlink($zipfile_tmpname);
-if($tsugi)
-{
-	echo "Visit on: " . $xerte_toolkits_site->site_url . "tsugi/mod/$tsugi_project_dir/";
-}
+
 ?>

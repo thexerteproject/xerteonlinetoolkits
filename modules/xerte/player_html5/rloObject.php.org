@@ -1,15 +1,23 @@
 <?php
-require_once "../config.php";
-
-// The Tsugi PHP API Documentation is available at:
-// http://do1.dr-chuck.com/tsugi/phpdoc/
-
+require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
+			
 use \Tsugi\Core\LTIX;
 use \Tsugi\Core\Settings;
 use \Tsugi\Util\Net;
 use \Tsugi\Grades\GradeUtil;
 
 $LAUNCH = LTIX::requireData();
+$USER = $LAUNCH->user;
+if(isset($_POST['grade']))
+{
+	$grade = $_POST['grade'];
+	if(is_numeric($grade) && $grade >= 0 && $grade <= 1.0)
+	{
+		$LAUNCH->result->gradeSend($grade);
+	}
+	exit();
+}
+
 ?>
 <!DOCTYPE html>
 <!--
@@ -37,6 +45,7 @@ $LAUNCH = LTIX::requireData();
 <!--[if lt IE 9]><html class="no-js lt-ie9"><![endif]-->
 <!--[if IE 9]><html class="no-js ie9"><![endif]-->
 <!--[if (gt IE 9)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8">
@@ -62,9 +71,20 @@ $LAUNCH = LTIX::requireData();
     <link href="%TEMPLATEPATH%common_html5/font-awesome-4.3.0/css/font-awesome.min.css" rel="stylesheet">
 	
     %OFFLINESCRIPTS%
+
 	<script>
 		var username = "<?php echo $USER->email; ?>";
+        <?php
+        if($row["tsugi_xapi_enabled"]){
+        ?>
+		var lrsEndpoint = "<?php echo $row["tsugi_xapi_endpoint"]; ?>";
+        var lrsUsername = "<?php echo $row["tsugi_xapi_key"]; ?>";
+        var lrsPassword = "<?php echo $row["tsugi_xapi_secret"]; ?>";
+        <?php
+        }
+        ?>
 	</script>
+
 </head>
 
 <body onload = "XTInitialise();" onbeforeunload = "XTTerminate();">
@@ -73,6 +93,7 @@ $LAUNCH = LTIX::requireData();
 
 		<div id="x_mobileScroll">
 			<div id="x_headerBlock" role="banner">
+				<img class="x_icon" src="%TEMPLATEPATH%common_html5/logo.png"/>
 				<div>
 					<h1> </h1>
 					<h2 aria-live="assertive"> </h2>

@@ -134,7 +134,7 @@ function lmsmanifest_create_rich($row, $metadata, $users, $flash, $lo_name) {
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html_page_create($name, $type, $rlo_file, $lo_name) {
+function basic_html_page_create($id, $name, $type, $rlo_file, $lo_name) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -147,6 +147,7 @@ function basic_html_page_create($name, $type, $rlo_file, $lo_name) {
     $buffer = str_replace("%TITLE%", $lo_name, $buffer);
     $buffer = str_replace("%RLOFILE%", $rlo_file, $buffer);
     $buffer = str_replace("%XMLPATH%", "", $buffer);
+    $buffer = str_replace("%TEMPLATEID%", $id, $buffer);
     $buffer = str_replace("%JSDIR%", "", $buffer);
     $buffer = str_replace("%XMLFILE%", "template.xml", $buffer);
     $buffer = str_replace("%SITE%", $xerte_toolkits_site->site_url, $buffer);
@@ -172,7 +173,7 @@ function basic_html_page_create($name, $type, $rlo_file, $lo_name) {
  * @version 1.0
  * @author Patrick Lockley
  */
-function scorm_html_page_create($name, $type, $rlo_file, $lo_name, $language) {
+function scorm_html_page_create($id, $name, $type, $rlo_file, $lo_name, $language) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -185,6 +186,7 @@ function scorm_html_page_create($name, $type, $rlo_file, $lo_name, $language) {
     $scorm_html_page_content = str_replace("%TITLE%", $lo_name, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%RLOFILE%", $rlo_file, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLPATH%", "", $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%TEMPLATEID%", $id, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%JSDIR%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLFILE%", "template.xml", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%SITE%", $xerte_toolkits_site->site_url, $scorm_html_page_content);
@@ -218,17 +220,20 @@ function scorm_html_page_create($name, $type, $rlo_file, $lo_name, $language) {
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($type, $template_name, $lo_name, $offline=false, $offline_includes="") {
+function basic_html5_page_create($id, $type, $template_name, $lo_name, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
     $version = getVersion();
 
     $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
+	
+   
     $buffer = str_replace("%VERSION%", $version, $buffer);
     $buffer = str_replace("%VERSION_PARAM%", "", $buffer);
     $buffer = str_replace("%TITLE%", $lo_name, $buffer);
     $buffer = str_replace("%TEMPLATEPATH%", "", $buffer);
+    $buffer = str_replace("%TEMPLATEID%", $id, $buffer);
     $buffer = str_replace("%XMLPATH%", "", $buffer);
     $buffer = str_replace("%XMLFILE%", "template.xml", $buffer);
     $buffer = str_replace("%THEMEPATH%", "themes/" . $template_name . "/",$buffer);
@@ -236,6 +241,7 @@ function basic_html5_page_create($type, $template_name, $lo_name, $offline=false
     if ($offline) {
         // Handle offline variables
         $buffer = str_replace("%OFFLINESCRIPTS%", "    <script type=\"text/javascript\" src=\"offline/js/offlinesupport.js\"></script>", $buffer);
+        if ($need_download_url) $offline_includes .= "   <script type=\"text/javascript\">var x_downloadURL = \"" . $xerte_toolkits_site->site_url . "download.php\";</script>\n";
         $buffer = str_replace("%OFFLINEINCLUDES%", $offline_includes, $buffer);
         $buffer = str_replace("%MATHJAXPATH%", "offline/js/mathjax/", $buffer);
     }
@@ -243,20 +249,23 @@ function basic_html5_page_create($type, $template_name, $lo_name, $offline=false
     {
         // Handle offline variables
         $buffer = str_replace("%OFFLINESCRIPTS%", "", $buffer);
-        $buffer = str_replace("%OFFLINEINCLUDES%", "", $buffer);
+        if ($need_download_url) $offline_includes = "   <script type=\"text/javascript\">var x_downloadURL = \"" . $xerte_toolkits_site->site_url . "download.php\";</script>\n";
+        $buffer = str_replace("%OFFLINEINCLUDES%", $offline_includes, $buffer);
         $buffer = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $buffer);
     }
-
     $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"common_html5/js/xttracking_noop.js\"></script>", $buffer);
+	
+	$index = "index.htm";
 
-    $file_handle = fopen($dir_path . "index.htm", 'w');
+	
+    $file_handle = fopen($dir_path . $index, 'w');
 
     fwrite($file_handle, $buffer, strlen($buffer));
     fclose($file_handle);
 
-    $zipfile->add_files("index.htm");
+    $zipfile->add_files($index);
 
-    array_push($delete_file_array, $dir_path . "index.htm");
+    array_push($delete_file_array, $dir_path . $index);
 }
 
 /**
@@ -268,7 +277,7 @@ function basic_html5_page_create($type, $template_name, $lo_name, $offline=false
  * @version 1.0
  * @author Patrick Lockley
  */
-function scorm_html5_page_create($type, $template_name, $lo_name, $language) {
+function scorm_html5_page_create($id, $type, $template_name, $lo_name, $language, $need_download_url=false) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -279,6 +288,7 @@ function scorm_html5_page_create($type, $template_name, $lo_name, $language) {
     $scorm_html_page_content = str_replace("%VERSION_PARAM%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TITLE%", $lo_name, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TEMPLATEPATH%", "", $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%TEMPLATEID%", $id, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLPATH%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLFILE%", "template.xml", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%THEMEPATH%", "themes/" . $template_name . "/",$scorm_html_page_content);
@@ -290,8 +300,10 @@ function scorm_html5_page_create($type, $template_name, $lo_name, $language) {
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm1.2.js\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_scorm1.2.js\"></script>\n";
     if (file_exists($dir_path . "languages/js/" . $language . "/xttracking_scorm1.2.js")) {
-        $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm1.2.js\"></script>";
+        $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm1.2.js\"></script>\n";
     }
+    if ($need_download_url) $tracking .= "   <script type=\"text/javascript\">var x_downloadURL = \"" . $xerte_toolkits_site->site_url . "download.php\";</script>\n";
+
     $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $scorm_html_page_content);
 
@@ -486,16 +498,13 @@ function xerte_zip_files($fullArchive = false, $dir_path) {
                 if ($skipfile)
                     continue;
             }
-            if (!$fullArchive && strpos($file[0], "/media/") !== false) {
-
+            $string = str_replace($dir_path, "", $file[0]);
+            if (!$fullArchive && strpos($string, "/media/") !== false) {
                 /* only add file if used */
-                $string = str_replace($dir_path, "", $file[0]);
-
                 if (strpos($data3, $string) !== false) {
                     $zipfile->add_files($string);
                 }
             } else {
-                $string = str_replace($dir_path, "", $file[0]);
                 $zipfile->add_files($string);
             }
         }

@@ -59,7 +59,18 @@ function _db_field_exists($table, $field) {
 function _db_add_field($table, $field, $fieldtype, $default, $after) {
     $table = table_by_key($table);
     if(! _db_field_exists($table, $field)) {
-        $query = "ALTER TABLE $table ADD COLUMN $field $fieldtype DEFAULT '$default' AFTER $after";
+        $fieldtype = strtoupper($fieldtype);
+        $query = "ALTER TABLE $table ADD COLUMN $field $fieldtype";
+
+        /* TEXT and BLOB types cannot have a default. */
+        if ($fieldtype != 'TEXT' && $fieldtype != 'BLOB') {
+            $query .= " DEFAULT '$default'";
+        }
+
+        if ($after) {
+            $query .= " AFTER $after";
+        }
+
         return db_query($query);
     } else { 
         printdebug ("field already exists: $table.$field");
@@ -464,20 +475,329 @@ function upgrade_9()
         }
 
         if (($error2 === false)) {
-            $error1_returned = false;
+            $error2_returned = false;
             // echo "creating LRS_Key field FAILED";
         }
 
         if (($error3 === false)) {
-            $error1_returned = false;
+            $error3_returned = false;
             // echo "creating LRS_Secret field FAILED";
         }
 
-        return "Creating LRS Endpoint settings fields - ok ? " . ($error1_returned && $error2_returned && $error3_returned? 'true' : 'false');
+        return "Creating LRS Endpoint settings fields - ok ? " . ($error1_returned && $error2_returned && $error3_returned? 'true' : 'false'). "<br>";
     }
     else
     {
-        return "LRS Endpoint settings fields already present - ok ? true";
+        return "LRS Endpoint settings fields already present - ok ? true". "<br>";
     }
 }
+
+
+function upgrade_10()
+{
+    // Update the list of allowed MIME types.
+
+    global $xerte_toolkits_site;
+
+    $add_types = array();
+    $new_types = array('image/jpg', 'image/bmp', 'image/svg+xml', 'application/svg', 'audio/mp3', 'video/mpeg', 'application/ogg', 'text/rtf');
+
+    if (! _db_field_exists('sitedetails', 'mimetypes')) {
+        die("Database field 'mimetypes' missing from 'sitedetails' table.");
+    }
+
+    foreach ($new_types as $new_mime_type) {
+        if (!in_array($new_mime_type, $xerte_toolkits_site->mimetypes)) {
+            $add_types[] = $new_mime_type;
+        }
+    }
+
+    // Only update the database if there are types that were missing.
+    if (!empty($add_types)) {
+        $new_str = implode(",", array_merge($xerte_toolkits_site->mimetypes, $add_types));
+
+        $table = table_by_key('sitedetails');
+        $sql = "UPDATE $table SET mimetypes = ?";
+        $res = db_query($sql, array($new_str));
+
+        if ($res) {
+            $new_str = implode(", ", $add_types);
+            echo "<p> New file MIME types added to the allowed type list: " . $new_str . "</p>";
+            return "Default allowed MIME type list updated - ok ? true";
+        }
+        else {
+            // A failed update is not fatal, so just report it.
+            return "Default allowed MIME type list updated - ok ? false";
+        }
+    }
+    else {
+        return "Default allowed MIME type list up to date - ok ? true";
+    }
+}
+
+function upgrade_11()
+{
+    // Create, and initialize, the field for enabling MIME upload checks.
+
+    if (! _db_field_exists('sitedetails', 'enable_mime_check')) {
+        $error1 = _db_add_field('sitedetails', 'enable_mime_check', 'char(255)', '', 'apache');
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET enable_mime_check = ?";
+            $error2 = db_query($sql, array('false'));
+        }
+        else {
+            $error2 = false;
+        }
+
+        return "Creating MIME checks field - ok ? " . ($error1 && $error2 ? 'true' : 'false');
+    }
+    else
+    {
+        return "MIME checks field already present - ok ? true";
+    }
+}
+
+function upgrade_12()
+{
+    // Create the field for enabling file extension file upload checks.
+
+    if (! _db_field_exists('sitedetails', 'enable_file_ext_check')) {
+        $error1 = _db_add_field('sitedetails', 'enable_file_ext_check', 'char(255)', '', 'mimetypes');
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET enable_file_ext_check = ?";
+            $error2 = db_query($sql, array('false'));
+        }
+        else {
+            $error2 = false;
+        }
+
+        return "Creating file extension check field - ok ? " . ($error1 && $error2 ? 'true' : 'false');
+    }
+    else
+    {
+        return "File extension check field already present - ok ? true";
+    }
+}
+
+function upgrade_13()
+{
+    // Create the file_extensions blacklist field.
+
+    $blacklist = 'php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm';
+
+    if (! _db_field_exists('sitedetails', 'file_extensions')) {
+        $error1 = _db_add_field('sitedetails', 'file_extensions', 'text', '', 'enable_file_ext_check');
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET file_extensions = ?";
+            $error2 = db_query($sql, array($blacklist));
+        }
+        else {
+            $error2 = false;
+        }
+
+        return "Creating file extension blacklist field - ok ? " . ($error1 && $error2 ? 'true' : 'false');
+    }
+    else
+    {
+        return "File extension blacklist field already present - ok ? true";
+    }
+}
+
+function upgrade_14()
+{
+    // Create the ClamAV antivirus check settings.
+
+    if (! _db_field_exists('sitedetails', 'enable_clamav_check') || ! _db_field_exists('sitedetails', 'clamav_cmd') || ! _db_field_exists('sitedetails', 'clamav_opts')) {
+        if (! _db_field_exists('sitedetails', 'enable_clamav_check')) {
+            $error1 = _db_add_field('sitedetails', 'enable_clamav_check', 'char(255)', '', 'file_extensions');
+
+            if ($error1) {
+                $table = table_by_key('sitedetails');
+                $sql = "UPDATE $table SET enable_clamav_check = ?";
+                $error1 = db_query($sql, array('false'));
+            }
+        }
+        else {
+            $error1 = true;
+        }
+
+        if ($error1 && ! _db_field_exists('sitedetails', 'clamav_cmd')) {
+            $error2 = _db_add_field('sitedetails', 'clamav_cmd', 'char(255)', '', 'enable_clamav_check');
+
+            if ($error2) {
+                $table = table_by_key('sitedetails');
+                $sql = "UPDATE $table SET clamav_cmd = ?";
+                $error2 = db_query($sql, array('/usr/bin/clamscan'));
+            }
+        }
+        else {
+            $error2 = true;
+        }
+
+        if ($error1 && $error2 && ! _db_field_exists('sitedetails', 'clamav_opts')) {
+            $error3 = _db_add_field('sitedetails', 'clamav_opts', 'char(255)', '', 'clamav_cmd');
+
+            if ($error3) {
+                $table = table_by_key('sitedetails');
+                $sql = "UPDATE $table SET clamav_opts = ?";
+                $error3 = db_query($sql, array('--no-summary'));
+            }
+        }
+        else {
+            $error3 = true;
+        }
+
+        return "Creating the ClamAV antivirus check fields - ok ? " . ($error1 && $error2 && $error3 ? 'true' : 'false');
+    }
+    else
+    {
+        return "ClamAV antivirus check fields already present - ok ? true";
+    }
+}
+
+function upgrade_15()
+{
+    if (! _db_field_exists('sitedetails', 'tsugi_dir')) {
+        $error1 = _db_add_field('sitedetails', 'tsugi_dir', 'text', '', 'LRS_Secret');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        return "Tsugi directory field - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Tsugi directory already exists - ok ? true". "<br>";
+    }
+}
+
+function upgrade_16()
+{
+    $message = "";
+    if (! _db_field_exists('templatedetails', 'tsugi_published')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_published', 'int(1)', '0', 'extra_flags');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        $message .= "Tsugi published field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        $message .= "Tsugi published field already exists - ok ? true". "<br>";
+    }
+
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_enabled')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_enabled', 'int(1)', '0', 'tsugi_published');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        $message .= "Tsugi xapi enabled field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        $message .= "Tsugi xapi enabled field already exists - ok ? true". "<br>";
+    }
+
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_endpoint')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_endpoint', 'varchar(255)', '', 'tsugi_xapi_enabled');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        $message .= "Tsugi xapi endpoint field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        $message .= "Tsugi xapi endpoint field already exists - ok ? true". "<br>";
+    }
+
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_key')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_key', 'varchar(255)', '', 'tsugi_xapi_endpoint');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        $message .= "Tsugi xapi key field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        $message .= "Tsugi xapi key field already exists - ok ? true". "<br>";
+    }
+
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_secret')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_secret', 'varchar(255)', '', 'tsugi_xapi_key');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        $message .= "Tsugi xapi secret field added - ok ? " . ($error1_returned ? 'true' : 'false') . "<br>";
+    }
+    else
+    {
+        $message .= "Tsugi xapi secret field already exists - ok ? true <br>";
+    }
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_student_id_mode')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_student_id_mode', 'int(1)', '0', 'tsugi_xapi_secret');
+        $error1_returned = true;
+
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        $message .= "Tsugi xapi student id mode field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        $message .= "Tsugi xapi student id mode field already exists - ok ? true <br>";
+    }
+    return $message;
+
+}
+
+function upgrade_17()
+{
+    $table = table_by_key('grouping');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+      `grouping_id` int(11) NOT NULL AUTO_INCREMENT,
+      `grouping_name` char(255) DEFAULT NULL,
+      PRIMARY KEY (`grouping_id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+    ");
+
+    $message =  "Creating grouping table - ok ? " . ( $ok ? 'true' : 'false' );
+
+    $ok = db_query("insert  into `$table` (`grouping_id`,`grouping_name`) values (1,'Grouping 1'),(2,'Grouping 2'),(3,'Grouping 3'),(4,'Grouping 4'),(5,'Grouping 5'),(6,'Grouping 6'),(7,'Grouping 7'),(8,'Grouping 8'),(9,'Grouping 9'),(10,'Grouping 10')");
+
+    $message .= "Filling default groupings into groupings table - ok ? " . ( $ok ? 'true' : 'false' );
+
+    return $message;
+}
+
 ?>

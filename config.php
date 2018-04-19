@@ -47,7 +47,7 @@ if ($development) {
     ini_set('error_reporting', E_ALL);
     // Change this to where you want the XOT log file to go; 
     // the webserver will need to be able to write to it.
-    define('XOT_DEBUG_LOGFILE', '/tmp/debug.log');
+    define('XOT_DEBUG_LOGFILE', 'error_logs/debug.log');
 }
 
 if (version_compare(PHP_VERSION, '5.1.0', '<')) {
@@ -124,8 +124,17 @@ foreach ($row as $key => $value) {
     $xerte_toolkits_site->$key = $value;
 }
 
+if($xerte_toolkits_site->tsugi_dir == "" || $xerte_toolkits_site->tsugi_dir == null)
+{
+	$xerte_toolkits_site->tsugi_dir = $xerte_toolkits_site->root_file_path . "tsugi/";
+}
+
 // awkward ones.
+$xerte_toolkits_site->enable_mime_check = true_or_false($row['enable_mime_check']);
 $xerte_toolkits_site->mimetypes = explode(",", $row['mimetypes']);
+$xerte_toolkits_site->enable_file_ext_check = true_or_false($row['enable_file_ext_check']);
+$xerte_toolkits_site->file_extensions = explode(",", strtolower($row['file_extensions']));
+$xerte_toolkits_site->enable_clamav_check = true_or_false($row['enable_clamav_check']);
 $xerte_toolkits_site->name = $row['site_name'];
 $xerte_toolkits_site->demonstration_page = $xerte_toolkits_site->site_url . $row['demonstration_page'];
 $xerte_toolkits_site->news_text = base64_decode($row['news_text']);
@@ -168,6 +177,9 @@ $xerte_toolkits_site->play_edit_preview_query = base64_decode($row['play_edit_pr
 $xerte_toolkits_site->error_log_path = $xerte_toolkits_site->root_file_path . $row['error_log_path'];
 
 $xerte_toolkits_site->flash_flv_skin = $xerte_toolkits_site->site_url . $row['flash_flv_skin'];
+
+/* Record the last error reported during file checks. */
+global $last_file_check_error;
 
 
 $dir = opendir(dirname(__FILE__) . "/modules/");

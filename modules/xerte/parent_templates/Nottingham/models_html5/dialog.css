@@ -5,13 +5,14 @@
 	}
 
 	#pageContents .question {
+		position: relative;
 		padding-bottom:	10px;
 		width:	100%;
 	}
 
 	#pageContents .question div {
 		margin-top:	2px;
-		width:		50%;
+		max-width:		50%;
 		display:	inline-block;
 	}
 
@@ -28,5 +29,12 @@
 	#pageContents button {
 		margin:		10px;
 		float:		right;
+		clear: both;
+	}
+	
+	.result {
+		position: absolute;
+		right: 0;
+		top: 0.3em;
 	}
 

@@ -6,7 +6,7 @@
 
 	#pageContents #btnHolder {
 		text-align:		center;
-		margin-top:		10px;
+		margin-top:		0.5em;
 		margin-right:	0px; /* over-ride ui style */
 		padding-top:	2px;
 		padding-bottom:	2px;
@@ -43,7 +43,7 @@
 	#pageContents .radioAnswers .optionTxt {
 		cursor:			pointer;
 		position:		relative;
-		margin-left:	30px;
+		margin-left:	2em;
 		display:		block;
 	} 
 	
@@ -72,6 +72,11 @@
 		float:	left;
 	}
 	
+	#helpBtn .ui-icon {
+		width: auto;
+		height: auto;
+	}
+	
 	#helpDialog {
 		padding:	10px;
 	}
@@ -84,7 +89,7 @@
 	}
 	
 	#overviewHolder .overviewAnswer, #overviewHolder .extraInfo {
-		margin-left:	10px;
+		margin-left: 1em;
 	}
 	
 	#overviewHolder .overviewAnswer .ui-icon, #overviewHolder .extraInfo .ui-icon {
@@ -98,5 +103,13 @@
 	#overviewHolder .overviewStep, #overviewHolder .overviewAnswer {
 		padding-top:	10px;
 		padding-bottom:	10px;
+	}
+	
+	#overviewHolder .overviewStep p {
+		display: inline;
+	}
+	
+	i[class*='fa-chevron'] {
+		font-size: 0.8em;
 	}
 

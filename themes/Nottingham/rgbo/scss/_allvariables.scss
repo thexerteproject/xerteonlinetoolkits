@@ -1,0 +1,38 @@
+//*---colours to use - rgbo:  Red Green Blue Orange---*/
+//*define color pallette*/
+$darkestcolor: #222222; /*black*/
+$lightestcolor:orange;
+$brightcolor:green;
+$contrastcolor:#0087C6; /*blue*/
+$whiteorlightest:#ffffff;
+$blackordarkest:#000000;
+$accent1: red;
+$accent2:yellow;
+
+/*set background colors*/
+$bodybackgroundcolor:#BFBFBF;
+$defaultpagebackground:$whiteorlightest;
+$progressBarColor: #2196F3; /* default #2196F3;*/
+
+/*set font family*/
+$mainfonts: Roboto, 'Segoe UI', Tahoma, sans-serif;;
+$secondaryfonts:Roboto, 'Segoe UI', Tahoma, sans-serif;;
+
+/*define font colors to match the background colors*/
+$mainfontcolour: $darkestcolor;
+$fontcolorfordarkestcolor:#ffffff;
+$fontcolorforlightestcolor:#000000;
+$fontcolorfobrightcolor:#ffffff;
+$fontcolorforcontrastcolor:#ffffff;
+$linkcolor:blue;
+$linkvisited: green;
+$linkhover:red;
+
+/*define rounded corner and other sizes*/
+$largeroundedcorners: 3vmin;/*6vmin;*/
+$mediumroundedcorners: 2vmin;/*2vmin;*/
+$smallroundedcorners: 1vmin;/*1vmin;*/
+$imageroundedcorners: none;/*2vmin;*/
+$contentmargin: 2%;
+$interfaceboxshadow:none; /*3px 3px 5px grey*/
+$defaultpagepadding:2%;

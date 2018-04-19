@@ -169,9 +169,10 @@ function show_preview_code2($row, $row_username){
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);        // $engine is assumed to be html5 if flash is NOT set
         $page_content = str_replace("%TITLE%", $title , $page_content);
         $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
+        $page_content = str_replace("%TEMPLATEID%", $_GET['template_id'], $page_content);
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
-        $page_content = str_replace("%THEMEPATH%",$xerte_toolkits_site->site_url . "themes/" . $row['template_name'] . "/",$page_content);
+        $page_content = str_replace("%THEMEPATH%", "themes/" . $row['template_name'] . "/",$page_content);
 
         // Handle offline variables
         $page_content = str_replace("%OFFLINESCRIPTS%", "", $page_content);

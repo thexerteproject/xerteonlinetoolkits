@@ -169,7 +169,7 @@
 		
 	define("PROPERTIES_LIBRARY_ACCESS_OTHER", "Other");
 		
-	define("PROPERTIES_LIBRARY_ACCESS_OTHER_EXPLAINED", "Using this setting restricts access to your content. Your content will only be visible to people following links to your content from the site you provide. Enter the site URL below.");
+	define("PROPERTIES_LIBRARY_ACCESS_OTHER_EXPLAINED", "Using this setting restricts access to your content. Your content will only be visible to people following links to your content from the sites you provide. Enter the site URLs below, separating individual URLs with commas.");
 		
 	define("PROPERTIES_LIBRARY_ACCESS_PRIVATE", "Private");
 		
@@ -206,6 +206,46 @@
 	define("PROPERTIES_LIBRARY_RSS_PUBLIC", "Please set this project to the 'Public' on the access tab before using the RSS Feed features");
 	
 	define("PROPERTIES_LIBRARY_RSS_FAIL", "Sorry only the creator or co-author of the project can set notes for the project");
+
+	// LTI/xAPI TAB
+
+	define("PROPERTIES_LIBRARY_TSUGI_FAIL", "Sorry only the creator or co-author of the project can set LTI/xAPI properties for the project");
+
+	define("PROPERTIES_LIBRARY_TSUGI", "LTI/xAPI");
+
+	define("PROPERTIES_LIBRARY_TSUGI_DESCRIPTION", "<p>Here you can publish your project as an LTI1 tool. To add this project via LTI to a learning environment the auto generated key, secret and URL specific to this project will need to be added to the learning environment. You can change the auto populated values but remember the key must be unique for this project in this Xerte installation. If you are enabling others to add this project via LTI to their learning environment they will need each of these details too.</p><p>You can also choose to track activities through xAPI. If you want to do that you need to specify the end-point, the username and the password of the LRS that is going to receive the xAPI events. If you want to track activities without LTI, the only option you have as a learner identifier is setting a group value. The group will need to be specified in the launch URL (substitute groupname by the groupname you want to used).</p>");
+
+	define("PROPERTIES_LIBRARY_TSUGI_NOTAVAILABLE_DESCRIPTION", "<p>Here you could publish your project as an LTI1 tool if you install and configure TSUGI as part of your installation, however Tsugi is not currently installed. See <a href='https://xot.xerte.org.uk/play.php?template_id=88' target='_blank'>how to install Tsugi</a> for further details.</p><p>You can also choose to track activities through xAPI. If you want to do so you need to specify the end-point, the username and the password of the LRS that is going to receive the xAPI events. You can still use xAPI without Tsugi/LTI installed but in this case the only option you have as a learner identifier is setting a group value. The group will need to be specified in the launch URL (substitute groupname by the groupname you want to be used).</p>");
+
+	define("PROPERTIES_LIBRARY_TSUGI_PUBLISH", "Publish project through Tsugi as an LTI1 tool");
+
+	define("PROPERTIES_LIBRARY_TSUGI_NAME", "Name:");
+
+    define("PROPERTIES_LIBRARY_TSUGI_KEY", "Key:");
+
+	define("PROPERTIES_LIBRARY_TSUGI_SECRET", "Secret:");
+
+	define("PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI", "Enable xAPI:");
+
+	define("PROPERTIES_LIBRARY_TSUGI_XAPI_ENDPOINT", "xAPI LRS end-point:");
+
+	define("PROPERTIES_LIBRARY_TSUGI_XAPI_USERNAME", "xAPI LRS username:");
+
+	define("PROPERTIES_LIBRARY_TSUGI_XAPI_PASSWORD", "xAPI LRS password/secret:");
+
+	define("PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE", "xAPI LRS learner id mode:");
+
+	define("PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_0", "e-mail address");
+
+	define("PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_1", "hashed e-mail address");
+
+	define("PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_2", "full name and e-mail address");
+
+	define("PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_3", "group");
+
+	define("PROPERTIES_LIBRARY_TSUGI_UPDATE_BUTTON_LABEL", "Update");
+
+	define("PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL", "Your launch url is:");
 
 	
 ?>

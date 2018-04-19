@@ -219,7 +219,12 @@
 							$("#incorrect").show();
 						}
 					}
-					XTExitInteraction(x_currentPage, $pageContents.data("current"), correct, [], answer, feedback)
+					var result =
+						{
+						    success: correct,
+							score: (correct ? 100.0 : 0.0)
+						};
+					XTExitInteraction(x_currentPage, $pageContents.data("current"), result, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
 					total++;
 
 					if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
@@ -304,11 +309,11 @@
 			// Show incorrect if requested
 			$("#incorrect")
 					.hide()
-					.html('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '">' + x_addLineBreaks(" " + incorrectText));
+					.html('<span class="tick fa fa-fw fa-x-cross"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Incorrect") + '</span></span>' + x_addLineBreaks(" " + incorrectText));
 			//Show correct if requested
 			$("#correct")
 					.hide()
-					.html('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '">' + x_addLineBreaks(" " + correctText));
+					.html('<span class="tick fa fa-fw fa-x-tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '</span></span>' + x_addLineBreaks(" " + correctText));
 
 			this.loadAudio($pageContents.data("captionInfo")[$pageContents.data("current")]);
 			var name = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].name).text().replace(/(\r\n|\n|\r)/gm,"");
@@ -317,7 +322,7 @@
 				name = x_currentPageXML.getAttribute("name");
 			}
 			var trackedAnswer = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer).text().replace(/(\r\n|\n|\r)/gm,"");
-			XTEnterInteraction(x_currentPage, $pageContents.data("current"), 'fill-in', name, [], trackedAnswer, "Correct");
+			XTEnterInteraction(x_currentPage, $pageContents.data("current"), 'fill-in', name, [], trackedAnswer, "Correct", x_currentPageXML.getAttribute("grouping"));
 		}
 
 		this.loadAudio = function(caption) {
@@ -361,7 +366,7 @@
 		}
 		//Stopping the tracking
 		this.finishTracking = function() {
-			XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total));
+			XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total), x_currentPageXML.getAttribute("trackinglabel"));
 		}
 		//Starting the tracking
 		this.initTracking = function() {

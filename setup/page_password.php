@@ -32,9 +32,15 @@ $connection = $xot_setup->database->connect();
 
 if (!$connection) { ?>
 
-    <p>Sorry, the attempt to connect to MySql on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $_POST['account']; ?>. MySQL reports the following error -</p>
+    <p>Sorry, the attempt to connect to MySQL on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $_POST['account']; ?>. 
     
-    <p class="setup_error"><?php echo $connection->errorInfo(); ?></p>
+    <?php if ($connection->errorInfo() != ""): ?>
+        MySQL reports the following error -</p>
+        <p class="setup_error"><?php echo $connection->errorInfo(); ?></p>
+    <?php else: ?>
+        </p>
+        <p class="setup_error">MySQL has provided no error message.</p>
+    <?php endif; ?>
 
     <p>The account <?php echo $_POST['account']; ?> must already exist, and have access to database <?php echo $_SESSION['DATABASE_NAME'];?></p>
 <?php
@@ -63,7 +69,7 @@ if ($success)
     if (!$success)
     {
 ?>
-       <p>Sorry, the attempt to insert and delete records in MySql on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $_POST['account']; ?>.</p>
+       <p>Sorry, the attempt to insert and delete records in MySQL on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $_POST['account']; ?>.</p>
 
         <p>The account <?php echo $_POST['account']; ?> exists, but does not have enough privileges to access database <?php echo $_SESSION['DATABASE_NAME'];?></p>
 <?php
@@ -102,6 +108,8 @@ if ($success)
                 if(document.getElementById('account').value==''||document.getElementById('password').value==''){
                     alert('Please set a username and password');
                     return false;
+                } else {
+                    document.getElementById('password').value = encodeURIComponent(document.getElementById('password').value);
                 }
                 return true;" enctype="multipart/form-data">
         <label for="account">Admin account name</label><br /><br /><input type="text" width="100" name="account" id="account" /><br /><br />

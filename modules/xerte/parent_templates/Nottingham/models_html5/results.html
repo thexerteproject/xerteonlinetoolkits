@@ -113,9 +113,6 @@
 		};
 
         this.init = function() {
-
-
-
             var loadFiles = true;
             if(xot_offline) {
 				/* files are already loaded statically */
@@ -140,7 +137,7 @@
             dialog_buttons[okButtonTxt] = function(){ results.userNameEntered(); };
             var dialog = $( "#dialog-form" ).dialog({
                 autoOpen: false,
-                height: 150,
+                height: 250,
                 width: 350,
                 modal: true,
                 buttons: dialog_buttons,
@@ -204,27 +201,27 @@
                 var interactiveToken, interactiveTokenTxt;
 			    if(x.type != 'page')
 				{
-				    interactiveToken = '<i class="fa fa-circle blue" title="' + detailsTooltip + '"></i>';
+				    interactiveToken = '<i class="fa fa-x-circle blue" title="' + detailsTooltip + '"><span class="ui-helper-hidden-accessible">' + detailsTooltip + '</span></i>';
 				    interactiveTokenTxt = "details";
 				}
 				else
 				{
-				    interactiveToken = '<i class="fa fa-circle-o blue" title="' + noDetailsTooltip + '"></i>';
+				    interactiveToken = '<i class="fa fa-x-circle-o blue" title="' + noDetailsTooltip + '"><span class="ui-helper-hidden-accessible">' + noDetailsTooltip + '</span></i>';
 				    interactiveTokenTxt = "nodetails";
 				}
 				var completedToken, completedTokenTxt;
 				if(x.completed == "true")
 				{
-					completedToken = '<i class="fa fa-check green" title="' + completeTooltip + '"></i>';
+					completedToken = '<i class="fa fa-x-tick" title="' + completeTooltip + '"><span class="ui-helper-hidden-accessible">' + completeTooltip + '</span></i>';
 					completedTokenTxt = "completed";
 				}
 				else if (x.completed == "false")
 				{
-					completedToken = '<i class="fa fa-times red" title="' + inCompleteTooltip + '"></i>';
+					completedToken = '<i class="fa fa-x-cross" title="' + inCompleteTooltip + '"><span class="ui-helper-hidden-accessible">' + inCompleteTooltip + '</span></i>';
 					completedTokenTxt = "notcompleted";
 				}
 				else {
-					completedToken = '<i class="fa fa-minus" title="' + NACompleteTooltip + '"></i>';
+					completedToken = '<i class="fa fa-minus" title="' + NACompleteTooltip + '"><span class="ui-helper-hidden-accessible">' + NACompleteTooltip + '</span></i>';
 					completedTokenTxt = '-';
 				}
 				if (x.type == 'page')
@@ -244,7 +241,7 @@
                         normalcolumns = [x_GetTrackingTextFromHTML(nameTxt, ""), scoreTxt, durationTxt, weightingTxt, completedTxt];
                         firstnormalrow = false;
 					}
-					$("#questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-right'>" + scoretxt + "</td><td class='td-right'>" + x.duration + "s</td><td class='td-right'>" + x.weighting + "</td><td class='td-right'>" + completedToken + "</td></tr>");
+					$("#questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-center'>" + scoretxt + "</td><td class='td-center'>" + x.duration + "s</td><td class='td-center'>" + x.weighting + "</td><td class='td-center'>" + completedToken + "</td></tr>");
 					var normalrow = [x_GetTrackingTextFromHTML(x.title, ""), scoretxt, x.duration, x.weighting, completedTokenTxt];
 					normalrows.push(normalrow);
 					altnormalrow = !altnormalrow;
@@ -258,7 +255,7 @@
                         $("#questionScores").append("<th>" + nameTxt + "</th><th>" + scoreTxt + "</th><th>" + durationTxt + "</th><th>" + weightingTxt + "</th><th>" + completedTxt + "</th><th>" + detailsTxt + "</th>");
                         firstnormalrow = false;
                     }
-                    $("#questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-right'>" + scoretxt + "</td><td class='td-right'>" + x.duration + "s</td><td class='td-right'>" + x.weighting + "</td><td class='td-right'>" + completedToken + "</td><td class='td-right'>" + interactiveToken + "</td></tr>");
+                    $("#questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-center'>" + scoretxt + "</td><td class='td-center'>" + x.duration + "s</td><td class='td-center'>" + x.weighting + "</td><td class='td-center'>" + completedToken + "</td><td class='td-center'>" + interactiveToken + "</td></tr>");
                     var normalrow = [x_GetTrackingTextFromHTML(x.title, ""), scoretxt, x.duration, x.weighting, completedTokenTxt, interactiveTokenTxt];
                     normalrows.push(normalrow);
                     altnormalrow = !altnormalrow;
@@ -273,12 +270,12 @@
                             var learnerAnswer = y.learnerAnswer;
                             var correctAnswer = y.correctAnswer;
                             if (learnerAnswer == correctAnswer || y.correct) {
-                                detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-check green' title='" + correctTooltip + "'></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
+                                detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-x-tick' title='" + correctTooltip + "'><span class='ui-helper-hidden-accessible'>" + correctTooltip + "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
                                 var detailstablerow = ["correct",  x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), x_GetTrackingTextFromHTML(correctAnswer, "")];
                                 detailstablerows.push(detailstablerow);
                             }
                             else {
-                                detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-times red' title='" + inCorrectTooltip + "'></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
+                                detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-x-cross' title='" + inCorrectTooltip + "'><span class='ui-helper-hidden-accessible'>" + inCorrectTooltip + "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
                                 var detailstablerow = ["incorrect", x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), x_GetTrackingTextFromHTML(correctAnswer, "")];
                                 detailstablerows.push(detailstablerow);
                             }
@@ -292,7 +289,10 @@
 				}
 			});
 			// call this function in every model once everything's loaded
-			x_pageLoaded();
+			if ($("#pageContents").data("setUp") == undefined) {
+				x_pageLoaded();
+				$("#pageContents").data("setUp", true);
+			}
 		};
 
         this.getLabels = function(){
@@ -320,8 +320,8 @@
 			NACompleteTooltip = x_currentPageXML.getAttribute("NACompleteTooltip") != undefined && x_currentPageXML.getAttribute("NACompleteTooltip") != "" ? x_currentPageXML.getAttribute("NACompleteTooltip") : "Not applicable";
 			detailsTooltip = x_currentPageXML.getAttribute("detailsTooltip") != undefined && x_currentPageXML.getAttribute("detailsTooltip") != "" ? x_currentPageXML.getAttribute("detailsTooltip") : "Details available";
             noDetailsTooltip = x_currentPageXML.getAttribute("noDetailsTooltip") != undefined && x_currentPageXML.getAttribute("noDetailsTooltip") != "" ? x_currentPageXML.getAttribute("noDetailsTooltip") : "No details available";
-            userNameDialogTitle = x_currentPageXML.getAttribute("userNameDialogTitle") != undefined && x_currentPageXML.getAttribute("userNameDialogTitle") != "" ? x_currentPageXML.getAttribute("userNameDialogTitle") : "Enter user name";
-            userNamePrompt = x_currentPageXML.getAttribute("userNamePrompt") != undefined && x_currentPageXML.getAttribute("userNamePrompt") != "" ? x_currentPageXML.getAttribute("userNamePrompt") : "User name:";
+            userNameDialogTitle = x_currentPageXML.getAttribute("userNameDialogTitle") != undefined && x_currentPageXML.getAttribute("userNameDialogTitle") != "" ? x_currentPageXML.getAttribute("userNameDialogTitle") : "Enter Full Name";
+            userNamePrompt = x_currentPageXML.getAttribute("userNamePrompt") != undefined && x_currentPageXML.getAttribute("userNamePrompt") != "" ? x_currentPageXML.getAttribute("userNamePrompt") : "Your name:";
             okButtonTxt = x_currentPageXML.getAttribute("okButtonTxt") != undefined && x_currentPageXML.getAttribute("okButtonTxt") != "" ? x_currentPageXML.getAttribute("okButtonTxt") : "OK";
             $("#dialog-form").attr("title", userNameDialogTitle);
             $("#namelabel").html(userNamePrompt);
@@ -387,7 +387,7 @@
             if (x_currentPageXML.getAttribute("givename"))
 			{
                 pdf.text(username, 10, vertpos);
-                vertpos += 5;
+                vertpos += 7;
 			}
             pdf.text(generalResultsTxt, 10, vertpos);
             vertpos += 0.2;
@@ -601,7 +601,7 @@
                     vertpos = pdf.autoTable.previous.finalY;
                 }
             }
-            var name = x_params.name + "_" + XTResults().start;
+            var name = x_params.name + "_" + XTResults().start + ".pdf";
             pdf.save(name.replace(/ /g, "_"));
         }
     };

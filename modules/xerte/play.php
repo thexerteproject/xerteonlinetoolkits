@@ -32,14 +32,15 @@ require_once(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 // (pl)
 // Set up the preview window for a xerte piece
 
-function show_template_page($row, $datafile="")
+function show_template_page($row, $datafile="", $tsugi_enabled = false)
 {
     global $xerte_toolkits_site;
 	global $youtube_api_key;
+	global $pedit_enabled;
 
     _load_language_file("/modules/xerte/preview.inc");
 
-
+    $version = getVersion();
     $string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 
     if (strlen($datafile) > 0)
@@ -84,23 +85,43 @@ function show_template_page($row, $datafile="")
         }
     }
     // If given as a parameter, force this engine
-    if (isset($_REQUEST['engine']))
-    {
-        if ($_REQUEST['engine'] == 'other')
-        {
+    if (isset($_REQUEST['engine'])) {
+        if ($_REQUEST['engine'] == 'other') {
             if ($engine == 'flash')
                 $engine = 'javascript';
             else
                 $engine = 'flash';
+        } else {
+            $engine = $_REQUEST['engine'];
+        }
+    }
+    $tracking_js_file = array($template_path . "common_html5/js/xttracking_noop.js");
+    if($tsugi_enabled) {
+        $rlo_object_file = "rloObject.htm";
+
+
+        if ($pedit_enabled)
+        {
+            if($row["tsugi_xapi_enabled"] == 1) {
+                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $flash_js_dir . "xAPI/xttracking_xapi.js");
+            }
+            else
+            {
+                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $template_path . "common_html5/js/xttracking_noop.js");
+            }
         }
         else
         {
-            $engine=$_REQUEST['engine'];
+            if($row["tsugi_xapi_enabled"] == 1) {
+                $tracking_js_file = array($flash_js_dir . "xAPI/xttracking_xapi.js");
+            }
         }
+    }else{
+        $rlo_object_file = "rloObject.htm";
     }
     if ($engine == 'flash')
     {
-        $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player/rloObject.htm");
+        $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player/$rlo_object_file");
 
         $page_content = str_replace("%WIDTH%", $x, $page_content);
         $page_content = str_replace("%HEIGHT%", $y, $page_content);
@@ -111,7 +132,44 @@ function show_template_page($row, $datafile="")
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
         $page_content = str_replace("%SITE%",$xerte_toolkits_site->site_url,$page_content);
 
-        $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js?version=" . $version . "\"></script>";
+        $tracking = "";
+        foreach($tracking_js_file as $jsfile)
+        {
+            $tracking .= "<script type=\"text/javascript\" src=\"$jsfile?version=" . $version . "\"></script>\n";
+        }
+        if ($tsugi_enabled && $row["tsugi_xapi_enabled"] == 1) {
+            $tracking .= "<script type=\"text/javascript\" src=\"$flash_js_dir/xAPI/tincan.js?\"></script>\n";
+        }
+        if($tsugi_enabled)
+        {
+            $tracking .= "<script>\n";
+            if($row["tsugi_xapi_enabled"] == 1) {
+                $tracking .= "  var lrsEndpoint = '" . $row['tsugi_xapi_endpoint'] . "';\n";
+                $tracking .= "  var lrsUsername = '" . $row['tsugi_xapi_key'] . "';\n";
+                $tracking .= "  var lrsPassword  = '" . $row['tsugi_xapi_secret'] . "';\n";
+                if ($row["tsugi_published"] == 1) {
+                    _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
+                    $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
+                    $tracking .= "   var fullusername = '" . $xerte_toolkits_site->lti_user->displayname . "';\n";
+                    $tracking .= "   var studentidmode = '" . $row['tsugi_xapi_student_id_mode'] . "';\n";
+                    if ($row['tsugi_xapi_student_id_mode'] == 1)
+                    {
+                        $tracking .= "  var mboxsha1 = '" . sha1("mailto:" . $xerte_toolkits_site->lti_user->email) . "';\n";
+                    }
+                }
+                else
+                {
+                    // Only xAPI - force group mode
+                    $tracking .= "   var studentidmode = 3;\n";
+                }
+                if (isset($xerte_toolkits_site->group))
+                {
+                    $tracking .= "   var groupname = '" . $xerte_toolkits_site->group . "';\n";
+                }
+            }
+            $tracking .= "</script>\n";
+            _debug("Tracking script: " . $tracking);
+        }
 
         $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
     }
@@ -137,32 +195,82 @@ function show_template_page($row, $datafile="")
     {
         $version = getVersion();
         // $engine is assumed to be javascript if flash is NOT set
-        $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
+        $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/$rlo_object_file");
         $page_content = str_replace("%VERSION%", $version , $page_content);
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
         $page_content = str_replace("%TITLE%", $title , $page_content);
         $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
+        $page_content = str_replace("%TEMPLATEID%", $_GET['template_id'], $page_content);
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
-        $page_content = str_replace("%THEMEPATH%",$xerte_toolkits_site->site_url . "themes/" . $row['template_name'] . "/",$page_content);
+        $page_content = str_replace("%THEMEPATH%", "themes/" . $row['template_name'] . "/",$page_content);
 
         // Handle offline variables
         $page_content = str_replace("%OFFLINESCRIPTS%", "", $page_content);
         $page_content = str_replace("%OFFLINEINCLUDES%", "", $page_content);
         $page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $page_content);
 
-        $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js?version=" . $version . "\"></script>";
+        $tracking = "";
+        foreach($tracking_js_file as $jsfile)
+        {
+            $tracking .= "<script type=\"text/javascript\" src=\"$jsfile?version=" . $version . "\"></script>\n";
+        }
+        if ($tsugi_enabled && $row["tsugi_xapi_enabled"] == 1) {
+            $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapiwrapper.min.js?version=" . $version . "\"></script>\n";
+        }
+        if($tsugi_enabled)
+        {
+            $tracking .= "<script>\n";
+            if($row["tsugi_xapi_enabled"] == 1) {
+                $tracking .= "  var lrsEndpoint = '" . $row['tsugi_xapi_endpoint'] . "';\n";
+                $tracking .= "  var lrsUsername = '" . $row['tsugi_xapi_key'] . "';\n";
+                $tracking .= "  var lrsPassword  = '" . $row['tsugi_xapi_secret'] . "';\n";
+                if ($row["tsugi_published"] == 1) {
+                    _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
+                    $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
+                    $tracking .= "   var fullusername = '" . $xerte_toolkits_site->lti_user->displayname . "';\n";
+                    $tracking .= "   var studentidmode = '" . $row['tsugi_xapi_student_id_mode'] . "';\n";
+                    if ($row['tsugi_xapi_student_id_mode'] == 1)
+                    {
+                        $tracking .= "  var mboxsha1 = '" . sha1("mailto:" . $xerte_toolkits_site->lti_user->email) . "';\n";
+                    }
+                }
+                else
+                {
+                    // Only xAPI - force group mode
+                    $tracking .= "   var studentidmode = 3;\n";
+                }
+                if (isset($xerte_toolkits_site->group))
+                {
+                    $tracking .= "   var groupname = '" . $xerte_toolkits_site->group . "';\n";
+                }
+            }
+            $tracking .= "</script>\n";
+            _debug("Tracking script: " . $tracking);
+        }
 
 		$page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
 		
 		$page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $page_content);
 		
     }
+    if(substr($rlo_object_file, -3) == "php")
+    {
+        $tmp = tmpfile ();
+        $tmpf = stream_get_meta_data ( $tmp );
+        $tmpf = $tmpf ['uri'];
+        fwrite ( $tmp, $page_content );
+        $ret = include($tmpf);
+        fclose ( $tmp );
+        return $ret;
+
+    }
+
     return $page_content;
 }
 
-function show_template($row)
+function show_template($row, $tsugi_enabled=false)
 {
-    echo show_template_page($row);
+    echo show_template_page($row, "", $tsugi_enabled);
 }
 

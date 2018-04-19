@@ -3,23 +3,59 @@
 	<learningObject icon="icLayout" remove="false" duplicate="false">
   
 		<name type="TextInput" label="Learning Object Title"/>
+		<theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default" />
+		
+		<glossaryGroup type="group" label="Glossary" optional="true">
+			<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition" optional="true"/>
+			<glossaryHover label="Show Definition on Hover" type="Checkbox" defaultValue="true" optional="true"/>
+			<glossaryPage type="ComboBox" data="none,first,last" options="None,First Page,Last Page" optional="true" label="Glossary Page" defaultValue="none" width="175"/>
+		</glossaryGroup>
 		
 		<headerGroup type="group" label="Header" optional="true">
 			<header type="Media" optional="true" label="Image"/>
 			<headerPos type="ComboBox" data="left,center,right" options="Left,Centre,Right" optional="true" label="Image Position" defaultValue="left" width="175"/>
 			<headerRepeat type="ComboBox" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" label="Image Repeat" defaultValue="repeat" width="175"/>
-			<headerColour type="ColourPicker" optional="true" label="Background Colour" defaultValue="0x0088CC"/>
-			<headerTextColour type="ColourPicker" optional="true" label="Text Colour" defaultValue="0xFFFFFF"/>
+			<headerColour type="ColourPicker" optional="true" label="Background Colour"/>
+			<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
 			<logoR type="Media" optional="true" label="Logo (Right)"/>
 			<logoL type="Media" optional="true" label="Logo (Left)"/>
+			<logoRHide label="Hide Default Logo (Right)" type="Checkbox" defaultValue="false" optional="true"/>
+			<logoLHide label="Hide Default Logo (Left)" type="Checkbox" defaultValue="false" optional="true"/>
+            <headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
 		</headerGroup>
+        
+        <navbarGroup type="group" label="Navigation Bar" optional="true">
+			<navbarPos type="ComboBox" data="above,below" options="Above Header,Below Header" optional="true" label="Position" defaultValue="above" width="175"/>
+			<navbarColour type="ColourPicker" optional="true" label="Background Colour"/>
+			<navbarTextColour type="ColourPicker" optional="true" label="Text Colour"/>
+            <navbarTextHoverColour type="ColourPicker" optional="true" label="Text Hover Colour"/>
+            <navbarHide label="Hide Navigation Bar" type="Checkbox" defaultValue="false" optional="true"/>
+		</navbarGroup>
+		
+		<socialGroup type="group" label="Social" optional="true" cols="3" info="Select below which social media options you wish to enable or disable. Removing this group will enable them all.">
+			<facebook label="Facebook" type="Checkbox" defaultValue="true" optional="true"/>
+			<twitter label="Twitter" type="Checkbox" defaultValue="true" optional="true"/>
+			<google label="Google+" type="Checkbox" defaultValue="true" optional="true"/>
+			<linkedin label="Linkedin" type="Checkbox" defaultValue="true" optional="true"/>
+			<scoopit label="Scoop.it!" type="Checkbox" defaultValue="true" optional="true"/>
+			<pinterest label="Pinterest" type="Checkbox" defaultValue="true" optional="true"/>
+			<email label="Email" type="Checkbox" defaultValue="true" optional="true"/>
+			<yammer label="Yammer" type="Checkbox" defaultValue="true" optional="true"/>
+			<addthis label="AddThis" type="Checkbox" defaultValue="true" optional="true"/>
+		</socialGroup>
+		
+        <footerGroup type="group" label="Footer" optional="true">
+            <footerHide label="Hide Footer" type="Checkbox" defaultValue="false" optional="true"/>
+            <customFooter type="TextArea" height="60" label="Custom Footer Content"/>
+			<footerPos type="ComboBox" data="above,below,replace" options="Above Social Icons,Below Social Icons,Replace Social Icons" optional="true" label="Custom Footer Position" defaultValue="above" width="175"/>
+            <footerColour type="ColourPicker" optional="true" label="Footer Background Colour"/>
+		</footerGroup>
 		
 		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
 		<stylesheet type="Media" optional="true" label="Stylesheet"/>
 		<styles type="script" height="200" optional="true" label="Styles"/>
 		<script type="script" height="200" optional="true" label="Script" defaultValue="// JavaScript / jQuery"/>
 		<authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
-		<!--<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition" optional="true"/>-->
 		
 		<newNodes>
 		</newNodes>

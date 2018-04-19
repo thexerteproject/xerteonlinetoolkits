@@ -165,6 +165,9 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
         $_SESSION['toolkits_logon_id'] = "site_administrator";
 
+        $msg = "Admin user logged in successfully from " . $_SERVER['REMOTE_ADDR'];
+        receive_message("", "SYSTEM", "MGMT", "Successful login", $msg);
+
         $mysql_id = database_connect("management.php database connect success", "management.php database connect fail");
 
         /*
@@ -307,10 +310,10 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                                     <button type="button" class="xerte_button" onclick="javascript:templates_list();"><i class="fa fa-file-code-o"></i> <?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:users_list();"><i class="fa fa-users"></i> <?PHP echo MANAGEMENT_MENUBAR_USERS; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:user_templates_list();"><i class="fa fa-file-text-o"></i> <?PHP echo MANAGEMENT_MENUBAR_TEMPLATES; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:errors_list();"><i class="fa fa-exclamation-triangle
-"></i> <?PHP echo MANAGEMENT_MENUBAR_ERRORS; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:errors_list();"><i class="fa fa-exclamation-triangle"></i> <?PHP echo MANAGEMENT_MENUBAR_LOGS; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:play_security_list();"><i class="fa fa-key"></i> <?PHP echo MANAGEMENT_MENUBAR_PLAY; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:categories_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_CATEGORIES; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:grouping_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_GROUPINGS; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:licenses_list();"><i class="fa fa-cc"></i> <?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>	</button>
                                     <button type="button" style="margin-right:10px;" class="xerte_button" onclick="javascript:feeds_list();"><i class="fa fa-rss"></i> <?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</button>
                                 </div>
@@ -329,8 +332,18 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
     } else {
 
         /*
-         * Wrong password message
+         * Wrong username or password message
          */
+
+        if ($_POST["login"] == $xerte_toolkits_site->admin_username) {
+            $msg = "Admin user attempted to login from " . $_SERVER['REMOTE_ADDR'];
+        }
+        else {
+            $uid = (empty($_POST["login"])) ? 'UNKNOWN' : $_POST["login"];
+            $msg = "User " . $uid . " attempted to login from " . $_SERVER['REMOTE_ADDR'];
+        }
+
+        receive_message("", "SYSTEM", "MGMT", "Failed login", $msg);
 
         mgt_page($xerte_toolkits_site, MANAGEMENT_LOGON_FAIL . " " . MANAGEMENT_NOT_ADMIN_USERNAME);
 

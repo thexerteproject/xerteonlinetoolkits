@@ -180,6 +180,15 @@ function getLangInfo(node, attribute, fallBack) {
 
 // _____ SET UP INTERFACE _____
 function setUpInterface() {
+	
+	if (allParams.theme != undefined && allParams.theme != "default") {
+		
+		$('head').append('<link rel="stylesheet" href="' + themePath + allParams.theme + '/' + allParams.theme + '.css' + '" type="text/css" />');
+        
+        $('head').append('<script src="'+ themePath + allParams.theme + '/'+ allParams.theme + '.js"' + '</script>');
+		
+	}
+	
 	// stylesheet can be added in editor
 	if (allParams.stylesheet != undefined) {
 		insertCSS(evalURL(allParams.stylesheet));
@@ -285,7 +294,7 @@ function setUpInterface() {
 	
 	// _____ INTRO BTN _____
 	if (allQParams.text != undefined && allQParams.text != "") {
-		$introHolder.append('<h3>' + allQParams.title + '</h3>' + addLineBreaks(allQParams.text));
+		$introHolder.append('<h3>' + allQParams.title + '</h3>' + addLineBreaks(iFrameCheck(allQParams.text)));
 		
 		$infoBtn
 			.click(function() {
@@ -659,7 +668,7 @@ function setUpQ(isNew) {
 		
 		var mediaInfo = checkForMedia();
 		
-		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="instruction">' + mediaInfo[0] + authorSupport + addLineBreaks(currentStepInfo.text) + '</div></div>');
+		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="instruction">' + mediaInfo[0] + authorSupport + addLineBreaks(iFrameCheck(currentStepInfo.text)) + '</div></div>');
 		
 		var $thisStep = $stepHolder.children(".step");
 		
@@ -771,21 +780,12 @@ function setUpQ(isNew) {
 					answerBox = '<label for="amount">' + currentStepInfo.unit + '</label><input type="text" id="amount"/>';
 				}
 				
-				// work out max length of answer string - depends on max value & increment & takes decimals into account if needed
-				var inputW;
-				if (currentStepInfo.step.split('.').length > 1) {
-					if (currentStepInfo.max.split('.').length > 1) {
-						if (currentStepInfo.max.split('.')[1].length > currentStepInfo.step.split('.')[1].length) {
-							inputW = currentStepInfo.max.length;
-						} else {
-							inputW = currentStepInfo.max.split('.')[0].length + 1 + currentStepInfo.step.split('.')[1].length;
-						}
-					} else {
-						inputW = currentStepInfo.max.length + 1 + currentStepInfo.step.split('.')[1].length;
-					}
-				} else {
-					inputW = currentStepInfo.max.length;
-				}
+				// work out max length of answer string
+				var stepDec = currentStepInfo.step.split('.').length > 1 ? currentStepInfo.step.split('.')[1].length : 0,
+					minDec = currentStepInfo.min.split('.').length > 1 ? currentStepInfo.min.split('.')[1].length : 0,
+					maxDec = currentStepInfo.max.split('.').length > 1 ? currentStepInfo.max.split('.')[1].length : 0;
+				var maxDecimals = Math.max(stepDec, minDec, maxDec);
+				var inputW = currentStepInfo.max.split('.')[0].length + (maxDecimals > 0 ? 1 + maxDecimals : 0);
 				
 				var authorSupport = "";
 				if (allParams.authorSupport == "true") {
@@ -819,12 +819,21 @@ function setUpQ(isNew) {
 				$amount
 					.val($slider.slider("value"))
 					.change(function() {
-						var value = $(this).val();
-						if (value > currentStepInfo.max) {
-							value = currentStepInfo.max;
+						var value = Number($(this).val()),
+							step = Number(currentStepInfo.step),
+							min = Number(currentStepInfo.min),
+							max = Number(currentStepInfo.max);
+						if (value > max) {
+							value = max;
 							$amount.val(value);
-						} else if (value < currentStepInfo.min) {
-							value = currentStepInfo.min;
+						} else if (value < min) {
+							value = min;
+							$amount.val(value);
+						} else {
+							// check the value is one allowed according to step
+							var rounded = Math.round((value - min) / step);
+							var calcValue = rounded * step + min;
+							value = Number(calcValue.toFixed(maxDecimals));
 							$amount.val(value);
 						}
 						$slider.slider({value: value});
@@ -874,7 +883,7 @@ function setUpI() {
 		
 		var mediaInfo = checkForMedia();
 		
-		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="info">' + mediaInfo[0] + authorSupport + addLineBreaks(currentStepInfo.text) + collateResult(currentStepInfo.collate, currentDecision, "html") + '</div></div>');
+		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="info">' + mediaInfo[0] + authorSupport + addLineBreaks(iFrameCheck(currentStepInfo.text)) + collateResult(currentStepInfo.collate, currentDecision, "html") + '</div></div>');
 		
 		var $thisStep = $stepHolder.children(".step");
 		
@@ -937,7 +946,7 @@ function setUpR() {
 		
 		var mediaInfo = checkForMedia();
 		
-		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="result">' + mediaInfo[0] + authorSupport + addLineBreaks(currentStepInfo.text) + collateResult(currentStepInfo.collate, currentDecision, "html") + resultEndString + '</div><a id="viewThisBtn" href="javascript:viewThisClickFunct()" class="floatL">' + allParams.viewThisBtn + '</a></div>');
+		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="result">' + mediaInfo[0] + authorSupport + addLineBreaks(iFrameCheck(currentStepInfo.text)) + collateResult(currentStepInfo.collate, currentDecision, "html") + resultEndString + '</div><a id="viewThisBtn" href="javascript:viewThisClickFunct()" class="floatL">' + allParams.viewThisBtn + '</a></div>');
 		
 		if (mediaInfo[1] != undefined) {
 			var $stepMedia = $(".stepAudio, .stepVideo");
@@ -1064,7 +1073,7 @@ function collateResult(collate, dec, type) {
 		for (var i=0; i<storedResultTxt[dec].length; i++) {
 			if (storedResultTxt[dec][i] != "" && storedResultTxt[dec][i] != undefined) {
 				if (type == "html") {
-					string += '<div class="collatedResult">' + addLineBreaks(storedResultTxt[dec][i]) + '</div>';
+					string += '<div class="collatedResult">' + addLineBreaks(iFrameCheck(storedResultTxt[dec][i])) + '</div>';
 				} else {
 					string += '\n\n' + storedResultTxt[dec][i];
 				}
@@ -1197,7 +1206,7 @@ function createDecStr(dec, type) {
 				if (thisStep.faIcon != undefined && thisStep.faIcon != "") {
 					icon = "fa-" + thisStep.faIcon;
 				}
-				string += '<div><span class="fa ' + icon + ' fa-fw"/>' + media + addLineBreaks(thisStep.text) + '</div>';
+				string += '<div><span class="fa ' + icon + ' fa-fw"/>' + media + addLineBreaks(iFrameCheck(thisStep.text)) + '</div>';
 			} else {
 				string += '\n' + thisStep.text;
 			}
@@ -1249,7 +1258,7 @@ function createDecStr(dec, type) {
 				if (thisStep.faIcon != undefined && thisStep.faIcon != "") {
 					icon = "fa-" + thisStep.faIcon;
 				}
-				string += '<div><span class="fa ' + icon + ' fa-fw"/>' + media + addLineBreaks(thisStep.text) + '</div>';
+				string += '<div><span class="fa ' + icon + ' fa-fw"/>' + media + addLineBreaks(iFrameCheck(thisStep.text)) + '</div>';
 			} else {
 				string += '\n' + thisStep.text;
 			}
@@ -1266,7 +1275,7 @@ function createDecStr(dec, type) {
 				string += '\n' + allParams.resultString + ':';
 			}
 			if (type == "html") {
-				string += media + addLineBreaks(thisStep.text) + '</div>';
+				string += media + addLineBreaks(iFrameCheck(thisStep.text)) + '</div>';
 			} else {
 				string += '\n' + thisStep.text;
 			}
@@ -1313,7 +1322,7 @@ function setUpHelp($thisStep) {
 					title:		allParams.helpString,
 					closeText:	allParams.closeBtn
 					})
-				.html(addLineBreaks(currentStepInfo.helpTxt));
+				.html(addLineBreaks(iFrameCheck(currentStepInfo.helpTxt)));
 		}
 	});
 }
@@ -1381,7 +1390,7 @@ function setUpSection(section, $step) {
 										title:		allSections[i].name,
 										closeText:	allParams.closeBtn
 										})
-									.html(addLineBreaks(allSections[i].description));
+									.html(addLineBreaks(iFrameCheck(allSections[i].description)));
 								
 								if (allSections[i].img != undefined && allSections[i].img != "") {
 									if (allSections[i].img.substr(0,3) == "fa-") {
@@ -1567,5 +1576,21 @@ function makeURLsAbsolute(html){
     return html.replace(/FileLocation \+ \'([^\']*)\'/g, FileLocation + '$1');
 }
 
+
+// if project is being viewed as https then force iframe src to be https too
+function iFrameCheck(txt) {
+	// if project is being viewed as https then force iframe src to be https too
+	if (window.location.protocol == "https:") {
+		function changeProtocol(iframe) {
+			if (/src="http:/.test(iframe)){
+				iframe = iframe.replace(/src="http:/g, 'src="https:').replace(/src='http:/g, "src='https:");
+			}
+			return iframe;
+		}
+		txt = txt.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
+	}
+	
+	return txt;
+}
 
 $(document).ready(init);

@@ -1,0 +1,415 @@
+//***********************************Text*************************************
+//*****title page******
+.titlePageTxt {
+  //*without reducing the width here horizontal scroll bars show when the theme selected isn't 100% width*/
+  width:98% !important;
+  overflow: hidden;
+}
+//***********************************Media*************************************
+//default highlight if not overriden
+.highlight {
+  background: $lightestcolor;
+}
+//*****audio slideshow********/
+.x_audioSlideshow_page .slide {
+  margin-left: 5px;
+}
+//*****multiple perspectives******/
+#thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3{
+  color: $darkestcolor;
+}
+//*****Synched Video*******/
+//add padding to right holder
+#x_mainHolder.x_videoSynch_page .right{
+  padding-top: 10px;
+  padding-left: 20px;
+}
+//*****transcript reader******/
+.x_transcriptReader_page .highlight {
+  background:transparentize($lightestcolor, .6);
+}
+//***********************************Navigators*************************************/
+//*****Accordion page*******/
+.ui-accordion .ui-accordion-content {
+  border-radius: $smallroundedcorners;
+  background: $brightcolor;
+  color:$blackordarkest;
+}
+.ui-accordion .ui-accordion-header {
+  border-radius: $smallroundedcorners;
+  background: $contrastcolor;
+  color:#ffffff;
+}
+.ui-accordion .ui-accordion-header a {
+  border-radius: $smallroundedcorners;
+  color: $whiteorlightest !important; //doesn't work without important
+  background: $contrastcolor;
+}
+.ui-accordion .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+  text-decoration: none;
+  background: $lightestcolor;
+  border-radius: $smallroundedcorners;
+  color: $blackordarkest;
+}
+//*****button navigator*****/
+.ui-button {
+  border-radius: $smallroundedcorners;
+  background: $contrastcolor;
+  border: none;
+  color: #ffffff;
+}
+.ui-buttonset .ui-button {
+  margin-left: 0;
+  margin-right: .2em;
+}
+.ui-state-active{
+  border-radius: $smallroundedcorners;
+  background: $lightestcolor;
+  border: none;
+  color: $darkestcolor;
+}
+//***Flash cards***/
+.front.panel{
+  background:$contrastcolor;
+  border:$contrastcolor;
+  color:$whiteorlightest;
+}
+.back.panel{
+  background:$brightcolor;
+  border:$brightcolor;
+  color:$blackordarkest;
+}
+//*****hyperlinks******/
+#linkHolder a{
+  color:$darkestcolor;
+}
+//*****navigator*****/
+#pageContents.button button.selected {
+  background-color: $lightestcolor;
+}
+#pageContents.slide #btnHolder button {
+  background: $contrastcolor;
+  border-color: $contrastcolor;
+}
+//****tabbed navigator****/
+.ui-tabs .ui-tabs-nav li {
+  border-radius: $smallroundedcorners;
+  background: $contrastcolor;
+  border:none;
+  color:$fontcolorforcontrastcolor;
+}
+.paneInfo{
+  /*color:$fontcolorfobrightcolor;*/
+}
+.paneList a, .paneList a:link, .paneList a:visited{
+  /*color: $linkcolor !important;*/
+}
+.ui-tabs-panel a:link {
+  /*color: $linkcolor;*/
+}
+.ui-tabs .ui-tabs-nav {
+  border-radius: $smallroundedcorners;
+  background: none;
+  border: none;
+}
+.ui-tabs .ui-tabs-nav li a {
+  color: $whiteorlightest;
+}
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+  text-decoration: none;
+  background: $darkestcolor;
+  color:$fontcolorfobrightcolor;
+  border-radius: $smallroundedcorners;
+}
+
+a.topic.highlight {
+  background: $brightcolor;
+}
+a.topic.highlight:hover {
+  color:$darkestcolor;
+}
+div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
+  background:$brightcolor;
+}
+//***********************************Interactivity*************************************/
+//most text areas unless changed for specifc pages
+#pageContents textarea {
+  border-radius: $mediumroundedcorners;
+  padding: 10px;
+}
+//most input boxes unless changed for specifc pages
+#pageContents input {
+  border-radius: $smallroundedcorners;
+  padding-left: 10px;
+}
+//*****annotated diagram******/
+#listholder a.listitem, a:visited {
+  color:$contrastcolor ;
+}
+.x_annotatedDiagram_page .highlight{
+  background:$brightcolor;
+}
+.x_annotatedDiagram_page .hotspot{
+  background:none;
+}
+.x_annotatedDiagram_page #infoHolder{
+  background:$brightcolor;
+  margin-left:10px;
+}
+//*******Drag and Drop Labelling*********/
+.target.ui-droppable.border.highlight {
+  //show transparent background when clicking target hotspots
+  background-color: transparentize($lightestcolor, .6) !important;
+}
+.x_dragDropLabel_page #infoHolder{
+  padding:20px;
+  margin-right:20px;
+}
+.x_dragDropLabel_page .label.panel{
+  background:transparentize($lightestcolor, .1 )!important;
+  border-color:$lightestcolor;
+}
+//*****categories*****/
+#categoryHolder .category {
+  border-radius: $mediumroundedcorners;
+}
+#categoryHolder h3 {
+  color:$whiteorlightest;
+}
+.x_categories_page .label.panel{
+  background:$lightestcolor;
+  border:$lightestcolor;
+}
+#categoryHolder .highlight {
+  border-radius: $smallroundedcorners;
+  background: $contrastcolor;
+}
+//*******decision tree********//
+.x_decision_page .highlight{
+  background: $lightestcolor;
+}
+//*****Dictation*****/
+.x_dictation_page #answerTxt {
+  width: 98%;
+  margin-bottom: 10px;
+  border-radius: $mediumroundedcorners;
+  padding:10px;
+}
+//*****gap fill*****/
+#targetHolder .target {
+  border-radius: $mediumroundedcorners;
+}
+#targetHolder .highlight {
+  background:$whiteorlightest;
+}
+#labelHolder .label.panel {
+  //background: purple;
+}
+.x_gapFill_page #targetHolder .highlight {
+  background:transparentize($whiteorlightest, .5);
+}
+.x_gapFill_page .label.panel {
+  background: $lightestcolor;
+  border-color:$lightestcolor !important;
+}
+.x_gapFill_page .target.correct{
+  color:green;
+  font-weight:bold;
+  background-color:transparentize($whiteorlightest, .8);
+}
+//*****hotspot image*****/
+a.hotspot, a.hotspot.selected {
+  background: none;
+}
+.hsinfo{
+  padding:1%;
+}
+//******Interactive lists*******/
+.x_interactiveText_page .highlight{
+  background: $lightestcolor;
+}
+//******Interactive lists*******/
+.x_list_page .highlight{
+  background: $brightcolor;
+}
+//*********matching texts*********/
+#dragDropHolder {
+  background: $brightcolor;
+  padding:10px;
+  border-radius: $mediumroundedcorners;
+}
+.x_textMatch_page .label.panel{
+  background:$lightestcolor;
+  border-color:$lightestcolor;
+}
+
+//*****model answer*****/
+.x_modelAnswer_page #answerTxt {
+  border-radius: $mediumroundedcorners;
+  width: 98%;
+}
+//*****opinion********/
+.x_opinion_page #pageContents input {
+  padding-left: 0;
+}
+.qPanel {
+  overflow-x:hidden;
+}
+.qSeparator hr {
+  background-color: lighten($brightcolor, 15%);
+  border-color: lighten($brightcolor, 15%);
+  border: solid 1px lighten($brightcolor, 15%);
+}
+.sliderHolder .labelHolder a p {
+  color: $blackordarkest;
+}
+
+//*****sortable grid*****/
+#gridBorders {
+  border-radius: $smallroundedcorners;
+}
+#grid .listHolder.constrainC li {
+  border-radius: $smallroundedcorners;
+}
+#grid ul li.header {
+  color: $whiteorlightest ;
+  background:$darkestcolor;
+  color:$whiteorlightest !important;
+}
+table.header.shaded tr:first-child {
+  background: $darkestcolor;
+}
+#grid ul li {
+  color: $mainfontcolour ;
+  /*background:$brightcolor;*/
+  background:red;
+  border-color:$whiteorlightest;
+}
+.x_grid_page #grid ul li{
+  background:$lightestcolor;
+  border-color: transparent;
+}
+table tr.shaded {
+  background: $contrastcolor;
+  color:$blackordarkest;
+}
+tr {
+  background: $brightcolor;
+  color:$whiteorlightest;
+}
+#grid ul li.static {
+  background: none;
+  border-color: transparent;
+}
+/*****timeline matching pairs*****/
+#targetHolder .target {
+  border-radius: $mediumroundedcorners;
+}
+.x_timeline_page .label.panel.ui-draggable {
+  background: $lightestcolor;
+}
+//***********************************Connectors*************************************/
+//*****menu connector*****/
+#subMenuItems .subMenuItem {
+  background: $brightcolor;
+  color:$darkestcolor;
+}
+//***********************************Charts*************************************/
+//***Charts Table***/
+table tr.shaded {
+  background: $lightestcolor;
+}
+table.header.shaded tr:first-child {
+  background: $blackordarkest;
+  color:$fontcolorforcontrastcolor;
+}
+table.header.simple tr:first-child {
+  border:none;
+}
+table.simple {
+  border: none;
+}
+//***********************************Games*************************************/
+//*****games memory*****/
+#pageContents .card {
+  border-radius: $smallroundedcorners;
+  border-color: $contrastcolor;
+}
+#cardTopHolder .card{
+  border-color: $contrastcolor;
+}
+//*****games puzzle*****/
+#puzzle {
+  border-radius: $mediumroundedcorners;
+}
+//*****memory******/
+#pageContents .card {
+  color: $darkestcolor;
+}
+#cardTopHolder .card {
+  background-image: url('card_back.svg') !important; //doesn't work without important
+}
+//***********************************Misc*************************************/
+//*****youtube feed page*****/
+#resultsHolder div {
+  width:97%;
+  min-height: 50px;
+  padding-top: 5px;
+  border-radius: $mediumroundedcorners;
+  background-color: $lightestcolor;
+  margin:.5em;
+}
+.shadedDiv {
+   background-color: $lightestcolor !important; //doesn't work without important
+   border-radius: $mediumroundedcorners;
+ }
+.shadedDiv p{
+  color:$blackordarkest !important;
+}
+//*****qr code******/
+div#shorturltodisplay a{
+  color:$darkestcolor;
+}
+//*****RSS feed******/
+#resultsHolder div {
+  border-radius: $mediumroundedcorners;
+  background-color: $lightestcolor;
+}
+#resultsHolder div p {
+  color: $blackordarkest;
+}
+#resultsHolder .shadedDiv {
+  //set via .shadedDiv above for youtube feed page
+}
+#resultsHolder div a {
+  color: darkblue;
+}
+//*****results page*****/
+td, th {
+  border-radius: $mediumroundedcorners;
+}
+tr.alt td {
+  background-color: $brightcolor;
+}
+tr.alt td{
+  background: $contrastcolor;
+  color:$whiteorlightest;
+}
+.details th {
+  background: $lightestcolor;
+  color: $blackordarkest;
+}
+#general_summary th {
+  background: #ffffff;//hide otherwise black line at to of summary table
+}
+//***********************************Media query/responsive changes*************************************/
+//*****change tick/cross size on all pages where used******/
+.tick, img.result{
+  @media (min-width: 768px) {
+    width: 2.5vmin;
+  }
+}
+
+
+
+

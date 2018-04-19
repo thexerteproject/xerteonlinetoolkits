@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong."/>]]></gapFill>
+      <gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong."/>]]></gapFill>
     </newNodes>
   </pageWizard>
 
@@ -16,6 +16,7 @@
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
 	
 	<checkBtn label="Check Button Text" type="TextInput" wysiwyg="true" language="true"/>
+	<showBtn label="Show Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	<gapFillWrong label="Gap Fill All Wrong" type="TextInput" wysiwyg="true" language="true" />
 	<gapFillPartWrong label="Gap Fill Part Wrong" type="TextInput" wysiwyg="true" language="true"/>
 	<gapFillIncomplete label= "Gap Fill Incomplete" type="TextInput" wysiwyg="true" language="true"/>
@@ -32,10 +33,14 @@
 	
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
     <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
-	<showHint label="Show Hint" type="CheckBox" defaultValue="true" optional="true"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>
 	<audioFeedback label="Audio Feedback" type="media" optional="true"/>
-	
+
+    <hints type="group" label="Hints" optional="true">
+		<showHint label="Show Hint/Correct Answers Button" type="CheckBox" defaultValue="true" optional="true"/>
+    	<attemptsBeforeHint label="Attempts Before Hint" defaultValue="2" type="NumericStepper" min="0" max="10" step="1" width="100" optional="true" />
+    </hints>
+
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
 	<casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat fill in the gap exercise answers as case sensitive"/>
 

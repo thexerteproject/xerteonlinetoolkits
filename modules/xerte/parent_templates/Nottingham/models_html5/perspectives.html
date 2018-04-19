@@ -98,7 +98,7 @@
 			
 			$("#prevBtn")
 				.button({
-					icons: {primary: 'fa fa-chevron-circle-left'},
+					icons: {primary: 'fa fa-x-prev-circle'},
 					label: x_currentPageXML.getAttribute("backBtnTip") == undefined ? "Back" : x_currentPageXML.getAttribute("backBtnTip"),
 					text: false
 				})
@@ -117,7 +117,7 @@
 			
 			$("#nextBtn")
 				.button({
-					icons: {primary: 'fa fa-chevron-circle-right'},
+					icons: {primary: 'fa fa-x-next-circle'},
 					label: x_currentPageXML.getAttribute("nextBtnTip") == undefined ? "Forward" : x_currentPageXML.getAttribute("nextBtnTip"),
 					text: false
 				})
@@ -258,7 +258,7 @@
 				}
 			});
 			
-			if (x_currentPageXML.getAttribute("highlight") == "true" && x_currentPageXML.getAttribute("highlightCol") != undefined && x_currentPageXML.getAttribute("highlightCol") != "") {
+			if (x_currentPageXML.getAttribute("highlight") == "true" && x_currentPageXML.getAttribute("highlightCol") != undefined && x_currentPageXML.getAttribute("highlightCol") != "" && x_currentPageXML.getAttribute("highlightCol") != "0x") {
 				highlightColour = x_getColour(x_currentPageXML.getAttribute("highlightCol"));
 				$("#pageContents").append('<style>#thumbHolder .current { border-color: ' + highlightColour + ' !important; }</style>');
 			}
@@ -268,7 +268,7 @@
 				.click(function(e, playAll) {
 					var $this = $(this);
 					
-					playAll = playAll && $this.data("index") + 2 < $("#thumbHolder .thumbBox").length ? true : false;
+					playAll = playAll && $this.data("index") + 2 <= $("#thumbHolder .thumbBox").length ? true : false;
 					if (playAll == false) { $(".playAll").removeClass("playing"); }
 					$("#pageContents").data("playAll", playAll);
 					
@@ -589,7 +589,11 @@
 		this.mediaFunct = function(mediaElement) {
 			mediaElement.addEventListener("ended", function(e) {
 				if ($("#pageContents").data("playAll") == true) {
-					$("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").trigger("click", true);
+					if ($("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").length > 0) {
+						$("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").trigger("click", true);
+					} else {
+						$("#pageContents").data("playAll", false);
+					}
 				}
 			});
 		}
@@ -661,7 +665,7 @@
 	</div>
 	
 	<div id="mainInfoHolder">
-		<div id="gridBack"><span class="fa fa-arrow-circle-o-left"></span></div>
+		<div id="gridBack"><span class="fa fa-x-prev-circle"></span></div>
 		<div id="mediaPanel" class="panel inline x_floatLeft"></div>
 		<div id="mainTxt"></div>
 	</div>

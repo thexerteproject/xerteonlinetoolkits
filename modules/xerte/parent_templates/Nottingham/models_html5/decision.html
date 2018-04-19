@@ -124,7 +124,7 @@
 				// _____ HISTORY BACK BTN _____
 				$backBtn
 					.button({
-						icons: { primary: "ui-icon-triangle-1-w" },
+						icons: { primary: "fa fa-fw fa-x-prev" },
 						label:	x_currentPageXML.getAttribute("backBtn") ? x_currentPageXML.getAttribute("backBtn") : "Previous Step",
 						text:	false
 					})
@@ -149,7 +149,7 @@
 				// _____ HISTORY FWD BTN _____
 				$fwdBtn
 					.button({
-						icons: { primary: "ui-icon-triangle-1-e" },
+						icons: { primary: "fa fa-fw fa-x-next" },
 						label:	x_currentPageXML.getAttribute("fwdBtn") ? x_currentPageXML.getAttribute("fwdBtn") : "Next Step",
 						text:	false
 					})
@@ -174,7 +174,7 @@
 				// _____ NEW BTN _____
 				$("#newBtn")
 					.button({
-						icons: { primary: "ui-icon-refresh" },
+						icons: { primary: "fa fa-fw fa-x-refresh" },
 						label:	x_currentPageXML.getAttribute("newBtnLabel") ? x_currentPageXML.getAttribute("newBtnLabel") : "Restart",
 						text:	false
 					})
@@ -282,6 +282,7 @@
 				// _____ HELP BTN _____
 				$helpBtn
 					.button({
+						icons: { primary: "fa fa-fw fa-x-info-circle" },
 						label:	x_currentPageXML.getAttribute("helpString") ? x_currentPageXML.getAttribute("helpString") : "More information"
 					})
 					.click(function() {
@@ -313,7 +314,7 @@
 				// _____ COPY BTN _____
 				$("#copyBtn")
 					.button({
-						icons: { primary: "ui-icon-copy" },
+						icons: { primary: "fa fa-fw fa-x-copy" },
 						label:	x_currentPageXML.getAttribute("copyBtn") ? x_currentPageXML.getAttribute("copyBtn") : "Copy Overview",
 						text:	false
 					})
@@ -567,7 +568,7 @@
 							} else {
 								var $parent = $thisStep;
 								if (i == 0) {
-									$parent = $('<div class="radioAnswers"/>').appendTo($thisStep);
+									$parent = $('<div id="optionHolder" class="radioAnswers"/>').appendTo($thisStep);
 								} else {
 									$parent = $thisStep.find(".radioAnswers");
 								}
@@ -624,26 +625,17 @@
 					} else if (currentStepInfo.type == "sliderStep") {
 						
 						// _____ SLIDER _____
-						var answerBox = '<input type="text" id="amount"/><label for="amount">' + currentStepInfo.unit + '</label>';
+						var answerBox = '<input type="text" id="amount" class="question"/><label for="amount">' + currentStepInfo.unit + '</label>';
 						if (currentStepInfo.unitPos == "start") {
-							answerBox = '<label for="amount">' + currentStepInfo.unit + '</label><input type="text" id="amount"/>';
+							answerBox = '<label for="amount">' + currentStepInfo.unit + '</label><input type="text" id="amount" class="question"/>';
 						}
 						
-						// work out max length of answer string - depends on max value & increment & takes decimals into account if needed
-						var inputW;
-						if (currentStepInfo.step.split('.').length > 1) {
-							if (currentStepInfo.max.split('.').length > 1) {
-								if (currentStepInfo.max.split('.')[1].length > currentStepInfo.step.split('.')[1].length) {
-									inputW = currentStepInfo.max.length;
-								} else {
-									inputW = currentStepInfo.max.split('.')[0].length + 1 + currentStepInfo.step.split('.')[1].length;
-								}
-							} else {
-								inputW = currentStepInfo.max.length + 1 + currentStepInfo.step.split('.')[1].length;
-							}
-						} else {
-							inputW = currentStepInfo.max.length;
-						}
+						// work out max length of answer string
+						var stepDec = currentStepInfo.step.split('.').length > 1 ? currentStepInfo.step.split('.')[1].length : 0,
+							minDec = currentStepInfo.min.split('.').length > 1 ? currentStepInfo.min.split('.')[1].length : 0,
+							maxDec = currentStepInfo.max.split('.').length > 1 ? currentStepInfo.max.split('.')[1].length : 0;
+						var maxDecimals = Math.max(stepDec, minDec, maxDec);
+						var inputW = currentStepInfo.max.split('.')[0].length + (maxDecimals > 0 ? 1 + maxDecimals : 0);
 						
 						var authorSupport = "";
 						if (x_params.authorSupport == "true") {
@@ -677,12 +669,21 @@
 						$amount
 							.val($slider.slider("value"))
 							.change(function() {
-								var value = $(this).val();
-								if (value > currentStepInfo.max) {
-									value = currentStepInfo.max;
+								var value = Number($(this).val()),
+									step = Number(currentStepInfo.step),
+									min = Number(currentStepInfo.min),
+									max = Number(currentStepInfo.max);
+								if (value > max) {
+									value = max;
 									$amount.val(value);
-								} else if (value < currentStepInfo.min) {
-									value = currentStepInfo.min;
+								} else if (value < min) {
+									value = min;
+									$amount.val(value);
+								} else {
+									// check the value is one allowed according to step
+									var rounded = Math.round((value - min) / step);
+									var calcValue = rounded * step + min;
+									value = Number(calcValue.toFixed(maxDecimals));
 									$amount.val(value);
 								}
 								$slider.slider({value: value});
@@ -882,7 +883,7 @@
 				
 				if (thisStep.type == "mcqStep" || thisStep.type == "sliderStep") {
 					if (type == "html") {
-						string += '<div><span class="ui-icon ui-icon-help"/>' + $text.prop('outerHTML') + '</div>';
+						string += '<div><i class="fa fa-fw fa-x-question"/> &nbsp;' + $text.prop('outerHTML') + '</div>';
 					} else {
 						string += '<p>' + $text.text() + '</p>';
 					}
@@ -890,8 +891,8 @@
 					if (thisStep.type == "mcqStep") {
 						if (type == "html") {
 							// include details of answers which weren't chosen too
-							string += '<div class="overviewAnswer"><span class="ui-icon ui-icon-carat-1-e"/>' + x_addLineBreaks($(thisStep.options[decisionHistory[i].option]).attr("name")) + '</div>';
-							string += '<div class="extraInfo"><span class="ui-icon ui-icon-carat-1-e"/>' + (x_currentPageXML.getAttribute("posAnswerString") ? x_currentPageXML.getAttribute("posAnswerString") : "Other possible answers") + ': ';
+							string += '<div class="overviewAnswer"><i class="fa fa-fw fa-chevron-right"></i> &nbsp;' + x_addLineBreaks($(thisStep.options[decisionHistory[i].option]).attr("name")) + '</div>';
+							string += '<div class="extraInfo"><i class="fa fa-fw fa-chevron-right"/> &nbsp;' + (x_currentPageXML.getAttribute("posAnswerString") ? x_currentPageXML.getAttribute("posAnswerString") : "Other possible answers") + ': ';
 							
 							thisStep.options.each(function(j) {
 								if (j != decisionHistory[i].option) {
@@ -921,8 +922,8 @@
 						}
 						
 						if (type == "html") {
-							string += '<div class="overviewAnswer"><span class="ui-icon ui-icon-carat-1-e"/>' + answer + '</div>';
-							string += '<div class="extraInfo"><span class="ui-icon ui-icon-carat-1-e"/>' + (x_currentPageXML.getAttribute("fromRangeString") ? x_currentPageXML.getAttribute("fromRangeString") : "From range") + ' ' + posAnswer + '</div>';
+							string += '<div class="overviewAnswer"><i class="fa fa-fw fa-chevron-right"/> &nbsp;' + answer + '</div>';
+							string += '<div class="extraInfo"><i class="fa fa-fw fa-chevron-right"/> &nbsp;' + (x_currentPageXML.getAttribute("fromRangeString") ? x_currentPageXML.getAttribute("fromRangeString") : "From range") + ' ' + posAnswer + '</div>';
 						} else {
 							string += '<p> >> ' + answer + '</p>';
 							string += '<p>-------------------------------------------------</p>';
@@ -932,7 +933,7 @@
 					
 				} else if (thisStep.type == "infoStep") {
 					if (type == "html") {
-						string += '<div><span class="ui-icon ui-icon-notice"/>' + $text.prop('outerHTML') + '</div>';
+						string += '<div><i class="fa fa-fw fa-x-info"/> &nbsp' + $text.prop('outerHTML') + '</div>';
 					} else {
 						string += '<p>' + $text.text() + '</p>';
 						string += '<p>-------------------------------------------------</p>';
@@ -940,7 +941,7 @@
 					
 				} else if (thisStep.type == "resultStep") {
 					if (type == "html") {
-						string += '<div><span class="ui-icon ui-icon-lightbulb"/>' + $text.prop('outerHTML') + '</div>';
+						string += '<div><i class="fa fa-fw fa-x-lightbulb"/> &nbsp;' + $text.prop('outerHTML') + '</div>';
 					} else {
 						string += '<p>' + (x_currentPageXML.getAttribute("resultString") ? x_currentPageXML.getAttribute("resultString") : "Result") + ':</p>';
 						string += '<p>' + $text.text() + '</p>';

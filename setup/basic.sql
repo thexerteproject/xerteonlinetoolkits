@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS `$originaltemplatesdetails` ;
 DROP TABLE IF EXISTS `$play_security_details` ;
 DROP TABLE IF EXISTS `$sitedetails` ;
 DROP TABLE IF EXISTS `$syndicationcategories` ;
+DROP TABLE IF EXISTS `$grouping` ;
 DROP TABLE IF EXISTS `$syndicationlicenses` ;
 DROP TABLE IF EXISTS `$templatedetails` ;
 DROP TABLE IF EXISTS `$templaterights` ;
@@ -91,7 +92,13 @@ CREATE TABLE `$sitedetails` (
   `site_id` int(11) NOT NULL AUTO_INCREMENT,
   `site_url` char(255) DEFAULT NULL,
   `apache` char(255) DEFAULT NULL,
+  `enable_mime_check` char(255) DEFAULT NULL,
   `mimetypes` text,
+  `enable_file_ext_check` char(255) DEFAULT NULL,
+  `file_extensions` text,
+  `enable_clamav_check` char(255) DEFAULT NULL,
+  `clamav_cmd` char(255) DEFAULT NULL,
+  `clamav_opts` char(255) DEFAULT NULL,
   `site_session_name` char(255) DEFAULT NULL,
   `authentication_method` char(255) DEFAULT NULL,
   `LDAP_preference` char(255) DEFAULT NULL,
@@ -146,6 +153,7 @@ CREATE TABLE `$sitedetails` (
   `LRS_Endpoint` char(255) DEFAULT NULL,
   `LRS_Key` char(255) DEFAULT NULL,
   `LRS_Secret` char(255) DEFAULT NULL,
+  `tsugi_dir` text,
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -156,6 +164,15 @@ CREATE TABLE `$syndicationcategories` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 insert  into `$syndicationcategories`(`category_id`,`category_name`) values (1,'American and Canadian Studies'),(2,'Biology'),(3,'Biomedical Sciences'),(4,'Biosciences'),(5,'Built Environment, The'),(6,'Centre for English Language Education'),(7,'Chemistry'),(9,'Community Health Sciences'),(10,'Computer Science'),(11,'Contemporary Chinese Studies'),(12,'Economics'),(13,'Education'),(14,'English Studies'),(15,'Geography'),(16,'Medicine and Health'),(17,'History'),(18,'Humanities'),(20,'Mathematical Sciences'),(21,'Modern Languages and Cultures'),(22,'Nursing, Midwifery and Physiotherapy'),(23,'Pharmacy'),(24,'Physics & Astronomy'),(25,'Politics and International Relations'),(26,'Psychology'),(27,'Sociology & Social Policy'),(28,'Veterinary Medicine and Science');
+
+CREATE TABLE `$grouping` (
+  `grouping_id` int(11) NOT NULL AUTO_INCREMENT,
+  `grouping_name` char(255) DEFAULT NULL,
+  PRIMARY KEY (`grouping_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+insert  into `$grouping` (`grouping_id`,`grouping_name`) values (1,'Grouping 1'),(2,'Grouping 2'),(3,'Grouping 3'),(4,'Grouping 4'),(5,'Grouping 5'),(6,'Grouping 6'),(7,'Grouping 7'),(8,'Grouping 8'),(9,'Grouping 9'),(10,'Grouping 10');
+
 
 CREATE TABLE `$syndicationlicenses` (
   `license_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -176,6 +193,12 @@ CREATE TABLE `$templatedetails` (
   `number_of_uses` bigint(20) DEFAULT NULL,
   `access_to_whom` text,
   `extra_flags` varchar(45) DEFAULT NULL,
+  `tsugi_published` int DEFAULT 0,
+  `tsugi_xapi_enabled` int DEFAULT 0,
+  `tsugi_xapi_endpoint` text,
+  `tsugi_xapi_key` text,
+  `tsugi_xapi_secret` text,
+  `tsugi_xapi_student_id_mode` int DEFAULT 0,
   PRIMARY KEY (`template_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

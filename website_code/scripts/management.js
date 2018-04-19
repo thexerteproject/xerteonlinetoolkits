@@ -185,27 +185,65 @@ function categories_list(){
 	}
 }
 
+// Function categories list
+//
+// remove a share, and check who did it
+
+function grouping_list(){
+
+    if(setup_ajax()!=false){
+
+        var url="grouping.php";
+
+        management_ajax_send_prepare(url)
+
+        xmlHttp.send('no_id=1');
+
+    }
+}
+
 // Function remove category
 //
 // remove a share, and check who did it
 
 function remove_category(id){
 
-	if (confirm(REMOVE_PROMPT)) {
+    if (confirm(REMOVE_PROMPT)) {
 
-		if(setup_ajax()!=false){
+        if(setup_ajax()!=false){
 
-			var url="remove_category.php";
+            var url="remove_category.php";
 
-			management_ajax_send_prepare(url)
+            management_ajax_send_prepare(url)
 
-			xmlHttp.send('remove=' + id); 
+            xmlHttp.send('remove=' + id);
 
-		}
-	
-	}
+        }
+
+    }
 }
 
+
+// Function remove category
+//
+// remove a share, and check who did it
+
+function remove_grouping(id){
+
+    if (confirm(REMOVE_PROMPT)) {
+
+        if(setup_ajax()!=false){
+
+            var url="remove_grouping.php";
+
+            management_ajax_send_prepare(url)
+
+            xmlHttp.send('remove=' + id);
+
+        }
+
+    }
+}
 // Function user templates list
 //
 // remove a share, and check who did it
@@ -382,7 +420,7 @@ function remove_security(){
 
 }
 
-// Function delete sharing template
+// Function update site
 //
 // remove a share, and check who did it
 
@@ -397,7 +435,6 @@ function update_site(){
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
 		copyright = document.getElementById("copyright").value;
-
 		copyright = copyright.split("�").join("AAA");
 
 		xmlHttp.send('site_url=' + document.getElementById("site_url").value + 
@@ -408,11 +445,11 @@ function update_site(){
 					 '&organisational_logo=' + document.getElementById("organisational_logo").value + 
 					 '&welcome_message=' + document.getElementById("welcome_message").value + 
 					 '&site_text=' + document.getElementById("site_text").value +
-                     '&tutorial_text=' + document.getElementById("tutorial_text").value +
-                     '&news_text=' + document.getElementById("news_text").value +
+					 '&tutorial_text=' + document.getElementById("tutorial_text").value +
+					 '&news_text=' + document.getElementById("news_text").value +
 					 '&pod_one=' + document.getElementById("pod_one").value + 
 					 '&pod_two=' + document.getElementById("pod_two").value + 
-					 '&copyright=' + document.getElementById("copyright").value + 
+					 '&copyright=' + encodeURIComponent(document.getElementById("copyright").value) +
 					 '&demonstration_page=' + document.getElementById("demonstration_page").value + 
 					 '&form_string=' + document.getElementById("form_string").value + 
 					 '&peer_form_string=' + document.getElementById("peer_form_string").value + 
@@ -426,11 +463,11 @@ function update_site(){
 					 '&play_edit_preview_query=' + document.getElementById("play_edit_preview_query").value + 
 					 '&email_error_list=' + document.getElementById("error_email_list").value + 
 					 '&error_log_message=' + document.getElementById("error_log_message").value + 
-					 '&error_email_message=' + document.getElementById("error_email_message").value + 
+					 '&max_error_size=' + document.getElementById("max_error_size").value + 
 					 '&authentication_method=' + document.getElementById("authentication_method").value + 
 					 '&ldap_host=' + document.getElementById("ldap_host").value	+ 
 					 '&ldap_port=' + document.getElementById("ldap_port").value + 
-					 '&bind_pwd=' + document.getElementById("bind_pwd").value + 
+					 '&bind_pwd=' + encodeURIComponent(document.getElementById("bind_pwd").value) +
 					 '&base_dn=' + document.getElementById("base_dn").value + 
 					 '&bind_dn=' + document.getElementById("bind_dn").value + 
 					 '&flash_save_path=' + document.getElementById("flash_save_path").value + 
@@ -446,13 +483,19 @@ function update_site(){
 					 '&synd_publisher=' + document.getElementById("synd_publisher").value + 
 					 '&synd_rights=' + document.getElementById("synd_rights").value + 
 					 '&synd_license=' + document.getElementById("synd_license").value + 
-					 '&import_path=' + document.getElementById("import_path").value + 
-					 '&mimetypes=' + document.getElementById("mimetypes").value + 
+					 '&import_path=' + document.getElementById("import_path").value +
+					 '&enable_mime_check=' + document.getElementById("enable_mime_check").value +
+					 '&mimetypes=' + document.getElementById("mimetypes").value +
+					 '&enable_file_ext_check=' + document.getElementById("enable_file_ext_check").value +
+					 '&file_extensions=' + document.getElementById("file_extensions").value +
+					 '&enable_clamav_check=' + document.getElementById("enable_clamav_check").value +
+					 '&clamav_cmd=' + document.getElementById("clamav_cmd").value +
+					 '&clamav_opts=' + document.getElementById("clamav_opts").value +
 					 '&LDAP_preference=' + document.getElementById("LDAP_preference").value + 
 					 '&LDAP_filter=' + document.getElementById("LDAP_filter").value + 
 					 '&integration_config_path=' + document.getElementById("integration_config_path").value + 
 					 '&admin_username=' + document.getElementById("admin_username").value + 
-					 '&admin_password=' + document.getElementById("admin_password").value +
+					 '&admin_password=' + encodeURIComponent(document.getElementById("admin_password").value) +
 					 '&site_xapi_endpoint=' + document.getElementById("site_xapi_endpoint").value +
 					 '&site_xapi_key=' + document.getElementById("site_xapi_key").value +
 					 '&site_xapi_secret=' + document.getElementById("site_xapi_secret").value);
@@ -621,6 +664,26 @@ function new_category(){
 		xmlHttp.send('newcategory=' + document.getElementById("newcategory").value);
 
 	}
+
+}
+
+// Function new grouping
+//
+// remove a share, and check who did it
+
+function new_grouping(){
+
+    if(setup_ajax()!=false){
+
+        var url="new_grouping.php";
+
+        xmlHttp.open("post",management_ajax_php_path + url,true);
+        xmlHttp.onreadystatechange=management_stateChanged;
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xmlHttp.send('newgrouping=' + document.getElementById("newgrouping").value);
+
+    }
 
 }
 

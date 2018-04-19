@@ -74,7 +74,7 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_POD_TWO . "<form><textarea id=\"pod_two\">" . base64_decode($row['pod_two']) . "</textarea></form></p>";	
 
-    echo "<p>" . MANAGEMENT_SITE_COPYRIGHT . "<form><textarea id=\"copyright\">" . $row['copyright'] . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_COPYRIGHT . "<form><textarea id=\"copyright\">" . htmlspecialchars($row['copyright']) . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_DEMONSTRATION . "<form><textarea id=\"demonstration_page\">" . $row['demonstration_page'] . "</textarea></form></p>";	
 
@@ -94,15 +94,51 @@ if(is_user_admin()){
     echo "<p>" . MANAGEMENT_SITE_SESSION_NAME . "<form><textarea id=\"site_session_name\">" . $row['site_session_name'] . "</textarea></form>
         </p>";	
 
+    if (Xerte_Validate_FileMimeType::canRun()) {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_MIME . "<form><textarea id=\"enable_mime_check\">" . $row['enable_mime_check'] . "</textarea></form>
+            </p>";
+    }
+    else {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_MIME . "<form><textarea id=\"enable_mime_check\" disabled=\"true\">False. The MIME check requires the PHP 'mime_content_type' function.</textarea></form>
+            </p>";
+    }
     echo "<p>" . MANAGEMENT_SITE_MIME . "<form><textarea id=\"mimetypes\">" . $row['mimetypes'] . "</textarea></form>
         </p>";	
+
+    if (Xerte_Validate_FileExtension::canRun()) {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_FILE_EXT . "<form><textarea id=\"enable_file_ext_check\">" . $row['enable_file_ext_check'] . "</textarea></form>
+            </p>";
+    }
+    else {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_FILE_EXT . "<form><textarea id=\"enable_file_ext_check\" disabled=\"true\">False. The file extension check requires the PHP 'pathinfo' function.</textarea></form>
+            </p>";
+    }
+    echo "<p>" . MANAGEMENT_SITE_FILE_EXTENSIONS . "<form><textarea id=\"file_extensions\">" . $row['file_extensions'] . "</textarea></form>
+        </p>";
+
+    // Clear the file cache because of the file check below.
+    clearstatcache();
+
+    if ($xerte_toolkits_site->enable_clamav_check && (! is_file($xerte_toolkits_site->clamav_cmd) || ! is_executable($xerte_toolkits_site->clamav_cmd))) {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_CLAMAV_CHK . "<form><textarea id=\"enable_clamav_check\" disabled=\"true\">False. The ClamAV antivirus check requires a valid command pathname.</textarea></form>
+            </p>";
+    }
+    else {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_CLAMAV_CHK . "<form><textarea id=\"enable_clamav_check\">" . $row['enable_clamav_check'] . "</textarea></form>
+            </p>";
+    }
+    echo "<p>" . MANAGEMENT_SITE_CLAMAV_CMD . "<form><textarea id=\"clamav_cmd\">" . str_replace('\\', '/', $row['clamav_cmd']) . "</textarea></form>
+        </p>";
+    echo "<p>" . MANAGEMENT_SITE_CLAMAV_OPTS . "<form><textarea id=\"clamav_opts\">" . $row['clamav_opts'] . "</textarea></form>
+        </p>";
+
     echo "<p>" . MANAGEMENT_SITE_INTEGRATION . "<form><textarea id=\"integration_config_path\">" . $row['integration_config_path'] . "</textarea></form>
         </p>";	
 
     echo "<p>" . MANAGEMENT_SITE_ADMIN_USER . "<form><textarea id=\"admin_username\">" . $row['admin_username'] . "</textarea></form>
         </p>";	
 
-    echo "<p>" . MANAGEMENT_SITE_ADMIN_PASSWORD . "<form><textarea id=\"admin_password\">" . $row['admin_password'] . "</textarea></form>
+    echo "<p>" . MANAGEMENT_SITE_ADMIN_PASSWORD . "<form><textarea id=\"admin_password\">" . htmlspecialchars($row['admin_password']) . "</textarea></form>
         </p>";	
 
     echo "</div>";
@@ -147,7 +183,7 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_ERROR_EMAIL . "<form><textarea id=\"error_email_list\">" . $row['email_error_list'] . "</textarea></form></p>";	
 
-    echo "<p>" . MANAGEMENT_SITE_ERROR_MAX . "<form><textarea id=\"error_email_message\">" . $row['max_error_size'] . "</textarea></form></p>";
+    echo "<p>" . MANAGEMENT_SITE_ERROR_MAX . "<form><textarea id=\"max_error_size\">" . $row['max_error_size'] . "</textarea></form></p>";
 
     echo "</div>";
 
@@ -157,18 +193,14 @@ if(is_user_admin()){
 
         echo "<select name=\"authentication_method\" id=\"authentication_method\" style=\"margin: 15px 0 0 10px; padding: 0.4em 0.15em; \">";
 
-        if(isset($row['authentication_method'])) {
-          echo "<option value=\"". $row['authentication_method'] . "\">". $row['authentication_method'] . "</option>";
-        }
-
-        echo "<option value=\"Guest\">Guest</option>
-              <option value=\"Ldap\">Ldap</option>
-              <option value=\"Db\">Db</option>
-              <option value=\"Static\">Static</option>
-              <option value=\"Moodle\">Moodle</option>
-              <option value=\"Saml2\">Saml2</option>
-              <option value=\"OAuth2\">OAuth2</option>
-            </select>";
+        echo "<option value=\"Guest\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Guest') ? " selected" : "") . ">Guest</option>";
+        echo "<option value=\"Ldap\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Ldap') ? " selected" : "") . ">Ldap</option>";
+        echo "<option value=\"Db\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Db') ? " selected" : "") . ">Db</option>";
+        echo "<option value=\"Static\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Static') ? " selected" : "") . ">Static</option>";
+        echo "<option value=\"Moodle\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Moodle') ? " selected" : "") . ">Moodle</option>";
+        echo "<option value=\"Saml2\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Saml2') ? " selected" : "") . ">Saml2</option>";
+        echo "<option value=\"OAuth2\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'OAuth2') ? " selected" : "") . ">OAuth2</option>";
+        echo "</select>";
 
         echo "</form></p>"; 
 
@@ -182,7 +214,7 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_LDAP_PORT . "<form><textarea id=\"ldap_port\">" . $row['ldap_port'] . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_LDAP_PASSWORD . "<form><textarea id=\"bind_pwd\">" . $row['bind_pwd'] . "</textarea></form></p>";
+    echo "<p>" . MANAGEMENT_SITE_LDAP_PASSWORD . "<form><textarea id=\"bind_pwd\">" . htmlspecialchars($row['bind_pwd']) . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_LDAP_BASE . "<form><textarea id=\"base_dn\">" . $row['basedn'] . "</textarea></form></p>";
 

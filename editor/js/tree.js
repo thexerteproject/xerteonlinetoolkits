@@ -414,7 +414,9 @@ var EDITOR = (function ($, parent) {
         var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
         var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true");
         var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');
-        var nodeText = $("#" + current_node.id + "_text").html();
+        // Be carefull. You cannot just find $("#" + current_node.id + "_text").html(), becuase if the node is collapsed this will return undefined!
+        // var nodeText = $("#" + current_node.id + "_text").html();
+        var nodeText = $("<div>").html(current_node.text).find("#" + current_node.id + "_text").html();
 
         var treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodeText + '</span>';
         // Create the tree node
@@ -678,6 +680,7 @@ var EDITOR = (function ($, parent) {
             .attr('src', 'editor/img/flashonly.png')
             .attr('alt', 'Flash only attribute');
         var flashonlytxt = '<img class="flash-icon" src="editor/img/flashonly.png" alt="Flash only attribute">';
+        var tooltipavailable = '<i class="deprecatedIcon iconEnabled fa fa-info-circle"></i>';
 		
 		var optGroups = [];
 		
@@ -766,12 +769,32 @@ var EDITOR = (function ($, parent) {
                 if (node_options['optional'][i].value.flashonly) {
                     label += flashonlytxt;
                 }
-                button.append(label);
                 if (node_options['optional'][i].value.tooltip)
                 {
+                    label += ' ' + tooltipavailable;
                     button.attr('title', node_options['optional'][i].value.tooltip);
                 }
-				
+                // If group, see if there any of the individual itmes have a tooltip
+                if (node_options['optional'][i].value.type == 'group')
+                {
+                    var tooltip_txt = "";
+                    for (var j=0; j<node_options['optional'][i].value.children.length; j++)
+                    {
+                        if (node_options['optional'][i].value.children[j].value.tooltip)
+                        {
+                            if (tooltip_txt.length > 0)
+                                tooltip_txt += "\n";
+                            tooltip_txt += node_options['optional'][i].value.children[j].value.label + ": " + node_options['optional'][i].value.children[j].value.tooltip;
+                        }
+                    }
+                    if (tooltip_txt.length > 0)
+                    {
+                        label += ' ' + tooltipavailable;
+                        button.attr('title', tooltip_txt);
+                    }
+                }
+                button.append(label);
+
                 if (attribute_value.found || $.inArray(true, found) > -1) {
                     // Add disabled button to right panel
                     button.prop('disabled', true)
@@ -803,8 +826,15 @@ var EDITOR = (function ($, parent) {
 					// group children aren't sorted into alphabetical order - they appear in order taken from xml
 					var groupChildren = node_options['optional'][i].value.children;
 					for (var j=0; j<groupChildren.length; j++) {
+						var tableOffset = (node_options['optional'][i].value.cols ? j % parseInt(node_options['optional'][i].value.cols, 10) : '');
 						if (found[j] == true || !groupChildren[j].value.deprecated) {
-							toolbox.displayParameter('#mainPanel .wizard #groupTable_' + node_options['optional'][i].name, groupChildren, groupChildren[j].name, toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value, key);
+							toolbox.displayParameter(
+								'#mainPanel .wizard #groupTable_' + node_options['optional'][i].name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
+								groupChildren,
+								groupChildren[j].name,
+								toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value,
+								key
+							);
 						}
 					}
 				}
@@ -820,8 +850,10 @@ var EDITOR = (function ($, parent) {
 			html.append(table);
 		};
 		if (table2.find("tr").length > 0) {
-			var tablerow = $('<tr>')
-				.append('<td class="optPropTitle">' + (language.optionalPropHTML && language.optionalPropHTML.$general ? language.optionalPropHTML.$general : "General") + '</td>');
+			var tablerow = $('<tr>');
+			if (templateframework != 'site') {
+				tablerow.append('<td class="optPropTitle">' + (language.optionalPropHTML && language.optionalPropHTML.$general ? language.optionalPropHTML.$general : "General") + '</td>');
+			}
 			table2.prepend(tablerow);
 			html.append(table2);
 		};
@@ -1058,15 +1090,12 @@ var EDITOR = (function ($, parent) {
             if (wizard_data[treeLabel].menu_options.menuItem)
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
         }
-        if (key == 'treeroot')
-        {
-            // Add icons to the node, all should be switched off
-            // Create node text based on xml, do not use text of original node, as this is not correct
-            var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
-            var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
+        // Add icons to the node, all should be switched off
+        // Create node text based on xml, do not use text of original node, as this is not correct
+        var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
+        var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
 
-            var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
-        }
+        var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
         var this_json = {
             id : lkey,
             text : treeLabel,

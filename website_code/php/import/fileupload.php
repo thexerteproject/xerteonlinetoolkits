@@ -18,16 +18,17 @@
  * limitations under the License.
  */
 require_once "../../../config.php";
+require_once "../../../plugins.php";
 
 _load_language_file("/website_code/php/import/fileupload.inc");
 
-if(in_array($_FILES['filenameuploaded']['type'],$xerte_toolkits_site->mimetypes)){
+if(apply_filters('editor_upload_file', $_FILES)){
 
     if($_FILES['filenameuploaded']['type']=="text/html"){
 
         $php_check = file_get_contents($_FILES['filenameuploaded']['tmp_name']);
 
-        if(!strpos($php_check,"<?PHP")){
+        if(!stripos($php_check,"<?PHP")){
 
             $new_file_name = $_POST['mediapath'] . $_FILES['filenameuploaded']['name'];
 
@@ -66,8 +67,14 @@ if(in_array($_FILES['filenameuploaded']['type'],$xerte_toolkits_site->mimetypes)
 
 }else{
 
-    echo FILE_UPLOAD_MIME_FAIL . " - " . $_FILES['filenameuploaded']['type'] . "****";
+    /* Show the last file check error if possible. */
+    if (isset($last_file_check_error) && !empty($last_file_check_error)) {
+        $err_string = implode("\n", $last_file_check_error);
 
+        echo $err_string . "****";
+    }
+    else {
+        echo FILE_UPLOAD_MIME_FAIL . " - " . $_FILES['filenameuploaded']['type'] . "****";
+    }
 }
-
 ?>

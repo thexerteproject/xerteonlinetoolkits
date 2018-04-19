@@ -25,6 +25,7 @@ _load_language_file("/properties.inc");
 ?><!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
+
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title><?php echo PROPERTIES_TITLE; ?></title>
 
@@ -38,6 +39,14 @@ _load_language_file("/properties.inc");
         <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/properties_tab.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+        <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
+        <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
+        <script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
 
         <script type="text/javascript" language="javascript" src="website_code/scripts/ajax_management.js"></script>
 
@@ -49,7 +58,6 @@ _load_language_file("/properties.inc");
             var ajax_php_path = "website_code/php/";
 
         </script>
-
         <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
         <?php
         _include_javascript_file("website_code/scripts/import.js");
@@ -76,7 +84,7 @@ _load_language_file("/properties.inc");
     -->
 
     <body onload="javascript:tab_highlight('1');
-        properties_template()" onunload="javascript:window.opener.refresh_workspace()">
+        properties_template()" onunload="javascript:parent.window.opener.refresh_workspace()">
 
         <!--
         
@@ -201,9 +209,26 @@ if (in_array("media", $template_supports)) {
                             </div>
                             <div class="tab_spacer">							
                             </div>
+
+							
+							
     <?PHP
 }
-?>							                            
+?>
+                        <?PHP
+                        if (in_array("lti/xapi", $template_supports)) {
+                        ?>
+                        <div id="tab8-1" class="tab" style="width:146px; height:38px;">
+                            <p onclick="javascript:tab_highlight('8-1');
+                                                                                                            tsugi_template()">
+                                <i class="fa fa-save xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_TSUGI; ?>
+                            </p>
+                        </div>
+                        <div class="tab_spacer">
+                        </div>
+                            <?PHP
+                        }
+                        ?>
                                 <?PHP
                                 if (in_array("peer", $template_supports)) {
                                     ?>	

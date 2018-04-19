@@ -30,7 +30,7 @@ if(is_user_admin()){
 
     $error_file_list = opendir($path);
 
-    echo "<div style=\"float:left; margin:10px; width:100%; height:30px; position:relative; border-bottom:1px solid #999\"><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_error_logs()\"><i class=\"fa fa-trash-o\"></i> " . DELETE_ALL . "</button></div>";
+    echo "<div style=\"float:left; margin:10px; width:100%; height:30px; position:relative; border-bottom:1px solid #999\"><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_error_logs()\"><i class=\"fa fa-trash-o\"></i> " . DELETE_ALL_LOGS . "</button></div>";
 
     while($file = readdir($error_file_list)){
 
@@ -46,16 +46,16 @@ if(is_user_admin()){
             $query_for_full_name_response = db_query($query_for_full_name, $params);
 		
             if(sizeof($query_for_full_name_response) > 0) { 
-                $row_name =	$query_for_full_name_response[0];
-                echo "<div class=\"template\" id=\"log" . $row_name['login_id'] . "\" savevalue=\"log" . $row_name['login_id'] .  "\"><p>" . $row_name['firstname'] . " " . $row_name['surname'] . " <a href=\"javascript:templates_display('log" . $row_name['login_id'] . "')\">View</a></p></div><div class=\"template_details\" id=\"log" . $row_name['login_id']  . "_child\">";
+                $row_name = $query_for_full_name_response[0];
+                echo "<div class=\"template\" id=\"log" . $row_name['login_id'] . "\" savevalue=\"log" . $row_name['login_id'] .  "\"><p>" . $row_name['firstname'] . " " . $row_name['surname'] . " <button type=\"button\" class=\"xerte_button\" id=\"log" . $row_name['login_id'] . "_btn\" onclick=\"javascript:templates_display('log" . $row_name['login_id'] . "')\">" . LOGS_VIEW . "</button></p></div><div class=\"template_details\" id=\"log" . $row_name['login_id']  . "_child\">";
 
             }else{
 
-                echo "<div class=\"template\" id=\"log" . $user_parameter . "\" savevalue=\"log" . $user_parameter .  "\"><p>" . $user_parameter . " <a href=\"javascript:templates_display('log" . $user_parameter . "')\">" . DELETE_VIEW . "</a></p></div><div class=\"template_details\" id=\"log" . $user_parameter  . "_child\">";
+                echo "<div class=\"template\" id=\"log" . $user_parameter . "\" savevalue=\"log" . $user_parameter .  "\"><p>" . $user_parameter . " <button type=\"button\" class=\"xerte_button\" id=\"log" . $user_parameter . "_btn\" onclick=\"javascript:templates_display('log" . $user_parameter . "')\">" . LOGS_VIEW . "</button></p></div><div class=\"template_details\" id=\"log" . $user_parameter  . "_child\">";
 
             }
 
-            echo "<p>" . str_replace("*","",file_get_contents($path . $file)) . "</p>";
+            echo "<p>" . str_replace("*","",str_replace("\n", "<br>\n", file_get_contents($path . $file))) . "</p>";
 
             echo "</div>";
 

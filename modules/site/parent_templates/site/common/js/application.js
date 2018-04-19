@@ -25,6 +25,8 @@ var pageLink = "";
 var authorSupport = false;
 var deepLink = "";
 var currentPage = 0;
+var glossary = [];
+var defaultHeaderCss;
 
 function init(){
 	loadContent();
@@ -71,8 +73,8 @@ function loadContent(){
 				
 			}
 			
-			//step one - libraries?
-			loadLibraries();
+			//step one - css	
+			cssSetUp('theme');
 			
 		}
 	});
@@ -87,15 +89,55 @@ function loadContent(){
 
 }
 
-function loadLibraries(){
+function cssSetUp(param) {
+	param = (typeof param !== 'undefined') ?  param : "theme";
 
-	//load stylesheet and libraries...
-	
-	if ( $(data).find('learningObject').attr('stylesheet') != undefined){
-	
-		$('head').append('<link rel="stylesheet" href="' + eval( $(data).find('learningObject').attr('stylesheet') ) + '" type="text/css" />');
-	
+	switch(param) {
+        case 'theme':
+			if ( $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default") {
+				$('head').append('<script src="'+ themePath + $(data).find('learningObject').attr('theme') + '/'+ $(data).find('learningObject').attr('theme')+ '.js"' + '</script>');
+				insertCSS(themePath + $(data).find('learningObject').attr('theme') + '/' + $(data).find('learningObject').attr('theme') + '.css', function() {cssSetUp('stylesheet')});
+			} else {
+				cssSetUp('stylesheet');
+			}
+            break;
+        case 'stylesheet':
+			if ( $(data).find('learningObject').attr('stylesheet') != undefined) {
+				insertCSS(eval( $(data).find('learningObject').attr('stylesheet') ), function() { loadLibraries(); });
+			} else {
+				loadLibraries();
+			}
+            break;
 	}
+	
+}
+
+function insertCSS(href, func) {
+	
+	var css = document.createElement("link");
+	var element = null;
+	var donotreplace = false;
+	css.rel = "stylesheet";
+	css.type = "text/css";
+	css.href = href;
+	
+	// don't continue until css has loaded as otherwise css priorities can be messed up
+	if (func != undefined) {
+		
+		css.onload = function(){
+			func();
+		};
+
+		css.onerror = function(){
+			func();
+		};
+		
+	}
+	
+	document.getElementsByTagName("head")[0].appendChild(css);
+}	
+
+function loadLibraries() {
 	
 	if ( $(data).find('learningObject').attr('styles') != undefined){
 	
@@ -134,7 +176,6 @@ function loadLibraries(){
 		getLangData(lang)
 		
 	}
-	
 
 }
 
@@ -181,13 +222,128 @@ function formatColour(col) {
 
 function setup(){
 	
+	if ($(data).find('learningObject').attr('glossary') != undefined) {
+		
+		// get list of glossary words & definitions
+		var i, len, item, word,
+			items = $(data).find('learningObject').attr('glossary').split("||");
+
+		for (i=0, len=items.length; i<len; i++) {
+			item = items[i].split("|"),
+			word = {word:item[0], definition:item[1]};
+
+			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
+				glossary.push(word);
+			}
+		}
+		
+		if (glossary.length > 0) {
+			glossary.sort(function(a, b){ // sort by size
+				return a.word.length > b.word.length ? -1 : 1;
+			});
+			
+			// show definition on hover
+			if ($(data).find('learningObject').attr('glossaryHover') == undefined || $(data).find('learningObject').attr('glossaryHover') == "true") {
+				
+				x_checkForText($(data).find('page'), 'glossary');
+				
+				// add events to control what happens when you rollover glossary words
+				$("body > .container")
+					.on("mouseenter", ".glossary", function(e) {
+						$(this).trigger("mouseleave");
+						
+						var $this = $(this),
+							myText = $this.text(),
+							myDefinition, i, len;
+						
+						for (i=0, len=glossary.length; i<len; i++) {
+							if (myText.toLowerCase() == glossary[i].word.toLowerCase()) {
+								myDefinition = "<b>" + myText + ":</b><br/>"
+								myDefinition += glossary[i].definition;
+							}
+						}
+						
+						$(this).parents('.container').append('<div id="glossaryHover" class="glossaryTip">' + myDefinition + '</div>');
+						
+						$("#glossaryHover").css({
+							"left"	:$(this).offset().left + 20,
+							"top"	:$(this).offset().top + 20
+						});
+						$("#glossaryHover").fadeIn("slow");
+					})
+					.on("mouseleave", ".glossary", function(e) {
+						$(this).parent('.container').off("click.glossary");
+						
+						if ($("#glossaryHover") != undefined) {
+							$("#glossaryHover").remove();
+						}
+					})
+					.on("mousemove", ".glossary", function(e) {
+						$("#glossaryHover").css({
+							"left": e.pageX + 20,
+							"top": e.pageY + 20
+						});
+					})
+					.on("focus", ".glossary", function(e) { // called when link is tabbed to
+						$(this).trigger("mouseenter");
+					})
+					.on("focusout", ".glossary", function(e) {
+						$(this).trigger("mouseleave");
+					});
+			}
+			
+			// show glossary in its own page
+			if ($(data).find('learningObject').attr('glossaryPage') != undefined && $(data).find('learningObject').attr('glossaryPage') != 'none') {
+				
+				glossary.sort(function(a, b){ // sort alphabetically
+					if(a.word < b.word) return -1;
+					if(a.word > b.word) return 1;
+					return 0;
+				})
+				
+				var charList = [],
+					glossaryTxt = [];
+				
+				for (var i=0; i<glossary.length; i++) {
+					if (charList.length == 0 || charList[charList.length - 1] != glossary[i].word[0]) {
+						charList += glossary[i].word[0];
+						glossaryTxt.push('<h3>' + glossary[i].word + '</h3><div>' + glossary[i].definition + '</div>');
+					} else {
+						glossaryTxt.splice(glossaryTxt.length - 1, 1, glossaryTxt[glossaryTxt.length - 1] + '<h3>' + glossary[i].word + '</h3><div>' + glossary[i].definition + '</div>');
+					}
+				}
+				
+				var $glossaryPage = $('<page name="Glossary" subtitle=""></page>');
+				for (var i=0; i<charList.length; i++) {
+					var cDataSection = data.createCDATASection(glossaryTxt[i]);
+					var $section = $('<section name="' + charList[i] + '"><text></text></section>');
+					$section.find('text').append(cDataSection);
+					$glossaryPage.append($section);
+				}
+				
+				if ($(data).find('learningObject').attr('glossaryPage') == "first") {
+					$glossaryPage.prependTo($(data).find('learningObject'));
+				} else {
+					$glossaryPage.appendTo($(data).find('learningObject'));
+				}
+			}
+		}
+	}
+	
+	// if project is being viewed as https then force any iframe src to be https too
+	if (window.location.protocol == "https:") {
+		
+		x_checkForText($(data).find('page'), 'iframe');	
+		
+	}	
+	
 	if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && $(data).find('learningObject').attr('authorSupport') == 'true' ) {
 		
 		authorSupport = true;
 		
 	}
 
-	//add all the pages to the pages menu: this links bak to the same page
+	//add all the pages to the pages menu: this links back to the same page
 	$(data).find('page').each( function(index, value){
 		
 		if ($(this).attr('hidePage') != 'true' || authorSupport == true) {
@@ -209,89 +365,288 @@ function setup(){
 		
 	});
 	
-	var bgImg = ''; 
+	// --------------- Optional Header properties --------------------
 	
-	//set the header image, if defined
-	if ($(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != ''){
-		$('#overview').css({filter:''}); //for IE8
+	if ($(data).find('learningObject').attr('headerHide') != undefined && $(data).find('learningObject').attr('headerHide') != 'false') {
+	
+		$(".jumbotron").remove();
 		
-		bgImg = "url(" + eval( $(data).find('learningObject').attr('header'))+ ")";
+	} else {
 		
-		$('#overview').css('background-image', bgImg);
+		// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
+		// they are overridden by any logos in theme folders
+		// they can also be overridden by images uploaded via Header Logo optional properties
+		$('#overview div.logoR, #overview div.logoL').hide();
+		$('#overview div.logoR').data('defaultLogo', $('#overview .logoR img').attr('src'));
+		$('#overview div.logoL').data('defaultLogo', $('#overview .logoL img').attr('src'));
 		
-		if ($(data).find('learningObject').attr('headerRepeat') != undefined && $(data).find('learningObject').attr('headerRepeat') != "") {
-			$('#overview').css('background-repeat', $(data).find('learningObject').attr('headerRepeat'));
-			
-			bgImg += ' ' + $(data).find('learningObject').attr('headerRepeat');
+		var checkExists = function(logoClass, type, fallback) {
+			$.ajax({
+				url: $('#overview .' + logoClass + ' img').attr('src'),
+				success: function() {
+					$('#overview').addClass(logoClass);
+					$('#overview div.' + logoClass).show();
+					
+					// the theme logo is being used - add a class that will allow for the different size windows to display different logos
+					if (type == 'theme') {
+						$('#overview .' + logoClass + ' img.' + logoClass).addClass('themeLogo');
+					}
+				},
+				error: function() {
+					if ($(data).find('learningObject').attr(logoClass + 'Hide') == 'true') {
+						$('#overview .' + logoClass + ' img').removeAttr('src');
+					} else {
+						if (fallback == 'theme') {
+							$('#overview .' + logoClass + ' img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo' + (logoClass == 'logoL' ? '_left' : '') + '.png');
+							checkExists(logoClass, 'theme', 'default');
+						} else if (fallback == 'default') {
+							$('#overview .' + logoClass + ' img').attr('src', $('#overview div.' + logoClass).data('defaultLogo'));
+							checkExists(logoClass);
+						}
+					}
+				}
+			});
 		}
 		
-		if ($(data).find('learningObject').attr('headerPos') != undefined && $(data).find('learningObject').attr('headerPos') != "") {
-			$('#overview').css('background-position', $(data).find('learningObject').attr('headerPos') + ' top');
-			
-			bgImg += ' ' + $(data).find('learningObject').attr('headerPos');
+		var type, fallback;
+		if ($(data).find('learningObject').attr('logoR') != undefined && $(data).find('learningObject').attr('logoR') != '') {
+			$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
+			type = 'LO';
+			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
+		} else if ($(data).find('learningObject').attr('logoRHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
+			type = 'theme';
+			$('#overview .logoR img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo.png');
 		}
-		
-		bgImg += ', ';
-	} 
-	
-	if ($(data).find('learningObject').attr('headerColour') != undefined){
-	
-		var col = $(data).find('learningObject').attr('headerColour');
-		
-		//one or two?
-		if (col.indexOf(',') != -1){
-			col = col.split(',');
+		if ((type == undefined || type == 'theme') && $(data).find('learningObject').attr('logoRHide') == 'true') {
+			$('#overview .logoR img').removeAttr('src');
 		} else {
-			col = [col,col];
+			checkExists('logoR', type, fallback);
 		}
-		col[0] = formatColour(col[0]);
-		col[1] = formatColour(col[1]);
 		
-		$('#overview').css('background', col[0]);
-		$('#overview').css('background', bgImg + '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + col[0] + '), color-stop(100%,' + col[1] + '))');
-		$('#overview').css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-o-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-ms-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + col[1]+ ' 100%)');
-		$('#overview').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + col[0] + ', endColorstr=' + col[1] + ',GradientType=1 )');
-		
-	}
-	
-	
-	
-	if ($(data).find('learningObject').attr('headerTextColour') != undefined){
-	
-		$('#overview').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
-		
-	}
-	
-	// default logos used are logo.png & logoL.png in modules/site/parent_templates/site/common/img/ - these can be overridden by images uploaded via Header Logo optional properties
-	$('#overview div.logoR, #overview div.logoL').hide();
-	
-	if ($(data).find('learningObject').attr('logoR') != undefined){
-		$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
-	}
-	
-	$.ajax({
-		url: $('#overview .logoR img').attr('src'),
-		success: function() {
-			$('#overview').addClass('logoR');
-			$('#overview div.logoR').show();
+		var type, fallback;
+		if ($(data).find('learningObject').attr('logoL') != undefined && $(data).find('learningObject').attr('logoL') != '') {
+			$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
+			type = 'LO';
+			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
+		} else if ($(data).find('learningObject').attr('logoLHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
+			type = 'theme';
+			$('#overview .logoL img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo_left.png');
 		}
-	});
-	
-	if ($(data).find('learningObject').attr('logoL') != undefined){
-		$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
+		if ((type == undefined || type == 'theme') && $(data).find('learningObject').attr('logoLHide') == 'true') {
+			$('#overview .logoL img').removeAttr('src');
+		} else {
+			checkExists('logoL', type, fallback);
+		}
+		
+		// apply all the header css optional properties
+		var $jumbotron = $(".jumbotron");
+		if ($(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != '' && $(data).find('learningObject').attr('headerColour') != '0x') {
+			if ($(data).find('learningObject').attr('headerColour').indexOf('rgb(') >= 0) {
+				$jumbotron.css('background-color', formatColour($(data).find('learningObject').attr('headerColour')));
+			} else {
+				// gradients can be entered in colour picker in format '#FF0000,#FFFF00'
+				var tempCol = $(data).find('learningObject').attr('headerColour');
+				tempCol = tempCol.split(',');
+				if (tempCol.length == 1) {
+					tempCol.push(tempCol[0]);
+				}
+				tempCol[0] = formatColour(tempCol[0]);
+				tempCol[1] = formatColour(tempCol[1]);
+				$jumbotron.css('background', tempCol[0]);
+				$jumbotron.css('background', '-moz-linear-gradient(45deg,  ' + tempCol[0] + ' 0%, ' + tempCol[1] + ' 100%)');
+				$jumbotron.css('background', '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + tempCol[0] + '), color-stop(100%,' + tempCol[1] + '))');
+				$jumbotron.css('background', '-webkit-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$jumbotron.css('background', '-o-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$jumbotron.css('background', '-ms-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$jumbotron.css('background', 'linear-gradient(45deg,  ' + + ' 0%,' + tempCol[1]+ ' 100%)');
+				$jumbotron.css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + tempCol[0] + ', endColorstr=' + tempCol[1] + ',GradientType=1 )');
+			}
+		}
+		if ($(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != '') {
+			$jumbotron.css('background-image', "url('" + eval($(data).find('learningObject').attr('header')) + "')");
+		}
+		if ($(data).find('learningObject').attr('headerPos') != undefined) {
+			$jumbotron.css('background-position', $(data).find('learningObject').attr('headerPos'));
+		}
+		if ($(data).find('learningObject').attr('headerRepeat') != undefined) {
+			$jumbotron.css('background-repeat', $(data).find('learningObject').attr('headerRepeat'));
+		}
+		if ($(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != '' && $(data).find('learningObject').attr('headerTextColour') != '0x') {
+			$jumbotron.find('#pageTitle, #pageSubTitle').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
+		}
+		
 	}
 	
-	$.ajax({
-		url: $('#overview .logoL img').attr('src'),
-		success: function() {
-			$('#overview').addClass('logoL');
-			$('#overview div.logoL').show();
+	// store initial header css as it might be needed later if page level header optional property is used
+	var $jumbotron = $(".jumbotron");
+	defaultHeaderCss = {
+		header: $jumbotron.css('background-image'),
+		headerPos: $jumbotron.css('background-position'),
+		headerRepeat: $jumbotron.css('background-repeat'),
+		headerColour: $jumbotron.css('background-color'),
+		headerTextColour: $jumbotron.find('#pageTitle').css('color')
+	};
+	
+    // --------------- Optional Navigation Bar properties --------------------
+    
+    if ($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false'){
+	
+		$(".navbar-inner").remove();
+		
+	} else {
+	
+		// nav bar can be moved below header bar
+		if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') == 'below'){
+		
+			$('#overview').after('<div id="pageLinks"></div>');
+			$('.navbar').appendTo('#pageLinks');
+
 		}
-	});
+		
+		// apply all the nav bar css optional properties
+		if ($(data).find('learningObject').attr('navbarColour') != undefined && $(data).find('learningObject').attr('navbarColour') != '' && $(data).find('learningObject').attr('navbarColour') != '0x') {
+			var $navBar = $('.navbar-inverse .navbar-inner');
+			
+			if ($(data).find('learningObject').attr('navbarColour').indexOf('rgb(') >= 0) {
+				$navBar.css('background-color', formatColour($(data).find('learningObject').attr('navbarColour')));
+			} else {
+				// gradients can be entered in colour picker in format '#FF0000,#FFFF00'
+				var tempCol = $(data).find('learningObject').attr('navbarColour');
+				tempCol = tempCol.split(',');
+				if (tempCol.length == 1) {
+					tempCol.push(tempCol[0]);
+				}
+				tempCol[0] = formatColour(tempCol[0]);
+				tempCol[1] = formatColour(tempCol[1]);
+				$navBar.css('background', tempCol[0]);
+				$navBar.css('background', '-moz-linear-gradient(45deg,  ' + tempCol[0] + ' 0%, ' + tempCol[1] + ' 100%)');
+				$navBar.css('background', '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + tempCol[0] + '), color-stop(100%,' + tempCol[1] + '))');
+				$navBar.css('background', '-webkit-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$navBar.css('background', '-o-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$navBar.css('background', '-ms-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$navBar.css('background', 'linear-gradient(45deg,  ' + + ' 0%,' + tempCol[1]+ ' 100%)');
+				$navBar.css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + tempCol[0] + ', endColorstr=' + tempCol[1] + ',GradientType=1 )');
+			}
+		}
+		
+		var navBarText = $('.nav li a').css('color');
+		if ($(data).find('learningObject').attr('navbarTextColour') != undefined && $(data).find('learningObject').attr('navbarTextColour') != '' && $(data).find('learningObject').attr('navbarTextColour') != '0x') {
+			navBarText = formatColour($(data).find('learningObject').attr('navbarTextColour'));
+			$('.nav li a').css('color', navBarText);
+		}
+		if ($(data).find('learningObject').attr('navbarTextHoverColour') != undefined && $(data).find('learningObject').attr('navbarTextHoverColour') != '' && $(data).find('learningObject').attr('navbarTextHoverColour') != '0x') {
+			var navBarTextHover = formatColour($(data).find('learningObject').attr('navbarTextHoverColour'));
+			$('.nav li a').hover(
+				function() { $(this).css('color', navBarTextHover); },
+				function() { $(this).css('color', navBarText); }
+			);
+		}
+	}
+	
+	// --------------- Optional Footer properties --------------------    
+	
+    if ($(data).find('learningObject').attr('footerHide') != undefined && $(data).find('learningObject').attr('footerHide') != 'false'){
+	
+		$('.footer').remove();
+		
+	} else {
+    
+		// add & position custom footer
+		if ($(data).find('learningObject').attr('customFooter') != undefined && $(data).find('learningObject').attr('customFooter') != ''){
+			var customFooterContent=$(data).find('learningObject').attr('customFooter');
+			
+			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'above'){
+			
+			$('.footer .container .row-fluid').before('<div id="customFooter">'+customFooterContent+'</div>');
+			$("#customFooter").css({"margin-bottom": "10px"});
+			} 
+
+			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'below'){
+			
+			$('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
+			$("#customFooter").css({"margin-top": "40px"});
+			} 
+			
+			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'replace'){
+			$('.footer .container').remove();
+			$('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
+				$("#customFooter").css({"margin-left": "10px"});
+			} 
+			
+			// convert img paths
+			$('#customFooter img').each(function() {
+				if ($(this).attr('src').substring(0, 16) == "FileLocation + '") {
+							$(this).attr('src', eval($(this).attr('src')));
+						}
+					});
+			
+		}
+		
+		// Change footer background colour
+		if ($(data).find('learningObject').attr('footerColour') != undefined && $(data).find('learningObject').attr('footerColour') != ''){
+			var $footer = $('.footer');
+			if ($(data).find('learningObject').attr('footerColour').indexOf('rgb(') >= 0) {
+				$footer.css('background-color', formatColour($(data).find('learningObject').attr('footerColour')));
+			} else {
+				// gradients can be entered in colour picker in format '#FF0000,#FFFF00'
+				var tempCol = $(data).find('learningObject').attr('footerColour');
+				tempCol = tempCol.split(',');
+				if (tempCol.length == 1) {
+					tempCol.push(tempCol[0]);
+				}
+				tempCol[0] = formatColour(tempCol[0]);
+				tempCol[1] = formatColour(tempCol[1]);
+				$footer.css('background', tempCol[0]);
+				$footer.css('background', '-moz-linear-gradient(45deg,  ' + tempCol[0] + ' 0%, ' + tempCol[1] + ' 100%)');
+				$footer.css('background', '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + tempCol[0] + '), color-stop(100%,' + tempCol[1] + '))');
+				$footer.css('background', '-webkit-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$footer.css('background', '-o-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$footer.css('background', '-ms-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$footer.css('background', 'linear-gradient(45deg,  ' + + ' 0%,' + tempCol[1]+ ' 100%)');
+				$footer.css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + tempCol[0] + ', endColorstr=' + tempCol[1] + ',GradientType=1 )');
+			}
+			
+		}
+		
+		
+		// Hide or show the social media buttons
+		$(".addthis_sharing_toolbox").hide();
+		setTimeout(function () {
+			var count_hidden = count_undef = 0,
+					value, social = [
+						'facebook',
+						'twitter',
+						['google', 'google_plusone_share'],
+						'linkedin',
+						'scoopit',
+						['pinterest', 'pinterest_share'],
+						'email',
+						'yammer',
+						['addthis', 'compact']
+					];
+
+			$(social).each(function(i, item) {
+				value = $.isArray(item) ? $(data).find('learningObject').attr(item[0]) : $(data).find('learningObject').attr(item);
+				
+				if (value == undefined) {
+					count_undef++;
+				}
+				else if (value == 'false') {
+					$(".at-svc-" + ($.isArray(item) ? item[1] : item)).hide();
+					count_hidden++;
+				}
+			});
+
+			if (
+				(count_hidden > 0 && count_hidden < social.length) ||
+				(count_hidden == 0 && count_undef == 0) ||
+				count_undef == social.length
+			) {
+				$(".addthis_sharing_toolbox").show();
+			}
+		}, 2000);
+		
+	}
 	
 	// script optional property added before any content loads
 	var script = $(data).find('learningObject').attr('script');
@@ -300,6 +655,49 @@ function setup(){
 	}
 }
 
+// add link around all examples of glossary words in text
+function x_insertGlossaryText(node) {
+	var temp = document.createElement("pre");
+	temp.innerHTML = node;
+	var tempText = temp.innerHTML;
+	
+	if (glossary.length > 0) {
+		for (var k=0, len=glossary.length; k<len; k++) {
+			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+		}
+		for (var k=0, len=glossary.length; k<len; k++) {
+			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			tempText = tempText.replace(regExp, '$1<a class="glossary" href="#" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+		}
+	}
+	
+	return tempText;
+}
+
+// check through text nodes for text that needs replacing with something lese (e.g. glossary)
+function x_checkForText(data, type) {
+	for (var i=0; i<data.length; i++) {
+		if (data[i].nodeName == 'text') {
+			if (type == 'glossary') {
+				if ($(data[i]).attr('disableGlossary') != 'true') {
+					data[i].childNodes[0].data = x_insertGlossaryText(data[i].childNodes[0].data);
+				}
+			} else if (type == 'iframe') {
+				function changeProtocol(iframe) {
+					if (/src="http:/.test(iframe)){
+						iframe = iframe.replace(/src="http:/g, 'src="https:').replace(/src='http:/g, "src='https:");
+					}
+					return iframe;
+				}
+				data[i].childNodes[0].data = data[i].childNodes[0].data.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
+			}
+			
+		} else {
+			x_checkForText(data[i].childNodes, type);
+		}
+	}
+}
 
 // this is the format of links added through the wysiwyg editor button
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
@@ -311,13 +709,13 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 	// First look for the fixed links
 	if ($.inArray(pageInfo.ID, links) > -1) {
 		parseContent(linkLocations[$.inArray(pageInfo.ID, links)]);
-		goToSection('top');
+		goToSection('topnav');
 	}
 	else { // Then look them up by ID
 		for (var i=0; i<pages.length; i++) {
 			if (pages[i].getAttribute("linkID") == pageInfo.ID) {
 				parseContent(i);
-				goToSection('top');
+				goToSection('topnav');
 				break;
 			}
 			if (pages[i].childNodes.length > 0) {
@@ -339,7 +737,7 @@ function goToSection(pageId) {
 }
 
 function parseContent(pageIndex){
-
+	
 	//clear out existing content
 	$('#mainContent').empty();
 	$('#toc').empty();
@@ -377,6 +775,10 @@ function parseContent(pageIndex){
 		
 		//set the main page title and subtitle
 		$('#pageTitle').html(page.attr('name'));
+		
+		if ($(".jumbotron").length > 0) {
+			setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'));
+		}
 		
 		var msg = languageData.find("hiddenPage")[0] != undefined && languageData.find("hiddenPage")[0].getAttribute('label') != null ? languageData.find("hiddenPage")[0].getAttribute('label') : "This page will be hidden in live projects";
 		var extraTitle = page.attr('hidePage') == 'true' ? ' <span class="alertMsg">(' + msg + ')</span>' : '';
@@ -533,6 +935,10 @@ function parseContent(pageIndex){
 						section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
 					}
 					
+					if (this.nodeName == 'xot'){
+						section.append(loadXotContent($(this)));
+					}
+					
 					if (this.nodeName == 'navigator'){
 					
 						if ($(this).attr('type') == 'Tabs'){
@@ -572,7 +978,7 @@ function parseContent(pageIndex){
 						val = $this.attr('src') || $this.attr('href'),
 						attr_name = $this.attr('src') ? 'src' : 'href';
 
-					if (val.substring(0, 16) == "FileLocation + '") {
+					if (val != undefined && val.substring(0, 16) == "FileLocation + '") {
 						$this.attr(attr_name, eval(val));
 					}
 				});
@@ -606,6 +1012,123 @@ function parseContent(pageIndex){
 	}
 }
 
+// LO level header background settings will be overridden by individual page ones (& returned to LO settings if page contains no background properties)
+function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTextColour) {
+	
+	var $overview = $('#overview'),
+		bgImg = '';
+	
+	if (header != undefined && header != '') {
+		
+		if (header != 'none') {
+			
+			bgImg = "url('" + eval(header) + "')";
+			
+		}
+		
+	} else {
+		
+		bgImg = defaultHeaderCss.header;
+		
+	}
+	
+	// bgImg could be a colour gradient & not image - only do repeat & position if it's an image
+	if (bgImg.indexOf('url(') >= 0) {
+		
+		if (headerRepeat != undefined && headerRepeat != "") {
+			
+			bgImg += ' ' + headerRepeat;
+			
+		} else if (defaultHeaderCss.headerRepeat) {
+			
+			bgImg += ' ' + defaultHeaderCss.headerRepeat;
+			
+		} else {
+			
+			bgImg += ' repeat';
+			
+		}
+		
+		if (headerPos != undefined && headerPos != "") {
+			
+			bgImg += ' ' + headerPos;
+			
+		} else if (defaultHeaderCss.headerPos) {
+			
+			bgImg += ' ' + $(data).find('learningObject').attr('headerPos');
+			
+		} else {
+			
+			bgImg += ' 0% 0%';
+			
+		}
+		
+	}
+	
+	var col = '';
+	
+	if (headerColour != undefined && headerColour != '') {
+		
+		col = headerColour;
+		
+	} else if (defaultHeaderCss.headerColour != undefined && defaultHeaderCss.headerColour != '' && defaultHeaderCss.headerColour != '0x') {
+		
+		col = defaultHeaderCss.headerColour;
+		
+	}
+	
+	if (col != '' && col != '0x' && col != 'rgba(0, 0, 0, 0)') {
+		
+		if (col.indexOf('rgb(') >= 0) {
+			
+			$overview.css('background', formatColour(col) + ' ' + bgImg );
+			
+		} else {
+			
+			// gradients can be entered in colour picker in format '#FF0000,#FFFF00'
+			var tempCol = col.split(',');
+			if (tempCol.length == 1) {
+				tempCol.push(tempCol[0]);
+			}
+			tempCol[0] = formatColour(tempCol[0]);
+			tempCol[1] = formatColour(tempCol[1]);
+			bgImg += ', ';
+			
+			$overview.css('background', tempCol[0]);
+			$overview.css('background', bgImg + '-moz-linear-gradient(45deg,  ' + tempCol[0] + ' 0%, ' + tempCol[1] + ' 100%)');
+			$overview.css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + tempCol[0] + '), color-stop(100%,' + tempCol[1] + '))');
+			$overview.css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+			$overview.css('background', bgImg + '-o-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+			$overview.css('background', bgImg + '-ms-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+			$overview.css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + tempCol[1]+ ' 100%)');
+			$overview.css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + tempCol[0] + ', endColorstr=' + tempCol[1] + ',GradientType=1 )');
+		}
+		
+	} else {
+		
+		$overview.css({
+			'filter': '',
+			'background': bgImg
+		});
+		
+	}
+	
+	var txtCol = '';
+	
+	if (headerTextColour != undefined && headerTextColour != '' && headerTextColour != '0x') {
+		
+		txtCol = headerTextColour;
+		
+	} else {
+		
+		txtCol = defaultHeaderCss.headerTextColour;
+		
+	}
+	
+	$overview.find('#pageTitle, #pageSubTitle').css('color', formatColour(txtCol));
+	
+}
+
 function makeNav(node,section,type, sectionIndex, itemIndex){
 
 	var sectionIndex = sectionIndex;
@@ -627,10 +1150,10 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 	var content = $( '<div class="tab-content"/>' );
 	
-	var iframeKaltura = [];
+	var iframeKaltura = [],
+		pdf = [];
 	
 	node.children().each( function(index, value){
-	
 		if (index == 0){
 
 			tabs.append( $('<li class="active"><a href="#tab' + sectionIndex + '_' + itemIndex + '_' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>') );
@@ -692,7 +1215,14 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'pdf'){
-				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+				
+				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '#page=1&view=fitH"></object>');
+				pdf.push(tab.find('object'));
+				
+			}
+			
+			if (this.nodeName == 'xot'){
+				tab.append(loadXotContent($(this)));
 			}
 			
 		});
@@ -713,7 +1243,8 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			.parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']").data("refresh", true);
 		
 		// hacky fix for issue with UoN mediaspace videos embedded on navigators
-		var $iframeTabs = $();
+		var $iframeTabs = $(),
+			$pdfTabs = $();
 		
 		for (var i=0; i<iframeKaltura.length; i++) {
 			$iframeTabs = $iframeTabs.add($('a[data-toggle="tab"]:eq(' + iframeKaltura[i] + ')'));
@@ -724,6 +1255,21 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			if (iframeRefresh.data("refresh") != true) {
 				iframeRefresh[0].src = iframeRefresh[0].src;
 				iframeRefresh.data("refresh", true);
+			}
+		});
+		
+		// fix for issue where firefox doesn't zoom pdfs correctly if not on 1st pane of navigators
+		for (var i=0; i<pdf.length; i++) {
+			$pdfTabs = $pdfTabs.add($(pdf[i]).parents('.tabbable').find('ul a[data-toggle="tab"]:eq(' + $(pdf[i]).parents('.tab-pane').index() + ')'));
+		}
+		
+		$pdfTabs.on('shown.bs.tab', function (e) {
+			if ($.browser.mozilla || $.browser.msie) {
+				var $pdfRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active object[id*='pdfDoc']");
+				if ($pdfRefresh.parent().data("refresh") != true) {
+					$pdfRefresh.parent().data("refresh", true);
+					$pdfRefresh.attr("data", $pdfRefresh.attr("data"));
+				}
 			}
 		});
 		
@@ -794,6 +1340,10 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			
 			if (this.nodeName == 'pdf'){
 				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+			}
+			
+			if (this.nodeName == 'xot'){
+				inner.append(loadXotContent($(this)));
 			}
 		});
 		
@@ -879,6 +1429,10 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
 			}
 			
+			if (this.nodeName == 'xot'){
+				pane.append(loadXotContent($(this)));
+			}
+			
 		});
 		
 		items.append(pane);
@@ -926,3 +1480,56 @@ function findAnchor(name){
 	
 }
 
+function loadXotContent($this) {
+	// get link & store url parameters to add back in later if not overridden
+	var xotLink = $this.attr('link'),
+		params = [],
+		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
+	
+	xotLink = xotLink.indexOf('#resume=') != -1 ? xotLink.slice(0,xotLink.indexOf('#resume=')) : xotLink;
+	
+	if (xotLink.indexOf(separator) != -1) {
+		params = xotLink.split(separator);
+		if (separator == '?') {
+			params.splice(1, 1, params[1].split('&'));
+		}
+		xotLink = params[0];
+		params.splice(0,1);
+		
+		for (var i=0; i<params.length; i++) {
+			params[i] = params[i].split('=');
+		}
+	}
+	
+	var hide = '';
+	if ($this.attr('header') == 'true') { hide = 'top'; }
+	if ($this.attr('footer') == 'true') { hide = hide == 'top' ? 'both' : 'bottom'; }
+	xotLink += separator + 'hide=' + (hide != '' ? hide : 'none');
+	separator = '&';
+	
+	if ($this.attr('pageNum') != undefined && $.isNumeric($this.attr('pageNum'))) {
+		xotLink += separator + 'page=' + $this.attr('pageNum');
+	}
+	
+	// the embed url parameter makes it responsive, full screen & hides minimise/maximise button (these can be overridden by manually adding other params to the url entered in editor)
+	xotLink += separator + 'embed=true';
+	
+	// add back any url params that haven't been overridden
+	for (var i=0; i<params.length; i++) {
+		if (xotLink.indexOf(separator + params[i][0] + '=') == -1) {
+			xotLink += separator + params[i][0] + '=' + params[i][1];
+		}
+	}
+	
+	// if project is being viewed as https then force iframe src to be https too
+	if (window.location.protocol == "https:" && xotLink.indexOf("http:") == 0) {
+		xotLink = "https:" + xotLink.substring(xotLink.indexOf("http:") + 5);
+	}
+	
+	var warning = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && (xotLink.indexOf('preview_') != -1 || xotLink.indexOf('preview.php?') != -1) ? '<p class="alertMsg">' + (languageData.find("errorEmbed")[0] != undefined && languageData.find("errorEmbed")[0].getAttribute('label') != null ? languageData.find("errorEmbed")[0].getAttribute('label') : "You have embedded an XOT project preview. You must make the project public and embed the public facing URL.") + '</p>' : '',
+		xotWidth = $this.attr('width') != undefined && ($.isNumeric($this.attr('width')) || $.isNumeric($this.attr('width').split('%')[0])) ? $this.attr('width') : '100%',
+		xotHeight = $this.attr('height') != undefined && ($.isNumeric($this.attr('height')) || $.isNumeric($this.attr('height').split('%')[0])) ? $this.attr('height') : 600;
+	
+	return warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
+	
+}

@@ -37,7 +37,7 @@
 		
 		this.init = function() {
 			var $pageContents = $("#pageContents");
-			if (x_currentPageXML.childNodes[0].nodeValue != "" && x_currentPageXML.childNodes[0].nodeValue != undefined) {
+			if (x_currentPageXML.childNodes[0] != undefined && x_currentPageXML.childNodes[0].nodeValue != "" && x_currentPageXML.childNodes[0].nodeValue != undefined) {
 				$pageContents.html(x_currentPageXML.childNodes[0].nodeValue);
 			}
 			
