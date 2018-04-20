@@ -2716,11 +2716,11 @@ function x_insertText(node, exclude) {
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0 && exclude.indexOf("glossary") == -1) {
         for (var k=0, len=x_glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
 			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
         }
         for (var k=0, len=x_glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
 			//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
 			tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
         }

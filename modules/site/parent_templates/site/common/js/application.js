@@ -663,11 +663,11 @@ function x_insertGlossaryText(node) {
 	
 	if (glossary.length > 0) {
 		for (var k=0, len=glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
 			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
 		}
 		for (var k=0, len=glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
 			tempText = tempText.replace(regExp, '$1<a class="glossary" href="#" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
 		}
 	}
