@@ -1367,6 +1367,18 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	
 	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="carousel slide"/>');
 	
+	if (node.attr('autoPlay') == 'true') {
+		
+		if ($.isNumeric(node.attr('delaySecs')) && node.attr('delaySecs') != '4') {
+			
+			carDiv.carousel({ interval: Number(node.attr('delaySecs')) * 1000 });
+			
+		}
+		
+		carDiv.carousel('cycle');
+		
+	}
+	
 	var indicators = $('<ol class="carousel-indicators"/>');
 	
 	var items = $('<div class="carousel-inner"/>');
