@@ -16,8 +16,7 @@
 
 #presentationHolder {
     display: inline-block;
-    width: 49%;
-    height: 428px;
+    vertical-align: top;
 }
 
 /* PANEL LAYOUT */
