@@ -481,7 +481,8 @@ tr.alt td {
   font-weight: bold; }
 
 #menuItems .menuItem {
-  background: #F8F1E5; }
+  background: #F8F1E5;
+  color: #2F3131; }
 
 #menuItems .menuItem:hover {
   background: #426E86;
