@@ -774,7 +774,7 @@ var EDITOR = (function ($, parent) {
                     label += ' ' + tooltipavailable;
                     button.attr('title', node_options['optional'][i].value.tooltip);
                 }
-                // If group, see if there any of the individual itmes have a tooltip
+                // If group, see if any of the individual items have a tooltip
                 if (node_options['optional'][i].value.type == 'group')
                 {
                     var tooltip_txt = "";
