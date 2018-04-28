@@ -17,9 +17,6 @@
 a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
   color: #FCBC2B; }
 
-.x_mediaLesson_page #panelHolder .panel.tileH:not(:last-of-type) {
-  margin-right: 1px; }
-
 .highlight {
   background: #FCBC2B; }
 
@@ -256,6 +253,20 @@ a.hotspot, a.hotspot.selected {
 .x_modelAnswer_page #answerTxt {
   border-radius: 0;
   width: 98%; }
+
+.x_opinion_page #pageContents input {
+  padding-left: 0; }
+
+.qPanel {
+  overflow-x: hidden; }
+
+.qSeparator hr {
+  background-color: silver;
+  border-color: silver;
+  border: solid 1px silver; }
+
+.sliderHolder .labelHolder a p {
+  color: #ffffff; }
 
 .x_grid_page #grid ul li.static {
   background: none;
@@ -530,7 +541,28 @@ div#shorturltodisplay a {
     display: block;
     font-size: 6px;
     text-align: center; } }
-/*@import "scss/_animations";*/
+#x_pageHolder .label.panel.ui-draggable {
+  transform: scale(1);
+  transition: transform 0.5s ease-out 0s,box-shadow 0.5s ease-out 0s; }
+  #x_pageHolder .label.panel.ui-draggable.ui-draggable-dragging {
+    transform: scale(1.25);
+    box-shadow: 2px 4px 1px #888888; }
+#x_pageHolder #feedback {
+  animation: fadePop 0.25s linear; }
+@keyframes fadePop {
+  0% {
+    opacity: 0;
+    transform: scale(1); }
+  50% {
+    transform: scale(1.05); }
+  100% {
+    opacity: 1;
+    transform: scale(1); } }
+@keyframes fadeIn {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
 .marker {
   font: Roboto, "Segoe UI", Tahoma, sans-serif;
   background-color: #1D202D;
@@ -609,6 +641,83 @@ tt {
 
 ::-webkit-scrollbar-thumb:window-inactive {
   background: rgba(255, 255, 255, 0.4); }
+
+[type='range'] {
+  -webkit-appearance: none;
+  margin: 12px 0;
+  width: 100%; }
+  [type='range']:focus {
+    outline: 0; }
+    [type='range']:focus::-webkit-slider-runnable-track {
+      background: #4a5566; }
+    [type='range']:focus::-ms-fill-lower {
+      background: #3F4957; }
+    [type='range']:focus::-ms-fill-upper {
+      background: #4a5566; }
+  [type='range']::-webkit-slider-runnable-track {
+    cursor: pointer;
+    height: 8px;
+    transition: all .2s ease;
+    width: 100%;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
+    background: #3F4957;
+    border: 2px solid #3F4957;
+    border-radius: 2px; }
+  [type='range']::-webkit-slider-thumb {
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2), 0 0 4px rgba(13, 13, 13, 0.2);
+    background: #018CCF;
+    border: 2px solid #018CCF;
+    border-radius: 12px;
+    cursor: pointer;
+    height: 24px;
+    width: 24px;
+    -webkit-appearance: none;
+    margin-top: -10px; }
+  [type='range']::-moz-range-track {
+    cursor: pointer;
+    height: 8px;
+    transition: all .2s ease;
+    width: 100%;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
+    background: #3F4957;
+    border: 2px solid #3F4957;
+    border-radius: 2px; }
+  [type='range']::-moz-range-thumb {
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2), 0 0 4px rgba(13, 13, 13, 0.2);
+    background: #018CCF;
+    border: 2px solid #018CCF;
+    border-radius: 12px;
+    cursor: pointer;
+    height: 24px;
+    width: 24px; }
+  [type='range']::-ms-track {
+    cursor: pointer;
+    height: 8px;
+    transition: all .2s ease;
+    width: 100%;
+    background: transparent;
+    border-color: transparent;
+    border-width: 12px 0;
+    color: transparent; }
+  [type='range']::-ms-fill-lower {
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
+    background: #343d48;
+    border: 2px solid #3F4957;
+    border-radius: 4px; }
+  [type='range']::-ms-fill-upper {
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
+    background: #3F4957;
+    border: 2px solid #3F4957;
+    border-radius: 4px; }
+  [type='range']::-ms-thumb {
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2), 0 0 4px rgba(13, 13, 13, 0.2);
+    background: #018CCF;
+    border: 2px solid #018CCF;
+    border-radius: 12px;
+    cursor: pointer;
+    height: 24px;
+    width: 24px;
+    margin-top: 0; }
 
 body {
   background: #3F4957;

@@ -1,5 +1,0 @@
-name: mobilewhite
-display name: Flat: Mobile White
-description: Flat white header and footer, white background and no border, round buttons. Header is hidden and footer is smaller when height is lower than 350 px (for mobile landscape)
-enabled: yes
-preview: mobilewhite.jpg

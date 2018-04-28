@@ -94,8 +94,10 @@ $(document).keydown(function(e) {
 
 $(document).ready(function() {
 	// Load the script.js dependency loader
-	// TODO - we should move this to play/preview and let it kickstart the loading of all files
-	$.getScript(x_templateLocation + "common_html5/js/script.js");
+    if (!xot_offline) {
+        // TODO - we should move this to play/preview and let it kickstart the loading of all files
+        $.getScript(x_templateLocation + "common_html5/js/script.js");
+    }
 
     $x_mainHolder = $("#x_mainHolder");
 
@@ -399,7 +401,22 @@ function x_evalURL(url)
     var trimmedURL = $.trim(url);
     if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("FileLocation + ") >=0)
     {
-        return eval(url)
+        if (xot_offline)
+        {
+            if (url.indexOf("FileLocation + ") >=0)
+            {
+                var pos = url.indexOf("FileLocation + ");
+                url = url.substr(0,pos) + url.substr(pos + 16);
+                return eval(url);
+            }
+            else
+            {
+                return eval(url);
+            }
+        }
+        else {
+            return eval(url)
+        }
     }
     else
     {
@@ -623,8 +640,9 @@ function x_cssSetUp(param) {
             }
             break;
         case "theme":
-            $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
-            /*x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {x_cssSetUp("responsive")});*/
+            if (!xot_offline) {
+                $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
+            }
             x_cssSetUp("responsive");
             break;
 		case "responsive":
@@ -636,27 +654,8 @@ function x_cssSetUp(param) {
 					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()});
                 }
 			} else {
-                x_continueSetUp1();
+                x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_continueSetUp1()}, true);
 			}
-            break;
-        case "responsive2":
-            if (x_params.theme != undefined && x_params.theme != "default") {
-				// adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
-                if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-                    x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {x_cssSetUp("stylesheet")}, true);
-                } else {
-                    x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {x_cssSetUp("stylesheet")});
-                }
-            } else {
-                x_cssSetUp("stylesheet");
-            }
-            break;
-        case "stylesheet":
-            if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
-                x_insertCSS(x_evalURL(x_params.stylesheet), x_continueSetUp1);
-            } else {
-                x_continueSetUp1();
-            }
             break;
     }
 }
@@ -895,6 +894,10 @@ function x_continueSetUp1() {
 	$('#x_headerBlock img.x_icon').addClass(icPosition);
 	
 	var checkExists = function(type, fallback) {
+	    if (type == 'LO') {
+            $('#x_headerBlock img.x_icon').show();
+            return;
+        }
 		$.ajax({
 			url: $('#x_headerBlock img.x_icon').attr('src'),
 			success: function() {
@@ -1383,13 +1386,7 @@ function x_lookupPage(pageType, pageID) {
 function x_changePage(x_gotoPage) {
 	// Prevent content from behaving weird as we remove css files
     $("#x_pageDiv").hide();
-    // Setup css correctly
-	//$("#page_model_css").remove();
-    //$("#theme_css").remove();
-    //$("#theme_responsive_css").remove();
-    //$("#lo_sheet_css").remove();
-    //$("#lo_css").remove();
-    //$("#page_css").remove();
+
 
     var modelfile = x_pageInfo[x_gotoPage].type;
 	
@@ -1430,7 +1427,7 @@ function x_changePageStep3(x_gotoPage) {
         } else {
             x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
                 x_changePageStep4(x_gotoPage);
-            }, false, "theme_responsive_css", true);
+            }, (x_params.responsive == "false"), "theme_responsive_css", true);
         }
     }
     else {
@@ -1558,7 +1555,7 @@ function x_changePageStep5(x_gotoPage) {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
 		// Use a clean text version of the page title
         var label = $('<div>').html(pageTitle).text();
-        if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+        if (x_currentPageXML != "menu" && x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
         {
             label = x_currentPageXML.getAttribute("trackinglabel");
         }
@@ -1657,7 +1654,7 @@ function x_changePageStep5(x_gotoPage) {
 		}
 		
 		// show page background & hide main background
-		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImage") != undefined) {
+		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImage") != undefined && x_currentPageXML.getAttribute("bgImage") != "") {
 			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
 				if (mediaExists) {
 					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
@@ -2719,11 +2716,11 @@ function x_insertText(node, exclude) {
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0 && exclude.indexOf("glossary") == -1) {
         for (var k=0, len=x_glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
 			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
         }
         for (var k=0, len=x_glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
 			//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
 			tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
         }

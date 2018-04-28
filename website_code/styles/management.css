@@ -149,6 +149,12 @@ body{
 	padding:10px;
 }
 
+.admin_mgt_area_middle_button_left .xerte_button {
+	display: inline-grid;
+}
+.admin_mgt_area_middle_button_right .xerte_button {
+	display: inline-grid;
+}
 
 .admin_mgt_area_bottom{
 	width:100%; 

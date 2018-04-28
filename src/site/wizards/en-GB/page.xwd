@@ -135,6 +135,11 @@
 		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<type type="ComboBox" label="Type" options="Accordion,Carousel,Pills,Tabs" width="120"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
+		
+		<autoPlayCarousel type="group" label="Auto-Play (Carousel Only)" optional="true">
+			<autoPlay label="Auto-Play" type="CheckBox" defaultValue="false" optional="true"/>
+			<delaySecs label="Delay (secs)" type="NumericStepper" min="1" max="20" step="1"  width="100" defaultValue="4" optional="true"/>
+		</autoPlayCarousel>
 
 		<newNodes>
 
