@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Sample Table</title>
+		<script src='../src/xapicollection.js'></script>
+		<script src='../extra/gen-lrs-data.js'></script>
+		<script src='../extra/knockout-3.1.0.js'></script>
+		<script>
+			function ready(){
+
+				console.time('Total operating time');
+				var c = new ADL.CollectionAsync(window.statements);
+				c
+					.where('result.score.raw != null')
+					.groupBy('actor.name')
+					.average('result.score.raw')
+					.relate('object.id','result.score.raw')
+					.select('group as actor,average, '+
+						'[http://myschool.edu/xapi/cop-3223/final] as final, '+
+						'[http://myschool.edu/xapi/cop-3223/test1] as test1, '+
+						'[http://myschool.edu/xapi/cop-3223/test2] as test2, '+
+						'[http://myschool.edu/xapi/cop-3223/test3] as test3, '+
+						'[http://myschool.edu/xapi/cop-3223/test4] as test4')
+					.orderBy('actor')
+					.exec(function(data){
+						document.body.innerHTML += '<pre>'+JSON.stringify(data, null, '    ')+'</pre>';
+						ko.applyBindings(data);
+					});
+			};
+		</script>
+	</head>
+	<body onload='ready()'>
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Test 1</th>
+				<th>Test 2</th>
+				<th>Test 3</th>
+				<th>Test 4</th>
+				<th>Final</th>
+				<th>Average</th>
+			</tr>
+			<!-- ko foreach: $data -->
+			<tr>
+				<td data-bind='text: actor'/>
+				<td data-bind='text: test1'/>
+				<td data-bind='text: test2'/>
+				<td data-bind='text: test3'/>
+				<td data-bind='text: test4'/>
+				<td data-bind='text: final'/>
+				<td data-bind='text: average'/>
+			</tr>
+			<!-- /ko -->
+		</table>
+	</body>
+</html>

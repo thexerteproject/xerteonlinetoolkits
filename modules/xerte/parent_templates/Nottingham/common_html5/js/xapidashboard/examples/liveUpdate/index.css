@@ -1,0 +1,50 @@
+
+html {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	display: flex;
+	flex-direction: row;
+	height: 100%;
+}
+
+p{
+	margin: 3px 0;
+}
+
+.container {
+	padding: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-content: flex-start;
+	text-align: center;
+}
+
+.sidebar {
+	padding: 10px;
+	width: 20%;
+	min-width: 200px;
+	background-color: whitesmoke;
+}
+.sidebar span {
+	display: block;
+	color: blue;
+	cursor: pointer;
+	padding-left: 10px;
+	text-indent: -10px;
+}
+.sidebar span:hover {
+	text-decoration: underline;
+}
+
+.sidebar .active, .item-name {
+	font-weight: bold;
+}
+
+.list {
+	margin: 20px;
+	width: 400px;
+}
