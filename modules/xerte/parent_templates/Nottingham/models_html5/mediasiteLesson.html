@@ -81,9 +81,12 @@
                 var marginR = parseInt($panelHolder.find(".panel.tileH").css("margin-right")) == 0 ? 15 : parseInt($panelHolder.find(".panel.tileH").css("margin-right"));
                 marginR = isNaN(marginR) ? 15 : marginR;
 
-                if (x_currentPageXML.getAttribute("layout") == "grid" && $("#panelHolder .top").length > 0) {
+                if (x_currentPageXML.getAttribute("layout") == "grid" && $("#panelHolder .top").length > 0)
                     numTileH = $("#panelHolder .top .panel.tileH").length;
-                }
+
+
+
+                //SETS HIGHTS AND WIDTHS OF THE PANELS
 
                 // tileH.width = holderWidth - padding - allPanelPadding - MarginR - 2
                 $panelHolder.find(".panel.tileH")
@@ -91,16 +94,33 @@
                 if(classes.indexOf("tileH") >= 0) {
                     presPanel[0].width = (Math.floor(($x_pageHolder.width() - padLeft - (parseInt($panelHolder.find(".panel.tileH").css("padding-left")) * (numTileH + 1) * 2) - marginR * (numTileH + 1)) / (numTileH + 1)) - 2);
                 }
-                $panelHolder.find(".panel.fullW")
-                    .width(Math.floor(($x_pageHolder.width() - padLeft - (parseInt($panelHolder.find(".panel.fullW").css("padding-left")) * (numTileV + 1) * 2) - marginR * (numTileV + 1)) / (numTileV + 1)) - 2);
+                //holderwidth - padding - padding - margin * 1
+                var fullHWidth = Math.floor($x_pageHolder.width() - padLeft - (parseInt($panelHolder.find(".panel.fullW").css("padding-left")) * 2)) - 2;
+                $panelHolder.find(".panel.fullW") //full width
+                    .width(fullHWidth);
+                if(classes.indexOf("fullW") >= 0) {
+                    presPanel[0].width = fullHWidth;
+                }
                 $panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseInt($("#infoHolder .accTitle").css("padding-top")) * 2);
                 //tileV.height = (Height - margin - padding) / num Panels) - tilePadding - marginBottom - controlholderHeight
+                var tileVHeight = Math.floor((($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - padTop)) - (parseInt($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1))) - parseInt($("#controlHolder").height()) - 2) / (numTileV + 1);
                 $panelHolder.find(".panel.tileV")
-                    .height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - padTop / numTileV) - (parseInt($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - (parseInt($("#controlHolder").height()) / numTileV) - 2));
+                    .height(tileVHeight);
+                if(classes.indexOf("tileV") >= 0){
+                    presPanel[0].height = tileVHeight;
+                }
                 $panelHolder.find(".panel.fullH")
                     .height($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - padTop - (parseInt($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - parseInt($("#controlHolder").height()) - 5);
+                if (classes.indexOf("fullH") >= 0) {
+                    presPanel[0].height = $x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - padTop - (parseInt($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - parseInt($("#controlHolder").height()) - 5;
+                    debugger;
+                }
                 $panelHolder.find(".panel.halfH")
                     .height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - padTop - (parseInt($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - parseInt($("#controlHolder").height())/2 - 2);
+                if(classes.indexOf("halfH") >= 0) {
+                    presPanel[0].height = Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - padTop - (parseInt($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - parseInt($("#controlHolder").height())/2 - 2;
+                }
+
 
                 $x_pageHolder.css("overflow", "auto");
 
@@ -470,16 +490,16 @@
                 var presHolder = $("#presentationHolder");
 
                 // layouts where panels are roughly the same size - either in grid or stacked vertically/horizontally
-                if (panelLayout == "tileH") {
+                if (panelLayout == "tileH") { //Tile Horizontally
                     $panelHolder.find(".panel").addClass("tileH fullH");
                     presHolder.addClass("tileH fullH");
 
-                } else if (panelLayout == "tileV") {
+                } else if (panelLayout == "tileV") { //Tile Vertically
                     $panelHolder.find(".panel").addClass("tileV fullW");
-                    presHolder.addClass("tileH fullH");
+                    presHolder.addClass("tileV fullW");
 
-                } else if (panelLayout == "grid") {
-                    if (panelData.length > 2) {
+                } else if (panelLayout == "grid") { //Grid
+                    if (panelData.length >= 2) {
                         $panelHolder.append('<div class="top"></div><div class="bottom"></div>');
                         presHolder.append('<div class="top"></div><div class="bottom"></div>');
 
@@ -494,11 +514,12 @@
                             }
                         }
 
-                    } else if (panelData.length > 1) {
+                    } else if (panelData.length >= 1) {
                         $panelHolder.find(".panel").addClass("tileH fullH");
-
+                        presHolder.addClass("tileH fullH")
                     } else {
                         $panelHolder.find(".panel").addClass("fullH");
+                        presHolder.addClass("fullH");
                     }
 
                     // layouts where screen is split with large panel on one side and smaller panels on other side - can be horizontally or vertically
@@ -507,13 +528,12 @@
 
                     var panels = $panelHolder.find(".panel");
 
-                    if (panelLayout == "top") {
+                    if (panelLayout == "top")
+                    {
+                        presHolder.append('<div class="top"></div><div class="bottom"></div>');
+                        presHolder.addClass("tileH fullH");
                         for (var i=0; i<panels.length; i++) {
-                            if (i == 0) {
-                                $(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH fullH");
-                            } else {
-                                $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
-                            }
+                            $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
                         }
 
                     } else if (panelLayout == "bottom") {
