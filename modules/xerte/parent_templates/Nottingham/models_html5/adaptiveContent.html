@@ -22,7 +22,7 @@
     var textSize;
 
 
-     String.prototype.replaceAll = function(search, replacement) {
+    String.prototype.replaceAll = function(search, replacement) {
         var target = this;
         return target.replace(new RegExp(search, 'g'), replacement);
     };
@@ -39,7 +39,7 @@
         var numUserSubmits = 0;
         textSize = 12;
         studentidmode = 0;
-        username = "email@test.com";
+        //username = "email@test.com";
         // We assume the data contains identical data sets
         // TODO: Check this
         if (numSubmits == 0)
@@ -48,19 +48,23 @@
         }
         importData.forEach(function(obj)
         {
-            if (objlabel == null) {
+            if (objlabel == null)
+            {
                 objlabel = obj.graph.label;
             }
             for(var i = 0; i < obj.graph.classvalues.length; i++)
             {
-                if(mean_all[i] == null) {
+                if(mean_all[i] == null)
+                {
                     mean_all[i] = obj.graph.classvalues[i];
                 }
-                else {
+                else
+                {
                     mean_all[i] += obj.graph.classvalues[i];
                 }
 
-                if(classnames[i] == null) {
+                if(classnames[i] == null)
+                {
                     classnames[i] = obj.graph.classnames[i];
                 }
             }
@@ -97,10 +101,12 @@
                 }
                 for(var i = 0; i < obj.graph.classvalues.length; i++)
                 {
-                    if(mean[i] == null) {
+                    if(mean[i] == null)
+                    {
                         mean[i] = obj.graph.classvalues[i];
                     }
-                    else {
+                    else
+                    {
                         mean[i] += obj.graph.classvalues[i];
                     }
                 }
@@ -110,9 +116,13 @@
         for(var x = 0; x < mean_all.length; x++)
         {
             if (mean_all[x] != null)
+            {
                 mean_all[x] = mean_all[x]/numSubmits;
+            }
             if (mean[x] != null)
+            {
                 mean[x] = mean[x]/numUserSubmits;
+            }
         }
         function hexToRgb(hex, opa) {
             var bigint = parseInt(hex, 16);
@@ -239,9 +249,9 @@
          });
      }
 
-     function requestMoreStatement(endpoint, data, statements, doneHandler)
-     {
-         if(data.pageInfo.hasNextPage)
+    function requestMoreStatement(endpoint, data, statements, doneHandler)
+    {
+        if(data.pageInfo.hasNextPage)
          {
             requestJSON(endpoint + "&first=1000&after=" + data.pageInfo.endCursor, function(res)
                  {
@@ -250,7 +260,9 @@
                      requestMoreStatement(endpoint, res, statements, doneHandler);
                  }, false)
 
-         }else{
+         }
+         else
+         {
              doneHandler(statements);
          }
      }
@@ -258,16 +270,16 @@
      function requestJSON(url, handler)
      {
          $.ajax({
-         type: 'GET',
-         url: url,
-         success: handler,
-         beforeSend: function(xhr) {
-             xhr.setRequestHeader('Authorization', "Basic " + toBase64(lrsUsername + ':' + lrsPassword));
-           }
+             type: 'GET',
+             url: url,
+             success: handler,
+             beforeSend: function(xhr) {
+                 xhr.setRequestHeader('Authorization', "Basic " + toBase64(lrsUsername + ':' + lrsPassword));
+             }
          });
      }
 
-    function getStatements(xerteurl, xertelo, xertelabel, opinionClass, type, handler)
+    function getStatements(xerteurl, xertelo, xertelabel, opinionClass, type, retrieveAll, handler)
     {
         url = xerteurl + xertelo + "/" + xertelabel;
         if(opinionClass != "")
@@ -275,21 +287,40 @@
             url += "/" + opinionClass;
         }
         q = {};
-        q["statement.actor.mbox"] = "mailto:" + "email@test.com";
+        if(retrieveAll == false)
+        {
+            switch(studentidmode)
+            {
+                case 0:
+                case 2:
+                    q["statement.actor.mbox"] = "mailto:" + username;
+                    break;
+                case 1:
+                    q["statement.actor.mbox_sha1summbox"] = mboxsha1;
+                    break;
+                case 3:
+                    q["statement.actor.objectType"] = "Group";
+                    q["statement.actor.account.name"] = groupname;
+                    break;
+            }
+
+        }
         q["statement.object.id"] = url;
         q["statement.verb.id"] = "http://adlnet.gov/expapi/verbs/scored";
+        debugger;
         queryStatements(lrsEndpoint + "/api/connection/statement", "filter", q, function(data)
         {
-            if(data.length > 0){
-            url = data[0].object.id;
-            interaction = $(x_currentPageXML).children()[$("#" + escapeUrl(url, type)).attr("data-index")];
-
-            if(data.length >= 1)
+            if(data.length > 0)
             {
-                handler(data, interaction, url, type)
+                url = data[0].object.id;
+                interaction = $(x_currentPageXML).children()[$("#" + escapeUrl(url, type)).attr("data-index")];
 
+                if(data.length >= 1)
+                {
+                    handler(data, interaction, url, type)
+
+                }
             }
-          }
         });
     }
 
@@ -368,7 +399,7 @@
                 }
                 if(interactionType == "score")
                 {
-                    statements = getStatements(xerteurl, xertelo, xertelabel, opinionClass, interactionType, function(data, interaction, url, type){
+                    statements = getStatements(xerteurl, xertelo, xertelabel, opinionClass, interactionType, false, function(data, interaction, url, type){
 
                         score = data[data.length - 1].result.score.raw;
                         //$("#" + escapeUrl(url) + " .score").html(score);
@@ -459,7 +490,7 @@
                 }
                 else if(interactionType == "answer")
                 {
-                    statements = getStatements(xerteurl, xertelo, xertelabel, opinionClass, interactionType, function(data, interaction, url, type){
+                    statements = getStatements(xerteurl, xertelo, xertelabel, opinionClass, interactionType, false, function(data, interaction, url, type){
                         givenAnswer = data[data.length - 1].result.response;
                         for(blockIndex = 0; blockIndex < interaction.children.length; blockIndex++)
                         {
