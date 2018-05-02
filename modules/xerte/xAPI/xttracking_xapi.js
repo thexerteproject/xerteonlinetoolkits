@@ -2512,7 +2512,7 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
             statement.context.extensions = extension;
         }else{
             // Loop over all keys in extension and add to existing extension
-            $each(extension, function(key, value){
+            $.each(extension, function(key, value){
                 statement.context.extensions[key] = value;
             });
         }
