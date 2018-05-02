@@ -1321,9 +1321,9 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
                                         raw: this.score,
                                         min: 0.0,
                                         max: 100.0,
-                                        scaled: this.score / 100.0,
-                                        response: this.score + ""
+                                        scaled: this.score / 100.0
                                     },
+                                    response: this.score + "",
                                     success: (this.score >= state.lo_passed),
                                     completion: true
                                 };
