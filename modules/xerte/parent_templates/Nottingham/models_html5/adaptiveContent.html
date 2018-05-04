@@ -19,6 +19,7 @@
  */
 
 
+ var textSize;
     var textSize;
 
 
@@ -40,140 +41,133 @@
         textSize = 12;
         studentidmode = 0;
         //username = "email@test.com";
+
+
         // We assume the data contains identical data sets
         // TODO: Check this
-        if (numSubmits == 0)
-        {
+        if (numSubmits == 0) {
             return;
         }
+
         importData.forEach(function(obj)
         {
-            if (objlabel == null)
-            {
+            if (objlabel == null) {
                 objlabel = obj.graph.label;
             }
-            for(var i = 0; i < obj.graph.classvalues.length; i++)
-            {
-                if(mean_all[i] == null)
-                {
+
+            for (var i = 0; i < obj.graph.classvalues.length; i++) {
+                if (mean_all[i] == null) {
                     mean_all[i] = obj.graph.classvalues[i];
                 }
-                else
-                {
+                else {
                     mean_all[i] += obj.graph.classvalues[i];
                 }
 
-                if(classnames[i] == null)
-                {
+                if (classnames[i] == null) {
                     classnames[i] = obj.graph.classnames[i];
                 }
             }
-            var matchactor = false;
 
-            switch(studentidmode)
-            {
+            // Check what method is used for identification.
+            var matchactor = false;
+            switch (studentidmode) {
                 case 0:
                 case 2:
-                    if (obj.actor.mbox == 'mailto:' + username)
-                    {
+                    if (obj.actor.mbox == 'mailto:' + username) {
                         matchactor = true;
                     }
                     break;
                 case 1:
-                    if (obj.actor.mbox_sha1sum == mboxsha1)
-                    {
+                    if (obj.actor.mbox_sha1sum == mboxsha1) {
                         matchactor = true;
                     }
                     break;
                 case 3:
-                    if (obj.actor.account.name == groupname)
-                    {
+                    if (obj.actor.account.name == groupname) {
                         matchactor = true;
                     }
                     break;
             }
-            if (matchactor)
-            {
-                if (obj.timestamp > latest_ts)
-                {
+
+            if (matchactor) {
+                if (obj.timestamp > latest_ts) {
                     latest_ts = obj.timestamp;
                     latest = obj;
                 }
-                for(var i = 0; i < obj.graph.classvalues.length; i++)
-                {
-                    if(mean[i] == null)
-                    {
+
+                for (var i = 0; i < obj.graph.classvalues.length; i++) {
+                    if (mean[i] == null) {
                         mean[i] = obj.graph.classvalues[i];
                     }
-                    else
-                    {
+                    else {
                         mean[i] += obj.graph.classvalues[i];
                     }
                 }
+
                 numUserSubmits++;
             }
         });
-        for(var x = 0; x < mean_all.length; x++)
-        {
-            if (mean_all[x] != null)
-            {
-                mean_all[x] = mean_all[x]/numSubmits;
+
+        for (var x = 0; x < mean_all.length; x++) {
+            if (mean_all[x] != null) {
+                mean_all[x] = mean_all[x] / numSubmits;
             }
-            if (mean[x] != null)
-            {
-                mean[x] = mean[x]/numUserSubmits;
+            if (mean[x] != null) {
+                mean[x] = mean[x] / numUserSubmits;
             }
         }
+
         function hexToRgb(hex, opa) {
             var bigint = parseInt(hex, 16);
             var r = (bigint >> 16) & 255;
             var g = (bigint >> 8) & 255;
             var b = bigint & 255;
 
-            return "rgba(" + r + ", " + g + ", " + b + ", " + opa + ")";
+            return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + opa + ')';
         }
+
         var ctx = $(identifier);
         var bgColourIn = "0xff0000";
-        if (x_currentPageXML.getAttribute("colour") != null) {
-            bgColourIn = x_currentPageXML.getAttribute("colour");
+        if (x_currentPageXML.getAttribute('colour') != null) {
+            bgColourIn = x_currentPageXML.getAttribute('colour');
         }
         var bgColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 0.5);
         var lnColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 1);
 
         var pavgbgColourIn = "0x0000ff";
-        if (x_currentPageXML.getAttribute("colourPersonalAvg") != null) {
-            pavgbgColourIn = x_currentPageXML.getAttribute("colourPersonalAvg");
+        if (x_currentPageXML.getAttribute('colourPersonalAvg') != null) {
+            pavgbgColourIn = x_currentPageXML.getAttribute('colourPersonalAvg');
         }
         var pavgbgColour = hexToRgb(pavgbgColourIn.substr(pavgbgColourIn.length - 6), 0.5);
         var pavglnColour = hexToRgb(pavgbgColourIn.substr(pavgbgColourIn.length - 6), 1);
 
-        var avgbgColourIn = "0x0000ff";
-        if (x_currentPageXML.getAttribute("colourAvg") != null) {
-            avgbgColourIn = x_currentPageXML.getAttribute("colourAvg");
+        var avgbgColourIn = "0x00ff00";
+        if (x_currentPageXML.getAttribute('colourAvg') != null) {
+            avgbgColourIn = x_currentPageXML.getAttribute('colourAvg');
         }
         var avgbgColour = hexToRgb(avgbgColourIn.substr(avgbgColourIn.length - 6), 0.5);
         var avglnColour = hexToRgb(avgbgColourIn.substr(avgbgColourIn.length - 6), 1);
 
-        var AvgAllLabelText = x_currentPageXML.getAttribute("AvgLabel");
-        if (AvgAllLabelText == undefined)
-        {
-            AvgAllLabelText = 'Avg. of all attempts';
+        var avgAllLabelText = x_currentPageXML.getAttribute('AvgLabel');
+        if (avgAllLabelText == undefined) {
+            avgAllLabelText = 'Avg. of all attempts';
         }
 
-        var PersonalLabelText = x_currentPageXML.getAttribute("PersonalLastLabel");
-        if (PersonalLabelText == undefined) {
-            PersonalLabelText = 'Your last attempt';
+        var personalLabelText = x_currentPageXML.getAttribute('PersonalLastLabel');
+        if (personalLabelText == undefined) {
+            personalLabelText = 'Your last attempt';
         }
 
-        var PersonalAvgLabelText = x_currentPageXML.getAttribute("PersonalAvgLabel");
-        if (PersonalAvgLabelText == undefined) {
-            PersonalAvgLabelText = 'Avg. of your attempts';
+        var personalAvgLabelText = x_currentPageXML.getAttribute('PersonalAvgLabel');
+        if (personalAvgLabelText == undefined) {
+            personalAvgLabelText = 'Avg. of your attempts';
         }
+
         var datasets = [];
         if (latest == null) {
             // Only show mean_all
             datasets = [{
-                label: AvgAllLabelText,
+                label: avgAllLabelText,
                 data: mean_all,
                 backgroundColor: avgbgColour,
                 borderColor: avglnColour
@@ -182,26 +176,27 @@
         else {
             datasets = [
                 {
-                    label: PersonalLabelText,
+                    label: personalLabelText,
                     data: latest.graph.classvalues,
                     backgroundColor: bgColour,
                     borderColor: lnColour
                 }];
             if (numUserSubmits > 1) {
                 datasets.push({
-                    label: PersonalAvgLabelText,
+                    label: personalAvgLabelText,
                     data: mean,
                     backgroundColor: pavgbgColour,
                     borderColor: pavglnColour
                 });
             }
             datasets.push({
-                label: AvgAllLabelText,
+                label: avgAllLabelText,
                 data: mean_all,
                 backgroundColor: avgbgColour,
                 borderColor: avglnColour
             });
         }
+
         // Show mean_all and latest
         var myRadarChart = new Chart(ctx, {
             type: 'radar',
@@ -231,146 +226,237 @@
         });
     }
 
-
-    function escapeUrl(url, type)
-    {
-        return url.replaceAll(":", "%3A").replaceAll("/", "%2F").replaceAll(" ", "%20").replaceAll("_", "%5F").replaceAll("-", "%2D").replaceAll("\\?", "%3F").replaceAll("%", "") + "-" + type;
+    function hasToRetrieveAll(interaction) {
+        if (interaction.getAttribute('graph') == 'true') {
+            return (
+                interaction.getAttribute('graphType') == 'bar_answers' ||
+                interaction.getAttribute('graphType') == 'bar_marks' ||
+                interaction.getAttribute('graphType') == 'line_average_marks'
+            );
+        }
+        return false;
     }
 
-     function queryStatements(endpoint, mode, query, handler){
-         search = mode + "="+ JSON.stringify(query);
-         var statements = [];
-         url =endpoint + "?first=1000&" + search
-         requestJSON(url, function(data)
-         {
-             statements = data.edges.map(s => s.node.statement);
-             requestMoreStatement(url, data, statements, handler);
+    function escapeUrl(url, type, interactionIndex) {
+        return (
+            url
+                .replaceAll(':', '%3A')
+                .replaceAll('/', '%2F')
+                .replaceAll(' ', '%20')
+                .replaceAll('_', '%5F')
+                .replaceAll('-', '%2D')
+                .replaceAll('\\?', '%3F')
+                .replaceAll('%', '') +
+            '-'   +
+            type  +
+            '-'   +
+            interactionIndex
+        );
+    }
 
-         });
-     }
-
-    function requestMoreStatement(endpoint, data, statements, doneHandler)
-    {
-        if(data.pageInfo.hasNextPage)
-         {
-            requestJSON(endpoint + "&first=1000&after=" + data.pageInfo.endCursor, function(res)
-                 {
-
-                     statements = statements.concat(res.edges.map(s => s.node.statement));
-                     requestMoreStatement(endpoint, res, statements, doneHandler);
-                 }, false)
-
-         }
-         else
-         {
-             doneHandler(statements);
-         }
-     }
-
-     function requestJSON(url, handler)
-     {
-         $.ajax({
-             type: 'GET',
-             url: url,
-             success: handler,
-             beforeSend: function(xhr) {
-                 xhr.setRequestHeader('Authorization', "Basic " + toBase64(lrsUsername + ':' + lrsPassword));
-             }
-         });
-     }
-
-    function getStatements(xerteurl, xertelo, xertelabel, opinionClass, type, retrieveAll, handler)
-    {
-        url = xerteurl + xertelo + "/" + xertelabel;
-        if(opinionClass != "")
+    function filterOwnStatements(data) {
+        statements = [];
+        for (var i = 0; i < data.length; i++)
         {
-            url += "/" + opinionClass;
-        }
-        q = {};
-        if(retrieveAll == false)
-        {
-            switch(studentidmode)
-            {
+            statement = data[i];
+            matchactor = false;
+            switch (studentidmode) {
                 case 0:
                 case 2:
-                    q["statement.actor.mbox"] = "mailto:" + username;
+                    if (statement.actor.mbox == 'mailto:' + username) {
+                        matchactor = true;
+                    }
                     break;
                 case 1:
-                    q["statement.actor.mbox_sha1summbox"] = mboxsha1;
+                    if (statement.actor.mbox_sha1sum == mboxsha1) {
+                        matchactor = true;
+                    }
                     break;
                 case 3:
-                    q["statement.actor.objectType"] = "Group";
-                    q["statement.actor.account.name"] = groupname;
+                    if (statement.actor.account.name == groupname) {
+                        matchactor = true;
+                    }
                     break;
             }
 
+            if (matchactor) {
+              statements.push(data[i]);
+            }
         }
-        q["statement.object.id"] = url;
-        q["statement.verb.id"] = "http://adlnet.gov/expapi/verbs/scored";
-        debugger;
-        queryStatements(lrsEndpoint + "/api/connection/statement", "filter", q, function(data)
-        {
-            if(data.length > 0)
+
+        return statements;
+    }
+
+    function queryStatements(endpoint, mode, query, interactionIndex, handler) {
+        search = mode + '=' + JSON.stringify(query);
+
+        var statements = [];
+        url = endpoint + '?first=1000&' + search;
+        requestJSON(url, function(data) {
+            statements = data.edges.map(s => s.node.statement);
+            requestMoreStatement(url, data, statements, interactionIndex, handler);
+         });
+    }
+
+    function requestMoreStatement(endpoint, data, statements, interactionIndex, doneHandler) {
+        if (data.pageInfo.hasNextPage) {
+            requestJSON(endpoint + '&first=1000&after=' + data.pageInfo.endCursor, function(res) {
+                statements = statements.concat(res.edges.map(s => s.node.statement));
+                requestMoreStatement(endpoint, res, statements, interactionIndex, doneHandler);
+            });
+        }
+        else {
+            doneHandler(statements, interactionIndex);
+        }
+    }
+
+    function requestJSON(url, handler) {
+        $.ajax(
             {
-                url = data[0].object.id;
-                interaction = $(x_currentPageXML).children()[$("#" + escapeUrl(url, type)).attr("data-index")];
-
-                if(data.length >= 1)
-                {
-                    handler(data, interaction, url, type)
-
+                type: 'GET',
+                url: url,
+                success: handler,
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader(
+                        'Authorization',
+                        'Basic ' + toBase64(lrsUsername + ':' + lrsPassword)
+                    );
                 }
             }
-        });
+        );
+    }
+
+    function verifyInteraction(interaction) {
+        errors = [];
+        if (interaction.getAttribute('interactionType') == 'score') {
+            for (var ci = 0; ci < interaction.children.length; ci++) {
+                c = interaction.children[ci];
+                if (!c.hasAttribute('conScoreBetween')) {
+                    errors.push('No score between given.');
+                }
+                else {
+                    values = c.getAttribute('conScoreBetween').split(',');
+                    if (values.length != 2) {
+                        errors.push('Invalid pattern for score between.');
+                    }
+                }
+            }
+        }
+        if (interaction.getAttribute('interactionType') == 'answer') {
+            for (var ci = 0; ci < interaction.children.length; ci++) {
+                c = interaction.children[ci];
+                if (!c.hasAttribute('conScoreAnswer')) {
+                    errors.push('No answer given.');
+                }
+            }
+        }
+        return errors;
+    }
+
+    function getStatements(
+        xerteurl,
+        xertelo,
+        xertelabel,
+        opinionClass,
+        type,
+        retrieveAll,
+        interactionIndex,
+        handler
+    ) {
+        url = xerteurl + xertelo + '/' + xertelabel;
+        if (opinionClass != '') {
+            url += '/' + opinionClass;
+        }
+
+        q = {};
+        if (!retrieveAll) {
+            switch(studentidmode) {
+                case 0:
+                case 2:
+                    q['statement.actor.mbox'] = 'mailto:' + username;
+                    break;
+                case 1:
+                    q['statement.actor.mbox_sha1summbox'] = mboxsha1;
+                    break;
+                case 3:
+                    q['statement.actor.objectType'] = 'Group';
+                    q['statement.actor.account.name'] = groupname;
+                    break;
+            }
+        }
+
+        q['statement.object.id'] = url;
+        q['statement.verb.id'] = 'http://adlnet.gov/expapi/verbs/scored';
+        queryStatements(
+            lrsEndpoint + '/api/connection/statement',
+            'filter',
+            q,
+            interactionIndex,
+            function(data, interactionIndex) {
+                if (data.length > 0) {
+                    url = data[0].object.id;
+                    interaction = $(x_currentPageXML).children()[interactionIndex];
+                    if (data.length >= 1 && filterOwnStatements(data).length >= 1) {
+                        handler(data, interaction, url, type, interactionIndex);
+                    }
+                    else {
+                        div = $(
+                            '#' +
+                            escapeUrl(url, type, interactionIndex)
+                        );
+                        div.append('No data found');
+                    }
+                }
+            }
+        );
     }
 
     // pageChanged & sizeChanged functions are needed in every model file
-    // other functions for model should also be in here to avoid conflicts
+    // other functions for model should also be in here to avoid conflicts.
     var adaptiveContent = new function() {
-
         this.loadJS = function() {
             if (numLoaded < 3) {
                 var fileToLoad;
                 if (numLoaded == 0) {
-                    fileToLoad = "common_html5/js/chart.min.js";
-                }else if(numLoaded == 1)
-                {
-                  fileToLoad = "common_html5/js/xapidashboard/dist/xapidashboard.min.js";
-                }else if(numLoaded == 2)
-                {
-                  fileToLoad = "common_html5/js/xapidashboard/dist/xapicollection.min.js";
+                    fileToLoad = 'common_html5/js/chart.min.js';
                 }
+                else if (numLoaded == 1) {
+                    fileToLoad = 'common_html5/js/xapidashboard/dist/xapidashboard.min.js';
+                }
+                else if (numLoaded == 2) {
+                    fileToLoad = 'common_html5/js/xapidashboard/dist/xapicollection.min.js';
+                }
+
                 $.getScript(x_templateLocation + fileToLoad)
-                        .done(function(script, textStatus) {
-                            numLoaded++;
-                            adaptiveContent.loadJS();
-                        })
-                        .fail(function( jqxhr, settings, exception ) {
-                            console.log("Failed to load chart scripts");
-                        });
+                    .done(function(script, textStatus) {
+                        numLoaded++;
+                        adaptiveContent.loadJS();
+                    })
+                    .fail(function( jqxhr, settings, exception ) {
+                        console.log('Failed to load chart scripts');
+                    });
             }
         };
 
-        // function called every time the page is viewed after it has initially loaded
+        // Function called every time the page is viewed after it has initially loaded.
         this.pageChanged = function() {
-
         }
 
-        // function called every time the size of the LO is changed
-        // function called every time the size of the LO is changed
+        // Function called every time the size of the LO is changed.
         this.sizeChanged = function() {
             var width = $x_pageHolder.width();
             var height = $x_pageHolder.height();
-            if(width > height) {
-                $("#diagram").width(height*0.90);
-                $("#diagram").height(height*0.90);
+            if (width > height) {
+                $('#diagram').width(height * 0.90);
+                $('#diagram').height(height * 0.90);
                 textSize = (width - height) / 10;
             }
             else {
-                $("#diagram").width(width*0.90);
-                $("#diagram").height(width*0.90);
+                $('#diagram').width(width * 0.90);
+                $('#diagram').height(width * 0.90);
                 textSize = (height - width) / 10;
             }
+
             if (textSize > 20) {
                 textSize = 20;
             }
@@ -382,213 +468,472 @@
         this.init = function() {
             numLoaded = 0;
             this.loadJS();
-            $("#introductionText").html(x_currentPageXML.getAttribute("introduction"));
+            $('#introductionText').html(x_currentPageXML.getAttribute('introduction'));
             interactions = $(x_currentPageXML).children();
-            for(interactionIndex = 0; interactionIndex < interactions.length; interactionIndex++)
-            {
-                interaction = interactions[interactionIndex];
-                xerteurl = interaction.getAttribute("xerteurl");
-                xertelo = interaction.getAttribute("xertelo");
-                xertelabel = interaction.getAttribute("label");
-                name = interaction.getAttribute("name");
-                interactionType = interaction.getAttribute("interactionType");
-                opinionClass = interaction.getAttribute("opinionClass");
-                if(opinionClass == undefined)
-                {
-                    opinionClass = "";
-                }
-                if(interactionType == "score")
-                {
-                    statements = getStatements(xerteurl, xertelo, xertelabel, opinionClass, interactionType, false, function(data, interaction, url, type){
 
-                        score = data[data.length - 1].result.score.raw;
-                        //$("#" + escapeUrl(url) + " .score").html(score);
-                        for(blockIndex = 0; blockIndex < interaction.children.length; blockIndex++)
-                        {
-                            block = interaction.children[blockIndex];
-                            scoreRange = block.getAttribute("conScoreBetween");
-                            range = scoreRange.split(",");
-                            if(range.length == 2)
-                            {
-                                lowerBound = range[0];
-                                upperBound = range[1];
-                                if(score >= lowerBound && score <= upperBound)
-                                {
-                                    $("#" + escapeUrl(url, type) +" .message").html(block.getAttribute("adaptiveContent"));
-                                    break;
+            for (var interactionIndex = 0; interactionIndex < interactions.length; interactionIndex++) {
+                interaction = interactions[interactionIndex];
+                errors = verifyInteraction(interaction);
+                if (errors.length > 0){
+
+                  $('#adaptiveContent').append("<div id='errors-"+ interactionIndex+ "'></div>");
+                  errors.forEach(function(error){
+                      $("#adaptiveContent #errors-" + interactionIndex).append(error);
+                  });
+                  continue;
+                }
+                xerteurl = interaction.getAttribute('xerteurl');
+                xertelo = interaction.getAttribute('xertelo');
+                xertelabel = interaction.getAttribute('label');
+                name = interaction.getAttribute('name');
+                interactionType = interaction.getAttribute('interactionType');
+                opinionClass = interaction.getAttribute('opinionClass');
+                if (opinionClass == undefined) {
+                    opinionClass = '';
+                }
+
+                if (interactionType == "score") {
+                    statements = getStatements(
+                        xerteurl,
+                        xertelo,
+                        xertelabel,
+                        opinionClass,
+                        interactionType,
+                        hasToRetrieveAll(interaction),
+                        interactionIndex,
+                        function(data, interaction, url, type, interactionIndex) {
+                            statements = filterOwnStatements(data);
+                            score = statements[statements.length - 1].result.score.raw;
+                            for (blockIndex = 0; blockIndex < interaction.children.length; blockIndex++) {
+                                block = interaction.children[blockIndex];
+                                scoreRange = block.getAttribute('conScoreBetween');
+                                range = scoreRange.split(",");
+                                if (range.length == 2) {
+                                    lowerBound = range[0];
+                                    upperBound = range[1];
+                                    if (score >= lowerBound && score <= upperBound) {
+                                        $('#' + escapeUrl(url, type, interactionIndex) + ' .message').html(
+                                            block.getAttribute('adaptiveContent'),
+                                        );
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        if(interaction.getAttribute("graph") === "true")
-                        {
-                            div = $("#" + escapeUrl(url, type));
-                            div.append("<div><svg id='"+escapeUrl(url, type)+"-graph'></svg></div>")
-                            if(interaction.getAttribute("graphType") == "bar_marks")
-                            {
-                                var dash = new ADL.XAPIDashboard();
-                                dash.addStatements(data);
-                                data.map(function(x){
-                                    x.result.score.raw /= 10;
-                                    return x;
-                                });
-                                var chart = dash.createBarChart   ({
-                                    container: "#" + escapeUrl(url, type)+"-graph",
-                                    groupBy: 'result.score.raw',
-                                    aggregate: ADL.count(),
-                                    range: {start: 0.0, end: 10.0, increment: 1},
-                                    post: function(d){
-                                        d.contents.map(function(el){
-                                            el.out *= 1/data.length * 100;
-                                        });
-                                    },
-                                    customize: function(chart){
-                                        chart.xAxis.rotateLabels(45).axisLabel("Grade Range");
-                                        chart.yAxis.axisLabel("% of Class");
-                                        chart.width(700);
-                                        chart.height(300);
-                                        chart.yDomain([0, 100]);
+                            if (interaction.getAttribute('graph') === 'true') {
+                                div = $('#' + escapeUrl(url, type, interactionIndex));
+                                div.append(
+                                    "<div><svg id='" +
+                                    escapeUrl(url, type, interactionIndex) +
+                                    "-graph'></svg></div>",
+                                );
+
+                                if (interaction.getAttribute('graphType') == 'bar_answers') {
+                                    var dash = new ADL.XAPIDashboard();
+                                    dash.addStatements(data);
+                                    var chart = dash.createBarChart(
+                                        {
+                                            container: '#' + escapeUrl(
+                                                url,
+                                                type,
+                                                interactionIndex
+                                            ) + '-graph',
+                                            groupBy: 'result.response',
+                                            aggregate: ADL.count(),
+                                            post: function(d) {
+                                                d.contents.map(function(el) {
+                                                    el.out *= 1 / data.length * 100;
+                                                });
+                                            },
+                                            customize: function(chart) {
+                                                chart.xAxis.rotateLabels(45).axisLabel('Answers given');
+                                                chart.yDomain([0, 100]);
+                                                chart.yAxis.axisLabel('Number of answers');
+                                                chart.width(700);
+                                                chart.height(300);
+                                            }
+                                        }
+                                    );
+                                    chart.draw();
+                                }
+                                else if (interaction.getAttribute('graphType') == 'bar_marks') {
+                                    var dash = new ADL.XAPIDashboard();
+                                    dash.addStatements(data);
+                                    data.map(function(x) {
+                                        x.result.score.raw /= 10;
+                                        return x;
+                                    });
+                                    var chart = dash.createBarChart(
+                                        {
+                                            container: '#' + escapeUrl(
+                                                url,
+                                                type,
+                                                interactionIndex
+                                            ) + '-graph',
+                                            groupBy: 'result.score.raw',
+                                            aggregate: ADL.count(),
+                                            range: { start: 0.0, end: 10.0, increment: 1 },
+                                            post: function(d) {
+                                                d.contents.map(function(el) {
+                                                    el.out *= 1 / data.length * 100;
+                                                });
+                                            },
+                                            customize: function(chart) {
+                                                chart.xAxis.rotateLabels(45).axisLabel("Grade Range");
+                                                chart.yAxis.axisLabel("% of Class");
+                                                chart.width(700);
+                                                chart.height(300);
+                                                chart.yDomain([0, 100]);
+                                            }
+
+                                        }
+                                    );
+                                    chart.draw();
+                                }
+                                else if (interaction.getAttribute("graphType") == "line_average_marks") {
+                                    var dash = new ADL.XAPIDashboard();
+                                    dash.addStatements(data);
+                                    data.map(function(x) {
+                                        x.result.score.raw /= 10;
+                                        return x;
+                                    });
+
+                                    var chart = dash.createLineChart(
+                                        {
+                                            container: '#' + escapeUrl(
+                                                url,
+                                                type,
+                                                interactionIndex
+                                            ) + '-graph',
+                                            groupBy: 'result.score.raw',
+                                            aggregate: ADL.count(),
+                                            range: { start: 0.0, end: 11, increment: 1 },
+                                            rangeLabel: 'start',
+                                            post: function(d) {
+                                                d.contents.map(function(el) {
+                                                    el.out *= 1 / data.length * 100;
+                                                });
+                                            },
+                                            customize: function(chart) {
+                                                chart.xAxis.rotateLabels(45).axisLabel('Grade Range');
+                                                chart.yAxis.axisLabel('% of Class');
+                                                chart.width(700);
+                                                chart.tooltips(false);
+                                                chart.height(300);
+                                                chart.yDomain([0, 100]);
+                                            }
+
+                                        }
+                                    );
+                                    chart.draw();
+                                }
+                                else if (interaction.getAttribute("graphType") == "line_own_marks") {
+                                    var dash = new ADL.XAPIDashboard();
+                                    data.map(function(x) {
+                                        x.result.score.raw /= 10;
+                                        return x;
+                                    });
+
+                                    dash.addStatements(statements);
+                                    end = new Date();
+                                    begin = end;
+                                    for (statement in statements) {
+                                        if (begin.getTime() > new Date(statements[statement].timestamp).getTime()) {
+                                            begin = new Date(statements[statement].timestamp);
+                                        }
                                     }
 
-                                });
-                                chart.draw();
+                                    begin = new Date(begin.getTime() - 1 * 24 * 60 * 60 * 1000)
+                                    var chart = dash.createLineChart(
+                                        {
+                                            container: '#' + escapeUrl(
+                                                url,
+                                                type,
+                                                interactionIndex
+                                            ) + '-graph',
+                                            groupBy: 'timestamp',
+                                            range: {
+                                                start: begin.toISOString(),
+                                                end: end.toISOString(),
+                                                increment: 1000 * 60 * 15
+                                            },
+                                            aggregate: ADL.average('result.score.raw'),
+                                            rangeLabel: 'start',
+                                            customize: function(chart) {
+                                                chart.width(700);
+                                                chart.height(300);
+                                                chart.tooltips(false);
+                                                chart.yDomain([0, 10]);
+                                                chart.xAxis.tickFormat(function(label) {
+                                                    return d3.time.format('%b %d')(new Date(label));
+                                                });
+                                            },
+                                            post: function(data) {
+                                                data.contents.map(function(el) {
+                                                    el.in = Date.parse(el.in);
+                                                });
+                                            }
+                                        }
+                                    );
+                                    chart.draw();
+                                }
                             }
-                            else if(interaction.getAttribute("graphType") == "line_average_marks")
-                            {
-                                var dash = new ADL.XAPIDashboard();
-                                dash.addStatements(data);
-                                data.map(function(x){
-                                    x.result.score.raw /= 10;
-
-                                    return x;
-                                });
-
-                                var chart = dash.createLineChart({
-                                    container: "#" + escapeUrl(url, type)+"-graph",
-                                    groupBy: 'result.score.raw',
-                                    aggregate: ADL.count(),
-                                    range: {start: 0.0, end: 11, increment: 1},
-                                    rangeLabel: 'start',
-                                    post: function(d){
-                                        d.contents.map(function(el){
-                                            el.out *= 1/data.length * 100;
-                                        });
-                                    },
-                                    customize: function(chart){
-                                        chart.xAxis.rotateLabels(45).axisLabel("Grade Range");
-                                        chart.yAxis.axisLabel("% of Class");
-                                        chart.width(700);
-                                        chart.tooltips(false);
-                                        chart.height(300);
-                                        chart.yDomain([0, 100]);
-                                    }
-
-                                });
-                                chart.draw();
-                            }
-                        }
-                    });
-                }
-                else if(interactionType == "answer")
-                {
-                    statements = getStatements(xerteurl, xertelo, xertelabel, opinionClass, interactionType, false, function(data, interaction, url, type){
-                        givenAnswer = data[data.length - 1].result.response;
-                        for(blockIndex = 0; blockIndex < interaction.children.length; blockIndex++)
-                        {
-                            block = interaction.children[blockIndex];
-                            conScoreAnswer = block.getAttribute("conScoreAnswer");
-                            if(conScoreAnswer == givenAnswer)
-                            {
-                                $("#" + escapeUrl(url) + " .message").html(block.getAttribute("adaptiveContent"));
-                                break;
-                            }
-                        }
-                        if(interaction.getAttribute("graph") === "true")
-                        {
-                            div = $("#" + escapeUrl(url, type));
-                            div.append("<div><svg id='"+escapeUrl(url, type)+"-graph'></svg></div>")
-                            if(interaction.getAttribute("graphType") == "bar_answers")
-                            {
-                              var dash = new ADL.XAPIDashboard();
-                              dash.addStatements(data);
-                              var chart = dash.createBarChart   ({
-                                      container: "#" + escapeUrl(url, type)+"-graph",
-                                      groupBy: 'result.response',
-                                      aggregate: ADL.count(),
-                                      post: function(d){
-                                          d.contents.map(function(el){
-                                              el.out *= 1/data.length * 100;
-                                          });
-                                      },
-                                      customize: function(chart){
-                                          chart.xAxis.rotateLabels(45).axisLabel("Answers given");
-                                          chart.yDomain([0, 100]);
-                                          chart.yAxis.axisLabel("Number of answers");
-                                          chart.width(700);
-                                          chart.height(300);
-                                      }
-
-                                  });
-                              chart.draw();
-                            }
-                        }
-                    });
-                }
-                else if(interactionType == "opinion"){
-
-                    statements = getStatements(xerteurl, xertelo, xertelabel, opinionClass, function(data, interaction, url){
-                        jsonData = data.map(function(d){
-                            var obj = {}
-                            obj.timestamp = d.timestamp;
-                            obj.actor = d.actor;
-                            obj.result = d.result;
-                            if(d.result.extensions == undefined)
-                            {
-                              return undefined;
-                            }
-                            obj.graph = JSON.parse(d.result.extensions["http://xerte&46;org&46;uk/xapi/JSONGraph"]);
-                            return obj;
                         });
-                        jsonData = jsonData.filter(x => x != undefined);
-                        identifier = "#" + escapeUrl(url) + " .message";
-                        $(identifier).append("<fieldset class='noStyle'><canvas aria-live='polite'></canvas></fieldset>");
-                        identifier += " canvas";
-                        createDiagram(jsonData, identifier);
+                    }
+                    else if (interactionType == 'answer') {
+                        statements = getStatements(
+                            xerteurl,
+                            xertelo,
+                            xertelabel,
+                            opinionClass,
+                            interactionType,
+                            hasToRetrieveAll(interaction),
+                            interactionIndex,
+                            function(data, interaction, url, type, interactionIndex) {
+                                statements = filterOwnStatements(data);
+                                givenAnswer = statements[statements.length - 1].result.response;
+                                for (blockIndex = 0; blockIndex < interaction.children.length; blockIndex++) {
+                                    block = interaction.children[blockIndex];
+                                    conScoreAnswer = block.getAttribute('conScoreAnswer');
+                                    if (conScoreAnswer == givenAnswer) {
+                                        $('#' + escapeUrl(
+                                            url,
+                                            type,
+                                            interactionIndex
+                                        ) + ' .message').html(
+                                            block.getAttribute('adaptiveContent'),
+                                        );
+
+                                        break;
+                                    }
+                                }
+                                if (interaction.getAttribute('graph') === 'true') {
+                                    div = $('#' + escapeUrl(
+                                        url,
+                                        type,
+                                        interactionIndex
+                                    ));
+
+                                    div.append(
+                                        "<div><svg id='" +
+                                        escapeUrl(url, type, interactionIndex) +
+                                        "-graph'></svg></div>",
+                                    );
+
+                                    if (interaction.getAttribute('graphType') == 'bar_answers') {
+                                        var dash = new ADL.XAPIDashboard();
+                                        dash.addStatements(data);
+                                        var chart = dash.createBarChart(
+                                            {
+                                                container: '#' + escapeUrl(
+                                                    url,
+                                                    type,
+                                                    interactionIndex
+                                                ) + '-graph',
+                                                groupBy: 'result.response',
+                                                aggregate: ADL.count(),
+                                                post: function(d) {
+                                                    d.contents.map(function(el) {
+                                                        el.out *= 1 / data.length * 100;
+                                                    });
+                                                },
+                                                customize: function(chart) {
+                                                    chart.xAxis.rotateLabels(45).axisLabel('Answers given');
+                                                    chart.yDomain([0, 100]);
+                                                    chart.yAxis.axisLabel('Number of answers');
+                                                    chart.width(700);
+                                                    chart.height(300);
+                                                }
+                                            }
+                                        );
+                                        chart.draw();
+                            }
+                            else if (interaction.getAttribute('graphType') == 'bar_marks') {
+                                var dash = new ADL.XAPIDashboard();
+                                dash.addStatements(data);
+                                data.map(function(x) {
+                                    x.result.score.raw /= 10;
+                                    return x;
+                                });
+
+                                var chart = dash.createBarChart(
+                                    {
+                                        container: '#' + escapeUrl(
+                                            url,
+                                            type,
+                                            interactionIndex
+                                        ) + '-graph',
+                                        groupBy: 'result.score.raw',
+                                        aggregate: ADL.count(),
+                                        range: { start: 0.0, end: 10.0, increment: 1 },
+                                        post: function(d) {
+                                            d.contents.map(function(el) {
+                                                el.out *= 1 / data.length * 100;
+                                            });
+                                        },
+                                        customize: function(chart) {
+                                            chart.xAxis.rotateLabels(45).axisLabel('Grade Range');
+                                            chart.yAxis.axisLabel('% of Class');
+                                            chart.width(700);
+                                            chart.height(300);
+                                            chart.yDomain([0, 100]);
+                                        }
+                                    }
+                                );
+                                chart.draw();
+                            }
+                            else if (interaction.getAttribute('graphType') == 'line_average_marks') {
+                                var dash = new ADL.XAPIDashboard();
+                                dash.addStatements(data);
+                                data.map(function(x) {
+                                    x.result.score.raw /= 10;
+                                    return x;
+                                });
+
+                                var chart = dash.createLineChart(
+                                    {
+                                        container: '#' + escapeUrl(
+                                            url,
+                                            type,
+                                            interactionIndex
+                                        ) + '-graph',
+                                        groupBy: 'result.score.raw',
+                                        aggregate: ADL.count(),
+                                        range: { start: 0.0, end: 11, increment: 1 },
+                                        rangeLabel: 'start',
+                                        post: function(d) {
+                                            d.contents.map(function(el) {
+                                                el.out *= 1 / data.length * 100;
+                                            });
+                                        },
+                                        customize: function(chart) {
+                                            chart.xAxis.rotateLabels(45).axisLabel('Grade Range');
+                                            chart.yAxis.axisLabel('% of Class');
+                                            chart.width(700);
+                                            chart.tooltips(false);
+                                            chart.height(300);
+                                            chart.yDomain([0, 100]);
+                                        }
+                                    }
+                                );
+                                chart.draw();
+                            }
+                            else if (interaction.getAttribute('graphType') == 'line_own_marks') {
+                                var dash = new ADL.XAPIDashboard();
+                                data.map(function(x) {
+                                  x.result.score.raw /= 10;
+                                  return x;
+                                });
+
+                                dash.addStatements(statements);
+                                end = new Date();
+                                begin = end;
+                                for (statement in statements) {
+                                    if (begin.getTime() > new Date(statements[statement].timestamp).getTime()) {
+                                        begin = new Date(statements[statement].timestamp);
+                                    }
+                                }
+
+                                begin = new Date(begin.getTime() - 1 * 24 * 60 * 60 * 1000)
+                                var chart = dash.createLineChart(
+                                    {
+                                        container: '#' + escapeUrl(
+                                            url,
+                                            type,
+                                            interactionIndex
+                                        ) + '-graph',
+                                        groupBy: 'timestamp',
+                                        range: {
+                                            start: begin.toISOString(),
+                                            end: end.toISOString(),
+                                            increment: 1000 * 60 * 15
+                                        },
+                                        aggregate: ADL.average('result.score.raw'),
+                                        rangeLabel: 'start',
+                                        customize: function(chart) {
+                                            chart.width(700);
+                                            chart.height(300);
+                                            chart.tooltips(false);
+                                            chart.yDomain([0, 10]);
+                                            chart.xAxis.tickFormat(function(label) {
+                                                return d3.time.format('%b %d')(new Date(label));
+                                            });
+                                        },
+                                        post: function(data) {
+                                            data.contents.map(function(el) {
+                                                el.in = Date.parse(el.in);
+                                            });
+                                        }
+                                    }
+                                );
+                                chart.draw();
+                            }
+                        }
                     });
                 }
-                url = xerteurl + xertelo + "/" + xertelabel;
-                if(opinionClass != "")
-                {
-                    url += "/" + opinionClass;
-                }
-                divUrl = escapeUrl(url, interactionType);
+                else if (interactionType == 'opinion') {
+                    statements = getStatements(
+                        xerteurl,
+                        xertelo,
+                        xertelabel,
+                        opinionClass,
+                        interactionIndex,
+                        function(data, interaction, url, type, interactionIndex) {
+                            jsonData = data.map(function(d) {
+                                var obj = {}
+                                obj.timestamp = d.timestamp;
+                                obj.actor = d.actor;
+                                obj.result = d.result;
+                                if (d.result.extensions == undefined) {
+                                    return undefined;
+                                }
+                                obj.graph = JSON.parse(d.result.extensions["http://xerte&46;org&46;uk/xapi/JSONGraph"]);
+                                return obj;
+                            });
+                            jsonData = jsonData.filter(x => x != undefined);
+                            identifier = '#' + escapeUrl(
+                                url,
+                                type,
+                                interactionIndex
+                            ) + ' .message';
 
-                $("#adaptiveContent").append("<div id='"+ divUrl +"' data-index='"+ interactionIndex +"'></div>");
-                $("#adaptiveContent #" + divUrl).append(
-                    "<h2>" + name + "</h2><div class='introduction'>"+
-                    interaction.getAttribute("introduction")
-                +"</div><div class='score'></div><div class='message'></div>");
+                            $(identifier).append(
+                                "<fieldset class='noStyle'><canvas aria-live='polite'></canvas></fieldset>",
+                            );
 
-                switch(interactionType)
-                {
-                    case "score":
-                        //debugger;
-                        break;
-                    default:
-                        console.log("Interaction type is not yet supported");
+                            identifier += ' canvas';
+                            createDiagram(jsonData, identifier);
+                        }
+                    );
                 }
-                //debugger;
+
+                url = xerteurl + xertelo + '/' + xertelabel;
+                if (opinionClass != '') {
+                    url += '/' + opinionClass;
+                }
+
+                divUrl = escapeUrl(url, interactionType, interactionIndex);
+
+                $('#adaptiveContent').append(
+                    "<div id='" + divUrl + "' data-index='" + interactionIndex + "'></div>",
+                );
+
+                $('#adaptiveContent #' + divUrl).append(
+                    '<h2>' +
+                    name +
+                    "</h2><div class='introduction'>" +
+                    interaction.getAttribute('introduction') +
+                    "</div><div class='score'></div><div class='message'></div>",
+                );
             }
 
-            // call this function in every model once everything's loaded
+            // Call this function in every model once everything's loaded.
             x_pageLoaded();
         }
     }
-
     adaptiveContent.init();
 
 </script>
 
-</script>
 <div id="introductionText">
 
 </div>
