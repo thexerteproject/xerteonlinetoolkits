@@ -1071,6 +1071,50 @@ function XTSetViewed(page_nr, name, score)
     state.setPageScore(page_nr, score);
 }
 
+function XThelperConsolidateSegments(videostate)
+{
+    // 1. Sort played segments on start time (first make a copy)
+    var segments = $.extend(true, [], videostate.segments);
+    segments.sort(function(a,b) {return (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0);} );
+    // 2. Combine the segments
+    var csegments = [];
+    var i=0;
+    while(i<segments.length) {
+        var segment = $.extend(true, {}, segments[i]);
+        i++;
+        while (i<segments.length && segment.end >= segments[i].start) {
+            segment.end = segments[i].end;
+            i++;
+        }
+        csegments.push(segment);
+    }
+    var segstr = "[";
+    for (var i=0; i<csegments.length; i++)
+    {
+        if (i>0)
+            segstr += ", ";
+        segstr += "(" + csegments[i].start + ", " + csegments[i].end + ")";
+    }
+    segstr += "]";
+    console.log("Consolidated segments: " + segstr);
+    return csegments;
+}
+
+function XThelperDetermineProgress(videostate)
+{
+    var csegments = XThelperConsolidateSegments(videostate);
+    var videoseen = 0;
+    for (var i=0; i<csegments.length; i++)
+    {
+        videoseen += csegments[i].end - csegments[i].start;
+    }
+    return Math.round(videoseen / videostate.duration * 10000.0)/100.0;
+}
+
+function XTVideo(page_nr, name, block_name, verb, videostate) {
+    return;
+}
+
 function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping)
 {
 	state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback);

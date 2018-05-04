@@ -886,7 +886,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
             // This is a page, use ia_name if set
             if (this.ia_name != null && this.ia_name != "") {
                 return baseUrl() + state.templateId + "/" + this.ia_name.replace(
-                    / /g, "_");
+                    /[\/ ]/g, "_");
             }
         } else {
             var sitp = state.findPage(this.page_nr);
@@ -916,7 +916,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
         var id = this.getPageId();
         if (this.ia_nr >= 0) {
             if (this.ia_name != null && this.ia_name != "") {
-                return id + "/" + this.ia_name.replace(/ /g, "_");
+                return id + "/" + this.ia_name.replace(/[\/ ]/g, "_");
             } else {
                 return id + "/" + this.ia_nr;
             }
@@ -988,8 +988,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
             statement.context = {
                 contextActivities: {
                     grouping: [{
-                        id: baseUrl() + state.templateId + '/' +
-                            this.grouping.replace(/ /g, "_"),
+                        id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
                         objectType: "Activity"
                     }]
                 }
@@ -1219,9 +1218,9 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                         raw: this.score,
                                         min: 0.0,
                                         max: 100.0,
-                                        scaled: this.score / 100.0,
-                                        response: this.score + ""
+                                        scaled: this.score / 100.0
                                     },
+                                    response: this.score + "",
                                     success: (this.score >= state.lo_passed),
                                     completion: true
                                 };
@@ -1300,7 +1299,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                         raw: result.score,
                                         min: 0.0,
                                         max: 100.0,
-                                        scaled: result.score / 100.0,
+                                        scaled: result.score / 100.0
                                     },
                                     response: this.learnerAnswers,
                                     success: result.success,
@@ -1340,9 +1339,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         statement.context = {
                             contextActivities: {
                                 grouping: [{
-                                    id: baseUrl() + state.templateId +
-                                        '/' + this.grouping.replace(
-                                            / /g, "_"),
+                                    id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
                                     objectType: "Activity"
                                 }]
                             }
@@ -1374,9 +1371,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             scoredstatement.context = {
                                 contextActivities: {
                                     grouping: [{
-                                        id: baseUrl() + state.templateId +
-                                            '/' + this.grouping.replace(
-                                                / /g, "_"),
+                                        id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
                                         objectType: "Activity"
                                     }]
                                 }
@@ -1412,9 +1407,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                     if (this.grouping != "") {
                         statement.context.contextActinities = {
                             grouping: [{
-                                id: baseUrl() + state.templateId +
-                                    '/' + this.grouping.replace(
-                                        / /g, "_"),
+                                id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
                                 objectType: "Activity"
                             }]
                         };
@@ -1458,9 +1451,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         if (this.grouping != "") {
                             statement.context.contextActivities = {
                                 grouping: [{
-                                    id: baseUrl() + state.templateId +
-                                        '/' + this.grouping.replace(
-                                            / /g, "_"),
+                                    id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
                                     objectType: "Activity"
                                 }]
                             };
@@ -1518,8 +1509,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                 statement.context = {
                     contextActivities: {
                         grouping: [{
-                            id: baseUrl() + state.templateId + '/' +
-                                this.grouping.replace(/ /g, "_"),
+                            id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
                             objectType: "Activity"
                         }]
                     }
@@ -1549,10 +1539,10 @@ function XTInitialise(category) {
     state.sessionId = new Date().getTime() + "" + Math.round(Math.random() *
         10000000);
     // Initialise actor object
-    if (studentidmode != undefined && typeof studentidmode == 'string') {
+    if (typeof studentidmode != "undefined" && typeof studentidmode == 'string') {
         studentidmode = parseInt(studentidmode);
     }
-    if (studentidmode == undefined || (studentidmode <= 0 && studentidmode > 3)) {
+    if (typeof studentidmode == "undefined" || (studentidmode <= 0 && studentidmode > 3)) {
         // set actor to global group
         actor = {
             objectType: "Group",
@@ -1562,7 +1552,7 @@ function XTInitialise(category) {
             }
         };
     } else {
-        if (username == undefined || username == "") {
+        if (typeof username == "undefined" || username == "") {
             userEMail = "mailto:email@test.com"
         } else {
             userEMail = "mailto:" + username;
@@ -1572,6 +1562,28 @@ function XTInitialise(category) {
         studentidmode = 0;
         userMail = "test_xerte_email@xerte.co.uk";
         //debugger;
+        if (typeof groupname != "undefined" && groupname != "")
+        {
+            group = {
+                objectType: "Group",
+                account: {
+                    name: groupname,
+                    homePage: baseUrl() + state.templateId
+                }
+            };
+        }
+        else {
+            group = "";
+        }
+        if (typeof coursename != "undefined" && coursename != "")
+        {
+            course = {
+                id: baseUrl() + coursename
+            };
+        }
+        else {
+            course = "";
+        }
         switch (studentidmode) {
             case 0: //mbox
                 actor = {
@@ -1593,13 +1605,25 @@ function XTInitialise(category) {
                 };
                 break;
             case 3:
-                actor = {
-                    objectType: "Group",
-                    account: {
-                        name: groupname,
-                        homePage: baseUrl() + state.templateId
-                    }
-                };
+                if (groupname != undefined && groupname != "") {
+                    actor = {
+                        objectType: "Group",
+                        account: {
+                            name: groupname,
+                            homePage: baseUrl() + state.templateId
+                        }
+                    };
+                }
+                else
+                {
+                    actor = {
+                        objectType: "Group",
+                        account: {
+                            name: "global",
+                            homePage: baseUrl() + state.templateId
+                        }
+                    };
+                }
 
         }
     }
@@ -1897,6 +1921,377 @@ function XTSetViewed(page_nr, name, score) {
         SaveStatement(statement);
         state.setPageScore(page_nr, score);
     }
+}
+
+function XThelperConsolidateSegments(videostate)
+{
+    // 1. Sort played segments on start time (first make a copy)
+    var segments = $.extend(true, [], videostate.segments);
+    segments.sort(function(a,b) {return (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0);} );
+    // 2. Combine the segments
+    var csegments = [];
+    var i=0;
+    while(i<segments.length) {
+        var segment = $.extend(true, {}, segments[i]);
+        i++;
+        while (i<segments.length && segment.end >= segments[i].start) {
+            segment.end = segments[i].end;
+            i++;
+        }
+        csegments.push(segment);
+    }
+    var segstr = "[";
+    for (var i=0; i<csegments.length; i++)
+    {
+        if (i>0)
+            segstr += ", ";
+        segstr += "(" + csegments[i].start + ", " + csegments[i].end + ")";
+    }
+    segstr += "]";
+    console.log("Consolidated segments: " + segstr);
+    return csegments;
+}
+
+function XThelperDetermineProgress(videostate)
+{
+    var csegments = XThelperConsolidateSegments(videostate);
+    var videoseen = 0;
+    for (var i=0; i<csegments.length; i++)
+    {
+        videoseen += csegments[i].end - csegments[i].start;
+    }
+    return Math.round(videoseen / videostate.duration * 10000.0)/100.0;
+}
+
+function XTVideo(page_nr, name, block_name, verb, videostate)
+{
+    var id = baseUrl() + state.templateId + "/" + page_nr + "/video";
+    var pagename = "Page " + page_nr;
+    if (name != null && name != "") {
+        id = baseUrl() + state.templateId + "/" + name.replace(/[\/ ]/g, "_") + "/video";
+        pagename = name;
+    }
+
+    switch(verb) {
+
+        case "initialized":
+            state.videostart = new Date();
+            var statement = {
+                "actor": actor,
+                "verb": {
+                    "id": "http://adlnet.gov/expapi/verbs/initialized",
+                    "display": {
+                        "en-US": "initialized"
+                    }
+                },
+                "object": {
+                    "id": id,
+                    "definition": {
+                        "name": {
+                            "en-US": "Video of " + pagename
+                        },
+                        "description": {
+                            "en-US": "Watching video on " + pagename
+                        },
+                        "type": "https://w3id.org/xapi/video/activity-type/video"
+                    },
+                    "objectType": "Activity"
+                },
+                "context": {
+                    "contextActivities": {
+                        "category": [{
+                            "id": "https://w3id.org/xapi/video"
+                        }]
+                    },
+                    "extensions": {
+                        "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
+                    }
+                }
+            };
+            SaveStatement(statement);
+            break;
+        case "played":
+            var statement = {
+                "actor": actor,
+                "verb": {
+                    "id": "https://w3id.org/xapi/video/verbs/played",
+                    "display": {
+                        "en-US": "played"
+                    }
+                },
+                "object": {
+                    "id": id,
+                    "definition": {
+                        "name": {
+                            "en-US": "Video of " + pagename
+                        },
+                        "description": {
+                            "en-US": "Watching video on " + pagename
+                        },
+                        "type": "https://w3id.org/xapi/video/activity-type/video"
+                    },
+                    "objectType": "Activity"
+                },
+                "result": {
+                    "extensions": {
+                        "https://w3id.org/xapi/video/extensions/time": videostate.time
+                    }
+                },
+                "context": {
+                    "contextActivities": {
+                        "category": [{
+                            "id": "https://w3id.org/xapi/video"
+                        }]
+                    },
+                    "extensions": {
+                        "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
+                    }
+                }
+            };
+            SaveStatement(statement);
+            break;
+        case "paused":
+            var played_segments = "";
+            for (var i=0; i<videostate.segments.length; i++)
+            {
+                if (i>0)
+                {
+                    played_segments += "[,]"
+                }
+                played_segments += videostate.segments[i].start + "[.]" + videostate.segments[i].end;
+            }
+            var statement = {
+                "actor": actor,
+                "verb": {
+                    "id": "https://w3id.org/xapi/video/verbs/paused",
+                    "display": {
+                        "en-US": "paused"
+                    }
+                },
+                "object": {
+                    "id": id,
+                    "definition": {
+                        "name": {
+                            "en-US": "Video of " + pagename
+                        },
+                        "description": {
+                            "en-US": "Watching video on " + pagename
+                        },
+                        "type": "https://w3id.org/xapi/video/activity-type/video"
+                    },
+                    "objectType": "Activity"
+                },
+                "result": {
+                    "extensions": {
+                        "https://w3id.org/xapi/video/extensions/time": videostate.time,
+                        "https://w3id.org/xapi/video/extensions/progress": XThelperDetermineProgress(videostate),
+                        "https://w3id.org/xapi/video/extensions/played-segments": played_segments
+                    }
+                },
+                "context": {
+                    "contextActivities": {
+                        "category": [{
+                            "id": "https://w3id.org/xapi/video"
+                        }]
+                    },
+                    "extensions": {
+                        "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
+                    }
+                }
+            };
+            SaveStatement(statement);
+            break;
+        case "seeked":
+            var statement =  {
+                "actor": actor,
+                "verb": {
+                    "id": "https://w3id.org/xapi/video/verbs/seeked",
+                    "display": {
+                        "en-US": "seeked"
+                    }
+                },
+                "object": {
+                    "id": id,
+                    "definition": {
+                        "name": {
+                            "en-US": "Video of " + pagename
+                        },
+                        "description": {
+                            "en-US": "Watching video on " + pagename
+                        },
+                        "type": "https://w3id.org/xapi/video/activity-type/video"
+                    },
+                    "objectType": "Activity"
+                },
+                "result": {
+                    "extensions": {
+                        "https://w3id.org/xapi/video/extensions/time-from": videostate.prevTime,
+                        "https://w3id.org/xapi/video/extensions/time-to": videostate.time
+                    }
+                },
+                "context": {
+                    "contextActivities": {
+                        "category": [{
+                            "id": "https://w3id.org/xapi/video"
+                        }]
+                    },
+                    "extensions": {
+                        "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
+                    }
+                }
+            };
+            SaveStatement(statement);
+            break;
+        case "interacted":
+            break;
+        case "exit": // Not really the verb. will send termintaed or completed depending on state
+            var played_segments = "";
+            for (var i=0; i<videostate.segments.length; i++)
+            {
+                if (i>0)
+                {
+                    played_segments += "[,]"
+                }
+                played_segments += videostate.segments[i].start + "[.]" + videostate.segments[i].end;
+            }
+            var progress = XThelperDetermineProgress(videostate);
+            // 3. Determine whther to use completed or terminated
+            if (progress >= 99.9)
+            {
+                // Use completed
+                var statement = {
+                    "actor": actor,
+                    "verb": {
+                        "id": "http://adlnet.gov/expapi/verbs/completed",
+                        "display": {
+                            "en-US": "completed"
+                        }
+                    },
+                    "object": {
+                        "id": id,
+                        "definition": {
+                            "name": {
+                                "en-US": "Video of " + pagename
+                            },
+                            "description": {
+                                "en-US": "Watching video on " + pagename
+                            },
+                            "type": "https://w3id.org/xapi/video/activity-type/video"
+                        },
+                        "objectType": "Activity"
+                    },
+                    "result": {
+                        "extensions": {
+                            "https://w3id.org/xapi/video/extensions/time": videostate.time,
+                            "https://w3id.org/xapi/video/extensions/progress": progress,
+                            "https://w3id.org/xapi/video/extensions/played-segments": played_segments
+                        },
+                        "completion" : true,
+                        "duration" : calcDuration(state.videostart, new Date())
+                    },
+                    "context": {
+                        "contextActivities": {
+                            "category": [{
+                                "id": "https://w3id.org/xapi/video"
+                            }]
+                        },
+                        "extensions": {
+                            "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
+                        }
+                    }
+                };
+            }
+            else
+            {
+                // use terminated, so first send paused as according to standards (if not already sent)
+                if (state.prevVerb != "paused")
+                {
+                    var statement = {
+                        "actor": actor,
+                        "verb": {
+                            "id": "https://w3id.org/xapi/video/verbs/paused",
+                            "display": {
+                                "en-US": "paused"
+                            }
+                        },
+                        "object": {
+                            "id": id,
+                            "definition": {
+                                "name": {
+                                    "en-US": "Video of " + pagename
+                                },
+                                "description": {
+                                    "en-US": "Watching video on " + pagename
+                                },
+                                "type": "https://w3id.org/xapi/video/activity-type/video"
+                            },
+                            "objectType": "Activity"
+                        },
+                        "result": {
+                            "extensions": {
+                                "https://w3id.org/xapi/video/extensions/time": videostate.time,
+                                "https://w3id.org/xapi/video/extensions/progress": XThelperDetermineProgress(videostate),
+                                "https://w3id.org/xapi/video/extensions/played-segments": played_segments
+                            }
+                        },
+                        "context": {
+                            "contextActivities": {
+                                "category": [{
+                                    "id": "https://w3id.org/xapi/video"
+                                }]
+                            },
+                            "extensions": {
+                                "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
+                            }
+                        }
+                    };
+                    SaveStatement(statement);
+                }
+                var statement =  {
+                    "actor": actor,
+                    "verb": {
+                        "id": "http://adlnet.gov/expapi/verbs/terminated",
+                        "display": {
+                            "en-US": "terminated"
+                        }
+                    },
+                    "object": {
+                        "id": id,
+                        "definition": {
+                            "name": {
+                                "en-US": "Video of " + pagename
+                            },
+                            "description": {
+                                "en-US": "Watching video on " + pagename
+                            },
+                            "type": "https://w3id.org/xapi/video/activity-type/video"
+                        },
+                        "objectType": "Activity"
+                    },
+                    "result": {
+                        "extensions": {
+                            "https://w3id.org/xapi/video/extensions/time": videostate.time,
+                            "https://w3id.org/xapi/video/extensions/progress": progress,
+                            "https://w3id.org/xapi/video/extensions/played-segments": played_segments
+                        }
+                    },
+                    "context": {
+                        "contextActivities": {
+                            "category": [{
+                                "id": "https://w3id.org/xapi/video"
+                            }]
+                        },
+                        "extensions": {
+                            "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
+                        }
+                    }
+                };
+            }
+            SaveStatement(statement);
+            break;
+
+    }
+    state.prevVerb = verb;
 }
 
 function XTSetPageScore(page_nr, score) {
@@ -2337,6 +2732,11 @@ function SaveStatement(statement, async) {
         "http://xerte.org.uk/learningObjectTitle": x_params.name + " (" +
             state.templateId + ")"
     };
+    if (course != "")
+    {
+        extension["http://xerte.org.uk/course"] = course;
+    }
+
     if (statement.context == undefined) {
         statement.context = {
             "extensions": extension
@@ -2345,7 +2745,7 @@ function SaveStatement(statement, async) {
         statement.context.extensions = extension;
     } else {
         // Loop over all keys in extension and add to existing extension
-        $each(extension, function(key, value) {
+        $.each(extension, function(key, value) {
             statement.context.extensions[key] = value;
         });
     }
@@ -2359,19 +2759,25 @@ function SaveStatement(statement, async) {
                 "name": {
                     "en-US": x_params.name + " (" + state.templateId +
                         ")"
-                },
+                }
             },
             "id": parentId,
             "objectType": "Activity"
         }];
     }
     if (state.category != "") {
+        //Place Xerte Category in contextActivities/Other, NOT in categoryContext/category, because that is used for different puposes by xAPI
         if (statement.context.contextActivities == undefined) {
             statement.context.contextActivities = {};
         }
-        statement.context.contextActivities.category = [{
-            id: parentId + '/' + state.category.replace(/ /g, "_")
+        statement.context.contextActivities.other = [{
+            id: baseUrl() + state.category.replace(/[\/ ]/g, "_")
         }];
+    }
+    if (group != "")
+    {
+        // Place in context team
+        statement.context.team = group;
     }
 
     /*
@@ -2408,6 +2814,7 @@ function SaveStatement(statement, async) {
     }
     */
     statement.id = null;
+    statement.timestamp = new Date();
     if (typeof async == 'undefined') {
         async = true;
     }
