@@ -114,5 +114,12 @@ if (is_numeric($id))
     }
     $pedit_enabled = true;
     $tsugi_enabled = true;
+    if (isset($_REQUEST['group']))
+    {
+        $xerte_toolkits_site->group = $_REQUEST{'group'};
+    }
+    if (isset($_REQUEST['course'])) {
+        $xerte_toolkits_site->course = $_REQUEST['course'];
+    }
     require(dirname(__FILE__) . "/play.php");
 }

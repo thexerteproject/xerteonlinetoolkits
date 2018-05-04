@@ -27,7 +27,11 @@
 			numLoaded = 0,
 			duration = 0,
             blocks = new Array (),
-		    vidFullWatched;
+		    vidFullWatched,
+            currSegment,
+            trackinglabel = "",
+            prevTime = -1,
+            lastTime = -1;
 
 		
 		// function called every time the page is viewed after it has initially loaded
@@ -46,19 +50,21 @@
 			if ($("#pageContents").data("audioBar") == true && $x_footerBlock.find(".mainMedia").length == 0) {
 				this.loadAudioInFooter();
 			}
-		}
+
+        	this.initTracking();
+		};
 		
 		// function called from mediaPlayer.js when video player has been set up
 		this.mediaFunct = function(mediaElement, mediaSrc) {
 			if ($(mediaElement).closest(".mainMedia").length != 0) {
 				$("#pageContents").data("mediaElement", mediaElement);
 			}
-		}
+		};
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			this.resizePanels();
-		}
+		};
 		
 		this.resizePanels = function() {
 		    // make sure no scroll bars are on screen during panel sizing
@@ -90,7 +96,7 @@
 			$x_pageHolder.css("overflow", "auto");
 			
 			this.resizeMedia();
-		}
+		};
 		
 		// function resizes media controls
 		this.resizeMedia = function($holder) {
@@ -188,7 +194,7 @@
             else {
                 return false;
 			}
-		}
+		};
         this.exitFullScreen = function() {
             if (document.fullscreenElement ||    // alternative standard method
                 document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement ) {  // current working methods
@@ -202,7 +208,7 @@
                     document.webkitExitFullscreen();
                 }
             }
-        }
+        };
 
 		this.resizeYouTube = function($youTube) {
 		    var $holder = $youTube.parent(),
@@ -239,23 +245,35 @@
 				"min-width" : 150,
 				"min-height": 120
 			});
-		}
+		};
 		
 		this.resizeVimeo = function($vimeo) {
 			this.resizeYouTube($vimeo);
-		}
+		};
 
 
 		this.leavePage = function () {
-		    if (vidFullWatched == undefined)
+		    currSegment.end = lastTime;
+		    this.addSegment(currSegment);
+            $(".youTube, .vimeo").each(function() {
+                $(this).data("popcornInstance").pause();
+            });
+
+            if (vidFullWatched == undefined)
 			{
                 vidFullWatched = {
-                    synchName: "full_video"
-                }
+                    synchStart: 0,
+                    duration: duration,
+                    synchName: "video",
+                    watched: [],
+                    segments:[]
+                };
                 sentXAPI(vidFullWatched, 0);
 			}
-			sentXAPI(vidFullWatched, lookupTable(vidFullWatched));
-		}
+			var progress = XThelperDetermineProgress(vidFullWatched);
+			sentXAPI(vidFullWatched, progress);
+			XTVideo(x_currentPage, trackinglabel, "", "exit", vidFullWatched);
+		};
 		// function called when page first loads
 		/*
 		this.init = function()
@@ -288,7 +306,7 @@
 				} else {
 					this.setUp();
 				}
-				this.initTracking();
+
 			} else {
 				$("#infoHolder, #panelHolder, #contentCover").remove();
 				$("#pageContents").append('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
@@ -303,6 +321,11 @@
             var numOfQuestions = questions.length;
 			// Number the quesion in the order they appear in the editor
 
+            trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
+            if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
+            {
+                trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
+            }
 			mediaLesson.questions = [];
 			var nr=0;
 			$(questions).each(function(key, value){
@@ -319,11 +342,12 @@
 
             window.correctQuestions = 0;
             XTSetPageType(x_currentPage, 'numeric',numOfQuestions , this.weighting);
-		}
+            XTVideo(x_currentPage, trackinglabel, "", "initialized", vidFullWatched);
+		};
 				
 		// function loads the popcorn files
 		this.loadJS = function() {
-			if (numLoaded == plugins.length + 1) {
+		    if (numLoaded == plugins.length + 1) {
 				// all files have loaded
 				this.setUp();
 			} else {
@@ -339,15 +363,37 @@
 				
 				$.getScript(x_templateLocation + "common_html5/js/popcorn/" + fileToLoad + ".js")
 					.done(function(script, textStatus) {
-						numLoaded++;
+                        numLoaded++;
 						mediaLesson.loadJS();
 					})
 					.fail(function( jqxhr, settings, exception ) {
 						console.log("Failed to load Popcorn.js & plugins");
 					});
 			}
-		}
-		
+		};
+
+		this.addSegment = function(segment)
+        {
+            console.log("Considering segment: (" + segment.start + ", " + segment.end +")");
+            if (segment.start != -1 && segment.end != -1 && segment.start < segment.end && segment.end - segment.start > 0.5)
+            {
+                // Pushing copy of segment
+                var csegment = $.extend(true, {}, segment);
+                console.log("Adding segment: (" + csegment.start + ", " + csegment.end +")");
+                vidFullWatched.segments.push(csegment);
+                var segstr = "[";
+                for (var i=0; i<vidFullWatched.segments.length; i++)
+                {
+                    if (i>0)
+                        segstr += ", ";
+                    segstr += "(" + vidFullWatched.segments[i].start + ", " + vidFullWatched.segments[i].end + ")";
+                }
+                segstr += "]";
+                console.log("Current segments: " + segstr);
+
+            }
+        };
+
 		// function called when popcorn.js & plugin files have all loaded
 		this.setUp = function() {
 			// _____ SORT PAGE LAYOUT _____
@@ -361,8 +407,8 @@
 				mediaType = "video",
 				maxPanels = 4,
 				mediaPanelIndex,
-				popcornInstance;
-			
+                popcornInstance;
+
 			// get index of media panel
 			for (var i=0; i<panelData.length; i++) {
 				if (panelData[i].nodeName == "mediaPanel") {
@@ -566,45 +612,117 @@
 
 			if (popcornInstance != undefined) {
 
+                if (vidFullWatched == null || vidFullWatched == undefined)
+                {
+                    vidFullWatched = {
+                        time: 0,
+                        synchStart: 0,
+                        duration: popcornInstance.duration(),
+                        synchName: "video",
+                        watched: [],
+                        segments: [],
+                    }
+                }
+
                 panelData.each(function(i) {
                     mediaLesson.sortPopcorn($(this).children(), "panel" + i, popcornInstance, $(".mainMedia"));
                 });
 
                 //Adds events to popcorn
-				var lastTime = -1;
 				popcornInstance.media.addEventListener( "timeupdate", function() {
-					var popTime = popcornInstance.media.currentTime;
+				    var popTime = popcornInstance.currentTime();
+                    //console.log("Timeupdate: " + popTime + " prevTime=" + prevTime + ", seeking=" + popcornInstance.seeking());
 					var block = getBlock(lastTime);
 					if (lastTime != popTime && popTime > 0) {
-						lastTime = popcornInstance.media.currentTime;
+					    prevTime = lastTime;
+						lastTime = popTime;
                         updateTable(vidFullWatched, lastTime);
 						updateTable(block, lastTime);
 					}
 
 				});
 				popcornInstance.media.addEventListener( "play", function() {
-					if (vidFullWatched == null || vidFullWatched == undefined)
+                    var popTime = popcornInstance.currentTime();
+                    console.log("Play    : " + popTime);
+				    currSegment = {
+				        start: popTime,
+                        end: -1
+                    };
+                    var block = getBlock(popTime);
+                    var name = "";
+                    if (block != null)
                     {
-                        vidFullWatched = {
-                            synchStart: 0,
-                            duration: popcornInstance.duration(),
-                            synchName: "full_video",
-                            watched: []
-                    }}
-					duration = popcornInstance.duration();
+                        name = block.synchName;
+                    }
+                    vidFullWatched.duration = popcornInstance.duration();
+                    vidFullWatched.time = popTime;
+                    duration = popcornInstance.duration();
+                    XTVideo(x_currentPage, trackinglabel, name, "played", vidFullWatched);
 				});
 				popcornInstance.media.addEventListener( "pause", function() {
-					var block = getBlock(popcornInstance.currentTime());
-					sentXAPI(vidFullWatched, lookupTable(vidFullWatched));
+                    var popTime = popcornInstance.currentTime();
+                    vidFullWatched.time = popTime;
+                    console.log("Pause   : " + popTime);
+					var block = getBlock(popTime);
+                    var name = "";
+                    if (block != null)
+                    {
+                        name = block.synchName;
+                    }
+					currSegment.end = popTime;
+					mediaLesson.addSegment(currSegment);
+                    currSegment = {
+                        start: popTime,
+                        end: -1
+                    };
+                    vidFullWatched.duration = popcornInstance.duration();
+                    duration = popcornInstance.duration();
+                    var progress = XThelperDetermineProgress(vidFullWatched);
+					sentXAPI(vidFullWatched, progress);
 					sentXAPI(block,lookupTable(block));
+					XTVideo(x_currentPage, trackinglabel, name, "paused", vidFullWatched);
 
 				});
-				popcornInstance.media.addEventListener( "seeked", function() {
-					popcornInstance.pause();
+                popcornInstance.media.addEventListener( "seeked", function() {
+                    var popTime = popcornInstance.currentTime();
+                    vidFullWatched.time = popTime;
+                    vidFullWatched.prevTime = prevTime;
+                    console.log("Seeked  : " + popTime + ", prevTime=" + prevTime);
+                    currSegment.end = prevTime;
+                    mediaLesson.addSegment(currSegment);
+                    currSegment = {
+                        start: popTime,
+                        end: -1
+                    };
+                    vidFullWatched.duration = popcornInstance.duration();
+                    duration = popcornInstance.duration();
+                    XTVideo(x_currentPage, trackinglabel, name, "seeked", vidFullWatched);
+                    popcornInstance.pause();
 					popcornInstance.play();
 				});
+                popcornInstance.media.addEventListener("ended", function() {
+                    var popTime = popcornInstance.duration();
+                    vidFullWatched.duration = popcornInstance.duration();
+                    duration = popcornInstance.duration();
+                    vidFullWatched.time = popTime;
+                    console.log("End     : " + popTime);
+                    var block = getBlock(popTime);
+                    var name = "";
+                    if (block != null)
+                    {
+                        name = block.synchName;
+                    }
+                    currSegment.end = popTime;
+                    mediaLesson.addSegment(currSegment);
+                    currSegment = {
+                        start: popTime,
+                        end: -1
+                    };
+                    XTVideo(x_currentPage, trackinglabel, name, "paused", vidFullWatched);
+
+                });
 			}
-			
+            this.initTracking();
 			x_pageLoaded();
 		};
 
