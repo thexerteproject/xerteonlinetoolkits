@@ -148,7 +148,7 @@
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
 	  restartBtnText="Restart" 
-	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="General Results" givenameTxt="Your name" averageTxt="Average" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Interactivity Results" globalResultsTxt="Global Results" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Specific Results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter user name" userNamePrompt="User name: " okButtonTxt="Ok" />]]></results><rss><![CDATA[<rss name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left" panelWidth="Medium"/>]]></rss><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
+	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="General Results" givenameTxt="Your name" averageTxt="Average" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Interactivity Results" globalResultsTxt="Global Results" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Specific Results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter Full Name" userNamePrompt="Your name: " okButtonTxt="Ok" />]]></results><rss><![CDATA[<rss name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left" panelWidth="Medium"/>]]></rss><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
        imageButtonShow="Show Media" imageButtonHide="Hide Media" imageButtonWidth="100" continueButtonLabel="Continue" continueButtonWidth="100"
 	   scenarioPropsTitle="You can see..." scenarioPropsName="item(s)" inventoryEmpty="Nothing" inventoryTitle="You have with you..." inventoryItemName="item(s)"
 	   actionTitle="Actions you can take..." scoresTitle="Scores"
@@ -278,8 +278,6 @@
         <graph type="group" label="Graph" optional="true">
           <graph label="Show graph" type="checkbox" defaultValue="false" optional="true"/>
           <graphType label="Graph type" type="combobox" data="bar_answers,bar_marks,line_own_marks,line_average_marks" options="Bar graph for given answers,Bar graph for received marks,Line graph for own received marks,Line graph for average marks of others" defaultValue="bar_answers" optional="true"/>
-          <grapIncludeAvgOwn label="Include current learner average" type="checkbox" defaultValue="true" optional="true"/>
-          <graphIncludeAvgAll label="Include average of everyone" type="checkbox" defaultValue="true" optional="true"/>
         </graph>
         <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue=""/>
         <xertelo label="ID of Xerte learning object" type="xertelo" mandatory="true" defaultValue=""/>
@@ -2701,7 +2699,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale.">
+	</background></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
     <name label="Opinion Title" type="TextInput" wysiwyg="true"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
@@ -2722,7 +2720,12 @@
 	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
 	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
-    <diagram label="Show diagram" type="CheckBox" defaultValue="true" optional="true"/>
+    <diagram label="Hide diagram" type="CheckBox" defaultValue="false" optional="true"/>
+    <layout label="Layout options" type="group" optional="true">
+      <list label="Show questions in list" type="checkbox" optional="true" tooltip="Show more than one question per page" defaultValue="false"/>
+      <paging label="Use paging" type="checkbox" optional="true" tooltip="Group question list in pages if using list mode" defaultValue="true"/>
+      <pagesize label="Max. page size" type="textinput" wysiwyg="false" optional="true" tooltip="Maximum number of questions shown per page if page mode is used." defaultValue="10"/>
+    </layout>
 
       <newNodes>
         <opinionClass><![CDATA[<opinionClass  name="C - Tree/Tracking label"/>]]></opinionClass>
@@ -3058,7 +3061,7 @@
         <noDetailsTooltip label="Details not available tooltip" type="TextInput" wysiwyg="false" language="true"/>
         <userNameDialogTitle label="User name dialog title" type="TextInput" wysiwyg="false" language="true"/>
         <userNamePrompt label="User name prompt" type="TextInput" wysiwyg="false" language="true"/>
-        <okButtonTxt label="Ok button tekst" type="TextInput" wysiwyg="false" language="true"/>
+        <okButtonTxt label="Ok button text" type="TextInput" wysiwyg="false" language="true"/>
 
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full learning object."/>
@@ -3302,7 +3305,7 @@
 	<scoreComp label="Score / Counter Comparison" defaultValue="LT" data="LT,GT,EQ" type="ComboBox" options="Less Than,Greater Than,Equal To" width="100" optional="true"/>
 	<chanceAct label="Out of 10" type="NumericStepper" min="1" max="9" step="1" width="100" optional="true" defaultValue="5"/>
 
-	</outcomeCondition><showGraph menu="Interactivity" menuItem="Show Graph" hint="A page where you can import data data to create a graph" icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
+	</outcomeCondition><showGraph menu="Interactivity" menuItem="Show Graph" hint="Use this page together with the opinion page to display a graph with collated results. Note: This separate show graph page will only work with xAPI configured." icon="icPageWhiteText" thumb="thumbs/showGraph.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue=""/>
