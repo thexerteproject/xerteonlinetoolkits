@@ -248,6 +248,10 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 {
                     $tracking .= "   var groupname = '" . $xerte_toolkits_site->group . "';\n";
                 }
+                if (isset($xerte_toolkits_site->course))
+                {
+                    $tracking .= "   var coursename = '" . $xerte_toolkits_site->course . "';\n";
+                }
             }
             $tracking .= "</script>\n";
             _debug("Tracking script: " . $tracking);

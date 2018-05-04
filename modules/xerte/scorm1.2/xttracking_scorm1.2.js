@@ -1483,6 +1483,10 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 }
 
 function XTSetViewed(page_nr, name, score) {
+    if (isNaN(score) || typeof score != "number")
+    {
+        score = 0.0;
+    }
     if (state.scormmode == 'normal')
     {
         var sit = state.findPage(page_nr);
@@ -1510,15 +1514,6 @@ function XThelperConsolidateSegments(videostate)
         }
         csegments.push(segment);
     }
-    var segstr = "[";
-    for (var i=0; i<csegments.length; i++)
-    {
-        if (i>0)
-            segstr += ", ";
-        segstr += "(" + csegments[i].start + ", " + csegments[i].end + ")";
-    }
-    segstr += "]";
-    console.log("Consolidated segments: " + segstr);
     return csegments;
 }
 
@@ -1530,7 +1525,11 @@ function XThelperDetermineProgress(videostate)
     {
         videoseen += csegments[i].end - csegments[i].start;
     }
-    return Math.round(videoseen / videostate.duration * 10000.0)/100.0;
+    // normalized between 0 and 1
+    if (!isNaN(videostate.duration) && videostate.duration > 0) {
+        return Math.round(videoseen / videostate.duration * 100.0) / 100.0;
+    }
+    return 0.0;
 }
 
 function XTVideo(page_nr, name, block_name, verb, videostate) {

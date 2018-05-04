@@ -1564,25 +1564,27 @@ function XTInitialise(category) {
         //debugger;
         if (typeof groupname != "undefined" && groupname != "")
         {
-            group = {
+            state.group = {
                 objectType: "Group",
                 account: {
                     name: groupname,
-                    homePage: baseUrl() + state.templateId
+                    homePage: baseUrl()
                 }
             };
         }
         else {
-            group = "";
+            state.group = "";
         }
         if (typeof coursename != "undefined" && coursename != "")
         {
-            course = {
+            state.course = {
                 id: baseUrl() + coursename
             };
+            state.coursename = coursename;
         }
         else {
-            course = "";
+            state.course = "";
+            state.coursename = "";
         }
         switch (studentidmode) {
             case 0: //mbox
@@ -1884,6 +1886,10 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting) {
 }
 
 function XTSetViewed(page_nr, name, score) {
+    if (isNaN(score) || typeof score != "number")
+    {
+        score = 0.0;
+    }
     this.pageEnd = new Date();
     var sit = state.findPage(page_nr);
     if (sit != null) {
@@ -1940,6 +1946,7 @@ function XThelperConsolidateSegments(videostate)
         }
         csegments.push(segment);
     }
+    /*
     var segstr = "[";
     for (var i=0; i<csegments.length; i++)
     {
@@ -1949,6 +1956,7 @@ function XThelperConsolidateSegments(videostate)
     }
     segstr += "]";
     console.log("Consolidated segments: " + segstr);
+    */
     return csegments;
 }
 
@@ -1960,7 +1968,11 @@ function XThelperDetermineProgress(videostate)
     {
         videoseen += csegments[i].end - csegments[i].start;
     }
-    return Math.round(videoseen / videostate.duration * 10000.0)/100.0;
+    // normalized between 0 and 1
+    if (!isNaN(videostate.duration) && videostate.duration > 0) {
+        return Math.round(videoseen / videostate.duration * 100.0) / 100.0;
+    }
+    return 0.0;
 }
 
 function XTVideo(page_nr, name, block_name, verb, videostate)
@@ -2035,7 +2047,8 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                 "result": {
                     "extensions": {
                         "https://w3id.org/xapi/video/extensions/time": videostate.time
-                    }
+                    },
+                    "duration" : calcDuration(state.videostart, new Date())
                 },
                 "context": {
                     "contextActivities": {
@@ -2086,7 +2099,8 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                         "https://w3id.org/xapi/video/extensions/time": videostate.time,
                         "https://w3id.org/xapi/video/extensions/progress": XThelperDetermineProgress(videostate),
                         "https://w3id.org/xapi/video/extensions/played-segments": played_segments
-                    }
+                    },
+                    "duration" : calcDuration(state.videostart, new Date())
                 },
                 "context": {
                     "contextActivities": {
@@ -2127,7 +2141,8 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                     "extensions": {
                         "https://w3id.org/xapi/video/extensions/time-from": videostate.prevTime,
                         "https://w3id.org/xapi/video/extensions/time-to": videostate.time
-                    }
+                    },
+                    "duration" : calcDuration(state.videostart, new Date())
                 },
                 "context": {
                     "contextActivities": {
@@ -2232,7 +2247,8 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                                 "https://w3id.org/xapi/video/extensions/time": videostate.time,
                                 "https://w3id.org/xapi/video/extensions/progress": XThelperDetermineProgress(videostate),
                                 "https://w3id.org/xapi/video/extensions/played-segments": played_segments
-                            }
+                            },
+                            "duration" : calcDuration(state.videostart, new Date())
                         },
                         "context": {
                             "contextActivities": {
@@ -2273,7 +2289,8 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                             "https://w3id.org/xapi/video/extensions/time": videostate.time,
                             "https://w3id.org/xapi/video/extensions/progress": progress,
                             "https://w3id.org/xapi/video/extensions/played-segments": played_segments
-                        }
+                        },
+                        "duration" : calcDuration(state.videostart, new Date())
                     },
                     "context": {
                         "contextActivities": {
@@ -2732,16 +2749,16 @@ function SaveStatement(statement, async) {
         "http://xerte.org.uk/learningObjectTitle": x_params.name + " (" +
             state.templateId + ")"
     };
-    if (course != "")
+    if (state.coursename != "")
     {
-        extension["http://xerte.org.uk/course"] = course;
+        extension["http://xerte.org.uk/course"] = state.coursename;
     }
 
-    if (statement.context == undefined) {
+    if (typeof statement.context == "undefined") {
         statement.context = {
             "extensions": extension
         };
-    } else if (statement.context.extensions == undefined) {
+    } else if (typeof statement.context.extensions == "undefined") {
         statement.context.extensions = extension;
     } else {
         // Loop over all keys in extension and add to existing extension
@@ -2751,7 +2768,7 @@ function SaveStatement(statement, async) {
     }
     var parentId = baseUrl() + state.templateId;
     if (statement.object.id != parentId) {
-        if (statement.context.contextActivities == undefined) {
+        if (typeof statement.context.contextActivities == "undefined") {
             statement.context.contextActivities = {};
         }
         statement.context.contextActivities.parent = [{
@@ -2767,17 +2784,39 @@ function SaveStatement(statement, async) {
     }
     if (state.category != "") {
         //Place Xerte Category in contextActivities/Other, NOT in categoryContext/category, because that is used for different puposes by xAPI
-        if (statement.context.contextActivities == undefined) {
+        if (typeof statement.context.contextActivities == "undefined") {
             statement.context.contextActivities = {};
         }
-        statement.context.contextActivities.other = [{
-            id: baseUrl() + state.category.replace(/[\/ ]/g, "_")
-        }];
+        if (typeof statement.context.contextActivities.other == "undefined") {
+            statement.context.contextActivities.other = [{
+                id: baseUrl() + state.category.replace(/[\/ ]/g, "_")
+            }];
+        }
+        else
+        {
+            statement.context.contextActivities.other.push({
+                id: baseUrl() + state.category.replace(/[\/ ]/g, "_")
+            });
+        }
     }
-    if (group != "")
+    if (state.course != "")
+    {
+        //Place course in contextActivities/Other
+        if (typeof statement.context.contextActivities == "undefined") {
+            statement.context.contextActivities = {};
+        }
+        if (typeof statement.context.contextActivities.other == "undefined") {
+            statement.context.contextActivities.other = [state.course];
+        }
+        else
+        {
+            statement.context.contextActivities.other.push(state.course);
+        }
+    }
+    if (state.group != "")
     {
         // Place in context team
-        statement.context.team = group;
+        statement.context.team = state.group;
     }
 
     /*
