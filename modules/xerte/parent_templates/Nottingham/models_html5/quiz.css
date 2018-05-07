@@ -33,6 +33,7 @@
 	#buttonHolder {
 		float:	right;
 		margin-bottom:	10px;
+		padding-right: 5px;
 	}
 
 	#infoHolder .quizImg {
