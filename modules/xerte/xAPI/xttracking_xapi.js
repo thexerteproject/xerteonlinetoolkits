@@ -2747,7 +2747,7 @@ function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
         results.completion = completion;
         results.score = score;
         results.nrofquestions = nrofquestions;
-        results.averageScore = state.getScaledScore() * 100;
+        results.averageScore = Math.round(state.getdScaledScore() * 10000.0)/100.0;
         results.totalDuration = Math.round(totalDuration / 1000);
         results.start = state.start.toLocaleString();
 
