@@ -124,7 +124,7 @@ if(!empty($r)) {
 
 echo "Updates are being applied to {$xerte_toolkits_site->database_name} \n";
 _do_upgrade($version);
-
+_do_cleanup();
 
 function _do_upgrade($current_version) {
     $target_version = $current_version + 0; // changed this to add 0 not 1 as this looks like it causes issues as when done an upgrade you had to add an extra 1 to the upgrade_function
@@ -160,7 +160,7 @@ function _do_upgrade($current_version) {
     }
 }
 
-/** 
+/**
  * Wrap around db_query - so we can print out the SQL etc if necessary.
  * @param string $sql
  * @param array parameters for the SQL - if prepared statement. See db_query.
@@ -171,6 +171,38 @@ function _upgrade_db_query($sql, $params = array()) {
         echo "<p>DEBUG Query: $sql, output " . print_r($result) . "</p>";
     }
     return $result;
+}
+
+function _do_cleanup()
+{
+    // Cleanup files that are really in the way of functionality, i.e. the responsivetext.css files in some of the themes prior to v3.6
+
+    echo "Cleanup up files that are really in the way<br>";
+    $filelist = array(
+        'themes/Nottingham/blackround/responsivetext.css',
+        'themes/Nottingham/btnTopPurple/responsivetext.css',
+        'themes/Nottingham/darkgrey/responsivetext.css',
+        'themes/Nottingham/flatblue/responsivetext.css',
+        'themes/Nottingham/flatred/responsivetext.css',
+        'themes/Nottingham/flatwhite/responsivetext.css',
+        'themes/Nottingham/orangepurple/responsivetext.css',
+        'themes/Nottingham/sketch/responsivetext.css'
+    );
+
+    foreach ($filelist as $file)
+    {
+        if (file_exists($file))
+        {
+            echo 'Removing ' . $file . '<br>';
+            unlink($file);
+        }
+        else
+        {
+            echo 'File ' . $file . ' not found (already deleted :-) )<br>';
+        }
+    }
+
+    echo 'Done<br>';
 }
 
 /**
