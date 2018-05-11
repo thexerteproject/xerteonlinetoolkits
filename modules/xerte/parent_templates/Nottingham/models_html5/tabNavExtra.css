@@ -10,11 +10,13 @@
 	.paneList {
 		color:			#CCCCCC;
 		border-bottom:	1px solid #CCCCCC;
-		padding-bottom:	10px;
+		padding-bottom:	1em;
 	}
 	
 	.paneList a {
 		font-size:	0.8em;
+		padding-left: 0.3em;
+		padding-right: 0.3em;
 	}
 	
 	.paneList a:link, .paneList a:visited, .paneList a:hover, .paneList a:active {

@@ -71,7 +71,9 @@
 	/* __columns__ */
 	
 	#pageContents.col #textHolder {
-		padding-bottom:	1em;
+		border-bottom: 1px solid #ccc;
+		margin-bottom:	1em;
+		padding-bottom:	0.7em;
 	}
 	
 	#pageContents.col .navChild {
@@ -146,12 +148,7 @@
 		border: none;
 	}
 	
-	#tabHolder .navChildTitle {
-		border-bottom: 1px solid #cccccc !important;
-	}
-	
 	#tabHolder .navChildTitle.ui-tabs-active {
-		border-color: #d3d3d3;
 		border-bottom: 1px solid white !important;
 	}
 	

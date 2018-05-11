@@ -11,8 +11,8 @@
 
 	#resultsHolder div {
 		width: 100%;
-		padding-top:	5px;
-		padding-bottom:	5px;
+		padding-top:	1em;
+		padding-bottom:	1em;
 	}
 
 	#resultsHolder div p, #resultsHolder div a {

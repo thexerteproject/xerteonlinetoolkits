@@ -18,3 +18,7 @@
 		clear: both;
 	}
 	
+	.infoGroup:not(:first-child) {
+		padding-top: 1em;
+	}
+	
