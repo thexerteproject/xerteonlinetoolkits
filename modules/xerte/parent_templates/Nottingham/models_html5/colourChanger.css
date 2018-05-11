@@ -8,4 +8,25 @@
 		display:		block;
 		text-align:		left;
 	}
+	
+	.optionGroup {
+		padding-top: 5px;
+		padding-bottom: 5px;
+	}
+	
+	.optionGroup input {
+		float: left;
+		display: block;
+	}
+	
+	.optionGroup label {
+		cursor: pointer;
+		position: relative;
+		margin-left: 2em;
+		display: block;
+	}
+	
+	.optionGroup p {
+		padding-top: 0;
+	}
 
