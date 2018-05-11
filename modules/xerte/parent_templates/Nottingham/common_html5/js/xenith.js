@@ -558,6 +558,7 @@ function x_desktopSetUp() {
 						icons:	{primary: "x_maximise"},
 						label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
 					});
+					$("#x_cssBtn").addClass("x_maximise").removeClass("x_minimise");
 					x_fillWindow = false;
 					x_updateCss();
 				}
@@ -566,6 +567,8 @@ function x_desktopSetUp() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
+		
+		$("#x_cssBtn").addClass("x_maximise").removeClass("x_minimise");
 	}
 	
 	if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
@@ -996,6 +999,7 @@ function x_continueSetUp1() {
 	if (x_params.navigation == "Historic") {
 		menuIcon = "x_home";
 		menuLabel = x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
+		$x_menuBtn.addClass("x_home");
 	}
 	
 	$x_menuBtn
@@ -2775,6 +2779,8 @@ function x_setFillWindow(updatePage) {
         icons:  {primary: "x_minimise"},
         label:  x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
     });
+	
+	$("#x_cssBtn").addClass("x_minimise").removeClass("x_maximise");
 }
 
 
