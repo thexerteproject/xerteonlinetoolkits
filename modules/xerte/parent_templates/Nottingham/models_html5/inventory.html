@@ -98,7 +98,7 @@
 				
 				$("#optionHolder input:checked").each(function() {
 					// calculate and store new score for this option's class based on it's previous score and this option's weight
-					var selectedOptionData = $(currentQuestion).children()[$(this).index()/2];
+					var selectedOptionData = $(currentQuestion).children()[$(this).parent().index()];
 					$pageContents.data("scores").splice(selectedOptionData.getAttribute("class"), 1, $pageContents.data("scores")[selectedOptionData.getAttribute("class")] + Number([selectedOptionData.getAttribute("weight")]));
 				});
 				
@@ -345,6 +345,8 @@
 			var	scores = $pageContents.data("scores"),
 				maxScore = 0, // max value to show on bar / line graph
 				i;
+			
+			console.log(scores);
 			
 			if (x_currentPageXML.getAttribute("scoreType") == "relative percent") {
 				// convert scores to percentage of total points scored
