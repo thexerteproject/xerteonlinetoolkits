@@ -1660,8 +1660,8 @@ function XTInitialise(category) {
             "password": lrsPassword,
             "strictCallbacks": true
         };
-        ADL.XAPIWrapper.changeConfig(conf);
         ADL.XAPIWrapper.log.debug = true;
+        ADL.XAPIWrapper.changeConfig(conf);
 
     } catch (ex) {
         //alert("Failed LRS setup. Error: " + ex);
@@ -2057,7 +2057,8 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                         }]
                     },
                     "extensions": {
-                        "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
+                        "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
+                        "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                     }
                 }
             };
@@ -2109,7 +2110,8 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                         }]
                     },
                     "extensions": {
-                        "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
+                        "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
+                        "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                     }
                 }
             };
@@ -2151,7 +2153,8 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                         }]
                     },
                     "extensions": {
-                        "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
+                        "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
+                        "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                     }
                 }
             };
@@ -2211,7 +2214,8 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                             }]
                         },
                         "extensions": {
-                            "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
+                            "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
+                            "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                         }
                     }
                 };
@@ -2257,7 +2261,8 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                                 }]
                             },
                             "extensions": {
-                                "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
+                                "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
+                                "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                             }
                         }
                     };
@@ -2299,7 +2304,8 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                             }]
                         },
                         "extensions": {
-                            "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
+                            "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
+                            "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                         }
                     }
                 };
@@ -2374,6 +2380,8 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
     if (sitp != null) {
         var id = sitp.getPageId();
         var description = sitp.getPageDescription();
+        var duration = calcDuration(this.pageStart, this.pageEnd);
+        var endtime = this.pageEnd;
         if (!surf_mode) {
             var statement = {
                 actor: actor,
@@ -2398,18 +2406,63 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
                     score: {
                         min: 0.0,
                         max: 100.0,
-                        raw: state.getdRawScore(),
+                        raw: score,
                         scaled: score / 100
                     },
-                    duration: calcDuration(this.pageStart, this.pageEnd),
+                    duration: duration,
                     extensions: {
                         "http://xerte.org.uk/xapi/JSONGraph": JSONGraph
                     }
                 },
-                timestamp: this.pageEnd
+                timestamp: endtime
             };
 
             SaveStatement(statement);
+
+            // save score for each class
+            var graph = JSON.parse(JSONGraph);
+            $.each(graph.classnames, function(i, classname)
+            {
+                var id = sitp.getPageId() + "/" + classname.replace(/ /g, "_");
+                var classdescription = description + "(class=" + classname + ")";
+                var value = graph.classvalues[i];
+                // Round to two decimals
+                value = Math.round(value * 100.0) / 100.0;
+                var statement = {
+                    actor: actor,
+                    verb: {
+                        id: "http://adlnet.gov/expapi/verbs/scored",
+                        display: {
+                            "en-US": "scored"
+                        }
+                    },
+                    object: {
+                        objectType: "Activity",
+                        id: id,
+                        definition: {
+                            name: {
+                                "en": classdescription
+                            }
+                        }
+                    },
+                    result: {
+                        completion: true,
+                        success: value >= state.lo_passed,
+                        score: {
+                            min: 0.0,
+                            max: 100.0,
+                            raw: value,
+                            scaled: Math.round(value) /100.0
+                        },
+                        duration: duration
+                    },
+                    timestamp: endtime
+                };
+
+                SaveStatement(statement);
+
+            });
+
         }
     }
 }
@@ -2489,6 +2542,7 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
     var search = ADL.XAPIWrapper.searchParams();
     search['verb'] = "http://adlnet.gov/expapi/verbs/scored";
     search['activity'] = id;
+    var stringObject = {};
     ADL.XAPIWrapper.getStatements(search, null,
         function getmore(err, res, body) {
             var lastSubmit = null;
@@ -2497,7 +2551,6 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
                 //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
                 //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                 //}
-                var stringObject = {};
                 stringObject.timestamp = body.statements[x].timestamp;
                 stringObject.actor = body.statements[x].actor;
                 stringObject.result = body.statements[x].result;
@@ -2520,6 +2573,42 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
     );
 }
 
+function XTGetStatements(q, one, callback) {
+    var search = ADL.XAPIWrapper.searchParams();
+    $.each(q, function(i, value){
+        search[i] = value;
+    });
+    if (one)
+    {
+        search['limit'] = 1;
+    }
+    var statements = [];
+    ADL.XAPIWrapper.getStatements(search, null,
+        function getmorestatements(err, res, body) {
+            var lastSubmit = null;
+
+            for (x = 0; x < body.statements.length; x++) {
+                //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
+                //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
+                //}
+
+                statements.push(body.statements[x]);
+            }
+            //stringObjects.push(lastSubmit);
+            if (err !== null) {
+                console.log("Failed to query statements: " + err);
+                // TODO: do something with error, didn't get statements
+                return;
+            }
+            if (res.more && res.more !== "") {
+                ADL.XAPIWrapper.getStatements(null, res.more, getmorestatements);
+            } else {
+                callback(statements);
+            }
+        }
+    );
+}
+
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name) {
     return "";
 }
@@ -2537,7 +2626,7 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 }
 
 function XTTerminate() {
-    if (!state.finished) {
+    if (!state.finished && state.initialised) {
         var currentpageid = "";
         state.finished = true;
         if (state.currentid) {
@@ -2589,8 +2678,7 @@ function XTTerminate() {
                     },
                     duration: calcDuration(state.start, new Date()),
                     extensions: {
-                        "http://xerte.org.uk/xapi/trackingstate": JSON.stringify(
-                            state)
+                        "http://xerte.org.uk/xapi/trackingstate": JSON.stringify(state)
                     }
                 },
                 timestamp: new Date()
