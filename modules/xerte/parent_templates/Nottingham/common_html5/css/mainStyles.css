@@ -35,6 +35,10 @@ h3 {
     padding-right: 0.3em;
 }
 
+h4, h5 {
+	font-size: 1em;
+}
+
 ul, ol {
 	overflow: hidden;
 }

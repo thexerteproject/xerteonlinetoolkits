@@ -15,6 +15,12 @@
   h3 {
     font-size: 2.5vmin; }
 
+  h4 {
+    font-size: 2.5vmin; }
+
+  h5 {
+    font-size: 2.5vmin; }
+
   .panelPage h3 {
     font-size: 2.5vmin; }
 
@@ -36,6 +42,9 @@
   #optionHolder {
     font-size: 2.5vmin; }
 
+  .optionHolder {
+    font-size: 2.5vmin; }
+
   .sliderHolder {
     font-size: 2.5vmin; }
 
@@ -50,9 +59,6 @@
 
   #dragDropHolder .label {
     font-size: 2vmin; }
-	#x_glossaryHover {
-		font-size: 2vmin;
-	}
 
   #pageContents h3 {
     font-size: 2.5vmin; }
@@ -143,10 +149,17 @@
   .ui-button-text-icon-secondary .ui-button-text {
     /*padding-right: 1.2em;*/ }
 
+  .caption {
+    font-size: 2vmin; }
+
   #resultsHolder div p, #resultsHolder div a {
     font-size: 2.5vmin; }
 
   #optionHolder input {
+    width: 2.5vmin;
+    height: 2.5vmin; }
+
+  .optionHolder input {
     width: 2.5vmin;
     height: 2.5vmin; }
 
@@ -192,6 +205,9 @@
     font-size: 3.1vmin !important; }
 
   #thumbBar.large #thumbHolder .playAll h3 {
-    font-size: 7.5vmin !important; } }
+    font-size: 7.5vmin !important; }
+
+  #x_glossaryHover {
+    font-size: 2vmin; } }
 
 /*# sourceMappingURL=responsivetext.css.map */
