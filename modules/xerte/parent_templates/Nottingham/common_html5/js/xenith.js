@@ -2089,11 +2089,13 @@ function x_openDialog(type, title, close, position, load) {
     for (var i=0, len=x_dialogInfo.length; i<len; i++) {
         if (x_dialogInfo[i].type == type) {
             $(".x_popupDialog").parent().detach();
+			
             if (x_dialogInfo[i].built != false) {
                 $x_body.append(x_dialogInfo[i].built);
 
                 if (load != undefined) {
                     x_dialogInfo[i].built.children(".x_popupDialog").html(load);
+					x_dialogInfo[i].built.find('.ui-dialog-title').html(title);
                 }
 				
 				x_setDialogSize(x_dialogInfo[i].built.children(".x_popupDialog"), position);

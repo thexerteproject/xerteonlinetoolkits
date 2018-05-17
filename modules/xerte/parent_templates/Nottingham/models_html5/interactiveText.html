@@ -632,6 +632,21 @@
 			// --- MCQ ---
 			// quiz asks what is highlighted
 			} else if (intType == "mcq") {
+				
+				// set up dialog object for later if it hasn't already been set up on another page of this type
+				// xenith.js contains the function used for creating/attaching dialogs - x_openDialog()
+				var newDialog = true;
+				$(x_dialogInfo).each(function(i) {
+					if (this.type == "interactiveText") {
+						newDialog = false;
+					}
+				});
+				if (newDialog == true) {
+					var dialog = new Object();
+					dialog.type = "interactiveText";
+					dialog.built = false;
+					x_dialogInfo.push(dialog);
+				}
 
 				// get all fixed strings used in quiz
 				var phrases = {},
@@ -650,21 +665,11 @@
 					.appendTo($("#questionHolder"))
 					.attr("tabindex", tabIndex+3)
 					.on("click", "#more", function() {
-						$(".x_popupDialog").parent().detach();
-						
 						var mcqAnswers = $pageContents.data("mcqAnswers"),
 							mcqCurrentQ = $pageContents.data("mcqCurrentQ"),
-							correctGroup = x_currentPageXML.getAttribute("mcqType") == "all" ? mcqAnswers[mcqCurrentQ] : subGroups[mcqAnswers[mcqCurrentQ]].ref,
-							$dialog = $('<div id="x_interactiveTextInfo" class="x_popupDialog">' + x_addLineBreaks(groupInfo[correctGroup].text) + '</div>').appendTo($x_body);
+							correctGroup = x_currentPageXML.getAttribute("mcqType") == "all" ? mcqAnswers[mcqCurrentQ] : subGroups[mcqAnswers[mcqCurrentQ]].ref;
 						
-						$dialog.dialog({
-							closeOnEscape:  true,
-							title:          groupInfo[correctGroup].name,
-							closeText:      $pageContents.data("phrases").mcqDialogClose,
-							close: function() { $(this).parent().detach(); }
-						});
-						
-						x_setDialogSize($dialog);
+						x_openDialog("interactiveText", groupInfo[correctGroup].name, $pageContents.data("phrases").mcqDialogClose, {left:"center", top:"middle", width:undefined, height:undefined}, x_addLineBreaks(groupInfo[correctGroup].text));
 					});
 				
 				$("#btnHolder")
@@ -682,7 +687,8 @@
                             l_answer = [],
                             l_feedback = [];
 						
-						$("#x_interactiveTextInfo").parent().detach();
+						$(".x_popupDialog").parent().detach();
+						
 						if ($(this).data("state") == 0) { // check
 							var correctGroup = x_currentPageXML.getAttribute("mcqType") == "all" ? mcqAnswers[mcqCurrentQ] : subGroups[mcqAnswers[mcqCurrentQ]].ref;
 							
