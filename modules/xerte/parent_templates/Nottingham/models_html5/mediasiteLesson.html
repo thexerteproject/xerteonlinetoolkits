@@ -90,12 +90,12 @@
 
                 // tileH.width = holderWidth - padding - allPanelPadding - MarginR - 2
                 $panelHolder.find(".panel.tileH")
-                    .width(Math.floor(($x_pageHolder.width() - padLeft - (parseInt($panelHolder.find(".panel.tileH").css("padding-left")) * (numTileH + 1) * 2) - marginR * (numTileH + 1)) / (numTileH + 1)) - 2);
+                    .width(Math.floor(($x_pageHolder.width() - padLeft * 2 - (parseInt($panelHolder.find(".panel.tileH").css("padding-left")) * (numTileH + 1) * 2) - marginR * (numTileH + 1)) / (numTileH + 1)) - 2);
                 if(classes.indexOf("tileH") >= 0) {
                     presPanel[0].width = (Math.floor(($x_pageHolder.width() - padLeft - (parseInt($panelHolder.find(".panel.tileH").css("padding-left")) * (numTileH + 1) * 2) - marginR * (numTileH + 1)) / (numTileH + 1)) - 2);
                 }
                 //holderwidth - padding - padding - margin * 1
-                var fullHWidth = Math.floor($x_pageHolder.width() - padLeft - (parseInt($panelHolder.find(".panel.fullW").css("padding-left")) * 2)) - 2;
+                var fullHWidth = Math.floor($x_pageHolder.width() - padLeft * 2 - 2);
                 $panelHolder.find(".panel.fullW") //full width
                     .width(fullHWidth);
                 if(classes.indexOf("fullW") >= 0) {
@@ -530,18 +530,18 @@
 
                     if (panelLayout == "top")
                     {
-                        presHolder.append('<div class="top"></div><div class="bottom"></div>');
-                        presHolder.addClass("tileH fullH");
-                        for (var i=0; i<panels.length; i++) {
+                        presHolder.appendTo($panelHolder.find(".top")).addClass("fullW halfH");
+                        for (var i=1; i<panels.length; i++) {
                             $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
                         }
 
                     } else if (panelLayout == "bottom") {
+                        presHolder.appendTo($panelHolder.find(".top")).addClass("tileH halfH");
                         for (var i=0; i<panels.length; i++) {
-                            if (i == panels.length - 1) {
-                                $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
+                            if (i == panels.length -1) {
+                                $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("fullW halfH");
                             } else {
-                                $(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH fullH");
+                                $(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH halfH");
                             }
                         }
                     }
