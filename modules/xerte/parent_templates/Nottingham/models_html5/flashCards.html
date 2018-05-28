@@ -41,6 +41,19 @@
 				$pageContents.add('.card, #cards').css({ 'width': '', 'height': '' });
 				$('.cardInner').css('height', '');
                 $('.card, #cards').css('max-width', '');
+
+                // Check whether boxshadow is set, if not reset the values from NaN to something more sensible;
+				if ($pageContents.data('boxShadow').top !== $pageContents.data('boxShadow').top
+					|| $pageContents.data('boxShadow').bottom !== $pageContents.data('boxShadow').bottom
+					|| $pageContents.data('boxShadow').left !== $pageContents.data('boxShadow').left
+					|| $pageContents.data('boxShadow').right !== $pageContents.data('boxShadow').right)
+				{
+				    // $pageContents.data('boxShadow').top is NaN
+                    $pageContents.data('boxShadow').top = 0;
+                    $pageContents.data('boxShadow').bottom = 0;
+                    $pageContents.data('boxShadow').left = 0;
+                    $pageContents.data('boxShadow').right = 0;
+				}
 				
 				// ...then recalculate the best sizes...
 				$pageContents
