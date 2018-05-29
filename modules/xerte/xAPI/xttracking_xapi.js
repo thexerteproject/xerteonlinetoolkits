@@ -2564,8 +2564,8 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
                 // TODO: do something with error, didn't get statements
                 return;
             }
-            if (res.more && res.more !== "") {
-                ADL.XAPIWrapper.getStatements(null, res.more, getmore);
+            if (body.more && body.more !== "") {
+                ADL.XAPIWrapper.getStatements(null, body.more, getmore);
             } else {
                 callback(stringObjects);
             }

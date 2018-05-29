@@ -498,7 +498,11 @@ function update_site(){
 					 '&admin_password=' + encodeURIComponent(document.getElementById("admin_password").value) +
 					 '&site_xapi_endpoint=' + document.getElementById("site_xapi_endpoint").value +
 					 '&site_xapi_key=' + document.getElementById("site_xapi_key").value +
-					 '&site_xapi_secret=' + document.getElementById("site_xapi_secret").value);
+					 '&site_xapi_secret=' + document.getElementById("site_xapi_secret").value +
+ 					 '&site_xapi_dashboard_enable=' + document.getElementById("site_xapi_dashboard_enable").value +
+					 '&site_xapi_dashboard_nonanonymous=' + document.getElementById("site_xapi_dashboard_nonanonymous").value +
+					 '&xapi_dashboard_minrole=' + document.getElementById("xapi_dashboard_minrole").value +
+					 '&site_xapi_dashboard_period=' + document.getElementById("site_xapi_dashboard_period").value);
 
 	}
 

@@ -631,6 +631,7 @@ function get_project_info($template_id)
     }
     $html .= "</table>";
 
+
     return $html;
 }
 

@@ -37,10 +37,17 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 }
 
 $info = new stdClass();
+$info->template_id = $_POST['template_id'];
 $info->properties = project_info($_POST['template_id']);
 $info->properties .= media_quota_info($_POST['template_id']);
 $info->properties .= access_info($_POST['template_id']);
 $info->properties .= sharing_info($_POST['template_id']);
+
+$statistics_available = statistics_prepare($_POST['template_id']);
+$info->properties .= $statistics_available->info;
+$info->fetch_statistics = $statistics_available->available;
+$info->lrs = $statistics_available->lrs;
+$info->dashboard = $statistics_available->dashboard;
 
 $sql = "SELECT template_id, user_id, firstname, surname, role FROM " .
     " {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .

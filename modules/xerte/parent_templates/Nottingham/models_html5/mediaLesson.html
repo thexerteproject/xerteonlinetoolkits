@@ -62,6 +62,24 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+            $panelHolder = $("#panelHolder");
+            var panels = $panelHolder.find(".panel");
+
+            if (panels.length == 2)
+			{
+                var panelLayout = x_currentPageXML.getAttribute("layout");
+                if (panelLayout == "grid") {
+                    var $mainHolder = $("#x_mainHolder");
+                    // Two panels. If in portrait mode, stack vertical, otherwise show horizontal
+                    // Use mainHolder, because height of panelHolder is not set on touch/mobile devices
+                    if ($mainHolder.width() >= $mainHolder.height()) {
+                        $panelHolder.find(".panel").removeClass("tileV fullW").addClass("tileH fullH");
+                    }
+                    else {
+                        $panelHolder.find(".panel").removeClass("tileH fullH").addClass("tileV fullW");
+                    }
+                }
+            }
 			this.resizePanels();
 		};
 		
@@ -84,7 +102,8 @@
 			$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2);
 			
 			$panelHolder.find(".panel.tileV")
-				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - parseFloat($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseFloat($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2);
+				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - parseFloat($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseFloat($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2)
+				.css('width', '');
 
 			$panelHolder.find(".panel.fullH")
 				.height($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - 5);
@@ -529,7 +548,16 @@
 					}
 					
 				} else if (panelData.length > 1) {
-					$panelHolder.find(".panel").addClass("tileH fullH");
+				    var $mainHolder = $("#x_mainHolder");
+				    // Two panels. If in portrait mode, stack vertical, otherwise show horizontal
+					// Use mainHolder, because height of panelHolder is not set on touch/mobile devices
+				    if ($mainHolder.width() >= $mainHolder.height() ) {
+                        $panelHolder.find(".panel").addClass("tileH fullH");
+                    }
+                    else
+					{
+                        $panelHolder.find(".panel").addClass("tileV fullW");
+					}
 					
 				} else {
 					$panelHolder.find(".panel").addClass("fullH");
