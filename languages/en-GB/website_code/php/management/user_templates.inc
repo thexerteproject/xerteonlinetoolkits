@@ -30,9 +30,9 @@
 
 	define("USERS_MANAGEMENT_TEMPLATE_PROPERTIES", "Properties");				
 
-	define("USERS_MANAGEMENT_TEMPLATE_GIVE", "Give this template to another user");
+	define("USERS_MANAGEMENT_TEMPLATE_GIVE", "Change the owner/creator of this project to the selected user:");
 
-	define("USERS_MANAGEMENT_TEMPLATE_GIVE_BUTTON", "Give template");
+	define("USERS_MANAGEMENT_TEMPLATE_GIVE_BUTTON", "Change ownership");
 
 	define("USERS_MANAGEMENT_TEMPLATE_NONE", "This user has no templates at present");
 

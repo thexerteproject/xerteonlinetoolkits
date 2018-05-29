@@ -165,9 +165,9 @@
 			var $colourChangerOptions = $('#colourChangerOptions');
 			var select = [];
 			for (var i=0; i<this.filterMap.length; i++) {
-				select.push('<label><input type="radio" name="colourChangerRadios" value="' + i + '"');
+				select.push('<div class="optionGroup"><input type="radio" id="option' + i + '" name="colourChangerRadios" value="' + i + '"');
 				if (i == this.selectedIndex) select.push(' checked="checked"');
-				select.push('>' + x_getLangInfo(x_languageData.find("colourChanger").find(this.filterMap[i].name)[0], "label", this.filterMap[i].default) + '</label><br>');
+				select.push('><label for="option' + i + '"><p>' + x_getLangInfo(x_languageData.find("colourChanger").find(this.filterMap[i].name)[0], "label", this.filterMap[i].default) + '</p></label></div>');
 			}
 			$colourChangerOptions.append(select.join(''));
 
@@ -283,6 +283,8 @@
 
 <div id="colourChangerHolder">
 	<p id="p1"></p>
-	<div id="colourChangerOptions"></div>
+	<div id="optionHolder">
+		<div id="colourChangerOptions"></div>
+	</div>
 	<p id="p2"></p>
 </div>

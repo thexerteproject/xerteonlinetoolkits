@@ -1,7 +1,9 @@
 /* columnPage.html */
 	
 	#textHolder {
-		padding-bottom:	10px;
+		padding-bottom:	0.7em;
+		border-bottom: 1px solid #ccc;
+		margin-bottom: 1em;
 	}
 	
 	#pageContents .column {

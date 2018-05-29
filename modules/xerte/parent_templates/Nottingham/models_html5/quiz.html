@@ -161,7 +161,7 @@
 				if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
 					quiz.loadAudio($thisQ.getAttribute("sound"));
 				} else {
-					$("#questionAudio").empty();
+					$("#questionAudio").empty().hide();
 				}
 				
 				var url = $thisQ.getAttribute("image");
@@ -674,13 +674,13 @@
 
 		<div id="infoHolder" class="right">
 		
-			<div id="mainPanel" class="panel qPanel">
+			<div id="mainPanel" class="panel ">
 			
 				<h3 id="qNo" aria-live="polite"></h3>
 				
 				<fieldset class="noStyle">
 				
-					<legend id="qTxt"></legend>
+					<span><legend id="qTxt"></legend></span>
 					
 					<div id="questionAudio"></div>
 					<div id="optionHolder"></div>

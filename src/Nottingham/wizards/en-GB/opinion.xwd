@@ -3,7 +3,7 @@
     <newNodes>
       <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" showfeedback="false" feedback="Provide feedback here"
 	  quesCount="Question {i} of {n}"
-	  onCompletion="You have completed the questionaire" score="You answered {i} / {n}"
+	  onCompletion="You have completed the questionnaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit" 
 	  />]]></opinion>
     </newNodes>

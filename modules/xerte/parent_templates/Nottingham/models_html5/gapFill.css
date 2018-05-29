@@ -58,7 +58,8 @@
 	}
 	
 	#labelHolder {
-		margin-top:	10px;
+		margin-top:	1em;
+		border-top:	1px solid #ccc;
 	}
 	
 	#labelHolder .label {
@@ -78,9 +79,9 @@
 	}
 	
 	#feedbackTxt {
-		margin-top:		20px;
-		padding-top:	20px;
-		border-top:		1px solid gray;
+		margin-top:		1em;
+		padding-top:	1em;
+		border-top:		1px solid #ccc;
 		clear:			both;
 	}
 	

@@ -1290,8 +1290,8 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 		group.append(header);
 		
 		if (index == 0){
-		
-			var outer = $('<div id="collapse' + sectionIndex + '_' + itemIndex + '_' + index + '" class="accordion-body collapse in"/>');
+			
+			var outer = $('<div id="collapse' + sectionIndex + '_' + itemIndex + '_' + index + '" class="accordion-body collapse ' + (node[0].getAttribute('collapse') == 'true' ? "" : "in") + '"/>');
 			
 		} else {
 		

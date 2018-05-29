@@ -28,6 +28,12 @@ li.bullet {
 h3 {
     font-size: $pagecontentslarge;
 }
+h4 {
+    font-size: $pagecontentslarge;
+}
+h5 {
+    font-size: $pagecontentslarge;
+}
 .panelPage h3 {
     font-size: $pagecontentslarge;
 }
@@ -47,6 +53,9 @@ h3 {
     font-size: $pagecontentslarge;
 }
 #optionHolder {
+    font-size: $pagecontentslarge;
+}
+.optionHolder {
     font-size: $pagecontentslarge;
 }
 .sliderHolder {
@@ -156,11 +165,17 @@ h3 {
 .ui-button-text-icon-secondary .ui-button-text {
 	/*padding-right: 1.2em;*/
 }
-
+.caption {
+	font-size: $pagecontentsmedium;
+}
 #resultsHolder div p, #resultsHolder div a {
     font-size: $pagecontentslarge;
 }
 #optionHolder input {
+    width: $pagecontentslarge;
+    height: $pagecontentslarge;
+}
+.optionHolder input {
     width: $pagecontentslarge;
     height: $pagecontentslarge;
 }
@@ -207,6 +222,9 @@ table {
 }
 #thumbBar.large #thumbHolder .playAll h3 {
 	font-size: $perspectiveslarge !important;
+}
+#x_glossaryHover {
+	font-size: $pagecontentsmedium;
 }
 //--end of text size changes-----------------------------------------
 }

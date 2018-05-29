@@ -35,6 +35,10 @@ h3 {
     padding-right: 0.3em;
 }
 
+h4, h5 {
+	font-size: 1em;
+}
+
 ul, ol {
 	overflow: hidden;
 }
@@ -316,38 +320,38 @@ img[align="left"],
 img[style*="float: left"],
 img[style*="float:left"]
 {
-    margin: 5px 25px 0px 0px;
+    margin: 5px 25px 5px 0px;
 }
 
 figure[align="left"],
 figure[style*="float: left"],
 figure[style*="float:left"]
 {
-    margin: 5px 15px 0px 0px;
+    margin: 5px 15px 5px 0px;
 }
 
 span.cke_image_nocaption[align="right"],
 span.cke_image_nocaption[style*="float: right"],
 span.cke_image_nocaption[style*="float:right"]{
-    margin: 5px 0px 0px 15px;
+    margin: 5px 0px 5px 15px;
 }
 
 div[align="right"] figure,
 div[style*="float: right"] figure,
 div[style*="float:right"] figure{
-    margin: 5px 0px 0px 15px;
+    margin: 5px 0px 5px 15px;
 }
 
 img[align="right"],
 img[style*="float: right"],
 img[style*="float:right"]{
-    margin: 5px 0px 0px 15px;
+    margin: 5px 0px 5px 15px;
 }
 
 figure[align="right"],
 figure[style*="float: right"],
 figure[style*="float:right"]{
-    margin: 5px 0px 0px 15px;
+    margin: 5px 0px 5px 15px;
 }
 
 img.centre {

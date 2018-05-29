@@ -5,7 +5,12 @@
 	}
 	
 	#optionHolder {
-		margin-top:	15px;
+		margin-top:	1em;
+	}
+	
+	.optionGroup {
+		padding-top: 5px;
+		padding-bottom: 5px;
 	}
 	
 	#optionHolder input {
@@ -16,7 +21,7 @@
 	#optionHolder .optionTxt {
 		cursor:			pointer;
 		position:		relative;
-		margin-left:	30px;
+		margin-left:	2em;
 		margin-bottom:	10px;
 		display:		block;
 	}

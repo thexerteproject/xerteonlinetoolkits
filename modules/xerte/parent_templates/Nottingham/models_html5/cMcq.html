@@ -80,22 +80,21 @@
 			$("#question").html(x_addLineBreaks(x_currentPageXML.getAttribute("prompt")));
 			
 			var	$optionHolder = $("#optionHolder"),
-				$option = $optionHolder.find("input"),
-				$optionTxt = $optionHolder.find(".optionTxt");
+				$optionGroup = $optionHolder.find(".optionGroup");
 			
 			if ($(x_currentPageXML).children().length == 0) {
 				$optionHolder.html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
 				$("#confirmBtn").hide();
 			} else {
 				$(x_currentPageXML).children().each(function(i) {
-					var $thisOption, $thisOptionTxt;
+					var $thisOptionGroup, $thisOption, $thisOptionTxt;
 					if (i != 0) {
-						$thisOption = $option.clone().appendTo($optionHolder);
-						$thisOptionTxt = $optionTxt.clone().appendTo($optionHolder);
+						$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
 					} else {
-						$thisOption = $option;
-						$thisOptionTxt = $optionTxt;
+						$thisOptionGroup = $optionGroup;
 					}
+					$thisOption = $thisOptionGroup.find("input");
+					$thisOptionTxt = $thisOptionGroup.find(".optionTxt");
 					
 					var optTxt = this.getAttribute("text");
 					if (x_params.authorSupport == "true") {
@@ -185,8 +184,10 @@
 			<div class="panel">
 				<h3 id="question"></h3>
 				<div id="optionHolder">
-					<input type="radio" name="option" />
-					<label class="optionTxt"></label>
+					<div class="optionGroup">
+						<input type="radio" name="option" />
+						<label class="optionTxt"></label>
+					</div>
 				</div>
 				<button id="confirmBtn"></button>
 				<div id="feedback" class="alert"></div>
