@@ -24,8 +24,12 @@ if(is_numeric($id))
     {
         $xerte_toolkits_site->group = $_REQUEST{'group'};
     }
+    if (isset($_REQUEST['course'])) {
+        $xerte_toolkits_site->course = $_REQUEST['course'];
+    }
 
-	require("play.php");
+
+    require("play.php");
 
 }
 ?>

@@ -77,6 +77,7 @@
             var latest = null;
             var objlabel = null;
             var classnames = [];
+            var classtitles = [];
             var numUserSubmits = 0;
 
             // We assume the data contains identical data sets
@@ -101,6 +102,14 @@
 
                     if(classnames[i] == null) {
                         classnames[i] = obj.graph.classnames[i];
+                    }
+                    if (classtitles[i] == null) {
+                        if (typeof obj.graph.classtitles[i] && obj.graph.classtitles[i] != "") {
+                            classtitles[i] = obj.graph.classtitles[i];
+                        }
+                        else {
+                            classtitles[i] = classnames[i];
+                        }
                     }
                 }
                 var matchactor = false;
@@ -234,7 +243,7 @@
             var myRadarChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: classnames,
+                    labels: classtitles,
                     datasets: datasets
                 },
                 options: {
@@ -257,7 +266,7 @@
                     maintainAspectRatio: false
                 }
             });
-        }
+        };
         this.init = function() {
             var $pageContents = $("#pageContents");
             var id = x_currentPageXML.getAttribute("xerteurl") + x_currentPageXML.getAttribute("xertelo") + '/' + x_currentPageXML.getAttribute("import");

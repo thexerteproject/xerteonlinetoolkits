@@ -1465,6 +1465,10 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 }
 
 function XTSetViewed(page_nr, name, score) {
+    if (isNaN(score) || typeof score != "number")
+    {
+        score = 0.0;
+    }
     if (state.scormmode == 'normal')
     {
         var sit = state.findPage(page_nr);
@@ -1473,6 +1477,45 @@ function XTSetViewed(page_nr, name, score) {
             sit.score = score;
         }
     }
+}
+
+function XThelperConsolidateSegments(videostate)
+{
+    // 1. Sort played segments on start time (first make a copy)
+    var segments = $.extend(true, [], videostate.segments);
+    segments.sort(function(a,b) {return (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0);} );
+    // 2. Combine the segments
+    var csegments = [];
+    var i=0;
+    while(i<segments.length) {
+        var segment = $.extend(true, {}, segments[i]);
+        i++;
+        while (i<segments.length && segment.end >= segments[i].start) {
+            segment.end = segments[i].end;
+            i++;
+        }
+        csegments.push(segment);
+    }
+    return csegments;
+}
+
+function XThelperDetermineProgress(videostate)
+{
+    var csegments = XThelperConsolidateSegments(videostate);
+    var videoseen = 0;
+    for (var i=0; i<csegments.length; i++)
+    {
+        videoseen += csegments[i].end - csegments[i].start;
+    }
+    // normalized between 0 and 1
+    if (!isNaN(videostate.duration) && videostate.duration > 0) {
+        return Math.round(videoseen / videostate.duration * 100.0) / 100.0;
+    }
+    return 0.0;
+}
+
+function XTVideo(page_nr, name, block_name, verb, videostate) {
+    return;
 }
 
 function XTSetPageScore(page_nr, score)

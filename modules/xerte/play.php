@@ -166,6 +166,10 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 {
                     $tracking .= "   var groupname = '" . $xerte_toolkits_site->group . "';\n";
                 }
+                if (isset($xerte_toolkits_site->course))
+                {
+                    $tracking .= "   var coursename = '" . $xerte_toolkits_site->course . "';\n";
+                }
             }
             $tracking .= "</script>\n";
             _debug("Tracking script: " . $tracking);
@@ -216,6 +220,8 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
             $tracking .= "<script type=\"text/javascript\" src=\"$jsfile?version=" . $version . "\"></script>\n";
         }
         if ($tsugi_enabled && $row["tsugi_xapi_enabled"] == 1) {
+            $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapidashboard.min.js?version=" . $version . "\"></script>\n";
+            //$tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapicollection.min.js?version=" . $version . "\"></script>\n";
             $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapiwrapper.min.js?version=" . $version . "\"></script>\n";
         }
         if($tsugi_enabled)
@@ -243,6 +249,10 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 if (isset($xerte_toolkits_site->group))
                 {
                     $tracking .= "   var groupname = '" . $xerte_toolkits_site->group . "';\n";
+                }
+                if (isset($xerte_toolkits_site->course))
+                {
+                    $tracking .= "   var coursename = '" . $xerte_toolkits_site->course . "';\n";
                 }
             }
             $tracking .= "</script>\n";

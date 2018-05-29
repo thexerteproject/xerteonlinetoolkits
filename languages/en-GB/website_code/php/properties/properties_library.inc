@@ -46,6 +46,8 @@
 	define ("PROJECT_INFO_URL", "URL");
 	
 	define ("PROJECT_INFO_EMBEDCODE", "Embed Code");
+
+	define ("PROJECT_STATISTICS_UNAVAILABLE", "xAPI tracking data is unavailable");
 	
 	define ("PROJECT_INFO_MEDIA", "Project size");
 	

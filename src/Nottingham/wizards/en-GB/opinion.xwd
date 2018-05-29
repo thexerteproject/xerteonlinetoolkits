@@ -46,9 +46,10 @@
 
   <opinionClass menuItem="Class">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="C - Tree/Tracking label" wysiwyg="false"/>
+    <title label="Title" type="TextInput" mandatory="true" defaultValue="Title to use in graph" wysiwyg="true" />
 
     <newNodes>
-      <opinionQuestion><![CDATA[<opinionQuestion  name="Q - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer" classWeight="1" interactivity="slider" />]]></opinionQuestion>
+      <opinionQuestion><![CDATA[<opinionQuestion  name="C - Tree/Tracking label" title="Title to use in graph" prompt="Here is a prompt" scale="false" type="Single Answer" classWeight="1" interactivity="slider" />]]></opinionQuestion>
     </newNodes>
   </opinionClass>
 

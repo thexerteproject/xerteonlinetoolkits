@@ -697,12 +697,20 @@
 		this.createDiagram = function()
 		{
 			var classNames = [];
+			var classTitles = [];
 			var classValues = [];
 			var classWeighting = [];
 
 			for(var i = 0; i< diagramLabels.length; i++){
 				var q = diagramLabels[i];
 				classNames[q.parentNode.classId] = q.parentNode.getAttribute("name");
+				if (typeof q.parentNode.getAttribute("title") != "undefined" && q.parentNode.getAttribute("title") != "") {
+                    classTitles[q.parentNode.classId] = q.parentNode.getAttribute("title");
+                }
+                else
+				{
+                    classTitles[q.parentNode.classId] = classNames[q.parentNode.classId];
+				}
 				if(classValues[q.parentNode.classId] != undefined){
                     classValues[q.parentNode.classId] = classValues[q.parentNode.classId] + (diagramAnswers[i]* diagramLabels[i].getAttribute("classWeight"));
                     classWeighting[q.parentNode.classId] = parseInt(classWeighting[q.parentNode.classId]) + parseInt(diagramLabels[i].getAttribute("classWeight"));
@@ -719,6 +727,7 @@
 			JSONGraph = {
 				label: x_currentPageXML.getAttribute("name"),
 				classnames: classNames,
+				classtitles: classTitles,
 				classvalues: classValues
 			};
 
@@ -741,7 +750,7 @@
 			var myRadarChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: classNames,
+                    labels: classTitles,
                     datasets: [{
 						label: x_currentPageXML.getAttribute("name"),
                         data: classValues,

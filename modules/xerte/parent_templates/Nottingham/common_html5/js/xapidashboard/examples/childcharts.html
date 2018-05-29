@@ -1,0 +1,202 @@
+<html>
+<head>
+	<title>xAPI Dashboard</title>
+	<link rel='stylesheet' href='../lib/nv.d3.css'></link>
+	<!--<script type="text/javascript" src="dist/xapidashboard.min.js"></script>-->
+	
+	<script type="text/javascript" src="../lib/d3.v3.js" charset="utf-8"></script>
+	<script type="text/javascript" src="../lib/nv.d3.js"></script>
+	<script type="text/javascript" src="../lib/xapiwrapper.min.js"></script>
+	<script type="text/javascript" src="../src/chart.js"></script>
+	<script type="text/javascript" src="../src/dashboard.js"></script>
+	<script type="text/javascript" src="../src/xapicollection.js"></script>
+	
+	<script src='../extra/gen-lrs-data.js'></script>
+</head>
+<body>
+	<style>
+		.nv-axislabel {
+			font-size: 18px;
+		}
+		#main{
+			width: 100%;
+		}
+		svg{
+			width: 50%;
+			height: 50%;
+			float:left;
+			clear: left;
+		}
+		
+		#svg{
+			width: 65%;
+			height: 55%;
+			margin: 0 auto;
+			float: none;
+			
+		}
+		
+		#svg2, #table, #table2{
+			width: 40%;
+			float: right;
+			clear:right;
+			text-align:center;
+			min-height: 500px;
+		}
+		
+		#children{
+			width: 100%;
+			clear:both;
+			margin-top: -50px;
+			padding: 70px 0;
+		}
+	</style>
+	<div id="main">
+		<svg id="svg"></svg>
+	</div>
+	<div id="children">
+		<h2 style="text-align:center;"></h2>
+		
+		<svg id="svg5"></svg>
+		<div id="table2"></div>
+		
+		<svg id="svg3"></svg>
+		<svg id="svg2"></svg>
+		
+		<svg id="svg4"></svg>
+		<div id="table"></div>
+	</div>
+
+	<script type="text/javascript">
+		//To-do: add comments
+	
+		var wrapper = new XAPIWrapper({"endpoint" : 'https://lrs.adlnet.gov/xAPI/'});
+		var dash = new ADL.XAPIDashboard('#svg');
+		var saveTest = '', scoreArr, totalStudents = 30;
+		
+		dash.addStatements(window.statements);
+		
+		var minMaxAverage = dash.createMultiBarChart({
+			pre: function(data){
+				return data.where("result.score.raw != null").orderBy("object.definition.name");
+			},
+			aggregate: ADL.multiAggregate("result.score.raw", ADL.min, ADL.average, ADL.max),
+			groupBy:  'object.definition.name',
+			customize: function(nvd3Chart){
+				nvd3Chart.forceY([0, 120]);
+				nvd3Chart.yAxis.axisLabel("Grade");			
+			}
+		});
+
+		var studentAnswersTable = dash.createTable({
+			container: '#table',
+			groupBy: 'object.definition.name',
+			pre: function(data, event){
+				data.where('actor.name = "' + event.in + '"');
+			},
+			aggregate: ADL.select('result.success'),
+			post: function(data){
+				//A little postprocessing to remove elements that are not from current test
+				//This will eventually be handled by using 'LIKE' (or an arbitrary regex) in where
+				var newArr = [];
+				for(var i = 0; i < data.length; i++){
+					if(data[i].in && data[i].in.indexOf(saveTest) >= 0 && data[i].out != null)
+						newArr.push(data[i]);
+				}
+				newArr.reverse();
+				return newArr;
+			}
+		});
+
+		var studentsInRange = dash.createBarChart({
+			container: "#svg4",
+			groupBy: 'actor.name',
+			pre: function(data, event){
+				scoreArr = event.in.split('-');
+				return data.where('result.score.raw >= '+scoreArr[0]+' and result.score.raw < '+scoreArr[1]+' and result.score.raw != null and object.definition.name = "' + saveTest + '"')
+					.orderBy('result.score.raw', 'desc');
+			},
+			aggregate: ADL.select('result.score.raw'),
+			customize: function(nvd3Chart, event){
+				nvd3Chart.xAxis.rotateLabels(45).axisLabel("Student");
+				nvd3Chart.yAxis.axisLabel("Grade");
+				nvd3Chart.forceY([scoreArr[0] - 5, scoreArr[1]]);
+			},
+			child: studentAnswersTable
+		});
+		
+		var incorrectStudentsTable = dash.createTable({
+			groupBy: 'actor.name',
+			pre: function(data, event){
+				data.where('result.success = false and object.definition.name = "' + event.in + '"').orderBy("actor.name");
+			},
+			aggregate: ADL.select("actor.name"),
+			container: '#table2'
+		});
+		
+		var incorrectChart = dash.createBarChart({
+			pre: function(data, event){
+				saveTest = event.in;
+				data.where('result.success = false and context.contextActivities.parent.0.id = /'+saveTest+'$/');
+			},
+			aggregate: ADL.count(),
+			groupBy: 'object.definition.name',
+			post: function(data){
+				data.orderBy('out', 'desc').slice(0, 10);
+			},
+			customize: function(nvd3Chart){
+				nvd3Chart.forceY([0, totalStudents]);
+				nvd3Chart.xAxis.rotateLabels(45).axisLabel("Question");
+				nvd3Chart.yAxis.axisLabel("% Incorrect");
+				ADL.$('h2').textContent = saveTest.charAt(0).toUpperCase() + saveTest.substr(1, saveTest.length) + ' Data';
+			},
+			container: '#svg5',
+			child: incorrectStudentsTable
+		});
+		
+		var scoreRanges = dash.createBarChart({
+			container: "#svg3",
+			groupBy: "result.score.raw",
+			range: {start: 30, end: 100, increment: 10},
+			pre: function(data, event){
+				return data.where('result.score.raw != null and object.definition.name = "' + saveTest + '"');
+			},
+			aggregate: ADL.count(),
+			post: function(data){
+				data.contents.map(function(el){
+					el.out *= 1/totalStudents * 100;
+				});
+			},
+			customize: function(nvd3Chart, event){
+				nvd3Chart.xAxis.rotateLabels(45).axisLabel("Grade Range");
+				nvd3Chart.yAxis.axisLabel("% of Class");
+			},
+			child: studentsInRange
+		});
+		
+		var scoreRangesPie = dash.createPieChart({
+			container: "#svg2",
+			groupBy: "result.score.raw",
+			range: {start: 30, end: 100, increment: 10},
+			pre: function(data, event){
+				return data.where('result.score.raw != null and object.definition.name = "' + event.in + '"');
+			},
+			aggregate: ADL.count(),
+			customize: function(chart){ chart.height(450).width(500); },
+			child: studentsInRange
+		});
+
+		minMaxAverage.addChild([incorrectChart, scoreRanges, scoreRangesPie]);
+		minMaxAverage.draw();		
+
+		/*if( window.statements ){
+			dash.addStatements(window.statements);
+			window.statements = null;
+			generateGraphs();
+		}
+		else {
+			dash.fetchAllStatements({'since': new Date(Date.now() - set.day * 30).toISOString()}, wrapper, generateGraphs);
+		}*/
+	</script>
+</body>
+</html>
