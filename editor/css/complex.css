@@ -115,7 +115,7 @@ td {
 		vertical-align: top;
 	}
 
-input.media
+input.media, input.date
 {
     padding: 4px;
     border: 1px solid lightgray;
@@ -825,6 +825,10 @@ td.flashonly, td.deprecated{
 
 }
 
+.media_container table tr td:first-child {
+	padding-left: 0;
+}
+
 .clickableHotspot
 {
     position: relative;
@@ -1025,6 +1029,28 @@ div.theme_description
 	width: 100%;
 	margin-top:3px;
 }
+
+.ui-datepicker {
+	font-size: 0.9em;
+	color: #333;
+}
+
+.ui-datepicker .ui-widget-header, .ui-datepicker .ui-widget-header a {
+	color: #333;
+}
+
+.ui-datepicker th {
+	font-weight: normal;
+}
+
+.ui-datepicker .ui-icon.ui-icon-circle-triangle-e {
+	background-position: -32px -16px;
+}
+
+.ui-datepicker .ui-icon.ui-icon-circle-triangle-w {
+	background-position: -96px -16px;
+}
+
 /* start of xertecss.css
 
 body {background: #b3b3b5; padding-bottom: 30px;}

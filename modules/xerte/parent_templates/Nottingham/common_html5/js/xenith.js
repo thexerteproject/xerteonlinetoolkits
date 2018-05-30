@@ -163,12 +163,110 @@ x_projectDataLoaded = function(xmlData) {
     for (i = 0, len = xmlData[0].attributes.length; i < len; i++) {
         x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
     }
+	
+	// author support should only work when previewed (not play link)
+	if (x_params.authorSupport == "true") {
+		if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") == -1) {
+			x_params.authorSupport = "false";
+		}
+	}
 
     x_pages = xmlData.children();
 	var pageToHide = [];
 	var currActPage = 0;
     x_pages.each(function (i) {
-		if ($(this)[0].getAttribute("hidePage") != "true" || (x_params.authorSupport == "true" && window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1)) {
+		// work out whether the page is hidden or not - can be simply hidden or hidden between specific dates/times
+		var hidePage = $(this)[0].getAttribute("hidePage") == "true" ? true : false;
+		if (hidePage == true) {
+			// get current date/time according to browser
+			var now = new Date();
+			var dayNow = now.getDate(),
+				monthNow = now.getMonth()+1,
+				yearNow = now.getFullYear(),
+				hourNow = String(now.getHours()),
+				minuteNow = String(now.getMinutes());
+			var timeNow = Number(hourNow + (minuteNow.length == 1 ? '0' : '') + minuteNow);
+			
+			// functions to get hide on/until date/times from xml
+			var hideOn, hideUntil,
+				hideOnString = '', hideUntilString = '';
+			var getDateInfo = function(dmy, hm) {
+				// ** need to check these dates/times are valid values
+				dmy = dmy.split('/');
+				var day = Number(dmy[0]),
+					month = Number(dmy[1]),
+					year = Number(dmy[2]),
+					time = 0; // use midnight if no time is given
+				
+				if (hm != undefined && hm != '') {
+					var hm = hm.split(':');
+					var hour = hm[0],
+						minute = hm[1];
+					time = Number(hour + (minute.length == 1 ? '0' : '') + minute);
+				}
+				
+				return {day:day, month:month, year:year, time:time};
+			}
+			
+			var getFullDate = function(info) {
+				return Number(info.year + (info.month.length == 1 ? '0' : '') + info.month + (info.day.length == 1 ? '0' : '') + info.day + (info.time.length == 3 ? '0' : '') + info.time);
+			}
+			
+			// is it hidden from a certain date? if so, have we passed that date/time?
+			if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
+				hideOn = getDateInfo($(this)[0].getAttribute("hideOnDate"), $(this)[0].getAttribute("hideOnTime"));
+				
+				if (hideOn.year > yearNow || (hideOn.year == yearNow && hideOn.month > monthNow) || (hideOn.year == yearNow && hideOn.month == monthNow && hideOn.day > dayNow) || (hideOn.year == yearNow && hideOn.month == monthNow && hideOn.day == dayNow && hideOn.time > timeNow)) {
+					hidePage = false;
+				}
+				
+				hideOnString = '{from}: ' + $(this)[0].getAttribute("hideOnDate") + ' ' + $(this)[0].getAttribute("hideOnTime");
+			}
+			
+			// is it hidden until a certain date? if so, have we passed that date/time?
+			if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
+				hideUntil = getDateInfo($(this)[0].getAttribute("hideUntilDate"), $(this)[0].getAttribute("hideUntilTime"));
+				
+				// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
+				var skip = false;
+				if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
+					if (hidePage == false) {
+						hidePage = true;
+					} else {
+						skip = true;
+					}
+				}
+				
+				if (skip != true && hidePage == true) {
+					if (hideUntil.year < yearNow || (hideUntil.year == yearNow && hideUntil.month < monthNow) || (hideUntil.year == yearNow && hideUntil.month == monthNow && hideUntil.day < dayNow) || (hideUntil.year == yearNow && hideUntil.month == monthNow && hideUntil.day == dayNow && hideUntil.time <= timeNow)) {
+						hidePage = false;
+					}
+				}
+				
+				hideUntilString = '{until}: ' + $(this)[0].getAttribute("hideOnDate") + ' ' + $(this)[0].getAttribute("hideUntilTime");
+			}
+			
+			// language data hasn't been sorted yet so temporarily just store the attribute name of where we can later get the language we need
+			var infoString = '';
+			if (hideOnString != '') {
+				infoString += '(' + hideOnString;
+			}
+			if (hideUntilString != '') {
+				if (infoString == '') { infoString += '('; } else { infoString += ' / '; }
+				infoString += hideUntilString;
+			}
+			if (infoString != '') { infoString += ')'; }
+			
+			if (hidePage == true) {
+				infoString = '{hidden} ' + infoString;
+			} else {
+				infoString = '{shown} ' + infoString;
+			}
+			
+			$(this)[0].setAttribute("hidePageInfo", infoString);
+		}
+		
+		if (hidePage == false || x_params.authorSupport == "true") {
 			var linkID = $(this)[0].getAttribute("linkID"),
 				pageID = $(this)[0].getAttribute("pageID"),
 				page = {type: $(this)[0].nodeName, built: false};
@@ -481,15 +579,9 @@ function x_setUp() {
 		
 		$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
 		
-		
-		// author support should only work in preview mode (not play)
 		if (x_params.authorSupport == "true") {
-			if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") == -1) {
-				x_params.authorSupport = "false";
-			} else {
-				var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
-				$x_headerBlock.prepend('<div id="x_authorSupportMsg" class="alert"><p>' + msg + '</p></div>');
-			}
+			var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
+			$x_headerBlock.prepend('<div id="x_authorSupportMsg" class="alert"><p>' + msg + '</p></div>');
 		}
 		
 		// calculate author set variables
@@ -1560,7 +1652,17 @@ function x_changePageStep5(x_gotoPage) {
 			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", "") + '</p>');
 		}
 		
-		var extraTitle = x_currentPageXML.getAttribute("hidePage") == "true" ? ' <span class="alert">' + (x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") : "This page will be hidden in live projects") + '</span>' : '';
+		var extraTitle = "";
+		if (x_params.authorSupport == "true" && x_currentPageXML.getAttribute("hidePage") == "true") {
+			// sort the string - language data wasn't available when hidePageInfo was created
+			var str = x_currentPageXML.getAttribute("hidePageInfo")
+				.replace('{from}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "from", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "from", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "from", "") : 'Hide from')
+				.replace('{until}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "until", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "until", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "until", "") : 'Hide until')
+				.replace('{hidden}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "hidden", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "hidden", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "hidden", "") : 'This page is currently hidden in live projects')
+				.replace('{shown}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "shown", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "shown", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "shown", "") : 'This page is currently shown in live projects');
+			
+			extraTitle = ' <span class="alert">' + str + '</span>';
+		}
 		
 		pageTitle = pageTitle + extraTitle;
     }

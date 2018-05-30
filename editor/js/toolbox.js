@@ -2779,6 +2779,48 @@ var EDITOR = (function ($, parent) {
 
                     datagrids.push({id: id, key: key, name: name, options: options});
                     break;
+				case 'datefield':
+                    var id = 'date_' + form_id_offset;
+                    form_id_offset++;
+					
+					// a datepicker with a browse buttons next to it
+                    var td1 = $('<td width="100%">')
+                        .append($('<input>')
+                            .attr('type', "text")
+                            .attr('id', id)
+							.addClass('date')
+                            .change({id:id, key:key, name:name}, function(event)
+							{
+								inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+							})
+							.attr('value', value)
+							.datepicker({
+								showOtherMonths: true,
+								selectOtherMonths: true,
+								dateFormat: 'dd/mm/yy',
+								minDate: 0
+							}));
+					
+                    var td2 = $('<td>');
+					var btnHolder = $('<div style="width:4.2em"></div>').appendTo(td2);
+                    btnHolder.append($('<button>')
+						.attr('id', 'calendar_' + id)
+						.attr('title', language.calendar != undefined ? language.calendar.$tooltip : '')
+						.addClass("xerte_button")
+						.click({id:id, key:key, name:name}, function(event)
+						{
+							td1.datepicker("show");
+						})
+						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-calendar').addClass('xerte-icon')))
+					
+                    html = $('<div>')
+                        .attr('id', 'container_' + id)
+                        .addClass('media_container');
+                    html.append($('<table width="100%">')
+                        .append($('<tr>')
+                            .append(td1)
+                            .append(td2)));
+                    break;
                 case 'drawing': // Not implemented
                     var id = 'drawing_' + form_id_offset;
                     form_id_offset++;
@@ -2793,7 +2835,6 @@ var EDITOR = (function ($, parent) {
                     )
                         .append(language.edit.$label);
                     break;
-                case 'datefield': // Not used??
                 case 'webpage':  //Not used??
                 case 'xerteurl':
                 case 'xertelo':
