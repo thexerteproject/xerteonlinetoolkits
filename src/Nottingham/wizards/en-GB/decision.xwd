@@ -16,6 +16,7 @@
 	
 	<copy label="Copy Overview Option" type="CheckBox" optional="true" defaultValue="true" tooltip="Adds a button to the overview screen that presents users with an easy to copy version of their answers and results."/>
 	<number label="Question Numbering" type="CheckBox" optional="true" defaultValue="true" tooltip="Displays question / step numbers"/>
+	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	
 	<newBtnLabel label="Refresh Button" type="TextInput" wysiwyg="true" language="true"/>
 	<viewThisBtn label="Overview Button" type="TextInput" wysiwyg="true" language="true"/>
