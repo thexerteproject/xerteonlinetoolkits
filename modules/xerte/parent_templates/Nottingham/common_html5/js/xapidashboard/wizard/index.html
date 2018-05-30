@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script type="text/javascript" src="../extra/knockout-3.1.0.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	
+	<script type="text/javascript" src="../lib/d3.v3.js" charset="utf-8"></script>
+	<script type="text/javascript" src="../lib/nv.d3.js"></script>
+	<script type="text/javascript" src="../lib/xapiwrapper.min.js"></script>
+	
+	<script type="text/javascript" src="../src/xapicollection.js"></script>
+	<script type="text/javascript" src="../src/chart.js"></script>
+	<script type="text/javascript" src="../src/dashboard.js"></script>
+	
+	<script type="text/javascript" src="model.js"></script>
+	
+	<link rel='stylesheet' href='../lib/nv.d3.css'></link>
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">	
+	<link rel="stylesheet" href="style.css">
+	<link href="themes/prism.css" rel="stylesheet" />	
+</head>
+<body>
+	<div id="container" >
+		<div class="sidebar">
+			<div class="side-element">
+				<ul data-bind="foreach:lrsList">
+					<li data-bind="text: endpoint"></li>
+						<ul>
+							<li data-bind="text: 'User: ' + user"></li>
+							<li>Pass: xxxxx</li>
+						</ul>					
+				</ul>
+				<button class="btn" data-bind="click:setModalType('Add LRS')" data-toggle="modal" data-target="#myModal">Add LRS</button>
+			</div>
+			<div class="side-element">
+				<ul data-bind="foreach:chartList">
+					<li>
+						<a href="#" data-bind="text: title"></a>
+					</li>
+				</ul>
+				<button class="btn" data-bind="click:setModalType('Add Chart'), visible: lrsList().length>0" data-toggle="modal" data-target="#myModal">New Chart</button>
+			</div>
+		</div>
+		<div class="main">
+		
+			<div id='graphContainer' data-bind="with:mainObject">
+				<div id='verbs'>
+					<h1 data-bind="text:title"></h1>
+					<svg></svg>
+				</div>
+			</div>
+			<div class="chart-footer">
+				<div data-bind="if:mainObject()">
+					<div class="col-md-3">
+						
+						<div class="single-option">
+							<span>Group field:</span><input type="text" data-bind="value:groupBy" /><br/>
+							<a href="#" data-bind="click:setModalType('Sample Statement')" data-toggle="modal" data-target="#myModal">Choose from sample statement</a>
+						</div>
+						<div class="single-option">
+							<span>Aggregation type:</span>
+							<select data-bind="value:aggregationType">
+								<option value="count">Count</option>
+								<option value="accumulate">Accumulate</option>
+								<option value="average">Average</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-3">
+						
+						Testing width
+						
+					</div>
+					<div class="col-md-3">
+						
+						Testing width
+						
+					</div>
+					<div class="col-md-3">
+						
+						Testing width
+						
+					</div>
+				</div>
+				<div data-bind="if:!mainObject()">
+					<h3 class="default-header">Choose an LRS and chart to begin</h3>
+				</div>
+			</div>	
+		</div>	
+	
+	</div>
+	
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h4 class="modal-title" id="myModalLabel" data-bind="text:currentModalType"></h4>
+		  </div>
+		  <div class="modal-body">
+				<!--ko if: currentModalType() == "Add LRS" -->
+					<input type="text" placeholder="End point" data-bind="value:lrsAddOpts.endpoint" /><br/>
+					<input type="text" placeholder="Username" data-bind="value:lrsAddOpts.user" /><br/>
+					<input type="password" placeholder="Password" data-bind="value:lrsAddOpts.password" /><br/>
+				<!-- /ko -->
+				<!--ko if: currentModalType() == "Add Chart" -->
+					<input type="text" placeholder="Title" data-bind="value:chartAddOpts.title" /><br/>
+					<select type="text" data-bind="value:chartAddOpts.type">
+						<option selected disabled class="placeholder">Chart type</option>
+						<option value="bar">Bar chart</option>
+						<option value="line">Line chart</option>
+					</select>
+					<br/>
+					<select type="text" data-bind="value:chartAddOpts.lrs, options: getEndpointNames(), optionsCaption: 'Choose an LRS' ">
+					</select><br/>
+				<!-- /ko -->
+				<!--ko if: currentModalType() == "Sample Statement" -->
+					<pre><code class="language-javascript" id="statement-code" data-bind="text:sampleStatement"></code></pre>
+				<!-- /ko -->
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary" data-bind="click:modalSaveClick">Save changes</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<script src="prism.js" data-manual></script>
+</body>
+</html>

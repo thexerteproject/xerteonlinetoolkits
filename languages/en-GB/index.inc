@@ -85,3 +85,11 @@ define("INDEX_BUTTON_PUBLISH", "Publish");
 define("INDEX_BUTTON_CANCEL", "Cancel");
 
 define("INDEX_BUTTON_SAVE", "Save");
+
+define("INDEX_XAPI_DASHBOARD_FROM", "From:");
+
+define("INDEX_XAPI_DASHBOARD_UNTIL", "Until:");
+
+define("INDEX_XAPI_DASHBOARD_SHOW_NAMES", "Show names and/or email addresses");
+
+define("INDEX_XAPI_DASHBOARD_CLOSE", "Close dashboard");

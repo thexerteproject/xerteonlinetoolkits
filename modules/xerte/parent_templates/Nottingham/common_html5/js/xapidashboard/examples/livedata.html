@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Live LRS Demo</title>
+		<link rel='stylesheet' href='../lib/nv.d3.css'/>
+		<script type="text/javascript" src="../lib/d3.v3.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../lib/nv.d3.js"></script>
+		<script type="text/javascript" src="../lib/xapiwrapper.min.js"></script>
+		<script type="text/javascript" src="../src/chart.js"></script>
+		<script type="text/javascript" src="../src/dashboard.js"></script>
+		<script type="text/javascript" src="../src/xapicollection.js"></script>
+
+		<style>
+			h2 {
+				text-align: center;
+			}
+			#graphContainer {
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+				align-items: center;
+				flex-wrap: wrap;
+			}
+
+			.container {
+				width: 500px;
+				height: 300px;
+				overflow: hidden;
+			}
+		</style>
+
+	</head>
+	<body>
+		<span id='status'>Fetching data</span>
+		<div id='graphContainer'>
+			<div id='verbs' class='container'>
+				<svg></svg>
+			</div>
+			<div id='lrsActivity' class='container'>
+				<svg></svg>
+			</div>
+			<div id='actorActivity' class='container'>
+				<svg></svg>
+			</div>
+		</div>
+		<script>
+
+			var wrapper = ADL.XAPIWrapper;
+			var dash = new ADL.XAPIDashboard();
+			wrapper.changeConfig({'endpoint': 'https://lrs.adlnet.gov/xAPI/'});
+
+			var handle = setInterval(function(){
+				document.querySelector('span').innerHTML += '.';
+			}, 500);
+
+			var cutoff = new Date(Date.now());
+			cutoff = new Date(cutoff.getFullYear(),cutoff.getMonth(),cutoff.getDate()-30);
+			cutoff = cutoff.toISOString();
+
+			dash.fetchAllStatements({since: cutoff}, wrapper, function()
+			{
+				clearInterval(handle);
+
+				// label for first graph
+				var container = document.querySelector('#verbs');
+				var header = document.createElement('h2');
+				header.innerHTML = 'Verb Popularity Over Last 30 Days';
+				container.insertBefore(header, container.firstChild);
+	
+				// create first graph
+				var verbsChart = dash.createBarChart({
+					container: '#verbs svg',
+					groupBy: 'verb.id',
+					aggregate: ADL.count(),
+					post: function(data){
+						data.orderBy('out','descending').slice(0,10);
+					},
+					customize: function(nvd3chart){
+						nvd3chart.margin({bottom: 150, right: 50});
+						nvd3chart.xAxis.rotateLabels(45);
+						nvd3chart.xAxis.tickFormat(function(label){
+							//var parts = /https?:\/\/.*?(\w+\.\w{2,3}).*(\/.+)$/.exec(label);
+							//return parts.slice(1,3).join('');
+							return /[^\/]+$/.exec(label)[0];
+						});
+					}
+				});
+
+				// draw first graph once it's configured
+				verbsChart.draw();
+
+
+				// label for second graph
+				container = document.querySelector('#lrsActivity');
+				header = document.createElement('h2');
+				header.innerHTML = 'LRS Activity Over Last 30 Days';
+				container.insertBefore(header, container.firstChild);
+	
+				// create second graph
+				var activityChart = dash.createLineChart({
+					container: '#lrsActivity svg',
+					groupBy: 'stored',
+					range: {
+						start: cutoff,
+						end: (new Date(Date.now())).toISOString(),
+						increment: 1000*3600*24
+					},
+					rangeLabel: 'start',
+					aggregate: ADL.count(),
+					post: function(data){
+						data.contents.map(function(el){
+							el.in = Date.parse(el.in);
+						});
+					},
+					customize: function(nvd3chart){
+						nvd3chart.xAxis.tickFormat(function(label){
+							return d3.time.format('%b %d')(new Date(label));
+						});
+					}
+				});
+				activityChart.draw();
+
+
+				// label for third graph
+				container = document.querySelector('#actorActivity');
+				header = document.createElement('h2');
+				header.innerHTML = 'Most Active Actors Over Last 30 Days';
+				container.insertBefore(header, container.firstChild);
+	
+				var actorChart = dash.createBarChart({
+					container: '#actorActivity svg',
+					groupBy: 'actor.mbox',
+					aggregate: ADL.count(),
+					post: function(data){
+						data.orderBy('out', 'descending').slice(0,10);
+					},
+					customize: function(nvd3chart){
+						nvd3chart.xAxis.rotateLabels(45);
+						nvd3chart.xAxis.tickFormat(function(label){
+							return label.slice(7);
+						});
+						nvd3chart.margin({right: 80, bottom: 150});
+					}
+				});
+				actorChart.draw();
+			});
+
+		</script>
+	</body>
+</html>
