@@ -16,6 +16,7 @@
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true" />
 	
     <filename label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
+	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
     <!--<email label="Enable Email Facility" type="Checkbox" defaultValue="true" optional="true"/>-->
 	
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true" />
