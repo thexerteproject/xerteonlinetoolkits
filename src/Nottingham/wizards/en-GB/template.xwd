@@ -908,6 +908,7 @@
 	
 	<copy label="Copy Overview Option" type="CheckBox" optional="true" defaultValue="true" tooltip="Adds a button to the overview screen that presents users with an easy to copy version of their answers and results."/>
 	<number label="Question Numbering" type="CheckBox" optional="true" defaultValue="true" tooltip="Displays question / step numbers"/>
+	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	
 	<newBtnLabel label="Refresh Button" type="TextInput" wysiwyg="true" language="true"/>
 	<viewThisBtn label="Overview Button" type="TextInput" wysiwyg="true" language="true"/>
@@ -1104,17 +1105,18 @@
 	<trackedShowText label="Show Button Text when tracked" type="TextInput" wysiwyg="true" language="true"/>
 	<correctText label="Correct text" type="TextInput" wysiwyg="true" language="true"/>
 	<incorrectText label="Incorrect text" type="TextInput" wysiwyg="true" language="true"/>
-	<showCorrectness label="Mark Answers" type="checkBox" optional="true" defaultValue="false" tooltip="Mark answer as correct or incorrect."/>
 	<nextText label="Next Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	<restartText label="Restart Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	<countText label="Clip {i} of {n}" type="TextInput" wysiwyg="true" language="true"/>
+	
+	<showCorrectness label="Mark Answers" type="checkBox" optional="true" defaultValue="false" tooltip="Mark answer as correct or incorrect."/>
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
 	<tt type="group" label="Timed Text" optional="true">
 		<timedText label="File" type="Media" defaultValue="Select a Timed Text File" optional="true"/>
 		<sound label="Audio File" type="Media" defaultValue="Select an Audio File" optional="true"/>
 	</tt>
-
-    <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 
     <newNodes>
       <nestedDictation><![CDATA[<nestedDictation name="Sentence" prompt="Enter Text Here" audio="Select an Audio File" answer="Enter Answer Here"/>]]></nestedDictation>
@@ -1153,6 +1155,7 @@
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>
 	
     <filename label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
+	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
     <!--<email label="Enable Email Facility" type="Checkbox" defaultValue="true" optional="true"/>-->
 	
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true"/>
@@ -1551,8 +1554,6 @@
 	<align label="Text Align" type="ComboBox" options="Left,Right,Top" data="left,right,top" defaultValue="left" width="100"/>
 	<drag label="Drop Label Action" type="ComboBox" options="Insert,Replace" data="insert,replace"/>
 	
-	<url label="CSV File" type="Media" optional="true"/>
-	
 	<fix type="group" label="Fixed Cells" optional="true">
 		<fixedRows label="Rows" type="TextInput" defaultValue="Enter numbers of any fixed rows here (e.g. 1,3)" optional="true"/>
 		<fixedCols label="Columns" type="TextInput" defaultValue="Enter numbers of any fixed columns here (e.g. 1,3)" optional="true"/>
@@ -1568,7 +1569,9 @@
 	<checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
 
+	<url label="CSV File" type="Media" optional="true"/>
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
   <narrate type="group" label="Narration" optional="true" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -1724,6 +1727,7 @@
 	<highlight label="Underline Text" type="CheckBox"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	
 	<mcqOptions type="group" label="MCQ" optional="true">
 		<mcqType label="Type" options="Highlight One From Group,Highlight Whole Group" type="ComboBox" data="one,all" defaultValue="one" optional="true"/>
@@ -3631,6 +3635,8 @@
 	<incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true"/>
 	
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+	
     <newNodes>
       <sentence><![CDATA[<sentence p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint" name="Sentence" />]]></sentence>
     </newNodes>

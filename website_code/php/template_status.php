@@ -193,6 +193,15 @@ function has_rights_to_this_template($template_id, $user_id){
     return false;
 }
 
+function get_user_access_rights($template_id){
+
+    global $xerte_toolkits_site;
+
+    $row = db_query_one("select role from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id=? AND user_id=?", array($template_id, $_SESSION['toolkits_logon_id']));
+
+    return $row['role'];
+}
+
 /**
  * 
  * Function is user an editor
