@@ -747,7 +747,7 @@ div.ui-layout-center {
     background-image: none;
     background-color: #f0f0f2;
     padding: 10px 5px;
-    height: 35px;
+    height: 56px;
     border-bottom: 1px solid #e0e0e0;
     color: #333;
     /* font-weight: bold; */
@@ -768,7 +768,7 @@ div.ui-layout-center {
     position: relative;
     overflow: hidden;
     white-space: nowrap;
-    height: 40px;
+    height: 47px;
     border-top: 1px solid #777;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
