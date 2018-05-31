@@ -22,7 +22,13 @@
 
 		<name type="TextInput" label="Section Title" wysiwyg="true"/>
 		
-		<hidePage label="Hide Section" type="CheckBox" defaultValue="false" optional="true"/>
+		<hideShow type="group" label="Hide/Show Section" optional="true" tooltip="Hide the section completely or hide/show the section between specified dates" info="Hide this section from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Section' check box must be ticked when using 'From' and/or 'Until' dates.">
+			<hidePage label="Hide Section" type="CheckBox" defaultValue="false" optional="true"/>
+			<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+			<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+			<hideUntilDate label="Until (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+			<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+		</hideShow>
 		
 		<links label="Subsection Links" type="ComboBox" width="80" options="None,Horizontal List,Vertical List" data="none,hlist,vlist" defaultValue="hlist" optional="true" tooltip="Add a list of subsection links below the section title. Only subsections where title isn't hidden will be included."/>
 
