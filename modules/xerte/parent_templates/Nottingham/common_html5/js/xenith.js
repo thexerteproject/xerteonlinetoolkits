@@ -179,71 +179,80 @@ x_projectDataLoaded = function(xmlData) {
 		var hidePage = $(this)[0].getAttribute("hidePage") == "true" ? true : false;
 		if (hidePage == true) {
 			// get current date/time according to browser
-			var now = new Date();
-			var dayNow = now.getDate(),
-				monthNow = now.getMonth()+1,
-				yearNow = now.getFullYear(),
-				hourNow = String(now.getHours()),
-				minuteNow = String(now.getMinutes());
-			var timeNow = Number(hourNow + (minuteNow.length == 1 ? '0' : '') + minuteNow);
+			var nowTemp = new Date();
+			var now = {day:nowTemp.getDate(), month:nowTemp.getMonth()+1, year:nowTemp.getFullYear(), time:Number(String(nowTemp.getHours()) + (String(nowTemp.getMinutes()) < 10 ? '0' : '') + String(nowTemp.getMinutes()))};
 			
 			// functions to get hide on/until date/times from xml
 			var hideOn, hideUntil,
 				hideOnString = '', hideUntilString = '';
 			var getDateInfo = function(dmy, hm) {
-				// ** need to check these dates/times are valid values
+				// some basic checks of whether values are valid & then splits the data into time/day/month/year
 				dmy = dmy.split('/');
-				var day = Number(dmy[0]),
-					month = Number(dmy[1]),
-					year = Number(dmy[2]),
-					time = 0; // use midnight if no time is given
-				
-				if (hm != undefined && hm != '') {
-					var hm = hm.split(':');
-					var hour = hm[0],
-						minute = hm[1];
-					time = Number(hour + (minute.length == 1 ? '0' : '') + minute);
+				if (dmy.length != 3) {
+					return false;
+				} else {
+					var day = Math.min(Number(dmy[0]), 31),
+						month = Math.min(Number(dmy[1]), 12),
+						year = Math.max(Number(dmy[2]), 2017),
+						time = 0; // use midnight if no time is given
+					
+					if (hm != undefined && hm.trim() != '') {
+						var hm = hm.split(':');
+						if (hm.length == 2) {
+							var hour = Math.min(Number(hm[0]), 23),
+								minute = Math.min(Number(hm[1]), 59);
+							time = Number(String(hour) + (minute < 10 ? '0' : '') + String(minute));
+						}
+					}
+					
+					return {day:day, month:month, year:year, time:time};
 				}
-				
-				return {day:day, month:month, year:year, time:time};
 			}
 			
 			var getFullDate = function(info) {
-				return Number(info.year + (info.month.length == 1 ? '0' : '') + info.month + (info.day.length == 1 ? '0' : '') + info.day + (info.time.length == 3 ? '0' : '') + info.time);
+				var timeZero = '';
+				for (var i=0; i<4-String(info.time).length; i++) {
+					timeZero += '0';
+				}
+				return Number(String(info.year) + (info.month < 10 ? '0' : '') + String(info.month) + (info.day < 10 ? '0' : '') + String(info.day) + timeZero + String(info.time));
 			}
 			
 			// is it hidden from a certain date? if so, have we passed that date/time?
 			if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
 				hideOn = getDateInfo($(this)[0].getAttribute("hideOnDate"), $(this)[0].getAttribute("hideOnTime"));
 				
-				if (hideOn.year > yearNow || (hideOn.year == yearNow && hideOn.month > monthNow) || (hideOn.year == yearNow && hideOn.month == monthNow && hideOn.day > dayNow) || (hideOn.year == yearNow && hideOn.month == monthNow && hideOn.day == dayNow && hideOn.time > timeNow)) {
-					hidePage = false;
+				if (hideOn != false) {
+					if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
+						hidePage = false;
+					}
+					
+					hideOnString = '{from}: ' + $(this)[0].getAttribute("hideOnDate") + ' ' + $(this)[0].getAttribute("hideOnTime");
 				}
-				
-				hideOnString = '{from}: ' + $(this)[0].getAttribute("hideOnDate") + ' ' + $(this)[0].getAttribute("hideOnTime");
 			}
 			
 			// is it hidden until a certain date? if so, have we passed that date/time?
 			if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
 				hideUntil = getDateInfo($(this)[0].getAttribute("hideUntilDate"), $(this)[0].getAttribute("hideUntilTime"));
 				
-				// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
-				var skip = false;
-				if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
-					if (hidePage == false) {
-						hidePage = true;
-					} else {
-						skip = true;
+				if (hideUntil != false) {
+					// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
+					var skip = false;
+					if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
+						if (hidePage == false) {
+							hidePage = true;
+						} else {
+							skip = true;
+						}
 					}
-				}
-				
-				if (skip != true && hidePage == true) {
-					if (hideUntil.year < yearNow || (hideUntil.year == yearNow && hideUntil.month < monthNow) || (hideUntil.year == yearNow && hideUntil.month == monthNow && hideUntil.day < dayNow) || (hideUntil.year == yearNow && hideUntil.month == monthNow && hideUntil.day == dayNow && hideUntil.time <= timeNow)) {
-						hidePage = false;
+					
+					if (skip != true && hidePage == true) {
+						if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+							hidePage = false;
+						}
 					}
+					
+					hideUntilString = '{until}: ' + $(this)[0].getAttribute("hideUntilDate") + ' ' + $(this)[0].getAttribute("hideUntilTime");
 				}
-				
-				hideUntilString = '{until}: ' + $(this)[0].getAttribute("hideOnDate") + ' ' + $(this)[0].getAttribute("hideUntilTime");
 			}
 			
 			// language data hasn't been sorted yet so temporarily just store the attribute name of where we can later get the language we need
@@ -252,7 +261,7 @@ x_projectDataLoaded = function(xmlData) {
 				infoString += '(' + hideOnString;
 			}
 			if (hideUntilString != '') {
-				if (infoString == '') { infoString += '('; } else { infoString += ' / '; }
+				if (infoString == '') { infoString += '('; } else { infoString += ' & '; }
 				infoString += hideUntilString;
 			}
 			if (infoString != '') { infoString += ')'; }

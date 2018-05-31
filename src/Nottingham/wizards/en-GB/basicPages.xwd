@@ -13,12 +13,12 @@
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns>
 	
-	<hideShow type="group" label="Hide/Show Page" optional="true" tooltip="GIVE A DESCRIPTION HERE...">
+	<hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates.">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
-		<hideOnDate label="Hide From" type="DateField" defaultValue="" optional="true"/>
-		<hideOnTime label="Hide From (Time)" type="TextInput" defaultValue="0:00" optional="true"/>
-		<hideUntilDate label="Hide Until" type="DateField" defaultValue="" optional="true"/>
-		<hideUntilTime label="Hide Until (Time)" type="TextInput" defaultValue="0:00" optional="true"/>
+		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+		<hideUntilDate label="Until (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow>
 	
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" deprecated="This property is deprecated"/>
