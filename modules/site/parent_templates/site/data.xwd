@@ -77,7 +77,7 @@
 		<headerRepeat type="ComboBox" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" label="Image Repeat" defaultValue="repeat" width="175"/>
 		<headerColour type="ColourPicker" optional="true" label="Background Colour"/>
 		<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
-	</headerGroup><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</headerGroup><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -87,7 +87,7 @@
 
 		<name type="TextInput" label="Section Title" wysiwyg="true"/>
 		
-		<hideShow type="group" label="Hide/Show Section" optional="true" tooltip="Hide the section completely or hide/show the section between specified dates" info="Hide this section from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Section' check box must be ticked when using 'From' and/or 'Until' dates.">
+		<hideShow type="group" label="Hide/Show Section" optional="true" tooltip="Hide the section completely or hide/show the section between specified dates" info="Hide this section from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
 			<hidePage label="Hide Section" type="CheckBox" defaultValue="false" optional="true"/>
 			<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 			<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>

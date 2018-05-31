@@ -8,7 +8,7 @@
 		<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
 	</headerGroup>
 	
-	<hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates.">
+	<hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>

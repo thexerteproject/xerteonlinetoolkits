@@ -188,7 +188,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -224,7 +224,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -273,7 +273,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -343,7 +343,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -393,7 +393,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -450,7 +450,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -483,7 +483,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -520,7 +520,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -559,7 +559,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -597,7 +597,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -644,7 +644,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -678,7 +678,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -720,7 +720,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -769,7 +769,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -809,7 +809,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -857,7 +857,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -918,7 +918,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -989,7 +989,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1049,7 +1049,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1151,7 +1151,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1196,7 +1196,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1256,7 +1256,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1310,7 +1310,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1448,7 +1448,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1485,7 +1485,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1526,7 +1526,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1573,7 +1573,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1611,7 +1611,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1674,7 +1674,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1706,7 +1706,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1761,7 +1761,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1798,7 +1798,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1842,7 +1842,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1873,7 +1873,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1912,7 +1912,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -1980,7 +1980,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2045,7 +2045,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2098,7 +2098,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2148,7 +2148,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2189,7 +2189,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2229,7 +2229,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2275,7 +2275,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2314,7 +2314,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2369,7 +2369,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2416,7 +2416,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2732,7 +2732,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2796,7 +2796,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2830,7 +2830,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2870,7 +2870,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2909,7 +2909,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -2956,7 +2956,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3005,7 +3005,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3062,7 +3062,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3123,7 +3123,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3158,7 +3158,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3213,7 +3213,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3328,7 +3328,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3377,7 +3377,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3439,7 +3439,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3472,7 +3472,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3537,7 +3537,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3705,7 +3705,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3742,7 +3742,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3775,7 +3775,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3813,7 +3813,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3850,7 +3850,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3899,7 +3899,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3945,7 +3945,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -3977,7 +3977,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4018,7 +4018,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4069,7 +4069,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4113,7 +4113,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4156,7 +4156,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4195,7 +4195,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4255,7 +4255,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4304,7 +4304,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4342,7 +4342,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4387,7 +4387,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4432,7 +4432,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4478,7 +4478,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4511,7 +4511,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4547,7 +4547,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -4582,7 +4582,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available. The 'Hide Page' check box must be ticked when using 'From' and/or 'Until' dates." common="true">
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
