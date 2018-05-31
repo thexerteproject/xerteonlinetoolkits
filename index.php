@@ -81,14 +81,14 @@ $version = getVersion();
     <script type="text/javascript" src="editor/js/vendor/jstree.js?version=<?php echo $version;?>"></script>
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+    <link href="website_code/styles/bootstrap.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/nv.d3.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/xapi_dashboard.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
     <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
     <link href="website_code/styles/folder_popup.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/jquery-ui-layout.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/frontpage.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
-    <link href="website_code/styles/nv.d3.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
-    <link href="website_code/styles/bootstrap.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
-    <link href="website_code/styles/xapi_dashboard.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>">
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>

@@ -684,6 +684,9 @@ div#workspace{
     width:30%;
     float:left;
 }
+#project_information textarea {
+	width: 96%;
+}
 
 .error {
     color: red;
