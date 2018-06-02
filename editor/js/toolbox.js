@@ -467,11 +467,15 @@ var EDITOR = (function ($, parent) {
             if (options.deprecated) {
                 var td = $('<td>')
                     .addClass("deprecated")
-                    .append($('<img>')
-                        .attr('id', 'deprbtn_' + name)
-                        .attr('src', 'editor/img/deprecated.png')
-                        .attr('title', options.deprecated)
-                        .addClass("deprecated"));
+					.append($('<i>')
+						.attr('id', 'deprbtn_' + name)
+                        .addClass('fa')
+                        .addClass('fa-exclamation-triangle')
+                        .addClass("xerte-icon")
+						.attr('title', options.deprecated)
+                        .height(14)
+                        .addClass("deprecated deprecatedIcon"));
+				
                 if (options.optional == 'true' && groupChild == false) {
                     var opt = $('<i>').attr('id', 'optbtn_' + name)
                         .addClass('fa')
@@ -533,7 +537,13 @@ var EDITOR = (function ($, parent) {
                 tdlabel.addClass("wizarddeprecated")
             }
             tdlabel.append(label);
-
+			
+			if (options.tooltip) {
+				$('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
+					.attr('title', options.tooltip)
+					.appendTo(tdlabel);
+			}
+			
             tr.append(tdlabel)
                 .append($('<td>')
                     .addClass("wizardvalue")
@@ -610,10 +620,16 @@ var EDITOR = (function ($, parent) {
 				.addClass("wizardattribute");
 		}
 		
-		$('<i class="fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
+		if (options.tooltip) {
+			$('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
+				.attr('title', options.tooltip)
+				.appendTo(legend.find('.legend_label'));
+		}
+		
+		$('<i class="minMaxIcon fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
 		
 		legend.find('.legend_label').click(function() {
-			var $icon = $(this).find('i.fa');
+			var $icon = $(this).find('i.minMaxIcon');
 			var $fieldset = $(this).parents('fieldset');
 			
 			if ($fieldset.find('.table_holder').is(':visible')) {

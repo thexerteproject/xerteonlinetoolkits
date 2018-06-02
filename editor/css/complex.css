@@ -725,6 +725,10 @@ td.flashonly, td.deprecated{
     width: 32px;
 }
 
+.deprecated .fa {
+	display: inline;
+}
+
 #optionalParams.content{
     padding: 2px;
 
@@ -981,10 +985,19 @@ div.wizardvalue_inner {
 	color:#a0a0a0;
 }
 
-.deprecatedIcon
+.deprecatedIcon, .tooltipIcon
 {
 	margin-right: 5px;
 	color: #ff8c00;
+}
+
+#optionalParams button.disabled .tooltipIcon {
+	display: none;
+}
+
+i.tooltipIcon {
+	padding-left: 6px;
+	padding-right: 3px;
 }
 
 .hiddenIcon {

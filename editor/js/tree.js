@@ -680,7 +680,7 @@ var EDITOR = (function ($, parent) {
             .attr('src', 'editor/img/flashonly.png')
             .attr('alt', 'Flash only attribute');
         var flashonlytxt = '<img class="flash-icon" src="editor/img/flashonly.png" alt="Flash only attribute">';
-        var tooltipavailable = '<i class="deprecatedIcon iconEnabled fa fa-info-circle"></i>';
+        var tooltipavailable = '<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>';
 		
 		var optGroups = [];
 		
@@ -789,8 +789,13 @@ var EDITOR = (function ($, parent) {
                     }
                     if (tooltip_txt.length > 0)
                     {
-                        label += ' ' + tooltipavailable;
-                        button.attr('title', tooltip_txt);
+						if (button.attr('title') != undefined) {
+							// a tooltip icon has already been added so don't add another - just add to the title text
+							button.attr('title', button.attr('title') + '\n' + tooltip_txt);
+						} else {
+							label += ' ' + tooltipavailable;
+							button.attr('title', tooltip_txt);
+						}
                     }
                 }
                 button.append(label);
