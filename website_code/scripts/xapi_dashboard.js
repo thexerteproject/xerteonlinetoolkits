@@ -296,14 +296,24 @@ xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, in
     var interactionObject = interactions[interactionObjectIndex];
     var html = "Status: " + this.interactionStatus(userdata, interactionObject.url) + "<br>";
     var scores = this.data.getAllInteractionScores(userdata, interactionObject.url);
+    var durations = this.data.getAllDurations(userdata, interactionObject.url);
     var lastAnswer = this.data.getAnswers(userdata, interactionObject.url);
     html += "Number of tries: " + scores.length + "<br>";
     if (scores.length == 1) {
-        html += "Grade: " + Math.round(scores[0] * 1000) / 100 + "<br>";
+        html += "Grade: " + Math.round(scores[0] * 10000) / 100 + " %<br>";
     } else if (scores.length > 1) {
         html += "Average score: " + Math.round(10 * (scores.reduce(function(a, b) {
             return a + b;
         }) / scores.length), 2) + "<br>";
+    }
+    if (durations.length == 1)
+    {
+        html += "Duration: " + Math.round(durations[0] * 100) / 100 + " s<br>";
+    }
+    else if (durations > 1){
+        html += "Average duration: " + Math.round((durations.reduce(function(a, b) {
+            return a + b;
+        }) / durations.length), 2) + " s<br>";
     }
     if (lastAnswer.length > 0) {
         // Format a bit
