@@ -78,7 +78,14 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         //    continue;
         //}
         var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
-        div.append('<h3 class="header">' + learningObjects[learningObjectIndex].name + '</h3>');
+        // Title should go to #dashboard-title if found
+        var titlediv = $("#dashboard-title");
+        if (titlediv.length == 0)
+        {
+            // Not found -> Place in div
+            titlediv = div;
+        }
+        titlediv.html('<h3 class="header">' + learningObjects[learningObjectIndex].name + '</h3>');
         div.append('<table class="table table-hover  table-bordered table-responsive" id="' + learningObjectIndex +
             '"><thead></thead><tbody></tbody></table>');
         div.find("#" + learningObjectIndex + " thead").append("<tr><th>User</th><th>Started</th><th>Completed</th></tr>");
