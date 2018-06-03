@@ -211,9 +211,9 @@ xAPIDashboard.prototype.getExtraUserData = function(div, userdata, obj) {
         statement.result == undefined ||
         statement.result.extensions == undefined || statement.result.extensions["http://xerte.org.uk/xapi/trackingstate"] == undefined) {
         rows = "";
-        rows += "Starting time: " + moment(this.userStartTime(userdata, obj)).format('YYYY-MM-DD HH:mm:ss') + "<br>";
-        rows += "Complete time: " + moment(this.userCompleteTime(userdata, obj)).format('YYYY-MM-DD HH:mm:ss') + "<br>";
-        rows += "Duration: " + this.userDuration(userdata, obj) + "<br>";
+        rows += XAPI_DASHBOARD_STARTINGTIME + " " + moment(this.userStartTime(userdata, obj)).format('YYYY-MM-DD HH:mm:ss') + "<br>";
+        rows += XAPI_DASHBOARD_COMPLETETIME + " " + moment(this.userCompleteTime(userdata, obj)).format('YYYY-MM-DD HH:mm:ss') + "<br>";
+        rows += XAPI_DASHBOARD_DURATION + " " + this.userDuration(userdata, obj) + "<br>";
         div.append(rows);
         return;
     }
@@ -224,7 +224,7 @@ xAPIDashboard.prototype.userStartTime = function(userdata, learningObject) {
     var statements = userdata['statements'];
     var statement = this.data.getStatement(statements, "http://adlnet.gov/expapi/verbs/launched");
     if (statement == undefined) {
-        return " not yet started";
+        return " " + XAPI_DASHBOARD_NOTYETSTARTED;
     }
     return new Date(statement.timestamp);
 };
@@ -233,7 +233,7 @@ xAPIDashboard.prototype.userCompleteTime = function(userdata, learningObject) {
     statements = userdata['statements'];
     statement = this.data.getStatement(statements, "http://adlnet.gov/expapi/verbs/exited");
     if (statement == undefined) {
-        return " not yet finished";
+        return " " + XAPI_DASHBOARD_NOTYETFINISHED;
     }
     return new Date(statement.timestamp);
 }
@@ -243,12 +243,12 @@ xAPIDashboard.prototype.userDuration = function(userdata, learningObject) {
     endTime = this.userCompleteTime(userdata, learningObject);
     time = (endTime - startTime) / 1000;
     if (isNaN(time)) {
-        return "not yet completed";
+        return " " + XAPI_DASHBOARD_NOTYETCOMPLETED;
     }
     if (time > 120) {
-        return Math.round(time / 60) + " minutes";
+        return Math.round(time / 60) + " " + XAPI_DASHBOARD_COMPLETED_UNIT_MINUTES;
     }
-    return Math.round(time) + " seconds";
+    return Math.round(time) + " " + XAPI_DASHBOARD_COMPLETED_UNIT_SECONDS;
 };
 
 xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata, learningObjectIndex, interactionObjectIndex) {
@@ -294,46 +294,52 @@ xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, in
     var learningObject = this.data.getLearningObjects()[learningObjectIndex];
     var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
     var interactionObject = interactions[interactionObjectIndex];
-    var html = "Status: " + this.interactionStatus(userdata, interactionObject.url) + "<br>";
+    var html = XAPI_JOURNEY_POPOVER_STATUS + " " + this.interactionStatus(userdata, interactionObject.url) + "<br>";
     var scores = this.data.getAllInteractionScores(userdata, interactionObject.url);
     var durations = this.data.getAllDurations(userdata, interactionObject.url);
     var lastAnswer = this.data.getAnswers(userdata, interactionObject.url);
-    html += "Number of tries: " + scores.length + "<br>";
+    html += XAPI_JOURNEY_POPOVER_NRTRIES + " " + scores.length + "<br>";
     if (scores.length == 1) {
-        html += "Grade: " + Math.round(scores[0] * 10000) / 100 + " %<br>";
+        html += XAPI_JOURNEY_POPOVER_GRADE + " " + Math.round(scores[0] * 10000) / 100 + "%<br>";
     } else if (scores.length > 1) {
-        html += "Average score: " + Math.round(10 * (scores.reduce(function(a, b) {
+        html += XAPI_JOURNEY_POPOVER_AVGGRADE + " " + Math.round(10 * (scores.reduce(function(a, b) {
             return a + b;
-        }) / scores.length), 2) + "<br>";
+        }) / scores.length), 2) + "%<br>";
     }
     if (durations.length == 1)
     {
-        html += "Duration: " + Math.round(durations[0] * 100) / 100 + " s<br>";
+        html += XAPI_JOURNEY_POPOVER_DURATION + " " + Math.round(durations[0] * 100) / 100 + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
     }
     else if (durations > 1){
-        html += "Average duration: " + Math.round((durations.reduce(function(a, b) {
+        html += XAPI_JOURNEY_POPOVER_AVGDURATION + " " + Math.round((durations.reduce(function(a, b) {
             return a + b;
-        }) / durations.length), 2) + " s<br>";
+        }) / durations.length), 2) + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
     }
     if (lastAnswer.length > 0) {
         // Format a bit
         var lastanswer = lastAnswer[lastAnswer.length - 1];
-        lastanswer = lastanswer.replace(/\[\.\]/g, " -> ");
-        lastanswer = lastanswer.replace(/\[,\]/g, "<br>");
-        html += "Last given answer: " + lastanswer;
+        if (lastanswer.indexOf('[.]') != false || lastanswer.indexOf('[,]') != false) {
+            if (lastanswer.indexOf('[,]') != false)
+            {
+                lastanswer = "<br>&nbsp;    " + lastanswer;
+            }
+            lastanswer = lastanswer.replace(/\[\.\]/g, " <i class=\"fa fa-long-arrow-right\"></i> ");
+            lastanswer = lastanswer.replace(/\[,\]/g, "<br>&nbsp;    ");
+            html += XAPI_JOURNEY_POPOVER_LASTANSWER + " " + lastanswer;
+        }
     }
     return html;
 };
 
 xAPIDashboard.prototype.interactionStatus = function(user, interactionObjectUrl) {
     if (this.data.hasPassedInteraction(user, interactionObjectUrl)) {
-        return "Completed and passed";
+        return XAPI_DASHBOARD_STATUS_COMPLETED_PASSED;
     } else if (this.data.hasCompletedInteraction(user, interactionObjectUrl)) {
-        return "Completed, but not passed";
+        return XAPI_DASHBOARD_STATUS_COMPLETED_NOTPASSED;
     } else if (this.data.hasStartedInteraction(user, interactionObjectUrl)) {
-        return "Started, but not completed";
+        return XAPI_DASHBOARD_STATUS_STARTED_NOTCOMPLETED;
     } else {
-        return "Not started";
+        return XAPI_DASHBOARD_STATUS_NOTSTARTED;
     }
 };
 
@@ -388,7 +394,7 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
                 interaction = interactions[interactionIndex];
                 contentDiv.append('<div class="container"></div>');
                 if (interaction.children.length == 0 && interaction.type == "interaction") {
-                    contentDiv.find(".container").append("<div></div>");
+                    contentDiv.find(".container").append("<div class='panel'></div>");
                     var interactionDetails = $this.data.selectInteractionById(interactions, interaction.url);
                     var statements = $this.data.getInteractionStatements(interaction.url);
                     contentDiv.find(".container div").append('<svg class="graph" id="model-svg-' + learningObjectIndex + '-' + interactionIndex +
@@ -398,19 +404,22 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
                     var question = $this.data.getQuestion(interactionDetails.url);
                     var pausedStatements = $this.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
                     if (question != undefined) {
-                        $this.displayQuestionInformation(contentDiv.find('.container').find('div:last'), question, learningObjectIndex, interactionIndex);
+                        var questionDiv = $("<div class='panel'></div>").appendTo(contentDiv.find('.container'));
+                        $this.displayQuestionInformation(questionDiv, question, learningObjectIndex, interactionIndex);
                     } else if (pausedStatements.length > 0) {
-                        $this.displayHeatmap(contentDiv.find('.container').find('div:last'), learningObjectIndex, interactionIndex, pausedStatements)
+                        var heatmapDiv = $("<div class='panel'></div>").appendTo(contentDiv.find('.container'));
+                        $this.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
                     }
+                    contentDiv.find(".container").append('<div class="interaction-info panel"></div>');
+                    $this.displayPageInfo(contentDiv, ".container .interaction-info", interaction);
                     //getMultipleChoiceQuestion(learningObjects[learningObjectIndex].url, interaction.url);
                 } else {
                     statements = $this.data.getInteractionStatements(interaction.url);
 
                     contentDiv.find(".container").append("<svg class='graph'></svg>");
                     $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' svg');
-                    contentDiv.find(".container").append('<div class="page-info"></div>');
-                    contentDiv.find(".container .page-info");
-                    $this.displayPageInfo(contentDiv, ".container .page-info", learningObject, interaction);
+                    contentDiv.find(".container").append('<div class="page-info panel"></div>');
+                    $this.displayPageInfo(contentDiv, ".container .page-info", interaction);
 
                 }
             }
@@ -474,7 +483,7 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
             tickangle: '-90',
             width: 700,
             height: 700,
-            autosize: false,
+            autosize: false
         },
         hovermode: false
     };
@@ -511,21 +520,21 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
     });
 };
 
-xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, learningObject, interaction) {
+xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, interaction) {
     var statements = this.data.getInteractionStatements(interaction.url);
     var started = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/initialized");
     var completed = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/exited");
-    contentDiv.find(jqLocation).append("Number of attempts: " + started.length + "<br>");
-    contentDiv.find(jqLocation).append("Number of completions: " + completed.length + "<br>");
+    contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRATTEMPTS + " " + started.length + "<br>");
+    contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRCOMPLETIONS + " " + completed.length + "<br>");
     var grouped = this.data.groupStatementsOnSession([started, completed]);
 
     avgTime = this.data.calculateDuration(grouped);
     if (avgTime < 120) {
-        avgTime = Math.round(avgTime) + " seconds";
+        avgTime = Math.round(avgTime) + " " + XAPI_DASHBOARD_COMPLETED_UNIT_SECONDS;
     } else {
-        avgTime = avgTime / 60 + " minutes";
+        avgTime = avgTime / 60 + " " + XAPI_DASHBOARD_COMPLETED_UNIT_MINUTES;
     }
-    contentDiv.find(jqLocation).append("Average time: " + avgTime + "<br>");
+    contentDiv.find(jqLocation).append(XAPI_DASHBOARD_AVGDURATION + " " + avgTime + "<br>");
 };
 
 xAPIDashboard.prototype.createPieChartInteraction = function(statements, div_location) {
@@ -545,8 +554,8 @@ xAPIDashboard.prototype.createPieChartInteraction = function(statements, div_loc
         aggregate: ADL.count(),
         range: {
             start: 0.0,
-            end: 10.0,
-            increment: 1
+            end: 100.0,
+            increment: 10
         },
         post: function(data) {
             data.contents.map(function(el) {
@@ -554,8 +563,8 @@ xAPIDashboard.prototype.createPieChartInteraction = function(statements, div_loc
             });
         },
         customize: function(chart) {
-            chart.xAxis.rotateLabels(45).axisLabel("Grade Range");
-            chart.yAxis.axisLabel("% of Class");
+            chart.xAxis.rotateLabels(45).axisLabel(XAPI_DASHBOARD_GRAPH_GRADERANGE);
+            chart.yAxis.axisLabel(XAPI_DASHBOARD_GRAPH_PERCOFCLASS);
             chart.width(500);
             chart.height(500);
             chart.yDomain([0, 100]);
@@ -588,19 +597,19 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
     var learningObjectUrl = learningObjects[learningObjectIndex].url;
     var interactionObjectUrl = interaction.url;
     contentDiv.append(question.name["en-US"]);
-    var options = "<div>Sources<ol>";
+    var options = "<div>" + XAPI_DASHBOARD_SOURCES + "<ol>";
     question.source.forEach(function(s) {
         options += "<li>" + s.description["en-US"] + "</li>";
     });
     options += '</ol>';
-    options += "Targets<ol>";
+    options += XAPI_DASHBOARD_TARGETS + "<ol>";
     question.target.forEach(function(targ) {
         options += "<li>" + targ.description["en-US"] + "</li>";
     });
     options += '</ol>';
     var pairs = question.correctResponsesPattern[0].split("[,]");
-    pairs = pairs.map(x => x.split("[.]").join(" -> "));
-    options += "Correct answers";
+    pairs = pairs.map(x => x.split("[.]").join(" <i class=\"fa fa-long-arrow-right\"></i> "));
+    options += XAPI_DASHBOARD_CORRECTANSWERS;
     options += "<ul>";
     pairs.forEach(function(p) {
         options += "<li>" + p + "</li>";
@@ -616,7 +625,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
         tup.forEach(function(t) {
             statement = JSON.parse(JSON.stringify(s));
             arr = t.split("[.]");
-            statement.result.pairs = arr[1] + " <- " + arr[0];
+            statement.result.pairs = arr[1] + " < " + arr[0];
             pairStatements.push(statement);
         });
     });
@@ -628,8 +637,8 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
         groupBy: 'result.pairs',
         aggregate: ADL.count(),
         customize: function(chart) {
-            chart.xAxis.rotateLabels(45);
-            chart.yAxis.axisLabel("% of Class");
+            chart.xAxis.rotateLabels(45).axisLabel(XAPI_DASHBOARD_GRAPH_MATCH_XAXIS);
+            chart.yAxis.axisLabel(XAPI_DASHBOARD_GRAPH_PERCOFCLASS);
             chart.width(500);
             chart.height(500);
         },
@@ -653,14 +662,17 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
     var interaction = interactions[interactionIndex];
     var learningObjectUrl = learningObjects[learningObjectIndex].url;
     var interactionObjectUrl = interaction.url;
-    contentDiv.append(question.name["en-US"]);
-    var options = "<div><ol>";
+    contentDiv.append(XAPI_DASHBOARD_QUESTION + " "  + question.name["en-US"]);
+    var options = "<div>" + XAPI_DASHBOARD_ANSWERS + "<ol>";
     question.choices.forEach(function(option) {
         var correct = "";
         if (question.correctResponsesPattern.indexOf(option.id) != -1) {
-            correct = " <- Correct answer";
+            correct = "<i class=\"fa fa-x-tick\"></i>";
         }
-        options += "<li>" + option.description["en-US"] + correct + "</li>";
+        else {
+            correct = "<i class=\"fa fa-x-cross\"></i>";
+        }
+        options += "<li>" + correct + option.description["en-US"] + "</li>";
     });
     var dash = new ADL.XAPIDashboard();
     var statements = this.data.getQuestionResponses(interactionObjectUrl);
@@ -672,8 +684,8 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
         groupBy: 'result.response',
         aggregate: ADL.count(),
         customize: function(chart) {
-            chart.xAxis.rotateLabels(45).axisLabel("Answers given");
-            chart.yAxis.axisLabel("Number of answers");
+            chart.xAxis.rotateLabels(45).axisLabel(XAPI_DASHBOARD_GRAPH_CHOICE_XAXIS);
+            chart.yAxis.axisLabel(XAPI_DASHBOARD_GRAPH_CHOICE_YAXIS);
             chart.width(500);
             chart.height(500);
         }
@@ -703,8 +715,8 @@ xAPIDashboard.prototype.displayFillInQuestionInformation = function(contentDiv, 
         groupBy: 'result.response',
         aggregate: ADL.count(),
         customize: function(chart) {
-            chart.xAxis.rotateLabels(45).axisLabel("Answers given");
-            chart.yAxis.axisLabel("Number of answers");
+            chart.xAxis.rotateLabels(45).axisLabel(XAPI_DASHBOARD_GRAPH_FILLIN_XAXIS);
+            chart.yAxis.axisLabel(XAPI_DASHBOARD_GRAPH_FILLIN_YAXIS);
             chart.width(500);
             chart.height(500);
         }
