@@ -170,6 +170,10 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 {
                     $tracking .= "   var coursename = '" . $xerte_toolkits_site->course . "';\n";
                 }
+                if (isset($xerte_toolkits_site->module))
+                {
+                    $tracking .= "   var modulename = '" . $xerte_toolkits_site->module . "';\n";
+                }
             }
             $tracking .= "</script>\n";
             _debug("Tracking script: " . $tracking);
@@ -253,6 +257,10 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 if (isset($xerte_toolkits_site->course))
                 {
                     $tracking .= "   var coursename = '" . $xerte_toolkits_site->course . "';\n";
+                }
+                if (isset($xerte_toolkits_site->module))
+                {
+                    $tracking .= "   var modulename = '" . $xerte_toolkits_site->module . "';\n";
                 }
             }
             $tracking .= "</script>\n";
