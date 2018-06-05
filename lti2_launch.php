@@ -27,6 +27,9 @@ if(is_numeric($id))
     if (isset($_REQUEST['course'])) {
         $xerte_toolkits_site->course = $_REQUEST['course'];
     }
+    if (isset($_REQUEST['module'])) {
+        $xerte_toolkits_site->course = $_REQUEST['module'];
+    }
 
 
     require("play.php");
