@@ -205,7 +205,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></QRcode><accNav menu="Navigators" menuItem="Accordion Navigator" hint="A group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" remove="true" deepLink="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></QRcode><accNav menu="Navigators" menuItem="Accordion Navigator" hint="A group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
@@ -241,7 +245,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></accNav><nestedPage menuItem="Nested Page" icon="icBullet" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></accNav><nestedPage menuItem="Nested Page" icon="icBullet" remove="true">
 
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -290,7 +298,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></adaptiveContent><interaction menuItem="Source interaction">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></adaptiveContent><interaction menuItem="Source interaction">
         <name label="Block title" type="textinput" wysiwyg="true"/>
         <introduction label="Introduction" type="textarea" height="120" wysiwyg="true"/>
         <graph type="group" label="Graph" optional="true">
@@ -325,8 +337,6 @@
     <colour label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
     <shape label="Highlight Type" type="ComboBox" options="Line,Oval,Rectangle,Arrow" data="None,Oval,Rectangle,Arrow" defaultValue="None" width="120"/>
     <align label="Text Align" type="ComboBox" options="Left,Bottom" data="Left,Top" defaultValue="Left" width="100"/>
-
-    <timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	
 	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="320,240" optional="true" deprecated="This property is deprecated."/>
 
@@ -360,7 +370,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></annotatedDiagram><hotspotGroup menuItem="Hotspot Group" icon="icGroup" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></annotatedDiagram><hotspotGroup menuItem="Hotspot Group" icon="icGroup" remove="true">
 
     <name label="Group Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -410,7 +424,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></audioSlideshow><synchPoint menuItem="Slide" icon="icBullet" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></audioSlideshow><synchPoint menuItem="Slide" icon="icBullet" remove="true">
 
     <name label="Slide Title" type="TextInput" wysiwyg="true"/>
     <text label="Slide Text" type="TextArea" height="250"/>
@@ -467,7 +485,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></bleedingImage><bullets menu="Text" menuItem="Bullets" hint="A page of animated bullet points." label="Page Text" type="text" height="310" icon="icBullets" thumb="thumbs/bullets.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></bleedingImage><bullets menu="Text" menuItem="Bullets" hint="A page of animated bullet points." label="Page Text" type="text" height="310" icon="icBullets" thumb="thumbs/bullets.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <delaySecs label="Delay (secs)" type="NumericStepper" min="1" max="10" step="0.25" width="100" defaultValue="1"/>
@@ -500,7 +522,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></bullets><buttonNav menu="Navigators" menuItem="Button Navigator" hint="A series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg" deepLink="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></bullets><buttonNav menu="Navigators" menuItem="Button Navigator" hint="A series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
@@ -537,7 +563,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></buttonNav><buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Pose a stimulating question to the user, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></buttonNav><buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Pose a stimulating question to the user, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="50"/>
@@ -548,8 +578,6 @@
 
     <label label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	<labelWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" language="true" deprecated="Width is now set automatically"/>
-	
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	
   <narrate type="group" label="Narration" optional="true" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -576,14 +604,16 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></buttonQuestion><buttonSequence menu="Interactivity" menuItem="Button Sequence" hint="Present a sequence of button interactions with text." icon="icButtons" thumb="thumbs/buttonSequence.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></buttonQuestion><buttonSequence menu="Interactivity" menuItem="Button Sequence" hint="Present a sequence of button interactions with text." icon="icButtons" thumb="thumbs/buttonSequence.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
     <intro label="Introduction" type="TextArea" height="100"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-
-    <timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	
     <newNodes>
       <button><![CDATA[<button name="Show More" text="Feedback"/>]]></button>
@@ -614,7 +644,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></buttonSequence><button menuItem="Button" icon="icBulletBlue" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></buttonSequence><button menuItem="Button" icon="icBulletBlue" remove="true">
     <name label="Button Label" type="TextInput" wysiwyg="true"/>
 	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" deprecated="Width is now set automatically"/>	
     <text label="Feedback" type="TextArea" height="250"/>
@@ -661,7 +695,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></cMcq><cOption menuItem="Answer" icon="icBullet" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></cMcq><cOption menuItem="Answer" icon="icBullet" remove="true">
     <text label="Answer" type="TextArea" height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
     <destination label="Destination Page" type="pageList" defaultValue=""/>
@@ -695,7 +733,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></captivate><categories menu="Interactivity" menuItem="Categories" hint="An interaction allowing the user to sort items into a number of categories." icon="icLayers" remove="true" thumb="thumbs/categories.jpg">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></captivate><categories menu="Interactivity" menuItem="Categories" hint="An interaction allowing the user to sort items into a number of categories." icon="icLayers" remove="true" thumb="thumbs/categories.jpg">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
@@ -705,7 +747,6 @@
 	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="120" width="100" language="true" deprecated="Width is now set automatically"/>
 	<feedbackScore label="Score Feedback" type="TextInput" wysiwyg="true" language="true"/>
 
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 
     <newNodes>
@@ -737,7 +778,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></categories><category menuItem="Category" icon="icGroup" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></categories><category menuItem="Category" icon="icGroup" remove="true">
 
     <name label="Category Name" type="TextInput" wysiwyg="true"/>
 
@@ -786,7 +831,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></chart><series menuItem="Series" remove="true" icon="icBullet">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></chart><series menuItem="Series" remove="true" icon="icBullet">
     <name label="Series Name" type="TextInput" wysiwyg="true"/>
     <data label="Chart Data" headers="X,Y" newRow="label,data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" rendererOptions="none,none"/>
     <colour label="Colour" type="colourPicker" defaultValue="0xFF0000"/>
@@ -826,7 +875,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions. When selected, each region will take you to another page in the project or present further information." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions. When selected, each region will take you to another page in the project or present further information." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
     <textWidth label="Min Text Width" options="No Text,Small,Medium,Large" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200"/>		
@@ -874,7 +927,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></connectorHotspotImage><cHotspot menuItem="Hotspot" label="Edit Hotspot" type="hotSpot" icon="icLayers" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></connectorHotspotImage><cHotspot menuItem="Hotspot" label="Edit Hotspot" type="hotSpot" icon="icLayers" remove="true">
     <name label="Tooltip Hotspot" type="TextInput" wysiwyg="false"/>
     <destination label="Destination Page" type="pageList" defaultValue="" optional="true" tooltip="Go to a page with this object"/>
     <hotspotSound label="Sound" type="media" optional="true"/>
@@ -935,7 +992,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></connectorMenu><cMenuListedPage menuItem="Item" remove="true" icon="icBullet">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></connectorMenu><cMenuListedPage menuItem="Item" remove="true" icon="icBullet">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <pageID label="Destination Page" type="pageList" defaultValue=""/>	
   </cMenuListedPage><customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="Create a hotspot based diagram where regions can be explored using a variety of interactivities." icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true">
@@ -1006,7 +1067,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></customHotspots><decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" hint="Find a solution to a problem by answering a series of questions." icon="icDecision" deepLink="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></customHotspots><decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" hint="Find a solution to a problem by answering a series of questions." icon="icDecision" deepLink="true">
 	
 	<name type="TextInput" wysiwyg="true" label="Page Title"/>
 	<text label="Intro Text" type="TextArea" height="100"/>
@@ -1016,7 +1081,6 @@
 	
 	<copy label="Copy Overview Option" type="CheckBox" optional="true" defaultValue="true" tooltip="Adds a button to the overview screen that presents users with an easy to copy version of their answers and results."/>
 	<number label="Question Numbering" type="CheckBox" optional="true" defaultValue="true" tooltip="Displays question / step numbers"/>
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	
 	<newBtnLabel label="Refresh Button" type="TextInput" wysiwyg="true" language="true"/>
 	<viewThisBtn label="Overview Button" type="TextInput" wysiwyg="true" language="true"/>
@@ -1066,7 +1130,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></decision><mcqStep icon="icComments" remove="true" duplicate="true" menuItem="Multiple Choice Question">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></decision><mcqStep icon="icComments" remove="true" duplicate="true" menuItem="Multiple Choice Question">
 	
 	<name label="Unique ID" type="TextInput"/>
 	<text label="Question" type="TextArea" height="100"/>
@@ -1168,7 +1236,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></delicious><dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icScript" thumb="thumbs/dialog.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></delicious><dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icScript" thumb="thumbs/dialog.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="100"/>
@@ -1182,7 +1254,6 @@
 	<nextBtnTxt label="Next Button Text" type="TextInput" wysiwyg="true" language="true"/>
     <answerDelimeter label="Answer Delimiter" type="textInput" defaultValue="," optional="true"/>
     <casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat answers as case sensitive"/>
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
       <dialogStep><![CDATA[<dialogStep name="Question - tree label" question="Enter question text here" answer="Enter answer here" hint="Enter hint here"/>]]></dialogStep>
@@ -1213,7 +1284,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></dialog><dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></dialog><dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
 
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - tree label"/>
     <question label="Question" type="TextArea" height="100"/> 
@@ -1237,7 +1312,6 @@
 	
 	<showCorrectness label="Mark Answers" type="checkBox" optional="true" defaultValue="false" tooltip="Mark answer as correct or incorrect."/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
 	<tt type="group" label="Timed Text" optional="true">
 		<timedText label="File" type="Media" defaultValue="Select a Timed Text File" optional="true"/>
@@ -1273,7 +1347,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></dictation><nestedDictation menuItem="Sentence" icon="icBullet" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></dictation><nestedDictation menuItem="Sentence" icon="icBullet" remove="true">
     <prompt label="Prompt Text" type="TextArea" height="200"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Sentence" wysiwyg="false"/>
     <audio label="Audio File" type="Media"/>
@@ -1287,7 +1365,6 @@
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>
 	
     <filename label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
     <!--<email label="Enable Email Facility" type="Checkbox" defaultValue="true" optional="true"/>-->
 	
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true"/>
@@ -1327,7 +1404,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></documentation><page menuItem="Nested Page" icon="icFolderPage">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></documentation><page menuItem="Nested Page" icon="icFolderPage">
     <name label="Title" type="TextInput" wysiwyg="true"/>
 	<text label="Text" type="TextArea" height="120"/>
 	
@@ -1433,7 +1514,6 @@
 	
 	<labelPos label="Label Position" type="ComboBox" data="image,text" options="Below Image,Below Text" defaultValue="image" optional="true"/>
 	
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 	
     <newNodes>
@@ -1465,7 +1545,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></dragDropLabel><embedDiv menu="Navigators" menuItem="Embed Content" hint="A page for including any web page or embed code in your project." icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></dragDropLabel><embedDiv menu="Navigators" menuItem="Embed Content" hint="A page for including any web page or embed code in your project." icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" remove="true">
     
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <src label="Embed Code or URL" type="script" height="300"/>
@@ -1502,7 +1586,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></embedDiv><flashCards menu="Navigators" menuItem="Flash Cards" icon="icRefreshPage" remove="true" thumb="thumbs/flashCards.jpg" hint="A series of double sided flash cards containing text and media.">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></embedDiv><flashCards menu="Navigators" menuItem="Flash Cards" icon="icRefreshPage" remove="true" thumb="thumbs/flashCards.jpg" hint="A series of double sided flash cards containing text and media.">
 	
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="120"/>
@@ -1543,7 +1631,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></flashCards><card menuItem="Card" icon="icTwoPages" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></flashCards><card menuItem="Card" icon="icTwoPages" remove="true">
 	<name label="Title" type="TextInput" wysiwyg="true"/>
 	<side1 label="Side 1 Text" type="TextArea" height="120"/>
 	<side2 label="Side 2 Text" type="TextArea" height="120"/>
@@ -1590,7 +1682,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></flashPaper><flickr menu="Misc" menuItem="Flickr Slideshow" hint="Include freely available graphical content from the Flickr photo sharing service." label="Page Text" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></flashPaper><flickr menu="Misc" menuItem="Flickr Slideshow" hint="Include freely available graphical content from the Flickr photo sharing service." label="Page Text" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <keywords label="Keyword(s)" type="TextInput"/>
@@ -1628,7 +1724,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></flickr><gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating gap fill exercises. Gaps can be filled by drag and drop labels, editable text boxes or by drop down menus." icon="icTextEntry" thumb="thumbs/gapFill.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></flickr><gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating gap fill exercises. Gaps can be filled by drag and drop labels, editable text boxes or by drop down menus." icon="icTextEntry" thumb="thumbs/gapFill.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Introductory Text" type="TextArea" height="100"/>
@@ -1662,8 +1762,7 @@
 		<showHint label="Show Hint/Correct Answers Button" type="CheckBox" defaultValue="true" optional="true"/>
     	<attemptsBeforeHint label="Attempts Before Hint" defaultValue="2" type="NumericStepper" min="0" max="10" step="1" width="100" optional="true"/>
     </hints>
-
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+	
 	<casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat fill in the gap exercise answers as case sensitive"/>
 
   <narrate type="group" label="Narration" optional="true" common="true">
@@ -1691,7 +1790,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></gapFill><geocommons menu="Misc" menuItem="GeoCommons Map" hint="Embed GeoCommons Maps" icon="icGeoComm" thumb="thumbs/googleMap.jpg" remove="true" deprecated="This page is no longer supported">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></gapFill><geocommons menu="Misc" menuItem="GeoCommons Map" hint="Embed GeoCommons Maps" icon="icGeoComm" thumb="thumbs/googleMap.jpg" remove="true" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <src label="IFrame code" type="TextInput"/>
@@ -1723,7 +1826,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></geocommons><grid menu="Interactivity" menuItem="Sortable Grid" hint="An interaction allowing the user to sort items on a grid." icon="icGrid" thumb="thumbs/grid.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></geocommons><grid menu="Interactivity" menuItem="Sortable Grid" hint="An interaction allowing the user to sort items on a grid." icon="icGrid" thumb="thumbs/grid.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<text label="Page Text" type="TextArea" height="150"/>
@@ -1751,7 +1858,6 @@
 
 	<url label="CSV File" type="Media" optional="true"/>
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
   <narrate type="group" label="Narration" optional="true" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -1778,7 +1884,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></grid><hangman menu="Games" menuItem="Hangman" hint="A hangman game. Create a list of words for the user to work out." icon="icPageWhite" thumb="thumbs/hangman.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></grid><hangman menu="Games" menuItem="Hangman" hint="A hangman game. Create a list of words for the user to work out." icon="icPageWhite" thumb="thumbs/hangman.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
     <words label="Words" type="script" height="100"/>
@@ -1787,8 +1897,6 @@
     <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>		
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
     <quesCount label="{i} of {n} words" type="TextInput" wysiwyg="true" language="true"/>
-	
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
   <narrate type="group" label="Narration" optional="true" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -1815,7 +1923,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></hangman><hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></hangman><hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -1827,8 +1939,6 @@
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
     <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
-	
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
 	  <hotspot><![CDATA[<hotspot name="Hotspot" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
@@ -1859,7 +1969,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></hotspotImage><iSpring menu="Media" menuItem="iSpring Movie" hint="Adds an iSpring Movie to your piece. iSpring movies should be published to 685 x 514 pixels." icon="icISpring" thumb="thumbs/ispring.jpg" remove="true" deprecated="This page is no longer supported">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></hotspotImage><iSpring menu="Media" menuItem="iSpring Movie" hint="Adds an iSpring Movie to your piece. iSpring movies should be published to 685 x 514 pixels." icon="icISpring" thumb="thumbs/ispring.jpg" remove="true" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="ISpring Movie" type="Media"/>
@@ -1890,7 +2004,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></iSpring><imageViewer menu="Media" menuItem="Image Viewer" hint="Allow users to zoom in and out of a large image and select regions. A useful way of presenting large images in a small screen space." icon="icImage" thumb="thumbs/imageViewer.jpg" label="Page Text" type="text" height="250" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></iSpring><imageViewer menu="Media" menuItem="Image Viewer" hint="Allow users to zoom in and out of a large image and select regions. A useful way of presenting large images in a small screen space." icon="icImage" thumb="thumbs/imageViewer.jpg" label="Page Text" type="text" height="250" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<url label="Image" type="media"/>
@@ -1929,7 +2047,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></imageViewer><interactiveText menu="Interactivity" menuItem="Interactive Text" hint="A text based page where sections can be explored using a variety of interactivities." icon="icInteractiveTxt" thumb="thumbs/interactiveText.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></imageViewer><interactiveText menu="Interactivity" menuItem="Interactive Text" hint="A text based page where sections can be explored using a variety of interactivities." icon="icInteractiveTxt" thumb="thumbs/interactiveText.jpg" remove="true">
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="150"/>
 	<passage label="Interactive Text" type="TextArea" height="200"/>
@@ -1937,7 +2059,6 @@
 	<highlight label="Underline Text" type="CheckBox"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	
 	<mcqOptions type="group" label="MCQ" optional="true">
 		<mcqType label="Type" options="Highlight One From Group,Highlight Whole Group" type="ComboBox" data="one,all" defaultValue="one" optional="true"/>
@@ -1997,7 +2118,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></interactiveText><group menuItem="Group" icon="icBullet" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></interactiveText><group menuItem="Group" icon="icBullet" remove="true">
   
 	<name label="Name" type="TextInput" wysiwyg="true"/>
 	<delimiter label="Delimiter" type="TextInput"/>
@@ -2030,7 +2155,6 @@
     <restartBtnTip label="Restart Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
     <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 	
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
     <info><![CDATA[<b>For full details on how to use the Inventory Page. <u><a href="http://xerte.org.uk/docs/xot/help/InventoryPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
@@ -2062,7 +2186,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></inventory><invQuestion menuItem="Question" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></inventory><invQuestion menuItem="Question" remove="true">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
     <prompt label="Question" type="TextArea" height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
@@ -2115,7 +2243,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></jing><jmol menu="Media" menuItem="JMOL Viewer" hint="Provides a viewer for JMOL files" icon="icAtom" thumb="thumbs/jmol.jpg" remove="true" deprecated="We cannot redistribute GPL components. You must install JMOL manually. See instructions in the JMOL folder">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></jing><jmol menu="Media" menuItem="JMOL Viewer" hint="Provides a viewer for JMOL files" icon="icAtom" thumb="thumbs/jmol.jpg" remove="true" deprecated="We cannot redistribute GPL components. You must install JMOL manually. See instructions in the JMOL folder">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="150"/>
@@ -2165,7 +2297,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></jmol><jmolOption menuItem="Script Option" icon="icBullet" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></jmol><jmolOption menuItem="Script Option" icon="icBullet" remove="true">
   
 	<name label="Label" type="TextInput" wysiwyg="true"/>
 	<script label="Jmol Script" type="TextArea" height="100"/>
@@ -2206,7 +2342,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></links><link menuItem="Link" icon="icTagGreen" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></links><link menuItem="Link" icon="icTagGreen" remove="true">
     <name label="Link Title" type="TextInput" wysiwyg="true"/>
     <text label="Link Description" type="TextArea" height="100"/>
     <url label="URL" type="TextInput"/>
@@ -2246,7 +2386,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></list><listItem menuItem="List Item" icon="icBullet" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></list><listItem menuItem="List Item" icon="icBullet" remove="true">
 
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -2292,7 +2436,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></map><mapstraction icon="icMap2" menu="Misc" menuItem="Mapstraction Map" remove="true" thumb="thumbs/googleMap.jpg" hint="Use maps with the mapstraction API." deprecated="This page is no longer supported">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></map><mapstraction icon="icMap2" menu="Misc" menuItem="Mapstraction Map" remove="true" thumb="thumbs/googleMap.jpg" hint="Use maps with the mapstraction API." deprecated="This page is no longer supported">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <provider type="ComboBox" label="Map Type" options="Google,Yahoo,Openlayers,Microsoft" width="100"/>
@@ -2331,7 +2479,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></mapstraction><overlay duplicate="true" menuItem="Overlay" remove="true" icon="icPageWhite">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></mapstraction><overlay duplicate="true" menuItem="Overlay" remove="true" icon="icPageWhite">
     <name type="TextInput" wysiwyg="true" label="Title"/>
     <url type="TextInput" label="Overlay"/>
   </overlay><mcq menu="Interactivity" menuItem="Multiple Choice Question" hint="Pose a question with multiple answer options. Create simple true - false questions, or more complex questions with multiple correct answers." icon="icComments" thumb="thumbs/mcq.jpg" remove="true">
@@ -2355,7 +2507,6 @@
 	
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
     <feedback type="TextArea" height="40" label="Feedback" optional="true"/>
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
       <option><![CDATA[<option name="Answer" text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
@@ -2386,7 +2537,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></mcq><option menuItem="Answer" icon="icBullet">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></mcq><option menuItem="Answer" icon="icBullet">
     <text label="Answer" type="TextArea" height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
     <feedback label="Feedback" type="TextArea" height="100"/>
@@ -2433,7 +2588,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></mediaLesson><mediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></mediaLesson><mediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
 		
 		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
 		<media label="Media" type="media"/>
@@ -2749,7 +2908,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></memory><matchItem menuItem="Item" icon="icPageWhite" remove="true" max="9">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></memory><matchItem menuItem="Item" icon="icPageWhite" remove="true" max="9">
 
     <name label="Label" type="TextInput" wysiwyg="true"/>
     <url label="Image" type="Media"/>
@@ -2785,8 +2948,6 @@
 		<image label="Image" type="media" optional="true" defaultValue="Select an Image"/>	
 		<tooltip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
 	</imgInfo>
-	
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
   <narrate type="group" label="Narration" optional="true" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -2813,7 +2974,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></modelAnswer><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Displays collated results from all the preceding model answer pages which can then be reviewed and copied to clipboard." icon="icFolderPage" thumb="thumbs/modelAnswerResult.jpg" type="text" label="Page Text" height="280" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></modelAnswer><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Displays collated results from all the preceding model answer pages which can then be reviewed and copied to clipboard." icon="icFolderPage" thumb="thumbs/modelAnswerResult.jpg" type="text" label="Page Text" height="280" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100" mandatory="true"/>
     <copyBtnTxt label="Copy Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" deprecated="This property is no longer required"/>
@@ -2847,7 +3012,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></modelAnswerResults><modify menu="Interactivity" menuItem="Modify Exercise" hint="Present a piece of text that the user must modify in some way, for example, by changing the tense." icon="icModify" thumb="thumbs/modify.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></modelAnswerResults><modify menu="Interactivity" menuItem="Modify Exercise" hint="Present a piece of text that the user must modify in some way, for example, by changing the tense." icon="icModify" thumb="thumbs/modify.jpg" remove="true">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="100"/>
@@ -2859,8 +3028,6 @@
     <feedbackBtnTxt label="Button Label" type="TextInput" wysiwyg="true" language="true"/>
     <feedbackBtnTip label="Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
     <feedbackBtnWidth label="Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>	
-
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
   <narrate type="group" label="Narration" optional="true" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -2887,7 +3054,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></modify><morphImages menu="Media" menuItem="Morph Images" hint="Morph between two images. Can be used to present an impression of zooming into a region of an image." icon="icZoomIn" thumb="thumbs/morphImages.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></modify><morphImages menu="Media" menuItem="Morph Images" hint="Morph between two images. Can be used to present an impression of zooming into a region of an image." icon="icZoomIn" thumb="thumbs/morphImages.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -2926,7 +3097,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></morphImages><nav menu="Navigators" menuItem="Multi-Navigator" hint="Present related text and graphical content on a choice of navigators." icon="icPages" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></morphImages><nav menu="Navigators" menuItem="Multi-Navigator" hint="Present related text and graphical content on a choice of navigators." icon="icPages" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
 	
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -2973,7 +3148,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></nav><navPage menuItem="Nested Page" icon="icBullet" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></nav><navPage menuItem="Nested Page" icon="icBullet" remove="true">
 
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -3022,7 +3201,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
     <name label="Opinion Title" type="TextInput" wysiwyg="true"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
@@ -3042,7 +3225,6 @@
 
 	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
 	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
     <diagram label="Hide diagram" type="CheckBox" defaultValue="false" optional="true"/>
     <layout label="Layout options" type="group" optional="true">
       <list label="Show questions in list" type="checkbox" optional="true" tooltip="Show more than one question per page" defaultValue="false"/>
@@ -3079,7 +3261,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></opinion><opinionClass menuItem="Class">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></opinion><opinionClass menuItem="Class">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="C - Tree/Tracking label" wysiwyg="false"/>
     <title label="Title" type="TextInput" mandatory="true" defaultValue="Title to use in graph" wysiwyg="true"/>
 
@@ -3140,7 +3326,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></orient><pdf menu="Media" menuItem="PDF File" hint="Incorporate PDF files in your project." icon="icPDF" thumb="thumbs/pdf.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></orient><pdf menu="Media" menuItem="PDF File" hint="Incorporate PDF files in your project." icon="icPDF" thumb="thumbs/pdf.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="PDF File" type="media"/>
@@ -3175,7 +3365,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></pdf><perspectives menu="Media" menuItem="Multiple Perspectives" hint="View and compare multiple video and sound clips." icon="icUser" thumb="thumbs/perspectives.jpg" remove="true" deepLink="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></pdf><perspectives menu="Media" menuItem="Multiple Perspectives" hint="View and compare multiple video and sound clips." icon="icUser" thumb="thumbs/perspectives.jpg" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 
     <backBtnTip label="Scroll Back Tip" type="TextInput" wysiwyg="true" language="true"/>
@@ -3230,7 +3424,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></perspectives><movie menuItem="Video" icon="icPageWhiteFilm" duplicate="true" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></perspectives><movie menuItem="Video" icon="icPageWhiteFilm" duplicate="true" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <txt label="Text" type="TextArea" height="300"/>
     <src label="Video" type="media"/>
@@ -3313,8 +3511,6 @@
 		<video label="Video" type="media" defaultValue="Select a Video" optional="true"/>
 		<movieSize label="Size" type="textInput" defaultValue="320,240" optional="true"/>
 	</videoInfo>
-	
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
       <question><![CDATA[<question prompt="Enter question" name="Question" type="Single Answer" />]]></question>
@@ -3345,7 +3541,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></quiz><question menuItem="Question">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></quiz><question menuItem="Question">
 
 
     <prompt label="Question" type="TextArea" height="100"/>
@@ -3394,7 +3594,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></raptivity><results menu="Misc" menuItem="Results Page" hint="A page displaying a summary of the results of the interactions." icon="icResults" thumb="thumbs/results.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></raptivity><results menu="Misc" menuItem="Results Page" hint="A page displaying a summary of the results of the interactions." icon="icResults" thumb="thumbs/results.jpg" remove="true">
 
         <generalResultsTxt label="General results text label" type="TextInput" wysiwyg="true" language="true"/>
         <averageTxt label="Average text label" type="TextInput" wysiwyg="true" language="true"/>
@@ -3456,7 +3660,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></results><rss menuItem="RSS Feed" menu="Misc" hint="Include RSS feeds in your project. RSS feeds allow you to add dynamic content from a variety of sources. You can create your own RSS feeds using the RSS Feed template." icon="icRSS" thumb="thumbs/rss.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></results><rss menuItem="RSS Feed" menu="Misc" hint="Include RSS feeds in your project. RSS feeds allow you to add dynamic content from a variety of sources. You can create your own RSS feeds using the RSS Feed template." icon="icRSS" thumb="thumbs/rss.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="textArea" height="300"/>
@@ -3489,7 +3697,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></rss><scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true" deprecated="This page is currently under development">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></rss><scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true" deprecated="This page is currently under development">
 	<name label="Scenario Name" type="TextInput" wysiwyg="true" width="200"/>
 	<title label="Scenario Title" type="TextInput" wysiwyg="true" width="200"/>
 	<description label="Description" type="textArea" height="120"/>
@@ -3554,7 +3766,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></scenario><gameSetup menuItem="Configure Scores" remove="true" max="1">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></scenario><gameSetup menuItem="Configure Scores" remove="true" max="1">
 	<name label="Scenario set up" type="TextInput" wysiwyg="true" width="200"/>
 
     <score1Use label="Display Score 1" options="Yes,No" type="ComboBox" defaultValue="0" data="1,0" width="100"/>
@@ -3722,7 +3938,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></showGraph><slideshow menu="Navigators" menuItem="Slideshow" hint="A sequence of pages of related text and graphical content navigated with two arrow controls." icon="icPages" thumb="thumbs/slideNav.jpg" sortChildren="true" remove="true" deepLink="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></showGraph><slideshow menu="Navigators" menuItem="Slideshow" hint="A sequence of pages of related text and graphical content navigated with two arrow controls." icon="icPages" thumb="thumbs/slideNav.jpg" sortChildren="true" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
@@ -3759,7 +3979,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></slideshow><summary menu="Text" menuItem="Summary" hint="A page for summarising key points and suggesting next steps." icon="icPageWhiteInfo" remove="true" thumb="thumbs/summary.jpg">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></slideshow><summary menu="Text" menuItem="Summary" hint="A page for summarising key points and suggesting next steps." icon="icPageWhiteInfo" remove="true" thumb="thumbs/summary.jpg">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <summaryHeader label="Summary Header" type="TextInput" wysiwyg="true"/>
@@ -3792,7 +4016,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></summary><tabNav menu="Navigators" menuItem="Tabbed Navigator" hint="A series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></summary><tabNav menu="Navigators" menuItem="Tabbed Navigator" hint="A series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -3830,7 +4058,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></tabNav><tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="A list of topics where each topic displays a series of tabbed pages to present related text and graphical content." icon="icTabPlus" thumb="thumbs/tabNavExtra.jpg" remove="true" deepLink="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></tabNav><tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="A list of topics where each topic displays a series of tabbed pages to present related text and graphical content." icon="icTabPlus" thumb="thumbs/tabNavExtra.jpg" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
@@ -3867,7 +4099,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></tabNavExtra><topic menuItem="Topic" icon="icFolderPage" deepLink="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></tabNavExtra><topic menuItem="Topic" icon="icFolderPage" deepLink="true">
 
     <name label="Topic Name" type="TextInput" wysiwyg="true"/>
 
@@ -3916,7 +4152,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></table><tableData menuItem="Table Data" duplicate="false" remove="false" icon="icBullet">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></table><tableData menuItem="Table Data" duplicate="false" remove="false" icon="icBullet">
 
     <name label="Table Name" type="TextInput" wysiwyg="true"/>
     <data label="Table Data" newRow="data,data" newCol="data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" addCols="true" showHeaderRow="false"/>
@@ -3962,7 +4202,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></text><textDrawing menu="Media" menuItem="Drawing" hint="Use the drawing tools to include your own diagrams, annotated images and custom graphic content in your presentation." label="Edit Drawing" type="drawing" icon="icPageWhiteEdit" thumb="thumbs/textDrawing.jpg" remove="true" deprecated="This page is no longer supported">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></text><textDrawing menu="Media" menuItem="Drawing" hint="Use the drawing tools to include your own diagrams, annotated images and custom graphic content in your presentation." label="Edit Drawing" type="drawing" icon="icPageWhiteEdit" thumb="thumbs/textDrawing.jpg" remove="true" deprecated="This page is no longer supported">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <desc label="Page Text" type="textArea" height="300"/>
@@ -3994,7 +4238,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></textDrawing><textGraphics menu="Media" menuItem="Graphics and Sound" hint="A page for presenting text and graphics. You can also add an optional sound to this page." label="Page Text" type="text" height="300" icon="icPageWhitePicture" thumb="thumbs/textGraphics.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></textDrawing><textGraphics menu="Media" menuItem="Graphics and Sound" hint="A page for presenting text and graphics. You can also add an optional sound to this page." label="Page Text" type="text" height="300" icon="icPageWhitePicture" thumb="thumbs/textGraphics.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
@@ -4035,7 +4283,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></textGraphics><textMatch menu="Interactivity" menuItem="Matching Texts" hint="An interaction for the user to match chunks of text." icon="icConnect" thumb="thumbs/textMatch.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></textGraphics><textMatch menu="Interactivity" menuItem="Matching Texts" hint="An interaction for the user to match chunks of text." icon="icConnect" thumb="thumbs/textMatch.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
@@ -4055,7 +4307,6 @@
 	<incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true"/>
 	
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	
     <newNodes>
       <sentence><![CDATA[<sentence p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint" name="Sentence" />]]></sentence>
@@ -4086,7 +4337,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></textMatch><sentence menuItem="Sentence" icon="icPageWhiteText" remove="true" max="5">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></textMatch><sentence menuItem="Sentence" icon="icPageWhiteText" remove="true" max="5">
     <p1 label="Part 1" type="TextArea" height="50"/>
     <hint label="Hint" type="TextArea" height="50"/>
     <p2 label="Part 2" type="TextArea" height="50"/>
@@ -4130,7 +4385,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></textSWF><textVideo menu="Media" menuItem="Video" hint="Embed MP4 video files in your project." label="Page Text" icon="icPageWhiteFilm" thumb="thumbs/textVideo.jpg" type="text" height="180" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></textSWF><textVideo menu="Media" menuItem="Video" hint="Embed MP4 video files in your project." label="Page Text" icon="icPageWhiteFilm" thumb="thumbs/textVideo.jpg" type="text" height="180" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
@@ -4173,7 +4432,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></textVideo><thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" hint="A series of thumbnail images for the user to browse." icon="icPictures" thumb="thumbs/thumb.jpg" remove="true" deepLink="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></textVideo><thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" hint="A series of thumbnail images for the user to browse." icon="icPictures" thumb="thumbs/thumb.jpg" remove="true" deepLink="true">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -4212,7 +4475,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></thumbnailViewer><thumbnailImage menuItem="Image" icon="icBullet" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></thumbnailViewer><thumbnailImage menuItem="Image" icon="icBullet" remove="true">
 
     <name label="Tree Label" type="TextInput" wysiwyg="true"/>
     <text label="Image Text" type="TextArea" height="250"/>
@@ -4240,7 +4507,6 @@
 	<scoreTracking label="{i} out of {n} Text Tracking" type="TextInput" wysiwyg="true" language="true"/>
 	<incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true"/>
 	
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/> 
 
     <newNodes>
@@ -4272,7 +4538,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></timeline><timelinedate menuItem="Item" icon="icPageWhite" max="12" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></timeline><timelinedate menuItem="Item" icon="icPageWhite" max="12" remove="true">
 
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Description" type="TextArea" height="100"/>
@@ -4321,7 +4591,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></title><transcriptReader menu="Media" menuItem="Transcript Reader" hint="Synchronise a transcript to an audio file." icon="icTranscript2" thumb="thumbs/transcriptReader.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></title><transcriptReader menu="Media" menuItem="Transcript Reader" hint="Synchronise a transcript to an audio file." icon="icTranscript2" thumb="thumbs/transcriptReader.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <sound label="Sound" type="Media"/>
@@ -4359,7 +4633,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></transcriptReader><nestedSynch menuItem="Text" icon="icBullet" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></transcriptReader><nestedSynch menuItem="Text" icon="icBullet" remove="true">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Synch point"/>
     <text label="Text" type="TextArea" height="250"/>
     <synch label="Synch Point" type="TextInput"/>	
@@ -4404,7 +4682,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></videoSynch><videoSynchPoint menuItem="Synch Point" icon="icBullet" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></videoSynch><videoSynchPoint menuItem="Synch Point" icon="icBullet" remove="true">
 
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -4449,7 +4731,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></wiki><wordsearch menu="Games" menuItem="Wordsearch" hint="A wordsearch game. Create a list of words for the user to find." icon="icWordsearch" thumb="thumbs/wordsearch.jpg" remove="true">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></wiki><wordsearch menu="Games" menuItem="Wordsearch" hint="A wordsearch game. Create a list of words for the user to find." icon="icWordsearch" thumb="thumbs/wordsearch.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
     <words label="Words" type="script" height="100"/>
@@ -4461,7 +4747,6 @@
 		<colour4 label="Solved" type="ColourPicker" defaultValue="0x008000" optional="true"/>
 	</colours>
 	
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	<order label="Word Ordering" options="None,Alphabetical,Random" type="ComboBox" width="120" data="none,alphabetical,random" defaultValue="none" optional="true"/>
 	<hideSolve label="Hide Solve Button" hint="Hide the solve button completely" type="CheckBox" optional="true"/>
 	<hideSolveUntilTimer label="Hide Solve Until Timer" hint="Hide the solve button until the timer expires" type="CheckBox" optional="true"/>
@@ -4495,7 +4780,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></wordsearch><xerteModel menu="Media" menuItem="Xerte Content" icon="icTag" remove="true" thumb="thumbs/xerte.jpg" hint="Add custom Xerte content to the piece. Custom Xerte content allows you to add functionality not otherwise available in the templated pages and create bespoke interactivity." deprecated="This page is no longer supported">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></wordsearch><xerteModel menu="Media" menuItem="Xerte Content" icon="icTag" remove="true" thumb="thumbs/xerte.jpg" hint="Add custom Xerte content to the piece. Custom Xerte content allows you to add functionality not otherwise available in the templated pages and create bespoke interactivity." deprecated="This page is no longer supported">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <modelFile type="media" label="Xerte Model"/>
@@ -4528,7 +4817,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></xerteModel><youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Include video content from YouTube in your project." icon="icYoutube">&gt;
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></xerteModel><youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Include video content from YouTube in your project." icon="icYoutube">&gt;
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <text type="textArea" label="Instructions" height="300"/>
@@ -4564,7 +4857,11 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></youtube><youtuberss menuItem="YouTube Feed" menu="Misc" remove="true" thumb="thumbs/youtubefeed.jpg" hint="Include YouTube videos in your project. Enter a search term to display videos matching the term from YouTube." icon="icYoutube">
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></youtube><youtuberss menuItem="YouTube Feed" menu="Misc" remove="true" thumb="thumbs/youtubefeed.jpg" hint="Include YouTube videos in your project. Enter a search term to display videos matching the term from YouTube." icon="icYoutube">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <text type="textArea" label="Instructions" height="200"/>
@@ -4599,4 +4896,8 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></youtuberss></wizard>
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer></youtuberss></wizard>

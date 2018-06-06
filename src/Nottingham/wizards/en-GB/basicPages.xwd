@@ -43,4 +43,10 @@
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
 	</background>
 	
+	<pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer>
+	
 </commonNodes>
