@@ -15,6 +15,7 @@ $esc6: $accent3;
   display:table;
   padding:10px;
   font-style:normal;
+  color:green;
 }
 //****common styles for highlights***//
 @mixin highlight{
@@ -35,7 +36,7 @@ $esc6: $accent3;
   border-left: 10px solid;
   margin: 1.5em 10px;
   padding: 0.5em 10px;
-  quotes: "\201C""\201D";
+  quotes: "\201C" "\201D";
 }
 @mixin beforeblockquote {
   content: open-quote;

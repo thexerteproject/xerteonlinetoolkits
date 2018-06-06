@@ -1,17 +1,17 @@
-@charset "UTF-8";
 /*6vmin;*/
 /*2vmin;*/
 /*1vmin;*/
 /*start here and set the default values for all the variables*/
-.marker, .panel1 {
+.panel1 {
   border-radius: 3px;
   display: table;
   padding: 10px;
   font-style: normal;
+  color: green;
   background-color: #603784;
   color: #ffffff; }
 
-.marker a, .panel1 a {
+.panel1 a {
   color: #c5abdc; }
 
 .panel2 {
@@ -19,21 +19,23 @@
   display: table;
   padding: 10px;
   font-style: normal;
+  color: green;
   background-color: #F07E31;
   color: #ffffff; }
 
-var a, .panel2 a {
+.panel2 a {
   color: #fad7c0; }
 
-kbd, .panel3 {
+.panel3 {
   border-radius: 3px;
   display: table;
   padding: 10px;
   font-style: normal;
+  color: green;
   background-color: #00A1A3;
   color: #ffffff; }
 
-kbd a, .panel3 a {
+.panel3 a {
   color: #0afcff; }
 
 .panel4 {
@@ -41,10 +43,11 @@ kbd a, .panel3 a {
   display: table;
   padding: 10px;
   font-style: normal;
+  color: green;
   background-color: #4185C5;
   color: #ffffff; }
 
-a, .panel4 a {
+.panel4 a {
   color: #b6d0e9; }
 
 .panel5 {
@@ -52,25 +55,27 @@ a, .panel4 a {
   display: table;
   padding: 10px;
   font-style: normal;
+  color: green;
   background-color: #2F9739;
   color: #ffffff;
   display: table; }
 
-a, .panel5 a {
+.panel5 a {
   color: #86d98e; }
 
-code, .panel6 {
+.panel6 {
   border-radius: 3px;
   display: table;
   padding: 10px;
   font-style: normal;
+  color: green;
   background-color: #D13759;
   color: #ffffff; }
 
-code a, .panel6 a {
+.panel6 a {
   color: #eeb3c0; }
 
-samp, .highlight1 {
+.highlight1 {
   font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
@@ -83,7 +88,7 @@ samp, .highlight1 {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #603784; }
 
-tt, .highlight2 {
+.highlight2 {
   font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
@@ -148,28 +153,12 @@ tt, .highlight2 {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #D13759; }
 
-q {
-  border-bottom: 1px solid #ccc;
-  border-top: 1px solid #ccc;
-  color: #333;
-  display: block;
-  padding: 10px; }
-
-cite {
-  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  font-style: normal;
-  /*font-weight:400;
-  margin-left:20px;*/
-  padding: 10px; }
-
 blockquote {
-  font-family: Verdana, Arial, sans-serif;
-  font: 400 14px/24px 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font: 400 14px/24px Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-left: 10px solid;
   margin: 1.5em 10px;
   padding: 0.5em 10px;
-  quotes: "“" "”";
+  quotes: "\201C" "\201D";
   background: #f9f9f9;
   border-color: #ccc; }
 
@@ -306,80 +295,20 @@ blockquote:after {
   vertical-align: -0.4em;
   color: #D13759; }
 
-.bubble1 {
-  /*  display: inline-block;
-    position: relative;
-    padding: 0px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    margin-right:auto;*/
-  position: relative;
-  padding: 5px;
-  background: #603784;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  color: #fff; }
-
-.bubble1:after {
-  /*content: '';
-  position: absolute;
-  border-style: solid;
-  border-width: 15px 15px 0;
+q {
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  color: #333;
   display: block;
-  width: 0;
-  z-index: 1;
-  bottom: -15px;
-  left: 45%;*/
-  content: '';
-  position: absolute;
-  border-style: solid;
-  border-width: 10px 23px 10px 0;
-  border-color: transparent #603784;
-  display: block;
-  width: 0;
-  z-index: 1;
-  margin-top: -15px;
-  left: -23px;
-  top: 50%; }
+  padding: 10px; }
 
-/*.bubble2
-{
-  @include bubble;
-//  background: $brightcolor;
- // color:$fontcolorfobrightcolor;
-
-}
-
-.bubble2:after {
-  @include bubbleafter;
- // border-color: $brightcolor transparent;
-
-}*/
-.bubble2 {
-  display: inline-block;
-  position: relative;
-  min-height: 50px;
-  padding: 0px;
-  background: #F07E31;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  color: #fff; }
-
-.bubble2:after {
-  content: '';
-  position: absolute;
-  border-style: solid;
-  border-width: 12px 0 12px 23px;
-  border-color: transparent #F07E31;
-  display: block;
-  width: 0;
-  z-index: 1;
-  margin-top: -12px;
-  right: -23px;
-  top: 50%; }
+cite {
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  /*font-weight:400;
+  margin-left:20px;*/
+  padding: 10px; }
 
 /* Important note: unlike some older Xerte themes this part of this default theme has been developed using sass and scss files */
 /*You should not edit the editorstyles.css file directly or change values directly unless you wish to override something*/
