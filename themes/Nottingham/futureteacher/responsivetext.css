@@ -1,0 +1,194 @@
+@media (min-width: 768px) {
+  p {
+    font-size: 2.5vmin; }
+
+  body {
+    font-size: 2.5vmin; }
+
+  body ul, body ol {
+    font-size: 2.5vmin; }
+
+  li.bullet {
+    font-size: 2.5vmin; }
+
+  #grid ul li {
+    font-size: 2.5vmin; }
+
+  h3 {
+    font-size: 2.5vmin; }
+
+  .panelPage h3 {
+    font-size: 2.5vmin; }
+
+  #mainTxt h3 {
+    font-size: 2.5vmin; }
+
+  #infoHolder {
+    font-size: 2.5vmin; }
+
+  .splitScreen {
+    font-size: 2.5vmin; }
+
+  #linkHolder .panel.linkBlock {
+    font-size: 2vmin; }
+
+  .topic {
+    font-size: 2.5vmin; }
+
+  #optionHolder {
+    font-size: 2.5vmin; }
+
+  .listItem {
+    font-size: 2.5vmin; }
+
+  #categoryHolder {
+    font-size: 2.5vmin; }
+
+  #dragDropHolder {
+    font-size: 2vmin; }
+
+  #dragDropHolder .label {
+    font-size: 2vmin; }
+
+  #pageContents h3 {
+    font-size: 2.5vmin; }
+
+  #pageContents .question {
+    font-size: 2.5vmin; }
+
+  #pageContents .question input {
+    font-size: 2.5vmin; }
+
+  #pageContents #mainText {
+    font-size: 2.5vmin; }
+
+  #labelHolder {
+    font-size: 2.5vmin; }
+
+  #mainPanel .panel {
+    font-size: 2.5vmin; }
+
+  .panel #contentHolder {
+    font-size: 2.5vmin; }
+
+  .panel #btnHolder {
+    font-size: 2.5vmin; }
+
+  #infoHolder {
+    font-size: 2.5vmin; }
+
+  #targetHolder h3 {
+    font-size: 2.5vmin; }
+
+  #answerTxt {
+    font-size: 2.5vmin; }
+
+  #pageContents textarea {
+    font-size: 2.5vmin; }
+
+  #targetHolder .target {
+    font-size: 2vmin;
+    padding: 0.6vmin !important; }
+
+  #targetHolder p {
+    font-size: 2vmin; }
+
+  .labelTxt p {
+    font-size: 2vmin; }
+
+  #resultsHolder div img {
+    width: 8vmin !important;
+    padding-right: 8px;
+    clear: both; }
+
+  #hsInfo {
+    font-size: 2.5vmin; }
+
+  #x_headerBlock h2 {
+    font-size: 4vmin;
+    font-weight: bold; }
+
+  #x_headerBlock h1 {
+    font-size: 2vmin; }
+
+  .ui-accordion .ui-accordion-header a {
+    font-size: 2.5vmin; }
+
+  .ui-button-text-only .ui-button-text {
+    padding: .1em 1em; }
+
+  .ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
+    padding: .1em; }
+
+  #slideTxt {
+    font-size: 2.5vmin; }
+
+  .ui-tabs .ui-tabs-nav li a {
+    font-size: 2.5vmin;
+    padding: .4em .4em; }
+
+  .ui-button-text-only .ui-button-text, .ui-button-text-icon-secondary .ui-button-text {
+    font-size: 2.5vmin; }
+
+  .ui-button-text-icon-secondary .ui-button-text {
+    padding-right: 1.2em; }
+
+  #resultsHolder div p, #resultsHolder div a {
+    font-size: 2.5vmin; }
+
+  #optionHolder input {
+    width: 2.5vmin;
+    height: 2.5vmin; }
+
+  figcaption {
+    font-size: 2vmin;
+    margin-top: 2%; }
+
+  #chartHolder {
+    font-size: 2vmin; }
+
+  table {
+    font-size: 2.5vmin; }
+
+  #pageContents.titlePageTxt, #pageContents.titlePageTxt p {
+    font-size: 7vmin; }
+
+  .paneList a, .paneList {
+    font-size: 2vmin !important; }
+
+  .ui-dialog {
+    font-size: 2.5vmin; }
+
+  #grid ul li {
+    font-size: 2.5vmin; }
+
+  #thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3 {
+    font-size: 1.5vmin; } }
+@media only screen and (max-width: 500px) {
+  #x_pageNo {
+    vertical-align: top;
+    text-align: center;
+    display: inline-block;
+    padding-top: 12px;
+    padding-right: 5px;
+    padding-bottom: 0px;
+    padding-left: 5px;
+    margin-right: -5px;
+    height: 30px;
+    width: auto;
+    z-index: 100;
+    font-size: 12px; }
+
+  #x_footerBlock button {
+    font-size: 1em;
+    width: 1em;
+    margin-left: 5px; }
+
+  .pbContainer {
+    margin-top: 1.2em; }
+
+  .pbTxt {
+    font-size: 6px;
+    text-align: center; } }
+
+/*# sourceMappingURL=responsivetext.css.map */
