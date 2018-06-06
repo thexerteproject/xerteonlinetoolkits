@@ -2,73 +2,69 @@
 /*2vmin;*/
 /*1vmin;*/
 /*start here and set the default values for all the variables*/
+/*You should not edit the editorstyles.css file directly or change values directly unless you wish to override something*/
+/*Use SASS and the files in the scss folder name _allvariables.scss to start any customisation*/
 .panel1 {
   border-radius: 3px;
   display: table;
   padding: 10px;
   font-style: normal;
-  color: green;
-  background-color: #603784;
+  background-color: #F07E31;
   color: #ffffff; }
 
 .panel1 a {
-  color: #c5abdc; }
+  color: #fef5ef; }
 
 .panel2 {
   border-radius: 3px;
   display: table;
   padding: 10px;
   font-style: normal;
-  color: green;
-  background-color: #F07E31;
+  background-color: #2F9739;
   color: #ffffff; }
 
 .panel2 a {
-  color: #fad7c0; }
+  color: #86d98e; }
 
 .panel3 {
   border-radius: 3px;
   display: table;
   padding: 10px;
   font-style: normal;
-  color: green;
-  background-color: #00A1A3;
+  background-color: #4185C5;
   color: #ffffff; }
 
 .panel3 a {
-  color: #0afcff; }
+  color: #8fb7dd; }
 
 .panel4 {
   border-radius: 3px;
   display: table;
   padding: 10px;
   font-style: normal;
-  color: green;
-  background-color: #4185C5;
+  background-color: #00A1A3;
   color: #ffffff; }
 
 .panel4 a {
-  color: #b6d0e9; }
+  color: #3dfdff; }
 
 .panel5 {
   border-radius: 3px;
   display: table;
   padding: 10px;
   font-style: normal;
-  color: green;
-  background-color: #2F9739;
+  background-color: #603784;
   color: #ffffff;
   display: table; }
 
 .panel5 a {
-  color: #86d98e; }
+  color: #ac87cd; }
 
 .panel6 {
   border-radius: 3px;
   display: table;
   padding: 10px;
   font-style: normal;
-  color: green;
   background-color: #D13759;
   color: #ffffff; }
 
@@ -86,7 +82,7 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #603784; }
+  border-color: #F07E31; }
 
 .highlight2 {
   font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -99,7 +95,7 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #F07E31; }
+  border-color: #2F9739; }
 
 .highlight3 {
   font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -112,7 +108,7 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #00A1A3; }
+  border-color: #4185C5; }
 
 .highlight4 {
   font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -125,7 +121,7 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #4185C5; }
+  border-color: #00A1A3; }
 
 .highlight5 {
   font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -138,7 +134,7 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #2F9739; }
+  border-color: #603784; }
 
 .highlight6 {
   font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -182,7 +178,7 @@ blockquote:after {
   color: #ccc; }
 
 .bq1 {
-  border-color: #603784; }
+  border-color: #F07E31; }
 
 .bq1:after {
   content: close-quote;
@@ -190,7 +186,7 @@ blockquote:after {
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
-  color: #603784; }
+  color: #F07E31; }
 
 .bq1:before {
   content: open-quote;
@@ -198,10 +194,10 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #603784; }
+  color: #F07E31; }
 
 .bq2 {
-  border-color: #F07E31; }
+  border-color: #2F9739; }
 
 .bq2:after {
   content: close-quote;
@@ -209,7 +205,7 @@ blockquote:after {
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
-  color: #F07E31; }
+  color: #2F9739; }
 
 .bq2:before {
   content: open-quote;
@@ -217,10 +213,10 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #F07E31; }
+  color: #2F9739; }
 
 .bq3 {
-  border-color: #00A1A3; }
+  border-color: #4185C5; }
 
 .bq3:after {
   content: close-quote;
@@ -228,7 +224,7 @@ blockquote:after {
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
-  color: #00A1A3; }
+  color: #4185C5; }
 
 .bq3:before {
   content: open-quote;
@@ -236,10 +232,10 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #00A1A3; }
+  color: #4185C5; }
 
 .bq4 {
-  border-color: #4185C5; }
+  border-color: #00A1A3; }
 
 .bq4:after {
   content: close-quote;
@@ -247,7 +243,7 @@ blockquote:after {
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
-  color: #4185C5; }
+  color: #00A1A3; }
 
 .bq4:before {
   content: open-quote;
@@ -255,10 +251,10 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #4185C5; }
+  color: #00A1A3; }
 
 .bq5 {
-  border-color: #2F9739; }
+  border-color: #603784; }
 
 .bq5:after {
   content: close-quote;
@@ -266,7 +262,7 @@ blockquote:after {
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
-  color: #2F9739; }
+  color: #603784; }
 
 .bq5:before {
   content: open-quote;
@@ -274,7 +270,7 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #2F9739; }
+  color: #603784; }
 
 .bq6 {
   border-color: #D13759; }
@@ -309,9 +305,5 @@ cite {
   /*font-weight:400;
   margin-left:20px;*/
   padding: 10px; }
-
-/* Important note: unlike some older Xerte themes this part of this default theme has been developed using sass and scss files */
-/*You should not edit the editorstyles.css file directly or change values directly unless you wish to override something*/
-/*Use SASS and the files in the scss folder name _allvariables.scss snd editor_styles.css to start any customisation*/
 
 /*# sourceMappingURL=editorstyles.css.map */
