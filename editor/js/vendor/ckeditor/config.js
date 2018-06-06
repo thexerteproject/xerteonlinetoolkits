@@ -54,6 +54,23 @@ CKEDITOR.editorConfig = function( config ) {
         'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css'
     ];
+
+    if (typeof lo_data['treeroot']["attributes"]["theme"] != 'undefined' && lo_data['treeroot']["attributes"]["theme"] != 'default')
+    {
+        var themecss;
+        var xerteeditorcss = "editor/js/vendor/ckeditor/xerteeditor.css";
+
+        if (templateframework == 'xerte') {
+            themecss = 'themes/' + lo_data['treeroot']["attributes"]["targetFolder"] + '/' + lo_data['treeroot']["attributes"]["theme"] + '/' + lo_data['treeroot']["attributes"]["theme"] + '.css';
+        }
+        else
+        {
+            themecss = 'themes/' + templateframework + '/' + lo_data['treeroot']["attributes"]["theme"] + '/' + lo_data['treeroot']["attributes"]["theme"] + '.css';
+        }
+        config.contentsCss.push(themecss);
+        config.contentsCss.push(xerteeditorcss);
+
+    }
 };
 CKEDITOR.dtd.$removeEmpty.i = 0;
 CKEDITOR.dtd.$removeEmpty.span = 0;
