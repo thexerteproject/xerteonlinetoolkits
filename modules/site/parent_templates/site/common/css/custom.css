@@ -1,3 +1,4 @@
+@import url("editorStyles.css");
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
@@ -49,6 +50,11 @@
   font-weight: 300;
   line-height: 30px;
   margin-bottom: 30px;
+}
+.jumbotron #pageSubTitle .alertMsg {
+  display: block;
+  font-size: 0.7em;
+  font-weight: normal;
 }
 /* --NAVBAR-------------------------------------------------------------- */
 .navbar-inverse .brand, .navbar-inverse .nav > li > a {

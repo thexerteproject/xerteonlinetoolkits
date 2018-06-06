@@ -549,6 +549,20 @@ DashboardState.prototype.getInteractionScores = function(verb, userdata, interac
     return scores;
 };
 
+DashboardState.prototype.getAllDurations = function(userdata, interactionUrl)
+{
+    var durations = [];
+    var statements = userdata['statements'];
+    var statementList = this.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/scored");
+    var durationList = statementList.filter(function(statement) {
+        return statement.object.id == interactionUrl;
+    });
+    for (var index in durationList) {
+        var duration = durationList[index];
+        durations.push(moment.duration(duration.result.duration).asSeconds());
+    }
+    return durations;
+};
 
 DashboardState.prototype.hasStartedInteraction = function(userdata, interaction) {
     var statements = userdata['statements'];

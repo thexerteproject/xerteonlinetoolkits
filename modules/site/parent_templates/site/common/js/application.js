@@ -346,8 +346,15 @@ function setup(){
 	//add all the pages to the pages menu: this links back to the same page
 	$(data).find('page').each( function(index, value){
 		
-		if ($(this).attr('hidePage') != 'true' || authorSupport == true) {
-			
+		// work out whether the page is hidden or not - can be simply hidden or hidden between specific dates/times
+		var hidePage = checkIfHidden($(this).attr('hidePage'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Page');
+		if ($.isArray(hidePage)) {
+			$(this).attr('hidePageInfo', hidePage[1]);
+			hidePage = hidePage[0];
+		}
+		$(this).attr('hidePage', hidePage);
+		
+		if (hidePage == false || authorSupport == true) {
 			var name = $(this).attr('name');
 			
 			// remove size & background color styles from links on nav bar
@@ -737,7 +744,6 @@ function goToSection(pageId) {
 }
 
 function parseContent(pageIndex){
-	
 	//clear out existing content
 	$('#mainContent').empty();
 	$('#toc').empty();
@@ -780,8 +786,7 @@ function parseContent(pageIndex){
 			setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'));
 		}
 		
-		var msg = languageData.find("hiddenPage")[0] != undefined && languageData.find("hiddenPage")[0].getAttribute('label') != null ? languageData.find("hiddenPage")[0].getAttribute('label') : "This page will be hidden in live projects";
-		var extraTitle = page.attr('hidePage') == 'true' ? ' <span class="alertMsg">(' + msg + ')</span>' : '';
+		var extraTitle = authorSupport == true && page.attr('hidePageInfo') != undefined && page.attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + page.attr('hidePageInfo') + '</span>' : '';
 		
 		$('#pageSubTitle').html( page.attr('subtitle') + extraTitle);
 		
@@ -791,7 +796,14 @@ function parseContent(pageIndex){
 		//create the sections
 		page.find('section').each( function(index, value){
 			
-			if ($(this).attr('hidePage') != 'true' || authorSupport == true) {
+			// work out whether the section is hidden or not - can be simply hidden or hidden between specific dates/times
+			var hidePage = checkIfHidden($(this).attr('hidePage'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Section');
+			if ($.isArray(hidePage)) {
+				$(this).attr('hidePageInfo', hidePage[1]);
+				hidePage = hidePage[0];
+			}
+			
+			if (hidePage == false || authorSupport == true) {
 				
 				var sectionIndex = index;	
 				
@@ -810,8 +822,7 @@ function parseContent(pageIndex){
 				$link.find('a').append(tocName);
 				
 				//add the section header
-				var msg = languageData.find("hiddenSection")[0] != undefined && languageData.find("hiddenSection")[0].getAttribute('label') != null ? languageData.find("hiddenSection")[0].getAttribute('label') : "This section will be hidden in live projects";
-				var extraTitle = $(this).attr('hidePage') == 'true' ? '<p class="alertMsg">' + msg + '</p>' : '';
+				var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '';
 				
 				var links = '';
 				
@@ -1544,4 +1555,116 @@ function loadXotContent($this) {
 	
 	return warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
 	
+}
+
+var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hideUntilTime, type) {
+	hidePage = hidePage == "true" ? true : false;
+	
+	if (hidePage == true) {
+		// get current date/time according to browser
+		var nowTemp = new Date();
+		var now = {day:nowTemp.getDate(), month:nowTemp.getMonth()+1, year:nowTemp.getFullYear(), time:Number(String(nowTemp.getHours()) + (String(nowTemp.getMinutes()) < 10 ? '0' : '') + String(nowTemp.getMinutes()))};
+		
+		// functions to get hide on/until date/times from xml
+		var hideOn, hideUntil,
+			hideOnString = '', hideUntilString = '';
+		var getDateInfo = function(dmy, hm) {
+			// some basic checks of whether values are valid & then splits the data into time/day/month/year
+			dmy = dmy.split('/');
+			if (dmy.length != 3) {
+				return false;
+			} else {
+				var day = Math.min(Number(dmy[0]), 31),
+					month = Math.min(Number(dmy[1]), 12),
+					year = Math.max(Number(dmy[2]), 2017),
+					time = 0; // use midnight if no time is given
+				
+				if (hm != undefined && hm.trim() != '') {
+					var hm = hm.split(':');
+					if (hm.length == 2) {
+						var hour = Math.min(Number(hm[0]), 23),
+							minute = Math.min(Number(hm[1]), 59);
+						time = Number(String(hour) + (minute < 10 ? '0' : '') + String(minute));
+					}
+				}
+				
+				return {day:day, month:month, year:year, time:time};
+			}
+		}
+		
+		var getFullDate = function(info) {
+			var timeZero = '';
+			for (var i=0; i<4-String(info.time).length; i++) {
+				timeZero += '0';
+			}
+			return Number(String(info.year) + (info.month < 10 ? '0' : '') + String(info.month) + (info.day < 10 ? '0' : '') + String(info.day) + timeZero + String(info.time));
+		}
+		
+		// is it hidden from a certain date? if so, have we passed that date/time?
+		if (hideOnDate != undefined && hideOnDate != '') {
+			hideOn = getDateInfo(hideOnDate, hideOnTime);
+			
+			if (hideOn != false) {
+				if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
+					hidePage = false;
+				}
+				
+				hideOnString = '{from}: ' + hideOnDate + ' ' + hideOnTime;
+			}
+		}
+		
+		// is it hidden until a certain date? if so, have we passed that date/time?
+		if (hideUntilDate != undefined && hideUntilDate != '') {
+			hideUntil = getDateInfo(hideUntilDate, hideUntilTime);
+			
+			if (hideUntil != false) {
+				// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
+				var skip = false;
+				if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
+					if (hidePage == false) {
+						hidePage = true;
+					} else {
+						skip = true;
+					}
+				}
+				
+				if (skip != true && hidePage == true) {
+					if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+						hidePage = false;
+					}
+				}
+				
+				hideUntilString = '{until}: ' + hideUntilDate + ' ' + hideUntilTime;
+			}
+		}
+		
+		// put together the message that will appear in author support
+		var infoString = '';
+		if (hideOnString != '') {
+			infoString += '(' + hideOnString;
+		}
+		if (hideUntilString != '') {
+			if (infoString == '') { infoString += '('; } else { infoString += ' & '; }
+			infoString += hideUntilString;
+		}
+		if (infoString != '') { infoString += ')'; }
+		
+		if (hidePage == true) {
+			infoString = '{hidden} ' + infoString;
+		} else {
+			infoString = '{shown} ' + infoString;
+		}
+		
+		var langData = languageData.find('hidden' + type)[0];
+		infoString = infoString
+			.replace('{from}', langData != undefined && langData.getAttribute('from') != "" && langData.getAttribute('from') != null ? langData.getAttribute('from') : 'Hide from')
+			.replace('{until}', langData != undefined && langData.getAttribute('until') != "" && langData.getAttribute('until') != null ? langData.getAttribute('until') : 'Hide until')
+			.replace('{hidden}', langData != undefined && langData.getAttribute('hidden') != "" && langData.getAttribute('hidden') != null ? langData.getAttribute('hidden') : 'This page is currently hidden in live projects')
+			.replace('{shown}', langData != undefined && langData.getAttribute('shown') != "" && langData.getAttribute('shown') != null ? langData.getAttribute('shown') : 'This page is currently shown in live projects');
+		
+		return [hidePage, infoString];
+		
+	} else {
+		return false;
+	}
 }

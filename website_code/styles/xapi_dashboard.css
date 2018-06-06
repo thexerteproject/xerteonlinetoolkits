@@ -4,15 +4,21 @@ body{
 
 .header{
   color:white;
+  padding-left: 10px;
 }
 
 table {
     empty-cells: show;
 }
 
+.popover {
+    /* set to 276px in bootstrap.css so override here */
+    max-width: none;
+}
+
 .journeyData table{
   overflow-x: visible;
-  margin: auto 20px;
+  border: 0px;
 }
 
 .journeyData th{
@@ -40,6 +46,15 @@ td a{
 
 #options-div label{
     margin-right: 5px;
+    margin-bottom: 0px;
+}
+
+#options-div
+{
+    width: 100%;
+    background-color: #ededed;
+    border-radius: 4px;
+
 }
 
 .status-green{
@@ -146,10 +161,13 @@ td a{
     flex-wrap: wrap;
     margin-right: -15px;
     margin-left: -15px;
-    background-color: #ededed;
     color: #a01a13;
     padding-left:20px;
     padding-right:20px;
+}
+.dash-row input[type=text] {
+
+    width:100px;
 }
 
 .dash-col-1
@@ -176,6 +194,15 @@ th.x-dashboard-interaction {
     margin-top:4px;
 }
 
+#journeyData
+{
+    overflow: auto;
+    position: absolute;
+    top: 64px;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+}
 .journeyData th a{
     font-family: Arial;
     color: #000;
@@ -195,7 +222,7 @@ th.x-dashboard-interaction {
 
 .unanonymous-view {
     display: none;
-    margin-top: 3px;
+    padding-top: 8px;
     margin-right: 10px;
 }
 
@@ -203,6 +230,15 @@ td.x-dashboard-interaction
 {
     background: #f4f4f4;
 }
+
+.panel{
+    width: 600px;
+    padding: 5px;
+    border: solid 1px #000000;
+    border-radius: 4px;
+    margin-bottom:10px;
+}
+
 /* FONT AWESOME BUTTON ICONS */
 
 /* chevron */
@@ -250,3 +286,4 @@ td.x-dashboard-interaction
 .fa-x--cross {
     content: "\f00d"; color: #ff0000;
 }
+

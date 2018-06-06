@@ -16,122 +16,142 @@
 // For more information refer to: http://docs.ckeditor.com/#!/guide/dev_styles-section-style-rules
 
 CKEDITOR.stylesSet.add( 'default', [
-	/* Block styles */
+    /* Block styles */
 
-	// These styles are already available in the "Format" drop-down list ("format" plugin),
-	// so they are not needed here by default. You may enable them to avoid
-	// placing the "Format" combo in the toolbar, maintaining the same features.
-	/*
-	{ name: 'Paragraph',		element: 'p' },
-	{ name: 'Heading 1',		element: 'h1' },
-	{ name: 'Heading 2',		element: 'h2' },
-	{ name: 'Heading 3',		element: 'h3' },
-	{ name: 'Heading 4',		element: 'h4' },
-	{ name: 'Heading 5',		element: 'h5' },
-	{ name: 'Heading 6',		element: 'h6' },
-	{ name: 'Preformatted Text',element: 'pre' },
-	{ name: 'Address',			element: 'address' },
-	*/
+    // These styles are already available in the "Format" drop-down list ("format" plugin),
+    // so they are not needed here by default. You may enable them to avoid
+    // placing the "Format" combo in the toolbar, maintaining the same features.
+    /*
+    { name: 'Paragraph',		element: 'p' },
+    { name: 'Heading 1',		element: 'h1' },
+    { name: 'Heading 2',		element: 'h2' },
+    { name: 'Heading 3',		element: 'h3' },
+    { name: 'Heading 4',		element: 'h4' },
+    { name: 'Heading 5',		element: 'h5' },
+    { name: 'Heading 6',		element: 'h6' },
+    { name: 'Preformatted Text',element: 'pre' },
+    { name: 'Address',			element: 'address' },
+    */
 
-	{ name: 'Italic Title',		element: 'h2', styles: { 'font-style': 'italic' } },
-	{ name: 'Subtitle',			element: 'h3', styles: { 'color': '#aaa', 'font-style': 'italic' } },
-	{
-		name: 'Special Container',
-		element: 'div',
-		styles: {
-			padding: '5px 10px',
-			background: '#eee',
-			border: '1px solid #ccc'
-		}
-	},
+    { name: 'Italic Title',		element: 'h2', styles: { 'font-style': 'italic' } },
+    { name: 'Subtitle',			element: 'h3', styles: { 'color': '#aaa', 'font-style': 'italic' } },
+    {
+        name: 'Special Container',
+        element: 'div',
+        styles: {
+            padding: '5px 10px',
+            background: '#eee',
+            border: '1px solid #ccc'
+        }
+    },
 
-	/* Inline styles */
+    /* Inline styles */
 
-	// These are core styles available as toolbar buttons. You may opt enabling
-	// some of them in the Styles drop-down list, removing them from the toolbar.
-	// (This requires the "stylescombo" plugin.)
-	/*
-	{ name: 'Strong',			element: 'strong', overrides: 'b' },
-	{ name: 'Emphasis',			element: 'em'	, overrides: 'i' },
-	{ name: 'Underline',		element: 'u' },
-	{ name: 'Strikethrough',	element: 'strike' },
-	{ name: 'Subscript',		element: 'sub' },
-	{ name: 'Superscript',		element: 'sup' },
-	*/
+    // These are core styles available as toolbar buttons. You may opt enabling
+    // some of them in the Styles drop-down list, removing them from the toolbar.
+    // (This requires the "stylescombo" plugin.)
+    /*
+    { name: 'Strong',			element: 'strong', overrides: 'b' },
+    { name: 'Emphasis',			element: 'em'	, overrides: 'i' },
+    { name: 'Underline',		element: 'u' },
+    { name: 'Strikethrough',	element: 'strike' },
+    { name: 'Subscript',		element: 'sub' },
+    { name: 'Superscript',		element: 'sup' },
+    */
+    { name: 'Panel 1',			element: 'span', attributes: { 'class': 'panel1' } },
+    { name: 'Panel 2',			element: 'span', attributes: { 'class': 'panel2' } },
+    { name: 'Panel 3',			element: 'span', attributes: { 'class': 'panel3' } },
+    { name: 'Panel 4',			element: 'span', attributes: { 'class': 'panel4' } },
+    { name: 'Panel 5',			element: 'span', attributes: { 'class': 'panel5' } },
+    { name: 'Panel 6',			element: 'span', attributes: { 'class': 'panel6' } },
 
-	{ name: 'Marker',			element: 'span', attributes: { 'class': 'marker' } },
+    { name: 'Highlight 1',			element: 'span', attributes: { 'class': 'highlight1' } },
+    { name: 'Highlight 2',			element: 'span', attributes: { 'class': 'highlight2' } },
+    { name: 'Highlight 3',			element: 'span', attributes: { 'class': 'highlight3' } },
+    { name: 'Highlight 4',			element: 'span', attributes: { 'class': 'highlight4' } },
+    { name: 'Highlight 5',			element: 'span', attributes: { 'class': 'highlight5' } },
+    { name: 'Highlight 6',			element: 'span', attributes: { 'class': 'highlight6' } },
 
-	{ name: 'Big',				element: 'big' },
-	{ name: 'Small',			element: 'small' },
-	{ name: 'Typewriter',		element: 'tt' },
+    { name: 'Blockquote 1',			element: 'blockquote', attributes: { 'class': 'bq1' } },
+    { name: 'Blockquote 2',			element: 'blockquote', attributes: { 'class': 'bq2' } },
+    { name: 'Blockquote 3',			element: 'blockquote', attributes: { 'class': 'bq3' } },
+    { name: 'Blockquote 4',			element: 'blockquote', attributes: { 'class': 'bq4' } },
+    { name: 'Blockquote 5',			element: 'blockquote', attributes: { 'class': 'bq5' } },
+    { name: 'Blockquote 6',			element: 'blockquote', attributes: { 'class': 'bq6' } },
 
-	{ name: 'Computer Code',	element: 'code' },
-	{ name: 'Keyboard Phrase',	element: 'kbd' },
-	{ name: 'Sample Text',		element: 'samp' },
-	{ name: 'Variable',			element: 'var' },
+    { name: 'Marker',			element: 'span', attributes: { 'class': 'marker' } },
 
-	{ name: 'Deleted Text',		element: 'del' },
-	{ name: 'Inserted Text',	element: 'ins' },
+    { name: 'Big',				element: 'big' },
+    { name: 'Small',			element: 'small' },
+    { name: 'Typewriter',		element: 'tt' },
 
-	{ name: 'Cited Work',		element: 'cite' },
-	{ name: 'Inline Quotation',	element: 'q' },
+    { name: 'Computer Code',	element: 'code' },
+    { name: 'Keyboard Phrase',	element: 'kbd' },
+    { name: 'Sample Text',		element: 'samp' },
+    { name: 'Variable',			element: 'var' },
 
-	{ name: 'Language: RTL',	element: 'span', attributes: { 'dir': 'rtl' } },
-	{ name: 'Language: LTR',	element: 'span', attributes: { 'dir': 'ltr' } },
+    { name: 'Deleted Text',		element: 'del' },
+    { name: 'Inserted Text',	element: 'ins' },
 
-	/* Object styles */
+    { name: 'Cited Work',		element: 'cite' },
+    { name: 'Inline Quotation',	element: 'q' },
 
-	{
-		name: 'Styled Image (left)',
-		element: 'img',
-		attributes: { 'class': 'left' }
-	},
+    { name: 'Language: RTL',	element: 'span', attributes: { 'dir': 'rtl' } },
+    { name: 'Language: LTR',	element: 'span', attributes: { 'dir': 'ltr' } },
 
-	{
-		name: 'Styled Image (right)',
-		element: 'img',
-		attributes: { 'class': 'right' }
-	},
+    /* Object styles */
 
-	{
-		name: 'Compact Table',
-		element: 'table',
-		attributes: {
-			cellpadding: '5',
-			cellspacing: '0',
-			border: '1',
-			bordercolor: '#ccc'
-		},
-		styles: {
-			'border-collapse': 'collapse'
-		}
-	},
+    {
+        name: 'Styled Image (left)',
+        element: 'img',
+        attributes: { 'class': 'left' }
+    },
 
-	{ name: 'Borderless Table',		element: 'table',	styles: { 'border-style': 'hidden', 'background-color': '#E6E6FA' } },
-	{ name: 'Square Bulleted List',	element: 'ul',		styles: { 'list-style-type': 'square' } },
+    {
+        name: 'Styled Image (right)',
+        element: 'img',
+        attributes: { 'class': 'right' }
+    },
 
-	/* Widget styles */
+    {
+        name: 'Compact Table',
+        element: 'table',
+        attributes: {
+            cellpadding: '5',
+            cellspacing: '0',
+            border: '1',
+            bordercolor: '#ccc'
+        },
+        styles: {
+            'border-collapse': 'collapse'
+        }
+    },
 
-	{ name: 'Clean Image', type: 'widget', widget: 'image', attributes: { 'class': 'image-clean' } },
-	{ name: 'Grayscale Image', type: 'widget', widget: 'image', attributes: { 'class': 'image-grayscale' } },
+    { name: 'Borderless Table',		element: 'table',	styles: { 'border-style': 'hidden', 'background-color': '#E6E6FA' } },
+    { name: 'Square Bulleted List',	element: 'ul',		styles: { 'list-style-type': 'square' } },
 
-	{ name: 'Featured Snippet', type: 'widget', widget: 'codeSnippet', attributes: { 'class': 'code-featured' } },
+    /* Widget styles */
 
-	{ name: 'Featured Formula', type: 'widget', widget: 'mathjax', attributes: { 'class': 'math-featured' } },
+    { name: 'Clean Image', type: 'widget', widget: 'image', attributes: { 'class': 'image-clean' } },
+    { name: 'Grayscale Image', type: 'widget', widget: 'image', attributes: { 'class': 'image-grayscale' } },
 
-	{ name: '240p', type: 'widget', widget: 'embedSemantic', attributes: { 'class': 'embed-240p' }, group: 'size' },
-	{ name: '360p', type: 'widget', widget: 'embedSemantic', attributes: { 'class': 'embed-360p' }, group: 'size' },
-	{ name: '480p', type: 'widget', widget: 'embedSemantic', attributes: { 'class': 'embed-480p' }, group: 'size' },
-	{ name: '720p', type: 'widget', widget: 'embedSemantic', attributes: { 'class': 'embed-720p' }, group: 'size' },
-	{ name: '1080p', type: 'widget', widget: 'embedSemantic', attributes: { 'class': 'embed-1080p' }, group: 'size' },
+    { name: 'Featured Snippet', type: 'widget', widget: 'codeSnippet', attributes: { 'class': 'code-featured' } },
 
-	// Adding space after the style name is an intended workaround. For now, there
-	// is no option to create two styles with the same name for different widget types. See #16664.
-	{ name: '240p ', type: 'widget', widget: 'embed', attributes: { 'class': 'embed-240p' }, group: 'size' },
-	{ name: '360p ', type: 'widget', widget: 'embed', attributes: { 'class': 'embed-360p' }, group: 'size' },
-	{ name: '480p ', type: 'widget', widget: 'embed', attributes: { 'class': 'embed-480p' }, group: 'size' },
-	{ name: '720p ', type: 'widget', widget: 'embed', attributes: { 'class': 'embed-720p' }, group: 'size' },
-	{ name: '1080p ', type: 'widget', widget: 'embed', attributes: { 'class': 'embed-1080p' }, group: 'size' }
+    { name: 'Featured Formula', type: 'widget', widget: 'mathjax', attributes: { 'class': 'math-featured' } },
+
+    { name: '240p', type: 'widget', widget: 'embedSemantic', attributes: { 'class': 'embed-240p' }, group: 'size' },
+    { name: '360p', type: 'widget', widget: 'embedSemantic', attributes: { 'class': 'embed-360p' }, group: 'size' },
+    { name: '480p', type: 'widget', widget: 'embedSemantic', attributes: { 'class': 'embed-480p' }, group: 'size' },
+    { name: '720p', type: 'widget', widget: 'embedSemantic', attributes: { 'class': 'embed-720p' }, group: 'size' },
+    { name: '1080p', type: 'widget', widget: 'embedSemantic', attributes: { 'class': 'embed-1080p' }, group: 'size' },
+
+    // Adding space after the style name is an intended workaround. For now, there
+    // is no option to create two styles with the same name for different widget types. See #16664.
+    { name: '240p ', type: 'widget', widget: 'embed', attributes: { 'class': 'embed-240p' }, group: 'size' },
+    { name: '360p ', type: 'widget', widget: 'embed', attributes: { 'class': 'embed-360p' }, group: 'size' },
+    { name: '480p ', type: 'widget', widget: 'embed', attributes: { 'class': 'embed-480p' }, group: 'size' },
+    { name: '720p ', type: 'widget', widget: 'embed', attributes: { 'class': 'embed-720p' }, group: 'size' },
+    { name: '1080p ', type: 'widget', widget: 'embed', attributes: { 'class': 'embed-1080p' }, group: 'size' }
 
 ] );
 

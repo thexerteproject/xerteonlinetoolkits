@@ -18,8 +18,6 @@
     <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required" />		
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically" />
     <quesCount label="{i} of {n} words" type="TextInput" wysiwyg="true" language="true" />
-	
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
 
   </hangman>
 

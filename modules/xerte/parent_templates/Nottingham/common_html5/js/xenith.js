@@ -163,12 +163,119 @@ x_projectDataLoaded = function(xmlData) {
     for (i = 0, len = xmlData[0].attributes.length; i < len; i++) {
         x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
     }
+	
+	// author support should only work when previewed (not play link)
+	if (x_params.authorSupport == "true") {
+		if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") == -1) {
+			x_params.authorSupport = "false";
+		}
+	}
 
     x_pages = xmlData.children();
 	var pageToHide = [];
 	var currActPage = 0;
     x_pages.each(function (i) {
-		if ($(this)[0].getAttribute("hidePage") != "true" || (x_params.authorSupport == "true" && window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1)) {
+		// work out whether the page is hidden or not - can be simply hidden or hidden between specific dates/times
+		var hidePage = $(this)[0].getAttribute("hidePage") == "true" ? true : false;
+		if (hidePage == true) {
+			// get current date/time according to browser
+			var nowTemp = new Date();
+			var now = {day:nowTemp.getDate(), month:nowTemp.getMonth()+1, year:nowTemp.getFullYear(), time:Number(String(nowTemp.getHours()) + (String(nowTemp.getMinutes()) < 10 ? '0' : '') + String(nowTemp.getMinutes()))};
+			
+			// functions to get hide on/until date/times from xml
+			var hideOn, hideUntil,
+				hideOnString = '', hideUntilString = '';
+			var getDateInfo = function(dmy, hm) {
+				// some basic checks of whether values are valid & then splits the data into time/day/month/year
+				dmy = dmy.split('/');
+				if (dmy.length != 3) {
+					return false;
+				} else {
+					var day = Math.min(Number(dmy[0]), 31),
+						month = Math.min(Number(dmy[1]), 12),
+						year = Math.max(Number(dmy[2]), 2017),
+						time = 0; // use midnight if no time is given
+					
+					if (hm != undefined && hm.trim() != '') {
+						var hm = hm.split(':');
+						if (hm.length == 2) {
+							var hour = Math.min(Number(hm[0]), 23),
+								minute = Math.min(Number(hm[1]), 59);
+							time = Number(String(hour) + (minute < 10 ? '0' : '') + String(minute));
+						}
+					}
+					
+					return {day:day, month:month, year:year, time:time};
+				}
+			}
+			
+			var getFullDate = function(info) {
+				var timeZero = '';
+				for (var i=0; i<4-String(info.time).length; i++) {
+					timeZero += '0';
+				}
+				return Number(String(info.year) + (info.month < 10 ? '0' : '') + String(info.month) + (info.day < 10 ? '0' : '') + String(info.day) + timeZero + String(info.time));
+			}
+			
+			// is it hidden from a certain date? if so, have we passed that date/time?
+			if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
+				hideOn = getDateInfo($(this)[0].getAttribute("hideOnDate"), $(this)[0].getAttribute("hideOnTime"));
+				
+				if (hideOn != false) {
+					if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
+						hidePage = false;
+					}
+					
+					hideOnString = '{from}: ' + $(this)[0].getAttribute("hideOnDate") + ' ' + $(this)[0].getAttribute("hideOnTime");
+				}
+			}
+			
+			// is it hidden until a certain date? if so, have we passed that date/time?
+			if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
+				hideUntil = getDateInfo($(this)[0].getAttribute("hideUntilDate"), $(this)[0].getAttribute("hideUntilTime"));
+				
+				if (hideUntil != false) {
+					// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
+					var skip = false;
+					if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
+						if (hidePage == false) {
+							hidePage = true;
+						} else {
+							skip = true;
+						}
+					}
+					
+					if (skip != true && hidePage == true) {
+						if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+							hidePage = false;
+						}
+					}
+					
+					hideUntilString = '{until}: ' + $(this)[0].getAttribute("hideUntilDate") + ' ' + $(this)[0].getAttribute("hideUntilTime");
+				}
+			}
+			
+			// language data hasn't been sorted yet so temporarily just store the attribute name of where we can later get the language we need
+			var infoString = '';
+			if (hideOnString != '') {
+				infoString += '(' + hideOnString;
+			}
+			if (hideUntilString != '') {
+				if (infoString == '') { infoString += '('; } else { infoString += ' & '; }
+				infoString += hideUntilString;
+			}
+			if (infoString != '') { infoString += ')'; }
+			
+			if (hidePage == true) {
+				infoString = '{hidden} ' + infoString;
+			} else {
+				infoString = '{shown} ' + infoString;
+			}
+			
+			$(this)[0].setAttribute("hidePageInfo", infoString);
+		}
+		
+		if (hidePage == false || x_params.authorSupport == "true") {
 			var linkID = $(this)[0].getAttribute("linkID"),
 				pageID = $(this)[0].getAttribute("pageID"),
 				page = {type: $(this)[0].nodeName, built: false};
@@ -481,15 +588,9 @@ function x_setUp() {
 		
 		$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
 		
-		
-		// author support should only work in preview mode (not play)
 		if (x_params.authorSupport == "true") {
-			if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") == -1) {
-				x_params.authorSupport = "false";
-			} else {
-				var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
-				$x_headerBlock.prepend('<div id="x_authorSupportMsg" class="alert"><p>' + msg + '</p></div>');
-			}
+			var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
+			$x_headerBlock.prepend('<div id="x_authorSupportMsg" class="alert"><p>' + msg + '</p></div>');
 		}
 		
 		// calculate author set variables
@@ -1560,7 +1661,17 @@ function x_changePageStep5(x_gotoPage) {
 			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", "") + '</p>');
 		}
 		
-		var extraTitle = x_currentPageXML.getAttribute("hidePage") == "true" ? ' <span class="alert">' + (x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") : "This page will be hidden in live projects") + '</span>' : '';
+		var extraTitle = "";
+		if (x_params.authorSupport == "true" && x_currentPageXML.getAttribute("hidePage") == "true") {
+			// sort the string - language data wasn't available when hidePageInfo was created
+			var str = x_currentPageXML.getAttribute("hidePageInfo")
+				.replace('{from}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "from", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "from", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "from", "") : 'Hide from')
+				.replace('{until}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "until", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "until", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "until", "") : 'Hide until')
+				.replace('{hidden}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "hidden", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "hidden", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "hidden", "") : 'This page is currently hidden in live projects')
+				.replace('{shown}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "shown", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "shown", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "shown", "") : 'This page is currently shown in live projects');
+			
+			extraTitle = ' <span class="alert">' + str + '</span>';
+		}
 		
 		pageTitle = pageTitle + extraTitle;
     }
@@ -1907,7 +2018,11 @@ function x_addNarration() {
 
 // function adds timer bar above main controls on interface - optional property that can be added to any interactivity page
 function x_addCountdownTimer() {
-    var x_timerLangInfo = [x_getLangInfo(x_languageData.find("timer").find("remaining")[0], "name", "Time remaining"), x_getLangInfo(x_languageData.find("timer").find("timeUp")[0], "name", "Time up"), x_getLangInfo(x_languageData.find("timer").find("seconds")[0], "name", "seconds")];
+    var x_timerLangInfo = [
+		x_getLangInfo(x_languageData.find("timer").find("remaining")[0], "name", "Time remaining"),
+		x_currentPageXML.getAttribute("timerLabel") != null && x_currentPageXML.getAttribute("timerLabel") != "" ? x_currentPageXML.getAttribute("timerLabel") : x_getLangInfo(x_languageData.find("timer").find("timeUp")[0], "name", "Time up"),
+		x_getLangInfo(x_languageData.find("timer").find("seconds")[0], "name", "seconds")
+	];
 
     var x_countdownTicker = function () {
         x_countdownTimer--;
@@ -1944,7 +2059,7 @@ function x_addCountdownTimer() {
     };
 
     var x_countdownTimer;
-    if (x_currentPageXML.getAttribute("timer") != null && x_currentPageXML.getAttribute("timer") != "") {
+    if ((x_currentPageXML.getAttribute("showTimer") == null || x_currentPageXML.getAttribute("showTimer") == "true") && (x_currentPageXML.getAttribute("timer") != null && x_currentPageXML.getAttribute("timer") != "")) {
         clearInterval(x_timer);
         $("#x_footerBlock div:first").before('<div id="x_pageTimer"></div>');
         x_countdownTimer = parseInt(x_currentPageXML.getAttribute("timer"));

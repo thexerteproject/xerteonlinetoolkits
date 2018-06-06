@@ -590,7 +590,11 @@ function setupMainLayout()
             center: {
                 //paneSelector:           "#mainContent",
                 minWidth:               200,
-                minHeight:              200/*,
+                minHeight:              200,
+                onresize:               function(){
+                    showInformationAndSetStatus(workspace.current_node);
+                }
+                /*,
                  contentSelector:        ".ui-layout-content"*/
             }
         };
@@ -749,13 +753,15 @@ function init_workspace()
         $workspace.bind('select_node.jstree', function (event, data) {
 
                 button_check();
+                workspace.current_node = data.node;
                 showInformationAndSetStatus(data.node);
 
         })
         .bind('deselect_node.jstree', function (event, data) {
 
-                button_check();
-                showInformationAndSetStatus();
+            button_check();
+            workspace.current_node = "";
+            showInformationAndSetStatus();
 
         })
         .bind('move_node.jstree',function(event,data)
@@ -831,7 +837,7 @@ function init_workspace()
 
 function showInformationAndSetStatus(node)
 {
-	if (node == undefined) {
+	if (node == undefined || (typeof node == "string" && node == "")) {
 		$("#project_information").html("");
 		
 	} else { 
