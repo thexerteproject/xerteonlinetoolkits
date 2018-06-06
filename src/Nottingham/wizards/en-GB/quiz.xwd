@@ -53,8 +53,6 @@
 		<video label="Video" type="media" defaultValue="Select a Video" optional="true"/>
 		<movieSize label="Size" type="textInput" defaultValue="320,240" optional="true"/>
 	</videoInfo>
-	
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
 
     <newNodes>
       <question><![CDATA[<question prompt="Enter question" name="Question" type="Single Answer" />]]></question>

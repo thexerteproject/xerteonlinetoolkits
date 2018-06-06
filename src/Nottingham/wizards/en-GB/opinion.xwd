@@ -30,7 +30,6 @@
 
 	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
 	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
     <diagram label="Hide diagram" type="CheckBox" defaultValue="false" optional="true"/>
     <layout label="Layout options" type="group" optional="true">
       <list label="Show questions in list" type="checkbox" optional="true" tooltip="Show more than one question per page" defaultValue="false"/>
