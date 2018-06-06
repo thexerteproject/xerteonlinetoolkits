@@ -1,0 +1,29 @@
+//*define color pallette*/
+$brightcolor:#F07E31;
+$accent1: #2F9739;
+$contrastcolor:#4185C5;
+$accent2: #00A1A3;
+$darkestcolor: #603784;
+$accent3:#D13759;
+$lightestcolor:#F4F4F6;
+$whiteorlightest:#ffffff;
+$blackordarkest:#000000;
+
+//Note additional colors are also set in _editorstyles//
+//and some of the above colors are referenced in _editorstyles//
+
+//*set font family*/
+$mainfonts: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+$secondaryfonts:Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+//*define font colors to match the background colors*/
+$mainfontcolour: $blackordarkest;
+$fontcolorfordarkestcolor:#ffffff;
+$fontcolorforlightestcolor:#000000;
+$fontcolorfobrightcolor:#ffffff;
+$fontcolorforcontrastcolor:#ffffff;
+
+//*define rounded corner and other sizes*/
+$largeroundedcorners: 3px;/*6vmin;*/
+$mediumroundedcorners: 3px;/*2vmin;*/
+$smallroundedcorners: 3px;/*1vmin;*/
