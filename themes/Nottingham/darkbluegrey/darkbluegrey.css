@@ -634,7 +634,7 @@ div#shorturltodisplay a {
   color: #eeb3c0; }
 
 .highlight1 {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background: #39424e;
   display: table;
   font-weight: lighter;
@@ -647,7 +647,7 @@ div#shorturltodisplay a {
   border-color: #F07E31; }
 
 .highlight2 {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background: #39424e;
   display: table;
   font-weight: lighter;
@@ -660,7 +660,7 @@ div#shorturltodisplay a {
   border-color: #2F9739; }
 
 .highlight3 {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background: #39424e;
   display: table;
   font-weight: lighter;
@@ -673,7 +673,7 @@ div#shorturltodisplay a {
   border-color: #4185C5; }
 
 .highlight4 {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background: #39424e;
   display: table;
   font-weight: lighter;
@@ -686,7 +686,7 @@ div#shorturltodisplay a {
   border-color: #00A1A3; }
 
 .highlight5 {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background: #39424e;
   display: table;
   font-weight: lighter;
@@ -699,7 +699,7 @@ div#shorturltodisplay a {
   border-color: #603784; }
 
 .highlight6 {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background: #39424e;
   display: table;
   font-weight: lighter;
@@ -869,7 +869,7 @@ cite {
   padding: 10px; }
 
 .marker {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background-color: #1D202D;
   color: #ffffff;
   border-radius: 0;

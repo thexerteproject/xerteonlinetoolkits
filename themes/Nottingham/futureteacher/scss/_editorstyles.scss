@@ -10,7 +10,7 @@ $esc6: $accent3;
 //*****editor styles*****/
 //****common styles for panels***//
 @mixin panel {
-  font:$mainfonts;
+  font-family:$mainfonts;
   border-radius:$smallroundedcorners;
   display:table;
   padding:10px;
@@ -18,7 +18,7 @@ $esc6: $accent3;
 }
 //****common styles for highlights***//
 @mixin highlight{
-  font:$mainfonts;
+  font-family:$mainfonts;
   background: #fff;
   display: table;
   font-weight: lighter;

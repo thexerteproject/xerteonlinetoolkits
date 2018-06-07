@@ -14,7 +14,7 @@ $esc6: $accent3;
 //*****editor styles*****/
 //****common styles for panels***//
 @mixin panel {
-  // font:$mainfonts;
+  // font-family:$mainfonts;
   border-radius:$smallroundedcorners;
   display:table;
   padding:10px;
@@ -22,7 +22,7 @@ $esc6: $accent3;
 }
 //****common styles for highlights***//
 @mixin highlight{
-  font:$mainfonts;
+  font-family:$mainfonts;
   background: lighten($darkestcolor, 3%);
   display: table;
   font-weight: lighter;
@@ -223,7 +223,7 @@ blockquote:after {
 
 //*****default editor styles*****/
 .marker {
-  font:$mainfonts;
+  font-family:$mainfonts;
   background-color:$darkestcolor;
   color:$lightestcolor;
   border-radius:$smallroundedcorners;

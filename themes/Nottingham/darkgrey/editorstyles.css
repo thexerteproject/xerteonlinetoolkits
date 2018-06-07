@@ -72,7 +72,7 @@
   color: #eeb3c0; }
 
 .highlight1 {
-  font: Arial, sans-serif;
+  font-family: Arial, sans-serif;
   background: #363636;
   display: table;
   font-weight: lighter;
@@ -85,7 +85,7 @@
   border-color: #F07E31; }
 
 .highlight2 {
-  font: Arial, sans-serif;
+  font-family: Arial, sans-serif;
   background: #363636;
   display: table;
   font-weight: lighter;
@@ -98,7 +98,7 @@
   border-color: #2F9739; }
 
 .highlight3 {
-  font: Arial, sans-serif;
+  font-family: Arial, sans-serif;
   background: #363636;
   display: table;
   font-weight: lighter;
@@ -111,7 +111,7 @@
   border-color: #4185C5; }
 
 .highlight4 {
-  font: Arial, sans-serif;
+  font-family: Arial, sans-serif;
   background: #363636;
   display: table;
   font-weight: lighter;
@@ -124,7 +124,7 @@
   border-color: #00A1A3; }
 
 .highlight5 {
-  font: Arial, sans-serif;
+  font-family: Arial, sans-serif;
   background: #363636;
   display: table;
   font-weight: lighter;
@@ -137,7 +137,7 @@
   border-color: #603784; }
 
 .highlight6 {
-  font: Arial, sans-serif;
+  font-family: Arial, sans-serif;
   background: #363636;
   display: table;
   font-weight: lighter;

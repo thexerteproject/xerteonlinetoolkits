@@ -67,7 +67,7 @@
   color: #eeb3c0; }
 
 .highlight1 {
-  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -80,7 +80,7 @@
   border-color: #0098C3; }
 
 .highlight2 {
-  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -93,7 +93,7 @@
   border-color: #89C2C0; }
 
 .highlight3 {
-  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -106,7 +106,7 @@
   border-color: #005172; }
 
 .highlight4 {
-  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -119,7 +119,7 @@
   border-color: #00A1A3; }
 
 .highlight5 {
-  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -132,7 +132,7 @@
   border-color: #3C3C3C; }
 
 .highlight6 {
-  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;

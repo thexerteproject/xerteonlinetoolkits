@@ -7,7 +7,7 @@
 /*start here and set the default values for all the variables*/
 /*****editor styles*****/
 .marker {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background-color: #005172;
   color: #ffffff;
   border-radius: 1vmin;

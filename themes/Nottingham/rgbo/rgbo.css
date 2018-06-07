@@ -668,7 +668,7 @@ div#shorturltodisplay a {
   color: #eeb3c0; }
 
 .highlight1 {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -681,7 +681,7 @@ div#shorturltodisplay a {
   border-color: green; }
 
 .highlight2 {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -694,7 +694,7 @@ div#shorturltodisplay a {
   border-color: red; }
 
 .highlight3 {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -707,7 +707,7 @@ div#shorturltodisplay a {
   border-color: #0087C6; }
 
 .highlight4 {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -720,7 +720,7 @@ div#shorturltodisplay a {
   border-color: orange; }
 
 .highlight5 {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -733,7 +733,7 @@ div#shorturltodisplay a {
   border-color: #222222; }
 
 .highlight6 {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -746,7 +746,7 @@ div#shorturltodisplay a {
   border-color: #D13759; }
 
 blockquote {
-  font: 400 14px/24px Roboto, "Segoe UI", Tahoma, sans-serif;
+  font: 400 14px/24px Arial, sans-serif;
   border-left: 10px solid;
   margin: 1.5em 10px;
   padding: 0.5em 10px;
@@ -888,7 +888,7 @@ blockquote:after {
   color: #D13759; }
 
 .marker {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background-color: #222222;
   color: orange;
   border-radius: 1vmin;
@@ -896,7 +896,7 @@ blockquote:after {
   padding: 10px; }
 
 var {
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background-color: green;
   color: #222222;
   display: table;
@@ -905,7 +905,7 @@ var {
   padding: 10px; }
 
 kbd {
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background-color: orange;
   color: #222222;
   display: table;
@@ -914,7 +914,7 @@ kbd {
   padding: 10px; }
 
 samp {
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background-color: #0087C6;
   color: orange;
   display: table;
@@ -930,13 +930,13 @@ q {
   padding: 10px; }
 
 cite {
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   font-size: 14px;
   font-style: normal;
   padding: 10px; }
 
 tt {
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background-color: #2196F3;
   color: #ffffff;
   display: table;
@@ -1045,10 +1045,10 @@ tt {
 body {
   background: #BFBFBF;
   color: #222222;
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif; }
+  font-family: Arial, sans-serif; }
 
 .ui-button .ui-button-text {
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif; }
+  font-family: Arial, sans-serif; }
 
 /*Note: these font-sizes will be ignored when responsive text is on*/
 p {

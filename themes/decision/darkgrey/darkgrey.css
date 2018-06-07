@@ -75,7 +75,7 @@
   color: #eeb3c0; }
 
 .highlight1 {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background: #232323;
   display: table;
   font-weight: lighter;
@@ -88,7 +88,7 @@
   border-color: #018CCF; }
 
 .highlight2 {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background: #232323;
   display: table;
   font-weight: lighter;
@@ -101,7 +101,7 @@
   border-color: #2F9739; }
 
 .highlight3 {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background: #232323;
   display: table;
   font-weight: lighter;
@@ -114,7 +114,7 @@
   border-color: #ffa500; }
 
 .highlight4 {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background: #232323;
   display: table;
   font-weight: lighter;
@@ -127,7 +127,7 @@
   border-color: #00A1A3; }
 
 .highlight5 {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background: #232323;
   display: table;
   font-weight: lighter;
@@ -140,7 +140,7 @@
   border-color: #494949; }
 
 .highlight6 {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background: #232323;
   display: table;
   font-weight: lighter;
@@ -295,7 +295,7 @@ blockquote:after {
   color: #D13759; }
 
 .marker {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background-color: #161616;
   color: #FCBC2B;
   border-radius: 1vmin;

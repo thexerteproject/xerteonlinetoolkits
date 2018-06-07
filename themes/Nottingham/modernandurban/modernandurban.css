@@ -615,7 +615,7 @@ tr.alt td {
   color: #eeb3c0; }
 
 .highlight1 {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -628,7 +628,7 @@ tr.alt td {
   border-color: #F9BA32; }
 
 .highlight2 {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -641,7 +641,7 @@ tr.alt td {
   border-color: #2F9739; }
 
 .highlight3 {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -654,7 +654,7 @@ tr.alt td {
   border-color: #426E86; }
 
 .highlight4 {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -667,7 +667,7 @@ tr.alt td {
   border-color: #00A1A3; }
 
 .highlight5 {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -680,7 +680,7 @@ tr.alt td {
   border-color: #2F3131; }
 
 .highlight6 {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -835,7 +835,7 @@ blockquote:after {
   color: #D13759; }
 
 .marker {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background-color: #2F3131;
   color: #F8F1E5;
   border-radius: 1vmin;

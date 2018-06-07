@@ -598,7 +598,7 @@ div#shorturltodisplay a {
   to {
     opacity: 1; } }
 .marker, .panel1 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 3px;
   display: table;
   padding: 10px;
@@ -610,7 +610,7 @@ div#shorturltodisplay a {
   color: #fef5ef; }
 
 .panel2 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 3px;
   display: table;
   padding: 10px;
@@ -622,7 +622,7 @@ var a, .panel2 a {
   color: #86d98e; }
 
 kbd, .panel3 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 3px;
   display: table;
   padding: 10px;
@@ -634,7 +634,7 @@ kbd a, .panel3 a {
   color: #8fb7dd; }
 
 .panel4 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 3px;
   display: table;
   padding: 10px;
@@ -646,7 +646,7 @@ a, .panel4 a {
   color: #3dfdff; }
 
 .panel5 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 3px;
   display: table;
   padding: 10px;
@@ -659,7 +659,7 @@ a, .panel5 a {
   color: #ac87cd; }
 
 code, .panel6 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 3px;
   display: table;
   padding: 10px;
@@ -671,7 +671,7 @@ code a, .panel6 a {
   color: #eeb3c0; }
 
 samp, .highlight1 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -684,7 +684,7 @@ samp, .highlight1 {
   border-color: #F07E31; }
 
 tt, .highlight2 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -697,7 +697,7 @@ tt, .highlight2 {
   border-color: #2F9739; }
 
 .highlight3 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -710,7 +710,7 @@ tt, .highlight2 {
   border-color: #4185C5; }
 
 .highlight4 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -723,7 +723,7 @@ tt, .highlight2 {
   border-color: #00A1A3; }
 
 .highlight5 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -736,7 +736,7 @@ tt, .highlight2 {
   border-color: #603784; }
 
 .highlight6 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
