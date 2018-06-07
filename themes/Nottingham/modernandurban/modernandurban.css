@@ -545,6 +545,295 @@ tr.alt td {
     opacity: 0; }
   to {
     opacity: 1; } }
+/*start here and set the default values for all the variables*/
+/*You should not edit the editorstyles.css file directly or change values directly unless you wish to override something*/
+.panel1 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #F9BA32;
+  color: #ffffff; }
+
+.panel1 a {
+  color: #fffdf8; }
+
+.panel2 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #2F9739;
+  color: #ffffff; }
+
+.panel2 a {
+  color: #86d98e; }
+
+.panel3 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #426E86;
+  color: #ffffff; }
+
+.panel3 a {
+  color: #74a1ba; }
+
+.panel4 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #00A1A3;
+  color: #ffffff; }
+
+.panel4 a {
+  color: #3dfdff; }
+
+.panel5 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #2F3131;
+  color: #ffffff;
+  display: table; }
+
+.panel5 a {
+  color: #7a7f7f; }
+
+.panel6 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #D13759;
+  color: #ffffff; }
+
+.panel6 a {
+  color: #eeb3c0; }
+
+.highlight1 {
+  font: "Varela Round", sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #F9BA32; }
+
+.highlight2 {
+  font: "Varela Round", sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #2F9739; }
+
+.highlight3 {
+  font: "Varela Round", sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #426E86; }
+
+.highlight4 {
+  font: "Varela Round", sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #00A1A3; }
+
+.highlight5 {
+  font: "Varela Round", sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #2F3131; }
+
+.highlight6 {
+  font: "Varela Round", sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #D13759; }
+
+blockquote {
+  font: 400 14px/24px "Varela Round", sans-serif;
+  border-left: 10px solid;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C" "\201D";
+  background: #f9f9f9;
+  border-color: #ccc; }
+
+blockquote:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #ccc; }
+
+blockquote p {
+  display: inline; }
+
+blockquote:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #ccc; }
+
+.bq1 {
+  border-color: #F9BA32; }
+
+.bq1:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #F9BA32; }
+
+.bq1:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #F9BA32; }
+
+.bq2 {
+  border-color: #2F9739; }
+
+.bq2:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #2F9739; }
+
+.bq2:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #2F9739; }
+
+.bq3 {
+  border-color: #426E86; }
+
+.bq3:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #426E86; }
+
+.bq3:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #426E86; }
+
+.bq4 {
+  border-color: #00A1A3; }
+
+.bq4:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #00A1A3; }
+
+.bq4:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #00A1A3; }
+
+.bq5 {
+  border-color: #2F3131; }
+
+.bq5:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #2F3131; }
+
+.bq5:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #2F3131; }
+
+.bq6 {
+  border-color: #D13759; }
+
+.bq6:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #D13759; }
+
+.bq6:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #D13759; }
+
 .marker {
   font: "Varela Round", sans-serif;
   background-color: #2F3131;
