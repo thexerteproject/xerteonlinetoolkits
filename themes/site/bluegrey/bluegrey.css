@@ -1,47 +1,296 @@
 /*start here and set the default values for all the variables*/
-/*****editor styles*****/
-.marker {
-  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+.panel1 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #0098C3;
+  color: #ffffff; }
+
+.panel1 a {
+  color: #90e7ff; }
+
+.panel2 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #89C2C0;
+  color: #ffffff; }
+
+.panel2 a {
+  color: #eef6f6; }
+
+.panel3 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #005172;
+  color: #ffffff; }
+
+.panel3 a {
+  color: #0099d8; }
+
+.panel4 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #00A1A3;
+  color: #ffffff; }
+
+.panel4 a {
+  color: #3dfdff; }
+
+.panel5 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
   background-color: #3C3C3C;
   color: #ffffff;
-  border-radius: 1vmin;
-  display: table;
-  padding: 10px; }
+  display: table; }
 
-var {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: #0098C3;
-  color: #ffffff;
-  display: table;
-  border-radius: 1vmin;
-  font-style: normal;
-  padding: 10px; }
+.panel5 a {
+  color: #898989; }
 
-kbd {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: white;
-  color: #3C3C3C;
-  display: table;
+.panel6 {
   border-radius: 1vmin;
+  display: table;
+  padding: 10px;
   font-style: normal;
-  padding: 10px; }
+  background-color: #D13759;
+  color: #ffffff; }
 
-samp {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: #005172;
-  color: #ffffff;
+.panel6 a {
+  color: #eeb3c0; }
+
+.highlight1 {
+  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #fff;
   display: table;
-  border-radius: 1vmin;
-  font-style: normal;
-  padding: 10px; }
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #0098C3; }
+
+.highlight2 {
+  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #89C2C0; }
+
+.highlight3 {
+  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #005172; }
+
+.highlight4 {
+  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #00A1A3; }
+
+.highlight5 {
+  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #3C3C3C; }
+
+.highlight6 {
+  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #D13759; }
+
+blockquote {
+  font: 400 14px/24px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border-left: 10px solid;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C" "\201D";
+  background: #f9f9f9;
+  border-color: #ccc; }
+
+blockquote:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #ccc; }
+
+blockquote p {
+  display: inline; }
+
+blockquote:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #ccc; }
+
+.bq1 {
+  border-color: #0098C3; }
+
+.bq1:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #0098C3; }
+
+.bq1:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #0098C3; }
+
+.bq2 {
+  border-color: #89C2C0; }
+
+.bq2:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #89C2C0; }
+
+.bq2:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #89C2C0; }
+
+.bq3 {
+  border-color: #005172; }
+
+.bq3:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #005172; }
+
+.bq3:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #005172; }
+
+.bq4 {
+  border-color: #00A1A3; }
+
+.bq4:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #00A1A3; }
+
+.bq4:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #00A1A3; }
+
+.bq5 {
+  border-color: #3C3C3C; }
+
+.bq5:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #3C3C3C; }
+
+.bq5:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #3C3C3C; }
+
+.bq6 {
+  border-color: #D13759; }
+
+.bq6:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #D13759; }
+
+.bq6:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #D13759; }
 
 q {
   border-bottom: 1px solid #ccc;
   border-top: 1px solid #ccc;
   color: #333;
   display: block;
-  /*margin-left:20px;
-  margin-right:20px;*/
   padding: 10px; }
 
 cite {
@@ -50,15 +299,6 @@ cite {
   font-style: normal;
   /*font-weight:400;
   margin-left:20px;*/
-  padding: 10px; }
-
-tt {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: #2196F3;
-  color: #ffffff;
-  display: table;
-  border-radius: 1vmin;
-  font-style: normal;
   padding: 10px; }
 
 /***** scrollbars *****/
@@ -100,7 +340,6 @@ tt {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* --BODY------------------------------------------------*/
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #3C3C3C;
