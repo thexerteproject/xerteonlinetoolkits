@@ -598,10 +598,299 @@ div#shorturltodisplay a {
     opacity: 0; }
   to {
     opacity: 1; } }
+/*start here and set the default values for all the variables*/
+/*You should not edit the editorstyles.css file directly or change values directly unless you wish to override something*/
+.panel1 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: green;
+  color: #ffffff; }
+
+.panel1 a {
+  color: #4dff4d; }
+
+.panel2 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: red;
+  color: #ffffff; }
+
+.panel2 a {
+  color: #ff9999; }
+
+.panel3 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #0087C6;
+  color: #ffffff; }
+
+.panel3 a {
+  color: #2dbcff; }
+
+.panel4 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: orange;
+  color: #ffffff; }
+
+.panel4 a {
+  color: #ffdb99; }
+
+.panel5 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #222222;
+  color: #ffffff;
+  display: table; }
+
+.panel5 a {
+  color: #6f6f6f; }
+
+.panel6 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #D13759;
+  color: #ffffff; }
+
+.panel6 a {
+  color: #eeb3c0; }
+
+.highlight1 {
+  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: green; }
+
+.highlight2 {
+  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: red; }
+
+.highlight3 {
+  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #0087C6; }
+
+.highlight4 {
+  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: orange; }
+
+.highlight5 {
+  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #222222; }
+
+.highlight6 {
+  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #D13759; }
+
+blockquote {
+  font: 400 14px/24px Roboto, "Segoe UI", Tahoma, sans-serif;
+  border-left: 10px solid;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C" "\201D";
+  background: #f9f9f9;
+  border-color: #ccc; }
+
+blockquote:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #ccc; }
+
+blockquote p {
+  display: inline; }
+
+blockquote:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #ccc; }
+
+.bq1 {
+  border-color: green; }
+
+.bq1:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: green; }
+
+.bq1:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: green; }
+
+.bq2 {
+  border-color: red; }
+
+.bq2:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: red; }
+
+.bq2:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: red; }
+
+.bq3 {
+  border-color: #0087C6; }
+
+.bq3:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #0087C6; }
+
+.bq3:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #0087C6; }
+
+.bq4 {
+  border-color: orange; }
+
+.bq4:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: orange; }
+
+.bq4:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: orange; }
+
+.bq5 {
+  border-color: #222222; }
+
+.bq5:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #222222; }
+
+.bq5:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #222222; }
+
+.bq6 {
+  border-color: #D13759; }
+
+.bq6:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #D13759; }
+
+.bq6:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #D13759; }
+
 .marker {
   font: Roboto, "Segoe UI", Tahoma, sans-serif;
   background-color: #222222;
-  color: #ffffff;
+  color: orange;
   border-radius: 1vmin;
   display: table;
   padding: 10px; }
@@ -609,7 +898,7 @@ div#shorturltodisplay a {
 var {
   font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background-color: green;
-  color: #ffffff;
+  color: #222222;
   display: table;
   border-radius: 1vmin;
   font-style: normal;
@@ -618,7 +907,7 @@ var {
 kbd {
   font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background-color: orange;
-  color: #000000;
+  color: #222222;
   display: table;
   border-radius: 1vmin;
   font-style: normal;
@@ -627,7 +916,7 @@ kbd {
 samp {
   font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background-color: #0087C6;
-  color: #ffffff;
+  color: orange;
   display: table;
   border-radius: 1vmin;
   font-style: normal;
@@ -638,21 +927,17 @@ q {
   border-top: 1px solid #ccc;
   color: #333;
   display: block;
-  /*margin-left:20px;
-  margin-right:20px;*/
   padding: 10px; }
 
 cite {
   font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   font-size: 14px;
   font-style: normal;
-  /*font-weight:400;
-  margin-left:20px;*/
   padding: 10px; }
 
 tt {
   font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
-  background-color: red;
+  background-color: #2196F3;
   color: #ffffff;
   display: table;
   border-radius: 1vmin;
