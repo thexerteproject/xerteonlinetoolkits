@@ -80,6 +80,8 @@ CKEDITOR.stylesSet.add( 'default', [
     { name: 'Blockquote 5',			element: 'blockquote', attributes: { 'class': 'bq5' } },
     { name: 'Blockquote 6',			element: 'blockquote', attributes: { 'class': 'bq6' } },
 
+    { name: 'Tom\'s test', element: 'div', wrap:true, attributes: { 'class': 'tom_test'} },
+
     { name: 'Marker',			element: 'span', attributes: { 'class': 'marker' } },
 
     { name: 'Big',				element: 'big' },
