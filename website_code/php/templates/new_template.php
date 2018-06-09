@@ -55,7 +55,7 @@ else
  * get the maximum id number from templates, as the id for this template
  */
 
-$row_template_type = db_query_one("select template_type_id, template_name, template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_name = ?", array($_POST['tutorialid']));
+$row_template_type = db_query_one("select template_type_id, template_name, parent_template, template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_name = ?", array($_POST['tutorialid']));
 
 
 /*
@@ -64,9 +64,9 @@ $row_template_type = db_query_one("select template_type_id, template_name, templ
 $extraflags = "";
 if ($row_template_type['template_framework'] == 'xerte')
 {
-    if ( ($row_template_type['template_name'] == 'multipersp') ||
-        ($row_template_type['template_name'] == 'mediaInteractions') ||
-        ($row_template_type['template_name'] == 'Rss') )
+    if ( ($row_template_type['parent_template'] == 'multipersp') ||
+        ($row_template_type['parent_template'] == 'mediaInteractions') ||
+        ($row_template_type['parent_template'] == 'Rss') )
     {
         $extraflags = "engine=flash";
     }
