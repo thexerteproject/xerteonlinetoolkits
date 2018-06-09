@@ -593,6 +593,12 @@ div.separator {
 	width:130px;
 }
 
+select.select_template {
+	margin-bottom: 3px;
+	padding: 3px 0px;
+	min-width:130px;
+}
+
 .form_button_pad{
 	margin:5px 0 0 0; 
 	padding:0px

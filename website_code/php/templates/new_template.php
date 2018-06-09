@@ -55,7 +55,7 @@ else
  * get the maximum id number from templates, as the id for this template
  */
 
-$row_template_type = db_query_one("select template_type_id, template_name, parent_template, template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_name = ?", array($_POST['tutorialid']));
+$row_template_type = db_query_one("select template_type_id, template_name, parent_template, template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_name = ?", array($_POST['templatename']));
 
 
 /*
@@ -89,7 +89,7 @@ if($lastid !== false) {
         _debug("Setup template rights ok");
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
         include $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $row_template_type['template_framework']  . "/new_template.php";
-        create_new_template($lastid, $_POST['tutorialid']);
+        create_new_template($lastid, $_POST['templatename']);
         echo trim($lastid);
 		echo "," . $xerte_toolkits_site->learning_objects->{$row_template_type['template_framework'] . "_" . $row_template_type['template_name']}->editor_size;
     }else{

@@ -161,8 +161,11 @@ function template_toggle(tag){
 
     if((temp.style.display=="none")||(temp.style.display=="")){
         temp.style.display="block";	
-				butt.style.display="none";
-				temp.querySelector('input[name="filename"]').focus();
+        butt.style.display="none";
+        temp.querySelector('input[name="filename"]').value ="";
+		temp.querySelector('input[name="filename"]').focus();
+
+
     }else{
         temp.style.display="none";
 				butt.style.display="";
@@ -1242,7 +1245,7 @@ function tutorials_stateChanged(){
 
         if(xmlHttp.responseText!=""){
 
-            document.getElementById(active_div).childNodes[1].filename.value="";
+            //$("#" + tutorial +"_filename").val("");
 
             template_toggle(active_div);
             active_div="";
@@ -1374,8 +1377,8 @@ function create_tutorial(tutorial){
         xmlHttp.open("post",url,true);
         xmlHttp.onreadystatechange=tutorial_created;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        if(is_ok_name(document.getElementById(tutorial).childNodes[1].filename.value)){
-            xmlHttp.send('tutorialid=' + tutorial + '&tutorialname=' + document.getElementById(tutorial).childNodes[1].filename.value + '&folder_id=' + new_template_folder);
+        if(is_ok_name($("#" + tutorial +"_filename").val())){
+            xmlHttp.send('tutorialid=' + tutorial + '&templatename=' + $("#" + tutorial +"_templatename").val() + '&tutorialname=' + $("#" + tutorial +"_filename").val() + '&folder_id=' + new_template_folder);
         }else{
             alert(NAME_FAIL);
         }

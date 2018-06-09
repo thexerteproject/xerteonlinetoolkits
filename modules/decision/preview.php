@@ -45,7 +45,7 @@ function show_preview_code($row){
 
 	$string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 
-	$template_path_string = "modules/decision/parent_templates/" . $row['template_name'] . "/";
+	$template_path_string = "modules/decision/parent_templates/" . $row['parent_template'] . "/";
 
 	require_once("config.php");
 
