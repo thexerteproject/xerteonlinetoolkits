@@ -80,7 +80,12 @@ CKEDITOR.stylesSet.add( 'default', [
     { name: 'Blockquote 5',			element: 'blockquote', attributes: { 'class': 'bq5' } },
     { name: 'Blockquote 6',			element: 'blockquote', attributes: { 'class': 'bq6' } },
 
-    { name: 'Tom\'s test', element: 'div', wrap:true, attributes: { 'class': 'tom_test'} },
+    { name: 'Speech Bubble 1', element: 'div', wrap:true, attributes: { 'class': 'speech-bubble1'} },
+    { name: 'Speech Bubble 2', element: 'div', wrap:true, attributes: { 'class': 'speech-bubble2'} },
+    { name: 'Speech Bubble 3', element: 'div', wrap:true, attributes: { 'class': 'speech-bubble3'} },
+    { name: 'Speech Bubble 4', element: 'div', wrap:true, attributes: { 'class': 'speech-bubble4'} },
+    { name: 'Speech Bubble 5', element: 'div', wrap:true, attributes: { 'class': 'speech-bubble5'} },
+    { name: 'Speech Bubble 6', element: 'div', wrap:true, attributes: { 'class': 'speech-bubble6'} },
 
     { name: 'Marker',			element: 'span', attributes: { 'class': 'marker' } },
 
