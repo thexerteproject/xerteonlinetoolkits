@@ -337,6 +337,18 @@ blockquote:after {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-top-color: #D13759; }
 
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a {
+  color: black !important;
+  text-decoration: underline; }
+
+tt a, samp a, var a, .marker a {
+  color: white !important;
+  text-decoration: underline; }
+
+kbd a, var a {
+  color: black !important;
+  text-decoration: underline; }
+
 .marker {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: #333333;

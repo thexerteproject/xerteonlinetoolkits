@@ -276,7 +276,19 @@ blockquote:after {
   font-family:$secondaryfonts;
   border-top-color: $esc6;
 }
-
+//***make links in speech bubbles white and underlined by default***//
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a,{
+  color:$blackordarkest !important;
+  text-decoration:underline;
+}
+tt a, samp a, var a,.marker a{
+  color:white !important;
+  text-decoration:underline;
+}
+kbd a, var a,{
+  color:$blackordarkest !important;
+  text-decoration:underline;
+}
 //*****default editor styles*****/
 .marker {
   font-family:$mainfonts;
