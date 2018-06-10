@@ -62,7 +62,7 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .panel1 a{
-  color:lighten($esc1, 40%);
+  color:white;
 }
 .panel2 {
   @include panel;
@@ -70,7 +70,7 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .panel2 a{
-  color:lighten($esc2, 30%);
+  color:white;
 }
 .panel3 {
   @include panel;
@@ -78,7 +78,7 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .panel3 a{
-  color:lighten($esc3, 20%);
+  color:white;
 }
 .panel4 {
   @include panel;
@@ -86,7 +86,7 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .panel4 a{
-  color:lighten($esc4, 30%);
+  color:white;
 }
 .panel5 {
   @include panel;
@@ -95,7 +95,7 @@ $esc6: $accent3;
   display:table;
 }
 .panel5 a{
-  color:lighten($esc5, 30%);
+  color:white;
 }
 .panel6 {
   @include panel;
@@ -103,7 +103,7 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .panel6 a{
-  color:lighten($esc6, 30%);
+  color:white;
 }
 
 //*****highlights*****/
@@ -365,6 +365,11 @@ blockquote:after {
   border-left: 0;
   margin-left: -0.609em;
   margin-bottom: -1.219em;
+}
+//***make links in speech bubbles white and underlined by default***//
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble4 a, .speech-bubble5 a, .speech-bubble6 a{
+  color:white;
+  text-decoration:underline;
 }
 
 q {
