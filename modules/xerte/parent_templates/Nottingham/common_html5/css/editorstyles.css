@@ -14,7 +14,8 @@
   color: #ffffff; }
 
 .panel1 a {
-  color: #fef5ef; }
+  color: white;
+  text-decoration: underline; }
 
 .panel2 {
   border-radius: 3px;
@@ -25,7 +26,8 @@
   color: #ffffff; }
 
 .panel2 a {
-  color: #86d98e; }
+  color: white;
+  text-decoration: underline; }
 
 .panel3 {
   border-radius: 3px;
@@ -36,7 +38,8 @@
   color: #ffffff; }
 
 .panel3 a {
-  color: #8fb7dd; }
+  color: white;
+  text-decoration: underline; }
 
 .panel4 {
   border-radius: 3px;
@@ -47,7 +50,8 @@
   color: #ffffff; }
 
 .panel4 a {
-  color: #3dfdff; }
+  color: white;
+  text-decoration: underline; }
 
 .panel5 {
   border-radius: 3px;
@@ -59,7 +63,8 @@
   display: table; }
 
 .panel5 a {
-  color: #ac87cd; }
+  color: white;
+  text-decoration: underline; }
 
 .panel6 {
   border-radius: 3px;
@@ -70,7 +75,8 @@
   color: #ffffff; }
 
 .panel6 a {
-  color: #eeb3c0; }
+  color: white;
+  text-decoration: underline; }
 
 .highlight1 {
   font-family: Arial, sans-serif;
@@ -429,6 +435,10 @@ blockquote:after {
   border-left: 0;
   margin-left: -0.609em;
   margin-bottom: -1.219em; }
+
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble4 a, .speech-bubble5 a, .speech-bubble6 a {
+  color: white;
+  text-decoration: underline; }
 
 q {
   border-bottom: 1px solid #ccc;
