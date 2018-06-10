@@ -207,7 +207,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         $page_content = str_replace("%TEMPLATEID%", $_GET['template_id'], $page_content);
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
-        $page_content = str_replace("%THEMEPATH%", "themes/" . $row['template_name'] . "/",$page_content);
+        $page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
 
         // Handle offline variables
         $page_content = str_replace("%OFFLINESCRIPTS%", "", $page_content);
