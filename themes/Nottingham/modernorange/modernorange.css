@@ -843,6 +843,49 @@ blockquote:after {
   vertical-align: -0.4em;
   color: #D13759; }
 
+.speech-bubble1 {
+  background: #FF8D3F;
+  color: white; }
+
+.speech-bubble1:after {
+  border-right-color: #FF8D3F; }
+
+.speech-bubble2 {
+  background: #00700c;
+  color: white; }
+
+.speech-bubble2:after {
+  border-left-color: #00700c; }
+
+.speech-bubble3 {
+  background: #756867;
+  color: white; }
+
+.speech-bubble3:after {
+  border-right-color: #756867; }
+
+.speech-bubble4 {
+  background: #a3a59d;
+  color: white; }
+
+.speech-bubble4:after {
+  border-left-color: #a3a59d; }
+
+.speech-bubble5 {
+  background: #353C3F;
+  color: white; }
+
+.speech-bubble5:after {
+  border-top-color: #353C3F; }
+
+.speech-bubble6 {
+  background: #D13759;
+  color: white; }
+
+.speech-bubble6:after {
+  font-family: "Varela Round", sans-serif;
+  border-top-color: #D13759; }
+
 .marker {
   font-family: "Varela Round", sans-serif;
   background-color: #353C3F;
