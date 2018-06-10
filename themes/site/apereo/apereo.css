@@ -9,9 +9,6 @@
   background-color: #079FC0;
   color: #ffffff; }
 
-.panel1 a {
-  color: #98e9fb; }
-
 .panel2 {
   border-radius: 1vmin;
   display: table;
@@ -19,9 +16,6 @@
   font-style: normal;
   background-color: #4e9794;
   color: #ffffff; }
-
-.panel2 a {
-  color: #eef6f6; }
 
 .panel3 {
   border-radius: 1vmin;
@@ -31,9 +25,6 @@
   background-color: #0F566A;
   color: #ffffff; }
 
-.panel3 a {
-  color: #1c9ec3; }
-
 .panel4 {
   border-radius: 1vmin;
   display: table;
@@ -41,9 +32,6 @@
   font-style: normal;
   background-color: #00A1A3;
   color: #ffffff; }
-
-.panel4 a {
-  color: #3dfdff; }
 
 .panel5 {
   border-radius: 1vmin;
@@ -54,9 +42,6 @@
   color: #ffffff;
   display: table; }
 
-.panel5 a {
-  color: #3b7692; }
-
 .panel6 {
   border-radius: 1vmin;
   display: table;
@@ -64,9 +49,6 @@
   font-style: normal;
   background-color: #D13759;
   color: #ffffff; }
-
-.panel6 a {
-  color: #eeb3c0; }
 
 .highlight1 {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -330,6 +312,10 @@ blockquote:after {
 .speech-bubble6:after {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-top-color: #D13759; }
+
+tt a, samp a, var a, .marker a {
+  color: white !important;
+  text-decoration: underline; }
 
 .marker {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
