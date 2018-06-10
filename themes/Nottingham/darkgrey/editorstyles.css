@@ -12,9 +12,6 @@
   background-color: #F07E31;
   color: #ffffff; }
 
-.panel1 a {
-  color: #fef5ef; }
-
 .panel2 {
   border-radius: 3px;
   display: table;
@@ -22,9 +19,6 @@
   font-style: normal;
   background-color: #2F9739;
   color: #ffffff; }
-
-.panel2 a {
-  color: #86d98e; }
 
 .panel3 {
   border-radius: 3px;
@@ -34,9 +28,6 @@
   background-color: #4185C5;
   color: #ffffff; }
 
-.panel3 a {
-  color: #8fb7dd; }
-
 .panel4 {
   border-radius: 3px;
   display: table;
@@ -44,9 +35,6 @@
   font-style: normal;
   background-color: #00A1A3;
   color: #ffffff; }
-
-.panel4 a {
-  color: #3dfdff; }
 
 .panel5 {
   border-radius: 3px;
@@ -57,9 +45,6 @@
   color: #ffffff;
   display: table; }
 
-.panel5 a {
-  color: #ac87cd; }
-
 .panel6 {
   border-radius: 3px;
   display: table;
@@ -67,9 +52,6 @@
   font-style: normal;
   background-color: #D13759;
   color: #ffffff; }
-
-.panel6 a {
-  color: #eeb3c0; }
 
 .highlight1 {
   font-family: Arial, sans-serif;

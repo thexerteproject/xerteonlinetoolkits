@@ -61,32 +61,21 @@ $esc6: $accent3;
   background-color:$esc1;
   color:$whiteorlightest;
 }
-.panel1 a{
-  color:lighten($esc1, 40%);
-}
+
 .panel2 {
   @include panel;
   background-color:$esc2;
   color:$whiteorlightest;
-}
-.panel2 a{
-  color:lighten($esc2, 30%);
 }
 .panel3 {
   @include panel;
   background-color:$esc3;
   color:$whiteorlightest;
 }
-.panel3 a{
-  color:lighten($esc3, 20%);
-}
 .panel4 {
   @include panel;
   background-color:$esc4;
   color:$whiteorlightest;
-}
-.panel4 a{
-  color:lighten($esc4, 30%);
 }
 .panel5 {
   @include panel;
@@ -94,16 +83,10 @@ $esc6: $accent3;
   color:$whiteorlightest;
   display:table;
 }
-.panel5 a{
-  color:lighten($esc5, 30%);
-}
 .panel6 {
   @include panel;
   background-color:$esc6;
   color:$whiteorlightest;
-}
-.panel6 a{
-  color:lighten($esc6, 30%);
 }
 
 //*****highlights*****/
