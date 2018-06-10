@@ -609,7 +609,7 @@ div#shorturltodisplay a {
   color: #ffffff; }
 
 .panel1 a {
-  color: #4dff4d; }
+  color: white !important; }
 
 .panel2 {
   border-radius: 1vmin;
@@ -620,7 +620,7 @@ div#shorturltodisplay a {
   color: #ffffff; }
 
 .panel2 a {
-  color: #ff9999; }
+  color: white !important; }
 
 .panel3 {
   border-radius: 1vmin;
@@ -631,7 +631,7 @@ div#shorturltodisplay a {
   color: #ffffff; }
 
 .panel3 a {
-  color: #2dbcff; }
+  color: white !important; }
 
 .panel4 {
   border-radius: 1vmin;
@@ -642,7 +642,7 @@ div#shorturltodisplay a {
   color: #ffffff; }
 
 .panel4 a {
-  color: #ffdb99; }
+  color: white !important; }
 
 .panel5 {
   border-radius: 1vmin;
@@ -654,7 +654,7 @@ div#shorturltodisplay a {
   display: table; }
 
 .panel5 a {
-  color: #6f6f6f; }
+  color: white !important; }
 
 .panel6 {
   border-radius: 1vmin;
@@ -665,7 +665,7 @@ div#shorturltodisplay a {
   color: #ffffff; }
 
 .panel6 a {
-  color: #eeb3c0; }
+  color: white !important; }
 
 .highlight1 {
   font-family: Arial, sans-serif;
@@ -930,6 +930,10 @@ blockquote:after {
   font-family: Arial, sans-serif;
   border-top-color: #D13759; }
 
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble4 a, .speech-bubble5 a, .speech-bubble6 a {
+  color: white !important;
+  text-decoration: underline; }
+
 .marker {
   font-family: Arial, sans-serif;
   background-color: #222222;
@@ -941,7 +945,7 @@ blockquote:after {
 var {
   font-family: Arial, sans-serif;
   background-color: green;
-  color: #222222;
+  color: #ffffff;
   display: table;
   border-radius: 1vmin;
   font-style: normal;
@@ -959,7 +963,7 @@ kbd {
 samp {
   font-family: Arial, sans-serif;
   background-color: #0087C6;
-  color: orange;
+  color: #ffffff;
   display: table;
   border-radius: 1vmin;
   font-style: normal;
@@ -986,6 +990,10 @@ tt {
   border-radius: 1vmin;
   font-style: normal;
   padding: 10px; }
+
+tt a, kbd a, samp a, code a, .marker a, var a {
+  color: white !important;
+  text-decoration: underline; }
 
 ::-webkit-scrollbar {
   width: 12px; }
