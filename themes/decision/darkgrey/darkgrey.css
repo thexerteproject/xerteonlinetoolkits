@@ -294,6 +294,49 @@ blockquote:after {
   vertical-align: -0.4em;
   color: #D13759; }
 
+.speech-bubble1 {
+  background: #018CCF;
+  color: white; }
+
+.speech-bubble1:after {
+  border-right-color: #018CCF; }
+
+.speech-bubble2 {
+  background: #2F9739;
+  color: white; }
+
+.speech-bubble2:after {
+  border-left-color: #2F9739; }
+
+.speech-bubble3 {
+  background: #ffa500;
+  color: white; }
+
+.speech-bubble3:after {
+  border-right-color: #ffa500; }
+
+.speech-bubble4 {
+  background: #00A1A3;
+  color: white; }
+
+.speech-bubble4:after {
+  border-left-color: #00A1A3; }
+
+.speech-bubble5 {
+  background: #494949;
+  color: white; }
+
+.speech-bubble5:after {
+  border-top-color: #494949; }
+
+.speech-bubble6 {
+  background: #D13759;
+  color: white; }
+
+.speech-bubble6:after {
+  font-family: "Varela Round", sans-serif;
+  border-top-color: #D13759; }
+
 .marker {
   font-family: "Varela Round", sans-serif;
   background-color: #161616;
