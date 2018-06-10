@@ -60,7 +60,7 @@ $esc6: $accent3;
 }
 .panel2 {
   @include panel;
-  background-color:$esc2;
+  background-color:darken($esc2, 20%);
   color:$whiteorlightest;
 }
 .panel2 a{
@@ -109,7 +109,7 @@ $esc6: $accent3;
 .highlight2 {
   @include highlight;
   //color: $esc2;
-  border-color: $esc2;
+  border-color: darken($esc2, 20%);
 }
 .highlight3 {
   @include highlight;
@@ -160,15 +160,15 @@ blockquote:after {
   color:$esc1;
 }
 .bq2{
-  border-color:$esc2;
+  border-color:darken($esc2, 20%);
 }
 .bq2:after {
   @include afterblockquote;
-  color:$esc2;
+  color:darken($esc2, 20%);
 }
 .bq2:before {
   @include beforeblockquote;
-  color:$esc2;
+  color:darken($esc2, 20%);
 }
 .bq3{
   border-color:$esc3;
@@ -213,6 +213,56 @@ blockquote:after {
 .bq6:before {
   @include beforeblockquote;
   color:$esc6;
+}
+
+//*****speech bubbles******//
+.speech-bubble1 {
+  background: $esc1;
+  color:white;
+}
+
+.speech-bubble1:after {
+  border-right-color: $esc1;
+}
+
+.speech-bubble2 {
+  background: darken($esc2, 20%);
+  color:white;
+}
+
+.speech-bubble2:after {
+  border-left-color: darken($esc2, 20%);
+}
+.speech-bubble3 {
+  background: $esc3;
+  color:white;
+}
+
+.speech-bubble3:after {
+  border-right-color: $esc3;
+}
+.speech-bubble4 {
+  background: $esc4;
+  color:white;
+}
+
+.speech-bubble4:after {
+  border-left-color: $esc4;
+}
+.speech-bubble5 {
+  background: $esc5;
+  color:white;
+}
+.speech-bubble5:after {
+  border-top-color: $esc5;
+}
+.speech-bubble6 {
+  background: $esc6;
+  color:white;
+}
+.speech-bubble6:after {
+  font-family:$secondaryfonts;
+  border-top-color: $esc6;
 }
 
 q {
