@@ -565,7 +565,7 @@ tr.alt td {
   color: #ffffff; }
 
 .panel1 a {
-  color: white; }
+  color: white !important; }
 
 .panel2 {
   border-radius: 1vmin;
@@ -576,7 +576,7 @@ tr.alt td {
   color: #ffffff; }
 
 .panel2 a {
-  color: #0aff24; }
+  color: white !important; }
 
 .panel3 {
   border-radius: 1vmin;
@@ -587,7 +587,7 @@ tr.alt td {
   color: #ffffff; }
 
 .panel3 a {
-  color: #a79c9b; }
+  color: white !important; }
 
 .panel4 {
   border-radius: 1vmin;
@@ -598,7 +598,7 @@ tr.alt td {
   color: #ffffff; }
 
 .panel4 a {
-  color: #eeeeed; }
+  color: white !important; }
 
 .panel5 {
   border-radius: 1vmin;
@@ -610,7 +610,7 @@ tr.alt td {
   display: table; }
 
 .panel5 a {
-  color: #7c8b91; }
+  color: white !important; }
 
 .panel6 {
   border-radius: 1vmin;
@@ -621,7 +621,7 @@ tr.alt td {
   color: #ffffff; }
 
 .panel6 a {
-  color: #eeb3c0; }
+  color: white !important; }
 
 .highlight1 {
   font-family: "Varela Round", sans-serif;
@@ -885,6 +885,14 @@ blockquote:after {
 .speech-bubble6:after {
   font-family: "Varela Round", sans-serif;
   border-top-color: #D13759; }
+
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble4 a, .speech-bubble5 a, .speech-bubble6 a {
+  color: white !important;
+  text-decoration: underline; }
+
+tt a, samp a, .marker a {
+  color: white !important;
+  text-decoration: underline; }
 
 .marker {
   font-family: "Varela Round", sans-serif;
