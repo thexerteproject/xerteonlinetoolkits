@@ -5,6 +5,10 @@
 /*define font colors to match the background colors*/
 /*define rounded corner and other sizes*/
 /*start here and set the default values for all the variables*/
+tt a, samp a, var a, .marker a {
+  color: white !important;
+  text-decoration: underline; }
+
 /*****editor styles*****/
 .marker {
   font-family: "Varela Round", sans-serif;

@@ -16,7 +16,7 @@
   color: #ffffff; }
 
 .panel1 a {
-  color: #9ddfff; }
+  color: white !important; }
 
 .panel2 {
   border-radius: 1vmin;
@@ -27,7 +27,7 @@
   color: #ffffff; }
 
 .panel2 a {
-  color: #86d98e; }
+  color: white !important; }
 
 .panel3 {
   border-radius: 1vmin;
@@ -38,7 +38,7 @@
   color: #ffffff; }
 
 .panel3 a {
-  color: #ffc966; }
+  color: white !important; }
 
 .panel4 {
   border-radius: 1vmin;
@@ -49,7 +49,7 @@
   color: #ffffff; }
 
 .panel4 a {
-  color: #3dfdff; }
+  color: white !important; }
 
 .panel5 {
   border-radius: 1vmin;
@@ -61,7 +61,7 @@
   display: table; }
 
 .panel5 a {
-  color: #636363; }
+  color: white !important; }
 
 .panel6 {
   border-radius: 1vmin;
@@ -72,7 +72,7 @@
   color: #ffffff; }
 
 .panel6 a {
-  color: #eeb3c0; }
+  color: white !important; }
 
 .highlight1 {
   font-family: "Varela Round", sans-serif;
@@ -337,6 +337,14 @@ blockquote:after {
   font-family: "Varela Round", sans-serif;
   border-top-color: #D13759; }
 
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble4 a, .speech-bubble5 a, .speech-bubble6 a {
+  color: white !important;
+  text-decoration: underline; }
+
+tt a, kbd a, samp a, code a, .marker a, var a {
+  color: white !important;
+  text-decoration: underline; }
+
 .marker {
   font-family: "Varela Round", sans-serif;
   background-color: #161616;
@@ -348,7 +356,7 @@ blockquote:after {
 var {
   font-family: "Varela Round", sans-serif;
   background-color: #018CCF;
-  color: #161616;
+  color: #ffffff;
   display: table;
   border-radius: 1vmin;
   font-style: normal;
