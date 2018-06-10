@@ -7,9 +7,6 @@
   background-color: #0098C3;
   color: #ffffff; }
 
-.panel1 a {
-  color: #90e7ff; }
-
 .panel2 {
   border-radius: 1vmin;
   display: table;
@@ -17,9 +14,6 @@
   font-style: normal;
   background-color: #4e9794;
   color: #ffffff; }
-
-.panel2 a {
-  color: #eef6f6; }
 
 .panel3 {
   border-radius: 1vmin;
@@ -29,9 +23,6 @@
   background-color: #005172;
   color: #ffffff; }
 
-.panel3 a {
-  color: #0099d8; }
-
 .panel4 {
   border-radius: 1vmin;
   display: table;
@@ -39,9 +30,6 @@
   font-style: normal;
   background-color: #00A1A3;
   color: #ffffff; }
-
-.panel4 a {
-  color: #3dfdff; }
 
 .panel5 {
   border-radius: 1vmin;
@@ -52,9 +40,6 @@
   color: #ffffff;
   display: table; }
 
-.panel5 a {
-  color: #898989; }
-
 .panel6 {
   border-radius: 1vmin;
   display: table;
@@ -62,9 +47,6 @@
   font-style: normal;
   background-color: #D13759;
   color: #ffffff; }
-
-.panel6 a {
-  color: #eeb3c0; }
 
 .highlight1 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
