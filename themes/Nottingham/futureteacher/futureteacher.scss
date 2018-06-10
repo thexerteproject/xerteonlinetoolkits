@@ -37,6 +37,10 @@ h3 {
 	margin:		0;
 }
 
+a{color:$linkcolor;}
+a:hover{color:$linkhover;}
+a:visited{color:$linkvisited;}
+
 #x_mainHolder{
 	background:$defaultpagebackground;
 	border-top-right-radius:$largeroundedcorners;
