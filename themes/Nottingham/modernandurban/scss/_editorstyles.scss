@@ -62,7 +62,7 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .panel1 a{
-  color:lighten($esc1, 40%);
+  color:white !important;
 }
 .panel2 {
   @include panel;
@@ -70,7 +70,7 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .panel2 a{
-  color:lighten($esc2, 30%);
+  color:white !important;
 }
 .panel3 {
   @include panel;
@@ -78,7 +78,7 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .panel3 a{
-  color:lighten($esc3, 20%);
+  color:white !important;
 }
 .panel4 {
   @include panel;
@@ -86,7 +86,7 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .panel4 a{
-  color:lighten($esc4, 30%);
+  color:white !important;
 }
 .panel5 {
   @include panel;
@@ -95,7 +95,7 @@ $esc6: $accent3;
   display:table;
 }
 .panel5 a{
-  color:lighten($esc5, 30%);
+  color:white !important;
 }
 .panel6 {
   @include panel;
@@ -103,7 +103,7 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .panel6 a{
-  color:lighten($esc6, 30%);
+  color:white !important;
 }
 
 //*****highlights*****/
@@ -268,6 +268,17 @@ blockquote:after {
 .speech-bubble6:after {
   font-family:$secondaryfonts;
   border-top-color: $esc6;
+}
+
+//***make links in speech bubbles white and underlined by default***//
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble4 a, .speech-bubble5 a, .speech-bubble6 a{
+  color:white !important;
+  text-decoration:underline;
+}
+
+tt a, samp a, code a, .marker a{
+  color:white !important;
+  text-decoration:underline;
 }
 //*****default editor styles*****/
 .marker {
