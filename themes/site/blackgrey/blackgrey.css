@@ -7,10 +7,11 @@
   padding: 10px;
   font-style: normal;
   background-color: orange;
-  color: #ffffff; }
+  color: black; }
 
 .panel1 a {
-  color: #ffedcc; }
+  color: black;
+  text-decoration: underline; }
 
 .panel2 {
   border-radius: 1vmin;
@@ -18,10 +19,11 @@
   padding: 10px;
   font-style: normal;
   background-color: #89C2C0;
-  color: #ffffff; }
+  color: black; }
 
 .panel2 a {
-  color: #eef6f6; }
+  color: black;
+  text-decoration: underline; }
 
 .panel3 {
   border-radius: 1vmin;
@@ -29,10 +31,11 @@
   padding: 10px;
   font-style: normal;
   background-color: #999999;
-  color: #ffffff; }
+  color: black; }
 
 .panel3 a {
-  color: #cccccc; }
+  color: black;
+  text-decoration: underline; }
 
 .panel4 {
   border-radius: 1vmin;
@@ -43,19 +46,21 @@
   color: #ffffff; }
 
 .panel4 a {
-  color: #3dfdff; }
+  color: white;
+  text-decoration: underline; }
 
 .panel5 {
   border-radius: 1vmin;
   display: table;
   padding: 10px;
   font-style: normal;
-  background-color: #333333;
+  background: #4d4d4d;
   color: #ffffff;
   display: table; }
 
 .panel5 a {
-  color: gray; }
+  color: white;
+  text-decoration: underline; }
 
 .panel6 {
   border-radius: 1vmin;
@@ -66,7 +71,8 @@
   color: #ffffff; }
 
 .panel6 a {
-  color: #eeb3c0; }
+  color: white;
+  text-decoration: underline; }
 
 .highlight1 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -287,6 +293,49 @@ blockquote:after {
   margin-right: 0.25em;
   vertical-align: -0.4em;
   color: #D13759; }
+
+.speech-bubble1 {
+  background: orange;
+  color: black; }
+
+.speech-bubble1:after {
+  border-right-color: orange; }
+
+.speech-bubble2 {
+  background: #89C2C0;
+  color: black; }
+
+.speech-bubble2:after {
+  border-left-color: #89C2C0; }
+
+.speech-bubble3 {
+  background: #999999;
+  color: black; }
+
+.speech-bubble3:after {
+  border-right-color: #999999; }
+
+.speech-bubble4 {
+  background: #00A1A3;
+  color: white; }
+
+.speech-bubble4:after {
+  border-left-color: #00A1A3; }
+
+.speech-bubble5 {
+  background: #666666;
+  color: white; }
+
+.speech-bubble5:after {
+  border-top-color: #666666; }
+
+.speech-bubble6 {
+  background: #D13759;
+  color: white; }
+
+.speech-bubble6:after {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border-top-color: #D13759; }
 
 .marker {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;

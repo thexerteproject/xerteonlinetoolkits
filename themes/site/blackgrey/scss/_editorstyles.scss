@@ -59,26 +59,29 @@ $esc6: $accent3;
 .panel1{
   @include panel;
   background-color:$esc1;
-  color:$whiteorlightest;
+  color:$blackordarkest;
 }
 .panel1 a{
-  color:lighten($esc1, 40%);
+  color:$blackordarkest;
+  text-decoration:underline;
 }
 .panel2 {
   @include panel;
   background-color:$esc2;
-  color:$whiteorlightest;
+  color:$blackordarkest;
 }
 .panel2 a{
-  color:lighten($esc2, 30%);
+  color:$blackordarkest;
+  text-decoration:underline;
 }
 .panel3 {
   @include panel;
   background-color:$esc3;
-  color:$whiteorlightest;
+  color:$blackordarkest;
 }
 .panel3 a{
-  color:lighten($esc3, 20%);
+  color:$blackordarkest;
+  text-decoration:underline;
 }
 .panel4 {
   @include panel;
@@ -86,16 +89,18 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .panel4 a{
-  color:lighten($esc4, 30%);
+  color:white;
+  text-decoration:underline;
 }
 .panel5 {
   @include panel;
-  background-color:$esc5;
+  background: lighten($esc5, 10%);
   color:$whiteorlightest;
   display:table;
 }
 .panel5 a{
-  color:lighten($esc5, 30%);
+  color:white;
+  text-decoration:underline;
 }
 .panel6 {
   @include panel;
@@ -103,7 +108,8 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .panel6 a{
-  color:lighten($esc6, 30%);
+  color:white;
+  text-decoration:underline;
 }
 
 //*****highlights*****/
@@ -219,6 +225,56 @@ blockquote:after {
 .bq6:before {
   @include beforeblockquote;
   color:$esc6;
+}
+
+//*****speech bubbles******//
+.speech-bubble1 {
+  background: $esc1;
+  color:$blackordarkest;
+}
+
+.speech-bubble1:after {
+  border-right-color: $esc1;
+}
+
+.speech-bubble2 {
+  background: $esc2;
+  color:$blackordarkest;
+}
+
+.speech-bubble2:after {
+  border-left-color: $esc2;
+}
+.speech-bubble3 {
+  background: $esc3;
+  color:$blackordarkest;
+}
+
+.speech-bubble3:after {
+  border-right-color: $esc3;
+}
+.speech-bubble4 {
+  background: $esc4;
+  color:white;
+}
+
+.speech-bubble4:after {
+  border-left-color: $esc4;
+}
+.speech-bubble5 {
+  background: lighten($esc5, 20%);
+  color:white;
+}
+.speech-bubble5:after {
+  border-top-color: lighten($esc5, 20%);
+}
+.speech-bubble6 {
+  background: $esc6;
+  color:white;
+}
+.speech-bubble6:after {
+  font-family:$secondaryfonts;
+  border-top-color: $esc6;
 }
 
 //*****default editor styles*****/
