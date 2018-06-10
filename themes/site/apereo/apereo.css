@@ -17,7 +17,7 @@
   display: table;
   padding: 10px;
   font-style: normal;
-  background-color: #89C2C0;
+  background-color: #4e9794;
   color: #ffffff; }
 
 .panel2 a {
@@ -92,7 +92,7 @@
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #89C2C0; }
+  border-color: #4e9794; }
 
 .highlight3 {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -194,7 +194,7 @@ blockquote:after {
   color: #079FC0; }
 
 .bq2 {
-  border-color: #89C2C0; }
+  border-color: #4e9794; }
 
 .bq2:after {
   content: close-quote;
@@ -202,7 +202,7 @@ blockquote:after {
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
-  color: #89C2C0; }
+  color: #4e9794; }
 
 .bq2:before {
   content: open-quote;
@@ -210,7 +210,7 @@ blockquote:after {
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #89C2C0; }
+  color: #4e9794; }
 
 .bq3 {
   border-color: #0F566A; }
@@ -287,6 +287,49 @@ blockquote:after {
   margin-right: 0.25em;
   vertical-align: -0.4em;
   color: #D13759; }
+
+.speech-bubble1 {
+  background: #079FC0;
+  color: white; }
+
+.speech-bubble1:after {
+  border-right-color: #079FC0; }
+
+.speech-bubble2 {
+  background: #4e9794;
+  color: white; }
+
+.speech-bubble2:after {
+  border-left-color: #4e9794; }
+
+.speech-bubble3 {
+  background: #0F566A;
+  color: white; }
+
+.speech-bubble3:after {
+  border-right-color: #0F566A; }
+
+.speech-bubble4 {
+  background: #00A1A3;
+  color: white; }
+
+.speech-bubble4:after {
+  border-left-color: #00A1A3; }
+
+.speech-bubble5 {
+  background: #0F1E25;
+  color: white; }
+
+.speech-bubble5:after {
+  border-top-color: #0F1E25; }
+
+.speech-bubble6 {
+  background: #D13759;
+  color: white; }
+
+.speech-bubble6:after {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border-top-color: #D13759; }
 
 .marker {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
