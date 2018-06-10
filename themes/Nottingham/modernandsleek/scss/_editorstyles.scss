@@ -35,7 +35,7 @@ $esc6: $accent3;
 }
 //****common styles for blockquotes***//
 @mixin blockquote{
-  font: 400 14px/24px $secondaryfonts;
+  font-family: $secondaryfonts;
   border-left: 10px solid;
   margin: 1.5em 10px;
   padding: 0.5em 10px;
@@ -219,6 +219,55 @@ blockquote:after {
 .bq6:before {
   @include beforeblockquote;
   color:$esc6;
+}
+//*****speech bubbles******//
+.speech-bubble1 {
+  background: $esc1;
+  color:white;
+}
+
+.speech-bubble1:after {
+  border-right-color: $esc1;
+}
+
+.speech-bubble2 {
+  background: $esc2;
+  color:white;
+}
+
+.speech-bubble2:after {
+  border-left-color: $esc2;
+}
+.speech-bubble3 {
+  background: $esc3;
+  color:white;
+}
+
+.speech-bubble3:after {
+  border-right-color: $esc3;
+}
+.speech-bubble4 {
+  background: $esc4;
+  color:white;
+}
+
+.speech-bubble4:after {
+  border-left-color: $esc4;
+}
+.speech-bubble5 {
+  background: $esc5;
+  color:white;
+}
+.speech-bubble5:after {
+  border-top-color: $esc5;
+}
+.speech-bubble6 {
+  background: $esc6;
+  color:white;
+}
+.speech-bubble6:after {
+  font-family:$secondaryfonts;
+  border-top-color: $esc6;
 }
 
 //*****default editor styles*****/

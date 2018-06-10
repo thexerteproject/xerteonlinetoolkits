@@ -742,7 +742,7 @@ div#shorturltodisplay a {
   border-color: #D13759; }
 
 blockquote {
-  font: 400 14px/24px "Libre Franklin", sans-serif;
+  font-family: "Libre Franklin", sans-serif;
   border-left: 10px solid;
   margin: 1.5em 10px;
   padding: 0.5em 10px;
@@ -882,6 +882,49 @@ blockquote:after {
   margin-right: 0.25em;
   vertical-align: -0.4em;
   color: #D13759; }
+
+.speech-bubble1 {
+  background: #8a8d82;
+  color: white; }
+
+.speech-bubble1:after {
+  border-right-color: #8a8d82; }
+
+.speech-bubble2 {
+  background: #2F9739;
+  color: white; }
+
+.speech-bubble2:after {
+  border-left-color: #2F9739; }
+
+.speech-bubble3 {
+  background: #2f2E33;
+  color: white; }
+
+.speech-bubble3:after {
+  border-right-color: #2f2E33; }
+
+.speech-bubble4 {
+  background: #00A1A3;
+  color: white; }
+
+.speech-bubble4:after {
+  border-left-color: #00A1A3; }
+
+.speech-bubble5 {
+  background: #3A5199;
+  color: white; }
+
+.speech-bubble5:after {
+  border-top-color: #3A5199; }
+
+.speech-bubble6 {
+  background: #D13759;
+  color: white; }
+
+.speech-bubble6:after {
+  font-family: "Libre Franklin", sans-serif;
+  border-top-color: #D13759; }
 
 .marker {
   font-family: "Libre Franklin", sans-serif;
