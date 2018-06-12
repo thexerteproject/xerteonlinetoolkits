@@ -235,6 +235,10 @@
                 this.resizeYouTube($vimeo);
             }
 
+            this.resizeMediasite = function ($mediasite) {
+                this.resizeYouTube($mediasite);
+            }
+
 
             this.leavePage = function () {
                 if (vidFullWatched == undefined)
@@ -335,7 +339,7 @@
             this.setUp = function() {
                 // _____ SORT PAGE LAYOUT _____
                 var videoURL = x_currentPageXML.getAttribute("videoSource");
-                var apiInstance = new Mediasite.Player( "presentationHolder",
+                var apiInstance = new Mediasite.Player("presentationHolder",
                     {
                         url: videoURL,
                         events: {
@@ -352,35 +356,29 @@
                         imageSprite: "url(" + ctrlPng + ")"
                     }
                 );
-                function onReady(){
+                function onReady() {
                     showStreams();
                     preSortPopcorn();
                 }
 
                 function showStreams() {
                     var visiblestreams = [];
-                    if (x_currentPageXML.getAttribute("showVideo1") === "true")
-                    {
-                        visiblestreams.push(Mediasite.StreamType.Video1 );
+                    if (x_currentPageXML.getAttribute("showVideo1") === "true") {
+                        visiblestreams.push(Mediasite.StreamType.Video1);
                     }
-                    if (x_currentPageXML.getAttribute("showDoc") === "true")
-                    {
+                    if (x_currentPageXML.getAttribute("showDoc") === "true") {
                         visiblestreams.push(Mediasite.StreamType.Document);
                     }
-                    if (x_currentPageXML.getAttribute("showSlides") === "true")
-                    {
+                    if (x_currentPageXML.getAttribute("showSlides") === "true") {
                         visiblestreams.push(Mediasite.StreamType.Slide);
                     }
-                    if (x_currentPageXML.getAttribute("showPres") === "true")
-                    {
+                    if (x_currentPageXML.getAttribute("showPres") === "true") {
                         visiblestreams.push(Mediasite.StreamType.Presentation);
                     }
-                    if (x_currentPageXML.getAttribute("showVideo2") === "true")
-                    {
+                    if (x_currentPageXML.getAttribute("showVideo2") === "true") {
                         visiblestreams.push(Mediasite.StreamType.Video2);
                     }
-                    if (x_currentPageXML.getAttribute("showVideo3") === "true")
-                    {
+                    if (x_currentPageXML.getAttribute("showVideo3") === "true") {
                         visiblestreams.push(Mediasite.StreamType.Video3);
                     }
                     apiInstance.setVisibleStreamTypes(visiblestreams);
@@ -389,33 +387,32 @@
 
                 //TODO verander height naar relatief
                 $panelHolder = $("#panelHolder");
-                var	panelData = $(x_currentPageXML).children(),
+                var panelData = $(x_currentPageXML).children(),
                     panelLayout = x_currentPageXML.getAttribute("layout");
 
-                var	mediaFile = $(x_currentPageXML).children("mediaPanel").attr("media"),
+                var mediaFile = $(x_currentPageXML).children("mediaPanel").attr("media"),
                     mediaType = "video",
                     maxPanels = 4,
                     mediaPanelIndex,
                     popcornInstance;
 
 
-
                 // get index of media panel
-                for (var i=0; i<panelData.length; i++) {
+                for (var i = 0; i < panelData.length; i++) {
                     if (panelData[i].nodeName == "mediaPanel") {
                         mediaPanelIndex = i;
                     }
                 }
 
-                    // get type of media (video/audio)
-                    if (mediaFile.indexOf(".mp3") != -1) {
+                // get type of media (video/audio)
+                if (mediaFile.indexOf(".mp3") != -1) {
                     mediaType = "audio";
 
                     // will audio appear in its own panel or across the bottom like narration?
                     var audioPosition = panelData[mediaPanelIndex].getAttribute("audioPosition") == "bottom" && (panelData[mediaPanelIndex].getAttribute("audioImage") == "" || panelData[mediaPanelIndex].getAttribute("audioImage") == undefined) ? "bottom" : "panel";
 
                     if (audioPosition == "bottom") {
-                        $("#pageContents").data("audioBar",true);
+                        $("#pageContents").data("audioBar", true);
                         popcornInstance = this.loadAudioInFooter();
                         mediaPanelIndex = -1;
                     }
@@ -438,7 +435,6 @@
                 }
 
 
-
                 // set up accordion if there's some intro text
                 if (x_currentPageXML.getAttribute("intro") != "" && x_currentPageXML.getAttribute("intro") != undefined) {
                     var $contentCover = $("#contentCover");
@@ -453,10 +449,10 @@
                     $infoHolder.find(".accTitle a").html(x_currentPageXML.getAttribute("introTitle"));
 
                     $infoHolder.accordion({
-                        collapsible:	true,
-                        heightStyle:	"content",
-                        beforeActivate:function(event, ui){
-                            if($(this).find("h3").hasClass("ui-state-active")) { //  close
+                        collapsible: true,
+                        heightStyle: "content",
+                        beforeActivate: function (event, ui) {
+                            if ($(this).find("h3").hasClass("ui-state-active")) { //  close
                                 $contentCover.fadeOut();
                             } else { // open
                                 $contentCover.fadeIn();
@@ -464,7 +460,7 @@
                         }
                     });
 
-                    $infoHolder.find(".closeTxt a").add($contentCover).on("click", function() {
+                    $infoHolder.find(".closeTxt a").add($contentCover).on("click", function () {
                         $infoHolder.accordion("option", "active", false);
                     });
 
@@ -477,7 +473,7 @@
                 }
 
                 // create all panels
-                for (var i=0; i<panelData.length; i++) {
+                for (var i = 0; i < panelData.length; i++) {
                     var title = "";
                     if (panelData[i].getAttribute("name") != "") {
                         title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
@@ -505,7 +501,7 @@
 
                         var panels = $panelHolder.find(".panel");
 
-                        for (var i=0; i<panels.length; i++) {
+                        for (var i = 0; i < panels.length; i++) {
                             if (i < 2) {
                                 $(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH halfH");
 
@@ -528,17 +524,16 @@
 
                     var panels = $panelHolder.find(".panel");
 
-                    if (panelLayout == "top")
-                    {
+                    if (panelLayout == "top") {
                         presHolder.appendTo($panelHolder.find(".top")).addClass("fullW halfH");
-                        for (var i=1; i<panels.length; i++) {
+                        for (var i = 1; i < panels.length; i++) {
                             $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
                         }
 
                     } else if (panelLayout == "bottom") {
                         presHolder.appendTo($panelHolder.find(".top")).addClass("tileH halfH");
-                        for (var i=0; i<panels.length; i++) {
-                            if (i == panels.length -1) {
+                        for (var i = 0; i < panels.length; i++) {
+                            if (i == panels.length - 1) {
                                 $(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("fullW halfH");
                             } else {
                                 $(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH halfH");
@@ -552,7 +547,7 @@
                     var panels = $panelHolder.find(".panel");
 
                     if (panelLayout == "left") {
-                        for (var i=0; i<panels.length; i++) {
+                        for (var i = 0; i < panels.length; i++) {
                             if (i == 0) {
                                 $(panels[i]).appendTo($panelHolder.find(".left")).addClass("fullH");
                             } else {
@@ -561,7 +556,7 @@
                         }
 
                     } else if (panelLayout == "right") {
-                        for (var i=0; i<panels.length; i++) {
+                        for (var i = 0; i < panels.length; i++) {
                             if (i == panels.length - 1) {
                                 $(panels[i]).appendTo($panelHolder.find(".right")).addClass("fullH");
                             } else {
@@ -583,7 +578,8 @@
                     popcornInstance = this.loadMedia(
                         $("#panel" + mediaPanelIndex),
                         mediaType,
-                        {	tip: mediaPanelData.attr("tip"),
+                        {
+                            tip: mediaPanelData.attr("tip"),
                             width: mediaPanelData.attr("width"),
                             height: mediaPanelData.attr("height"),
                             media: mediaPanelData.attr("media"),
@@ -597,37 +593,31 @@
                     );
                 }
 
-
-                $(".panel").each(function(i) {
+                $(".panel").each(function (i) {
                     $('<div id="panelContent' + i + '" class="panelContent"/>').appendTo($(this));
                 });
 
                 function preSortPopcorn() {
-                    panelData.each(function(i) {
+                    panelData.each(function (i) {
                         apiInstance.duration = apiInstance.getDuration();
                         mediasiteLesson.sortPopcorn($(this).children(), "panel" + i, apiInstance, $(".mainMedia"), popcornInstance);
                     });
                 }
-                $("#panel0").css({"position": "absolute", "top": "-9999px", "left": "-9999px"});
-
 
                 // _____ SORT & CREATE SYNCH POINT EVENTS FOR EACH PANEL _____
 
-                popcornInstance.media.addEventListener( "timeupdate", function() {
-                        console.log(popcornInstance.currentTime());
-                    });
-
-                    //Adds events to popcorn
-                    //getblock in general herschrijven vanwege de .duration, deze is specifiek voor de sync points die we bij popcorn gebruiken, herintegratie is daarmee wonderbaarlijk vervelend
-                    var lastTime = -1;
-                    apiInstance.addHandler({"currenttimechanged": function (eventData) {
+                //Adds events to popcorn
+                //getblock in general herschrijven vanwege de .duration, deze is specifiek voor de sync points die we bij popcorn gebruiken, herintegratie is daarmee wonderbaarlijk vervelend
+                var lastTime = -1;
+                apiInstance.addHandler({
+                    "currenttimechanged": function (eventData) {
                         var currentTime = eventData.currentTime;
-                        if(currentTime != lastTime && currentTime > 0)
-                        {
+                        if (currentTime != lastTime && currentTime > 0) {
                             lastTime = currentTime;
                             popcornInstance.currentTime(lastTime);
                         }
-                    }});
+                    }
+                });
                 x_pageLoaded();
 
             }
@@ -637,6 +627,7 @@
                     popcornInstance,
                     classes = "popcornMedia";
 
+                debugger;
                 if (mainMedia == true) {
                     classes += " mainMedia";
                 }
@@ -669,7 +660,20 @@
                             popcornInstance.play();
                         }
 
-                    } else {
+                    }
+                    else if (mediaData.media.indexOf("deltion.mediamission.nl") != -1) {
+                        debugger;
+                        var $mediasite = $holder.find(".popcornMedia").addClass("mediasite");
+                        mediasiteLesson.resizeMediasite($mediasite);
+
+                        popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .mediasite", mediaData.media); //deals with controls, maybe bad practice
+                        $mediasite.data("popcornInstance", popcornInstance)
+
+                        if (mediaData.autoplay == "true") {
+                            popcornInstance.play();
+                        }
+                    }
+                    else {
                         $myVideo
                             .attr("title", mediaData.tip)
                             .css("margin", "0 auto")
@@ -1168,33 +1172,6 @@
             }
 
             this.setUpPopcornCue = function(popcornInstance, synchData, apiInstance) {
-            /*    var synchpointsHit = 0;
-                var lastTime = 0;
-                apiInstance.addHandler({"currenttimechanged": function (eventData) {
-                    var currentTime = eventData.currentTime;
-
-                    if(currentTime > lastTime + 0.9 && currentTime > 0)
-                    {
-                        lastTime = currentTime;
-                        console.log(lastTime);
-                    }
-                    else{
-                        return;
-                    }
-
-                    for (var i = 0; i < synchData.length; i++) {
-                        //niet netjes geen idee waarom getAttribute niet werkt.
-                        var timeStamp = synchData[i].attributes[5].value;
-                        if(timeStamp >= lastTime && timeStamp <= lastTime + 1 && synchpointsHit <= i)
-                        {
-                            console.log(synchpointsHit);
-                            apiInstance.pause();
-                            synchpointsHit++;
-                        }
-                    }
-
-                }});
-            */
                 //TODO if popcorn instance.cue
                 popcornInstance.cue(popcornInstance, Number(synchData.getAttribute("synchstart")), function() {
                     // pause / play media
