@@ -877,6 +877,10 @@ function x_continueSetUp1() {
 					}
 					
 					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
+					
+					// Queue reparsing of MathJax - fails if no network connection
+					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+					
 					$x_glossaryHover = $("#x_glossaryHover");
 					$x_glossaryHover.css({
 						"left"	:$(this).offset().left + 20,

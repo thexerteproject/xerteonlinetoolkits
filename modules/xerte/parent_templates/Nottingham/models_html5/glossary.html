@@ -35,8 +35,12 @@
 			tableData += "</table>";
 			$("#glossaryItems").append(tableData);
 			
+			// Queue reparsing of MathJax - fails if no network connection
+			try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+			
 			// add class for shaded rows rather than using css selector as doesn't work for IE8 & below
 			$("#glossaryItems .glossary tr:nth-child(even)").addClass("shaded");
+			
 		}
 	}
 	
