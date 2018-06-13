@@ -150,7 +150,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 		}
 		array_multisort($display_name, SORT_ASC, $ThemeList);
 		// Add default theme to beginning
-		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Default", 'description' => "Default", 'preview' => ""));
+		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Default", 'description' => "Default", 'preview' => $xerte_toolkits_site->site_url . "modules/site/parent_templates/site/common/img/default.jpg"));
     }
     /**
      * sort of the screen sies required for the preview window
