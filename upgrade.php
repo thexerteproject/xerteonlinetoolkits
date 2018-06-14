@@ -898,12 +898,10 @@ function upgrade_19()
         }
         if (($error1 === false)) {
             $error1_returned = false;
-            // echo "creating LRS_Endpoint field FAILED";
         }
 
         if (($error2 === false)) {
             $error2_returned = false;
-            // echo "creating LRS_Key field FAILED";
         }
         return "Creating template_parent field in originaltemplatesdetails - ok ? " . ($error1_returned && $error2_returned ? 'true' : 'false'). "<br>";
     }
