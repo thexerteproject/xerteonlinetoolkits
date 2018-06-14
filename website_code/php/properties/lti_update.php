@@ -29,8 +29,8 @@ $lti_def->key = (isset($_POST["tsugi_key"]) ? htmlspecialchars($_POST["tsugi_key
 $lti_def->title = (isset($_POST["tsugi_title"]) ? htmlspecialchars($_POST["tsugi_title"]) : "");
 $lti_def->xapi_enabled = isset($_POST["tsugi_xapi"]) && $_POST["tsugi_xapi"] == "true";
 $lti_def->published = isset($_POST["tsugi_published"]) && $_POST["tsugi_published"] == "true";
-$lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
-$lti_def->url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
+$lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
+$lti_def->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
 $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
 $lti_def->xapi_endpoint = (isset($_POST["tsugi_xapi_endpoint"]) ? htmlspecialchars($_POST["tsugi_xapi_endpoint"]) : "");
 $lti_def->xapi_username = (isset($_POST["tsugi_xapi_username"]) ? htmlspecialchars($_POST["tsugi_xapi_username"]) : "");
@@ -52,7 +52,7 @@ if ($tsugi_installed) {
     $p = $CFG->dbprefix;
     $xp = $xerte_toolkits_site->database_table_prefix;
     _debug("Data init " . print_r($_POST, true));
-    $url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
+    $url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
     _debug("Detele " . $url);
 
 
@@ -111,7 +111,7 @@ if ($tsugi_installed) {
     }
 
     if ($tsugi_publish) {
-        $url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
+        $url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
         $PDOX = LTIX::getConnection();
         $p = $CFG->dbprefix;
         $context_row = $PDOX->rowDie("SELECT MAX(context_id) FROM {$p}lti_context;");

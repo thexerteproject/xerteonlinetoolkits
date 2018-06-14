@@ -1586,6 +1586,17 @@ function XTInitialise(category) {
             state.course = "";
             state.coursename = "";
         }
+        if (typeof modulename != "undefined" && modulename != "")
+        {
+            state.module = {
+                id: baseUrl() + modulename
+            };
+            state.modulename = modulename;
+        }
+        else {
+            state.module = "";
+            state.modulename = "";
+        }
         switch (studentidmode) {
             case 0: //mbox
                 actor = {
@@ -2841,7 +2852,10 @@ function SaveStatement(statement, async) {
     {
         extension["http://xerte.org.uk/course"] = state.coursename;
     }
-
+    if (state.modulename != "")
+    {
+        extension["http://xerte.org.uk/module"] = state.modulename;
+    }
     if (typeof statement.context == "undefined") {
         statement.context = {
             "extensions": extension
@@ -2899,6 +2913,20 @@ function SaveStatement(statement, async) {
         else
         {
             statement.context.contextActivities.other.push(state.course);
+        }
+    }
+    if (state.module != "")
+    {
+        //Place module in contextActivities/Other
+        if (typeof statement.context.contextActivities == "undefined") {
+            statement.context.contextActivities = {};
+        }
+        if (typeof statement.context.contextActivities.other == "undefined") {
+            statement.context.contextActivities.other = [state.module];
+        }
+        else
+        {
+            statement.context.contextActivities.other.push(state.module);
         }
     }
     if (state.group != "")

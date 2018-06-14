@@ -54,8 +54,8 @@
             $lti_def->key = $row['name'] . "_" . $id;
             $lti_def->secret = generatePwd(16);
             $lti_def->published = $row["tsugi_published"];
-            $lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
-            $lti_def->url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
+            $lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $row['template_id'];
+            $lti_def->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $row['template_id'];
             $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $row['template_id'] . "&group=groupname";
             $lti_def->xapi_endpoint = $xerte_toolkits_site->LRS_Endpoint;
             $lti_def->xapi_username = $xerte_toolkits_site->LRS_Key;

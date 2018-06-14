@@ -339,7 +339,9 @@
             $("#completedTxt").html(completedTxt);
             $("#detailsTxt").html(detailsTxt);
             $("#specificResultsTxt").html(specificResultsTxt);
-            $("#button").html(downloadPdfTxt);
+            $("#button").button({
+                label: downloadPdfTxt
+            });
         }
 
         this.pdfDownload = function(skip) {
