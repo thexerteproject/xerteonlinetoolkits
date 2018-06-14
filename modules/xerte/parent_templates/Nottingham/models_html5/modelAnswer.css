@@ -14,8 +14,16 @@
 	}
 	
 	#pageContents .panelImg {
-		text-align:		center;
-		padding-top:	1em;
+		text-align: center;
+		padding-top: 1em;
+	}
+	
+	#pageContents .panelImg img {
+		max-width: 50%;
+	}
+	
+	.x_mobile #pageContents .panelImg img {
+		max-width: 80%;
 	}
 	
 	#answerTxt {
