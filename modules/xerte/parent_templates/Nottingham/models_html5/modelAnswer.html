@@ -35,6 +35,17 @@
 			if (x_browserInfo.mobile == false) {
 				var $panel = $("#pageContents .panel");
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				
+				// makes sure image doesn't take up too much vertical space & will try to fit text, image, answer box on screen without scrolling if possible
+				if ($(".panelImg img").length > 0) {
+					var totalHeight = 0;
+					$panel.children().each(function() {
+						totalHeight = totalHeight + $(this).outerHeight(true);
+					});
+					totalHeight -= $(".panelImg img").height();
+					var maxH = Math.max($panel.innerHeight() - totalHeight, 100);
+					$(".panelImg img").css("max-height", maxH);
+				}
 			}
 		};
 
@@ -138,7 +149,7 @@
 				if (url.split('.').pop().slice(0, -1) == "swf") {
 					promptString += '<div class="centerAlign"><div id="pageSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
 				} else {
-					promptString += '<div class="panelImg"><img ';
+					promptString += '<div class="panelImg"><img src="' + x_evalURL(url) + '"';
 					if (x_currentPageXML.getAttribute("tooltip") != undefined && x_currentPageXML.getAttribute("tooltip") != "") {
 						promptString += 'alt="' + x_currentPageXML.getAttribute("tooltip") + '" ';
 					}
@@ -146,19 +157,6 @@
 				}
 			}
 			$prompt.html(promptString);
-			
-			if ($prompt.find(".panelImg").length > 0) {
-				$prompt.find(".panelImg img")
-					.one("load", function() {
-						x_scaleImg(this, 200, 200, true, true);
-					})
-					.attr("src", x_evalURL(url))
-					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-						if (this.complete) {
-							$(this).trigger("load");
-						}
-					});
-			}
 			
 			if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
 				swfobject.embedSWF(x_evalURL(url), "pageSWF", "100", "100", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");
