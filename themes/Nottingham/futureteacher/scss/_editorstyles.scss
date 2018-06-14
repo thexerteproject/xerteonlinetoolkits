@@ -10,7 +10,7 @@ $esc6: $accent3;
 //*****editor styles*****/
 //****common styles for panels***//
 @mixin panel {
-  font:$mainfonts;
+  font-family:$mainfonts;
   border-radius:$smallroundedcorners;
   display:table;
   padding:10px;
@@ -18,7 +18,7 @@ $esc6: $accent3;
 }
 //****common styles for highlights***//
 @mixin highlight{
-  font:$mainfonts;
+  font-family:$mainfonts;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -53,49 +53,6 @@ $esc6: $accent3;
   vertical-align: -.6em;
 }
 
-//****common styles for bubbles***//
-@mixin bubble{
-/*  display: inline-block;
-  position: relative;
-  padding: 0px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  margin-right:auto;*/
-//  display: inline;
-  position: relative;
-//  margin-left:5%;
-  //width: 50%;
-  //height: 120px;
-  padding: 5px;
-  background: $esc1;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  color:#fff;
-}
-@mixin bubbleafter{
-  /*content: '';
-  position: absolute;
-  border-style: solid;
-  border-width: 15px 15px 0;
-  display: block;
-  width: 0;
-  z-index: 1;
-  bottom: -15px;
-  left: 45%;*/
-  content: '';
-  position: absolute;
-  border-style: solid;
-  border-width: 10px 23px 10px 0;
-  border-color: transparent $esc1;
-  display: block;
-  width: 0;
-  z-index: 1;
-  margin-top: -15px;
-  left: -23px;
-  top: 50%;
-}
 
 //*****panels*****/
 .marker, .panel1{
@@ -104,7 +61,8 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .marker a, .panel1 a{
-  color:lighten($esc1, 40%);
+  color:white !important;
+  text-decoration:underline;
 }
 .panel2 {
    @include panel;
@@ -112,7 +70,8 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 var a, .panel2 a{
-  color:lighten($esc2, 30%);
+  color:white !important;
+  text-decoration:underline;
 }
 kbd, .panel3 {
   @include panel;
@@ -120,15 +79,17 @@ kbd, .panel3 {
   color:$whiteorlightest;
 }
 kbd a, .panel3 a{
-  color:lighten($esc3, 20%);
+  color:white !important;
+  text-decoration:underline;
 }
 .panel4 {
   @include panel;
   background-color:$esc4;
   color:$whiteorlightest;
 }
-a, .panel4 a{
-  color:lighten($esc4, 30%);
+.panel4 a{
+  color:white !important;
+  text-decoration:underline;
 }
 .panel5 {
   @include panel;
@@ -136,8 +97,9 @@ a, .panel4 a{
   color:$whiteorlightest;
   display:table;
 }
-a, .panel5 a{
-  color:lighten($esc5, 30%);
+.panel5 a{
+  color:white !important;
+  text-decoration:underline;
 }
 code, .panel6 {
   @include panel;
@@ -145,7 +107,8 @@ code, .panel6 {
   color:$whiteorlightest;
 }
 code a, .panel6 a{
-  color:lighten($esc6, 30%);
+  color:white !important;
+  text-decoration:underline;
 }
 
 //*****highlights*****/
@@ -284,63 +247,8 @@ blockquote:after {
   color:$esc6;
 }
 
-.bubble1
-{
-
-  @include bubble;
-//  background: $darkestcolor;
-//  color:$fontcolorfordarkestcolor;
-
+//***make links in speech bubbles white and underlined by default***//
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble4 a, .speech-bubble5 a, .speech-bubble6 a{
+  color:white !important;
+  text-decoration:underline;
 }
-
-.bubble1:after {
-  @include bubbleafter;
- // border-color: $darkestcolor transparent;
-}
-
-/*.bubble2
-{
-  @include bubble;
-//  background: $brightcolor;
- // color:$fontcolorfobrightcolor;
-
-}
-
-.bubble2:after {
-  @include bubbleafter;
- // border-color: $brightcolor transparent;
-
-}*/
-
-.bubble2
-{
-  // my customisations//*
-  display: inline-block;//*
-  position: relative;
-//  width: 250px;//*
-  min-height: 50px;
-  padding: 0px;
-  background: $esc2;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  color:#fff;//*
-}
-
-.bubble2:after
-{
-  content: '';
-  position: absolute;
-  border-style: solid;
-  border-width: 12px 0 12px 23px;
-  border-color: transparent $esc2;
-  display: block;
-  width: 0;
-  z-index: 1;
-  margin-top: -12px;
-  right: -23px;
-  top: 50%;
-}
-
-
-

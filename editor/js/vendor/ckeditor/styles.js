@@ -41,6 +41,7 @@ CKEDITOR.stylesSet.add( 'default', [
         styles: {
             padding: '5px 10px',
             background: '#eee',
+            color: '#000',
             border: '1px solid #ccc'
         }
     },
@@ -78,6 +79,13 @@ CKEDITOR.stylesSet.add( 'default', [
     { name: 'Blockquote 4',			element: 'blockquote', attributes: { 'class': 'bq4' } },
     { name: 'Blockquote 5',			element: 'blockquote', attributes: { 'class': 'bq5' } },
     { name: 'Blockquote 6',			element: 'blockquote', attributes: { 'class': 'bq6' } },
+
+    { name: 'Speech Bubble 1', element: 'div', wrap:true, attributes: { 'class': 'speech-bubble1'} },
+    { name: 'Speech Bubble 2', element: 'div', wrap:true, attributes: { 'class': 'speech-bubble2'} },
+    { name: 'Speech Bubble 3', element: 'div', wrap:true, attributes: { 'class': 'speech-bubble3'} },
+    { name: 'Speech Bubble 4', element: 'div', wrap:true, attributes: { 'class': 'speech-bubble4'} },
+    { name: 'Speech Bubble 5', element: 'div', wrap:true, attributes: { 'class': 'speech-bubble5'} },
+    { name: 'Speech Bubble 6', element: 'div', wrap:true, attributes: { 'class': 'speech-bubble6'} },
 
     { name: 'Marker',			element: 'span', attributes: { 'class': 'marker' } },
 

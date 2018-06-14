@@ -45,7 +45,7 @@ function show_preview_code($row){
 
 	$string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 
-	$template_path_string = "modules/decision/parent_templates/" . $row['template_name'] . "/";
+	$template_path_string = "modules/decision/parent_templates/" . $row['parent_template'] . "/";
 
 	require_once("config.php");
 
@@ -60,7 +60,7 @@ function show_preview_code($row){
     $page_content = str_replace("%TEMPLATEPATH%", $template_path_string, $page_content);
     $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
     $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
-	$page_content = str_replace("%THEMEPATH%", "themes/" . $row['template_name'] . "/",$page_content);
+	$page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
     $page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $page_content);
 
     echo $page_content;

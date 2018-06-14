@@ -449,7 +449,11 @@
                 }
             }
             if (x_currentPageXML.getAttribute("judge") != "false") {
-                fbTxt += "<p>" + $pageContents.data("scoreText").replace("{i}", myScore).replace("{n}", quiz.questions.length) + "</p>";
+				if (x_currentPageXML.getAttribute("scorePos") == "Above") {
+					fbTxt = "<p>" + $pageContents.data("scoreText").replace("{i}", myScore).replace("{n}", quiz.questions.length) + "</p>" + fbTxt;
+				} else {
+					fbTxt += "<p>" + $pageContents.data("scoreText").replace("{i}", myScore).replace("{n}", quiz.questions.length) + "</p>";
+				}
             }
 
             $("#feedback").html(fbTxt);

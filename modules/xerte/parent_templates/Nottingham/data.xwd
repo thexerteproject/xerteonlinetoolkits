@@ -2878,6 +2878,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	<backurl label="Card Back Image" type="Media" optional="true"/>
+	<text label="Page Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
 
     <newNodes>
       <matchItem><![CDATA[<matchItem name="Enter Label" url="Select Image"/>]]></matchItem>
@@ -3482,7 +3483,8 @@
     <judge label="Judge Questions" type="CheckBox" defaultValue="true"/>
 	<showfeedback label="Show Feedback" type="CheckBox" defaultValue="true"/>
     <feedback label="Feedback" type="textArea" height="120"/>
-	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/> 
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+	<scorePos label="Score Position" options="Above Feedback,Below Feedback" type="ComboBox" data="Above,Below" defaultValue="Below" width="120" optional="true"/>
 	
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true"/>
