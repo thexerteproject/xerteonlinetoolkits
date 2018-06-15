@@ -405,7 +405,12 @@ x_projectDataLoaded = function(xmlData) {
 	if (urlParams.responsive != undefined && (urlParams.responsive == "true" || urlParams.responsive == "false")) {
 		x_params.responsive = urlParams.responsive;
 	}
-	
+
+	if (urlParams.theme != undefined)
+    {
+        x_params.theme = urlParams.theme;
+    }
+
     x_getLangData(x_params.language);
 
     // Setup nr of pages for tracking

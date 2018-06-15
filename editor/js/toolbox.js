@@ -1867,7 +1867,8 @@ var EDITOR = (function ($, parent) {
 				'src': theme.preview,
 				'alt': obj[value].label
 			});
-        $('div.theme_description:first').html(theme.description);
+        var description = $("<div>" + theme.description + "</div><div class='theme_url_param'>" + language.ThemeUrlParam + " " + theme.name + "</div>");
+        $('div.theme_description:first').html(description);
         setAttributeValue(key, [name], [theme.name]);
     },
 
@@ -2495,11 +2496,12 @@ var EDITOR = (function ($, parent) {
 						});
 						
                     html.append(preview);
-                    var description = $('<div>')
+                    var description = $("<div>" + theme_list[currtheme].description + "</div><div class='theme_url_param'>" + language.ThemeUrlParam + " " + theme_list[currtheme].name + "</div>");
+                    var description_box = $('<div>')
                         .attr('id', 'theme_description_' + form_id_offset)
                         .addClass('theme_description')
-                        .append(theme_list[currtheme].description);
-                    html.append(description);
+                        .append(description);
+                    html.append(description_box);
                     form_id_offset++;
 
                     break;
