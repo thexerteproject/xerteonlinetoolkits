@@ -113,6 +113,11 @@
 		};
 
         this.init = function() {
+			
+			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
+				$('#pageContents').prepend('<div id="txtHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div>');
+			}
+			
             var loadFiles = true;
             if(xot_offline) {
 				/* files are already loaded statically */
