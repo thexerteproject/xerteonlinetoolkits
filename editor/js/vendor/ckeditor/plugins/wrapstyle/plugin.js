@@ -249,7 +249,7 @@
 				}
 
 				// move wrap styles up
-				stylesDefinitions.sort( sortStyleDefinitions );
+				//stylesDefinitions.sort( sortStyleDefinitions );
 			});
 
 			// extend style class
