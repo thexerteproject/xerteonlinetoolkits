@@ -27,6 +27,7 @@
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
     <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
     <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
+    <themeurl type="CheckBox" label="Disable theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
 	<variables optional="true" label="Variables" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
 	
 	<progressBar optional="true" type="ComboBox" options="Show progress bar with page counter,Show progress bar and hide page counter" data="pBar,pBarNoCounter" label="Progress bar" defaultValue="pBar" width="100"/>
