@@ -18,7 +18,8 @@
  */
 
 var allParams		= {},	// all attributes of learningObject
-	allQParams		= {},	// all attributes of quiz
+    urlParams       = {},	// url parameters
+    allQParams		= {},	// all attributes of quiz
 	allSections		= [],	// array containing an object with details of each section
 	allSteps		= [],	// array containing an object with details for each possible step
 	
@@ -30,6 +31,7 @@ var allParams		= {},	// all attributes of learningObject
 	currentSection,
 	
 	languageData	= [],
+	x_theme 		= "default",
 	x_volume        = 1,
 	x_audioBarH     = 30,
 	x_mediaText     = [];
@@ -180,7 +182,16 @@ function getLangInfo(node, attribute, fallBack) {
 
 // _____ SET UP INTERFACE _____
 function setUpInterface() {
-	
+    // if there's a valid step ID set in URL, use this as 1st step
+    var tempUrlParams = window.location.href.split("&").splice(0);
+    for (i=0; i<tempUrlParams.length; i++) {
+        urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
+    }
+    if (urlParams.theme != undefined)
+	{
+		allParams.theme = urlParams.theme;
+	}
+
 	if (allParams.theme != undefined && allParams.theme != "default") {
 		
 		$('head').append('<link rel="stylesheet" href="' + themePath + allParams.theme + '/' + allParams.theme + '.css' + '" type="text/css" />');
@@ -445,12 +456,7 @@ function setUpInterface() {
 	showHideHolders($introHolder);
 	$mainHolder.css("visibility", "visible");
 	
-	// if there's a valid step ID set in URL, use this as 1st step
-	var tempUrlParams = window.location.href.split("&").splice(0);
-	var urlParams = {};
-	for (i=0; i<tempUrlParams.length; i++) {
-		urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
-	}
+
 	if (urlParams.step != undefined) {
 		startNewDecision(urlParams.step);
 	} else {
