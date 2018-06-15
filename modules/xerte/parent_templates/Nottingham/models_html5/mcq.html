@@ -57,7 +57,7 @@
             var correctOptions = [],
                correctAnswer = [],
                correctFeedback = [],
-               correctOption = false; // is there a correct answer for the question?
+               judge = false; // is there a correct answer for the question?
 
             this.checked = false;
             // Track the quiz page
@@ -86,11 +86,14 @@
 					result: this.optionElements[i].correct == 'true'
 				});
 				if (this.optionElements[i].correct == 'true') {
+					judge = true;
                     correctAnswer.push(answerTxt);
                 }
 				correctFeedback.push(x_GetTrackingTextFromHTML(this.optionElements[i].feedback, ""));
-				mcq.correctOption = true;
             }
+			
+			$("#pageContents").data("judge", judge);
+			
             // Create fallback label
             var questionTxt = (x_currentPageXML.getAttribute('questionTxt') != undefined ? x_currentPageXML.getAttribute('questionTxt') : "Multiple choice question");
             questionTxt += ' ' + (x_currentPage+1);
@@ -164,35 +167,23 @@
             }
             generalFeedback += answerFeedback;
 
-            var singleRight = x_currentPageXML.getAttribute("singleRight");
-            if (singleRight == undefined) {
-                singleRight = "Your answer is correct";
-            }
-            var singleWrong = x_currentPageXML.getAttribute("singleWrong");
-            if (singleWrong == undefined) {
-                singleWrong = "Your answer is incorrect";
-            }
-            var multiRight = x_currentPageXML.getAttribute("multiRight");
-            if (multiRight == undefined) {
-                multiRight = "You have selected all the correct answers";
-            }
-            var multiWrong = x_currentPageXML.getAttribute("multiWrong");
-            if (multiWrong == undefined) {
-                multiWrong = "You have not selected the correct combination of answers";
-            }
+            var singleRight = x_currentPageXML.getAttribute("singleRight") != undefined ? x_currentPageXML.getAttribute("singleRight") : "Your answer is correct";
+			var singleWrong = x_currentPageXML.getAttribute("singleWrong") != undefined ? x_currentPageXML.getAttribute("singleWrong") : "Your answer is incorrect";
+			var multiRight = x_currentPageXML.getAttribute("multiRight") != undefined ? x_currentPageXML.getAttribute("multiRight") : "You have selected all the correct answers";
+			var multiWrong = x_currentPageXML.getAttribute("multiWrong") != undefined ? x_currentPageXML.getAttribute("multiWrong") : "You have not selected the correct combination of answers";
 
             var rightWrongTxt = "";
             // add correct feedback depending on if question overall has been answered correctly or not
             if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
                 if (mcq.correctOption == true) { // there is a correct answer for question
-                    if (correct == true) {
+                    if ($("#pageContents").data("judge") == true) {
                         rightWrongTxt = '<p><br/>' + multiRight + '</p>';
                     } else {
                         rightWrongTxt = '<p><br/>' + multiWrong + '</p>';
                     }
                 }
             } else {
-                if (mcq.correctOption == true) { // there is a correct answer for question
+                if ($("#pageContents").data("judge") == true) { // there is a correct answer for question
                     if (correct == true) {
                         rightWrongTxt = '<p><br/>' + singleRight + '</p>';
                     } else {
