@@ -21,6 +21,7 @@ $(document).ready(init);
 var data;
 var languageData;
 var startPage = 0;
+var theme = "default";
 var pageLink = "";
 var authorSupport = false;
 var deepLink = "";
@@ -78,13 +79,27 @@ function loadContent(){
 			
 		}
 	});
-	
-	// If we have a start page/section then extract it and clear the url
-	if (window.location.hash.length > 0) {
-		pageLink = window.location.hash.substring(1);
-		if (pageLink.substring(0,4) == "page") {
-			startPage = parseInt(pageLink.substring(4), 10) - 1;
-		}
+
+    if ($(data).find('learningObject').attr('theme') != undefined)
+	{
+		theme = $(data).find('learningObject').attr('theme');
+	}
+	// sort any parameters in url - these will override those in xml
+    var tempUrlParams = window.location.search.substr(1, window.location.search.length).split("&");
+    var urlParams = {};
+    for (i = 0; i < tempUrlParams.length; i++) {
+        urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
+    }
+
+    // If we have a start page/section then extract it and clear the url
+    if (urlParams.page != undefined) {
+		startPage = parseInt(urlParams.page);
+	}
+
+	// See if we have a theme
+	if (urlParams.theme != undefined)
+	{
+		theme = urlParams.theme;
 	}
 
 }
@@ -94,9 +109,9 @@ function cssSetUp(param) {
 
 	switch(param) {
         case 'theme':
-			if ( $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default") {
-				$('head').append('<script src="'+ themePath + $(data).find('learningObject').attr('theme') + '/'+ $(data).find('learningObject').attr('theme')+ '.js"' + '</script>');
-				insertCSS(themePath + $(data).find('learningObject').attr('theme') + '/' + $(data).find('learningObject').attr('theme') + '.css', function() {cssSetUp('stylesheet')});
+			if ( theme != undefined && theme != "default") {
+				$('head').append('<script src="'+ themePath + theme + '/'+ theme+ '.js"' + '</script>');
+				insertCSS(themePath + theme + '/' + theme + '.css', function() {cssSetUp('stylesheet')});
 			} else {
 				cssSetUp('stylesheet');
 			}
