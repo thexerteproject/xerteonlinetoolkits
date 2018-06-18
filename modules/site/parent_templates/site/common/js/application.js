@@ -28,6 +28,8 @@ var deepLink = "";
 var currentPage = 0;
 var glossary = [];
 var defaultHeaderCss;
+var urlParams = {};
+
 
 function init(){
 	loadContent();
@@ -80,13 +82,8 @@ function loadContent(){
 		}
 	});
 
-    if ($(data).find('learningObject').attr('theme') != undefined)
-	{
-		theme = $(data).find('learningObject').attr('theme');
-	}
 	// sort any parameters in url - these will override those in xml
     var tempUrlParams = window.location.search.substr(1, window.location.search.length).split("&");
-    var urlParams = {};
     for (i = 0; i < tempUrlParams.length; i++) {
         urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
     }
@@ -95,13 +92,6 @@ function loadContent(){
     if (urlParams.page != undefined) {
 		startPage = parseInt(urlParams.page);
 	}
-
-	// See if we have a theme
-	if (urlParams.theme != undefined)
-	{
-		theme = urlParams.theme;
-	}
-
 }
 
 function cssSetUp(param) {
@@ -109,6 +99,17 @@ function cssSetUp(param) {
 
 	switch(param) {
         case 'theme':
+            if ($(data).find('learningObject').attr('theme') != undefined)
+            {
+                theme = $(data).find('learningObject').attr('theme');
+            }
+
+            // See if we have a theme definition in the url
+            if (urlParams.theme != undefined && $(data).find('learningObject').attr('themeurl') != undefined && $(data).find('learningObject').attr('themeurl') != 'false')
+            {
+                theme = urlParams.theme;
+            }
+
 			if ( theme != undefined && theme != "default") {
 				$('head').append('<script src="'+ themePath + theme + '/'+ theme+ '.js"' + '</script>');
 				insertCSS(themePath + theme + '/' + theme + '.css', function() {cssSetUp('stylesheet')});

@@ -5,7 +5,8 @@
   
 		<name label="Project Title" type="TextInput"/>
 		<theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default" />
-		
+		<themeurl type="CheckBox" label="Disable theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
+
 		<stylesheet label="Stylesheet" type="Media" optional="true"/>
 		<styles optional="true" type="script" height="200" label="Styles"/>
 		<displayMode type="ComboBox" options="Fixed,Fill screen" data="fixed,fill" label="Display Mode" width="100"/>

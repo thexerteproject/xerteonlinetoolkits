@@ -164,7 +164,7 @@ DashboardState.prototype.groupStatements = function(data) {
                 attempt['key'] = key;
                 if (statement.actor.name != undefined) {
                     attempt['username'] = statement.actor.name;
-                    groupedData[key]['mode'] = 'username';
+                    attempt['mode'] = 'username';
                 }
                 groupedData[key] = attempt;
             }

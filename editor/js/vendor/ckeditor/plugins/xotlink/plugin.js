@@ -33,7 +33,7 @@ CKEDITOR.plugins.add('xotlink', {
 			if (editor.readOnly) return;
 
 			var element = evt.data.path.lastElement && evt.data.path.lastElement.getAscendant('a', true);
-			var linkCommand = editor.getCommand('link');
+			var linkCommand = editor.getCommand('link2');
 			var xotLinkCommand = editor.getCommand('xotlink');
 			if (element && element.getName() == 'a' && element.getAttribute('href') && element.getChildCount()) {
 				var attr = element.getAttribute('onclick') ? element.getAttribute('onclick') : element.getAttribute('data-cke-pa-onclick');

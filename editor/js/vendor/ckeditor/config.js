@@ -25,7 +25,7 @@ CKEDITOR.editorConfig = function( config ) {
     ];
 
 
-    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,rubytext,wrapstyle';
+    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,rubytext,wrapstyle,link2';
     // The default plugins included in the basic setup define some buttons that
     // we don't want too have in a basic editor. We remove them here.
     //config.removeButtons = 'Cut,Copy,Paste,Undo,Redo,Anchor,Underline,Strike,Subscript,Superscript';
@@ -34,7 +34,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.format_tags = 'p;h3;h4;h5;h6;pre;address;div';
 
     // Let's have it basic on dialogs as well.
-    config.removeDialogTabs = 'link:advanced';
+    config.removeDialogTabs = 'link2:advanced';
     config.toolbarCanCollapse = true;
     config.allowedContent = true;
     config.extraAllowedContent = 'p(*)[*]{*};div(*)[*]{*};li(*)[*]{*};ul(*)[*]{*}';

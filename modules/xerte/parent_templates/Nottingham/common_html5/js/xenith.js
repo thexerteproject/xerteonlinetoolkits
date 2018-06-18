@@ -406,7 +406,7 @@ x_projectDataLoaded = function(xmlData) {
 		x_params.responsive = urlParams.responsive;
 	}
 
-	if (urlParams.theme != undefined)
+	if (urlParams.theme != undefined && x_params.themeurl != undefined && x_params.themeurl != 'false')
     {
         x_params.theme = urlParams.theme;
     }
@@ -1989,6 +1989,10 @@ function x_pageLoaded() {
         .hide()
         .css("visibility", "visible")
         .fadeIn();
+
+	// Trigger featherlight
+    var config = $.featherlight.defaults;
+    $(config.selector, config.context).featherlight();
 
 	doPercentage();
 }
