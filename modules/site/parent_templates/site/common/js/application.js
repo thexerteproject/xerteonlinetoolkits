@@ -89,9 +89,12 @@ function loadContent(){
     }
 
     // If we have a start page/section then extract it and clear the url
-    if (urlParams.page != undefined) {
-		startPage = parseInt(urlParams.page);
-	}
+    if (window.location.hash.length > 0) {
+        pageLink = window.location.hash.substring(1);
+        if (pageLink.substring(0,4) == "page") {
+            startPage = parseInt(pageLink.substring(4), 10) - 1;
+		}
+ 	}
 }
 
 function cssSetUp(param) {
