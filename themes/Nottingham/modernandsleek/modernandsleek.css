@@ -1154,8 +1154,10 @@ tt {
 /* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
 /*You should not edit the .css files directly or change values directly unless you wish to override something*/
 /*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
+body:not(.cke_contents .cke_reset) {
+  background: #D5D6D2; }
+
 body {
-  background: #D5D6D2;
   color: #3A5199;
   font-family: "Libre Franklin", sans-serif; }
 

@@ -11,8 +11,10 @@
 //*You should not edit the .css files directly or change values directly unless you wish to override something*/
 //*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
 
-body{
+body:not(.cke_contents .cke_reset){
 	background:$bodybackgroundcolor;
+}
+body {
 	color:$mainfontcolour;
 	font-family: $mainfonts;
 }
