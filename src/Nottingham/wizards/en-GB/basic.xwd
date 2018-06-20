@@ -11,6 +11,7 @@
 	<hideHeader optional="true" type="CheckBox" label="Hide Header" defaultValue="false" />
 	<hideFooter optional="true" type="CheckBox" label="Hide Footer" defaultValue="false" />
 	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" />
+	<homePage optional="true" type="pagelist" label="Home Page" defaultValue="" tooltip="Home page used when navigation is set to 'Historic'. By default this is the first page in the project."/>
 
     <kblanguage type="ComboBox" options="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
     <displayMode type="ComboBox" options="Default,Fill Window" data="default,fill window" label="Display Mode" width="100"/>
