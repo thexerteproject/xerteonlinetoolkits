@@ -1014,12 +1014,13 @@ blockquote:after {
 /* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
 /*You should not edit the .css files directly or change values directly unless you wish to override something*/
 /*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
-body:not(.cke_contents .cke_reset) {
-  background: #BFBFBF; }
-
 body {
+  background: #BFBFBF;
   color: #000000;
   font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+.cke_editable {
+  background: #ffffff; }
 
 /******Fonts******/
 .ui-button .ui-button-text {
