@@ -146,7 +146,9 @@
 					.removeClass("inline");
 			}
 			
-			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+			if (x_currentPageXML.childNodes[0] != undefined) {
+				$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+			}
 			
 			$("#pageImg")
 				.one("load", function() {
