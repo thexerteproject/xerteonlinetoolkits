@@ -704,23 +704,25 @@ function x_insertGlossaryText(node) {
 // check through text nodes for text that needs replacing with something lese (e.g. glossary)
 function x_checkForText(data, type) {
 	for (var i=0; i<data.length; i++) {
-		if (data[i].nodeName == 'text') {
-			if (type == 'glossary') {
-				if ($(data[i]).attr('disableGlossary') != 'true') {
-					data[i].childNodes[0].data = x_insertGlossaryText(data[i].childNodes[0].data);
-				}
-			} else if (type == 'iframe') {
-				function changeProtocol(iframe) {
-					if (/src="http:/.test(iframe)){
-						iframe = iframe.replace(/src="http:/g, 'src="https:').replace(/src='http:/g, "src='https:");
+		if (data[i].childNodes.length > 0) {
+			if (data[i].nodeName == 'text') {
+				if (type == 'glossary') {
+					if ($(data[i]).attr('disableGlossary') != 'true') {
+						data[i].childNodes[0].data = x_insertGlossaryText(data[i].childNodes[0].data);
 					}
-					return iframe;
+				} else if (type == 'iframe') {
+					function changeProtocol(iframe) {
+						if (/src="http:/.test(iframe)){
+							iframe = iframe.replace(/src="http:/g, 'src="https:').replace(/src='http:/g, "src='https:");
+						}
+						return iframe;
+					}
+					data[i].childNodes[0].data = data[i].childNodes[0].data.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
 				}
-				data[i].childNodes[0].data = data[i].childNodes[0].data.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
+				
+			} else {
+				x_checkForText(data[i].childNodes, type);
 			}
-			
-		} else {
-			x_checkForText(data[i].childNodes, type);
 		}
 	}
 }
