@@ -1087,7 +1087,7 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 			
 		} else if (defaultHeaderCss.headerPos) {
 			
-			bgImg += ' ' + $(data).find('learningObject').attr('headerPos');
+			bgImg += ' ' + defaultHeaderCss.headerPos;
 			
 		} else {
 			
