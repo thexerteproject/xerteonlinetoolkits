@@ -187,7 +187,7 @@ function setUpInterface() {
     for (i=0; i<tempUrlParams.length; i++) {
         urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
     }
-    if (urlParams.theme != undefined && allParams.themeurl != undefined && allParams.themeurl != 'false')
+    if (urlParams.theme != undefined && (allParams.themeurl == undefined || allParams.themeurl != 'true'))
 	{
 		allParams.theme = urlParams.theme;
 	}

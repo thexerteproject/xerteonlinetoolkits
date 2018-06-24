@@ -108,7 +108,7 @@ function cssSetUp(param) {
             }
 
             // See if we have a theme definition in the url
-            if (urlParams.theme != undefined && $(data).find('learningObject').attr('themeurl') != undefined && $(data).find('learningObject').attr('themeurl') != 'false')
+            if (urlParams.theme != undefined && ($(data).find('learningObject').attr('themeurl') == undefined || $(data).find('learningObject').attr('themeurl') != 'true'))
             {
                 theme = urlParams.theme;
             }

@@ -406,7 +406,7 @@ x_projectDataLoaded = function(xmlData) {
 		x_params.responsive = urlParams.responsive;
 	}
 
-	if (urlParams.theme != undefined && x_params.themeurl != undefined && x_params.themeurl != 'false')
+	if (urlParams.theme != undefined && (x_params.themeurl == undefined || x_params.themeurl != 'true'))
     {
         x_params.theme = urlParams.theme;
     }
