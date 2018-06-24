@@ -5,4 +5,6 @@
 		margin-bottom:	5px;
 		text-align:		left;
 	}
-	
+#subMenuItems .subMenuItem .notvisited {
+	display: none;
+}

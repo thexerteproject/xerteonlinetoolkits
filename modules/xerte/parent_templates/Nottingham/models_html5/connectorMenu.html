@@ -26,7 +26,15 @@
 	var connectorMenu = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-            
+			//only show ticks if all pages showing in menu
+			//ideally also need to get this working when only a selected range is used
+			if ((x_currentPageXML.getAttribute("startPageID") == undefined || x_currentPageXML.getAttribute("startPageID") == "") && (x_currentPageXML.getAttribute("endPageID") == undefined || x_currentPageXML.getAttribute("endPageID") != "")) {
+			if (x_params.pageTick == undefined || x_params.pageTick == "true") {
+				$("#subMenuItems .subMenuItem").each(function(i) {
+					if (x_pageInfo[i+1].built) $(this).find('i').removeClass('notvisited');
+				});
+			}
+			}
 		}
 		
 		// function called every time the size of the LO is changed
@@ -112,11 +120,13 @@
 				} else {
 					var page = x_lookupPage("linkID", menuItems[i]);
 					name = $.isArray(page) ? this.getNestedName(page) : x_pages[page].getAttribute("name");
+					
 				}
 				
 				$thisItem
 					.data("id", menuItems[i])
 					.html(name);
+				$thisItem.append(' <i class="fa fa-x-tick-circle notvisited" aria-hidden="true"></i>');
 			}
 			
 			$(".subMenuItem")
@@ -144,6 +154,7 @@
 			for (var i=0; i<page.length-1; i++) {
 				child = child.childNodes[page[i+1]];
 				name += " | " + child.getAttribute("name");
+			//	$thisItem.append(' <i class="fa fa-x-tick-circle notvisited" aria-hidden="true"></i>');
 			}
 			return name;
 		}
