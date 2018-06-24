@@ -138,8 +138,8 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
             $tracking .= "<script type=\"text/javascript\" src=\"$jsfile?version=" . $version . "\"></script>\n";
         }
         if ($tsugi_enabled && $row["tsugi_xapi_enabled"] == 1) {
-            $tracking .= "<script type=\"text/javascript\" src=\"$flash_js_dir/xAPI/tincan.js?\"></script>\n";
-        }
+            $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapidashboard.min.js?version=" . $version . "\"></script>\n";
+            $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapiwrapper.min.js?version=" . $version . "\"></script>\n";        }
         if($tsugi_enabled)
         {
             $tracking .= "<script>\n";
@@ -231,6 +231,15 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         if($tsugi_enabled)
         {
             $tracking .= "<script>\n";
+            if (!$pedit_enabled)
+            {
+                // Set lti_enabled variable so that we can send back gradebook results through LTI
+                $tracking .= "  var lti_enabled=true;\n";
+            }
+            else
+            {
+                $tracking .= "  var lti_enabled=false;\n";
+            }
             if($row["tsugi_xapi_enabled"] == 1) {
                 $tracking .= "  var lrsEndpoint = '" . $row['tsugi_xapi_endpoint'] . "';\n";
                 $tracking .= "  var lrsUsername = '" . $row['tsugi_xapi_key'] . "';\n";

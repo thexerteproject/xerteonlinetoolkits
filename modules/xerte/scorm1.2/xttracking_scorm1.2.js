@@ -1149,7 +1149,7 @@ function ScormTrackingState()
     function verifyExitInteractionParameters(sit, result, learneroptions, learneranswer, feedback)
     {
         if (this.debug) {
-            verifyResult(result);
+            this.verifyResult(result);
             switch(sit.ia_type)
             {
                 case 'match':
@@ -1457,7 +1457,7 @@ function XTExitPage(page_nr)
 
     if (state.scormmode == 'normal')
     {
-        state.exitInteraction(page_nr, -1, false, "", "", "", false);
+        state.exitInteraction(page_nr, -1, {score:0, success:true}, "", "", "", false);
 
 
     }

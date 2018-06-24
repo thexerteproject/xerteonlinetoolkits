@@ -708,7 +708,7 @@ function XApiTrackingState() {
     function verifyExitInteractionParameters(sit, result, learneroptions,
         learneranswer, feedback) {
         if (this.debug) {
-            verifyResult(result);
+            this.verifyResult(result);
             switch (sit.ia_type) {
                 case 'match':
                     /*
@@ -1887,7 +1887,7 @@ function XTEnterPage(page_nr, page_name) {
 function XTExitPage(page_nr) {
     var sit = state.findPage(page_nr);
     if (sit != undefined && sit != null) {
-        state.exitInteraction(page_nr, -1, false, "", sit.score, "");
+        state.exitInteraction(page_nr, -1, {score:0, success:true}, "", sit.score, "");
     }
 }
 
@@ -2836,6 +2836,31 @@ function XTTerminate() {
             timestamp: new Date()
         };
         SaveStatement(statement, false);
+        if (lti_enabled)
+        {
+            // Send ajax request to store grade through LTI to gradebook
+            var url = window.location.href;
+            if (url.indexOf("launch_lti.php") >=0)
+            {
+                url = url.replace("launch_lti.php", "website_code/php/lti/sendgrade.php");
+            }
+            else if (url.indexOf("launch_lti2.php") >=0){
+                url = url.replace("launch_lti2.php", "website_code/php/lti/sendgrade.php");
+            }
+            else {
+                url = "";
+            }
+            if (url.length > 0) {
+                $.ajax({
+                    method: "POST",
+                    url: url,
+                    data: {grade: state.getdScaledScore()}
+                })
+                    .done(function (msg) {
+                        //alert("Data Saved: " + msg);
+                    });
+            }
+        }
     }
 }
 
