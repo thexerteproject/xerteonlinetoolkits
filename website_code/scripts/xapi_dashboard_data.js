@@ -191,13 +191,15 @@ DashboardState.prototype.groupStatements = function(data) {
         }
         else
         {
-            // Key is session_id
+            // Key is group, session_id (if group is available), otherwise just session
+            var group = (statement.actor.group != undefined ? statement.actor.group.name : 'global');
             var key = statement.context.extensions['http://xerte.org.uk/sessionId'];
             if (key == undefined)
             {
                 key = statement.context.extensions[site_url + "sessionId"];
             }
             if (key != undefined) {
+                key = group + ' ' + key;
                 if (groupedData[key] == undefined) {
                     attempt['mode'] = 'session';
                     attempt['sessionid'] = key;
@@ -484,6 +486,16 @@ DashboardState.prototype.getInteractions = function(learningObject) {
     return this.interactions[learningObject];
 };
 
+DashboardState.prototype.getFilteredStatements = function(userdata, verb, learningObjectUrl)
+{
+    var statements = userdata['statements'];
+    var statementList = this.getStatementsList(statements, verb);
+    statementList = statementList.filter(function(statement) {
+        return statement.object.id == learningObjectUrl;
+    });
+    return statementList;
+}
+
 DashboardState.prototype.hasCompletedLearningObject = function(userdata, learningObject) {
     return this.getStatement(userdata['statements'],
         "http://adlnet.gov/expapi/verbs/completed") != undefined;
@@ -498,6 +510,11 @@ DashboardState.prototype.hasStartedLearningObject = function(userdata, learningO
     }).length > 0;
     return res;
 };
+
+DashboardState.prototype.getExitedStatements = function(userdata, learningObjectUrl)
+{
+    return this.getFilteredStatements(userdata, "http://adlnet.gov/expapi/verbs/exiteded", learningObjectUrl);
+}
 
 DashboardState.prototype.hasCompletedInteraction = function(userdata, interactionUrl) {
     var statements = userdata['statements'];
