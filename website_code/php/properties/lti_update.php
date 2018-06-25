@@ -83,8 +83,6 @@ if ($tsugi_installed) {
         $sql = "UPDATE {$xp}templatedetails SET tsugi_published = 0  WHERE template_id = ?";
         db_query($sql, array($template_id));
         $mesg = "Object is no longer published.";
-        tsugi_display($template_id, $lti_def, $mesg);
-        exit();
     }
 
     if ($tsugi_publish) {
