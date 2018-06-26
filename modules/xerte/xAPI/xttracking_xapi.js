@@ -1559,9 +1559,6 @@ function XTInitialise(category) {
         }
         if (typeof fullusername == 'undefined')
             fullusername = "Unknown";
-        studentidmode = 0;
-        userMail = "test_xerte_email@xerte.co.uk";
-        //debugger;
         if (typeof groupname != "undefined" && groupname != "")
         {
             state.group = {
