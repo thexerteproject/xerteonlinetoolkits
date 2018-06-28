@@ -2550,7 +2550,6 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
     var search = ADL.XAPIWrapper.searchParams();
     search['verb'] = "http://adlnet.gov/expapi/verbs/scored";
     search['activity'] = id;
-    var stringObject = {};
     ADL.XAPIWrapper.getStatements(search, null,
         function getmore(err, res, body) {
             var lastSubmit = null;
@@ -2559,6 +2558,8 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
                 //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
                 //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                 //}
+                var stringObject = {};
+
                 stringObject.timestamp = body.statements[x].timestamp;
                 stringObject.actor = body.statements[x].actor;
                 stringObject.result = body.statements[x].result;
