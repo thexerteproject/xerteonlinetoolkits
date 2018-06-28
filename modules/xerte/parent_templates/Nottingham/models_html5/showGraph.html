@@ -129,7 +129,8 @@
                         }
                         break;
                     case 3:
-                        if (obj.actor.account.name == groupname)
+                        if (obj.actor.account != undefined && obj.actor.account:w
+                        .name == groupname)
                         {
                             matchactor = true;
                         }
