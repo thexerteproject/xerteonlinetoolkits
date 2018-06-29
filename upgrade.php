@@ -881,5 +881,35 @@ function upgrade_18()
     }
 }
 
+function upgrade_19()
+{
+    if (! _db_field_exists('originaltemplatesdetails', 'parent_template')) {
+        $error1 = _db_add_field('originaltemplatesdetails', 'parent_template', 'char(255)', '', 'template_name');
+        if ($error1 !== false)
+        {
+            // Populate
+            $table = table_by_key('originaltemplatesdetails');
+            $sql = "UPDATE $table SET parent_template = template_name";
+            $error2 = db_query($sql);
+        }
+        else
+        {
+            $error2 = false;
+        }
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        if (($error2 === false)) {
+            $error2_returned = false;
+        }
+        return "Creating template_parent field in originaltemplatesdetails - ok ? " . ($error1_returned && $error2_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating template_parent field in originaltemplatesdetails already present - ok ? ". "<br>";
+    }
+
+}
 
 ?>

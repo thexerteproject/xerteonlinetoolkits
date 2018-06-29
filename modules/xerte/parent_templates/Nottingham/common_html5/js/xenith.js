@@ -877,6 +877,10 @@ function x_continueSetUp1() {
 					}
 					
 					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
+					
+					// Queue reparsing of MathJax - fails if no network connection
+					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+					
 					$x_glossaryHover = $("#x_glossaryHover");
 					$x_glossaryHover.css({
 						"left"	:$(this).offset().left + 20,
@@ -904,11 +908,11 @@ function x_continueSetUp1() {
 					
 					if (x_browserInfo.mobile == false) {
 						leftPos = e.pageX + 20;
-						if (e.pageX + 250 > $x_mainHolder.width()) {
-							leftPos = e.pageX - 220;
+						if (leftPos + $x_glossaryHover.width() > $x_mainHolder.offset().left + $x_mainHolder.width()) {
+							leftPos = e.pageX - $x_glossaryHover.width() - 20;
 						}
-						if (topPos > $x_pageHolder.height()) {
-							topPos = $(this).offset().top - $x_glossaryHover.height() - 10;
+						if (topPos + $x_glossaryHover.height() > $x_mainHolder.offset().top + $x_mainHolder.height()) {
+							topPos = e.pageY - $x_glossaryHover.height() - 20;
 						}
 					} else {
 						leftPos = ($x_mobileScroll.width() - $x_glossaryHover.width()) / 2;

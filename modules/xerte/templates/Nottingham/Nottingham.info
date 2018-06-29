@@ -5,3 +5,4 @@ preview size: 802,602
 preview filename: preview.xml
 public filename: data.xml
 supports: media,export,give,peer,xml,lti/xapi
+parent: Nottingham

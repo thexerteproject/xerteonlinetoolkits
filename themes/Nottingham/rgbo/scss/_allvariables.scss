@@ -8,6 +8,7 @@ $whiteorlightest:#ffffff;
 $blackordarkest:#000000;
 $accent1: red;
 $accent2:yellow;
+$accent3:#D13759;
 
 /*set background colors*/
 $bodybackgroundcolor:#BFBFBF;
@@ -15,8 +16,8 @@ $defaultpagebackground:$whiteorlightest;
 $progressBarColor: #2196F3; /* default #2196F3;*/
 
 /*set font family*/
-$mainfonts: Roboto, 'Segoe UI', Tahoma, sans-serif;;
-$secondaryfonts:Roboto, 'Segoe UI', Tahoma, sans-serif;;
+$mainfonts: Arial, sans-serif;
+$secondaryfonts:Arial, sans-serif;;
 
 /*define font colors to match the background colors*/
 $mainfontcolour: $darkestcolor;

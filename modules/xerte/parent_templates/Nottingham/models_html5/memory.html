@@ -37,6 +37,11 @@
 		}
 		
 		this.init = function() {
+			
+			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
+				$('#pageContents').prepend('<div id="txtHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div>');
+			}
+			
 			// get & store card data
 			var cards = [];
 			$(x_currentPageXML).children().each(function(i){

@@ -1,0 +1,225 @@
+@import "scss/_allvariables"; /*start here and set the default values for all the variables*/
+/* Important note: unlike some older Xerte themes this part of this default theme has been developed using sass and scss files */
+/*You should not edit the editorstyles.css file directly or change values directly unless you wish to override something*/
+/*Use SASS and the files in the scss folder name _allvariables.scss to start any customisation*/
+//***define the Editor Style Colors esc[n]***/
+//***define the colors used in the new styles for the styles menu***/
+$esc1: $brightcolor;
+$esc2: $accent1;
+$esc3: $contrastcolor;
+$esc4: $accent2;
+$esc5: $darkestcolor;
+$esc6: $accent3;
+
+//*****editor styles*****/
+//****common styles for panels that differ from the defaults***//
+@mixin panel {
+  font-family:$mainfonts;
+  border-radius:$smallroundedcorners;
+}
+//****common styles for highlights***//
+@mixin highlight{
+  font-family:$mainfonts;
+  background: #fff;
+}
+//****common styles for blockquotes***//
+@mixin blockquote{
+  font-family:$secondaryfonts;
+  font: 400 14px/24px $secondaryfonts;
+}
+//*****panels*****/
+.panel1{
+  @include panel;
+  background-color:$esc1;
+  color:$whiteorlightest;
+}
+.panel1 a{
+  color:lighten($esc1, 40%);
+}
+.panel2 {
+  @include panel;
+  background-color:$esc2;
+  color:$whiteorlightest;
+}
+.panel2 a{
+  color:white;
+}
+.panel3 {
+  @include panel;
+  background-color:$esc3;
+  color:$whiteorlightest;
+}
+.panel3 a{
+  color:white;
+}
+.panel4 {
+  @include panel;
+  background-color:$esc4;
+  color:$whiteorlightest;
+}
+.panel4 a{
+  color:white;
+}
+.panel5 {
+  @include panel;
+  background-color:$esc5;
+  color:$whiteorlightest;
+  display:table;
+}
+.panel5 a{
+  color:white;
+}
+.panel6 {
+  @include panel;
+  background-color:$esc6;
+  color:$whiteorlightest;
+}
+.panel6 a{
+  color:white;
+}
+
+//*****highlights*****/
+.highlight1 {
+  @include highlight;
+  //color: $esc1;
+  border-color: $esc1;
+}
+.highlight2 {
+  @include highlight;
+  //color: $esc2;
+  border-color: $esc2;
+}
+.highlight3 {
+  @include highlight;
+  //color: $esc3;
+  border-color: $esc3;
+}
+.highlight4 {
+  @include highlight;
+  //color: $esc4;
+  border-color: $esc4;
+}
+.highlight5 {
+  @include highlight;
+  //color: $esc5;
+  border-color: $esc5;
+}
+.highlight6 {
+  @include highlight;
+  //color: $esc6;
+  border-color: $esc6;
+}
+blockquote {
+  @include blockquote;
+  background: #f9f9f9;
+  border-color:#ccc;
+}
+
+.bq1{
+  border-color:$esc1;
+}
+.bq1:after {
+  color:$esc1;
+}
+.bq1:before {
+  color:$esc1;
+}
+.bq2{
+  border-color:$esc2;
+}
+.bq2:after {
+  color:$esc2;
+}
+.bq2:before {
+  color:$esc2;
+}
+.bq3{
+  border-color:$esc3;
+}
+.bq3:after {
+  color:$esc3;
+}
+.bq3:before {
+  color:$esc3;
+}
+.bq4{
+  border-color:$esc4;
+}
+.bq4:after {
+  color:$esc4;
+}
+.bq4:before {
+  color:$esc4;
+}
+.bq5{
+  border-color:$esc5;
+}
+.bq5:after {
+  color:$esc5;
+}
+.bq5:before {
+  color:$esc5;
+}
+.bq6{
+  border-color:$esc6;
+}
+.bq6:after {
+  color:$esc6;
+}
+.bq6:before {
+  color:$esc6;
+}
+
+//*****speech bubbles******//
+.speech-bubble1 {
+  background: $esc1;
+  color:white;
+}
+
+.speech-bubble1:after {
+  border-right-color: $esc1;
+}
+
+.speech-bubble2 {
+  background: $esc2;
+  color:white;
+}
+
+.speech-bubble2:after {
+  border-left-color: $esc2;
+}
+.speech-bubble3 {
+  background: $esc3;
+  color:white;
+}
+
+.speech-bubble3:after {
+  border-right-color: $esc3;
+}
+.speech-bubble4 {
+  background: $esc4;
+  color:white;
+}
+
+.speech-bubble4:after {
+  border-left-color: $esc4;
+}
+.speech-bubble5 {
+  background: $esc5;
+  color:white;
+}
+.speech-bubble5:after {
+  border-top-color: $esc5;
+}
+.speech-bubble6 {
+  background: $esc6;
+  color:white;
+}
+.speech-bubble6:after {
+  font-family:$secondaryfonts;
+  border-top-color: $esc6;
+}
+
+q, tt, kbd, samp, code, cite {
+  font-family:$secondaryfonts;
+}

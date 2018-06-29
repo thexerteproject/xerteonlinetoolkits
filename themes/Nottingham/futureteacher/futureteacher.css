@@ -70,7 +70,7 @@
   color: blue; }
 
 .ui-tabs-panel a:hover, .ui-accordion-content a:hover {
-  color: red; }
+  color: #00006f; }
 
 .ui-button {
   border-radius: 3px;
@@ -102,10 +102,10 @@
   color: blue; }
 
 .x_links_page #linkHolder a:visited {
-  color: green; }
+  color: #00006f; }
 
 .x_links_page #linkHolder a:hover {
-  color: red; }
+  color: #00006f; }
 
 #pageContents.button button.selected {
   background-color: #F4F4F6; }
@@ -598,7 +598,7 @@ div#shorturltodisplay a {
   to {
     opacity: 1; } }
 .marker, .panel1 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 3px;
   display: table;
   padding: 10px;
@@ -607,10 +607,11 @@ div#shorturltodisplay a {
   color: #ffffff; }
 
 .marker a, .panel1 a {
-  color: #fef5ef; }
+  color: white !important;
+  text-decoration: underline; }
 
 .panel2 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 3px;
   display: table;
   padding: 10px;
@@ -619,10 +620,11 @@ div#shorturltodisplay a {
   color: #ffffff; }
 
 var a, .panel2 a {
-  color: #86d98e; }
+  color: white !important;
+  text-decoration: underline; }
 
 kbd, .panel3 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 3px;
   display: table;
   padding: 10px;
@@ -631,10 +633,11 @@ kbd, .panel3 {
   color: #ffffff; }
 
 kbd a, .panel3 a {
-  color: #8fb7dd; }
+  color: white !important;
+  text-decoration: underline; }
 
 .panel4 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 3px;
   display: table;
   padding: 10px;
@@ -642,11 +645,12 @@ kbd a, .panel3 a {
   background-color: #00A1A3;
   color: #ffffff; }
 
-a, .panel4 a {
-  color: #3dfdff; }
+.panel4 a {
+  color: white !important;
+  text-decoration: underline; }
 
 .panel5 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 3px;
   display: table;
   padding: 10px;
@@ -655,11 +659,12 @@ a, .panel4 a {
   color: #ffffff;
   display: table; }
 
-a, .panel5 a {
-  color: #ac87cd; }
+.panel5 a {
+  color: white !important;
+  text-decoration: underline; }
 
 code, .panel6 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 3px;
   display: table;
   padding: 10px;
@@ -668,10 +673,11 @@ code, .panel6 {
   color: #ffffff; }
 
 code a, .panel6 a {
-  color: #eeb3c0; }
+  color: white !important;
+  text-decoration: underline; }
 
 samp, .highlight1 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -684,7 +690,7 @@ samp, .highlight1 {
   border-color: #F07E31; }
 
 tt, .highlight2 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -697,7 +703,7 @@ tt, .highlight2 {
   border-color: #2F9739; }
 
 .highlight3 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -710,7 +716,7 @@ tt, .highlight2 {
   border-color: #4185C5; }
 
 .highlight4 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -723,7 +729,7 @@ tt, .highlight2 {
   border-color: #00A1A3; }
 
 .highlight5 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -736,7 +742,7 @@ tt, .highlight2 {
   border-color: #603784; }
 
 .highlight6 {
-  font: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
   font-weight: lighter;
@@ -906,80 +912,9 @@ blockquote:after {
   vertical-align: -0.4em;
   color: #D13759; }
 
-.bubble1 {
-  /*  display: inline-block;
-    position: relative;
-    padding: 0px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    margin-right:auto;*/
-  position: relative;
-  padding: 5px;
-  background: #F07E31;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  color: #fff; }
-
-.bubble1:after {
-  /*content: '';
-  position: absolute;
-  border-style: solid;
-  border-width: 15px 15px 0;
-  display: block;
-  width: 0;
-  z-index: 1;
-  bottom: -15px;
-  left: 45%;*/
-  content: '';
-  position: absolute;
-  border-style: solid;
-  border-width: 10px 23px 10px 0;
-  border-color: transparent #F07E31;
-  display: block;
-  width: 0;
-  z-index: 1;
-  margin-top: -15px;
-  left: -23px;
-  top: 50%; }
-
-/*.bubble2
-{
-  @include bubble;
-//  background: $brightcolor;
- // color:$fontcolorfobrightcolor;
-
-}
-
-.bubble2:after {
-  @include bubbleafter;
- // border-color: $brightcolor transparent;
-
-}*/
-.bubble2 {
-  display: inline-block;
-  position: relative;
-  min-height: 50px;
-  padding: 0px;
-  background: #2F9739;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  color: #fff; }
-
-.bubble2:after {
-  content: '';
-  position: absolute;
-  border-style: solid;
-  border-width: 12px 0 12px 23px;
-  border-color: transparent #2F9739;
-  display: block;
-  width: 0;
-  z-index: 1;
-  margin-top: -12px;
-  right: -23px;
-  top: 50%; }
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble4 a, .speech-bubble5 a, .speech-bubble6 a {
+  color: white !important;
+  text-decoration: underline; }
 
 ::-webkit-scrollbar {
   width: 12px; }
@@ -1103,6 +1038,15 @@ h2 {
 h3 {
   font-size: 1.2em;
   margin: 0; }
+
+a {
+  color: blue; }
+
+a:hover {
+  color: #00006f; }
+
+a:visited {
+  color: #00006f; }
 
 #x_mainHolder {
   background: #ffffff;

@@ -442,7 +442,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only) 
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
     $query = "select td.template_name as project_name, otd.template_name,"
-        . " otd.template_framework, td.template_id, tr.role from {$prefix}templatedetails td, "
+        . " otd.parent_template, otd.template_framework, td.template_id, tr.role from {$prefix}templatedetails td, "
         . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd where td.template_id = tr.template_id and tr.user_id = ? "
         . " and tr.folder= ? and  otd.template_type_id = td.template_type_id ";
 
@@ -486,7 +486,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only) 
         $item->xot_id = $row['template_id'];
         $item->parent = $tree_id;
         $item->text = $row['project_name'];
-        $item->type = strtolower($row['template_name']);
+        $item->type = strtolower($row['parent_template']);
         $item->xot_type = "file";
         $item->editor_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size;
         $item->preview_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size;
@@ -596,13 +596,13 @@ function get_users_projects($sort_type, $copy_only=false)
     }
 
     // setup the templates available in the installation , to determine the node types
-    $query_for_blank_templates = "select * from {$prefix}originaltemplatesdetails order by date_uploaded DESC";
+    $query_for_blank_templates = "select * from {$prefix}originaltemplatesdetails where template_name=parent_template order by date_uploaded DESC";
 
     $templates = array();
     $rows = db_query($query_for_blank_templates, array());
     foreach($rows as $row)
     {
-        $templates[] = strtolower($row['template_name']);
+        $templates[] = strtolower($row['parent_template']);
     }
     $workspace->templates = $templates;
 
@@ -653,32 +653,46 @@ function list_blank_templates() {
 
   
   $prefix = $xerte_toolkits_site->database_table_prefix;
-  
+
+  $query_parent_templates = "select * from {$prefix}originaltemplatesdetails where "
+  . "template_name=parent_template and access_rights=? and active= ? order by date_uploaded DESC";
+
+  $parent_templates = db_query($query_parent_templates, array('*', 1));
+
   $query_for_blank_templates = "select * from {$prefix}originaltemplatesdetails where "
-  . "access_rights=? and active= ? order by date_uploaded DESC";
+  . "access_rights=? and active= ? order by parent_template, date_uploaded DESC";
 
   $rows = db_query($query_for_blank_templates, array('*', 1));
   
   
-  foreach($rows as $row) {
+  foreach($parent_templates as $template) {
+    // derived templates
+    $derived = array($template);
+    foreach($rows as $row)
+    {
+      if ($row['template_name'] != $row['parent_template'] && $template['parent_template'] == $row['parent_template'])
+      {
+          array_push($derived, $row);
+      }
+    }
     echo "<div class=\"template\" onmouseover=\"this.style.backgroundColor='#ebedf3'\" "
       . "onmouseout=\"this.style.backgroundColor='#fff'\">"
-            . "<div class=\"template_icon ".strtolower($row['template_name'])."\">"
-            . "</div><div class=\"template_desc\"><p class=\"template_name\">";
+            . "<div class=\"template_icon ".strtolower($template['parent_template'])."\">"
+            . "</div><div class=\"template_desc\"><p class=\"parent_template\">";
 
-    echo $row['display_name'];
+    echo $template['display_name'];
 
     echo "</p><p class=\"template_desc_p\">";
 
-    echo $row['description'];
+    echo $template['description'];
 
     /*
     * If no example don't display the link
     */
 
-    if ($row['display_id'] != 0) {
+    if ($template['display_id'] != 0) {
 
-      echo "</p><a href=\"javascript:example_window('" . $row['display_id'] . "' )\">" . DISPLAY_EXAMPLE . "</a> | ";
+      echo "</p><a href=\"javascript:example_window('" . $template['display_id'] . "' )\">" . DISPLAY_EXAMPLE . "</a> | ";
 
     } else {
 
@@ -686,10 +700,45 @@ function list_blank_templates() {
 
     }
 
-    echo "<button id=\"" . $row['template_name'] .  "_button\" type=\"button\" class=\"xerte_button_c_no_width\" onclick=\"javascript:template_toggle('" . $row['template_name'] . "')\"><i class=\"fa  icon-plus-sign xerte-icon\"></i> " . DISPLAY_CREATE . "&nbsp;</button></div><div id=\"" . $row['template_name'] . "\" class=\"rename\">";
+    ?>
+        <button id="<?php echo $template['template_name']?>_button" type="button" class="xerte_button_c_no_width" onclick="javascript:template_toggle('<?php echo $template['template_name']?>')">
+            <i class="fa  icon-plus-sign xerte-icon"></i><?php echo DISPLAY_CREATE; ?>&nbsp;
+        </button>
+      </div>
+      <div id="<?php echo $template['template_name']; ?>" class="rename">
+          <span><?php echo (count($derived) == 1 ? DISPLAY_NAME : DISPLAY_CHOOSE_AND_NAME); ?></span>
+          <form action="javascript:create_tutorial('<?php echo $template['parent_template']; ?>')" method="post" enctype="text/plain">
+              <?php
+              if (count($derived) == 1)
+              {
+                  ?>
+                  <input type="hidden" id="<?php echo $template['template_name']; ?>_templatename" name="templatename" value="<?php echo $template['template_name']; ?>" />
+                  <?php
+              }
+              else
+              {
+                  ?>
+                  <select id="<?php echo $template['template_name']; ?>_templatename" name="templatename" class="select_template">
 
-    echo "<span>" . DISPLAY_NAME . "</span><form action=\"javascript:create_tutorial('" . $row['template_name'] . "')\" method=\"post\" enctype=\"text/plain\"><input type=\"text\" width=\"200\" id=\"filename\" name=\"filename\" /> <button type=\"submit\" class=\"xerte_button_c\" ><i class=\"fa  icon-plus-sign xerte-icon\"></i>" . DISPLAY_CREATE . "</button></form></div></div>";
-  }
+                  <?php
+                  foreach($derived as $row)
+                  {
+                      ?>
+                      <option value="<?php echo $row['template_name']; ?>" <?php ($row['template_name'] == $row['parent_template'] ? "\"selected\"" : ""); ?> ><?php echo ($row['template_name'] == $row['parent_template'] ? DISPLAY_DEFAULT_TEMPLATE : $row['template_name']); ?></option>
+                      <?php
+                  }
+                  ?>
+                  </select>
+                  <?php
+                  }
+              ?>
+              <input type="text" width="200" id="<?php echo $template['template_name']; ?>_filename" name="filename" />
+              <button type="submit" class="xerte_button_c" ><i class="fa  icon-plus-sign xerte-icon"></i><?php echo DISPLAY_CREATE; ?></button>
+          </form>
+      </div>
+      </div>
+      <?php
+  };
 
   /*
   * once done listing the blank templates, list if any the specific templates available for this user

@@ -1,9 +1,11 @@
+@import url("editorStyles.css");
 /* change this file to rebrand your version of Xerte Online Toolkits */
 
 body {
 	font-family:	Arial, sans-serif;
 	color: #cfcfcf;
 }
+a{color: #cfcfcf;}
 
 #x_mainHolder {
 	border:		1px solid #1c1c1c;

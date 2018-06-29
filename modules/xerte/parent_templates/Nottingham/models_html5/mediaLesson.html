@@ -36,7 +36,9 @@
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$panelHolder = $("#panelHolder");
+            this.panelbaseid = "panel_" + x_currentPage + '_';
+
+            $panelHolder = $("#panelHolder");
 			
 			if ($("#pageContents").data("mediaElement") != undefined) {
 				$("#pageContents").data("mediaElement").setCurrentTime(0);
@@ -305,6 +307,7 @@
 		};
 		|*/
 		this.init = function() {
+            this.panelbaseid = "panel_" + x_currentPage + '_';
 			if (!!document.createElement("canvas").getContext) {
 				// load popcorn library and plugins 
 				var loadFiles = true;
@@ -523,7 +526,7 @@
 				}
 				$('<div class="panel">' + title + '</div>')
 					.appendTo($panelHolder)
-					.attr("id", "panel" + i);
+					.attr("id", mediaLesson.panelbaseid + i);
 			}
 			
 			// layouts where panels are roughly the same size - either in grid or stacked vertically/horizontally
@@ -624,7 +627,7 @@
 			
 			if (mediaPanelIndex != -1) {
 			    this.popcornInstance = this.loadMedia(
-					$("#panel" + mediaPanelIndex),
+					$('#' + mediaLesson.panelbaseid + mediaPanelIndex),
 					mediaType,
 					{	tip: mediaPanelData.attr("tip"),
 						width: mediaPanelData.attr("width"),
@@ -661,7 +664,7 @@
                 }
 
                 panelData.each(function(i) {
-                    mediaLesson.sortPopcorn($(this).children(), "panel" + i, mediaLesson.popcornInstance, $(".mainMedia"));
+                    mediaLesson.sortPopcorn($(this).children(), mediaLesson.panelbaseid + i, mediaLesson.popcornInstance, $(".mainMedia"));
                 });
 
                 //Adds events to popcorn

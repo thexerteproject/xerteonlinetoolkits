@@ -1,4 +1,4 @@
-<?php
+1<?php
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
@@ -70,8 +70,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
     $data_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
     $rlo_url = $xerte_toolkits_site->site_url .  $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
-    $xwd_url = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['template_name'] . "/";
-    $xwd_path = $xerte_toolkits_site->root_file_path . "/modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['template_name'] . "/";
+    $xwd_url = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
+    $xwd_path = $xerte_toolkits_site->root_file_path . "/modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
 
     if (file_exists($xwd_path . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd" ))
     {
@@ -107,7 +107,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 	/**
      * build an array of available themes for this template
      */
-    $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['template_name'] . "/";
+    $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['parent_template'] . "/";
     $ThemeList = array();
     if (file_exists($theme_folder))
     {
@@ -133,7 +133,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
                                 break;
                             case "enabled" : $themeProperties->enabled = strtolower(trim($attr_data[1]));
                                 break;
-                            case "preview" : $themeProperties->preview = $xerte_toolkits_site->site_url . "themes/" . $row_edit['template_name'] . "/" . $f . "/" . trim($attr_data[1]);
+                            case "preview" : $themeProperties->preview = $xerte_toolkits_site->site_url . "themes/" . $row_edit['parent_template'] . "/" . $f . "/" . trim($attr_data[1]);
                                 break;
                         }
                     }
@@ -150,7 +150,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 		}
 		array_multisort($display_name, SORT_ASC, $ThemeList);
 		// Add default theme to beginning
-		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Default", 'description' => "Default", 'preview' => ""));
+		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Default", 'description' => "Default", 'preview' => $xerte_toolkits_site->site_url . "modules/site/parent_templates/site/common/img/default.jpg"));
     }
     /**
      * sort of the screen sies required for the preview window

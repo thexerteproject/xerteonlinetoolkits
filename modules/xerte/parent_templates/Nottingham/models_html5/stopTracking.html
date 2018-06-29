@@ -32,35 +32,50 @@
 		}
 		
 		this.init = function() {
-			var $pageContents = $("#closingText");
-			$pageContents.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
-			// ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
-			
-			if (x_currentPageXML.getAttribute("textWidth") == "300") {
-				$pageContents.addClass("width40");
-			} else if (x_currentPageXML.getAttribute("textWidth") == "450") {
-				$pageContents.addClass("width60");
-			} else if (x_currentPageXML.getAttribute("textWidth") == "600") {
-				$pageContents.addClass("width80");
-			}
+			var $closeText = $("#closingText"),
+                $splitScreen = $("#pageContents .splitScreen");
+            $closeText.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+            // ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
+			if (x_currentPageXML.getAttribute("textWidth") != null) {
+                if (x_currentPageXML.getAttribute("textWidth") == "small") {
+                    $splitScreen.addClass("large");
+                } else if (x_currentPageXML.getAttribute("textWidth") == "medium") {
+                    $splitScreen.addClass("medium");
+                } else if (x_currentPageXML.getAttribute("textWidth") == "large") {
+                    $splitScreen.addClass("small");
+                }
+                else
+                {
+                    $("#pageContents .panel").appendTo($("#pageContents"));
+                    $splitScreen.remove();
+                }
+            }
+			else {
+                $("#pageContents .panel").appendTo($("#pageContents"));
+                $splitScreen.remove();
+            }
+			if (x_currentPageXML.getAttribute("textWidth") != null && x_currentPageXML.getAttribute("textWidth") != "full")
+            {
+                $("#textHolder").html(x_currentPageXML.getAttribute("textIntro"));
+
+            }
             if (XTGetMode() == "normal")
             {
                 var lbl = (x_currentPageXML.getAttribute("buttonLblTracking") != null ? x_currentPageXML.getAttribute("buttonLblTracking") : "Close and finish tracking of this session");
-                $("#closeBtn").html(lbl).click(function(){
+                $("#closeBtn").button({
+                    label: lbl
+                }).click(function(){
                     // Disable all the buttons and menu
+                    XTTerminate();
                     $('#x_footerRight button').button("disable");
-                    $("#pageContents").html(x_addLineBreaks(x_currentPageXML.getAttribute('textAfter')));
+                    $('#closeBtn').hide();
+                    $closeText.html(x_addLineBreaks(x_currentPageXML.getAttribute('textAfter')));
                 });
             }
             else
             {
-                var lbl = (x_currentPageXML.getAttribute("buttonLbl") != null ? x_currentPageXML.getAttribute("buttonLbl") : "Close");
-
-                $("#closeBtn").html(lbl).click(function(){
-                    // Disable all the buttons and menu
-                    $('#x_footerRight button').button("disable");
-                    $("#pageContents").html(x_addLineBreaks(x_currentPageXML.getAttribute('textAfter')));
-                });
+                $('#closeBtn').hide();
+                $closeText.html(x_addLineBreaks(x_currentPageXML.getAttribute('textAfter')));
             }
 
 
@@ -76,8 +91,12 @@
 
 
 <div id="pageContents">
-	<div id="closingText">
+    <div class="splitScreen">
+        <div id="textHolder" class="left"></div>
+        <div class="panel right" id="infoHolder">
+            <div id="closingText"></div>
+            <div class="center"><button id="closeBtn"></button></div>
+        </div>
 
     </div>
-    <button id="closeBtn"></button>
 </div>
