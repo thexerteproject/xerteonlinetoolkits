@@ -1556,7 +1556,7 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
     }
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, callback)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, callback, q)
 {
     callback(null);
     return 0;

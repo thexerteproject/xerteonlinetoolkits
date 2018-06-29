@@ -160,7 +160,7 @@
 	   score2WinMessage="Scenario over - you have a winning score 2" score2LoseMessage="Scenario over - score 2 is to low" score2WinEndID="" score2LoseEndID=""
 	   score3Use="1" score3Label="Label for Score 3" score3Min="0" score3Max="100" score3Start="0" score3ProgressBar="1" score3BarColour="0x6699CC" score3Win="max" score3Lose="min"
 	   score3WinMessage="Scenario over - you have a winning score 3" score3LoseMessage="Scenario over - score 3 is to low" score3WinEndID=""
-	   score3LoseEndID="" /><scenarioActions name="List of scenario actions" /><propList name="List of props in scenario" /></scenario>]]></scenario><showGraph><![CDATA[<showGraph name="Enter Page Title" xerteurl="" xertelo="" import="Enter name of import object"
+	   score3LoseEndID="" /><scenarioActions name="List of scenario actions" /><propList name="List of props in scenario" /></scenario>]]></scenario><showGraph><![CDATA[<showGraph name="Enter Page Title" xerteurl="" xertelo="" xapisince="" import="Enter name of import object"
       PersonalAvgLabel = "Avg. of your attempts"
       PersonalLastLabel = "Your last attempt"
       AvgLabel = "Avg. of all attempts"
@@ -3905,6 +3905,7 @@
     <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue=""/>
     <xertelo label="ID of Xerte learning object" type="xertelo" mandatory="true" defaultValue=""/>
     <import label="Import Graph Label" type="TextInput" wysiwyg="false"/>
+    <xapisince label="Retrieve xAPI records since" type="datefield" wysiwyg="false" mandatory="true" defaultValue=""/>
     <graphcolour type="group" label="Graph colours" optional="true">
       <colour label="Personal graph" type="colourPicker" defaultValue="0xFF0000" optional="true"/>
       <colourPersonalAvg label="Personal average graph" type="colourPicker" defaultValue="0x0000FF" optional="true"/>

@@ -1124,7 +1124,7 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
 	state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback);
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback, q)
 {
     var JSONGraph = {
         label: "Enter Page Title",

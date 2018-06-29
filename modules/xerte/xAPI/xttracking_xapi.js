@@ -2491,7 +2491,7 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions,
 }
 
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
-    callback) {
+    callback, q) {
     var stringObjects = [];
     //Get ID from the question
     //var idQ = this.x_currentPageXML.childNodes[ia_nr].getAttribute("linkID");
@@ -2553,6 +2553,10 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
     var search = ADL.XAPIWrapper.searchParams();
     search['verb'] = "http://adlnet.gov/expapi/verbs/scored";
     search['activity'] = id;
+    $.each(q, function(i, value){
+        search[i] = value;
+    });
+
     var stringObject = {};
     ADL.XAPIWrapper.getStatements(search, null,
         function getmore(err, res, body) {
@@ -2562,6 +2566,7 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
                 //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
                 //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                 //}
+                stringObject = {};
                 stringObject.timestamp = body.statements[x].timestamp;
                 stringObject.actor = body.statements[x].actor;
                 stringObject.result = body.statements[x].result;

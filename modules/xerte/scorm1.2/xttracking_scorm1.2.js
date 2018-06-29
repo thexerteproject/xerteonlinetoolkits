@@ -1573,7 +1573,7 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
     }
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback, q)
 {
     callback(null);
     return 0;
