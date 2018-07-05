@@ -234,12 +234,12 @@
 					{
 						className = styleDefinition.attributes['class'] || '';
 
-						if ( className.length )
-						{
-							className += ' ';
-						}
-
-						className += ( editor.config.style_wrap_class || 'style-wrap' );
+                        if (className.indexOf(editor.config.style_wrap_class || 'style-wrap') <0) {
+                            if (className.length) {
+                                className += ' ';
+                            }
+                            className += ( editor.config.style_wrap_class || 'style-wrap' );
+                        }
 
 						styleDefinition.attributes[ 'class' ] = className;
 
