@@ -2640,13 +2640,17 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 
 function XTTerminate() {
     if (!state.finished && state.initialised) {
+        // End tracking of page
+        x_endPageTracking(false, -1);
+
+        // This code is probably obsolete, leave it in to allow for more testing
         var currentpageid = "";
         state.finished = true;
         if (state.currentid) {
             var sit = state.find(state.currentid);
             // there is still an interaction open, close it
             if (sit != null) {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "",
+                state.exitInteraction(sit.page_nr, sit.ia_nr, {success:false, score:0}, "", 0, "",
                     false);
             }
         }
@@ -2655,7 +2659,7 @@ function XTTerminate() {
             var sit = state.find(state.currentpageid);
             // there is still an interaction open, close it
             if (sit != null) {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "",
+                state.exitInteraction(sit.page_nr, sit.ia_nr, {success:false, score:0}, "", 0, "",
                     false);
             }
 

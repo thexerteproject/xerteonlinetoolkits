@@ -1162,6 +1162,10 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 function XTTerminate()
 {
     if (!state.finished) {
+        // End tracking of page
+        x_endPageTracking(false, -1);
+
+        // This code is probably obsolete, leave it in to allow for more testing
         var currentpageid = "";
         state.finished = true;
         if (state.currentid) {
