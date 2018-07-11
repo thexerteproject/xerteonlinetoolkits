@@ -68,6 +68,13 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
     $flash_js_dir = "modules/" . $row['template_framework'] . "/";
     $template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
     $rlo_file = $template_path . $row['template_name'] . ".rlt";
+    if (file_exists("modules/" . $row['template_framework'] . "/templates/" . $row['template_name'] . "/wizards/" . $xmlFixer->getLanguage() . "/data.xwd"))
+    {
+        $xwd_file = "modules/" . $row['template_framework'] . "/templates/" . $row['template_name'] . "/wizards/" . $xmlFixer->getLanguage() . "/data.xwd";
+    }
+    else{
+        $xwd_file = $template_path . "/wizards/" . $xmlFixer->getLanguage() . "/data.xwd";
+    }
 
     list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
 

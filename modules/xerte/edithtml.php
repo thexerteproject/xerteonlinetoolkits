@@ -70,8 +70,11 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
     $data_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
     $rlo_url = $xerte_toolkits_site->site_url .  $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
-    $xwd_url = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
-    $xwd_path = $xerte_toolkits_site->root_file_path . "/modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
+
+
+    // Derived templates
+    $xwd_url = "modules/" . $row_edit['template_framework'] . "/templates/" . $row_edit['template_name'] . "/";
+    $xwd_path = $xerte_toolkits_site->root_file_path . "/modules/" . $row_edit['template_framework'] . "/templates/" . $row_edit['template_name'] . "/";
 
     if (file_exists($xwd_path . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd" ))
     {
@@ -81,11 +84,18 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     {
         $xwd_file_url = $xwd_url . "wizards/en-GB/data.xwd";
     }
-    else if (file_exists($xwd_path . "data.xwd"))
-    {
-        $xwd_file_url = $xwd_url . "data.xwd";
-    }
+    else {
+        $xwd_url = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
+        $xwd_path = $xerte_toolkits_site->root_file_path . "/modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
 
+        if (file_exists($xwd_path . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd")) {
+            $xwd_file_url = $xwd_url . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd";
+        } else if (file_exists($xwd_path . "wizards/en-GB/data.xwd")) {
+            $xwd_file_url = $xwd_url . "wizards/en-GB/data.xwd";
+        } else if (file_exists($xwd_path . "data.xwd")) {
+            $xwd_file_url = $xwd_url . "data.xwd";
+        }
+    }
     $module_url = "modules/" . $row_edit['template_framework'] . "/";
 
     $jqgridlangfile = "editor/js/vendor/jqgrid/js/i18n/grid.locale-en.js";
