@@ -92,7 +92,7 @@
   color: red; }
 
 #x_footerBlock button.ui-state-focus {
-  color: #ffffff; }
+  color: red !important; }
 
 #x_footerBlock button.ui-state-active {
   color: #ffffff; }
