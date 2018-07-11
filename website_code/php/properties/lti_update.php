@@ -10,6 +10,9 @@ if (file_exists($xerte_toolkits_site->tsugi_dir)) {
     require_once($xerte_toolkits_site->tsugi_dir . "config.php");
     require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
     $tsugi_installed = true;
+
+    ini_set('display_errors', 0);
+    error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
 }
 
 use \Tsugi\Core\LTIX;
@@ -83,8 +86,6 @@ if ($tsugi_installed) {
         $sql = "UPDATE {$xp}templatedetails SET tsugi_published = 0  WHERE template_id = ?";
         db_query($sql, array($template_id));
         $mesg = "Object is no longer published.";
-        tsugi_display($template_id, $lti_def, $mesg);
-        exit();
     }
 
     if ($tsugi_publish) {

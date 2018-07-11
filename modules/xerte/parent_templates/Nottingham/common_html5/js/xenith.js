@@ -1577,16 +1577,9 @@ function x_changePageStep4(x_gotoPage) {
         x_changePageStep5(x_gotoPage);
     }
 }
-
-function x_changePageStep5(x_gotoPage) {
-	var prevPage = x_currentPage;
-
-    if (x_params.styles != undefined){
-        $x_head.append('<style type="text/css" id="page_css">' +  x_params.styles + '</style>');
-    }
-
+function x_endPageTracking(pagechange, x_gotoPage) {
     // End page tracking of x_currentPage
-    if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_currentPage != x_gotoPage)
+    if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && (!pagechange || x_currentPage != x_gotoPage))
     {
         var pageObj;
 
@@ -1609,6 +1602,18 @@ function x_changePageStep5(x_gotoPage) {
         }
         XTExitPage(x_currentPage);
     }
+}
+
+function x_changePageStep5(x_gotoPage) {
+	var prevPage = x_currentPage;
+
+    if (x_params.styles != undefined){
+        $x_head.append('<style type="text/css" id="page_css">' +  x_params.styles + '</style>');
+    }
+
+    // End page tracking of x_currentPage
+    x_endPageTracking(true, x_gotoPage);
+
     x_currentPage = x_gotoPage;
     x_currentPageXML = x_pages[x_currentPage];
 

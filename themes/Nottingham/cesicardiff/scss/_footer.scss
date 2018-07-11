@@ -39,7 +39,7 @@
 
 #x_footerBlock button { color: $whiteorlightest; }
 #x_footerBlock button.ui-state-hover { color: red; }
-#x_footerBlock button.ui-state-focus { color: $whiteorlightest; }
+#x_footerBlock button.ui-state-focus { color: red !important; }
 #x_footerBlock button.ui-state-active { color: $whiteorlightest; }
 
 #x_footerBlock button {
