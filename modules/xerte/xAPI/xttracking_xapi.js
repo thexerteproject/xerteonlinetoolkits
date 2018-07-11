@@ -2591,6 +2591,10 @@ function XTGetStatements(q, one, callback) {
     {
         search['limit'] = 1;
     }
+    else
+    {
+        search['limit'] = 1000;
+    }
     var statements = [];
     ADL.XAPIWrapper.getStatements(search, null,
         function getmorestatements(err, res, body) {

@@ -43,6 +43,10 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
     {
         search['limit'] = 1;
     }
+    else
+    {
+        search['limit'] = 10000;
+    }
     this.clear();
     var $this = this;
     ADL.XAPIWrapper.getStatements(search, null,
