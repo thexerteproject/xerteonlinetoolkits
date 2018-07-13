@@ -337,6 +337,10 @@ function setup(){
 					var cDataSection = data.createCDATASection(glossaryTxt[i]);
 					var $section = $('<section name="' + charList[i] + '"><text></text></section>');
 					$section.find('text').append(cDataSection);
+					
+					if ($(data).find('learningObject').attr('glossaryMenu') != undefined && $(data).find('learningObject').attr('glossaryMenu') != '') {
+						$section.attr('menu', $(data).find('learningObject').attr('glossaryMenu'));
+					}
 					$glossaryPage.append($section);
 				}
 				
@@ -828,19 +832,21 @@ function parseContent(pageIndex){
 				
 				var sectionIndex = index;	
 				
-				//add a TOC entry
-				var tocName = $(this).attr('name');
-			
-				// remove size & background color styles from links on toc
-				if ($('<p>' + tocName + '</p>').children().length > 0) {
-					tocName = $(tocName);
-					tocName.css({ 'font-size': '', 'background-color': 'transparent' });
-					tocName.find('[style*="font-size"]').css('font-size', '');
-					tocName.find('[style*="background-color"]').css('background-color', 'transparent');
-				}
+				if ($(this).attr('menu') != 'headings' && $(this).attr('menu') != 'neither') {
+					//add a TOC entry
+					var tocName = $(this).attr('name');
 				
-				var $link = $('<li' + (index==0?' class="active"':'') +'><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '"></a></li>').appendTo('#toc');
-				$link.find('a').append(tocName);
+					// remove size & background color styles from links on toc
+					if ($('<p>' + tocName + '</p>').children().length > 0) {
+						tocName = $(tocName);
+						tocName.css({ 'font-size': '', 'background-color': 'transparent' });
+						tocName.find('[style*="font-size"]').css('font-size', '');
+						tocName.find('[style*="background-color"]').css('background-color', 'transparent');
+					}
+					
+					var $link = $('<li' + (index==0?' class="active"':'') +'><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '"></a></li>').appendTo('#toc');
+					$link.find('a').append(tocName);
+				}
 				
 				//add the section header
 				var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '';
@@ -851,7 +857,9 @@ function parseContent(pageIndex){
 					links = '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>';
 				}
 				
-				var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '"><div class="page-header"><h1>' + $(this).attr('name') + '</h1>' + extraTitle + links + '</div></section>');
+				var subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h1>' + $(this).attr('name') + '</h1>' : '';
+				
+				var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '"><div class="page-header">' + subHeadings + extraTitle + links + '</div></section>');
 
 				//add the section contents
 				$(this).children().each( function(index, value){
@@ -999,7 +1007,11 @@ function parseContent(pageIndex){
 				}
 				
 				//a return to top button
-				section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
+				if ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') {
+					
+					section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
+					
+				}
 
 				//add the section to the document
 				$('#mainContent').append(section);
