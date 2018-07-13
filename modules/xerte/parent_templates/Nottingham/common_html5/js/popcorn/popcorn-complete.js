@@ -4318,8 +4318,8 @@
         // Mark type as Mediasite
         self._util.type = "Mediasite";
 
-        elem.id = "div";
-
+        elem.id = "mediasiteIframe";
+        elem.addClass = " .iframe ";
 
         function addPlayerReadyCallback( callback ) {
             playerReadyCallbacks.push( callback );
@@ -4338,28 +4338,33 @@
 
             impl.src = aSrc;
             aSrc = "http://deltion.mediamission.nl/Mediasite/Play/c550ff4fee9d493b8f5efebe45b777271d";
-            parent.appendChild( elem );
+            parent.appendChild(elem);
 
             $.getScript("modules/xerte/parent_templates/Nottingham/common_html5/js/popcorn/plugins/MediasitePlayerIFrameAPI.js")
-                .done(function(){
-                        console.log("Mediasiteplayer loaded" + aSrc + "\n" + elem);
-                        player = new Mediasite.Player(elem.id,
-                            {
-                                url: aSrc,
-                                events: {
-                                    "ready": onReady,
-                                    "error": function(errorData) {
-                                      console.log(errorData);
-                                      },
-                                    "playstatechanged": onPlayStateChanged,
-                                    "playerstatechanged": onPlayerStateChanged,
-                                    "currenttimechanged": onCurrentTimeChanged
-                                }
+                .done(function () {
+                    console.log("Mediasiteplayer loaded" + aSrc + "\n" + elem);
+                    player = new Mediasite.Player(elem.id,
+                        {
+                            url: aSrc,
+                            events: {
+                                "ready": onReady,
+                                "error": function (errorData) {
+                                    console.log(errorData);
+                                },
+                                "playstatechanged": onPlayStateChanged,
+                                "playerstatechanged": onPlayerStateChanged,
+                                "currenttimechanged": onCurrentTimeChanged
+                            },
+                            layoutOptions: {
+                                "BackgroundColor": "#FFFFFF"
                             }
-                        );
-                    })
-                .fail(function(a,b,c){console.log("Failed: " + c)});
-
+                        }
+                    );
+                })
+                .fail(function (a, b, c) {
+                    console.log("Failed: " + c)
+                });
+        }
 
             //elem.src = aSrc;
 
@@ -4375,6 +4380,12 @@
                 impl.readyState = self.HAVE_ENOUGH_DATA;
                 self.dispatchEvent( "canplaythrough" );
 
+                var iframe = $(".mediasite")[0].children[0];
+                iframe.style.height = "100%";
+                iframe.style.width = "100%";
+
+                player.currentTime = 0;
+                player.seekTo(0);
                 playerReady = true;
               //addEvent("pause", onPause);
             }
@@ -4386,8 +4397,15 @@
 
             function onCurrentTimeChanged (data) {
                 impl.currentTime = data.currentTime;
+                //player.currentTime = impl.currentTime;
+                //player.seekTo(impl.currentTime);
             }
 
+            function changeCurrentTime (data)
+            {
+                impl.currentTime = data;
+                player.seekTo(data);
+            }
             function onPlayerStateChanged (data)
             {
               //console.log( data.state );
@@ -4447,18 +4465,14 @@
             };
 
 
+
+
             function addEvent (event, listener)
             {
                self.addEventListener(event, listener, false);
 
                player.addHandler(event, listener);
             }
-
-
-        }
-
-
-
 
 
 
@@ -4506,7 +4520,7 @@
                     return impl.currentTime;
                 },
                 set: function( aValue ) {
-                    onCurrentTimeChanged( aValue );
+                    changeCurrentTime( aValue );
                 }
             }
         });
@@ -6966,6 +6980,7 @@
           return impl.currentTime;
         },
         set: function( aValue ) {
+          debugger;
           changeCurrentTime( aValue );
         }
       },

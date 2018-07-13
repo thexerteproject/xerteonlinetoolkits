@@ -159,8 +159,12 @@
 			});
 			
 			$(".popcornMedia.vimeo").each(function(i) {
-				mediaLesson.resizeVimeo($(this));
-			});
+                mediaLesson.resizeVimeo($(this));
+            });
+
+            $(".popcornMedia.vimeo").each(function(i) {
+                mediaLesson.resizeMediasite($(this));
+            });
 			
 			$(".audioImg").each(function() {
 				var $this = $(this);
@@ -271,6 +275,14 @@
 			this.resizeYouTube($vimeo);
 		};
 
+		this.resizeMediasite = function($mediasite) {
+		  var parent = $mediasite[0].parentElement;
+
+		  var parentt = $(" .panel tileH fullH ");
+
+		  $mediasite[0].style.height = "90%"//parent.style.height;
+		  $mediasite[0].style.width = "100%";
+		};
 
 		this.leavePage = function () {
 		    currSegment.end = lastTime;
@@ -393,7 +405,7 @@
 						mediaLesson.loadJS();
 					})
 					.fail(function( jqxhr, settings, exception ) {
-						console.log("Failed to load Popcorn.js & plugins");
+						console.log("Failed to load Popcorn.js & plugins" + exception);
 					});
 			}
 		};
@@ -885,7 +897,7 @@
 					
 				} else if (mediaData.media.indexOf("mediamission.nl") != -1) {
                     var $mediasite = $holder.find(".popcornMedia").addClass("mediasite");
-                    mediaLesson.resizeVimeo($mediasite);
+                    mediaLesson.resizeMediasite($mediasite);
 
                     popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .mediasite", mediaData.media);
                     $mediasite.data("popcornInstance", popcornInstance);
