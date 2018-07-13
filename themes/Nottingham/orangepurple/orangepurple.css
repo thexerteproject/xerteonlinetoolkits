@@ -51,7 +51,9 @@ h3 {
 	font-size:	1em;
 	margin:		0px;
 }
-
+.sliderHolder .labelHolder a p {
+	color: #7c097d;
+}
 
 .ui-button .ui-icon.x_help {					background-image: url("help.svg"); background-position: 0px 0px; }
 .ui-button.ui-state-hover .ui-icon.x_help {		background-position: -42px 0px; }

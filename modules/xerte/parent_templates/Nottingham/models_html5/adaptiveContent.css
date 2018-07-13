@@ -1,0 +1,12 @@
+svg{
+  height: 300px;
+  width: 700px;
+}
+canvas {
+  height: 400px;
+}
+#adaptiveContent .panel {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding-bottom: 20px;
+}

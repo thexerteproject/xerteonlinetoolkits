@@ -186,11 +186,13 @@
 									
 									$prevTarget.data("currentLabel", "");
 									
-									if (numAttempts < maxAttempts && $prevTarget.data("hint") != "" && $prevTarget.data("hint") != undefined) {
-										$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("hint")) + '</div>');
-									} else {
-										$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("correct")) + '</div>');
-									}
+									if (numAttempts >= maxAttempts) {
+                                        if ($prevTarget.data("hint") != "" && $prevTarget.data("hint") != undefined) {
+                                            $prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("hint")) + '</div>');
+                                        } else {
+                                            $prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("correct")) + '</div>');
+                                        }
+                                    }
 								}
 								allCorrect = false;
 							}
@@ -244,7 +246,7 @@
 							
 						
 						if (allCorrect == false && numAttempts >= maxAttempts) {
-							
+                            $feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						} else if (allCorrect == true) {
 							$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 							$(this).hide();
@@ -423,7 +425,7 @@
                     correctOptions.push(correctOption);
             	}
             );
-            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswers, correctFeedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswers, correctFeedbacks, x_currentPageXML.getAttribute("grouping"));
 
 		}
 		
@@ -619,6 +621,6 @@
 
 	<button id="button"></button>
 
-	<div id="feedback"></div>
+	<div><p id="feedback"></p></div>
 
 </div>

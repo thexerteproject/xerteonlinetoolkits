@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Live LRS Demo</title>
+		<link rel='stylesheet' href='../lib/nv.d3.css'/>
+		<script type="text/javascript" src="../dist/xapidashboard.min.js"></script>
+		<script type="text/javascript" src="../dist/xapicollection.min.js"></script>
+
+		<style>
+			h2 {
+				text-align: center;
+			}
+			#graphContainer {
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+				align-items: center;
+				flex-wrap: wrap;
+			}
+
+			.container {
+				width: 500px;
+				height: 300px;
+				overflow: hidden;
+			}
+		</style>
+
+	</head>
+	<body>
+		<div id='graphContainer'>
+			<div id='verbs' class='container'>
+				<svg></svg>
+			</div>
+		</div>
+		<script>
+
+			var dash = new ADL.XAPIDashboard();
+
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function(e)
+			{
+				if(xhr.readyState === 4 && xhr.status === 200)
+				{
+					var data = JSON.parse(xhr.response);
+
+					// label for first graph
+					var container = document.querySelector('#verbs');
+					var header = document.createElement('h2');
+					header.innerHTML = 'Verb Popularity Over Last 30 Days';
+					container.insertBefore(header, container.firstChild);
+	
+					// create first graph
+					var verbsChart = dash.createBarChart({
+						container: '#verbs svg',
+						process: function(d,e,opts){opts.cb(data);},
+						customize: function(nvd3chart){
+							nvd3chart.margin({bottom: 150, right: 50});
+							nvd3chart.xAxis.rotateLabels(45);
+							nvd3chart.xAxis.tickFormat(function(label){
+								return /[^\/]+$/.exec(label)[0];
+							});
+						}
+					});
+
+					// draw first graph once it's configured
+					verbsChart.draw();
+				}
+			};
+			xhr.open('GET', 'http://localhost:3003/verbFrequency');
+			xhr.send();
+
+		</script>
+	</body>
+</html>

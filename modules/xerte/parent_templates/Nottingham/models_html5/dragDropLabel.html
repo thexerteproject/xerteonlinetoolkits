@@ -203,7 +203,7 @@
 
             // set up drag events (mouse and keyboard controlled)
             if (interactivity == "Match") {
-                XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("trackinglabel"));
+                XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
                 $("#labelHolder .label")
                         .draggable({
                             containment: "#x_pageHolder",

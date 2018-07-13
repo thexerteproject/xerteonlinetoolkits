@@ -20,6 +20,10 @@
     define("DISPLAY_BUTTON_PROJECT_CREATE", "Create Project");
 
     define("DISPLAY_NAME", "Enter a name for this project");
+
+    define("DISPLAY_CHOOSE_AND_NAME", "Choose a predifined template then enter a name for this project");
+
+    define("DISPLAY_DEFAULT_TEMPLATE", "Default");
 	
 	define("DISPLAY_ERROR", "An error has occured and as such you cannot edit at present");
 	

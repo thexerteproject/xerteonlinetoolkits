@@ -1,14 +1,40 @@
 <script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 	var opinion = new function()
 	{
 		var currentQuestion,
 			resultShown,
 			checked,
             numLoaded = 0,
-			questionNumberText;
+			questionNumberText,
+		listMode = false,
+		pageMode = true,
+		pageSize = 10,
+		pageQuestionStart=0,
+		pageQuestionEnd=9,
+		maxChars=20;
 		var	answeredValues = {};
 		var diagramAnswers = [];
 		var diagramLabels = [];
+        var radioButtonQuestions = [];
 		var JSONGraph;
 		var textSize;
 
@@ -40,23 +66,27 @@
 			
 			var resized = false;
 			
-			var questionAudio = $("#questionAudio");
+			var questionAudio = $(".questionAudio");
 
-			if (questionAudio.children().length > 0)
-			{
-				if (resized == false)
-				{
-					var audioBarW = 0;
-					questionAudio.find(".mejs-inner").find(".mejs-controls").children().each(function() {
-						audioBarW += $(this).outerWidth();
-					});
-					if (audioBarW < questionAudio.width() - 5 || audioBarW > questionAudio.width() + 5)
-					{
-						resized = true;
-						$x_window.resize();
-					}
-				}
-			}
+			$.each(questionAudio, function(key, qA) {
+			    var qAudio = $("#" + qA.id);
+                if (qAudio.children().length > 0)
+                {
+                    if (resized == false)
+                    {
+                        var audioBarW = 0;
+                        qAudio.find(".mejs-inner").find(".mejs-controls").children().each(function() {
+                            audioBarW += $(this).outerWidth();
+                        });
+                        if (audioBarW < qAudio.width() - 5 || audioBarW > qAudio.width() + 5)
+                        {
+                            resized = true;
+                            $x_window.resize();
+                        }
+                    }
+                }
+			});
+
 			
 			var audioHolder = $("#pageContents .audioHolder");
 
@@ -94,14 +124,14 @@
 			else if (textSize < 12) {
 				textSize = 12;
 			}
-			$("#qTxt").width($panel.width());
+			$(".qTxt").width($panel.width());
 		};
 		
-		this.loadAudio = function(soundFile)
+		this.loadAudio = function(currQuestion, soundFile)
 		{
 			if (soundFile != undefined && soundFile != "")
 			{
-				$("#questionAudio").mediaPlayer({
+				$("#questionAudio" + currQuestion).mediaPlayer({
 					type	:"audio",
 					source	:soundFile,
 					width	:"100%"
@@ -128,7 +158,7 @@
             }
 
 			$("#diagram").hide();
-            $("#sliderHolder").show();
+            $("#qHolder").show();
 			$("#checkBtn").show();
 			$("#checkBtn").button("disable");
 			
@@ -172,7 +202,7 @@
 
             XTSetPageType(x_currentPage, 'numeric', numberOfQuestions, this.weighting);
 
-			this.loadQuestion();
+			this.loadQuestions();
 			
             // Queue reparsing of MathJax - fails if no network connection
             try
@@ -181,8 +211,63 @@
             }
             catch (e) {}			
 		};
-		
-		this.loadQuestion = function()
+
+		this.loadQuestions = function()
+		{
+            $("#checkBtn").button("disable");
+            this.radioButtonQuestions = [];
+		    if (this.listMode)
+			{
+			    if (this.pageMode)
+				{
+                    $("#qNo").html(this.questionNumberText.replace("{i}", (this.currentQuestion + 1) + " - " + (Math.min(this.currentQuestion + this.pageSize, opinion.questions.length))).replace("{n}", this.questions.length));
+                    $("#qHolder").html("");
+				    for (i=this.currentQuestion; i<Math.min(this.currentQuestion + this.pageSize, opinion.questions.length); i++)
+					{
+                        $("#qHolder").append('<legend id="qTxt' + i + '" class="qTxt"></legend><div id="questionAudio'+ i + '" class="questionAudio"></div><div id="sliderHolder' + i
+                            + '" class="sliderHolder"><div id="labelHolder' + i + '" class="labelHolder"></div><div id="rangeHolder' + i + '" class="rangeHolder"></div></div><div class="qSeparator"><hr></div>');
+					    this.loadQuestion(i);
+					}
+				}
+				else
+				{
+                    $("#qNo").html(this.questionNumberText.replace("{i}", (this.currentQuestion + 1) + " - " + opinion.questions.length).replace("{n}", this.questions.length));
+                    $("#qHolder").html("");
+                    for (i=this.currentQuestion; i<opinion.questions.length; i++)
+                    {
+                        $("#qHolder").append('<legend id="qTxt' + i + '" class="qTxt"></legend><div id="questionAudio'+ i + '" class="questionAudio"></div><div id="sliderHolder' + i
+                            + '" class="sliderHolder"><div id="labelHolder' + i + '" class="labelHolder"></div><div id="rangeHolder' + i + '" class="rangeHolder"></div></div><div class="qSeparator"><hr></div>');
+                        this.loadQuestion(i);
+                    }
+				}
+			}
+			else
+			{
+                $("#qNo").html(this.questionNumberText.replace("{i}", this.currentQuestion + 1).replace("{n}", this.questions.length));
+			    $("#qHolder").html('<legend id="qTxt' + this.currentQuestion + '" class="qTxt"></legend><div id="questionAudio'+this.currentQuestion + '" class="questionAudio"></div><div id="sliderHolder'
+					+ this.currentQuestion + '" class="sliderHolder"><div id="labelHolder' + this.currentQuestion + '" class="labelHolder"></div><div id="rangeHolder' + this.currentQuestion + '" class="rangeHolder"></div></div>');
+
+
+                this.loadQuestion(this.currentQuestion);
+			}
+			this.checkButtonState();
+		};
+
+		this.checkButtonState = function()
+		{
+		    var checked = true;
+		    $.each(this.radioButtonQuestions, function(key, value){
+		    	if (value == false) {
+                    checked = false;
+                }
+			});
+		    if (checked)
+			{
+                $("#checkBtn").button("enable");
+			}
+		};
+
+		this.loadQuestion = function(currQuestion)
 		{
 			if ($(x_currentPageXML).children().length == 0)
 			{
@@ -190,18 +275,16 @@
 			}
 			else
 			{
-				var $thisQ = $(x_currentPageXML).children().children()[this.questions[this.currentQuestion]];
-
-				$("#qNo").html(this.questionNumberText.replace("{i}", this.currentQuestion + 1).replace("{n}", this.questions.length));
+				var $thisQ = $(x_currentPageXML).children().children()[this.questions[currQuestion]];
 
 				var infoString = $thisQ.getAttribute("prompt");
 				
 				if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
-					opinion.loadAudio($thisQ.getAttribute("sound"));
+					opinion.loadAudio(currQuestion, $thisQ.getAttribute("sound"));
 				}
 				else
 				{
-					$("#questionAudio").empty();
+					$("#questionAudio" + currQuestion).empty();
 				}
 				
 				var url = $thisQ.getAttribute("image");
@@ -219,27 +302,26 @@
 					infoString = newString + infoString;
 				}
 				
-				$("#qTxt").html(x_addLineBreaks(infoString));
+				$("#qTxt" + currQuestion).html(x_addLineBreaks(infoString));
 
 				$("#feedback").html("");
 				
 				if ($($thisQ).children().length == 0)
 				{
-					$("#sliderHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
+					$("#sliderHolder" + currQuestion).html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
 				}
 				else
 				{
                     if($thisQ.getAttribute("interactivity") == "radio-buttons") {
-                        var $optionHolder = $("#sliderHolder");
-                        $optionHolder.html('<div class="optionGroup"><input type="radio" name="option" /><label class="optionTxt"></label></div>');
+                        var $optionHolder = $("#sliderHolder" + currQuestion);
+                        $optionHolder.html('<div class="optionGroup"><input type="radio" name="option' + currQuestion + '" /><label class="optionTxt"></label></div>');
 
                         var $optionGroup = $optionHolder.find(".optionGroup"),
-                            $checkBtn = $("#checkBtn"),
                             correctOptions = [],
                             correctAnswer = [];
 
-                        $checkBtn.button("disable");
 
+						this.radioButtonQuestions[currQuestion] = false;
                         this.currentAnswers = [];
                         $($thisQ).children().each(function () {
                             opinion.currentAnswers.push(
@@ -271,14 +353,15 @@
                             $thisOption
                                 .attr({
                                     "value": value.text,
-                                    "id": "option" + index
+                                    "id": "option" + currQuestion + "_" + index
                                 })
                                 .change(function () {
-                                    $checkBtn.button("enable");
+                                    opinion.radioButtonQuestions[currQuestion] = true;
+                                    opinion.checkButtonState();
                                 });
                             $thisOption[0].score = index;
                             $thisOptionTxt
-                                .attr("for", "option" + index)
+                                .attr("for", "option" +currQuestion + "_" + index)
                                 .data("option", $thisOption)
                                 .html(x_addLineBreaks(value.text));
 
@@ -293,21 +376,22 @@
                     }
                     else if($thisQ.getAttribute("interactivity") == null || $thisQ.getAttribute("interactivity") == "slider")
 					{
-                        var $sliderHolder = $("#sliderHolder");
-						$sliderHolder.html('<div id="labelHolder"></div><div id="rangeHolder"></div>');
-						var $labelHolder = $("#labelHolder"),
-                            $rangeHolder = $("#rangeHolder");
+                        var $sliderHolder = $("#sliderHolder" + currQuestion);
+						$sliderHolder.html('<div id="labelHolder' + currQuestion + '" class="labelHolder"><table><tr id="labelHolderRow' + currQuestion + '"></tr></table></div><div id="rangeHolder' + currQuestion + '"></div>');
+						var $labelHolder = $("#labelHolderRow" + currQuestion),
+                            $rangeHolder = $("#rangeHolder" + currQuestion);
 
-						$labelHolder.html('<a href="#" onclick="" class="optionTxt"></a> ');
+						$labelHolder.html('<td class="labelCell"><a href="#" onclick="" class="optionTxt"></a></td>');
                         var $optionTxt = $labelHolder.find(".optionTxt"),
-                            $checkBtn = $("#checkBtn"),
+                            $optionCell = $labelHolder.find(".labelCell");
                             correctOptions = [],
                             correctAnswer = [];
 
-                        $checkBtn.button("disable");
                         var max = $($thisQ).children().length - 1;
+                        var numberOfOptions = max + 1;
+
                         //TODO get the name of the label instead of the index as slideroutput (? we already get that)
-                        $rangeHolder.html('<form id="form1"> <input id="slider1" type="range" min="0" max = "' + max + '" step="1" /> </form> ');
+                        $rangeHolder.html('<form id="form' + currQuestion + '"> <input id="slider' + currQuestion + '" type="range" min="0" max = "' + max + '" step="1" class="slider"/> </form> ');
 
                         $.each($($thisQ).children(), function(index, value)
                         {
@@ -315,7 +399,8 @@
 
                             if (index != 0)
                             {
-                                $thisOptionTxt = $optionTxt.clone().appendTo($labelHolder);
+                                $thisOptionTxt = $optionCell.clone().appendTo($labelHolder);
+                                $thisOptionTxt = $thisOptionTxt.find(".optionTxt");
                                 $thisOptionTxt.after(" ");
                             }
                             else
@@ -323,7 +408,6 @@
                                 $thisOptionTxt = $optionTxt;
                             }
 
-                            $checkBtn.button("enable");
 
                             $thisOptionTxt
                                 .attr("for", "option" + index)
@@ -331,10 +415,10 @@
 
                             $thisOptionTxt[0].onclick = function()
                             {
-                                $("#slider1")[0].value = index;
+                                $("#slider" + currQuestion)[0].value = index;
                                 if (labelsHidden)
                                 {
-                                    updateBubble();
+                                    updateBubble(currQuestion);
                                 }
                             };
 
@@ -342,45 +426,55 @@
                             correctAnswer.push(value.getAttribute("text"));
                         });
 
+                        var cellWidth = 100.0/numberOfOptions;
+                        $("td.labelCell").css("width", cellWidth + "%");
+                        $("#slider" + currQuestion).css("width", 100-cellWidth + 2 +"%");
+                        $("#slider" + currQuestion).css("margin-left", cellWidth/2 - 1 + "%");
+
+
+
+
                         var labelsHidden = false;
 						var labelWidth = 0;
 						//Hide and truncate labels
 						for (var i = 0; i < $labelHolder[0].children.length; i++)
 						{
 						    labelWidth += ($labelHolder[0].children[i].clientWidth + 4);
-						    $labelHolder[0].children[i].origText = $labelHolder[0].children[i].text;
-							$labelHolder[0].children[i].text = truncateLabels($labelHolder[0].children[i].text);
+						    //$labelHolder[0].children[i].children[0].origText = $labelHolder[0].children[i].children[0].text;
+							//$labelHolder[0].children[i].children[0].text = truncateLabels($labelHolder[0].children[i].children[0].text);
                         }
 
 
 
+                        /*
                         if (labelWidth > $labelHolder.width()) //+4 to counter inline-block built in margin
                         {
-                            var numberOfOptions = $labelHolder[0].childElementCount;
+
                             for (var i = 1; i < numberOfOptions - 1; i++)
                             {
-                                $labelHolder[0].children[i].style.display = "none";
+                                $labelHolder[0].children[i].children[0].style.display = "none";
                             }
                             labelsHidden = true;
 
                             $labelHolder[0].children[0].className += " leftLabel";
                             $labelHolder[0].children[numberOfOptions - 1].className += " rightLabel";
-                            $("#slider1").after('<output id="sliderOutput1" for="slider1" /> ');
-                            $rangeHolder.find("#form1")[0].oninput = function()
+                            $("#slider" + currQuestion).after('<output id="sliderOutput1" for="slider1" /> ');
+                            $rangeHolder.find("#form" + currQuestion)[0].oninput = function()
                             {
-                                updateBubble();
+                                updateBubble(currQuestion);
                             };
                         }
+                        */
 
                         function truncateLabels(label)
 						{
-							    if(label.length >= 20)
+							    if(label.length >= maxChars)
 								{
                                     var words = label.split(" ");
                                     label = "";
                                     var length = 0;
                                     var index  = 0;
-                                    while (length + words[index].length < 18)
+                                    while (length + words[index].length < maxChars-2)
                                     {
                                         length += words[index].length;
                                         index++;
@@ -391,9 +485,9 @@
 								return label;
 						}
 
-                        function updateBubble()
+                        function updateBubble(currQuestion)
                         {
-                            var index = $("#slider1")[0].valueAsNumber,
+                            var index = $("#slider" + currQuestion)[0].valueAsNumber,
 								sliderOutput = $("#sliderHolder").find("#sliderOutput1")[0];
 
 
@@ -418,7 +512,7 @@
                             updateBubble();
                         }
                     }
-					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctOptions, correctAnswer, null, x_currentPageXML.getAttribute("trackinglabel"));
+					XTEnterInteraction(x_currentPage, this.questions[currQuestion], 'numeric', name, correctOptions, correctAnswer, null, x_currentPageXML.getAttribute("grouping"));
 					opinion.checked = false;
 				}
 			}
@@ -438,7 +532,7 @@
 			{
 				if (!this.checked)
 				{
-					this.trackQuestion();
+					this.trackQuestions();
 				}
 				
 				if (!this.resultShown)
@@ -447,10 +541,40 @@
 				}
 			}
 		};
-		
-		this.trackQuestion = function()
+
+		this.trackQuestions = function()
 		{
-			var currentQ = $(x_currentPageXML).children().children()[opinion.questions[opinion.currentQuestion]];
+		    var currQuestion = this.currentQuestion;
+            if (this.listMode)
+            {
+                if (this.pageMode)
+                {
+                    for (i=currQuestion; i<Math.min(currQuestion+ this.pageSize, opinion.questions.length); i++)
+                    {
+                        this.trackQuestion(i);
+                    }
+                }
+                else
+                {
+                    for (i=currQuestion; i<opinion.questions.length; i++)
+                    {
+                        this.trackQuestion(i);
+                    }
+                }
+            }
+            else
+            {
+                this.trackQuestion(currQuestion);
+            }
+            if (! this.resultShown)
+			{
+			    this.loadQuestions();
+			}
+		};
+
+		this.trackQuestion = function(currQuestion)
+		{
+			var currentQ = $(x_currentPageXML).children().children()[opinion.questions[currQuestion]];
 
 
             var selected = 0,
@@ -461,10 +585,10 @@
 				currentQuestionValue = 0;
 
 			if (currentQ.getAttribute("interactivity") == null || currentQ.getAttribute("interactivity") == "slider")
-                selected = $('#slider1')[0].valueAsNumber;
+                selected = $('#slider' + currQuestion)[0].valueAsNumber;
 			else if (currentQ.getAttribute("interactivity") == "radio-buttons")
-			    if ($("#sliderHolder input:checked")[0] != null)
-                selected = $("#sliderHolder input:checked")[0].score;
+			    if ($("#sliderHolder" + currQuestion + " input:checked")[0] != null)
+                selected = $("#sliderHolder" + currQuestion + " input:checked")[0].score;
             for (var i = 0; i < options.length; i++)
            	{
            		l_options.push(i + "");
@@ -479,21 +603,21 @@
 			
             l_answer = Math.round(currentQuestionValue * 10.0) / 10.0;
             
-            var currentQuestionString = opinion.currentQuestion + "";
+            var currentQuestionString = currQuestion + "";
             answeredValues[currentQuestionString] = currentQuestionValue;
 
 
 
-            diagramLabels[opinion.currentQuestion] = currentQ;
-            diagramAnswers[opinion.currentQuestion] = (Math.round(currentQuestionValue * 10.0) / 10.0);
+            diagramLabels[currQuestion] = currentQ;
+            diagramAnswers[currQuestion] = (Math.round(currentQuestionValue * 10.0) / 10.0);
 
 
             var result = {
                 success: correct,
                 score: Math.round(currentQuestionValue * 10.0) / 10.0
             };
-			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], result, l_options, l_answer, null, x_currentPageXML.getAttribute("trackinglabel"));
-            opinion.myProgress.splice(opinion.currentQuestion, 1, correct);
+			XTExitInteraction(x_currentPage, opinion.questions[currQuestion], result, l_options, l_answer, null, x_currentPageXML.getAttribute("trackinglabel"));
+            opinion.myProgress.splice(currQuestion, 1, correct);
             
 			// Continue to next question
 			opinion.currentQuestion++;
@@ -504,10 +628,7 @@
 				opinion.trackOpinion();
 				opinion.resultShown = true;
 			}
-			else
-			{
-				opinion.loadQuestion();
-			}
+
 
             // Queue reparsing of MathJax - fails if no network connection
             try
@@ -519,7 +640,7 @@
 		
 		this.trackOpinion = function() {
             // Last question answered - show results
-            if (x_currentPageXML.getAttribute("diagram") == "true"){
+            if (x_currentPageXML.getAttribute("diagram") !== "true"){
                 opinion.createDiagram();
 				this.sizeChanged();
 			}
@@ -545,9 +666,9 @@
             $("#questionAudio").empty();
 
 			$("#diagram").show();
-            $("#sliderHolder").hide();
+            $("#qHolder").hide();
             $("#checkBtn").hide();
-            $("#qTxt").html("");
+            //$("#qTxt").html("");
 
             XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph), x_currentPageXML.getAttribute("trackinglabel"));
             opinion.checked = true;
@@ -576,12 +697,20 @@
 		this.createDiagram = function()
 		{
 			var classNames = [];
+			var classTitles = [];
 			var classValues = [];
 			var classWeighting = [];
 
 			for(var i = 0; i< diagramLabels.length; i++){
 				var q = diagramLabels[i];
 				classNames[q.parentNode.classId] = q.parentNode.getAttribute("name");
+				if (typeof q.parentNode.getAttribute("title") != "undefined" && q.parentNode.getAttribute("title") != "") {
+                    classTitles[q.parentNode.classId] = q.parentNode.getAttribute("title");
+                }
+                else
+				{
+                    classTitles[q.parentNode.classId] = classNames[q.parentNode.classId];
+				}
 				if(classValues[q.parentNode.classId] != undefined){
                     classValues[q.parentNode.classId] = classValues[q.parentNode.classId] + (diagramAnswers[i]* diagramLabels[i].getAttribute("classWeight"));
                     classWeighting[q.parentNode.classId] = parseInt(classWeighting[q.parentNode.classId]) + parseInt(diagramLabels[i].getAttribute("classWeight"));
@@ -598,6 +727,7 @@
 			JSONGraph = {
 				label: x_currentPageXML.getAttribute("name"),
 				classnames: classNames,
+				classtitles: classTitles,
 				classvalues: classValues
 			};
 
@@ -620,7 +750,7 @@
 			var myRadarChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: classNames,
+                    labels: classTitles,
                     datasets: [{
 						label: x_currentPageXML.getAttribute("name"),
                         data: classValues,
@@ -633,7 +763,7 @@
 						ticks: {
 							suggestedMin: 0,
 							suggestedMax: 100,
-							fontSize: textSize - 4
+							fontSize: textSize - 10
 						},
 						pointLabels: {
 							fontSize: textSize
@@ -644,7 +774,7 @@
 							fontSize: textSize
 						}
 					},
-					responsive: false,
+					responsive: true,
 					maintainAspectRatio: false
 				}
             });
@@ -657,6 +787,7 @@
 				/* files are already loaded statically */
                 loadFiles = false;
             }
+
             for (var i=0; i<x_pageInfo.length; i++) {
                 if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
                     // a page of this type has already been loaded - don't reload js files
@@ -670,7 +801,23 @@
             }
 
 
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
+            if (x_currentPageXML.getAttribute("list") != undefined)
+			{
+			    this.listMode = x_currentPageXML.getAttribute("list") === "true";
+			}
+
+            if (x_currentPageXML.getAttribute("paging") != undefined)
+            {
+                this.pageMode = x_currentPageXML.getAttribute("paging") === "true";
+            }
+
+            if (x_currentPageXML.getAttribute("pagesize") != undefined)
+            {
+                this.pageSize = parseInt(x_currentPageXML.getAttribute("pagesize"));
+                this.pageQuestionEnd = pageQuestionStart + pageSize - 1;
+            }
+
+            var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
 				$splitScreen = $("#pageContents .splitScreen"),
 				$textHolder = $("#textHolder");
 			
@@ -752,7 +899,7 @@
 				label: submitBtnText
 				})
 			.click(function() {
-				    opinion.trackQuestion();
+				    opinion.trackQuestions();
                 });
 
 			this.startQuestions();
@@ -778,15 +925,8 @@
 								
 				<fieldset class="noStyle">
 				
-					<legend id="qTxt"></legend>
-				
-					<div id="questionAudio"></div>
 					<div id="wrapper">
-						<div id="sliderHolder">
-							<div id="labelHolder"></div>
-							<div id="rangeHolder"></div>
-						</div>
-
+						<div id="qHolder"></div>
 						<div id="buttonHolder">
 							<button id="checkBtn"></button>
 						</div>

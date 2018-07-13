@@ -82,11 +82,11 @@ function lmsmanifest_create_rich($row, $metadata, $users, $flash, $lo_name) {
     global $dir_path, $delete_file_array, $zipfile, $xerte_toolkits_site;
 
     $scorm_top_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><manifest xmlns=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2\" xmlns:imsmd=\"http://www.imsglobal.org/xsd/imsmd_rootv1p2p1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_rootv1p2\" identifier=\"MANIFEST-90878C16-EB60-D648-94ED-9651972B5F38\" xsi:schemaLocation=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd\"><metadata><schema>ADL SCORM</schema><schemaversion>1.2</schemaversion>";
-    $scorm_top_string .= "<imsmd:lom><imsmd:general><imsmd:identifier><imsmd:catalog>" . $xerte_toolkits_site->site_title . "</imsmd:catalog><imsmd:entry>A180_2</imsmd:entry></imsmd:identifier><imsmd:title><imsmd:string language=\"en-GB\">" . $row['zipname'] . "</imsmd:string></imsmd:title><imsmd:language>en-GB</imsmd:language><imsmd:description><imsmd:string language=\"en-GB\">" . $metadata['description'] . "</imsmd:string></imsmd:description>";
+    $scorm_top_string .= "<imsmd:lom><imsmd:general><imsmd:identifier><imsmd:catalog>" . $xerte_toolkits_site->site_title . "</imsmd:catalog><imsmd:entry>A180_2</imsmd:entry></imsmd:identifier><imsmd:title><imsmd:langstring xml:lang=\"en-GB\">" . $row['zipname'] . "</imsmd:langstring></imsmd:title><imsmd:language>en-GB</imsmd:language><imsmd:description><imsmd:langstring xml:lang=\"en-GB\">" . $metadata['description'] . "</imsmd:langstring></imsmd:description>";
     $keyword = explode(",", $metadata['keywords']);
 
     while ($word = array_pop($keyword)) {
-        $scorm_top_string .= "<imsmd:keyword><imsmd:string language=\"en-GB\">" . $word . "</imsmd:string></imsmd:keyword>";
+        $scorm_top_string .= "<imsmd:keyword><imsmd:langstring xml:lang=\"en-GB\">" . $word . "</imsmd:langstring></imsmd:keyword>";
     }
 
     $scorm_top_string .= "</imsmd:general>";
@@ -96,7 +96,7 @@ function lmsmanifest_create_rich($row, $metadata, $users, $flash, $lo_name) {
 	}
 
 	$scorm_top_string .= "<imsmd:technical><imsmd:format>text/html</imsmd:format><imsmd:location>" . url_return("play", $_GET['template_id']) . "</imsmd:location></imsmd:technical>";
-	$scorm_top_string .= "<imsmd:rights><imsmd:copyrightAndOtherRestrictions><imsmd:source>LOMv1.0</imsmd:source><imsmd:value>yes</imsmd:value></imsmd:copyrightAndOtherRestrictions><imsmd:description><imsmd:string language=\"en-GB\">" . $metadata['license'] . "</imsmd:string><imsmd:string language=\"x-t-cc-url\">" . $metadata['license'] . "</imsmd:string></imsmd:description></imsmd:rights>";
+	$scorm_top_string .= "<imsmd:rights><imsmd:copyrightAndOtherRestrictions><imsmd:source>LOMv1.0</imsmd:source><imsmd:value>yes</imsmd:value></imsmd:copyrightAndOtherRestrictions><imsmd:description><imsmd:langstring xml:lang=\"en-GB\">" . $metadata['license'] . "</imsmd:langstring><imsmd:langstring xml:lang=\"x-t-cc-url\">" . $metadata['license'] . "</imsmd:langstring></imsmd:description></imsmd:rights>";
 	$scorm_top_string .= "</imsmd:lom></metadata>";
 
     $date = time();
@@ -498,16 +498,13 @@ function xerte_zip_files($fullArchive = false, $dir_path) {
                 if ($skipfile)
                     continue;
             }
-            if (!$fullArchive && strpos($file[0], "/media/") !== false) {
-
+            $string = str_replace($dir_path, "", $file[0]);
+            if (!$fullArchive && strpos($string, "/media/") !== false) {
                 /* only add file if used */
-                $string = str_replace($dir_path, "", $file[0]);
-
                 if (strpos($data3, $string) !== false) {
                     $zipfile->add_files($string);
                 }
             } else {
-                $string = str_replace($dir_path, "", $file[0]);
                 $zipfile->add_files($string);
             }
         }

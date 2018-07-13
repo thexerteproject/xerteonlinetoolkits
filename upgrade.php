@@ -64,7 +64,13 @@ function _db_add_field($table, $field, $fieldtype, $default, $after) {
 
         /* TEXT and BLOB types cannot have a default. */
         if ($fieldtype != 'TEXT' && $fieldtype != 'BLOB') {
-            $query .= " DEFAULT '$default'";
+            if ($fieldtype == 'INT')
+            {
+                $query .= " DEFAULT $default";
+            }
+            else {
+                $query .= " DEFAULT '$default'";
+            }
         }
 
         if ($after) {
@@ -124,7 +130,7 @@ if(!empty($r)) {
 
 echo "Updates are being applied to {$xerte_toolkits_site->database_name} \n";
 _do_upgrade($version);
-
+_do_cleanup();
 
 function _do_upgrade($current_version) {
     $target_version = $current_version + 0; // changed this to add 0 not 1 as this looks like it causes issues as when done an upgrade you had to add an extra 1 to the upgrade_function
@@ -160,7 +166,7 @@ function _do_upgrade($current_version) {
     }
 }
 
-/** 
+/**
  * Wrap around db_query - so we can print out the SQL etc if necessary.
  * @param string $sql
  * @param array parameters for the SQL - if prepared statement. See db_query.
@@ -171,6 +177,38 @@ function _upgrade_db_query($sql, $params = array()) {
         echo "<p>DEBUG Query: $sql, output " . print_r($result) . "</p>";
     }
     return $result;
+}
+
+function _do_cleanup()
+{
+    // Cleanup files that are really in the way of functionality, i.e. the responsivetext.css files in some of the themes prior to v3.6
+
+    echo "Cleanup up files that are really in the way<br>";
+    $filelist = array(
+        'themes/Nottingham/blackround/responsivetext.css',
+        'themes/Nottingham/btnTopPurple/responsivetext.css',
+        'themes/Nottingham/darkgrey/responsivetext.css',
+        'themes/Nottingham/flatblue/responsivetext.css',
+        'themes/Nottingham/flatred/responsivetext.css',
+        'themes/Nottingham/flatwhite/responsivetext.css',
+        'themes/Nottingham/orangepurple/responsivetext.css',
+        'themes/Nottingham/sketch/responsivetext.css'
+    );
+
+    foreach ($filelist as $file)
+    {
+        if (file_exists($file))
+        {
+            echo 'Removing ' . $file . '<br>';
+            unlink($file);
+        }
+        else
+        {
+            echo 'File ' . $file . ' not found (already deleted :-) )<br>';
+        }
+    }
+
+    echo 'Done<br>';
 }
 
 /**
@@ -778,6 +816,99 @@ function upgrade_16()
         $message .= "Tsugi xapi student id mode field already exists - ok ? true <br>";
     }
     return $message;
+
+}
+
+function upgrade_17()
+{
+    $table = table_by_key('grouping');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+      `grouping_id` int(11) NOT NULL AUTO_INCREMENT,
+      `grouping_name` char(255) DEFAULT NULL,
+      PRIMARY KEY (`grouping_id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+    ");
+
+    $message = "Creating grouping table - ok ? " . ($ok ? 'true' : 'false');
+
+    $ok = db_query("insert  into `$table` (`grouping_id`,`grouping_name`) values (1,'Grouping 1'),(2,'Grouping 2'),(3,'Grouping 3'),(4,'Grouping 4'),(5,'Grouping 5'),(6,'Grouping 6'),(7,'Grouping 7'),(8,'Grouping 8'),(9,'Grouping 9'),(10,'Grouping 10')");
+
+    $message .= "Filling default groupings into groupings table - ok ? " . ($ok ? 'true' : 'false');
+
+    return $message;
+}
+
+function upgrade_18()
+{
+    if (! _db_field_exists('sitedetails', 'dashboard_enabled')) {
+        $error1 = _db_add_field('sitedetails', 'dashboard_enabled', 'char(255)', 'true', 'LRS_Secret');
+        $error1_returned = true;
+
+        $error2 = _db_add_field('sitedetails', 'dashboard_nonanonymous', 'char(255)', 'true', 'dashboard_enabled');
+        $error2_returned = true;
+
+        $error3 = _db_add_field('sitedetails', 'xapi_dashboard_minrole', 'char(255)', 'co-author', 'dashboard_nonanonymous');
+        $error3_returned = true;
+
+        $error4 = _db_add_field('sitedetails', 'dashboard_period', 'INT', 14, 'xapi_dashboard_minrole');
+        $error4_returned = true;
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+            // echo "creating LRS_Endpoint field FAILED";
+        }
+
+        if (($error2 === false)) {
+            $error2_returned = false;
+            // echo "creating LRS_Key field FAILED";
+        }
+
+        if (($error3 === false)) {
+            $error3_returned = false;
+            // echo "creating LRS_Secret field FAILED";
+        }
+
+        if (($error4 === false)) {
+            $error4_returned = false;
+            // echo "creating LRS_Secret field FAILED";
+        }
+
+        return "Creating xAPI dashboard settings fields - ok ? " . ($error1_returned && $error2_returned && $error3_returned && $error4_returned? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating xAPI dashboard settings fields already present - ok ? true". "<br>";
+    }
+}
+
+function upgrade_19()
+{
+    if (! _db_field_exists('originaltemplatesdetails', 'parent_template')) {
+        $error1 = _db_add_field('originaltemplatesdetails', 'parent_template', 'char(255)', '', 'template_name');
+        if ($error1 !== false)
+        {
+            // Populate
+            $table = table_by_key('originaltemplatesdetails');
+            $sql = "UPDATE $table SET parent_template = template_name";
+            $error2 = db_query($sql);
+        }
+        else
+        {
+            $error2 = false;
+        }
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        if (($error2 === false)) {
+            $error2_returned = false;
+        }
+        return "Creating template_parent field in originaltemplatesdetails - ok ? " . ($error1_returned && $error2_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating template_parent field in originaltemplatesdetails already present - ok ? ". "<br>";
+    }
 
 }
 

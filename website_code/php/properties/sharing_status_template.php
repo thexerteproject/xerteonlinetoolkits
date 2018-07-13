@@ -84,7 +84,7 @@ foreach($query_sharing_rows as $row) {
 
     if($row['role']!="creator"){
 
-        if(is_user_creator($_POST['template_id'])){
+        if(is_user_creator_or_coauthor($_POST['template_id'])){
 
             echo "<p class=\"share_files_paragraph\">";
 

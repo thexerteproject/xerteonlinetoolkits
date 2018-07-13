@@ -70,8 +70,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
     $data_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
     $rlo_url = $xerte_toolkits_site->site_url .  $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
-    $xwd_url = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['template_name'] . "/";
-    $xwd_path = $xerte_toolkits_site->root_file_path . "/modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['template_name'] . "/";
+    $xwd_url = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
+    $xwd_path = $xerte_toolkits_site->root_file_path . "/modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
 
     if (file_exists($xwd_path . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd" ))
     {
@@ -107,7 +107,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     /**
      * build an array of available themes for this template
      */
-    $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['template_name'] . "/";
+    $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['parent_template'] . "/";
     $ThemeList = array();
     if (file_exists($theme_folder))
     {
@@ -133,7 +133,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
                                 break;
                             case "enabled" : $themeProperties->enabled = strtolower(trim($attr_data[1]));
                                 break;
-                            case "preview" : $themeProperties->preview = $xerte_toolkits_site->site_url . "themes/" . $row_edit['template_name'] . "/" . $f . "/" . trim($attr_data[1]);
+                            case "preview" : $themeProperties->preview = $xerte_toolkits_site->site_url . "themes/" . $row_edit['parent_template'] . "/" . $f . "/" . trim($attr_data[1]);
                                 break;
                         }
                     }
@@ -152,6 +152,20 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 		// Add default theme to beginning
 		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => $xerte_toolkits_site->site_url . "modules/xerte/parent_templates/Nottingham/common_html5/default.jpg"));
     }
+
+    /**
+     * Build CategoryList
+     */
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}syndicationcategories";
+    $categories = db_query($sql);
+
+    /**
+     * Build Grouping List
+     */
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}grouping";
+    $grouping = db_query($sql);
+
+
     /**
      * sort of the screen sies required for the preview window
      */
@@ -329,6 +343,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
+    echo "category_list=" . json_encode($categories) . ";\n";
+    echo "grouping_list=" . json_encode($grouping) . ";\n";
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     ?>
 

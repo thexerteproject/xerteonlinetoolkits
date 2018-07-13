@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wizard menus="Interactivity">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction="Enter introduction text here"></adaptiveContent>]]></adaptiveContent>
+      </newNodes>
+    </pageWizard>
+    <!-- Adaptive Content =============================================== -->
+    <adaptiveContent menu="Interactivity" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
+      <name label="Page Title" type="TextInput" wysiwyg="true" />
+      <introduction label="Introduction" type="textArea"  height="120"/>
+      <newNodes>
+        <interaction ><![CDATA[<interaction name="Enter title here" introduction="Enter introduction here" xerteurl="" xertelo="" label="" interactionType="score" PersonalAvgLabel = "Avg. of your attempts"
+      PersonalLastLabel = "Your last attempt"
+      AvgLabel = "Avg. of all attempts" scoreText="Your score is {0}" answerText="Your answer is {0}"><interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100"></interactionBlock></interaction>]]>
+        </interaction>
+      </newNodes>
+    </adaptiveContent>
+    <interaction menuItem="Source interaction">
+        <name label="Block title" type="textinput" wysiwyg="true" />
+        <introduction label="Introduction" type="textarea" height="120" wysiwyg="true" />
+        <graph type="group" label="Graph" optional="true">
+          <graph label="Show graph" type="checkbox" defaultValue="false" optional="true"/>
+          <graphType label="Graph type" type="combobox" data="bar_answers,bar_marks,line_own_marks,line_average_marks" options="Bar graph for given answers,Bar graph for received marks,Line graph for own received marks,Line graph for average marks of others" defaultValue="bar_answers" optional="true" />
+        </graph>
+        <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue="" />
+        <xertelo label="ID of Xerte learning object" type="xertelo" mandatory="true" defaultValue="" />
+        <label label="Tracking Label of source" type="TextInput" wysiwyg="false" />
+        <interactionType label="Interaction type" type="combobox" data="score,answer,opinion" options="Based on end score,Based on specific answer,Based on 2D opinion" />
+        <opinionClass label="Opinion Class" type="TextInput" wysiwyg="false" optional="true" defaultValue="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interactiontype is based on 2D opinion" />
+        <showScore label="Show score/answer" type="CheckBox" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based" />
+        <scoreText label="Score text" type="TextInput" wysiwyg="true" language="true" />
+        <answerText label="Answer text" type="TextInput" wysiwyg="true" language="true" />
+        <AvgLabel label="Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
+        <PersonalLastLabel label="Personal Graph Label" type="TextInput" wysiwyg="true" language="true" />
+        <PersonalAvgLabel label="Personal Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
+
+      <newNodes>
+          <interactionBlock ><![CDATA[<interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100" ></interactionBlock>]]></interactionBlock>
+        </newNodes>
+    </interaction>
+    <interactionBlock menuItem="Interaction Block">
+          <conScoreBetween label="Score between" type="TextInput" optional="true" defaultValue="0,100" wysiwyg="false" />
+          <conScoreAnswer label="Result label equals" type="TextInput" optional="true" defaultValue="label of answer" wysiwyg="false" />
+          <adaptiveContent type="TextArea" wysiwyg="true" height="360" />
+    </interactionBlock>
+</wizard>

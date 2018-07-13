@@ -185,14 +185,18 @@ if ($fullArchive) {
 
             // Offline dialogs
             create_offline_file("modelfilestrs['colourChanger']", $parent_template_path . "models_html5/colourChanger.html", "offline/offline_colourChanger.js");
+            array_push($file_array, array($parent_template_path . "models_html5/colourChanger.css", ""));
             $offline_includes .= "   <!-- Offline dialogs -->\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_colourChanger.js\"></script>\n";
             create_offline_file("modelfilestrs['menu']", $parent_template_path . "models_html5/menu.html", "offline/offline_menu.js");
+            array_push($file_array, array($parent_template_path . "models_html5/menu.css", ""));
             $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_menu.js\"></script>\n";
             create_offline_file("modelfilestrs['language']", $parent_template_path . "models_html5/language.html", "offline/offline_language.js");
+            array_push($file_array, array($parent_template_path . "models_html5/language.css", ""));
             $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_language.js\"></script>\n";
             if ($xml->glossaryUsed()) {
                 create_offline_file("modelfilestrs['glossary']", $parent_template_path . "models_html5/glossary.html", "offline/offline_glossary.js");
+                array_push($file_array, array($parent_template_path . "models_html5/glossary.css", ""));
                 $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_glossary.js\"></script>\n";
             }
             $offline_includes .= "\n";
@@ -202,11 +206,13 @@ if ($fullArchive) {
             foreach($models as $model)
             {
                 create_offline_file("modelfilestrs['" . $model . "']", $parent_template_path . "models_html5/" . $model . ".html", "offline/" . $model . ".js");
+                array_push($file_array, array($parent_template_path . "models_html5/" .$model . ".css", ""));
                 $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/" . $model . ".js\"></script>\n";
             }
 
             // Extra include files normally loaded dynamically
             $offline_includes .= "   <!-- extra files, normally loaded dynamically -->\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/script.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/popcorn-complete.min.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.textplus.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.subtitleplus.js\"></script>\n";
@@ -217,6 +223,10 @@ if ($fullArchive) {
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/MediasitePlayerControls.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.slides.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.sortholder.js\"></script>\n";
+
+            // Offline theme js file
+            $offline_includes .= "   <!-- theme file, normally loaded dynamically -->\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"theme/Nottingham/" . $xml->getTheme() . "/" . $xml->getTheme() . ".js\"></script>\n";
         }
         else {
             foreach ($models as $model) {

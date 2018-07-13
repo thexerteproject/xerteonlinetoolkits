@@ -161,8 +161,11 @@ function template_toggle(tag){
 
     if((temp.style.display=="none")||(temp.style.display=="")){
         temp.style.display="block";	
-				butt.style.display="none";
-				temp.querySelector('input[name="filename"]').focus();
+        butt.style.display="none";
+        temp.querySelector('input[name="filename"]').value ="";
+		temp.querySelector('input[name="filename"]').focus();
+
+
     }else{
         temp.style.display="none";
 				butt.style.display="";
@@ -693,6 +696,26 @@ function getProjectInformation_stateChanged(){
             deletebtn.className = "xerte_button_c_no_width disabled";
             deletebtn.onclick="";
         }
+        if (info.fetch_statistics)
+        {
+            url = site_url + info.template_id;
+            q = {};
+            q['activity'] = url;
+            q['verb'] = "http://adlnet.gov/expapi/verbs/launched";
+            q['related_activities'] = false;
+
+            var today = new Date();
+            var start = new Date(today.getTime() - info.dashboard.default_period*24*60*60*1000);
+            var startstartofday = new Date(start.getFullYear(), start.getMonth(), start.getDate(), 0, 0, 0, 0);
+            var todayendofday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 0);
+            q['since'] = startstartofday.toISOString();
+            x_Dashboard = new xAPIDashboard(info);
+            x_Dashboard.getStatements(q, false, function()
+            {
+                $("#graph_" + info.template_id).html("");
+                x_Dashboard.drawActivityChart($("#graph_"+info.template_id), startstartofday, todayendofday);
+            });
+        }
     }
 }
 
@@ -1222,7 +1245,7 @@ function tutorials_stateChanged(){
 
         if(xmlHttp.responseText!=""){
 
-            document.getElementById(active_div).childNodes[1].filename.value="";
+            //$("#" + tutorial +"_filename").val("");
 
             template_toggle(active_div);
             active_div="";
@@ -1354,8 +1377,8 @@ function create_tutorial(tutorial){
         xmlHttp.open("post",url,true);
         xmlHttp.onreadystatechange=tutorial_created;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        if(is_ok_name(document.getElementById(tutorial).childNodes[1].filename.value)){
-            xmlHttp.send('tutorialid=' + tutorial + '&tutorialname=' + document.getElementById(tutorial).childNodes[1].filename.value + '&folder_id=' + new_template_folder);
+        if(is_ok_name($("#" + tutorial +"_filename").val())){
+            xmlHttp.send('tutorialid=' + tutorial + '&templatename=' + $("#" + tutorial +"_templatename").val() + '&tutorialname=' + $("#" + tutorial +"_filename").val() + '&folder_id=' + new_template_folder);
         }else{
             alert(NAME_FAIL);
         }

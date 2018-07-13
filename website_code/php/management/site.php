@@ -22,6 +22,7 @@
 require_once("../../../config.php");
 
 _load_language_file("/website_code/php/management/site.inc");
+_load_language_file( "/website_code/php/properties/sharing_status_template.inc");
 
 require_once("../user_library.php");
 require_once("management_library.php");
@@ -269,6 +270,25 @@ if(is_user_admin()){
     echo "<p>" . MANAGEMENT_SITE_XAPI_KEY . "<form><textarea id=\"site_xapi_key\">" . $row['LRS_Key'] . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_XAPI_SECRET . "<form><textarea id=\"site_xapi_secret\">" . $row['LRS_Secret'] . "</textarea></form></p>";
+
+    echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_ENABLE . "<form><textarea id=\"site_xapi_dashboard_enable\">" . $row['dashboard_enabled'] . "</textarea></form></p>";
+
+    echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_NONANONYMOUS_VIEW . "<form><textarea id=\"site_xapi_dashboard_nonanonymous\">" . $row['dashboard_nonanonymous'] . "</textarea></form></p>";
+
+    echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_MINIMUM_ROLE . "<form style=\"margin: top: 20px; padding: 4em 0.15em; \">";
+
+    echo "<select name=\"xapi_dashboard_minrole\" id=\"xapi_dashboard_minrole\" style=\"margin: 15px 0 0 10px; padding: 0.4em 0.15em; \">";
+
+    echo "<option value=\"creator\"" . ((isset($row['xapi_dashboard_minrole']) && $row['xapi_dashboard_minrole'] == 'creator') ? " selected" : "") . ">" . SHARING_CREATOR. "</option>";
+    echo "<option value=\"co-author\"" . ((isset($row['xapi_dashboard_minrole']) && $row['xapi_dashboard_minrole'] == 'co-author') ? " selected" : "") . ">" . SHARING_COAUTHOR . "</option>";
+    echo "<option value=\"editor\"" . ((isset($row['xapi_dashboard_minrole']) && $row['xapi_dashboard_minrole'] == 'editor') ? " selected" : "") . ">" . SHARING_EDITOR . "</option>";
+    echo "<option value=\"read-only\"" . ((isset($row['xapi_dashboard_minrole']) && $row['xapi_dashboard_minrole'] == 'read-only') ? " selected" : "") . ">" . SHARING_READONLY . "</option>";
+
+    echo "</select>";
+
+    echo "</form></p>";
+
+    echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_DEFAULT_PERIOD . "<form><textarea id=\"site_xapi_dashboard_period\">" . $row['dashboard_period'] . "</textarea></form></p>";
 
     echo "</div>";
 

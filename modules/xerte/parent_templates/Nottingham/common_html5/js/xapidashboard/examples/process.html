@@ -1,0 +1,49 @@
+<html>
+<head>
+	<title>xAPI Dashboard</title>
+	<link rel='stylesheet' href='../lib/nv.d3.css'></link>
+	<!--<script type="text/javascript" src="dist/xapidashboard.min.js"></script>-->
+	
+	<script type="text/javascript" src="../lib/d3.v3.js" charset="utf-8"></script>
+	<script type="text/javascript" src="../lib/nv.d3.js"></script>
+	<script type="text/javascript" src="../lib/xapiwrapper.min.js"></script>
+	<script type="text/javascript" src="../src/chart.js"></script>
+	<script type="text/javascript" src="../src/dashboard.js"></script>
+	<script type="text/javascript" src="../src/xapicollection.js"></script>
+	
+	<script src='../extra/gen-lrs-data.js'></script>
+</head>
+<body>
+	<style>
+		svg{
+			width: 65%;
+			height: 55%;
+			margin: 0 auto;
+		}
+	</style>
+	<svg id="svg"></svg>
+
+	<script type="text/javascript">
+		//We could have also added a "container" option to the chart.
+		var dash = new ADL.XAPIDashboard('#svg');
+		
+		dash.addStatements(window.statements);
+		dash.createBarChart({
+			process: function(data, event, opts){
+				/* 
+					With process, you are responsible for the formatting of the data (see the call to select below).
+					opts is the chart's options object. You can access groupBy, range, and other properties.
+					opts.cb is a callback used internally. It must be given to exec. 
+				*/
+				
+				data.where("result.score.raw != null").orderBy("object.definition.name");
+				data.groupBy('object.definition.name').average('result.score.raw').select('group as in, average as out').exec(opts.cb);				
+			},
+			customize: function(nvd3Chart){
+				nvd3Chart.forceY([70, 85]);
+				nvd3Chart.yAxis.axisLabel("Grade");			
+			}
+		}).draw();		
+	</script>
+</body>
+</html>

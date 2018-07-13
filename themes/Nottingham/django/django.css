@@ -223,6 +223,8 @@ a:-webkit-any-link {
   font-family: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif;
   background-color: rgba(255, 255, 255, 0) !important;
   color: #525252; }
+#x_pageHolder .fa {
+  font: normal normal normal 14px/1 FontAwesome; }
 #x_pageHolder .panel {
   padding: 10px;
   background-color: #ffffff;

@@ -1,0 +1,39 @@
+//*define color pallette*/
+
+$brightcolor:#F07E31;//professionalengagement
+$accent1: #2F9739;//digitalresources
+$contrastcolor:#4185C5;//digitalpedagogyteachingandlearning
+$accent2: #00A1A3;//digitalassessment
+$darkestcolor: #603784;//empoweringlearners
+$accent3:#D13759;//facilitatinglearners:#983265
+$lightestcolor:#F4F4F6;
+$whiteorlightest:#ffffff;
+$blackordarkest:#000000;
+
+/*set background colors*/
+$bodybackgroundcolor:#BFBFBF;
+$defaultpagebackground:$whiteorlightest;
+$progressBarColor: #2196F3; /* default #2196F3;*/
+
+/*set font family*/
+$mainfonts: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+$secondaryfonts:Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+/*define font colors to match the background colors*/
+$mainfontcolour: $blackordarkest;
+$fontcolorfordarkestcolor:#ffffff;
+$fontcolorforlightestcolor:#000000;
+$fontcolorfobrightcolor:#ffffff;
+$fontcolorforcontrastcolor:#ffffff;
+$linkcolor:blue;
+$linkvisited: #00006f;
+$linkhover: #00006f;
+
+/*define rounded corner and other sizes*/
+$largeroundedcorners: 3px;/*6vmin;*/
+$mediumroundedcorners: 3px;/*2vmin;*/
+$smallroundedcorners: 3px;/*1vmin;*/
+$imageroundedcorners: none;/*2vmin;*/
+$contentmargin: 2%;
+$interfaceboxshadow:none; /*3px 3px 5px grey*/
+$defaultpagepadding:2%;

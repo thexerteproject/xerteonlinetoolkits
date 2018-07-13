@@ -522,7 +522,7 @@
 							return thisHelper;
 						},
 						cursor:			"none",
-						cursorAt:		{left: -1, top: 7},
+						cursorAt:		{left: -1, top: 16},
 						start:			function() {
 							// reset any info shown and hide pin on label
 							$("#hsHolder canvas")
@@ -615,19 +615,18 @@
 					.droppable({
 						accept:	$("#labelHolder .label"),
 						drop:	function(e, ui) {
-							// helper pin has been dropped on mainCanvas
-							var $thisHSCanvas = ui.draggable.data("correct");
+							var $thisHSCanvas = ui.draggable.data("correct")[0];
 							
-							for (var i=0; i<$thisHSCanvas.length; i++) {
-								var xyCoords = [e.pageX - $thisHSCanvas[i].offset().left, e.pageY - $thisHSCanvas[i].offset().top];
-								
-								// get pixel data from the whole canvas - and then from pixel dropped on
-								var pix = $thisHSCanvas[i][0].getContext("2d").getImageData(0, 0, $thisHSCanvas[i].width(), $thisHSCanvas[i].height()),
-									dataPos = ((xyCoords[1] * $thisHSCanvas[i].width()) + xyCoords[0]) * 4;
-								
-								if (pix.data[Math.round(dataPos)+3] > 0) { // is it transparent?
-									customHotspots.dropLabel($thisHSCanvas[i], ui.draggable, ui.helper);
-								}
+							// get xy pos of click relative to position of canvas
+							var xyCoords = {x : Math.floor(e.pageX - $thisHSCanvas.offset().left), y : Math.floor(e.pageY - $thisHSCanvas.offset().top)};
+							
+							// get pixel data from the whole canvas - and then from pixel clicked
+							var pix = $thisHSCanvas[0].getContext("2d").getImageData(0, 0, $thisHSCanvas.width(), $thisHSCanvas.height()),
+								dataPos = (((xyCoords.y - 1) * $thisHSCanvas.width()) + xyCoords.x) * 4;
+							
+							// is it transparent?
+							if (pix.data[dataPos] > 0) {
+								customHotspots.dropLabel($thisHSCanvas, ui.draggable, ui.helper);
 							}
 						}
 					});
@@ -675,7 +674,7 @@
 										.removeClass("selected")
 										.attr("title", labelTxt1);
 									// only accept drops for correct answers
-									if ($selectedLabel.data("correct").is($this) == true) {
+									if ($selectedLabel.data("correct")[0].is($this) == true) {
 										customHotspots.dropLabel($this, $selectedLabel);
 									} else {
 										$this.removeClass("visible");
@@ -893,7 +892,7 @@
 				// set up divs needed for quiz - one containing question stuff and one containing results shown at end of the quiz
 				$("#labelHolder, #hsInfo").remove();
 				$("#textHolder")
-					.append('<div id="qHolder"><h3 id="qCount"></h3><p id="qTxt">' + fixedPhrases.questionTxt + ':</p><div id="optionHolder"></div><div class="buttonHolder"><button id="checkBtn"></button></div><div id="feedback"></div><div class="buttonHolder"><button id="nextBtn"></button></div>')
+					.append('<hr><div id="qHolder"><h3 id="qCount"></h3><p id="qTxt">' + fixedPhrases.questionTxt + ':</p><div id="optionHolder"></div><div class="buttonHolder"><button id="checkBtn"></button></div><div id="feedback"></div><div class="buttonHolder"><button id="nextBtn"></button></div>')
 					.append('<div id="scoreHolder"><h3 id="score">' + fixedPhrases.scoreLabel + '</h3><p id="scoreTxt"></p><p id="retakeTxt">' + fixedPhrases.onCompletion + '.</p><div class="buttonHolder"><button id="restartBtn"></button></div></div>');
 				
 				$("#checkBtn")
@@ -903,7 +902,7 @@
 						var	$currentShape = $("#hsHolder canvas.visible, #hsHolder div.visible"),
 							myAnswer = $("#optionHolder input:checked").val();
 						if ($currentShape.data("label") == myAnswer) { // correct
-							$("#feedback").html('<p>' + $pageContents.data("phrases").correctTxt + "</br>" + $pageContents.data("phrases").continueTxt + ".</p>");
+							$("#feedback").html('<p>' + $pageContents.data("phrases").correctTxt + "</p><p>" + $pageContents.data("phrases").continueTxt + ".</p>");
 							$pageContents.data("mcqData").score++;
 							
 						} else { // incorrect
@@ -911,7 +910,7 @@
 								$("#feedback").html('<p>' + $pageContents.data("phrases").wrongFeedback.replace("{a}", myAnswer).replace("{b}", $currentShape.data("label")) + ".</br>" + $pageContents.data("phrases").continueTxt + ".</p>");
 							} else {
 								// for backward compatibility
-								$("#feedback").html('<p>' + $pageContents.data("phrases").wrong1stTxt + " " + myAnswer + " " + $pageContents.data("phrases").wrong2ndTxt +  " " + $currentShape.data("label") + ".</br>" + $pageContents.data("phrases").continueTxt + ".</p>");
+								$("#feedback").html('<p>' + $pageContents.data("phrases").wrong1stTxt + " " + myAnswer + " " + $pageContents.data("phrases").wrong2ndTxt +  " " + $currentShape.data("label") + ".</p><p>" + $pageContents.data("phrases").continueTxt + ".</p>");
 							}
 							
 							// tint wrong answer canvas/div green
@@ -1036,7 +1035,7 @@
 						
 						$pin.css({
 							left:	x + $hsHolder.position().left - 8,
-							top:	y + $hsHolder.position().top - 15
+							top:	y + $hsHolder.position().top - 26
 						});
 						break;
 					}

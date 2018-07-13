@@ -680,6 +680,7 @@ var EDITOR = (function ($, parent) {
             .attr('src', 'editor/img/flashonly.png')
             .attr('alt', 'Flash only attribute');
         var flashonlytxt = '<img class="flash-icon" src="editor/img/flashonly.png" alt="Flash only attribute">';
+        var tooltipavailable = '<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>';
 		
 		var optGroups = [];
 		
@@ -768,12 +769,37 @@ var EDITOR = (function ($, parent) {
                 if (node_options['optional'][i].value.flashonly) {
                     label += flashonlytxt;
                 }
-                button.append(label);
                 if (node_options['optional'][i].value.tooltip)
                 {
+                    label += ' ' + tooltipavailable;
                     button.attr('title', node_options['optional'][i].value.tooltip);
                 }
-				
+                // If group, see if any of the individual items have a tooltip
+                if (node_options['optional'][i].value.type == 'group')
+                {
+                    var tooltip_txt = "";
+                    for (var j=0; j<node_options['optional'][i].value.children.length; j++)
+                    {
+                        if (node_options['optional'][i].value.children[j].value.tooltip)
+                        {
+                            if (tooltip_txt.length > 0)
+                                tooltip_txt += "\n";
+                            tooltip_txt += node_options['optional'][i].value.children[j].value.label + ": " + node_options['optional'][i].value.children[j].value.tooltip;
+                        }
+                    }
+                    if (tooltip_txt.length > 0)
+                    {
+						if (button.attr('title') != undefined) {
+							// a tooltip icon has already been added so don't add another - just add to the title text
+							button.attr('title', button.attr('title') + '\n' + tooltip_txt);
+						} else {
+							label += ' ' + tooltipavailable;
+							button.attr('title', tooltip_txt);
+						}
+                    }
+                }
+                button.append(label);
+
                 if (attribute_value.found || $.inArray(true, found) > -1) {
                     // Add disabled button to right panel
                     button.prop('disabled', true)
@@ -1069,15 +1095,12 @@ var EDITOR = (function ($, parent) {
             if (wizard_data[treeLabel].menu_options.menuItem)
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
         }
-        if (key == 'treeroot')
-        {
-            // Add icons to the node, all should be switched off
-            // Create node text based on xml, do not use text of original node, as this is not correct
-            var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
-            var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
+        // Add icons to the node, all should be switched off
+        // Create node text based on xml, do not use text of original node, as this is not correct
+        var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
+        var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
 
-            var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
-        }
+        var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
         var this_json = {
             id : lkey,
             text : treeLabel,

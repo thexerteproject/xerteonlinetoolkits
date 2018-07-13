@@ -287,6 +287,21 @@ a.hotspot, a.hotspot.selected {
   border-radius: $mediumroundedcorners;
   width: 98%;
 }
+//*****opinion********/
+.x_opinion_page #pageContents input {
+  padding-left: 0;
+}
+.qPanel {
+  overflow-x:hidden;
+}
+.qSeparator hr {
+  background-color: lighten($brightcolor, 10%);
+  border-color: lighten($brightcolor, 10%);
+  border: solid 1px lighten($brightcolor, 10%);
+}
+.sliderHolder .labelHolder a p {
+  color: $blackordarkest;
+}
 //*****sortable grid*****/
 //static text
 .x_grid_page #grid ul li.static {

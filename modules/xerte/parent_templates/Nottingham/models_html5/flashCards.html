@@ -34,29 +34,94 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
+		    if (x_browserInfo.mobile == false) {
 				
 				// reset heights/widths initially...
 				$('.mediaHolder').hide();
-				$pageContents.add('.card, #cards').css({ 'width': 'auto', 'height': 'auto' });
-				$('.cardInner').css('height', 'auto');
+				$pageContents.add('.card, #cards').css({ 'width': '', 'height': '' });
+				$('.cardInner').css('height', '');
+                $('.card, #cards').css('max-width', '');
+
+                // Check whether boxshadow is set, if not reset the values from NaN to something more sensible;
+				if ($pageContents.data('boxShadow').top !== $pageContents.data('boxShadow').top
+					|| $pageContents.data('boxShadow').bottom !== $pageContents.data('boxShadow').bottom
+					|| $pageContents.data('boxShadow').left !== $pageContents.data('boxShadow').left
+					|| $pageContents.data('boxShadow').right !== $pageContents.data('boxShadow').right)
+				{
+				    // $pageContents.data('boxShadow').top is NaN
+                    $pageContents.data('boxShadow').top = 0;
+                    $pageContents.data('boxShadow').bottom = 0;
+                    $pageContents.data('boxShadow').left = 0;
+                    $pageContents.data('boxShadow').right = 0;
+				}
 				
 				// ...then recalculate the best sizes...
 				$pageContents
-					.height($x_pageHolder.height() - parseInt($x_pageDiv.css('padding-top')) * 2 - 2)
-					.width($x_pageHolder.width() - parseInt($x_pageDiv.css('padding-left')) * 2 - 2);
-				
-				$('.card, #cards')
-					.height($('#cardCtrls').height() - $pageContents.data('boxShadow').top - $pageContents.data('boxShadow').bottom)
-					.width(Math.min(($('#cardCtrls').height() * 1.3) - $pageContents.data('boxShadow').top - $pageContents.data('boxShadow').bottom, $('#cardHolder').width() - ($('.btnHolder button').width() * 2)) - $pageContents.data('boxShadow').right - $pageContents.data('boxShadow').left);
-				
-				$('.cardInner')
-					.height($('#cards').height() - $('.flipBtnHolder').data('height') - parseInt($('.cardInner').css('padding-top')) * 2 - 10);
+					.height($x_pageHolder.height() - parseInt($x_pageDiv.css('padding-top')) * 2 - 2) //parseInt($("#cards .panel").css('padding-top')) * 2 - 2)
+					.width($x_pageHolder.width() - parseInt($x_pageDiv.css('padding-left')) * 2 - 2); //parseInt($("#cards .panel").css('padding-left')) * 2 - 2);
+
+				$("#cardHolder").width($pageContents.width());
+				$("#cardHolder").css('max-width', $pageContents.width());
+
+                var paddingright = parseInt($("#cards .panel").css('padding-left')) + parseInt($("#cards .panel").css('padding-right')),
+                    paddingbottom = parseInt($("#cards .panel").css('padding-top')) + parseInt($("#cards .panel").css('padding-bottom'));
+
+                $('#cards').css('padding',  '0px ' + paddingright + 'px ' + paddingbottom + 'px 0px');
+
+                $('.card, #cards')
+					.height($('#cardCtrls').height() + $pageContents.data('boxShadow').top + $pageContents.data('boxShadow').bottom)
+                    .width(Math.min(($('#cardCtrls').height() * 1.3) - $pageContents.data('boxShadow').top - $pageContents.data('boxShadow').bottom, $pageContents.width() - ($('.btnHolder button').width() * 2)) - $pageContents.data('boxShadow').right - $pageContents.data('boxShadow').left - parseInt($x_pageHolder.css('padding-left')) * 2);
+                	//.width($pageContents.width() - ($('.btnHolder button').width() * 2)) + $pageContents.data('boxShadow').right + $pageContents.data('boxShadow').left - parseInt($x_pageHolder.css('padding-left')) * 2;
+
+				var cardwidth = $pageContents.width() - $('#leftBtn').width() - $('#rightBtn').width() - paddingright;
+				if (cardwidth < $('#cards').width())
+				{
+                    $('.card, #cards').width(cardwidth);
+				}
+				$('.card, #cards').css('max-width', $('#cards').width() + 'px');
+
+                $('.cardInner')
+					.height($('#cards').outerHeight() - $('.flipBtnHolder').data('height') - parseInt($('.cardInner').css('padding-top')) * 2 - 10);
 				
 				$('.mediaHolder').show();
 				
 			} else {
-				// ** mobile layout
+				// ** mobile layout (same for now)
+                // reset heights/widths initially...
+                $('.mediaHolder').hide();
+                $pageContents.add('.card, #cards').css({ 'width': '', 'height': '' });
+                $('.cardInner').css('height', '');
+                $('.card, #cards').css('max-width', '');
+
+                // ...then recalculate the best sizes...
+                $pageContents
+                    .height($x_pageHolder.height() - parseInt($x_pageDiv.css('padding-top')) * 2 - 2) //parseInt($("#cards .panel").css('padding-top')) * 2 - 2)
+                    .width($x_pageHolder.width() - parseInt($x_pageDiv.css('padding-left')) * 2 - 2); //parseInt($("#cards .panel").css('padding-left')) * 2 - 2);
+
+                $("#cardHolder").width($pageContents.width());
+                $("#cardHolder").css('max-width', $pageContents.width());
+
+                var paddingright = parseInt($("#cards .panel").css('padding-left')) + parseInt($("#cards .panel").css('padding-right')),
+                    paddingbottom = parseInt($("#cards .panel").css('padding-top')) + parseInt($("#cards .panel").css('padding-bottom'));
+
+                $('#cards').css('padding',  '0px ' + paddingright + 'px ' + paddingbottom + 'px 0px');
+
+                $('.card, #cards')
+                    .height($('#cardCtrls').height() + $pageContents.data('boxShadow').top + $pageContents.data('boxShadow').bottom)
+                    .width(Math.min(($('#cardCtrls').height() * 1.3) - $pageContents.data('boxShadow').top - $pageContents.data('boxShadow').bottom, $pageContents.width() - ($('.btnHolder button').width() * 2)) - $pageContents.data('boxShadow').right - $pageContents.data('boxShadow').left - parseInt($x_pageHolder.css('padding-left')) * 2);
+                //.width($pageContents.width() - ($('.btnHolder button').width() * 2)) + $pageContents.data('boxShadow').right + $pageContents.data('boxShadow').left - parseInt($x_pageHolder.css('padding-left')) * 2;
+
+                var cardwidth = $pageContents.width() - $('#leftBtn').width() - $('#rightBtn').width() - paddingright;
+                if (cardwidth < $('#cards').width())
+                {
+                    $('.card, #cards').width(cardwidth);
+                }
+                $('.card, #cards').css('max-width', $('#cards').width() + 'px');
+
+                $('.cardInner')
+                    .height($('#cards').outerHeight() - $('.flipBtnHolder').data('height') - parseInt($('.cardInner').css('padding-top')) * 2 - 10);
+
+                $('.mediaHolder').show();
 			}
 			
 			flashCards.resizeMedia();
@@ -129,23 +194,7 @@
 			$pageContents = $('#pageContents');
 			$pageContents.data('currentCard', 0);
 			
-			// these are used later for sizing / layout:
-			var boxShadow = $('.panel').css('box-shadow'),
-				h, v, b, s,
-				top = 0, right = 0, bottom = 0, left = 0;
-			
-			if (boxShadow) {
-				boxShadow = $.trim(boxShadow.split(')')[1]).split(' ');
-				h = parseInt(boxShadow[0]); v = parseInt(boxShadow[1]); b = parseInt(boxShadow[2]); s = parseInt(boxShadow[3]);
-				top = s + b - v + 2;
-				right = s + b + h + 2;
-				bottom = s + b + v + 2;
-				left = s + b - h + 2;
-			}
-			
-			$pageContents.data('boxShadow', { top: top, right: right, bottom: bottom, left: left });
-			
-			
+
 			var $textHolder	= $('#textHolder');
 			if (x_currentPageXML.getAttribute('text') != '') {
 				$textHolder.html(x_currentPageXML.getAttribute('text'));
@@ -278,9 +327,10 @@
 					$this.append('<div class="flipBtnHolder"><button class="flipBtn circleBtn"></button></div>');
 				});
 				
-				$thisCard.flip({ trigger: 'manual' });
+				$thisCard.flip({ trigger: 'manual'});
 			});
-			
+
+
 			if ($('.card').length < 2) {
 				$('#prevBtn, #nextBtn, #cardNoTxt').remove();
 				
@@ -309,8 +359,25 @@
 						flashCards.newCard(true);
 					});
 			}
-			
-			$('.flipBtn')
+
+            // these are used later for sizing / layout:
+            var boxShadow = $('.panel').css('box-shadow'),
+                h, v, b, s,
+                top = 0, right = 0, bottom = 0, left = 0;
+
+            if (boxShadow) {
+                boxShadow = $.trim(boxShadow.split(')')[1]).split(' ');
+                h = parseInt(boxShadow[0]); v = parseInt(boxShadow[1]); b = parseInt(boxShadow[2]); s = parseInt(boxShadow[3]);
+                top = s + b - v + 2;
+                right = s + b + h + 2;
+                bottom = s + b + v + 2;
+                left = s + b - h + 2;
+            }
+
+            $pageContents.data('boxShadow', { top: top, right: right, bottom: bottom, left: left });
+
+
+            $('.flipBtn')
 				.button({
 					icons: {
 						primary: 'fa fa-x-refresh'
