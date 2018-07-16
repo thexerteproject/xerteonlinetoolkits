@@ -25,7 +25,7 @@ CKEDITOR.editorConfig = function( config ) {
     ];
 
 
-    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,rubytext';
+    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,rubytext,wrapstyle';
     // The default plugins included in the basic setup define some buttons that
     // we don't want too have in a basic editor. We remove them here.
     //config.removeButtons = 'Cut,Copy,Paste,Undo,Redo,Anchor,Underline,Strike,Subscript,Superscript';
@@ -49,10 +49,28 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.contentsCss = ['modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/css/themeStyles.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/css/editorStyles.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css'
     ];
+
+    if (typeof lo_data['treeroot']["attributes"]["theme"] != 'undefined' && lo_data['treeroot']["attributes"]["theme"] != 'default')
+    {
+        var themecss;
+        var xerteeditorcss = "editor/js/vendor/ckeditor/xerteeditor.css";
+
+        if (templateframework == 'xerte') {
+            themecss = 'themes/' + lo_data['treeroot']["attributes"]["targetFolder"] + '/' + lo_data['treeroot']["attributes"]["theme"] + '/' + lo_data['treeroot']["attributes"]["theme"] + '.css';
+        }
+        else
+        {
+            themecss = 'themes/' + templateframework + '/' + lo_data['treeroot']["attributes"]["theme"] + '/' + lo_data['treeroot']["attributes"]["theme"] + '.css';
+        }
+        config.contentsCss.push(themecss);
+        config.contentsCss.push(xerteeditorcss);
+
+    }
 };
 CKEDITOR.dtd.$removeEmpty.i = 0;
 CKEDITOR.dtd.$removeEmpty.span = 0;

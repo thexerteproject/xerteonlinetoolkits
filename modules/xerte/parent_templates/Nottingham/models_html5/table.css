@@ -11,6 +11,8 @@
 	}
 	
 	#footnote {
-		margin-top:	10px;
+		margin-top:	1em;
+		padding-top: 0.7em;
+		border-top: 1px solid #ccc;
 	}
 	

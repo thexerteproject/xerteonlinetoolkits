@@ -59,9 +59,9 @@
   
   <authorSupport label="Author Support is ON: text shown in red will not appear in live projects."/>
   
-  <hiddenPage label="This page will be hidden in live projects"/>
+  <hiddenPage label="This page will be hidden in live projects" hidden="This page is currently hidden in live projects" shown="This page is currently shown in live projects" until="Hide until" from="Hide from"/>
   
-  <hiddenSection label="This section will be hidden in live projects"/>
+  <hiddenSection label="This section will be hidden in live projects" hidden="This section is currently hidden in live projects" shown="This section is currently shown in live projects" until="Hide until" from="Hide from"/>
   
   <tick label="Tick"/>
   

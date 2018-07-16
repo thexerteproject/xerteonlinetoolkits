@@ -160,6 +160,21 @@
 				$("#words ul").width(maxW * numCols + "em");
 			}
 			
+			this.getSize();
+		}
+		
+		this.begin = function () {
+			wordsearch.game();
+
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+		
+		this.sizeChanged = function() {
+			this.getSize();
+		}
+		
+		this.getSize = function() {
 			// set minimum width for wordsearch panel so lines don't start breaking up
 			var minW = 0;
 			$("#puzzle div:first button").each(function() {
@@ -169,13 +184,6 @@
 			minW += Math.ceil($("#words").outerWidth(true));
 			
 			$("#infoHolder").css("min-width", minW);
-		}
-		
-		this.begin = function () {
-			wordsearch.game();
-
-			// call this function in every model once everything's loaded
-			x_pageLoaded();
 		}
 	}
 	

@@ -60,6 +60,10 @@
 		margin:	15px;
 	}
 	
+	#slider .ui-slider-handle {
+		cursor: pointer;
+	}
+	
 	#pageContents #submitBtn, #pageContents #viewThisBtn, #pageContents #helpBtn, #pageContents #goBtn {
 		margin:	10px;
 	}
@@ -101,8 +105,8 @@
 	}
 	
 	#overviewHolder .overviewStep, #overviewHolder .overviewAnswer {
-		padding-top:	10px;
-		padding-bottom:	10px;
+		padding-top:	1em;
+		padding-bottom:	1em;
 	}
 	
 	#overviewHolder .overviewStep p {

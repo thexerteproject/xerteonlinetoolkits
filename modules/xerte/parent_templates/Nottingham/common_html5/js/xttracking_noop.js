@@ -65,6 +65,7 @@ function NoopTrackingState()
     this.lo_passed = 0;
     this.page_timeout = 5000;
     this.forcetrackingmode = false;
+    this.debug = false;
 
 
     this.initialise = initialise;
@@ -87,6 +88,9 @@ function NoopTrackingState()
     this.findInteraction = findInteraction;
     this.findCreate = findCreate;
     this.enterPage = enterPage;
+    this.verifyResult = verifyResult;
+    this.verifyEnterInteractionParameters = verifyEnterInteractionParameters;
+    this.verifyExitInteractionParameters = verifyExitInteractionParameters;
 
 
     function initialise()
@@ -264,8 +268,9 @@ function NoopTrackingState()
 
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
     {
-    	interaction = new NoopTracking(page_nr, ia_nr, ia_type, ia_name);
-    	interaction.enterInteraction(correctanswer, correctoptions);
+        interaction = new NoopTracking(page_nr, ia_nr, ia_type, ia_name);
+        this.verifyEnterInteractionParameters(ia_type, ia_name, correctoptions, correctanswer, feedback);
+        interaction.enterInteraction(correctanswer, correctoptions);
         this.interactions.push(interaction);
     }
 
@@ -274,6 +279,7 @@ function NoopTrackingState()
     	var sit = this.findInteraction(page_nr, ia_nr);
     	if (sit != null) {
             if (ia_nr != -1) {
+                this.verifyExitInteractionParameters(sit, result, learneroptions, learneranswer, feedback);
                 sit.exitInteraction(result, learneranswer, learneroptions, feedback);
             }
             sit.exit();
@@ -393,6 +399,484 @@ function NoopTrackingState()
         return sit;
     }
 
+    /**
+     * Check whether result has the valid structure and contents
+     * @param result
+     *
+     * result should be an object with a boolean field success and a float field score
+     */
+    function verifyResult(result)
+    {
+        if (this.debug)
+        {
+            if (typeof result != 'object' || typeof result['success'] != 'boolean' || typeof result['score'] != 'number' || result['score'] < 0.0 || result['score'] > 100.0)
+            {
+                console.log("Invalid result structure: " + result);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param ia_type
+     * @param ia_name
+     * @param correctoptions
+     * @param correctanswer
+     * @param feedback
+     *
+     *  correctoptions and correctanswer depends on the sit_iatype
+     *
+     *  1. matching
+     *      correctoptions: array of objects with source and target strings
+     *              [
+     *              {
+     *                  source: 'lettuce',
+     *                  target: 'vegetable'
+     *              },
+     *              {
+     *                  source: 'apple',
+     *                  target: 'fruit'
+     *              },
+     *              {
+     *                  source: 'pear',
+     *                  target: 'vegetable'
+     *              }
+     *              ]
+     *      correctanswer: array of matching representation
+     *              [
+     *              'lettuce --> vegetable',
+     *              'apple --> fruit',
+     *              'pear --> fruit'
+     *              ]
+     *
+     *   2. multiplechoice
+     *       correctoptions: array of objects containg all possible options numbered "1" to max nr of options.
+     *              [
+     *              {
+     *                  id: '1',
+     *                  answer: 'London',
+     *                  result: true
+     *              },
+     *              {
+     *                  id: '2',
+     *                  answer: 'Paris',
+     *                  result: false
+     *              },
+     *              {
+     *                  id: '3',
+     *                  answer: 'Amsterdam',
+     *                  result: false
+     *              }
+     *              ]
+     *       correctanswers contains an array with the answer string of the above structure
+     *              [
+     *                  'London',
+     *                  'Paris',
+     *                  'Amsterdam'
+     *              ]
+     *
+     *    3. numeric
+     *        correctoptions is ignored
+     *        correctanswers is ignored
+     *
+     *    4. text, fill-in
+     *        correctoptions contains an array of strings that are correct. With type text, array is assumed to be empty
+     *        correctanswers is ignored
+     *
+     *    5. page
+     *         correctoptions is ignored
+     *         correctanswers is ignored
+     *
+     *    6. default
+     *          flag warning
+     *
+     */
+    function verifyEnterInteractionParameters(ia_type, ia_name, correctoptions, correctanswer, feedback)
+    {
+        if (this.debug) {
+            switch(ia_type)
+            {
+                case 'match':
+                    /*
+                    *  1. matching
+                    *      correctoptions: array of objects with source and target strings
+                    *              [
+                    *              {
+                    *                  source: 'lettuce',
+                    *                  target: 'vegetable'
+                    *              },
+                    *              {
+                    *                  source: 'apple',
+                    *                  target: 'fruit'
+                    *              },
+                    *              {
+                    *                  source: 'pear',
+                    *                  target: 'fruit'
+                    *              }
+                    *              ]
+                    *      learneranswer: array of matching representation
+                    *              [
+                    *              'lettuce --> vegetable',
+                    *              'apple --> fruit',
+                    *              'pear --> fruit'
+                    *              ]
+                    */
+                    if (typeof correctoptions == 'object')
+                    {
+                        for (var i=0; i<correctoptions.length; i++)
+                        {
+                            var item = correctoptions[i];
+                            if (typeof item != 'object' || typeof item['source'] != 'string' || typeof item['target'] != 'string')
+                            {
+                                console.log("Invalid structure for correctoptions for type match: " + correctoptions);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for correctoptions for type match: " + correctoptions);
+                    }
+                    if (typeof correctanswer == 'object')
+                    {
+                        for (var i=0; i<correctanswer.length; i++)
+                        {
+                            var item = correctanswer[i];
+                            if (typeof item != 'string')
+                            {
+                                console.log("Invalid structure for correctanswer for type match: " + correctanswer);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for correctanswer for type match: " + correctanswer);
+                    }
+                    break;
+                case 'multiplechoice':
+                    /*
+                     * 2. multiplechoice
+                     *       correctoptions: array of objects containg all possible options numbered "1" to max nr of options.
+                     *              [
+                     *              {
+                     *                  id: '1',
+                     *                  answer: 'London',
+                     *                  result: true
+                     *              },
+                     *              {
+                     *                  id: '2',
+                     *                  answer: 'Paris',
+                     *                  result: false
+                     *              },
+                     *              {
+                     *                  id: '3',
+                     *                  answer: 'Amsterdam',
+                     *                  result: false
+                     *              }
+                     *              ]
+                     *       correctanswers contains an array with the answer string of the above structure
+                     *              [
+                     *                  'London',
+                     *                  'Paris',
+                     *                  'Amsterdam'
+                     *              ]
+                     */
+                    if (typeof correctoptions == 'object')
+                    {
+                        for (var i=0; i<correctoptions.length; i++)
+                        {
+                            var item = correctoptions[i];
+                            if (typeof item != 'object' || typeof item['id'] != 'string' || typeof item['answer'] != 'string' || typeof item['result'] != 'boolean')
+                            {
+                                console.log("Invalid structure for correctoptions for type multiplechoice: " + correctoptions);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for correctoptions for type multiplechoice: " + correctoptions);
+                    }
+                    if (typeof correctanswer == 'object')
+                    {
+                        for (var i=0; i<correctanswer.length; i++)
+                        {
+                            var item = correctanswer[i];
+                            if (typeof item != 'string')
+                            {
+                                console.log("Invalid structure for correctanswer for type multiplechoice: " + correctanswer);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for correctanswer for type multiplechoice: " + correctanswer);
+                    }
+                    break;
+                case 'numeric':
+                    /**
+                     * 3. numeric
+                     *        correctoptions is ignored
+                     *        correctanswers is ignored
+                     */
+                    // Nothing to check
+                    break;
+                case 'text':
+                case 'fill-in':
+                    /**
+                     * 4. text, fill-in
+                     *        correctoptions contains an array of strings that are correct. With type text, array is assumed to be empty
+                     *        correctanswers is ignored
+                     *
+                     */
+                    if (typeof correctoptions == 'object')
+                    {
+                        for (var i=0; i<correctoptions.length; i++)
+                        {
+                            var item = correctoptions[i];
+                            if (typeof item != 'string')
+                            {
+                                console.log("Invalid structure for correctoptions for type multiplechoice: " + correctoptions);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for correctoptions for type multiplechoice: " + correctoptions);
+                    }
+                    break;
+                case 'page':
+                case 'result':
+                    /**
+                     * 5. page
+                     *         correctoptions is ignored
+                     *         correctanswers is ignored
+                     */
+                    // Nothing to check
+                    break;
+
+                default:
+                    console.log("Invalid ia_type " + ia_type + " entering interaction.");
+                    break;
+            }
+        }
+    }
+
+
+    /**
+     * Routine to verify the structures of result, learneroptions and learneranswer given sit.ia_type
+     * @param sit
+     * @param result
+     * @param learneroptions
+     * @param learneranswer
+     * @param feedback
+     *
+     *  result should be an object
+     *          {
+     *              success: true,
+     *              score: 100.0
+     *          }
+     *
+     *  learneroptions and learneranswer depends on the sit_iatype
+     *
+     *  1. matching
+     *      learneroptions: array of objects with source and target strings
+     *              [
+     *              {
+     *                  source: 'lettuce',
+     *                  target: 'vegetable'
+     *              },
+     *              {
+     *                  source: 'apple',
+     *                  target: 'fruit'
+     *              },
+     *              {
+     *                  source: 'pear',
+     *                  target: 'vegetable'
+     *              }
+     *              ]
+     *      learneranswer: array of matching representation
+     *              [
+     *              'lettuce --> vegetable',
+     *              'apple --> fruit',
+     *              'pear --> vegetable'
+     *              ]
+     *
+     *   2. multiplechoice
+     *       learneroptions: array of objects indicating selected options numbered "1" to max nr of options. Therer are only more than one entries, if there are multiple answers allowed
+     *              [
+     *              {
+     *                  id: '2',
+     *                  answer: 'Paris'
+     *                  result: false
+     *              }
+     *              ]
+     *       learneranswers contains an array with the answer string of the above structure
+     *              [
+     *                  'Paris'
+     *              ]
+     *
+     *    3. numeric
+     *        learneroptions: ignored
+     *        learneranswer contains a number between 0 and 100
+     *
+     *    4. text, fill-in
+     *        learneroptions is ignored
+     *        learneranswers contains the selected/entered text
+     *
+     *    5. page
+     *         learneroptions is ignored
+     *         learneranswers is ignored
+     *
+     *    6. default
+     *          flag warning
+     *
+     */
+    function verifyExitInteractionParameters(sit, result, learneroptions, learneranswer, feedback)
+    {
+        if (this.debug) {
+            verifyResult(result);
+            switch(sit.ia_type)
+            {
+                case 'match':
+                    /*
+                    *  1. matching
+                    *      learneroptions: array of objects with source and target strings
+                    *              [
+                    *              {
+                    *                  source: 'lettuce',
+                    *                  target: 'vegetable'
+                    *              },
+                    *              {
+                    *                  source: 'apple',
+                    *                  target: 'fruit'
+                    *              },
+                    *              {
+                    *                  source: 'pear',
+                    *                  target: 'vegetable'
+                    *              }
+                    *              ]
+                    *      learneranswer: array of matching representation
+                    *              [
+                    *              'lettuce --> vegetable',
+                    *              'apple --> fruit',
+                    *              'pear --> vegetable'
+                    *              ]
+                    */
+                    if (typeof learneroptions == 'object')
+                    {
+                        for (var i=0; i<learneroptions.length; i++)
+                        {
+                            var item = learneroptions[i];
+                            if (typeof item != 'object' || typeof item['source'] != 'string' || typeof item['target'] != 'string')
+                            {
+                                console.log("Invalid structure for learneroptions for type match: " + learneroptions);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for learneroptions for type match: " + learneroptions);
+                    }
+                    if (typeof learneranswer == 'object')
+                    {
+                        for (var i=0; i<learneranswer.length; i++)
+                        {
+                            var item = learneranswer[i];
+                            if (typeof item != 'string')
+                            {
+                                console.log("Invalid structure for learneranswer for type match: " + learneranswer);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for learneranswers for type match: " + learneranswer);
+                    }
+                    break;
+                case 'multiplechoice':
+                    /*
+                     * 2. multiplechoice
+                     *       learneroptions: array of objects indicating selected options numbered "1" to max nr of options. Therer are only more than one entries, if there are multiple answers allowed
+                     *              [
+                     *              {
+                     *                  id: '2',
+                     *                  answer: 'Paris'
+                     *                  result: false
+                     *              }
+                     *              ]
+                     *       learneranswers contains an array with the answer string of the above structure
+                     *              [
+                     *                  'Paris'
+                     *              ]
+                     */
+                    if (typeof learneroptions == 'object')
+                    {
+                        for (var i=0; i<learneroptions.length; i++)
+                        {
+                            var item = learneroptions[i];
+                            if (typeof item != 'object' || typeof item['id'] != 'string' || typeof item['answer'] != 'string' || typeof item['result'] != 'boolean')
+                            {
+                                console.log("Invalid structure for learneroptions for type multiplechoice: " + learneroptions);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for learneroptions for type multiplechoice: " + learneroptions);
+                    }
+                    if (typeof learneranswer == 'object')
+                    {
+                        for (var i=0; i<learneranswer.length; i++)
+                        {
+                            var item = learneranswer[i];
+                            if (typeof item != 'string')
+                            {
+                                console.log("Invalid structure for learneranswer for type multiplechoice: " + learneranswer);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        console.log("Invalid structure for learneranswers for type multiplechoice: " + learneranswer);
+                    }
+                    break;
+                case 'numeric':
+                    /**
+                     * 3. numeric
+                     *        learneroptions: ignored
+                     *        learneranswer contains a number between 0 and 100
+                     */
+                    if (typeof learneranswer != 'number')
+                    {
+                        console.log("Invalid structure for learneranswers for type numeric: " + learneranswer);
+                    }
+                    break;
+                case 'text':
+                case 'fill-in':
+                    /**
+                     * 4. text, fill-in
+                     *        learneroptions is ignored
+                     *        learneranswers contains the selected/entered text
+                     *
+                     */
+                    if (typeof learneranswer != 'string')
+                    {
+                        console.log("Invalid structure for learneranswers for type fill-in: " + learneranswer);
+                    }
+                case 'page':
+                case 'result':
+                    /**
+                     * 5. page
+                     *         learneroptions is ignored
+                     *         learneranswers is ignored
+                     */
+                    // Nothing to check
+                    break;
+                default:
+                    console.log("Invalid ia_type " + sit.ia_type + " exiting interaction.");
+                    break;
+            }
+        }
+    }
 
 }
 
@@ -457,8 +941,10 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
 
 
 var state = new NoopTrackingState();
+// Enable debugging for now
+state.debug = true;
 
-function XTInitialise()
+function XTInitialise(category)
 {
 	if (! state.initialised)
     {
@@ -560,7 +1046,7 @@ function XTEnterPage(page_nr, page_name)
 	state.enterPage(page_nr, -1, "page", page_name);
 }
 
-function XTExitPage(page_nr, pageName)
+function XTExitPage(page_nr)
 {
     state.exitInteraction(page_nr, -1, false, "", "", "", false);
 }
@@ -582,20 +1068,63 @@ function XTSetPageScoreJSON(page_nr, score)
 
 function XTSetViewed(page_nr, name, score)
 {
+    if (isNaN(score) || typeof score != "number")
+    {
+        score = 0.0;
+    }
     state.setPageScore(page_nr, score);
 }
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, page_name)
+function XThelperConsolidateSegments(videostate)
+{
+    // 1. Sort played segments on start time (first make a copy)
+    var segments = $.extend(true, [], videostate.segments);
+    segments.sort(function(a,b) {return (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0);} );
+    // 2. Combine the segments
+    var csegments = [];
+    var i=0;
+    while(i<segments.length) {
+        var segment = $.extend(true, {}, segments[i]);
+        i++;
+        while (i<segments.length && segment.end >= segments[i].start) {
+            segment.end = segments[i].end;
+            i++;
+        }
+        csegments.push(segment);
+    }
+    return csegments;
+}
+
+function XThelperDetermineProgress(videostate)
+{
+    var csegments = XThelperConsolidateSegments(videostate);
+    var videoseen = 0;
+    for (var i=0; i<csegments.length; i++)
+    {
+        videoseen += csegments[i].end - csegments[i].start;
+    }
+    // normalized between 0 and 1
+    if (!isNaN(videostate.duration) && videostate.duration > 0) {
+        return Math.round(videoseen / videostate.duration * 100.0) / 100.0;
+    }
+    return 0.0;
+}
+
+function XTVideo(page_nr, name, block_name, verb, videostate) {
+    return;
+}
+
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping)
 {
 	state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback);
 }
 
-function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, page_name)
+function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
 {
-	state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, page_name);
+	state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback);
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback, q)
 {
     var JSONGraph = {
         label: "Enter Page Title",
@@ -607,8 +1136,8 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName)
         classnames: ["C-1", "C-2", "C-3"],
         classvalues: [100, 30, 40]
     };
-    var JSONGraphArray = [JSONGraph, JSONGraph2]
-    return JSONGraphArray;
+    var JSONGraphArray = [JSONGraph, JSONGraph2];
+    callback(JSONGraphArray);
 }
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
 {
@@ -632,8 +1161,26 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 
 function XTTerminate()
 {
-    window.opener.innerWidth+=2;
-	window.opener.innerWidth-=2;
+    if (!state.finished) {
+        var currentpageid = "";
+        state.finished = true;
+        if (state.currentid) {
+            var sit = state.find(currentid);
+            // there is still an interaction open, close it
+            if (sit != null) {
+                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+            }
+        }
+        if (state.currentpageid) {
+            currentpageid = state.currentpageid;
+            var sit = state.find(currentpageid);
+            // there is still an interaction open, close it
+            if (sit != null) {
+                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+            }
+
+        }
+    }
 }
 
 function XTResults(fullcompletion) {
@@ -744,8 +1291,8 @@ function XTResults(fullcompletion) {
 
                     break;
                 case "text":
-                    learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
-                    correctAnswer = state.interactions[i].correctAnswers.join(", ");
+                    learnerAnswer = state.interactions[i].learnerAnswers;
+                    correctAnswer = state.interactions[i].correctAnswers;
                     break;
                 case "multiplechoice":
                     learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
@@ -782,7 +1329,7 @@ function XTResults(fullcompletion) {
     results.completion = completion;
     results.score = score;
     results.nrofquestions = nrofquestions;
-    results.averageScore = state.getScaledScore() * 100;
+    results.averageScore = Math.round(state.getdScaledScore() * 10000.0)/100.0;
     results.totalDuration = Math.round(totalDuration / 1000);
     results.start = state.start.toLocaleString();
 

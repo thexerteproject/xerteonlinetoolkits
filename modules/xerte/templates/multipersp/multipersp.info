@@ -5,3 +5,4 @@ preview size: 800,665
 preview filename: preview.xml
 public filename: data.xml
 supports: give,peer,xml
+parent: multipers

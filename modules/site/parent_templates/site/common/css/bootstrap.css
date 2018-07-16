@@ -6160,3 +6160,30 @@ a.badge:focus {
 .affix {
   position: fixed;
 }
+
+
+@media print {
+	
+	.navbar, #contentTable, .carousel-control, section .btn-mini.pull-right {
+		display: none;
+	}
+	
+	.addthis_sharing_toolbox {
+		display: none !important;
+	}
+	
+	.tab-content .tab-pane {
+		display: block;
+		border-bottom: 1px solid #ccc;
+		margin-bottom: 1em;
+	}
+	
+	.accordion-group .accordion-body {
+		height: auto;
+	}
+	
+	.carousel-inner .item {
+		display: block;
+	}
+	
+}

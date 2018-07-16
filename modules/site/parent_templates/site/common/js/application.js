@@ -73,8 +73,8 @@ function loadContent(){
 				
 			}
 			
-			//step one - libraries?
-			loadLibraries();
+			//step one - css	
+			cssSetUp('theme');
 			
 		}
 	});
@@ -89,23 +89,55 @@ function loadContent(){
 
 }
 
-function loadLibraries(){
+function cssSetUp(param) {
+	param = (typeof param !== 'undefined') ?  param : "theme";
 
-	//load stylesheet and libraries...
+	switch(param) {
+        case 'theme':
+			if ( $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default") {
+				$('head').append('<script src="'+ themePath + $(data).find('learningObject').attr('theme') + '/'+ $(data).find('learningObject').attr('theme')+ '.js"' + '</script>');
+				insertCSS(themePath + $(data).find('learningObject').attr('theme') + '/' + $(data).find('learningObject').attr('theme') + '.css', function() {cssSetUp('stylesheet')});
+			} else {
+				cssSetUp('stylesheet');
+			}
+            break;
+        case 'stylesheet':
+			if ( $(data).find('learningObject').attr('stylesheet') != undefined) {
+				insertCSS(eval( $(data).find('learningObject').attr('stylesheet') ), function() { loadLibraries(); });
+			} else {
+				loadLibraries();
+			}
+            break;
+	}
 	
-	if ( $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default") {
+}
+
+function insertCSS(href, func) {
+	
+	var css = document.createElement("link");
+	var element = null;
+	var donotreplace = false;
+	css.rel = "stylesheet";
+	css.type = "text/css";
+	css.href = href;
+	
+	// don't continue until css has loaded as otherwise css priorities can be messed up
+	if (func != undefined) {
 		
-		$('head').append('<link rel="stylesheet" href="' + themePath + $(data).find('learningObject').attr('theme') + '/' + $(data).find('learningObject').attr('theme') + '.css' + '" type="text/css" />');
-        
-        $('head').append('<script src="'+ themePath + $(data).find('learningObject').attr('theme') + '/'+ $(data).find('learningObject').attr('theme')+ '.js"' + '</script>');
+		css.onload = function(){
+			func();
+		};
+
+		css.onerror = function(){
+			func();
+		};
 		
 	}
 	
-	if ( $(data).find('learningObject').attr('stylesheet') != undefined) {
-		
-		$('head').append('<link rel="stylesheet" href="' + eval( $(data).find('learningObject').attr('stylesheet') ) + '" type="text/css" />');
-		
-	}
+	document.getElementsByTagName("head")[0].appendChild(css);
+}	
+
+function loadLibraries() {
 	
 	if ( $(data).find('learningObject').attr('styles') != undefined){
 	
@@ -144,7 +176,6 @@ function loadLibraries(){
 		getLangData(lang)
 		
 	}
-	
 
 }
 
@@ -315,8 +346,15 @@ function setup(){
 	//add all the pages to the pages menu: this links back to the same page
 	$(data).find('page').each( function(index, value){
 		
-		if ($(this).attr('hidePage') != 'true' || authorSupport == true) {
-			
+		// work out whether the page is hidden or not - can be simply hidden or hidden between specific dates/times
+		var hidePage = checkIfHidden($(this).attr('hidePage'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Page');
+		if ($.isArray(hidePage)) {
+			$(this).attr('hidePageInfo', hidePage[1]);
+			hidePage = hidePage[0];
+		}
+		$(this).attr('hidePage', hidePage);
+		
+		if (hidePage == false || authorSupport == true) {
 			var name = $(this).attr('name');
 			
 			// remove size & background color styles from links on nav bar
@@ -334,20 +372,13 @@ function setup(){
 		
 	});
 	
-	if ($(data).find('learningObject').attr('headerHide') != undefined && $(data).find('learningObject').attr('headerHide') != 'false'){
+	// --------------- Optional Header properties --------------------
+	
+	if ($(data).find('learningObject').attr('headerHide') != undefined && $(data).find('learningObject').attr('headerHide') != 'false') {
 	
 		$(".jumbotron").remove();
 		
 	} else {
-		
-		var $jumbotron = $(".jumbotron");
-		defaultHeaderCss = {
-			header: $jumbotron.css('background-image'),
-			headerPos: $jumbotron.css('background-position'),
-			headerRepeat: $jumbotron.css('background-repeat'),
-			headerColour: $jumbotron.css('background-color'),
-			headerTextColor: $jumbotron.css('color')
-		};
 		
 		// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
 		// they are overridden by any logos in theme folders
@@ -414,167 +445,221 @@ function setup(){
 			checkExists('logoL', type, fallback);
 		}
 		
+		// apply all the header css optional properties
+		var $jumbotron = $(".jumbotron");
+		if ($(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != '' && $(data).find('learningObject').attr('headerColour') != '0x') {
+			if ($(data).find('learningObject').attr('headerColour').indexOf('rgb(') >= 0) {
+				$jumbotron.css('background-color', formatColour($(data).find('learningObject').attr('headerColour')));
+			} else {
+				// gradients can be entered in colour picker in format '#FF0000,#FFFF00'
+				var tempCol = $(data).find('learningObject').attr('headerColour');
+				tempCol = tempCol.split(',');
+				if (tempCol.length == 1) {
+					tempCol.push(tempCol[0]);
+				}
+				tempCol[0] = formatColour(tempCol[0]);
+				tempCol[1] = formatColour(tempCol[1]);
+				$jumbotron.css('background', tempCol[0]);
+				$jumbotron.css('background', '-moz-linear-gradient(45deg,  ' + tempCol[0] + ' 0%, ' + tempCol[1] + ' 100%)');
+				$jumbotron.css('background', '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + tempCol[0] + '), color-stop(100%,' + tempCol[1] + '))');
+				$jumbotron.css('background', '-webkit-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$jumbotron.css('background', '-o-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$jumbotron.css('background', '-ms-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$jumbotron.css('background', 'linear-gradient(45deg,  ' + + ' 0%,' + tempCol[1]+ ' 100%)');
+				$jumbotron.css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + tempCol[0] + ', endColorstr=' + tempCol[1] + ',GradientType=1 )');
+			}
+		}
+		if ($(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != '') {
+			$jumbotron.css('background-image', "url('" + eval($(data).find('learningObject').attr('header')) + "')");
+		}
+		if ($(data).find('learningObject').attr('headerPos') != undefined) {
+			$jumbotron.css('background-position', $(data).find('learningObject').attr('headerPos'));
+		}
+		if ($(data).find('learningObject').attr('headerRepeat') != undefined) {
+			$jumbotron.css('background-repeat', $(data).find('learningObject').attr('headerRepeat'));
+		}
+		if ($(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != '' && $(data).find('learningObject').attr('headerTextColour') != '0x') {
+			$jumbotron.find('#pageTitle, #pageSubTitle').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
+		}
+		
 	}
 	
-    //---------------Optional Navbar properties--------------------
+	// store initial header css as it might be needed later if page level header optional property is used
+	var $jumbotron = $(".jumbotron");
+	defaultHeaderCss = {
+		header: $jumbotron.css('background-image'),
+		headerPos: $jumbotron.css('background-position'),
+		headerRepeat: $jumbotron.css('background-repeat'),
+		headerColour: $jumbotron.css('background-color'),
+		headerTextColour: $jumbotron.find('#pageTitle').css('color')
+	};
+	
+    // --------------- Optional Navigation Bar properties --------------------
     
-    //Hide the Navbar position if defined
     if ($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false'){
 	
 		$(".navbar-inner").remove();
 		
-	}
-    
-    //Position the Navbar position if defined
-    if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') == 'below'){
+	} else {
 	
-		$('#overview').after('<div id="pageLinks"></div>');
-        $('.navbar').appendTo('#pageLinks');
-
-	}
-    
-    //Change navbar background colour
-    if ($(data).find('learningObject').attr('navbarColour') != undefined && $(data).find('learningObject').attr('navbarColour') != ''){
-	
-		var navbarcol = $(data).find('learningObject').attr('navbarColour');
-        
-        //one or two?
-		if (navbarcol.indexOf(',') != -1){
-			navbarcol = navbarcol.split(',');
-		} else {
-			navbarcol = [navbarcol,navbarcol];
-		}
-		navbarcol[0] = formatColour(navbarcol[0]);
-		navbarcol[1] = formatColour(navbarcol[1]);
+		// nav bar can be moved below header bar
+		if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') == 'below'){
 		
-		$('.navbar-inverse .navbar-inner').css('background', navbarcol[0]);
-		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-moz-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%, ' + navbarcol[1] + ' 100%)');
-		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + navbarcol[0] + '), color-stop(100%,' + navbarcol[1] + '))');
-		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%,' + navbarcol[1] + ' 100%)');
-		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-o-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%,' + navbarcol[1] + ' 100%)');
-		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-ms-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%,' + navbarcol[1] + ' 100%)');
-		$('.navbar-inverse .navbar-inner').css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + navbarcol[1]+ ' 100%)');
-		$('.navbar-inverse .navbar-inner').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + navbarcol[0] + ', endColorstr=' + navbarcol[1] + ',GradientType=1 )');
-        
-    }
-    
-    //Change navbar text/link colour
-    var navbarTextColour = $('.nav li a').css('color');
-    if ($(data).find('learningObject').attr('navbarTextColour') != undefined && $(data).find('learningObject').attr('navbarTextColour') != '') {
-			navbarTextColour = formatColour($(data).find('learningObject').attr('navbarTextColour'));
-			$('.nav li a').css('color', navbarTextColour);
-		}
+			$('#overview').after('<div id="pageLinks"></div>');
+			$('.navbar').appendTo('#pageLinks');
 
-  	//Change navbar text/link Hover colour
-  	var navbarTextHoverColour;
-  	if ($(data).find('learningObject').attr('navbarTextHoverColour') != undefined && $(data).find('learningObject').attr('navbarTextHoverColour') != '') {
-  		navbarTextHoverColour = formatColour($(data).find('learningObject').attr('navbarTextHoverColour'));
-    	$('.nav li a').hover(function(){
-      	$(this).css('color', navbarTextHoverColour);
-    	},
-    	function(){
-      	$(this).css('color', navbarTextColour);
-    	});
 		}
-    
-    //---------------Optional footer properties--------------------
-    
-    // remove footer
+		
+		// apply all the nav bar css optional properties
+		if ($(data).find('learningObject').attr('navbarColour') != undefined && $(data).find('learningObject').attr('navbarColour') != '' && $(data).find('learningObject').attr('navbarColour') != '0x') {
+			var $navBar = $('.navbar-inverse .navbar-inner');
+			
+			if ($(data).find('learningObject').attr('navbarColour').indexOf('rgb(') >= 0) {
+				$navBar.css('background-color', formatColour($(data).find('learningObject').attr('navbarColour')));
+			} else {
+				// gradients can be entered in colour picker in format '#FF0000,#FFFF00'
+				var tempCol = $(data).find('learningObject').attr('navbarColour');
+				tempCol = tempCol.split(',');
+				if (tempCol.length == 1) {
+					tempCol.push(tempCol[0]);
+				}
+				tempCol[0] = formatColour(tempCol[0]);
+				tempCol[1] = formatColour(tempCol[1]);
+				$navBar.css('background', tempCol[0]);
+				$navBar.css('background', '-moz-linear-gradient(45deg,  ' + tempCol[0] + ' 0%, ' + tempCol[1] + ' 100%)');
+				$navBar.css('background', '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + tempCol[0] + '), color-stop(100%,' + tempCol[1] + '))');
+				$navBar.css('background', '-webkit-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$navBar.css('background', '-o-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$navBar.css('background', '-ms-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$navBar.css('background', 'linear-gradient(45deg,  ' + + ' 0%,' + tempCol[1]+ ' 100%)');
+				$navBar.css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + tempCol[0] + ', endColorstr=' + tempCol[1] + ',GradientType=1 )');
+			}
+		}
+		
+		var navBarText = $('.nav li a').css('color');
+		if ($(data).find('learningObject').attr('navbarTextColour') != undefined && $(data).find('learningObject').attr('navbarTextColour') != '' && $(data).find('learningObject').attr('navbarTextColour') != '0x') {
+			navBarText = formatColour($(data).find('learningObject').attr('navbarTextColour'));
+			$('.nav li a').css('color', navBarText);
+		}
+		if ($(data).find('learningObject').attr('navbarTextHoverColour') != undefined && $(data).find('learningObject').attr('navbarTextHoverColour') != '' && $(data).find('learningObject').attr('navbarTextHoverColour') != '0x') {
+			var navBarTextHover = formatColour($(data).find('learningObject').attr('navbarTextHoverColour'));
+			$('.nav li a').hover(
+				function() { $(this).css('color', navBarTextHover); },
+				function() { $(this).css('color', navBarText); }
+			);
+		}
+	}
+	
+	// --------------- Optional Footer properties --------------------    
+	
     if ($(data).find('learningObject').attr('footerHide') != undefined && $(data).find('learningObject').attr('footerHide') != 'false'){
 	
 		$('.footer').remove();
 		
-	}
+	} else {
     
-    //add custom footer
-    if ($(data).find('learningObject').attr('customFooter') != undefined && $(data).find('learningObject').attr('customFooter') != ''){
-        var customFooterContent=$(data).find('learningObject').attr('customFooter');
-        
-        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'above'){
-        
-        $('.footer .container .row-fluid').before('<div id="customFooter">'+customFooterContent+'</div>');
-        $("#customFooter").css({"margin-bottom": "10px"});
-        } 
+		// add & position custom footer
+		if ($(data).find('learningObject').attr('customFooter') != undefined && $(data).find('learningObject').attr('customFooter') != ''){
+			var customFooterContent=$(data).find('learningObject').attr('customFooter');
+			
+			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'above'){
+			
+			$('.footer .container .row-fluid').before('<div id="customFooter">'+customFooterContent+'</div>');
+			$("#customFooter").css({"margin-bottom": "10px"});
+			} 
 
-        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'below'){
-        
-        $('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
-        $("#customFooter").css({"margin-top": "40px"});
-        } 
-        
-        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'replace'){
-        $('.footer .container').remove();
-        $('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
-            $("#customFooter").css({"margin-left": "10px"});
-        } 
-        
-        //convert img paths
-        $('#customFooter img').each(function() {
-        	if ($(this).attr('src').substring(0, 16) == "FileLocation + '") {
-						$(this).attr('src', eval($(this).attr('src')));
-					}
-				});
-        
-    }
-    
-    //Change footer background colour
-    if ($(data).find('learningObject').attr('footerColour') != undefined && $(data).find('learningObject').attr('footerColour') != ''){
-	
-		var footercol = $(data).find('learningObject').attr('footerColour');
-        
-        if (footercol.indexOf(',') != -1){
-			footercol = footercol.split(',');
-		} else {
-			footercol = [footercol,footercol];
+			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'below'){
+			
+			$('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
+			$("#customFooter").css({"margin-top": "40px"});
+			} 
+			
+			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'replace'){
+			$('.footer .container').remove();
+			$('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
+				$("#customFooter").css({"margin-left": "10px"});
+			} 
+			
+			// convert img paths
+			$('#customFooter img').each(function() {
+				if ($(this).attr('src').substring(0, 16) == "FileLocation + '") {
+							$(this).attr('src', eval($(this).attr('src')));
+						}
+					});
+			
 		}
-		footercol[0] = formatColour(footercol[0]);
-		footercol[1] = formatColour(footercol[1]);
-        $('.footer').css('background', footercol[0]);
-        
-    }
+		
+		// Change footer background colour
+		if ($(data).find('learningObject').attr('footerColour') != undefined && $(data).find('learningObject').attr('footerColour') != ''){
+			var $footer = $('.footer');
+			if ($(data).find('learningObject').attr('footerColour').indexOf('rgb(') >= 0) {
+				$footer.css('background-color', formatColour($(data).find('learningObject').attr('footerColour')));
+			} else {
+				// gradients can be entered in colour picker in format '#FF0000,#FFFF00'
+				var tempCol = $(data).find('learningObject').attr('footerColour');
+				tempCol = tempCol.split(',');
+				if (tempCol.length == 1) {
+					tempCol.push(tempCol[0]);
+				}
+				tempCol[0] = formatColour(tempCol[0]);
+				tempCol[1] = formatColour(tempCol[1]);
+				$footer.css('background', tempCol[0]);
+				$footer.css('background', '-moz-linear-gradient(45deg,  ' + tempCol[0] + ' 0%, ' + tempCol[1] + ' 100%)');
+				$footer.css('background', '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + tempCol[0] + '), color-stop(100%,' + tempCol[1] + '))');
+				$footer.css('background', '-webkit-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$footer.css('background', '-o-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$footer.css('background', '-ms-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+				$footer.css('background', 'linear-gradient(45deg,  ' + + ' 0%,' + tempCol[1]+ ' 100%)');
+				$footer.css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + tempCol[0] + ', endColorstr=' + tempCol[1] + ',GradientType=1 )');
+			}
+			
+		}
+		
+		
+		// Hide or show the social media buttons
+		$(".addthis_sharing_toolbox").hide();
+		setTimeout(function () {
+			var count_hidden = count_undef = 0,
+					value, social = [
+						'facebook',
+						'twitter',
+						['google', 'google_plusone_share'],
+						'linkedin',
+						'scoopit',
+						['pinterest', 'pinterest_share'],
+						'email',
+						'yammer',
+						['addthis', 'compact']
+					];
+
+			$(social).each(function(i, item) {
+				value = $.isArray(item) ? $(data).find('learningObject').attr(item[0]) : $(data).find('learningObject').attr(item);
+				
+				if (value == undefined) {
+					count_undef++;
+				}
+				else if (value == 'false') {
+					$(".at-svc-" + ($.isArray(item) ? item[1] : item)).hide();
+					count_hidden++;
+				}
+			});
+
+			if (
+				(count_hidden > 0 && count_hidden < social.length) ||
+				(count_hidden == 0 && count_undef == 0) ||
+				count_undef == social.length
+			) {
+				$(".addthis_sharing_toolbox").show();
+			}
+		}, 2000);
+		
+	}
 	
 	// script optional property added before any content loads
 	var script = $(data).find('learningObject').attr('script');
 	if (script != undefined && script != "") {
 		$("head").append('<script>' +  script + '</script>');
 	}
-	
-	// Hide or show the social media buttons
-	$(".addthis_sharing_toolbox").hide();
-	setTimeout(function () {
-		var count_hidden = count_undef = 0,
-				value, social = [
-					'facebook',
-					'twitter',
-					['google', 'google_plusone_share'],
-					'linkedin',
-					'scoopit',
-					['pinterest', 'pinterest_share'],
-					'email',
-					'yammer',
-					['addthis', 'compact']
-				];
-
-		$(social).each(function(i, item) {
-			value = $.isArray(item) ? $(data).find('learningObject').attr(item[0]) : $(data).find('learningObject').attr(item);
-			
-			if (value == undefined) {
-				count_undef++;
-			}
-			else if (value == 'false') {
-				$(".at-svc-" + ($.isArray(item) ? item[1] : item)).hide();
-				count_hidden++;
-			}
-		});
-
-		if (
-			(count_hidden > 0 && count_hidden < social.length) ||
-			(count_hidden == 0 && count_undef == 0) ||
-			count_undef == social.length
-		) {
-			$(".addthis_sharing_toolbox").show();
-		}
-	}, 2000);
 }
 
 // add link around all examples of glossary words in text
@@ -585,11 +670,11 @@ function x_insertGlossaryText(node) {
 	
 	if (glossary.length > 0) {
 		for (var k=0, len=glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
 			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
 		}
 		for (var k=0, len=glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
 			tempText = tempText.replace(regExp, '$1<a class="glossary" href="#" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
 		}
 	}
@@ -659,7 +744,6 @@ function goToSection(pageId) {
 }
 
 function parseContent(pageIndex){
-	
 	//clear out existing content
 	$('#mainContent').empty();
 	$('#toc').empty();
@@ -699,11 +783,10 @@ function parseContent(pageIndex){
 		$('#pageTitle').html(page.attr('name'));
 		
 		if ($(".jumbotron").length > 0) {
-			setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'), "page");
+			setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'));
 		}
 		
-		var msg = languageData.find("hiddenPage")[0] != undefined && languageData.find("hiddenPage")[0].getAttribute('label') != null ? languageData.find("hiddenPage")[0].getAttribute('label') : "This page will be hidden in live projects";
-		var extraTitle = page.attr('hidePage') == 'true' ? ' <span class="alertMsg">(' + msg + ')</span>' : '';
+		var extraTitle = authorSupport == true && page.attr('hidePageInfo') != undefined && page.attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + page.attr('hidePageInfo') + '</span>' : '';
 		
 		$('#pageSubTitle').html( page.attr('subtitle') + extraTitle);
 		
@@ -713,7 +796,14 @@ function parseContent(pageIndex){
 		//create the sections
 		page.find('section').each( function(index, value){
 			
-			if ($(this).attr('hidePage') != 'true' || authorSupport == true) {
+			// work out whether the section is hidden or not - can be simply hidden or hidden between specific dates/times
+			var hidePage = checkIfHidden($(this).attr('hidePage'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Section');
+			if ($.isArray(hidePage)) {
+				$(this).attr('hidePageInfo', hidePage[1]);
+				hidePage = hidePage[0];
+			}
+			
+			if (hidePage == false || authorSupport == true) {
 				
 				var sectionIndex = index;	
 				
@@ -732,8 +822,7 @@ function parseContent(pageIndex){
 				$link.find('a').append(tocName);
 				
 				//add the section header
-				var msg = languageData.find("hiddenSection")[0] != undefined && languageData.find("hiddenSection")[0].getAttribute('label') != null ? languageData.find("hiddenSection")[0].getAttribute('label') : "This section will be hidden in live projects";
-				var extraTitle = $(this).attr('hidePage') == 'true' ? '<p class="alertMsg">' + msg + '</p>' : '';
+				var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '';
 				
 				var links = '';
 				
@@ -900,7 +989,7 @@ function parseContent(pageIndex){
 						val = $this.attr('src') || $this.attr('href'),
 						attr_name = $this.attr('src') ? 'src' : 'href';
 
-					if (val.substring(0, 16) == "FileLocation + '") {
+					if (val != undefined && val.substring(0, 16) == "FileLocation + '") {
 						$this.attr(attr_name, eval(val));
 					}
 				});
@@ -934,147 +1023,121 @@ function parseContent(pageIndex){
 	}
 }
 
-function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTextColour, level) {
+// LO level header background settings will be overridden by individual page ones (& returned to LO settings if page contains no background properties)
+function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTextColour) {
 	
-	// LO background settings will be overridden by individual page ones (& returned to LO settings if page contains no background properties)
-	var bgImg = ''; 
+	var $overview = $('#overview'),
+		bgImg = '';
 	
-	//set the header image, if defined
 	if (header != undefined && header != '') {
 		
-		bgImg = "url(" + eval(header) + ")";
-		
-	} else if (level == 'page' && $(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != '') {
-		
-		bgImg = "url(" + eval($(data).find('learningObject').attr('header')) + ")";
-		
-	}
-	
-	if (bgImg != '') {
-		
-		$('#overview').css({
-			filter: '', //for IE8
-			'background-image': bgImg
-		});
-		
-		var bgRepeat = '';
-		
-		if (headerRepeat != undefined && headerRepeat != "") {
+		if (header != 'none') {
 			
-			bgRepeat = headerRepeat;
-			
-		} else if (level == 'page' && $(data).find('learningObject').attr('headerRepeat') != undefined && $(data).find('learningObject').attr('headerRepeat') != '') {
-			
-			bgRepeat = $(data).find('learningObject').attr('headerRepeat');
+			bgImg = "url('" + eval(header) + "')";
 			
 		}
-		
-		if (bgRepeat != '') {
-			
-			$('#overview').css('background-repeat', bgRepeat);
-			
-			bgImg += ' ' + bgRepeat;
-			
-		} else {
-			
-			$('#overview').css('background-repeat', defaultHeaderCss.headerRepeat);
-			
-		}
-		
-		var bgPos = '';
-		
-		if (headerPos != undefined && headerPos != "") {
-			
-			bgPos = headerPos;
-			
-		} else if (level == 'page' && $(data).find('learningObject').attr('headerPos') != undefined && $(data).find('learningObject').attr('headerPos') != '') {
-			
-			bgPos = $(data).find('learningObject').attr('headerPos');
-			
-		}
-		
-		if (bgPos != '') {
-			
-			$('#overview').css('background-position', bgPos + ' top');
-			
-			bgImg += ' ' + bgPos + ' top';
-			
-		} else {
-			
-			$('#overview').css('background-position', defaultHeaderCss.headerPos);
-			
-		}
-		
-		bgImg += ', ';
 		
 	} else {
 		
-		$('#overview').css('background-image', defaultHeaderCss.header);
+		bgImg = defaultHeaderCss.header;
+		
+	}
+	
+	// bgImg could be a colour gradient & not image - only do repeat & position if it's an image
+	if (bgImg.indexOf('url(') >= 0) {
+		
+		if (headerRepeat != undefined && headerRepeat != "") {
+			
+			bgImg += ' ' + headerRepeat;
+			
+		} else if (defaultHeaderCss.headerRepeat) {
+			
+			bgImg += ' ' + defaultHeaderCss.headerRepeat;
+			
+		} else {
+			
+			bgImg += ' repeat';
+			
+		}
+		
+		if (headerPos != undefined && headerPos != "") {
+			
+			bgImg += ' ' + headerPos;
+			
+		} else if (defaultHeaderCss.headerPos) {
+			
+			bgImg += ' ' + $(data).find('learningObject').attr('headerPos');
+			
+		} else {
+			
+			bgImg += ' 0% 0%';
+			
+		}
 		
 	}
 	
 	var col = '';
 	
 	if (headerColour != undefined && headerColour != '') {
-	
+		
 		col = headerColour;
 		
-	} else if (level == 'page' && $(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != '') {
+	} else if (defaultHeaderCss.headerColour != undefined && defaultHeaderCss.headerColour != '' && defaultHeaderCss.headerColour != '0x') {
 		
-		col = $(data).find('learningObject').attr('headerColour');
+		col = defaultHeaderCss.headerColour;
 		
 	}
 	
-	if (col != '' && col != '0x') {
-		//one or two?
-		if (col.indexOf(',') != -1){
-			col = col.split(',');
-		} else {
-			col = [col,col];
-		}
-		col[0] = formatColour(col[0]);
-		col[1] = formatColour(col[1]);
+	if (col != '' && col != '0x' && col != 'rgba(0, 0, 0, 0)') {
 		
-		$('#overview').css('background', col[0]);
-		$('#overview').css('background', bgImg + '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + col[0] + '), color-stop(100%,' + col[1] + '))');
-		$('#overview').css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-o-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + '-ms-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + col[1]+ ' 100%)');
-		$('#overview').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + col[0] + ', endColorstr=' + col[1] + ',GradientType=1 )');
+		if (col.indexOf('rgb(') >= 0) {
+			
+			$overview.css('background', formatColour(col) + ' ' + bgImg );
+			
+		} else {
+			
+			// gradients can be entered in colour picker in format '#FF0000,#FFFF00'
+			var tempCol = col.split(',');
+			if (tempCol.length == 1) {
+				tempCol.push(tempCol[0]);
+			}
+			tempCol[0] = formatColour(tempCol[0]);
+			tempCol[1] = formatColour(tempCol[1]);
+			bgImg += ', ';
+			
+			$overview.css('background', tempCol[0]);
+			$overview.css('background', bgImg + '-moz-linear-gradient(45deg,  ' + tempCol[0] + ' 0%, ' + tempCol[1] + ' 100%)');
+			$overview.css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + tempCol[0] + '), color-stop(100%,' + tempCol[1] + '))');
+			$overview.css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+			$overview.css('background', bgImg + '-o-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+			$overview.css('background', bgImg + '-ms-linear-gradient(45deg,  ' + tempCol[0] + ' 0%,' + tempCol[1] + ' 100%)');
+			$overview.css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + tempCol[1]+ ' 100%)');
+			$overview.css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + tempCol[0] + ', endColorstr=' + tempCol[1] + ',GradientType=1 )');
+		}
 		
 	} else {
-		$('#overview').css('filter', '');
 		
-		if (defaultHeaderCss.headerColour != undefined && defaultHeaderCss.headerColour != '') {
-			bgImg = defaultHeaderCss.headerColour;
-			$('#overview').css('background-color', defaultHeaderCss.headerColour);
-		}
+		$overview.css({
+			'filter': '',
+			'background': bgImg
+		});
 		
 	}
 	
 	var txtCol = '';
 	
-	if (headerTextColour != undefined && headerTextColour != '') {
+	if (headerTextColour != undefined && headerTextColour != '' && headerTextColour != '0x') {
 		
 		txtCol = headerTextColour;
 		
-	} else if (level == 'page' && $(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != '') {
+	} else {
 		
-		txtCol = $(data).find('learningObject').attr('headerTextColour');
+		txtCol = defaultHeaderCss.headerTextColour;
 		
 	}
 	
-	if (txtCol != ''){
-		
-		$('#overview').css('color', formatColour(txtCol));
-		
-	} else {
-		
-		$('#overview').css('color', defaultHeaderCss.headerTextColor);
-		
-	}
+	$overview.find('#pageTitle, #pageSubTitle').css('color', formatColour(txtCol));
+	
 }
 
 function makeNav(node,section,type, sectionIndex, itemIndex){
@@ -1238,8 +1301,8 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 		group.append(header);
 		
 		if (index == 0){
-		
-			var outer = $('<div id="collapse' + sectionIndex + '_' + itemIndex + '_' + index + '" class="accordion-body collapse in"/>');
+			
+			var outer = $('<div id="collapse' + sectionIndex + '_' + itemIndex + '_' + index + '" class="accordion-body collapse ' + (node[0].getAttribute('collapse') == 'true' ? "" : "in") + '"/>');
 			
 		} else {
 		
@@ -1314,6 +1377,18 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	var itemIndex = itemIndex;
 	
 	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="carousel slide"/>');
+	
+	if (node.attr('autoPlay') == 'true') {
+		
+		if ($.isNumeric(node.attr('delaySecs')) && node.attr('delaySecs') != '4') {
+			
+			carDiv.carousel({ interval: Number(node.attr('delaySecs')) * 1000 });
+			
+		}
+		
+		carDiv.carousel('cycle');
+		
+	}
 	
 	var indicators = $('<ol class="carousel-indicators"/>');
 	
@@ -1480,4 +1555,116 @@ function loadXotContent($this) {
 	
 	return warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
 	
+}
+
+var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hideUntilTime, type) {
+	hidePage = hidePage == "true" ? true : false;
+	
+	if (hidePage == true) {
+		// get current date/time according to browser
+		var nowTemp = new Date();
+		var now = {day:nowTemp.getDate(), month:nowTemp.getMonth()+1, year:nowTemp.getFullYear(), time:Number(String(nowTemp.getHours()) + (String(nowTemp.getMinutes()) < 10 ? '0' : '') + String(nowTemp.getMinutes()))};
+		
+		// functions to get hide on/until date/times from xml
+		var hideOn, hideUntil,
+			hideOnString = '', hideUntilString = '';
+		var getDateInfo = function(dmy, hm) {
+			// some basic checks of whether values are valid & then splits the data into time/day/month/year
+			dmy = dmy.split('/');
+			if (dmy.length != 3) {
+				return false;
+			} else {
+				var day = Math.min(Number(dmy[0]), 31),
+					month = Math.min(Number(dmy[1]), 12),
+					year = Math.max(Number(dmy[2]), 2017),
+					time = 0; // use midnight if no time is given
+				
+				if (hm != undefined && hm.trim() != '') {
+					var hm = hm.split(':');
+					if (hm.length == 2) {
+						var hour = Math.min(Number(hm[0]), 23),
+							minute = Math.min(Number(hm[1]), 59);
+						time = Number(String(hour) + (minute < 10 ? '0' : '') + String(minute));
+					}
+				}
+				
+				return {day:day, month:month, year:year, time:time};
+			}
+		}
+		
+		var getFullDate = function(info) {
+			var timeZero = '';
+			for (var i=0; i<4-String(info.time).length; i++) {
+				timeZero += '0';
+			}
+			return Number(String(info.year) + (info.month < 10 ? '0' : '') + String(info.month) + (info.day < 10 ? '0' : '') + String(info.day) + timeZero + String(info.time));
+		}
+		
+		// is it hidden from a certain date? if so, have we passed that date/time?
+		if (hideOnDate != undefined && hideOnDate != '') {
+			hideOn = getDateInfo(hideOnDate, hideOnTime);
+			
+			if (hideOn != false) {
+				if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
+					hidePage = false;
+				}
+				
+				hideOnString = '{from}: ' + hideOnDate + ' ' + hideOnTime;
+			}
+		}
+		
+		// is it hidden until a certain date? if so, have we passed that date/time?
+		if (hideUntilDate != undefined && hideUntilDate != '') {
+			hideUntil = getDateInfo(hideUntilDate, hideUntilTime);
+			
+			if (hideUntil != false) {
+				// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
+				var skip = false;
+				if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
+					if (hidePage == false) {
+						hidePage = true;
+					} else {
+						skip = true;
+					}
+				}
+				
+				if (skip != true && hidePage == true) {
+					if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+						hidePage = false;
+					}
+				}
+				
+				hideUntilString = '{until}: ' + hideUntilDate + ' ' + hideUntilTime;
+			}
+		}
+		
+		// put together the message that will appear in author support
+		var infoString = '';
+		if (hideOnString != '') {
+			infoString += '(' + hideOnString;
+		}
+		if (hideUntilString != '') {
+			if (infoString == '') { infoString += '('; } else { infoString += ' & '; }
+			infoString += hideUntilString;
+		}
+		if (infoString != '') { infoString += ')'; }
+		
+		if (hidePage == true) {
+			infoString = '{hidden} ' + infoString;
+		} else {
+			infoString = '{shown} ' + infoString;
+		}
+		
+		var langData = languageData.find('hidden' + type)[0];
+		infoString = infoString
+			.replace('{from}', langData != undefined && langData.getAttribute('from') != "" && langData.getAttribute('from') != null ? langData.getAttribute('from') : 'Hide from')
+			.replace('{until}', langData != undefined && langData.getAttribute('until') != "" && langData.getAttribute('until') != null ? langData.getAttribute('until') : 'Hide until')
+			.replace('{hidden}', langData != undefined && langData.getAttribute('hidden') != "" && langData.getAttribute('hidden') != null ? langData.getAttribute('hidden') : 'This page is currently hidden in live projects')
+			.replace('{shown}', langData != undefined && langData.getAttribute('shown') != "" && langData.getAttribute('shown') != null ? langData.getAttribute('shown') : 'This page is currently shown in live projects');
+		
+		return [hidePage, infoString];
+		
+	} else {
+		return false;
+	}
 }

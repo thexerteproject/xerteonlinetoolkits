@@ -467,11 +467,15 @@ var EDITOR = (function ($, parent) {
             if (options.deprecated) {
                 var td = $('<td>')
                     .addClass("deprecated")
-                    .append($('<img>')
-                        .attr('id', 'deprbtn_' + name)
-                        .attr('src', 'editor/img/deprecated.png')
-                        .attr('title', options.deprecated)
-                        .addClass("deprecated"));
+					.append($('<i>')
+						.attr('id', 'deprbtn_' + name)
+                        .addClass('fa')
+                        .addClass('fa-exclamation-triangle')
+                        .addClass("xerte-icon")
+						.attr('title', options.deprecated)
+                        .height(14)
+                        .addClass("deprecated deprecatedIcon"));
+				
                 if (options.optional == 'true' && groupChild == false) {
                     var opt = $('<i>').attr('id', 'optbtn_' + name)
                         .addClass('fa')
@@ -533,7 +537,13 @@ var EDITOR = (function ($, parent) {
                 tdlabel.addClass("wizarddeprecated")
             }
             tdlabel.append(label);
-
+			
+			if (options.tooltip) {
+				$('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
+					.attr('title', options.tooltip)
+					.appendTo(tdlabel);
+			}
+			
             tr.append(tdlabel)
                 .append($('<td>')
                     .addClass("wizardvalue")
@@ -610,10 +620,16 @@ var EDITOR = (function ($, parent) {
 				.addClass("wizardattribute");
 		}
 		
-		$('<i class="fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
+		if (options.tooltip) {
+			$('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
+				.attr('title', options.tooltip)
+				.appendTo(legend.find('.legend_label'));
+		}
+		
+		$('<i class="minMaxIcon fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
 		
 		legend.find('.legend_label').click(function() {
-			var $icon = $(this).find('i.fa');
+			var $icon = $(this).find('i.minMaxIcon');
 			var $fieldset = $(this).parents('fieldset');
 			
 			if ($fieldset.find('.table_holder').is(':visible')) {
@@ -1812,21 +1828,25 @@ var EDITOR = (function ($, parent) {
                         // Get the default node
                         // Search in array newnodes for node_name
                         i = $.inArray(node_name, wizard_data[p_node_name].new_nodes);
-                        node_xml = wizard_data[p_node_name].new_nodes_defaults[i];
+                        if (i>=0) {
+                            node_xml = wizard_data[p_node_name].new_nodes_defaults[i];
+                            if (node_xml != "undefined") {
 
-                        // Parse XML
-                        var x2js = new X2JS({
-                            // XML attributes. Default is "_"
-                            attributePrefix: "$"
-                        });
-                        var defaults = x2js.xml_str2json(node_xml)[node_name];
+                                // Parse XML
+                                var x2js = new X2JS({
+                                    // XML attributes. Default is "_"
+                                    attributePrefix: "$"
+                                });
+                                var defaults = x2js.xml_str2json(node_xml)[node_name];
 
-                        $.each(node_options.language, function (index, lang_attr) {
-                            // search
-                            if (typeof defaults['$' + lang_attr.name] !== 'undefined') {
-                                setAttributeValue(key, [lang_attr.name], [defaults['$' + lang_attr.name]])
+                                $.each(node_options.language, function (index, lang_attr) {
+                                    // search
+                                    if (typeof defaults['$' + lang_attr.name] !== 'undefined') {
+                                        setAttributeValue(key, [lang_attr.name], [defaults['$' + lang_attr.name]])
+                                    }
+                                });
                             }
-                        });
+                        }
 
                     }
 
@@ -2483,6 +2503,88 @@ var EDITOR = (function ($, parent) {
                     form_id_offset++;
 
                     break;
+                case 'category':
+                    var id = 'select_' + form_id_offset;
+                    var html = $('<div>')
+                        .attr('id', 'category_div_' + form_id_offset);
+                    var currselected=false;
+                    var select = $('<select>')
+                        .attr('id', id)
+                        .change({id:id, key:key, name:name}, function(event)
+                        {
+                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        });
+                    // Add empty option
+                    var option = $('<option>')
+                        .attr('value', "");
+                    if (value=="") {
+                        option.prop('selected', true);
+                        currselected=true;
+                    }
+                    option.append("");
+                    select.append(option);
+                    for (var i=0; i<category_list.length; i++) {
+                        var option = $('<option>')
+                            .attr('value', category_list[i].category_name);
+                        if (category_list[i].category_name==value) {
+                            option.prop('selected', true);
+                            curreselected = true;
+                        }
+                        option.append(category_list[i].category_name);
+                        select.append(option);
+                    }
+                    if (value != "" && !currselected)
+                    {
+                        //  Add current value as option, even though it is not in the list
+                        var option = $('<option>')
+                            .attr('value', value);
+                        option.prop('selected', true);
+                        option.append(value);
+                        select.append(option);
+                    }
+                    html.append(select);
+                break;
+                case 'grouping':
+                    var id = 'select_' + form_id_offset;
+                    var html = $('<div>')
+                        .attr('id', 'grouping_div_' + form_id_offset);
+                    var currselected = false;
+                    var select = $('<select>')
+                        .attr('id', id)
+                        .change({id:id, key:key, name:name}, function(event)
+                        {
+                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        });
+                    // Add empty option
+                    var option = $('<option>')
+                        .attr('value', "");
+                    if (value=="") {
+                        option.prop('selected', true);
+                        currselected = true;
+                    }
+                    option.append("");
+                    select.append(option);
+                    for (var i=0; i<grouping_list.length; i++) {
+                        var option = $('<option>')
+                            .attr('value', grouping_list[i].grouping_name);
+                        if (grouping_list[i].grouping_name==value) {
+                            option.prop('selected', true);
+                            currselected = true;
+                        }
+                        option.append(grouping_list[i].grouping_name);
+                        select.append(option);
+                    }
+                    if (value != "" && !currselected)
+                    {
+                        //  Add current value as option, even though it is not in the list
+                        var option = $('<option>')
+                            .attr('value', value);
+                        option.prop('selected', true);
+                        option.append(value);
+                        select.append(option);
+                    }
+                    html.append(select);
+                    break;
                 case 'hotspot':
                     var id = 'hotspot_' + form_id_offset;
                     form_id_offset++;
@@ -2693,6 +2795,52 @@ var EDITOR = (function ($, parent) {
 
                     datagrids.push({id: id, key: key, name: name, options: options});
                     break;
+				case 'datefield':
+                    var id = 'date_' + form_id_offset;
+                    form_id_offset++;
+                    if (value.length==0)
+                    {
+                        value=new Date();
+                        setAttributeValue(key, [name], [value.toISOString()]);
+                    }
+                    value = new Date(value).toDateString();
+					// a datepicker with a browse buttons next to it
+                    var td1 = $('<td width="100%">')
+                        .append($('<input>')
+                            .attr('type', "text")
+                            .attr('id', id)
+							.addClass('date')
+                            .change({id:id, key:key, name:name}, function(event)
+							{
+								inputChanged(event.data.id, event.data.key, event.data.name, new Date(this.value).toISOString(), this);
+							})
+							.attr('value', value)
+							.datepicker({
+								showOtherMonths: true,
+								selectOtherMonths: true,
+								dateFormat: 'yy-mm-dd'
+							}));
+					
+                    var td2 = $('<td>');
+					var btnHolder = $('<div style="width:4.2em"></div>').appendTo(td2);
+                    btnHolder.append($('<button>')
+						.attr('id', 'calendar_' + id)
+						.attr('title', language.calendar != undefined ? language.calendar.$tooltip : '')
+						.addClass("xerte_button")
+						.click({id:id, key:key, name:name}, function(event)
+						{
+							td1.datepicker("show");
+						})
+						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-calendar').addClass('xerte-icon')))
+					
+                    html = $('<div>')
+                        .attr('id', 'container_' + id)
+                        .addClass('media_container');
+                    html.append($('<table width="100%">')
+                        .append($('<tr>')
+                            .append(td1)
+                            .append(td2)));
+                    break;
                 case 'drawing': // Not implemented
                     var id = 'drawing_' + form_id_offset;
                     form_id_offset++;
@@ -2707,7 +2855,6 @@ var EDITOR = (function ($, parent) {
                     )
                         .append(language.edit.$label);
                     break;
-                case 'datefield': // Not used??
                 case 'webpage':  //Not used??
                 case 'xerteurl':
                 case 'xertelo':

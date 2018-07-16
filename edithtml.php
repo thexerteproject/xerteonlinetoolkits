@@ -66,11 +66,11 @@ if(!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
 
 $safe_template_id = (int) $_GET['template_id'];
 
-$query_for_edit_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
+//$query_for_edit_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
-$query_for_edit_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_id, $query_for_edit_content_strip);
+$query_for_edit_content = "select " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.parent_template, " . $xerte_toolkits_site->database_table_prefix . "logindetails.username, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_framework, " . $xerte_toolkits_site->database_table_prefix . "templaterights.user_id, " . $xerte_toolkits_site->database_table_prefix . "templaterights.folder, " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id, " . $xerte_toolkits_site->database_table_prefix . "templatedetails.access_to_whom from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails, " . $xerte_toolkits_site->database_table_prefix . "templaterights, " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "logindetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id and " . $xerte_toolkits_site->database_table_prefix . "templatedetails.creator_id = " . $xerte_toolkits_site->database_table_prefix . "logindetails.login_id and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id=? and role='creator'";
 
-$row_edit = db_query_one($query_for_edit_content);
+$row_edit = db_query_one($query_for_edit_content, array($safe_template_id));
 
 if(empty($row_edit)) {
     die("Invalid template_id (could not find in DB)");
@@ -101,11 +101,15 @@ if(isset($_SESSION['toolkits_logon_id'])){
 
 					$lock_file_creator = $temp[0];
 
-					/*
-					 * Check if lock file creator is current user, if so, continue into the code
-					 */
+					// get username only
+                    $temp = explode(" ", $temp[0]);
+                    $lock_file_creator_username = $temp[0];
 
-					if($lock_file_creator==$_SESSION['toolkits_logon_username']) {
+                    /*
+                     * Check if lock file creator is current user, if so, continue into the code
+                     */
+
+					if($lock_file_creator_username==$_SESSION['toolkits_logon_username']) {
 						if(update_access_time($row_edit)) {
 							// Display the editor
 							require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edithtml.php";
@@ -126,7 +130,7 @@ if(isset($_SESSION['toolkits_logon_id'])){
 
 							$file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt", 'w');
 
-							fwrite($file_handle, $_SESSION['toolkits_logon_username'] . "*");
+							fwrite($file_handle, $_SESSION['toolkits_logon_username'] . " (" . date("Y-m-d H:i:s") . ")*");
 
 							fclose($file_handle);
 
@@ -147,7 +151,7 @@ if(isset($_SESSION['toolkits_logon_id'])){
 						else {
 
 							// Update the lock file. The lock file format is creator id*id that tried to access 1 <space> id that tried to access 2 and so on
-							$new_lock_file = $lock_file_data . $_SESSION['toolkits_logon_username'] . " ";
+							$new_lock_file = $lock_file_data . $_SESSION['toolkits_logon_username'] . " (" . date("Y-m-d H:i:s") . "), ";
 							$file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt",'w');
 							fwrite($file_handle, $new_lock_file);
 							fclose($file_handle);
@@ -159,7 +163,7 @@ if(isset($_SESSION['toolkits_logon_id'])){
 
 					// No lock file, so create one
 					$file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt", 'w');
-					fwrite($file_handle, $_SESSION['toolkits_logon_username'] . "*");
+					fwrite($file_handle, $_SESSION['toolkits_logon_username'] . " (" . date("Y-m-d H:i:s") . ")*");
 					fclose($file_handle);
 
 					// Update the time this template was last edited

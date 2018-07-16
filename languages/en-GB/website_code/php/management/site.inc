@@ -160,7 +160,7 @@
 
   define("MANAGEMENT_SITE_AUTH_METHOD", "The authentication method to use");
 
-  define("MANAGEMENT_SITE_LTI","LTI settings");
+  define("MANAGEMENT_SITE_LTI","LTI/Moodle settings. (Not Tsugi/LTI)");
   
   define("MANAGEMENT_SITE_XAPI", "xAPI settings");
   
@@ -169,6 +169,14 @@
   define("MANAGEMENT_SITE_XAPI_KEY", "xAPI key (username)");
   
   define("MANAGEMENT_SITE_XAPI_SECRET", "xAPI secret (password)");
+
+  define("MANAGEMENT_SITE_XAPI_DASHBOARD_ENABLE", "Enable xAPI dashboard");
+
+  define("MANAGEMENT_SITE_XAPI_DASHBOARD_NONANONYMOUS_VIEW", "Enable non-anonymous view (if available)");
+
+  define("MANAGEMENT_SITE_XAPI_DASHBOARD_DEFAULT_PERIOD", "xAPI dashboard default period (in days)");
+
+  define("MANAGEMENT_SITE_XAPI_DASHBOARD_MINIMUM_ROLE", "xAPI dashboard minimum role to view dashboard");
 
 define("LTI_TOGGLE","View");
 

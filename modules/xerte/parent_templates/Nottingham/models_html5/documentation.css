@@ -1,15 +1,21 @@
 /* documentation.html */
 	
-	h3 {
-		padding: 4px;
-	}
-	
 	#pages {
 		overflow: auto;
 	}
 	
 	#pages:not(:last-child) {
 		border-bottom: 1px solid #CCCCCC;
+	}
+	
+	#pages hr {
+		border: none;
+		height: 1px;
+		background-color: #ccc;
+	}
+	
+	#pages fieldset {
+		border: 1px solid #ccc;
 	}
 	
 	#btnHolder {

@@ -9,6 +9,10 @@
         margin-top:		20px;
         padding-top:	20px;
     }
+	
+	#mainText {
+		margin-bottom: 1em;
+	}
 
     #mainPanel {
         position:	relative;
@@ -70,6 +74,10 @@
         background-color: #CCCCCC;
         height: 1px;
     }
+	
+	#infoHolder {
+		margin-top: 1em;
+	}
 	
 	
 

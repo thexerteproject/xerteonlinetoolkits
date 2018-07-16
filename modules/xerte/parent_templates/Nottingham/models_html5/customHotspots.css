@@ -28,7 +28,7 @@
 	}
 	
 	#hsInfo {
-		margin-top:	20px;
+		margin-top:	1em;
 	}
 	
 	
@@ -83,7 +83,7 @@
 	}
 	
 	#qHolder, #scoreHolder {
-		margin-top:		20px;
+		margin-top:		1em;
 	}
 	
 	#qHolder button, #scoreHolder button {
@@ -110,5 +110,11 @@
 
 	#feedback, #buttonHolder {
 		clear:		both;
+	}
+	
+	#textHolder hr {
+		border: none;
+		background-color: #ccc;
+		height: 1px;
 	}
 

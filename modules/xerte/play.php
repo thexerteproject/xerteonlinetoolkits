@@ -66,7 +66,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
     $string_for_flash_xml = $xmlfile . "?time=" . time();
 
     $flash_js_dir = "modules/" . $row['template_framework'] . "/";
-    $template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['template_name'] . "/";
+    $template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
     $rlo_file = $template_path . $row['template_name'] . ".rlt";
 
     list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
@@ -103,11 +103,11 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         if ($pedit_enabled)
         {
             if($row["tsugi_xapi_enabled"] == 1) {
-                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $flash_js_dir . "pedit/xttracking_xapi_pedit.js");
+                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $flash_js_dir . "xAPI/xttracking_xapi.js");
             }
             else
             {
-                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $flash_js_dir . "pedit/xttracking_pedit.js");
+                $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $template_path . "common_html5/js/xttracking_noop.js");
             }
         }
         else
@@ -166,6 +166,14 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 {
                     $tracking .= "   var groupname = '" . $xerte_toolkits_site->group . "';\n";
                 }
+                if (isset($xerte_toolkits_site->course))
+                {
+                    $tracking .= "   var coursename = '" . $xerte_toolkits_site->course . "';\n";
+                }
+                if (isset($xerte_toolkits_site->module))
+                {
+                    $tracking .= "   var modulename = '" . $xerte_toolkits_site->module . "';\n";
+                }
             }
             $tracking .= "</script>\n";
             _debug("Tracking script: " . $tracking);
@@ -203,7 +211,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         $page_content = str_replace("%TEMPLATEID%", $_GET['template_id'], $page_content);
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
-        $page_content = str_replace("%THEMEPATH%", "themes/" . $row['template_name'] . "/",$page_content);
+        $page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
 
         // Handle offline variables
         $page_content = str_replace("%OFFLINESCRIPTS%", "", $page_content);
@@ -216,7 +224,9 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
             $tracking .= "<script type=\"text/javascript\" src=\"$jsfile?version=" . $version . "\"></script>\n";
         }
         if ($tsugi_enabled && $row["tsugi_xapi_enabled"] == 1) {
-            $tracking .= "<script type=\"text/javascript\" src=\"$flash_js_dir/xAPI/tincan.js?\"></script>\n";
+            $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapidashboard.min.js?version=" . $version . "\"></script>\n";
+            //$tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapicollection.min.js?version=" . $version . "\"></script>\n";
+            $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapiwrapper.min.js?version=" . $version . "\"></script>\n";
         }
         if($tsugi_enabled)
         {
@@ -243,6 +253,14 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 if (isset($xerte_toolkits_site->group))
                 {
                     $tracking .= "   var groupname = '" . $xerte_toolkits_site->group . "';\n";
+                }
+                if (isset($xerte_toolkits_site->course))
+                {
+                    $tracking .= "   var coursename = '" . $xerte_toolkits_site->course . "';\n";
+                }
+                if (isset($xerte_toolkits_site->module))
+                {
+                    $tracking .= "   var modulename = '" . $xerte_toolkits_site->module . "';\n";
                 }
             }
             $tracking .= "</script>\n";

@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS `$originaltemplatesdetails` ;
 DROP TABLE IF EXISTS `$play_security_details` ;
 DROP TABLE IF EXISTS `$sitedetails` ;
 DROP TABLE IF EXISTS `$syndicationcategories` ;
+DROP TABLE IF EXISTS `$grouping` ;
 DROP TABLE IF EXISTS `$syndicationlicenses` ;
 DROP TABLE IF EXISTS `$templatedetails` ;
 DROP TABLE IF EXISTS `$templaterights` ;
@@ -68,6 +69,7 @@ CREATE TABLE `$originaltemplatesdetails` (
   `template_type_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `template_framework` char(255) DEFAULT NULL,
   `template_name` char(255) DEFAULT NULL,
+  `parent_template` char(255) DEFAULT NULL,
   `description` char(255) DEFAULT NULL,
   `date_uploaded` date DEFAULT NULL,
   `display_name` char(255) DEFAULT NULL,
@@ -77,7 +79,7 @@ CREATE TABLE `$originaltemplatesdetails` (
   PRIMARY KEY (`template_type_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-insert  into `$originaltemplatesdetails`(`template_type_id`,`template_framework`,`template_name`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (5,'xerte','Nottingham','A flexible template for creating interactive learning objects.','2009-09-02','Xerte Online Toolkit',0,'*',1),(8,'xerte','Rss','Easily create and maintain an RSS Feed.','2008-04-02','RSS Feed',0,'*',1),(14,'xerte','multipersp','A template for creating learning objects to present multiple perspectives on a topic','2009-07-08','Multiple Perspectives',0,'*',0),(15,'xerte','mediaInteractions','A  template for presenting a piece of media and creating a series of interactions','2009-09-01','Media Interactions',0,'*',0),(16,'site','site','A responsive template for delivering content to all devices.','2009-04-02','Bootstrap Template',0,'*',1),(17,'decision','decision','A template for presenting a series of questions to reach a solution to a problem.','2009-01-01','Decision Tree Template',0,'*',1);;
+insert  into `$originaltemplatesdetails`(`template_type_id`,`template_framework`,`template_name`,`parent_template`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (5,'xerte','Nottingham','Nottingham','A flexible template for creating interactive learning objects.','2009-09-02','Xerte Online Toolkit',0,'*',1),(8,'xerte','Rss','Rss','Easily create and maintain an RSS Feed.','2008-04-02','RSS Feed',0,'*',1),(14,'xerte','multipersp','multipersp','A template for creating learning objects to present multiple perspectives on a topic','2009-07-08','Multiple Perspectives',0,'*',0),(15,'xerte','mediaInteractions','mediaInteractions','A  template for presenting a piece of media and creating a series of interactions','2009-09-01','Media Interactions',0,'*',0),(16,'site','site','site','A responsive template for delivering content to all devices.','2009-04-02','Bootstrap Template',0,'*',1),(17,'decision','decision','decision','A template for presenting a series of questions to reach a solution to a problem.','2009-01-01','Decision Tree Template',0,'*',1);;
 
 CREATE TABLE `$play_security_details` (
   `security_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -91,15 +93,15 @@ CREATE TABLE `$sitedetails` (
   `site_id` int(11) NOT NULL AUTO_INCREMENT,
   `site_url` char(255) DEFAULT NULL,
   `apache` char(255) DEFAULT NULL,
-  `enable_mime_check` char(255) DEFAULT NULL,
+  `enable_mime_check` char(255) DEFAULT '',
   `mimetypes` text,
-  `enable_file_ext_check` char(255) DEFAULT NULL,
+  `enable_file_ext_check` char(255) DEFAULT '',
   `file_extensions` text,
-  `enable_clamav_check` char(255) DEFAULT NULL,
-  `clamav_cmd` char(255) DEFAULT NULL,
-  `clamav_opts` char(255) DEFAULT NULL,
+  `enable_clamav_check` char(255) DEFAULT '',
+  `clamav_cmd` char(255) DEFAULT '',
+  `clamav_opts` char(255) DEFAULT '',
   `site_session_name` char(255) DEFAULT NULL,
-  `authentication_method` char(255) DEFAULT NULL,
+  `authentication_method` char(255) DEFAULT '',
   `LDAP_preference` char(255) DEFAULT NULL,
   `LDAP_filter` char(255) DEFAULT NULL,
   `integration_config_path` char(255) DEFAULT NULL,
@@ -149,9 +151,13 @@ CREATE TABLE `$sitedetails` (
   `proxy1` char(255) DEFAULT NULL,
   `port1` char(255) DEFAULT NULL,
   `feedback_list` char(255) DEFAULT NULL,
-  `LRS_Endpoint` char(255) DEFAULT NULL,
-  `LRS_Key` char(255) DEFAULT NULL,
-  `LRS_Secret` char(255) DEFAULT NULL,
+  `LRS_Endpoint` char(255) DEFAULT '',
+  `LRS_Key` char(255) DEFAULT '',
+  `LRS_Secret` char(255) DEFAULT '',
+  `dashboard_enabled` char(255) DEFAULT 'true',
+  `dashboard_nonanonymous` char(255) DEFAULT 'true',
+  `xapi_dashboard_minrole` char(255) DEFAULT 'co-author',
+  `dashboard_period` int DEFAULT 14,
   `tsugi_dir` text,
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -163,6 +169,15 @@ CREATE TABLE `$syndicationcategories` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 insert  into `$syndicationcategories`(`category_id`,`category_name`) values (1,'American and Canadian Studies'),(2,'Biology'),(3,'Biomedical Sciences'),(4,'Biosciences'),(5,'Built Environment, The'),(6,'Centre for English Language Education'),(7,'Chemistry'),(9,'Community Health Sciences'),(10,'Computer Science'),(11,'Contemporary Chinese Studies'),(12,'Economics'),(13,'Education'),(14,'English Studies'),(15,'Geography'),(16,'Medicine and Health'),(17,'History'),(18,'Humanities'),(20,'Mathematical Sciences'),(21,'Modern Languages and Cultures'),(22,'Nursing, Midwifery and Physiotherapy'),(23,'Pharmacy'),(24,'Physics & Astronomy'),(25,'Politics and International Relations'),(26,'Psychology'),(27,'Sociology & Social Policy'),(28,'Veterinary Medicine and Science');
+
+CREATE TABLE `$grouping` (
+  `grouping_id` int(11) NOT NULL AUTO_INCREMENT,
+  `grouping_name` char(255) DEFAULT NULL,
+  PRIMARY KEY (`grouping_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+insert  into `$grouping` (`grouping_id`,`grouping_name`) values (1,'Grouping 1'),(2,'Grouping 2'),(3,'Grouping 3'),(4,'Grouping 4'),(5,'Grouping 5'),(6,'Grouping 6'),(7,'Grouping 7'),(8,'Grouping 8'),(9,'Grouping 9'),(10,'Grouping 10');
+
 
 CREATE TABLE `$syndicationlicenses` (
   `license_id` int(11) NOT NULL AUTO_INCREMENT,

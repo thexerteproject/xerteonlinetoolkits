@@ -5,9 +5,13 @@
 /*define font colors to match the background colors*/
 /*define rounded corner and other sizes*/
 /*start here and set the default values for all the variables*/
+tt a, samp a, var a, .marker a {
+  color: white !important;
+  text-decoration: underline; }
+
 /*****editor styles*****/
 .marker {
-  font: "Varela Round", sans-serif;
+  font-family: "Varela Round", sans-serif;
   background-color: #005172;
   color: #ffffff;
   border-radius: 1vmin;

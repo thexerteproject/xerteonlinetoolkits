@@ -1,3 +1,4 @@
+@import url("editorstyles.css");
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
@@ -227,8 +228,16 @@ h3 {
 .fa-x-tick-circle:before { content:"\f058"} /* used for visited ticks in table of contents */
 
 /* marking on interactivity pages */
-.fa-x-tick:before { content: "\f00c"; color: #62c562; }
+.fa-x-tick:before { font-family: FontAwesome; content: "\f00c"; color: #62c562; }
 .fa-x-cross:before { content: "\f00d"; color: #ff0000; }
+
+/* Just the colour */
+.fa-x-tick {
+	font-family: FontAwesome; content: "\f00c"; color: #62c562;
+}
+.fa-x-cross {
+	content: "\f00d"; color: #ff0000;
+}
 
 @media only screen
 and (max-width :500px) {

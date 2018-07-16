@@ -431,7 +431,7 @@ function ScormTrackingState()
 
         if (sit != null && sit.exit())
         {
-            verifyExitInteractionParameters(sit, result, learneroptions, learneranswer, feedback);
+            this.verifyExitInteractionParameters(sit, result, learneroptions, learneranswer, feedback);
             if (this.scoremode == 'first' && sit.count > 1)
                 return;
 
@@ -757,8 +757,15 @@ function ScormTrackingState()
             setValue('cmi.core.lesson_status', lessonStatus);
             state.currentpageid = currentid;
             var suspend_str = JSON.stringify(this);
-            setValue('cmi.core.exit', 'suspend');
-            setValue('cmi.suspend_data', suspend_str);
+            if (lessonStatus == 'incomplete') {
+                setValue('cmi.core.exit', 'suspend');
+                setValue('cmi.suspend_data', suspend_str);
+            }
+            else
+            {
+                setValue('cmi.core.exit', '');
+                setValue('cmi.suspend_data', suspend_str);
+            }
 
             var supported = getValue('cmi.core.score._children');
             setValue('cmi.core.score.raw', this.getRawScore());
@@ -1305,7 +1312,7 @@ function setValue(elementName, value){
 }
 
 
-function XTInitialise()
+function XTInitialise(category)
 {
     if (! state.initialised)
     {
@@ -1424,7 +1431,7 @@ function XTSetOption(option, value)
     }
 }
 
-function XTEnterPage(page_nr, page_name, page_type)
+function XTEnterPage(page_nr, page_name)
 {
     if (state.scormmode == 'normal')
     {
@@ -1445,7 +1452,7 @@ function XTEnterPage(page_nr, page_name, page_type)
 }
 
 
-function XTExitPage(page_nr, page_name)
+function XTExitPage(page_nr)
 {
 
     if (state.scormmode == 'normal')
@@ -1475,7 +1482,11 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
     }
 }
 
-function XTSetViewed(page_nr, name, score, page_name) {
+function XTSetViewed(page_nr, name, score) {
+    if (isNaN(score) || typeof score != "number")
+    {
+        score = 0.0;
+    }
     if (state.scormmode == 'normal')
     {
         var sit = state.findPage(page_nr);
@@ -1486,7 +1497,46 @@ function XTSetViewed(page_nr, name, score, page_name) {
     }
 }
 
-function XTSetPageScore(page_nr, score, page_name)
+function XThelperConsolidateSegments(videostate)
+{
+    // 1. Sort played segments on start time (first make a copy)
+    var segments = $.extend(true, [], videostate.segments);
+    segments.sort(function(a,b) {return (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0);} );
+    // 2. Combine the segments
+    var csegments = [];
+    var i=0;
+    while(i<segments.length) {
+        var segment = $.extend(true, {}, segments[i]);
+        i++;
+        while (i<segments.length && segment.end >= segments[i].start) {
+            segment.end = segments[i].end;
+            i++;
+        }
+        csegments.push(segment);
+    }
+    return csegments;
+}
+
+function XThelperDetermineProgress(videostate)
+{
+    var csegments = XThelperConsolidateSegments(videostate);
+    var videoseen = 0;
+    for (var i=0; i<csegments.length; i++)
+    {
+        videoseen += csegments[i].end - csegments[i].start;
+    }
+    // normalized between 0 and 1
+    if (!isNaN(videostate.duration) && videostate.duration > 0) {
+        return Math.round(videoseen / videostate.duration * 100.0) / 100.0;
+    }
+    return 0.0;
+}
+
+function XTVideo(page_nr, name, block_name, verb, videostate) {
+    return;
+}
+
+function XTSetPageScore(page_nr, score)
 {
     if (state.scormmode == 'normal')
     {
@@ -1498,11 +1548,11 @@ function XTSetPageScore(page_nr, score, page_name)
     }
 }
 
-function XTSetPageScoreJSON(page_nr, score, JSONGraph, page_name) {
-    XTSetPage|Score(page_nr, score, page_name);
+function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
+    XTSetPageScore(page_nr, score);
 }
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, page_name)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping)
 {
     if (state.scormmode == 'normal')
     {
@@ -1515,7 +1565,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, co
     }
 }
 
-function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, page_name)
+function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
 {
     if (state.scormmode == 'normal')
     {
@@ -1523,8 +1573,9 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
     }
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, callback)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback, q)
 {
+    callback(null);
     return 0;
 }
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
@@ -1691,8 +1742,8 @@ function XTResults(fullcompletion) {
 
                     break;
                 case "text":
-                    learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
-                    correctAnswer = state.interactions[i].correctAnswers.join(", ");
+                    learnerAnswer = state.interactions[i].learnerAnswers;
+                    correctAnswer = state.interactions[i].correctAnswers;
                     break;
                 case "multiplechoice":
                     learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
@@ -1729,7 +1780,7 @@ function XTResults(fullcompletion) {
     results.completion = completion;
     results.score = score;
     results.nrofquestions = nrofquestions;
-    results.averageScore = state.getScaledScore() * 100;
+    results.averageScore = Math.round(state.getdScaledScore() * 10000.0)/100.0;
     results.totalDuration = Math.round(totalDuration / 1000);
     results.start = state.start.toLocaleString();
 

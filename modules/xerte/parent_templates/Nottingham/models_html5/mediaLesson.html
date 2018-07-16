@@ -27,12 +27,18 @@
 			numLoaded = 0,
 			duration = 0,
             blocks = new Array (),
-		    vidFullWatched;
+		    vidFullWatched,
+            currSegment,
+            trackinglabel = "",
+            prevTime = -1,
+            lastTime = -1;
 
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$panelHolder = $("#panelHolder");
+            this.panelbaseid = "panel_" + x_currentPage + '_';
+
+            $panelHolder = $("#panelHolder");
 			
 			if ($("#pageContents").data("mediaElement") != undefined) {
 				$("#pageContents").data("mediaElement").setCurrentTime(0);
@@ -46,22 +52,41 @@
 			if ($("#pageContents").data("audioBar") == true && $x_footerBlock.find(".mainMedia").length == 0) {
 				this.loadAudioInFooter();
 			}
-		}
+            this.setUp();
+		};
 		
 		// function called from mediaPlayer.js when video player has been set up
 		this.mediaFunct = function(mediaElement, mediaSrc) {
 			if ($(mediaElement).closest(".mainMedia").length != 0) {
 				$("#pageContents").data("mediaElement", mediaElement);
 			}
-		}
+		};
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+            $panelHolder = $("#panelHolder");
+            var panels = $panelHolder.find(".panel");
+
+            if (panels.length == 2)
+			{
+                var panelLayout = x_currentPageXML.getAttribute("layout");
+                if (panelLayout == "grid") {
+                    var $mainHolder = $("#x_mainHolder");
+                    // Two panels. If in portrait mode, stack vertical, otherwise show horizontal
+                    // Use mainHolder, because height of panelHolder is not set on touch/mobile devices
+                    if ($mainHolder.width() >= $mainHolder.height()) {
+                        $panelHolder.find(".panel").removeClass("tileV fullW").addClass("tileH fullH");
+                    }
+                    else {
+                        $panelHolder.find(".panel").removeClass("tileH fullH").addClass("tileV fullW");
+                    }
+                }
+            }
 			this.resizePanels();
-		}
+		};
 		
 		this.resizePanels = function() {
-			// make sure no scroll bars are on screen during panel sizing
+		    // make sure no scroll bars are on screen during panel sizing
 			$x_pageHolder.css("overflow", "hidden");
 			
 			var numTileH = $("#panelHolder .panel.tileH").length,
@@ -71,26 +96,27 @@
 				numTileH = $("#panelHolder .top .panel.tileH").length;
 			}
 			
-			var marginR = parseInt($panelHolder.find(".panel.tileH").css("margin-right")) == 0 ? 15 : parseInt($panelHolder.find(".panel.tileH").css("margin-right"));
+			var marginR = parseInt($panelHolder.find(".panel.tileH").css("margin-right")) == 0 ? 15 : parseFloat($panelHolder.find(".panel.tileH").css("margin-right"));
 			
 			$panelHolder.find(".panel.tileH")
-				.width(Math.floor(($x_pageHolder.width() - (parseInt($x_pageDiv.css("padding-left")) * 2) - (parseInt($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * (numTileH - 1))) / numTileH) - 2);
+				.width(Math.floor(($x_pageHolder.width() - (parseFloat($x_pageDiv.css("padding-left")) * 2) - (parseFloat($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * numTileH)) / numTileH) - 2);
 			
-			$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseInt($("#infoHolder .accTitle").css("padding-top")) * 2);
+			$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2);
 			
 			$panelHolder.find(".panel.tileV")
-				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - parseInt($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseInt($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2);
+				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - parseFloat($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseFloat($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2)
+				.css('width', '');
 
 			$panelHolder.find(".panel.fullH")
-				.height($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - 5);
+				.height($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - 5);
 			
 			$panelHolder.find(".panel.halfH")
-				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
+				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
 			
 			$x_pageHolder.css("overflow", "auto");
 			
 			this.resizeMedia();
-		}
+		};
 		
 		// function resizes media controls
 		this.resizeMedia = function($holder) {
@@ -133,8 +159,12 @@
 			});
 			
 			$(".popcornMedia.vimeo").each(function(i) {
-				mediaLesson.resizeVimeo($(this));
-			});
+                mediaLesson.resizeVimeo($(this));
+            });
+
+            $(".popcornMedia.vimeo").each(function(i) {
+                mediaLesson.resizeMediasite($(this));
+            });
 			
 			$(".audioImg").each(function() {
 				var $this = $(this);
@@ -178,42 +208,118 @@
 				//google.maps.event.trigger($holder.find(".gm-style")[0], "resize");
 			}
 		}
-		
+
+		this.isFullScreen = function()
+		{
+            if (document.fullscreenElement ||    // alternative standard method
+                document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement ) {  // current working methods
+                return true;
+            }
+            else {
+                return false;
+			}
+		};
+        this.exitFullScreen = function() {
+            if (document.fullscreenElement ||    // alternative standard method
+                document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement ) {  // current working methods
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
+        };
+
 		this.resizeYouTube = function($youTube) {
-			var $holder = $youTube.parent(),
-				ratio = 270 / 480; // assume videos are 480 x 270 ratio
-				w = $holder.width() - parseInt($holder.css("padding-left")) * 2,
-				h = Math.floor(w * ratio);
-			
-			if (h < 200) { // must be at least 200 x 200
-				h = 200;
-				w = Math.floor(h * (1 / ratio));
+		    var $holder = $youTube.parent(),
+				ratio = 16 / 9; // assume videos are 16:9 ratio
+
+			if ($(x_currentPageXML).children("mediaPanel").attr("aspectRatio") != undefined)
+			{
+			    ratio = parseFloat($(x_currentPageXML).children("mediaPanel").attr("aspectRatio"));
+			}
+			var ww = $holder.width(),// - parseInt($holder.css("padding-left")) * 2,
+				wh = Math.floor(ww / ratio),
+				hh = $holder.height() - $holder.find(".panelTitle").outerHeight(),  // - parseInt($holder.css("padding-top")) * 2,
+				hw = Math.floor(hh * ratio);
+
+			if (ww < hw)
+			{
+			    w = ww;
+			    h = wh;
+			}
+			else
+			{
+			    w = hw;
+			    h = hh;
 			}
 			
+			//if (h < 200) { // must be at least 200 x 200
+			//	h = 200;
+			//	w = Math.floor(h * (1 / ratio));
+			//}
+			
 			$youTube.css({
-				width:	w,
-				height:	h
+				"width":	w,
+				"height":	h,
+				"min-width" : 150,
+				"min-height": 120
 			});
-		}
+		};
 		
 		this.resizeVimeo = function($vimeo) {
 			this.resizeYouTube($vimeo);
-		}
+		};
 
+		this.resizeMediasite = function($mediasite) {
+		  var parent = $mediasite[0].parentElement;
+
+		  var parentt = $(" .panel tileH fullH ");
+
+		  $mediasite[0].style.height = "90%"//parent.style.height;
+		  $mediasite[0].style.width = "100%";
+		};
 
 		this.leavePage = function () {
-		    if (vidFullWatched == undefined)
+		    currSegment.end = lastTime;
+		    this.addSegment(currSegment);
+            $(".youTube, .vimeo").each(function() {
+                $(this).data("popcornInstance").pause();
+            });
+            this.removeEvents();
+            this.popcornInstance.destroy();
+            if (vidFullWatched == undefined)
 			{
                 vidFullWatched = {
-                    synchName: "full_video"
-                }
-                sentXAPI(vidFullWatched, 0);
+                    synchStart: 0,
+                    duration: duration,
+                    synchName: "video",
+                    watched: [],
+                    segments:[]
+                };
+                this.sendXAPI(vidFullWatched, 0);
 			}
-			sentXAPI(vidFullWatched, lookupTable(vidFullWatched));
-		}
+			var progress = XThelperDetermineProgress(vidFullWatched) * 100.0;
+			this.sendXAPI(vidFullWatched, progress);
+			XTVideo(x_currentPage, trackinglabel, "", "exit", vidFullWatched);
+		};
 		// function called when page first loads
+		/*
+		this.init = function()
+		{
+            // Load in the required scripts before we can begin
+            $script.path(x_templateLocation + 'common_html5/js/featherlight/');
+            $script(['featherlight.min.js', 'featherlight.min.css'], function () {
+				mediaLesson.begin();
+            });
+		};
+		|*/
 		this.init = function() {
-			
+            this.panelbaseid = "panel_" + x_currentPage + '_';
 			if (!!document.createElement("canvas").getContext) {
 				// load popcorn library and plugins 
 				var loadFiles = true;
@@ -234,7 +340,7 @@
 				} else {
 					this.setUp();
 				}
-				this.initTracking();
+
 			} else {
 				$("#infoHolder, #panelHolder, #contentCover").remove();
 				$("#pageContents").append('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
@@ -249,6 +355,11 @@
             var numOfQuestions = questions.length;
 			// Number the quesion in the order they appear in the editor
 
+            trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
+            if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
+            {
+                trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
+            }
 			mediaLesson.questions = [];
 			var nr=0;
 			$(questions).each(function(key, value){
@@ -265,17 +376,22 @@
 
             window.correctQuestions = 0;
             XTSetPageType(x_currentPage, 'numeric',numOfQuestions , this.weighting);
-		}
+            XTVideo(x_currentPage, trackinglabel, "", "initialized", vidFullWatched);
+            currSegment = {
+                start: 0,
+                end: -1
+            };
+		};
 				
 		// function loads the popcorn files
 		this.loadJS = function() {
-			if (numLoaded == plugins.length + 1) {
+		    if (numLoaded == plugins.length + 1) {
 				// all files have loaded
 				this.setUp();
 			} else {
 				var fileToLoad;
 				if (numLoaded == 0) {
-					fileToLoad = "popcorn-complete.min";
+					fileToLoad = "popcorn-complete";
 				} else {
 					fileToLoad = "plugins/popcorn." + plugins[numLoaded - 1];
 					if (jQuery.inArray(plugins[numLoaded - 1], css) != -1) {
@@ -285,20 +401,47 @@
 				
 				$.getScript(x_templateLocation + "common_html5/js/popcorn/" + fileToLoad + ".js")
 					.done(function(script, textStatus) {
-						numLoaded++;
+                        numLoaded++;
 						mediaLesson.loadJS();
 					})
 					.fail(function( jqxhr, settings, exception ) {
-						console.log("Failed to load Popcorn.js & plugins");
+						console.log("Failed to load Popcorn.js & plugins" + exception);
 					});
 			}
-		}
-		
+		};
+
+		this.addSegment = function(segment)
+        {
+            // console.log("Considering segment: (" + segment.start + ", " + segment.end +")");
+            if (segment.start != -1 && segment.end != -1 && segment.start < segment.end && segment.end - segment.start > 0.5)
+            {
+                // Pushing copy of segment
+                var csegment = $.extend(true, {}, segment);
+                // console.log("Adding segment: (" + csegment.start + ", " + csegment.end +")");
+                vidFullWatched.segments.push(csegment);
+
+                /*
+                var segstr = "[";
+                for (var i=0; i<vidFullWatched.segments.length; i++)
+                {
+                    if (i>0)
+                        segstr += ", ";
+                    segstr += "(" + vidFullWatched.segments[i].start + ", " + vidFullWatched.segments[i].end + ")";
+                }
+                segstr += "]";
+                console.log("Current segments: " + segstr);
+                */
+            }
+        };
+
 		// function called when popcorn.js & plugin files have all loaded
 		this.setUp = function() {
 			// _____ SORT PAGE LAYOUT _____
 			
 			$panelHolder = $("#panelHolder");
+
+			// Clear panelholder
+			$panelHolder.html("");
 			
 			var	panelData = $(x_currentPageXML).children(),
 				panelLayout = x_currentPageXML.getAttribute("layout");
@@ -306,9 +449,8 @@
 			var	mediaFile = $(x_currentPageXML).children("mediaPanel").attr("media"),
 				mediaType = "video",
 				maxPanels = 4,
-				mediaPanelIndex,
-				popcornInstance;
-			
+				mediaPanelIndex;
+
 			// get index of media panel
 			for (var i=0; i<panelData.length; i++) {
 				if (panelData[i].nodeName == "mediaPanel") {
@@ -326,7 +468,7 @@
 				
 				if (audioPosition == "bottom") {
 					$("#pageContents").data("audioBar",true);
-					popcornInstance = this.loadAudioInFooter();
+					this.popcornInstance = this.loadAudioInFooter();
 					mediaPanelIndex = -1;
 				}
 				
@@ -396,7 +538,7 @@
 				}
 				$('<div class="panel">' + title + '</div>')
 					.appendTo($panelHolder)
-					.attr("id", "panel" + i);
+					.attr("id", mediaLesson.panelbaseid + i);
 			}
 			
 			// layouts where panels are roughly the same size - either in grid or stacked vertically/horizontally
@@ -421,7 +563,16 @@
 					}
 					
 				} else if (panelData.length > 1) {
-					$panelHolder.find(".panel").addClass("tileH fullH");
+				    var $mainHolder = $("#x_mainHolder");
+				    // Two panels. If in portrait mode, stack vertical, otherwise show horizontal
+					// Use mainHolder, because height of panelHolder is not set on touch/mobile devices
+				    if ($mainHolder.width() >= $mainHolder.height() ) {
+                        $panelHolder.find(".panel").addClass("tileH fullH");
+                    }
+                    else
+					{
+                        $panelHolder.find(".panel").addClass("tileV fullW");
+					}
 					
 				} else {
 					$panelHolder.find(".panel").addClass("fullH");
@@ -487,8 +638,8 @@
 			var mediaPanelData = $(x_currentPageXML).children("mediaPanel");
 			
 			if (mediaPanelIndex != -1) {
-				popcornInstance = this.loadMedia(
-					$("#panel" + mediaPanelIndex),
+			    this.popcornInstance = this.loadMedia(
+					$('#' + mediaLesson.panelbaseid + mediaPanelIndex),
 					mediaType,
 					{	tip: mediaPanelData.attr("tip"),
 						width: mediaPanelData.attr("width"),
@@ -510,51 +661,138 @@
 			
 			// _____ SORT & CREATE SYNCH POINT EVENTS FOR EACH PANEL _____
 
-			if (popcornInstance != undefined) {
+			if (this.popcornInstance != undefined) {
+
+                if (vidFullWatched == null || vidFullWatched == undefined)
+                {
+                    vidFullWatched = {
+                        time: 0,
+                        synchStart: 0,
+                        duration: this.popcornInstance.duration(),
+                        synchName: "video",
+                        watched: [],
+                        segments: []
+                    }
+                }
 
                 panelData.each(function(i) {
-                    mediaLesson.sortPopcorn($(this).children(), "panel" + i, popcornInstance, $(".mainMedia"));
+                    mediaLesson.sortPopcorn($(this).children(), mediaLesson.panelbaseid + i, mediaLesson.popcornInstance, $(".mainMedia"));
                 });
 
                 //Adds events to popcorn
-				var lastTime = -1;
-				popcornInstance.media.addEventListener( "timeupdate", function() {
-					var popTime = popcornInstance.media.currentTime;
-					var block = getBlock(lastTime);
-					if (lastTime != popTime && popTime > 0) {
-						lastTime = popcornInstance.media.currentTime;
-                        updateTable(vidFullWatched, lastTime);
-						updateTable(block, lastTime);
-					}
+                this.addEvents();
 
-				});
-				popcornInstance.media.addEventListener( "play", function() {
-					if (vidFullWatched == null || vidFullWatched == undefined)
-                    {
-                        vidFullWatched = {
-                            synchStart: 0,
-                            duration: popcornInstance.duration(),
-                            synchName: "full_video",
-                            watched: []
-                    }}
-					duration = popcornInstance.duration();
-				});
-				popcornInstance.media.addEventListener( "pause", function() {
-					var block = getBlock(popcornInstance.currentTime());
-					sentXAPI(vidFullWatched, lookupTable(vidFullWatched));
-					sentXAPI(block,lookupTable(block));
-
-				});
-				popcornInstance.media.addEventListener( "seeked", function() {
-					popcornInstance.pause();
-					popcornInstance.play();
-				});
 			}
-			
+            this.initTracking();
 			x_pageLoaded();
 		};
 
-		 function getBlock(time)
+		this.addEvents = function()
+        {
+            this.popcornInstance.on( "timeupdate", function() {
+                var popTime = mediaLesson.popcornInstance.currentTime();
+                //console.log("Timeupdate: " + popTime + " prevTime=" + prevTime + ", seeking=" + mediaLesson.popcornInstance.seeking());
+                var block = mediaLesson.getBlock(lastTime);
+                if (lastTime != popTime && popTime > 0) {
+                    prevTime = lastTime;
+                    lastTime = popTime;
+                    mediaLesson.updateTable(vidFullWatched, lastTime);
+                    mediaLesson.updateTable(block, lastTime);
+                }
+
+            });
+            this.popcornInstance.on( "play", function() {
+                var popTime = mediaLesson.popcornInstance.currentTime();
+                console.log("Play    : " + popTime);
+                currSegment = {
+                    start: popTime,
+                    end: -1
+                };
+                var block = mediaLesson.getBlock(popTime);
+                var name = "";
+                if (block != null)
+                {
+                    name = block.synchName;
+                }
+                vidFullWatched.duration = mediaLesson.popcornInstance.duration();
+                vidFullWatched.time = popTime;
+                duration = mediaLesson.popcornInstance.duration();
+                XTVideo(x_currentPage, trackinglabel, name, "played", vidFullWatched);
+            });
+            this.popcornInstance.on( "pause", function() {
+                var popTime = mediaLesson.popcornInstance.currentTime();
+                vidFullWatched.time = popTime;
+                console.log("Pause   : " + popTime);
+                var block = mediaLesson.getBlock(popTime);
+                var name = "";
+                if (block != null)
+                {
+                    name = block.synchName;
+                }
+                currSegment.end = popTime;
+                mediaLesson.addSegment(currSegment);
+                currSegment = {
+                    start: popTime,
+                    end: -1
+                };
+                vidFullWatched.duration = mediaLesson.popcornInstance.duration();
+                duration = mediaLesson.popcornInstance.duration();
+                var progress = XThelperDetermineProgress(vidFullWatched) * 100.0;
+                mediaLesson.sendXAPI(vidFullWatched, progress);
+                mediaLesson.sendXAPI(block,lookupTable(block));
+                XTVideo(x_currentPage, trackinglabel, name, "paused", vidFullWatched);
+
+            });
+            this.popcornInstance.on( "seeked", function() {
+                var popTime = mediaLesson.popcornInstance.currentTime();
+                vidFullWatched.time = popTime;
+                vidFullWatched.prevTime = prevTime;
+                console.log("Seeked  : " + popTime + ", prevTime=" + prevTime);
+                currSegment.end = prevTime;
+                mediaLesson.addSegment(currSegment);
+                currSegment = {
+                    start: popTime,
+                    end: -1
+                };
+                vidFullWatched.duration = mediaLesson.popcornInstance.duration();
+                duration = mediaLesson.popcornInstance.duration();
+                XTVideo(x_currentPage, trackinglabel, name, "seeked", vidFullWatched);
+                mediaLesson.popcornInstance.pause();
+                mediaLesson.popcornInstance.play();
+            });
+            this.popcornInstance.on("ended", function() {
+                var popTime = mediaLesson.popcornInstance.duration();
+                vidFullWatched.duration = mediaLesson.popcornInstance.duration();
+                duration = mediaLesson.popcornInstance.duration();
+                vidFullWatched.time = popTime;
+                console.log("End     : " + popTime);
+                var block = mediaLesson.getBlock(popTime);
+                var name = "";
+                if (block != null)
+                {
+                    name = block.synchName;
+                }
+                currSegment.end = popTime;
+                mediaLesson.addSegment(currSegment);
+                currSegment = {
+                    start: popTime,
+                    end: -1
+                };
+                XTVideo(x_currentPage, trackinglabel, name, "paused", vidFullWatched);
+
+            });
+        };
+
+        this.removeEvents = function()
+        {
+            this.popcornInstance.off("timeupdate");
+            this.popcornInstance.off("play");
+            this.popcornInstance.off("pause");
+            this.popcornInstance.off("seeked");
+            this.popcornInstance.off("ended");
+        };
+
+        this.getBlock = function(time)
         {
             if (blocks.length == 0)
 			{
@@ -568,10 +806,10 @@
                 }
             }
             return blocks[i];
-        }
+        };
 
 		// helper function for lookupTable, called on time updates, checks what part of a video block is being watched (in %).
-		updateTable = function (block, current) {
+		this.updateTable = function (block, current) {
 		     if (block != null) {
                  if (block.duration < 30) {
                      var i = Math.round((current - block.synchStart) / block.duration * 20) * 5;
@@ -581,15 +819,16 @@
                  }
                  block.watched[i] = 1;
                  if (i == 100) {
-                     sentXAPI(block, 100);
+                     this.sendXAPI(block, 100);
                  }
              }
-		}
+		};
 
-		function sentXAPI(block, percentageWatched)
+		this.sendXAPI = function(block, percentageWatched)
         {
-            XTSetViewed(x_currentPage, block.synchName, percentageWatched)
-        }
+            if (block != null)
+            	XTSetViewed(x_currentPage, block.synchName, percentageWatched)
+        };
 
 		// function calculates the time watched within a video block based on an array (in %).
 		lookupTable = function (block) {
@@ -636,7 +875,8 @@
 				if (mediaData.media.indexOf("www.youtube.com") != -1 || mediaData.media.indexOf("//youtu") != -1) {
 					var $youTube = $holder.find(".popcornMedia").addClass("youTube");
 					mediaLesson.resizeYouTube($youTube);
-					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .youTube", mediaData.media + "&controls=2"); // force controls to appear
+					var urlsep = (mediaData.media.indexOf("?") < 0 ? "?" : "&");
+					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .youTube", mediaData.media + urlsep + "controls=2&playsinline=1"); // force controls to appear, and force online play on iPhone
 					$youTube.data("popcornInstance", popcornInstance);
 					
 					if (mediaData.autoplay == "true") {
@@ -647,7 +887,7 @@
 					var $vimeo = $holder.find(".popcornMedia").addClass("vimeo");
 					mediaLesson.resizeVimeo($vimeo);
 					
-					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .vimeo", mediaData.media); // force controls to appear
+					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .vimeo", mediaData.media);
 					$vimeo.data("popcornInstance", popcornInstance);
 
 
@@ -655,7 +895,19 @@
 						popcornInstance.play();
 					}
 					
-				} else {
+				} else if (mediaData.media.indexOf("mediamission.nl") != -1) {
+                    var $mediasite = $holder.find(".popcornMedia").addClass("mediasite");
+                    mediaLesson.resizeMediasite($mediasite);
+
+                    popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .mediasite", mediaData.media);
+                    $mediasite.data("popcornInstance", popcornInstance);
+
+
+                    if (mediaData.autoplay == "true") {
+                        popcornInstance.play();
+                    }
+
+                } else {
 					$myVideo
 						.attr("title", mediaData.tip)
 						.css("margin", "0 auto")
@@ -1009,6 +1261,9 @@
 					if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
 						popcornInstance.cue(thisContent.start, function() {
 							this.pause();
+                            if (thisContent.allInfo.getAttribute("overlay") != "true") {
+                                mediaLesson.exitFullScreen();
+                            }
 						});
 					}
 
@@ -1074,7 +1329,10 @@
 			popcornInstance.cue(Number(synchData.getAttribute("synch")), function() {
 				// pause / play media
 				if (synchData.getAttribute("pauseMedia") == "true") {
-					this.pause();
+				    this.pause();
+				    if (synchData.getAttribute("overlay") != "true") {
+                        mediaLesson.exitFullScreen();
+                    }
 				} else {
 					this.play();
 				}

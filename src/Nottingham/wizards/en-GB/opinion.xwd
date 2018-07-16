@@ -3,14 +3,14 @@
     <newNodes>
       <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" showfeedback="false" feedback="Provide feedback here"
 	  quesCount="Question {i} of {n}"
-	  onCompletion="You have completed the questionaire" score="You answered {i} / {n}"
+	  onCompletion="You have completed the questionnaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit" 
 	  />]]></opinion>
     </newNodes>
   </pageWizard>
 
   <!-- OPINION=============================== -->
-    <opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale.">
+    <opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
     <name label="Opinion Title" type="TextInput" wysiwyg="true" />
 	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
@@ -30,8 +30,12 @@
 
 	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
 	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
-    <diagram label="Show diagram" type="CheckBox" defaultValue="true" optional="true"/>
+    <diagram label="Hide diagram" type="CheckBox" defaultValue="false" optional="true"/>
+    <layout label="Layout options" type="group" optional="true">
+      <list label="Show questions in list" type="checkbox" optional="true" tooltip="Show more than one question per page" defaultValue="false"/>
+      <paging label="Use paging" type="checkbox" optional="true" tooltip="Group question list in pages if using list mode" defaultValue="true" />
+      <pagesize label="Max. page size" type="textinput" wysiwyg="false" optional="true" tooltip="Maximum number of questions shown per page if page mode is used." defaultValue="10" />
+    </layout>
 
       <newNodes>
         <opinionClass><![CDATA[<opinionClass  name="C - Tree/Tracking label"/>]]></opinionClass>
@@ -41,9 +45,10 @@
 
   <opinionClass menuItem="Class">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="C - Tree/Tracking label" wysiwyg="false"/>
+    <title label="Title" type="TextInput" mandatory="true" defaultValue="Title to use in graph" wysiwyg="true" />
 
     <newNodes>
-      <opinionQuestion><![CDATA[<opinionQuestion  name="Q - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer" classWeight="1" interactivity="slider" />]]></opinionQuestion>
+      <opinionQuestion><![CDATA[<opinionQuestion  name="C - Tree/Tracking label" title="Title to use in graph" prompt="Here is a prompt" scale="false" type="Single Answer" classWeight="1" interactivity="slider" />]]></opinionQuestion>
     </newNodes>
   </opinionClass>
 

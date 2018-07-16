@@ -1,9 +1,11 @@
+@import url("editorStyles.css");
 /* change this file to rebrand your version of Xerte Online Toolkits */
 
 body {
 	font-family:	Arial, sans-serif;
 	color: #cfcfcf;
 }
+a{color: #cfcfcf;}
 
 #x_mainHolder {
 	border:		1px solid #1c1c1c;
@@ -44,6 +46,15 @@ h2 {
 h3 {
 	font-size:	1em;
 	margin:		0px;
+}
+
+.qSeparator hr {
+	background-color: #cfcfcf;
+	border-color: #cfcfcf;
+	border: solid 1px #cfcfcf;
+}
+.sliderHolder .labelHolder a p {
+	color: #cfcfcf;
 }
 
 /* see pngs in modules/xerte/parent_templates/Nottingham/common_html5 to see how replacement images for buttons should be made (with 4 states in one image file) */

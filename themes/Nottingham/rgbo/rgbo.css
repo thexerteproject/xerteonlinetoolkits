@@ -264,6 +264,20 @@ a.hotspot, a.hotspot.selected {
   border-radius: 2vmin;
   width: 98%; }
 
+.x_opinion_page #pageContents input {
+  padding-left: 0; }
+
+.qPanel {
+  overflow-x: hidden; }
+
+.qSeparator hr {
+  background-color: #ffc04d;
+  border-color: #ffc04d;
+  border: solid 1px #ffc04d; }
+
+.sliderHolder .labelHolder a p {
+  color: #000000; }
+
 .x_grid_page #gridBorders {
   border-radius: 1vmin; }
 
@@ -584,16 +598,352 @@ div#shorturltodisplay a {
     opacity: 0; }
   to {
     opacity: 1; } }
-.marker {
-  font: Roboto, "Segoe UI", Tahoma, sans-serif;
+/*start here and set the default values for all the variables*/
+/*You should not edit the editorstyles.css file directly or change values directly unless you wish to override something*/
+.panel1 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: green;
+  color: #ffffff; }
+
+.panel1 a {
+  color: white !important; }
+
+.panel2 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: red;
+  color: #ffffff; }
+
+.panel2 a {
+  color: white !important; }
+
+.panel3 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #0087C6;
+  color: #ffffff; }
+
+.panel3 a {
+  color: white !important; }
+
+.panel4 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: orange;
+  color: #ffffff; }
+
+.panel4 a {
+  color: white !important; }
+
+.panel5 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
   background-color: #222222;
   color: #ffffff;
+  display: table; }
+
+.panel5 a {
+  color: white !important; }
+
+.panel6 {
+  border-radius: 1vmin;
+  display: table;
+  padding: 10px;
+  font-style: normal;
+  background-color: #D13759;
+  color: #ffffff; }
+
+.panel6 a {
+  color: white !important; }
+
+.highlight1 {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: green; }
+
+.highlight2 {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: red; }
+
+.highlight3 {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #0087C6; }
+
+.highlight4 {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: orange; }
+
+.highlight5 {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #222222; }
+
+.highlight6 {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  display: table;
+  font-weight: lighter;
+  margin-bottom: 7px;
+  margin-top: 5px;
+  padding: 10px;
+  border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-color: #D13759; }
+
+blockquote {
+  font: 400 14px/24px Arial, sans-serif;
+  border-left: 10px solid;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C" "\201D";
+  background: #f9f9f9;
+  border-color: #ccc; }
+
+blockquote:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #ccc; }
+
+blockquote p {
+  display: inline; }
+
+blockquote:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #ccc; }
+
+.bq1 {
+  border-color: green; }
+
+.bq1:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: green; }
+
+.bq1:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: green; }
+
+.bq2 {
+  border-color: red; }
+
+.bq2:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: red; }
+
+.bq2:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: red; }
+
+.bq3 {
+  border-color: #0087C6; }
+
+.bq3:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #0087C6; }
+
+.bq3:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #0087C6; }
+
+.bq4 {
+  border-color: orange; }
+
+.bq4:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: orange; }
+
+.bq4:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: orange; }
+
+.bq5 {
+  border-color: #222222; }
+
+.bq5:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #222222; }
+
+.bq5:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #222222; }
+
+.bq6 {
+  border-color: #D13759; }
+
+.bq6:after {
+  content: close-quote;
+  font-size: 4em;
+  line-height: .1em;
+  margin-left: .1em;
+  vertical-align: -.6em;
+  color: #D13759; }
+
+.bq6:before {
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+  color: #D13759; }
+
+.speech-bubble1 {
+  background: green;
+  color: white; }
+
+.speech-bubble1:after {
+  border-right-color: green; }
+
+.speech-bubble2 {
+  background: red;
+  color: white; }
+
+.speech-bubble2:after {
+  border-left-color: red; }
+
+.speech-bubble3 {
+  background: #0087C6;
+  color: white; }
+
+.speech-bubble3:after {
+  border-right-color: #0087C6; }
+
+.speech-bubble4 {
+  background: orange;
+  color: white; }
+
+.speech-bubble4:after {
+  border-left-color: orange; }
+
+.speech-bubble5 {
+  background: #222222;
+  color: white; }
+
+.speech-bubble5:after {
+  border-top-color: #222222; }
+
+.speech-bubble6 {
+  background: #D13759;
+  color: white; }
+
+.speech-bubble6:after {
+  font-family: Arial, sans-serif;
+  border-top-color: #D13759; }
+
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble4 a, .speech-bubble5 a, .speech-bubble6 a {
+  color: white !important;
+  text-decoration: underline; }
+
+.marker {
+  font-family: Arial, sans-serif;
+  background-color: #222222;
+  color: orange;
   border-radius: 1vmin;
   display: table;
   padding: 10px; }
 
 var {
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background-color: green;
   color: #ffffff;
   display: table;
@@ -602,16 +952,16 @@ var {
   padding: 10px; }
 
 kbd {
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background-color: orange;
-  color: #000000;
+  color: #222222;
   display: table;
   border-radius: 1vmin;
   font-style: normal;
   padding: 10px; }
 
 samp {
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   background-color: #0087C6;
   color: #ffffff;
   display: table;
@@ -624,26 +974,26 @@ q {
   border-top: 1px solid #ccc;
   color: #333;
   display: block;
-  /*margin-left:20px;
-  margin-right:20px;*/
   padding: 10px; }
 
 cite {
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   font-size: 14px;
   font-style: normal;
-  /*font-weight:400;
-  margin-left:20px;*/
   padding: 10px; }
 
 tt {
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
-  background-color: red;
+  font-family: Arial, sans-serif;
+  background-color: #2196F3;
   color: #ffffff;
   display: table;
   border-radius: 1vmin;
   font-style: normal;
   padding: 10px; }
+
+tt a, kbd a, samp a, code a, .marker a, var a {
+  color: white !important;
+  text-decoration: underline; }
 
 ::-webkit-scrollbar {
   width: 12px; }
@@ -663,16 +1013,93 @@ tt {
 ::-webkit-scrollbar-thumb:window-inactive {
   background: rgba(255, 255, 255, 0.4); }
 
+[type='range'] {
+  -webkit-appearance: none;
+  margin: 12px 0;
+  width: 100%; }
+  [type='range']:focus {
+    outline: 0; }
+    [type='range']:focus::-webkit-slider-runnable-track {
+      background: #2f2f2f; }
+    [type='range']:focus::-ms-fill-lower {
+      background: #222222; }
+    [type='range']:focus::-ms-fill-upper {
+      background: #2f2f2f; }
+  [type='range']::-webkit-slider-runnable-track {
+    cursor: pointer;
+    height: 8px;
+    transition: all .2s ease;
+    width: 100%;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
+    background: #222222;
+    border: 2px solid #222222;
+    border-radius: 5px; }
+  [type='range']::-webkit-slider-thumb {
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2), 0 0 4px rgba(13, 13, 13, 0.2);
+    background: green;
+    border: 2px solid green;
+    border-radius: 12px;
+    cursor: pointer;
+    height: 24px;
+    width: 24px;
+    -webkit-appearance: none;
+    margin-top: -10px; }
+  [type='range']::-moz-range-track {
+    cursor: pointer;
+    height: 8px;
+    transition: all .2s ease;
+    width: 100%;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
+    background: #222222;
+    border: 2px solid #222222;
+    border-radius: 5px; }
+  [type='range']::-moz-range-thumb {
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2), 0 0 4px rgba(13, 13, 13, 0.2);
+    background: green;
+    border: 2px solid green;
+    border-radius: 12px;
+    cursor: pointer;
+    height: 24px;
+    width: 24px; }
+  [type='range']::-ms-track {
+    cursor: pointer;
+    height: 8px;
+    transition: all .2s ease;
+    width: 100%;
+    background: transparent;
+    border-color: transparent;
+    border-width: 12px 0;
+    color: transparent; }
+  [type='range']::-ms-fill-lower {
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
+    background: #151515;
+    border: 2px solid #222222;
+    border-radius: 10px; }
+  [type='range']::-ms-fill-upper {
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
+    background: #222222;
+    border: 2px solid #222222;
+    border-radius: 10px; }
+  [type='range']::-ms-thumb {
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2), 0 0 4px rgba(13, 13, 13, 0.2);
+    background: green;
+    border: 2px solid green;
+    border-radius: 12px;
+    cursor: pointer;
+    height: 24px;
+    width: 24px;
+    margin-top: 0; }
+
 /* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
 /*You should not edit the .css files directly or change values directly unless you wish to override something*/
 /*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
 body {
   background: #BFBFBF;
   color: #222222;
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif; }
+  font-family: Arial, sans-serif; }
 
 .ui-button .ui-button-text {
-  font-family: Roboto, "Segoe UI", Tahoma, sans-serif; }
+  font-family: Arial, sans-serif; }
 
 /*Note: these font-sizes will be ignored when responsive text is on*/
 p {

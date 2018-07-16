@@ -330,10 +330,9 @@ function peer_display($xerte_toolkits_site,$change, $template_id){
     else
     {
         $retouremail = $_SESSION['toolkits_logon_username'];
-        $retouremail .= '@';
         if (strlen($xerte_toolkits_site->email_to_add_to_username)>0)
         {
-            $retouremail .= $xerte_toolkits_site->email_to_add_to_username;
+            $retouremail .= '@' . $xerte_toolkits_site->email_to_add_to_username;
         }
 
     }
@@ -560,6 +559,77 @@ function project_info($template_id){
 
 }
 
+function statistics_prepare($template_id)
+{
+
+    $info = new stdClass();
+    $info->available = false;
+
+    $html = "<div id='graph_" . $template_id . "' class='statistics'><img src='editor/img/loading16.gif'/></div>";
+
+    global $xerte_toolkits_site;
+
+    if ($xerte_toolkits_site->dashboard_enabled != 'false') {
+
+        // determine role and check against minrole
+        $role = get_user_access_rights($template_id);
+
+        $access = false;
+        switch($xerte_toolkits_site->xapi_dashboard_minrole)
+        {
+            case 'creator':
+                $access = ($role == 'creator');
+                break;
+            case 'co-author':
+                $access = ($role == 'creator' || $role == 'co-author');
+                break;
+            case 'editor':
+                $access = ($role == 'creator' || $role == 'co-author' || $role == 'editor');
+                break;
+            case 'read-only':
+                $access = ($role == 'creator' || $role == 'co-author' || $role == 'editor' || $role=='read-only');
+                break;
+        }
+
+        if ($access) {
+            $prefix = $xerte_toolkits_site->database_table_prefix;
+
+
+            $query_for_names = "select td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode from {$prefix}templatedetails td where template_id=?";
+
+            $params = array($template_id);
+            $row = db_query_one($query_for_names, $params);
+
+            if ($row['tsugi_xapi_enabled'] && $row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != "") {
+                $info->info = $html;
+                $lrs = new stdClass();
+                $lrs->lrsendpoint = $row['tsugi_xapi_endpoint'];
+                $lrs->lrskey = $row['tsugi_xapi_key'];
+                $lrs->lrssecret = $row['tsugi_xapi_secret'];
+                $lrs->groupmode = $row['tsugi_xapi_student_id_mode'];
+                $info->lrs = $lrs;
+                $info->available = true;
+                $dashboard = new stdClass();
+                $dashboard->enable_nonanonymous = $xerte_toolkits_site->dashboard_nonanonymous;
+                $dashboard->default_period = (int)$xerte_toolkits_site->dashboard_period;
+                $info->dashboard = $dashboard;
+            } else {
+                $info->info = "";
+                $info->available = false;
+            }
+        }
+        else{
+            $info->info = "";
+            $info->available = false;
+        }
+    }
+    else
+    {
+        $info->info = "";
+        $info->available = false;
+    }
+    return $info;
+}
 function media_quota_info($template_id)
 {
     global $xerte_toolkits_site;
@@ -890,7 +960,7 @@ function tsugi_display($id, $lti_def, $mesg = "")
 
 
 
-    if (file_exists($xerte_toolkits_site->tsugi_dir))
+    if ($lti_def->tsugi_installed)
     {
     ?>
     <p class="header"><span><?php echo PROPERTIES_LIBRARY_TSUGI; ?></span></p>
@@ -925,23 +995,27 @@ function tsugi_display($id, $lti_def, $mesg = "")
                 <?php
                 for ($i=0; $i<4; $i++)
                 {
-                     echo "<option value=\"" . $i . "\" " . ($i == $lti_def->xapi_student_id_mode ? "selected>" : ">");
-                     switch($i)
-                     {
-                         case 0:
-                             echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_0;
-                             break;
-                         case 1:
-                             echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_1;
-                             break;
-                         case 2:
-                             echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_2;
-                             break;
-                         case 3:
-                             echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_3;
-                             break;
-                     }
-                     echo "</option>\n";
+                    if (! $lti_def->tsugi_installed && $i<3)
+                    {
+                        continue;
+                    }
+                    echo "<option value=\"" . $i . "\" " . ($i == $lti_def->xapi_student_id_mode ? "selected>" : ">");
+                    switch($i)
+                    {
+                        case 0:
+                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_0;
+                            break;
+                        case 1:
+                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_1;
+                            break;
+                        case 2:
+                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_2;
+                            break;
+                        case 3:
+                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_3;
+                            break;
+                    }
+                    echo "</option>\n";
                 }
                 ?>
             </select><br>

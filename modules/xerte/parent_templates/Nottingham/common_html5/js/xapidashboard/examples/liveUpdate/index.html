@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html ng-app='xAPIGame'>
+	<head>
+		<link rel='stylesheet' href='index.css'/>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js"></script>
+		<script src='../../dist/xapicollection.min.js'></script>
+		<script src='model.js'></script>
+	</head>
+	<body ng-controller='MenuCtrl'>
+		<div class='container' ng-controller='ListsCtrl'>
+
+			<div class='list' ng-repeat='list in lists' ng-show='list.specificity()'>
+				<h2>{{list.name}}</h2>
+				<p>{{list.description}}</p>
+				<span>{{list.caveat}}</span><br/>
+				<ol ng-show='list.items.length > 0'>
+					<li ng-repeat='item in list.items'>
+						<span class="item-name">{{item.name}}</span>
+						<span>- {{item.value | number}} {{list.quality + (item.value!=1 ? 's' : '')}}  ({{item.date | date : 'MMM dd'}})</span>
+					</li>
+				</ol>
+				<p ng-show='list.items.length == 0'>No Data</p>
+			</div>
+		</div>
+	</body>
+</html>
