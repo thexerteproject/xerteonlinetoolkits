@@ -1591,7 +1591,6 @@
             runningPlugins.splice( runningPlugins.indexOf( byEnd ), 1 );
 
             if ( !obj.data.disabled[ type ] ) {
-
               natives.end.call( obj, event, byEnd );
 
               obj.emit( trackend,
@@ -4249,38 +4248,6 @@
     var CURRENT_TIME_MONITOR_MS = 16;
     var MEDIASITE_HOST = "mediamission.nl";
 
-    function MediasitePlayer( iframe )
-    {
-        var self = this;
-        var url = iframe.src;
-
-        //url = "http://localhost:25565";
-
-        function sendMessage( method, params ) {
-            var data = JSON.stringify({
-                method: method,
-                value: params
-            });
-
-            // The iframe has been destroyed, it just doesn't know it
-            if (!iframe.contentWindow) {
-                return;
-            }
-            //iframe.contentWindow.postMessage(data, url);
-        }
-
-        var methods = ("play pause stop seekTo getCurrentTime getCurrentChapter getCurrentSlide getCurrentCaption getChapters getTimedEvents"
-        + "getPlayState getDuration getPlayerState getVolume setVolume addEventListener").split(" ");
-
-        methods.forEach( function( method ) {
-            // All current methods take 0 or 1 args, always send arg0
-            self[ method ] = function( arg0 ) {
-                sendMessage( method, arg0 );
-
-            };
-        });
-    }
-
     function HTMLMediasiteVideoElement(id) {
         var self = new Popcorn._MediaElementProto(),
             parent = typeof id === "string" ? Popcorn.dom.find( id ) : id,
@@ -4337,7 +4304,12 @@
             }
 
             impl.src = aSrc;
-            aSrc = "http://deltion.mediamission.nl/Mediasite/Play/c550ff4fee9d493b8f5efebe45b777271d";
+
+            //WARNING
+            if(window.location.protocol !== "https:") {
+                aSrc = aSrc.replace("https://", "http://").trim();
+            }
+
             parent.appendChild(elem);
 
             $.getScript("modules/xerte/parent_templates/Nottingham/common_html5/js/popcorn/plugins/MediasitePlayerIFrameAPI.js")
@@ -4351,9 +4323,7 @@
                                 "error": function (errorData) {
                                     console.log(errorData);
                                 },
-                                "playstatechanged": onPlayStateChanged,
-                                "playerstatechanged": onPlayerStateChanged,
-                                "currenttimechanged": onCurrentTimeChanged
+                                "playerstatechanged": onPlayerStateChanged
                             },
                             layoutOptions: {
                                 "BackgroundColor": "#FFFFFF"
@@ -4364,13 +4334,16 @@
                 .fail(function (a, b, c) {
                     console.log("Failed: " + c)
                 });
+            self.dispatchEvent("loadstart");
+            self.dispatchEvent("progress");
         }
-
-            //elem.src = aSrc;
 
             function onReady()
             {
               self.dispatchEvent("loadedmetadata");
+
+                currentTimeInterval = setInterval( monitorCurrentTime,
+                    CURRENT_TIME_MONITOR_MS );
 
                 self.dispatchEvent( "loadeddata" );
 
@@ -4384,31 +4357,39 @@
                 iframe.style.height = "100%";
                 iframe.style.width = "100%";
 
+                impl.duration = player.getDuration();
+
                 player.currentTime = 0;
                 player.seekTo(0);
                 playerReady = true;
-              //addEvent("pause", onPause);
             }
 
-            function onPlayStateChanged ( data )
-            {
-              //console.log( data.playState + "playstate");
-            }
 
-            function onCurrentTimeChanged (data) {
-                impl.currentTime = data.currentTime;
-                //player.currentTime = impl.currentTime;
-                //player.seekTo(impl.currentTime);
+        function monitorCurrentTime() {
+            var playerTime = player.getCurrentTime();
+            if ( !impl.seeking ) {
+                if ( Math.abs( impl.currentTime - playerTime ) > CURRENT_TIME_MONITOR_MS ) {
+                    onSeeking();
+                    onSeeked();
+                }
+                impl.currentTime = playerTime;
+            } else if ( Math.abs( playerTime - impl.currentTime ) < 1 ) {
+                onSeeked();
             }
+        }
 
-            function changeCurrentTime (data)
-            {
-                impl.currentTime = data;
-                player.seekTo(data);
+        function changeCurrentTime( aTime ) {
+            if (aTime === impl.currentTime) {
+                return;
             }
+            impl.currentTime = aTime;
+            onSeeking();
+            player.seekTo(aTime);
+        }
+
+
             function onPlayerStateChanged (data)
             {
-              //console.log( data.state );
               switch (data.state)
               {
                   case "Playing":
@@ -4419,6 +4400,10 @@
                       onPause();
                       break;
 
+                  case "Ended":
+                    onEnded();
+                    break;
+
               }
             }
 
@@ -4426,15 +4411,25 @@
                 self.dispatchEvent("timeupdate");
             }
 
-            function onPlay() {
-                if (playerPaused) {
-                    self.dispatchEvent("play")
-                    playerPaused = false;
-                    impl.paused = false;
-                    timeUpdateInterval = setInterval(onTimeUpdate,
-                        self._util.TIMEUPDATE_MS);
-                }
+        function onPlay() {
+            if( impl.ended ) {
+                changeCurrentTime( 0 );
+                impl.ended = false;
             }
+            impl.duration = player.getDuration();
+            self.dispatchEvent( "durationchange" );
+
+            timeUpdateInterval = setInterval( onTimeUpdate,
+                self._util.TIMEUPDATE_MS );
+            impl.paused = false;
+            if( playerPaused ) {
+                playerPaused = false;
+
+                self.dispatchEvent( "play" );
+
+                self.dispatchEvent( "playing" );
+            }
+        }
 
             self.play = function() {
                 impl.paused = false;
@@ -4464,20 +4459,22 @@
                 player.pause();
             };
 
+        function onSeeking() {
+            impl.seeking = true;
+            self.dispatchEvent( "seeking" );
+        }
+
+        function onSeeked() {
+            impl.ended = false;
+            impl.seeking = false;
+            self.dispatchEvent( "timeupdate" );
+            self.dispatchEvent( "seeked" );
+            self.dispatchEvent( "canplay" );
+            self.dispatchEvent( "canplaythrough" );
+        }
 
 
-
-            function addEvent (event, listener)
-            {
-               self.addEventListener(event, listener, false);
-
-               player.addHandler(event, listener);
-            }
-
-
-
-
-        function destroyPlayer() {
+        /*function destroyPlayer() {
             if( !( playerReady && player ) ) {
                 return;
             }
@@ -4487,14 +4484,14 @@
             window.removeEventListener( 'message', onStateChange, false );
             parent.removeChild( elem );
             elem = document.createElement( "iframe" );
+        }*/
+
+        function onEnded() {
+            impl.ended = true;
+            onPause();
+            self.dispatchEvent("timeupdate");
+            self.dispatchEvent("ended");
         }
-
-        function onStateChange( event )
-        {
-            debugger;
-        }
-
-
 
         Object.defineProperties( self, {
 
@@ -4509,9 +4506,30 @@
                 }
             },
 
+            seeking: {
+                get: function() {
+                    return impl.seeking;
+                }
+            },
+
+            loop: {
+                get: function() {
+                    return impl.loop;
+                },
+                set: function( aValue ) {
+                    impl.loop = self._util.isAttributeSet( aValue );
+                }
+            },
+
             paused: {
                 get: function() {
                     return impl.paused;
+                }
+            },
+
+            duration: {
+                get: function() {
+                    return impl.duration;
                 }
             },
 
@@ -6980,7 +6998,6 @@
           return impl.currentTime;
         },
         set: function( aValue ) {
-          debugger;
           changeCurrentTime( aValue );
         }
       },
