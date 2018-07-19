@@ -962,13 +962,11 @@ function parseContent(pageIndex){
 					}
 					
 					if (this.nodeName == 'audio'){
-						//section.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
-						section.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+						section.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 					}
 					
 					if (this.nodeName == 'video'){
-						//section.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
-						section.append('<p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+						section.append('<p><video src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata" style="max-width: 100%" width="100%" height="100%"></video></p>');
 					}
 					
 					if (this.nodeName == 'pdf'){
@@ -1195,7 +1193,8 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	var content = $( '<div class="tab-content"/>' );
 	
 	var iframeKaltura = [],
-		pdf = [];
+		pdf = [],
+		video = [];
 	
 	node.children().each( function(index, value){
 		if (index == 0){
@@ -1233,11 +1232,12 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				tab.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				tab.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
-				tab.append('<p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+				tab.append('<p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
+				video.push(tab.find('video'));
 			}
 			
 			if (this.nodeName == 'link'){
@@ -1288,7 +1288,8 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 		// hacky fix for issue with UoN mediaspace videos embedded on navigators
 		var $iframeTabs = $(),
-			$pdfTabs = $();
+			$pdfTabs = $(),
+			$videoTabs = $();
 		
 		for (var i=0; i<iframeKaltura.length; i++) {
 			$iframeTabs = $iframeTabs.add($('a[data-toggle="tab"]:eq(' + iframeKaltura[i] + ')'));
@@ -1317,12 +1318,26 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 		});
 		
+		// fix for issue where videos don't load correct height if not on 1st pane of navigators
+		for (var i=0; i<video.length; i++) {
+			$videoTabs = $videoTabs.add($(video[i]).parents('.tabbable').find('ul a[data-toggle="tab"]:eq(' + $(video[i]).parents('.tab-pane').index() + ')'));
+		}
+		
+		$videoTabs.on('shown.bs.tab', function (e) {
+			var $videoRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active video");
+			if ($videoRefresh.data('forceLoad') != true) {
+				$videoRefresh
+					.data('forceLoad', true)
+					.load();
+			}
+		});
+		
 	}, 0);
 	
 }
 
 function makeAccordion(node,section, sectionIndex, itemIndex){
-
+	
 	var accDiv = $( '<div class="accordion" id="acc' + sectionIndex + '_' + itemIndex + '">' );
 	
 	node.children().each( function(index, value){
@@ -1357,11 +1372,11 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
 			}
 			
 			if (this.nodeName == 'link'){
@@ -1404,6 +1419,8 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 
 function makeCarousel(node, section, sectionIndex, itemIndex){
+	
+	var video = [];
 
 	var sectionIndex = sectionIndex;
 	
@@ -1456,11 +1473,12 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
+				video.push(pane.find('video'));
 			}
 			
 			if (this.nodeName == 'link'){
@@ -1503,6 +1521,21 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	carDiv.append( $('<a class="carousel-control right" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="next">&rsaquo;</a>') );
 	
 	section.append(carDiv);
+	
+	setTimeout( function(){
+		
+		// fix for issue where videos don't load correct height if not on 1st pane of carousel
+		carDiv.bind('slide.bs.carousel', function (e) {
+			for (var i=0; i<video.length; i++) {
+				if ($(video[i]).closest('.item').is(e.relatedTarget) && $(video[i]).data('forceLoad') != true) {
+					$(video[i])
+						.data('forceLoad', true)
+						.load();
+				}
+			}
+		});
+		
+	}, 0);
 
 }
 
