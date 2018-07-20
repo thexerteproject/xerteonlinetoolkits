@@ -856,17 +856,13 @@ function parseContent(pageIndex, checkSection){
 				}
 				
 				//add the section header
-				var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '';
+				var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '',
+					links = $(this).attr('links') != undefined && $(this).attr('links') != "none" ? '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>' : '',
+					subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h1>' + $(this).attr('name') + '</h1>' : '';
 				
-				var links = '';
+				var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
 				
-				if ($(this).attr('links') != undefined && $(this).attr('links') != "none") {
-					links = '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>';
-				}
-				
-				var subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h1>' + $(this).attr('name') + '</h1>' : '';
-				
-				var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '"><div class="page-header">' + subHeadings + extraTitle + links + '</div></section>');
+				var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '">' + pageHeader + '</section>');
 
 				//add the section contents
 				$(this).children().each( function(index, value){
