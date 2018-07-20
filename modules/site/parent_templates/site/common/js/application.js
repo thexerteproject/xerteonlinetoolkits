@@ -21,6 +21,7 @@ $(document).ready(init);
 var data;
 var languageData;
 var startPage = 0;
+var startSection;
 var theme = "default";
 var pageLink = "";
 var authorSupport = false;
@@ -91,8 +92,13 @@ function loadContent(){
     // If we have a start page/section then extract it and clear the url
     if (window.location.hash.length > 0) {
         pageLink = window.location.hash.substring(1);
+		
         if (pageLink.substring(0,4) == "page") {
             startPage = parseInt(pageLink.substring(4), 10) - 1;
+		}
+		
+		if (pageLink.indexOf('section') > -1) {
+			startSection = parseInt(pageLink.substring(pageLink.indexOf('section') + 7), 10);
 		}
  	}
 }
@@ -217,7 +223,7 @@ function getLangData(lang) {
 			setup();
 			
 			// step four
-			parseContent(startPage);
+			parseContent(startPage, true);
 			
 		},
 		
@@ -228,7 +234,7 @@ function getLangData(lang) {
 			} else { // hasn't found GB language file - set up anyway, will use fallback text in code
 				languageData = $("");
 				setup();
-				parseContent(startPage);
+				parseContent(startPage, true);
 			}
 			
 		}
@@ -683,6 +689,7 @@ function setup(){
 	if (script != undefined && script != "") {
 		$("head").append('<script>' +  script + '</script>');
 	}
+	
 }
 
 // add link around all examples of glossary words in text
@@ -765,10 +772,10 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 
 function goToSection(pageId) {
 	if (document.getElementById(pageId) == null || document.getElementById(pageId) == undefined) return;
-	document.location = '#' + pageId;
+	document.location.hash = '#' + pageId;
 }
 
-function parseContent(pageIndex){
+function parseContent(pageIndex, checkSection){
 	//clear out existing content
 	$('#mainContent').empty();
 	$('#toc').empty();
@@ -1051,6 +1058,10 @@ function parseContent(pageIndex){
 		
 		console.log("project contains no (unhidden) pages");
 		
+	}
+	
+	if (checkSection == true && startSection != undefined) {
+		goToSection('page' + (startPage+1) + 'section' + startSection);
 	}
 }
 
