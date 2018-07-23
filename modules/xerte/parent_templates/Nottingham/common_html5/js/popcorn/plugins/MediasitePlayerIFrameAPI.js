@@ -1,5 +1,5 @@
 ﻿/// <summary>
-/// Mediasite Player SDK v7.0
+/// Mediasite Player SDK v7.0.29
 /// 
 /// To create a Mediasite player, include this file and instantiate the player.  (One document can contain many players.)
 /// <pre>
@@ -121,8 +121,8 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
         var self = this;
         var _broker, _view, _model, _eventBundle;
         var _version = {
-            version: "7.0",
-            supports: ["6.1.5", "6.1.7", "6.1.9", "6.1.11", "7.0"],
+            version: "7.0.29",
+            supports: ["6.1.5", "6.1.7", "6.1.9", "6.1.11", "7.0", "7.0.28", "7.0.29"],
             application: 'MediasitePlayer'
         };
         var _versionMismatchCheck; // undefined for not checked, false for checked and acknowledged, true / version identifier for checked and not acknowledged
@@ -318,7 +318,7 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
                 "currenttimechanged": currySetPropertyFromEvent({ currentTime: "currentTime" }),
                 "durationchanged": currySetPropertyFromEvent({ duration: "duration" }),
                 "playbackratechanged": currySetPropertyFromEvent({ playbackRate: "playbackRate" }),
-                "captionchanged": currySetPropertyFromEvent({ captionText: "caption.text", captionTime: "caption.time" }),
+                "captionchanged": currySetPropertyFromEvent({ captions: "currentCaptions"}),
                 "chapterchanged": currySetPropertyFromEvent({ chapterTitle: "chapter.title", chapterTime: "chapter.time" }),
                 "timedeventreached": currySetPropertyFromEvent({ timedEventType: "timedevent.type", timedEventTime: "timedevent.time", timedEventPayload: "timedevent.payload" }),
                 "slidechanged": currySetPropertyFromEvent({ slideTitle: "slide.title", slideDescription: "slide.description", slideTime: "slide.time", slideUrl: "slide.url", slideStreamType: "slide.streamtype" }, "slideStreamType"),
@@ -354,6 +354,7 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
             _model.Set("pollsUri", properties.pollsUri);
             _model.Set("allStreams", properties.allStreams);
             _model.Set("visibleStreamTypes", properties.visibleStreamTypes);
+            _model.Set("pastSessionPlayedSegments", properties.pastSessionPlayedSegments);
         }
 
         function addNewSlide(slideEvent) {
@@ -377,6 +378,26 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
 
             collection = collection.slice(0);
             return collection;
+        }
+
+        function cloneArrayAndItems(oldArray) {
+            var i, oldItem, newItem;
+            var newArray = [];
+
+            if (oldArray && oldArray.length > 0) {
+                for (i = 0; i < oldArray.length; i += 1) {
+                    oldItem = oldArray[i];
+                    newItem = {};
+                    for (var prop in oldItem) {
+                        if (oldItem.hasOwnProperty(prop)) {
+                            newItem[prop] = oldItem[prop];
+                        }
+                    }
+                    newArray.push(newItem);
+                }
+            }
+
+            return newArray;
         }
         // #endregion
 
@@ -442,17 +463,12 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
                 url: _model.Get("slide.url" + streamType),
                 streamType: _model.Get("slide.streamtype" + streamType)
             };
-        }
+        };
 
-        this.getCurrentCaption = function () {
+        this.getCurrentCaptions = function () {
             verifyVersionCheck();
-            if (!_model.Has("caption.time")) { return; }
-
-            return {
-                text: _model.Get("caption.text"),
-                time: _model.Get("caption.time")
-            };
-        }
+            return getCollection("currentCaptions");
+        };
 
         this.getChapters = function () {
             verifyVersionCheck();
@@ -598,20 +614,27 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
             return _model.Get("pollsUri");
         };
 
-        this.getAllStreams = function() {
+        this.getAllStreams = function () {
             verifyVersionCheck();
             return getCollection("allStreams");
         };
 
-        this.getVisibleStreamTypes = function() {
+        this.getVisibleStreamTypes = function () {
             verifyVersionCheck();
             return getCollection("visibleStreamTypes");
         };
 
-        this.setVisibleStreamTypes = function(streamTypes) {
+        this.setVisibleStreamTypes = function (streamTypes) {
             verifyVersionCheck();
-            _broker.sendCommand("setVisibleStreamTypes", { streamTypes: streamTypes } );
-        }
+            _broker.sendCommand("setVisibleStreamTypes", { streamTypes: streamTypes });
+        };
+
+        this.getPastSessionPlayedSegments = function () {
+            // NOT PART OF PUBLIC API
+
+            verifyVersionCheck();
+            return cloneArrayAndItems(_model.Get("pastSessionPlayedSegments"));
+        };
 
         // #endregion 
         initialize();
@@ -1011,7 +1034,8 @@ Mediasite.PlaybackTracker = (function () {
     var module = Mediasite$TimelineCoverage$Tracker;
 
     module.TrackerDefaults = {
-        tolerance: 1    // player reports contiguous segments as [1:2] [3:4], not [1:2] [2:3].
+        tolerance: 1,    // player reports contiguous segments as [1:2] [3:4], not [1:2] [2:3].
+        includePastSessions: false
     };
 
     function Mediasite$TimelineCoverage$Tracker(player, options) {
@@ -1019,6 +1043,8 @@ Mediasite.PlaybackTracker = (function () {
         // #region Private
         var _tolerance; // seconds
         var _duration = -1;
+        var _normalizedTimeRanges = [];
+        var _currentTimeRange;
 
 
         // Set local variables from options/defaults
@@ -1031,13 +1057,26 @@ Mediasite.PlaybackTracker = (function () {
         }
         setTolerance(options.tolerance);
 
+        self.addMoment = addMoment;
+        self.add = addTimeRange;
+
+        self.played = {
+            start: getTimeRangeStart,
+            end: getTimeRangeEnd,
+            length: 0
+        };
+
+        if (Object.defineProperty) {
+            Object.defineProperty(self.played, "length", {
+                get: getTimeRangeCount,
+                set: function () { /* read only */ },
+                configurable: false
+            });
+        }
+
         if (player) {
             attachToApi(player);
         }
-
-
-        var _normalizedTimeRanges = [];
-        var _currentTimeRange;
 
 
         function addMoment(moment) {
@@ -1111,9 +1150,7 @@ Mediasite.PlaybackTracker = (function () {
             var _playing = false;
 
             playerApi.addHandler({
-                "ready": function () {
-                    setDuration(playerApi.getDuration());
-                },
+                "ready": onReady,
                 "currenttimechanged": function (data) {
                     addMoment(data.currentTime);
                 },
@@ -1130,23 +1167,15 @@ Mediasite.PlaybackTracker = (function () {
         }
 
 
-        self.addMoment = addMoment;
-        self.add = addTimeRange;
+        
 
-        self.played = {
-            start: getTimeRangeStart,
-            end: getTimeRangeEnd,
-            length: 0
-        };
 
-        if (Object.defineProperty) {
-            Object.defineProperty(self.played, "length", {
-                get: getTimeRangeCount,
-                set: function () { /* read only */ },
-                configurable: false
-            });
+        function onReady() {
+            setDuration(player.getDuration());
+            if (options.includePastSessions) {
+                addPastSessions();
+            }
         }
-
 
         function getTimeRangeCount() {
             /// <returns type="Number[integer]">Number of normalized time ranges available</returns>
@@ -1222,6 +1251,19 @@ Mediasite.PlaybackTracker = (function () {
             var percentage = durationsSum / _duration * 100;
             return percentage;
         };
+
+
+        function addPastSessions() {
+            if (!player || typeof player.getPastSessionPlayedSegments !== 'function') {
+                return;
+            }
+
+            var i;
+            var items = player.getPastSessionPlayedSegments();
+            for (i = 0; i < items.length; i += 1) {
+                addTimeRange(items[i].start, items[i].end);
+            }
+        }
     }
 
 
