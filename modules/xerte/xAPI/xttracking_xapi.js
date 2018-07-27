@@ -1575,7 +1575,7 @@ function XTInitialise(category) {
         if (typeof coursename != "undefined" && coursename != "")
         {
             state.course = {
-                id: baseUrl() + coursename
+                id: baseUrl() + '/course/' + coursename
             };
             state.coursename = coursename;
         }
@@ -1586,7 +1586,7 @@ function XTInitialise(category) {
         if (typeof modulename != "undefined" && modulename != "")
         {
             state.module = {
-                id: baseUrl() + modulename
+                id: baseUrl() + '/module/' + modulename
             };
             state.modulename = modulename;
         }
@@ -1941,14 +1941,16 @@ function XThelperConsolidateSegments(videostate)
 {
     // 1. Sort played segments on start time (first make a copy)
     var segments = $.extend(true, [], videostate.segments);
-    segments.sort(function(a,b) {return (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0);} );
+    segments.sort(function(a, b) {
+        return (parseFloat(a.start) > parseFloat(b.start)) ? 1 : ((parseFloat(b.start) > parseFloat(a.start)) ? -1 : parseFloat(a.end) - parseFloat(b.end));
+    });
     // 2. Combine the segments
     var csegments = [];
-    var i=0;
-    while(i<segments.length) {
+    var i = 0;
+    while (i < segments.length) {
         var segment = $.extend(true, {}, segments[i]);
         i++;
-        while (i<segments.length && segment.end >= segments[i].start) {
+        while (i < segments.length && parseFloat(segment.end) >= parseFloat(segments[i].start)) {
             segment.end = segments[i].end;
             i++;
         }

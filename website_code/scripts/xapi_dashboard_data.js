@@ -8,7 +8,7 @@ function DashboardState(info) {
         "password": info.lrs.lrssecret,
         "strictCallbacks": true
     };
-    ADL.XAPIWrapper.changeConfig(this.config);
+    ADL.XAPIWrapper.changeConfig(this.conf);
     this.mode = info.groupmode;
     this.rawData = undefined;
     this.dashboard = new ADL.XAPIDashboard();
@@ -32,7 +32,7 @@ DashboardState.prototype.clear = function()
 
 DashboardState.prototype.getStatements = function(q, one, callback) {
 
-    ADL.XAPIWrapper.log.debug = true;
+    //ADL.XAPIWrapper.log.debug = true;
     ADL.XAPIWrapper.changeConfig(this.conf);
 
     var search = ADL.XAPIWrapper.searchParams();
