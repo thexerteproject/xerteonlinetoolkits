@@ -295,9 +295,12 @@ if ($tsugi_enabled) {
                     list($success, $errors) = $returnedproc;
                 }
 
-                if ($success && empty($errors)) {
-                    //sucessfull authentication
+                if (($success && empty($errors)) || $_SESSION['passwordGiven'] == true) {
+                    //successful authentication
                     db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+
+					// to allow other password protected projects to now be opened without login prompt every time
+					$_SESSION['passwordGiven'] = true;
 
                     show_template($row_play);
                 } else {
