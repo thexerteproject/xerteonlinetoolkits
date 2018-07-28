@@ -293,16 +293,18 @@ if ($tsugi_enabled) {
                 } else {
                     $returnedproc = login_processing(false);
                     list($success, $errors) = $returnedproc;
+                    // Make sure that normal session variables are set to allow other password protected projects to now be opened without login prompt every time
+                    if ($success)
+                    {
+                        login_processing2();
+                    }
                 }
 
-                if (($success && empty($errors)) || $_SESSION['passwordGiven'] == true) {
+                if ($success && empty($errors)) {
                     //successful authentication
                     db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
-					// to allow other password protected projects to now be opened without login prompt every time
-					$_SESSION['passwordGiven'] = true;
-
-                    show_template($row_play);
+					show_template($row_play);
                 } else {
                     html_headers();
                     login_prompt($errors);
