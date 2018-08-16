@@ -19,6 +19,12 @@
 		margin:	0;
 		padding: 0 5px;
 	}
+	
+	#resultsHolder div img {
+		width: auto !important;
+		height: auto;
+		max-width: 95%;
+	}
 
 	.shadedDiv {
 		background-color: #E3FFD6;
