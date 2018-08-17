@@ -896,8 +896,8 @@ function ScormTrackingState()
      *        correctanswers is ignored
      *
      *    4. text, fill-in
-     *        correctoptions contains an array of strings that are correct. With type text, array is assumed to be empty
-     *        correctanswers is ignored
+     *        correctoptions is ignored
+     *        correctanswers contains an array of strings that are correct. With type text, array is assumed to be empty
      *
      *    5. page
      *         correctoptions is ignored
