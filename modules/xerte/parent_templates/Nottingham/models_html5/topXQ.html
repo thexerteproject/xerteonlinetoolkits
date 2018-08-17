@@ -146,6 +146,7 @@
                 var correctOptionsFeedback = [];
                 for (i = 0; i < elements.length; i++) {
                     correctOptionsFeedback.push(x_GetTrackingTextFromHTML(elements[i].feedback, ""))
+                    debugger;
                 }
 
                 var amountOfInputs = 0;
@@ -273,15 +274,16 @@
                 }
                 $("#feedback").html("<h3>" + feedbackLabel + "</h3>");
 
-
                 var correctAnswersLabel = x_currentPageXML.getAttribute("correctAnswersLabel");
 
                 $("#correctAnswer h3").html(correctAnswersLabel);
 
                 for(i =0; i < elements.length; i++)
                 {
-                    $("#feedbackAnswers ul").append("<li><div class='answerFeedback'>" + elements[i].answer+" :" + "</div></li>");
-                    $("#feedbackAnswers ul li:last").append("<div>"+  elements[i].feedback + "</div>");
+                    if(elements[i].feedback !== "") {
+                        $("#feedbackAnswers ul").append("<li><div class='answerFeedback'>" + elements[i].answer + " :" + "</div></li>");
+                        $("#feedbackAnswers ul li:last").append("<div>" + elements[i].feedback + "</div>");
+                    }
                 }
 
 
@@ -302,7 +304,6 @@
                var average = amountOfGoodAnswers/amountOfAnswers;
 
                var passedOrFailed = "";
-                debugger;
                var mainFeedback = x_currentPageXML.getAttribute("feedback");
                if(mainFeedback === null){
                    mainFeedback = ""
