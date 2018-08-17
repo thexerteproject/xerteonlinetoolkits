@@ -722,7 +722,12 @@
 					$thisLabel.add($thisTarget).data("correct", true);
 				}
 			} else {
+                debugger;
 				$thisTarget.addClass("correct");
+                if ($thisLabel.data("answer") == $thisTarget.data("answer")) {
+                    $pageContents.data("score", $pageContents.data("score") + 1);
+                }
+
 			}
 			
 			$thisTarget
@@ -951,6 +956,18 @@
                         }
                     });
                 }
+				/*
+				x = a ? b : c
+				if(a){
+					x = b;
+				}else{
+					x = c
+				}
+
+
+
+
+				 */
 
                 if (wrong == $targetHolder.find("select").length) {
                     $("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillWrong") != undefined && x_currentPageXML.getAttribute("gapFillWrong") != "" ? x_currentPageXML.getAttribute("gapFillWrong") : "You have not filled any gaps correctly. Try again."));
@@ -1014,7 +1031,7 @@
 
                 gapFill.finishTracking();
                 this.hasBeenTracked = true;
-				
+
                 if (XTGetMode() == "normal") {
                     if (wrong == 0) {
                         $("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
@@ -1028,6 +1045,7 @@
                         $feedbackTxt.fadeIn();
                     }
                 } else {
+
                     if (wrong == 0) {
                         $("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
                         $feedbackTxt.fadeIn();
@@ -1043,7 +1061,6 @@
 				
                 // Hide the button so only one submission can be made whilst tracking.
                 if(XTGetMode() == "normal"){
-                    $(this).hide();
                 }
 				this.hasBeenTracked = true;
             }
@@ -1063,7 +1080,6 @@
 				}).addClass("correct");
 				
 				var $incorrectTargets = $("#targetHolder .target").filter(function () {
-
 					return !($(this).data("correct") == true || $(this).hasClass("correct")) && !$(this).hasClass("highlight");
 				});
 				
@@ -1112,7 +1128,8 @@
 					$incorrectTargets.addClass("incorrect");
 					$("#submitBtn").hide();
 				}
-				
+
+
 				// feedback...
 				if (score == $("#targetHolder .target").length) {
 					$("#labelHolder").hide();
