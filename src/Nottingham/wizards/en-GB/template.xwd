@@ -4642,7 +4642,7 @@
 	</pageTimer></title><topXQ menu="Interactivity" menuItem="Top X Question " hint="pose a question with multiple answers" icon="icComments" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-    <instruction label="instruction" type="TextArea" height="100"/>
+    <instruction label="Instruction" type="TextArea" height="100"/>
     <prompt label="Question" type="TextArea" height="100"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <numberAnswers label="Amount of correct answers" type="TextInput" defaultValue="1"/>

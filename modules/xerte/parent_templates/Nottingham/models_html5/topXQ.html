@@ -20,7 +20,7 @@
 
         // pageChanged & sizeChanged functions are needed in every model file
         // other functions for model should also be in here to avoid conflicts
-    var TopXQ = new function () {
+    var topXQ = new function () {
             // function called every time the page is viewed after it has initially loaded
             this.pageChanged = function () {
 
@@ -46,6 +46,14 @@
 
 
             this.init = function () {
+
+                this.weighting = 1.0;
+                if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+                {
+                    this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+                }
+                XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
+
                 var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
                     $splitScreen = $("#pageContents .splitScreen");
                 var $textHolder = $("#textHolder");
@@ -116,6 +124,39 @@
                     j++;
                 }
 
+                var answers = [];
+                for (i = 0; i < elements.length; i++) {
+                    var answer = elements[i].answer.split(",");
+                    answers.push({
+                        options: answer,
+                        counter: 0
+                    });
+                }
+
+                var correctOptions = [];
+                for (i = 0; i < answers.length; i++) {
+                    for (var j = 0; j < answers[i].options.length; j++) {
+                        if (correctOptions[i]==undefined){
+                            correctOptions.push([]);
+                        }
+                        correctOptions[i].push(answers[i].options[j]);
+                    }
+                }
+
+                var correctOptionsFeedback = [];
+                for (i = 0; i < elements.length; i++) {
+                    correctOptionsFeedback.push(x_GetTrackingTextFromHTML(elements[i].feedback, ""))
+                }
+
+                var amountOfInputs = 0;
+                $('.input-answer').each(function () {
+                    amountOfInputs ++;
+                });
+
+                for (i = 0; i<amountOfInputs; i++) {
+                    XTEnterInteraction(x_currentPage, i, "fill-in", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), ""), "", "", correctOptionsFeedback, x_currentPageXML.getAttribute("grouping"));
+                }
+
                 var checkBtnTxt = x_currentPageXML.getAttribute("checkBtnTxt");
                 if (checkBtnTxt == undefined) {
                     checkBtnTxt = "Check";
@@ -127,19 +168,11 @@
                     .click(function () {
                         $(this).button("disable");
 
-
                         var inputs = [];
                         $('.input-answer').each(function () {
                             inputs.push($(this).val());
                         });
-                        var answers = [];
-                        for (i = 0; i < elements.length; i++) {
-                            var answer = elements[i].answer.split(",");
-                            answers.push({
-                                options: answer,
-                                counter: 0
-                            });
-                        }
+                        
 
                         var checkAnswers = [];
                         for (i = 0; i < inputs.length; i++) {
@@ -187,30 +220,36 @@
 
                         }
 
-                        for(i = 0; i < answers.length; i++){
-                            $("#correctAnswer ul").append("<li>"  + answers[i].options + "<span id='topXQ-correctAnswer-" + i +  "'></span> </li>" /*<span id= 'topXQ-correctAnswer-" + i + "'></span>"*/);
+                        for (i = 0; i < answers.length; i++) {
+                            $("#correctAnswer ul").append("<li>" + answers[i].options + "<span id='topXQ-correctAnswer-" + i + "'></span> </li>" /*<span id= 'topXQ-correctAnswer-" + i + "'></span>"*/);
                         }
 
                         var doneAnswers = [];
                         for (i = 0; i < inputs.length; i++) {
                             for (k = 0; k < answers.length; k++) {
 
-                                 for (j = 0; j < answers[k].options.length; j++) {
+                                for (j = 0; j < answers[k].options.length; j++) {
                                     if (!doneAnswers.includes(k) && inputs[i] === answers[k].options[j].trim()) {
                                         doneAnswers.push(k);
-                                       // answers[k].options[j] = "<span class='correctOptions'> "+answers[k].options[j]+" </span>"
+                                        // answers[k].options[j] = "<span class='correctOptions'> "+answers[k].options[j]+" </span>"
 
                                         $("#topXQ-correctAnswer-" + k).addClass("fa").addClass("fa-fw").addClass("fa-long-arrow-left")
 
 
+                                    }
                                 }
                             }
                         }
 
-                    }
+                        for (i = 0; i < inputs.length; i++) {
 
-
-
+                            var result = {
+                                success: checkAnswers[i].correct,
+                                score: checkAnswers[i].correct ? 100.0 : 0.0
+                            };
+                            XTExitInteraction(x_currentPage, i, result, "", inputs[i],"", x_currentPageXML.getAttribute("trackinglabel") );
+                            XTSetPageScore(x_currentPage, (checkAnswers[i].correctF ? 100.0 : 0.0));
+                        }
                 for (i = 0; i < checkAnswers.length; i++) {
                     if (checkAnswers[i].correct) {
                         $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
@@ -277,10 +316,9 @@
     // call this function in every model once everything's loaded
     x_pageLoaded();
     }
-    }
-    ;
+    };
 
-    TopXQ.init();
+    topXQ.init();
 
 </script>
 
