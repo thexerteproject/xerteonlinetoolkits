@@ -302,13 +302,17 @@
                var average = amountOfGoodAnswers/amountOfAnswers;
 
                var passedOrFailed = "";
-
+                debugger;
                var mainFeedback = x_currentPageXML.getAttribute("feedback");
                if(mainFeedback === null){
                    mainFeedback = ""
                }
 
-               if(average >= state.lo_passed){
+               passedScore = state.lo_passed;
+               if(state.trackingmode != "none"){
+                   passedScore = 0.55;
+               }
+               if(average >= passedScore){
                    passedOrFailed = passedTxt
                }else{
                    passedOrFailed = failedTxt
