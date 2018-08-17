@@ -133,19 +133,20 @@
                     });
                 }
 
-                var correctOptions = [];
+                var correctAnswers = [];
                 for (i = 0; i < answers.length; i++) {
                     for (var j = 0; j < answers[i].options.length; j++) {
-                        if (correctOptions[i]==undefined){
-                            correctOptions.push([]);
+                        if (correctAnswers[i]==undefined){
+                            correctAnswers.push([]);
                         }
-                        correctOptions[i].push(answers[i].options[j]);
+                        correctAnswers[i].push(answers[i].options[j]);
                     }
                 }
 
                 var correctOptionsFeedback = [];
                 for (i = 0; i < elements.length; i++) {
                     correctOptionsFeedback.push(x_GetTrackingTextFromHTML(elements[i].feedback, ""))
+                    debugger;
                 }
 
                 var amountOfInputs = 0;
@@ -154,7 +155,7 @@
                 });
 
                 for (i = 0; i<amountOfInputs; i++) {
-                    XTEnterInteraction(x_currentPage, i, "fill-in", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), ""), "", "", correctOptionsFeedback, x_currentPageXML.getAttribute("grouping"));
+                    XTEnterInteraction(x_currentPage, i, "fill-in", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), ""), "", correctAnswers[i], correctOptionsFeedback, x_currentPageXML.getAttribute("grouping"));
                 }
 
                 var checkBtnTxt = x_currentPageXML.getAttribute("checkBtnTxt");
@@ -241,6 +242,7 @@
                             }
                         }
 
+                        amountOfCorrect = 0;
                         for (i = 0; i < inputs.length; i++) {
 
                             var result = {
@@ -248,8 +250,13 @@
                                 score: checkAnswers[i].correct ? 100.0 : 0.0
                             };
                             XTExitInteraction(x_currentPage, i, result, "", inputs[i],"", x_currentPageXML.getAttribute("trackinglabel") );
-                            XTSetPageScore(x_currentPage, (checkAnswers[i].correctF ? 100.0 : 0.0));
+
+                            if(checkAnswers[i].correct){
+                                amountOfCorrect++;
+                            }
                         }
+
+                        XTSetPageScore(x_currentPage, 100/amountOfInputs*amountOfCorrect);
                 for (i = 0; i < checkAnswers.length; i++) {
                     if (checkAnswers[i].correct) {
                         $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
@@ -267,15 +274,16 @@
                 }
                 $("#feedback").html("<h3>" + feedbackLabel + "</h3>");
 
-
                 var correctAnswersLabel = x_currentPageXML.getAttribute("correctAnswersLabel");
 
                 $("#correctAnswer h3").html(correctAnswersLabel);
 
                 for(i =0; i < elements.length; i++)
                 {
-                    $("#feedbackAnswers ul").append("<li><div class='answerFeedback'>" + elements[i].answer+" :" + "</div></li>");
-                    $("#feedbackAnswers ul li:last").append("<div>"+  elements[i].feedback + "</div>");
+                    if(elements[i].feedback !== "") {
+                        $("#feedbackAnswers ul").append("<li><div class='answerFeedback'>" + elements[i].answer + " :" + "</div></li>");
+                        $("#feedbackAnswers ul li:last").append("<div>" + elements[i].feedback + "</div>");
+                    }
                 }
 
 
@@ -296,13 +304,16 @@
                var average = amountOfGoodAnswers/amountOfAnswers;
 
                var passedOrFailed = "";
-
                var mainFeedback = x_currentPageXML.getAttribute("feedback");
                if(mainFeedback === null){
                    mainFeedback = ""
                }
 
-               if(average >= state.lo_passed){
+               passedScore = state.lo_passed;
+               if(state.trackingmode != "none"){
+                   passedScore = 0.55;
+               }
+               if(average >= passedScore){
                    passedOrFailed = passedTxt
                }else{
                    passedOrFailed = failedTxt
@@ -313,7 +324,7 @@
         );
 
 
-    // call this function in every model once everything's loaded
+    // call this function in every model once everything is loaded
     x_pageLoaded();
     }
     };
