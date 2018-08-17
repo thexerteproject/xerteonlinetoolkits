@@ -55,6 +55,7 @@
 			{
 			    if(!this.hasBeenTracked && this.isTracked){
 			        this.dragDropSubmit(true);
+
 				}
 			}
 			else if(x_currentPageXML.getAttribute("interactivity") == "Fill in Blank"){
@@ -93,6 +94,7 @@
 		}
 		
 		this.init = function() {
+
 			$pageContents = $("#pageContents");
 			$targetHolder = $("#targetHolder");
 			$feedbackTxt = $("#feedbackTxt");
@@ -279,6 +281,7 @@
 				}
                 XTEnterInteraction(x_currentPage,  0 , 'match', name, correctOptions, correctAnswers, "", x_currentPageXML.getAttribute("grouping"));
 
+
             }
 			else
 			{
@@ -326,6 +329,7 @@
 				.click(function() {
                     if(!this.hasBeenTracked){
                         gapFill.dropDownSubmit();
+
                     }
 
 				});
@@ -353,6 +357,7 @@
 					
 					$(this).hide();
 					$("#submitBtn").hide();
+
 				});
 			
 			$targetHolder.find("select").on("change", function() {
@@ -534,10 +539,11 @@
 		}
 		
 		this.setUpDragDrop = function() {
-			
 			// if mark at end is off but tracking is on then it will mark at end anyway
 			if (!this.isTracked && (x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false")) {
                 $("#submitBtn").hide();
+
+
 				
 			} else {
 				$("#submitBtn")
@@ -735,6 +741,8 @@
 				$("#labelHolder").hide();
 				$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 				$feedbackTxt.fadeIn();
+                gapFill.dragDropSubmit();
+
 			}
 			
 //			if ($targetHolder.find(".target.highlight").length == 0 && (this.isTracked || (x_currentPageXML.getAttribute("markEnd") == "true"))) {
@@ -920,6 +928,7 @@
                     });
                 });
                 XTExitInteraction(x_currentPage, i, result, options, answers, feedback, x_currentPageXML.getAttribute("trackinglabel"));
+
             });
 
 
@@ -1000,6 +1009,7 @@
 					};
                     XTExitInteraction(x_currentPage, $this.data("index") , result, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
 
+
                 });
 
                 gapFill.finishTracking();
@@ -1053,7 +1063,8 @@
 				}).addClass("correct");
 				
 				var $incorrectTargets = $("#targetHolder .target").filter(function () {
-					return $(this).data("correct") != true && !$(this).hasClass("highlight");
+
+					return !($(this).data("correct") == true || $(this).hasClass("correct")) && !$(this).hasClass("highlight");
 				});
 				
 				var $incorrectLabels = $("#labelHolder .label").filter(function () {
@@ -1186,7 +1197,7 @@
 
 		}
 		
-		
+
 	}
 	
 	gapFill.init();
