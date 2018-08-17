@@ -1,7 +1,8 @@
-@import url("editorStyles.css");
+@import url("editorstyles.css");
 /* change this file to rebrand your version of Xerte Online Toolkits */
 
 body {
+	background:#1c1c1c;
 	font-family:	Arial, sans-serif;
 	color: #cfcfcf;
 }

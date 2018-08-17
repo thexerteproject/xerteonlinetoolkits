@@ -450,7 +450,7 @@ tr.alt td {
   color: #F9BA32; }
 
 #x_footerBlock button.ui-state-focus {
-  color: #F8F1E5; }
+  color: #F9BA32; }
 
 #x_footerBlock button.ui-state-active {
   color: #2F3131; }
@@ -618,7 +618,7 @@ tr.alt td {
   font-family: "Varela Round", sans-serif;
   background: #fff;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -631,7 +631,7 @@ tr.alt td {
   font-family: "Varela Round", sans-serif;
   background: #fff;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -644,7 +644,7 @@ tr.alt td {
   font-family: "Varela Round", sans-serif;
   background: #fff;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -657,7 +657,7 @@ tr.alt td {
   font-family: "Varela Round", sans-serif;
   background: #fff;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -670,7 +670,7 @@ tr.alt td {
   font-family: "Varela Round", sans-serif;
   background: #fff;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -683,7 +683,7 @@ tr.alt td {
   font-family: "Varela Round", sans-serif;
   background: #fff;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -1041,6 +1041,9 @@ body {
   background: #F8F1E5;
   color: #2F3131;
   font-family: "Varela Round", sans-serif; }
+
+.cke_editable {
+  background: #ffffff; }
 
 .ui-button .ui-button-text {
   font-family: "Varela Round", sans-serif; }

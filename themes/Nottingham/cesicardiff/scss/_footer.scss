@@ -1,0 +1,120 @@
+#x_footerBlock {
+  font-size:		1em;
+  color:			$whiteorlightest;
+  background-image:	none;
+  width: 100%;
+  background: $darkestcolor;
+  box-shadow: $interfaceboxshadow;
+}
+#x_footerBg {
+  background-image:none;
+}
+#x_pageNo {
+  background:	none;
+}
+.pbBar {
+  background-color: $progressBarColor;
+}
+/* these buttons will use font awesome icons instead of pngs */
+.ui-button .ui-icon.x_help { background-image: none; }
+.ui-button .ui-icon.x_info { background-image: none; }
+.ui-button .ui-icon.x_home { background-image: none; }
+.ui-button .ui-icon.x_glossary { background-image: none; }
+.ui-button .ui-icon.x_maximise { background-image: none; }
+.ui-button .ui-icon.x_minimise {	background-image: none; }
+.ui-button .ui-icon.x_media { background-image: none; }
+.ui-button .ui-icon.x_next { background-image: none; }
+.ui-button .ui-icon.x_prev {	background-image: none; }
+.ui-button .ui-icon.x_prev_hist { background-image: none; }
+.ui-button .ui-icon.x_colourChanger { background-image: none; }
+
+#x_nextBtn:after { content: "\f138"; }
+#x_prevBtn:after { content: "\f137"; }
+#x_cssBtn:after { content: "\f066"; }
+#x_colourChangerBtn:after { content: "\f042"; }
+#x_mediaBtn:after { content: "\f16a"; }
+#x_glossaryBtn:after { content: "\f02d"; }
+#x_helpBtn:after { content: "\f128"; }
+#x_menuBtn:after { content: "\f0c9"; }
+
+#x_footerBlock button { color: $whiteorlightest; }
+#x_footerBlock button.ui-state-hover { color: red; }
+#x_footerBlock button.ui-state-focus { color: red !important; }
+#x_footerBlock button.ui-state-active { color: $whiteorlightest; }
+
+#x_footerBlock button {
+  font-family: FontAwesome, sans-serif;
+  font-size: 1.9em;
+  width: 1.5em;
+  padding-right: 0;
+  margin-left: 5px;
+}
+#x_footerBlock button span {
+  display: none;
+}
+#x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button {
+  padding: 0;
+}
+/*****footer tools chevron*****/
+#x_footerChevron {
+  color: $whiteorlightest;
+}
+#x_footerChevron:hover {
+  color: $brightcolor;
+}
+
+/*****TOC****/
+.ui-dialog .ui-widget-header {
+  border: 1px solid $whiteorlightest;
+  background: darken($lightestcolor,40);
+  color: $whiteorlightest;
+  font-weight: bold;
+}
+#menuItems .menuItem {
+  background: $whiteorlightest;
+  color:$blackordarkest;
+}
+#menuItems .menuItem:hover {
+  background: darken($lightestcolor,30);
+  color:$whiteorlightest;
+}
+
+#menuItems .menuItem.current {
+  border: 2px solid darken($lightestcolor,40);
+}
+
+//******** Smartphones (portrait) - change progress bar display for small screen-----------*/
+@media only screen
+and (max-width :500px) {
+  //show progress bar in mobile portrait mode with this theme
+  //but also reduce font/button sizes to fit//
+  #x_footerProgress {
+    display: block;
+  }
+  #x_pageNo {
+    vertical-align: top;
+    text-align: center;
+    display: inline-block;
+    padding: 12px 5px 0 5px;
+    margin-right: -5px;
+    height: 30px;
+    width: auto;
+    z-index: 100;
+    font-size: 12px;
+  }
+  #x_footerBlock button {
+    font-size: 1em;
+    width: 1em;
+    margin-left: 5px;
+  }
+  .pbContainer {
+    display:block;
+    margin-top: 1.2em;
+  }
+  .pbTxt {
+    display:block;
+    font-size: 6px;
+    text-align: center;
+  }
+}
+//----------------end of smartphones portrait---------------------------------

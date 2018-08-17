@@ -44,8 +44,8 @@
 			$pageContents = $("#pageContents");
 			
 			// set fixed text fields and page layout
-			$("#mainTxt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("instructions")) + '</p>');
-			$("#feedbackTxt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + '</p>');
+			$("#mainTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
+			$("#feedbackTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 			$("#chartTitle").html(x_currentPageXML.getAttribute("chartTitle"));
 			
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");

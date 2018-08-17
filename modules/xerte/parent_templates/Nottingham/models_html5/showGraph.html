@@ -93,11 +93,13 @@
                 }
                 for(var i = 0; i < obj.graph.classvalues.length; i++)
                 {
-                    if(mean_all[i] == null) {
-                        mean_all[i] = obj.graph.classvalues[i];
-                    }
-                    else {
-                        mean_all[i] += obj.graph.classvalues[i];
+                    if (obj.graph.classvalues[i] != null) {
+                        if (mean_all[i] == null) {
+                            mean_all[i] = obj.graph.classvalues[i];
+                        }
+                        else {
+                            mean_all[i] += obj.graph.classvalues[i];
+                        }
                     }
 
                     if(classnames[i] == null) {
@@ -117,7 +119,7 @@
                 {
                     case 0:
                     case 2:
-                        if (obj.actor.mbox == 'mailto:' + username)
+                        if (obj.actor.mbox == userEMail)
                         {
                             matchactor = true;
                         }
@@ -129,7 +131,8 @@
                         }
                         break;
                     case 3:
-                        if (obj.actor.account.name == groupname)
+                        if (obj.actor.account != undefined && obj.actor.account:w
+                        .name == groupname)
                         {
                             matchactor = true;
                         }
@@ -144,11 +147,13 @@
                     }
                     for(var i = 0; i < obj.graph.classvalues.length; i++)
                     {
-                        if(mean[i] == null) {
-                            mean[i] = obj.graph.classvalues[i];
-                        }
-                        else {
-                            mean[i] += obj.graph.classvalues[i];
+                        if (obj.graph.classvalues[i] != null) {
+                            if (mean[i] == null) {
+                                mean[i] = obj.graph.classvalues[i];
+                            }
+                            else {
+                                mean[i] += obj.graph.classvalues[i];
+                            }
                         }
                     }
                     numUserSubmits++;

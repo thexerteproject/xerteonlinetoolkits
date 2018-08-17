@@ -122,7 +122,7 @@ if (is_numeric($id))
         $xerte_toolkits_site->course = $_REQUEST['course'];
     }
     if (isset($_REQUEST['module'])) {
-        $xerte_toolkits_site->course = $_REQUEST['module'];
+        $xerte_toolkits_site->module = $_REQUEST['module'];
     }
 
     require(dirname(__FILE__) . "/play.php");

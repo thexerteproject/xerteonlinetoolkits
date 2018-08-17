@@ -637,7 +637,7 @@ div#shorturltodisplay a {
   font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background: #39424e;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -650,7 +650,7 @@ div#shorturltodisplay a {
   font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background: #39424e;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -663,7 +663,7 @@ div#shorturltodisplay a {
   font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background: #39424e;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -676,7 +676,7 @@ div#shorturltodisplay a {
   font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background: #39424e;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -689,7 +689,7 @@ div#shorturltodisplay a {
   font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background: #39424e;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -702,7 +702,7 @@ div#shorturltodisplay a {
   font-family: Roboto, "Segoe UI", Tahoma, sans-serif;
   background: #39424e;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -1032,6 +1032,9 @@ body {
   background: #3F4957;
   color: #ffffff;
   font-family: Roboto, "Segoe UI", Tahoma, sans-serif; }
+
+.cke_editable {
+  background: #3F4957; }
 
 #pageContents .fa {
   color: #ffffff;

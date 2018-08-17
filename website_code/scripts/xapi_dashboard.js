@@ -200,24 +200,35 @@ xAPIDashboard.prototype.handleCollapse = function(div, userdata, learningObjectI
     });
 };
 
-xAPIDashboard.prototype.getExtraUserData = function(div, userdata, obj) {
+xAPIDashboard.prototype.getExtraUserData = function(div, userdata, objIdx) {
     var statements = this.data.getStatementsList(userdata['statements'], "http://adlnet.gov/expapi/verbs/completed");
     var statement = undefined;
     if (statements[0] != undefined)
     {
         statement = statements[0];
     }
+    else
+    {
+        var learningObjects = this.data.getLearningObjects();
+        var url = learningObjects[objIdx].url;
+        // Try to find exited
+        statements = this.data.getExitedStatements(userdata['statements'], url);
+        if (statements[0] != undefined)
+        {
+            statement = statements[0];
+        }
+    }
     if (statement == undefined ||
         statement.result == undefined ||
         statement.result.extensions == undefined || statement.result.extensions["http://xerte.org.uk/xapi/trackingstate"] == undefined) {
         rows = "";
-        rows += XAPI_DASHBOARD_STARTINGTIME + " " + moment(this.userStartTime(userdata, obj)).format('YYYY-MM-DD HH:mm:ss') + "<br>";
-        rows += XAPI_DASHBOARD_COMPLETETIME + " " + moment(this.userCompleteTime(userdata, obj)).format('YYYY-MM-DD HH:mm:ss') + "<br>";
-        rows += XAPI_DASHBOARD_DURATION + " " + this.userDuration(userdata, obj) + "<br>";
+        rows += XAPI_DASHBOARD_STARTINGTIME + " " + moment(this.userStartTime(userdata, objIdx)).format('YYYY-MM-DD HH:mm:ss') + "<br>";
+        rows += XAPI_DASHBOARD_COMPLETETIME + " " + moment(this.userCompleteTime(userdata, objIdx)).format('YYYY-MM-DD HH:mm:ss') + "<br>";
+        rows += XAPI_DASHBOARD_DURATION + " " + this.userDuration(userdata, objIdx) + "<br>";
         div.append(rows);
         return;
     }
-    this.getResultPage(div, userdata, obj, statement);
+    this.getResultPage(div, userdata, objIdx, statement);
 };
 
 xAPIDashboard.prototype.userStartTime = function(userdata, learningObject) {
