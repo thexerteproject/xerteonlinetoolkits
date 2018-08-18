@@ -164,7 +164,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         // Add table with specific overview.
         div.append('<div class="row journeyTable"><table class="table table-hover table-bordered table-responsive" id="' + learningObjectIndex +
             '"><thead></thead><tbody></tbody></table></div>');
-        div.find("#" + learningObjectIndex + " thead").append("<tr><th>User</th><th>Started</th><th>Completed</th></tr>");
+        div.find("#" + learningObjectIndex + " thead").append("<tr><th class='name-column column-hide'>User</th><th>Started</th><th>Completed</th></tr>");
         for (var interaction in interactions) {
             interactionHeader = this.insertInteractionModal(div, learningObjectIndex, interaction);
         }
@@ -180,15 +180,15 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             var row = "<tr class='session-row' id='session-" + learningObjectIndex + "-" + this.escapeId(user) + "'>";
             if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
                 if (data[user]['mode'] == 'username') {
-                    row += "<td>" + data[user]['username'] + "</td>";
+                    row += "<td class='name-column'>" + data[user]['username'] + "</td>";
                 }
                 else {
-                    row += "<td>" + user + "</td>";
+                    row += "<td class='name-column'>" + user + "</td>";
                 }
             }
             else
             {
-                row += "<td>" + toSHA1(user) + "</td>";
+                row += "<td class='column-hide name-column'>" + toSHA1(user) + "</td>";
             }
             if (this.data.hasStartedLearningObject(data[user], learningObjects[learningObjectIndex].url)) {
                 started = "<i class=\"fa fa-x-tick\">";
@@ -1036,6 +1036,9 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end)
         $("#dp-unanonymous-view").change(function(event){
             $this.data.info.dashboard.anonymous = !$this.data.info.dashboard.anonymous;
             $this.regenerate_dashboard();
+            if (!$this.data.info.dashboard.anonymous) {
+                $('th.name-column').removeClass('column-hide');
+            }
         });
     }
 
