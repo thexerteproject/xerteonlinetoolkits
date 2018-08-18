@@ -53,21 +53,15 @@
         this.leavePage = function() {
 		    if(x_currentPageXML.getAttribute("interactivity") == "Drag Drop")
 			{
-			    if(!this.hasBeenTracked && this.isTracked){
 			        this.dragDropSubmit(true);
-
-				}
 			}
-			else if(x_currentPageXML.getAttribute("interactivity") == "Fill in Blank"){
-		        if(!this.hasBeenTracked && this.isTracked){
+			else if(x_currentPageXML.getAttribute("interactivity") == "Fill in Blank")
+			{
 		            this.fillInSubmit(true);
-				}
 			}
 			else if (x_currentPageXML.getAttribute("interactivity") == "Drop Down Menu")
             {
-                if (!this.hasBeenTracked && this.isTracked){
                     this.dropDownSubmit(true);
-                }
             }
         };
 		
@@ -978,7 +972,8 @@
             }
         };
 
-		this.fillInSubmit = function(){
+		this.fillInSubmit = function(forceTracking){
+		    debugger;
             var empty = 0;
             $targetHolder.find("input").each(function() {
                 if ($(this).val() == "") {
@@ -986,7 +981,7 @@
                 }
             });
 			
-			if (empty > 0) {
+			if (empty > 0 && !forceTracking) {
 				$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise."));
                 $feedbackTxt.fadeIn();
 			} else {
@@ -1203,6 +1198,7 @@
 		
 		//Stopping the tracking
 		this.finishTracking = function() {
+		    debugger;
 			if(total != 0)
 			{
 				XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total), x_currentPageXML.getAttribute("trackinglabel"));
