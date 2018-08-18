@@ -544,7 +544,6 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
 
         data[0].push(totalViewed[i] / stringRanges.length * 100);
     }
-    debugger;
     var data = [{
         z: data,
         x: times,
