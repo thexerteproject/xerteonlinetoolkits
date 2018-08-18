@@ -16,18 +16,28 @@ table {
     max-width: none;
 }
 
-.journeyData table{
-  overflow-x: visible;
+.journeyOverview{
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.journeyOverviewActivity{
+    margin-left: -1rem;
+    margin-right: -1rem;
+}
+
+.journeyTable table{
+  overflow-x: scroll;
   border: 0px;
 }
 
-.journeyData th{
+.journeyTable th{
   position: relative;
   /* min-width: 120px; */
   white-space: nowrap;
 }
 
-.journeyData tr{
+.journeyTable tr{
   white-space: nowrap;
 }
 
@@ -42,6 +52,16 @@ table {
 
 td a{
   text-decoration: none;
+}
+
+.col-4-widget{
+    margin-top: 1rem;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #007bff;
+    border-radius: 4px;
+    height: 100px;
+    text-align: center;
 }
 
 #options-div label{
@@ -95,6 +115,10 @@ td a{
 .graph{
   display:block;
   height: 500px;
+}
+
+#graph_link_6{
+    width: 100%;
 }
 
 .graph-svg-wrapper
@@ -196,7 +220,6 @@ th.x-dashboard-interaction {
 
 #journeyData
 {
-    overflow: auto;
     position: absolute;
     top: 64px;
     bottom: 5px;
@@ -224,6 +247,22 @@ th.x-dashboard-interaction {
     display: none;
     padding-top: 8px;
     margin-right: 10px;
+}
+
+.dashboard{
+    overflow-x: hidden !important;
+    position: absolute;
+    width: -moz-calc(100% - 100px) !important;
+    width: -webkit-calc(100% - 100px) !important;
+    width: calc(100% - 10px) !important;
+    height: -moz-calc(100% - 100px) !important;
+    height: -webkit-calc(100% - 100px) !important;
+    height: calc(100% - 10px) !important;
+}
+
+.dashboard-wrapper{
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 td.x-dashboard-interaction
