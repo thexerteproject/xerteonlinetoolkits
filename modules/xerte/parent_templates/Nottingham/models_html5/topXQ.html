@@ -108,7 +108,6 @@
 
                 }
 
-                debugger;
 
                 var doneAnswers = [];
                 for (i = 0; i < inputs.length; i++) {
@@ -135,7 +134,7 @@
                         score: checkAnswers[i].correct ? 100.0 : 0.0
                     };
                     XTExitInteraction(x_currentPage, i, result, "", inputs[i], "", x_currentPageXML.getAttribute("trackinglabel"));
-                    debugger;
+
                     if (checkAnswers[i].correct) {
                         amountOfCorrect++;
                     }
@@ -159,7 +158,6 @@
                         $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
                     }
                 }
-                debugger;
 
             };
 
