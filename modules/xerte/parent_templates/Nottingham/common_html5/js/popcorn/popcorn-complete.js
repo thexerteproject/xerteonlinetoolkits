@@ -4314,7 +4314,7 @@
 
             $.getScript("modules/xerte/parent_templates/Nottingham/common_html5/js/popcorn/plugins/MediasitePlayerIFrameAPI.js")
                 .done(function () {
-                    console.log("Mediasiteplayer loaded" + aSrc + "\n" + elem);
+                    console.log(" Mediasiteplayer loaded " + aSrc + "\n" + elem.id);
                     player = new Mediasite.Player(elem.id,
                         {
                             url: aSrc,

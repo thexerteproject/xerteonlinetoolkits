@@ -689,7 +689,7 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
         }
 
         this.postMessage = function (message, origin) {
-            this.getElementWindow().postMessage(message, origin);
+            this.getElementWindow().postMessage(message, '*');
         };
 
         this.addEventListener = function (event, handler) {
@@ -937,6 +937,7 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
             singleton.listenForMessages();
             if (!broker || !view || !view.getElementWindow()) return false;
             origin = origin || [document.location.protocol, '//', document.location.hostname].join('');
+            origin = origin.trim();
 
             var brokerMetadata = {
                 origin: origin,
