@@ -281,6 +281,12 @@ td.x-dashboard-interaction
     margin-bottom:10px;
 }
 
+.loading-gif {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* FONT AWESOME BUTTON ICONS */
 
 /* chevron */

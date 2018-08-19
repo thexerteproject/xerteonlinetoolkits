@@ -143,7 +143,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
         // Add the number of launches.
         var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
-        this.drawNumberOfLaunches($('.journeyOverviewStats'), this.data.rawData.length);
+        this.drawNumberOfInteractions($('.journeyOverviewStats'), this.data.rawData.length);
 
         // Add the average grade.
         var completedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/completed");
@@ -921,18 +921,18 @@ xAPIDashboard.prototype.drawSelectRow = function(table, obj, begin, end) {
 };
 
 
-xAPIDashboard.prototype.drawNumberOfLaunches = function(elmnt, numberOfLaunches) {
-    var row = '<div class="col-4-widget col-4"><h3>Number of Interactions</h3><h1>' + numberOfLaunches + '</h1></div>';
+xAPIDashboard.prototype.drawNumberOfInteractions = function(elmnt, numberOfInteractions) {
+    var row = '<div class="col-4-widget col-4"><h3>' + XAPI_DASHBOARD_NUMBER_OF_INTERACTIONS + '</h3><h1>' + numberOfInteractions + '</h1></div>';
     elmnt.append(row);
 };
 
 xAPIDashboard.prototype.drawNumberOfUsers = function(elmnt, numberOfUsers) {
-    var row = '<div class="col-4-widget col-4"><h3>Number of Students</h3><h1>' + numberOfUsers + '</h1></div>';
+    var row = '<div class="col-4-widget col-4"><h3>' + XAPI_DASHBOARD_NUMBER_OF_STUDENTS + '</h3><h1>' + numberOfUsers + '</h1></div>';
     elmnt.append(row);
 };
 
-xAPIDashboard.prototype.drawAverageScore = function(elmnt, numberOfLaunches) {
-    var row = '<div class="col-4-widget col-4"><h3>Average Score</h3><h1>' + numberOfLaunches + '</h1></div>';
+xAPIDashboard.prototype.drawAverageScore = function(elmnt, averageGrade) {
+    var row = '<div class="col-4-widget col-4"><h3>' + XAPI_DASHBOARD_AVERAGE_SCORE + '</h3><h1>' + averageGrade + '</h1></div>';
     elmnt.append(row);
 };
 
@@ -1079,8 +1079,9 @@ xAPIDashboard.prototype.helperGetDate = function(datetimepicker) {
     return mTime;
 };
 
-xAPIDashboard.prototype.regenerate_dashboard = function() {
-    $("#journeyData").html("<img src='editor/img/loading16.gif'/>");
+xAPIDashboard.prototype.regenerate_dashboard = function()
+{
+    $("#journeyData").html("<img class='loading-gif' src='editor/img/loading16.gif'/>");
 
     var url = site_url + this.data.info.template_id;
     var start = this.helperGetDate('#dp-start');

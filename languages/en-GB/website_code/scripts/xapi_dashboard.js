@@ -36,3 +36,6 @@ var XAPI_DASHBOARD_SOURCES = "Items";
 var XAPI_DASHBOARD_TARGETS = "Targets";
 var XAPI_DASHBOARD_GRAPH_FILLIN_XAXIS = "Answers given";
 var XAPI_DASHBOARD_GRAPH_FILLIN_YAXIS = "Number of answers";
+var XAPI_DASHBOARD_NUMBER_OF_STUDENTS = "Number of Students";
+var XAPI_DASHBOARD_NUMBER_OF_INTERACTIONS = "Number of Interactions";
+var XAPI_DASHBOARD_AVERAGE_SCORE = "Average Score";
