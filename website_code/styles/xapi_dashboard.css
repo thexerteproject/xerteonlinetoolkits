@@ -68,6 +68,16 @@ td a{
     text-align: center;
 }
 
+.col-4-widget h1{
+    font-weight: bold;
+    color: #fba61f;
+    margin-top: .5rem;
+}
+
+.col-4-widget h3{
+    margin-top: .5rem;
+}
+
 #options-div label{
     margin-right: 5px;
     margin-bottom: 0px;
