@@ -1422,7 +1422,9 @@ function XTSetOption(option, value)
             state.lo_completed = value;
             break;
         case "objective_passed":
-            state.lo_passed = Number(value) * 100;
+            if (Number(value) <= 1) {
+                state.lo_passed = Number(value) * 100;
+            }
             break;
         case "page_timeout":
             // Page timeout in seconds
