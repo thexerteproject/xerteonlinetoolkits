@@ -1,4 +1,3 @@
-
 var XAPI_ACTIVITY_CHART_YAXIS = "Number of launches";
 var XAPI_JOURNEY_POPOVER_STATUS = "Status:";
 var XAPI_JOURNEY_POPOVER_NRTRIES = "Number of tries:";
@@ -8,6 +7,8 @@ var XAPI_JOURNEY_POPOVER_DURATION = "Duration:";
 var XAPI_JOURNEY_POPOVER_AVGDURATION = "Average duration:";
 var XAPI_JOURNEY_POPOVER_DURATION_UNIT = "s";
 var XAPI_JOURNEY_POPOVER_LASTANSWER = "Last given answer:";
+var XAPI_JOURNEY_POPOVER_LAST_GRADE = "Last grade:";
+var XAPI_JOURNEY_POPOVER_LAST_DURATION = "Last duration";
 var XAPI_DASHBOARD_STARTINGTIME = "Starting time:";
 var XAPI_DASHBOARD_COMPLETETIME = "Complete time:";
 var XAPI_DASHBOARD_DURATION = "Complete time:";

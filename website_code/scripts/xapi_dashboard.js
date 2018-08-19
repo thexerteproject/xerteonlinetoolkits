@@ -60,19 +60,15 @@ function xAPIDashboard(info) {
     this.data = new DashboardState(info);
 }
 
-xAPIDashboard.prototype.getStatements = function(q, one, callback)
-{
+xAPIDashboard.prototype.getStatements = function(q, one, callback) {
     this.data.getStatements(q, one, callback);
 };
-xAPIDashboard.prototype.escapeId = function(id)
-{
+xAPIDashboard.prototype.escapeId = function(id) {
     return id.replace(/[^A-Za-z0-9]/g, "_");
 };
 
-xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element)
-{
-    if (element == null)
-    {
+xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element) {
+    if (element == null) {
         element = "#heatmapData";
     }
     $(element).append(
@@ -80,9 +76,9 @@ xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element)
         '<svg></svg></div>');
     var dashstatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
     begin = new Date(dashstatements[0].timestamp);
-    begin.setDate(begin.getDate()-1);
+    begin.setDate(begin.getDate() - 1);
     end = new Date(dashstatements[dashstatements.length - 1].timestamp);
-    end.setDate(end.getDate()+1);
+    end.setDate(end.getDate() + 1);
     var dash = new ADL.XAPIDashboard();
     dash.addStatements(dashstatements);
     var chart = dash.createLineChart({
@@ -124,15 +120,16 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
         // Title should go to #dashboard-title if found
         var titlediv = $("#dashboard-title");
-        if (titlediv.length == 0)
-        {
+        if (titlediv.length == 0) {
             // Not found -> Place in div
             titlediv = div;
         }
         titlediv.html('<h3 class="header">' + learningObjects[learningObjectIndex].name + '</h3>');
 
         // Add statistics above the table.
-        div.append('<div class="journeyOverview"><div class="journeyOverviewHeader row"><h3>Overview</h3></div><div class="journeyOverviewActivity row"></div><div class="journeyOverviewStats row"></div></div>');
+        div.append(
+            '<div class="journeyOverview"><div class="journeyOverviewHeader row"><h3>Overview</h3></div><div class="journeyOverviewActivity row"></div><div class="journeyOverviewStats row"></div></div>'
+        );
         var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
         var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
         this.drawActivityChart($('.journeyOverviewActivity'), first_launch, last_launch, false);
@@ -150,7 +147,9 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
         // Add the average grade.
         var completedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/completed");
-        completedStatements.sort(function(a,b) {return (new Date(a.timestamp) < new Date(b.timestamp)) ? 1 : ((new Date(b.timestamp) < new Date(a.timestamp)) ? -1 : 0);} );
+        completedStatements.sort(function(a, b) {
+            return (new Date(a.timestamp) < new Date(b.timestamp)) ? 1 : ((new Date(b.timestamp) < new Date(a.timestamp)) ? -1 : 0);
+        });
         var userList = [];
         var totalScore = 0;
         for (var i = 0; i < completedStatements.length; i++) {
@@ -159,7 +158,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 totalScore += completedStatements[i].result.score.scaled;
             }
         }
-        this.drawAverageScore($('.journeyOverviewStats'), (Math.round((totalScore/completedStatements.length)*10*10)/10), first_launch, last_launch);
+        this.drawAverageScore($('.journeyOverviewStats'), (Math.round((totalScore / completedStatements.length) * 10 * 10) / 10), first_launch, last_launch);
 
         // Add table with specific overview.
         div.append('<div class="row journeyTable"><table class="table table-hover table-bordered table-responsive" id="' + learningObjectIndex +
@@ -172,8 +171,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         var greenDiv = '<div class="status-indicator status-green">&nbsp;</div>';
         var orangeDiv = '<div class="status-indicator status-orange">&nbsp;</div>';
         var greyDiv = '<div class="status-indicator status-gray">&nbsp;</div>';
-        $.each(data, function (key, value)
-        {
+        $.each(data, function(key, value) {
             console.log(key);
         });
         for (var user in data) {
@@ -182,13 +180,10 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
                 if (data[user]['mode'] == 'username') {
                     row += "<td class='name-column'>" + data[user]['username'] + "</td>";
-                }
-                else {
+                } else {
                     row += "<td class='name-column'>" + user + "</td>";
                 }
-            }
-            else
-            {
+            } else {
                 row += "<td class='column-hide name-column'>" + toSHA1(user) + "</td>";
             }
             if (this.data.hasStartedLearningObject(lastStatements, learningObjects[learningObjectIndex].url)) {
@@ -255,7 +250,9 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 };
 
 xAPIDashboard.prototype.getLastUserAttempt = function(data) {
-    data.statements.sort(function(a,b) {return (new Date(a.timestamp) < new Date(b.timestamp)) ? 1 : ((new Date(b.timestamp) < new Date(a.timestamp)) ? -1 : 0);} );
+    data.statements.sort(function(a, b) {
+        return (new Date(a.timestamp) < new Date(b.timestamp)) ? 1 : ((new Date(b.timestamp) < new Date(a.timestamp)) ? -1 : 0);
+    });
     var lastStatements = {
         'key': data.key,
         'mbox_sha1sum': data.mbox_sha1sum,
@@ -274,7 +271,8 @@ xAPIDashboard.prototype.getLastUserAttempt = function(data) {
 
 xAPIDashboard.prototype.insertCollapse = function(div, userdata, learningObject, rows) {
     numberOfColumns = div.find("th").length;
-    rows += "<tr class='collapse' id='collapse-session-" + learningObject + "-" + this.escapeId(userdata['key']) + "'><td colspan='" + numberOfColumns + "'><div>";
+    rows += "<tr class='collapse' id='collapse-session-" + learningObject + "-" + this.escapeId(userdata['key']) + "'><td colspan='" + numberOfColumns +
+        "'><div>";
     rows += "<div class='card card-inverse' data-empty='true'>";
     rows += "</div>";
     rows += "</div></td></tr>";
@@ -298,18 +296,14 @@ xAPIDashboard.prototype.handleCollapse = function(div, userdata, learningObjectI
 xAPIDashboard.prototype.getExtraUserData = function(div, userdata, objIdx) {
     var statements = this.data.getStatementsList(userdata['statements'], "http://adlnet.gov/expapi/verbs/completed");
     var statement = undefined;
-    if (statements[0] != undefined)
-    {
+    if (statements[0] != undefined) {
         statement = statements[0];
-    }
-    else
-    {
+    } else {
         var learningObjects = this.data.getLearningObjects();
         var url = learningObjects[objIdx].url;
         // Try to find exited
         statements = this.data.getExitedStatements(userdata['statements'], url);
-        if (statements[0] != undefined)
-        {
+        if (statements[0] != undefined) {
             statement = statements[0];
         }
     }
@@ -383,7 +377,8 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
         title = "";
     }
     div.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex).popover({
-        content: "<div id='popover-" + learningObjectIndex + "-session-" + $this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex + "'></div>",
+        content: "<div id='popover-" + learningObjectIndex + "-session-" + $this.escapeId(userdata['key']) + "-interaction-" +
+            interactionObjectIndex + "'></div>",
         title: title,
         html: true
     });
@@ -404,35 +399,43 @@ xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, in
     var scores = this.data.getAllInteractionScores(userdata, interactionObject.url);
     var durations = this.data.getAllDurations(userdata, interactionObject.url);
     var lastAnswer = this.data.getAnswers(userdata, interactionObject.url);
+    var lastStatements = this.getLastUserAttempt(userdata);
     html += XAPI_JOURNEY_POPOVER_NRTRIES + " " + scores.length + "<br>";
     if (scores.length == 1) {
         html += XAPI_JOURNEY_POPOVER_GRADE + " " + Math.round(scores[0] * 10000) / 100 + "%<br>";
+
     } else if (scores.length > 1) {
-        html += XAPI_JOURNEY_POPOVER_AVGGRADE + " " + Math.round(10 * (scores.reduce(function(a, b) {
+        html += XAPI_JOURNEY_POPOVER_AVGGRADE + " " + Math.round(100 * (scores.reduce(function(a, b) {
             return a + b;
         }) / scores.length), 2) + "%<br>";
+
+        var last_score = this.data.getAllInteractionScores(lastStatements, interactionObject.url)[0];
+
+        html += XAPI_JOURNEY_POPOVER_LAST_GRADE + " " + Math.round(last_score * 10000) / 100 + "%<br>"
     }
-    if (durations.length == 1)
-    {
+    if (durations.length == 1) {
         html += XAPI_JOURNEY_POPOVER_DURATION + " " + Math.round(durations[0] * 100) / 100 + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
-    }
-    else if (durations > 1){
+    } else if (durations.length > 1) {
         html += XAPI_JOURNEY_POPOVER_AVGDURATION + " " + Math.round((durations.reduce(function(a, b) {
             return a + b;
         }) / durations.length), 2) + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
+        var last_duration = this.data.getAllDurations(lastStatements, interactionObject.url)[0];
+        html += XAPI_JOURNEY_POPOVER_LAST_DURATION + " " + Math.round(last_duration * 100) / 100 + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
     }
+
     if (lastAnswer.length > 0) {
         // Format a bit
-        var lastanswer = lastAnswer[lastAnswer.length - 1];
+        var lastanswer = lastAnswer[0];
         if (lastanswer.indexOf('[.]') != false || lastanswer.indexOf('[,]') != false) {
-            if (lastanswer.indexOf('[,]') != false)
-            {
+            if (lastanswer.indexOf('[,]') != false) {
                 lastanswer = "<br>&nbsp;    " + lastanswer;
             }
             lastanswer = lastanswer.replace(/\[\.\]/g, " <i class=\"fa fa-long-arrow-right\"></i> ");
             lastanswer = lastanswer.replace(/\[,\]/g, "<br>&nbsp;    ");
             html += XAPI_JOURNEY_POPOVER_LASTANSWER + " " + lastanswer;
+
         }
+
     }
     return html;
 };
@@ -474,7 +477,8 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
         parentIndex = this.data.selectInteractionById(interactions, interaction.parent).interactionObjectIndex;
         thclass += "x-dashboard-interaction";
     }
-    var interactionHeader = '<th data-parent="' + parentIndex + '" class="column-' + showHide + thclass + '"><a href="#" data-toggle="modal" data-target="#model-' +
+    var interactionHeader = '<th data-parent="' + parentIndex + '" class="column-' + showHide + thclass +
+        '"><a href="#" data-toggle="modal" data-target="#model-' +
         learningObjectIndex + '-' + interactionIndex + '">' + interactionTitle + '</a>' + collapseIcon + '</th>';
     $('body').append('<div id="model-' + learningObjectIndex + '-' + interactionIndex + '" class="modal fade" role="dialog" >' +
         '<div class="modal-dialog">' +
@@ -505,7 +509,8 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
                     var statements = $this.data.getInteractionStatements(interaction.url);
                     contentDiv.find(".container div").append('<svg class="graph" id="model-svg-' + learningObjectIndex + '-' + interactionIndex +
                         '"></svg>');
-                    $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' #model-svg-' + learningObjectIndex +
+                    $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' #model-svg-' +
+                        learningObjectIndex +
                         '-' + interactionIndex);
                     var question = $this.data.getQuestion(interactionDetails.url);
                     var pausedStatements = $this.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
@@ -535,10 +540,10 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
 // Function that creates a heatmap for the given data.
 xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectIndex, interactionIndex, pausedstatements) {
     var times = [],
-    data = [
-        []
-    ],
-    total = 100;
+        data = [
+            []
+        ],
+        total = 100;
     var videoLength = Math.max(...pausedStatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/time"]));
     // Gets all the ranges from the data.
     var stringRanges = pausedStatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/played-segments"]);
@@ -767,14 +772,13 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
     var interaction = interactions[interactionIndex];
     var learningObjectUrl = learningObjects[learningObjectIndex].url;
     var interactionObjectUrl = interaction.url;
-    contentDiv.append(XAPI_DASHBOARD_QUESTION + " "  + question.name["en-US"]);
+    contentDiv.append(XAPI_DASHBOARD_QUESTION + " " + question.name["en-US"]);
     var options = "<div>" + XAPI_DASHBOARD_ANSWERS + "<ol>";
     question.choices.forEach(function(option) {
         var correct = "";
         if (question.correctResponsesPattern.indexOf(option.id) != -1) {
             correct = "<i class=\"fa fa-x-tick\"></i>";
-        }
-        else {
+        } else {
             correct = "<i class=\"fa fa-x-cross\"></i>";
         }
         options += "<li>" + correct + option.description["en-US"] + "</li>";
@@ -874,9 +878,7 @@ xAPIDashboard.prototype.getResultPage = function(div, userdata, learningObject, 
 </div></div>`;
         div.append(html);
         results.init(classIdentifier, trackingState);
-    }
-    else
-    {
+    } else {
         html = "<div></div>";
         div.append(html);
     }
@@ -935,15 +937,20 @@ xAPIDashboard.prototype.drawAverageScore = function(elmnt, numberOfLaunches) {
 };
 
 xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = true) {
-    var row = "<a id='graph_link_" + this.data.info.template_id + "' href='#'><div id='graph-svg-wrapper-" + this.data.info.template_id + "' class='graph-svg-wrapper'><svg></svg></div></a>";
+    var row = "<a id='graph_link_" + this.data.info.template_id + "' href='#'><div id='graph-svg-wrapper-" + this.data.info.template_id +
+        "' class='graph-svg-wrapper'><svg></svg></div></a>";
     elmnt.append(row);
     var $this = this;
     if (link) {
-        $("#graph_link_" + this.data.info.template_id).click(function(){$this.show_dashboard(begin, end)});
+        $("#graph_link_" + this.data.info.template_id).click(function() {
+            $this.show_dashboard(begin, end)
+        });
     }
     var dash = new ADL.XAPIDashboard();
     var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
     dash.addStatements(launchedStatements);
+    template_id = this.data.info.template_id;
+    //debugger;
     var chart = dash.createLineChart({
         container: '#graph-svg-wrapper-' + this.data.info.template_id + ' svg',
         groupBy: 'timestamp',
@@ -955,7 +962,7 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
         aggregate: ADL.count(),
         rangeLabel: 'start',
         customize: function(chart) {
-            chart.width(elmnt.width()-10);
+            chart.width($('#graph-svg-wrapper-' + template_id + ' svg').width() - 10);
             chart.height(300);
             chart.tooltips(false);
             chart.interpolate("monotone");
@@ -963,13 +970,14 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
 
             chart.xAxis.tickFormat(function(label) {
                 var date = new Date(label);
-                var options = { month: 'short', day: 'numeric' };
+                var options = {
+                    month: 'short',
+                    day: 'numeric'
+                };
                 var intllabel;
                 try {
                     intllabel = new Intl.DateTimeFormat(language_code, options).format(date);
-                }
-                catch(e)
-                {
+                } catch (e) {
                     intllabel = d3.time.format('%b %d')(date);
                 }
                 return intllabel;
@@ -984,32 +992,26 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
     chart.draw();
 };
 
-function close_dashboard()
-{
+function close_dashboard() {
+    $(".journeyOverviewActivity").html("");
     $("#dashboard-wrapper").hide();
 };
 
-xAPIDashboard.prototype.show_dashboard = function(begin, end)
-{
+xAPIDashboard.prototype.show_dashboard = function(begin, end) {
     var $this = this;
     var until = new Date(end);
     var since = new Date(begin);
     var jquery_language;
-    if ($.datepicker.regional[language_code] != undefined)
-    {
+    if ($.datepicker.regional[language_code] != undefined) {
         jquery_language = language_code;
-    }
-    else
-    {
-        jquery_language = language_code.substr(0,2);
-        if ($.datepicker.regional[jquery_language] == undefined)
-        {
+    } else {
+        jquery_language = language_code.substr(0, 2);
+        if ($.datepicker.regional[jquery_language] == undefined) {
             jquery_language = "";
         }
     }
     $.datepicker.setDefaults(
-        $.extend(
-            {},
+        $.extend({},
             $.datepicker.regional[jquery_language]
         )
     );
@@ -1019,22 +1021,22 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end)
     $('#dp-start').val(since.toDateString());
 
     $('#dp-start').datepicker({
-        onShow:function(ct) {
+        onShow: function(ct) {
             this.setOptions({
-                maxDate:$('#dp-end').val() ? $('#dp-end').val() : false,
-                maxTime:$('#dp-end').val() ? $('#dp-end').val() : false
+                maxDate: $('#dp-end').val() ? $('#dp-end').val() : false,
+                maxTime: $('#dp-end').val() ? $('#dp-end').val() : false
             })
         },
-        timepicker:true
+        timepicker: true
     });
     $('#dp-end').datepicker({
-        onShow:function( ct ) {
+        onShow: function(ct) {
             this.setOptions({
                 minDate: $('#dp-start').val() ? $('#dp-start').val() : false,
                 minTime: $('#dp-start').val() ? $('#dp-start').val() : false
             })
         },
-        timepicker:true
+        timepicker: true
     });
     $('#dp-start').datepicker("setDate", since);
     $('#dp-end').datepicker("setDate", until);
@@ -1047,11 +1049,10 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end)
         $this.regenerate_dashboard();
     });
 
-    if (this.data.info.dashboard.enable_nonanonymous == 'true')
-    {
+    if (this.data.info.dashboard.enable_nonanonymous == 'true') {
         $(".unanonymous-view").show();
         this.data.info.dashboard.anonymous = true;
-        $("#dp-unanonymous-view").change(function(event){
+        $("#dp-unanonymous-view").change(function(event) {
             $this.data.info.dashboard.anonymous = !$this.data.info.dashboard.anonymous;
             $this.regenerate_dashboard();
             if ($('#dp-unanonymous-view').is(':checked')) {
@@ -1066,11 +1067,11 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end)
 
 xAPIDashboard.prototype.helperGetDate = function(datetimepicker) {
     var mTime = $(datetimepicker).datepicker("getDate");
-    if(mTime == "") {
-        if(datetimepicker == "#dp-end") {
+    if (mTime == "") {
+        if (datetimepicker == "#dp-end") {
             return new Date();
         }
-        if(datetimepicker == "#dp-start") {
+        if (datetimepicker == "#dp-start") {
             return new Date('1970-01-01');
         }
     }
@@ -1078,8 +1079,7 @@ xAPIDashboard.prototype.helperGetDate = function(datetimepicker) {
     return mTime;
 };
 
-xAPIDashboard.prototype.regenerate_dashboard = function()
-{
+xAPIDashboard.prototype.regenerate_dashboard = function() {
     $("#journeyData").html("<img src='editor/img/loading16.gif'/>");
 
     var url = site_url + this.data.info.template_id;
@@ -1093,8 +1093,7 @@ xAPIDashboard.prototype.regenerate_dashboard = function()
     q['until'] = end.toISOString();
 
     var $this = this;
-    this.data.getStatements(q, false, function()
-    {
+    this.data.getStatements(q, false, function() {
         $("#journeyData").html("");
         $this.createJourneyTableSession($("#journeyData"));
     });
