@@ -478,7 +478,6 @@ DashboardState.prototype.getAllInteractions = function(data = undefined) {
         lIndex++;
     });
     this.interactions = interactions;
-    //debugger;
     return interactions;
 };
 

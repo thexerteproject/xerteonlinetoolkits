@@ -146,7 +146,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
         // Add the number of launches.
         var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
-        this.drawNumberOfLaunches($('.journeyOverviewStats'), launchedStatements.length);
+        this.drawNumberOfLaunches($('.journeyOverviewStats'), this.data.rawData.length);
 
         // Add the average grade.
         var completedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/completed");
@@ -177,6 +177,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             console.log(key);
         });
         for (var user in data) {
+            var lastStatements = this.getLastUserAttempt(data[user]);
             var row = "<tr class='session-row' id='session-" + learningObjectIndex + "-" + this.escapeId(user) + "'>";
             if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
                 if (data[user]['mode'] == 'username') {
@@ -190,13 +191,13 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             {
                 row += "<td class='column-hide name-column'>" + toSHA1(user) + "</td>";
             }
-            if (this.data.hasStartedLearningObject(data[user], learningObjects[learningObjectIndex].url)) {
+            if (this.data.hasStartedLearningObject(lastStatements, learningObjects[learningObjectIndex].url)) {
                 started = "<i class=\"fa fa-x-tick\">";
             } else {
                 continue;
             }
             row += "<td>" + started + "</td>";
-            if (this.data.hasCompletedLearningObject(data[user], learningObjects[learningObjectIndex].url)) {
+            if (this.data.hasCompletedLearningObject(lastStatements, learningObjects[learningObjectIndex].url)) {
                 completed = "<i class=\"fa fa-x-tick\">";
             } else {
                 completed = "<i class=\"fa fa-x-cross\">";
@@ -208,11 +209,11 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 //insertInteractionData(div, colorDiv, user, learningObjectIndex, interactionObjectIndex)
                 interaction = interactions[interactionIndex];
                 learningObject = learningObjects[learningObjectIndex];
-                if (this.data.hasPassedInteraction(data[user], interaction.url)) {
+                if (this.data.hasPassedInteraction(lastStatements, interaction.url)) {
                     this.insertInteractionData(div, greenDiv, data[user], learningObjectIndex, interactionIndex);
-                } else if (this.data.hasCompletedInteraction(data[user], interaction.url)) {
+                } else if (this.data.hasCompletedInteraction(lastStatements, interaction.url)) {
                     this.insertInteractionData(div, redDiv, data[user], learningObjectIndex, interactionIndex);
-                } else if (this.data.hasStartedInteraction(data[user], interaction.url)) {
+                } else if (this.data.hasStartedInteraction(lastStatements, interaction.url)) {
                     this.insertInteractionData(div, orangeDiv, data[user], learningObjectIndex, interactionIndex);
                 } else {
                     this.insertInteractionData(div, greyDiv, data[user], learningObjectIndex, interactionIndex);
@@ -251,6 +252,24 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             $(".journeyTable").width(Math.min($(".journeyTable thead").width(), $(".journeyOverview").width()));
         });
     }
+};
+
+xAPIDashboard.prototype.getLastUserAttempt = function(data) {
+    data.statements.sort(function(a,b) {return (new Date(a.timestamp) < new Date(b.timestamp)) ? 1 : ((new Date(b.timestamp) < new Date(a.timestamp)) ? -1 : 0);} );
+    var lastStatements = {
+        'key': data.key,
+        'mbox_sha1sum': data.mbox_sha1sum,
+        'mode': data.mode,
+        'statements': []
+    };
+    for (var userStatement in data.statements) {
+        lastStatements.statements.push(data.statements[userStatement]);
+        if (data.statements[userStatement].verb.id == "http://adlnet.gov/expapi/verbs/launched") {
+            lastStatements.statements.reverse();
+            return lastStatements;
+        }
+    }
+    return undefined;
 };
 
 xAPIDashboard.prototype.insertCollapse = function(div, userdata, learningObject, rows) {
@@ -901,7 +920,7 @@ xAPIDashboard.prototype.drawSelectRow = function(table, obj, begin, end) {
 
 
 xAPIDashboard.prototype.drawNumberOfLaunches = function(elmnt, numberOfLaunches) {
-    var row = '<div class="col-4-widget col-4"><h3>Number of Launces</h3><h1>' + numberOfLaunches + '</h1></div>';
+    var row = '<div class="col-4-widget col-4"><h3>Number of Interactions</h3><h1>' + numberOfLaunches + '</h1></div>';
     elmnt.append(row);
 };
 
@@ -1035,7 +1054,7 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end)
         $("#dp-unanonymous-view").change(function(event){
             $this.data.info.dashboard.anonymous = !$this.data.info.dashboard.anonymous;
             $this.regenerate_dashboard();
-            if (!$this.data.info.dashboard.anonymous) {
+            if ($('#dp-unanonymous-view').is(':checked')) {
                 $('th.name-column').removeClass('column-hide');
             }
         });

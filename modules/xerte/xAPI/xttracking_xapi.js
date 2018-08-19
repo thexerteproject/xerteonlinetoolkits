@@ -148,7 +148,7 @@ function XApiTrackingState() {
 
     function getSuccessStatus() {
         if (this.lo_type != "pages only") {
-            if (this.getScaledScore() > this.lo_passed) {
+            if (this.getScaledScore() > (this.lo_passed / 100)) {
                 return "passed";
             } else {
                 return "failed";
@@ -363,7 +363,7 @@ function XApiTrackingState() {
         if (ia_type != "page" && ia_type != "result") {
             this.lo_type = "interactive";
             if (this.lo_passed == -1) {
-                this.lo_passed = 0.55;
+                this.lo_passed = 0.55 * 100;
             }
         }
 
@@ -1833,7 +1833,7 @@ function XTSetOption(option, value) {
             state.lo_completed = value;
             break;
         case "objective_passed":
-            state.lo_passed = Number(value);
+            state.lo_passed = Number(value) * 100;
             break;
         case "page_timeout":
             // Page timeout in seconds
