@@ -650,14 +650,15 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
 xAPIDashboard.prototype.createPieChartInteraction = function(statements, div_location) {
     var dash = new ADL.XAPIDashboard();
     statements = this.data.getAllScoreStatements(statements);
-    statements.forEach(function(x) {
+    var newStatements = jQuery.extend(true, [], statements);
+    newStatements.forEach(function(x) {
         if (x.result.score.isScaled == undefined || x.result.score.isScaled == false) {
             x.result.score.isScaled = true;
             x.result.score.scaled *= 10;
         }
         return x;
     });
-    dash.addStatements(statements);
+    dash.addStatements(newStatements);
     var chart = dash.createBarChart({
         container: div_location,
         groupBy: 'result.score.scaled',
@@ -669,7 +670,7 @@ xAPIDashboard.prototype.createPieChartInteraction = function(statements, div_loc
         },
         post: function(data) {
             data.contents.map(function(el) {
-                el.out *= 1 / statements.length * 100;
+                el.out *= 1 / newStatements.length * 100;
             });
         },
         customize: function(chart) {
