@@ -362,10 +362,11 @@ function XApiTrackingState() {
         var sit = new XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name);
         if (ia_type != "page" && ia_type != "result") {
             this.lo_type = "interactive";
-            if (this.lo_passed == -1) {
-                this.lo_passed = 0.55 * 100;
-            }
         }
+        if (this.lo_passed == -1) {
+            this.lo_passed = 55;
+        }
+
 
         this.interactions.push(sit);
         return sit;

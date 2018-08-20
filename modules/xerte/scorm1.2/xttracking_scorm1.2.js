@@ -255,10 +255,10 @@ function ScormTrackingState()
         if (ia_type != "page" && ia_type != "result")
         {
             this.lo_type = "interactive";
-            if (this.lo_passed == -1)
-            {
-                this.lo_passed = 55;
-            }
+        }
+        if (this.lo_passed == -1)
+        {
+            this.lo_passed = 55;
         }
         this.interactions.push(sit);
         return sit;
