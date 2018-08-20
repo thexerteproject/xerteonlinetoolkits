@@ -637,12 +637,12 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRATTEMPTS + " " + started.length + "<br>");
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRCOMPLETIONS + " " + completed.length + "<br>");
     var grouped = this.data.groupStatementsOnSession([started, completed]);
-
     avgTime = this.data.calculateDuration(grouped);
+
     if (avgTime < 120) {
         avgTime = Math.round(avgTime) + " " + XAPI_DASHBOARD_COMPLETED_UNIT_SECONDS;
     } else {
-        avgTime = avgTime / 60 + " " + XAPI_DASHBOARD_COMPLETED_UNIT_MINUTES;
+        avgTime = Math.round(avgTime / 6) / 10 + " " + XAPI_DASHBOARD_COMPLETED_UNIT_MINUTES;
     }
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_AVGDURATION + " " + avgTime + "<br>");
 };
@@ -665,8 +665,8 @@ xAPIDashboard.prototype.createPieChartInteraction = function(statements, div_loc
         aggregate: ADL.count(),
         range: {
             start: 0.0,
-            end: 100.0,
-            increment: 10
+            end: 10.0,
+            increment: 1
         },
         post: function(data) {
             data.contents.map(function(el) {
@@ -951,7 +951,6 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
     var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
     dash.addStatements(launchedStatements);
     template_id = this.data.info.template_id;
-    //debugger;
     var chart = dash.createLineChart({
         container: '#graph-svg-wrapper-' + this.data.info.template_id + ' svg',
         groupBy: 'timestamp',

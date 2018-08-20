@@ -1560,8 +1560,7 @@ function XTInitialise(category) {
         }
         if (typeof fullusername == 'undefined')
             fullusername = "Unknown";
-        if (typeof groupname != "undefined" && groupname != "")
-        {
+        if (typeof groupname != "undefined" && groupname != "") {
             state.group = {
                 objectType: "Group",
                 account: {
@@ -1569,29 +1568,24 @@ function XTInitialise(category) {
                     homePage: baseUrl()
                 }
             };
-        }
-        else {
+        } else {
             state.group = "";
         }
-        if (typeof coursename != "undefined" && coursename != "")
-        {
+        if (typeof coursename != "undefined" && coursename != "") {
             state.course = {
                 id: baseUrl() + '/course/' + coursename
             };
             state.coursename = coursename;
-        }
-        else {
+        } else {
             state.course = "";
             state.coursename = "";
         }
-        if (typeof modulename != "undefined" && modulename != "")
-        {
+        if (typeof modulename != "undefined" && modulename != "") {
             state.module = {
                 id: baseUrl() + '/module/' + modulename
             };
             state.modulename = modulename;
-        }
-        else {
+        } else {
             state.module = "";
             state.modulename = "";
         }
@@ -1624,9 +1618,7 @@ function XTInitialise(category) {
                             homePage: baseUrl() + state.templateId
                         }
                     };
-                }
-                else
-                {
+                } else {
                     actor = {
                         objectType: "Group",
                         account: {
@@ -1887,7 +1879,10 @@ function XTEnterPage(page_nr, page_name) {
 function XTExitPage(page_nr) {
     var sit = state.findPage(page_nr);
     if (sit != undefined && sit != null) {
-        state.exitInteraction(page_nr, -1, {score:0, success:true}, "", sit.score, "");
+        state.exitInteraction(page_nr, -1, {
+            score: 0,
+            success: true
+        }, "", sit.score, "");
     }
 }
 
@@ -1897,8 +1892,7 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting) {
 }
 
 function XTSetViewed(page_nr, name, score) {
-    if (isNaN(score) || typeof score != "number")
-    {
+    if (isNaN(score) || typeof score != "number") {
         score = 0.0;
     }
     this.pageEnd = new Date();
@@ -1940,8 +1934,7 @@ function XTSetViewed(page_nr, name, score) {
     }
 }
 
-function XThelperConsolidateSegments(videostate)
-{
+function XThelperConsolidateSegments(videostate) {
     // 1. Sort played segments on start time (first make a copy)
     var segments = $.extend(true, [], videostate.segments);
     segments.sort(function(a, b) {
@@ -1973,12 +1966,10 @@ function XThelperConsolidateSegments(videostate)
     return csegments;
 }
 
-function XThelperDetermineProgress(videostate)
-{
+function XThelperDetermineProgress(videostate) {
     var csegments = XThelperConsolidateSegments(videostate);
     var videoseen = 0;
-    for (var i=0; i<csegments.length; i++)
-    {
+    for (var i = 0; i < csegments.length; i++) {
         videoseen += csegments[i].end - csegments[i].start;
     }
     // normalized between 0 and 1
@@ -1988,8 +1979,7 @@ function XThelperDetermineProgress(videostate)
     return 0.0;
 }
 
-function XTVideo(page_nr, name, block_name, verb, videostate)
-{
+function XTVideo(page_nr, name, block_name, verb, videostate) {
     var id = baseUrl() + state.templateId + "/" + page_nr + "/video";
     var pagename = "Page " + page_nr;
     if (name != null && name != "") {
@@ -1997,7 +1987,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
         pagename = name;
     }
 
-    switch(verb) {
+    switch (verb) {
 
         case "initialized":
             state.videostart = new Date();
@@ -2061,7 +2051,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                     "extensions": {
                         "https://w3id.org/xapi/video/extensions/time": videostate.time
                     },
-                    "duration" : calcDuration(state.videostart, new Date())
+                    "duration": calcDuration(state.videostart, new Date())
                 },
                 "context": {
                     "contextActivities": {
@@ -2079,10 +2069,8 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
             break;
         case "paused":
             var played_segments = "";
-            for (var i=0; i<videostate.segments.length; i++)
-            {
-                if (i>0)
-                {
+            for (var i = 0; i < videostate.segments.length; i++) {
+                if (i > 0) {
                     played_segments += "[,]"
                 }
                 played_segments += videostate.segments[i].start + "[.]" + videostate.segments[i].end;
@@ -2114,7 +2102,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                         "https://w3id.org/xapi/video/extensions/progress": XThelperDetermineProgress(videostate),
                         "https://w3id.org/xapi/video/extensions/played-segments": played_segments
                     },
-                    "duration" : calcDuration(state.videostart, new Date())
+                    "duration": calcDuration(state.videostart, new Date())
                 },
                 "context": {
                     "contextActivities": {
@@ -2131,7 +2119,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
             SaveStatement(statement);
             break;
         case "seeked":
-            var statement =  {
+            var statement = {
                 "actor": actor,
                 "verb": {
                     "id": "https://w3id.org/xapi/video/verbs/seeked",
@@ -2157,7 +2145,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                         "https://w3id.org/xapi/video/extensions/time-from": videostate.prevTime,
                         "https://w3id.org/xapi/video/extensions/time-to": videostate.time
                     },
-                    "duration" : calcDuration(state.videostart, new Date())
+                    "duration": calcDuration(state.videostart, new Date())
                 },
                 "context": {
                     "contextActivities": {
@@ -2177,18 +2165,15 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
             break;
         case "exit": // Not really the verb. will send termintaed or completed depending on state
             var played_segments = "";
-            for (var i=0; i<videostate.segments.length; i++)
-            {
-                if (i>0)
-                {
+            for (var i = 0; i < videostate.segments.length; i++) {
+                if (i > 0) {
                     played_segments += "[,]"
                 }
                 played_segments += videostate.segments[i].start + "[.]" + videostate.segments[i].end;
             }
             var progress = XThelperDetermineProgress(videostate);
             // 3. Determine whther to use completed or terminated
-            if (progress >= 99.9)
-            {
+            if (progress >= 99.9) {
                 // Use completed
                 var statement = {
                     "actor": actor,
@@ -2217,8 +2202,8 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                             "https://w3id.org/xapi/video/extensions/progress": progress,
                             "https://w3id.org/xapi/video/extensions/played-segments": played_segments
                         },
-                        "completion" : true,
-                        "duration" : calcDuration(state.videostart, new Date())
+                        "completion": true,
+                        "duration": calcDuration(state.videostart, new Date())
                     },
                     "context": {
                         "contextActivities": {
@@ -2232,12 +2217,9 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                         }
                     }
                 };
-            }
-            else
-            {
+            } else {
                 // use terminated, so first send paused as according to standards (if not already sent)
-                if (state.prevVerb != "paused")
-                {
+                if (state.prevVerb != "paused") {
                     var statement = {
                         "actor": actor,
                         "verb": {
@@ -2265,7 +2247,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                                 "https://w3id.org/xapi/video/extensions/progress": XThelperDetermineProgress(videostate),
                                 "https://w3id.org/xapi/video/extensions/played-segments": played_segments
                             },
-                            "duration" : calcDuration(state.videostart, new Date())
+                            "duration": calcDuration(state.videostart, new Date())
                         },
                         "context": {
                             "contextActivities": {
@@ -2281,7 +2263,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                     };
                     SaveStatement(statement);
                 }
-                var statement =  {
+                var statement = {
                     "actor": actor,
                     "verb": {
                         "id": "http://adlnet.gov/expapi/verbs/terminated",
@@ -2308,7 +2290,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate)
                             "https://w3id.org/xapi/video/extensions/progress": progress,
                             "https://w3id.org/xapi/video/extensions/played-segments": played_segments
                         },
-                        "duration" : calcDuration(state.videostart, new Date())
+                        "duration": calcDuration(state.videostart, new Date())
                     },
                     "context": {
                         "contextActivities": {
@@ -2434,8 +2416,7 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
 
             // save score for each class
             var graph = JSON.parse(JSONGraph);
-            $.each(graph.classnames, function(i, classname)
-            {
+            $.each(graph.classnames, function(i, classname) {
                 var id = sitp.getPageId() + "/" + classname.replace(/ /g, "_");
                 var classdescription = description + "(class=" + classname + ")";
                 var value = graph.classvalues[i];
@@ -2465,7 +2446,7 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
                             min: 0.0,
                             max: 100.0,
                             raw: value,
-                            scaled: Math.round(value) /100.0
+                            scaled: Math.round(value) / 100.0
                         },
                         duration: duration
                     },
@@ -2555,7 +2536,7 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
     var search = ADL.XAPIWrapper.searchParams();
     search['verb'] = "http://adlnet.gov/expapi/verbs/scored";
     search['activity'] = id;
-    $.each(q, function(i, value){
+    $.each(q, function(i, value) {
         search[i] = value;
     });
 
@@ -2594,15 +2575,12 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
 
 function XTGetStatements(q, one, callback) {
     var search = ADL.XAPIWrapper.searchParams();
-    $.each(q, function(i, value){
+    $.each(q, function(i, value) {
         search[i] = value;
     });
-    if (one)
-    {
+    if (one) {
         search['limit'] = 1;
-    }
-    else
-    {
+    } else {
         search['limit'] = 1000;
     }
     var statements = [];
@@ -2660,7 +2638,10 @@ function XTTerminate() {
             var sit = state.find(state.currentid);
             // there is still an interaction open, close it
             if (sit != null) {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, {success:false, score:0}, "", 0, "",
+                state.exitInteraction(sit.page_nr, sit.ia_nr, {
+                        success: false,
+                        score: 0
+                    }, "", 0, "",
                     false);
             }
         }
@@ -2669,7 +2650,10 @@ function XTTerminate() {
             var sit = state.find(state.currentpageid);
             // there is still an interaction open, close it
             if (sit != null) {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, {success:false, score:0}, "", 0, "",
+                state.exitInteraction(sit.page_nr, sit.ia_nr, {
+                        success: false,
+                        score: 0
+                    }, "", 0, "",
                     false);
             }
 
@@ -2852,27 +2836,25 @@ function XTTerminate() {
             timestamp: new Date()
         };
         SaveStatement(statement, false);
-        if (lti_enabled)
-        {
+        if (lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
-            if (url.indexOf("launch_lti.php") >=0)
-            {
+            if (url.indexOf("launch_lti.php") >= 0) {
                 url = url.replace("launch_lti.php", "website_code/php/lti/sendgrade.php");
-            }
-            else if (url.indexOf("launch_lti2.php") >=0){
+            } else if (url.indexOf("launch_lti2.php") >= 0) {
                 url = url.replace("launch_lti2.php", "website_code/php/lti/sendgrade.php");
-            }
-            else {
+            } else {
                 url = "";
             }
             if (url.length > 0) {
                 $.ajax({
-                    method: "POST",
-                    url: url,
-                    data: {grade: state.getdScaledScore()}
-                })
-                    .done(function (msg) {
+                        method: "POST",
+                        url: url,
+                        data: {
+                            grade: state.getdScaledScore()
+                        }
+                    })
+                    .done(function(msg) {
                         //alert("Data Saved: " + msg);
                     });
             }
@@ -2881,7 +2863,6 @@ function XTTerminate() {
 }
 
 function SaveStatement(statement, async) {
-
     var key = "http://xerte.org.uk/sessionId";
     extension = {
         "http://xerte.org.uk/sessionId": state.sessionId,
@@ -2889,12 +2870,10 @@ function SaveStatement(statement, async) {
         "http://xerte.org.uk/learningObjectTitle": x_params.name + " (" +
             state.templateId + ")"
     };
-    if (state.coursename != "")
-    {
+    if (state.coursename != "") {
         extension["http://xerte.org.uk/course"] = state.coursename;
     }
-    if (state.modulename != "")
-    {
+    if (state.modulename != "") {
         extension["http://xerte.org.uk/module"] = state.modulename;
     }
     if (typeof statement.context == "undefined") {
@@ -2934,44 +2913,35 @@ function SaveStatement(statement, async) {
             statement.context.contextActivities.other = [{
                 id: baseUrl() + state.category.replace(/[\/ ]/g, "_")
             }];
-        }
-        else
-        {
+        } else {
             statement.context.contextActivities.other.push({
                 id: baseUrl() + state.category.replace(/[\/ ]/g, "_")
             });
         }
     }
-    if (state.course != "")
-    {
+    if (state.course != "") {
         //Place course in contextActivities/Other
         if (typeof statement.context.contextActivities == "undefined") {
             statement.context.contextActivities = {};
         }
         if (typeof statement.context.contextActivities.other == "undefined") {
             statement.context.contextActivities.other = [state.course];
-        }
-        else
-        {
+        } else {
             statement.context.contextActivities.other.push(state.course);
         }
     }
-    if (state.module != "")
-    {
+    if (state.module != "") {
         //Place module in contextActivities/Other
         if (typeof statement.context.contextActivities == "undefined") {
             statement.context.contextActivities = {};
         }
         if (typeof statement.context.contextActivities.other == "undefined") {
             statement.context.contextActivities.other = [state.module];
-        }
-        else
-        {
+        } else {
             statement.context.contextActivities.other.push(state.module);
         }
     }
-    if (state.group != "")
-    {
+    if (state.group != "") {
         // Place in context team
         statement.context.team = state.group;
     }
@@ -3179,7 +3149,7 @@ function XTResults(fullcompletion) {
     results.completion = completion;
     results.score = score;
     results.nrofquestions = nrofquestions;
-    results.averageScore = Math.round(state.getdScaledScore() * 10000.0)/100.0;
+    results.averageScore = Math.round(state.getdScaledScore() * 10000.0) / 100.0;
     results.totalDuration = Math.round(totalDuration / 1000);
     results.start = state.start.toLocaleString();
 
