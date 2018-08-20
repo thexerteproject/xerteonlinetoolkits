@@ -599,7 +599,7 @@
   //  an object with defined methods
   Popcorn.extend(Popcorn.p, (function() {
 
-      var methods = "load play pause currentTime playbackRate volume duration preload playbackRate " +
+      var methods = "load play setVST pause currentTime playbackRate volume duration preload playbackRate " +
                     "autoplay loop controls muted buffered readyState seeking paused played seekable ended",
           ret = {};
 
@@ -618,6 +618,12 @@
               this.media.currentTime = Popcorn.util.toSeconds( arg );
             }
 
+            if ( arg != undefined )
+            {
+              this.media[ name ](arg);
+              return this;
+            }
+
             this.media[ name ]();
 
             return this;
@@ -626,13 +632,13 @@
           if ( arg != null ) {
             // Capture the current value of the attribute property
             previous = this.media[ name ];
-
             // Set the attribute property with the new value
             this.media[ name ] = arg;
 
             // If the new value is not the same as the old value
             // emit an "attrchanged event"
             if ( previous !== arg ) {
+
               this.emit( "attrchange", {
                 attribute: name,
                 previousValue: previous,
@@ -4378,6 +4384,7 @@
             }
         }
 
+
         function changeCurrentTime( aTime ) {
             if (aTime === impl.currentTime) {
                 return;
@@ -4451,12 +4458,20 @@
             }
 
             self.pause = function() {
-
                 impl.paused = true;
                 if( !playerReady ) {
                     addPlayerReadyCallback( function() { self.pause(); } );
                 }
                 player.pause();
+            };
+
+            self.setVST = function(vst) {
+              player.setVisibleStreamTypes(vst.split(" ").map(parseIntOne));
+
+              function parseIntOne(str)
+              {
+                return parseInt(str);
+              }
             };
 
         function onSeeking() {
@@ -4467,6 +4482,7 @@
         function onSeeked() {
             impl.ended = false;
             impl.seeking = false;
+
             self.dispatchEvent( "timeupdate" );
             self.dispatchEvent( "seeked" );
             self.dispatchEvent( "canplay" );

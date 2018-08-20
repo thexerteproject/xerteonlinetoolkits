@@ -1122,7 +1122,6 @@
 									});
 								}
 							});
-							
 							// store child data if children aren't being synced to media so plugin can use it
 							if (syncChildren == false) {
 								data[data.length-1].childNodes = $(this).children();
@@ -1336,7 +1335,18 @@
 				} else {
 					this.play();
 				}
-				
+
+				// Show the following streams (Mediasite)
+				// 0: Video 1
+				// 1: Document
+				// 2: Slides
+				// 3: Presentation
+				// 4: Video 2
+				// 5: Video 3
+				if (synchData.getAttribute("visibleStreamTypes") != undefined)
+					this.setVST(synchData.getAttribute("visibleStreamTypes"));
+
+
 				// disable media controls
 				if (synchData.getAttribute("disable") == "true") {
 					mediaLesson.enableControls(this.media, false);
