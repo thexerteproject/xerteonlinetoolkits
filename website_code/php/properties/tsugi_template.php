@@ -7,6 +7,9 @@
         require_once($xerte_toolkits_site->tsugi_dir . "config.php");
         require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
         $tsugi_installed = true;
+
+        ini_set('display_errors', 0);
+        error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
     }
 
     use \Tsugi\Util\LTI;

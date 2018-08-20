@@ -97,6 +97,8 @@
                 success: this.allCorrect,
                 score: ((correct/numOfQuestions)*100.0)
             };
+
+			this.checked = true;
             XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
 
 
@@ -808,6 +810,7 @@
 			rowCount++;
 		}
 		XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+
 		XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 		/*
 		for(var i = 0; i < correctOptions.length; i++)

@@ -1064,6 +1064,13 @@ div.theme_description
 	background-position: -96px -16px;
 }
 
+.theme_url_param
+{
+	margin-top: 10px;
+	font-style: italic;
+	font-size:small;
+}
+
 /* start of xertecss.css
 
 body {background: #b3b3b5; padding-bottom: 30px;}

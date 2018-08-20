@@ -113,6 +113,13 @@
 		};
 
         this.init = function() {
+			
+			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
+				$('#txtHolder').html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			} else {
+				$('#txtHolder').remove();
+			}
+			
             var loadFiles = true;
             if(xot_offline) {
 				/* files are already loaded statically */
@@ -615,6 +622,7 @@ results.init();
 
 
 <div id="pageContents">
+	<div id="txtHolder"></div>
 	<div id="dialog-form" title="Create new user">
 		<form>
 			<fieldset>

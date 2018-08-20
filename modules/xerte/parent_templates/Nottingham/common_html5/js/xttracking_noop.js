@@ -62,7 +62,7 @@ function NoopTrackingState()
     this.start = new Date();
     this.interactions = new Array();
     this.lo_completed = 0;
-    this.lo_passed = 0;
+    this.lo_passed = -1;
     this.page_timeout = 5000;
     this.forcetrackingmode = false;
     this.debug = false;
@@ -133,7 +133,7 @@ function NoopTrackingState()
     {
         if (this.lo_type != "pages only")
         {
-            if (state.getScaledScore() > this.lo_passed)
+            if (state.getScaledScore() > (this.lo_passed / 100))
             {
                 return "passed";
             }
@@ -346,7 +346,7 @@ function NoopTrackingState()
             this.lo_type = "interactive";
             if (this.lo_passed == -1)
             {
-                this.lo_passed = 0.55;
+                this.lo_passed = 55;
             }
         }
 
@@ -1029,7 +1029,7 @@ function XTSetOption(option, value)
         	state.lo_completed = value;
             break;
         case "objective_passed":
-        	state.lo_passed = Number(value);
+        	state.lo_passed = Number(value) * 100;
             break;
         case "page_timeout":
             // Page timeout in seconds
@@ -1162,6 +1162,10 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 function XTTerminate()
 {
     if (!state.finished) {
+        // End tracking of page
+        x_endPageTracking(false, -1);
+
+        // This code is probably obsolete, leave it in to allow for more testing
         var currentpageid = "";
         state.finished = true;
         if (state.currentid) {

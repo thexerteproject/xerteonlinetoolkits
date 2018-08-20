@@ -206,7 +206,7 @@ Folder popup is the div that appears when creating a new folder
             </div>
         </div>
         <div id="dashboard-title"></div>
-        <div id="journeyData" class="journeyData"></div>
+        <div id="journeyData" class="journeyData container-fluid container"></div>
     </div>
 </div>
 

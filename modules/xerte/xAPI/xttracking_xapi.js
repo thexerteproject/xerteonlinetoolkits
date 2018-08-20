@@ -148,7 +148,7 @@ function XApiTrackingState() {
 
     function getSuccessStatus() {
         if (this.lo_type != "pages only") {
-            if (this.getScaledScore() > this.lo_passed) {
+            if (this.getScaledScore() > (this.lo_passed / 100)) {
                 return "passed";
             } else {
                 return "failed";
@@ -363,7 +363,7 @@ function XApiTrackingState() {
         if (ia_type != "page" && ia_type != "result") {
             this.lo_type = "interactive";
             if (this.lo_passed == -1) {
-                this.lo_passed = 0.55;
+                this.lo_passed = 0.55 * 100;
             }
         }
 
@@ -708,7 +708,7 @@ function XApiTrackingState() {
     function verifyExitInteractionParameters(sit, result, learneroptions,
         learneranswer, feedback) {
         if (this.debug) {
-            verifyResult(result);
+            this.verifyResult(result);
             switch (sit.ia_type) {
                 case 'match':
                     /*
@@ -1559,9 +1559,6 @@ function XTInitialise(category) {
         }
         if (typeof fullusername == 'undefined')
             fullusername = "Unknown";
-        studentidmode = 0;
-        userMail = "test_xerte_email@xerte.co.uk";
-        //debugger;
         if (typeof groupname != "undefined" && groupname != "")
         {
             state.group = {
@@ -1578,7 +1575,7 @@ function XTInitialise(category) {
         if (typeof coursename != "undefined" && coursename != "")
         {
             state.course = {
-                id: baseUrl() + coursename
+                id: baseUrl() + '/course/' + coursename
             };
             state.coursename = coursename;
         }
@@ -1589,7 +1586,7 @@ function XTInitialise(category) {
         if (typeof modulename != "undefined" && modulename != "")
         {
             state.module = {
-                id: baseUrl() + modulename
+                id: baseUrl() + '/module/' + modulename
             };
             state.modulename = modulename;
         }
@@ -1836,7 +1833,9 @@ function XTSetOption(option, value) {
             state.lo_completed = value;
             break;
         case "objective_passed":
-            state.lo_passed = Number(value);
+            if (Number(value) <= 1) {
+                state.lo_passed = Number(value) * 100;
+            }
             break;
         case "page_timeout":
             // Page timeout in seconds
@@ -1887,7 +1886,7 @@ function XTEnterPage(page_nr, page_name) {
 function XTExitPage(page_nr) {
     var sit = state.findPage(page_nr);
     if (sit != undefined && sit != null) {
-        state.exitInteraction(page_nr, -1, false, "", sit.score, "");
+        state.exitInteraction(page_nr, -1, {score:0, success:true}, "", sit.score, "");
     }
 }
 
@@ -1944,14 +1943,16 @@ function XThelperConsolidateSegments(videostate)
 {
     // 1. Sort played segments on start time (first make a copy)
     var segments = $.extend(true, [], videostate.segments);
-    segments.sort(function(a,b) {return (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0);} );
+    segments.sort(function(a, b) {
+        return (parseFloat(a.start) > parseFloat(b.start)) ? 1 : ((parseFloat(b.start) > parseFloat(a.start)) ? -1 : parseFloat(a.end) - parseFloat(b.end));
+    });
     // 2. Combine the segments
     var csegments = [];
-    var i=0;
-    while(i<segments.length) {
+    var i = 0;
+    while (i < segments.length) {
         var segment = $.extend(true, {}, segments[i]);
         i++;
-        while (i<segments.length && segment.end >= segments[i].start) {
+        while (i < segments.length && parseFloat(segment.end) >= parseFloat(segments[i].start)) {
             segment.end = segments[i].end;
             i++;
         }
@@ -2567,6 +2568,7 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
                 //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                 //}
                 stringObject = {};
+
                 stringObject.timestamp = body.statements[x].timestamp;
                 stringObject.actor = body.statements[x].actor;
                 stringObject.result = body.statements[x].result;
@@ -2597,6 +2599,10 @@ function XTGetStatements(q, one, callback) {
     if (one)
     {
         search['limit'] = 1;
+    }
+    else
+    {
+        search['limit'] = 1000;
     }
     var statements = [];
     ADL.XAPIWrapper.getStatements(search, null,
@@ -2643,13 +2649,17 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 
 function XTTerminate() {
     if (!state.finished && state.initialised) {
+        // End tracking of page
+        x_endPageTracking(false, -1);
+
+        // This code is probably obsolete, leave it in to allow for more testing
         var currentpageid = "";
         state.finished = true;
         if (state.currentid) {
             var sit = state.find(state.currentid);
             // there is still an interaction open, close it
             if (sit != null) {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "",
+                state.exitInteraction(sit.page_nr, sit.ia_nr, {success:false, score:0}, "", 0, "",
                     false);
             }
         }
@@ -2658,7 +2668,7 @@ function XTTerminate() {
             var sit = state.find(state.currentpageid);
             // there is still an interaction open, close it
             if (sit != null) {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "",
+                state.exitInteraction(sit.page_nr, sit.ia_nr, {success:false, score:0}, "", 0, "",
                     false);
             }
 
@@ -2841,6 +2851,31 @@ function XTTerminate() {
             timestamp: new Date()
         };
         SaveStatement(statement, false);
+        if (lti_enabled)
+        {
+            // Send ajax request to store grade through LTI to gradebook
+            var url = window.location.href;
+            if (url.indexOf("launch_lti.php") >=0)
+            {
+                url = url.replace("launch_lti.php", "website_code/php/lti/sendgrade.php");
+            }
+            else if (url.indexOf("launch_lti2.php") >=0){
+                url = url.replace("launch_lti2.php", "website_code/php/lti/sendgrade.php");
+            }
+            else {
+                url = "";
+            }
+            if (url.length > 0) {
+                $.ajax({
+                    method: "POST",
+                    url: url,
+                    data: {grade: state.getdScaledScore()}
+                })
+                    .done(function (msg) {
+                        //alert("Data Saved: " + msg);
+                    });
+            }
+        }
     }
 }
 

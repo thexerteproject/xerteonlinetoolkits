@@ -405,7 +405,12 @@ x_projectDataLoaded = function(xmlData) {
 	if (urlParams.responsive != undefined && (urlParams.responsive == "true" || urlParams.responsive == "false")) {
 		x_params.responsive = urlParams.responsive;
 	}
-	
+
+	if (urlParams.theme != undefined && (x_params.themeurl == undefined || x_params.themeurl != 'true'))
+    {
+        x_params.theme = urlParams.theme;
+    }
+
     x_getLangData(x_params.language);
 
     // Setup nr of pages for tracking
@@ -1129,6 +1134,8 @@ function x_continueSetUp1() {
 		.click(function() {
 			if (x_params.navigation == "Linear" || x_params.navigation == undefined) {
 				x_openDialog("menu", x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"), x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"));
+			} else if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
+				x_navigateToPage(false,{type:'linkID',ID:x_params.homePage});
 			} else {
 				x_changePage(0);
 			}
@@ -1570,16 +1577,9 @@ function x_changePageStep4(x_gotoPage) {
         x_changePageStep5(x_gotoPage);
     }
 }
-
-function x_changePageStep5(x_gotoPage) {
-	var prevPage = x_currentPage;
-
-    if (x_params.styles != undefined){
-        $x_head.append('<style type="text/css" id="page_css">' +  x_params.styles + '</style>');
-    }
-
+function x_endPageTracking(pagechange, x_gotoPage) {
     // End page tracking of x_currentPage
-    if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_currentPage != x_gotoPage)
+    if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && (!pagechange || x_currentPage != x_gotoPage))
     {
         var pageObj;
 
@@ -1602,6 +1602,18 @@ function x_changePageStep5(x_gotoPage) {
         }
         XTExitPage(x_currentPage);
     }
+}
+
+function x_changePageStep5(x_gotoPage) {
+	var prevPage = x_currentPage;
+
+    if (x_params.styles != undefined){
+        $x_head.append('<style type="text/css" id="page_css">' +  x_params.styles + '</style>');
+    }
+
+    // End page tracking of x_currentPage
+    x_endPageTracking(true, x_gotoPage);
+
     x_currentPage = x_gotoPage;
     x_currentPageXML = x_pages[x_currentPage];
 
@@ -1984,6 +1996,10 @@ function x_pageLoaded() {
         .hide()
         .css("visibility", "visible")
         .fadeIn();
+
+	// Trigger featherlight
+    var config = $.featherlight.defaults;
+    $(config.selector, config.context).featherlight();
 
 	doPercentage();
 }

@@ -165,4 +165,5 @@
 		<nextpage>* next page *</nextpage>
 		<prevpage>* previous page*</prevpage>
 	</XotLinkRelativePages>
+	<ThemeUrlParam>Theme url parameter:</ThemeUrlParam>
 </language>

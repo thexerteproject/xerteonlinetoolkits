@@ -8,7 +8,7 @@ function DashboardState(info) {
         "password": info.lrs.lrssecret,
         "strictCallbacks": true
     };
-    ADL.XAPIWrapper.changeConfig(this.config);
+    ADL.XAPIWrapper.changeConfig(this.conf);
     this.mode = info.groupmode;
     this.rawData = undefined;
     this.dashboard = new ADL.XAPIDashboard();
@@ -32,7 +32,7 @@ DashboardState.prototype.clear = function()
 
 DashboardState.prototype.getStatements = function(q, one, callback) {
 
-    ADL.XAPIWrapper.log.debug = true;
+    //ADL.XAPIWrapper.log.debug = true;
     ADL.XAPIWrapper.changeConfig(this.conf);
 
     var search = ADL.XAPIWrapper.searchParams();
@@ -42,6 +42,10 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
     if (one)
     {
         search['limit'] = 1;
+    }
+    else
+    {
+        search['limit'] = 10000;
     }
     this.clear();
     var $this = this;
@@ -164,7 +168,7 @@ DashboardState.prototype.groupStatements = function(data) {
                 attempt['key'] = key;
                 if (statement.actor.name != undefined) {
                     attempt['username'] = statement.actor.name;
-                    groupedData[key]['mode'] = 'username';
+                    attempt['mode'] = 'username';
                 }
                 groupedData[key] = attempt;
             }
@@ -191,13 +195,15 @@ DashboardState.prototype.groupStatements = function(data) {
         }
         else
         {
-            // Key is session_id
+            // Key is group, session_id (if group is available), otherwise just session
+            var group = (statement.actor.group != undefined ? statement.actor.group.name : 'global');
             var key = statement.context.extensions['http://xerte.org.uk/sessionId'];
             if (key == undefined)
             {
                 key = statement.context.extensions[site_url + "sessionId"];
             }
             if (key != undefined) {
+                key = group + ' ' + key;
                 if (groupedData[key] == undefined) {
                     attempt['mode'] = 'session';
                     attempt['sessionid'] = key;
@@ -472,7 +478,6 @@ DashboardState.prototype.getAllInteractions = function(data = undefined) {
         lIndex++;
     });
     this.interactions = interactions;
-    //debugger;
     return interactions;
 };
 
@@ -483,6 +488,16 @@ DashboardState.prototype.getInteractions = function(learningObject) {
     }
     return this.interactions[learningObject];
 };
+
+DashboardState.prototype.getFilteredStatements = function(userdata, verb, learningObjectUrl)
+{
+    var statements = userdata['statements'];
+    var statementList = this.getStatementsList(statements, verb);
+    statementList = statementList.filter(function(statement) {
+        return statement.object.id == learningObjectUrl;
+    });
+    return statementList;
+}
 
 DashboardState.prototype.hasCompletedLearningObject = function(userdata, learningObject) {
     return this.getStatement(userdata['statements'],
@@ -498,6 +513,11 @@ DashboardState.prototype.hasStartedLearningObject = function(userdata, learningO
     }).length > 0;
     return res;
 };
+
+DashboardState.prototype.getExitedStatements = function(userdata, learningObjectUrl)
+{
+    return this.getFilteredStatements(userdata, "http://adlnet.gov/expapi/verbs/exiteded", learningObjectUrl);
+}
 
 DashboardState.prototype.hasCompletedInteraction = function(userdata, interactionUrl) {
     var statements = userdata['statements'];

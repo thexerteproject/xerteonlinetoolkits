@@ -21,12 +21,16 @@ $(document).ready(init);
 var data;
 var languageData;
 var startPage = 0;
+var startSection;
+var theme = "default";
 var pageLink = "";
 var authorSupport = false;
 var deepLink = "";
 var currentPage = 0;
 var glossary = [];
 var defaultHeaderCss;
+var urlParams = {};
+
 
 function init(){
 	loadContent();
@@ -78,15 +82,25 @@ function loadContent(){
 			
 		}
 	});
-	
-	// If we have a start page/section then extract it and clear the url
-	if (window.location.hash.length > 0) {
-		pageLink = window.location.hash.substring(1);
-		if (pageLink.substring(0,4) == "page") {
-			startPage = parseInt(pageLink.substring(4), 10) - 1;
-		}
-	}
 
+	// sort any parameters in url - these will override those in xml
+    var tempUrlParams = window.location.search.substr(1, window.location.search.length).split("&");
+    for (i = 0; i < tempUrlParams.length; i++) {
+        urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
+    }
+
+    // If we have a start page/section then extract it and clear the url
+    if (window.location.hash.length > 0) {
+        pageLink = window.location.hash.substring(1);
+		
+        if (pageLink.substring(0,4) == "page") {
+            startPage = parseInt(pageLink.substring(4), 10) - 1;
+		}
+		
+		if (pageLink.indexOf('section') > -1) {
+			startSection = parseInt(pageLink.substring(pageLink.indexOf('section') + 7), 10);
+		}
+ 	}
 }
 
 function cssSetUp(param) {
@@ -94,9 +108,20 @@ function cssSetUp(param) {
 
 	switch(param) {
         case 'theme':
-			if ( $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default") {
-				$('head').append('<script src="'+ themePath + $(data).find('learningObject').attr('theme') + '/'+ $(data).find('learningObject').attr('theme')+ '.js"' + '</script>');
-				insertCSS(themePath + $(data).find('learningObject').attr('theme') + '/' + $(data).find('learningObject').attr('theme') + '.css', function() {cssSetUp('stylesheet')});
+            if ($(data).find('learningObject').attr('theme') != undefined)
+            {
+                theme = $(data).find('learningObject').attr('theme');
+            }
+
+            // See if we have a theme definition in the url
+            if (urlParams.theme != undefined && ($(data).find('learningObject').attr('themeurl') == undefined || $(data).find('learningObject').attr('themeurl') != 'true'))
+            {
+                theme = urlParams.theme;
+            }
+
+			if ( theme != undefined && theme != "default") {
+				$('head').append('<script src="'+ themePath + theme + '/'+ theme+ '.js"' + '</script>');
+				insertCSS(themePath + theme + '/' + theme + '.css', function() {cssSetUp('stylesheet')});
 			} else {
 				cssSetUp('stylesheet');
 			}
@@ -198,7 +223,7 @@ function getLangData(lang) {
 			setup();
 			
 			// step four
-			parseContent(startPage);
+			parseContent(startPage, true);
 			
 		},
 		
@@ -209,7 +234,7 @@ function getLangData(lang) {
 			} else { // hasn't found GB language file - set up anyway, will use fallback text in code
 				languageData = $("");
 				setup();
-				parseContent(startPage);
+				parseContent(startPage, true);
 			}
 			
 		}
@@ -318,6 +343,10 @@ function setup(){
 					var cDataSection = data.createCDATASection(glossaryTxt[i]);
 					var $section = $('<section name="' + charList[i] + '"><text></text></section>');
 					$section.find('text').append(cDataSection);
+					
+					if ($(data).find('learningObject').attr('glossaryMenu') != undefined && $(data).find('learningObject').attr('glossaryMenu') != '') {
+						$section.attr('menu', $(data).find('learningObject').attr('glossaryMenu'));
+					}
 					$glossaryPage.append($section);
 				}
 				
@@ -660,6 +689,7 @@ function setup(){
 	if (script != undefined && script != "") {
 		$("head").append('<script>' +  script + '</script>');
 	}
+	
 }
 
 // add link around all examples of glossary words in text
@@ -685,23 +715,25 @@ function x_insertGlossaryText(node) {
 // check through text nodes for text that needs replacing with something lese (e.g. glossary)
 function x_checkForText(data, type) {
 	for (var i=0; i<data.length; i++) {
-		if (data[i].nodeName == 'text') {
-			if (type == 'glossary') {
-				if ($(data[i]).attr('disableGlossary') != 'true') {
-					data[i].childNodes[0].data = x_insertGlossaryText(data[i].childNodes[0].data);
-				}
-			} else if (type == 'iframe') {
-				function changeProtocol(iframe) {
-					if (/src="http:/.test(iframe)){
-						iframe = iframe.replace(/src="http:/g, 'src="https:').replace(/src='http:/g, "src='https:");
+		if (data[i].childNodes.length > 0) {
+			if (data[i].nodeName == 'text') {
+				if (type == 'glossary') {
+					if ($(data[i]).attr('disableGlossary') != 'true') {
+						data[i].childNodes[0].data = x_insertGlossaryText(data[i].childNodes[0].data);
 					}
-					return iframe;
+				} else if (type == 'iframe') {
+					function changeProtocol(iframe) {
+						if (/src="http:/.test(iframe)){
+							iframe = iframe.replace(/src="http:/g, 'src="https:').replace(/src='http:/g, "src='https:");
+						}
+						return iframe;
+					}
+					data[i].childNodes[0].data = data[i].childNodes[0].data.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
 				}
-				data[i].childNodes[0].data = data[i].childNodes[0].data.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
+				
+			} else {
+				x_checkForText(data[i].childNodes, type);
 			}
-			
-		} else {
-			x_checkForText(data[i].childNodes, type);
 		}
 	}
 }
@@ -740,10 +772,10 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 
 function goToSection(pageId) {
 	if (document.getElementById(pageId) == null || document.getElementById(pageId) == undefined) return;
-	document.location = '#' + pageId;
+	document.location.hash = '#' + pageId;
 }
 
-function parseContent(pageIndex){
+function parseContent(pageIndex, checkSection){
 	//clear out existing content
 	$('#mainContent').empty();
 	$('#toc').empty();
@@ -807,30 +839,30 @@ function parseContent(pageIndex){
 				
 				var sectionIndex = index;	
 				
-				//add a TOC entry
-				var tocName = $(this).attr('name');
-			
-				// remove size & background color styles from links on toc
-				if ($('<p>' + tocName + '</p>').children().length > 0) {
-					tocName = $(tocName);
-					tocName.css({ 'font-size': '', 'background-color': 'transparent' });
-					tocName.find('[style*="font-size"]').css('font-size', '');
-					tocName.find('[style*="background-color"]').css('background-color', 'transparent');
-				}
+				if ($(this).attr('menu') != 'headings' && $(this).attr('menu') != 'neither') {
+					//add a TOC entry
+					var tocName = $(this).attr('name');
 				
-				var $link = $('<li' + (index==0?' class="active"':'') +'><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '"></a></li>').appendTo('#toc');
-				$link.find('a').append(tocName);
+					// remove size & background color styles from links on toc
+					if ($('<p>' + tocName + '</p>').children().length > 0) {
+						tocName = $(tocName);
+						tocName.css({ 'font-size': '', 'background-color': 'transparent' });
+						tocName.find('[style*="font-size"]').css('font-size', '');
+						tocName.find('[style*="background-color"]').css('background-color', 'transparent');
+					}
+					
+					var $link = $('<li' + (index==0?' class="active"':'') +'><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '"></a></li>').appendTo('#toc');
+					$link.find('a').append(tocName);
+				}
 				
 				//add the section header
-				var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '';
+				var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '',
+					links = $(this).attr('links') != undefined && $(this).attr('links') != "none" ? '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>' : '',
+					subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h1>' + $(this).attr('name') + '</h1>' : '';
 				
-				var links = '';
+				var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
 				
-				if ($(this).attr('links') != undefined && $(this).attr('links') != "none") {
-					links = '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>';
-				}
-				
-				var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '"><div class="page-header"><h1>' + $(this).attr('name') + '</h1>' + extraTitle + links + '</div></section>');
+				var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '">' + pageHeader + '</section>');
 
 				//add the section contents
 				$(this).children().each( function(index, value){
@@ -933,13 +965,11 @@ function parseContent(pageIndex){
 					}
 					
 					if (this.nodeName == 'audio'){
-						//section.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
-						section.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+						section.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 					}
 					
 					if (this.nodeName == 'video'){
-						//section.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
-						section.append('<p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+						section.append('<p><video src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata" style="max-width: 100%" width="100%" height="100%"></video></p>');
 					}
 					
 					if (this.nodeName == 'pdf'){
@@ -978,7 +1008,11 @@ function parseContent(pageIndex){
 				}
 				
 				//a return to top button
-				section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
+				if ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') {
+					
+					section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
+					
+				}
 
 				//add the section to the document
 				$('#mainContent').append(section);
@@ -1020,6 +1054,10 @@ function parseContent(pageIndex){
 		
 		console.log("project contains no (unhidden) pages");
 		
+	}
+	
+	if (checkSection == true && startSection != undefined) {
+		goToSection('page' + (startPage+1) + 'section' + startSection);
 	}
 }
 
@@ -1066,7 +1104,7 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 			
 		} else if (defaultHeaderCss.headerPos) {
 			
-			bgImg += ' ' + $(data).find('learningObject').attr('headerPos');
+			bgImg += ' ' + defaultHeaderCss.headerPos;
 			
 		} else {
 			
@@ -1162,7 +1200,8 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	var content = $( '<div class="tab-content"/>' );
 	
 	var iframeKaltura = [],
-		pdf = [];
+		pdf = [],
+		video = [];
 	
 	node.children().each( function(index, value){
 		if (index == 0){
@@ -1200,11 +1239,12 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				tab.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				tab.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
-				tab.append('<p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+				tab.append('<p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
+				video.push(tab.find('video'));
 			}
 			
 			if (this.nodeName == 'link'){
@@ -1255,7 +1295,8 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 		// hacky fix for issue with UoN mediaspace videos embedded on navigators
 		var $iframeTabs = $(),
-			$pdfTabs = $();
+			$pdfTabs = $(),
+			$videoTabs = $();
 		
 		for (var i=0; i<iframeKaltura.length; i++) {
 			$iframeTabs = $iframeTabs.add($('a[data-toggle="tab"]:eq(' + iframeKaltura[i] + ')'));
@@ -1284,12 +1325,26 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 		});
 		
+		// fix for issue where videos don't load correct height if not on 1st pane of navigators
+		for (var i=0; i<video.length; i++) {
+			$videoTabs = $videoTabs.add($(video[i]).parents('.tabbable').find('ul a[data-toggle="tab"]:eq(' + $(video[i]).parents('.tab-pane').index() + ')'));
+		}
+		
+		$videoTabs.on('shown.bs.tab', function (e) {
+			var $videoRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active video");
+			if ($videoRefresh.data('forceLoad') != true) {
+				$videoRefresh
+					.data('forceLoad', true)
+					.load();
+			}
+		});
+		
 	}, 0);
 	
 }
 
 function makeAccordion(node,section, sectionIndex, itemIndex){
-
+	
 	var accDiv = $( '<div class="accordion" id="acc' + sectionIndex + '_' + itemIndex + '">' );
 	
 	node.children().each( function(index, value){
@@ -1324,11 +1379,11 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
 			}
 			
 			if (this.nodeName == 'link'){
@@ -1371,6 +1426,8 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 
 
 function makeCarousel(node, section, sectionIndex, itemIndex){
+	
+	var video = [];
 
 	var sectionIndex = sectionIndex;
 	
@@ -1423,11 +1480,12 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
+				video.push(pane.find('video'));
 			}
 			
 			if (this.nodeName == 'link'){
@@ -1470,6 +1528,21 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	carDiv.append( $('<a class="carousel-control right" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="next">&rsaquo;</a>') );
 	
 	section.append(carDiv);
+	
+	setTimeout( function(){
+		
+		// fix for issue where videos don't load correct height if not on 1st pane of carousel
+		carDiv.bind('slide.bs.carousel', function (e) {
+			for (var i=0; i<video.length; i++) {
+				if ($(video[i]).closest('.item').is(e.relatedTarget) && $(video[i]).data('forceLoad') != true) {
+					$(video[i])
+						.data('forceLoad', true)
+						.load();
+				}
+			}
+		});
+		
+	}, 0);
 
 }
 
