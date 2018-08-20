@@ -748,7 +748,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
         groupBy: 'result.pairs',
         aggregate: ADL.count(),
         customize: function(chart) {
-            chart.xAxis.rotateLabels(45).axisLabel(XAPI_DASHBOARD_GRAPH_MATCH_XAXIS);
+            chart.xAxis.axisLabel(XAPI_DASHBOARD_GRAPH_MATCH_XAXIS);
             chart.yAxis.axisLabel(XAPI_DASHBOARD_GRAPH_PERCOFCLASS);
             chart.width(500);
             chart.height(500);
@@ -794,7 +794,7 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
         groupBy: 'result.response',
         aggregate: ADL.count(),
         customize: function(chart) {
-            chart.xAxis.rotateLabels(45).axisLabel(XAPI_DASHBOARD_GRAPH_CHOICE_XAXIS);
+            chart.xAxis.axisLabel(XAPI_DASHBOARD_GRAPH_CHOICE_XAXIS);
             chart.yAxis.axisLabel(XAPI_DASHBOARD_GRAPH_CHOICE_YAXIS);
             chart.width(500);
             chart.height(500);
@@ -825,7 +825,7 @@ xAPIDashboard.prototype.displayFillInQuestionInformation = function(contentDiv, 
         groupBy: 'result.response',
         aggregate: ADL.count(),
         customize: function(chart) {
-            chart.xAxis.rotateLabels(45).axisLabel(XAPI_DASHBOARD_GRAPH_FILLIN_XAXIS);
+            chart.xAxis.axisLabel(XAPI_DASHBOARD_GRAPH_FILLIN_XAXIS);
             chart.yAxis.axisLabel(XAPI_DASHBOARD_GRAPH_FILLIN_YAXIS);
             chart.width(500);
             chart.height(500);
