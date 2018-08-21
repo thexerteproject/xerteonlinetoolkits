@@ -1324,6 +1324,7 @@
         }
 
 		// function sets up the popcorn sync events for pausing and skipping the media
+		// Also shows or hide streams for the mediasite API.
 		this.setUpPopcornCue = function(popcornInstance, synchData) {
 			popcornInstance.cue(Number(synchData.getAttribute("synch")), function() {
 				// pause / play media
@@ -1343,8 +1344,9 @@
 				// 3: Presentation
 				// 4: Video 2
 				// 5: Video 3
-				if (synchData.getAttribute("visibleStreamTypes") != undefined)
-					this.setVST(synchData.getAttribute("visibleStreamTypes"));
+				if (this.video._util.type === "Mediasite")
+					if (synchData.getAttribute("visibleStreamTypes") != undefined)
+						this.setVST(synchData.getAttribute("visibleStreamTypes"));
 
 
 				// disable media controls
