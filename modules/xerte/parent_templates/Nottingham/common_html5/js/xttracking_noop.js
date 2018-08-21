@@ -1321,7 +1321,7 @@ function XTResults(fullcompletion) {
                     correctAnswer = state.interactions[i].correctAnswers;
                     break;
             }
-            if (state.interactions[i].ia_type != "match") {
+            if (state.interactions[i].ia_type != "match" && state.interactions[i].result != undefined) {
                 subinteraction.question = state.interactions[i].ia_name;
                 subinteraction.correct = state.interactions[i].result.success;
                 subinteraction.learnerAnswer = learnerAnswer;
