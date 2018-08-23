@@ -163,7 +163,10 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         // Add table with specific overview.
         div.append('<div class="row journeyTable"><table class="table table-hover table-bordered table-responsive" id="' + learningObjectIndex +
             '"><thead></thead><tbody></tbody></table></div>');
-        div.find("#" + learningObjectIndex + " thead").append("<tr><th class='name-column column-hide'>User</th><th>Started</th><th>Completed</th></tr>");
+        div.find("#" + learningObjectIndex + " thead").append("<tr><th>Started</th><th>Completed</th></tr>");
+        if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
+            div.find("#" + learningObjectIndex + " thead tr").prepend('<th>Users</th>');
+        }
         for (var interaction in interactions) {
             interactionHeader = this.insertInteractionModal(div, learningObjectIndex, interaction);
         }
@@ -183,8 +186,6 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 } else {
                     row += "<td class='name-column'>" + user + "</td>";
                 }
-            } else {
-                row += "<td class='column-hide name-column'>" + toSHA1(user) + "</td>";
             }
             if (this.data.hasStartedLearningObject(lastStatements, learningObjects[learningObjectIndex].url)) {
                 started = "<i class=\"fa fa-x-tick\">";
@@ -1055,9 +1056,6 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
         $("#dp-unanonymous-view").change(function(event) {
             $this.data.info.dashboard.anonymous = !$this.data.info.dashboard.anonymous;
             $this.regenerate_dashboard();
-            if ($('#dp-unanonymous-view').is(':checked')) {
-                $('th.name-column').removeClass('column-hide');
-            }
         });
     }
 
