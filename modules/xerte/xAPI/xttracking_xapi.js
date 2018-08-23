@@ -2694,7 +2694,7 @@ function XTTerminate() {
                 },
                 timestamp: new Date()
             };
-            SaveStatement(statement, true);
+            SaveStatement(statement, false);
             if (state.getSuccessStatus() == "passed") {
                 // Sen passsed
                 var statement = {
@@ -2728,7 +2728,7 @@ function XTTerminate() {
                     },
                     timestamp: new Date()
                 };
-                SaveStatement(statement, true);
+                SaveStatement(statement, false);
             } else {
                 // Send failed
                 var statement = {
@@ -2762,7 +2762,7 @@ function XTTerminate() {
                     },
                     timestamp: new Date()
                 };
-                SaveStatement(statement, true);
+                SaveStatement(statement, false);
             }
             // Save scored
             var statement = {
@@ -2796,7 +2796,7 @@ function XTTerminate() {
                 },
                 timestamp: new Date()
             };
-            SaveStatement(statement, true);
+            SaveStatement(statement, false);
 
         }
 
@@ -2835,7 +2835,7 @@ function XTTerminate() {
             },
             timestamp: new Date()
         };
-        SaveStatement(statement, true);
+        SaveStatement(statement, false);
         if (lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
