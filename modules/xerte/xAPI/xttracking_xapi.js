@@ -2626,7 +2626,7 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
     return "";
 }
 
-async function XTTerminate() {
+function XTTerminate() {
     if (!state.finished && state.initialised) {
         // End tracking of page
         x_endPageTracking(false, -1);
@@ -2858,6 +2858,13 @@ async function XTTerminate() {
                         //alert("Data Saved: " + msg);
                     });
             }
+        }
+    }
+
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > 2000){
+            break;
         }
     }
 }
