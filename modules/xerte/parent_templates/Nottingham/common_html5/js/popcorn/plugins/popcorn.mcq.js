@@ -226,7 +226,6 @@ optional: feedback page synch play enable
 				autoEnable = true;
 				var tempEnable = false;
 
-				debugger;
 				// is it to appear over media?
 				if (options.overlay == "true" && (this.video != undefined || $(this.audio).closest(".mediaHolder").find(".audioImg").length > 0)) {
 					var $parent;

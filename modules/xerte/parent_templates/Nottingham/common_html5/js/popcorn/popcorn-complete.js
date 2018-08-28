@@ -4346,7 +4346,8 @@
 
             function onReady()
             {
-              self.dispatchEvent("loadedmetadata");
+                impl.duration = player.getDuration();
+                self.dispatchEvent("loadedmetadata");
 
                 currentTimeInterval = setInterval( monitorCurrentTime,
                     CURRENT_TIME_MONITOR_MS );
@@ -4363,9 +4364,8 @@
                 iframe.style.height = "100%";
                 iframe.style.width = "100%";
 
-                impl.duration = player.getDuration();
-
                 player.currentTime = 0;
+
                 player.seekTo(0);
                 playerReady = true;
             }
@@ -4373,6 +4373,7 @@
 
         function monitorCurrentTime() {
             var playerTime = player.getCurrentTime();
+
             if ( !impl.seeking ) {
                 if ( Math.abs( impl.currentTime - playerTime ) > CURRENT_TIME_MONITOR_MS ) {
                     onSeeking();
