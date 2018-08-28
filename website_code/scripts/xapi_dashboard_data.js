@@ -20,8 +20,7 @@ function DashboardState(info) {
     this.password = info.lrs.secret;
 }
 
-DashboardState.prototype.clear = function()
-{
+DashboardState.prototype.clear = function() {
     this.rawData = [];
     this.learningObjects = undefined;
     this.interactionObjects = undefined;
@@ -36,15 +35,12 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
     ADL.XAPIWrapper.changeConfig(this.conf);
 
     var search = ADL.XAPIWrapper.searchParams();
-    $.each(q, function(i, value){
+    $.each(q, function(i, value) {
         search[i] = value;
     });
-    if (one)
-    {
+    if (one) {
         search['limit'] = 1;
-    }
-    else
-    {
+    } else {
         search['limit'] = 10000;
     }
     this.clear();
@@ -53,8 +49,7 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
         function getmorestatements(err, res, body) {
             for (x = 0; x < body.statements.length; x++) {
                 var statement = body.statements[x];
-                if ($this.info.dashboard.anonymous)
-                {
+                if ($this.info.dashboard.anonymous) {
                     if (statement.actor.mbox != undefined) {
                         // Key is email
                         // cutoff mailto: and calc sha1:
@@ -62,22 +57,16 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
                         var sha1 = toSHA1(key);
                         statement.actor.mbox_sha1sum = sha1;
                         delete statement.actor.mbox;
-                        if (statement.actor.name)
-                        {
+                        if (statement.actor.name) {
                             delete statement.actor.name;
                         }
-                    }
-                    else if (statement.actor.mbox_sha1sum != undefined)
-                    {
+                    } else if (statement.actor.mbox_sha1sum != undefined) {
                         // Nothing to do
 
-                    }
-                    else
-                    {
+                    } else {
                         // Key is session_id, transform to pseudo mbox_sha1sum
                         var key = statement.context.extensions['http://xerte.org.uk/sessionId'];
-                        if (key == undefined)
-                        {
+                        if (key == undefined) {
                             key = statement.context.extensions[site_url + "sessionId"];
                         }
                         if (key != undefined) {
@@ -144,19 +133,16 @@ DashboardState.prototype.filterOnGroup = function(name) {
 DashboardState.prototype.groupStatements = function(data) {
     var groupedData = {};
 
-    if (data == undefined)
-    {
+    if (data == undefined) {
         if (this.groupedData != undefined) {
             return this.groupedData;
-        }
-        else
-        {
+        } else {
             data = this.rawData;
         }
     }
     data.forEach(function(statement) {
         var attempt = {
-            statements : []
+            statements: []
         };
         if (statement.actor.mbox != undefined) {
             // Key is email
@@ -171,35 +157,28 @@ DashboardState.prototype.groupStatements = function(data) {
                     attempt['mode'] = 'username';
                 }
                 groupedData[key] = attempt;
-            }
-            else {
+            } else {
                 if (statement.actor.name != undefined && groupedData[key]['username'] == undefined) {
                     groupedData[key]['username'] = statement.actor.name;
                     groupedData[key]['mode'] = 'username';
                 }
             }
             groupedData[key]['statements'].push(statement);
-        }
-        else if (statement.actor.mbox_sha1sum != undefined)
-        {
+        } else if (statement.actor.mbox_sha1sum != undefined) {
             // Key is sha1(email)
             var key = statement.actor.mbox_sha1sum;
-            if (groupedData[key] == undefined)
-            {
+            if (groupedData[key] == undefined) {
                 attempt['mode'] = 'mbox_sha1sum';
                 attempt['mbox_sha1sum'] = key;
                 attempt['key'] = key;
                 groupedData[key] = attempt;
             }
             groupedData[key]['statements'].push(statement);
-        }
-        else
-        {
+        } else {
             // Key is group, session_id (if group is available), otherwise just session
             var group = (statement.actor.group != undefined ? statement.actor.group.name : 'global');
             var key = statement.context.extensions['http://xerte.org.uk/sessionId'];
-            if (key == undefined)
-            {
+            if (key == undefined) {
                 key = statement.context.extensions[site_url + "sessionId"];
             }
             if (key != undefined) {
@@ -255,12 +234,12 @@ DashboardState.prototype.groupStatementsOnSession = function(statements) {
     nStatements = [];
     statements.forEach(function(sList) {
         sList.forEach(function(s) {
-
-            if (nStatements[s.context.session] == undefined) {
-                nStatements[s.context.session] = [];
+            session = s.context.extensions["http://xerte.org.uk/sessionId"];
+            if (nStatements[session] == undefined) {
+                nStatements[session] = [];
                 nStatements.length++;
             }
-            nStatements[s.context.session].push(s);
+            nStatements[session].push(s);
         });
     });
     return nStatements;
@@ -417,8 +396,7 @@ DashboardState.prototype.getAllInteractions = function(data = undefined) {
     var learningObjects = this.getLearningObjects(data);
     var interactions = [];
     var lIndex = 0;
-    if (data == undefined)
-    {
+    if (data == undefined) {
         data = this.rawData;
     }
     learningObjects.forEach(function(learningObject) {
@@ -477,21 +455,55 @@ DashboardState.prototype.getAllInteractions = function(data = undefined) {
         interactions[learningObject.url] = interactionObjects;
         lIndex++;
     });
+    interactions = this.filterNotPassedFailed(interactions);
     this.interactions = interactions;
-    //debugger;
+
     return interactions;
 };
 
+DashboardState.prototype.filterNotPassedFailed = function(allInteractions) {
+    $this = this;
+    newInteractions = [];
+    for (interactionIndex in allInteractions) {
+        interactions = allInteractions[interactionIndex];
+        newInteractions[interactionIndex] = [];
+        interactions.forEach(function(interaction) {
+            statements = $this.rawData;
+            hasPassedOrFailed = false;
+            url = interaction.url;
+            statements.forEach(function(s) {
+                if (s.object.id == url && (s.verb.id == "http://adlnet.gov/expapi/verbs/failed" || s.verb.id ==
+                        "http://adlnet.gov/expapi/verbs/passed" || s.verb.id ==
+                        "http://adlnet.gov/expapi/verbs/scored" || s.verb.id == "https://w3id.org/xapi/video/verbs/paused" || s.verb.id ==
+                        "https://w3id.org/xapi/video/verbs/played" || s.verb.id == "http://adlnet.gov/expapi/verbs/answered")) {
+                    hasPassedOrFailed = true;
+                }
+            });
+
+            if (!hasPassedOrFailed && statements.length > 0) {
+
+                $this.rawData.filter(s => s.object.id != url);
+                for (user in $this.groupedData) {
+                    $this.groupedData[user].statements.filter(s => s.object.id != url);
+                }
+
+            } else {
+                newInteractions[interactionIndex].push(interaction);
+            }
+
+        })
+    }
+    return newInteractions;
+}
+
 DashboardState.prototype.getInteractions = function(learningObject) {
-    if (this.interactions == undefined)
-    {
+    if (this.interactions == undefined) {
         this.getAllInteractions();
     }
     return this.interactions[learningObject];
 };
 
-DashboardState.prototype.getFilteredStatements = function(userdata, verb, learningObjectUrl)
-{
+DashboardState.prototype.getFilteredStatements = function(userdata, verb, learningObjectUrl) {
     var statements = userdata['statements'];
     var statementList = this.getStatementsList(statements, verb);
     statementList = statementList.filter(function(statement) {
@@ -515,8 +527,7 @@ DashboardState.prototype.hasStartedLearningObject = function(userdata, learningO
     return res;
 };
 
-DashboardState.prototype.getExitedStatements = function(userdata, learningObjectUrl)
-{
+DashboardState.prototype.getExitedStatements = function(userdata, learningObjectUrl) {
     return this.getFilteredStatements(userdata, "http://adlnet.gov/expapi/verbs/exiteded", learningObjectUrl);
 }
 
@@ -570,8 +581,7 @@ DashboardState.prototype.getInteractionScores = function(verb, userdata, interac
     return scores;
 };
 
-DashboardState.prototype.getAllDurations = function(userdata, interactionUrl)
-{
+DashboardState.prototype.getAllDurations = function(userdata, interactionUrl) {
     var durations = [];
     var statements = userdata['statements'];
     var statementList = this.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/scored");
@@ -699,4 +709,3 @@ DashboardState.prototype.getStatementsFromLearningObject = function(learningObje
     });
     return elems;
 };
-

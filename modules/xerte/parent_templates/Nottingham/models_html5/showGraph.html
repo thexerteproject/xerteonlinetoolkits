@@ -275,9 +275,15 @@
         this.init = function() {
             var $pageContents = $("#pageContents");
             var id = x_currentPageXML.getAttribute("xerteurl") + x_currentPageXML.getAttribute("xertelo") + '/' + x_currentPageXML.getAttribute("import");
+            var since, q={};
+            if (x_currentPageXML.getAttribute("xapisince") != null && x_currentPageXML.getAttribute("xapisince") != "")
+            {
+                since = x_currentPageXML.getAttribute("xapisince");
+                q['since'] = since;
+            }
             XTGetInteractionScore(null, null, null, null, id, function(data) {
                 showGraph.createDiagram(data);
-            });
+            }, q);
 
 
             // call this function in every model once everything's loaded

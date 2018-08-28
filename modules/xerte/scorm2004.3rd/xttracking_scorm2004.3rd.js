@@ -253,12 +253,11 @@ function ScormTrackingState()
         if (ia_type != "page" && ia_type != "result")
         {
             this.lo_type = "interactive";
-            if (this.lo_passed == -1)
-            {
-                this.lo_passed = 0.55;
-            }
         }
-
+        if (this.lo_passed == -1)
+        {
+            this.lo_passed = 55;
+        }
         this.interactions.push(sit);
         return sit;
     }
@@ -630,7 +629,7 @@ function ScormTrackingState()
     {
         if (this.lo_type != "pages only")
         {
-            if (state.getScaledScore() > this.lo_passed)
+            if (state.getScaledScore() > (this.lo_passed / 100))
             {
                 return "passed";
             }
@@ -1402,7 +1401,9 @@ function XTSetOption(option, value)
             state.lo_completed = value;
             break;
         case "objective_passed":
-            state.lo_passed = Number(value);
+            if (Number(value) <= 1) {
+                state.lo_passed = Number(value) * 100;
+            }
             break;
         case "page_timeout":
             // Page timeout in seconds
@@ -1556,7 +1557,7 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
     }
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, callback)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, page_name, callback, q)
 {
     callback(null);
     return 0;

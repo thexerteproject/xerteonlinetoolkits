@@ -2800,7 +2800,12 @@ var EDITOR = (function ($, parent) {
 				case 'datefield':
                     var id = 'date_' + form_id_offset;
                     form_id_offset++;
-					
+                    if (value.length==0)
+                    {
+                        value=new Date();
+                        setAttributeValue(key, [name], [value.toISOString()]);
+                    }
+                    value = new Date(value).toDateString();
 					// a datepicker with a browse buttons next to it
                     var td1 = $('<td width="100%">')
                         .append($('<input>')
@@ -2809,14 +2814,13 @@ var EDITOR = (function ($, parent) {
 							.addClass('date')
                             .change({id:id, key:key, name:name}, function(event)
 							{
-								inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+								inputChanged(event.data.id, event.data.key, event.data.name, new Date(this.value).toISOString(), this);
 							})
 							.attr('value', value)
 							.datepicker({
 								showOtherMonths: true,
 								selectOtherMonths: true,
-								dateFormat: 'dd/mm/yy',
-								minDate: 0
+								dateFormat: 'yy-mm-dd'
 							}));
 					
                     var td2 = $('<td>');

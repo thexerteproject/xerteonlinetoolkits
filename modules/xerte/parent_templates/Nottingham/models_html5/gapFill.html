@@ -53,20 +53,15 @@
         this.leavePage = function() {
 		    if(x_currentPageXML.getAttribute("interactivity") == "Drag Drop")
 			{
-			    if(!this.hasBeenTracked && this.isTracked){
 			        this.dragDropSubmit(true);
-				}
 			}
-			else if(x_currentPageXML.getAttribute("interactivity") == "Fill in Blank"){
-		        if(!this.hasBeenTracked && this.isTracked){
+			else if(x_currentPageXML.getAttribute("interactivity") == "Fill in Blank")
+			{
 		            this.fillInSubmit(true);
-				}
 			}
 			else if (x_currentPageXML.getAttribute("interactivity") == "Drop Down Menu")
             {
-                if (!this.hasBeenTracked && this.isTracked){
                     this.dropDownSubmit(true);
-                }
             }
         };
 		
@@ -93,6 +88,7 @@
 		}
 		
 		this.init = function() {
+
 			$pageContents = $("#pageContents");
 			$targetHolder = $("#targetHolder");
 			$feedbackTxt = $("#feedbackTxt");
@@ -279,6 +275,7 @@
 				}
                 XTEnterInteraction(x_currentPage,  0 , 'match', name, correctOptions, correctAnswers, "", x_currentPageXML.getAttribute("grouping"));
 
+
             }
 			else
 			{
@@ -326,6 +323,7 @@
 				.click(function() {
                     if(!this.hasBeenTracked){
                         gapFill.dropDownSubmit();
+
                     }
 
 				});
@@ -353,6 +351,7 @@
 					
 					$(this).hide();
 					$("#submitBtn").hide();
+
 				});
 			
 			$targetHolder.find("select").on("change", function() {
@@ -534,10 +533,11 @@
 		}
 		
 		this.setUpDragDrop = function() {
-			
 			// if mark at end is off but tracking is on then it will mark at end anyway
 			if (!this.isTracked && (x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false")) {
                 $("#submitBtn").hide();
+
+
 				
 			} else {
 				$("#submitBtn")
@@ -716,7 +716,12 @@
 					$thisLabel.add($thisTarget).data("correct", true);
 				}
 			} else {
+                debugger;
 				$thisTarget.addClass("correct");
+                if ($thisLabel.data("answer") == $thisTarget.data("answer")) {
+                    $pageContents.data("score", $pageContents.data("score") + 1);
+                }
+
 			}
 			
 			$thisTarget
@@ -735,6 +740,8 @@
 				$("#labelHolder").hide();
 				$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 				$feedbackTxt.fadeIn();
+                gapFill.dragDropSubmit();
+
 			}
 			
 //			if ($targetHolder.find(".target.highlight").length == 0 && (this.isTracked || (x_currentPageXML.getAttribute("markEnd") == "true"))) {
@@ -920,6 +927,7 @@
                     });
                 });
                 XTExitInteraction(x_currentPage, i, result, options, answers, feedback, x_currentPageXML.getAttribute("trackinglabel"));
+
             });
 
 
@@ -942,6 +950,18 @@
                         }
                     });
                 }
+				/*
+				x = a ? b : c
+				if(a){
+					x = b;
+				}else{
+					x = c
+				}
+
+
+
+
+				 */
 
                 if (wrong == $targetHolder.find("select").length) {
                     $("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillWrong") != undefined && x_currentPageXML.getAttribute("gapFillWrong") != "" ? x_currentPageXML.getAttribute("gapFillWrong") : "You have not filled any gaps correctly. Try again."));
@@ -952,7 +972,8 @@
             }
         };
 
-		this.fillInSubmit = function(){
+		this.fillInSubmit = function(forceTracking){
+		    debugger;
             var empty = 0;
             $targetHolder.find("input").each(function() {
                 if ($(this).val() == "") {
@@ -960,7 +981,7 @@
                 }
             });
 			
-			if (empty > 0) {
+			if (empty > 0 && !forceTracking) {
 				$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise."));
                 $feedbackTxt.fadeIn();
 			} else {
@@ -1000,11 +1021,12 @@
 					};
                     XTExitInteraction(x_currentPage, $this.data("index") , result, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
 
+
                 });
 
                 gapFill.finishTracking();
                 this.hasBeenTracked = true;
-				
+
                 if (XTGetMode() == "normal") {
                     if (wrong == 0) {
                         $("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
@@ -1018,6 +1040,7 @@
                         $feedbackTxt.fadeIn();
                     }
                 } else {
+
                     if (wrong == 0) {
                         $("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
                         $feedbackTxt.fadeIn();
@@ -1033,7 +1056,6 @@
 				
                 // Hide the button so only one submission can be made whilst tracking.
                 if(XTGetMode() == "normal"){
-                    $(this).hide();
                 }
 				this.hasBeenTracked = true;
             }
@@ -1053,7 +1075,7 @@
 				}).addClass("correct");
 				
 				var $incorrectTargets = $("#targetHolder .target").filter(function () {
-					return $(this).data("correct") != true && !$(this).hasClass("highlight");
+					return !($(this).data("correct") == true || $(this).hasClass("correct")) && !$(this).hasClass("highlight");
 				});
 				
 				var $incorrectLabels = $("#labelHolder .label").filter(function () {
@@ -1101,7 +1123,8 @@
 					$incorrectTargets.addClass("incorrect");
 					$("#submitBtn").hide();
 				}
-				
+
+
 				// feedback...
 				if (score == $("#targetHolder .target").length) {
 					$("#labelHolder").hide();
@@ -1186,7 +1209,7 @@
 
 		}
 		
-		
+
 	}
 	
 	gapFill.init();

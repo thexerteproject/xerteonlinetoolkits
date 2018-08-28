@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var results = new function() {
@@ -66,10 +66,10 @@
 		    this.init();
 
         };
-		
+
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+
 		};
 
         this.loadJS = function() {
@@ -113,13 +113,13 @@
 		};
 
         this.init = function() {
-			
+
 			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
 				$('#txtHolder').html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			} else {
 				$('#txtHolder').remove();
 			}
-			
+
             var loadFiles = true;
             if(xot_offline) {
 				/* files are already loaded statically */
@@ -158,7 +158,7 @@
             //});
 
             // ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
-			
+
 			if (x_currentPageXML.getAttribute("textWidth") == "300") {
 				$pageContents.addClass("width40");
 			} else if (x_currentPageXML.getAttribute("textWidth") == "450") {
@@ -615,7 +615,7 @@
         }
     };
 results.init();
- 	
+
 
 
 </script>

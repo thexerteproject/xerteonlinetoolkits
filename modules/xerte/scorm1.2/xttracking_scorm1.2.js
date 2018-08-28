@@ -255,10 +255,10 @@ function ScormTrackingState()
         if (ia_type != "page" && ia_type != "result")
         {
             this.lo_type = "interactive";
-            if (this.lo_passed == -1)
-            {
-                this.lo_passed = 0.55;
-            }
+        }
+        if (this.lo_passed == -1)
+        {
+            this.lo_passed = 55;
         }
         this.interactions.push(sit);
         return sit;
@@ -652,7 +652,7 @@ function ScormTrackingState()
         }
         else
         {
-            if (state.getdScaledScore() > this.lo_passed) {
+            if (state.getdScaledScore() > (this.lo_passed / 100)) {
                 return "passed";
             }
             else {
@@ -896,8 +896,8 @@ function ScormTrackingState()
      *        correctanswers is ignored
      *
      *    4. text, fill-in
-     *        correctoptions contains an array of strings that are correct. With type text, array is assumed to be empty
-     *        correctanswers is ignored
+     *        correctoptions is ignored
+     *        correctanswers contains an array of strings that are correct. With type text, array is assumed to be empty
      *
      *    5. page
      *         correctoptions is ignored
@@ -1422,7 +1422,9 @@ function XTSetOption(option, value)
             state.lo_completed = value;
             break;
         case "objective_passed":
-            state.lo_passed = Number(value);
+            if (Number(value) <= 1) {
+                state.lo_passed = Number(value) * 100;
+            }
             break;
         case "page_timeout":
             // Page timeout in seconds
@@ -1573,7 +1575,7 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
     }
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback, q)
 {
     callback(null);
     return 0;

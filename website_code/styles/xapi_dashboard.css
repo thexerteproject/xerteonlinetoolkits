@@ -16,18 +16,32 @@ table {
     max-width: none;
 }
 
-.journeyData table{
-  overflow-x: visible;
+.journeyOverview{
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.journeyOverviewActivity{
+    margin-left: -1rem;
+    margin-right: -1rem;
+}
+
+.journeyOverviewActivity a{
+    width: 100%;
+}
+
+.journeyTable table{
+  overflow-x: scroll;
   border: 0px;
 }
 
-.journeyData th{
+.journeyTable th{
   position: relative;
   /* min-width: 120px; */
   white-space: nowrap;
 }
 
-.journeyData tr{
+.journeyTable tr{
   white-space: nowrap;
 }
 
@@ -42,6 +56,26 @@ table {
 
 td a{
   text-decoration: none;
+}
+
+.col-4-widget{
+    margin-top: 1rem;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #007bff;
+    border-radius: 4px;
+    height: 100px;
+    text-align: center;
+}
+
+.col-4-widget h1{
+    font-weight: bold;
+    color: #fba61f;
+    margin-top: .5rem;
+}
+
+.col-4-widget h3{
+    margin-top: .5rem;
 }
 
 #options-div label{
@@ -97,6 +131,10 @@ td a{
   height: 500px;
 }
 
+#graph_link_6{
+    width: 100%;
+}
+
 .graph-svg-wrapper
 {
     border: solid 1px;
@@ -106,7 +144,6 @@ td a{
 
 .icon-header{
   position: absolute;
-  top: 0px;
   right: 5px;
   top: 5px;
   color: #999da1;
@@ -186,7 +223,7 @@ th.x-dashboard-page {
 }
 
 th.x-dashboard-page.x-dashboard-has-children a {
-    margin-right:15px;
+    margin-right:20px;
 }
 
 th.x-dashboard-interaction {
@@ -196,7 +233,6 @@ th.x-dashboard-interaction {
 
 #journeyData
 {
-    overflow: auto;
     position: absolute;
     top: 64px;
     bottom: 5px;
@@ -226,6 +262,22 @@ th.x-dashboard-interaction {
     margin-right: 10px;
 }
 
+.dashboard{
+    overflow-x: hidden !important;
+    position: absolute;
+    width: -moz-calc(100% - 100px) !important;
+    width: -webkit-calc(100% - 100px) !important;
+    width: calc(100% - 10px) !important;
+    height: -moz-calc(100% - 100px) !important;
+    height: -webkit-calc(100% - 100px) !important;
+    height: calc(100% - 10px) !important;
+}
+
+.dashboard-wrapper{
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
 td.x-dashboard-interaction
 {
     background: #f4f4f4;
@@ -237,6 +289,12 @@ td.x-dashboard-interaction
     border: solid 1px #000000;
     border-radius: 4px;
     margin-bottom:10px;
+}
+
+.loading-gif {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* FONT AWESOME BUTTON ICONS */
