@@ -176,15 +176,13 @@
 			    debugger;
                  switch(this.value){
 					 case "0":
-					     //todo switch to default set theme
+					     colourChanger.switchTheme(x_params.theme);
 						 break;
 					 case "1":
-					     //todo load default theme in
-						 colourChanger.applyFilter($(this).attr('value'));
+					     colourChanger.applyFilter($(this).attr('value'));
 						 break;
 					 case "2":
-					     debugger;
-						 colourChanger.switchTheme("highcontrast");
+					     colourChanger.switchTheme("highcontrast");
 						 break;
 					 case "3":
 						colourChanger.switchTheme("blackonyellow");
@@ -208,11 +206,10 @@
 		}
 
 		this.switchTheme = function(theme){
-
-            currentThemeURL = x_themePath + theme + '/' + theme + '.css';
-            document.getElementById("theme_css").href = currentThemeURL;
-            $('link[href="' + currentThemeURL + '"]').attr('href', currentThemeURL);
-            debugger;
+			// Do NOT touch theme_responisive_css
+            currentThemeURL = x_themePath + theme + '/' + theme;
+            $("#theme_css").attr("href", currentThemeURL + ".css");
+            $("#theme_js").attr("href", currentThemeURL + ".js");
 
             $(window).trigger('resize');
 		};
