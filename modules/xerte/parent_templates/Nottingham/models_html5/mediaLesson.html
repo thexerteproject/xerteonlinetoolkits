@@ -1174,15 +1174,10 @@
 			// set end point to end of media if still undefined
 			for (var j=0; j<data.length; j++) {
 				if (data[j].end == undefined && data[j].type != "synchEmpty" && data[j].type != "synchCue") {
-					if (popcornInstance.media._util != undefined && (popcornInstance.media._util.type == "Vimeo" || popcornInstance.media._util.type == "YouTube")) {
-						if (popcornInstance.duration()) {
-							data[j].end = popcornInstance.duration() - 1;
-						} else {
-							data[j].end = $mediaDiv.data("duration") - 1;
-						}
+					if (popcornInstance.duration()) {
+						data[j].end = popcornInstance.duration() - 1;
 					} else {
-						// apart from vimeo it works better if end is set to after the end of media
-						data[j].end = popcornInstance.duration() + 10;
+						data[j].end = $mediaDiv.data("duration") - 1;
 					}
 					data[j].autoEnd = true;
 				}
