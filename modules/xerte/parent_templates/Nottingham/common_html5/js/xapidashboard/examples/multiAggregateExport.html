@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Live LRS Demo</title>
+		<link rel='stylesheet' href='../lib/nv.d3.css'/>
+		<script type="text/javascript" src="../lib/d3.v3.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../lib/nv.d3.js"></script>
+		<script type="text/javascript" src="../src/chart.js"></script>
+		<script type="text/javascript" src="../src/dashboard.js"></script>
+		<script type="text/javascript" src="../src/xapicollection.js"></script>
+		<script src='../extra/gen-lrs-data.js'></script>
+		<style>
+			/* Just some basic styles, nothing really critical */
+			div{
+				float:left;
+				margin-left: 200px;
+			}
+			.links a{
+				display:block;
+				float:right;
+				margin: 20px;
+				clear:both;
+			}
+		</style>
+	</head>
+	<body>
+		<svg style="height: 300px;" id="multi"></svg>
+		<div id='multiTableContainer'></div>
+		<div id='tableContainer'></div>
+		<div class="links">
+			<a id="mbSVG" download="mb.svg">Download MultiBarChart SVG</a>
+			<a id="mbCSV" download="mb.csv">Download MultiBarChart CSV</a>
+			<a id="mtCSV" download="mt.csv">Download (multi) Table CSV</a>
+			<a id="stCSV" download="st.csv">Download (single) Table CSV</a>
+		</div>
+		<script>
+			var dash = new ADL.XAPIDashboard();
+			dash.addStatements(window.statements);
+			
+			//We could have also added a "pre" option to each of the charts
+			dash.data.where('result.score.raw != null');
+			
+			//Add a table
+			var table = dash.createTable({
+				container: '#tableContainer',
+				groupBy: 'actor.name',
+				aggregate: ADL.min('result.score.raw')
+			});	
+			
+			//Add a table
+			var multiTable = dash.createTable({
+				container: '#multiTableContainer',
+				groupBy: 'actor.name',
+				aggregate: ADL.multiAggregate('result.score.raw', ADL.count, ADL.min, ADL.max, ADL.average, ADL.select('verb.display.en-US'), ADL.select('context.instructor.name'))
+			});						
+
+			//Add a multiBarChart
+			var multiBar = dash.createMultiBarChart({
+				container: '#multi',
+				groupBy: 'actor.name',
+				aggregate: ADL.multiAggregate('result.score.raw', ADL.min, ADL.max, ADL.average)
+			});
+
+			table.draw();
+			multiTable.draw();
+			multiBar.draw();
+			
+			//We use setTimeout before exporting the data because we must wait until 
+			//the charts have finished processing and asynchronously drawing
+			window.setTimeout(function(){
+				
+				//ADL.$ is equal to window.querySelector. What we do is we select each of the links
+				//and set their href properties to either an SVG data URI or a CSV data URI. The browser
+				//should download the data because we've added the "download" attribute to each "a" tag in the HTML above
+				ADL.$('#mbSVG').href = multiBar.getSVGDataURI();
+				ADL.$('#mbCSV').href = multiBar.getCSVDataURI();
+				ADL.$('#mtCSV').href = multiTable.getCSVDataURI();
+				ADL.$('#stCSV').href = table.getCSVDataURI();
+			}, 3000);
+		</script>
+	</body>
+</html>

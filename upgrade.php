@@ -64,7 +64,13 @@ function _db_add_field($table, $field, $fieldtype, $default, $after) {
 
         /* TEXT and BLOB types cannot have a default. */
         if ($fieldtype != 'TEXT' && $fieldtype != 'BLOB') {
-            $query .= " DEFAULT '$default'";
+            if ($fieldtype == 'INT')
+            {
+                $query .= " DEFAULT $default";
+            }
+            else {
+                $query .= " DEFAULT '$default'";
+            }
         }
 
         if ($after) {
@@ -823,13 +829,87 @@ function upgrade_17()
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
     ");
 
-    $message =  "Creating grouping table - ok ? " . ( $ok ? 'true' : 'false' );
+    $message = "Creating grouping table - ok ? " . ($ok ? 'true' : 'false');
 
     $ok = db_query("insert  into `$table` (`grouping_id`,`grouping_name`) values (1,'Grouping 1'),(2,'Grouping 2'),(3,'Grouping 3'),(4,'Grouping 4'),(5,'Grouping 5'),(6,'Grouping 6'),(7,'Grouping 7'),(8,'Grouping 8'),(9,'Grouping 9'),(10,'Grouping 10')");
 
-    $message .= "Filling default groupings into groupings table - ok ? " . ( $ok ? 'true' : 'false' );
+    $message .= "Filling default groupings into groupings table - ok ? " . ($ok ? 'true' : 'false');
 
     return $message;
+}
+
+function upgrade_18()
+{
+    if (! _db_field_exists('sitedetails', 'dashboard_enabled')) {
+        $error1 = _db_add_field('sitedetails', 'dashboard_enabled', 'char(255)', 'true', 'LRS_Secret');
+        $error1_returned = true;
+
+        $error2 = _db_add_field('sitedetails', 'dashboard_nonanonymous', 'char(255)', 'true', 'dashboard_enabled');
+        $error2_returned = true;
+
+        $error3 = _db_add_field('sitedetails', 'xapi_dashboard_minrole', 'char(255)', 'co-author', 'dashboard_nonanonymous');
+        $error3_returned = true;
+
+        $error4 = _db_add_field('sitedetails', 'dashboard_period', 'INT', 14, 'xapi_dashboard_minrole');
+        $error4_returned = true;
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+            // echo "creating LRS_Endpoint field FAILED";
+        }
+
+        if (($error2 === false)) {
+            $error2_returned = false;
+            // echo "creating LRS_Key field FAILED";
+        }
+
+        if (($error3 === false)) {
+            $error3_returned = false;
+            // echo "creating LRS_Secret field FAILED";
+        }
+
+        if (($error4 === false)) {
+            $error4_returned = false;
+            // echo "creating LRS_Secret field FAILED";
+        }
+
+        return "Creating xAPI dashboard settings fields - ok ? " . ($error1_returned && $error2_returned && $error3_returned && $error4_returned? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating xAPI dashboard settings fields already present - ok ? true". "<br>";
+    }
+}
+
+function upgrade_19()
+{
+    if (! _db_field_exists('originaltemplatesdetails', 'parent_template')) {
+        $error1 = _db_add_field('originaltemplatesdetails', 'parent_template', 'char(255)', '', 'template_name');
+        if ($error1 !== false)
+        {
+            // Populate
+            $table = table_by_key('originaltemplatesdetails');
+            $sql = "UPDATE $table SET parent_template = template_name";
+            $error2 = db_query($sql);
+        }
+        else
+        {
+            $error2 = false;
+        }
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        if (($error2 === false)) {
+            $error2_returned = false;
+        }
+        return "Creating template_parent field in originaltemplatesdetails - ok ? " . ($error1_returned && $error2_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating template_parent field in originaltemplatesdetails already present - ok ? ". "<br>";
+    }
+
 }
 
 ?>

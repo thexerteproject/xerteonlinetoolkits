@@ -1,0 +1,199 @@
+/*6vmin;*/
+/*2vmin;*/
+/*1vmin;*/
+/*start here and set the default values for all the variables*/
+/* Important note: unlike some older Xerte themes this part of this default theme has been developed using sass and scss files */
+/*You should not edit the editorstyles.css file directly or change values directly unless you wish to override something*/
+/*Use SASS and the files in the scss folder name _allvariables.scss to start any customisation*/
+.panel1 {
+  font-family: "Schoolbell", cursive;
+  border-radius: 3px;
+  background-color: #F07E31;
+  color: #ffffff; }
+
+.panel1 a {
+  color: #fef5ef; }
+
+.panel2 {
+  font-family: "Schoolbell", cursive;
+  border-radius: 3px;
+  background-color: #2F9739;
+  color: #ffffff; }
+
+.panel2 a {
+  color: white; }
+
+.panel3 {
+  font-family: "Schoolbell", cursive;
+  border-radius: 3px;
+  background-color: #4185C5;
+  color: #ffffff; }
+
+.panel3 a {
+  color: white; }
+
+.panel4 {
+  font-family: "Schoolbell", cursive;
+  border-radius: 3px;
+  background-color: #00A1A3;
+  color: #ffffff; }
+
+.panel4 a {
+  color: white; }
+
+.panel5 {
+  font-family: "Schoolbell", cursive;
+  border-radius: 3px;
+  background-color: #603784;
+  color: #ffffff;
+  display: table; }
+
+.panel5 a {
+  color: white; }
+
+.panel6 {
+  font-family: "Schoolbell", cursive;
+  border-radius: 3px;
+  background-color: #D13759;
+  color: #ffffff; }
+
+.panel6 a {
+  color: white; }
+
+.highlight1 {
+  font-family: "Schoolbell", cursive;
+  background: #fff;
+  border-color: #F07E31; }
+
+.highlight2 {
+  font-family: "Schoolbell", cursive;
+  background: #fff;
+  border-color: #2F9739; }
+
+.highlight3 {
+  font-family: "Schoolbell", cursive;
+  background: #fff;
+  border-color: #4185C5; }
+
+.highlight4 {
+  font-family: "Schoolbell", cursive;
+  background: #fff;
+  border-color: #00A1A3; }
+
+.highlight5 {
+  font-family: "Schoolbell", cursive;
+  background: #fff;
+  border-color: #603784; }
+
+.highlight6 {
+  font-family: "Schoolbell", cursive;
+  background: #fff;
+  border-color: #D13759; }
+
+blockquote {
+  font-family: "Schoolbell", cursive;
+  font: 400 14px/24px "Schoolbell", cursive;
+  background: #f9f9f9;
+  border-color: #ccc; }
+
+.bq1 {
+  border-color: #F07E31; }
+
+.bq1:after {
+  color: #F07E31; }
+
+.bq1:before {
+  color: #F07E31; }
+
+.bq2 {
+  border-color: #2F9739; }
+
+.bq2:after {
+  color: #2F9739; }
+
+.bq2:before {
+  color: #2F9739; }
+
+.bq3 {
+  border-color: #4185C5; }
+
+.bq3:after {
+  color: #4185C5; }
+
+.bq3:before {
+  color: #4185C5; }
+
+.bq4 {
+  border-color: #00A1A3; }
+
+.bq4:after {
+  color: #00A1A3; }
+
+.bq4:before {
+  color: #00A1A3; }
+
+.bq5 {
+  border-color: #603784; }
+
+.bq5:after {
+  color: #603784; }
+
+.bq5:before {
+  color: #603784; }
+
+.bq6 {
+  border-color: #D13759; }
+
+.bq6:after {
+  color: #D13759; }
+
+.bq6:before {
+  color: #D13759; }
+
+.speech-bubble1 {
+  background: #F07E31;
+  color: white; }
+
+.speech-bubble1:after {
+  border-right-color: #F07E31; }
+
+.speech-bubble2 {
+  background: #2F9739;
+  color: white; }
+
+.speech-bubble2:after {
+  border-left-color: #2F9739; }
+
+.speech-bubble3 {
+  background: #4185C5;
+  color: white; }
+
+.speech-bubble3:after {
+  border-right-color: #4185C5; }
+
+.speech-bubble4 {
+  background: #00A1A3;
+  color: white; }
+
+.speech-bubble4:after {
+  border-left-color: #00A1A3; }
+
+.speech-bubble5 {
+  background: #603784;
+  color: white; }
+
+.speech-bubble5:after {
+  border-top-color: #603784; }
+
+.speech-bubble6 {
+  background: #D13759;
+  color: white; }
+
+.speech-bubble6:after {
+  font-family: "Schoolbell", cursive;
+  border-top-color: #D13759; }
+
+q, tt, kbd, samp, code, cite {
+  font-family: "Schoolbell", cursive; }
+
+/*# sourceMappingURL=editorstyles.css.map */

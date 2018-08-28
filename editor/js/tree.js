@@ -680,7 +680,7 @@ var EDITOR = (function ($, parent) {
             .attr('src', 'editor/img/flashonly.png')
             .attr('alt', 'Flash only attribute');
         var flashonlytxt = '<img class="flash-icon" src="editor/img/flashonly.png" alt="Flash only attribute">';
-        var tooltipavailable = '<i class="deprecatedIcon iconEnabled fa fa-info-circle"></i>';
+        var tooltipavailable = '<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>';
 		
 		var optGroups = [];
 		
@@ -774,7 +774,7 @@ var EDITOR = (function ($, parent) {
                     label += ' ' + tooltipavailable;
                     button.attr('title', node_options['optional'][i].value.tooltip);
                 }
-                // If group, see if there any of the individual itmes have a tooltip
+                // If group, see if any of the individual items have a tooltip
                 if (node_options['optional'][i].value.type == 'group')
                 {
                     var tooltip_txt = "";
@@ -789,8 +789,13 @@ var EDITOR = (function ($, parent) {
                     }
                     if (tooltip_txt.length > 0)
                     {
-                        label += ' ' + tooltipavailable;
-                        button.attr('title', tooltip_txt);
+						if (button.attr('title') != undefined) {
+							// a tooltip icon has already been added so don't add another - just add to the title text
+							button.attr('title', button.attr('title') + '\n' + tooltip_txt);
+						} else {
+							label += ' ' + tooltipavailable;
+							button.attr('title', tooltip_txt);
+						}
                     }
                 }
                 button.append(label);

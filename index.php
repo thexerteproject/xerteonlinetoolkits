@@ -81,6 +81,9 @@ $version = getVersion();
     <script type="text/javascript" src="editor/js/vendor/jstree.js?version=<?php echo $version;?>"></script>
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+    <link href="website_code/styles/bootstrap.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/nv.d3.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/xapi_dashboard.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
     <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
     <link href="website_code/styles/folder_popup.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/jquery-ui-layout.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
@@ -91,6 +94,14 @@ $version = getVersion();
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
     <?PHP
+    if (isset($_SESSION['toolkits_language']))
+    {
+        $languagecodevar = "var language_code = \"" . $_SESSION['toolkits_language'] . "\"";
+    }
+    else
+    {
+        $languagecodevar = "var language_code = \"en-GB\"";
+    }
     echo "
         <script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS
             var site_url = \"{$xerte_toolkits_site->site_url}\";
@@ -98,6 +109,7 @@ $version = getVersion();
             var properties_ajax_php_path = \"website_code/php/properties/\";
             var management_ajax_php_path = \"website_code/php/management/\";
             var ajax_php_path = \"website_code/php/\";
+            {$languagecodevar};
         </script>";
     ?>
     <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js?version=<?php echo $version;?>"></script>
@@ -109,6 +121,21 @@ $version = getVersion();
     _include_javascript_file("website_code/scripts/template_management.js?version" . $version);
     _include_javascript_file("website_code/scripts/logout.js?version=" . $version);
     _include_javascript_file("website_code/scripts/import.js?version=" . $version);
+    ?>
+    <script type="text/javascript" src="website_code/scripts/tooltip.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="website_code/scripts/popper.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="website_code/scripts/bootstrap.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="modules/xerte/xAPI/xapicollection.min.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="modules/xerte/xAPI/xapidashboard.min.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="modules/xerte/xAPI/xapiwrapper.min.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="website_code/scripts/moment.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="website_code/scripts/jquery-ui-i18n.min.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="website_code/scripts/result.js?version=<?php echo $version;?>"></script>
+
+    <?php
+    _include_javascript_file("website_code/scripts/xapi_dashboard_data.js?version=" . $version);
+    _include_javascript_file("website_code/scripts/xapi_dashboard.js?version=" . $version);
+
     ?>
     <?php head_end(); ?></head>
 
@@ -144,6 +171,42 @@ Folder popup is the div that appears when creating a new folder
             </button>
         </form>
         <p><span id="folder_feedback"></span></p>
+    </div>
+</div>
+
+<div class="dashboard-wrapper" id="dashboard-wrapper">
+
+    <div class="dashboard" id="dashboard">
+        <div id="options-div">
+            <div class="row dash-row">
+                <div class="dash-col unanonymous-view" >
+                    <label for="dp-unanonymous-view">
+                        <?php echo INDEX_XAPI_DASHBOARD_SHOW_NAMES; ?>
+                    </label>
+                    <input type="checkbox" id="dp-unanonymous-view" >
+                </div>
+
+                <div class="dash-col">
+                    <label for="dp-start">
+                        <?php echo INDEX_XAPI_DASHBOARD_FROM; ?>
+                    </label>
+                    <input type="text" id="dp-start" value="2018/03/24 21:23" data-test="2018/03/24 21:23">
+                </div>
+                <div class="dash-col-1">
+                    <label for="dp-end">
+                        <?php echo INDEX_XAPI_DASHBOARD_UNTIL; ?>
+                    </label>
+                    <input type="text" id="dp-end">
+                </div>
+                <div class="close-button">
+                    <button type="button" class="xerte_button_c_no_width"
+                            onclick="javascript:close_dashboard()"><?php echo INDEX_XAPI_DASHBOARD_CLOSE; ?>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="dashboard-title"></div>
+        <div id="journeyData" class="journeyData container-fluid container"></div>
     </div>
 </div>
 
@@ -323,7 +386,7 @@ Folder popup is the div that appears when creating a new folder
             <!--<img src="website_code/images/lt_logo.gif" /><br/>-->
             <?PHP
             echo $xerte_toolkits_site->copyright;
-            ?></p><div class="footerlogos"><a href="http://opensource.org/" target="_blank" title="Open Source Initiative: http://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0"></a> <a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0"></a> <a href="http://xerte.org.uk" target="_blank" title="Xerte: http://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0"></a></div>
+            ?> <i class="fa fa-info-circle" aria-hidden="true" style="color:#f86718; cursor: help;" title="<?PHP echo $version;?>"></i></p><div class="footerlogos"><a href="http://opensource.org/" target="_blank" title="Open Source Initiative: http://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0"></a> <a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0"></a> <a href="http://xerte.org.uk" target="_blank" title="Xerte: http://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0"></a></div>
 
         <div style="clear:both;"></div>
     </div>

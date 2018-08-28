@@ -121,6 +121,8 @@ $(document).ready(function() {
 		$x_mainHolder.addClass("x_touchScreen");
 	}
 
+	x_browserInfo.mobile = x_isMobileBrowser();
+
     // get xml data and sort it
     if (typeof dataxmlstr != 'undefined')
     {
@@ -147,18 +149,133 @@ $(document).ready(function() {
 
 });
 
+// To be able to check on orientation, and also detect the difference between a mobile and tablet
+// See https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
+x_isMobileBrowser = function() {
+    var check = false;
+    (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
+    return check;
+};
+
 x_projectDataLoaded = function(xmlData) {
     var i, len;
 	var markedPages = new Array();
     for (i = 0, len = xmlData[0].attributes.length; i < len; i++) {
         x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
     }
+	
+	// author support should only work when previewed (not play link)
+	if (x_params.authorSupport == "true") {
+		if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") == -1) {
+			x_params.authorSupport = "false";
+		}
+	}
 
     x_pages = xmlData.children();
 	var pageToHide = [];
 	var currActPage = 0;
     x_pages.each(function (i) {
-		if ($(this)[0].getAttribute("hidePage") != "true" || (x_params.authorSupport == "true" && window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1)) {
+		// work out whether the page is hidden or not - can be simply hidden or hidden between specific dates/times
+		var hidePage = $(this)[0].getAttribute("hidePage") == "true" ? true : false;
+		if (hidePage == true) {
+			// get current date/time according to browser
+			var nowTemp = new Date();
+			var now = {day:nowTemp.getDate(), month:nowTemp.getMonth()+1, year:nowTemp.getFullYear(), time:Number(String(nowTemp.getHours()) + (String(nowTemp.getMinutes()) < 10 ? '0' : '') + String(nowTemp.getMinutes()))};
+			
+			// functions to get hide on/until date/times from xml
+			var hideOn, hideUntil,
+				hideOnString = '', hideUntilString = '';
+			var getDateInfo = function(dmy, hm) {
+				// some basic checks of whether values are valid & then splits the data into time/day/month/year
+				dmy = dmy.split('/');
+				if (dmy.length != 3) {
+					return false;
+				} else {
+					var day = Math.min(Number(dmy[0]), 31),
+						month = Math.min(Number(dmy[1]), 12),
+						year = Math.max(Number(dmy[2]), 2017),
+						time = 0; // use midnight if no time is given
+					
+					if (hm != undefined && hm.trim() != '') {
+						var hm = hm.split(':');
+						if (hm.length == 2) {
+							var hour = Math.min(Number(hm[0]), 23),
+								minute = Math.min(Number(hm[1]), 59);
+							time = Number(String(hour) + (minute < 10 ? '0' : '') + String(minute));
+						}
+					}
+					
+					return {day:day, month:month, year:year, time:time};
+				}
+			}
+			
+			var getFullDate = function(info) {
+				var timeZero = '';
+				for (var i=0; i<4-String(info.time).length; i++) {
+					timeZero += '0';
+				}
+				return Number(String(info.year) + (info.month < 10 ? '0' : '') + String(info.month) + (info.day < 10 ? '0' : '') + String(info.day) + timeZero + String(info.time));
+			}
+			
+			// is it hidden from a certain date? if so, have we passed that date/time?
+			if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
+				hideOn = getDateInfo($(this)[0].getAttribute("hideOnDate"), $(this)[0].getAttribute("hideOnTime"));
+				
+				if (hideOn != false) {
+					if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
+						hidePage = false;
+					}
+					
+					hideOnString = '{from}: ' + $(this)[0].getAttribute("hideOnDate") + ' ' + $(this)[0].getAttribute("hideOnTime");
+				}
+			}
+			
+			// is it hidden until a certain date? if so, have we passed that date/time?
+			if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
+				hideUntil = getDateInfo($(this)[0].getAttribute("hideUntilDate"), $(this)[0].getAttribute("hideUntilTime"));
+				
+				if (hideUntil != false) {
+					// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
+					var skip = false;
+					if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
+						if (hidePage == false) {
+							hidePage = true;
+						} else {
+							skip = true;
+						}
+					}
+					
+					if (skip != true && hidePage == true) {
+						if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+							hidePage = false;
+						}
+					}
+					
+					hideUntilString = '{until}: ' + $(this)[0].getAttribute("hideUntilDate") + ' ' + $(this)[0].getAttribute("hideUntilTime");
+				}
+			}
+			
+			// language data hasn't been sorted yet so temporarily just store the attribute name of where we can later get the language we need
+			var infoString = '';
+			if (hideOnString != '') {
+				infoString += '(' + hideOnString;
+			}
+			if (hideUntilString != '') {
+				if (infoString == '') { infoString += '('; } else { infoString += ' & '; }
+				infoString += hideUntilString;
+			}
+			if (infoString != '') { infoString += ')'; }
+			
+			if (hidePage == true) {
+				infoString = '{hidden} ' + infoString;
+			} else {
+				infoString = '{shown} ' + infoString;
+			}
+			
+			$(this)[0].setAttribute("hidePageInfo", infoString);
+		}
+		
+		if (hidePage == false || x_params.authorSupport == "true") {
 			var linkID = $(this)[0].getAttribute("linkID"),
 				pageID = $(this)[0].getAttribute("pageID"),
 				page = {type: $(this)[0].nodeName, built: false};
@@ -288,7 +405,12 @@ x_projectDataLoaded = function(xmlData) {
 	if (urlParams.responsive != undefined && (urlParams.responsive == "true" || urlParams.responsive == "false")) {
 		x_params.responsive = urlParams.responsive;
 	}
-	
+
+	if (urlParams.theme != undefined && (x_params.themeurl == undefined || x_params.themeurl != 'true'))
+    {
+        x_params.theme = urlParams.theme;
+    }
+
     x_getLangData(x_params.language);
 
     // Setup nr of pages for tracking
@@ -471,15 +593,9 @@ function x_setUp() {
 		
 		$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
 		
-		
-		// author support should only work in preview mode (not play)
 		if (x_params.authorSupport == "true") {
-			if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") == -1) {
-				x_params.authorSupport = "false";
-			} else {
-				var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
-				$x_headerBlock.prepend('<div id="x_authorSupportMsg" class="alert"><p>' + msg + '</p></div>');
-			}
+			var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
+			$x_headerBlock.prepend('<div id="x_authorSupportMsg" class="alert"><p>' + msg + '</p></div>');
 		}
 		
 		// calculate author set variables
@@ -506,8 +622,8 @@ function x_setUp() {
 			});
 		}
 		
-		if (screen.width <= 550) {
-			x_browserInfo.mobile = true;
+		if (x_browserInfo.mobile) {
+		    x_fillWindow = true;
 			$x_mainHolder.addClass("x_mobile");
 			x_insertCSS(x_templateLocation + "common_html5/css/mobileStyles.css", function() {x_cssSetUp()});
 		} else {
@@ -558,6 +674,7 @@ function x_desktopSetUp() {
 						icons:	{primary: "x_maximise"},
 						label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
 					});
+					$("#x_cssBtn").addClass("x_maximise").removeClass("x_minimise");
 					x_fillWindow = false;
 					x_updateCss();
 				}
@@ -566,6 +683,8 @@ function x_desktopSetUp() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
+		
+		$("#x_cssBtn").addClass("x_maximise").removeClass("x_minimise");
 	}
 	
 	if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
@@ -763,6 +882,10 @@ function x_continueSetUp1() {
 					}
 					
 					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
+					
+					// Queue reparsing of MathJax - fails if no network connection
+					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+					
 					$x_glossaryHover = $("#x_glossaryHover");
 					$x_glossaryHover.css({
 						"left"	:$(this).offset().left + 20,
@@ -790,11 +913,11 @@ function x_continueSetUp1() {
 					
 					if (x_browserInfo.mobile == false) {
 						leftPos = e.pageX + 20;
-						if (e.pageX + 250 > $x_mainHolder.width()) {
-							leftPos = e.pageX - 220;
+						if (leftPos + $x_glossaryHover.width() > $x_mainHolder.offset().left + $x_mainHolder.width()) {
+							leftPos = e.pageX - $x_glossaryHover.width() - 20;
 						}
-						if (topPos > $x_pageHolder.height()) {
-							topPos = $(this).offset().top - $x_glossaryHover.height() - 10;
+						if (topPos + $x_glossaryHover.height() > $x_mainHolder.offset().top + $x_mainHolder.height()) {
+							topPos = e.pageY - $x_glossaryHover.height() - 20;
 						}
 					} else {
 						leftPos = ($x_mobileScroll.width() - $x_glossaryHover.width()) / 2;
@@ -996,6 +1119,7 @@ function x_continueSetUp1() {
 	if (x_params.navigation == "Historic") {
 		menuIcon = "x_home";
 		menuLabel = x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
+		$x_menuBtn.addClass("x_home");
 	}
 	
 	$x_menuBtn
@@ -1010,6 +1134,8 @@ function x_continueSetUp1() {
 		.click(function() {
 			if (x_params.navigation == "Linear" || x_params.navigation == undefined) {
 				x_openDialog("menu", x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"), x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"));
+			} else if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
+				x_navigateToPage(false,{type:'linkID',ID:x_params.homePage});
 			} else {
 				x_changePage(0);
 			}
@@ -1082,7 +1208,14 @@ function x_continueSetUp1() {
 		var mouseDown = [0, 0]; // [x, y]
 		var mouseUp = [0, 0];
 		*/
-		
+
+		// Set start orientation
+        if (window.orientation == 0 || window.orientation == 180) {
+            x_browserInfo.orientation = "portrait";
+        } else {
+            x_browserInfo.orientation = "landscape";
+        }
+
 		$x_pageHolder.bind("touchstart", function(e) {
 			/*
 			var touch = e.originalEvent.touches[0];
@@ -1128,7 +1261,7 @@ function x_continueSetUp1() {
 				}
 				if (newOrientation != x_browserInfo.orientation) {
 					x_browserInfo.orientation = newOrientation;
-					x_updateCss();
+					x_updateCss(true);
 				}
 			}
 		});
@@ -1444,16 +1577,9 @@ function x_changePageStep4(x_gotoPage) {
         x_changePageStep5(x_gotoPage);
     }
 }
-
-function x_changePageStep5(x_gotoPage) {
-	var prevPage = x_currentPage;
-
-    if (x_params.styles != undefined){
-        $x_head.append('<style type="text/css" id="page_css">' +  x_params.styles + '</style>');
-    }
-
+function x_endPageTracking(pagechange, x_gotoPage) {
     // End page tracking of x_currentPage
-    if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_currentPage != x_gotoPage)
+    if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && (!pagechange || x_currentPage != x_gotoPage))
     {
         var pageObj;
 
@@ -1476,6 +1602,18 @@ function x_changePageStep5(x_gotoPage) {
         }
         XTExitPage(x_currentPage);
     }
+}
+
+function x_changePageStep5(x_gotoPage) {
+	var prevPage = x_currentPage;
+
+    if (x_params.styles != undefined){
+        $x_head.append('<style type="text/css" id="page_css">' +  x_params.styles + '</style>');
+    }
+
+    // End page tracking of x_currentPage
+    x_endPageTracking(true, x_gotoPage);
+
     x_currentPage = x_gotoPage;
     x_currentPageXML = x_pages[x_currentPage];
 
@@ -1539,7 +1677,17 @@ function x_changePageStep5(x_gotoPage) {
 			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", "") + '</p>');
 		}
 		
-		var extraTitle = x_currentPageXML.getAttribute("hidePage") == "true" ? ' <span class="alert">' + (x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") : "This page will be hidden in live projects") + '</span>' : '';
+		var extraTitle = "";
+		if (x_params.authorSupport == "true" && x_currentPageXML.getAttribute("hidePage") == "true") {
+			// sort the string - language data wasn't available when hidePageInfo was created
+			var str = x_currentPageXML.getAttribute("hidePageInfo")
+				.replace('{from}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "from", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "from", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "from", "") : 'Hide from')
+				.replace('{until}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "until", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "until", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "until", "") : 'Hide until')
+				.replace('{hidden}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "hidden", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "hidden", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "hidden", "") : 'This page is currently hidden in live projects')
+				.replace('{shown}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "shown", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "shown", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "shown", "") : 'This page is currently shown in live projects');
+			
+			extraTitle = ' <span class="alert">' + str + '</span>';
+		}
 		
 		pageTitle = pageTitle + extraTitle;
     }
@@ -1654,7 +1802,7 @@ function x_changePageStep5(x_gotoPage) {
 		}
 		
 		// show page background & hide main background
-		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImage") != undefined) {
+		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImage") != undefined && x_currentPageXML.getAttribute("bgImage") != "") {
 			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
 				if (mediaExists) {
 					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
@@ -1849,6 +1997,10 @@ function x_pageLoaded() {
         .css("visibility", "visible")
         .fadeIn();
 
+	// Trigger featherlight
+    var config = $.featherlight.defaults;
+    $(config.selector, config.context).featherlight();
+
 	doPercentage();
 }
 
@@ -1886,7 +2038,11 @@ function x_addNarration() {
 
 // function adds timer bar above main controls on interface - optional property that can be added to any interactivity page
 function x_addCountdownTimer() {
-    var x_timerLangInfo = [x_getLangInfo(x_languageData.find("timer").find("remaining")[0], "name", "Time remaining"), x_getLangInfo(x_languageData.find("timer").find("timeUp")[0], "name", "Time up"), x_getLangInfo(x_languageData.find("timer").find("seconds")[0], "name", "seconds")];
+    var x_timerLangInfo = [
+		x_getLangInfo(x_languageData.find("timer").find("remaining")[0], "name", "Time remaining"),
+		x_currentPageXML.getAttribute("timerLabel") != null && x_currentPageXML.getAttribute("timerLabel") != "" ? x_currentPageXML.getAttribute("timerLabel") : x_getLangInfo(x_languageData.find("timer").find("timeUp")[0], "name", "Time up"),
+		x_getLangInfo(x_languageData.find("timer").find("seconds")[0], "name", "seconds")
+	];
 
     var x_countdownTicker = function () {
         x_countdownTimer--;
@@ -1923,7 +2079,7 @@ function x_addCountdownTimer() {
     };
 
     var x_countdownTimer;
-    if (x_currentPageXML.getAttribute("timer") != null && x_currentPageXML.getAttribute("timer") != "") {
+    if ((x_currentPageXML.getAttribute("showTimer") == null || x_currentPageXML.getAttribute("showTimer") == "true") && (x_currentPageXML.getAttribute("timer") != null && x_currentPageXML.getAttribute("timer") != "")) {
         clearInterval(x_timer);
         $("#x_footerBlock div:first").before('<div id="x_pageTimer"></div>');
         x_countdownTimer = parseInt(x_currentPageXML.getAttribute("timer"));
@@ -2085,11 +2241,13 @@ function x_openDialog(type, title, close, position, load) {
     for (var i=0, len=x_dialogInfo.length; i<len; i++) {
         if (x_dialogInfo[i].type == type) {
             $(".x_popupDialog").parent().detach();
+			
             if (x_dialogInfo[i].built != false) {
                 $x_body.append(x_dialogInfo[i].built);
 
                 if (load != undefined) {
                     x_dialogInfo[i].built.children(".x_popupDialog").html(load);
+					x_dialogInfo[i].built.find('.ui-dialog-title').html(title);
                 }
 				
 				x_setDialogSize(x_dialogInfo[i].built.children(".x_popupDialog"), position);
@@ -2716,11 +2874,11 @@ function x_insertText(node, exclude) {
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0 && exclude.indexOf("glossary") == -1) {
         for (var k=0, len=x_glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
 			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
         }
         for (var k=0, len=x_glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
 			//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
 			tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
         }
@@ -2775,6 +2933,8 @@ function x_setFillWindow(updatePage) {
         icons:  {primary: "x_minimise"},
         label:  x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
     });
+	
+	$("#x_cssBtn").addClass("x_minimise").removeClass("x_maximise");
 }
 
 

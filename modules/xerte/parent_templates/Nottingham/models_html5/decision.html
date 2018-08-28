@@ -573,7 +573,7 @@
 									$parent = $thisStep.find(".radioAnswers");
 								}
 								
-								$parent.append('<div class="optionGroup"><input type="radio" name="option" id="opt' + i + '"/><label class="optionTxt" for="opt' + i + '">' + x_addLineBreaks($this.attr("name")) + authorSupport + '</label></div>');
+								$parent.append('<div class="optionGroup"><input type="radio" name="option" id="opt' + i + '"/><label class="optionTxt" for="opt' + i + '"><p>' + x_addLineBreaks($this.attr("name")) + authorSupport + '</p></label></div>');
 								
 								if ($this.attr("selected") == "true") {
 									$thisStep.find("#opt" + i).prop("checked", true);

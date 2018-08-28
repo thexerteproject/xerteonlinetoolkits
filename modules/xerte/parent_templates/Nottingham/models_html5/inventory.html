@@ -44,8 +44,8 @@
 			$pageContents = $("#pageContents");
 			
 			// set fixed text fields and page layout
-			$("#mainTxt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("instructions")) + '</p>');
-			$("#feedbackTxt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + '</p>');
+			$("#mainTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
+			$("#feedbackTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 			$("#chartTitle").html(x_currentPageXML.getAttribute("chartTitle"));
 			
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
@@ -98,7 +98,7 @@
 				
 				$("#optionHolder input:checked").each(function() {
 					// calculate and store new score for this option's class based on it's previous score and this option's weight
-					var selectedOptionData = $(currentQuestion).children()[$(this).index()/2];
+					var selectedOptionData = $(currentQuestion).children()[$(this).parent().index()];
 					$pageContents.data("scores").splice(selectedOptionData.getAttribute("class"), 1, $pageContents.data("scores")[selectedOptionData.getAttribute("class")] + Number([selectedOptionData.getAttribute("weight")]));
 				});
 				
@@ -270,24 +270,25 @@
 				// set up radio buttons or check boxes
 				var $optionHolder = $("#optionHolder");
 				if (thisQ.getAttribute("type") == "Multiple Answer") {
-					$optionHolder.html('<input type="checkbox" name="option" /><label class="optionTxt"></label>');
+					$optionHolder.html('<div class="optionGroup"><input type="checkbox" name="option" /><label class="optionTxt"></label></optionGroup>');
 				} else {
-					$optionHolder.html('<input type="radio" name="option" /><label class="optionTxt"></label>');
+					$optionHolder.html('<div class="optionGroup"><input type="radio" name="option" /><label class="optionTxt"></label></optionGroup>');
 				}
-				var	$option = $optionHolder.find("input"),
-					$optionTxt = $optionHolder.find(".optionTxt"),
+				var	$optionGroup = $optionHolder.find(".optionGroup"),
 					$checkBtn = $("#checkBtn"),
 					$qFeedback = $("#qFeedback");
 				
 				$(thisQ).children()
 					.each(function(i) {
-						var $thisOption, $thisOptionTxt;
+						var $thisOptionGroup, $thisOption, $thisOptionTxt;
 						if (i != 0) {
-							$thisOption = $option.clone().appendTo($optionHolder);
-							$thisOptionTxt = $optionTxt.clone().appendTo($optionHolder);
+							$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
+							$thisOption = $thisOptionGroup.find('input');
+							$thisOptionTxt = $thisOptionGroup.find('.optionTxt');
 						} else {
-							$thisOption = $option;
-							$thisOptionTxt = $optionTxt;
+							$thisOptionGroup = $optionGroup;
+							$thisOption = $thisOptionGroup.find('input');
+							$thisOptionTxt = $thisOptionGroup.find('.optionTxt');
 						}
 						
 						$thisOption
@@ -304,6 +305,12 @@
 								} else {
 									$btn.attr("disabled", "disabled");
 								}
+							})
+							.focusin(function() {
+								$thisOptionGroup.addClass("highlight");
+							})
+							.focusout(function() {
+								$thisOptionGroup.removeClass("highlight");
 							});
 						
 						var optTxt = x_addLineBreaks(this.getAttribute("text"));
@@ -338,6 +345,8 @@
 			var	scores = $pageContents.data("scores"),
 				maxScore = 0, // max value to show on bar / line graph
 				i;
+			
+			console.log(scores);
 			
 			if (x_currentPageXML.getAttribute("scoreType") == "relative percent") {
 				// convert scores to percentage of total points scored
@@ -609,7 +618,7 @@
 				
 				<div class="quiz">
 					<h3 id="qNo"></h3>
-					<p id="qTxt"></p>
+					<div id="qTxt"></div>
 					<div id="optionHolder"></div>
 					<div id="buttonHolder">
 						<button id="checkBtn"></button>

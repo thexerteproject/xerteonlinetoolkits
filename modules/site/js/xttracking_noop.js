@@ -91,7 +91,7 @@ function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedb
 
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback, q)
 {
     return 0;
 }

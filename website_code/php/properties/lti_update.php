@@ -10,6 +10,9 @@ if (file_exists($xerte_toolkits_site->tsugi_dir)) {
     require_once($xerte_toolkits_site->tsugi_dir . "config.php");
     require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
     $tsugi_installed = true;
+
+    ini_set('display_errors', 0);
+    error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
 }
 
 use \Tsugi\Core\LTIX;
@@ -29,8 +32,8 @@ $lti_def->key = (isset($_POST["tsugi_key"]) ? htmlspecialchars($_POST["tsugi_key
 $lti_def->title = (isset($_POST["tsugi_title"]) ? htmlspecialchars($_POST["tsugi_title"]) : "");
 $lti_def->xapi_enabled = isset($_POST["tsugi_xapi"]) && $_POST["tsugi_xapi"] == "true";
 $lti_def->published = isset($_POST["tsugi_published"]) && $_POST["tsugi_published"] == "true";
-$lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
-$lti_def->url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
+$lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
+$lti_def->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
 $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
 $lti_def->xapi_endpoint = (isset($_POST["tsugi_xapi_endpoint"]) ? htmlspecialchars($_POST["tsugi_xapi_endpoint"]) : "");
 $lti_def->xapi_username = (isset($_POST["tsugi_xapi_username"]) ? htmlspecialchars($_POST["tsugi_xapi_username"]) : "");
@@ -52,16 +55,16 @@ if ($tsugi_installed) {
     $p = $CFG->dbprefix;
     $xp = $xerte_toolkits_site->database_table_prefix;
     _debug("Data init " . print_r($_POST, true));
-    $url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
+    $url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
     _debug("Detele " . $url);
 
 
     if ($tsugi_publish) {
 
-        $key_count = $PDOX->rowDie("SELECT COUNT(*) as count FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE k.key_sha256 = :KEY and c.key_id = k.key_id and l.context_id=c.context_id and l.path != :URL", array(
+        $rows = $PDOX->allRowsDie("SELECT * FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE k.key_sha256 = :KEY and c.key_id = k.key_id and l.context_id=c.context_id and l.path != :URL", array(
             ':KEY' => lti_sha256($lti_def->key),
             ':URL' => $lti_def->tsugi_url));
-        if ($key_count['count'] > 0) {
+        if (count($rows) > 0) {
             $mesg = "Key already in use, use another key.";
             tsugi_display($template_id, $lti_def, $mesg);
             exit;
@@ -70,48 +73,23 @@ if ($tsugi_installed) {
     }
 
 
-//link -> context -> key
-    $sql = "SELECT * FROM {$p}lti_link WHERE path = :PATH";
-    $link_row = $PDOX->rowDie($sql, array(
-        ':PATH' => $lti_def->tsugi_url
-    ));
-    $sql = "DELETE FROM {$p}lti_link WHERE link_id = :LINK_ID";
-    $PDOX->queryDie($sql, array(
-        ':LINK_ID' => $link_row["link_id"]
-    ));
-    $sql = "SELECT context_id FROM {$p}lti_context WHERE link_id = :LINK_ID";
-    $context_id = $link_row["context_id"];
-    $sql = "SELECT COUNT(*) AS count FROM {$p}lti_link WHERE context_id = :CONTEXT_ID";
-    $context_count = $PDOX->rowDie($sql, array(
-        ':CONTEXT_ID' => $context_id
-    ))["count"];
-    if ($context_count == 0) {
-        $context_row = $PDOX->rowDie("SELECT * FROM {$p}lti_context WHERE context_id = :CONTEXT_ID", array(
-            ':CONTEXT_ID' => $context_id));
-        $PDOX->queryDie("DELETE FROM {$p}lti_context WHERE context_id = :CONTEXT_ID", array(
-            ':CONTEXT_ID' => $context_id));
-        $sql = "SELECT COUNT(*) AS count FROM {$p}lti_context WHERE key_id = :KEY_ID";
-        $key_count = $PDOX->rowDie($sql, array(
-            ':KEY_ID' => $context_row["key_id"]
-        ))["count"];
-
-        if ($key_count == 0) {
-            $PDOX->queryDie("DELETE FROM {$p}lti_key WHERE key_id = :KEY_ID;", array(
-                ':KEY_ID' => $context_row["key_id"]));
-        }
+    // Remove key from tsugi
+    $rows = $PDOX->allRowsDie("SELECT * FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE c.key_id = k.key_id and l.context_id=c.context_id and l.path = :URL", array(
+        ':URL' => $lti_def->tsugi_url));
+    if (count($rows) > 0) {
+        $sql = "delete from {$p}lti_key where key_id = ?";
+        $params = array($rows[0]['key_id']);
+        $res = $PDOX->queryDie($sql, $params);
     }
+
     if (!$tsugi_publish) {
-        if (!$lti_def->xapi_enabled) {
-            $sql = "UPDATE {$xp}templatedetails SET tsugi_published = 0  WHERE template_id = ?";
-            db_query($sql, array($template_id));
-            $mesg = "Object is no longer published.";
-            tsugi_display($template_id, $lti_def, $mesg);
-            exit();
-        }
+        $sql = "UPDATE {$xp}templatedetails SET tsugi_published = 0  WHERE template_id = ?";
+        db_query($sql, array($template_id));
+        $mesg = "Object is no longer published.";
     }
 
     if ($tsugi_publish) {
-        $url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
+        $url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
         $PDOX = LTIX::getConnection();
         $p = $CFG->dbprefix;
         $context_row = $PDOX->rowDie("SELECT MAX(context_id) FROM {$p}lti_context;");

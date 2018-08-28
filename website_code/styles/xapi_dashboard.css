@@ -1,0 +1,347 @@
+body{
+  background-color: #212529;
+}
+
+.header{
+  color:white;
+  padding-left: 10px;
+}
+
+table {
+    empty-cells: show;
+}
+
+.popover {
+    /* set to 276px in bootstrap.css so override here */
+    max-width: none;
+}
+
+.journeyOverview{
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.journeyOverviewActivity{
+    margin-left: -1rem;
+    margin-right: -1rem;
+}
+
+.journeyOverviewActivity a{
+    width: 100%;
+}
+
+.journeyTable table{
+  overflow-x: scroll;
+  border: 0px;
+}
+
+.journeyTable th{
+  position: relative;
+  /* min-width: 120px; */
+  white-space: nowrap;
+}
+
+.journeyTable tr{
+  white-space: nowrap;
+}
+
+.status-indicator{
+    height: 100%;
+    width: 21px;
+    position: relative;
+    border-radius: 5px;
+    margin: auto;
+    text-decoration: none;
+}
+
+td a{
+  text-decoration: none;
+}
+
+.col-4-widget{
+    margin-top: 1rem;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #007bff;
+    border-radius: 4px;
+    height: 100px;
+    text-align: center;
+}
+
+.col-4-widget h1{
+    font-weight: bold;
+    color: #fba61f;
+    margin-top: .5rem;
+}
+
+.col-4-widget h3{
+    margin-top: .5rem;
+}
+
+#options-div label{
+    margin-right: 5px;
+    margin-bottom: 0px;
+}
+
+#options-div
+{
+    width: 100%;
+    background-color: #ededed;
+    border-radius: 4px;
+
+}
+
+.status-green{
+    background-color: #7FB821
+}
+
+.status-red{
+    background-color: #D93223
+}
+
+.status-orange{
+    background-color: #F2A01B
+}
+
+.status-gray{
+    background-color: #67666A
+}
+
+.card{
+    background-color: #eee;
+    border-color: #333;
+    margin-left: 100px;
+}
+
+
+.modal-dialog {
+  width: 100%;
+  height: 80%;
+  padding: 0;
+  max-width: 80%;
+}
+
+.modal-content {
+  width: 100%;
+  border-radius: 0;
+}
+
+.graph{
+  display:block;
+  height: 500px;
+}
+
+#graph_link_6{
+    width: 100%;
+}
+
+.graph-svg-wrapper
+{
+    border: solid 1px;
+    border-radius: 10px;
+    height:250px
+}
+
+.icon-header{
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  color: #999da1;
+  cursor: pointer;
+  font-size: 1.3em;
+}
+
+.icon-hide{
+  transition-duration: 0.5s;
+  transform: rotate(0deg)
+}
+
+.icon-show{
+  transition-duration: 0.5s;
+  transform: rotate(-450deg)
+}
+
+.column-show{
+  display: table-cell;
+
+}
+
+.column-hide{
+  display: none;
+}
+
+#overview{
+    color: white;
+}
+
+#overview svg{
+    color: black;
+    background-color: white;
+    height: 200px;
+    width: 500px;
+}
+
+.modebar {
+    display: none !important;
+}
+
+.close-button {
+    float: right;
+    padding:5px;
+}
+
+.dash-row {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: block;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+    color: #a01a13;
+    padding-left:20px;
+    padding-right:20px;
+}
+.dash-row input[type=text] {
+
+    width:100px;
+}
+
+.dash-col-1
+{
+    display: inline-block;
+    padding:5px;
+}
+.dash-col {
+    float: left;
+    padding:5px;
+}
+
+th.x-dashboard-page {
+    color: #fff;
+    vertical-align: top;
+}
+
+th.x-dashboard-page.x-dashboard-has-children a {
+    margin-right:20px;
+}
+
+th.x-dashboard-interaction {
+    font-size: smaller;
+    margin-top:4px;
+}
+
+#journeyData
+{
+    position: absolute;
+    top: 64px;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+}
+.journeyData th a{
+    font-family: Arial;
+    color: #000;
+}
+
+.pdfContent {
+    background: #eee;
+    color: #000;
+
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.dashboard .table th, .dashboard .table td {
+    padding: 5px;
+}
+
+.unanonymous-view {
+    display: none;
+    padding-top: 8px;
+    margin-right: 10px;
+}
+
+.dashboard{
+    overflow-x: hidden !important;
+    position: absolute;
+    width: -moz-calc(100% - 100px) !important;
+    width: -webkit-calc(100% - 100px) !important;
+    width: calc(100% - 10px) !important;
+    height: -moz-calc(100% - 100px) !important;
+    height: -webkit-calc(100% - 100px) !important;
+    height: calc(100% - 10px) !important;
+}
+
+.dashboard-wrapper{
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+td.x-dashboard-interaction
+{
+    background: #f4f4f4;
+}
+
+.panel{
+    width: 600px;
+    padding: 5px;
+    border: solid 1px #000000;
+    border-radius: 4px;
+    margin-bottom:10px;
+}
+
+.loading-gif {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* FONT AWESOME BUTTON ICONS */
+
+/* chevron */
+.fa-x-next:before { content: "\f054"; }
+.fa-x-prev:before { content: "\f053"; }
+.fa-x-next-circle:before { content: "\f138"; } /* circle versions are used in multiple perspectives & thumbnail viewer pages */
+.fa-x-prev-circle:before { content: "\f137"; }
+
+/* arrow */
+/*
+.fa-x-next:before { content: "\f061"; }
+.fa-x-prev:before { content: "\f060"; }
+.fa-x-next-circle:before { content: "\f0a9"; }
+.fa-x-prev-circle:before { content: "\f0a8"; }
+*/
+.fa-x-close:before { content: "\f00d"; }
+.fa-x-refresh:before { content: "\f021"; }
+.fa-x-acc-hide:before { content: "\f0da"; }
+.fa-x-acc-show:before { content: "\f0d7"; }
+.fa-x-btn-hide:before { content: "\f0d8"; } /* btn-hide/show used on transcript buttons */
+.fa-x-btn-show:before { content: "\f0d7"; }
+.fa-x-zoom-in:before { content: "\f00e"; }
+.fa-x-zoom-out:before { content: "\f010"; }
+.fa-x-download:before { content: "\f019"; }
+.fa-x-copy:before { content:"\f0c5" }
+.fa-x-info-circle:before { content:"\f05a" }
+.fa-x-circle:before { content:"\f111" }
+.fa-x-circle-o:before { content:"\f10c" }
+
+/* decision tree overview icons */
+.fa-x-info:before { content:"\f129" }
+.fa-x-question:before { content:"\f128" }
+.fa-x-lightbulb:before { content:"\f0eb" }
+
+.fa-x-tick-circle:before { content:"\f058"} /* used for visited ticks in table of contents */
+
+/* marking on interactivity pages */
+.fa-x-tick:before { font-family: FontAwesome; content: "\f00c"; color: #62c562; }
+.fa-x-cross:before { content: "\f00d"; color: #ff0000; }
+
+/* Just the colour */
+.fa-x-tick {
+    font-family: FontAwesome; content: "\f00c"; color: #62c562;
+}
+.fa-x--cross {
+    content: "\f00d"; color: #ff0000;
+}
+

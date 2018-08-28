@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,7 +51,8 @@
 			// *** These will eventually be pushed out to reside in the relevant model ***
 			// *** Each model will also expose a needsRedrawn flag or will provide relevant methods ***
 
-			// *******************
+
+            // *******************
 			// ***** Inverted ****
 			// *******************
 
@@ -165,14 +166,30 @@
 			var $colourChangerOptions = $('#colourChangerOptions');
 			var select = [];
 			for (var i=0; i<this.filterMap.length; i++) {
-				select.push('<label><input type="radio" name="colourChangerRadios" value="' + i + '"');
+				select.push('<div class="optionGroup"><input type="radio" id="option' + i + '" name="colourChangerRadios" value="' + i + '"');
 				if (i == this.selectedIndex) select.push(' checked="checked"');
-				select.push('>' + x_getLangInfo(x_languageData.find("colourChanger").find(this.filterMap[i].name)[0], "label", this.filterMap[i].default) + '</label><br>');
+				select.push('><label for="option' + i + '"><p>' + x_getLangInfo(x_languageData.find("colourChanger").find(this.filterMap[i].name)[0], "label", this.filterMap[i].default) + '</p></label></div>');
 			}
 			$colourChangerOptions.append(select.join(''));
 
 			$("input[name='colourChangerRadios']").click(function(){
-				colourChanger.applyFilter($(this).attr('value'));
+			    debugger;
+                 switch(this.value){
+					 case "0":
+					     //todo switch to default set theme
+						 break;
+					 case "1":
+					     //todo load default theme in
+						 colourChanger.applyFilter($(this).attr('value'));
+						 break;
+					 case "2":
+					     debugger;
+						 colourChanger.switchTheme("highcontrast");
+						 break;
+					 case "3":
+						colourChanger.switchTheme("blackonyellow");
+
+				 }
 
 				var pageTypesRequiringRefresh = ['chart', 'textDrawing'];
 
@@ -189,6 +206,16 @@
 				}
 			});
 		}
+
+		this.switchTheme = function(theme){
+
+            currentThemeURL = x_themePath + theme + '/' + theme + '.css';
+            document.getElementById("theme_css").href = currentThemeURL;
+            $('link[href="' + currentThemeURL + '"]').attr('href', currentThemeURL);
+            debugger;
+
+            $(window).trigger('resize');
+		};
 
 		this.applyFilter = function (index) {
 			if (index % 4) $("#x_background").hide(); else $("#x_background").show();
@@ -283,6 +310,8 @@
 
 <div id="colourChangerHolder">
 	<p id="p1"></p>
-	<div id="colourChangerOptions"></div>
+	<div id="optionHolder">
+		<div id="colourChangerOptions"></div>
+	</div>
 	<p id="p2"></p>
 </div>

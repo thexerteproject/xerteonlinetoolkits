@@ -35,6 +35,10 @@ h3 {
     padding-right: 0.3em;
 }
 
+h4, h5 {
+	font-size: 1em;
+}
+
 ul, ol {
 	overflow: hidden;
 }
@@ -264,6 +268,7 @@ a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active
 }
 
 #x_glossaryHover {
+	position: fixed;
 	display:			none;
 	max-width:			200px;
 }
@@ -413,6 +418,11 @@ audio {
 .alert {
 	font-weight:	bold;
 	color:			red;
+}
+
+h2 .alert {
+	display: block;
+	font-size: 0.5em;
 }
 
 .alertBorder {

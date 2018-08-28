@@ -154,7 +154,7 @@ optional: feedback page synch play enable
 				}
 				
 			
-				feedbackTxt += options[fb] != "" ? '<div class="feedback">' + options[fb] + '</div>' : "";
+				feedbackTxt += options[fb] != "" ? '<div class="feedback"><p>' + options[fb] + '</p></div>' : "";
 			}
 			
 			if (options.childNodes[index].getAttribute("enable") == "true" || (enable == true && ((options.childNodes[index].getAttribute("page") == undefined || options.childNodes[index].getAttribute("page") == "") && (options.childNodes[index].getAttribute("synch") == undefined || options.childNodes[index].getAttribute("synch") == "")))) {
@@ -225,7 +225,8 @@ optional: feedback page synch play enable
 				judge = false;
 				autoEnable = true;
 				var tempEnable = false;
-				
+
+				debugger;
 				// is it to appear over media?
 				if (options.overlay == "true" && (this.video != undefined || $(this.audio).closest(".mediaHolder").find(".audioImg").length > 0)) {
 					var $parent;

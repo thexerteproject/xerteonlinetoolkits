@@ -109,7 +109,7 @@ function show_preview_code2($row, $row_username){
     $string_for_flash_xml = $xmlfile . "?time=" . time();
 
     $flash_js_dir = "modules/" . $row['template_framework'] . "/";
-    $template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['template_name'] . "/";
+    $template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
     $rlo_file = $template_path . $row['template_name'] . ".rlt";
 
     list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
@@ -172,7 +172,7 @@ function show_preview_code2($row, $row_username){
         $page_content = str_replace("%TEMPLATEID%", $_GET['template_id'], $page_content);
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
-        $page_content = str_replace("%THEMEPATH%", "themes/" . $row['template_name'] . "/",$page_content);
+        $page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
 
         // Handle offline variables
         $page_content = str_replace("%OFFLINESCRIPTS%", "", $page_content);

@@ -62,7 +62,7 @@ function NoopTrackingState()
     this.start = new Date();
     this.interactions = new Array();
     this.lo_completed = 0;
-    this.lo_passed = 0;
+    this.lo_passed = -1;
     this.page_timeout = 5000;
     this.forcetrackingmode = false;
     this.debug = false;
@@ -133,7 +133,7 @@ function NoopTrackingState()
     {
         if (this.lo_type != "pages only")
         {
-            if (state.getScaledScore() > this.lo_passed)
+            if (state.getScaledScore() > (this.lo_passed / 100))
             {
                 return "passed";
             }
@@ -346,7 +346,7 @@ function NoopTrackingState()
             this.lo_type = "interactive";
             if (this.lo_passed == -1)
             {
-                this.lo_passed = 0.55;
+                this.lo_passed = 55;
             }
         }
 
@@ -1029,7 +1029,7 @@ function XTSetOption(option, value)
         	state.lo_completed = value;
             break;
         case "objective_passed":
-        	state.lo_passed = Number(value);
+        	state.lo_passed = Number(value) * 100;
             break;
         case "page_timeout":
             // Page timeout in seconds
@@ -1068,7 +1068,50 @@ function XTSetPageScoreJSON(page_nr, score)
 
 function XTSetViewed(page_nr, name, score)
 {
+    if (isNaN(score) || typeof score != "number")
+    {
+        score = 0.0;
+    }
     state.setPageScore(page_nr, score);
+}
+
+function XThelperConsolidateSegments(videostate)
+{
+    // 1. Sort played segments on start time (first make a copy)
+    var segments = $.extend(true, [], videostate.segments);
+    segments.sort(function(a,b) {return (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0);} );
+    // 2. Combine the segments
+    var csegments = [];
+    var i=0;
+    while(i<segments.length) {
+        var segment = $.extend(true, {}, segments[i]);
+        i++;
+        while (i<segments.length && segment.end >= segments[i].start) {
+            segment.end = segments[i].end;
+            i++;
+        }
+        csegments.push(segment);
+    }
+    return csegments;
+}
+
+function XThelperDetermineProgress(videostate)
+{
+    var csegments = XThelperConsolidateSegments(videostate);
+    var videoseen = 0;
+    for (var i=0; i<csegments.length; i++)
+    {
+        videoseen += csegments[i].end - csegments[i].start;
+    }
+    // normalized between 0 and 1
+    if (!isNaN(videostate.duration) && videostate.duration > 0) {
+        return Math.round(videoseen / videostate.duration * 100.0) / 100.0;
+    }
+    return 0.0;
+}
+
+function XTVideo(page_nr, name, block_name, verb, videostate) {
+    return;
 }
 
 function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping)
@@ -1081,7 +1124,7 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
 	state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback);
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback, q)
 {
     var JSONGraph = {
         label: "Enter Page Title",
@@ -1119,6 +1162,10 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 function XTTerminate()
 {
     if (!state.finished) {
+        // End tracking of page
+        x_endPageTracking(false, -1);
+
+        // This code is probably obsolete, leave it in to allow for more testing
         var currentpageid = "";
         state.finished = true;
         if (state.currentid) {
@@ -1274,7 +1321,7 @@ function XTResults(fullcompletion) {
                     correctAnswer = state.interactions[i].correctAnswers;
                     break;
             }
-            if (state.interactions[i].ia_type != "match") {
+            if (state.interactions[i].ia_type != "match" && state.interactions[i].result != undefined) {
                 subinteraction.question = state.interactions[i].ia_name;
                 subinteraction.correct = state.interactions[i].result.success;
                 subinteraction.learnerAnswer = learnerAnswer;

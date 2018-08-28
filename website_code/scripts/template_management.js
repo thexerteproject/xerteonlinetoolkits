@@ -8,7 +8,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-/**	
- * 
+/**
+ *
  * template management, javascript for the management of the templates in the file area and their creation
  *
  * @author Patrick Lockley
@@ -26,19 +26,17 @@
  * @package
  */
 
-if(typeof(String.prototype.trim) === "undefined")
-{
-    String.prototype.trim = function() 
-    {
+if (typeof(String.prototype.trim) === "undefined") {
+    String.prototype.trim = function() {
         return String(this).replace(/^\s+|\s+$/g, '');
     };
 }
-var active_div="";
+var active_div = "";
 
 var edit_window_open = new Array();
 
 /**
- * 
+ *
  * Function url return
  * This function sorts out the URL depending on whether the htaccess if off or on
  * @param string url = the extra part of the url to make this URL from
@@ -47,7 +45,7 @@ var edit_window_open = new Array();
  * @author Patrick Lockley
  */
 
-function url_return(url,parameter){
+function url_return(url, parameter) {
 
     switch (url) {
 
@@ -146,7 +144,7 @@ function url_return(url,parameter){
 }
 
 
-/* 
+/*
  * Function template toggle
  * This function sorts out the display and hiding of the blank templates side of the screen
  * @param string tag = the div to display
@@ -154,19 +152,22 @@ function url_return(url,parameter){
  * @author Patrick Lockley
  */
 
-function template_toggle(tag){
+function template_toggle(tag) {
 
     var temp = document.getElementById(tag);
-    var butt = document.getElementById(tag+'_button');
+    var butt = document.getElementById(tag + '_button');
 
-    if((temp.style.display=="none")||(temp.style.display=="")){
-        temp.style.display="block";	
-				butt.style.display="none";
-				temp.querySelector('input[name="filename"]').focus();
-    }else{
-        temp.style.display="none";
-				butt.style.display="";
-    }	
+    if ((temp.style.display == "none") || (temp.style.display == "")) {
+        temp.style.display = "block";
+        butt.style.display = "none";
+        temp.querySelector('input[name="filename"]').value = "";
+        temp.querySelector('input[name="filename"]').focus();
+
+
+    } else {
+        temp.style.display = "none";
+        butt.style.display = "";
+    }
 
 }
 
@@ -175,18 +176,18 @@ function template_toggle(tag){
 // open and close template areas when creating a new one
 
 
-function toggle(tag){
+function toggle(tag) {
 
-    if(document.getElementById(tag).style.display=="none"){		
-        document.getElementById(tag).style.display="block";
-    }else{
-        document.getElementById(tag).style.display="none";
+    if (document.getElementById(tag).style.display == "none") {
+        document.getElementById(tag).style.display = "block";
+    } else {
+        document.getElementById(tag).style.display = "none";
     }
 
 }
 
 /**
- * 
+ *
  * Function edit window
  * This function opens an edit window
  * @param string admin = is the user an administrator
@@ -194,78 +195,81 @@ function toggle(tag){
  * @author Patrick Lockley
  */
 
-function edit_window(admin,edit){
+function edit_window(admin, edit) {
 
-    if(!admin){
+    if (!admin) {
 
         var tree = $.jstree.reference("#workspace"),
             ids = tree.get_selected();
         if (ids.length == 0)
             return;
 
-        for(var i=0; i<ids.length; i++)
-        {
+        for (var i = 0; i < ids.length; i++) {
             var node = workspace.nodes[ids[i]];
-            if(node.xot_type == "file"){
+            if (node.xot_type == "file") {
 
-                if(node.parent != workspace.recyclebin_id){
+                if (node.parent != workspace.recyclebin_id) {
                     window_id = "editwindow" + node.id;
-					
+
                     window_open = false;
-					
-					if (typeof(edit_window_open) != 'undefined') {
 
-						for(z=0;z<edit_window_open.length;z++){
-							if(("editwindow" + edit_window_open[z].id)==window_id) {
-								window_open = edit_window_open[z].window;
-							}
-						}
-					}
+                    if (typeof(edit_window_open) != 'undefined') {
 
-                    if(!window_open){
-						
-						size = node.editor_size.split(",");
+                        for (z = 0; z < edit_window_open.length; z++) {
+                            if (("editwindow" + edit_window_open[z].id) == window_id) {
+                                window_open = edit_window_open[z].window;
+                            }
+                        }
+                    }
 
-						if(size.length==1){
-							var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id );
-						}else{
-							var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "height=" + size[1] + ", width=" + size[0] + ", resizable=yes");
-						}
+                    if (!window_open) {
 
-						try{
+                        size = node.editor_size.split(",");
 
-							xmlHttp=new XMLHttpRequest();
+                        if (size.length == 1) {
+                            var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id);
+                        } else {
+                            var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "height=" + size[1] + ", width=" +
+                                size[0] + ", resizable=yes");
+                        }
 
-						}catch (e){    // Internet Explorer    
-							try{
-								xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
-							}catch (e){
-								try{
-									xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
-								}catch (e){
+                        try {
 
-								}      
-							}    
-						}
+                            xmlHttp = new XMLHttpRequest();
 
-						NewEditWindow.ajax_handle = xmlHttp;		
-						self.last_reference = self;		
-						
-						NewEditWindow.focus();
-						
-						edit_window_open.push({id:node.id, window:NewEditWindow});
+                        } catch (e) { // Internet Explorer
+                            try {
+                                xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+                            } catch (e) {
+                                try {
+                                    xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+                                } catch (e) {
+
+                                }
+                            }
+                        }
+
+                        NewEditWindow.ajax_handle = xmlHttp;
+                        self.last_reference = self;
+
+                        NewEditWindow.focus();
+
+                        edit_window_open.push({
+                            id: node.id,
+                            window: NewEditWindow
+                        });
 
                     } else {
-						window_open.focus();
-					}
+                        window_open.focus();
+                    }
 
-                }else{
+                } else {
 
                     alert(RECYCLE_EDIT);
 
                 }
 
-            }else{
+            } else {
 
                 alert(FOLDER_EDIT);
 
@@ -273,11 +277,11 @@ function edit_window(admin,edit){
 
         }
 
-    }else{
+    } else {
 
-        var NewEditWindow = window.open(site_url + url_return("edithtml", admin), "editwindow" + admin, "height=665, width=800" );
+        var NewEditWindow = window.open(site_url + url_return("edithtml", admin), "editwindow" + admin, "height=665, width=800");
 
-        NewEditWindow.window_reference = self;			
+        NewEditWindow.window_reference = self;
 
         NewEditWindow.focus();
 
@@ -286,7 +290,7 @@ function edit_window(admin,edit){
 }
 
 /**
- * 
+ *
  * Function close edit window
  * This function sorts out the deletion of lock files
  * @param string path = the path to delete the lock file, or an ID number
@@ -294,7 +298,7 @@ function edit_window(admin,edit){
  * @author Patrick Lockley
  */
 
-function close_edit_window(path){
+function close_edit_window(path) {
 
     /*
      * if the path variable contains a hyphen, then it is the path to delete a file
@@ -303,20 +307,20 @@ function close_edit_window(path){
     /*
      * use the for loop to check for its place in the array then delete it
      */
-    for(x=0;x<edit_window_open.length;x++){
+    for (x = 0; x < edit_window_open.length; x++) {
 
-        if(path.indexOf("-")!=-1){
-            if(edit_window_open[x].id.substr(5,edit_window_open[x].id.length-5)==path.substr(0,path.indexOf("-"))){
+        if (path.indexOf("-") != -1) {
+            if (edit_window_open[x].id.substr(5, edit_window_open[x].id.length - 5) == path.substr(0, path.indexOf("-"))) {
 
-                edit_window_open.splice(x,1);
+                edit_window_open.splice(x, 1);
 
-            }			
+            }
 
-        }else{
+        } else {
 
-            if(edit_window_open[x].id.substr(5,edit_window_open[x].id.length-5)==path){
+            if (edit_window_open[x].id.substr(5, edit_window_open[x].id.length - 5) == path) {
 
-                edit_window_open.splice(x,1);
+                edit_window_open.splice(x, 1);
 
             }
 
@@ -327,18 +331,18 @@ function close_edit_window(path){
 }
 
 /**
- * 
+ *
  * Function file_version_sync
  * This function opens a window to display an example template
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function file_version_sync(){
+function file_version_sync() {
 
-    if (xmlHttp.readyState==4){ 
+    if (xmlHttp.readyState == 4) {
         response = xmlHttp.responseText.trim();
-        if(response!=""){
+        if (response != "") {
             alert(response);
         }
         refresh_workspace();
@@ -346,29 +350,29 @@ function file_version_sync(){
 }
 
 /**
- * 
+ *
  * Function example state changed
  * This function opens a window to display an example template
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function file_need_save(){
+function file_need_save() {
 
-    if (xmlHttp.readyState==4){ 
-	
+    if (xmlHttp.readyState == 4) {
+
         result = xmlHttp.responseText.split("~*~");
 
-        if(xmlHttp.responseText!=""){
+        if (xmlHttp.responseText != "") {
 
             var response = confirm(result[0]);
 
-            if(response){
+            if (response) {
 
-                var url="website_code/php/versioncontrol/update_file.php";
+                var url = "website_code/php/versioncontrol/update_file.php";
 
-                xmlHttp.open("post",url,true);
-                xmlHttp.onreadystatechange=file_version_sync;
+                xmlHttp.open("post", url, true);
+                xmlHttp.onreadystatechange = file_version_sync;
                 xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 xmlHttp.send('file_path=' + result[1] + "&template_id=" + result[2]);
 
@@ -381,39 +385,39 @@ function file_need_save(){
 }
 
 /**
- * 
+ *
  * Function edit window close
  * This function is empty to handle the response from the lock file deletion (which generates no response)
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function edit_window_close(path){
+function edit_window_close(path) {
 
-    for(x=0;x<edit_window_open.length;x++){
+    for (x = 0; x < edit_window_open.length; x++) {
 
-        if(path.indexOf("-")!=-1){
-			
-			if(edit_window_open[x].id.substr(edit_window_open[x].id.lastIndexOf("_")+1,edit_window_open[x].id.length)==path.substr(0,path.indexOf("-"))){
-			//if(edit_window_open[x].substr(5,edit_window_open[x].length-5)==path.substr(0,path.indexOf("-"))){
-                edit_window_open.splice(x,1);
+        if (path.indexOf("-") != -1) {
+
+            if (edit_window_open[x].id.substr(edit_window_open[x].id.lastIndexOf("_") + 1, edit_window_open[x].id.length) == path.substr(0, path.indexOf("-"))) {
+                //if(edit_window_open[x].substr(5,edit_window_open[x].length-5)==path.substr(0,path.indexOf("-"))){
+                edit_window_open.splice(x, 1);
             }
 
-        }else{
-            if(edit_window_open[x].id.substr(5,edit_window_open[x].id.length-5)==path){
-                edit_window_open.splice(x,1);
+        } else {
+            if (edit_window_open[x].id.substr(5, edit_window_open[x].id.length - 5) == path) {
+                edit_window_open.splice(x, 1);
             }
 
         }
 
     }
 
-    if(setup_ajax()!=false){
+    if (setup_ajax() != false) {
 
-        var url="website_code/php/versioncontrol/template_close.php";
+        var url = "website_code/php/versioncontrol/template_close.php";
 
-        xmlHttp.open("post",url,false);
-        xmlHttp.onreadystatechange=file_need_save;
+        xmlHttp.open("post", url, false);
+        xmlHttp.onreadystatechange = file_need_save;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xmlHttp.send('file_path=' + path);
 
@@ -422,7 +426,7 @@ function edit_window_close(path){
 }
 
 /**
- * 
+ *
  * Function example window
  * This function requests the screen size for an example template
  * @param string examole_id = the id of the example
@@ -430,31 +434,31 @@ function edit_window_close(path){
  * @author Patrick Lockley
  */
 
-function example_window(example_id){
+function example_window(example_id) {
 
-    if(example_id!=0){
+    if (example_id != 0) {
 
-        if(setup_ajax()!=false){
+        if (setup_ajax() != false) {
 
-            var url="website_code/php/properties/screen_size_template.php";
+            var url = "website_code/php/properties/screen_size_template.php";
 
-            xmlHttp.open("post",url,true);
-            xmlHttp.onreadystatechange=example_stateChanged;
+            xmlHttp.open("post", url, true);
+            xmlHttp.onreadystatechange = example_stateChanged;
             xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xmlHttp.send('tutorial_id=' + example_id); 
+            xmlHttp.send('tutorial_id=' + example_id);
 
         }
 
-    }else{
+    } else {
 
         alert(NO_EXAMPLE);
-		
+
     }
 
 }
 
 /**
- * 
+ *
  * Function preview window
  * This function opens a window to display a preview of a template
  * @param string admin = whether the user is an admin
@@ -462,37 +466,38 @@ function example_window(example_id){
  * @author Patrick Lockley
  */
 
-function preview_window(admin){
+function preview_window(admin) {
 
-    if(!admin){
+    if (!admin) {
 
-        if(setup_ajax()!=false){
+        if (setup_ajax() != false) {
             var tree = $.jstree.reference("#workspace"),
                 ids = tree.get_selected();
             if (ids.length == 0)
                 return;
 
-            for(var i=0; i<ids.length; i++)
-            {
+            for (var i = 0; i < ids.length; i++) {
                 var node = workspace.nodes[ids[i]];
 
-                if(node.xot_type=="file"){
+                if (node.xot_type == "file") {
 
-					size = node.preview_size.split(",");
-					
-					if(size.length!=1){
-					
+                    size = node.preview_size.split(",");
 
-						var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id, "height=" + size[1] + ", width=" + size[0] + ", scrollbars=yes,resizable=yes" );
-						
-					}else{
-					
+                    if (size.length != 1) {
 
-						var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id, "height=768,width=1024,scrollbars=yes,resizable=yes");
-						
-					}
 
-                }else{
+                        var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id, "height=" + size[1] +
+                            ", width=" + size[0] + ", scrollbars=yes,resizable=yes");
+
+                    } else {
+
+
+                        var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id,
+                            "height=768,width=1024,scrollbars=yes,resizable=yes");
+
+                    }
+
+                } else {
 
                     alert(PROJECT_SELECT);
 
@@ -500,9 +505,9 @@ function preview_window(admin){
 
             }
 
-        }	
+        }
 
-    }else{
+    } else {
 
         var PreviewWindow = window.open(site_url + url_return("preview", admin), "previewwindow" + admin, "scrollbars=yes");
 
@@ -512,18 +517,18 @@ function preview_window(admin){
 
 
 /**
- * 
+ *
  * Function example state changed
  * This function opens a window to display an example template
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function example_stateChanged(){
+function example_stateChanged() {
 
-    if (xmlHttp.readyState==4){ 
+    if (xmlHttp.readyState == 4) {
 
-        if(xmlHttp.responseText!=""){
+        if (xmlHttp.responseText != "") {
 
             temp = xmlHttp.responseText.toString().split("~");
 
@@ -531,7 +536,7 @@ function example_stateChanged(){
 
             var property_id = temp[2];
 
-            var NewWindow = window.open(site_url + url_return("play",property_id), "examplewindow" + property_id, parameter);
+            var NewWindow = window.open(site_url + url_return("play", property_id), "examplewindow" + property_id, parameter);
 
             NewWindow.focus();
 
@@ -542,7 +547,7 @@ function example_stateChanged(){
 }
 
 /**
- * 
+ *
  * Function properties window
  * This function opens a properties window
  * @param string admin - is the user an admin
@@ -565,7 +570,7 @@ function publishproperties_window(admin) {
 }
 
 /**
- * 
+ *
  * Function properties window
  * This function opens a properties window
  * @param string admin - is the user an admin
@@ -588,14 +593,16 @@ function properties_window(admin) {
             for (var i = 0; i < ids.length; i++) {
                 if (workspace.nodes[ids[i]].type != "folder") {
                     if (workspace.nodes[ids[i]].parent != workspace.recyclebin_id) {
-                        var NewWindow = window.open(site_url + url_return("properties", workspace.nodes[ids[i]].xot_id), workspace.nodes[ids[i]].xot_id, "height=600, width=635");
+                        var NewWindow = window.open(site_url + url_return("properties", workspace.nodes[ids[i]].xot_id), workspace.nodes[ids[i]].xot_id,
+                            "height=600, width=635");
                         NewWindow.window_reference = self;
                         NewWindow.focus();
                     } else {
                         alert(RECYCLE_PROPERTIES);
                     }
                 } else {
-                    var NewWindow = window.open(site_url + url_return("folderproperties", workspace.nodes[ids[i]].xot_id + "_folder"), workspace.nodes[ids[i]].xot_id + "_folder", "height=600, width=635");
+                    var NewWindow = window.open(site_url + url_return("folderproperties", workspace.nodes[ids[i]].xot_id + "_folder"), workspace.nodes[ids[i]].xot_id +
+                        "_folder", "height=600, width=635");
                     NewWindow.window_reference = self;
                     NewWindow.focus();
                 }
@@ -610,7 +617,7 @@ function properties_window(admin) {
 }
 
 /**
- * 
+ *
  * Function selection changed
  * This function redisplays the file area sorted accordingly
  * @version 1.0
@@ -618,19 +625,19 @@ function properties_window(admin) {
  */
 
 
-function refresh_workspace(){
-    if(setup_ajax()!=false){
-        var url="website_code/php/templates/get_templates_sorted.php";
+function refresh_workspace() {
+    if (setup_ajax() != false) {
+        var url = "website_code/php/templates/get_templates_sorted.php";
 
-        xmlHttp.open("post",url,true);
-        xmlHttp.onreadystatechange=refreshworkspace_stateChanged;
+        xmlHttp.open("post", url, true);
+        xmlHttp.onreadystatechange = refreshworkspace_stateChanged;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlHttp.send('sort_type=' + document.sorting.type.value); 
+        xmlHttp.send('sort_type=' + document.sorting.type.value);
     }
 }
 
 /**
- * 
+ *
  * Function selection changed state changed
  * This function redisplays the file area after sorting
  * @version 1.0
@@ -638,13 +645,13 @@ function refresh_workspace(){
  */
 
 
-function refreshworkspace_stateChanged(){
+function refreshworkspace_stateChanged() {
 
-    if (xmlHttp.readyState==4){ 
+    if (xmlHttp.readyState == 4) {
 
         //document.getElementById('file_area').innerHTML = xmlHttp.responseText;
 
-        var response=xmlHttp.responseText;
+        var response = xmlHttp.responseText;
         workspace = JSON.parse(response);
         init_workspace();
 
@@ -652,52 +659,69 @@ function refreshworkspace_stateChanged(){
 
 }
 
-function getProjectInformation(user_id, template_id){
-    if(setup_ajax()!=false){
-        var url="website_code/php/templates/get_template_info.php";
+function getProjectInformation(user_id, template_id) {
+    if (setup_ajax() != false) {
+        var url = "website_code/php/templates/get_template_info.php";
 
-        xmlHttp.open("post",url,true);
-        xmlHttp.onreadystatechange=getProjectInformation_stateChanged;
+        xmlHttp.open("post", url, true);
+        xmlHttp.onreadystatechange = getProjectInformation_stateChanged;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xmlHttp.send('user_id=' + user_id + '&template_id=' + template_id);
     }
 }
 
-function getProjectInformation_stateChanged(){
+function getProjectInformation_stateChanged() {
 
-    if (xmlHttp.readyState==4){
-        var response=xmlHttp.responseText;
+    if (xmlHttp.readyState == 4) {
+        var response = xmlHttp.responseText;
         var info = JSON.parse(response);
         document.getElementById('project_information').innerHTML = info.properties;
-        if (info.role == 'read-only')
-        {
+        if (info.role == 'read-only') {
             // disable edit button.
             var editbtn = document.getElementById("edit");
             var propertiesbtn = document.getElementById("properties");
             var deletebtn = document.getElementById("delete");
             var publishbtn = document.getElementById("publish");
 
-            editbtn.disabled="disabled";
+            editbtn.disabled = "disabled";
             editbtn.className = "xerte_button_c_no_width disabled";
-            editbtn.onclick="";
+            editbtn.onclick = "";
 
-            publishbtn.disabled="disabled";
+            publishbtn.disabled = "disabled";
             publishbtn.className = "xerte_button_c_no_width disabled";
-            publishbtn.onclick="";
+            publishbtn.onclick = "";
 
-            propertiesbtn.disabled="disabled";
+            propertiesbtn.disabled = "disabled";
             propertiesbtn.className = "xerte_button_c_no_width disabled";
-            propertiesbtn.onclick="";
+            propertiesbtn.onclick = "";
 
-            deletebtn.disabled="disabled";
+            deletebtn.disabled = "disabled";
             deletebtn.className = "xerte_button_c_no_width disabled";
-            deletebtn.onclick="";
+            deletebtn.onclick = "";
+        }
+        if (info.fetch_statistics) {
+            url = site_url + info.template_id;
+            q = {};
+            q['activity'] = url;
+            q['verb'] = "http://adlnet.gov/expapi/verbs/launched";
+            q['related_activities'] = false;
+
+            var today = new Date();
+            var start = new Date(today.getTime() - info.dashboard.default_period * 24 * 60 * 60 * 1000);
+            var startstartofday = new Date(start.getFullYear(), start.getMonth(), start.getDate(), 0, 0, 0, 0);
+            var todayendofday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 0);
+            q['since'] = startstartofday.toISOString();
+            x_Dashboard = new xAPIDashboard(info);
+            x_Dashboard.getStatements(q, false, function() {
+                $("#graph_" + info.template_id).html("");
+                x_Dashboard.drawActivityChart($("#graph_" + info.template_id), startstartofday, todayendofday);
+            });
         }
     }
 }
 
 /**
- * 
+ *
  * Function remove template
  * This function removes a template
  * @param string template_id - id of the template to be deleted
@@ -705,26 +729,26 @@ function getProjectInformation_stateChanged(){
  * @author Patrick Lockley
  */
 
-function remove_template(template_id){
+function remove_template(template_id) {
 
 
-    if(setup_ajax()!=false){
+    if (setup_ajax() != false) {
 
-        var url="website_code/php/templates/remove_template.php";
+        var url = "website_code/php/templates/remove_template.php";
 
-        xmlHttp.open("post",url,true);
-        xmlHttp.onreadystatechange=delete_stateChanged;
+        xmlHttp.open("post", url, true);
+        xmlHttp.onreadystatechange = delete_stateChanged;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlHttp.send('template_id=' + (template_id.substr(template_id.indexOf("_")+1,template_id.length))); 
+        xmlHttp.send('template_id=' + (template_id.substr(template_id.indexOf("_") + 1, template_id.length)));
 
     }
 
 }
 
 /**
- * 
+ *
  * Function recycle bin remove all template
- * This function empties the recycle bin 
+ * This function empties the recycle bin
  * @param string template_id - id of the template to be deleted
  * @version 1.0
  * @author Patrick Lockley
@@ -733,45 +757,45 @@ function remove_template(template_id){
 
 var number_of_files_to_delete = 0;
 
-function recycle_bin_remove_all_template(template_id){
+function recycle_bin_remove_all_template(template_id) {
 
 
-    if(setup_ajax()!=false){
+    if (setup_ajax() != false) {
 
-        var url="website_code/php/templates/remove_template.php";
+        var url = "website_code/php/templates/remove_template.php";
 
         var xmlHttpDelete = new XMLHttpRequest();
 
-        xmlHttpDelete.open("post",url,true);
+        xmlHttpDelete.open("post", url, true);
 
-        xmlHttpDelete.onreadystatechange= function(){
+        xmlHttpDelete.onreadystatechange = function() {
 
-            if (xmlHttpDelete.readyState==4){ 
+            if (xmlHttpDelete.readyState == 4) {
 
-                if(number_of_files_to_delete!=1){
+                if (number_of_files_to_delete != 1) {
 
-                    number_of_files_to_delete-=1;
+                    number_of_files_to_delete -= 1;
 
-                }else{
+                } else {
 
                     //screen_refresh();
                     refresh_workspace();
 
-                }						
+                }
 
             }
 
         };
 
         xmlHttpDelete.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlHttpDelete.send('template_id=' + (template_id.substr(template_id.indexOf("_")+1,template_id.length))); 
+        xmlHttpDelete.send('template_id=' + (template_id.substr(template_id.indexOf("_") + 1, template_id.length)));
 
     }
 
 }
 
 /**
- * 
+ *
  * Function delete template
  * This function moves a file to the recycle bin
  * @param string template_id - id of the template to be deleted
@@ -779,75 +803,75 @@ function recycle_bin_remove_all_template(template_id){
  * @author Patrick Lockley
  */
 
-function delete_template(template_id){
+function delete_template(template_id) {
 
 
-    if(setup_ajax()!=false){
+    if (setup_ajax() != false) {
 
-        var url="website_code/php/templates/delete_template.php";
+        var url = "website_code/php/templates/delete_template.php";
 
-        xmlHttp.open("post",url,true);
-        xmlHttp.onreadystatechange=delete_stateChanged;
+        xmlHttp.open("post", url, true);
+        xmlHttp.onreadystatechange = delete_stateChanged;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlHttp.send('template_id=' + (template_id.substr(template_id.indexOf("_")+1,template_id.length))); 
+        xmlHttp.send('template_id=' + (template_id.substr(template_id.indexOf("_") + 1, template_id.length)));
 
     }
 
 }
 
 /**
- * 
+ *
  * Function delete state changed
  * This function redisplays after a file is deleted
  * @version 1.0
  * @author Patrick Lockley
  */
 
-var delete_feedback_string="";
+var delete_feedback_string = "";
 
-function delete_stateChanged(){ 
+function delete_stateChanged() {
 
-    if (xmlHttp.readyState==4){ 
+    if (xmlHttp.readyState == 4) {
         response = xmlHttp.responseText.trim();
 
-        if(response.indexOf("Sorry")==0){
+        if (response.indexOf("Sorry") == 0) {
             alert(DELETE_ERROR + ' "' + response + '"');
 
-        }		
+        }
 
         //screen_refresh();
         refresh_workspace();
 
     }
 
-} 
+}
 
 /**
- * 
+ *
  * Function duplicate template
  * This function duplicates a template
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function duplicate_template(){
+function duplicate_template() {
     var tree = $.jstree.reference("#workspace"),
         ids = tree.get_selected();
 
-    if(ids.length==1){
+    if (ids.length == 1) {
 
         var node = workspace.nodes[ids[0]];
-        if(node.xot_type=="file"){
+        if (node.xot_type == "file") {
 
-            if(node.parent!= workspace.recyclebin_id){
+            if (node.parent != workspace.recyclebin_id) {
 
                 /*
                  * code to prevent folders being dupped
                  */
 
-                if(setup_ajax()!=false){
+                if (setup_ajax() != false) {
 
-                    var url="website_code/php/templates/duplicate_template.php";
+                    var url = "website_code/php/templates/duplicate_template.php";
 
                     template_id = node.xot_id;
 
@@ -855,30 +879,30 @@ function duplicate_template(){
 
                     folder_id = workspace.nodes[node.parent].xot_id;
 
-                    xmlHttp.open("post",url,true);
-                    xmlHttp.onreadystatechange=duplicate_stateChanged;
+                    xmlHttp.open("post", url, true);
+                    xmlHttp.onreadystatechange = duplicate_stateChanged;
                     xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                    xmlHttp.send('template_id=' + template_id + '&template_name=' + template_name + '&folder_id=' + folder_id); 
+                    xmlHttp.send('template_id=' + template_id + '&template_name=' + template_name + '&folder_id=' + folder_id);
 
                 }
 
-            }else{
+            } else {
 
                 alert(RECYCLE_DUPLICATE);
 
             }
 
-        }else{
+        } else {
 
             alert(DUPLICATE_PROMPT);
 
         }
 
-    }else if(ids.length==0){
+    } else if (ids.length == 0) {
 
         alert(DUPLICATE_PROMPT_OTHER);
 
-    }else{
+    } else {
 
         alert(DUPLICATE_LIMIT);
 
@@ -887,19 +911,19 @@ function duplicate_template(){
 }
 
 /**
- * 
+ *
  * Function duplicate state changed
  * This function redisplays the file area are a file is duplicate
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function duplicate_stateChanged(){ 
+function duplicate_stateChanged() {
 
-    if (xmlHttp.readyState==4){ 
+    if (xmlHttp.readyState == 4) {
         response = xmlHttp.responseText.trim();
 
-        if(response!=""){
+        if (response != "") {
             alert(DUPLICATE_ERROR + ' "' + response + '"');
 
         }
@@ -919,24 +943,24 @@ function duplicate_stateChanged(){
  * @author Patrick Lockley
  */
 
-function duplicate_folder(){
+function duplicate_folder() {
     var tree = $.jstree.reference("#workspace"),
         ids = tree.get_selected();
 
-    if(ids.length==1){
+    if (ids.length == 1) {
 
         var node = workspace.nodes[ids[0]];
-        if(node.xot_type=="folder"){
+        if (node.xot_type == "folder") {
 
-            if(node.parent!= workspace.recyclebin_id){
+            if (node.parent != workspace.recyclebin_id) {
 
                 /*
                  * code to prevent folders being dupped
                  */
 
-                if(setup_ajax()!=false){
+                if (setup_ajax() != false) {
 
-                    var url="website_code/php/templates/duplicate_folder.php";
+                    var url = "website_code/php/templates/duplicate_folder.php";
 
                     folder_id = node.xot_id;
 
@@ -944,29 +968,29 @@ function duplicate_folder(){
 
                     parentfolder_id = workspace.nodes[node.parent].xot_id;
 
-                    xmlHttp.open("post",url,true);
-                    xmlHttp.onreadystatechange=duplicatefolder_stateChanged;
+                    xmlHttp.open("post", url, true);
+                    xmlHttp.onreadystatechange = duplicatefolder_stateChanged;
                     xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                     xmlHttp.send('folder_id=' + folder_id + '&folder_name=' + folder_name + '&parentfolder_id=' + parentfolder_id);
 
                 }
 
-            }else{
+            } else {
 
                 alert(RECYCLE_DUPLICATE);
 
             }
 
-        }else{
+        } else {
 
             alert(DUPLICATE_PROMPT);
         }
 
-    }else if(ids.length==0){
+    } else if (ids.length == 0) {
 
         alert(DUPLICATE_PROMPT_OTHER);
 
-    }else{
+    } else {
 
         alert(DUPLICATE_LIMIT);
 
@@ -982,12 +1006,12 @@ function duplicate_folder(){
  * @author Patrick Lockley
  */
 
-function duplicatefolder_stateChanged(){
+function duplicatefolder_stateChanged() {
 
-    if (xmlHttp.readyState==4){
+    if (xmlHttp.readyState == 4) {
         response = xmlHttp.responseText.trim();
 
-        if(response!=""){
+        if (response != "") {
             alert(DUPLICATE_ERROR + ' "' + response + '"');
 
         }
@@ -1000,13 +1024,13 @@ function duplicatefolder_stateChanged(){
 }
 
 
-function publish_project(template_id){
+function publish_project(template_id) {
 
-    if(setup_ajax()!=false){
+    if (setup_ajax() != false) {
 
-        var url="website_code/php/versioncontrol/update_file.php";
-        xmlHttp.open("post",url,true);
-        xmlHttp.onreadystatechange=publish_stateChanged;
+        var url = "website_code/php/versioncontrol/update_file.php";
+        xmlHttp.open("post", url, true);
+        xmlHttp.onreadystatechange = publish_stateChanged;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xmlHttp.send('template_id=' + template_id);
 
@@ -1015,36 +1039,36 @@ function publish_project(template_id){
 }
 
 /**
- * 
+ *
  * Function publish this
  * This function updates the public copy
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function publish_this(){
+function publish_this() {
     var tree = $.jstree.reference("#workspace"),
         ids = tree.get_selected();
 
-    if(ids.length==1){
+    if (ids.length == 1) {
         publishproperties_window();
-    }else{
+    } else {
         alert(PUBLISH_LIMIT);
     }
 
-} 
+}
 
 /**
- * 
+ *
  * Function publish state changed
  * This function redisplays the file area are a file is duplicate
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function publish_stateChanged(){ 
+function publish_stateChanged() {
 
-    if (xmlHttp.readyState==4){ 
+    if (xmlHttp.readyState == 4) {
 
         alert(PUBLISH_SUCCESS);
 
@@ -1055,72 +1079,67 @@ function publish_stateChanged(){
 
 
 /**
- * 
+ *
  * Function remove this
  * This function handles what we are to delete and whether we want to.
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function remove_this(){
+function remove_this() {
 
     var tree = $.jstree.reference("#workspace"),
         ids = tree.get_selected();
     if (ids.length == 0)
         return;
 
-    if(ids[0] == workspace.recyclebin_id) {
+    if (ids[0] == workspace.recyclebin_id) {
         var response = confirm(RECYCLE_EMPTY);
 
         if (response) {
             var node = workspace.nodes[ids[0]];
             var folder_node = tree.get_node(node.id, false);
 
-            number_of_files_to_delete =folder_node.children.length;
-            for (var i=0; i<folder_node.children.length; i++)
-            {
+            number_of_files_to_delete = folder_node.children.length;
+            for (var i = 0; i < folder_node.children.length; i++) {
                 recycle_bin_remove_all_template(workspace.nodes[folder_node.children[i]].xot_id);
             }
         }
-    }
-    else if (ids[0] == workspace.workspace_id)
-    {
+    } else if (ids[0] == workspace.workspace_id) {
         alert(WORKSPACE_DELETE);
-    }else{
+    } else {
 
-        if(ids.length!=1){
+        if (ids.length != 1) {
             var response = confirm(DELETE_PROMPT);
-        }else{
+        } else {
             var response = confirm(workspace.nodes[ids[0]].text + "\n\n" + DELETE_PROMPT);
         }
 
-        if(response){
-            for(var i=0; i<ids.length; i++)
-            {
+        if (response) {
+            for (var i = 0; i < ids.length; i++) {
                 var node = workspace.nodes[ids[i]];
 
                 if (ids[i] == workspace.workspace_id) {
                     continue;
-                }
-                else if(node.xot_type=="file"){
-                    if(node.parent==workspace.recyclebin_id){
+                } else if (node.xot_type == "file") {
+                    if (node.parent == workspace.recyclebin_id) {
                         var answer = confirm(DELETE_PERMENANT_PROMPT + " - " + node.text);
-                        if(answer){
+                        if (answer) {
                             remove_template(node.xot_id);
                         }
-                    }else{
+                    } else {
                         delete_template(node.xot_id);
                     }
-                }else{
+                } else {
                     var folder_node = tree.get_node(node.id, false);
 
                     var folder_children = folder_node.children.length;
 
-                    if(folder_children!=0){
+                    if (folder_children != 0) {
 
                         alert(DELETE_FOLDER_NOT_EMPTY);
 
-                    }else{
+                    } else {
                         delete_folder(node.xot_id);
                     }
                 }
@@ -1132,21 +1151,21 @@ function remove_this(){
 var lock = "false";
 
 /**
- * 
+ *
  * Function update your projects
  * This function redisplays the file area sorted accordingly
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function update_your_projects(){
+function update_your_projects() {
 
-    if(setup_ajax()!=false){
+    if (setup_ajax() != false) {
 
-        var url="website_code/php/templates/your_templates.php";
+        var url = "website_code/php/templates/your_templates.php";
 
-        xmlHttp.open("post",url,true);
-        xmlHttp.onreadystatechange=tutorials_stateChanged;
+        xmlHttp.open("post", url, true);
+        xmlHttp.onreadystatechange = tutorials_stateChanged;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
         // send dummy code
@@ -1158,42 +1177,42 @@ function update_your_projects(){
 }
 
 /**
- * 
+ *
  * Function update templates
  * This function redisplays the blank templates
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function update_templates(){
+function update_templates() {
 
-    if(setup_ajax()!=false){
+    if (setup_ajax() != false) {
 
-        var url="website_code/php/templates/general_templates.php";
+        var url = "website_code/php/templates/general_templates.php";
 
-        xmlHttp.open("post",url,true);
-        xmlHttp.onreadystatechange=templates_stateChanged;
+        xmlHttp.open("post", url, true);
+        xmlHttp.onreadystatechange = templates_stateChanged;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-        xmlHttp.send("loginid=1"); 
+        xmlHttp.send("loginid=1");
 
     }
 
 }
 
 /**
- * 
+ *
  * Function template state changed
  * This function redisplays the blank templates
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function templates_stateChanged(){ 
+function templates_stateChanged() {
 
-    if(xmlHttp.readyState==4){ 
+    if (xmlHttp.readyState == 4) {
 
-        if(xmlHttp.responseText!=""){
+        if (xmlHttp.responseText != "") {
 
             document.getElementById('new_template_area_middle_ajax').innerHTML = xmlHttp.responseText;
 
@@ -1203,29 +1222,29 @@ function templates_stateChanged(){
 
 }
 
-var active_div=null;
-var new_file=null;
-var new_template_folder=null;
+var active_div = null;
+var new_file = null;
+var new_template_folder = null;
 
 
 /**
- * 
+ *
  * Function tutorials state changed
  * This function handles what to do when a new file is created
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function tutorials_stateChanged(){ 
+function tutorials_stateChanged() {
 
-    if(xmlHttp.readyState==4){ 
+    if (xmlHttp.readyState == 4) {
 
-        if(xmlHttp.responseText!=""){
+        if (xmlHttp.responseText != "") {
 
-            document.getElementById(active_div).childNodes[1].filename.value="";
+            //$("#" + tutorial +"_filename").val("");
 
             template_toggle(active_div);
-            active_div="";
+            active_div = "";
 
             refresh_workspace();
 
@@ -1239,82 +1258,82 @@ function tutorials_stateChanged(){
  * Test if the new window is blocked!
  */
 var popupBlockerChecker = {
-    check: function(popup_window){
+    check: function(popup_window) {
         var _scope = this;
         if (popup_window) {
-            if(/chrome/.test(navigator.userAgent.toLowerCase())){
-                setTimeout(function () {
+            if (/chrome/.test(navigator.userAgent.toLowerCase())) {
+                setTimeout(function() {
                     _scope._is_popup_blocked(_scope, popup_window);
-                },200);
-            }else{
-                popup_window.onload = function () {
+                }, 200);
+            } else {
+                popup_window.onload = function() {
                     _scope._is_popup_blocked(_scope, popup_window);
                 };
             }
-        }else{
+        } else {
             _scope._displayError();
         }
     },
-    _is_popup_blocked: function(scope, popup_window){
-        if ((popup_window.innerHeight > 0)==false){ scope._displayError(); }
+    _is_popup_blocked: function(scope, popup_window) {
+        if ((popup_window.innerHeight > 0) == false) {
+            scope._displayError();
+        }
     },
-    _displayError: function(){
+    _displayError: function() {
         alert(POPUP_BLOCKER_ACTIVATED);
     }
 };
 /**
- * 
+ *
  * Function tutorial created
  * This function opens the edit window when a new file is created
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function tutorial_created(){ 
+function tutorial_created() {
 
-    if (xmlHttp.readyState==4){ 
-        if( typeof xmlHttp.responseText == 'string' ) {
+    if (xmlHttp.readyState == 4) {
+        if (typeof xmlHttp.responseText == 'string') {
             response = String(xmlHttp.responseText);
             response = response.trim();
-            if(response!=""){
-				data = xmlHttp.responseText.split(",");
+            if (response != "") {
+                data = xmlHttp.responseText.split(",");
 
                 open_created_node(data[0], new_template_folder);
                 update_your_projects();
 
-				if(data[1]=="*"){
-				
-					var neweditorwindow = window.open(site_url + url_return("edithtml" , data[0]), "editwindow" + data[0], "height=" + screen.height + ", width=" + screen.width);
-					
-				}else{
-				    var url=site_url + url_return("edithtml" , data[0]);
-                    var title="editwindow" + data[0];
-                    var options="height=" + data[2].trim() + ", width=" + data[1].trim();
-					var neweditorwindow = window.open(url, title, options);
-						
-				}
+                if (data[1] == "*") {
+
+                    var neweditorwindow = window.open(site_url + url_return("edithtml", data[0]), "editwindow" + data[0], "height=" + screen.height +
+                        ", width=" + screen.width);
+
+                } else {
+                    var url = site_url + url_return("edithtml", data[0]);
+                    var title = "editwindow" + data[0];
+                    var options = "height=" + data[2].trim() + ", width=" + data[1].trim();
+                    var neweditorwindow = window.open(url, title, options);
+
+                }
                 popupBlockerChecker.check(neweditorwindow);
                 new_file = xmlHttp.responseText;
                 neweditorwindow.window_reference = self;
-				
+
                 neweditorwindow.focus();
 
             }
         }
     }
-} 
+}
 
-function open_created_node(template_id, folder_id)
-{
-    setTimeout(function(){
+function open_created_node(template_id, folder_id) {
+    setTimeout(function() {
         // Hope workspace has been updated in the mean time,
         // Search the template, and open the node
         var tree = $.jstree.reference("#workspace");
         var node;
-        for (var i=0; i<workspace.items.length; i++)
-        {
-            if (workspace.items[i].xot_id == template_id)
-            {
+        for (var i = 0; i < workspace.items.length; i++) {
+            if (workspace.items[i].xot_id == template_id) {
                 node = workspace.items[i];
                 tree.deselect_all();
                 tree.select_node(node.id);
@@ -1326,7 +1345,7 @@ function open_created_node(template_id, folder_id)
 }
 
 /**
- * 
+ *
  * Function create tutorial
  * This function redisplays the blank templates
  * @param string tutorial - the template type to create
@@ -1334,10 +1353,10 @@ function open_created_node(template_id, folder_id)
  * @author Patrick Lockley
  */
 
-function create_tutorial(tutorial){ 
-    if(setup_ajax()!=false){
-        var url="website_code/php/templates/new_template.php";
-        active_div=tutorial;
+function create_tutorial(tutorial) {
+    if (setup_ajax() != false) {
+        var url = "website_code/php/templates/new_template.php";
+        active_div = tutorial;
 
         /*
          * if a folder is selected, create the folder in that folder
@@ -1345,18 +1364,19 @@ function create_tutorial(tutorial){
         var tree = $.jstree.reference("#workspace"),
             ids = tree.get_selected();
         new_template_folder = "";
-        if(ids.length==1) {
+        if (ids.length == 1) {
             var node = workspace.nodes[ids[0]];
             if (node.xot_type == "folder") {
                 new_template_folder = node.xot_id;
             }
         }
-        xmlHttp.open("post",url,true);
-        xmlHttp.onreadystatechange=tutorial_created;
+        xmlHttp.open("post", url, true);
+        xmlHttp.onreadystatechange = tutorial_created;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        if(is_ok_name(document.getElementById(tutorial).childNodes[1].filename.value)){
-            xmlHttp.send('tutorialid=' + tutorial + '&tutorialname=' + document.getElementById(tutorial).childNodes[1].filename.value + '&folder_id=' + new_template_folder);
-        }else{
+        if (is_ok_name($("#" + tutorial + "_filename").val())) {
+            xmlHttp.send('tutorialid=' + tutorial + '&templatename=' + $("#" + tutorial + "_templatename").val() + '&tutorialname=' + $("#" + tutorial +
+                "_filename").val() + '&folder_id=' + new_template_folder);
+        } else {
             alert(NAME_FAIL);
         }
     }
@@ -1365,14 +1385,14 @@ function create_tutorial(tutorial){
 
 /********** CHECK **************/
 
-function example(){
+function example() {
 
-    if(setup_ajax()!=false){
+    if (setup_ajax() != false) {
 
-        var url="website_code/php/example.php";
+        var url = "website_code/php/example.php";
 
-        xmlHttp.open("post",url,true);
-        xmlHttp.onreadystatechange=example_alert;
+        xmlHttp.open("post", url, true);
+        xmlHttp.onreadystatechange = example_alert;
         xmlHttp.send('nullid=null');
 
 
@@ -1380,10 +1400,10 @@ function example(){
 
 }
 
-function example_alert(){ 
+function example_alert() {
 
-    if (xmlHttp.readyState==4){ 
+    if (xmlHttp.readyState == 4) {
 
 
     }
-} 
+}

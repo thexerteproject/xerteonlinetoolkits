@@ -120,6 +120,11 @@ optional: pauseMedia*
 						}
 					}
 					
+					// if project is being viewed as https then force iframe to be https too
+					if (window.location.protocol == "https:" && myURL.indexOf("http:") == 0) {
+						myURL = "https:" + myURL.substring(myURL.indexOf("http:") + 5);
+					}
+					
 					$iframe.data({
 						"url"	:myURL,
 						"page"	:options.page

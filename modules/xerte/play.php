@@ -66,8 +66,15 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
     $string_for_flash_xml = $xmlfile . "?time=" . time();
 
     $flash_js_dir = "modules/" . $row['template_framework'] . "/";
-    $template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['template_name'] . "/";
+    $template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
     $rlo_file = $template_path . $row['template_name'] . ".rlt";
+    if (file_exists("modules/" . $row['template_framework'] . "/templates/" . $row['template_name'] . "/wizards/" . $xmlFixer->getLanguage() . "/data.xwd"))
+    {
+        $xwd_file = "modules/" . $row['template_framework'] . "/templates/" . $row['template_name'] . "/wizards/" . $xmlFixer->getLanguage() . "/data.xwd";
+    }
+    else{
+        $xwd_file = $template_path . "/wizards/" . $xmlFixer->getLanguage() . "/data.xwd";
+    }
 
     list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
 
@@ -138,8 +145,8 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
             $tracking .= "<script type=\"text/javascript\" src=\"$jsfile?version=" . $version . "\"></script>\n";
         }
         if ($tsugi_enabled && $row["tsugi_xapi_enabled"] == 1) {
-            $tracking .= "<script type=\"text/javascript\" src=\"$flash_js_dir/xAPI/tincan.js?\"></script>\n";
-        }
+            $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapidashboard.min.js?version=" . $version . "\"></script>\n";
+            $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapiwrapper.min.js?version=" . $version . "\"></script>\n";        }
         if($tsugi_enabled)
         {
             $tracking .= "<script>\n";
@@ -165,6 +172,14 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 if (isset($xerte_toolkits_site->group))
                 {
                     $tracking .= "   var groupname = '" . $xerte_toolkits_site->group . "';\n";
+                }
+                if (isset($xerte_toolkits_site->course))
+                {
+                    $tracking .= "   var coursename = '" . $xerte_toolkits_site->course . "';\n";
+                }
+                if (isset($xerte_toolkits_site->module))
+                {
+                    $tracking .= "   var modulename = '" . $xerte_toolkits_site->module . "';\n";
                 }
             }
             $tracking .= "</script>\n";
@@ -203,7 +218,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         $page_content = str_replace("%TEMPLATEID%", $_GET['template_id'], $page_content);
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
-        $page_content = str_replace("%THEMEPATH%", "themes/" . $row['template_name'] . "/",$page_content);
+        $page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
 
         // Handle offline variables
         $page_content = str_replace("%OFFLINESCRIPTS%", "", $page_content);
@@ -216,11 +231,22 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
             $tracking .= "<script type=\"text/javascript\" src=\"$jsfile?version=" . $version . "\"></script>\n";
         }
         if ($tsugi_enabled && $row["tsugi_xapi_enabled"] == 1) {
+            $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapidashboard.min.js?version=" . $version . "\"></script>\n";
+            //$tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapicollection.min.js?version=" . $version . "\"></script>\n";
             $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapiwrapper.min.js?version=" . $version . "\"></script>\n";
         }
         if($tsugi_enabled)
         {
             $tracking .= "<script>\n";
+            if (!$pedit_enabled)
+            {
+                // Set lti_enabled variable so that we can send back gradebook results through LTI
+                $tracking .= "  var lti_enabled=true;\n";
+            }
+            else
+            {
+                $tracking .= "  var lti_enabled=false;\n";
+            }
             if($row["tsugi_xapi_enabled"] == 1) {
                 $tracking .= "  var lrsEndpoint = '" . $row['tsugi_xapi_endpoint'] . "';\n";
                 $tracking .= "  var lrsUsername = '" . $row['tsugi_xapi_key'] . "';\n";
@@ -243,6 +269,14 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 if (isset($xerte_toolkits_site->group))
                 {
                     $tracking .= "   var groupname = '" . $xerte_toolkits_site->group . "';\n";
+                }
+                if (isset($xerte_toolkits_site->course))
+                {
+                    $tracking .= "   var coursename = '" . $xerte_toolkits_site->course . "';\n";
+                }
+                if (isset($xerte_toolkits_site->module))
+                {
+                    $tracking .= "   var modulename = '" . $xerte_toolkits_site->module . "';\n";
                 }
             }
             $tracking .= "</script>\n";

@@ -255,10 +255,10 @@ function ScormTrackingState()
         if (ia_type != "page" && ia_type != "result")
         {
             this.lo_type = "interactive";
-            if (this.lo_passed == -1)
-            {
-                this.lo_passed = 0.55;
-            }
+        }
+        if (this.lo_passed == -1)
+        {
+            this.lo_passed = 55;
         }
         this.interactions.push(sit);
         return sit;
@@ -652,7 +652,7 @@ function ScormTrackingState()
         }
         else
         {
-            if (state.getdScaledScore() > this.lo_passed) {
+            if (state.getdScaledScore() > (this.lo_passed / 100)) {
                 return "passed";
             }
             else {
@@ -757,8 +757,15 @@ function ScormTrackingState()
             setValue('cmi.core.lesson_status', lessonStatus);
             state.currentpageid = currentid;
             var suspend_str = JSON.stringify(this);
-            setValue('cmi.core.exit', 'suspend');
-            setValue('cmi.suspend_data', suspend_str);
+            if (lessonStatus == 'incomplete') {
+                setValue('cmi.core.exit', 'suspend');
+                setValue('cmi.suspend_data', suspend_str);
+            }
+            else
+            {
+                setValue('cmi.core.exit', '');
+                setValue('cmi.suspend_data', suspend_str);
+            }
 
             var supported = getValue('cmi.core.score._children');
             setValue('cmi.core.score.raw', this.getRawScore());
@@ -889,8 +896,8 @@ function ScormTrackingState()
      *        correctanswers is ignored
      *
      *    4. text, fill-in
-     *        correctoptions contains an array of strings that are correct. With type text, array is assumed to be empty
-     *        correctanswers is ignored
+     *        correctoptions is ignored
+     *        correctanswers contains an array of strings that are correct. With type text, array is assumed to be empty
      *
      *    5. page
      *         correctoptions is ignored
@@ -1142,7 +1149,7 @@ function ScormTrackingState()
     function verifyExitInteractionParameters(sit, result, learneroptions, learneranswer, feedback)
     {
         if (this.debug) {
-            verifyResult(result);
+            this.verifyResult(result);
             switch(sit.ia_type)
             {
                 case 'match':
@@ -1415,7 +1422,9 @@ function XTSetOption(option, value)
             state.lo_completed = value;
             break;
         case "objective_passed":
-            state.lo_passed = Number(value);
+            if (Number(value) <= 1) {
+                state.lo_passed = Number(value) * 100;
+            }
             break;
         case "page_timeout":
             // Page timeout in seconds
@@ -1450,7 +1459,7 @@ function XTExitPage(page_nr)
 
     if (state.scormmode == 'normal')
     {
-        state.exitInteraction(page_nr, -1, false, "", "", "", false);
+        state.exitInteraction(page_nr, -1, {score:0, success:true}, "", "", "", false);
 
 
     }
@@ -1476,6 +1485,10 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 }
 
 function XTSetViewed(page_nr, name, score) {
+    if (isNaN(score) || typeof score != "number")
+    {
+        score = 0.0;
+    }
     if (state.scormmode == 'normal')
     {
         var sit = state.findPage(page_nr);
@@ -1484,6 +1497,45 @@ function XTSetViewed(page_nr, name, score) {
             sit.score = score;
         }
     }
+}
+
+function XThelperConsolidateSegments(videostate)
+{
+    // 1. Sort played segments on start time (first make a copy)
+    var segments = $.extend(true, [], videostate.segments);
+    segments.sort(function(a,b) {return (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0);} );
+    // 2. Combine the segments
+    var csegments = [];
+    var i=0;
+    while(i<segments.length) {
+        var segment = $.extend(true, {}, segments[i]);
+        i++;
+        while (i<segments.length && segment.end >= segments[i].start) {
+            segment.end = segments[i].end;
+            i++;
+        }
+        csegments.push(segment);
+    }
+    return csegments;
+}
+
+function XThelperDetermineProgress(videostate)
+{
+    var csegments = XThelperConsolidateSegments(videostate);
+    var videoseen = 0;
+    for (var i=0; i<csegments.length; i++)
+    {
+        videoseen += csegments[i].end - csegments[i].start;
+    }
+    // normalized between 0 and 1
+    if (!isNaN(videostate.duration) && videostate.duration > 0) {
+        return Math.round(videoseen / videostate.duration * 100.0) / 100.0;
+    }
+    return 0.0;
+}
+
+function XTVideo(page_nr, name, block_name, verb, videostate) {
+    return;
 }
 
 function XTSetPageScore(page_nr, score)
@@ -1523,7 +1575,7 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
     }
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callback, q)
 {
     callback(null);
     return 0;
@@ -1556,6 +1608,10 @@ function XTTerminate()
     {
         if (!state.finished)
         {
+            // End tracking of page
+            x_endPageTracking(false, -1);
+
+            // This code is probably obsolete, leave it in to allow for more testing
             var currentpageid = "";
             state.finished = true;
             if (state.currentid)

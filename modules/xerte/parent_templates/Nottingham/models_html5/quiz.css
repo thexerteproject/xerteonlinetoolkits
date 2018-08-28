@@ -33,6 +33,7 @@
 	#buttonHolder {
 		float:	right;
 		margin-bottom:	10px;
+		margin-top: 10px;
 		padding-right: 5px;
 	}
 
@@ -65,5 +66,10 @@
 	
 	#feedback .audioHolder {
 		margin:	0.5em 0 1em 0;
+	}
+	
+	#feedback h3 {
+		border-top: 1px solid #ccc;
+		padding-top: 1em;
 	}
 

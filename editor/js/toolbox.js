@@ -467,11 +467,15 @@ var EDITOR = (function ($, parent) {
             if (options.deprecated) {
                 var td = $('<td>')
                     .addClass("deprecated")
-                    .append($('<img>')
-                        .attr('id', 'deprbtn_' + name)
-                        .attr('src', 'editor/img/deprecated.png')
-                        .attr('title', options.deprecated)
-                        .addClass("deprecated"));
+					.append($('<i>')
+						.attr('id', 'deprbtn_' + name)
+                        .addClass('fa')
+                        .addClass('fa-exclamation-triangle')
+                        .addClass("xerte-icon")
+						.attr('title', options.deprecated)
+                        .height(14)
+                        .addClass("deprecated deprecatedIcon"));
+				
                 if (options.optional == 'true' && groupChild == false) {
                     var opt = $('<i>').attr('id', 'optbtn_' + name)
                         .addClass('fa')
@@ -533,7 +537,13 @@ var EDITOR = (function ($, parent) {
                 tdlabel.addClass("wizarddeprecated")
             }
             tdlabel.append(label);
-
+			
+			if (options.tooltip) {
+				$('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
+					.attr('title', options.tooltip)
+					.appendTo(tdlabel);
+			}
+			
             tr.append(tdlabel)
                 .append($('<td>')
                     .addClass("wizardvalue")
@@ -610,10 +620,16 @@ var EDITOR = (function ($, parent) {
 				.addClass("wizardattribute");
 		}
 		
-		$('<i class="fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
+		if (options.tooltip) {
+			$('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
+				.attr('title', options.tooltip)
+				.appendTo(legend.find('.legend_label'));
+		}
+		
+		$('<i class="minMaxIcon fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
 		
 		legend.find('.legend_label').click(function() {
-			var $icon = $(this).find('i.fa');
+			var $icon = $(this).find('i.minMaxIcon');
 			var $fieldset = $(this).parents('fieldset');
 			
 			if ($fieldset.find('.table_holder').is(':visible')) {
@@ -1851,7 +1867,8 @@ var EDITOR = (function ($, parent) {
 				'src': theme.preview,
 				'alt': obj[value].label
 			});
-        $('div.theme_description:first').html(theme.description);
+        var description = $("<div>" + theme.description + "</div><div class='theme_url_param'>" + language.ThemeUrlParam + " " + theme.name + "</div>");
+        $('div.theme_description:first').html(description);
         setAttributeValue(key, [name], [theme.name]);
     },
 
@@ -2479,11 +2496,12 @@ var EDITOR = (function ($, parent) {
 						});
 						
                     html.append(preview);
-                    var description = $('<div>')
+                    var description = $("<div>" + theme_list[currtheme].description + "</div><div class='theme_url_param'>" + language.ThemeUrlParam + " " + theme_list[currtheme].name + "</div>");
+                    var description_box = $('<div>')
                         .attr('id', 'theme_description_' + form_id_offset)
                         .addClass('theme_description')
-                        .append(theme_list[currtheme].description);
-                    html.append(description);
+                        .append(description);
+                    html.append(description_box);
                     form_id_offset++;
 
                     break;
@@ -2779,6 +2797,52 @@ var EDITOR = (function ($, parent) {
 
                     datagrids.push({id: id, key: key, name: name, options: options});
                     break;
+				case 'datefield':
+                    var id = 'date_' + form_id_offset;
+                    form_id_offset++;
+                    if (value.length==0)
+                    {
+                        value=new Date();
+                        setAttributeValue(key, [name], [value.toISOString()]);
+                    }
+                    value = new Date(value).toDateString();
+					// a datepicker with a browse buttons next to it
+                    var td1 = $('<td width="100%">')
+                        .append($('<input>')
+                            .attr('type', "text")
+                            .attr('id', id)
+							.addClass('date')
+                            .change({id:id, key:key, name:name}, function(event)
+							{
+								inputChanged(event.data.id, event.data.key, event.data.name, new Date(this.value).toISOString(), this);
+							})
+							.attr('value', value)
+							.datepicker({
+								showOtherMonths: true,
+								selectOtherMonths: true,
+								dateFormat: 'yy-mm-dd'
+							}));
+					
+                    var td2 = $('<td>');
+					var btnHolder = $('<div style="width:4.2em"></div>').appendTo(td2);
+                    btnHolder.append($('<button>')
+						.attr('id', 'calendar_' + id)
+						.attr('title', language.calendar != undefined ? language.calendar.$tooltip : '')
+						.addClass("xerte_button")
+						.click({id:id, key:key, name:name}, function(event)
+						{
+							td1.datepicker("show");
+						})
+						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-calendar').addClass('xerte-icon')))
+					
+                    html = $('<div>')
+                        .attr('id', 'container_' + id)
+                        .addClass('media_container');
+                    html.append($('<table width="100%">')
+                        .append($('<tr>')
+                            .append(td1)
+                            .append(td2)));
+                    break;
                 case 'drawing': // Not implemented
                     var id = 'drawing_' + form_id_offset;
                     form_id_offset++;
@@ -2793,7 +2857,6 @@ var EDITOR = (function ($, parent) {
                     )
                         .append(language.edit.$label);
                     break;
-                case 'datefield': // Not used??
                 case 'webpage':  //Not used??
                 case 'xerteurl':
                 case 'xertelo':

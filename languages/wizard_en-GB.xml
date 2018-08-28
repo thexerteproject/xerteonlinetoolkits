@@ -45,6 +45,7 @@
     <chkShowToolbar label="Show Toolbar" tooltip="Show all the toolbars by default."/>
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview" error="Preview unavailable"/>
+	<calendar tooltip="Select Date"/>
 	<hidePage title="HIDDEN" tooltip="This page is hidden"/>
 	<unmarkForCompletion tooltip="This page is not required for completion"/>
 	<filemenu title="File">
@@ -164,4 +165,5 @@
 		<nextpage>* next page *</nextpage>
 		<prevpage>* previous page*</prevpage>
 	</XotLinkRelativePages>
+	<ThemeUrlParam>Theme url parameter:</ThemeUrlParam>
 </language>

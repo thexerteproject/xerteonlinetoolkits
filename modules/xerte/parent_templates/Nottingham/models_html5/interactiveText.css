@@ -54,8 +54,18 @@
 		margin-top:	0.5em;
 	}
 	
+	#groupInfo h3 {
+		border-top: 1px solid #ccc;
+		padding-top: 1em;
+	}
+	
 	#groupInfo, #questionHolder {
-		margin-top:	2em;
+		margin-top:	1em;
+		padding-top: 1em;
+	}
+	
+	#questionHolder {
+		border-top: 1px solid #ccc;
 	}
 	
 	#btnHolder button {

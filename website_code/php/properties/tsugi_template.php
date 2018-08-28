@@ -7,6 +7,9 @@
         require_once($xerte_toolkits_site->tsugi_dir . "config.php");
         require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
         $tsugi_installed = true;
+
+        ini_set('display_errors', 0);
+        error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
     }
 
     use \Tsugi\Util\LTI;
@@ -54,8 +57,8 @@
             $lti_def->key = $row['name'] . "_" . $id;
             $lti_def->secret = generatePwd(16);
             $lti_def->published = $row["tsugi_published"];
-            $lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
-            $lti_def->url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
+            $lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $row['template_id'];
+            $lti_def->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $row['template_id'];
             $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $row['template_id'] . "&group=groupname";
             $lti_def->xapi_endpoint = $xerte_toolkits_site->LRS_Endpoint;
             $lti_def->xapi_username = $xerte_toolkits_site->LRS_Key;

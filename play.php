@@ -56,12 +56,22 @@ if(!isset($tsugi_enabled))
  */
 function check_host($hostname, $setting)
 {
-    $hostname = substr($hostname, 0, strlen($setting));
-    if ($hostname == $setting) {
-        return true;
-    } else {
-        return false;
+    // Allow for more than 1 host in a comma seperated list
+    $test_string = explode(",", $setting);
+
+    /*
+     * Can only check against this variable, if I can't find it (say pop ups) no choice but to fail
+     */
+
+    if (strlen(hostname) != 0) {
+        foreach ($test_string as $item) {
+            $item = trim($item);
+            if (strpos($hostname, $item) === 0) {
+                return true;
+            }
+        }
     }
+    return false;
 }
 
 /**
@@ -172,7 +182,7 @@ $safe_template_id = (int) $_GET['template_id'];
  */
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
-$sql = "SELECT otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags, td.template_name as zipname, " .
+$sql = "SELECT otd.template_name, otd.parent_template, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags, td.template_name as zipname, " .
     " td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, tsugi_xapi_student_id_mode ".
     " FROM {$prefix}originaltemplatesdetails otd, {$prefix}templaterights tr, {$prefix}templatedetails td, {$prefix}logindetails ld " .
     " WHERE td.template_type_id = otd.template_type_id AND td.creator_id = ld.login_id AND tr.template_id = td.template_id AND tr.template_id= ? AND (role=? OR role=?)";
@@ -220,194 +230,181 @@ if ($tsugi_enabled) {
 
         dont_show_template();
     }
-} else if ($row_play['access_to_whom'] == "Private") {
-    /*
-     * Private - so do nothing
-     */
-
-    dont_show_template();
-
-} else if ($row_play['access_to_whom'] == "Public") {
-
-    /*
-     * Public - Increment the number of users and show the template
-     */
-
-    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
-
-    show_template($row_play);
-
-} else if ($row_play['access_to_whom'] == "Password") {
-
-    /*
-     * Password protected - Check if there has been a post
-     */
-
-   // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-   require_once $xerte_toolkits_site->php_library_path . "login_library.php";
-   _load_language_file("/website_code/php/display_library.inc");
-
-  if (!isset($mysqli)) {
-    $mysqli = new mysqli($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password, $xerte_toolkits_site->database_name);
-    if ($mysqli->error) {
-      try {
-        throw new Exception("0MySQL error $mysqli->error <br> Query:<br> $query", $mysqli->errno);
-      } catch (Exception $e) {
-        echo "Error No: " . $e->getCode() . " - " . $e->getMessage() . "<br />";
-        echo nl2br($e->getTraceAsString());
-      }
-    }
-  }
-  if (!isset($lti)) {
-    require_once('LTI/ims-lti/UoN_LTI.php');
-    if (strlen($xerte_toolkits_site->database_table_prefix) > 0) {
-      $lti = new UoN_LTI($mysqli, array('table_prefix' => $xerte_toolkits_site->database_table_prefix));
-    } else {
-      $lti = new UoN_LTI($mysqli);
-    }
-    if(session_id()=='') {
-      session_start();
-    }
-    $lti->init_lti();
-
-  }
-
-
-if($lti->valid) {
-  $success=true;
-  unset($errors);
 } else {
-  $returnedproc = login_processing(false);
-  list($success, $errors) = $returnedproc;
-}
-
-  if ($success && empty($errors)) {
-    //sucessfull authentication
-    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
-
-    show_template($row_play);
-  } else {
-    html_headers();
-    login_prompt($errors);
-  }
+    if ($row_play['access_to_whom'] == "Private") {
         /*
-         * Check the password
+         * Private - so do nothing
          */
 
-/*        $auth = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
-        if ($auth->check() && isset($_POST['login']) && isset($_POST['password']) && $auth->login($_POST['login'], $_POST['password'])) {
+        dont_show_template();
+
+    } else {
+        if ($row_play['access_to_whom'] == "Public") {
 
             /*
-             * Update uses and display the template
-             *-/
+             * Public - Increment the number of users and show the template
+             */
 
             db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
-
-            require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
             show_template($row_play);
 
         } else {
+            if ($row_play['access_to_whom'] == "Password") {
 
-            /*
-             * Login failure
-             *-/
+                /*
+                 * Password protected - Check if there has been a post
+                 */
 
-            $buffer = $xerte_toolkits_site->form_string . $temp[1] . "<p>" . PLAY_LOGON_FAIL . ".</p></center></body></html>";
+                // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-            echo $buffer;
-        }
-    } else {
+                require_once $xerte_toolkits_site->php_library_path . "login_library.php";
+                _load_language_file("/website_code/php/display_library.inc");
 
-        /*
-         * There has been no postage so echo the site variable to display the login string
-         *-/
+                if (!isset($mysqli)) {
+                    $mysqli = new mysqli($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password, $xerte_toolkits_site->database_name);
+                    if ($mysqli->error) {
+                        try {
+                            throw new Exception("0MySQL error $mysqli->error <br> Query:<br> $query", $mysqli->errno);
+                        } catch (Exception $e) {
+                            echo "Error No: " . $e->getCode() . " - " . $e->getMessage() . "<br />";
+                            echo nl2br($e->getTraceAsString());
+                        }
+                    }
+                }
+                if (!isset($lti)) {
+                    require_once('LTI/ims-lti/UoN_LTI.php');
+                    if (strlen($xerte_toolkits_site->database_table_prefix) > 0) {
+                        $lti = new UoN_LTI($mysqli, array('table_prefix' => $xerte_toolkits_site->database_table_prefix));
+                    } else {
+                        $lti = new UoN_LTI($mysqli);
+                    }
+                    if (session_id() == '') {
+                        session_start();
+                    }
+                    $lti->init_lti();
 
-        echo $xerte_toolkits_site->form_string;*/
-  //  }
-} else if (substr($row_play['access_to_whom'], 0, 5) == "Other") {
+                }
 
-    /*
-     * The Other attribute has been set - so break the string down to obtain the host - this can now be a comma separated list to allow for more than one referrer
-     */
 
-    $test_string = substr($row_play['access_to_whom'], 6, strlen($row_play['access_to_whom']));
-	
-    _debug("'Other' security is active for '" . $test_string . "', the current referrer is: '" . $_SERVER['HTTP_REFERER'] . "'");
-	
-	$test_string = explode(",", $test_string);
-	
-    /*
-     * Can only check against this variable, if I can't find it (say pop ups) no choice but to fail
-     */
+                if ($lti->valid) {
+                    $success = true;
+                    unset($errors);
+                } else {
+                    $returnedproc = login_processing(false);
+                    list($success, $errors) = $returnedproc;
+                    // Make sure that normal session variables are set to allow other password protected projects to now be opened without login prompt every time
+                    if ($success)
+                    {
+                        login_processing2();
+                    }
+                }
 
-    if (strlen($_SERVER['HTTP_REFERER']) != 0) {
-		
-		$ok = false;
-		
-		foreach($test_string as $item) {
-			
-			if (strpos($_SERVER['HTTP_REFERER'], $item) === 0) {
-			
-				$ok = true;
-				
-				db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+                if ($success && empty($errors)) {
+                    //successful authentication
+                    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
-				show_template($row_play);
-				
-				break;
-				
-			}
-		}
-		
-		if ($ok == false) {
-			
-            dont_show_template('Doesnt Match Referer:' . $_SERVER['HTTP_REFERER']);
-			
-        }
-		
-    } else {
-		
-      dont_show_template('No HTTP Referer');
-	  
-    }
-	
-} else if (sizeof($query_for_security_content_response) > 0) {
+					show_template($row_play);
+                } else {
+                    html_headers();
+                    login_prompt($errors);
+                }
+                /*
+                 * Check the password
+                 */
 
-    /*
-     * A setting from play_security_details might be in use, as such, check to see if it is, and then loop through checking if one is valid.
-     */
+                /*        $auth = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+                        if ($auth->check() && isset($_POST['login']) && isset($_POST['password']) && $auth->login($_POST['login'], $_POST['password'])) {
 
-    $flag = false;
+                            /*
+                             * Update uses and display the template
+                             *-/
 
-    foreach ($query_for_security_content_response as $row_security) {
+                            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
-        /*
-         * Check each setting to see if true
-         */
+                            require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
-        if ($row_play['access_to_whom'] == $row_security['security_setting']) {
+                            show_template($row_play);
 
-            if (check_security_type($row_security['security_data'])) {
+                        } else {
 
-                show_template($row_play);
+                            /*
+                             * Login failure
+                             *-/
 
-                $flag = true;
+                            $buffer = $xerte_toolkits_site->form_string . $temp[1] . "<p>" . PLAY_LOGON_FAIL . ".</p></center></body></html>";
 
-                break;
+                            echo $buffer;
+                        }
+                    } else {
 
+                        /*
+                         * There has been no postage so echo the site variable to display the login string
+                         *-/
+
+                        echo $xerte_toolkits_site->form_string;*/
+                //  }
             } else {
+                if (substr($row_play['access_to_whom'], 0, 5) == "Other") {
 
-                $flag == false;
+                    /*
+                     * The Other attribute has been set - so break the string down to obtain the host - this can now be a comma separated list to allow for more than one referrer
+                     */
+
+                    $test_string = substr($row_play['access_to_whom'], 6, strlen($row_play['access_to_whom']));
+
+                    _debug("'Other' security is active for '" . $test_string . "', the current referrer is: '" . $_SERVER['HTTP_REFERER'] . "'");
+
+                    if (strlen($_SERVER['HTTP_REFERER']) > 0) {
+                        $ok = check_host($_SERVER['HTTP_REFERER'], $test_string);
+                        if ($ok) {
+                            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+                            show_template($row_play);
+                        } else {
+                            dont_show_template('Doesnt Match Referer:' . $_SERVER['HTTP_REFERER']);
+                        }
+                    }
+                    else {
+                        dont_show_template('No HTTP Referer');
+                    }
+
+                } else {
+                    $q = "select * from {$xerte_toolkits_site->database_table_prefix}play_security_details";
+                    $params = array();
+                    $query_for_security_content_response = db_query($q, $params);
+                    if ($query_for_security_content_response !== false && count($query_for_security_content_response) > 0) {
+
+                        /*
+                         * A setting from play_security_details might be in use, as such, check to see if it is, and then loop through checking if one is valid.
+                         */
+
+                        $flag = false;
+
+                        foreach ($query_for_security_content_response as $row_security) {
+
+                            /*
+                             * Check each setting to see if true
+                             */
+                            if ($row_play['access_to_whom'] == $row_security['security_setting']) {
+                                if (check_security_type($row_security['security_data'])) {
+                                    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+                                    show_template($row_play);
+                                    $flag = true;
+
+                                    break;
+                                }
+                            }
+                        }
+
+                        if ($flag == false) {
+                            dont_show_template();
+                        }
+                    } else {
+                        dont_show_template();
+                    }
+                }
             }
         }
     }
-
-    if ($flag == false) {
-
-        dont_show_template();
-    }
-} else {
-    dont_show_template();
 }
+
