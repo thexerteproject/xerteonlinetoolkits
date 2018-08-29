@@ -258,6 +258,15 @@
 			    h = hh;
 			}
 
+			if(!$youTube.aspect && !$youTube.hasClass("mainMedia"))
+			{
+			    w = "100%";
+			    h = "100%";
+			    $youTube.parent().css({
+					"height": "100%"
+			    });
+			}
+
 			//if (h < 200) { // must be at least 200 x 200
 			//	h = 200;
 			//	w = Math.floor(h * (1 / ratio));
@@ -874,10 +883,11 @@
 				// load video - max dimensions set in mediaMetaData function below when dimensions received
 				$mediaHolder = $holder;
 				var $myVideo = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
-				
+
 				// is it from youtube or vimeo?
 				if (mediaData.media.indexOf("www.youtube.com") != -1 || mediaData.media.indexOf("//youtu") != -1) {
 					var $youTube = $holder.find(".popcornMedia").addClass("youTube");
+					$youTube.attr("aspect", mediaData.aspect);
 					mediaLesson.resizeYouTube($youTube);
 					var urlsep = (mediaData.media.indexOf("?") < 0 ? "?" : "&");
 					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .youTube", mediaData.media + urlsep + "controls=2&playsinline=1"); // force controls to appear, and force online play on iPhone
@@ -889,9 +899,11 @@
 					
 				} else if (mediaData.media.indexOf("vimeo.com") != -1) {
 					var $vimeo = $holder.find(".popcornMedia").addClass("vimeo");
+                    $vimeo.attr("aspect", mediaData.aspect);
 					mediaLesson.resizeVimeo($vimeo);
 					
 					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .vimeo", mediaData.media);
+
 					$vimeo.data("popcornInstance", popcornInstance);
 
 
@@ -901,10 +913,13 @@
 					
 				} else if (mediaData.media.indexOf("mediamission.nl") != -1) {
                     var $mediasite = $holder.find(".popcornMedia").addClass("mediasite");
+
+                    $mediasite.attr("aspect", mediaData.aspect);
                     mediaLesson.resizeMediasite($mediasite);
 
                     popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .mediasite", mediaData.media);
                     $mediasite.data("popcornInstance", popcornInstance);
+
 
 
                     if (mediaData.autoplay == "true") {
