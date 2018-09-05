@@ -173,20 +173,21 @@
 			$colourChangerOptions.append(select.join(''));
 
 			$("input[name='colourChangerRadios']").click(function(){
-			    debugger;
-                 switch(this.value){
-					 case "0":
-					     colourChanger.switchTheme(x_params.theme);
-						 break;
-					 case "1":
-					     colourChanger.applyFilter($(this).attr('value'));
-						 break;
-					 case "2":
-					     colourChanger.switchTheme("highcontrast");
-						 break;
-					 case "3":
-						colourChanger.switchTheme("blackonyellow");
-
+				switch(this.value){
+					case "0":
+					    colourChanger.switchTheme(x_params.theme);
+                        colourChanger.applyFilter($(this).attr('value'));
+					 break;
+					case "1":
+					    colourChanger.applyFilter($(this).attr('value'));
+					 break;
+					case "2":
+					    colourChanger.switchTheme("highcontrast");
+                        colourChanger.applyFilter($(this).attr('value'));
+					 break;
+					case "3":
+                        colourChanger.switchTheme("blackonyellow");
+                        colourChanger.applyFilter($(this).attr('value'));
 				 }
 
 				var pageTypesRequiringRefresh = ['chart', 'textDrawing'];
@@ -218,10 +219,10 @@
 			if (index % 4) $("#x_background").hide(); else $("#x_background").show();
 			//console.log("Applying filter " + index);
 
-			for (var i=0; i<this.filterMap.length; i++) {
-				$('html').removeClass(this.filterMap[i].class);
-			}
-			$('html').addClass(this.filterMap[index].class);
+			//for (var i=0; i<this.filterMap.length; i++) {
+			//	$('html').removeClass(this.filterMap[i].class);
+			//}
+			//$('html').addClass(this.filterMap[index].class);
 		}
 
 		// From http://www.happycode.info/create-css-classes-with-javascript/
