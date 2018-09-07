@@ -954,11 +954,14 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 
-	<itemHeight label="Menu Item Height" type="NumericStepper" min="25" max="35" step="1" width="100" defaultValue="25" optional="true" deprecated="This property is deprecated"/>
-	<itemSpacingX label="Horizontal Spacing" type="NumericStepper" min="10" max="30" step="1" width="100" defaultValue="10" optional="true" deprecated="This property is deprecated"/>
 	<itemSpacingY label="Vertical Spacing" type="NumericStepper" min="5" max="35" step="1" width="100" defaultValue="5" optional="true"/>	
 	<startPageID label="First Entry" type="pageList" defaultValue="" optional="true"/>
 	<endPageID label="Last Entry" type="pageList" defaultValue="" optional="true"/>
+	<text label="Page Text" type="TextArea" height="200" defaultValue="Enter text for the page here" optional="true"/>
+	<pageTick label="Tick When Viewed" type="CheckBox" defaultValue="true" optional="true"/>
+	
+	<itemHeight label="Menu Item Height" type="NumericStepper" min="25" max="35" step="1" width="100" defaultValue="25" optional="true" deprecated="This property is deprecated"/>
+	<itemSpacingX label="Horizontal Spacing" type="NumericStepper" min="10" max="30" step="1" width="100" defaultValue="10" optional="true" deprecated="This property is deprecated"/>
     <menuLineCol label="Line Colour" type="ColourPicker" defaultValue="0x84A2C6" optional="true" deprecated="This property is deprecated"/>
     <menuFillCol label="Fill Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true" deprecated="This property is deprecated"/>	
     <menuOverLineCol label="Line Colour (over)" type="ColourPicker" defaultValue="0x456287" optional="true" deprecated="This property is deprecated"/>	

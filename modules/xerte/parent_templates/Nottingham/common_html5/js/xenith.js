@@ -1505,10 +1505,12 @@ function x_lookupPage(pageType, pageID) {
 	for (var i=0; i<x_pageInfo.length; i++) {
 		tempArray = tempArray.splice();
 		tempArray.push(i);
-		var result = checkChildIDs(x_pageInfo[i].childIDs);
-		if (result == true) {
-			return tempArray;
-			break;
+		if (x_pageInfo[i].type != 'menu') {
+			var result = checkChildIDs(x_pageInfo[i].childIDs);
+			if (result == true) {
+				return tempArray;
+				break;
+			}
 		}
 	}
 
