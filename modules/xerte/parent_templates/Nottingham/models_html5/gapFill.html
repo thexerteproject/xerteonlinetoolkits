@@ -315,6 +315,10 @@
 			tabIndex++;
 			$("#labelHolder").remove();
 			
+			if (x_currentPageXML.getAttribute("spaceLines") != "false") {
+				$targetHolder.find("span").css("line-height", $targetHolder.find("select").outerHeight() + 12 + "px");
+			}
+			
 			$("#submitBtn")
 				.button({
 					label:	x_currentPageXML.getAttribute("checkBtn") != undefined && x_currentPageXML.getAttribute("checkBtn") != "" ? x_currentPageXML.getAttribute("checkBtn") : "Check"
@@ -364,6 +368,10 @@
 		this.setUpFillBlank = function() {
 			$("#labelHolder").remove();
 
+			if (x_currentPageXML.getAttribute("spaceLines") != "false") {
+				$targetHolder.find("span").css("line-height", $targetHolder.find("input").outerHeight() + 12 + "px");
+			}
+			
 			var	maxW = 0,
 				i;
 			for (i=0; i<$targetHolder.find("input").length; i++) {
@@ -611,6 +619,10 @@
 					}
 					});
 			
+			if (x_currentPageXML.getAttribute("spaceLines") != "false") {
+				$targetHolder.find("span:not(.target)").css("line-height", parseInt($targetHolder.find(".target").css("line-height")) + 10 + "px");
+			}
+			
 			this.setUpTargetListeners($targetHolder.find(".target"));
 			
 			var allLabels = answerData.slice();
@@ -716,7 +728,6 @@
 					$thisLabel.add($thisTarget).data("correct", true);
 				}
 			} else {
-                debugger;
 				$thisTarget.addClass("correct");
                 if ($thisLabel.data("answer") == $thisTarget.data("answer")) {
                     $pageContents.data("score", $pageContents.data("score") + 1);
@@ -973,7 +984,6 @@
         };
 
 		this.fillInSubmit = function(forceTracking){
-		    debugger;
             var empty = 0;
             $targetHolder.find("input").each(function() {
                 if ($(this).val() == "") {
