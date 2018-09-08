@@ -1,5 +1,7 @@
 <language name="Cymraeg">
 
+  <noPages label="Nid yw'r prosiect hwn yn cynnwys unrhyw dudalennau."/>
+  
   <nextButton label="Nesaf" description="Botwm Tudalen Nesaf"/>
   
   <backButton label="Nôl" description="Botwm Tudalen Diwethaf"/>
@@ -18,11 +20,17 @@
   
   <continueButton label="Parhau" description="Botwm Parhau"/>
   
-  <toc label="Tabl Cynnwys" description="tabl cynnwys. Defnyddiwch y bysellau saeth i ddewis tudalen.  Pwyswch ar y fysell fylchu (Space) i fynd i'r tudalen hwnnw.">
+  <progressBar label="CWBLHAU"/>
+  
+  <footerTools hide="Cuddio offer troednodyn" show="Dangos offer troednodyn"/>
+  
+  <toc label="Tabl Cynnwys" description="Tabl cynnwys. Defnyddiwch yr allweddi saeth i ddewis tudalen. Pwyswch y bylchwr i fynd i'r dudalen honno." htmlDescription="Defnyddiwch y bysell tab i ddewis tudalen. Pwyswch y bylchwr i fynd i'r dudalen honno.">
 	  <contentsList label="" description=""/>
-	  <closeButton label="" description="botwm cau tabl cynnwys"/>
-	  <gotoPageButton label="Ewch i Dudalen" description="Botwm Ewch i Dudalen"/>
+	  <closeButton label="" description="Cau'r Tabl Cynnwys"/>
+	  <gotoPageButton label="Ewch i Dudalen" description="Ewch i Fotwm y Dudalen"/>
   </toc>
+  
+  <mediaWindow label="Media Viewer"/>
   
   <glossary label="Geirfa" description="Rhestr o eiriau a diffiniadau.">
 	  <closeButton label="" description="Botwm cau geirfa"/>
@@ -41,8 +49,20 @@
   
   <errorBrowser label="Nid yw eich porwr yn gallu cefnogi'r math hwn o dudalen yn llawn."/>
   
+  <errorEmbed label="Rydych wedi mewnosod prosiect rhagolwg XOT. Rhaid i chi wneud y prosiect yn gyhoeddus, a mewnosod yr URL sy'n wynebu'r cyhoedd."/>
+  
+  <pageDeprecatedCeased label="Mae'r dudalen hon wedi'i hanghymeradwyo gan fod y gwasanaeth wedi dod i ben."/>
+  
+  <errorQuestions noQ="Nid oes unrhyw gwestiynau wedi'u hychwanegu" noA="Nid oes unrhyw opsiynau ateb wedi'u hychwanegu" />
+  
   <errorFlash label="Rhaid ichi osod y Chwaraewr Flash i weld y cynnwys hwn." description="Nôl y Chwaraewr Flash"/>
   
+  <authorSupport label="Mae Cymorth Awdur YMLAEN: ni fydd y testun a ddangosir mewn coch yn ymddangos mewn prosiectau byw."/>
+  
+  <hiddenPage label="Bydd y dudalen hon yn cael ei chuddio mewn prosiectau byw" hidden="Mae'r dudalen hon ar hyn o bryd yn cael ei chuddio mewn prosiectau byw" shown="Dangosir y dudalen hon ar hyn o bryd mewn prosiectau byw" until="Cuddio tan" from="Cuddio rhag"/>
+  
+  <hiddenSection label="Bydd yr adran hon yn cael ei guddio mewn prosiectau byw" hidden="Mae'r adran hon yn cael ei chuddio mewn prosiectau byw ar hyn o bryd" shown="Dangosir yr adran hon mewn prosiectau byw ar hyn o bryd" until="Cuddio tan" from="Cuddio rhag"/>
+   
   <tick label="Tic"/>
   
   <cross label="Croes"/>
@@ -105,7 +125,7 @@
 	<loader label="Llwytho: "/>
   </movieController>
   
-  <mediaElementControls>
+  <mediaElementControls video="Fideo" audio="Sain">
 	<stopButton label="Diffodd" description="Botwm Diffodd Cyfryngau"/>
 	<playPauseButton label="Chwarae/Atal" description="Botwm Chwarae/Atal Cyfryngau"/>
 	<muteButton label="Pylu Sain" description="Botwm Pylu Sain"/>
@@ -123,6 +143,7 @@
 	  <textEntry name="Blwch Gosod Testun" selected="Dewiswyd Blwch Gosod Testun"/>
 	  <targetArea name="Man Cyrchu" description="Y gyrchfan ar gyfer" toSelect="Pwyswch ar y fysell fylchu (Space) i ollwng yr eitem a ddewiswyd."/>
 	  <draggableItem name="Eitem i'w lusgo" selected="Dewiswyd Eitem" toSelect="Pwyswch ar y fysell fylchu (Space) i ddewis" deSelected="Ni ddewiswyd eitem." />
+	  <moreInfoItem toSelect="Pwyswch y bylchwr i ddewis" selected="Wedi dewis" moreInfo="Pwyswch y bylchwr am ragor o wybodaeth" />
   </interactions>
   
   <fetchResults label="Wrthi'n hôl canlyniadau..."/>
@@ -136,8 +157,47 @@
 	  <seconds name="eiliad"/>
   </timer>
 
-  <colourChanger label="Newid Lliwiau" description="Newid y lliwiau.">
-	  <closeButton label="" description="Cau'r Newidiwr Lliwiau"/>
+  <colourChanger label="Newidiwr Lliw" description="Newid y lliwiau." tooltip="Newid Lliwiau">
+	  <closeButton label="" description="Cau y Newidiwr Lliw"/>
+	  <selectTxt label="PDewiswch o blith yr opsiynau isod"/>
+	  <adviceTxt label="Angen mwy o gyngor? Ewch i &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt; ganllawiau hygyrchedd Offer Xerte&lt;/a&gt; Jisc TechDis."/>
+	  <off label="Diffodd"/>
+	  <noBg label="Tynnu Delweddau'r Cefndir"/>
+	  <invert label="Gwrthdroi"/>
+	  <blackYellow label="Du ar Felyn"/>
   </colourChanger>
 
+  <screenReaderInfo label="Gwybodaeth Darllenydd Sgrin" newWindow="Bydd y ddolen hon yn agor mewn ffenestr newydd" thisWindow="Bydd y ddolen hon yn agor yn y ffenestr hon" dialog="Bydd y botwm hwn yn agor ffenestr ddeialog">
+	  <tabNav description="Mae'r dudalen hon yn cynnwys panel tab, lle mae'r dewisiadau tab yn newid y wybodaeth a gyflwynir. I ddewis tab: Cliciwch Enter ddwywaith (Jaws) neu cliciwch Shift-Enter (NVDA)."/>
+	  <accNav description="Mae'r dudalen hon yn cynnwys panel acordion, lle mae'r dewisiadau tab yn newid y wybodaeth a gyflwynir. I ddewis tab cliciwch Enter neu'r bylchwr."  click="Cliciwch i ddatgelu gwybodaeth"/>
+	  <buttonNav description="Mae'r dudalen hon yn cynnwys cyfres o fotymau lle mae pob un yn datgelu rhywfaint o wybodaeth gysylltiedig." click="Cliciwch i ddatgelu gwybodaeth"/>
+	  <slideshow description="Mae'r dudalen hon yn cynnwys sioe sleidiau lle mae clicio ar y botymau nesaf a blaenorol yn newid y wybodaeth a gyflwynir."/>
+	  <audioSlideshow description="Mae'r dudalen hon yn dangos y cynnwys i gyd-fynd â'r ffeiliau sain. Mae cynnwys newydd yn cael ei ychwanegu at y dudalen wrth i'r sain chwarae."/>
+	  <videoSynch description="Mae'r dudalen hon yn dangos y cynnwys i gyd-fynd â'r fideo. Mae cynnwys newydd yn cael ei ychwanegu at y dudalen wrth i'r fideo chwarae."/>
+	  <list description="Mae'r dudalen hon yn cynnwys cyfres o ddolenni lle mae pob un yn datgelu rhywfaint o wybodaeth gysylltiedig." click="Cliciwch i ddatgelu gwybodaeth"/>
+	  <modelAnswerResults selected="Testun wedi'i ddewis"/>
+	  <mcq description="Mae'r dudalen hon yn cynnwys cwestiwn amlddewis. Defnyddiwch y tab a'r bysellau saeth i fyny/i lawr i edrych ar atebion posibl. Cliciwch y bylchwr i ddewis eich ateb."/>
+	  <quiz description="Mae'r dudalen hon yn cynnwys cyfres o gwestiynau amlddewis. Defnyddiwch y tab a'r bysellau saeth i fyny/i lawr i edrych ar atebion posibl. Cliciwch y bylchwr i ddewis eich ateb."/>
+  </screenReaderInfo>
+ 
+  <authorVars label="Gweld data newidiol">
+	<item>Enw</item>
+	<item>Gwerth Sefydlog</item>
+	<item>Ar hap</item>
+	<item>Lleiafswm</item>
+	<item>Uchafswm</item>
+	<item>Cam</item>
+	<item>DP</item>
+	<item>SF</item>
+	<item>Seros Dilynol</item>
+	<item>Gwahardd</item>
+	<item>Diofyn</item>
+	<item>Gwerth</item>
+  </authorVars> 
+  
+  <authorVarsInfo>
+	  <error unable="Methu â chyfrifo" invalid="Gwerth annilys" none="Dim data newidiol"/>
+	  <info undef="Cyfeiriadau at newidyn anniffiniedig" minMax="lleiafswm > uchafswm" valueMin="gwerth &lt; lleiafswm" valueMax="gwerth > uchafswm" exclude="{n} wedi'i eithrio" circular="Cyfeirnod cylchlythyr newidiol" none="Mae'r holl werthoedd posibl wedi'u heithrio, neu y tu hwnt i'r ystod lleiafswm &amp; uchafswm" none2="Nid yw ymdrechion {n} wedi dychwelyd gwerth a dderbyniwyd" attempts="Ymdrechion {n} i gyfrifo gwerth dilys" default="Cynllun wrth gefn i werth diofyn"/>
+  </authorVarsInfo>
+  
 </language>
