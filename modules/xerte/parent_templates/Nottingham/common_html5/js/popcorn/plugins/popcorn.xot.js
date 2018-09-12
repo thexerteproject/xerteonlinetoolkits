@@ -32,19 +32,19 @@ optional: pauseMedia*
 */
 
 (function (Popcorn) {
-	Popcorn.plugin("xot", function(options) {
+	Popcorn.plugin("xot", function(popOptions) {
 		
 		// define plugin wide variables here
 		var $target, $iframe;
 		
 		return {
-			_setup: function(options) {
+			_setup: function(popOptions) {
 				// setup code, fire on initialisation
 				
-				$target = $("#" + options.target);
+				$target = $("#" + popOptions.target);
 				
 				// has a xot iframe already been built here for this block? if not, build iframe
-				if (!options.child && $target.children(".xotiframe").length == 0) {
+				if (!popOptions.child && $target.children(".xotiframe").length == 0) {
 					$target.addClass("xotHolder");
 						
 					$iframe = $('<iframe class="xotiframe"/>')
@@ -55,25 +55,25 @@ optional: pauseMedia*
 							"scrolling":	"no"
 						});
 					
-					if (options.name != "") {
-						$iframe.before('<h4>' + options.name + '</h4>');
+					if (popOptions.name != "") {
+						$iframe.before('<h4>' + popOptions.name + '</h4>');
 					}
 					
-					if (options.description) {
-						$iframe.attr("title", options.description);
+					if (popOptions.description) {
+						$iframe.attr("title", popOptions.description);
 					}
 					
 					// sort url to include extra parameters (display, hide)
-					var params = options.url.split("?"),
+					var params = popOptions.url.split("?"),
 						myURL = params[0];
 					
 					params.splice(0,1);
 					
-					if ($.isNumeric(options.page) == false) {
-						delete options.page;
+					if ($.isNumeric(popOptions.page) == false) {
+						delete popOptions.page;
 					}
 					
-					// check whether any params set in url should be used or if they are overridden by other xwd options
+					// check whether any params set in url should be used or if they are overridden by other xwd popOptions
 					if (params.length > 0) {
 						params = params[0].split("&");
 						
@@ -85,30 +85,30 @@ optional: pauseMedia*
 								i-=1;
 								
 							} else if (params[i].indexOf("page=") != -1 || params[i].indexOf("pageID=") != -1 || params[i].indexOf("linkID=") != -1) {
-								if (options.page) {
+								if (popOptions.page) {
 									params.splice(i, 1);
 									i-=1;
 								} else if (params[i].indexOf("page=") != -1) {
-									options.page = Number(params[i].split("=")[1]);
+									popOptions.page = Number(params[i].split("=")[1]);
 									params.splice(i, 1);
 									i-=1;
 								}
 								
-							} else if (options.hide && params[i].indexOf("hide=") != -1) {
+							} else if (popOptions.hide && params[i].indexOf("hide=") != -1) {
 								params.splice(i, 1);
 								i-=1;
 							}
 						}
 					}
 					
-					if (!options.page) {
-						options.page = 1;
+					if (!popOptions.page) {
+						popOptions.page = 1;
 					}
 					
 					params.push("display=fill");
 					
-					if (options.hide) {
-						params.push("hide=" + options.hide);
+					if (popOptions.hide) {
+						params.push("hide=" + popOptions.hide);
 					}
 					
 					// recreate url with all relevant parameters
@@ -127,11 +127,11 @@ optional: pauseMedia*
 					
 					$iframe.data({
 						"url"	:myURL,
-						"page"	:options.page
+						"page"	:popOptions.page
 					});
 					
-					if (options.line == "true") {
-						if (options.position == "top") {
+					if (popOptions.line == "true") {
+						if (popOptions.position == "top") {
 							$target.append("<hr/>");
 						} else {
 							$target.prepend("<hr/>");
@@ -145,30 +145,30 @@ optional: pauseMedia*
 					eval(x_currentPageXML.nodeName).resizeContent($iframe);
 					
 				// if it's a child then at synch points the url stays the same but the project page can change
-				} else if (options.child) {
+				} else if (popOptions.child) {
 					$iframe = $target.children(".xotiframe");
 				}
 				
 				$target.hide();
 			},
 			
-			start: function(event, options) {
-				// fire on options.start
+			start: function(event, popOptions) {
+				// fire on popOptions.start
 				
 				var pageStr = "";
-				if (options.page) {
+				if (popOptions.page) {
 					pageStr = $iframe.data("url").indexOf("?") == -1 ? "?" : "&";
-					pageStr = String(options.page).indexOf("PG") == -1 ? pageStr + "page=" + options.page : pageStr + "linkID=" + options.page;
+					pageStr = String(popOptions.page).indexOf("PG") == -1 ? pageStr + "page=" + popOptions.page : pageStr + "linkID=" + popOptions.page;
 				}
 				
 				if ($iframe.attr("src") == undefined) {
 					// it's the 1st url to load in iframe
 					$iframe.attr("src", $iframe.data("url") + pageStr);
 					
-				} else if (options.page != undefined) {
+				} else if (popOptions.page != undefined) {
 					try {
 						// if possible change page by calling xot function
-						$iframe[0].contentWindow.x_changePage(options.page - 1);
+						$iframe[0].contentWindow.x_changePage(popOptions.page - 1);
 					} catch(e) {
 						// otherwise reset src for iframe
 						$iframe.attr("src", $iframe.data("url") + pageStr);
@@ -178,10 +178,10 @@ optional: pauseMedia*
 				$target.show();
 			},
 			
-			end: function(event, options) {
-				// fire on options.end
+			end: function(event, popOptions) {
+				// fire on popOptions.end
 				
-				if (!options.child == true) {
+				if (!popOptions.child == true) {
 					$target.hide();
 					
 				} else {
