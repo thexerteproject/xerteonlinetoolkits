@@ -441,8 +441,9 @@ function update_site(){
 					 '&apache=' + document.getElementById("apache").value + 
 					 '&site_title=' + document.getElementById("site_title").value + 
 					 '&site_name=' + document.getElementById("site_name").value + 
-					 '&site_logo=' + document.getElementById("site_logo").value + 
-					 '&organisational_logo=' + document.getElementById("organisational_logo").value + 
+					 '&site_logo=' + document.getElementById("site_logo").value +
+			    	 '&alert_banner=' + document.getElementById("alert_banner").value +
+					 '&organisational_logo=' + document.getElementById("organisational_logo").value +
 					 '&welcome_message=' + document.getElementById("welcome_message").value + 
 					 '&site_text=' + document.getElementById("site_text").value +
 					 '&tutorial_text=' + document.getElementById("tutorial_text").value +

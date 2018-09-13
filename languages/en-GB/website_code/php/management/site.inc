@@ -28,6 +28,8 @@
 
 	define("MANAGEMENT_SITE_LOGO", "The site logo is (The logo in the top left)");
 
+	define("MANAGEMENT_ALERT_BANNER", "Alert banner message when doing system maintenance or upgrades");
+
 	define("MANAGEMENT_SITE_LOGO_ORG", "The organisational logo is (The logo in the top right)");
 
 	define("MANAGEMENT_SITE_WELCOME", "The Welcome message is (The text above the tools on index.php)");

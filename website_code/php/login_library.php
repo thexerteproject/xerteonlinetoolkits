@@ -247,6 +247,7 @@ function login_form($messages, $xerte_toolkits_site)
     }
     ?>
 </div>
+<div class="alert-banner" style="color:#fff; padding: 5px; text-align: center; background: red;"> <?php echo $xerte_toolkits_site->alert_banner;?></div>
 
 <div class="mainbody">
     <div class="title_holder">
