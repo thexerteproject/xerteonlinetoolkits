@@ -477,7 +477,7 @@ function setupMainLayout()
                 */
             },
             north: {
-                size:                   117,
+                size:                   "auto",
                 minSize:                65,
                 spacing_open:           1,
                 togglerLength_open:     0,
