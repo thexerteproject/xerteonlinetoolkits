@@ -1284,7 +1284,8 @@
                     {
                         $(data).each(function (e){
                             var testSynch = this.allInfo.getAttribute("synchStart");
-                            var isJump = this.allInfo.children[0].getAttribute("synch");
+                            if (this.allInfo.children.length !== 0)
+                            	var isJump = this.allInfo.children[0].getAttribute("synch");
                             if (testSynch !== null && isJump !== null)
                             {
                                 $(this.childNodes).each(function(jmp)
