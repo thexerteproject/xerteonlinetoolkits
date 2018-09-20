@@ -99,7 +99,7 @@
 			var marginR = parseInt($panelHolder.find(".panel.tileH").css("margin-right")) == 0 ? 15 : parseFloat($panelHolder.find(".panel.tileH").css("margin-right"));
 			
 			$panelHolder.find(".panel.tileH")
-				.width(Math.floor(($x_pageHolder.width() - (parseFloat($x_pageDiv.css("padding-left")) * 2) - (parseFloat($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * numTileH)) / numTileH) - 2);
+				.width(Math.floor(($x_pageHolder.width() - (parseFloat($x_pageDiv.css("padding-left")) * 2) - (parseFloat($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * (numTileH-1))) / numTileH) - 2);
 			
 			$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2);
 			
