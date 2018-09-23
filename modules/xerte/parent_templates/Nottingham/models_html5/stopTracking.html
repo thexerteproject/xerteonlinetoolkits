@@ -61,7 +61,7 @@
             }
             if (XTGetMode() == "normal")
             {
-                var lbl = (x_currentPageXML.getAttribute("buttonLblTracking") != null ? x_currentPageXML.getAttribute("buttonLblTracking") : "Close and finish tracking of this session");
+                var lbl = (x_currentPageXML.getAttribute("buttonLbl") != null ? x_currentPageXML.getAttribute("buttonLbl") : "Close and finish tracking of this session");
                 $("#closeBtn").button({
                     label: lbl
                 }).click(function(){
