@@ -1634,7 +1634,6 @@
             if ( !obj.data.disabled[ type ] ) {
 
               natives.start.call( obj, event, byStart );
-
               obj.emit( trackstart,
                 Popcorn.extend({}, byStart, {
                   plugin: type,
@@ -1991,6 +1990,7 @@
             }));
           }
         }
+
 
         this.data.trackEvents.add( options );
         TrackEvent.start( this, options );
@@ -4320,12 +4320,22 @@
 
             $.getScript("modules/xerte/parent_templates/Nottingham/common_html5/js/popcorn/plugins/MediasitePlayerIFrameAPI.js")
                 .done(function () {
+                    $("#mediasiteIframe").parent()[0].style.visibility = "hidden";
                     console.log(" Mediasiteplayer loaded " + aSrc + "\n" + elem.id);
                     player = new Mediasite.Player(elem.id,
                         {
                             url: aSrc,
                             events: {
                                 "ready": onReady,
+                                "playcoverready": function () {
+                                    $("#mediasiteIframe")[0].style.width = "100%";
+                                    $("#mediasiteIframe")[0].style.height = "100%";
+
+                                    $("#mediasiteIframe").parent()[0].style.width = "100%";
+                                    $("#mediasiteIframe").parent()[0].style.height = "90%";
+
+                                    $("#mediasiteIframe").parent()[0].style.visibility = "visible";
+                                },
                                 "error": function (errorData) {
                                     console.log(errorData);
                                 },
@@ -4340,12 +4350,20 @@
                 .fail(function (a, b, c) {
                     console.log("Failed: " + c)
                 });
+
             self.dispatchEvent("loadstart");
             self.dispatchEvent("progress");
         }
 
             function onReady()
             {
+
+		        $("#mediasiteIframe")[0].style.width = "100%";
+                $("#mediasiteIframe")[0].style.height = "90%";
+
+                $("#mediasiteIframe").parent()[0].style.width = "100%";
+                $("#mediasiteIframe").parent()[0].style.height = "90%";
+
                 impl.duration = player.getDuration();
                 self.dispatchEvent("loadedmetadata");
 
