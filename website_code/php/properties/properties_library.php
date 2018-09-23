@@ -85,7 +85,7 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
     
     $_POST['template_id'] = (int) $_POST['template_id'];
     
-    if(is_user_creator($_POST['template_id'])){
+    if(is_user_creator_or_coauthor($_POST['template_id'])){
 
         $query_for_template_name = "select template_name from {$prefix}templatedetails where template_id= ?";
         $params = array($_POST['template_id']);
@@ -739,7 +739,7 @@ function access_info($template_id){
     global $xerte_toolkits_site;
 
     $prefix =  $xerte_toolkits_site->database_table_prefix ;
-    $query_for_template_access = "select access_to_whom from {$prefix}templatedetails where template_id= ? ";
+    $query_for_template_access = "select access_to_whom, number_of_uses from {$prefix}templatedetails where template_id= ? ";
     $params = array($template_id);
 
     $row_access = db_query_one($query_for_template_access, $params);
@@ -751,25 +751,35 @@ function access_info($template_id){
     {
         case "Public":
             $accessTranslation = PROJECT_INFO_PUBLIC;
+            $nrViews = $row_access["number_of_uses"];
             break;
         case "Private":
             $accessTranslation = PROJECT_INFO_PRIVATE;
             break;
+            $nrViews = "";
         case "Password":
             $accessTranslation = PROJECT_INFO_PASSWORD;
+            $nrViews = $row_access["number_of_uses"];
             break;
         default:
-            if (substr(template_access_settings($template_id),0,5) == "Other")
+            if (substr($accessStr,0,5) == "Other")
             {
                 $accessStr = "Other";
-                $accessTranslation = PROJECT_INFO_OTHER;
+                $accessTranslation = PROJECT_INFO_OTHER . " ('" . substr(5) . "')";
+                $nrViews = $row_access["number_of_uses"];
             }
             else
             {
-                return;
+                $accessTranslation = "'" . $accessStr . "'";
+                $nrViews = $row_access["number_of_uses"];
             }
     }
-    $info .=  PROPERTIES_LIBRARY_ACCESS . " " . $accessTranslation . "<br/>";
+    $info .=  PROJECT_INFO_ACCESS_SET_AS . " " . $accessTranslation;
+    if ($nrViews != "")
+    {
+        $info .= str_replace("%n", $nrViews, PROJECT_INFO_NRVIEWS);
+    }
+    $info .= "<br/>";
     return $info;
 }
 
