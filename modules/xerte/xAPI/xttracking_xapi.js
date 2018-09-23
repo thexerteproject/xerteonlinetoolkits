@@ -40,7 +40,7 @@ function XApiTrackingState() {
     this.currentid = "";
     this.currentpageid = "";
     this.trackingmode = "full";
-    this.mode = "normal";
+    this.forcetrackingmode = false;
     this.scoremode = 'first';
     this.nrpages = 0;
     this.toCompletePages = new Array();
@@ -1766,7 +1766,10 @@ function XTLogin(login, passwd) {
 }
 
 function XTGetMode() {
-    return state.mode;
+    if (state.forcetrackingmode === 'true')
+        return "normal";
+    else
+        return "";
 }
 
 function XTStartPage() {
@@ -1839,6 +1842,9 @@ function XTSetOption(option, value) {
             break;
         case "templateName":
             state.templateName = value;
+            break;
+        case "force_tracking_mode":
+            state.forcetrackingmode = value;
             break;
     }
 }
