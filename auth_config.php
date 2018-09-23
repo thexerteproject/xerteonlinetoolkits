@@ -33,6 +33,8 @@ if (!isset($xerte_toolkits_site->authentication_method) || $xerte_toolkits_site-
     $res = db_query_one("update {$xerte_toolkits_site->database_table_prefix}sitedetails set authentication_method = 'Guest' where site_id=1");
 }
 
+$xerte_toolkits_site->altauthentication = "";
+
 /*
 * Note: see moodle_restrictions.php for additional Moodle specific options
 */
