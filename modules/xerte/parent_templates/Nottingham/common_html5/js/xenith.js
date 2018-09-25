@@ -761,6 +761,8 @@ function x_cssSetUp(param) {
         case "theme":
             if (!xot_offline) {
                 $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
+                // Set id
+                $('link[href="' + x_themePath + x_params.theme + '/' + x_params.theme + '.js"]').attr('id', 'theme_js');
             }
             x_cssSetUp("responsive");
             break;
@@ -1503,10 +1505,12 @@ function x_lookupPage(pageType, pageID) {
 	for (var i=0; i<x_pageInfo.length; i++) {
 		tempArray = tempArray.splice();
 		tempArray.push(i);
-		var result = checkChildIDs(x_pageInfo[i].childIDs);
-		if (result == true) {
-			return tempArray;
-			break;
+		if (x_pageInfo[i].type != 'menu') {
+			var result = checkChildIDs(x_pageInfo[i].childIDs);
+			if (result == true) {
+				return tempArray;
+				break;
+			}
 		}
 	}
 
@@ -1538,16 +1542,9 @@ function x_changePage(x_gotoPage) {
 }
 
 function x_changePageStep2(x_gotoPage) {
-	if (x_params.theme != 'default') {
-        var modelfile = x_pageInfo[x_gotoPage].type;
-        x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
-                x_changePageStep3(x_gotoPage);
-        }, false, "theme_css", true);
-	}
-	else
-    {
-        x_changePageStep3(x_gotoPage);
-    }
+    x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
+            x_changePageStep3(x_gotoPage);
+    }, false, "theme_css", true);
 }
 
 function x_changePageStep3(x_gotoPage) {

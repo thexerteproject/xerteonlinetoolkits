@@ -127,7 +127,6 @@ $(document).ready(function(){
 					groupBy: self.groupBy(),
 					customize: function(chart){
 						chart.margin({'bottom': 100}).staggerLabels(false);
-						chart.xAxis.rotateLabels(45);
 						chart.xAxis.tickFormat(function(d){ return /[^\/]+$/.exec(d)[0]; });
 					}
 				}).draw();

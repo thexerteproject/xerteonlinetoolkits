@@ -26,6 +26,10 @@ table {
     margin-right: -1rem;
 }
 
+.journeyOverviewActivity a{
+    width: 100%;
+}
+
 .journeyTable table{
   overflow-x: scroll;
   border: 0px;
@@ -62,6 +66,16 @@ td a{
     border-radius: 4px;
     height: 100px;
     text-align: center;
+}
+
+.col-4-widget h1{
+    font-weight: bold;
+    color: #fba61f;
+    margin-top: .5rem;
+}
+
+.col-4-widget h3{
+    margin-top: .5rem;
 }
 
 #options-div label{
@@ -130,7 +144,6 @@ td a{
 
 .icon-header{
   position: absolute;
-  top: 0px;
   right: 5px;
   top: 5px;
   color: #999da1;
@@ -210,7 +223,7 @@ th.x-dashboard-page {
 }
 
 th.x-dashboard-page.x-dashboard-has-children a {
-    margin-right:15px;
+    margin-right:20px;
 }
 
 th.x-dashboard-interaction {
@@ -276,6 +289,12 @@ td.x-dashboard-interaction
     border: solid 1px #000000;
     border-radius: 4px;
     margin-bottom:10px;
+}
+
+.loading-gif {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* FONT AWESOME BUTTON ICONS */

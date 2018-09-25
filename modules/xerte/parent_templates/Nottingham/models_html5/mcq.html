@@ -117,9 +117,13 @@
                     l_feedbacks = [],
                     selected = $("#optionHolder input"),
                     generalFeedback = "";
-
-            if (x_currentPageXML.getAttribute("feedback") != undefined) {
-                generalFeedback = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
+			
+            if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
+				var genFeedback = x_addLineBreaks(x_currentPageXML.getAttribute("feedback"));
+				if (!$(genFeedback).is('p')) {
+					genFeedback = '<p>' + genFeedback + '</p>';
+				}
+                generalFeedback = '<br/>' + genFeedback;
             }
 
             for (var i=0; i<selected.length; i++) {
@@ -140,10 +144,18 @@
                 }
 
                 if ($(selected[i]).is(':checked')) {
-                    answerFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback) + "</p>";
-					if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
-						answerFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '"></div>';
+					var tempFeedback = "";
+                    tempFeedback += selectedOption.feedback;
+					if (tempFeedback != "" && !$(tempFeedback).is('p')) {
+						tempFeedback = '<p>' + tempFeedback + '</p>';
 					}
+					if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
+						tempFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '"></div>';
+					}
+					if (tempFeedback != "") {
+						answerFeedback += (answerFeedback == '' ? '<br/>' : '') + tempFeedback;
+					}
+					
 					var answerTxt = "";
 					if (selectedOption.label != undefined) {
                         answerTxt = selectedOption.label;
@@ -166,38 +178,40 @@
                 }
             }
             generalFeedback += answerFeedback;
-
-            var singleRight = x_currentPageXML.getAttribute("singleRight") != undefined ? x_currentPageXML.getAttribute("singleRight") : "Your answer is correct";
-			var singleWrong = x_currentPageXML.getAttribute("singleWrong") != undefined ? x_currentPageXML.getAttribute("singleWrong") : "Your answer is incorrect";
-			var multiRight = x_currentPageXML.getAttribute("multiRight") != undefined ? x_currentPageXML.getAttribute("multiRight") : "You have selected all the correct answers";
-			var multiWrong = x_currentPageXML.getAttribute("multiWrong") != undefined ? x_currentPageXML.getAttribute("multiWrong") : "You have not selected the correct combination of answers";
+			
+            var singleRight = x_currentPageXML.getAttribute("singleRight") != undefined ? x_currentPageXML.getAttribute("singleRight") : "Your answer is correct",
+				singleWrong = x_currentPageXML.getAttribute("singleWrong") != undefined ? x_currentPageXML.getAttribute("singleWrong") : "Your answer is incorrect",
+				multiRight = x_currentPageXML.getAttribute("multiRight") != undefined ? x_currentPageXML.getAttribute("multiRight") : "You have selected all the correct answers",
+				multiWrong = x_currentPageXML.getAttribute("multiWrong") != undefined ? x_currentPageXML.getAttribute("multiWrong") : "You have not selected the correct combination of answers";
 
             var rightWrongTxt = "";
             // add correct feedback depending on if question overall has been answered correctly or not
             if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
-                if (mcq.correctOption == true) { // there is a correct answer for question
-                    if ($("#pageContents").data("judge") == true) {
-                        rightWrongTxt = '<p><br/>' + multiRight + '</p>';
+                if ($("#pageContents").data("judge") == true) { // there is a correct answer for question
+					if (correct == true) {
+                        rightWrongTxt = multiRight != '' ? '<p><br/>' + multiRight + '</p>' : '';
                     } else {
-                        rightWrongTxt = '<p><br/>' + multiWrong + '</p>';
+						rightWrongTxt = multiWrong != '' ? '<p><br/>' + multiWrong + '</p>' : '';
                     }
                 }
             } else {
                 if ($("#pageContents").data("judge") == true) { // there is a correct answer for question
                     if (correct == true) {
-                        rightWrongTxt = '<p><br/>' + singleRight + '</p>';
+						rightWrongTxt = singleRight != '' ? '<p><br/>' + singleRight + '</p>' : '';
                     } else {
-                        rightWrongTxt = '<p><br/>' + singleWrong + '</p>';
+						rightWrongTxt = singleWrong != '' ? '<p><br/>' + singleWrong + '</p>' : '';
                     }
                 }
             }
-            generalFeedback += rightWrongTxt;
+			if (rightWrongTxt != '') {
+				generalFeedback += rightWrongTxt;
+			}
             var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
             if (feedbackLabel == undefined) {
                 feedbackLabel = "Feedback";
             }
             $("#feedback")
-				.html("<h3>" + feedbackLabel + "</h3>" + generalFeedback)
+				.html((feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '') + generalFeedback)
 				.find(".audioHolder").each(function() {
 					$(this).mediaPlayer({
 						type	:"audio",

@@ -533,7 +533,7 @@ div.separator {
 	margin-top:5px
 }
 
-.template_name{
+.template_name, .parent_template{
 	margin:0px;
 	font-weight:bold;
 	/* width:200px; */
