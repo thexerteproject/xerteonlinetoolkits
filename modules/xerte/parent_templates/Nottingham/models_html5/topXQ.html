@@ -138,7 +138,7 @@
                         score: checkAnswers[i].correct ? 100.0 : 0.0
                     };
                     XTExitInteraction(x_currentPage, i, result, "", inputs[i], "", x_currentPageXML.getAttribute("trackinglabel"));
-                    debugger;
+
 
                     if (checkAnswers[i].correct) {
                         amountOfCorrect++;
@@ -208,7 +208,7 @@
                         if (panelWidth == "Small") {
                             $splitScreen.addClass("medium");
                         } else if (panelWidth == "Large") {
-                            $splitScreen.addClass("xlarge");
+                            $splitScreen.addClass("large");
                         } else {
                             $splitScreen.addClass("large");
                         }
