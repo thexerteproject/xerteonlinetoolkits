@@ -64,7 +64,7 @@ function create_offline_file($varname, $sourcefile, $destfile)
  * Set up the paths
  */
 $dir_path = $xerte_toolkits_site->users_file_area_full . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
-$parent_template_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/parent_templates/" . $row['template_name'] . "/";
+$parent_template_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
 $scorm_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/scorm1.2/";
 $scorm_language_relpath = $xerte_toolkits_site->module_path . $row['template_framework'] . "/scorm1.2/";
 $scorm2004_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/scorm2004.3rd/";
@@ -224,7 +224,7 @@ if ($fullArchive) {
 
             // Offline theme js file
             $offline_includes .= "   <!-- theme file, normally loaded dynamically -->\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"theme/Nottingham/" . $xml->getTheme() . "/" . $xml->getTheme() . ".js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"themes/" . $row['parent_template'] . "/" . $xml->getTheme() . "/" . $xml->getTheme() . ".js\"></script>\n";
         }
         else {
             foreach ($models as $model) {
@@ -281,7 +281,7 @@ if (!$export_offline) {
 $theme = $xml->getTheme();
 if ($theme != "" && $theme != "default")
 {
-    export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['template_name'] . '/' . $theme . '/');
+    export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/' . $theme . '/');
     copy_extra_files();
 }
 
@@ -413,7 +413,7 @@ if ($scorm == "true") {
     if ($useflash) {
         scorm_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-            scorm_html5_page_create($_GET['template_id'], $row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage(), $need_download_url);
+            scorm_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $need_download_url);
     }
 } else if ($scorm == "2004") {
     $useflash = ($export_flash && !$export_html5);
@@ -421,7 +421,7 @@ if ($scorm == "true") {
     if ($export_flash && !$export_html5) {
         scorm2004_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-        scorm2004_html5_page_create($_GET['template_id'], $row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage(), $need_download_url);
+        scorm2004_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $need_download_url);
     }
 } else if($xAPI)
 	{
@@ -432,7 +432,7 @@ else {
         basic_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
     if ($export_html5) {
-        basic_html5_page_create($_GET['template_id'], $row['template_framework'], $row['template_name'],$lo_name,  $tsugi, $export_offline, $offline_includes, $need_download_url);
+        basic_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'],$lo_name,  $tsugi, $export_offline, $offline_includes, $need_download_url);
     }
 }
 
