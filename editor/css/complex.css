@@ -251,7 +251,7 @@ input.media, input.date
 .resizer-north:hover		{ background: url(../img/resizable-n.gif) repeat-x center; }*/
 .resizer-south-dragging ,
 .resizer-south:hover		{ background: url(../img/resizable-s.gif) repeat-x center; }
-	
+
 .resizer-west-dragging ,
 .resizer-west-open:hover	{ background: url(../img/resizable-w.gif) repeat-y center; }
 .resizer-east-dragging ,
@@ -422,7 +422,7 @@ span.button-close-east			{ background: url(../img/chevron-right_444444_15.png) n
 *	INNER LAYOUT RESIZERS & TOGGLERS
 *
 *	These styles target 'children of center pane', so only affect the Inner Layout
-*	This layout has applyDefaultCSS=true, so use !important to override defaults 
+*	This layout has applyDefaultCSS=true, so use !important to override defaults
 */
 
 #mainContent .ui-layout-resizer-closed:hover	{ background: #FFEDCA !important; }
@@ -567,7 +567,7 @@ span.button-close-east			{ background: url(../img/chevron-right_444444_15.png) n
     cursor: pointer;
 }
 
-#insert_menu .insert_buttons button img {  
+#insert_menu .insert_buttons button img {
 border-style: none;
 margin-right: 3px;
 }
@@ -850,6 +850,52 @@ td.flashonly, td.deprecated{
 
 .hotspotLightboxImg {
     width:100%;
+}
+
+.overlayWrapper {
+  width:100%;
+  height:100%;
+  position:relative;
+}
+.overlayImage {
+  width:100%;
+  height:100%;
+  position:absolute;
+  top:0px;
+  left:0px;
+}
+.overlayCanvas {
+  width:100%;
+  height:100%;
+  position:absolute;
+  top:0px;
+  left:0px;
+  z-index:9999;
+}
+
+.overlayDiv{
+  width:100%;
+  height:100%;
+  position:absolute;
+  top:0px;
+  left:0px;
+  z-index:9999;
+}
+
+.hotspot-handle{
+    width: 0px;
+    height: 0px;
+    padding: 4px;
+    border: 1px solid black;
+    cursor: grab;
+    position: absolute;
+    margin: -4px;
+    background-color: rgba(50, 50, 50, 1);
+}
+
+.instructions{
+    width: 94%;
+    padding: 3%;
 }
 
 
