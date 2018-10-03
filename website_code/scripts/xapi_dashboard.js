@@ -463,20 +463,28 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
     var parentIndex = "";
     var $this = this;
     var thclass = " ";
+    var max_interaction_title_length;
+
     if (interaction.parent == "" || this.data.selectInteractionById(interactions, interaction.parent) == undefined) {
         parentIndex = "-1";
         showHide = "show";
         interactionTitle = interactionTitle;
+
         if (interaction.children.length > 0) {
             collapseIcon = '<div data-interaction="' + interactionIndex + '" class="icon-header icon-hide">&#9701</div>';
             thclass += "x-dashboard-has-children ";
         }
-
+        max_interaction_title_length = 25;
         thclass += "x-dashboard-page";
     } else {
 
         parentIndex = this.data.selectInteractionById(interactions, interaction.parent).interactionObjectIndex;
         thclass += "x-dashboard-interaction";
+        max_interaction_title_length = 35;
+    }
+    if(interactionTitle.length > max_interaction_title_length)
+    {
+        interactionTitle = interactionTitle.substr(0, max_interaction_title_length - 3) + "...";
     }
     var interactionHeader = '<th data-parent="' + parentIndex + '" class="column-' + showHide + thclass +
         '"><a href="#" data-toggle="modal" data-target="#model-' +
@@ -634,7 +642,9 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
 xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, interaction) {
     var statements = this.data.getInteractionStatements(interaction.url);
     var started = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/initialized");
-    var completed = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/exited");
+    var completed = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/exited").concat(
+         this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/scored")
+    );
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRATTEMPTS + " " + started.length + "<br>");
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRCOMPLETIONS + " " + completed.length + "<br>");
     var grouped = this.data.groupStatementsOnSession([started, completed]);
