@@ -64,6 +64,19 @@ function mgt_page($xerte_toolkits_site, $extra)
                 background:white;
             }
             </style>
+
+            <?php
+            if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
+            {
+                ?>
+                <link href='branding/branding.css' rel='stylesheet' type='text/css'>
+                <?php
+            }
+            else {
+                ?>
+                <?php
+            }
+            ?>
         </head>
 
         <body>
@@ -184,6 +197,19 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
                 <link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" />
                 <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
+                <?php
+                if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
+                {
+                    ?>
+                    <link href='branding/branding.css' rel='stylesheet' type='text/css'>
+                    <?php
+                }
+                else {
+                    ?>
+                    <?php
+                }
+                ?>
+
                 <script type="text/javascript">
         <?PHP
         echo "var site_url = \"" . $xerte_toolkits_site->site_url . "\";\n";

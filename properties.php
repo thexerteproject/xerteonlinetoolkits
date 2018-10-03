@@ -75,6 +75,19 @@ _load_language_file("/properties.inc");
 		<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
 
+        <?php
+        if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
+        {
+            ?>
+            <link href='branding/branding.css' rel='stylesheet' type='text/css'>
+            <?php
+        }
+        else {
+            ?>
+            <?php
+        }
+        ?>
+
     </head>
 
     <!--
