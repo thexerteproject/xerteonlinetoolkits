@@ -377,6 +377,11 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
     if (title == undefined) {
         title = "";
     }
+    var max_popover_title = 25;
+    if(title.length > max_popover_title)
+    {
+        title = title.substr(0, max_popover_title - 3) + "...";
+    }
     div.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex).popover({
         content: "<div id='popover-" + learningObjectIndex + "-session-" + $this.escapeId(userdata['key']) + "-interaction-" +
             interactionObjectIndex + "'></div>",
@@ -397,11 +402,13 @@ xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, in
     var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
     var interactionObject = interactions[interactionObjectIndex];
     var html = XAPI_JOURNEY_POPOVER_STATUS + " " + this.interactionStatus(userdata, interactionObject.url) + "<br>";
+
+    var started = this.data.getFilteredStatements(userdata, "http://adlnet.gov/expapi/verbs/initialized", interactionObject.url);
     var scores = this.data.getAllInteractionScores(userdata, interactionObject.url);
     var durations = this.data.getAllDurations(userdata, interactionObject.url);
     var lastAnswer = this.data.getAnswers(userdata, interactionObject.url);
     var lastStatements = this.getLastUserAttempt(userdata);
-    html += XAPI_JOURNEY_POPOVER_NRTRIES + " " + scores.length + "<br>";
+    html += XAPI_JOURNEY_POPOVER_NRTRIES + " " + started.length + "<br>";
     if (scores.length == 1) {
         html += XAPI_JOURNEY_POPOVER_GRADE + " " + Math.round(scores[0] * 10000) / 100 + "%<br>";
 

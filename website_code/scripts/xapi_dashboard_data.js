@@ -435,11 +435,21 @@ DashboardState.prototype.getAllInteractions = function(data = undefined) {
                             }
                             children[parent].push(objectId);
                         }
+
+                        var interaction_name;
+                        if(statement.object.definition.name.en != undefined)
+                        {
+                            interaction_name = statement.object.definition.name.en;
+                        }else if(statement.object.definition.name["en-US"] != undefined)
+                        {
+                            interaction_name = statement.object.definition.name["en-US"]
+                        }else{
+                            interaction_name = "";
+                        }
                         interactionObjects.push({
                             type: type,
                             url: objectId,
-                            name: statement.object.definition
-                                .name.en,
+                            name: interaction_name,
                             parent: parent,
                             learningObjectIndex: lIndex,
                             interactionObjectIndex: iIndex
