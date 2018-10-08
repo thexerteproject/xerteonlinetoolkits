@@ -793,6 +793,7 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
     var interactionObjectUrl = interaction.url;
     contentDiv.append(XAPI_DASHBOARD_QUESTION + " " + question.name["en-US"]);
     var options = "<div>" + XAPI_DASHBOARD_ANSWERS + "<ol>";
+    choices = question.choices;
     question.choices.forEach(function(option) {
         var correct = "";
         if (question.correctResponsesPattern.indexOf(option.id) != -1) {
@@ -816,6 +817,29 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
             chart.yAxis.axisLabel(XAPI_DASHBOARD_GRAPH_CHOICE_YAXIS);
             chart.width(500);
             chart.height(500);
+            chart.color(function(d){
+                if(d.correct)
+                {
+                    return "green";
+                }
+                return "red";
+
+            });
+        },
+        post : function(data)
+        {
+            data.contents.forEach(function(d){
+                origAnswer = d.in;
+                answers = origAnswer.split("[,]");
+                updatedAnswers = [];
+                answers.forEach(function(a)
+                {
+                    updatedAnswers.push(choices.map(c => c.id).indexOf(a) + 1);
+                })
+                d.in = updatedAnswers.join(",");
+                d.correct = question.correctResponsesPattern.indexOf(origAnswer) != -1;
+            });
+            
         }
 
     });
