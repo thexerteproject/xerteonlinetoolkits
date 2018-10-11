@@ -27,6 +27,11 @@ abstract class Xerte_Authentication_Abstract
     protected $_errors = array();
 
     /**
+     * @var boolean - see auth_config.php.
+     */
+    protected $container_auth = false;
+
+    /**
      * @var StdClass - see config.php.
      */
     protected $xerte_toolkits_site = null;
@@ -72,10 +77,12 @@ abstract class Xerte_Authentication_Abstract
     abstract public function getEmail();
 
     /**
+     * @param boolean  $container_auth
      * @param StdClass $xerte_toolkits_site
      */
-    public function __construct($xerte_toolkits_site)
+    public function __construct($container_auth, $xerte_toolkits_site)
     {
+        $this->container_auth = $container_auth;
         $this->xerte_toolkits_site = $xerte_toolkits_site;
     }
 

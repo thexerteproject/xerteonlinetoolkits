@@ -193,7 +193,12 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
                     $this->addError("Issue connecting to ldap server (#4) : No entries found ");
                     return false;
                 } else {
-                    if (@ldap_bind($ds, $entry[0]['dn'], $password)) {
+                    $user_record = array('firstname' => $entry[0]['givenname'][0], 'surname' => $entry[0]['sn'][0], 'username' => $xot_username);
+                    if ($this->container_auth) {
+                        _debug("Container auth ok " . print_r($entry, true));
+                        $this->_record = $user_record;
+                        return true;
+                    } else if (@ldap_bind($ds, $entry[0]['dn'], $password)) {
                         _debug("Login ok " . print_r($entry, true));
                         /*
                          * valid login, so return true
@@ -201,6 +206,9 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
 
                         $this->_record = array('firstname' => $entry[0]['givenname'][0], 'surname' => $entry[0]['sn'][0], 'username' => $xot_username);
                         return true;
+                    } else {
+                        _debug("Failed to authenticate " . print_r($entry, true));
+                        return false;
                     }
                 }
             }
