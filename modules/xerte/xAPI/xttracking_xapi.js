@@ -903,7 +903,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
         if (this.ia_nr < 0) {
             // This is a page, use ia_name if set
             if (this.ia_name != null && this.ia_name != "") {
-                return this.ia_name;
+                return $("<div>").html(this.ia_name).text();
             }
         } else {
             var sitp = state.findPage(this.page_nr);
@@ -930,7 +930,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
     function getxApiDescription() {
         if (this.ia_nr >= 0) {
             if (this.ia_name != null && this.ia_name != "") {
-                return this.ia_name;
+                return $("<div>").html(this.ia_name).text();
             } else {
                 return "Interactivity " + this.ia_nr;
             }
@@ -985,6 +985,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
             },
             timestamp: this.enterInteractionStamp
         };
+        statement.object.definition.name[state.language] = description;
 
         if (this.grouping != "") {
             statement.context = {
@@ -1110,11 +1111,10 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             var scorm_canswer = scormCorrectArray.join('[,]');
                             statement.object.definition = {
                                 name: {
-                                    "en-US": this.ia_name
+                                    "en-US": description
                                 },
                                 description: {
-                                    "en-US": "Matching interaction " + this
-                                        .ia_name + " of " + pageref
+                                    "en-US": "Matching interaction " + description + " of " + pageref
                                 },
                                 type: "http://adlnet.gov/expapi/activities/cmi.interaction",
                                 interactionType: "matching",
@@ -1122,7 +1122,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 target: targetArray,
                                 correctResponsesPattern: [scorm_canswer]
                             };
-                            statement.object.definition.name[state.language] = this.ia.name;
+                            statement.object.definition.name[state.language] = description;
                             statement.result = {
                                 duration: calcDuration(this.start, this.end),
                                 score: {
@@ -1177,10 +1177,10 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
 
                             statement.object.definition = {
                                 name: {
-                                    "en-US": this.ia_name
+                                    "en-US": description
                                 },
                                 description: {
-                                    "en-US": "Choice interaction " + this.ia_name +
+                                    "en-US": "Choice interaction " + description +
                                         " of " + pageref
                                 },
                                 type: "http://adlnet.gov/expapi/activities/cmi.interaction",
@@ -1188,7 +1188,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 choices: scormArray,
                                 correctResponsesPattern: scorm_canswer
                             };
-                            statement.object.definition.name[state.language] = this.ia_name;
+                            statement.object.definition.name[state.language] = description;
                             statement.result = {
                                 duration: calcDuration(this.start, this.end),
                                 score: {
@@ -1208,17 +1208,17 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         case 'numeric':
                             statement.object.definition = {
                                 name: {
-                                    "en-US": this.ia_name
+                                    "en-US": description
                                 },
                                 description: {
-                                    "en-US": "Numeric interaction " + this.ia_name +
+                                    "en-US": "Numeric interaction " + description +
                                         " of " + pageref
                                 },
                                 type: "http://adlnet.gov/expapi/activities/cmi.interaction",
                                 interactionType: "numeric",
                                 correctResponsesPattern: ["0[:]100"]
                             };
-                            statement.object.definition.name[state.language] = this.ia_name;
+                            statement.object.definition.name[state.language] = description;
                             if (this.ia_nr < 0) // Page mode
                             {
                                 statement.result = {
@@ -1264,10 +1264,10 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             }
                             statement.object.definition = {
                                 name: {
-                                    "en-US": this.ia_name
+                                    "en-US": description
                                 },
                                 description: {
-                                    "en-US": "Fill-in interaction " + this.ia_name +
+                                    "en-US": "Fill-in interaction " + description +
                                         " of " + pageref
                                 },
                                 type: "http://adlnet.gov/expapi/activities/cmi.interaction",
@@ -1339,6 +1339,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     "en": "Interaction with " + pageref
                                 }
                             };
+                            statement.object.definition.name[state.language] = description;
                             var duration = calcDuration(this.start, this.end);
                             statement.result = {
                                 duration: duration,
@@ -1489,13 +1490,13 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         id: id,
                         definition: {
                             name: {
-                                "en": this.ia_name
+                                "en": description
                             }
                         }
                     },
                     timestamp: new Date()
                 };
-                statement.object.definition.name[state.language] = this.ia.name;
+                statement.object.definition.name[state.language] = description;
 
             } else {
                 statement = {
@@ -1517,6 +1518,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                     },
                     timestamp: new Date()
                 };
+                statement.object.definition.name[state.language] = description;
             }
             if (this.grouping != "") {
                 statement.context = {
@@ -1894,6 +1896,7 @@ function XTEnterPage(page_nr, page_name) {
             timestamp: this.pageStart
 
         };
+        statement.object.definition.name[state.language] = description;
         SaveStatement(statement);
     }
 }
