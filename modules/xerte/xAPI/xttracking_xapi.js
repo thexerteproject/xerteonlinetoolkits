@@ -56,6 +56,7 @@ function XApiTrackingState() {
     this.debug = false;
     this.sessionId = "";
     this.category = "";
+    this.language = "en";
 
     this.initialise = initialise;
     this.getCompletionStatus = getCompletionStatus;
@@ -1074,12 +1075,14 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             for (i = 0; i < this.correctOptions.length; i++) {
                                 // Create ascii characters from option number and ignore answer string
                                 var entry = this.correctOptions[i];
-                                sourceArray.push({
+                                var entryobject = {
                                     id: entry.source.replace(/ /g, "_"),
                                     description: {
                                         "en-US": entry.source
                                     }
-                                });
+                                };
+                                entryobject.description[state.language] = entry.source;
+                                sourceArray.push(entryobject);
                                 // Only add to target array if not already present
                                 var found = false;
                                 var targetid = entry.target.replace(/ /g, "_");
@@ -1090,13 +1093,15 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     }
                                 }
                                 if (!found) {
-                                    targetArray.push({
+                                    var targetObj = {
                                         id: entry.target.replace(/ /g,
                                             "_"),
                                         description: {
                                             "en-US": entry.target
                                         }
-                                    });
+                                    };
+                                    targetObj.description[state.language] = entry.target;
+                                    targetArray.push(targetObj);
                                 }
                                 scormCorrectArray.push(entry.source.replace(
                                     / /g, "_") + "[.]" + entry.target.replace(
@@ -1117,6 +1122,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 target: targetArray,
                                 correctResponsesPattern: [scorm_canswer]
                             };
+                            statement.object.definition.name[state.language] = this.ia.name;
                             statement.result = {
                                 duration: calcDuration(this.start, this.end),
                                 score: {
@@ -1160,6 +1166,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                         ]
                                     }
                                 };
+                                entry.description[state.language] = this.correctOptions[i]['answer'];
                                 scormArray.push(entry);
                                 if (this.correctOptions[i].result) {
                                     scormCorrectArray.push(this.correctOptions[
@@ -1181,6 +1188,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 choices: scormArray,
                                 correctResponsesPattern: scorm_canswer
                             };
+                            statement.object.definition.name[state.language] = this.ia_name;
                             statement.result = {
                                 duration: calcDuration(this.start, this.end),
                                 score: {
@@ -1210,6 +1218,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 interactionType: "numeric",
                                 correctResponsesPattern: ["0[:]100"]
                             };
+                            statement.object.definition.name[state.language] = this.ia_name;
                             if (this.ia_nr < 0) // Page mode
                             {
                                 statement.result = {
@@ -1265,6 +1274,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 interactionType: "fill-in",
                                 correctResponsesPattern: [this.correctAnswers]
                             };
+                            statement.object.definition.name[state.language] = this.ia_name;
                             if (this.ia_type == 'text') {
                                 statement.result = {
                                     duration: calcDuration(this.start, this
@@ -1291,7 +1301,8 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                         "en-US": "Model answer interaction " +
                                             this.ia_name + " of " + pageref
                                     }
-                                }
+                                };
+                                statement.object.definition.name[state.language] = this.ia_name;
                             } else {
                                 statement.result = {
                                     duration: calcDuration(this.start, this
@@ -1484,6 +1495,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                     },
                     timestamp: new Date()
                 };
+                statement.object.definition.name[state.language] = this.ia.name;
 
             } else {
                 statement = {
@@ -1573,7 +1585,7 @@ function XTInitialise(category) {
         }
         if (typeof coursename != "undefined" && coursename != "") {
             state.course = {
-                id: baseUrl() + '/course/' + coursename
+                id: baseUrl() + 'course/' + coursename
             };
             state.coursename = coursename;
         } else {
@@ -1582,7 +1594,7 @@ function XTInitialise(category) {
         }
         if (typeof modulename != "undefined" && modulename != "") {
             state.module = {
-                id: baseUrl() + '/module/' + modulename
+                id: baseUrl() + 'module/' + modulename
             };
             state.modulename = modulename;
         } else {
@@ -1641,6 +1653,10 @@ function XTInitialise(category) {
     } else {
         state.category = "";
     }
+    if (x_params.language != "undefined" && x_params.language != "")
+    {
+        state.language=x_params.language.substr(0,2);
+    }
 
     //    if(lrsInstance == undefined){
     try {
@@ -1698,6 +1714,7 @@ function XTInitialise(category) {
             },
             timestamp: this.initStamp
         };
+        statement.object.definition.name[state.language] = x_params.name;
 
         SaveStatement(statement);
     }
@@ -1877,7 +1894,6 @@ function XTEnterPage(page_nr, page_name) {
             timestamp: this.pageStart
 
         };
-
         SaveStatement(statement);
     }
 }
@@ -1934,6 +1950,7 @@ function XTSetViewed(page_nr, name, score) {
             timestamp: this.pageEnd
 
         };
+        statement.object.definition.name[state.language] = name;
 
         SaveStatement(statement);
         state.setPageScore(page_nr, score);
@@ -2029,6 +2046,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                     }
                 }
             };
+            statement.object.definition.name[state.language] = pagename;
             SaveStatement(statement);
             break;
         case "played":
@@ -2071,6 +2089,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                     }
                 }
             };
+            statement.object.definition.name[state.language] = pagename;
             SaveStatement(statement);
             break;
         case "paused":
@@ -2122,6 +2141,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                     }
                 }
             };
+            statement.object.definition.name[state.language] = pagename;
             SaveStatement(statement);
             break;
         case "seeked":
@@ -2165,6 +2185,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                     }
                 }
             };
+            statement.object.definition.name[state.language] = pagename;
             SaveStatement(statement);
             break;
         case "interacted":
@@ -2223,6 +2244,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                         }
                     }
                 };
+                statement.object.definition.name[state.language] = pagename;
             } else {
                 // use terminated, so first send paused as according to standards (if not already sent)
                 if (state.prevVerb != "paused") {
@@ -2267,6 +2289,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                             }
                         }
                     };
+                    statement.object.definition.name[state.language] = pagename;
                     SaveStatement(statement);
                 }
                 var statement = {
@@ -2310,6 +2333,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                         }
                     }
                 };
+                statement.object.definition.name[state.language] = pagename;
             }
             SaveStatement(statement);
             break;
@@ -2356,7 +2380,6 @@ function XTSetPageScore(page_nr, score) {
             timestamp: this.pageEnd
 
         };
-
         SaveStatement(statement);
     }
 }
@@ -2417,7 +2440,6 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
                 },
                 timestamp: endtime
             };
-
             SaveStatement(statement);
 
             // save score for each class
@@ -2700,6 +2722,7 @@ function XTTerminate() {
                 },
                 timestamp: new Date()
             };
+            statement.object.definition.name[state.language] = x_params.name;
             SaveStatement(statement, false);
             if (state.getSuccessStatus() == "passed") {
                 // Sen passsed
@@ -2734,6 +2757,7 @@ function XTTerminate() {
                     },
                     timestamp: new Date()
                 };
+                statement.object.definition.name[state.language] = x_params.name;
                 SaveStatement(statement, false);
             } else {
                 // Send failed
@@ -2768,6 +2792,7 @@ function XTTerminate() {
                     },
                     timestamp: new Date()
                 };
+                statement.object.definition.name[state.language] = x_params.name;
                 SaveStatement(statement, false);
             }
             // Save scored
@@ -2802,6 +2827,7 @@ function XTTerminate() {
                 },
                 timestamp: new Date()
             };
+            statement.object.definition.name[state.language] = x_params.name;
             SaveStatement(statement, false);
 
         }
@@ -2841,6 +2867,7 @@ function XTTerminate() {
             },
             timestamp: new Date()
         };
+        statement.object.definition.name[state.language] = x_params.name;
         SaveStatement(statement, false);
         if (lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
@@ -2873,7 +2900,7 @@ function SaveStatement(statement, async) {
     extension = {
         "http://xerte.org.uk/sessionId": state.sessionId,
         "http://xerte.org.uk/learningObjectId": baseUrl() + state.templateId,
-        "http://xerte.org.uk/learningObjectTitle": x_params.name + " (" +
+        "http://xerte.org.uk/learningObjectTitle": $("<div>").html(x_params.name).text() + " (" +
             state.templateId + ")"
     };
     if (state.coursename != "") {
@@ -2899,16 +2926,17 @@ function SaveStatement(statement, async) {
         if (typeof statement.context.contextActivities == "undefined") {
             statement.context.contextActivities = {};
         }
-        statement.context.contextActivities.parent = [{
+        var parentObj = {
             "definition": {
                 "name": {
-                    "en-US": x_params.name + " (" + state.templateId +
-                        ")"
+                    "en-US": x_params.name + " (" + state.templateId + ")"
                 }
             },
             "id": parentId,
             "objectType": "Activity"
-        }];
+        };
+        parentObj.definition.name[state.language] = x_params.name + " (" + state.templateId + ")";
+        statement.context.contextActivities.parent = [parentObj];
     }
     if (state.category != "") {
         //Place Xerte Category in contextActivities/Other, NOT in categoryContext/category, because that is used for different puposes by xAPI
