@@ -71,11 +71,31 @@ $(document).keydown(function(e) {
     switch(e.which) {
         case 33: // PgUp
             if (x_currentPage > 0 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
-                if (x_params.navigation != "Historic") {
+                if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
 					x_changePage(x_currentPage -1);
                 } else {
                     var prevPage = x_pageHistory[x_pageHistory.length-2];
                     x_pageHistory.splice(x_pageHistory.length - 2, 2);
+					//check if history is empty and if so allow normal back navigation and change to normal back button
+				if(prevPage==undefined && x_currentPage > 0 && x_params.navigation == "LinearWithHistoric"){
+					prevIcon = "x_prev";
+					$x_prevBtn
+						.button({
+							icons: {
+							primary: prevIcon
+					},
+			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+			text:	false
+		})
+		 x_changePage(x_currentPage -1);
+				   }
+				   //disable normal back navigation if 1st page
+				if (x_currentPage <=1){
+					$x_prevBtn
+            .button("disable")
+            .removeClass("ui-state-focus")
+            .removeClass("ui-state-hover");
+					}
                     x_changePage(prevPage);
                 }
 			}
@@ -333,7 +353,7 @@ x_projectDataLoaded = function(xmlData) {
         if (x_params.navigation == undefined) {
             x_params.navigation = "Linear";
         }
-        if (x_params.navigation != "Linear" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
+        if (x_params.navigation != "Linear" && x_params.navigation != "LinearWithHistoric" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
             x_pages.splice(0, 0, "menu");
             x_pageInfo.splice(0, 0, {type: 'menu', built: false});
         }
@@ -1074,7 +1094,7 @@ function x_continueSetUp1() {
 	}
 	
 	var prevIcon = "x_prev";
-	if (x_params.navigation == "Historic") {
+	if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
 		prevIcon = "x_prev_hist";
 	}
 	
@@ -1087,11 +1107,41 @@ function x_continueSetUp1() {
 			text:	false
 		})
 		.click(function() {
-			if (x_params.navigation != "Historic") {
+			if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
 				x_changePage(x_currentPage -1);
 			} else {
+				//ensure button is historic style
+				prevIcon = "x_prev_hist";
+					$x_prevBtn
+						.button({
+							icons: {
+							primary: prevIcon
+					},
+			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+			text:	false
+		})
 				var prevPage = x_pageHistory[x_pageHistory.length-2];
 				x_pageHistory.splice(x_pageHistory.length - 2, 2);
+				//check if history is empty and if so allow normal back navigation and change to normal back button
+				if(prevPage==undefined && x_currentPage > 0 && x_params.navigation == "LinearWithHistoric"){
+					prevIcon = "x_prev";
+					$x_prevBtn
+						.button({
+							icons: {
+							primary: prevIcon
+					},
+			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+			text:	false
+		})
+				   x_changePage(x_currentPage -1);
+				   }
+				//disable normal back navigation if 1st page
+				if (x_currentPage <=1){
+					$x_prevBtn
+            .button("disable")
+            .removeClass("ui-state-focus")
+            .removeClass("ui-state-hover");
+					}
 				x_changePage(prevPage);
 			}
 			$(this)
@@ -1108,6 +1158,18 @@ function x_continueSetUp1() {
 			text:	false
 		})
 		.click(function() {
+		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
+				//when moving forward history is generated so ensure button is historic style
+				prevIcon = "x_prev_hist";
+					$x_prevBtn
+						.button({
+							icons: {
+							primary: prevIcon
+					},
+			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+			text:	false
+		})
+			}
 			x_changePage(x_currentPage+1);
 			$(this)
 				.removeClass("ui-state-focus")
@@ -1134,7 +1196,7 @@ function x_continueSetUp1() {
 		})
 		.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
 		.click(function() {
-			if (x_params.navigation == "Linear" || x_params.navigation == undefined) {
+			if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
 				x_openDialog("menu", x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"), x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"));
 			} else if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
 				x_navigateToPage(false,{type:'linkID',ID:x_params.homePage});
@@ -1656,7 +1718,7 @@ function x_changePageStep5(x_gotoPage) {
         }
     }
 
-    if (x_params.navigation == "Historic") {
+    if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
         x_pageHistory.push(x_currentPage);
     }
 
@@ -1904,7 +1966,7 @@ function x_setUpPage() {
 
     if (x_currentPage > 0) {
         $x_prevBtn.button("enable");
-    } else if (x_params.navigation != "Historic" || (x_params.navigation == "Historic" && x_pageHistory.length <= 1)) {
+    } else if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric" || (x_params.navigation == "Historic" && x_pageHistory.length <= 1)) {
         $x_prevBtn
             .button("disable")
             .removeClass("ui-state-focus")
