@@ -2597,7 +2597,6 @@ var EDITOR = (function ($, parent) {
                                             }
                                             var stringVal = JSON.stringify(npoints);
                                             img = $('#featherlight-content img');
-                                            debugger;
                                             setAttributeValue(key, ["points", "w", "h"], [stringVal, img.width(), img.height()]);
 
                                             current.close();
