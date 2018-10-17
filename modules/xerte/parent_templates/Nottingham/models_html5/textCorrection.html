@@ -28,6 +28,7 @@
             };
 
             this.init = function() {
+
                 var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
                     $splitScreen = $("#pageContents .splitScreen");
                 var $textHolder = $("#textHolder");
@@ -73,19 +74,37 @@
 
                 var $question = $("#infoHolder #question");
                 var question = x_currentPageXML.getAttribute("wrongText");
+                question = $("<div>").html(question).text().trim();
                 $question.html(question);
 
                 var answer = x_currentPageXML.getAttribute("answer");
-                answer = answer.replace(/(<p[^>]+?>|<p>|<\/p>)/img, "").trim();
+                answer = $("<div>").html(answer).text().trim();
 
                 var $correctOrNot = $("#infoHolder #correctOrNot");
                 var correct = "Good job";
 
                 var $feedback = $("#infoHolder #feedback");
                 var feedback = x_currentPageXML.getAttribute("feedback");
+                feedback = $("<div>").html(feedback).text().trim();
 
+                var $answer = $("#infoHolder #answer");
 
+                var showAnswer =  x_currentPageXML.getAttribute("showAnswers");
 
+                //Translation
+                var incorrect = x_currentPageXML.getAttribute("textWrong");
+
+                var incompleet = x_currentPageXML.getAttribute("textIncomplete");
+
+                var correct = x_currentPageXML.getAttribute("textRight");
+
+                var checkButtonTxt = x_currentPageXML.getAttribute("checkBtn");
+
+                var resultLabel = x_currentPageXML.getAttribute("resultLabel");
+
+                var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+
+                var answerLabel = x_currentPageXML.getAttribute("answerLabel");
 
 
                 // if (checkBtnTxt == undefined) {
@@ -93,22 +112,32 @@
                 // }
                 $("#checkButton")
                     .button({
-                        label: "Check"
+                        label: checkButtonTxt
                     })
                     .click(function () {
+                        $(checkButton).button("disable");
                         //get value of text area
                         var input = $(".answer textarea").val();
-
                         // decide if it is correct or not
+                        $correctOrNot.append("<h3>"+resultLabel+"</h3>");
                         if(input === answer){
-                            $correctOrNot.html(correct)
-                        }else{
-                            $correctOrNot.html("nope")
+                            $correctOrNot.append(correct)
+                        }
+                        if(input === ""){
+                            $correctOrNot.append(incompleet);
+                        }else if(input !== answer){
+                            $correctOrNot.append(incorrect)
                         }
 
                         // show feedback
-                        $feedback.append("<h3>" + "Feedback" + "</h3>")
+                        $feedback.append("<h3>" + feedbackLabel + "</h3>");
                         $feedback.append(feedback);
+
+                        if(showAnswer === null || showAnswer === true){
+
+                            $answer.append("<h3>" + answerLabel + "</h3>");
+                            $answer.append(answer)
+                        }
 
                     });
 
@@ -141,7 +170,9 @@
                 <div id="feedback">
 
                 </div>
+                <div id ="answer">
 
+                </div>
             </div>
         </div>
     </div>
