@@ -2596,7 +2596,9 @@ var EDITOR = (function ($, parent) {
                                                 });
                                             }
                                             var stringVal = JSON.stringify(npoints);
-                                            setAttributeValue(key, ["points"], [stringVal]);
+                                            img = $('#featherlight-content img');
+                                            debugger;
+                                            setAttributeValue(key, ["points", "w", "h"], [stringVal, img.width(), img.height()]);
 
                                             current.close();
                                             parent.tree.showNodeData(key);
@@ -2717,7 +2719,7 @@ var EDITOR = (function ($, parent) {
                                             }else if(
                                                         !dragging
                                                         && e.type == "mouseup"
-                                                        && e.target.className != "hotspot-handle" 
+                                                        && e.target.className != "hotspot-handle"
                                                         &&
                                                         (
                                                             last_mousedown == undefined

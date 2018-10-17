@@ -23,7 +23,7 @@
 	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
 
     <newNodes>
-	  <hotspot><![CDATA[<hotspot name="Hotspot" text="Description for the hotspot" points="[]"/>]]></hotspot>
+	  <hotspot><![CDATA[<hotspot name="Hotspot" text="Description for the hotspot" w="0" h="0" points="[]"/>]]></hotspot>
     </newNodes>
 
   </hotspotImage>
