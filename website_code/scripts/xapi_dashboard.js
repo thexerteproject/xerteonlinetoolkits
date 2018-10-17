@@ -377,6 +377,11 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
     if (title == undefined) {
         title = "";
     }
+    var max_popover_title = 25;
+    if(title.length > max_popover_title)
+    {
+        title = title.substr(0, max_popover_title - 3) + "...";
+    }
     div.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex).popover({
         content: "<div id='popover-" + learningObjectIndex + "-session-" + $this.escapeId(userdata['key']) + "-interaction-" +
             interactionObjectIndex + "'></div>",
@@ -397,11 +402,13 @@ xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, in
     var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
     var interactionObject = interactions[interactionObjectIndex];
     var html = XAPI_JOURNEY_POPOVER_STATUS + " " + this.interactionStatus(userdata, interactionObject.url) + "<br>";
+
+    var started = this.data.getFilteredStatements(userdata, "http://adlnet.gov/expapi/verbs/initialized", interactionObject.url);
     var scores = this.data.getAllInteractionScores(userdata, interactionObject.url);
     var durations = this.data.getAllDurations(userdata, interactionObject.url);
     var lastAnswer = this.data.getAnswers(userdata, interactionObject.url);
     var lastStatements = this.getLastUserAttempt(userdata);
-    html += XAPI_JOURNEY_POPOVER_NRTRIES + " " + scores.length + "<br>";
+    html += XAPI_JOURNEY_POPOVER_NRTRIES + " " + started.length + "<br>";
     if (scores.length == 1) {
         html += XAPI_JOURNEY_POPOVER_GRADE + " " + Math.round(scores[0] * 10000) / 100 + "%<br>";
 
@@ -463,20 +470,28 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
     var parentIndex = "";
     var $this = this;
     var thclass = " ";
+    var max_interaction_title_length;
+
     if (interaction.parent == "" || this.data.selectInteractionById(interactions, interaction.parent) == undefined) {
         parentIndex = "-1";
         showHide = "show";
         interactionTitle = interactionTitle;
+
         if (interaction.children.length > 0) {
             collapseIcon = '<div data-interaction="' + interactionIndex + '" class="icon-header icon-hide">&#9701</div>';
             thclass += "x-dashboard-has-children ";
         }
-
+        max_interaction_title_length = 25;
         thclass += "x-dashboard-page";
     } else {
 
         parentIndex = this.data.selectInteractionById(interactions, interaction.parent).interactionObjectIndex;
         thclass += "x-dashboard-interaction";
+        max_interaction_title_length = 35;
+    }
+    if(interactionTitle.length > max_interaction_title_length)
+    {
+        interactionTitle = interactionTitle.substr(0, max_interaction_title_length - 3) + "...";
     }
     var interactionHeader = '<th data-parent="' + parentIndex + '" class="column-' + showHide + thclass +
         '"><a href="#" data-toggle="modal" data-target="#model-' +
@@ -634,7 +649,9 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
 xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, interaction) {
     var statements = this.data.getInteractionStatements(interaction.url);
     var started = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/initialized");
-    var completed = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/exited");
+    var completed = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/exited").concat(
+         this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/scored")
+    );
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRATTEMPTS + " " + started.length + "<br>");
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRCOMPLETIONS + " " + completed.length + "<br>");
     var grouped = this.data.groupStatementsOnSession([started, completed]);
@@ -776,6 +793,7 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
     var interactionObjectUrl = interaction.url;
     contentDiv.append(XAPI_DASHBOARD_QUESTION + " " + question.name["en-US"]);
     var options = "<div>" + XAPI_DASHBOARD_ANSWERS + "<ol>";
+    choices = question.choices;
     question.choices.forEach(function(option) {
         var correct = "";
         if (question.correctResponsesPattern.indexOf(option.id) != -1) {
@@ -799,6 +817,29 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
             chart.yAxis.axisLabel(XAPI_DASHBOARD_GRAPH_CHOICE_YAXIS);
             chart.width(500);
             chart.height(500);
+            chart.color(function(d){
+                if(d.correct)
+                {
+                    return "green";
+                }
+                return "red";
+
+            });
+        },
+        post : function(data)
+        {
+            data.contents.forEach(function(d){
+                origAnswer = d.in;
+                answers = origAnswer.split("[,]");
+                updatedAnswers = [];
+                answers.forEach(function(a)
+                {
+                    updatedAnswers.push(choices.map(c => c.id).indexOf(a) + 1);
+                })
+                d.in = updatedAnswers.join(",");
+                d.correct = question.correctResponsesPattern.indexOf(origAnswer) != -1;
+            });
+            
         }
 
     });
