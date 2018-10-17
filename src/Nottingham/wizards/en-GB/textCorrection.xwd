@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
     <pageWizard remove="true" duplicate="false">
         <newNodes>
-            <textCorrection><![CDATA[<textCorrection name="Enter Page Title" align="Left" instruction="Enter the introduction for the page here" wrongText="Enter the wrong text here" answer="Enter the correct text here" feedback="Enter the feedback here" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" textCorrect="You passed this test" textWrong="You have no good answers" textIncomplete="You have not filled in any answers correctly. Please try again."/>]]></textCorrection>
+            <textCorrection><![CDATA[<textCorrection name="Enter Page Title" align="Left" instruction="Enter the introduction for the page here" wrongText="Enter the wrong text here" answer="Enter the correct text here" feedback="Enter the feedback here" panelWidth="Medium" checkBtn="Check"  textRight="You passed this test" textWrong="You have no good answers"  resultLabel="Result" feedbackLabel="Feedback" answerLabel="Answer" textIncomplete="You have not filled in any answers correctly. Please try again."/>]]></textCorrection>
         </newNodes>
     </pageWizard>
 
@@ -13,11 +13,14 @@
         <answer label="Correct Text" type="TextArea" height="150"/>
         <feedback label="Feedback" type="TextArea" height="50"/>
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+        <showAnswers label = "Show Answers" defaultValue="true" type="CheckBox" optional="true"></showAnswers>
 
         <checkBtn label="Check Button Text" type="TextInput" wysiwyg="true" language="true"/>
-        <showBtn label="Show Button Text" type="TextInput" wysiwyg="true" language="true"/>
-        <textWrong label="Text All Wrong" type="TextInput" wysiwyg="true" language="true" />
-        <textCorrectlabel label="Text All Wrong" type="TextInput" wysiwyg="true" language="true"/>
+        <textRight label="Passed the test" type="TextInput" wysiwyg="true" language="true"/>
+        <textWrong label="Failed the test" type="TextInput" wysiwyg="true" language="true" />
         <textIncomplete label= "Text Incomplete" type="TextInput" wysiwyg="true" language="true"/>
+        <resultLabel label="Result" type="TextInput" wysiwyg="true" language="true"></resultLabel>
+        <feedbackLabel label="Feedback" type="TextInput" wysiwyg="true" language="true"></feedbackLabel>
+        <answerLabel label="Answer" type="TextInput" wysiwyg="true" language="true"></answerLabel>
     </textCorrection>
 </wizard>
