@@ -98,7 +98,7 @@
 
                 var correct = x_currentPageXML.getAttribute("textRight");
 
-                var checkButton = x_currentPageXML.getAttribute("checkBtn");
+                var checkButtonTxt = x_currentPageXML.getAttribute("checkBtn");
 
                 var resultLabel = x_currentPageXML.getAttribute("resultLabel");
 
@@ -112,9 +112,10 @@
                 // }
                 $("#checkButton")
                     .button({
-                        label: checkButton
+                        label: checkButtonTxt
                     })
                     .click(function () {
+                        $(checkButton).button("disable");
                         //get value of text area
                         var input = $(".answer textarea").val();
                         // decide if it is correct or not
@@ -123,7 +124,7 @@
                             $correctOrNot.append(correct)
                         }
                         if(input === ""){
-                            $correctOrNot.append(incompleet)
+                            $correctOrNot.append(incompleet);
                         }else if(input !== answer){
                             $correctOrNot.append(incorrect)
                         }
