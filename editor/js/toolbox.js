@@ -2623,8 +2623,8 @@ var EDITOR = (function ($, parent) {
                                             var handle = $(handle_shell);
                                             point.id = "handle_" + i;
                                             handle.attr("id", point.id);
-                                            handle.css("left", point.x);
-                                            handle.css("top", point.y);
+                                            handle.css("left", point.x * canvas.width);
+                                            handle.css("top", point.y * canvas.height);
                                             $("#outer_img_" + id + " .overlayDiv").append(handle.prop("outerHTML"));
                                         }
 
@@ -2648,8 +2648,8 @@ var EDITOR = (function ($, parent) {
                                             x -= rect.left;
                                             y -= rect.top;
                                             return {
-                                                x: x,
-                                                y: y
+                                                x: x / canvas.width,
+                                                y: y / canvas.height
                                             };
                                         }
 
@@ -2669,9 +2669,9 @@ var EDITOR = (function ($, parent) {
                                                 point = points[i % points.length];
                                                 if(i == 0)
                                                 {
-                                                    context.moveTo(point.x, point.y);
+                                                    context.moveTo(point.x * canvas.width, point.y * canvas.height);
                                                 }else{
-                                                    context.lineTo(point.x, point.y);
+                                                    context.lineTo(point.x * canvas.width, point.y * canvas.height);
                                                 }
                                             }
                                             context.stroke();
@@ -2743,7 +2743,8 @@ var EDITOR = (function ($, parent) {
                                                     mouse = getMousePosition(canvas, e);
                                                     point.x = mouse.x;
                                                     point.y = mouse.y;
-                                                    $("#" + current_handle).css("top", point.y).css("left", point.x);
+
+                                                    $("#" + current_handle).css("top", point.y * canvas.height).css("left", point.x * canvas.width);
                                                     last_mousedown = e;
                                                     redraw_points(canvas);
                                                 }
@@ -2802,8 +2803,8 @@ var EDITOR = (function ($, parent) {
 
                                             var handle = $(handle_shell);
                                             handle.attr("id", center.id);
-                                            handle.css("left", center.x);
-                                            handle.css("top", center.y);
+                                            handle.css("left", center.x * canvas.width);
+                                            handle.css("top", center.y * canvas.height);
                                             $("#outer_img_" + id + " .overlayDiv").append(handle.prop("outerHTML"));
                                             redraw_points(canvas);
                                         }
