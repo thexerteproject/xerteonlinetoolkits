@@ -397,10 +397,7 @@
 						var $this = $(this);
 
 						setTimeout(function() {
-							currvalue = $this.val();
-							if (!casesensitive) {
-								currvalue = $this.val().toLowerCase();
-							}
+							var currvalue = !casesensitive ? $this.val().trim().toLowerCase() : $this.val().trim();
 							if (answerData[$this.data("index")].indexOf(currvalue) != -1) { // correct
 								$this
 									.attr("readonly", "readonly")
@@ -514,9 +511,9 @@
 					})
 					//.attr("tabindex",tabIndex) // **
 					.click(function() {
-						 $targetHolder.find("input").each(function() {
+						$targetHolder.find("input").each(function() {
 							var $this = $(this),
-								currvalue = !casesensitive ? $this.val().toLowerCase() : $this.val();
+								currvalue = !casesensitive ? $this.val().trim().toLowerCase() : $this.val().trim();
 							
 							if (answerData[$this.data("index")].indexOf(currvalue) != -1) {
 								$this.attr("readonly", "readonly");
@@ -1006,7 +1003,7 @@
 				
                 $targetHolder.find("input").each(function() {
                     var $this = $(this),
-                        currvalue = !casesensitive ? $this.val().toLowerCase() : $this.val();
+                        currvalue = !casesensitive ? $this.val().trim().toLowerCase() : $this.val().trim();
                     var feedback = "Incorrect"
                     var correct = false;
                     var answer = currvalue;
