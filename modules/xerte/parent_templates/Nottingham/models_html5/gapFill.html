@@ -186,7 +186,7 @@
 						gapFillStr += '</select>';
 						
 					} else { // fill in the blank
-						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + decodedAnswer + '" tabindex="' + tabIndex + '"/>';
+						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + decodedAnswer + '" tabindex="' + tabIndex + '" autocapitalize="none"/>';
 
 						var tempArray = [];
 						tempArray = decodedAnswer.split(delimiter);
