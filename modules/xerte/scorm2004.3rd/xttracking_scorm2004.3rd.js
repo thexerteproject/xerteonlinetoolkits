@@ -1315,7 +1315,16 @@ function XTGetMode()
             var sit=state.find(state.currentpageid);
             if (sit != null)
             {
-               return "normal";
+                if (state.trackingmode !== 'none') {
+                    if (state.scoremode == 'first')
+                        return "normal";
+                    else
+                        return "normal_last";
+                }
+                else
+                {
+                    return "tracking";
+                }
             }
         }
         return "tracking";

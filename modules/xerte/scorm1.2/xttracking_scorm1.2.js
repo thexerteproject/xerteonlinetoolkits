@@ -1340,9 +1340,15 @@ function XTGetMode()
         if (state.currentpageid)
         {
             var sit=state.find(state.currentpageid);
-            if (sit != null)
+            if (state.trackingmode !== 'none') {
+                if (state.scoremode == 'first')
+                    return "normal";
+                else
+                    return "normal_last";
+            }
+            else
             {
-                return "normal";
+                return "tracking";
             }
         }
         return "tracking";
