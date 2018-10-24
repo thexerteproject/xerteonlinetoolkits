@@ -965,8 +965,17 @@ function XTLogin(login, passwd)
 
 function XTGetMode()
 {
-    if (state.forcetrackingmode === 'true')
-        return "normal";
+    if (state.forcetrackingmode === 'true') {
+        if (state.trackingmode !== "none") {
+            if (state.scoremode == "first")
+                return "normal";
+            else
+                return "normal-last";
+        }
+        else {
+            return "tracking";
+        }
+    }
     else
         return "";
 }
