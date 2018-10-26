@@ -238,6 +238,9 @@ th.x-dashboard-interaction {
     bottom: 5px;
     left: 5px;
     right: 5px;
+    overflow-y:scroll !important;
+    overflow-x:hidden !important;
+    padding: 20px;
 }
 .journeyData th a{
     font-family: Arial;
@@ -263,7 +266,7 @@ th.x-dashboard-interaction {
 }
 
 .dashboard{
-    overflow-x: hidden !important;
+    /*overflow-x: hidden !important;*/
     position: absolute;
     width: -moz-calc(100% - 100px) !important;
     width: -webkit-calc(100% - 100px) !important;
@@ -284,7 +287,6 @@ td.x-dashboard-interaction
 }
 
 .panel{
-    width: 600px;
     padding: 5px;
     border: solid 1px #000000;
     border-radius: 4px;
@@ -345,3 +347,6 @@ td.x-dashboard-interaction
     content: "\f00d"; color: #ff0000;
 }
 
+.jorneyData-container1{
+    overflow-x: scroll;
+}

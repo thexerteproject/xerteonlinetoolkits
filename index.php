@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 // Load the plugin files and fire a startup action
 require_once(dirname(__FILE__) . "/plugins.php");
 
@@ -206,7 +206,9 @@ Folder popup is the div that appears when creating a new folder
             </div>
         </div>
         <div id="dashboard-title"></div>
-        <div id="journeyData" class="journeyData container-fluid container"></div>
+        <div class="jorneyData-container">
+            <div id="journeyData" class="journeyData container-fluid container"></div>
+        </div>
     </div>
 </div>
 
@@ -246,7 +248,7 @@ Folder popup is the div that appears when creating a new folder
 
         <div class="buttonbar">
             <div class="file_mgt_area_top">
-                
+
 
             </div>
 
@@ -286,13 +288,13 @@ Folder popup is the div that appears when creating a new folder
 					<button title="<?php echo INDEX_BUTTON_PREVIEW; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="preview"><i class="fa fa-play xerte-icon"></i></button>
 				</div>
-				
+
 				<div class="file_mgt_area_middle_button_left">
 					<button title="<?php echo INDEX_BUTTON_NEWFOLDER; ?>" type="button" class="xerte_workspace_button" id="newfolder" onClick="javascript:make_new_folder()">
 						<i class="fa fa-folder xerte-icon"></i>
 					</button>
 				</div>
-				
+
 				<div class="file_mgt_area_middle_button_right">
 					<button title="<?php echo INDEX_BUTTON_DELETE; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="delete"><i class="fa  fa-trash xerte-icon"></i></button>
@@ -342,11 +344,11 @@ Folder popup is the div that appears when creating a new folder
     </div>
 
     <div class="ui-layout-east">
-	
+
         <div class="header" id="inner_right_header">
             <p class="heading"><i class="fa  icon-wrench xerte-icon"></i>&nbsp;<?PHP echo INDEX_CREATE; ?></p>
         </div>
-		
+
         <div class="content">
             <div class="new_template_area_middle">
                 <div id="new_template_area_middle_ajax" class="new_template_area_middle_scroll"><?PHP

@@ -110,7 +110,9 @@ xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element) {
 
 
 xAPIDashboard.prototype.createJourneyTableSession = function(div) {
+    this.data.rawData = this.data.combineUrls();
     var learningObjects = this.data.getLearningObjects();
+    this.data.getAllInteractions(this.rawData);
     var data = this.data.groupStatements();
 
     for (var learningObjectIndex = 0; learningObjectIndex < learningObjects.length; learningObjectIndex++) {
@@ -234,6 +236,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
             interactionIndex = $(this)[0].attributes.getNamedItem("data-interaction").value;
             interaction = interactions[interactionIndex];
+
             column = $(this).closest("table").find("[data-parent=" + interaction.interactionObjectIndex + "]");
             column.each(function(ci) {
                 c = $(column[ci]);
@@ -267,7 +270,7 @@ xAPIDashboard.prototype.getLastUserAttempt = function(data) {
             return lastStatements;
         }
     }
-    return undefined;
+    return lastStatements;
 };
 
 xAPIDashboard.prototype.insertCollapse = function(div, userdata, learningObject, rows) {
@@ -382,13 +385,14 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
     {
         title = title.substr(0, max_popover_title - 3) + "...";
     }
-    div.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex).popover({
+    sessionDiv = div.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex);
+    sessionDiv.popover({
         content: "<div id='popover-" + learningObjectIndex + "-session-" + $this.escapeId(userdata['key']) + "-interaction-" +
             interactionObjectIndex + "'></div>",
         title: title,
         html: true
     });
-    div.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex)
+    sessionDiv
         .on('inserted.bs.popover', function(e) {
             elem = $("#popover-" + learningObjectIndex + "-session-" + $this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex);
             if (elem.html() == "") {
@@ -560,9 +564,16 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
             []
         ],
         total = 100;
-    var videoLength = Math.max(...pausedStatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/time"]));
+    var videoLength;
+    if(pausedstatements.length == 1)
+    {
+        videoLength = pausedstatements[0].result.extensions["https://w3id&46;org/xapi/video/extensions/time"];
+
+    }else{
+        videoLength = Math.max(...pausedStatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/time"]));
+    }
     // Gets all the ranges from the data.
-    var stringRanges = pausedStatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/played-segments"]);
+    var stringRanges = pausedstatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/played-segments"]);
     var totalViewed = [];
     for (var i = 0; i < total; i++) {
         totalViewed.push(0);
@@ -768,7 +779,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
         customize: function(chart) {
             chart.xAxis.axisLabel(XAPI_DASHBOARD_GRAPH_MATCH_XAXIS);
             chart.yAxis.axisLabel(XAPI_DASHBOARD_GRAPH_PERCOFCLASS);
-            chart.width(500);
+            chart.width(1000);
             chart.height(500);
         },
         process: function(data, event, opts) {
@@ -839,7 +850,7 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
                 d.in = updatedAnswers.join(",");
                 d.correct = question.correctResponsesPattern.indexOf(origAnswer) != -1;
             });
-            
+
         }
 
     });
@@ -1035,6 +1046,12 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
 };
 
 function close_dashboard() {
+    $this.clear();
+    $("#dp-start").unbind("change");
+    $("#dp-end").unbind("change");
+    $("#dp-unanonymous-view").unbind("change");
+
+
     $(".journeyOverviewActivity").html("");
     $("#dashboard-wrapper").hide();
 };
@@ -1097,6 +1114,7 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
         $("#dp-unanonymous-view").change(function(event) {
             $this.data.info.dashboard.anonymous = !$this.data.info.dashboard.anonymous;
             $this.regenerate_dashboard();
+
         });
     }
 
@@ -1127,6 +1145,7 @@ xAPIDashboard.prototype.regenerate_dashboard = function()
     var end = this.helperGetDate('#dp-end');
     end = new Date(moment(end).add(1, 'days').toISOString());
     var q = {};
+    q['activities'] = [url].concat(this.data.info.lrs.lrsurls.split(",")).concat(this.data.info.lrs.site_allowed_urls.split(",").map(url => url + this.data.info.template_id)).filter(url => url != "");
     q['activity'] = url;
     q['related_activities'] = true;
     q['since'] = start.toISOString();
@@ -1138,3 +1157,4 @@ xAPIDashboard.prototype.regenerate_dashboard = function()
         $this.createJourneyTableSession($("#journeyData"));
     });
 };
+
