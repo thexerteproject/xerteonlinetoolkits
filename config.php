@@ -239,5 +239,13 @@ $xerte_toolkits_site->learning_objects = $learning_objects;
   array($session_handle,'xerte_session_destroy'),
   array($session_handle,'xerte_session_clean'));
  */
-require_once(dirname(__FILE__) . '/auth_config.php');
+// set authentication method to guest if not set in db via management area
+if (!isset($xerte_toolkits_site->authentication_method) || $xerte_toolkits_site->authentication_method=="") {
+    $xerte_toolkits_site->authentication_method = 'Guest';
+    $res = db_query_one("update {$xerte_toolkits_site->database_table_prefix}sitedetails set authentication_method = 'Guest' where site_id=1");
+}
+if (file_exists(dirname(__FILE__) . '/auth_config.php'))
+{
+    require_once(dirname(__FILE__) . '/auth_config.php');
+}
 
