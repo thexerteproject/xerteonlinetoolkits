@@ -520,6 +520,7 @@
 								$this.attr("readonly", "readonly");
 								$this.attr("correct", "correct");
 							} else {
+								$this.attr("readonly", "readonly");
 								$this.val(answerData[$this.data("index")][0]);
 								$this.addClass("answerShown");
 							}
@@ -531,7 +532,9 @@
 					});
 				
 				$targetHolder.find("input").on("keypress", function() {
-					$feedbackTxt.hide();
+					if($(this).attr("readonly")!=="readonly"){
+						$feedbackTxt.hide();
+					}
 				});
 			}
 			
