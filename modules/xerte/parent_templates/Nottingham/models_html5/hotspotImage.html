@@ -22,7 +22,9 @@
 	// other functions for model should also be in here to avoid conflicts
 	var hotspotImage = new function() {
 		var	$img;
-		
+		var amountOfAttempts = x_currentPageXML.getAttribute("attempts");
+		var attempts = parseInt(amountOfAttempts, 10);
+		var counter = 0;
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$img = $("#image");
@@ -44,6 +46,7 @@
 		
 		this.init = function() {
 			$img = $("#image");
+			this.selectHs("next");
 
             if (x_currentPageXML.getAttribute("align") == "Right") {
 				$("#panel").addClass("left");
@@ -51,7 +54,6 @@
 				$("#panel").addClass("right");
 			}
 			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-			
 			$img
 				.css({
 						"opacity"	:0,
@@ -93,6 +95,7 @@
 						text	:false
 					})
 					.click(function() {
+
 						hotspotImage.selectHs("next");
 					});
 				
@@ -133,59 +136,11 @@
 			$("#hsHolder").html("");
 			
 			$(x_currentPageXML).children()
-				.each(function(i){
-					var _this = this;
-					
-					var $hotspot = $('<a class="hotspot transparent" href="#" tabindex="' + (i+2) + '" />');
-					$hotspot
-						.attr("title", this.getAttribute("name"))
-						.css({
-							width	:Math.round(this.getAttribute("w") * scale) + "px",
-							height	:Math.round(this.getAttribute("h") * scale) + "px",
-							left	:Math.round(this.getAttribute("x") * scale) + "px",
-							top		:Math.round(this.getAttribute("y") * scale) + "px"
-							})
-						.click(function() {
-							$("#infoHolder").html("<hr/><h3>" + _this.getAttribute("name") + "</h3><br/>" + x_addLineBreaks(_this.getAttribute("text")));
-							$(".selected").removeClass("selected");
-							var $this = $(this);
-							$this.addClass("selected");
-							if (x_currentPageXML.getAttribute("interactivity") == "Show Me") {
-								var nextHS = $("#nextHS"),
-									prevHS = $("#prevHS");
-								
-								if ($this.index() + 1 == $("#pageContents .hotspot").length) {
-									nextHS.button("disable");
-									prevHS.button("enable");
-								} else if ($this.index() == 0) {
-									nextHS.button("enable");
-									prevHS.button("disable");
-								} else {
-									nextHS.button("enable");
-									prevHS.button("enable");
-								}
-							}
-							})
-						.focusin(function() {
-							$(this)
-								.removeClass("transparent")
-								.addClass("highlight");
-							})
-						.focusout(function() {
-							$(this)
-								.removeClass("highlight")
-								.addClass("transparent");
-							})
-						.keypress(function(e) {
-							var charCode = e.charCode || e.keyCode;
-							if (charCode == 32) {
-								$(this).trigger("click");
-							}
-						});
-					
-					$("#hsHolder").append($hotspot);
-				});
-			
+				.each(function(i) {
+					return;
+
+
+                });
 			var highlightColour = "yellow";
 			if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
 				highlightColour = x_getColour(x_currentPageXML.getAttribute("hicol"));
@@ -201,17 +156,102 @@
 		}
 		
 		this.selectHs = function(type) {
-			var currentSelection = $("#pageContents .selected"),
-				i = currentSelection.index();
-			
-			currentSelection.removeClass("selected");
-			
-			if (type == "next") {
-				$("#pageContents .hotspot:eq(" + (i + 1)  + ")").trigger("click");
-			} else {
-				$("#pageContents .hotspot:eq(" + (i - 1) + ")").trigger("click");
-			}
-		}
+            var i = Number( $("canvas").attr("data-child-index"));
+            if (type == "next") {
+                i +=1;
+            } else {
+                i-=1;
+            }
+            $("canvas").attr("data-child-index", i);
+			debugger;
+
+            var _this = this;
+            $("canvas").on("click", function (event) {
+                var rect = this.getBoundingClientRect();
+                var x = event.pageX - rect.x;
+                var y = event.pageY - rect.y;
+
+                redraw_points(canvas, pointArray);
+                var CI = checkIntersection(x, y, pointArray);
+                var $comment = $("#comment");
+                var feedback = x_currentPageXML.getAttribute("feedback");
+                feedback = $("<div>").html(feedback).text().trim();
+                if (counter < attempts) {
+                    if (CI) {
+                        $comment.append(feedback)
+
+                    } else {
+                        $comment.append("too bad");
+                    }
+                    counter++;
+                }
+
+
+            });
+
+            var points = x_currentPageXML.children[i].getAttribute("points");
+            origW = x_currentPageXML.children[i].getAttribute("w");
+            origH = x_currentPageXML.children[i].getAttribute("h");
+            pointArray = JSON.parse(points);
+            pointArray = pointArray.map(function (p) {
+                p.x = p.x * ($("canvas").width());
+                p.y = p.y * ($("canvas").height());
+                return p;
+            });
+
+            checkIntersection = function (x, y, pointsArray) {
+                // ray-casting algorithm based on
+                // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
+
+                var inside = false;
+
+                for (var i = 0, j = pointsArray.length - 1; i < pointsArray.length; j = i++) {
+                    var xi = pointsArray[i].x, yi = pointsArray[i].y;
+                    var xj = pointsArray[j].x, yj = pointsArray[j].y;
+
+                    var intersect = ((yi > y) != (yj > y))
+                        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                    if (intersect) inside = !inside;
+                }
+
+                return inside;
+            };
+
+            function redraw_points(canvas, points) {
+                var context = canvas.getContext('2d');
+                context.beginPath();
+                context.lineWidth = 1;
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                // context.setLineDash([5, 5]);
+
+                var color = x_currentPageXML.getAttribute("hicol");
+                color = color.replace("0x", "#");
+                for (var i = 0; i < points.length + 1; i++) {
+                    point = points[i % points.length];
+                    if (i == 0) {
+                        context.moveTo(point.x, point.y);
+                    } else {
+                        context.lineTo(point.x, point.y);
+                    }
+                }
+                if (counter >= attempts - 1) {
+                    context.strokeStyle = color;
+                    context.fillStyle = color;
+                    context.globalAlpha = 0.3;
+                    context.fill();
+                    context.globalAlpha = 1;
+                    context.lineWidth = 2;
+                    context.stroke();
+                }
+
+            }
+
+            var canvas = $("canvas").get(0);
+            $("canvas")[0].width = $("canvas").width();
+            $("canvas")[0].height = $("canvas").height();
+
+        }
 	}
 	
 	hotspotImage.init();
@@ -219,15 +259,23 @@
 </script>
 
 
+
 <div id="pageContents">
 	
 	<div id="panel" class="panel inline">
 		<div id="imageHolder">
-			<img id="image" />
+			<div class="overlayWrapper">
+				<img id="image"/>
+				<canvas class="canvas" data-child-index="-1"></canvas>
+			</div>
+
 			<div id="hsHolder"></div>
 			<div id="btnHolder">
 				<button id="prevHS"></button>
 				<button id="nextHS"></button>
+			</div>
+			<div id="comment">
+
 			</div>
 		</div>
 	</div>
