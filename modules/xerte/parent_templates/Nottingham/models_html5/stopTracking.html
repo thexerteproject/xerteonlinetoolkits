@@ -59,7 +59,7 @@
                 $("#textHolder").html(x_currentPageXML.getAttribute("textIntro"));
 
             }
-            if (XTGetMode() == "normal")
+            if (XTGetMode().indexOf("normal") >= 0)
             {
                 var lbl = (x_currentPageXML.getAttribute("buttonLbl") != null ? x_currentPageXML.getAttribute("buttonLbl") : "Close and finish tracking of this session");
                 $("#closeBtn").button({
