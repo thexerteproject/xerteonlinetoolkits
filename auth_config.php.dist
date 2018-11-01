@@ -32,12 +32,3 @@ $xerte_toolkits_site->altauthentication = "";
 /*
 * Note: see moodle_restrictions.php for additional Moodle specific options
 */
-if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true)
-	{
-	if($xerte_toolkits_site->authentication_method == "Moodle") {
-		// skip session_start() as we'll probably stomp on Moodle's session if we do. 
-	}
-	else {
-		session_start();
-	}
-}
