@@ -173,7 +173,7 @@
 
 
                 this.weighting = 1.0;
-                if (x_currentPageXML.getAttribute("trackingWeight") != undefined) {
+                if (x_currentPageXML.getAttribute("trackingWeight") !== undefined) {
                     this.weighting = x_currentPageXML.getAttribute("trackingWeight");
                 }
                 XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
@@ -182,17 +182,17 @@
                     $splitScreen = $("#pageContents .splitScreen");
                 var $textHolder = $("#textHolder");
 
-                if (panelWidth == "Full") {
+                if (panelWidth === "Full") {
                     $("#pageContents .panel").appendTo($("#pageContents"));
                     $splitScreen.remove();
                 } else {
                     $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
 
                     var textAlign = x_currentPageXML.getAttribute("align");
-                    if (textAlign != "Right") {
-                        if (panelWidth == "Small") {
+                    if (textAlign !== "Right") {
+                        if (panelWidth === "Small") {
                             $splitScreen.addClass("large");
-                        } else if (panelWidth == "Large") {
+                        } else if (panelWidth === "Large") {
                             $splitScreen.addClass("small");
                         } else {
                             $splitScreen.addClass("medium");
@@ -205,9 +205,9 @@
                         $("#infoHolder")
                             .removeClass("right")
                             .addClass("left");
-                        if (panelWidth == "Small") {
+                        if (panelWidth === "Small") {
                             $splitScreen.addClass("medium");
-                        } else if (panelWidth == "Large") {
+                        } else if (panelWidth === "Large") {
                             $splitScreen.addClass("large");
                         } else {
                             $splitScreen.addClass("large");
@@ -260,7 +260,7 @@
                 var correctAnswers = [];
                 for (i = 0; i < answers.length; i++) {
                     for (var j = 0; j < answers[i].options.length; j++) {
-                        if (correctAnswers[i] == undefined) {
+                        if (correctAnswers[i] === undefined) {
                             correctAnswers.push([]);
                         }
                         correctAnswers[i].push(answers[i].options[j]);
@@ -287,7 +287,7 @@
 
 
                 var checkBtnTxt = x_currentPageXML.getAttribute("checkBtnTxt");
-                if (checkBtnTxt == undefined) {
+                if (checkBtnTxt === undefined) {
                     checkBtnTxt = "Check";
                 }
                 $("#checkButton")
@@ -297,10 +297,10 @@
                     .click(function () {
                             $(checkButton).button("disable");
 
-                            if (x_currentPageXML.getAttribute("showAnswers") == "true" || x_currentPageXML.getAttribute("showAnswers") == undefined) {
+                            if (x_currentPageXML.getAttribute("showAnswers") === "true" || x_currentPageXML.getAttribute("showAnswers") === undefined) {
 
 
-                                if ($('#correctAnswer ul').has("li").length == 0) {
+                                if ($('#correctAnswer ul').has("li").length === 0) {
                                     for (i = 0; i < answers.length; i++) {
                                         $("#correctAnswer ul").append("<li>" + answers[i].options + "<span id='topXQ-correctAnswer-" + i + "'></span> </li>" /*<span id= 'topXQ-correctAnswer-" + i + "'></span>"*/);
                                     }
@@ -333,7 +333,7 @@
 
                             var correctAnswersLabel = x_currentPageXML.getAttribute("correctAnswersLabel");
 
-                            if (x_currentPageXML.getAttribute("showAnswers") == "true" || x_currentPageXML.getAttribute("showAnswers") == undefined) {
+                            if (x_currentPageXML.getAttribute("showAnswers") === "true" || x_currentPageXML.getAttribute("showAnswers") === undefined) {
                                 $("#correctAnswer h3").html(correctAnswersLabel);
                             }
 
@@ -346,13 +346,13 @@
 
 
                             var passedTxt = x_currentPageXML.getAttribute("passed");
-                            if (passedTxt == undefined) {
+                            if (passedTxt === undefined) {
                                 passedTxt = "You passed the question";
                             }
 
 
                             var failedTxt = x_currentPageXML.getAttribute("failed");
-                            if (failedTxt == undefined) {
+                            if (failedTxt === undefined) {
                                 failedTxt = "You did not passed the question";
                             }
 
@@ -371,7 +371,7 @@
                             }
 
                             passedScore = state.lo_passed;
-                            if (state.trackingmode != "none") {
+                            if (state.trackingmode !== "none") {
                                 passedScore = 0.55;
                             }
                             if (average >= passedScore) {
