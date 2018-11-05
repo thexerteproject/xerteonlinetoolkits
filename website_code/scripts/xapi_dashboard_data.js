@@ -189,10 +189,20 @@ DashboardState.prototype.groupStatements = function(data) {
             data = this.rawData;
         }
     }
+    groups = [];
     data.forEach(function(statement) {
         var attempt = {
             statements: []
         };
+
+        if(statement.context.team != undefined)
+        {
+            var group = statement.context.team.account.name;
+            if(groups.indexOf(group) == -1)
+            {
+                groups.push(group);
+            }
+        }
         if (statement.actor.mbox != undefined) {
             // Key is email
             // Cutoff mailto:
@@ -242,6 +252,7 @@ DashboardState.prototype.groupStatements = function(data) {
             }
         }
     });
+    this.groups = groups;
     this.groupedData = groupedData;
     return groupedData;
 };
@@ -703,6 +714,16 @@ DashboardState.prototype.getAllDurations = function(userdata, interactionUrl) {
     }
     return durations;
 };
+
+DashboardState.prototype.getDurationBlocks = function(userdata, interactionUrl)
+{
+    var statements = userdata['statements'];
+    var statementList = this.getStatementsList(statements, "https://w3id.org/xapi/video/verbs/paused");
+    var durations = statementList.map(s => s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]);
+
+    debugger;
+    return undefined;
+}
 
 DashboardState.prototype.hasStartedInteraction = function(userdata, interaction) {
     var statements = userdata['statements'];
