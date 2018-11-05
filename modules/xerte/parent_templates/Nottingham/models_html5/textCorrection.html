@@ -24,10 +24,63 @@
             };
 
             this.sizeChanged = function() {
+                if (x_browserInfo.mobile === false) {
+                    var $panel = $("#pageContents .panel");
+                    $panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+                }
 
+                if ($("#pageContents .audioHolder").length > 0) {
+                    var audioBarW = 0;
+                    $("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function () {
+                        audioBarW += $(this).outerWidth();
+                    });
+                    if (audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() > 2) {
+                        $x_window.resize();
+                    }
+                }
+            };
+
+            this.leavePage = function () {
+                hasExited = textCorrection.hasExited;
+                if(!hasExited){
+                    this.exitTrackTextCorrection();
+                }
+            }
+
+            this.exitTrackTextCorrection = function () {
+                answer = textCorrection.answer;
+                input = textCorrection.input;
+
+
+                var checkAnswer = false;
+                if(input === answer){
+                    checkAnswer = true;
+                }
+
+                var result = 0;
+
+                if(checkAnswer){
+                    result = 100;
+                }else{
+                    result = 0;
+                }
+
+                XTExitInteraction(x_currentPage, 0, result,[], input, []);
+                debugger;
+
+                XTSetPageScore(x_currentPage, result);
+                debugger;
             };
 
             this.init = function() {
+                var hadExited = false;
+
+                this.weighting = 1.0;
+                if(x_currentPageXML.getAttribute("trackingWeight") != null){
+                    this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+                }
+                XTSetPageType(x_currentPage, "fill in", 1,this.weighting);
+
 
                 var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
                     $splitScreen = $("#pageContents .splitScreen");
@@ -80,6 +133,8 @@
                 var answer = x_currentPageXML.getAttribute("answer");
                 answer = $("<div>").html(answer).text().trim();
 
+                textCorrection.answer = answer;
+
                 var $correctOrNot = $("#infoHolder #correctOrNot");
                 var correct = "Good job";
 
@@ -106,7 +161,10 @@
 
                 var answerLabel = x_currentPageXML.getAttribute("answerLabel");
 
+                // pageScore
+                var correctIcon = $("<div>").addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
 
+                var incorrectICon = $("<div>").addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
                 // if (checkBtnTxt == undefined) {
                 //     checkBtnTxt = "Check";
                 // }
@@ -116,19 +174,31 @@
                     })
                     .click(function () {
                         $(checkButton).button("disable");
+
+                        XTEnterInteraction(x_currentPage, 0, "text", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("question"), ""), "",answer, feedback);
+                        debugger;
                         //get value of text area
                         var input = $(".answer textarea").val();
+                        textCorrection.input = input;
                         // decide if it is correct or not
                         $correctOrNot.append("<h3>"+resultLabel+"</h3>");
                         if(input === answer){
-                            $correctOrNot.append(correct)
+                            $correctOrNot.append(correct);
+                            $correctOrNot.append(correctIcon)
                         }
                         if(input === ""){
                             $correctOrNot.append(incompleet);
+                            $correctOrNot.append(incorrectICon)
                         }else if(input !== answer){
-                            $correctOrNot.append(incorrect)
+                            $correctOrNot.append(incorrect);
+                            $correctOrNot.append(incorrectICon)
                         }
 
+                        if(!hadExited){
+                            textCorrection.exitTrackTextCorrection();
+                            hasExited = true;
+                        }
+                        textCorrection.hasExited = hadExited;
                         // show feedback
                         $feedback.append("<h3>" + feedbackLabel + "</h3>");
                         $feedback.append(feedback);

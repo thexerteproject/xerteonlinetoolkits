@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
     <pageWizard remove="true" duplicate="false">
         <newNodes>
-            <textCorrection><![CDATA[<textCorrection name="Enter Page Title" align="Left" instruction="Enter the introduction for the page here" wrongText="Enter the wrong text here" answer="Enter the correct text here" feedback="Enter the feedback here" panelWidth="Medium" checkBtn="Check"  textRight="You passed this test" textWrong="You have no good answers"  resultLabel="Result" feedbackLabel="Feedback" answerLabel="Answer" textIncomplete="You have not filled in any answers correctly. Please try again."/>]]></textCorrection>
+            <textCorrection><![CDATA[<textCorrection name="Enter Page Title" align="Left" instruction="Enter the introduction for the page here" wrongText="Enter the wrong text here" answer="Enter the correct text here" feedback="Enter the feedback here" question="Enter here the question" panelWidth="Medium" checkBtn="Check"  textRight="You passed this test" textWrong="You have no good answers"  resultLabel="Result" feedbackLabel="Feedback" answerLabel="Answer" textIncomplete="You have not filled in any answers correctly. Please try again."/>]]></textCorrection>
         </newNodes>
     </pageWizard>
 
@@ -9,6 +9,7 @@
         <name label="Page Title" type="textInput" wysiwyg="true"/>
         <align label = "Align Text" options = "Left,Right" type = "ComboBox" data = "Left,Right" defaultValue = "Left" width = "100"/>
         <instruction label="Introductory Text" type="TextArea" height="100"/>
+        <question label="Question" type="TextArea" height="100"/>
         <wrongText label="Incorrect Text" type="TextArea" height="150"/>
         <answer label="Correct Text" type="TextArea" height="150"/>
         <feedback label="Feedback" type="TextArea" height="50"/>
