@@ -198,6 +198,14 @@ Folder popup is the div that appears when creating a new folder
                     </label>
                     <input type="text" id="dp-end">
                 </div>
+                <div class="dash-col-1">
+                    <label for="dp-end">
+                        <?php echo INDEX_XAPI_DASHBOARD_GROUP_SELECT; ?>
+                    </label>
+                    <select type="text" id="group-select">
+                        <option value="all-groups"><?php echo INDEX_XAPI_DASHBOARD_GROUP_ALL; ?></option>
+                    </select>
+                </div>
                 <div class="close-button">
                     <button type="button" class="xerte_button_c_no_width"
                             onclick="javascript:close_dashboard()"><?php echo INDEX_XAPI_DASHBOARD_CLOSE; ?>
