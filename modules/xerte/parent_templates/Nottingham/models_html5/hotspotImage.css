@@ -66,3 +66,11 @@
 	left:0px;
 	z-index:9999;
 	}
+	#hint h3 {
+	border-top: 1px solid #ccc;
+	padding-top: 1em;
+	}
+	#feedback h3 {
+	border-top: 1px solid #ccc;
+	padding-top: 1em;
+	}

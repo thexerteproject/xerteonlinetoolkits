@@ -14,14 +14,14 @@
         <answer label="Correct Text" type="TextArea" height="150"/>
         <feedback label="Feedback" type="TextArea" height="50"/>
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
-        <showAnswers label = "Show Answers" defaultValue="true" type="CheckBox" optional="true"></showAnswers>
+        <showAnswers label = "Show Answers" defaultValue="true" type="CheckBox" optional="true"/>
 
         <checkBtn label="Check Button Text" type="TextInput" wysiwyg="true" language="true"/>
         <textRight label="Passed the test" type="TextInput" wysiwyg="true" language="true"/>
         <textWrong label="Failed the test" type="TextInput" wysiwyg="true" language="true" />
         <textIncomplete label= "Text Incomplete" type="TextInput" wysiwyg="true" language="true"/>
-        <resultLabel label="Result" type="TextInput" wysiwyg="true" language="true"></resultLabel>
-        <feedbackLabel label="Feedback" type="TextInput" wysiwyg="true" language="true"></feedbackLabel>
-        <answerLabel label="Answer" type="TextInput" wysiwyg="true" language="true"></answerLabel>
+        <resultLabel label="Result" type="TextInput" wysiwyg="true" language="true"/>
+        <feedbackLabel label="Feedback" type="TextInput" wysiwyg="true" language="true"/>
+        <answerLabel label="Answer" type="TextInput" wysiwyg="true" language="true"/>
     </textCorrection>
 </wizard>
