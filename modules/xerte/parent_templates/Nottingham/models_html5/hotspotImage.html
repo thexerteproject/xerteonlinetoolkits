@@ -215,13 +215,13 @@
                 pointsUpdated[i] = true;
             }
 
-			debugger;
+
             $("canvas").attr("data-child-index", i);
 
 			if(counter[i] >= attempts || hits[i]){
 
                 redraw_points(canvas, pointArray, hits[i]);
-                debugger;
+
 			}
 
 
@@ -281,7 +281,7 @@
                     } else {
                         if(gotHint === false){
                             if(hint == ""){
-                                $hint.append("<h3>" + "Hint" + "</h3>");
+                                $hint.append( "<h3>" + "Hint" + "</h3>");
 							}
 
                             $hint.append(hint);
@@ -289,7 +289,7 @@
 						}
 
                     }
-
+						
                 }
 
 
@@ -323,7 +323,7 @@
             function redraw_points(canvas, points, isHit) {
                 var x = Number( $("canvas").attr("data-child-index"));
                 counter[x] = Number(counter[x]+1);
-				debugger;
+
 
                 var context = canvas.getContext('2d');
                 context.beginPath();
@@ -342,8 +342,7 @@
                         context.lineTo(point.x, point.y);
                     }
                 }
-					debugger;
-                if (counter[x] >= attempts || isHit) {
+					 (counter[x] >= attempts || isHit) {
                     context.strokeStyle = color;
                     context.fillStyle = color;
                     context.globalAlpha = 0.3;
