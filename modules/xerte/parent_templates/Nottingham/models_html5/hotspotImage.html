@@ -233,11 +233,6 @@
 			$("#feedback").html("");
             gotHint = false;
 
-
-
-
-
-
             var _this = this;
 
             $("canvas").off("click");
@@ -273,21 +268,19 @@
                 var feedback = x_currentPageXML.childNodes[i].getAttribute("feedback");
                 var hint = x_currentPageXML.childNodes[i].getAttribute("hint");
                 feedback = $("<div>").html(feedback).text().trim();
-                if (counter[i] < attempts) {
+                if (counter[i] <= attempts) {
                     if (CI) {
                         $feedback.append("<h3>" + "Feedback" + "</h3>");
                         $feedback.append(feedback)
 
                     } else {
                         if(gotHint === false){
-                            if(hint == ""){
-                                $hint.append( "<h3>" + "Hint" + "</h3>");
-							}
 
+							$hint.append( "<h3>" + "Hint" + "</h3>");
                             $hint.append(hint);
                             gotHint=true;
 						}
-
+debugger;
                     }
 
                 }
