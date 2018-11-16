@@ -281,11 +281,19 @@ if (!$export_offline) {
  * Theme support
  */
 $theme = $xml->getTheme();
-if ($theme != "" && $theme != "default")
+if ($theme == "")
 {
-    export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/' . $theme . '/');
-    copy_extra_files();
+    $theme = "default";
 }
+// Add selected theme
+export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/' . $theme . '/');
+copy_extra_files();
+// Add colourChanger themes
+export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/blackonyellow/');
+copy_extra_files();
+export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/highcontrast/');
+copy_extra_files();
+
 
 if ($export_flash) {
     /*
