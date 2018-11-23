@@ -940,6 +940,12 @@
 						});
 					
 					popcornInstance = Popcorn("#" +$holder.attr("id") + " video");
+					
+					if (mainMedia == true) {
+						$("#" + $holder.attr("id") + " video").attr('id', 'mainVideo');
+					} else {
+						$("#" + $holder.attr("id") + " video").attr('id', 'video_' + $("#" + $holder.attr("id") + " video").parents('.mejs-video').attr('id'));
+					}
 				}
 				
 			} else if (mediaType == "audio") {
@@ -957,6 +963,12 @@
 					});
 				
 				popcornInstance = Popcorn("#" + $holder.attr("id") + " audio");
+				
+				if (mainMedia == true) {
+					$("#" + $holder.attr("id") + " audio").attr('id', 'mainAudio');
+				} else {
+					$("#" + $holder.attr("id") + " audio").attr('id', 'audio_' + $("#" + $holder.attr("id") + " audio").parents('.mejs-audio').attr('id'));
+				}
 				
 				if (mediaData.audioImage != "" && mediaData.audioImage != undefined) {
 					var $imgHolder = $('<div class="audioImgHolder"></div>').insertBefore($myAudio),
