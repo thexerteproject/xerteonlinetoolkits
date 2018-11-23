@@ -403,6 +403,11 @@ x_projectDataLoaded = function(xmlData) {
 		x_params.displayMode = "default";
 		x_fillWindow = false;
 	}
+	
+	// this is being shown in iframe so force to fill available space
+	if (self !== top) {
+		x_fillWindow = true;
+	}
 
     // url hide parameter will remove x_headerBlock &/or x_footerBlock divs
     if (urlParams.hide != undefined) {
@@ -1399,7 +1404,7 @@ function x_continueSetUp2() {
     window.onbeforeunload = XTTerminate;
 
     XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
-    // Set course and module options AFTER XTInitialise
+	// Set course and module options AFTER XTInitialise
     if (x_params.course != undefined && x_params.course != "")
     {
         XTSetOption('course', x_params.course);
