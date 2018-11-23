@@ -1865,6 +1865,26 @@ function XTSetOption(option, value) {
         case "force_tracking_mode":
             state.forcetrackingmode = value;
             break;
+        case "course":
+            // If overruled by request parameters (or LTI) do not use coursename, else set coursename and course
+            if (state.coursename != "" && value != undefined && value != "")
+            {
+                state.course = {
+                    id: baseUrl() + 'course/' + value
+                };
+                state.coursename = value;
+            }
+            break;
+        case "module":
+            // If overruled by request parameters (or LTI) do not use coursename, else set coursename and course
+            if (state.modulename != "" && value != undefined && value != "")
+            {
+                state.module = {
+                    id: baseUrl() + 'modules/' + value
+                };
+                state.modulename = value;
+            }
+            break;
     }
 }
 

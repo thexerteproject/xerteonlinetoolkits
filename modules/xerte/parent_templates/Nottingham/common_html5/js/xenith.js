@@ -1399,8 +1399,17 @@ function x_continueSetUp2() {
     window.onbeforeunload = XTTerminate;
 
     XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
+    // Set course and module options AFTER XTInitialise
+    if (x_params.course != undefined && x_params.course != "")
+    {
+        XTSetOption('course', x_params.course);
+    }
+    if (x_params.module != undefined && x_params.module != "")
+    {
+        XTSetOption('module', x_params.module);
+    }
 
-	x_navigateToPage(true, x_startPage);
+    x_navigateToPage(true, x_startPage);
 }
 
 // function checks whether a media file exists
