@@ -2626,6 +2626,12 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
 
 function XTGetStatements(q, one, callback) {
     var search = ADL.XAPIWrapper.searchParams();
+    var group = "";
+    if (q['group'] != undefined)
+    {
+        group = q['group'];
+        delete q['group'];
+    }
     $.each(q, function(i, value) {
         search[i] = value;
     });
@@ -2643,8 +2649,17 @@ function XTGetStatements(q, one, callback) {
                 //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
                 //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                 //}
-
-                statements.push(body.statements[x]);
+                if (group != ""
+                    && body.statements[x].context.team != undefined
+                    && body.statements[x].context.team.account != undefined
+                    && body.statements[x].context.team.account.name != undefined
+                    && body.statements[x].context.team.account.name != group)
+                {
+                    continue;
+                }
+                {
+                    statements.push(body.statements[x]);
+                }
             }
             //stringObjects.push(lastSubmit);
             if (err !== null) {
