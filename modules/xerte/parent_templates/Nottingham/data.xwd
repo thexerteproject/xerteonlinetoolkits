@@ -4,7 +4,7 @@
   <learningObject icon="icPackage" remove="false" duplicate="false">
 
     <name type="TextInput" wysiwyg="true" label="Learning Object Title"/>
-    <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls" data="Linear,Historic,Menu,Menu with Page Controls" label="Navigation" width="170"/>
+    <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls, Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
     <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals Without Titles, Clean Visuals With Titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true"/>
     <language type="LanguageList" label="Language" width="170"/>
@@ -212,7 +212,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></QRcode><accNav menu="Navigators" menuItem="Accordion Navigator" hint="A group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" remove="true" deepLink="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></QRcode><accNav menu="Navigators" menuItem="Accordion Navigator" hint="A group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
@@ -252,7 +252,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></accNav><nestedPage menuItem="Nested Page" icon="icBullet" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></accNav><nestedPage menuItem="Nested Page" icon="icBullet" remove="true">
 
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -305,7 +305,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></adaptiveContent><interaction menuItem="Source interaction">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></adaptiveContent><interaction menuItem="Source interaction">
         <name label="Block title" type="textinput" wysiwyg="true"/>
         <introduction label="Introduction" type="textarea" height="120" wysiwyg="true"/>
         <graph type="group" label="Graph" optional="true">
@@ -377,7 +377,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></annotatedDiagram><hotspotGroup menuItem="Hotspot Group" icon="icGroup" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></annotatedDiagram><hotspotGroup menuItem="Hotspot Group" icon="icGroup" remove="true">
 
     <name label="Group Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -431,7 +431,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></audioSlideshow><synchPoint menuItem="Slide" icon="icBullet" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></audioSlideshow><synchPoint menuItem="Slide" icon="icBullet" remove="true">
 
     <name label="Slide Title" type="TextInput" wysiwyg="true"/>
     <text label="Slide Text" type="TextArea" height="250"/>
@@ -492,7 +492,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></bleedingImage><bullets menu="Text" menuItem="Bullets" hint="A page of animated bullet points." label="Page Text" type="text" height="310" icon="icBullets" thumb="thumbs/bullets.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></bleedingImage><bullets menu="Text" menuItem="Bullets" hint="A page of animated bullet points." label="Page Text" type="text" height="310" icon="icBullets" thumb="thumbs/bullets.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <delaySecs label="Delay (secs)" type="NumericStepper" min="1" max="10" step="0.25" width="100" defaultValue="1"/>
@@ -529,7 +529,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></bullets><buttonNav menu="Navigators" menuItem="Button Navigator" hint="A series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg" deepLink="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></bullets><buttonNav menu="Navigators" menuItem="Button Navigator" hint="A series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
@@ -570,7 +570,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></buttonNav><buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Pose a stimulating question to the user, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></buttonNav><buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Pose a stimulating question to the user, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="50"/>
@@ -611,7 +611,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></buttonQuestion><buttonSequence menu="Interactivity" menuItem="Button Sequence" hint="Present a sequence of button interactions with text." icon="icButtons" thumb="thumbs/buttonSequence.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></buttonQuestion><buttonSequence menu="Interactivity" menuItem="Button Sequence" hint="Present a sequence of button interactions with text." icon="icButtons" thumb="thumbs/buttonSequence.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
     <intro label="Introduction" type="TextArea" height="100"/>
@@ -651,7 +651,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></buttonSequence><button menuItem="Button" icon="icBulletBlue" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></buttonSequence><button menuItem="Button" icon="icBulletBlue" remove="true">
     <name label="Button Label" type="TextInput" wysiwyg="true"/>
 	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" deprecated="Width is now set automatically"/>	
     <text label="Feedback" type="TextArea" height="250"/>
@@ -702,7 +702,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></cMcq><cOption menuItem="Answer" icon="icBullet" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></cMcq><cOption menuItem="Answer" icon="icBullet" remove="true">
     <text label="Answer" type="TextArea" height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
     <destination label="Destination Page" type="pageList" defaultValue=""/>
@@ -740,7 +740,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></captivate><categories menu="Interactivity" menuItem="Categories" hint="An interaction allowing the user to sort items into a number of categories." icon="icLayers" remove="true" thumb="thumbs/categories.jpg">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></captivate><categories menu="Interactivity" menuItem="Categories" hint="An interaction allowing the user to sort items into a number of categories." icon="icLayers" remove="true" thumb="thumbs/categories.jpg">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
@@ -785,7 +785,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></categories><category menuItem="Category" icon="icGroup" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></categories><category menuItem="Category" icon="icGroup" remove="true">
 
     <name label="Category Name" type="TextInput" wysiwyg="true"/>
 
@@ -838,7 +838,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></chart><series menuItem="Series" remove="true" icon="icBullet">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></chart><series menuItem="Series" remove="true" icon="icBullet">
     <name label="Series Name" type="TextInput" wysiwyg="true"/>
     <data label="Chart Data" headers="X,Y" newRow="label,data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" rendererOptions="none,none"/>
     <colour label="Colour" type="colourPicker" defaultValue="0xFF0000"/>
@@ -882,7 +882,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions. When selected, each region will take you to another page in the project or present further information." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions. When selected, each region will take you to another page in the project or present further information." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
     <textWidth label="Min Text Width" options="No Text,Small,Medium,Large" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200"/>		
@@ -934,7 +934,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></connectorHotspotImage><cHotspot menuItem="Hotspot" label="Edit Hotspot" type="hotSpot" icon="icLayers" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></connectorHotspotImage><cHotspot menuItem="Hotspot" label="Edit Hotspot" type="hotSpot" icon="icLayers" remove="true">
     <name label="Tooltip Hotspot" type="TextInput" wysiwyg="false"/>
     <destination label="Destination Page" type="pageList" defaultValue="" optional="true" tooltip="Go to a page with this object"/>
     <hotspotSound label="Sound" type="media" optional="true"/>
@@ -1002,7 +1002,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></connectorMenu><cMenuListedPage menuItem="Item" remove="true" icon="icBullet">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></connectorMenu><cMenuListedPage menuItem="Item" remove="true" icon="icBullet">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <pageID label="Destination Page" type="pageList" defaultValue=""/>	
   </cMenuListedPage><customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="Create a hotspot based diagram where regions can be explored using a variety of interactivities." icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true">
@@ -1077,7 +1077,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></customHotspots><decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" hint="Find a solution to a problem by answering a series of questions." icon="icDecision" deepLink="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></customHotspots><decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" hint="Find a solution to a problem by answering a series of questions." icon="icDecision" deepLink="true">
 	
 	<name type="TextInput" wysiwyg="true" label="Page Title"/>
 	<text label="Intro Text" type="TextArea" height="100"/>
@@ -1140,7 +1140,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></decision><mcqStep icon="icComments" remove="true" duplicate="true" menuItem="Multiple Choice Question">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></decision><mcqStep icon="icComments" remove="true" duplicate="true" menuItem="Multiple Choice Question">
 	
 	<name label="Unique ID" type="TextInput"/>
 	<text label="Question" type="TextArea" height="100"/>
@@ -1246,7 +1246,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></delicious><dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icScript" thumb="thumbs/dialog.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></delicious><dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icScript" thumb="thumbs/dialog.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="100"/>
@@ -1294,7 +1294,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></dialog><dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></dialog><dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
 
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - tree label"/>
     <question label="Question" type="TextArea" height="100"/> 
@@ -1357,7 +1357,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></dictation><nestedDictation menuItem="Sentence" icon="icBullet" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></dictation><nestedDictation menuItem="Sentence" icon="icBullet" remove="true">
     <prompt label="Prompt Text" type="TextArea" height="200"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Sentence" wysiwyg="false"/>
     <audio label="Audio File" type="Media"/>
@@ -1414,7 +1414,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></documentation><page menuItem="Nested Page" icon="icFolderPage">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></documentation><page menuItem="Nested Page" icon="icFolderPage">
     <name label="Title" type="TextInput" wysiwyg="true"/>
 	<text label="Text" type="TextArea" height="120"/>
 	
@@ -1555,7 +1555,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></dragDropLabel><embedDiv menu="Navigators" menuItem="Embed Content" hint="A page for including any web page or embed code in your project." icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></dragDropLabel><embedDiv menu="Navigators" menuItem="Embed Content" hint="A page for including any web page or embed code in your project." icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" remove="true">
     
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <src label="Embed Code or URL" type="script" height="300"/>
@@ -1596,7 +1596,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></embedDiv><flashCards menu="Navigators" menuItem="Flash Cards" icon="icRefreshPage" remove="true" thumb="thumbs/flashCards.jpg" hint="A series of double sided flash cards containing text and media.">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></embedDiv><flashCards menu="Navigators" menuItem="Flash Cards" icon="icRefreshPage" remove="true" thumb="thumbs/flashCards.jpg" hint="A series of double sided flash cards containing text and media.">
 	
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="120"/>
@@ -1641,7 +1641,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></flashCards><card menuItem="Card" icon="icTwoPages" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></flashCards><card menuItem="Card" icon="icTwoPages" remove="true">
 	<name label="Title" type="TextInput" wysiwyg="true"/>
 	<side1 label="Side 1 Text" type="TextArea" height="120"/>
 	<side2 label="Side 2 Text" type="TextArea" height="120"/>
@@ -1692,7 +1692,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></flashPaper><flickr menu="Misc" menuItem="Flickr Slideshow" hint="Include freely available graphical content from the Flickr photo sharing service." label="Page Text" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></flashPaper><flickr menu="Misc" menuItem="Flickr Slideshow" hint="Include freely available graphical content from the Flickr photo sharing service." label="Page Text" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <keywords label="Keyword(s)" type="TextInput"/>
@@ -1734,7 +1734,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></flickr><gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating gap fill exercises. Gaps can be filled by drag and drop labels, editable text boxes or by drop down menus." icon="icTextEntry" thumb="thumbs/gapFill.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></flickr><gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating gap fill exercises. Gaps can be filled by drag and drop labels, editable text boxes or by drop down menus." icon="icTextEntry" thumb="thumbs/gapFill.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Introductory Text" type="TextArea" height="100"/>
@@ -1801,7 +1801,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></gapFill><geocommons menu="Misc" menuItem="GeoCommons Map" hint="Embed GeoCommons Maps" icon="icGeoComm" thumb="thumbs/googleMap.jpg" remove="true" deprecated="This page is no longer supported">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></gapFill><geocommons menu="Misc" menuItem="GeoCommons Map" hint="Embed GeoCommons Maps" icon="icGeoComm" thumb="thumbs/googleMap.jpg" remove="true" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <src label="IFrame code" type="TextInput"/>
@@ -1837,7 +1837,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></geocommons><grid menu="Interactivity" menuItem="Sortable Grid" hint="An interaction allowing the user to sort items on a grid." icon="icGrid" thumb="thumbs/grid.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></geocommons><grid menu="Interactivity" menuItem="Sortable Grid" hint="An interaction allowing the user to sort items on a grid." icon="icGrid" thumb="thumbs/grid.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<text label="Page Text" type="TextArea" height="150"/>
@@ -1895,7 +1895,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></grid><hangman menu="Games" menuItem="Hangman" hint="A hangman game. Create a list of words for the user to work out." icon="icPageWhite" thumb="thumbs/hangman.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></grid><hangman menu="Games" menuItem="Hangman" hint="A hangman game. Create a list of words for the user to work out." icon="icPageWhite" thumb="thumbs/hangman.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
     <words label="Words" type="script" height="100"/>
@@ -1934,7 +1934,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></hangman><hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></hangman><hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -1980,7 +1980,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></hotspotImage><iSpring menu="Media" menuItem="iSpring Movie" hint="Adds an iSpring Movie to your piece. iSpring movies should be published to 685 x 514 pixels." icon="icISpring" thumb="thumbs/ispring.jpg" remove="true" deprecated="This page is no longer supported">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></hotspotImage><iSpring menu="Media" menuItem="iSpring Movie" hint="Adds an iSpring Movie to your piece. iSpring movies should be published to 685 x 514 pixels." icon="icISpring" thumb="thumbs/ispring.jpg" remove="true" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="ISpring Movie" type="Media"/>
@@ -2015,7 +2015,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></iSpring><imageViewer menu="Media" menuItem="Image Viewer" hint="Allow users to zoom in and out of a large image and select regions. A useful way of presenting large images in a small screen space." icon="icImage" thumb="thumbs/imageViewer.jpg" label="Page Text" type="text" height="250" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></iSpring><imageViewer menu="Media" menuItem="Image Viewer" hint="Allow users to zoom in and out of a large image and select regions. A useful way of presenting large images in a small screen space." icon="icImage" thumb="thumbs/imageViewer.jpg" label="Page Text" type="text" height="250" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<url label="Image" type="media"/>
@@ -2058,7 +2058,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></imageViewer><interactiveText menu="Interactivity" menuItem="Interactive Text" hint="A text based page where sections can be explored using a variety of interactivities." icon="icInteractiveTxt" thumb="thumbs/interactiveText.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></imageViewer><interactiveText menu="Interactivity" menuItem="Interactive Text" hint="A text based page where sections can be explored using a variety of interactivities." icon="icInteractiveTxt" thumb="thumbs/interactiveText.jpg" remove="true">
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="150"/>
 	<passage label="Interactive Text" type="TextArea" height="200"/>
@@ -2129,7 +2129,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></interactiveText><group menuItem="Group" icon="icBullet" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></interactiveText><group menuItem="Group" icon="icBullet" remove="true">
   
 	<name label="Name" type="TextInput" wysiwyg="true"/>
 	<delimiter label="Delimiter" type="TextInput"/>
@@ -2197,7 +2197,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></inventory><invQuestion menuItem="Question" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></inventory><invQuestion menuItem="Question" remove="true">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
     <prompt label="Question" type="TextArea" height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
@@ -2254,7 +2254,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></jing><jmol menu="Media" menuItem="JMOL Viewer" hint="Provides a viewer for JMOL files" icon="icAtom" thumb="thumbs/jmol.jpg" remove="true" deprecated="We cannot redistribute GPL components. You must install JMOL manually. See instructions in the JMOL folder">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></jing><jmol menu="Media" menuItem="JMOL Viewer" hint="Provides a viewer for JMOL files" icon="icAtom" thumb="thumbs/jmol.jpg" remove="true" deprecated="We cannot redistribute GPL components. You must install JMOL manually. See instructions in the JMOL folder">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="150"/>
@@ -2308,7 +2308,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></jmol><jmolOption menuItem="Script Option" icon="icBullet" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></jmol><jmolOption menuItem="Script Option" icon="icBullet" remove="true">
   
 	<name label="Label" type="TextInput" wysiwyg="true"/>
 	<script label="Jmol Script" type="TextArea" height="100"/>
@@ -2353,7 +2353,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></links><link menuItem="Link" icon="icTagGreen" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></links><link menuItem="Link" icon="icTagGreen" remove="true">
     <name label="Link Title" type="TextInput" wysiwyg="true"/>
     <text label="Link Description" type="TextArea" height="100"/>
     <url label="URL" type="TextInput"/>
@@ -2397,7 +2397,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></list><listItem menuItem="List Item" icon="icBullet" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></list><listItem menuItem="List Item" icon="icBullet" remove="true">
 
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -2447,7 +2447,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></map><mapstraction icon="icMap2" menu="Misc" menuItem="Mapstraction Map" remove="true" thumb="thumbs/googleMap.jpg" hint="Use maps with the mapstraction API." deprecated="This page is no longer supported">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></map><mapstraction icon="icMap2" menu="Misc" menuItem="Mapstraction Map" remove="true" thumb="thumbs/googleMap.jpg" hint="Use maps with the mapstraction API." deprecated="This page is no longer supported">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <provider type="ComboBox" label="Map Type" options="Google,Yahoo,Openlayers,Microsoft" width="100"/>
@@ -2490,7 +2490,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></mapstraction><overlay duplicate="true" menuItem="Overlay" remove="true" icon="icPageWhite">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></mapstraction><overlay duplicate="true" menuItem="Overlay" remove="true" icon="icPageWhite">
     <name type="TextInput" wysiwyg="true" label="Title"/>
     <url type="TextInput" label="Overlay"/>
   </overlay><mcq menu="Interactivity" menuItem="Multiple Choice Question" hint="Pose a question with multiple answer options. Create simple true - false questions, or more complex questions with multiple correct answers." icon="icComments" thumb="thumbs/mcq.jpg" remove="true">
@@ -2548,28 +2548,28 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></mcq><option menuItem="Answer" icon="icBullet">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></mcq><option menuItem="Answer" icon="icBullet">
     <text label="Answer" type="TextArea" height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
     <feedback label="Feedback" type="TextArea" height="100"/>
     <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
 	<audioFB label="Audio Feedback" defaultValue="Select a Sound File" type="media" optional="true"/>
   </option><mediaLesson menu="Media" menuItem="Media Lesson" hint="Synchronise a variety of types of content to a piece of media." icon="icApplicationTile" thumb="thumbs/mediaLesson.jpg" remove="true">
-		
+
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
 		<layout label="Panel Layout" type="ComboBox" options="Grid,Tile Horizontally,Tile Vertically,Full Top - Tile Bottom,Tile Top - Full Bottom,Full Left - Tile Right,Tile Left - Full Right" data="grid,tileH,tileV,top,bottom,left,right" defaultValue="grid" width="200"/>
-		
+
 		<intro label="Introduction" type="TextArea" height="200" defaultValue="Enter Introduction Text" optional="true"/>
-		
+
 		<introTitle label="Introduction Title" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<introClose label="Introduction Close" type="TextInput" wysiwyg="true" language="true"/>
-		
+
 		<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 		<trackVideo label="Track video progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs" tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)."/>
 		<newNodes>
 			<panel><![CDATA[<panel name="Enter Panel Title"/>]]></panel>
 		</newNodes>
-		
+
 	<narrate type="group" label="Narration" optional="true" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true"/>
@@ -2599,23 +2599,23 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></mediaLesson><mediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
-		
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></mediaLesson><mediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
+
 		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
 		<media label="Media" type="media"/>
 		<tip label="Media Description" type="TextInput"/>
 		<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
-		
+
 		<audioImg type="group" label="Image (Audio only)" optional="true">
 			<audioImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
 			<audioImageTip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
 		</audioImg>
-		
+
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<audioPosition label="Audio Player Position" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
 		<aspectRatio label="Media aspect ratio" type="ComboBox" data="1.333333,1.777777,2.333333" options="4:3,16:9,21:9" defaultValue="1.777777" optional="true"/>
-		
+
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
 			<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>
@@ -2628,11 +2628,11 @@
 			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
 			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
 		</newNodes>
-		
+
 	</mediaPanel><panel menuItem="Panel" icon="icApplication" remove="true" max="3">
-		
+
 		<name label="Panel Title" type="TextInput" wysiwyg="true"/>
-		
+
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
 			<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>
@@ -2644,47 +2644,48 @@
 			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchTextPlus>
 			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
 		</newNodes>
-		
+
 	</panel><synchCue menuItem="Pause/Jump Point" icon="icPause" remove="true">
 		<synch label="Synch Point" type="TextInput" defaultValue="0"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<disable label="Disable Controls" type="CheckBox" defaultValue="false"/>
+		<visibleStreamTypes label="Visible stream types" type="TextInput" defaultValue="0 1 2 3 4 5" optional="true"/>
 		<destination label="Jump To" type="TextInput" defaultValue="0" optional="true"/>
 	</synchCue><synchEmpty menuItem="Clear Panel" icon="icBullet" remove="true">
 		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
 	</synchEmpty><synchSubtitlePlus menuItem="Subtitles" icon="icFolderPage" remove="true" max="1">
-		
+
 		<info><![CDATA[This is the holder for the media's subtitles.<br/>Select 'New Subtitle' to add and synch each caption.]]></info>
-		
+
 		<newNodes>
 			<synchSub><![CDATA[<synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/>]]></synchSub>
 		</newNodes>
-		
+
 	</synchSubtitlePlus><synchSub menuItem="Subtitle" icon="icBullet" remove="true">
-		
+
 		<name label="Subtitle Text" type="TextArea" height="100"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="bottom" width="100"/>
-		
+
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		
+
 	</synchSub><synchTextPlus menuItem="Text Content" icon="icPageWhiteText" remove="true">
-		
+
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<text label="Text" type="TextArea" height="250"/>
-		
+
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-		
+
 	</synchTextPlus><synchSlides menuItem="Slideshow" icon="icFolderImg" remove="true">
-		
+
 		<name label="Title" type="TextInput" wysiwyg="true"/>
-		
+
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<overlay label="Overlay Media" type="CheckBox" defaultValue="false"/>
@@ -2692,54 +2693,55 @@
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-		
+
 		<newNodes>
 			<synchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchSlide>
 		</newNodes>
-		
+
 	</synchSlides><synchSlide menuItem="Slide" icon="icBullet" remove="true">
-		
+
 		<name label="Image Description" type="TextInput"/>
 		<url label="Image" type="media"/>
 		<synchStart label="Synch Point" type="TextInput"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		
+
 		<captionOptions type="group" label="Caption" optional="true">
 			<caption label="Text" type="TextInput" wysiwyg="true" defaultValue="Enter Caption Text" optional="true"/>
 			<captionPosV label="Vertical Position" type="ComboBox" options="Top,Middle,Bottom" data="top,middle,bottom" defaultValue="bottom" width="100" optional="true"/>
 			<captionPosH label="Horizontal Position" type="ComboBox" options="Left,Centre,Right" data="left,centre,right" defaultValue="centre" width="100" optional="true"/>
 		</captionOptions>
-		
+
 	</synchSlide><synchMediaPlus menuItem="Media" icon="icFilm" remove="true">
-		
+
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<media label="Media" type="media"/>
 		<tip label="Media Description" type="TextInput"/>
 		<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
-		
+
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-		
+
 		<audioImg type="group" label="Image (Audio only)" optional="true">
 			<audioImage label="Image" type="media" optional="true"/>
 			<audioImageTip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
 		</audioImg>
-		
+
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-		
+		<aspect label="Maintain Aspect Ratio" type="CheckBox" defaultValue="true" optional="true"/>
+
 		<newNodes>
 			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="button" answerType="single" overlay="true" disable="true" synchStart="0" clearPanel="false" pauseMedia="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
 			<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>
 			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
 		</newNodes>
-		
+
 	</synchMediaPlus><synchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
-		
+
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<text label="Question" type="TextArea" height="100"/>
 		<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>
@@ -2752,10 +2754,10 @@
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-		
+
 		<feedback type="TextArea" height="40" label="Feedback" optional="true"/>
-		
-		
+
+
 		<feedbackLabel label="Feedback Label" type="textInput" wysiwyg="true" divider="true" language="true"/>
 		<singleRight label="Single Answer Correct" type="TextInput" wysiwyg="true" language="true"/>
 		<singleWrong label="Single Answer Wrong" type="TextInput" wysiwyg="true" language="true"/>
@@ -2764,122 +2766,122 @@
 		<checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
 		<continueBtnTxt label="Continue Button Label" type="TextInput" wysiwyg="true" language="true"/>
 		<topOption label="Drop Down Menu Option 1" type="TextInput" wysiwyg="true" language="true"/>
-		
+
 		<newNodes>
 			<synchMCQOption><![CDATA[<synchMCQOption name="Answer" text="Option text" correct="false"/>]]></synchMCQOption>
 		</newNodes>
-		
+
 	</synchMCQ><synchMCQOption menuItem="Answer" icon="icBullet" remove="true">
 
 		<text label="Answer" type="TextArea" wysiwyg="true"/>
 	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
 	    <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
-		
+
 		<feedback label="Feedback" type="TextArea" height="100" defaultValue="Feedback for this option" optional="true"/>
 		<page label="Go to Page" type="PageList" optional="true"/>
 		<synch label="Go to Synch Point" type="TextInput" optional="true"/>
 		<play label="Play Media" type="CheckBox" defaultValue="false" optional="true"/>
 		<enable label="Enable Controls" type="CheckBox" defaultValue="true" optional="true"/>
-		
+
 	</synchMCQOption><synchWebpage menuItem="Embed Web Page" icon="icPageWorld" remove="true">
-		
+
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<src label="URL" type="TextInput"/>
-		
+
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-		
+
 	</synchWebpage><synchXot menuItem="Embed XOT Project" icon="icPageWhiteCodeRed" remove="true">
-		
+
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<url label="URL" type="TextInput"/>
 		<page label="Page" type="TextInput" wysiwyg="true" defaultValue="Enter Page Number"/>
 		<hide label="Hide" type="ComboBox" options="None,Header,Footer,Both" data="none,top,bottom,both" defaultValue="none" width="100"/>
-		
+
 		<description label="Description" type="TextInput" wysiwyg="true" optional="true"/>
-		
+
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-		
+
 		<newNodes>
 			<synchXotChange><![CDATA[<synchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></synchXotChange>
 		</newNodes>
-		
+
 	</synchXot><synchXotChange menuItem="XOT Page Change" icon="icBullet" remove="true">
-		
+
 		<page label="Page" type="TextInput" defaultValue="Enter Page Number"/>
-		
+
 		<synchStart label="Synch Point" type="TextInput"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		
+
 	</synchXotChange><synchGoogleFeed menuItem="RSS Feed" icon="icRSS" remove="true">
-		
+
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<url label="RSS Feed URL" type="TextInput"/>
-		
+
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-		
+
 	</synchGoogleFeed><synchGoogleMap menuItem="Google Map" icon="icMap" remove="true">
-		
+
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<type label="Map Type" type="ComboBox" options="Hybrid,Road,Satellite,Terrain,Street view" data="HYBRID,ROADMAP,SATELLITE,TERRAIN,STREETVIEW" width="100"/>
 		<zoom label="Zoom" type="TextInput"/>
 		<lat label="Latitude" type="TextInput"/>
 		<lng label="Longitude" type="TextInput"/>
 		<location label="Location" type="TextInput"/>
-		
+
 		<orientation type="group" label="Orientation (Street view only)" optional="true">
 			<heading label="Horizontal" type="TextInput" defaultValue="0" optional="true"/>
 			<pitch label="Vertical" type="TextInput" defaultValue="1" optional="true"/>
 		</orientation>
-		
+
 		<info><![CDATA[Either Latitude & Longitude or Location must be set for the map to load.]]></info>
-		
+
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-		
+
 		<!--<newNodes>
 			<synchGoogleMapChange><![CDATA[<synchGoogleMapChange type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" pauseMedia="false"/>]]></synchGoogleMapChange>
 		</newNodes>-->
-		
+
 	</synchGoogleMap><synchGoogleMapChange menuItem="Google Map Location" icon="icBullet" remove="true">
-		
+
 		<type label="Map Type" type="ComboBox" options="Hybrid,Road map,Satellite,Terrain,Street view" data="HYBRID,ROADMAP,SATELLITE,TERRAIN,STREETVIEW" width="100"/>
 		<zoom label="Zoom" type="TextInput"/>
 		<lat label="Latitude" type="TextInput"/>
 		<lng label="Longitude" type="TextInput"/>
 		<location label="Location" type="TextInput"/>
-		
+
 		<orientation type="group" label="Orientation (Street view only)" optional="true">
 			<heading label="Horizontal" type="TextInput" defaultValue="0" optional="true"/>
 			<pitch label="Vertical" type="TextInput" defaultValue="1" optional="true"/>
 		</orientation>
-		
+
 		<tween label="Tween (Street view only)" type="CheckBox" defaultValue="false" optional="true"/>
 		<interval label="Tween Interval (Street view only)" type="TextInput" defaultValue="1000" optional="true"/>
-		
+
 		<info><![CDATA[Either Latitude & Longitude or Location must be set for the map to load.]]></info>
-		
+
 		<synchStart label="Synch Point" type="TextInput"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		
+
 	</synchGoogleMapChange><memory menu="Games" menuItem="Memory Game" hint="A memory card game. Create pairs of text and images for the user to match." icon="icLightbulb" thumb="thumbs/memoryGame.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
@@ -2920,7 +2922,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></memory><matchItem menuItem="Item" icon="icPageWhite" remove="true" max="9">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></memory><matchItem menuItem="Item" icon="icPageWhite" remove="true" max="9">
 
     <name label="Label" type="TextInput" wysiwyg="true"/>
     <url label="Image" type="Media"/>
@@ -2986,7 +2988,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></modelAnswer><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Displays collated results from all the preceding model answer pages which can then be reviewed and copied to clipboard." icon="icFolderPage" thumb="thumbs/modelAnswerResult.jpg" type="text" label="Page Text" height="280" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></modelAnswer><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Displays collated results from all the preceding model answer pages which can then be reviewed and copied to clipboard." icon="icFolderPage" thumb="thumbs/modelAnswerResult.jpg" type="text" label="Page Text" height="280" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100" mandatory="true"/>
     <copyBtnTxt label="Copy Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" deprecated="This property is no longer required"/>
@@ -3024,7 +3026,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></modelAnswerResults><modify menu="Interactivity" menuItem="Modify Exercise" hint="Present a piece of text that the user must modify in some way, for example, by changing the tense." icon="icModify" thumb="thumbs/modify.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></modelAnswerResults><modify menu="Interactivity" menuItem="Modify Exercise" hint="Present a piece of text that the user must modify in some way, for example, by changing the tense." icon="icModify" thumb="thumbs/modify.jpg" remove="true">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="100"/>
@@ -3066,7 +3068,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></modify><morphImages menu="Media" menuItem="Morph Images" hint="Morph between two images. Can be used to present an impression of zooming into a region of an image." icon="icZoomIn" thumb="thumbs/morphImages.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></modify><morphImages menu="Media" menuItem="Morph Images" hint="Morph between two images. Can be used to present an impression of zooming into a region of an image." icon="icZoomIn" thumb="thumbs/morphImages.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -3109,7 +3111,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></morphImages><nav menu="Navigators" menuItem="Multi-Navigator" hint="Present related text and graphical content on a choice of navigators." icon="icPages" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></morphImages><nav menu="Navigators" menuItem="Multi-Navigator" hint="Present related text and graphical content on a choice of navigators." icon="icPages" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
 	
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -3160,7 +3162,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></nav><navPage menuItem="Nested Page" icon="icBullet" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></nav><navPage menuItem="Nested Page" icon="icBullet" remove="true">
 
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -3213,7 +3215,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
     <name label="Opinion Title" type="TextInput" wysiwyg="true"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
@@ -3273,7 +3275,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></opinion><opinionClass menuItem="Class">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></opinion><opinionClass menuItem="Class">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="C - Tree/Tracking label" wysiwyg="false"/>
     <title label="Title" type="TextInput" mandatory="true" defaultValue="Title to use in graph" wysiwyg="true"/>
 
@@ -3338,7 +3340,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></orient><pdf menu="Media" menuItem="PDF File" hint="Incorporate PDF files in your project." icon="icPDF" thumb="thumbs/pdf.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></orient><pdf menu="Media" menuItem="PDF File" hint="Incorporate PDF files in your project." icon="icPDF" thumb="thumbs/pdf.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="PDF File" type="media"/>
@@ -3377,7 +3379,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></pdf><perspectives menu="Media" menuItem="Multiple Perspectives" hint="View and compare multiple video and sound clips." icon="icUser" thumb="thumbs/perspectives.jpg" remove="true" deepLink="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></pdf><perspectives menu="Media" menuItem="Multiple Perspectives" hint="View and compare multiple video and sound clips." icon="icUser" thumb="thumbs/perspectives.jpg" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 
     <backBtnTip label="Scroll Back Tip" type="TextInput" wysiwyg="true" language="true"/>
@@ -3436,7 +3438,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></perspectives><movie menuItem="Video" icon="icPageWhiteFilm" duplicate="true" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></perspectives><movie menuItem="Video" icon="icPageWhiteFilm" duplicate="true" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <txt label="Text" type="TextArea" height="300"/>
     <src label="Video" type="media"/>
@@ -3554,7 +3556,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></quiz><question menuItem="Question">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></quiz><question menuItem="Question">
 
 
     <prompt label="Question" type="TextArea" height="100"/>
@@ -3607,7 +3609,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></raptivity><results menu="Misc" menuItem="Results Page" hint="A page displaying a summary of the results of the interactions." icon="icResults" thumb="thumbs/results.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></raptivity><results menu="Misc" menuItem="Results Page" hint="A page displaying a summary of the results of the interactions." icon="icResults" thumb="thumbs/results.jpg" remove="true">
 
         <generalResultsTxt label="General results text label" type="TextInput" wysiwyg="true" language="true"/>
         <averageTxt label="Average text label" type="TextInput" wysiwyg="true" language="true"/>
@@ -3674,7 +3676,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></results><rss menuItem="RSS Feed" menu="Misc" hint="Include RSS feeds in your project. RSS feeds allow you to add dynamic content from a variety of sources. You can create your own RSS feeds using the RSS Feed template." icon="icRSS" thumb="thumbs/rss.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></results><rss menuItem="RSS Feed" menu="Misc" hint="Include RSS feeds in your project. RSS feeds allow you to add dynamic content from a variety of sources. You can create your own RSS feeds using the RSS Feed template." icon="icRSS" thumb="thumbs/rss.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="textArea" height="300"/>
@@ -3711,7 +3713,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></rss><scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true" deprecated="This page is currently under development">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></rss><scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true" deprecated="This page is currently under development">
 	<name label="Scenario Name" type="TextInput" wysiwyg="true" width="200"/>
 	<title label="Scenario Title" type="TextInput" wysiwyg="true" width="200"/>
 	<description label="Description" type="textArea" height="120"/>
@@ -3780,7 +3782,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></scenario><gameSetup menuItem="Configure Scores" remove="true" max="1">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></scenario><gameSetup menuItem="Configure Scores" remove="true" max="1">
 	<name label="Scenario set up" type="TextInput" wysiwyg="true" width="200"/>
 
     <score1Use label="Display Score 1" options="Yes,No" type="ComboBox" defaultValue="0" data="1,0" width="100"/>
@@ -3953,7 +3955,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></showGraph><slideshow menu="Navigators" menuItem="Slideshow" hint="A sequence of pages of related text and graphical content navigated with two arrow controls." icon="icPages" thumb="thumbs/slideNav.jpg" sortChildren="true" remove="true" deepLink="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></showGraph><slideshow menu="Navigators" menuItem="Slideshow" hint="A sequence of pages of related text and graphical content navigated with two arrow controls." icon="icPages" thumb="thumbs/slideNav.jpg" sortChildren="true" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
@@ -3994,7 +3996,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></slideshow><stopTracking label="Page Text" type="text" height="360" menu="Misc" menuItem="Stop Tracking" hint="A page with a button to stop and finish tracking the learning object." icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></slideshow><stopTracking label="Page Text" type="text" height="360" menu="Misc" menuItem="Stop Tracking" hint="A page with a button to stop and finish tracking the learning object." icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <textIntro label="Instruction" type="textarea" wysiwyg="true"/>
@@ -4031,7 +4033,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></stopTracking><summary menu="Text" menuItem="Summary" hint="A page for summarising key points and suggesting next steps." icon="icPageWhiteInfo" remove="true" thumb="thumbs/summary.jpg">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></stopTracking><summary menu="Text" menuItem="Summary" hint="A page for summarising key points and suggesting next steps." icon="icPageWhiteInfo" remove="true" thumb="thumbs/summary.jpg">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <summaryHeader label="Summary Header" type="TextInput" wysiwyg="true"/>
@@ -4068,7 +4070,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></summary><tabNav menu="Navigators" menuItem="Tabbed Navigator" hint="A series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></summary><tabNav menu="Navigators" menuItem="Tabbed Navigator" hint="A series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -4110,7 +4112,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></tabNav><tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="A list of topics where each topic displays a series of tabbed pages to present related text and graphical content." icon="icTabPlus" thumb="thumbs/tabNavExtra.jpg" remove="true" deepLink="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></tabNav><tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="A list of topics where each topic displays a series of tabbed pages to present related text and graphical content." icon="icTabPlus" thumb="thumbs/tabNavExtra.jpg" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
@@ -4151,7 +4153,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></tabNavExtra><topic menuItem="Topic" icon="icFolderPage" deepLink="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></tabNavExtra><topic menuItem="Topic" icon="icFolderPage" deepLink="true">
 
     <name label="Topic Name" type="TextInput" wysiwyg="true"/>
 
@@ -4204,7 +4206,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></table><tableData menuItem="Table Data" duplicate="false" remove="false" icon="icBullet">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></table><tableData menuItem="Table Data" duplicate="false" remove="false" icon="icBullet">
 
     <name label="Table Name" type="TextInput" wysiwyg="true"/>
     <data label="Table Data" newRow="data,data" newCol="data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" addCols="true" showHeaderRow="false"/>
@@ -4254,7 +4256,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></text><textDrawing menu="Media" menuItem="Drawing" hint="Use the drawing tools to include your own diagrams, annotated images and custom graphic content in your presentation." label="Edit Drawing" type="drawing" icon="icPageWhiteEdit" thumb="thumbs/textDrawing.jpg" remove="true" deprecated="This page is no longer supported">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></text><textDrawing menu="Media" menuItem="Drawing" hint="Use the drawing tools to include your own diagrams, annotated images and custom graphic content in your presentation." label="Edit Drawing" type="drawing" icon="icPageWhiteEdit" thumb="thumbs/textDrawing.jpg" remove="true" deprecated="This page is no longer supported">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <desc label="Page Text" type="textArea" height="300"/>
@@ -4290,7 +4292,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></textDrawing><textGraphics menu="Media" menuItem="Graphics and Sound" hint="A page for presenting text and graphics. You can also add an optional sound to this page." label="Page Text" type="text" height="300" icon="icPageWhitePicture" thumb="thumbs/textGraphics.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></textDrawing><textGraphics menu="Media" menuItem="Graphics and Sound" hint="A page for presenting text and graphics. You can also add an optional sound to this page." label="Page Text" type="text" height="300" icon="icPageWhitePicture" thumb="thumbs/textGraphics.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
@@ -4335,7 +4337,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></textGraphics><textMatch menu="Interactivity" menuItem="Matching Texts" hint="An interaction for the user to match chunks of text." icon="icConnect" thumb="thumbs/textMatch.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></textGraphics><textMatch menu="Interactivity" menuItem="Matching Texts" hint="An interaction for the user to match chunks of text." icon="icConnect" thumb="thumbs/textMatch.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
@@ -4389,7 +4391,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></textMatch><sentence menuItem="Sentence" icon="icPageWhiteText" remove="true" max="5">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></textMatch><sentence menuItem="Sentence" icon="icPageWhiteText" remove="true" max="5">
     <p1 label="Part 1" type="TextArea" height="50"/>
     <hint label="Hint" type="TextArea" height="50"/>
     <p2 label="Part 2" type="TextArea" height="50"/>
@@ -4437,7 +4439,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></textSWF><textVideo menu="Media" menuItem="Video" hint="Embed MP4 video files in your project." label="Page Text" icon="icPageWhiteFilm" thumb="thumbs/textVideo.jpg" type="text" height="180" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></textSWF><textVideo menu="Media" menuItem="Video" hint="Embed MP4 video files in your project." label="Page Text" icon="icPageWhiteFilm" thumb="thumbs/textVideo.jpg" type="text" height="180" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
@@ -4484,7 +4486,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></textVideo><thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" hint="A series of thumbnail images for the user to browse." icon="icPictures" thumb="thumbs/thumb.jpg" remove="true" deepLink="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></textVideo><thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" hint="A series of thumbnail images for the user to browse." icon="icPictures" thumb="thumbs/thumb.jpg" remove="true" deepLink="true">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -4527,7 +4529,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></thumbnailViewer><thumbnailImage menuItem="Image" icon="icBullet" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></thumbnailViewer><thumbnailImage menuItem="Image" icon="icBullet" remove="true">
 
     <name label="Tree Label" type="TextInput" wysiwyg="true"/>
     <text label="Image Text" type="TextArea" height="250"/>
@@ -4590,7 +4592,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></timeline><timelinedate menuItem="Item" icon="icPageWhite" max="12" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></timeline><timelinedate menuItem="Item" icon="icPageWhite" max="12" remove="true">
 
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Description" type="TextArea" height="100"/>
@@ -4643,7 +4645,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></title><topXQ menu="Interactivity" menuItem="Top X Question " hint="pose a question with multiple answers" icon="icComments" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></title><topXQ menu="Interactivity" menuItem="Top X Question " hint="pose a question with multiple answers" icon="icComments" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
     <instruction label="Instruction" type="TextArea" height="100"/>
@@ -4695,7 +4697,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></topXQ><optionXQ menuItem="Answer" icon="icBullet">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></topXQ><optionXQ menuItem="Answer" icon="icBullet">
         <answer label="Answer" type="TextInput" height="100" wysiwyg="false" mandatory="true"/>
         <name label="Label" type="TextInput" hieght="100"/>
         <feedback label="Feedback" type="TextArea" height="100" wysiwys="true"/>
@@ -4741,7 +4743,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></transcriptReader><nestedSynch menuItem="Text" icon="icBullet" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></transcriptReader><nestedSynch menuItem="Text" icon="icBullet" remove="true">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Synch point"/>
     <text label="Text" type="TextArea" height="250"/>
     <synch label="Synch Point" type="TextInput"/>	
@@ -4790,7 +4792,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></videoSynch><videoSynchPoint menuItem="Synch Point" icon="icBullet" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></videoSynch><videoSynchPoint menuItem="Synch Point" icon="icBullet" remove="true">
 
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -4839,7 +4841,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></wiki><wordsearch menu="Games" menuItem="Wordsearch" hint="A wordsearch game. Create a list of words for the user to find." icon="icWordsearch" thumb="thumbs/wordsearch.jpg" remove="true">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></wiki><wordsearch menu="Games" menuItem="Wordsearch" hint="A wordsearch game. Create a list of words for the user to find." icon="icWordsearch" thumb="thumbs/wordsearch.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
     <words label="Words" type="script" height="100"/>
@@ -4888,7 +4890,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></wordsearch><xerteModel menu="Media" menuItem="Xerte Content" icon="icTag" remove="true" thumb="thumbs/xerte.jpg" hint="Add custom Xerte content to the piece. Custom Xerte content allows you to add functionality not otherwise available in the templated pages and create bespoke interactivity." deprecated="This page is no longer supported">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></wordsearch><xerteModel menu="Media" menuItem="Xerte Content" icon="icTag" remove="true" thumb="thumbs/xerte.jpg" hint="Add custom Xerte content to the piece. Custom Xerte content allows you to add functionality not otherwise available in the templated pages and create bespoke interactivity." deprecated="This page is no longer supported">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <modelFile type="media" label="Xerte Model"/>
@@ -4925,7 +4927,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></xerteModel><youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Include video content from YouTube in your project." icon="icYoutube">&gt;
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></xerteModel><youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Include video content from YouTube in your project." icon="icYoutube">&gt;
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <text type="textArea" label="Instructions" height="300"/>
@@ -4965,7 +4967,7 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></youtube><youtuberss menuItem="YouTube Feed" menu="Misc" remove="true" thumb="thumbs/youtubefeed.jpg" hint="Include YouTube videos in your project. Enter a search term to display videos matching the term from YouTube." icon="icYoutube">
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></youtube><youtuberss menuItem="YouTube Feed" menu="Misc" remove="true" thumb="thumbs/youtubefeed.jpg" hint="Include YouTube videos in your project. Enter a search term to display videos matching the term from YouTube." icon="icYoutube">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <text type="textArea" label="Instructions" height="200"/>
@@ -5004,4 +5006,4 @@
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer></youtuberss></wizard>
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></youtuberss></wizard>

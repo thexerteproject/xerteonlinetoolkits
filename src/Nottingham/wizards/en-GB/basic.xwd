@@ -3,7 +3,7 @@
   <learningObject  icon="icPackage" remove="false" duplicate="false">
 
     <name type="TextInput" wysiwyg="true" label="Learning Object Title"/>
-    <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls" data="Linear,Historic,Menu,Menu with Page Controls" label="Navigation" width="170"/>
+    <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls, Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
     <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals Without Titles, Clean Visuals With Titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true" />
     <language type="LanguageList" label="Language" width="170"/>
@@ -73,7 +73,12 @@
         <forceTrackingMode label="Force tracking mode behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracking LO's. This changes the behaviour of some pagetypes, i.e. in Quiz the restart button will be disabled and in drag/drop exercises, the labels will stick, even if the answer is wrong" />
        	<category label="Tracking Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object, stored in xAPI events, to be used for categorising in xAPI reports"/>
 	</tracking>
-	
+
+	<meta type="group" label="Meta data" optional="true">
+	   	<course label="Course" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
+	   	<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
+    </meta>
+
     <newNodes>
     </newNodes>
 

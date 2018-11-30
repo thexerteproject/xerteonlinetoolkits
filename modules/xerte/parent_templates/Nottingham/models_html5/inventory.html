@@ -118,7 +118,9 @@
 						feedbackTxt = "";
 					
 					$("#optionHolder input:checked").each(function() {
-						var selectedOptionData = $(currentQuestion).children()[$(this).index()/2];
+					    // id is of the form optionX, where X is the index of the option
+					    var index = parseInt(this.id.substr(6));
+						var selectedOptionData = $(currentQuestion).children()[index];
 						if (currentQuestion.getAttribute("questionFeedback") == "yes") {
 							feedbackTxt += x_addLineBreaks(selectedOptionData.getAttribute("feedback")) + '<br/>';
 						}

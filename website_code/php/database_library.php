@@ -174,7 +174,7 @@ function db_query_one($sql, $params = array())
 {
     $results = db_query($sql, $params);
 
-    if (sizeof($results) > 0) {
+    if ($results!==false && sizeof($results) > 0) {
         return $results[0];
     }
     return null;

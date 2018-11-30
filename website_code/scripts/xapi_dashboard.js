@@ -79,6 +79,22 @@ xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element) {
     begin.setDate(begin.getDate() - 1);
     end = new Date(dashstatements[dashstatements.length - 1].timestamp);
     end.setDate(end.getDate() + 1);
+
+    var vals = [];
+    var timeFrame = end.getTime() - begin.getTime();
+    var tickmarkDuration = timeFrame / 8;
+    //round to nearset day
+    var tickMarkNrDays = Math.round(tickmarkDuration / (1000 * 3600 * 24));
+    if (tickMarkNrDays < 1)
+    {
+        tickMarkNrDays = 1;
+    }
+    var tick = begin.getTime();
+    while(tick < end.getTime()) {
+        vals.push(tick);
+        tick += (tickMarkNrDays * 1000 * 3600 * 24);
+    }
+
     var dash = new ADL.XAPIDashboard();
     dash.addStatements(dashstatements);
     var chart = dash.createLineChart({
@@ -98,6 +114,7 @@ xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element) {
             chart.xAxis.tickFormat(function(label) {
                 return d3.time.format('%b %d')(new Date(label));
             });
+            chart.xAxis.tickValues(vals);
         },
         post: function(data) {
             data.contents.map(function(el) {
@@ -1025,6 +1042,20 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
     var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
     dash.addStatements(launchedStatements);
     template_id = this.data.info.template_id;
+    var vals = [];
+    var timeFrame = end.getTime() - begin.getTime();
+    var tickmarkDuration = timeFrame / 8;
+    //round to nearset day
+    var tickMarkNrDays = Math.round(tickmarkDuration / (1000 * 3600 * 24));
+    if (tickMarkNrDays < 1)
+    {
+        tickMarkNrDays = 1;
+    }
+    var tick = begin.getTime();
+    while(tick < end.getTime()) {
+        vals.push(tick);
+        tick += (tickMarkNrDays * 1000 * 3600 * 24);
+    }
     var chart = dash.createLineChart({
         container: '#graph-svg-wrapper-' + this.data.info.template_id + ' svg',
         groupBy: 'timestamp',
@@ -1056,6 +1087,7 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
                 }
                 return intllabel;
             });
+            chart.xAxis.tickValues(vals);
         },
         post: function(data) {
             data.contents.map(function(el) {

@@ -247,3 +247,10 @@ and (max-width :500px) {
 		display: none;
 	}
 }
+
+/*fix button and text issue with footer narration controls in some themes*/
+#x_footerBlock .mejs-controls .mejs-button button {
+    font-size: 0 !important;
+    height: 16px !important;
+    width: 16px !important;
+}
