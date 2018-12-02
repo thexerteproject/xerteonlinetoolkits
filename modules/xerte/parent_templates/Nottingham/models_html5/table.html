@@ -125,19 +125,19 @@
 		
 		this.makeTable = function(tableData, csv) {
 			var tableString = "",
-				seperator = "|",
+				separator = "|",
 				i, j;
 			
 			if (csv == true) {
 				if ($tableInfo[0].getAttribute("delimiter") != "") {
-					seperator = ($tableInfo[0].getAttribute("delimiter") == 'semicolon' ? ';' : ',');
+					separator = ($tableInfo[0].getAttribute("delimiter") == 'semicolon' ? ';' : ',');
 				} else {
-					seperator = ',';
+					separator = ',';
 				}
 			}
 			for (i=0; i<tableData.length; i++) {
 				tableString += "<tr>";
-				var rowData = tableData[i].split(seperator);
+				var rowData = tableData[i].split(separator);
 				for (j=0; j<rowData.length; j++) {
 					tableString += "<td>" + rowData[j] + "</td>";
 				}
