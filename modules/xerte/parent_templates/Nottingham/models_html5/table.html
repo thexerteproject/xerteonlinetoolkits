@@ -129,7 +129,11 @@
 				i, j;
 			
 			if (csv == true) {
-				seperator = ",";
+				if ($tableInfo[0].getAttribute("delimiter") != "") {
+					seperator = ($tableInfo[0].getAttribute("delimiter") == 'semicolon' ? ';' : ',');
+				} else {
+					seperator = ',';
+				}
 			}
 			for (i=0; i<tableData.length; i++) {
 				tableString += "<tr>";
