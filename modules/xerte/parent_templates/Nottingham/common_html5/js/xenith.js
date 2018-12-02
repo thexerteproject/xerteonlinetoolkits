@@ -2926,12 +2926,20 @@ function x_insertText(node, exclude) {
 	exclude = exclude == undefined ? [] : exclude;
 	
 	// check text for variables - if found replace with variable value
+	// also handle case where comma decimal separator has been requested
 	if (x_variables.length > 0 && exclude.indexOf("variables") == -1) {
-        for (var k=0; k<x_variables.length; k++) {
+    for (var k=0; k<x_variables.length; k++) {
 			var regExp = new RegExp('\\[' + x_variables[k].name + '\\]', 'g');
-			tempText = tempText.replace(regExp, x_variables[k].value);
-        }
+
+			if ($.isNumeric( x_variables[k].value ))
+				if (x_params.decimalseparator !== undefined && x_params.decimalseparator === 'comma')
+					tempText = tempText.replace(regExp, String(x_variables[k].value).replace('.', ','));
+				else
+					tempText = tempText.replace(regExp, x_variables[k].value);
+			else
+				tempText = tempText.replace(regExp, x_variables[k].value);
     }
+  }
 	
 	// if project is being viewed as https then force iframe src to be https too
 	if (window.location.protocol == "https:" && exclude.indexOf("iframe") == -1) {
