@@ -675,7 +675,6 @@ a:visited {
   border-radius: 0px 20px 20px 0px; }
 
 #dragDropHolder .label p {
-  font-size: 1.1em !important;
   font-weight: normal; }
 
 .hint p {
@@ -1016,7 +1015,7 @@ h3 {
   	/*background:#152c51;
       color:white;*/
   font-family: 'Roboto', sans-serif;
-  font-size: 1 em !important;
+  font-size: 1.2em !important;
   font-weight: bold;
   padding-top: 10px !important;
   padding-bottom: 5px !important;
@@ -1080,6 +1079,7 @@ li {
 
 p {
   color: #000;
+  font-size: 1.2em;
   line-height: 1.4em; }
 
 li p {
