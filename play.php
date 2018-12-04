@@ -66,7 +66,9 @@ function check_host($hostname, $setting)
     if (strlen(hostname) != 0) {
         foreach ($test_string as $item) {
             $item = trim($item);
+            _debug("Checking host: " . $hostname . " in " . $item);
             if (strpos($hostname, $item) === 0) {
+                _debug("Matched host " . $hostname);
                 return true;
             }
         }
@@ -103,10 +105,8 @@ function check_ip($ip_address, $security_settings)
              */
 
             if (strcmp($ip_address, $host_ip) == 0) {
-
                 $flag = true;
             } else {
-
                 $flag = false;
             }
         } else {

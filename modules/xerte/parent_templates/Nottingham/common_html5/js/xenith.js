@@ -368,13 +368,13 @@ x_projectDataLoaded = function(xmlData) {
 
     // sort any parameters in url - these will override those in xml
     var tempUrlParams = window.location.search.substr(1, window.location.search.length).split("&");
-    var urlParams = {};
+    x_urlParams = {};
     for (i = 0; i < tempUrlParams.length; i++) {
-        urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
+        x_urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
     }
 	
 	// url embed parameter uses ideal setup for embedding in iframes - can be overridden with other parameters below
-	if (urlParams.embed == 'true') {
+	if (x_urlParams.embed == 'true') {
 		x_params.embed = true;
 		x_params.displayMode = 'full screen';
 		x_params.responsive = 'false';
@@ -382,18 +382,18 @@ x_projectDataLoaded = function(xmlData) {
 	}
 	
     // url display parameter will set size of LO (display=fixed|full|fill - or a specified size e.g. display=200,200)
-    if (urlParams.display != undefined) {
-        if ($.isNumeric(urlParams.display.split(",")[0]) == true && $.isNumeric(urlParams.display.split(",")[1]) == true) {
-            x_params.displayMode = urlParams.display.split(",");
+    if (x_urlParams.display != undefined) {
+        if ($.isNumeric(x_urlParams.display.split(",")[0]) == true && $.isNumeric(x_urlParams.display.split(",")[1]) == true) {
+            x_params.displayMode = x_urlParams.display.split(",");
             x_fillWindow = false; // overrides fill window for touchscreen devices
 
-        } else if (urlParams.display == "fixed" || urlParams.display == "default" || urlParams.display == "full" || urlParams.display == "fill") {
+        } else if (x_urlParams.display == "fixed" || x_urlParams.display == "default" || x_urlParams.display == "full" || x_urlParams.display == "fill") {
             if (x_browserInfo.touchScreen == true) {
                 x_fillWindow = true;
             }
-            if (urlParams.display == "fixed" || urlParams.display == "default") { // default fixed size using values in css (800,600)
+            if (x_urlParams.display == "fixed" || x_urlParams.display == "default") { // default fixed size using values in css (800,600)
                 x_params.displayMode = "default";
-            } else if (urlParams.display == "full" || urlParams.display == "fill") {
+            } else if (x_urlParams.display == "full" || x_urlParams.display == "fill") {
                 x_params.displayMode = "full screen"
             }
         }
@@ -403,32 +403,37 @@ x_projectDataLoaded = function(xmlData) {
 		x_params.displayMode = "default";
 		x_fillWindow = false;
 	}
+	
+	// this is being shown in iframe so force to fill available space
+	if (self !== top) {
+		x_fillWindow = true;
+	}
 
     // url hide parameter will remove x_headerBlock &/or x_footerBlock divs
-    if (urlParams.hide != undefined) {
-        if (urlParams.hide == "none") {
+    if (x_urlParams.hide != undefined) {
+        if (x_urlParams.hide == "none") {
             x_params.hideHeader = "false";
             x_params.hideFooter = "false";
-        } else if (urlParams.hide == "both") {
+        } else if (x_urlParams.hide == "both") {
             x_params.hideHeader = "true";
             x_params.hideFooter = "true";
-        } else if (urlParams.hide == "bottom") {
+        } else if (x_urlParams.hide == "bottom") {
             x_params.hideHeader = "false";
             x_params.hideFooter = "true";
-        } else if (urlParams.hide == "top") {
+        } else if (x_urlParams.hide == "top") {
             x_params.hideHeader = "true";
             x_params.hideFooter = "false";
         }
     }
 	
 	// url parameter to turn responsive on / off
-	if (urlParams.responsive != undefined && (urlParams.responsive == "true" || urlParams.responsive == "false")) {
-		x_params.responsive = urlParams.responsive;
+	if (x_urlParams.responsive != undefined && (x_urlParams.responsive == "true" || x_urlParams.responsive == "false")) {
+		x_params.responsive = x_urlParams.responsive;
 	}
 
-	if (urlParams.theme != undefined && (x_params.themeurl == undefined || x_params.themeurl != 'true'))
+	if (x_urlParams.theme != undefined && (x_params.themeurl == undefined || x_params.themeurl != 'true'))
     {
-        x_params.theme = urlParams.theme;
+        x_params.theme = x_urlParams.theme;
     }
 
     x_getLangData(x_params.language);
@@ -1399,8 +1404,17 @@ function x_continueSetUp2() {
     window.onbeforeunload = XTTerminate;
 
     XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
+	// Set course and module options AFTER XTInitialise
+    if (x_params.course != undefined && x_params.course != "")
+    {
+        XTSetOption('course', x_params.course);
+    }
+    if (x_params.module != undefined && x_params.module != "")
+    {
+        XTSetOption('module', x_params.module);
+    }
 
-	x_navigateToPage(true, x_startPage);
+    x_navigateToPage(true, x_startPage);
 }
 
 // function checks whether a media file exists
@@ -2912,12 +2926,20 @@ function x_insertText(node, exclude) {
 	exclude = exclude == undefined ? [] : exclude;
 	
 	// check text for variables - if found replace with variable value
+	// also handle case where comma decimal separator has been requested
 	if (x_variables.length > 0 && exclude.indexOf("variables") == -1) {
-        for (var k=0; k<x_variables.length; k++) {
+    for (var k=0; k<x_variables.length; k++) {
 			var regExp = new RegExp('\\[' + x_variables[k].name + '\\]', 'g');
-			tempText = tempText.replace(regExp, x_variables[k].value);
-        }
+
+			if ($.isNumeric( x_variables[k].value ))
+				if (x_params.decimalseparator !== undefined && x_params.decimalseparator === 'comma')
+					tempText = tempText.replace(regExp, String(x_variables[k].value).replace('.', ','));
+				else
+					tempText = tempText.replace(regExp, x_variables[k].value);
+			else
+				tempText = tempText.replace(regExp, x_variables[k].value);
     }
+  }
 	
 	// if project is being viewed as https then force iframe src to be https too
 	if (window.location.protocol == "https:" && exclude.indexOf("iframe") == -1) {
