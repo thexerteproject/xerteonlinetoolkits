@@ -1,6 +1,7 @@
 /*var linkEl;*/
 
-/*$(document).ready(function(){
+$(document).ready(function(){
+    /*
     linkEl = $('<link rel="stylesheet" href="https://learningcentral.cf.ac.uk/bbcswebdav/courses/REGOS-ELTTStaff/XERTE%20Files/XT%20Toolkit%20Open.css" type="text/css">').appendTo('head')[0];
     $(window).trigger('resize');
 
@@ -42,7 +43,7 @@
 
     });
 
-
+*/
     $('#x_pageDiv').on('DOMNodeInserted', '.splitScreen', function(){
         $('.splitScreen:first').closest('#pageContents').addClass('withChild');
     });
@@ -58,7 +59,7 @@
 
 
 
-});*/
+});
 
 
 /*$(function(){

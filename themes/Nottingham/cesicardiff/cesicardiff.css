@@ -658,6 +658,9 @@ a:visited {
 .x_dragDropLabel_page #labelHolder .label {
   margin: 0; }
 
+.x_dragDropLabel_page #infoHolder {
+  font-size: 1em; }
+
 #dragDropHolder .label {
   border: 1px solid #152c51;
   padding-left: 8px !important;
@@ -675,14 +678,27 @@ a:visited {
   border-radius: 0px 20px 20px 0px; }
 
 #dragDropHolder .label p {
+  font-size: 1.1em;
   font-weight: normal; }
 
 .hint p {
-  font-size: 1em !important; }
+  font-size: 1em; }
 
 #feedback h3 {
   border-bottom: 1px solid #aaa !important;
   padding-bottom: 5px !important; }
+
+p #iFrame, p iframe {
+  height: 66vw !important;
+  max-height: 60vh;
+  max-width: 960px;
+  width: 100%; }
+
+p .panel #iFrame, p .panel iframe {
+  width: 100%;
+  max-width: 960px;
+  height: auto !important;
+  max-height: 100%; }
 
 #imgCaption {
   font-weight: lighter; }
@@ -690,7 +706,12 @@ a:visited {
 #infoHolder {
   background: #eee;
   border: 0;
-  padding: 0; }
+  padding: 0;
+  font-size: 1.2em;
+  line-height: 1.4em; }
+
+#infoHolder button {
+  font-size: 0.8em; }
 
 #infoHolder img {
   max-width: 100%;
@@ -705,7 +726,11 @@ a:visited {
   /*border-bottom:none; */
   color: black;
   font-weight: 700;
-  padding-left: 0 !important; }
+  padding-left: 0 !important;
+  font-size: 1em; }
+
+#infoHolder p {
+  font-size: 1em; }
 
 #initHolder {
   margin: 0 0 10px !important; }
@@ -730,7 +755,7 @@ a:visited {
   padding: 4px; }
 
 #linkHolder p {
-  font-size: 1em; }
+  font-size: 1.2em; }
 
 #menuItems .menuItem {
   background: #eee;
@@ -749,8 +774,9 @@ a:visited {
   max-width: 100%; }
 
 .x_videoSynch_page #pageContents {
-  width: 50%;
-  max-width: 80%; }
+  width: 50% !important;
+  max-width: 80% !important;
+  font-size: 1.2em; }
 
 #question p {
   font-size: inherit; }
@@ -768,7 +794,7 @@ a:visited {
 
 #targetHolder h3 {
   border: 1px solid #152c51;
-  font-size: 1em !important;
+  font-size: 1em;
   padding: 5px !important;
   background: white;
   position: relative;
@@ -792,7 +818,7 @@ a:visited {
 
 #textHolder {
   margin-bottom: 0 !important;
-  max-width: 80%;
+  max-width: 960px;
   margin: auto; }
 
 #textHolder img {
@@ -856,7 +882,7 @@ img {
   -webkit-box-shadow: none;
   box-shadow: none; }
 
-#pageContents p#instruction {
+#pageContents p #instruction {
   font-size: 1em; }
 
 .right .panel {
@@ -925,11 +951,14 @@ img {
   overflow-y: auto !important;
   overflow-x: hidden !important; }
 
-.splitScreen, .ui-sortable h3 {
+.ui-sortable h3 {
   font-size: 1em !important; }
 
 .splitScreen .right {
   margin-left: 10px !important; }
+
+#dragDropHolder .ui-sortable .label p {
+  font-size: 0.9em; }
 
 #dragDropHolder .ui-sortable .label:before {
   content: none; }
@@ -973,7 +1002,8 @@ img {
   border: 1px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  margin-right: 1px; }
+  margin-right: 1px;
+  font-size: 0.8em; }
 
 .ui-tabs .ui-tabs-nav li a {
   border: 0;
@@ -1015,7 +1045,7 @@ h3 {
   	/*background:#152c51;
       color:white;*/
   font-family: 'Roboto', sans-serif;
-  font-size: 1.2em !important;
+  font-size: 1.2em;
   font-weight: bold;
   padding-top: 10px !important;
   padding-bottom: 5px !important;
@@ -1027,7 +1057,7 @@ h3:empty, #infoHolder hr {
 
 h4 {
   font-family: 'Roboto', sans-serif;
-  font-size: 1.1em !important;
+  font-size: 1.1em;
   font-weight: normal;
   padding-top: 10px !important;
   padding-bottom: 5px !important;
@@ -1037,7 +1067,7 @@ h4 {
 
 h5 {
   font-family: 'Roboto', sans-serif;
-  font-size: 1.0em !important;
+  font-size: 1.0em;
   font-weight: normal;
   padding-top: 10px !important;
   padding-bottom: 8px !important;
@@ -1049,7 +1079,6 @@ h5 {
 
 h6 {
   border-top: 1px solid #152c51;
-  display: none;
   font-family: Roboto, sans-serif;
   font-size: 1.1em;
   font-weight: 400;
@@ -1061,7 +1090,7 @@ hr {
   border: 1px solid #ddd; }
 
 img, #cropImg, #controlPanel {
-  border: 1px solid #152c51; }
+  border: 1px solid #ccc; }
 
 kbd {
   background-color: #d3374a;
@@ -1125,10 +1154,14 @@ td {
   background: #fff;
   border-color: #152c51;
   font-size: 1.1em;
+  line-height: 1.4em;
   width: auto; }
 
-td li, .ui-tabs .ui-tabs-panel p {
-  font-size: .8em; }
+td li {
+  font-size: 0.85em; }
+
+.ui-tabs .ui-tabs-panel p {
+  font-size: 1em; }
 
 th {
   background: #152c51;
@@ -1168,25 +1201,25 @@ tt {
 
 ul {
   color: #000;
-  font-size: 1em !important;
+  font-size: 1.2em;
   margin: 0; }
 
 ul ul {
-  font-size: inherit !important; }
+  font-size: inherit; }
 
 ol {
   color: #000;
-  font-size: 1.2em !important;
+  font-size: 1.2em;
   margin: 0; }
 
 ol ol {
-  font-size: inherit !important; }
+  font-size: inherit; }
 
 ol ul {
-  font-size: inherit !important; }
+  font-size: inherit; }
 
 ul ol {
-  font-size: inherit !important; }
+  font-size: inherit; }
 
 var {
   background-color: #ccc;
@@ -1203,11 +1236,11 @@ var {
   margin-right: -2px !important; }
 
 .titlePageTxt {
-  font-size: 3vw !important; }
+  font-size: 3vw; }
 
 #pageContents {
   width: 95%;
-  max-width: 80%; }
+  max-width: 960px; }
 
 .withChild {
   width: 100% !important;
@@ -1218,7 +1251,7 @@ var {
 
 @media only screen and (max-width: 900px) {
   .titlePageTxt {
-    font-size: 4vw !important; } }
+    font-size: 3.5vw; } }
 @media only screen and (min-height: 700px) {
   .withChild2 {
     max-width: 1280px !important; } }
@@ -1229,12 +1262,57 @@ var {
   color: #EEE; }
 
 #cards {
+  width: 90% !important;
   height: 60vh !important; }
 
-.x_flashCards .card {
+.x_flashCards_page .card {
   width: 100% !important; }
 
 .x_grid_page table {
   margin-top: 0; }
+
+#thumbHolder .thumbBox h3 {
+  font-size: 0.9em;
+  text-align: center;
+  overflow: hidden;
+  padding: 0px !important;
+  border: none !important; }
+
+.x_mediaLesson_page iframe, .x_mediaLesson_page #iframe {
+  width: 100% !important;
+  height: 100% !important; }
+
+#mainText, #textHolder {
+  line-height: 1.4em; }
+
+#textHolder {
+  font-size: 1.2em; }
+
+#textHolder p {
+  font-size: inherit;
+  line-height: 1.6em; }
+
+#subMenuItems {
+  width: 100%;
+  margin: auto;
+  max-width: 960px; }
+
+#subMenuItems .subMenuItem {
+  display: block;
+  margin-bottom: 5px;
+  text-align: left;
+  width: 100% !important; }
+
+.x_annotatedDiagram_page #canvas {
+  position: absolute;
+  top: 0px;
+  margin: 0;
+  right: 0; }
+
+#copyBtn {
+  font-size: 0.8em; }
+
+.x_tabNavExtra_page #pageContents {
+  font-size: 1.1em; }
 
 /*# sourceMappingURL=cesicardiff.css.map */
