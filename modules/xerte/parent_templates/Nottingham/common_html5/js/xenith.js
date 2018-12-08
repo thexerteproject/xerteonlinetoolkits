@@ -42,15 +42,9 @@ var x_languageData  = [],
 	x_responsive = [], // list of any responsivetext.css files in use
 	x_cssFiles = [];
 
-if (typeof modelfilestrs == 'undefined')
-{
-    modelfilestrs = [];
-    xot_offline = false;
-}
-else
-{
-    xot_offline = true;
-}
+// Determine whether offline mode or not
+var xot_offline = !(typeof modelfilestrs === 'undefined');
+var modelfilestrs = modelfilestrs || [];
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
 
@@ -2251,16 +2245,20 @@ function x_loadPageBg(loadModel) {
 		$("#x_bgDarken").hide();
 	}
 	
-	$pageBg.fadeIn();
+	
 	
 	if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
-		$pageBg.gray();
+		//setTimeout(function(){$pageBg.gray();}, 100);
+		//$pageBg.gray();
 		if ($("#pageBg" + x_currentPage).length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
 			$(".grayscale:not(#x_mainBg):not('[id]')").addClass("pageBg").attr("id", "pageBg" + x_currentPage);
 			$pageBg = $("#pageBg" + x_currentPage);
 			$pageBg.css("visibility", "visible");
 		}
+		$("#pageBg").gray().fadeIn();
 	}
+	
+	
 	
 	$("#x_mainBg").hide();
 }
