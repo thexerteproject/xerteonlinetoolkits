@@ -872,11 +872,19 @@ function x_continueSetUp1() {
 				})
 				.attr("aria-label", $("#x_glossaryBtn").attr("title") + " " + x_params.dialogTxt)
 				.click(function() {
-					x_openDialog("glossary", x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"), x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"));
-					$(this)
-						.blur()
-						.removeClass("ui-state-focus")
-						.removeClass("ui-state-hover");
+					x_openDialog(
+						"glossary",
+						x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"),
+						x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"),
+						null,
+						null,
+						function () {
+							$("#x_glossaryBtn")
+								.blur()
+								.removeClass("ui-state-focus")
+								.removeClass("ui-state-hover");
+						}
+					);
 				});
 
 			$x_pageDiv
@@ -2308,7 +2316,7 @@ function x_updateCss(updatePage) {
 
 
 // functions open dialogs e.g. glossary, table of contents - just reattach if it's already loaded previously
-function x_openDialog(type, title, close, position, load) {
+function x_openDialog(type, title, close, position, load, onclose) {
     for (var i=0, len=x_dialogInfo.length; i<len; i++) {
         if (x_dialogInfo[i].type == type) {
             $(".x_popupDialog").parent().detach();
@@ -2338,7 +2346,10 @@ function x_openDialog(type, title, close, position, load) {
                         closeOnEscape:  true,
                         title:          title,
                         closeText:      close,
-                        close: function() {$x_popupDialog.parent().detach();},
+                        close: function() {
+                        	$x_popupDialog.parent().detach();
+                        	if (onclose && typeof onclose == 'function')  onclose();
+                        },
 						create: function(event, ui) {
 							$(this).parent(".ui-dialog").find(".ui-dialog-titlebar-close .ui-icon")
 								.removeClass("ui-icon-closethick")
