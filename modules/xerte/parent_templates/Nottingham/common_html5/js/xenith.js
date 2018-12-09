@@ -1227,11 +1227,19 @@ function x_continueSetUp1() {
 		})
 		.attr("aria-label", $("#x_colourChangerBtn").attr("title") + " " + x_params.dialogTxt)
 		.click(function() {
-				x_openDialog("colourChanger", x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"), x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"));
-			$(this)
-				.blur()
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
+			x_openDialog(
+				"colourChanger",
+				x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"),
+				x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"),
+				null,
+				null,
+				function () {
+					$x_colourChangerBtn
+						.blur()
+						.removeClass("ui-state-focus")
+						.removeClass("ui-state-hover");
+				}
+			);
 		});
 
 	if (x_params.kblanguage != undefined) {
