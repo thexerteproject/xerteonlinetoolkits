@@ -8,7 +8,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -177,7 +177,7 @@ x_projectDataLoaded = function(xmlData) {
     for (i = 0, len = xmlData[0].attributes.length; i < len; i++) {
         x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
     }
-	
+
 	// author support should only work when previewed (not play link)
 	if (x_params.authorSupport == "true") {
 		if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") == -1) {
@@ -195,7 +195,7 @@ x_projectDataLoaded = function(xmlData) {
 			// get current date/time according to browser
 			var nowTemp = new Date();
 			var now = {day:nowTemp.getDate(), month:nowTemp.getMonth()+1, year:nowTemp.getFullYear(), time:Number(String(nowTemp.getHours()) + (String(nowTemp.getMinutes()) < 10 ? '0' : '') + String(nowTemp.getMinutes()))};
-			
+
 			// functions to get hide on/until date/times from xml
 			var hideOn, hideUntil,
 				hideOnString = '', hideUntilString = '';
@@ -209,7 +209,7 @@ x_projectDataLoaded = function(xmlData) {
 						month = Math.min(Number(dmy[1]), 12),
 						year = Math.max(Number(dmy[2]), 2017),
 						time = 0; // use midnight if no time is given
-					
+
 					if (hm != undefined && hm.trim() != '') {
 						var hm = hm.split(':');
 						if (hm.length == 2) {
@@ -218,11 +218,11 @@ x_projectDataLoaded = function(xmlData) {
 							time = Number(String(hour) + (minute < 10 ? '0' : '') + String(minute));
 						}
 					}
-					
+
 					return {day:day, month:month, year:year, time:time};
 				}
 			}
-			
+
 			var getFullDate = function(info) {
 				var timeZero = '';
 				for (var i=0; i<4-String(info.time).length; i++) {
@@ -230,24 +230,24 @@ x_projectDataLoaded = function(xmlData) {
 				}
 				return Number(String(info.year) + (info.month < 10 ? '0' : '') + String(info.month) + (info.day < 10 ? '0' : '') + String(info.day) + timeZero + String(info.time));
 			}
-			
+
 			// is it hidden from a certain date? if so, have we passed that date/time?
 			if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
 				hideOn = getDateInfo($(this)[0].getAttribute("hideOnDate"), $(this)[0].getAttribute("hideOnTime"));
-				
+
 				if (hideOn != false) {
 					if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
 						hidePage = false;
 					}
-					
+
 					hideOnString = '{from}: ' + $(this)[0].getAttribute("hideOnDate") + ' ' + $(this)[0].getAttribute("hideOnTime");
 				}
 			}
-			
+
 			// is it hidden until a certain date? if so, have we passed that date/time?
 			if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
 				hideUntil = getDateInfo($(this)[0].getAttribute("hideUntilDate"), $(this)[0].getAttribute("hideUntilTime"));
-				
+
 				if (hideUntil != false) {
 					// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
 					var skip = false;
@@ -258,17 +258,17 @@ x_projectDataLoaded = function(xmlData) {
 							skip = true;
 						}
 					}
-					
+
 					if (skip != true && hidePage == true) {
 						if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
 							hidePage = false;
 						}
 					}
-					
+
 					hideUntilString = '{until}: ' + $(this)[0].getAttribute("hideUntilDate") + ' ' + $(this)[0].getAttribute("hideUntilTime");
 				}
 			}
-			
+
 			// language data hasn't been sorted yet so temporarily just store the attribute name of where we can later get the language we need
 			var infoString = '';
 			if (hideOnString != '') {
@@ -279,16 +279,16 @@ x_projectDataLoaded = function(xmlData) {
 				infoString += hideUntilString;
 			}
 			if (infoString != '') { infoString += ')'; }
-			
+
 			if (hidePage == true) {
 				infoString = '{hidden} ' + infoString;
 			} else {
 				infoString = '{shown} ' + infoString;
 			}
-			
+
 			$(this)[0].setAttribute("hidePageInfo", infoString);
 		}
-		
+
 		if (hidePage == false || x_params.authorSupport == "true") {
 			var linkID = $(this)[0].getAttribute("linkID"),
 				pageID = $(this)[0].getAttribute("pageID"),
@@ -299,7 +299,7 @@ x_projectDataLoaded = function(xmlData) {
 			if (pageID != undefined && pageID != "Unique ID for this page") { // Need to use this English for backward compatibility
 				page.pageID = pageID;
 			}
-			
+
 			//Get child linkIDs for deeplinking
 			page.childIDs = [];
 			var tempArrays = [];
@@ -312,7 +312,7 @@ x_projectDataLoaded = function(xmlData) {
 						var tempArray = tempArrays[tempArrays.length-1];
 						allChildIDs($child, tempArray);
 						array.push(tempArray);
-						
+
 					} else {
 						array.push($child[0].getAttribute("linkID"));
 					}
@@ -334,7 +334,7 @@ x_projectDataLoaded = function(xmlData) {
 		}
 
     });
-	
+
 	// removes hidden pages from array
 	for (i=0; i<pageToHide.length; i++) {
 		x_pages.splice(pageToHide[i]-i,1);
@@ -366,7 +366,7 @@ x_projectDataLoaded = function(xmlData) {
     for (i = 0; i < tempUrlParams.length; i++) {
         x_urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
     }
-	
+
 	// url embed parameter uses ideal setup for embedding in iframes - can be overridden with other parameters below
 	if (x_urlParams.embed == 'true') {
 		x_params.embed = true;
@@ -374,7 +374,7 @@ x_projectDataLoaded = function(xmlData) {
 		x_params.responsive = 'false';
 		// css button also won't appear
 	}
-	
+
     // url display parameter will set size of LO (display=fixed|full|fill - or a specified size e.g. display=200,200)
     if (x_urlParams.display != undefined) {
         if ($.isNumeric(x_urlParams.display.split(",")[0]) == true && $.isNumeric(x_urlParams.display.split(",")[1]) == true) {
@@ -392,12 +392,12 @@ x_projectDataLoaded = function(xmlData) {
             }
         }
     }
-	
+
 	if (window.location.href.indexOf("/peer.php") != -1 || window.location.href.indexOf("/peerreview_") != -1) {
 		x_params.displayMode = "default";
 		x_fillWindow = false;
 	}
-	
+
 	// this is being shown in iframe so force to fill available space
 	if (self !== top) {
 		x_fillWindow = true;
@@ -419,7 +419,7 @@ x_projectDataLoaded = function(xmlData) {
             x_params.hideFooter = "false";
         }
     }
-	
+
 	// url parameter to turn responsive on / off
 	if (x_urlParams.responsive != undefined && (x_urlParams.responsive == "true" || x_urlParams.responsive == "false")) {
 		x_params.responsive = x_urlParams.responsive;
@@ -588,11 +588,11 @@ function x_GetTrackingTextFromHTML(html, fallback)
 function x_setUp() {
 	x_params.dialogTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") : "";
 	x_params.newWindowTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") : "";
-	
+
 	if (x_pages.length == 0) {
 		$("body").append(x_getLangInfo(x_languageData.find("noPages")[0], "label", "<p>This project does not contain any pages.</p>"));
 	} else {
-		
+
 		$x_head			= $("head");
 		$x_body			= $("body");
 		$x_window		= $(window);
@@ -609,17 +609,17 @@ function x_setUp() {
 		$x_pageNo		= $("#x_pageNo");
 		$x_nextBtn		= $("#x_nextBtn");
 		$x_background	= $("#x_background");
-		
+
 		$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
-		
+
 		if (x_params.authorSupport == "true") {
 			var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
 			$x_headerBlock.prepend('<div id="x_authorSupportMsg" class="alert"><p>' + msg + '</p></div>');
 		}
-		
+
 		// calculate author set variables
 		x_newVariables();
-		
+
 		// hides header/footer if set in url
 		if (x_params.hideHeader == "true") {
 			$x_headerBlock.hide().height(0);
@@ -632,7 +632,7 @@ function x_setUp() {
 		if (x_params.hideHeader == "true" && x_params.hideFooter == "true") {
 			$x_mainHolder.css("border", "none");
 		}
-		
+
 		// sets initial size if set in url e.g. display=500,500
 		if ($.isArray(x_params.displayMode)) {
 			$x_mainHolder.css({
@@ -640,7 +640,7 @@ function x_setUp() {
 				"height"	:x_params.displayMode[1]
 			});
 		}
-		
+
 		if (x_browserInfo.mobile) {
 		    x_fillWindow = true;
 			$x_mainHolder.addClass("x_mobile");
@@ -674,7 +674,7 @@ function x_desktopSetUp() {
 						$x_mainHolder.removeClass("x_responsive");
 						$(x_responsive[i]).prop("disabled", true);
 					};
-					
+
 					// minimised size to come from display size specified in xml or url param
 					if ($.isArray(x_params.displayMode)) {
 						$x_mainHolder.css({
@@ -702,18 +702,18 @@ function x_desktopSetUp() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
-		
+
 		$("#x_cssBtn").addClass("x_maximise").removeClass("x_minimise");
 	}
-	
+
 	if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
 		x_fillWindow = true;
 	}
-	
+
 	if (x_fillWindow == true) {
 		x_setFillWindow(false);
 	}
-	
+
 	x_cssSetUp();
 }
 
@@ -804,7 +804,7 @@ function x_continueSetUp1() {
 	//if (x_params.styles != undefined){
 	//	$x_head.append('<style type="text/css">' +  x_params.styles + '</style>');
 	//}
-	
+
 	if (x_pageInfo[0].type == "menu") {
 		$x_pageNo.hide();
 		if (x_params.navigation == "Menu") {
@@ -840,11 +840,11 @@ function x_continueSetUp1() {
 					.removeClass("ui-state-hover");
 			});
 	}
-	
-	
+
+
 	if (x_params.glossary != undefined) {
 		x_dialogInfo.push({type:'glossary', built:false});
-		
+
 		var i, len, item, word,
 			items = x_params.glossary.split("||");
 
@@ -860,7 +860,7 @@ function x_continueSetUp1() {
 			x_glossary.sort(function(a, b){ // sort by size
 				return a.word.length > b.word.length ? -1 : 1;
 			});
-			
+
 			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
 			$("#x_glossaryBtn")
 				.button({
@@ -878,19 +878,19 @@ function x_continueSetUp1() {
 						.removeClass("ui-state-focus")
 						.removeClass("ui-state-hover");
 				});
-			
+
 			$x_pageDiv
 				.on("mouseenter", ".x_glossary", function(e) {
 					$(this).trigger("mouseleave");
-					
+
 					var $this = $(this),
 						myText = $this.text(),
 						myDefinition, i, len;
-					
+
 					// Rip out the title attribute
 					$this.data('title', $this.attr('title'));
 					$this.attr('title', '');
-					
+
 					for (i=0, len=x_glossary.length; i<len; i++) {
 						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>"
@@ -901,12 +901,12 @@ function x_continueSetUp1() {
 							}
 						}
 					}
-					
+
 					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
-					
+
 					// Queue reparsing of MathJax - fails if no network connection
 					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-					
+
 					$x_glossaryHover = $("#x_glossaryHover");
 					$x_glossaryHover.css({
 						"left"	:$(this).offset().left + 20,
@@ -919,11 +919,11 @@ function x_continueSetUp1() {
 				})
 				.on("mouseleave", ".x_glossary", function(e) {
 					$x_mainHolder.off("click.glossary");
-					
+
 					if ($x_glossaryHover != undefined) {
 						$x_glossaryHover.remove();
 					}
-					
+
 					// Put back the title attribute
 					$this = $(this);
 					$this.attr('title', $this.data('title'));
@@ -931,7 +931,7 @@ function x_continueSetUp1() {
 				.on("mousemove", ".x_glossary", function(e) {
 					var leftPos,
 						topPos = e.pageY + 20;
-					
+
 					if (x_browserInfo.mobile == false) {
 						leftPos = e.pageX + 20;
 						if (leftPos + $x_glossaryHover.width() > $x_mainHolder.offset().left + $x_mainHolder.width()) {
@@ -959,7 +959,7 @@ function x_continueSetUp1() {
 				});
 		}
 	}
-	
+
 	if (x_params.media != undefined) {
 		x_checkMediaExists(x_evalURL(x_params.media), function(mediaExists) {
 			if (mediaExists) {
@@ -978,13 +978,13 @@ function x_continueSetUp1() {
 							.blur()
 							.removeClass("ui-state-focus")
 							.removeClass("ui-state-hover");
-						
+
 						x_openMediaWindow();
 					});
 			}
 		});
 	}
-	
+
 	//add optional progress bar
     if (x_params.progressBar != undefined && x_params.progressBar != "" && x_params.hideFooter != "true") {
 		//add a div for the progress bar
@@ -996,7 +996,7 @@ function x_continueSetUp1() {
 			$("#x_pageNo").remove();
 		}
 	}
-	
+
 	//add show/hide footer tools
 	if (x_params.footerTools != "none" && x_params.hideFooter != "true") {
 		var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
@@ -1004,7 +1004,7 @@ function x_continueSetUp1() {
 		//add a div for the show/hide chevron
 		$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><div id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div></div>');
 		$('#x_footerChevron').prop('title', hideMsg);
-		
+
 		//chevron to show/hide function
 		$('#x_footerChevron').click(function(){
 			$('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
@@ -1024,19 +1024,19 @@ function x_continueSetUp1() {
 			$('#x_footerChevron').prop('title', showMsg);
 		}
 	}
-	
+
 	// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
 	// it's overridden by logo in theme folder
 	// default & theme logos can also be overridden by images uploaded via Icon optional property
 	$('#x_headerBlock img.x_icon').hide();
 	$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
-	
+
 	var icPosition = "x_floatLeft";
 	if (x_params.icPosition != undefined && x_params.icPosition != "") {
 		icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
 	}
 	$('#x_headerBlock img.x_icon').addClass(icPosition);
-	
+
 	var checkExists = function(type, fallback) {
 	    if (type == 'LO') {
             $('#x_headerBlock img.x_icon').show();
@@ -1047,12 +1047,12 @@ function x_continueSetUp1() {
 			success: function() {
 				$('#x_headerBlock img.x_icon').show();
 				if (x_firstLoad == false) {x_updateCss();};
-				
+
 				// the theme logo is being used - add a class that will allow for the different size windows to display different logos
 				if (type == 'theme') {
 					$('#x_headerBlock img.x_icon').addClass('themeLogo');
 				}
-				
+
 				if (x_params.icTip != undefined && x_params.icTip != "") {
 					$('#x_headerBlock img.x_icon').attr('alt', x_params.icTip);
 				} else {
@@ -1070,7 +1070,7 @@ function x_continueSetUp1() {
 			}
 		});
 	}
-	
+
 	var type, fallback;
 	if (x_params.ic != undefined && x_params.ic != '') {
 		$('#x_headerBlock img.x_icon').attr('src', x_evalURL(x_params.ic));
@@ -1081,22 +1081,22 @@ function x_continueSetUp1() {
 		$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
 	}
 	checkExists(type, fallback);
-	
+
 	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 	$("#x_headerBlock h1").html(x_params.name);
-	
+
 	// strips code out of page title
     var div = $("<div>").html(x_params.name);
     var strippedText = div.text();
 	if (strippedText != "") {
 		document.title = strippedText;
 	}
-	
+
 	var prevIcon = "x_prev";
 	if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
 		prevIcon = "x_prev_hist";
 	}
-	
+
 	$x_prevBtn
 		.button({
 			icons: {
@@ -1147,7 +1147,7 @@ function x_continueSetUp1() {
 				.removeClass("ui-state-focus")
 				.removeClass("ui-state-hover");
 		});
-	
+
 	$x_nextBtn
 		.button({
 			icons: {
@@ -1174,17 +1174,17 @@ function x_continueSetUp1() {
 				.removeClass("ui-state-focus")
 				.removeClass("ui-state-hover");
 		});
-	
-	
+
+
 	var	menuIcon = "x_info",
 		menuLabel = x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
-	
+
 	if (x_params.navigation == "Historic") {
 		menuIcon = "x_home";
 		menuLabel = x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
 		$x_menuBtn.addClass("x_home");
 	}
-	
+
 	$x_menuBtn
 		.button({
 			icons: {
@@ -1225,7 +1225,7 @@ function x_continueSetUp1() {
 				.removeClass("ui-state-focus")
 				.removeClass("ui-state-hover");
 		});
-	
+
 	if (x_params.kblanguage != undefined) {
 		if (typeof charpadstr != 'undefined')
 		{
@@ -1246,8 +1246,8 @@ function x_continueSetUp1() {
 			});
 		}
 	}
-	
-	
+
+
 	$x_window.resize(function() {
 		if (x_fillWindow == true) {
 			if (this.resizeTo) {
@@ -1258,12 +1258,12 @@ function x_continueSetUp1() {
 			}, 200);
 		}
 	});
-	
+
 	$x_window.on("resizeEnd", function() {
 		x_updateCss();
 	});
-	
-	
+
+
 	// ** swipe to change page on touch screen devices - taken out as caused problems with drag and drop activities - need to be able to disable it for these activities
 	if (x_browserInfo.touchScreen == true) {
 		/*
@@ -1290,7 +1290,7 @@ function x_continueSetUp1() {
 				$x_glossaryHover.remove();
 			}
 		});
-		
+
 		$x_pageHolder.bind("touchend", function(e) {
 			/*
 			if (numTouches == 1) { // if >1 then don't use to change page (user may be zooming)
@@ -1298,7 +1298,7 @@ function x_continueSetUp1() {
 				mouseUp = [touch.pageX, touch.pageY];
 				var dif = [mouseDown[0] - mouseUp[0], mouseDown[1] - mouseUp[1]];
 				// only swipes of min 75px & swipes where xDif > yDif will change page to avoid scrolling up and down triggering page change
-				if (Math.abs(dif[0]) > Math.abs(dif[1])) {	
+				if (Math.abs(dif[0]) > Math.abs(dif[1])) {
 					if (dif[0] >= 75) {
 						if (x_pageInfo.length > x_currentPage + 1) {
 							x_changePage(x_currentPage+1);
@@ -1312,7 +1312,7 @@ function x_continueSetUp1() {
 			}
 			*/
 		});
-		
+
 		// call x_updateCss function on orientation change (resize event should trigger this but it's inconsistent)
 		$x_window.on("orientationchange", function() {
 			if (x_fillWindow == true) {
@@ -1329,9 +1329,9 @@ function x_continueSetUp1() {
 			}
 		});
 	}
-	
+
 	if (x_params.background != undefined && x_params.background != "") {
-		
+
 		x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
 			if (mediaExists) {
 				var alpha = 30;
@@ -1362,13 +1362,13 @@ function x_continueSetUp1() {
 						"filter" :"alpha(opacity=" + x_params.backgroundDark + ")"
 					});
 				}
-				
+
 				x_continueSetUp2();
 			} else {
 				x_continueSetUp2();
 			}
 		});
-		
+
 	} else {
 		x_continueSetUp2();
 	}
@@ -1377,7 +1377,7 @@ function x_continueSetUp1() {
 function x_continueSetUp2() {
 	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
 	var mediaElementText = [{name:"stopButton", label:"Stop", description:"Stop Media Button"},{name:"playPauseButton", label:"Play/Pause", description:"Play/Pause Media Button"},{name:"muteButton", label:"Mute Toggle", description:"Toggle Mute Button"},{name:"fullscreenButton", label:"Fullscreen", description:"Fullscreen Movie Button"},{name:"captionsButton", label:"Captions/Subtitles", description:"Show/Hide Captions Button"}];
-	
+
 	for (var i=0, len=mediaElementText.length; i<len; i++) {
 		x_mediaText.push({
 			label: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]),
@@ -1548,7 +1548,7 @@ function x_lookupPage(pageType, pageID) {
 			return i;
 		}
 	}
-	
+
 	// Lastly we now need to check children of each page
 	var tempArray = [];
 	var checkChildIDs = function(ids) {
@@ -1571,7 +1571,7 @@ function x_lookupPage(pageType, pageID) {
 		}
 		return null;
 	}
-	
+
 	for (var i=0; i<x_pageInfo.length; i++) {
 		tempArray = tempArray.splice();
 		tempArray.push(i);
@@ -1596,16 +1596,16 @@ function x_changePage(x_gotoPage) {
 
 
     var modelfile = x_pageInfo[x_gotoPage].type;
-	
+
 	var classList = $x_mainHolder.attr('class') == undefined ? [] : $x_mainHolder.attr('class').split(/\s+/);
 	$.each(classList, function(index, item) {
 		if (item.substring(0,2) == "x_" && item.substr(item.length-5,item.length) == "_page") {
 			$x_mainHolder.removeClass(item);
 		}
 	});
-	
+
 	$x_mainHolder.addClass("x_" + modelfile + "_page");
-	
+
 	x_insertCSS(x_templateLocation + "models_html5/" + modelfile + ".css", function () {
 		x_changePageStep2(x_gotoPage);
 	}, false, "page_model_css");
@@ -1688,7 +1688,7 @@ function x_changePageStep5(x_gotoPage) {
     if ($x_pageDiv.children().length > 0) {
         // remove everything specific to previous page that's outside $x_pageDiv
         $(".pageBg").hide();
-		
+
 		if ($("#x_mainBg").length > 0 && $("#x_bgDarken").length > 0 && x_params.backgroundDark != undefined && x_params.backgroundDark != "" && x_params.backgroundDark != "0") {
 			$("#x_bgDarken")
 				.css({
@@ -1699,7 +1699,7 @@ function x_changePageStep5(x_gotoPage) {
 		} else {
 			$("#x_bgDarken").hide();
 		}
-		
+
 		$("#x_mainBg").show();
         $(".x_pageNarration").remove(); // narration flash / html5 audio player
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
@@ -1737,13 +1737,13 @@ function x_changePageStep5(x_gotoPage) {
         pageTitle = x_currentPageXML.getAttribute("name");
         x_addNarration();
         x_addCountdownTimer();
-		
+
 		// add screen reader info for this page type (if exists)
 		var screenReaderInfo = x_pageInfo[x_currentPage].type != "nav" ? x_pageInfo[x_currentPage].type : x_currentPageXML.getAttribute("type") == "Acc" ? "accNav" : x_currentPageXML.getAttribute("type") == "Button" ? "buttonNav" : x_currentPageXML.getAttribute("type") == "Col" ? "columnPage" : x_currentPageXML.getAttribute("type") == "Slide" ? "slideshow" : "tabNav";
 		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", undefined) != undefined) {
 			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", "") + '</p>');
 		}
-		
+
 		var extraTitle = "";
 		if (x_params.authorSupport == "true" && x_currentPageXML.getAttribute("hidePage") == "true") {
 			// sort the string - language data wasn't available when hidePageInfo was created
@@ -1752,13 +1752,13 @@ function x_changePageStep5(x_gotoPage) {
 				.replace('{until}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "until", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "until", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "until", "") : 'Hide until')
 				.replace('{hidden}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "hidden", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "hidden", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "hidden", "") : 'This page is currently hidden in live projects')
 				.replace('{shown}', x_getLangInfo(x_languageData.find("hiddenPage")[0], "shown", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "shown", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "shown", "") : 'This page is currently shown in live projects');
-			
+
 			extraTitle = ' <span class="alert">' + str + '</span>';
 		}
-		
+
 		pageTitle = pageTitle + extraTitle;
     }
-	
+
     $("#x_headerBlock h2").html(pageTitle);
 
     x_updateCss(false);
@@ -1780,12 +1780,12 @@ function x_changePageStep5(x_gotoPage) {
         $x_pageDiv.append(builtPage);
         builtPage.hide();
         builtPage.fadeIn();
-		
+
 		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
 			$("#x_pageScript").remove();
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
-		
+
 		// show page background & hide main background
 		if ($(".pageBg#pageBg" + x_currentPage).length > 0) {
 			$(".pageBg#pageBg" + x_currentPage).show();
@@ -1799,7 +1799,7 @@ function x_changePageStep5(x_gotoPage) {
 			} else {
 				$("#x_bgDarken").hide();
 			}
-			
+
 			if ($("#x_mainBg").length > 0) {
 				$("#x_mainBg").hide();
 			}
@@ -1810,7 +1810,7 @@ function x_changePageStep5(x_gotoPage) {
         // get short page type var
         var pt = x_pageInfo[x_currentPage].type;
         if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
-        
+
         // calls function in current page model (if it exists) which does anything needed to reset the page (if it needs to be reset)
         if (typeof window[pt].pageChanged === "function") window[pt].pageChanged();
 
@@ -1833,7 +1833,7 @@ function x_changePageStep5(x_gotoPage) {
                 }
             }
         }
-		
+
     // x_currentPage hasn't been viewed previously - load model file
     } else {
 		function loadModel() {
@@ -1867,7 +1867,7 @@ function x_changePageStep5(x_gotoPage) {
 				$("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + modelfile + ".html", x_loadPage);
 			}
 		}
-		
+
 		// show page background & hide main background
 		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImage") != undefined && x_currentPageXML.getAttribute("bgImage") != "") {
 			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
@@ -1887,7 +1887,7 @@ function x_changePageStep5(x_gotoPage) {
 					loadModel();
 				}
 			});
-			
+
 		} else {
 			loadModel();
 		}
@@ -1897,7 +1897,7 @@ function x_changePageStep5(x_gotoPage) {
     try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 
     x_updateHash();
-	
+
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();
 	}
@@ -2001,7 +2001,7 @@ function x_setUpPage() {
 		if (x_currentPageXML.getAttribute("next") == "false") {
 			$x_nextBtn.button("disable");
 		}
-		
+
 	} else if ((x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) && x_currentPageXML.getAttribute("navSetting") != undefined) {
 		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
 		if (x_currentPageXML.getAttribute("navSetting") != "all") {
@@ -2036,7 +2036,7 @@ function x_setUpPage() {
 // function called from each model when fully loaded to trigger fadeIn
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
-	
+
 	// Do deeplinking here so model has appropriate data at hand
 	x_doDeepLink();
 
@@ -2048,7 +2048,7 @@ function x_pageLoaded() {
 
         $this.attr(attr_name, x_evalURL(val));
     });
-	
+
 	// script & style optional properties for each page added after page is otherwise set up
 	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
 		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
@@ -2117,7 +2117,7 @@ function x_addCountdownTimer() {
             $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
 
          	// If page model wants timer tick to know then pass value
-        	if (typeof window[x_pageInfo[x_currentPage].type].onTimerTick === "function") window[x_pageInfo[x_currentPage].type].onTimerTick(x_countdownTimer);	
+        	if (typeof window[x_pageInfo[x_currentPage].type].onTimerTick === "function") window[x_pageInfo[x_currentPage].type].onTimerTick(x_countdownTimer);
         }
         else {
             window.clearInterval(x_timer);
@@ -2162,7 +2162,7 @@ function x_loadPageBg(loadModel) {
 	var vConstrain = x_currentPageXML.getAttribute("bgImageVConstrain"),
 		hConstrain = x_currentPageXML.getAttribute("bgImageHConstrain"),
 		alpha = x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "" ? x_currentPageXML.getAttribute("bgImageAlpha") : 100;
-	
+
 	var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg"/>');
 	$pageBg
 		.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))
@@ -2178,23 +2178,23 @@ function x_loadPageBg(loadModel) {
 				if ((vConstrain != undefined && vConstrain != "" && vConstrain != "0") || (hConstrain != undefined && hConstrain != "" && hConstrain != "0")) {
 					var imgMaxW = 800,
 						imgMaxH = 500;
-					
+
 					if (hConstrain != undefined && hConstrain != "" && hConstrain != "0") {
 						imgMaxW = Number(hConstrain);
 					}
 					if (vConstrain != undefined && vConstrain != "" && vConstrain != "0") {
 						imgMaxH = Number(vConstrain);
 					}
-					
+
 					x_scaleImg($this[0], imgMaxW, imgMaxH, true, false, true);
-					
+
 					var vAlign = x_currentPageXML.getAttribute("bgImageVAlign") != undefined ? x_currentPageXML.getAttribute("bgImageVAlign") : "middle",
 						hAlign = x_currentPageXML.getAttribute("bgImageHAlign") != undefined ? x_currentPageXML.getAttribute("bgImageHAlign") : "centre";
-					
+
 					if (vAlign == "middle" || vAlign == "bottom") {
 						var topValue = "50%",
 							topMargin = 0 - Math.round($this.height() / 2);
-						
+
 						if (vAlign == "bottom") {
 							topValue = "100%"
 							topMargin = 0 - $this.height();
@@ -2207,7 +2207,7 @@ function x_loadPageBg(loadModel) {
 					if (hAlign == "centre" || hAlign == "right") {
 						var leftValue = "50%",
 							leftMargin = 0 - Math.round($this.width() / 2);
-						
+
 						if (hAlign == "right") {
 							leftValue = "100%"
 							leftMargin = 0 - $this.width();
@@ -2221,7 +2221,7 @@ function x_loadPageBg(loadModel) {
 					$this.css("visibility", "visible");
 				}
 			}, 0);
-			
+
 			if (loadModel != undefined) { loadModel() };
 		})
 		.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
@@ -2229,12 +2229,12 @@ function x_loadPageBg(loadModel) {
 				$(this).trigger("load");
 			}
 		});
-	
+
 	$x_background.prepend($pageBg);
-	
+
 	if (x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
 		var $bgDarken = $("#x_bgDarken").length > 0 ? $("#x_bgDarken") : $('<div id="x_bgDarken" />').appendTo($x_background);
-		
+
 		$bgDarken
 			.css({
 				"opacity" :Number(x_currentPageXML.getAttribute("bgImageDark")/100),
@@ -2244,9 +2244,9 @@ function x_loadPageBg(loadModel) {
 	} else {
 		$("#x_bgDarken").hide();
 	}
-	
-	
-	
+
+
+
 	if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
 		//setTimeout(function(){$pageBg.gray();}, 100);
 		//$pageBg.gray();
@@ -2257,9 +2257,9 @@ function x_loadPageBg(loadModel) {
 		}
 		$("#pageBg").gray().fadeIn();
 	}
-	
-	
-	
+
+
+
 	$("#x_mainBg").hide();
 }
 
@@ -2312,7 +2312,7 @@ function x_openDialog(type, title, close, position, load) {
     for (var i=0, len=x_dialogInfo.length; i<len; i++) {
         if (x_dialogInfo[i].type == type) {
             $(".x_popupDialog").parent().detach();
-			
+
             if (x_dialogInfo[i].built != false) {
                 $x_body.append(x_dialogInfo[i].built);
 
@@ -2320,9 +2320,9 @@ function x_openDialog(type, title, close, position, load) {
                     x_dialogInfo[i].built.children(".x_popupDialog").html(load);
 					x_dialogInfo[i].built.find('.ui-dialog-title').html(title);
                 }
-				
+
 				x_setDialogSize(x_dialogInfo[i].built.children(".x_popupDialog"), position);
-				
+
                 if (type == "language") {
                     language.turnOnKeyEvents();
                 } else if (type == "menu") {
@@ -2444,7 +2444,7 @@ function x_openMediaWindow() {
         captionDetails = undefined;
     }
 	var mediaTxtStr = x_mediaText[0].label + "~" + x_mediaText[1].label + "~" + x_mediaText[2].label + "~" + x_mediaText[3].label + "~" + x_mediaText[4].label;
-	
+
 	window.open("mediaViewer/mediaHTML5.htm?media='" + x_evalURL(x_params.media) + "',transcript='" + x_evalURL(x_params.mediaTranscript) + "',img='" + x_evalURL(x_params.mediaImage) + "',imgTip='" + x_params.mediaImageTip + "',caption='" + captionDetails + "',title='" + x_getLangInfo(x_languageData.find("mediaWindow")[0], "label", "Media Viewer") + "',lang='" + mediaTxtStr + "'", "_blank", "height=100,width=100,toolbar=0,menubar=0");
 }
 
@@ -2474,13 +2474,13 @@ function x_newVariables() {
 	// clears arrays if they have previously been calculated
 	x_variables.splice(0, x_variables.length);
 	x_variableErrors.splice(0, x_variableErrors.length);
-	
+
 	if (x_params.variables != undefined) {
 		var i, j, k, temp, thisVar,
 			allVars = x_params.variables.split("||"),
 			toCalc = [],
 			lastLength, checkDefault;
-		
+
 		// get array of data for all uniquely named variables & sort them so empty strings etc. become undefined
 		for (i=0; i<allVars.length; i++) {
 			var temp = allVars[i].split("|");
@@ -2506,22 +2506,22 @@ function x_newVariables() {
 						thisVar.data.splice(j, 1, temp);
 					}
 				}
-				
+
 				allVars.splice(i, 1, thisVar);
 				toCalc.push(i);
-				
+
 			} else {
 				allVars.splice(i, 1);
 				i--;
 			}
 		}
-		
+
 		// goes through all variables and attempts to calculate their value
 		// may loop several times if variables require other variable values to be ready before calculating their value
 		// stops when no. var values calculated is no longer increasing - either all done or some vars can't be calculated (circular calculations or referencing non-existant vars)
 		while (toCalc.length > 0 && (toCalc.length != lastLength || checkDefault == true)) {
 			lastLength = toCalc.length;
-			
+
 			for (i=0; i<toCalc.length; i++) {
 				thisVar = x_calcVariables(allVars[toCalc[i]], false, checkDefault);
 				if (thisVar.ok == true) {
@@ -2537,13 +2537,13 @@ function x_newVariables() {
 					toCalc.splice(i,1);
 					i--;
 				}
-				
+
 				if (i + 1 == toCalc.length && toCalc.length == lastLength) {
 					checkDefault = checkDefault == true ? false : true;
 				}
 			}
 		}
-		
+
 		for (i=0; i<toCalc.length; i++) {
 			thisVar = allVars[toCalc[i]];
 			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "undef", "References an undefined variable");
@@ -2551,7 +2551,7 @@ function x_newVariables() {
 			toCalc.splice(i,1);
 			i--;
 		}
-		
+
 		if ($("#x_authorSupportMsg").length > 0 && (x_variables.length > 0 || x_variableErrors.length > 0)) {
 			$("#x_authorSupportMsg p").append('</br>' + '<a onclick="x_showVariables()" href="javascript:void(0)" style="color:red">' + x_getLangInfo(x_languageData.find("authorVars")[0], "label", "View variable data") + '</a>');
 		}
@@ -2562,11 +2562,11 @@ function x_newVariables() {
 // function calculates the value of any author set variables
 function x_calcVariables(thisVar, recalc, checkDefault) {
 	thisVar.ok = undefined;
-	
+
 	// calculate min / max / step values
 	var data = {min:thisVar.data[2], max:thisVar.data[3], step:thisVar.data[4]},
 		exclude = [], index;
-	
+
 	for (var key in data) {
 		if (Object.prototype.hasOwnProperty.call(data, key)) {
 			// check for use of other variables & keep track of which are required
@@ -2574,7 +2574,7 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 				var info = x_getVarValues(data[key], thisVar.name);
 				data[key] = info[0];
 				if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
-				
+
 				thisVar.ok = info[2];
 				if (thisVar.ok != true) { // a variable needed doesn't exist / hasn't been calculated yet
 					break;
@@ -2584,7 +2584,7 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 			}
 		}
 	}
-	
+
 	// calculate exclude values
 	if ((thisVar.ok == true || thisVar.ok == undefined) && thisVar.data[8].length > 0) {
 		exclude = thisVar.data[8].slice();
@@ -2593,11 +2593,11 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 			var info = x_getVarValues(exclude[i], thisVar.name);
 			exclude.splice(i, 1, info[0]);
 			if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
-			
+
 			thisVar.ok = info[2];
 			if (info[2] != true) {  // a variable needed doesn't exist / hasn't been calculated yet
 				break;
-				
+
 			} else if (typeof exclude[i] === "string" && exclude[i].indexOf("&&") != -1) {
 				// it's a range e.g. -2<&&<2 or -2<=&&<=2
 				var temp = exclude[i].split("&&").filter(function (a) { return a.indexOf("<") > -1 || a.indexOf(">") > -1; });
@@ -2609,42 +2609,42 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 			}
 		}
 	}
-	
+
 	// no missing dependancies so far
 	if (thisVar.ok == true || thisVar.ok == undefined) {
-		
+
 		if (data.min != undefined && data.max != undefined && data.min > data.max) {
 			// fail because min > max
 			thisVar.ok = false;
 			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "minMax", "min > max") + " (" + data.min + " > " + data.max + ")";
-			
+
 		} else if (thisVar.data[0] != undefined || thisVar.data[1].length > 0) {
 			if (thisVar.data[0] != undefined) {
 				// FIXED VALUE
 				thisVar.type = "fixed";
 				thisVar.value = thisVar.data[0];
-				
+
 				// check for use of other variables & keep track of which are required
 				var info = x_getVarValues(thisVar.value, thisVar.name);
 				thisVar.value = info[0];
 				if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
 				thisVar.ok = info[2];
-				
+
 			} else if (thisVar.data[1].length > 0) {
 				// RANDOM FROM LIST
 				thisVar.type = "random";
-				
+
 				index = Math.floor(Math.random()*thisVar.data[1].length);
 				thisVar.value = thisVar.data[1][index];
-				
+
 				// check for use of other variables & keep track of which are required
 				var info = x_getVarValues(thisVar.value, thisVar.name);
 				thisVar.value = info[0];
 				if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
 				thisVar.ok = info[2];
-				
+
 			}
-			
+
 			if (thisVar.ok == true) {
 				if (data.min != undefined && data.min > thisVar.value) {
 					// fail because value < min
@@ -2654,7 +2654,7 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 						thisVar.ok = false;
 					}
 					thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "valueMin", "value < min") + " (" + thisVar.value + " < " + data.min + ")";
-						
+
 				} else if (data.max != undefined && data.max < thisVar.value) {
 					// fail because value > max
 					if (thisVar.type == "random") {
@@ -2665,35 +2665,35 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 					thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "valueMax", "value > max") + " (" + thisVar.value + " > " + data.max + ")";
 				}
 			}
-			
+
 		} else if (data.min != undefined || data.max != undefined) { // from max & min
 			// RANDOM BETWEEN MIN & MAX VALUES
 			thisVar.type = "minMax";
-			
+
 			// uses defaults of min=0 & max=100 if only min or max are set
 			if (data.min == undefined) {
 				data.min  = 0;
 			} else if (data.max == undefined) {
 				data.max = 100;
 			}
-			
+
 			// use default of 1 for step
 			if (data.step == undefined) {
 				data.step = 1;
 			}
-			
+
 			var maxDecimal = Math.max(Math.floor(data.min) === data.min ? 0 : data.min.toString().split(".")[1].length || 0, Math.floor(data.step) === data.step ? 0 : data.step.toString().split(".")[1].length || 0);
 			thisVar.value = Math.floor(Math.random()*(((data.max - data.min) / data.step) + 1)) * data.step + data.min;
 			if (thisVar.value > data.max) { thisVar.value = thisVar.value - data.step; } // can be over max if step doesn't take to exact max number - adjust for this
 			thisVar.value = thisVar.value.toFixed(maxDecimal); // forces correct decimal num - should work without this but occasionally it ends up with e.g. 1.1999999999999.... instead of 1.2
 			thisVar.ok = true;
-			
+
 		} else if (thisVar.type == undefined) {
 			thisVar.ok = false;
 			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "none", "No variable data");
 		}
 	}
-	
+
 	if (thisVar.ok == true && $.isNumeric(Number(thisVar.value))) {
 		// to significant figure
 		if ($.isNumeric(Number(thisVar.data[6]))) {
@@ -2708,7 +2708,7 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 			}
 		}
 	}
-	
+
 	// check value isn't one that should be excluded
 	if (thisVar.ok == true) {
 		for (var i=0; i<exclude.length; i++) {
@@ -2717,7 +2717,7 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 				if (exclude[i] == thisVar.value) {
 					clash = true;
 				}
-			
+
 			// it's an exclude range
 			} else if (typeof exclude[i] == "object") {
 				for (var j=0; j<exclude[i].length; j++) {
@@ -2727,7 +2727,7 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 					clash = true;
 				}
 			}
-			
+
 			if (clash == true) {
 				if (thisVar.type == "fixed") {
 					thisVar.ok = false;
@@ -2739,11 +2739,11 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 				break;
 			}
 		}
-		
+
 	} else if (thisVar.ok == false && thisVar.info == undefined) {
 		thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "circular", "Circular variable reference");
 	}
-	
+
 	// only retry random if there's a value that hasn't already failed
 	if (thisVar.ok == "retry" && thisVar.type == "random") {
 		thisVar.data[1].splice(index, 1);
@@ -2752,18 +2752,18 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "none", "All possible values are excluded or fall outside the min & max range");
 		}
 	}
-	
+
 	// retry multiple times to see if we can get a valid value
 	if (thisVar.ok == "retry") {
 		var attempts = 100;
-		
+
 		if (recalc != true) {
 			var counter = 0;
 			do {
 				thisVar = x_calcVariables(thisVar, true);
 				counter++;
 			} while (counter < attempts && thisVar.ok == "retry");
-			
+
 			if (thisVar.ok == "retry") {
 				thisVar.ok = false;
 				thisVar.info = " " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "none2", "{n} attempts have not returned an accepted value").replace("{n}", attempts);
@@ -2772,7 +2772,7 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 			}
 		}
 	}
-	
+
 	// fallback to default
 	if (thisVar.data[9] != undefined && (thisVar.ok == false || checkDefault == true)) {
 		try {
@@ -2786,7 +2786,7 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 		thisVar.ok = true;
 		thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "default", "Fallback to default value");
 	}
-	
+
 	return thisVar;
 }
 
@@ -2814,11 +2814,11 @@ function x_setVariable(name, value)
 // function gets values of other variables needed for calculation and evals the value when everything's ready
 function x_getVarValues(thisValue, thisName) {
 	var requires = [];
-	
+
 	if (thisValue.indexOf("[" + thisName + "]") != -1) {
 		return [thisValue, requires, false];
 	}
-	
+
 	if (String(thisValue).indexOf("[") != -1) {
 		for (var i=0; i<x_variables.length; i++) {
 			if (thisValue.indexOf("[" + x_variables[i].name + "]") != -1) {
@@ -2827,7 +2827,7 @@ function x_getVarValues(thisValue, thisName) {
 					x_variables[i].requiredBy.push(thisName);
 				}
 				requires.push(x_variables[i].name);
-				
+
 				RegExp.esc = function(str) {
 					return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
 				};
@@ -2837,7 +2837,7 @@ function x_getVarValues(thisValue, thisName) {
 			}
 		}
 	}
-	
+
 	try {
 		var sum = eval(thisValue);
 		return [sum, requires, true];
@@ -2856,14 +2856,14 @@ function x_showVariables() {
 	var varHeadings = ["Name", "Fixed Value", "Random", "Min", "Max", "Step", "DP", "SF", "Trailing Zeros", "Exclude", "Default"];
 	var pageText = '<html><body><style>table, tr, td, th { border: 1px solid black; text-align: left; } th { background-color: LightGray; } table { border-collapse: collapse; min-width: 100%; } th, td { padding: 1em; width: ' + (100/(varHeadings.length+1)) + '%; } .alert { color: red; } td:nth-child(1), td:nth-child(2) { font-weight: bold; } </style><table>',
 		cells, temp, infoTxt;
-	
+
 	for (var i=0; i<varHeadings.length; i++) {
 		pageText += '<th>' + x_getLangInfo(x_languageData.find("authorVars").find("item")[i], false, varHeadings[i]) + '</th>';
 		if (i == 0) {
 			pageText += '<th>' + x_getLangInfo(x_languageData.find("authorVars").find("item")[varHeadings.length], false, "Value") + '</th>';
 		}
 	}
-	
+
 	for (var i=0; i<x_variables.length; i++) {
 		cells = "";
 		for (var j=0; j<x_variables[i].data.length; j++) {
@@ -2873,7 +2873,7 @@ function x_showVariables() {
 		infoTxt = x_variables[i].info == undefined ? "" : '<br/><span class="alert">' + x_variables[i].info + '</span>';
 		pageText += '<tr><td>' + x_variables[i].name + '</td><td>' + x_variables[i].value + infoTxt + '</td>' + cells + '</tr>';
 	}
-	
+
 	for (var i=0; i<x_variableErrors.length; i++) {
 		cells = "";
 		for (var j=0; j<x_variableErrors[i].data.length; j++) {
@@ -2882,9 +2882,9 @@ function x_showVariables() {
 		}
 		pageText += '<tr style="background-color: LightGray;"><td>' + x_variableErrors[i].name + '</td><td>' + x_variableErrors[i].info + '</td>' + cells + '</tr>';
 	}
-	
+
 	pageText += '</table></body></html>';
-	
+
 	window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12">' + pageText + '</p>');
 }
 
@@ -2894,7 +2894,7 @@ function x_findText(pageXML, exclude) {
     var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt"],
         i, j, len;
 	if (pageXML.nodeName == "mcqStepOption") { attrToCheck.push("name"); } // don't include name normally as it's generally only used in titles
-	
+
     for (i=0, len = pageXML.attributes.length; i<len; i++) {
         if ($.inArray(pageXML.attributes[i].name, attrToCheck) > -1) {
             x_insertText(pageXML.attributes[i], exclude);
@@ -2920,9 +2920,9 @@ function x_insertText(node, exclude) {
 	var temp=document.createElement("pre");
 	temp.innerHTML=node.nodeValue;
 	var tempText = temp.innerHTML;
-	
+
 	exclude = exclude == undefined ? [] : exclude;
-	
+
 	// check text for variables - if found replace with variable value
 	// also handle case where comma decimal separator has been requested
 	if (x_variables.length > 0 && exclude.indexOf("variables") == -1) {
@@ -2938,7 +2938,7 @@ function x_insertText(node, exclude) {
 				tempText = tempText.replace(regExp, x_variables[k].value);
     }
   }
-	
+
 	// if project is being viewed as https then force iframe src to be https too
 	if (window.location.protocol == "https:" && exclude.indexOf("iframe") == -1) {
 		function changeProtocol(iframe) {
@@ -2949,7 +2949,7 @@ function x_insertText(node, exclude) {
 		}
 		tempText = tempText.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
 	}
-	
+
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0 && exclude.indexOf("glossary") == -1) {
         for (var k=0, len=x_glossary.length; k<len; k++) {
@@ -2991,14 +2991,14 @@ function x_insertText(node, exclude) {
 // function maximises LO size to fit window
 function x_setFillWindow(updatePage) {
 	x_fillWindow = true;
-	 
+
     if (x_params.responsive == "true") {
         for (var i = 0; i < x_responsive.length; i++) {
 			$x_mainHolder.addClass("x_responsive");
             $(x_responsive[i]).prop("disabled", false);
         }
     }
-	
+
     $x_mainHolder.css({
         "width"     :"100%",
         "height"    :"100%"
@@ -3012,7 +3012,7 @@ function x_setFillWindow(updatePage) {
         icons:  {primary: "x_minimise"},
         label:  x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
     });
-	
+
 	$("#x_cssBtn").addClass("x_minimise").removeClass("x_maximise");
 }
 
@@ -3034,7 +3034,7 @@ function x_insertCSS(href, func, disable, id, keep) {
            donotreplace=keep;
         }
 	}
-	
+
 	// in some cases code is stopped until css loaded as some heights are done with js and depend on css being loaded
 	if (func != undefined) {
         var f = function() {
@@ -3057,7 +3057,7 @@ function x_insertCSS(href, func, disable, id, keep) {
 		css.onerror = function(){
 			func();
 		};
-		
+
 	} else if (disable == true) {
 		css.onload = function() {
 			$(this).prop("disabled", true);
@@ -3101,7 +3101,7 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
             imgW = $img.data("origSize")[0];
             imgH = $img.data("origSize")[1];
         }
-		
+
 		if (enlarge != true) {
 			if (maxW > imgW) {
 				maxW = imgW;
@@ -3116,7 +3116,7 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
             var scaleH = maxH / imgH;
             var scaleFactor;
 			scaleFactor = Math.min(scaleW, scaleH);
-			
+
             imgW = Math.round(imgW * scaleFactor);
             imgH = Math.round(imgH * scaleFactor);
             $img.css("width", imgW + "px"); // set width only to constrain proportions
@@ -3139,7 +3139,7 @@ function x_addLineBreaks(text, override) {
 		{
 			return text; // Return text unchanged
 		}
-		
+
 		// Now try to identify v3beta created LOs
 		var trimmedText = $.trim(text);
 		if ((trimmedText.indexOf("<p") == 0 || trimmedText.indexOf("<h") == 0) && (trimmedText.lastIndexOf("</p") == trimmedText.length-4 || trimmedText.lastIndexOf("</h") == trimmedText.length-5))
@@ -3147,7 +3147,7 @@ function x_addLineBreaks(text, override) {
 			return text; // Return text unchanged
 		}
 	}
-    
+
     // Now assume it's v2.1 or before
     if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1)
     {
@@ -3272,7 +3272,7 @@ function x_getColour(colour) {
 function x_blackOrWhite(colour) {
 	var rgbval = parseInt(colour.substr(1), 16),
 		brightness = ((rgbval >> 16) * 0.299) + (((rgbval & 65280) >> 8) * 0.587) + ((rgbval & 255) * 0.114);
-	
+
 	return (brightness > 160) ? "#000000" : "#FFFFFF"; // checks whether black or white text is best on bg colour
 }
 
