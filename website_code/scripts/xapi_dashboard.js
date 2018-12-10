@@ -219,7 +219,8 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                     row += "<td class='name-column'>" + user + group +"</td>";
                 }
             }
-            if (this.data.hasStartedLearningObject(lastStatements, learningObjects[learningObjectIndex].url)) {
+
+            if (this.data.hasStartedLearningObject(data[user], learningObjects[learningObjectIndex].url)) {
                 started = "<i class=\"fa fa-x-tick\">";
             } else {
                 continue;
@@ -1204,6 +1205,7 @@ xAPIDashboard.prototype.regenerate_dashboard = function()
 {
     $("#journeyData").html("<img class='loading-gif' src='editor/img/loading16.gif'/>");
     $("#group-select option:not(:first-child)").remove();
+
     var url = site_url + this.data.info.template_id;
     var start = this.helperGetDate('#dp-start');
     var end = this.helperGetDate('#dp-end');
