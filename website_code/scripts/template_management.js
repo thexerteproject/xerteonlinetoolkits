@@ -702,8 +702,11 @@ function getProjectInformation_stateChanged() {
         if (info.fetch_statistics) {
             url = site_url + info.template_id;
             q = {};
+
+
             q['activities'] = [url].concat(info.lrs.lrsurls.split(",")).concat(info.lrs.site_allowed_urls.split(",").map(url => url + info.template_id)).filter(url => url != "");
             q['activity'] = url;
+
             q['verb'] = "http://adlnet.gov/expapi/verbs/launched";
             q['related_activities'] = false;
 

@@ -210,6 +210,9 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 if (data[user]['mode'] == 'username') {
                     row += "<td class='name-column'>" + data[user]['username'] + "</td>";
                 } else {
+
+
+
                     actor = lastStatements.statements[0].actor;
                     var group = "";
                     if(actor.account != undefined)
@@ -219,6 +222,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                     row += "<td class='name-column'>" + user + group +"</td>";
                 }
             }
+
 
             if (this.data.hasStartedLearningObject(data[user], learningObjects[learningObjectIndex].url)) {
                 started = "<i class=\"fa fa-x-tick\">";
@@ -416,6 +420,8 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
     if (title == undefined) {
         title = "";
     }
+
+
     var max_popover_title = 25;
     if(title.length > max_popover_title)
     {
@@ -470,6 +476,7 @@ xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, in
         }) / durations.length), 2) + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
         var last_duration = this.data.getAllDurations(lastStatements, interactionObject.url)[0];
         html += XAPI_JOURNEY_POPOVER_LAST_DURATION + " " + Math.round(last_duration * 100) / 100 + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
+
     }
     if (lastAnswer.length > 0) {
         // Format a bit
@@ -529,10 +536,12 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
         thclass += "x-dashboard-interaction";
         max_interaction_title_length = 35;
     }
+
     if(interactionTitle.length > max_interaction_title_length)
     {
         interactionTitle = interactionTitle.substr(0, max_interaction_title_length - 3) + "...";
     }
+
     var interactionHeader = '<th data-parent="' + parentIndex + '" class="column-' + showHide + thclass +
         '"><a href="#" data-toggle="modal" data-target="#model-' +
         learningObjectIndex + '-' + interactionIndex + '">' + interactionTitle + '</a>' + collapseIcon + '</th>';
@@ -598,6 +607,7 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
             []
         ],
         total = 100;
+
     var videoLength;
     if(pausedstatements.length == 1)
     {
@@ -606,6 +616,7 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
     }else{
         videoLength = Math.max(...pausedStatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/time"]));
     }
+
     // Gets all the ranges from the data.
     var stringRanges = pausedstatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/played-segments"]);
     var totalViewed = [];
@@ -1068,7 +1079,9 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
         aggregate: ADL.count(),
         rangeLabel: 'start',
         customize: function(chart) {
+
             chart.width($('#graph-svg-wrapper-' + template_id + ' svg').width() - 10);
+
             chart.height(300);
             chart.tooltips(false);
             chart.interpolate("monotone");
@@ -1100,6 +1113,8 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
 };
 
 function close_dashboard() {
+
+
     $this.clear();
     $("#dp-start").unbind("change");
     $("#dp-end").unbind("change");
@@ -1107,6 +1122,7 @@ function close_dashboard() {
 
 
     $(".journeyOverviewActivity").html("");
+
     $("#dashboard-wrapper").hide();
 };
 
@@ -1162,6 +1178,7 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
         $this.regenerate_dashboard();
     });
 
+
     $("#group-select").change(function(){
         var group = $(this).val();
         if(group == "all-groups")
@@ -1172,6 +1189,7 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
             $('.session-row[data-group="' + group + '"]').show();
         }
     });
+
 
     if (this.data.info.dashboard.enable_nonanonymous == 'true') {
         $(".unanonymous-view").show();
@@ -1211,8 +1229,11 @@ xAPIDashboard.prototype.regenerate_dashboard = function()
     var end = this.helperGetDate('#dp-end');
     end = new Date(moment(end).add(1, 'days').toISOString());
     var q = {};
+
     q['activities'] = [url].concat(this.data.info.lrs.lrsurls.split(",")).concat(this.data.info.lrs.site_allowed_urls.split(",").map(url => url + this.data.info.template_id)).filter(url => url != "");
     q['activity'] = url;
+
+
     q['related_activities'] = true;
     q['since'] = start.toISOString();
     q['until'] = end.toISOString();
