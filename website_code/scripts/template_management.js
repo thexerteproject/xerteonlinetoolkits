@@ -393,19 +393,11 @@ function file_need_save() {
  */
 
 function edit_window_close(path) {
-<<<<<<< Updated upstream
 
     for (x = 0; x < edit_window_open.length; x++) {
 
         if (path.indexOf("-") != -1) {
 
-=======
-
-    for (x = 0; x < edit_window_open.length; x++) {
-
-        if (path.indexOf("-") != -1) {
-
->>>>>>> Stashed changes
             if (edit_window_open[x].id.substr(edit_window_open[x].id.lastIndexOf("_") + 1, edit_window_open[x].id.length) == path.substr(0, path.indexOf("-"))) {
                 //if(edit_window_open[x].substr(5,edit_window_open[x].length-5)==path.substr(0,path.indexOf("-"))){
                 edit_window_open.splice(x, 1);
@@ -490,7 +482,6 @@ function preview_window(admin) {
                 if (node.xot_type == "file") {
 
                     size = node.preview_size.split(",");
-
                     if (size.length != 1) {
 
 
@@ -710,15 +701,10 @@ function getProjectInformation_stateChanged() {
         if (info.fetch_statistics) {
             url = site_url + info.template_id;
             q = {};
-<<<<<<< Updated upstream
-
 
             q['activities'] = [url].concat(info.lrs.lrsurls.split(",")).concat(info.lrs.site_allowed_urls.split(",").map(url => url + info.template_id)).filter(url => url != "");
             q['activity'] = url;
 
-=======
-            q['activity'] = "http://localhost/xerteonlinetoolkits/6"; //url;
->>>>>>> Stashed changes
             q['verb'] = "http://adlnet.gov/expapi/verbs/launched";
             q['related_activities'] = false;
 
