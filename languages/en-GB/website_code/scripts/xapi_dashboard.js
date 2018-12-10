@@ -39,3 +39,6 @@ var XAPI_DASHBOARD_GRAPH_FILLIN_YAXIS = "Number of answers";
 var XAPI_DASHBOARD_NUMBER_OF_STUDENTS = "Number of Students";
 var XAPI_DASHBOARD_NUMBER_OF_INTERACTIONS = "Number of Interactions";
 var XAPI_DASHBOARD_AVERAGE_SCORE = "Average Score";
+var XAPI_DASHBOARD_NUMBER_OF_SESSIONS = "Number of sessions";
+var XAPI_DASHBOARD_COMPLETED_SESSIONS = "Completed sessions";
+var XAPI_DASHBOARD_AVERAGE_COMPLETED_PAGES = "Average completed pages";
