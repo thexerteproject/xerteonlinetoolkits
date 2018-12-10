@@ -79,6 +79,7 @@ xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element) {
     begin.setDate(begin.getDate() - 1);
     end = new Date(dashstatements[dashstatements.length - 1].timestamp);
     end.setDate(end.getDate() + 1);
+<<<<<<< Updated upstream
 
     var vals = [];
     var timeFrame = end.getTime() - begin.getTime();
@@ -95,6 +96,8 @@ xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element) {
         tick += (tickMarkNrDays * 1000 * 3600 * 24);
     }
 
+=======
+>>>>>>> Stashed changes
     var dash = new ADL.XAPIDashboard();
     dash.addStatements(dashstatements);
     var chart = dash.createLineChart({
@@ -210,6 +213,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 if (data[user]['mode'] == 'username') {
                     row += "<td class='name-column'>" + data[user]['username'] + "</td>";
                 } else {
+<<<<<<< Updated upstream
 
 
 
@@ -221,6 +225,12 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                     }
                     row += "<td class='name-column'>" + user + group +"</td>";
                 }
+=======
+                    row += "<td class='name-column'>" + user + "</td>";
+                }
+            } else {
+                row += "<td class='column-hide name-column'>" + toSHA1(user) + "</td>";
+>>>>>>> Stashed changes
             }
 
 
@@ -315,7 +325,10 @@ xAPIDashboard.prototype.insertCollapse = function(div, userdata, learningObject,
     numberOfColumns = div.find("th").length;
     rows += "<tr class='collapse' id='collapse-session-" + learningObject + "-" + this.escapeId(userdata['key']) + "'><td colspan='" + numberOfColumns +
         "'><div>";
+<<<<<<< Updated upstream
     rows += '<div><span><button type="button" class="close-results xerte_button_c_no_width">Close Results</button></span></i></div>';
+=======
+>>>>>>> Stashed changes
     rows += "<div class='card card-inverse' data-empty='true'>";
     rows += "</div>";
     rows += "</div></td></tr>";
@@ -420,6 +433,7 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
     if (title == undefined) {
         title = "";
     }
+<<<<<<< Updated upstream
 
 
     var max_popover_title = 25;
@@ -429,6 +443,9 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
     }
     sessionDiv = div.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex);
     sessionDiv.popover({
+=======
+    div.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex).popover({
+>>>>>>> Stashed changes
         content: "<div id='popover-" + learningObjectIndex + "-session-" + $this.escapeId(userdata['key']) + "-interaction-" +
             interactionObjectIndex + "'></div>",
         title: title,
@@ -474,9 +491,14 @@ xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, in
         html += XAPI_JOURNEY_POPOVER_AVGDURATION + " " + Math.round((durations.reduce(function(a, b) {
             return a + b;
         }) / durations.length), 2) + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
+<<<<<<< Updated upstream
         var last_duration = this.data.getAllDurations(lastStatements, interactionObject.url)[0];
         html += XAPI_JOURNEY_POPOVER_LAST_DURATION + " " + Math.round(last_duration * 100) / 100 + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
 
+=======
+    } else {
+        debugger;
+>>>>>>> Stashed changes
     }
     if (lastAnswer.length > 0) {
         // Format a bit
@@ -536,12 +558,15 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
         thclass += "x-dashboard-interaction";
         max_interaction_title_length = 35;
     }
+<<<<<<< Updated upstream
 
     if(interactionTitle.length > max_interaction_title_length)
     {
         interactionTitle = interactionTitle.substr(0, max_interaction_title_length - 3) + "...";
     }
 
+=======
+>>>>>>> Stashed changes
     var interactionHeader = '<th data-parent="' + parentIndex + '" class="column-' + showHide + thclass +
         '"><a href="#" data-toggle="modal" data-target="#model-' +
         learningObjectIndex + '-' + interactionIndex + '">' + interactionTitle + '</a>' + collapseIcon + '</th>';
@@ -607,6 +632,7 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
             []
         ],
         total = 100;
+<<<<<<< Updated upstream
 
     var videoLength;
     if(pausedstatements.length == 1)
@@ -617,6 +643,9 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
         videoLength = Math.max(...pausedStatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/time"]));
     }
 
+=======
+    var videoLength = Math.max(...pausedStatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/time"]));
+>>>>>>> Stashed changes
     // Gets all the ranges from the data.
     var stringRanges = pausedstatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/played-segments"]);
     var totalViewed = [];
@@ -1079,9 +1108,13 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
         aggregate: ADL.count(),
         rangeLabel: 'start',
         customize: function(chart) {
+<<<<<<< Updated upstream
 
             chart.width($('#graph-svg-wrapper-' + template_id + ' svg').width() - 10);
 
+=======
+            chart.width(elmnt.width() - 10);
+>>>>>>> Stashed changes
             chart.height(300);
             chart.tooltips(false);
             chart.interpolate("monotone");
@@ -1113,6 +1146,7 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
 };
 
 function close_dashboard() {
+<<<<<<< Updated upstream
 
 
     $this.clear();
@@ -1123,6 +1157,8 @@ function close_dashboard() {
 
     $(".journeyOverviewActivity").html("");
 
+=======
+>>>>>>> Stashed changes
     $("#dashboard-wrapper").hide();
 };
 
@@ -1178,6 +1214,7 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
         $this.regenerate_dashboard();
     });
 
+<<<<<<< Updated upstream
 
     $("#group-select").change(function(){
         var group = $(this).val();
@@ -1191,6 +1228,8 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
     });
 
 
+=======
+>>>>>>> Stashed changes
     if (this.data.info.dashboard.enable_nonanonymous == 'true') {
         $(".unanonymous-view").show();
         this.data.info.dashboard.anonymous = true;
@@ -1219,21 +1258,30 @@ xAPIDashboard.prototype.helperGetDate = function(datetimepicker) {
     return mTime;
 };
 
+<<<<<<< Updated upstream
 xAPIDashboard.prototype.regenerate_dashboard = function()
 {
     $("#journeyData").html("<img class='loading-gif' src='editor/img/loading16.gif'/>");
     $("#group-select option:not(:first-child)").remove();
+=======
+xAPIDashboard.prototype.regenerate_dashboard = function() {
+    $("#journeyData").html("<img src='editor/img/loading16.gif'/>");
+>>>>>>> Stashed changes
 
     var url = site_url + this.data.info.template_id;
     var start = this.helperGetDate('#dp-start');
     var end = this.helperGetDate('#dp-end');
     end = new Date(moment(end).add(1, 'days').toISOString());
     var q = {};
+<<<<<<< Updated upstream
 
     q['activities'] = [url].concat(this.data.info.lrs.lrsurls.split(",")).concat(this.data.info.lrs.site_allowed_urls.split(",").map(url => url + this.data.info.template_id)).filter(url => url != "");
     q['activity'] = url;
 
 
+=======
+    q['activity'] = "http://localhost/xerteonlinetoolkits/6"; //url;
+>>>>>>> Stashed changes
     q['related_activities'] = true;
     q['since'] = start.toISOString();
     q['until'] = end.toISOString();
