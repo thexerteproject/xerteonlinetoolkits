@@ -12,9 +12,10 @@ $resultsHolderwidth:8vmin;//previously 8vmin
     #textHolder p,  #targetHolder h3 p, #dragDropHolder .label p{
         font-size: $pagecontentslarge;
     }
-    p #iFrame,p iframe, p .panel #iFrame, p .panel iframe, #linkHolder, #textHolder, #pageContents, .withChild, .withChild2, #subMenuItems{
+    p #iFrame,p iframe, p .panel #iFrame, p .panel iframe, #linkHolder, #textHolder, #pageContents, .withChild, .withChild2, #subMenuItems, .embeddedContent iframe{
         max-width:85% !important;
     }
+
     .x_mediaLesson_page #pageContents{
         max-width:100% !important;
     }

@@ -27,7 +27,7 @@ $esc6: #c3c8cf ;
 	font-family:$mainfonts;
 	background: #fff;
 	display: table;
-	font-weight: normal;
+	font-weight: lighter;
 	margin-bottom: 7px;
 	margin-top: 5px;
 	padding: 10px;
@@ -234,7 +234,7 @@ blockquote:after {
 }
 .speech-bubble2 {
 	background: $esc2;
-	color:white;
+	color:$blackordarkest;
 }
 .speech-bubble2:after {
 	border-left-color: $esc2;
@@ -248,7 +248,7 @@ blockquote:after {
 }
 .speech-bubble4 {
 	background: $esc4;
-	color:$blackordarkest;
+	color:$whiteorlightest;
 }
 .speech-bubble4:after {
 	border-left-color: $esc4;
@@ -301,6 +301,7 @@ a {
 	font-weight:bold;
 	font-family:'Open Sans', sans-serif;
 }
+
 a:hover {
 	text-decoration:underline;
 	color:#152c51;
@@ -404,6 +405,12 @@ p .panel #iFrame, p .panel iframe {
 	max-height: 100%;
 }
 
+.embeddedContent iframe {
+	height: 66vw !important;
+	max-height: 60vh;
+	max-width: 960px;
+	width: 100%;
+}
 
 #imgCaption {
 	font-weight:lighter;
@@ -733,8 +740,22 @@ body {
 	font-family:Roboto, sans-serif;
 	font-weight:lighter;
 }
+//set editor background colour to same as theme background
 .cke_editable {
 	background: #efefef;
+}
+//font size of p text in editor window
+.cke_editable p{
+	font-size:1em;
+}
+//link style in editor window
+.cke_editable a{
+	font-weight:bold;
+}
+//font size and link style in editor list menu
+.cke_panel_listItem p,.cke_panel_listItem a{
+	font-size:.8em;
+	font-weight:normal;
 }
 cite {
 	font-family:'Open Sans', sans-serif;
@@ -878,7 +899,7 @@ td {
 	width:auto;
 }
 td li {
-	font-size: 0.85em; //OC
+	//font-size: 0.85em; //OC
 }
 
 .ui-tabs .ui-tabs-panel p {
@@ -945,7 +966,7 @@ ol {
 	font-size:1.2em;//RM !important;
 	margin:0;
 }
-ol ol {
+ol {
 	font-size:inherit;//RM !important;
 }
 ol ul {

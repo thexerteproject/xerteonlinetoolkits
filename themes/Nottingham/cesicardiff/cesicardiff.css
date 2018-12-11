@@ -311,7 +311,7 @@
   font-family: "Roboto", sans-serif;
   background: #fff;
   display: table;
-  font-weight: normal;
+  font-weight: lighter;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -324,7 +324,7 @@
   font-family: "Roboto", sans-serif;
   background: #fff;
   display: table;
-  font-weight: normal;
+  font-weight: lighter;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -337,7 +337,7 @@
   font-family: "Roboto", sans-serif;
   background: #fff;
   display: table;
-  font-weight: normal;
+  font-weight: lighter;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -350,7 +350,7 @@
   font-family: "Roboto", sans-serif;
   background: #fff;
   display: table;
-  font-weight: normal;
+  font-weight: lighter;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -363,7 +363,7 @@
   font-family: "Roboto", sans-serif;
   background: #fff;
   display: table;
-  font-weight: normal;
+  font-weight: lighter;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -376,7 +376,7 @@
   font-family: "Roboto", sans-serif;
   background: #fff;
   display: table;
-  font-weight: normal;
+  font-weight: lighter;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -539,7 +539,7 @@ blockquote:after {
 
 .speech-bubble2 {
   background: #ccc;
-  color: white; }
+  color: #000000; }
 
 .speech-bubble2:after {
   border-left-color: #ccc; }
@@ -553,7 +553,7 @@ blockquote:after {
 
 .speech-bubble4 {
   background: #231f20;
-  color: #000000; }
+  color: #ffffff; }
 
 .speech-bubble4:after {
   border-left-color: #231f20; }
@@ -699,6 +699,12 @@ p .panel #iFrame, p .panel iframe {
   max-width: 960px;
   height: auto !important;
   max-height: 100%; }
+
+.embeddedContent iframe {
+  height: 66vw !important;
+  max-height: 60vh;
+  max-width: 960px;
+  width: 100%; }
 
 #imgCaption {
   font-weight: lighter; }
@@ -1018,6 +1024,16 @@ body {
 .cke_editable {
   background: #efefef; }
 
+.cke_editable p {
+  font-size: 1em; }
+
+.cke_editable a {
+  font-weight: bold; }
+
+.cke_panel_listItem p, .cke_panel_listItem a {
+  font-size: .8em;
+  font-weight: normal; }
+
 cite {
   font-family: 'Open Sans', sans-serif;
   font-size: 12px;
@@ -1157,9 +1173,6 @@ td {
   line-height: 1.4em;
   width: auto; }
 
-td li {
-  font-size: 0.85em; }
-
 .ui-tabs .ui-tabs-panel p {
   font-size: 1em; }
 
@@ -1212,7 +1225,7 @@ ol {
   font-size: 1.2em;
   margin: 0; }
 
-ol ol {
+ol {
   font-size: inherit; }
 
 ol ul {
