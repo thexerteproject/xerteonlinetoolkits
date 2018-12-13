@@ -4228,8 +4228,11 @@
 
     <caption label="Footnote" type="TextInput" wysiwyg="true" optional="true"/>
     <alt label="Summary" type="TextInput" wysiwyg="true" defaultValue="Enter a Summary of the Table Contents for Accessibility" optional="true"/>
-    <url label="CSV File" type="Media" optional="true"/>
-    <delimiter label="CSV Delimiter" options="Comma,Semicolon" type="ComboBox" data="comma,semicolon" defaultValue="comma" width="100" optional="true"/>
+	
+	<csv type="group" label="CSV" optional="true">
+		<url label="File" type="Media" optional="true"/>
+		<delimiter label="Delimiter" options="Comma,Semicolon" type="ComboBox" data="comma,semicolon" defaultValue="comma" width="100" optional="true"/>
+	</csv>
 
   </tableData><text label="Page Text" type="text" height="360" menu="Text" menuItem="Plain Text" hint="A plain and simple text page." icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
 
