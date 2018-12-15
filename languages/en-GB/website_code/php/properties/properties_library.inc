@@ -229,6 +229,8 @@
 
 	define("PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI", "Enable xAPI:");
 
+	define("PROPERTIES_LIBRARY_TSUGI_XAPI_USEGLOBAL", "Use globally configured xAPI LRS:");
+
 	define("PROPERTIES_LIBRARY_TSUGI_XAPI_ENDPOINT", "xAPI LRS end-point:");
 
 	define("PROPERTIES_LIBRARY_TSUGI_XAPI_USERNAME", "xAPI LRS username:");

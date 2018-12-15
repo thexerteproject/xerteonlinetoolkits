@@ -18,7 +18,6 @@
  * limitations under the License.
  */
 
-$tsugi_disable_xerte_session = true;
 require_once(dirname(__FILE__) . "/config.php");
 
 global $tsugi_enabled;
@@ -32,6 +31,33 @@ if(is_numeric($id))
         die('group parameter not supplied!');
     }
 	$tsugi_enabled = true;
+    // Get LRS endpoint and see if xAPI is enabled
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    $q = "select * from {$prefix}templatedetails where template_id=?";
+    $params = array($template_id);
+    $row = db_query_one($q, $params);
+    if ($row === false)
+    {
+        die("template_id not found");
+    }
+    if ($row['tsugi_xapi_useglobal'])
+    {
+        $q = "select LRS_Endpoint, LRS_Key, LRS_Secret from {$prefix}sitedetails where site_id=1";
+        $globalrow = db_query_one($q);
+        $lrs = array('lrsendpoint' => $globalrow['LRS_Endpoint'],
+            'lrskey' => $globalrow['LRS_Key'],
+            'lrssecret' => $globalrow['LRS_Secret'],
+            );
+    }
+    else{
+        $lrs = array('lrsendpoint' => $row['tsugi_xapi_endpoint'],
+            'lrskey' => $row['tsugi_xapi_key'],
+            'lrssecret' => $row['tsugi_xapi_secret'],
+        );
+    }
+
+
+    $_SESSION['XAPI_PROXY'] = $lrs;
 
     $xerte_toolkits_site->group = $_REQUEST{'group'};
     if (isset($_REQUEST['course'])) {
