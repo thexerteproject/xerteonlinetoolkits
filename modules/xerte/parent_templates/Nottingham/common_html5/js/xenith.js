@@ -1204,7 +1204,19 @@ function x_continueSetUp1() {
 		.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
 		.click(function() {
 			if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
-				x_openDialog("menu", x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"), x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"));
+				x_openDialog(
+					"menu",
+					x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
+					x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
+					null,
+					null,
+					function () {
+						$x_menuBtn
+							.blur()
+							.removeClass("ui-state-focus")
+							.removeClass("ui-state-hover");
+					}
+				);
 			} else if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
 				x_navigateToPage(false,{type:'linkID',ID:x_params.homePage});
 			} else {
