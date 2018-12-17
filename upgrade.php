@@ -912,4 +912,22 @@ function upgrade_19()
 
 }
 
+function upgrade_20()
+{
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_useglobal')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_useglobal', 'int(1)', '0', 'tsugi_xapi_enabled');
+        $error1_returned = true;
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        return "Tsugi xapi enabled field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Tsugi xapi enabled field already exists - ok ? true". "<br>";
+    }
+}
+
 ?>
