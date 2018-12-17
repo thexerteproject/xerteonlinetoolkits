@@ -1,6 +1,7 @@
 /*var linkEl;*/
 
 $(document).ready(function(){
+    $(window).trigger('resize');
     /*
     linkEl = $('<link rel="stylesheet" href="https://learningcentral.cf.ac.uk/bbcswebdav/courses/REGOS-ELTTStaff/XERTE%20Files/XT%20Toolkit%20Open.css" type="text/css">').appendTo('head')[0];
     $(window).trigger('resize');

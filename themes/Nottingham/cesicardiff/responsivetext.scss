@@ -9,7 +9,7 @@ $resultsHolderwidth:8vmin;//previously 8vmin
 @media (min-width: 768px) {
 
 //---cesicardiff overrides----------------------------------------------------
-    #textHolder p,  #targetHolder h3 p, #dragDropHolder .label p{
+    #textHolder p,  #targetHolder h3 p, #dragDropHolder .label p, #pageContents.mcq .optionTxt {
         font-size: $pagecontentslarge;
     }
     p #iFrame,p iframe, p .panel #iFrame, p .panel iframe, #linkHolder, #textHolder, #pageContents, .withChild, .withChild2, #subMenuItems, .embeddedContent iframe{
