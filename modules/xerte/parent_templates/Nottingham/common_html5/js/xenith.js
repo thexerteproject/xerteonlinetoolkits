@@ -1010,7 +1010,7 @@ function x_continueSetUp1() {
 		var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
 		var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
 		//add a div for the show/hide chevron
-		$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><div id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div></div>');
+		$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></button></div>');
 		$('#x_footerChevron').prop('title', hideMsg);
 
 		//chevron to show/hide function
