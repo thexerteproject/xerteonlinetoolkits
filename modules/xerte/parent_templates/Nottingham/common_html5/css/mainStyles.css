@@ -586,8 +586,8 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
     cursor: pointer;
 }
 #x_footerShowHide{
-    padding-left: 8px; 
-    padding-top: 15px;
+    /*padding-left: 8px;
+    padding-top: 15px;*/
     float:left;
 }
 
