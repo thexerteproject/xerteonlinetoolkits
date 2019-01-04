@@ -64,8 +64,13 @@
 	define ("PROJECT_INFO_PASSWORD", "Password");
 	
 	define ("PROJECT_INFO_OTHER", "Other");
-	
-	// PROJECT TAB
+
+	define ("PROJECT_INFO_ACCESS_SET_AS", "is currently set as");
+
+	define ("PROJECT_INFO_NRVIEWS", ", number of views is %n");
+
+
+// PROJECT TAB
 	
 	define("PROPERTIES_LIBRARY_PROJECT", "Project");
 	
