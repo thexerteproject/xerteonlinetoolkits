@@ -69,8 +69,7 @@
 
 	define ("PROJECT_INFO_NRVIEWS", ", number of views is %n");
 
-
-// PROJECT TAB
+	// PROJECT TAB
 	
 	define("PROPERTIES_LIBRARY_PROJECT", "Project");
 	
