@@ -128,7 +128,7 @@ if (is_numeric($id))
     // Get LRS endpoint and see if xAPI is enabled
     $prefix = $xerte_toolkits_site->database_table_prefix;
     $q = "select * from {$prefix}templatedetails where template_id=?";
-    $params = array($template_id);
+    $params = array($id);
     $row = db_query_one($q, $params);
     if ($row === false)
     {
