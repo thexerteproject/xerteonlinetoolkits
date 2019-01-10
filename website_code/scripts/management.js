@@ -74,6 +74,10 @@ function management_alert_stateChanged(){
 	}
 }
 
+function upload_template(){
+	
+}
+
 // Function feeds list
 //
 // remove a share, and check who did it
