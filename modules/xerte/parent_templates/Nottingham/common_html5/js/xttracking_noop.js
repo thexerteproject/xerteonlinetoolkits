@@ -965,8 +965,17 @@ function XTLogin(login, passwd)
 
 function XTGetMode()
 {
-    if (state.forcetrackingmode === 'true')
-        return "normal";
+    if (state.forcetrackingmode === 'true') {
+        if (state.trackingmode !== "none") {
+            if (state.scoremode == "first")
+                return "normal";
+            else
+                return "normal-last";
+        }
+        else {
+            return "tracking";
+        }
+    }
     else
         return "";
 }
@@ -1183,6 +1192,29 @@ function XTTerminate()
                 state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
             }
 
+        }
+        if (lti_enabled) {
+            // Send ajax request to store grade through LTI to gradebook
+            var url = window.location.href;
+            if (url.indexOf("launch_lti.php") >= 0) {
+                url = url.replace("launch_lti.php", "website_code/php/lti/sendgrade.php");
+            } else if (url.indexOf("launch_lti2.php") >= 0) {
+                url = url.replace("launch_lti2.php", "website_code/php/lti/sendgrade.php");
+            } else {
+                url = "";
+            }
+            if (url.length > 0) {
+                $.ajax({
+                    method: "POST",
+                    url: url,
+                    data: {
+                        grade: state.getdScaledScore()
+                    }
+                })
+                    .done(function(msg) {
+                        //alert("Data Saved: " + msg);
+                    });
+            }
         }
     }
 }

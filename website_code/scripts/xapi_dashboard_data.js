@@ -639,7 +639,7 @@ DashboardState.prototype.hasStartedLearningObject = function(userdata, learningO
 };
 
 DashboardState.prototype.getExitedStatements = function(userdata, learningObjectUrl) {
-    return this.getFilteredStatements(userdata, "http://adlnet.gov/expapi/verbs/exiteded", learningObjectUrl);
+    return this.getFilteredStatements(userdata, "http://adlnet.gov/expapi/verbs/exited", learningObjectUrl);
 }
 
 DashboardState.prototype.hasCompletedInteraction = function(userdata, interactionUrl) {
@@ -715,14 +715,60 @@ DashboardState.prototype.getAllDurations = function(userdata, interactionUrl) {
     return durations;
 };
 
+DashboardState.prototype.consolidateSegments = function (pausedSegments) {
+    // 1. Sort played segments on start time (first make a copy)
+    if (pausedSegments.length == 0) {
+        return 0;
+    }
+    csegments = pausedSegments.map(function(s) {
+        segments = s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"].split("[,]");
+        if (segments[0] == "") {
+            return [];
+        }
+        return segments.map(function(segment) {
+            return {
+                start: Math.round(segment.split("[.]")[0]),
+                end: Math.round(segment.split("[.]")[1])
+            };
+        });
+    });
+    segments = [];
+    csegments.forEach(function(segment) {
+        segment.forEach(function(seg) {
+            segments.push(seg);
+        });
+    });
+    segments.sort(function(a, b) {
+        return (parseFloat(a.start) > parseFloat(b.start)) ? 1 : ((parseFloat(b.start) > parseFloat(a.start)) ? -1 : parseFloat(a.end) - parseFloat(b.end));
+    });
+    // 2. Combine the segments
+    var csegments = [];
+    var i = 0;
+    while (i < segments.length) {
+        var segment = $.extend(true, {}, segments[i]);
+        i++;
+        while (i < segments.length && parseFloat(segment.end) >= parseFloat(segments[i].start)) {
+            segment.end = segments[i].end;
+            i++;
+        }
+        csegments.push(segment);
+    }
+    return csegments;
+}
+
 DashboardState.prototype.getDurationBlocks = function(userdata, interactionUrl)
 {
-    var statements = userdata['statements'];
+    var statements = userdata['statements'].filter(function(statement) {
+        return statement.object.id == interactionUrl + "/video";
+    });
     var statementList = this.getStatementsList(statements, "https://w3id.org/xapi/video/verbs/paused");
     var durations = statementList.map(s => s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]);
-
-    debugger;
-    return undefined;
+    if(durations.length > 0)
+    {
+        segments = this.consolidateSegments(statementList);
+        return segments
+    }
+    return [];
 }
 
 DashboardState.prototype.hasStartedInteraction = function(userdata, interaction) {
@@ -787,8 +833,9 @@ DashboardState.prototype.getQuestion = function(interactionObjectUrl) {
                 statement.verb.id == "http://adlnet.gov/expapi/verbs/answered";
         })
         .forEach(function(statement) {
-            if (question == undefined) {
+            if (question == undefined || question.interactionType == undefined) {
                 question = statement.object.definition;
+                question.interactionUrl = statement.object.id;
             }
 
         });

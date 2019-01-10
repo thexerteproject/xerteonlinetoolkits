@@ -640,8 +640,9 @@
 		
 		this.trackOpinion = function() {
             // Last question answered - show results
+            JSONGraph = opinion.createGraphObject();
             if (x_currentPageXML.getAttribute("diagram") !== "true"){
-                opinion.createDiagram();
+                opinion.createDiagram(JSONGraph);
 				this.sizeChanged();
 			}
 
@@ -694,42 +695,50 @@
 			return value;
 		}
 
-		this.createDiagram = function()
+		this.createGraphObject = function()
 		{
-			var classNames = [];
-			var classTitles = [];
-			var classValues = [];
-			var classWeighting = [];
+            var classNames = [];
+            var classTitles = [];
+            var classValues = [];
+            var classWeighting = [];
 
-			for(var i = 0; i< diagramLabels.length; i++){
-				var q = diagramLabels[i];
-				classNames[q.parentNode.classId] = q.parentNode.getAttribute("name");
-				if (typeof q.parentNode.getAttribute("title") != "undefined" && q.parentNode.getAttribute("title") != "") {
+            for(var i = 0; i< diagramLabels.length; i++){
+                var q = diagramLabels[i];
+                classNames[q.parentNode.classId] = q.parentNode.getAttribute("name");
+                if (typeof q.parentNode.getAttribute("title") != "undefined" && q.parentNode.getAttribute("title") != "") {
                     classTitles[q.parentNode.classId] = q.parentNode.getAttribute("title");
                 }
                 else
-				{
+                {
                     classTitles[q.parentNode.classId] = classNames[q.parentNode.classId];
-				}
-				if(classValues[q.parentNode.classId] != undefined){
+                }
+                if(classValues[q.parentNode.classId] != undefined){
                     classValues[q.parentNode.classId] = classValues[q.parentNode.classId] + (diagramAnswers[i]* diagramLabels[i].getAttribute("classWeight"));
                     classWeighting[q.parentNode.classId] = parseInt(classWeighting[q.parentNode.classId]) + parseInt(diagramLabels[i].getAttribute("classWeight"));
                 }
                 else{
                     classValues[q.parentNode.classId] =(diagramAnswers[i]* diagramLabels[i].getAttribute("classWeight"));
                     classWeighting[q.parentNode.classId] = diagramLabels[i].getAttribute("classWeight");
-				}
-			}
-			for(var j=0; j<classValues.length;j++){
-			    classValues[j] = classValues[j] / classWeighting[j];
-			}
+                }
+            }
+            for(var j=0; j<classValues.length;j++){
+                classValues[j] = classValues[j] / classWeighting[j];
+            }
 
-			JSONGraph = {
-				label: x_currentPageXML.getAttribute("name"),
-				classnames: classNames,
-				classtitles: classTitles,
-				classvalues: classValues
-			};
+            return {
+                label: x_currentPageXML.getAttribute("name"),
+                classnames: classNames,
+                classtitles: classTitles,
+                classvalues: classValues
+            };
+
+        };
+
+		this.createDiagram = function(graphObject)
+		{
+			var classNames = graphObject.classnames;
+			var classTitles = graphObject.classtitles;
+			var classValues = graphObject.classvalues;
 
 			function hexToRgb(hex, opa) {
 				var bigint = parseInt(hex, 16);

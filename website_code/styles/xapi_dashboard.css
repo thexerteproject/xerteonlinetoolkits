@@ -33,6 +33,7 @@ table {
 .journeyTable table{
   overflow-x: scroll;
   border: 0px;
+  position:absolute;
 }
 
 .journeyTable th{
@@ -58,7 +59,7 @@ td a{
   text-decoration: none;
 }
 
-.col-4-widget{
+.col-2-widget{
     margin-top: 1rem;
     border-style: solid;
     border-width: 1px;
@@ -68,13 +69,13 @@ td a{
     text-align: center;
 }
 
-.col-4-widget h1{
+.col-2-widget h2{
     font-weight: bold;
     color: #fba61f;
     margin-top: .5rem;
 }
 
-.col-4-widget h3{
+.col-2-widget h5{
     margin-top: .5rem;
 }
 
@@ -183,6 +184,11 @@ td a{
 
 .modebar {
     display: none !important;
+}
+
+.show-hide-column-button{
+    float: right;
+    padding:5px;
 }
 
 .close-button {

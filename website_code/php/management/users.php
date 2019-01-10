@@ -30,6 +30,12 @@ if(is_user_admin()){
     {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
+    if ($xerte_toolkits_site->altauthentication != "" && isset($_SESSION['altauth']))
+    {
+        $xerte_toolkits_site->authentication_method = $xerte_toolkits_site->altauthentication;
+        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+    }
+
     if ($authmech->check() && $authmech->canManageUser($jsscript))
     {
         echo "<h2>" . USERS_MANAGE_AUTH . "</h2>";

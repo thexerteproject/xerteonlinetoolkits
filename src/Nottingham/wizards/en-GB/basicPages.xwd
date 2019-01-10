@@ -49,4 +49,6 @@
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
 	</pageTimer>
 	
+	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project."/>
+	
 </commonNodes>

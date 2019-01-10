@@ -71,11 +71,31 @@ $(document).keydown(function(e) {
     switch(e.which) {
         case 33: // PgUp
             if (x_currentPage > 0 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
-                if (x_params.navigation != "Historic") {
+                if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
 					x_changePage(x_currentPage -1);
                 } else {
                     var prevPage = x_pageHistory[x_pageHistory.length-2];
                     x_pageHistory.splice(x_pageHistory.length - 2, 2);
+					//check if history is empty and if so allow normal back navigation and change to normal back button
+				if(prevPage==undefined && x_currentPage > 0 && x_params.navigation == "LinearWithHistoric"){
+					prevIcon = "x_prev";
+					$x_prevBtn
+						.button({
+							icons: {
+							primary: prevIcon
+					},
+			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+			text:	false
+		})
+		 x_changePage(x_currentPage -1);
+				   }
+				   //disable normal back navigation if 1st page
+				if (x_currentPage <=1){
+					$x_prevBtn
+            .button("disable")
+            .removeClass("ui-state-focus")
+            .removeClass("ui-state-hover");
+					}
                     x_changePage(prevPage);
                 }
 			}
@@ -333,7 +353,7 @@ x_projectDataLoaded = function(xmlData) {
         if (x_params.navigation == undefined) {
             x_params.navigation = "Linear";
         }
-        if (x_params.navigation != "Linear" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
+        if (x_params.navigation != "Linear" && x_params.navigation != "LinearWithHistoric" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
             x_pages.splice(0, 0, "menu");
             x_pageInfo.splice(0, 0, {type: 'menu', built: false});
         }
@@ -348,13 +368,13 @@ x_projectDataLoaded = function(xmlData) {
 
     // sort any parameters in url - these will override those in xml
     var tempUrlParams = window.location.search.substr(1, window.location.search.length).split("&");
-    var urlParams = {};
+    x_urlParams = {};
     for (i = 0; i < tempUrlParams.length; i++) {
-        urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
+        x_urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
     }
 	
 	// url embed parameter uses ideal setup for embedding in iframes - can be overridden with other parameters below
-	if (urlParams.embed == 'true') {
+	if (x_urlParams.embed == 'true') {
 		x_params.embed = true;
 		x_params.displayMode = 'full screen';
 		x_params.responsive = 'false';
@@ -362,18 +382,18 @@ x_projectDataLoaded = function(xmlData) {
 	}
 	
     // url display parameter will set size of LO (display=fixed|full|fill - or a specified size e.g. display=200,200)
-    if (urlParams.display != undefined) {
-        if ($.isNumeric(urlParams.display.split(",")[0]) == true && $.isNumeric(urlParams.display.split(",")[1]) == true) {
-            x_params.displayMode = urlParams.display.split(",");
+    if (x_urlParams.display != undefined) {
+        if ($.isNumeric(x_urlParams.display.split(",")[0]) == true && $.isNumeric(x_urlParams.display.split(",")[1]) == true) {
+            x_params.displayMode = x_urlParams.display.split(",");
             x_fillWindow = false; // overrides fill window for touchscreen devices
 
-        } else if (urlParams.display == "fixed" || urlParams.display == "default" || urlParams.display == "full" || urlParams.display == "fill") {
+        } else if (x_urlParams.display == "fixed" || x_urlParams.display == "default" || x_urlParams.display == "full" || x_urlParams.display == "fill") {
             if (x_browserInfo.touchScreen == true) {
                 x_fillWindow = true;
             }
-            if (urlParams.display == "fixed" || urlParams.display == "default") { // default fixed size using values in css (800,600)
+            if (x_urlParams.display == "fixed" || x_urlParams.display == "default") { // default fixed size using values in css (800,600)
                 x_params.displayMode = "default";
-            } else if (urlParams.display == "full" || urlParams.display == "fill") {
+            } else if (x_urlParams.display == "full" || x_urlParams.display == "fill") {
                 x_params.displayMode = "full screen"
             }
         }
@@ -383,32 +403,37 @@ x_projectDataLoaded = function(xmlData) {
 		x_params.displayMode = "default";
 		x_fillWindow = false;
 	}
+	
+	// this is being shown in iframe so force to fill available space
+	if (self !== top) {
+		x_fillWindow = true;
+	}
 
     // url hide parameter will remove x_headerBlock &/or x_footerBlock divs
-    if (urlParams.hide != undefined) {
-        if (urlParams.hide == "none") {
+    if (x_urlParams.hide != undefined) {
+        if (x_urlParams.hide == "none") {
             x_params.hideHeader = "false";
             x_params.hideFooter = "false";
-        } else if (urlParams.hide == "both") {
+        } else if (x_urlParams.hide == "both") {
             x_params.hideHeader = "true";
             x_params.hideFooter = "true";
-        } else if (urlParams.hide == "bottom") {
+        } else if (x_urlParams.hide == "bottom") {
             x_params.hideHeader = "false";
             x_params.hideFooter = "true";
-        } else if (urlParams.hide == "top") {
+        } else if (x_urlParams.hide == "top") {
             x_params.hideHeader = "true";
             x_params.hideFooter = "false";
         }
     }
 	
 	// url parameter to turn responsive on / off
-	if (urlParams.responsive != undefined && (urlParams.responsive == "true" || urlParams.responsive == "false")) {
-		x_params.responsive = urlParams.responsive;
+	if (x_urlParams.responsive != undefined && (x_urlParams.responsive == "true" || x_urlParams.responsive == "false")) {
+		x_params.responsive = x_urlParams.responsive;
 	}
 
-	if (urlParams.theme != undefined && (x_params.themeurl == undefined || x_params.themeurl != 'true'))
+	if (x_urlParams.theme != undefined && (x_params.themeurl == undefined || x_params.themeurl != 'true'))
     {
-        x_params.theme = urlParams.theme;
+        x_params.theme = x_urlParams.theme;
     }
 
     x_getLangData(x_params.language);
@@ -1074,7 +1099,7 @@ function x_continueSetUp1() {
 	}
 	
 	var prevIcon = "x_prev";
-	if (x_params.navigation == "Historic") {
+	if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
 		prevIcon = "x_prev_hist";
 	}
 	
@@ -1087,11 +1112,41 @@ function x_continueSetUp1() {
 			text:	false
 		})
 		.click(function() {
-			if (x_params.navigation != "Historic") {
+			if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
 				x_changePage(x_currentPage -1);
 			} else {
+				//ensure button is historic style
+				prevIcon = "x_prev_hist";
+					$x_prevBtn
+						.button({
+							icons: {
+							primary: prevIcon
+					},
+			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+			text:	false
+		})
 				var prevPage = x_pageHistory[x_pageHistory.length-2];
 				x_pageHistory.splice(x_pageHistory.length - 2, 2);
+				//check if history is empty and if so allow normal back navigation and change to normal back button
+				if(prevPage==undefined && x_currentPage > 0 && x_params.navigation == "LinearWithHistoric"){
+					prevIcon = "x_prev";
+					$x_prevBtn
+						.button({
+							icons: {
+							primary: prevIcon
+					},
+			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+			text:	false
+		})
+				   x_changePage(x_currentPage -1);
+				   }
+				//disable normal back navigation if 1st page
+				if (x_currentPage <=1){
+					$x_prevBtn
+            .button("disable")
+            .removeClass("ui-state-focus")
+            .removeClass("ui-state-hover");
+					}
 				x_changePage(prevPage);
 			}
 			$(this)
@@ -1108,6 +1163,18 @@ function x_continueSetUp1() {
 			text:	false
 		})
 		.click(function() {
+		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
+				//when moving forward history is generated so ensure button is historic style
+				prevIcon = "x_prev_hist";
+					$x_prevBtn
+						.button({
+							icons: {
+							primary: prevIcon
+					},
+			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+			text:	false
+		})
+			}
 			x_changePage(x_currentPage+1);
 			$(this)
 				.removeClass("ui-state-focus")
@@ -1134,7 +1201,7 @@ function x_continueSetUp1() {
 		})
 		.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
 		.click(function() {
-			if (x_params.navigation == "Linear" || x_params.navigation == undefined) {
+			if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
 				x_openDialog("menu", x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"), x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"));
 			} else if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
 				x_navigateToPage(false,{type:'linkID',ID:x_params.homePage});
@@ -1337,8 +1404,17 @@ function x_continueSetUp2() {
     window.onbeforeunload = XTTerminate;
 
     XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
+	// Set course and module options AFTER XTInitialise
+    if (x_params.course != undefined && x_params.course != "")
+    {
+        XTSetOption('course', x_params.course);
+    }
+    if (x_params.module != undefined && x_params.module != "")
+    {
+        XTSetOption('module', x_params.module);
+    }
 
-	x_navigateToPage(true, x_startPage);
+    x_navigateToPage(true, x_startPage);
 }
 
 // function checks whether a media file exists
@@ -1656,7 +1732,7 @@ function x_changePageStep5(x_gotoPage) {
         }
     }
 
-    if (x_params.navigation == "Historic") {
+    if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
         x_pageHistory.push(x_currentPage);
     }
 
@@ -1904,7 +1980,7 @@ function x_setUpPage() {
 
     if (x_currentPage > 0) {
         $x_prevBtn.button("enable");
-    } else if (x_params.navigation != "Historic" || (x_params.navigation == "Historic" && x_pageHistory.length <= 1)) {
+    } else if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric" || (x_params.navigation == "Historic" && x_pageHistory.length <= 1)) {
         $x_prevBtn
             .button("disable")
             .removeClass("ui-state-focus")

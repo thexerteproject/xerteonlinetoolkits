@@ -186,7 +186,8 @@
 						gapFillStr += '</select>';
 						
 					} else { // fill in the blank
-						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + decodedAnswer + '" tabindex="' + tabIndex + '"/>';
+
+						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + decodedAnswer + '" tabindex="' + tabIndex + '" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" />';
 
 						var tempArray = [];
 						tempArray = decodedAnswer.split(delimiter);
@@ -397,10 +398,7 @@
 						var $this = $(this);
 
 						setTimeout(function() {
-							currvalue = $this.val();
-							if (!casesensitive) {
-								currvalue = $this.val().toLowerCase();
-							}
+							var currvalue = !casesensitive ? $this.val().trim().toLowerCase() : $this.val().trim();
 							if (answerData[$this.data("index")].indexOf(currvalue) != -1) { // correct
 								$this
 									.attr("readonly", "readonly")
@@ -485,7 +483,7 @@
 									}
 								}
 							}
-						}, 0);
+						}, 10);
 					});
 				
 			} else {
@@ -514,9 +512,9 @@
 					})
 					//.attr("tabindex",tabIndex) // **
 					.click(function() {
-						 $targetHolder.find("input").each(function() {
+						$targetHolder.find("input").each(function() {
 							var $this = $(this),
-								currvalue = !casesensitive ? $this.val().toLowerCase() : $this.val();
+								currvalue = !casesensitive ? $this.val().trim().toLowerCase() : $this.val().trim();
 							
 							if (answerData[$this.data("index")].indexOf(currvalue) != -1) {
 								$this.attr("readonly", "readonly");
@@ -548,6 +546,7 @@
 
 				
 			} else {
+				tabIndex++;
 				$("#submitBtn")
 					.button({
 						label:	x_currentPageXML.getAttribute("checkBtn") != undefined && x_currentPageXML.getAttribute("checkBtn") != "" ? x_currentPageXML.getAttribute("checkBtn") : "Check"
@@ -1006,7 +1005,7 @@
 				
                 $targetHolder.find("input").each(function() {
                     var $this = $(this),
-                        currvalue = !casesensitive ? $this.val().toLowerCase() : $this.val();
+                        currvalue = !casesensitive ? $this.val().trim().toLowerCase() : $this.val().trim();
                     var feedback = "Incorrect"
                     var correct = false;
                     var answer = currvalue;

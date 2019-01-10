@@ -220,7 +220,7 @@ function scorm_html_page_create($id, $name, $type, $rlo_file, $lo_name, $languag
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($id, $type, $template_name, $lo_name, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false) {
+function basic_html5_page_create($id, $type, $parent_name, $lo_name, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -236,7 +236,7 @@ function basic_html5_page_create($id, $type, $template_name, $lo_name, $tsugi=fa
     $buffer = str_replace("%TEMPLATEID%", $id, $buffer);
     $buffer = str_replace("%XMLPATH%", "", $buffer);
     $buffer = str_replace("%XMLFILE%", "template.xml", $buffer);
-    $buffer = str_replace("%THEMEPATH%", "themes/" . $template_name . "/",$buffer);
+    $buffer = str_replace("%THEMEPATH%", "themes/" . $parent_name . "/",$buffer);
 
     if ($offline) {
         // Handle offline variables
@@ -277,7 +277,7 @@ function basic_html5_page_create($id, $type, $template_name, $lo_name, $tsugi=fa
  * @version 1.0
  * @author Patrick Lockley
  */
-function scorm_html5_page_create($id, $type, $template_name, $lo_name, $language, $need_download_url=false) {
+function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, $need_download_url=false) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -291,7 +291,7 @@ function scorm_html5_page_create($id, $type, $template_name, $lo_name, $language
     $scorm_html_page_content = str_replace("%TEMPLATEID%", $id, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLPATH%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLFILE%", "template.xml", $scorm_html_page_content);
-    $scorm_html_page_content = str_replace("%THEMEPATH%", "themes/" . $template_name . "/",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%THEMEPATH%", "themes/" . $parent_name . "/",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%OFFLINESCRIPTS%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $scorm_html_page_content);

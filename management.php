@@ -64,6 +64,19 @@ function mgt_page($xerte_toolkits_site, $extra)
                 background:white;
             }
             </style>
+
+            <?php
+            if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
+            {
+                ?>
+                <link href='branding/branding.css' rel='stylesheet' type='text/css'>
+                <?php
+            }
+            else {
+                ?>
+                <?php
+            }
+            ?>
         </head>
 
         <body>
@@ -161,6 +174,12 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
     {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
+    if (isset($_GET['altauth']))
+    {
+        $xerte_toolkits_site->authentication_method = 'Db';
+        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+    }
+
     if (($_POST["login"] == $xerte_toolkits_site->admin_username) && ($_POST["password"] == $xerte_toolkits_site->admin_password)) {
 
         $_SESSION['toolkits_logon_id'] = "site_administrator";
@@ -184,11 +203,30 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
                 <link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" />
                 <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
+                <?php
+                if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
+                {
+                    ?>
+                    <link href='branding/branding.css' rel='stylesheet' type='text/css'>
+                    <?php
+                }
+                else {
+                    ?>
+                    <?php
+                }
+                ?>
+
                 <script type="text/javascript">
         <?PHP
         echo "var site_url = \"" . $xerte_toolkits_site->site_url . "\";\n";
 
         echo "var site_apache = \"" . $xerte_toolkits_site->apache . "\";\n";
+        if ($xerte_toolkits_site->altauthentication != "" && isset($_GET['altauth']))
+        {
+            $xerte_toolkits_site->authentication_method = $xerte_toolkits_site->altauthentication;
+            $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+            $_SESSION['altauth'] = $xerte_toolkits_site->altauthentication;
+        }
 
         echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";
         ?></script>
