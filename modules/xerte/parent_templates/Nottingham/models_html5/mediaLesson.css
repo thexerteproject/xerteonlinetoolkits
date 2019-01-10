@@ -5,6 +5,7 @@
 		/*overflow:		hidden;*/
 		margin-left:	auto;
 		margin-right:	auto;
+		z-index: 2;
 	}
 	
 	.popcornMedia.youTube {
@@ -12,6 +13,29 @@
 	}
 	
 	/* PANEL LAYOUT */
+	#panelHolder .overlay {
+		position: absolute;
+		height: auto;
+		width: auto;
+		/*padding: 5px;*/
+		text-align: center;
+		left: 50px;
+		top: 50px;
+		/*border-radius: 5px;*/
+		background-color: #CFCFCF;
+		opacity: 0.95;
+		z-index: 4;
+
+	}
+
+	#panelHolder .overlayGray {
+		position: absolute;
+		height: inherit;
+		width: inherit;
+		background-color: #222222;
+		opacity: 0.55;
+		z-index: -1;
+	}
 	
 	#panelHolder .panel.tileH {
 		display:	inline-block;

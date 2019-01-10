@@ -45,14 +45,31 @@ optional: end position* line
 					}
 				}
 				
-				$target = $("#" + options.target)
-					.html(txt)
-					.hide();
+				$target = $("#" + options.target).hide();
+				//	.html(txt)
+				//	.hide();
+                if(options.mandatory === "true")
+                {
+                    $showBtn = $('<button class="mcqShowBtn"></button>').appendTo($target);
+                    $showBtn
+                        .button({
+                            "label": "Show"
+                        })
+                        .click(function () {
+                            $showBtn.hide();
+                            //$optHolder.show();
+                            $target.prepend(txt);
+                        });
+                }
+                else {
+                    //$optHolder.show();
+                    //$checkBtn.button("disable");
+                    $target.prepend(txt);
+                }
 			},
 			
 			start: function(event, options) {
 				// fire on options.start
-				
 				$target.show();
 			},
 			

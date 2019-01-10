@@ -38,7 +38,7 @@ optional: feedback page synch play enable
 	Popcorn.plugin("mcq", function(options) {
 
 		// define plugin wide variables / functions here
-		var $target, $optHolder, $checkBtn, $feedbackDiv, media, selected, judge, autoEnable, questions;
+		var $target, $optHolder, $checkBtn, $feedbackDiv, $continueBtn, media, selected, judge, autoEnable, questions, $showBtn;
 		
 		var finishTracking = function(options) {
             var allValid = true;
@@ -174,7 +174,9 @@ optional: feedback page synch play enable
 				$feedbackDiv
 					.html(feedbackLabel + feedbackTxt)
 					.show();
-				
+				$continueBtn.show();
+
+				//#Warning: unused by Xerte at the current time.
 				if (action >= 0) {
 					$('<button>')
 						.appendTo($feedbackDiv)
@@ -220,7 +222,6 @@ optional: feedback page synch play enable
 		
 		return {
 			_setup: function(options) {
-
 				media = this;
 				judge = false;
 				autoEnable = true;
@@ -245,13 +246,14 @@ optional: feedback page synch play enable
 				} else {
 					$target = $("#" + options.target);
 				}
-				
+				var $optionText = options.name !== "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
 				$target
-					.append(options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text))
+				//	.append(options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text))
 					.hide();
-				
+
+
 				$optHolder = $('<div class="optionHolder"/>').appendTo($target);
-				
+
 				if ($(options.childNodes).length == 0) {
 					$optHolder.html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
 				} else {
@@ -390,22 +392,32 @@ optional: feedback page synch play enable
 					
 					// unless it's a button question there needs to be a submit answer button
 					if (options.type != "button") {
-						$checkBtn = $('<button class="mcqCheckBtn"></button>').appendTo($target);
-						$checkBtn
-							.button({
-								"label":	options.checkBtnTxt != "" ? options.checkBtnTxt : "Check",
-								"disabled":	true
-							})
-							.click(function() {
-								answerSelected();
-								$checkBtn.hide();
-							});
-					}
+                        $checkBtn = $('<button class="mcqCheckBtn"></button>').appendTo($target);
+                        $checkBtn
+                            .button({
+                                "label": options.checkBtnTxt != "" ? options.checkBtnTxt : "Check",
+                                "disabled": true
+                            })
+                            .click(function () {
+                                answerSelected();
+                                $checkBtn.hide();
+                            });
+                    }
 					
 					$feedbackDiv = $('<div class="mcqFeedback"></div>')
 						.appendTo($target)
 						.hide();
-					
+
+					$continueBtn = $('<button class="mcqContinueBtn"></button>').appendTo($target).hide();
+					$continueBtn
+						.button({
+							"label": options.continueBtnTxt != "" ? options.continueBtnTxt : "Continue"
+						})
+						.click(function () {
+							$target.hide();
+							media.play();
+                        });
+
 					$target.append('<div class="bottom"/>');
 				}
 				
@@ -416,6 +428,29 @@ optional: feedback page synch play enable
 						$target.prepend("<hr/>");
 					}
 				}
+
+                if(options.mandatory === "true")
+                {
+                    $showBtn = $('<button class="mcqShowBtn"></button>').appendTo($target);
+                    $showBtn
+                        .button({
+                            "label": "Show"
+                        })
+                        .click(function () {
+                            $showBtn.hide();
+                            $optHolder.show();
+                            $checkBtn.show();
+                            $checkBtn.button("disable");
+							$target.prepend($optionText);
+                            debugger;
+                        });
+                }
+                else {
+                    $optHolder.show();
+                    $checkBtn.show();
+                    $checkBtn.button("disable");
+                }
+
 			},
 			
 			start: function(event, options) {
@@ -452,12 +487,19 @@ optional: feedback page synch play enable
 						.html("")
 						.hide()
 						.find("button").remove();
-					
-					if ($checkBtn) {
-						$checkBtn
-							.show()
-							.button("disable");
+					if ($showBtn) {
+						$optHolder.hide();
+						$checkBtn.hide();
 					}
+
+					else {
+						$target.prepend(options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text));
+                        if ($checkBtn) {
+                            $checkBtn
+                                .show()
+                                .button("disable");
+                        }
+                    }
 					
 					if (options.disable == "true") {
 						mediaLesson.enableControls(this.media, false);
@@ -465,7 +507,6 @@ optional: feedback page synch play enable
 						mediaLesson.enableControls(this.media, true);
 					}
 				}
-				
 				$target.show();
 			},
 			
@@ -473,6 +514,9 @@ optional: feedback page synch play enable
 				// fire on options.end
 				mediaLesson.enableControls(this.media, true);
 				$target.hide();
+			},
+
+			testEvent: function(event,options){
 			}
 		};
 		

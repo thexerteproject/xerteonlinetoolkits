@@ -87,8 +87,7 @@
 		
 		this.resizePanels = function() {
 		    // make sure no scroll bars are on screen during panel sizing
-			$x_pageHolder.css("overflow", "hidden");
-			
+            $x_pageHolder.css("overflow", "hidden");
 			var numTileH = $("#panelHolder .panel.tileH").length,
 				numTileV = $("#panelHolder .panel.tileV").length;
 			
@@ -543,13 +542,18 @@
 			for (var i=0; i<panelData.length; i++) {
 				var title = "";
 				if (panelData[i].getAttribute("name") != "") {
-					title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
+                    title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
+                }
+				if (panelData[i].getAttribute("overlay"))
+				{
+				    //panelData[i].hide();
 				}
-				$('<div class="panel">' + title + '</div>')
-					.appendTo($panelHolder)
-					.attr("id", mediaLesson.panelbaseid + i);
+				else{
+                    $('<div class="panel">' + title + '</div>')
+                        .appendTo($panelHolder)
+                        .attr("id", mediaLesson.panelbaseid + i);
+				}
 			}
-			
 			// layouts where panels are roughly the same size - either in grid or stacked vertically/horizontally
 			if (panelLayout == "tileH") {
 				$panelHolder.find(".panel").addClass("tileH fullH");
@@ -645,7 +649,6 @@
 			// _____ LOAD MEDIA _____
 			
 			var mediaPanelData = $(x_currentPageXML).children("mediaPanel");
-			
 			if (mediaPanelIndex != -1) {
 			    this.popcornInstance = this.loadMedia(
 					$('#' + mediaLesson.panelbaseid + mediaPanelIndex),
@@ -664,7 +667,22 @@
 					true
 					);
 			}
-			
+
+			//overlay
+			for(i = 0; i < panelData.length; i++) {
+			    if(panelData[i].getAttribute("overlay")) {
+                    $('<div class="overlay"></div>')
+                        .appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex)[0].children[1])
+                        .attr("id", mediaLesson.panelbaseid + i);
+						//.hide();
+                    $('<div class="overlayGray"></div>')
+                        .appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex)[0].children[1])
+                        .attr("id", "overlay");
+                    break;
+                }
+            }
+
+
 			$(".panel").each(function(i) {
 			    if (i == 0)
 					$('<div id="panelContent' + 0 + '" class="panelContent" />').appendTo($(this));
@@ -715,6 +733,8 @@
 
             });
             this.popcornInstance.on( "play", function() {
+                $("#overlay").css("z-index", "-1");
+
                 var popTime = mediaLesson.popcornInstance.currentTime();
                 console.log("Play    : " + popTime);
                 currSegment = {
@@ -732,7 +752,7 @@
                 duration = mediaLesson.popcornInstance.duration();
                 XTVideo(x_currentPage, trackinglabel, name, "played", vidFullWatched);
             });
-            this.popcornInstance.on( "pause", function() {
+            this.popcornInstance.on( "pause", function() { //TODO function being called on pause
                 var popTime = mediaLesson.popcornInstance.currentTime();
                 vidFullWatched.time = popTime;
                 console.log("Pause   : " + popTime);
@@ -1098,6 +1118,11 @@
 			var data = new Array(), // array of objects containing details of a synch point event
 				prevStart = 0,
 				start, end;
+			var overlayScreen = $("#overlay");
+            if($(synchData).context.getAttribute("overlay"))
+                $(synchData).each(function() {
+                    this.overlay = true;
+                });
 			$(synchData).each(function(j) {
                         // ignore the media synchCues as they will be set up separately
                         if (this.nodeName != "synchCue") {
@@ -1109,15 +1134,15 @@
                                 // there's no start or end synch on subtitle holder - store previous sibling's start for relative synching to be done against
                                 start = 0;
                             }
-
                             data.push({
-                                type:		this.nodeName,
-                                start:		start,
-                                end:		end,
-                                target:		targetRef + "_" + j,
-                                allInfo:	this
+                                type:			this.nodeName,
+                                start:			start,
+                                end:			end,
+                                target:			targetRef + "_" + j,
+								overlayPanel:	this.overlay,
+								optional:		this.attributes.optional.value,
+                                allInfo:		this
                             });
-
 					
 					if ($(this).children().length > 0) {
 						if (this.nodeName == "synchMediaPlus") {
@@ -1234,9 +1259,10 @@
 					var pluginAttributes = {
 						start	:thisContent.start,
 						end		:thisContent.end,
-						target	:thisContent.target
+						target	:thisContent.target,
+						mandatory: thisContent.optional
 					};
-					
+
 					// add other info to pluginAttributes
 					$.each(thisContent.allInfo.attributes, function(i, attrib) {
 						// ignore attributes that aren't needed or are dealt with here rather than in individual plugins
@@ -1286,6 +1312,11 @@
 					if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
 						popcornInstance.cue(thisContent.start, function() {
 							this.pause();
+							// Gray out the background and fix z-index if the media is paused on an overlay panel
+							if (thisContent.overlayPanel)
+							{
+							    overlayScreen.css("z-index", 3)
+							}
                             if (thisContent.allInfo.getAttribute("overlay") != "true") {
                                 mediaLesson.exitFullScreen();
                             }
@@ -1356,13 +1387,13 @@
 		this.setUpPopcornCue = function(popcornInstance, synchData) {
 			popcornInstance.cue(Number(synchData.getAttribute("synch")), function() {
 				// pause / play media
-				if (synchData.getAttribute("pauseMedia") == "true") {
+				if (synchData.getAttribute("pauseMedia") == "true") { //TODO not here
 				    this.pause();
 				    if (synchData.getAttribute("overlay") != "true") {
                         mediaLesson.exitFullScreen();
                     }
 				} else {
-					this.play();
+					this.play()
 				}
 
 				// Show the following streams (Mediasite)
