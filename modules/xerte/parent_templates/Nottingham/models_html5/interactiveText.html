@@ -71,7 +71,9 @@
 			} else if (x_currentPageXML.getAttribute("interactivity") == "find" || x_currentPageXML.getAttribute("interactivity") == "find2") {
 				$("#feedback").hide();
 
-				/* this was here, I'm not sure why you would delete the progress of a user when they change pages
+				/*
+					This was here, I'm not sure why you would delete the progress of a user when they change pages
+					I kept it in this comment because there might be a good reason I don't know.
 				$pageContents.data({
 					"found" : [],
 					"wrongFound": [],
@@ -282,7 +284,6 @@
 								newNodeArray.push(newNode);
 							}
 						}
-						debugger;
 						for (var k = 0; k < newNodeArray.length; k++) {
 							passage.insertBefore(newNodeArray[k], passageArray[i+k])
 						}
@@ -301,14 +302,19 @@
 					if (span.hasClass("group")){
 						var groupNumber = parseInt(span.attr("class")[span.attr("class").length - 1]);
 						var groupName = groupInfo[groupNumber].name;
-						//correctOptions.push("Group: " + groupName + "; Text: " + span.text() + "; Index: " + span.attr("data-index"));
-						correctOptions.push(
+						if (correctOptions[groupNumber] === undefined){
+							correctAnswers[groupNumber] = [];
+							correctOptions[groupNumber] = [];
+						}
+
+						correctOptions[groupNumber].push(
 							{
-								source: groupName,
-								target: span.attr("data-index") + ": " + span.text()
+								id: span.attr("data-index"),
+								answer: span.attr("data-index") + ": " + span.text(),
+								result: true
 							}
 						)
-						correctAnswers.push(groupName + " --> " + span.attr("data-index") + ": " + span.text());
+						correctAnswers[groupNumber].push("&#8226 " + span.attr("data-index") + ": " + span.text() + "<br>");
 					}
 					index++;
 				});
@@ -997,7 +1003,6 @@
 					}
 				}
 
-				//TODO: zorg dat hier completed goed werkt voor beide find interactivities
 				if (intType == "find"){
 					$("#feedback")
 								.html('<p>' + $pageContents.data("findTxt2")
@@ -1037,35 +1042,68 @@
 			}
 		};
 
-		//TODO: maak per group een multiple choice aan waarbij
-		//de goede antwoorden goed zijn en de verkeerde antwoorden die de gebruiker heeft gekozen als foute opties zijn ingesteld
+		/*
+			To end the find2 interaction, we cheat a bit and use a multiple choice interaction. We already know the correct answers since the begining, but we can add the
+			wrong answers the user chose as false options.
+		 	he order of chosen answers does not matter, because the result score is based on the amount of correctFound answers.
+			However, how it results.html / xttracking_noop.js work right now, you cannot have 2 same answers where 1 is wrong
+			this situation would happen if the answer depended on the context ("select the instances where 'trip' is used as a verb, not a noun")
+			We can see the difference now because we include the "data-index" in the answer, but for a user this is unintuitive and we need to find a better solution, or forbid it.
+			if the answers on the resultpage are checked by their options data instead of their answers data,
+			we could see the difference between a right and wrong answer that is the same word
+		*/
 		this.endFindInteraction = function() {
-			//$pageContents.data("found")[currentGroup].length == groupInfo[currentGroup].numSubGroups
 			var correctFound = $pageContents.data("found");
 			var incorrectFound = $pageContents.data("wrongFound");
 			var groupInfo = $pageContents.data("groupInfo");
-			l_options = [];
-			l_answers = [];
+			var endScore = 0;
+			var totalAnswers = 0;
 			for (var group = 0; group < correctFound.length; group++){
+				l_options = [];
+				l_answers = [];
 
 				var groupName = groupInfo[group].name;
-				XTEnterInteraction(x_currentPage, group, 'matching', groupName, correctOptions, correctAnswers, [], x_currentPageXML.getAttribute("grouping"));
 
 				for (var i = 0; i < correctFound[group].length; i++){
-					debugger;
 					var span = $('*[data-index=' + correctFound[group][i]+ ']')
 					l_options.push(
 						{
-							source: groupName,
-							target: correctFound[group][i] + ": " + span.text()
+							id: span.attr("data-index"),
+							answer: span.attr("data-index") + ": " + span.text(),
+							result: true
 						}
 					);
-					l_answers.push(groupName + " --> " + span.attr("data-index") + ": " + span.text());
+					l_answers.push("&#8226 " + span.attr("data-index") + ": " + span.text() + "<br>");
+					totalAnswers++;
 				}
-				XTExitInteraction(x_currentPage, group, [], l_options, l_answers, []);
-			}
-			//XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswers, feedback)
 
+				var percentageCorrect = correctFound[group].length / correctOptions[group].length * 100;
+				endScore += correctFound[group].length;
+				for (var i = 0; i < incorrectFound[group].length; i++){
+					var span = $('*[data-index=' + incorrectFound[group][i]+ ']')
+					wrongOption =
+						{
+							id: span.attr("data-index"),
+							answer: span.attr("data-index") + ": " + span.text(),
+							result: false
+						}
+					l_options.push(wrongOption);
+					correctOptions[group].push(wrongOption);
+					l_answers.push("&#8226 " + span.attr("data-index") + ": " +  span.text() + "<br>");
+					totalAnswers++;
+				}
+				debugger;
+
+				var correct = percentageCorrect == 100;
+				var result = {
+								success: correct,
+								score: percentageCorrect
+							};
+				XTEnterInteraction(x_currentPage, group, 'multiplechoice', groupName, correctOptions[group], correctAnswers[group], [], x_currentPageXML.getAttribute("grouping"));
+				XTExitInteraction(x_currentPage, group, result, l_options, l_answers, []);
+			}
+			var score = endScore / totalAnswers * 100;
+			XTSetPageScore(x_currentPage, score);
 		};
 
 		function markWrong(target, intType, currentGroup){
@@ -1078,7 +1116,6 @@
 				$pageContents.data("wrongFound")[currentGroup].push($(target).data("index"))
 			}
 		};
-
 
 		function checkComplete(intType, currentGroup){
 			if (intType == "find"){

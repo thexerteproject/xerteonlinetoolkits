@@ -405,7 +405,7 @@ function XApiTrackingState() {
      *
      *  correctoptions and correctanswer depends on the sit_iatype
      *
-     *  1. matching
+     *  1. match
      *      correctoptions: array of objects with source and target strings
      *              [
      *              {
