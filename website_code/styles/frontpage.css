@@ -533,7 +533,7 @@ div.separator {
 	margin-top:5px
 }
 
-.template_name{
+.template_name, .parent_template{
 	margin:0px;
 	font-weight:bold;
 	/* width:200px; */
@@ -815,4 +815,8 @@ div.ui-layout-center {
 	border-radius : 4px;
 	background:#fff;
 
+}
+
+.xerte_info_button {
+	color:#f86718;
 }

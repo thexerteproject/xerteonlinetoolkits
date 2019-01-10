@@ -152,9 +152,9 @@ function has_template_multiple_editors($template_id){
     
     $query_response = db_query($query_for_number_of_rows, $params);
 
-    $overall_rows = sizeof($query_response);
+    $overall_rows = ($query_response === false ? 0 : sizeof($query_response));
 
-    if(sizeof($overall_rows)!=0){
+    if($overall_rows!=0){
 
         if($read_only_rows==($overall_rows-1)){
 

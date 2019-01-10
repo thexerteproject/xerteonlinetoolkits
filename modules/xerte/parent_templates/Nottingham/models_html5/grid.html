@@ -64,7 +64,7 @@
                 l_option,
                 l_feedback,
                 counter = 0;
-                this.allCorrect = true;
+                allCorrectLocal = true;
             $("#grid").find("ul:not(.preview) li:not(.static)").each(function() {
                 Correct = true;
                 var $this = $(this);
@@ -86,17 +86,20 @@
                     numOfQuestions++;
                     l_option.result = false;
                     l_feedback = "Incorrect";
-                    this.allCorrect = false;
+                    allCorrectLocal = false;
                 }
                 l_options.push(l_option);
                 l_answers.push(l_answer);
                 l_feedbacks.push(l_feedback);
                 counter++;
             });
+          this.allCorrect = allCorrectLocal;
             var result = {
                 success: this.allCorrect,
                 score: ((correct/numOfQuestions)*100.0)
             };
+
+			this.checked = true;
             XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
 
 
@@ -808,6 +811,7 @@
 			rowCount++;
 		}
 		XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+
 		XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 		/*
 		for(var i = 0; i < correctOptions.length; i++)

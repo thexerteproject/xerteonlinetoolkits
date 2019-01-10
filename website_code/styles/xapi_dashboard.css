@@ -16,18 +16,33 @@ table {
     max-width: none;
 }
 
-.journeyData table{
-  overflow-x: visible;
-  border: 0px;
+.journeyOverview{
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
-.journeyData th{
+.journeyOverviewActivity{
+    margin-left: -1rem;
+    margin-right: -1rem;
+}
+
+.journeyOverviewActivity a{
+    width: 100%;
+}
+
+.journeyTable table{
+  overflow-x: scroll;
+  border: 0px;
+  position:absolute;
+}
+
+.journeyTable th{
   position: relative;
   /* min-width: 120px; */
   white-space: nowrap;
 }
 
-.journeyData tr{
+.journeyTable tr{
   white-space: nowrap;
 }
 
@@ -42,6 +57,26 @@ table {
 
 td a{
   text-decoration: none;
+}
+
+.col-2-widget{
+    margin-top: 1rem;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #007bff;
+    border-radius: 4px;
+    height: 100px;
+    text-align: center;
+}
+
+.col-2-widget h2{
+    font-weight: bold;
+    color: #fba61f;
+    margin-top: .5rem;
+}
+
+.col-2-widget h5{
+    margin-top: .5rem;
 }
 
 #options-div label{
@@ -97,6 +132,10 @@ td a{
   height: 500px;
 }
 
+#graph_link_6{
+    width: 100%;
+}
+
 .graph-svg-wrapper
 {
     border: solid 1px;
@@ -106,7 +145,6 @@ td a{
 
 .icon-header{
   position: absolute;
-  top: 0px;
   right: 5px;
   top: 5px;
   color: #999da1;
@@ -148,6 +186,11 @@ td a{
     display: none !important;
 }
 
+.show-hide-column-button{
+    float: right;
+    padding:5px;
+}
+
 .close-button {
     float: right;
     padding:5px;
@@ -186,7 +229,7 @@ th.x-dashboard-page {
 }
 
 th.x-dashboard-page.x-dashboard-has-children a {
-    margin-right:15px;
+    margin-right:20px;
 }
 
 th.x-dashboard-interaction {
@@ -196,12 +239,14 @@ th.x-dashboard-interaction {
 
 #journeyData
 {
-    overflow: auto;
     position: absolute;
     top: 64px;
     bottom: 5px;
     left: 5px;
     right: 5px;
+    overflow-y:scroll !important;
+    overflow-x:hidden !important;
+    padding: 20px;
 }
 .journeyData th a{
     font-family: Arial;
@@ -226,17 +271,39 @@ th.x-dashboard-interaction {
     margin-right: 10px;
 }
 
+.dashboard{
+    /*overflow-x: hidden !important;*/
+    position: absolute;
+    width: -moz-calc(100% - 100px) !important;
+    width: -webkit-calc(100% - 100px) !important;
+    width: calc(100% - 10px) !important;
+    height: -moz-calc(100% - 100px) !important;
+    height: -webkit-calc(100% - 100px) !important;
+    height: calc(100% - 10px) !important;
+}
+
+.dashboard-wrapper{
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
 td.x-dashboard-interaction
 {
     background: #f4f4f4;
 }
 
 .panel{
-    width: 600px;
     padding: 5px;
     border: solid 1px #000000;
     border-radius: 4px;
     margin-bottom:10px;
+    float:left;
+}
+
+.loading-gif {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* FONT AWESOME BUTTON ICONS */
@@ -287,3 +354,6 @@ td.x-dashboard-interaction
     content: "\f00d"; color: #ff0000;
 }
 
+.jorneyData-container1{
+    overflow-x: scroll;
+}

@@ -78,3 +78,9 @@
 {
 	color: #0000ff;
 }
+
+#txtHolder {
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 1em;
+	margin-bottom: 1em;
+}

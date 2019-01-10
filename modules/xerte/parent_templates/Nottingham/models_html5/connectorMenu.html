@@ -26,7 +26,7 @@
 	var connectorMenu = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-            
+			this.checkVisited();
 		}
 		
 		// function called every time the size of the LO is changed
@@ -35,6 +35,12 @@
 		}
 		
 		this.init = function() {
+			
+			// add text before menu items if required
+			if (x_currentPageXML.getAttribute('text') != undefined && x_currentPageXML.getAttribute('text') != '') {
+				$('#subMenuHolder').before('<div id="pageTxt">' + x_currentPageXML.getAttribute('text') + '</div>');
+			}
+			
 			var menuItems = [];
 			
 			// work out which pages to include in menu item list...
@@ -48,8 +54,13 @@
 			} else {
 				// use pages between endPageID / startPageID
 				var allIDs = [];
-				$(x_pageInfo).each(function() {
-					allIDs.push(this.linkID);
+				$(x_pageInfo).each(function(i) {
+					if (this.linkID == undefined) {
+						// old project pages might bot have linkID - use the page number instead
+						allIDs.push('page' + i);
+					} else {
+						allIDs.push(this.linkID);
+					}
 				});
 				
 				if ((x_currentPageXML.getAttribute("startPageID") != undefined && x_currentPageXML.getAttribute("startPageID") != "") || (x_currentPageXML.getAttribute("endPageID") != undefined && x_currentPageXML.getAttribute("endPageID") != "")) {
@@ -110,13 +121,24 @@
 					name = x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
 					menuItems.splice(i, 1, "toc_menu");
 				} else {
-					var page = x_lookupPage("linkID", menuItems[i]);
-					name = $.isArray(page) ? this.getNestedName(page) : x_pages[page].getAttribute("name");
+					if (menuItems[i].substring(0,4) == 'page') {
+						name = x_pages[Number(menuItems[i].substring(4))].getAttribute("name");
+						$thisItem.data('pageNo', Number(menuItems[i].substring(4)));
+					} else {
+						var page = x_lookupPage("linkID", menuItems[i]);
+						if ($.isArray(page)) {
+							name = this.getNestedName(page);
+							$thisItem.data('parent', x_pages[page[0]].getAttribute('linkID'));
+						} else {
+							name = x_pages[page].getAttribute("name");
+						}
+					}
 				}
 				
 				$thisItem
 					.data("id", menuItems[i])
 					.html(name);
+				$thisItem.append(' <i class="fa fa-x-tick-circle notvisited" aria-hidden="true"></i>');
 			}
 			
 			$(".subMenuItem")
@@ -124,6 +146,8 @@
 				.click(function() {
 					if ($(this).data("id") == "toc_menu") {
 						x_changePage(0);
+					} else if ($(this).data('pageNo') != undefined) {
+						x_changePage($(this).data('pageNo'));
 					} else {
 						x_navigateToPage(false, {type:"linkID", ID:$(this).data("id")});
 					}
@@ -135,25 +159,54 @@
 				$("#subMenuItems .subMenuItem").css("margin-bottom", Number(x_currentPageXML.getAttribute("itemSpacingY")));
 			}
 			
+			this.checkVisited();
+			
 			x_pageLoaded();
 		}
 		
 		this.getNestedName = function(page) {
 			var child = x_pages[page[0]];
-			var name = child.getAttribute("name")
+			var name = child.getAttribute("name");
 			for (var i=0; i<page.length-1; i++) {
 				child = child.childNodes[page[i+1]];
 				name += " | " + child.getAttribute("name");
 			}
 			return name;
 		}
+		
+		this.checkVisited = function() {
+			if (x_currentPageXML.getAttribute("pageTick") != 'false') {
+				// show visited ticks
+				if (x_params.pageTick == undefined || x_params.pageTick == "true") {
+					var allBuiltPages = [], allBuiltPageNums = [];
+					for (var i=0; i<x_pageInfo.length; i++) {
+						if (x_pageInfo[i].built) {
+							allBuiltPages.push(x_pageInfo[i].linkID);
+							allBuiltPageNums.push(i);
+						}
+					}
+					
+					$("#subMenuItems .subMenuItem").each(function(i) {
+						// if nested page then look to parent page to see if visited
+						var pageToCheck = $(this).data('parent') != undefined ? $(this).data('parent') : $(this).data("id");
+						if (pageToCheck.substring(0,4) == 'page') {
+							if ($.inArray(Number(pageToCheck.substring(4)), allBuiltPageNums) > -1) {
+								$(this).find('i').removeClass('notvisited')
+							}
+						} else {
+							if ($.inArray(pageToCheck, allBuiltPages) > -1) {
+								$(this).find('i').removeClass('notvisited')
+							}
+						}
+					});
+				}
+			}
+		}
 	}
 
     connectorMenu.init();
 	
 </script>
-
-
 
 <div id="subMenuHolder">
 	

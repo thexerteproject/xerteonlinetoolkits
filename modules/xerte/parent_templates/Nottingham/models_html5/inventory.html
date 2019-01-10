@@ -44,8 +44,8 @@
 			$pageContents = $("#pageContents");
 			
 			// set fixed text fields and page layout
-			$("#mainTxt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("instructions")) + '</p>');
-			$("#feedbackTxt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + '</p>');
+			$("#mainTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
+			$("#feedbackTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 			$("#chartTitle").html(x_currentPageXML.getAttribute("chartTitle"));
 			
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
@@ -118,7 +118,9 @@
 						feedbackTxt = "";
 					
 					$("#optionHolder input:checked").each(function() {
-						var selectedOptionData = $(currentQuestion).children()[$(this).index()/2];
+					    // id is of the form optionX, where X is the index of the option
+					    var index = parseInt(this.id.substr(6));
+						var selectedOptionData = $(currentQuestion).children()[index];
 						if (currentQuestion.getAttribute("questionFeedback") == "yes") {
 							feedbackTxt += x_addLineBreaks(selectedOptionData.getAttribute("feedback")) + '<br/>';
 						}

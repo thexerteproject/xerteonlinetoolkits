@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,14 +17,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 
 /**
  * Upgrade script for generic-ish MySQL database.
  *
  * Method of operation:
- * 
- * 1. Creates a config table, which it'll use to store a version number within it. 
+ *
+ * 1. Creates a config table, which it'll use to store a version number within it.
  * 2. Each time this script runs, it looks to see if there is a function called 'upgrade_NN' where NN is version_number +1.
  * 3. If it finds update_NN, it will keep running all subsequent upgrade_NN functions it can find.
  *
@@ -32,12 +32,12 @@
  *
  * It's been changed a little for Xerte Online Toolkits to take into consideration the table prefix stuff and that XOT only deals with MySQL.
  *
- * Error reporting could be enhanced a bit; in that the 'native' db_query*() functions we have in XOT now don't really raise any sort of 
- * error messages... so it's difficult to retrieve them to show here - although perhaps a call to mysql_error() would work, 
+ * Error reporting could be enhanced a bit; in that the 'native' db_query*() functions we have in XOT now don't really raise any sort of
+ * error messages... so it's difficult to retrieve them to show here - although perhaps a call to mysql_error() would work,
  * it's not been tested.
  *
- * For now, if someone calls this script via http://server/path/to/xot/upgrade.php?debug=yes then they'll see the queries being output, 
- * but error messages will probably remain hidden. Hopefully this is sufficient to debug any problems end users/sysadmins encounter, 
+ * For now, if someone calls this script via http://server/path/to/xot/upgrade.php?debug=yes then they'll see the queries being output,
+ * but error messages will probably remain hidden. Hopefully this is sufficient to debug any problems end users/sysadmins encounter,
  * but who knows.
  * Alternatively, edit config.php, enable development mode, and see what is shown in the debug file (probably /tmp/debug.log).
  *
@@ -78,7 +78,7 @@ function _db_add_field($table, $field, $fieldtype, $default, $after) {
         }
 
         return db_query($query);
-    } else { 
+    } else {
         printdebug ("field already exists: $table.$field");
         return false;
     }
@@ -138,7 +138,7 @@ function _do_upgrade($current_version) {
 
 
     echo "<p>Current database version - $current_version</p>";
-    if(!function_exists('upgrade_' . $target_version)) {    
+    if(!function_exists('upgrade_' . $target_version)) {
         echo "<p>Database is up to date, nothing to do</p>";
         return true;
     }
@@ -221,7 +221,7 @@ function _do_cleanup()
  *   // add 'field_name' to the 'logindetails' table; don't worry about making sure the table prefix is there
  *   return _db_add_field('logindetails', 'field_name');
  * }
- * 
+ *
  * function upgrade_2() {
  *   // perhaps we need to run a query which reforms some data... do it like so :
  *   return _upgrade_db_query("UPDATE logindetails SET foo = bar WHERE x = y");
@@ -252,7 +252,7 @@ function upgrade_2() {
 
     $site_details = db_query_one("SELECT * FROM {$sdtable}");
     if(empty($site_details['ldap_host']) || empty($site_details['basedn'])) {
-        _debug("No ldap information to use; can't migrate"); 
+        _debug("No ldap information to use; can't migrate");
         return "No ldap information here to use for migrating";
     }
     // some empty records may be already here?
@@ -448,7 +448,7 @@ function upgrade_7()
 {
     global $xerte_toolkits_site;
     if (! _db_field_exists('sitedetails', 'authentication_method')) {
-        $error1 = _db_add_field('sitedetails', 'authentication_method', 'char(255)', '', 'site_session_name');      
+        $error1 = _db_add_field('sitedetails', 'authentication_method', 'char(255)', '', 'site_session_name');
         $error_returned = true;
         $res = db_query("update {$xerte_toolkits_site->database_table_prefix}sitedetails set authentication_method = 'Guest' where site_id=1");
         if($res === false) {
@@ -910,6 +910,19 @@ function upgrade_19()
         return "Creating template_parent field in originaltemplatesdetails already present - ok ? ". "<br>";
     }
 
+}
+
+function upgrade_20()
+{
+    if (! _db_field_exists('templatedetails', 'dashboard_allowed_links')) {
+        $error1 = _db_add_field('templatedetails', 'dashboard_allowed_links', 'text', '', 'tsugi_xapi_student_id_mode');
+        if($error1 === false)
+        {
+            return "Creating dashboard_allower_links field in templatedetails - ok ? false". "<br>";
+        }
+        return "Creating dashboard_allower_links field in templatedetails - ok ? true". "<br>";
+    }
+    return "Creating dashboard_allower_links field in templatedetails already present - ok ? ". "<br>";
 }
 
 ?>

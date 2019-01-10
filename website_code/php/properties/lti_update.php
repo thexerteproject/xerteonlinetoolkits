@@ -10,6 +10,9 @@ if (file_exists($xerte_toolkits_site->tsugi_dir)) {
     require_once($xerte_toolkits_site->tsugi_dir . "config.php");
     require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
     $tsugi_installed = true;
+
+    ini_set('display_errors', 0);
+    error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
 }
 
 use \Tsugi\Core\LTIX;
@@ -36,6 +39,7 @@ $lti_def->xapi_endpoint = (isset($_POST["tsugi_xapi_endpoint"]) ? htmlspecialcha
 $lti_def->xapi_username = (isset($_POST["tsugi_xapi_username"]) ? htmlspecialchars($_POST["tsugi_xapi_username"]) : "");
 $lti_def->xapi_password = (isset($_POST["tsugi_xapi_password"]) ? htmlspecialchars($_POST["tsugi_xapi_password"]) : "");
 $lti_def->xapi_student_id_mode = (isset($_POST["tsugi_xapi_student_id_mode"]) ? $_POST["tsugi_xapi_student_id_mode"] : "");
+$lti_def->dashboard_urls = (isset($_POST["dashboard_urls"]) ? $_POST["dashboard_urls"] : "");
 // Force groupmode
 if (!$tsugi_installed)
 {
@@ -58,10 +62,10 @@ if ($tsugi_installed) {
 
     if ($tsugi_publish) {
 
-        $key_count = $PDOX->rowDie("SELECT COUNT(*) as count FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE k.key_sha256 = :KEY and c.key_id = k.key_id and l.context_id=c.context_id and l.path != :URL", array(
+        $rows = $PDOX->allRowsDie("SELECT * FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE k.key_sha256 = :KEY and c.key_id = k.key_id and l.context_id=c.context_id and l.path != :URL", array(
             ':KEY' => lti_sha256($lti_def->key),
             ':URL' => $lti_def->tsugi_url));
-        if ($key_count['count'] > 0) {
+        if (count($rows) > 0) {
             $mesg = "Key already in use, use another key.";
             tsugi_display($template_id, $lti_def, $mesg);
             exit;
@@ -70,44 +74,19 @@ if ($tsugi_installed) {
     }
 
 
-//link -> context -> key
-    $sql = "SELECT * FROM {$p}lti_link WHERE path = :PATH";
-    $link_row = $PDOX->rowDie($sql, array(
-        ':PATH' => $lti_def->tsugi_url
-    ));
-    $sql = "DELETE FROM {$p}lti_link WHERE link_id = :LINK_ID";
-    $PDOX->queryDie($sql, array(
-        ':LINK_ID' => $link_row["link_id"]
-    ));
-    $sql = "SELECT context_id FROM {$p}lti_context WHERE link_id = :LINK_ID";
-    $context_id = $link_row["context_id"];
-    $sql = "SELECT COUNT(*) AS count FROM {$p}lti_link WHERE context_id = :CONTEXT_ID";
-    $context_count = $PDOX->rowDie($sql, array(
-        ':CONTEXT_ID' => $context_id
-    ))["count"];
-    if ($context_count == 0) {
-        $context_row = $PDOX->rowDie("SELECT * FROM {$p}lti_context WHERE context_id = :CONTEXT_ID", array(
-            ':CONTEXT_ID' => $context_id));
-        $PDOX->queryDie("DELETE FROM {$p}lti_context WHERE context_id = :CONTEXT_ID", array(
-            ':CONTEXT_ID' => $context_id));
-        $sql = "SELECT COUNT(*) AS count FROM {$p}lti_context WHERE key_id = :KEY_ID";
-        $key_count = $PDOX->rowDie($sql, array(
-            ':KEY_ID' => $context_row["key_id"]
-        ))["count"];
-
-        if ($key_count == 0) {
-            $PDOX->queryDie("DELETE FROM {$p}lti_key WHERE key_id = :KEY_ID;", array(
-                ':KEY_ID' => $context_row["key_id"]));
-        }
+    // Remove key from tsugi
+    $rows = $PDOX->allRowsDie("SELECT * FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE c.key_id = k.key_id and l.context_id=c.context_id and l.path = :URL", array(
+        ':URL' => $lti_def->tsugi_url));
+    if (count($rows) > 0) {
+        $sql = "delete from {$p}lti_key where key_id = ?";
+        $params = array($rows[0]['key_id']);
+        $res = $PDOX->queryDie($sql, $params);
     }
+
     if (!$tsugi_publish) {
-        if (!$lti_def->xapi_enabled) {
-            $sql = "UPDATE {$xp}templatedetails SET tsugi_published = 0  WHERE template_id = ?";
-            db_query($sql, array($template_id));
-            $mesg = "Object is no longer published.";
-            tsugi_display($template_id, $lti_def, $mesg);
-            exit();
-        }
+        $sql = "UPDATE {$xp}templatedetails SET tsugi_published = 0  WHERE template_id = ?";
+        db_query($sql, array($template_id));
+        $mesg = "Object is no longer published.";
     }
 
     if ($tsugi_publish) {
@@ -158,7 +137,7 @@ if ($tsugi_installed) {
 
     }
 }
-$sql = "UPDATE {$xp}templatedetails SET tsugi_published = ?, tsugi_xapi_enabled = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ? WHERE template_id = ?";
+$sql = "UPDATE {$xp}templatedetails SET tsugi_published = ?, tsugi_xapi_enabled = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ?, dashboard_allowed_links = ? WHERE template_id = ?";
 db_query($sql,
     array(
         $lti_def->published ? "1" : "0",
@@ -167,6 +146,7 @@ db_query($sql,
         $lti_def->xapi_enabled ? $lti_def->xapi_username : "",
         $lti_def->xapi_enabled ? $lti_def->xapi_password : "",
         $lti_def->xapi_enabled ? $lti_def->xapi_student_id_mode : "0",
+        $lti_def->xapi_enabled ? $lti_def->dashboard_urls : "",
         $template_id
     )
 );

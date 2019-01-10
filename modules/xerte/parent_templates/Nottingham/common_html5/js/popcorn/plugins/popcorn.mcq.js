@@ -225,7 +225,7 @@ optional: feedback page synch play enable
 				judge = false;
 				autoEnable = true;
 				var tempEnable = false;
-				
+
 				// is it to appear over media?
 				if (options.overlay == "true" && (this.video != undefined || $(this.audio).closest(".mediaHolder").find(".audioImg").length > 0)) {
 					var $parent;
@@ -432,7 +432,8 @@ optional: feedback page synch play enable
 							result: v.getAttribute("correct") == "true"
 						}
 						);
-					correctAnswers.push(x_GetTrackingTextFromHTML(v.getAttribute("text"), (i+1)+""));
+					if (v.getAttribute("correct") == "true" )
+						correctAnswers.push(x_GetTrackingTextFromHTML(v.getAttribute("text"), (i+1)+""));
 					correctFeedback.push(v.getAttribute("correct") == "true" ? "Correct" : "Incorrect");
 				});
 				XTEnterInteraction(x_currentPage, ia_nr, 'multiplechoice', x_GetTrackingTextFromHTML(options.text, ia_nr + ""), correctOptions, correctAnswers, correctFeedback, x_currentPageXML.getAttribute("grouping"));

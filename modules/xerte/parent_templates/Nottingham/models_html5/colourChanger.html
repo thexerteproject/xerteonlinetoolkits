@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,7 +51,8 @@
 			// *** These will eventually be pushed out to reside in the relevant model ***
 			// *** Each model will also expose a needsRedrawn flag or will provide relevant methods ***
 
-			// *******************
+
+            // *******************
 			// ***** Inverted ****
 			// *******************
 
@@ -172,7 +173,22 @@
 			$colourChangerOptions.append(select.join(''));
 
 			$("input[name='colourChangerRadios']").click(function(){
-				colourChanger.applyFilter($(this).attr('value'));
+				switch(this.value){
+					case "0":
+					    colourChanger.switchTheme(x_params.theme);
+                        colourChanger.applyFilter($(this).attr('value'));
+					 break;
+					case "1":
+					    colourChanger.applyFilter($(this).attr('value'));
+					 break;
+					case "2":
+					    colourChanger.switchTheme("highcontrast");
+                        colourChanger.applyFilter($(this).attr('value'));
+					 break;
+					case "3":
+                        colourChanger.switchTheme("blackonyellow");
+                        colourChanger.applyFilter($(this).attr('value'));
+				 }
 
 				var pageTypesRequiringRefresh = ['chart', 'textDrawing'];
 
@@ -190,14 +206,23 @@
 			});
 		}
 
+		this.switchTheme = function(theme){
+			// Do NOT touch theme_responisive_css
+            currentThemeURL = x_themePath + theme + '/' + theme;
+            $("#theme_css").attr("href", currentThemeURL + ".css");
+            $("#theme_js").attr("href", currentThemeURL + ".js");
+
+            $(window).trigger('resize');
+		};
+
 		this.applyFilter = function (index) {
 			if (index % 4) $("#x_background").hide(); else $("#x_background").show();
 			//console.log("Applying filter " + index);
 
-			for (var i=0; i<this.filterMap.length; i++) {
-				$('html').removeClass(this.filterMap[i].class);
-			}
-			$('html').addClass(this.filterMap[index].class);
+			//for (var i=0; i<this.filterMap.length; i++) {
+			//	$('html').removeClass(this.filterMap[i].class);
+			//}
+			//$('html').addClass(this.filterMap[index].class);
 		}
 
 		// From http://www.happycode.info/create-css-classes-with-javascript/

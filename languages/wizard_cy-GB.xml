@@ -1,4 +1,12 @@
 <language name="Cymraeg" code="cy-GB">
+	<layout closetooltip="Cau'r cwarel hwn" opentooltip="Agor y cwarel hwn" resizetooltip="Ailfeintio'r cwarel hwn" pin="Pin" unpin="Dad-binio" />
+    <edit label="Golygu ..." tooltip="Golygu'r opsiwn hwn" description="Botwm golygu" />
+     <insertDialog label="Mewnosod Newydd {i}" preview="Rhagolwg">
+        <insertBefore label="Cyn" tooltip="Mewnosod cyn y dudalen a ddewiswyd"/>
+        <insertAfter label="Ar ôl" tooltip="Mewnosod ar ôl y dudalen a ddewiswyd"/>
+        <insertAtEnd label="Ar y diwedd" tooltip="Mewnosod fel y dudalen olaf"/>
+		<insertMerge label="Mewngludo tudalennau" tooltip="Mewngludo tudalennau ar ôl y dudalen olaf"/>
+    </insertDialog>
 	<btnSaveXerte label="Cadw" tooltip="Cadw Prosiect" description="Botwm Cadw"/>
 	<btnPublishXot label="Cyhoeddi" tooltip="Cyhoeddi Prosiect" description="Botwm Cyhoeddi"/>
 	<popupFileUpload title="Lanlwytho Ffeil" cancelLabel="Canslo"/>
@@ -16,7 +24,10 @@
 	</kblanguage>
 	<newLink label="Newydd {i}" />
 	<helpLink tooltip="Pwyswch am gymorth"/>
+	<btnAddColumn label="Ychwanegu Colofn" tooltip="Ychwanegu colofn i'r dde i'r grid"/>
+    <btnDelColumn label="Dileu Colofn" tooltip="Dileu'r golofn a ddewiswyd"/>
 	<btnInsert label="Mewnosod" tooltip="Mewnosod"/>
+	<btnMerge label="Mewngludo tudalennau" tooltip="Mewngludo tudalennau"/>	
 	<btnAddChild tooltip="ychwanegwch blant"/>
 	<btnDuplicate label="Copïo" tooltip="Dyblygwch"/>
 	<btnDelete label="Dileu" tooltip="Dileu"/>
@@ -28,10 +39,15 @@
 	<icDelete tooltip="Dileu" prompt="Dileu'r Eitem?"/>
 	<addProp label="Ychwanegu" tooltip="ychwanegu" />
 	<optionalProp label="Priodweddau Dewisol:"/>
-	<chkShowLanguage label="Dangos Dewisiadau Iaith" />
-	<chkShowAdvanced label="Dangos Dangosiadau Pellach" />
+	<optionalPropHTML label="Priodweddau Dewisol:" general="Cyffredinol"/>
+	<chkShowLanguage label="Dangos Dewisiadau Iaith" tooltip="Os oes dewisiadau iaith ar gael, dangoswch nhw."/>
+	<chkShowAdvanced label="Dangoswch Opsiynau Uwch" tooltip="Os oes dewisiadau uwch ar gael, dangoswch nhw."/>
+	<chkShowToolbar label="Dangoswch y Bar Offer" tooltip="Dangoswch yr holl Fariau Offer yn ddiofyn."/>
 	<compMedia tooltip="Mewnforio Cyfryngau"/>
 	<compPreview tooltip="Rhagweld"/>
+	<calendar tooltip="Dewiswch Ddyddiad"/>
+	<hidePage title="CUDD" tooltip="Mae'r dudalen hon wedi'i chuddio"/>
+	<unmarkForCompletion tooltip="Nid oes angen cwblhau'r dudalen hon"/>
 	<filemenu title="Ffeil">
 		<menuNew>Prosiect Newydd…</menuNew>
 		<menuOpen>Agor...</menuOpen>
@@ -126,6 +142,9 @@
 		<savefile>
 			<prompt>Ni lwyddwyd i fformadu'r XML, ac ni chadwyd y newidiadau. Ailedrychwch ar eich newidiadau diweddar.</prompt>
 		</savefile>
+		<exitwizard>
+            <prompt>Rydych ar fin gadael y golygydd.</prompt>
+        </exitwizard>
         <upload>
             <successful>Lanlwythwyd yn llwyddiannus</successful>
             <failed>
@@ -135,6 +154,17 @@
                 <security>Methwyd lanlwytho: Gwall Diogelwch</security>
             </failed>
         </upload>
-		
+		<changeLanguage>
+			<prompt>Ydych chi eisiau newid yr holl opsiynau iaith i werthoedd diofyn yr iaith?</prompt>
+		</changeLanguage>
+
 	</Alert>
+	<XotLinkRelativePages>
+		<firstpage>* tudalen gyntaf *</firstpage>
+		<lastpage>* tudalen olaf *</lastpage>
+		<nextpage>* tudalen nesaf *</nextpage>
+		<prevpage>* tudalen flaenorol *</prevpage>
+	</XotLinkRelativePages>
+	<ThemeUrlParam>Thema paramedr url:</ThemeUrlParam>
 </language>
+

@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" hicol="0xFFFF00" align="Left" 
+      <hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" hicol="0xFFFF00" align="Left" attempts = "1"
   	  nextTxt="Next"
 	  priorTxt="Previous"
 	  />]]></hotspotImage>
@@ -17,13 +17,14 @@
 	<tip label="Image Description" type="TextInput"/>
     <interactivity label="Interactivity" options="Show Me,Click Explore" type="ComboBox" data="Show Me,Click Explore" defaultValue="Show Me" width="100"/>
     <highlight label="Highlight Hotspots" type="CheckBox" defaultValue="false"/>
-    <hicol label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00"/> 
+    <hicol label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+    <attempts label="Amount of attempts" type="TextInput" defaultValue="1"></attempts>
     <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
 
     <newNodes>
-	  <hotspot><![CDATA[<hotspot name="Hotspot" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
+	  <hotspot><![CDATA[<hotspot name="Hotspot" text="Description for the hotspot" hint="Enter here the hint after the first try" feedback="Enter here the feedback" w="0" h="0" points="[]"/>]]></hotspot>
     </newNodes>
 
   </hotspotImage>
@@ -33,7 +34,9 @@
 
     <name label="Label" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
+    <feedback label="Feedback" type="TextArea" wysiwyg="true" DefaultValue="true"/>
+    <hint label="Hint" type="TextArea" wysiwyg="true" optional="true"/>
 
   </hotspot>
-  
+
 </wizard>

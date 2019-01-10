@@ -31,7 +31,7 @@ _load_language_file("/index.inc");
 function html_headers() {
   global $xerte_toolkits_site;
 
-  print <<<END
+?>
 <!DOCTYPE html>
 <html><head>
 
@@ -48,7 +48,14 @@ function html_headers() {
 
         <link href="../website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="../website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" />
-END;
+    <?php
+    if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
+    {
+        ?>
+        <link href='branding/branding.css' rel='stylesheet' type='text/css'>
+        <?php
+    }
+    ?>
   _include_javascript_file("../website_code/scripts/file_system.js");
   _include_javascript_file("../website_code/scripts/screen_display.js");
   _include_javascript_file("../website_code/scripts/ajax_management.js");
@@ -199,7 +206,14 @@ function login_form($messages, $xerte_toolkits_site)
     <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
-
+    <?php
+    if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
+    {
+    ?>
+        <link href='branding/branding.css' rel='stylesheet' type='text/css'>
+    <?php
+    }
+    ?>
     <!--
 
     HTML to use to set up the login page

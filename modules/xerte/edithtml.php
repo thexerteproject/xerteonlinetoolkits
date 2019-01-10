@@ -70,8 +70,11 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
     $data_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
     $rlo_url = $xerte_toolkits_site->site_url .  $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
-    $xwd_url = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
-    $xwd_path = $xerte_toolkits_site->root_file_path . "/modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
+
+
+    // Derived templates
+    $xwd_url = "modules/" . $row_edit['template_framework'] . "/templates/" . $row_edit['template_name'] . "/";
+    $xwd_path = $xerte_toolkits_site->root_file_path . "/modules/" . $row_edit['template_framework'] . "/templates/" . $row_edit['template_name'] . "/";
 
     if (file_exists($xwd_path . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd" ))
     {
@@ -81,11 +84,18 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     {
         $xwd_file_url = $xwd_url . "wizards/en-GB/data.xwd";
     }
-    else if (file_exists($xwd_path . "data.xwd"))
-    {
-        $xwd_file_url = $xwd_url . "data.xwd";
-    }
+    else {
+        $xwd_url = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
+        $xwd_path = $xerte_toolkits_site->root_file_path . "/modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
 
+        if (file_exists($xwd_path . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd")) {
+            $xwd_file_url = $xwd_url . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd";
+        } else if (file_exists($xwd_path . "wizards/en-GB/data.xwd")) {
+            $xwd_file_url = $xwd_url . "wizards/en-GB/data.xwd";
+        } else if (file_exists($xwd_path . "data.xwd")) {
+            $xwd_file_url = $xwd_url . "data.xwd";
+        }
+    }
     $module_url = "modules/" . $row_edit['template_framework'] . "/";
 
     $jqgridlangfile = "editor/js/vendor/jqgrid/js/i18n/grid.locale-en.js";
@@ -209,6 +219,18 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>">
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <?php
+    if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
+    {
+        ?>
+        <link href='branding/branding.css' rel='stylesheet' type='text/css'>
+        <?php
+    }
+    else {
+        ?>
+        <?php
+    }
+    ?>
 
     <script src="website_code/scripts/template_management.js?version=<?php echo $version;?>"></script>
     <!--[if lte IE 7]>

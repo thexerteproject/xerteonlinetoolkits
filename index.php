@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 // Load the plugin files and fire a startup action
 require_once(dirname(__FILE__) . "/plugins.php");
 
@@ -39,6 +39,13 @@ include $xerte_toolkits_site->php_library_path . "display_library.php";
 
 
 require_once(dirname(__FILE__) . "/website_code/php/login_library.php");
+
+if ($xerte_toolkits_site->altauthentication != "" && isset($_GET['altauth']))
+{
+    $xerte_toolkits_site->authentication_method = $xerte_toolkits_site->altauthentication;
+    $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+    $_SESSION['altauth'] = $xerte_toolkits_site->altauthentication;
+}
 
 login_processing();
 login_processing2();
@@ -93,7 +100,13 @@ $version = getVersion();
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
-    <?PHP
+    <?php
+    if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
+    {
+        ?>
+        <link href='branding/branding.css' rel='stylesheet' type='text/css'>
+        <?php
+    }
     if (isset($_SESSION['toolkits_language']))
     {
         $languagecodevar = "var language_code = \"" . $_SESSION['toolkits_language'] . "\"";
@@ -198,15 +211,29 @@ Folder popup is the div that appears when creating a new folder
                     </label>
                     <input type="text" id="dp-end">
                 </div>
+                <div class="dash-col-1">
+                    <label for="dp-end">
+                        <?php echo INDEX_XAPI_DASHBOARD_GROUP_SELECT; ?>
+                    </label>
+                    <select type="text" id="group-select">
+                        <option value="all-groups"><?php echo INDEX_XAPI_DASHBOARD_GROUP_ALL; ?></option>
+                    </select>
+                </div>
                 <div class="close-button">
                     <button type="button" class="xerte_button_c_no_width"
                             onclick="javascript:close_dashboard()"><?php echo INDEX_XAPI_DASHBOARD_CLOSE; ?>
                     </button>
                 </div>
+                <div class="show-hide-column-button">
+                    <button type="button" class="xerte_button_c_no_width"><?php echo INDEX_XAPI_DASHBOARD_SHOW_HIDE_COLUMNS; ?>
+                    </button>
+                </div>
             </div>
         </div>
         <div id="dashboard-title"></div>
-        <div id="journeyData" class="journeyData"></div>
+        <div class="jorneyData-container">
+            <div id="journeyData" class="journeyData container-fluid container"></div>
+        </div>
     </div>
 </div>
 
@@ -246,7 +273,7 @@ Folder popup is the div that appears when creating a new folder
 
         <div class="buttonbar">
             <div class="file_mgt_area_top">
-                
+
 
             </div>
 
@@ -286,13 +313,13 @@ Folder popup is the div that appears when creating a new folder
 					<button title="<?php echo INDEX_BUTTON_PREVIEW; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="preview"><i class="fa fa-play xerte-icon"></i></button>
 				</div>
-				
+
 				<div class="file_mgt_area_middle_button_left">
 					<button title="<?php echo INDEX_BUTTON_NEWFOLDER; ?>" type="button" class="xerte_workspace_button" id="newfolder" onClick="javascript:make_new_folder()">
 						<i class="fa fa-folder xerte-icon"></i>
 					</button>
 				</div>
-				
+
 				<div class="file_mgt_area_middle_button_right">
 					<button title="<?php echo INDEX_BUTTON_DELETE; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="delete"><i class="fa  fa-trash xerte-icon"></i></button>
@@ -342,11 +369,11 @@ Folder popup is the div that appears when creating a new folder
     </div>
 
     <div class="ui-layout-east">
-	
+
         <div class="header" id="inner_right_header">
             <p class="heading"><i class="fa  icon-wrench xerte-icon"></i>&nbsp;<?PHP echo INDEX_CREATE; ?></p>
         </div>
-		
+
         <div class="content">
             <div class="new_template_area_middle">
                 <div id="new_template_area_middle_ajax" class="new_template_area_middle_scroll"><?PHP
@@ -386,7 +413,7 @@ Folder popup is the div that appears when creating a new folder
             <!--<img src="website_code/images/lt_logo.gif" /><br/>-->
             <?PHP
             echo $xerte_toolkits_site->copyright;
-            ?> <i class="fa fa-info-circle" aria-hidden="true" style="color:#f86718; cursor: help;" title="<?PHP echo $version;?>"></i></p><div class="footerlogos"><a href="http://opensource.org/" target="_blank" title="Open Source Initiative: http://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0"></a> <a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0"></a> <a href="http://xerte.org.uk" target="_blank" title="Xerte: http://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0"></a></div>
+            ?> <i class="fa fa-info-circle xerte_info_button" aria-hidden="true" style=" cursor: help;" title="<?PHP echo $version;?>"></i></p><div class="footerlogos"><a href="http://opensource.org/" target="_blank" title="Open Source Initiative: http://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0"></a> <a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0"></a> <a href="http://xerte.org.uk" target="_blank" title="Xerte: http://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0"></a></div>
 
         <div style="clear:both;"></div>
     </div>

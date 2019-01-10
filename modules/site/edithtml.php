@@ -195,7 +195,18 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>">
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-
+    <?php
+    if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
+    {
+        ?>
+        <link href='branding/branding.css' rel='stylesheet' type='text/css'>
+        <?php
+    }
+    else {
+        ?>
+        <?php
+    }
+    ?>
     <script src="website_code/scripts/template_management.js?version=<?php echo $version;?>"></script>
     <!--[if lte IE 7]>
     <style type="text/css"> body { font-size: 85%; } </style>

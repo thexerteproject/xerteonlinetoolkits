@@ -181,7 +181,7 @@ function scorm2004_html_page_create($id, $name, $type, $rlo_file, $lo_name, $lan
 
 }
 
-function scorm2004_html5_page_create($id, $type, $template_name, $lo_name, $language, $need_download_url=false){
+function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $language, $need_download_url=false){
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -196,7 +196,7 @@ function scorm2004_html5_page_create($id, $type, $template_name, $lo_name, $lang
     $scorm_html_page_content = str_replace("%TEMPLATEPATH%","",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLPATH%","",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLFILE%","template.xml",$scorm_html_page_content);
-    $scorm_html_page_content = str_replace("%THEMEPATH%", "themes/" . $template_name . "/",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%THEMEPATH%", "themes/" . $parent_name . "/",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%OFFLINESCRIPTS%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $scorm_html_page_content);

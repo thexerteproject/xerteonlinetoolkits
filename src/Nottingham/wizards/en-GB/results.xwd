@@ -40,6 +40,7 @@
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full learning object." />
         <givename label="Ask user name" type="Checkbox" defaultValue="false" optional="true" tooltip="Ask your learner for his name to be placed on the results page"/>
+		<text label="Page Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
 
         <resultmode label="Results Mode" type="ComboBox" options="Minimal Results,Normal Results,Full Results"
                     data="minimal-results,normal-results,full-results"/>

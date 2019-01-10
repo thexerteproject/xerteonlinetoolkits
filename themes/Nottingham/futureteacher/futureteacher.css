@@ -680,7 +680,7 @@ samp, .highlight1 {
   font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -693,7 +693,7 @@ tt, .highlight2 {
   font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -706,7 +706,7 @@ tt, .highlight2 {
   font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -719,7 +719,7 @@ tt, .highlight2 {
   font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -732,7 +732,7 @@ tt, .highlight2 {
   font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -745,7 +745,7 @@ tt, .highlight2 {
   font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
   display: table;
-  font-weight: lighter;
+  font-weight: normal;
   margin-bottom: 7px;
   margin-top: 5px;
   padding: 10px;
@@ -1018,6 +1018,9 @@ body {
   background: #BFBFBF;
   color: #000000;
   font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+.cke_editable {
+  background: #ffffff; }
 
 /******Fonts******/
 .ui-button .ui-button-text {

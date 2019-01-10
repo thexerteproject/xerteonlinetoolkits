@@ -253,12 +253,11 @@ function ScormTrackingState()
         if (ia_type != "page" && ia_type != "result")
         {
             this.lo_type = "interactive";
-            if (this.lo_passed == -1)
-            {
-                this.lo_passed = 0.55;
-            }
         }
-
+        if (this.lo_passed == -1)
+        {
+            this.lo_passed = 55;
+        }
         this.interactions.push(sit);
         return sit;
     }
@@ -630,7 +629,7 @@ function ScormTrackingState()
     {
         if (this.lo_type != "pages only")
         {
-            if (state.getScaledScore() > this.lo_passed)
+            if (state.getScaledScore() > (this.lo_passed / 100))
             {
                 return "passed";
             }
@@ -1124,7 +1123,7 @@ function ScormTrackingState()
     function verifyExitInteractionParameters(sit, result, learneroptions, learneranswer, feedback)
     {
         if (this.debug) {
-            verifyResult(result);
+            this.verifyResult(result);
             switch(sit.ia_type)
             {
                 case 'match':
@@ -1316,7 +1315,16 @@ function XTGetMode()
             var sit=state.find(state.currentpageid);
             if (sit != null)
             {
-               return "normal";
+                if (state.trackingmode !== 'none') {
+                    if (state.scoremode == 'first')
+                        return "normal";
+                    else
+                        return "normal_last";
+                }
+                else
+                {
+                    return "tracking";
+                }
             }
         }
         return "tracking";
@@ -1402,7 +1410,9 @@ function XTSetOption(option, value)
             state.lo_completed = value;
             break;
         case "objective_passed":
-            state.lo_passed = Number(value);
+            if (Number(value) <= 1) {
+                state.lo_passed = Number(value) * 100;
+            }
             break;
         case "page_timeout":
             // Page timeout in seconds
@@ -1441,7 +1451,7 @@ function XTExitPage(page_nr)
 {
     if (state.scormmode == 'normal')
     {
-        state.exitInteraction(page_nr, -1, false, "", "", "", false);
+        state.exitInteraction(page_nr, -1, {score: 0, success:true}, "", "", "", false);
     }
 }
 
@@ -1589,6 +1599,10 @@ function XTTerminate()
     {
         if (!state.finished)
         {
+            // End tracking of page
+            x_endPageTracking(false, -1);
+
+            // This code is probably obsolete, leave it in to allow for more testing
             var currentpageid = "";
             state.finished = true;
             if (state.currentid)

@@ -1,5 +1,5 @@
 ﻿/// <summary>
-/// Mediasite Player SDK v7.0
+/// Mediasite Player SDK v7.2.2
 /// 
 /// To create a Mediasite player, include this file and instantiate the player.  (One document can contain many players.)
 /// <pre>
@@ -43,8 +43,21 @@
 /// </para>
 /// </summary>
 
-if (!window.Mediasite) { // avoid re-instantiating everything if script is included twice
-    Mediasite = {};
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        define([], factory);
+    } else if (typeof module === 'object' && module.exports) {
+        module.exports = factory();
+    } else {
+        // Don't do anything if the player had already been defined.
+        if (root.Mediasite && root.Mediasite.Player) {
+            return;
+        }
+
+        root.Mediasite = factory();
+    }
+}(this, function () {
+    var Mediasite = {};
 
     Mediasite.PlayState = {
         Undefined: 'undefined',
@@ -112,27 +125,29 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
         232: "iFrame API client is newer than Mediasite server and might use unavailable methods or data"
     };
 
-    Mediasite.Player = function MediasiteIFramePlayer(elementId, options) {
+    Mediasite.Player = function MediasiteIFramePlayer(element, options) {
         // Sanity check parameters
-        if (!elementId) throw "MediasitePlayer requires value for elementId parameter";
+        if (!element) throw "MediasitePlayer requires value for element parameter";
         if (!options) throw "MediasitePlayer requires value for options parameter";
         if (!options.url) throw "MediasitePlayer requires value for options.url parameter";
 
         var self = this;
-        var _broker, _view, _model, _eventBundle;
         var _version = {
-            version: "7.0",
-            supports: ["6.1.5", "6.1.7", "6.1.9", "6.1.11", "7.0"],
+            version: "7.2.2",
+            supports: ["6.1.5", "6.1.7", "6.1.9", "6.1.11", "7.0", "7.0.28", "7.0.29", "7.2", "7.2.2"],
             application: 'MediasitePlayer'
         };
         var _versionMismatchCheck; // undefined for not checked, false for checked and acknowledged, true / version identifier for checked and not acknowledged
+        var _broker, _view, _model, _eventBundle;
+        var _idGenerator = makeIdGenerator();
+        
 
         // #region Initialize
         function initialize() {
             try {
                 var url = options.url;
                 _model = new Mediasite.Player.StateModel();
-                _view = options.view || new Mediasite.Player.View(elementId, url);
+                _view = options.view || new Mediasite.Player.View(element, url);
 
                 _broker = options.broker || new Mediasite.Player.IFrameAPIBroker({
                     messagePrefix: 'MediasitePlayer',
@@ -161,6 +176,11 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
                     options.events.error(makeError(424, message));
                 }
             }
+        }
+
+        function makeIdGenerator() {
+            var scope = Math.abs(Math.floor(Math.random() * 1000000)) + 1; // Greater than zero.
+            return new UniqueTemporaryIdGenerator(scope);
         }
 
         function currySetPropertyFromEvent(parameterMappings, streamTypeKey) {
@@ -288,13 +308,12 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
             if (!_eventBundle) {
                 _eventBundle = new Mediasite.Player.StandaloneEventBundle(self);
                 _broker.addHandler("*", function (eventName, argumentsArray) {
-                    switch (eventName) {
-                        case "error":
-                            //argumentsArray = [makeError(eventName, argumentsArray[1])];
-                            break;
+                    // Opt out of pass-through events for these types.
+                    if (eventName === "timedeventlistchanged") {
+                        return;
                     }
 
-                    // Pass-through event handler
+                    // Pass-through event handler for all the rest.
                     argumentsArray = argumentsArray || [];
                     if (typeof argumentsArray[0] == "undefined" || argumentsArray[0] == null) {
                         argumentsArray[0] = {};
@@ -310,6 +329,7 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
         function addStateChangedHandlers() {
             _broker.addHandler({
                 "_api_state": setModelState,
+                "playcoverready": onPlayCoverReady,
                 "ready": onReady,
                 "playstatechanged": currySetPropertyFromEvent({ playState: "playState" }),
                 "playerstatechanged": currySetPropertyFromEvent({ state: "playerState.state", isLive: "playerState.live" }),
@@ -318,9 +338,10 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
                 "currenttimechanged": currySetPropertyFromEvent({ currentTime: "currentTime" }),
                 "durationchanged": currySetPropertyFromEvent({ duration: "duration" }),
                 "playbackratechanged": currySetPropertyFromEvent({ playbackRate: "playbackRate" }),
-                "captionchanged": currySetPropertyFromEvent({ captionText: "caption.text", captionTime: "caption.time" }),
+                "captionchanged": currySetPropertyFromEvent({ captions: "currentCaptions" }),
                 "chapterchanged": currySetPropertyFromEvent({ chapterTitle: "chapter.title", chapterTime: "chapter.time" }),
-                "timedeventreached": currySetPropertyFromEvent({ timedEventType: "timedevent.type", timedEventTime: "timedevent.time", timedEventPayload: "timedevent.payload" }),
+                "timedeventlistchanged": handleTimedEventListChanged,
+                "timedeventreached": currySetPropertyFromEvent({ timedEventType: "timedevent.type", timedEventTime: "timedevent.time", timedEventPayload: "timedevent.payload", timedEventId: "timedevent.id" }),
                 "slidechanged": currySetPropertyFromEvent({ slideTitle: "slide.title", slideDescription: "slide.description", slideTime: "slide.time", slideUrl: "slide.url", slideStreamType: "slide.streamtype" }, "slideStreamType"),
                 "slideadded": addNewSlide,
                 "visiblestreamschanged": currySetPropertyFromEvent({ streamTypes: "visibleStreamTypes" })
@@ -330,6 +351,12 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
         function setInitialModelState() {
             _model.Set("activated", false);
             _model.Set("ready", false);
+        }
+
+        function onPlayCoverReady() {
+            _model.Set("playCoverReady", true);
+            console.log($(".play-button"));
+            $(".play-button").click();
         }
 
         function onReady() {
@@ -354,6 +381,7 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
             _model.Set("pollsUri", properties.pollsUri);
             _model.Set("allStreams", properties.allStreams);
             _model.Set("visibleStreamTypes", properties.visibleStreamTypes);
+            _model.Set("pastSessionPlayedSegments", properties.pastSessionPlayedSegments);
         }
 
         function addNewSlide(slideEvent) {
@@ -370,6 +398,11 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
             _model.Set("slides", slides);
         }
 
+        function handleTimedEventListChanged(eventData) {
+            _model.Set("timedevents", eventData.timedEvents);
+            _eventBundle.callHandlers("timedeventlistchanged", []);
+        }
+
         function getCollection(key) {
             // Get a collection from model storage and sanitize it for API consumers
             var collection = _model.Get(key);
@@ -377,6 +410,30 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
 
             collection = collection.slice(0);
             return collection;
+        }
+
+        function cloneArrayAndItems(oldArray) {
+            var i, oldItem, newItem;
+            var newArray = [];
+
+            if (oldArray && oldArray.length > 0) {
+                for (i = 0; i < oldArray.length; i += 1) {
+                    oldItem = oldArray[i];
+                    newItem = {};
+                    for (var prop in oldItem) {
+                        if (oldItem.hasOwnProperty(prop)) {
+                            newItem[prop] = oldItem[prop];
+                        }
+                    }
+                    newArray.push(newItem);
+                }
+            }
+
+            return newArray;
+        }
+
+        function compareTimedEvents(a, b) {
+            return a.time - b.time;
         }
         // #endregion
 
@@ -442,41 +499,16 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
                 url: _model.Get("slide.url" + streamType),
                 streamType: _model.Get("slide.streamtype" + streamType)
             };
-        }
+        };
 
-        this.getCurrentCaption = function () {
+        this.getCurrentCaptions = function () {
             verifyVersionCheck();
-            if (!_model.Has("caption.time")) { return; }
-
-            return {
-                text: _model.Get("caption.text"),
-                time: _model.Get("caption.time")
-            };
-        }
+            return getCollection("currentCaptions");
+        };
 
         this.getChapters = function () {
             verifyVersionCheck();
             return getCollection("chapters");
-        };
-
-        this.getTimedEvents = function (eventType) {
-            verifyVersionCheck();
-            var i, result;
-            var all = getCollection("timedevents");
-
-            if (typeof eventType === 'undefined') {
-                return all;
-            } else {
-                result = [];
-
-                for (i = 0; i < all.length; i++) {
-                    if (all[i].type === eventType) {
-                        result.push(all[i]);
-                    }
-                }
-
-                return result;
-            }
         };
 
         this.getSlides = function (streamType) {
@@ -586,6 +618,11 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
             return _model.Get("ready");
         };
 
+        this.isPlayCoverReady = function () {
+            verifyVersionCheck();
+            return _model.Get("playCoverReady");
+        }
+
         this.getLinks = function () {
             /// <returns type="string[]"></returns>
             verifyVersionCheck();
@@ -598,20 +635,89 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
             return _model.Get("pollsUri");
         };
 
-        this.getAllStreams = function() {
+        this.getAllStreams = function () {
             verifyVersionCheck();
             return getCollection("allStreams");
         };
 
-        this.getVisibleStreamTypes = function() {
+        this.getVisibleStreamTypes = function () {
             verifyVersionCheck();
             return getCollection("visibleStreamTypes");
         };
 
-        this.setVisibleStreamTypes = function(streamTypes) {
+        this.setVisibleStreamTypes = function (streamTypes) {
             verifyVersionCheck();
-            _broker.sendCommand("setVisibleStreamTypes", { streamTypes: streamTypes } );
-        }
+            _broker.sendCommand("setVisibleStreamTypes", { streamTypes: streamTypes });
+        };
+
+        this.getTimedEvents = function (eventType) {
+            verifyVersionCheck();
+            var i, result;
+            var all = getCollection("timedevents");
+
+            if (typeof eventType === 'undefined') {
+                return all;
+            } else {
+                result = [];
+
+                for (i = 0; i < all.length; i++) {
+                    if (all[i].type === eventType) {
+                        result.push(all[i]);
+                    }
+                }
+
+                return result;
+            }
+        };
+
+        this.addTimedEvent = function (time, type, payload) {
+            verifyVersionCheck();
+            var id = _idGenerator.generate();
+            var te = { id:id, time:time, type:type, payload:payload };
+            var list = _model.Get('timedevents');
+            list.push(te);
+            list.sort(compareTimedEvents);
+
+            _broker.sendCommand("unsafeAddTimedEvent", { time: time, type: type, payload: payload, id: id });
+
+            return id;
+        };
+
+        this.removeTimedEvent = function (id) {
+            verifyVersionCheck();
+            var list = _model.Get('timedevents');
+            var i;
+            for (i = list.length - 1; i >= 0; i -= 1) {
+                if (list[i].id === id) {
+                    list.splice(i, 1);
+                }
+            }
+
+            _broker.sendCommand("removeTimedEvent", { id: id });
+        };
+
+        this.setTimedEventMarkerOptions = function (timedEventId, options) {
+            verifyVersionCheck();
+            _broker.sendCommand("setTimedEventMarkerOptions", timedEventId, options);
+        };
+
+        this.clearTimedEventMarkerOptions = function (timedEventId) {
+            verifyVersionCheck();
+            _broker.sendCommand("clearTimedEventMarkerOptions", timedEventId);
+        };
+
+        // private
+        this.getPastSessionPlayedSegments = function () {
+            // NOT PART OF PUBLIC API
+
+            verifyVersionCheck();
+            return cloneArrayAndItems(_model.Get("pastSessionPlayedSegments"));
+        };
+
+        this.setPlayCoverCustomHtml = function (htmlString) {
+            verifyVersionCheck();
+            _broker.sendCommand("setPlayCoverCustomHtml", { htmlString: htmlString });
+        };
 
         // #endregion 
         initialize();
@@ -619,7 +725,7 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
 
 
 
-    Mediasite.Player.View = function MediasitePlayerIFrameView(elementId, url) {
+    Mediasite.Player.View = function MediasitePlayerIFrameView(element, url) {
         /// <summary>Set up presentation in DOM</summary>
         /// <returns type="bool|string">if successful, true; else, error text</returns>
 
@@ -630,8 +736,14 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
         // #region Initialize
         (function initialize() {
             // Sanity check parameters
-            var container = document.getElementById(elementId);
-            if (!container) throw 'could not find DOMElement with id="' + elementId + '"';
+            if (element instanceof Element) {
+                container = element; // If the element is an instanceof a DOM element, use that
+            } else {
+                container = document.getElementById(element); // Otherwise, look up the element by it's ID in the document
+
+                if (!container) throw 'could not find DOMElement with id="' + element + '"';
+            }
+
             if (container.tagName !== 'IFRAME' && !url) throw 'no presentation url specified';
 
             if (container.tagName === 'IFRAME') {
@@ -641,11 +753,12 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
             } else {
                 // Create iframe to host presentation
                 var presentationContainer = document.createElement('iframe');
-                presentationContainer.id = elementId;
+                presentationContainer.id = container.id;
                 presentationContainer.src = url;
                 presentationContainer.setAttribute('frameBorder', '0');
                 presentationContainer.setAttribute('marginHeight', '0');
                 presentationContainer.setAttribute('marginWidth', '0');
+                presentationContainer.setAttribute('allow', 'autoplay; fullscreen');
 
                 // Replace given container with presentation
                 _originalElement = container;
@@ -666,7 +779,7 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
         }
 
         this.postMessage = function (message, origin) {
-            this.getElementWindow().postMessage(message, origin);
+            this.getElementWindow().postMessage(message, '*');
         };
 
         this.addEventListener = function (event, handler) {
@@ -899,6 +1012,7 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
         } else {
             origin = [protocol, '://', hostandport].join('');
         }
+        origin = origin.trim();
         return origin;
     };
 
@@ -999,281 +1113,312 @@ if (!window.Mediasite) { // avoid re-instantiating everything if script is inclu
 
         return singleton;
     })();
-}
+
+    /* =================================
+    PlaybackTracker
+    ================================= */
+    var Mediasite = Mediasite || {};
+
+    Mediasite.PlaybackTracker = (function () {
+        var module = Mediasite$TimelineCoverage$Tracker;
+
+        module.TrackerDefaults = {
+            tolerance: 1,    // player reports contiguous segments as [1:2] [3:4], not [1:2] [2:3].
+            includePastSessions: false
+        };
+
+        function Mediasite$TimelineCoverage$Tracker(player, options) {
+            var self = this;
+            // #region Private
+            var _tolerance; // seconds
+            var _duration = -1;
+            var _normalizedTimeRanges = [];
+            var _currentTimeRange;
 
 
-/* =================================
-PlaybackTracker
-================================= */
-var Mediasite = Mediasite || {};
-
-Mediasite.PlaybackTracker = (function () {
-    var module = Mediasite$TimelineCoverage$Tracker;
-
-    module.TrackerDefaults = {
-        tolerance: 1    // player reports contiguous segments as [1:2] [3:4], not [1:2] [2:3].
-    };
-
-    function Mediasite$TimelineCoverage$Tracker(player, options) {
-        var self = this;
-        // #region Private
-        var _tolerance; // seconds
-        var _duration = -1;
-
-
-        // Set local variables from options/defaults
-        if (!options) options = {};
-        var defaults = module.TrackerDefaults;
-        for (var option in defaults) {
-            if (!options.hasOwnProperty(option)) {
-                options[option] = defaults[option];
-            }
-        }
-        setTolerance(options.tolerance);
-
-        if (player) {
-            attachToApi(player);
-        }
-
-
-        var _normalizedTimeRanges = [];
-        var _currentTimeRange;
-
-
-        function addMoment(moment) {
-            if (_currentTimeRange && _currentTimeRange.merge(moment, moment, _tolerance)) {
-                if (_currentTimeRange.duration() >= _minChunkDuration) {    // ignore blips
-                    addTimeRange(_currentTimeRange);
+            // Set local variables from options/defaults
+            if (!options) options = {};
+            var defaults = module.TrackerDefaults;
+            for (var option in defaults) {
+                if (!options.hasOwnProperty(option)) {
+                    options[option] = defaults[option];
                 }
-            } else {
-                _currentTimeRange = new module.TimeRange(moment, moment);
             }
-        }
+            setTolerance(options.tolerance);
 
-        function getNormalizedTimeRanges() {
-            return _normalizedTimeRanges;
-        }
+            self.addMoment = addMoment;
+            self.add = addTimeRange;
 
-        function addTimeRange(start, end) {
-            if (start.start) {
-                end = start.end();
-                start = start.start();
+            self.played = {
+                start: getTimeRangeStart,
+                end: getTimeRangeEnd,
+                length: 0
+            };
+
+            if (Object.defineProperty) {
+                Object.defineProperty(self.played, "length", {
+                    get: getTimeRangeCount,
+                    set: function () { /* read only */ },
+                    configurable: false
+                });
             }
 
-            if (start > end) {
-                var temp = start;
-                start = end;
-                end = temp;
+            if (player) {
+                attachToApi(player);
             }
 
-            var ranges = _normalizedTimeRanges; // alias
 
-            // Insert/merge time range into appropriate location
-            var added = false;
-            for (var i = 0, len = ranges.length; i < len; i++) {
-                var current = ranges[i];
-
-                var merged = current.merge(start, end, _tolerance);
-                if (merged) {
-                    added = true;
-
-                    // Swallow up following time ranges which are now contiguous
-                    var next;
-                    while ((next = ranges[i + 1])   // check for next available
-                        && current.merge(next.start(), next.end(), _tolerance)) // attempt to merge it
-                    {
-                        ranges.splice(i + 1, 1);
+            function addMoment(moment) {
+                if (_currentTimeRange && _currentTimeRange.merge(moment, moment, _tolerance)) {
+                    if (_currentTimeRange.duration() >= _minChunkDuration) {    // ignore blips
+                        addTimeRange(_currentTimeRange);
                     }
-
-                    break;
-                } else if (current.start() > start) {
-                    ranges.splice(i, 0, new module.TimeRange(start, end));
-                    added = true;
-                    break;
+                } else {
+                    _currentTimeRange = new module.TimeRange(moment, moment);
                 }
             }
 
-            if (!added) {
-                // Time range comes after existing time ranges
-                ranges.push(new module.TimeRange(start, end));
+            function getNormalizedTimeRanges() {
+                return _normalizedTimeRanges;
             }
 
-            if (!Object.defineProperty) {
-                self.played.length = ranges.length;
-            }
-        }
-
-        // #endregion
-
-        // #region Public methods
-        self.attachToPlayer = attachToApi;
-        function attachToApi(playerApi) {
-            var _playing = false;
-
-            playerApi.addHandler({
-                "ready": function () {
-                    setDuration(playerApi.getDuration());
-                },
-                "currenttimechanged": function (data) {
-                    addMoment(data.currentTime);
-                },
-                "durationchanged": function (data) {
-                    setDuration(data.duration);
+            function addTimeRange(start, end) {
+                if (start.start) {
+                    end = start.end();
+                    start = start.start();
                 }
-            });
 
-            if (playerApi.isReady()) {
-                onReady();
+                if (start > end) {
+                    var temp = start;
+                    start = end;
+                    end = temp;
+                }
+
+                var ranges = _normalizedTimeRanges; // alias
+
+                // Insert/merge time range into appropriate location
+                var added = false;
+                for (var i = 0, len = ranges.length; i < len; i++) {
+                    var current = ranges[i];
+
+                    var merged = current.merge(start, end, _tolerance);
+                    if (merged) {
+                        added = true;
+
+                        // Swallow up following time ranges which are now contiguous
+                        var next;
+                        while ((next = ranges[i + 1])   // check for next available
+                            && current.merge(next.start(), next.end(), _tolerance)) // attempt to merge it
+                        {
+                            ranges.splice(i + 1, 1);
+                        }
+
+                        break;
+                    } else if (current.start() > start) {
+                        ranges.splice(i, 0, new module.TimeRange(start, end));
+                        added = true;
+                        break;
+                    }
+                }
+
+                if (!added) {
+                    // Time range comes after existing time ranges
+                    ranges.push(new module.TimeRange(start, end));
+                }
+
+                if (!Object.defineProperty) {
+                    self.played.length = ranges.length;
+                }
             }
 
+            // #endregion
 
+            // #region Public methods
+            self.attachToPlayer = attachToApi;
+            function attachToApi(playerApi) {
+                var _playing = false;
+
+                playerApi.addHandler({
+                    "ready": onReady,
+                    "currenttimechanged": function (data) {
+                        addMoment(data.currentTime);
+                    },
+                    "durationchanged": function (data) {
+                        setDuration(data.duration);
+                    }
+                });
+
+                if (playerApi.isReady()) {
+                    onReady();
+                }
+
+
+            }
+
+            function onReady() {
+                setDuration(player.getDuration());
+                if (options.includePastSessions) {
+                    addPastSessions();
+                }
+            }
+
+            function getTimeRangeCount() {
+                /// <returns type="Number[integer]">Number of normalized time ranges available</returns>
+                var timeRanges = getNormalizedTimeRanges();
+                return timeRanges.length;
+            };
+
+            function getTimeRangeStart(index) {
+                /// <param name="index" type="Number[integer]">Which TimeRange you want</param>
+                /// <returns type="Number[integer:seconds]">Start time for the given TimeRange</returns>
+
+                var timeRanges = getNormalizedTimeRanges();
+
+                if (typeof index == "undefined" || index < 0) return;
+                if (index >= timeRanges.length) return;
+
+                var range = timeRanges[index];
+                if (range) {
+                    return range.start();
+                }
+            };
+
+            function getTimeRangeEnd(index) {
+                /// <param name="index" type="Number[integer]">Which TimeRange you want</param>
+                /// <returns type="Number[seconds]">End time for the given TimeRange</returns>
+
+                var timeRanges = getNormalizedTimeRanges();
+                if (typeof index == "undefined" || index < 0) return;
+                if (index >= timeRanges.length) return;
+
+                var range = timeRanges[index];
+                if (range) {
+                    return range.end();
+                }
+            };
+
+            self.setTolerance = setTolerance;
+            function setTolerance(tolerance) {
+                /// <param name="tolerance" type="Number[seconds]"></param>
+                _tolerance = Math.abs(tolerance);
+                if (typeof _tolerance != "number") {
+                    _tolerance = 0;
+                }
+
+                _minChunkDuration = Math.min(1, _tolerance);
+            };
+
+            self.getTolerance = getTolerance;
+            function getTolerance() {
+                /// <returns type="Number[seconds]"></returns>
+                return _tolerance;
+            };
+
+            self.setDuration = setDuration;
+            function setDuration(time, updateIfLonger) {
+                /// <param name="time" type="Number[seconds]"></param>
+                if (typeof time == "undefined" || time <= 0) return;
+                if (updateIfLonger && time < _duration) return;
+                _duration = time;
+            };
+
+            self.getPercentageWatched = getPercentageWatched;
+            function getPercentageWatched() {
+                /// <returns type="Number[0 to 100]">
+                if (_duration <= 0) return;
+
+                var ranges = getNormalizedTimeRanges();
+                var durationsSum = 0;
+                for (var i = 0; i < ranges.length; i++) {
+                    durationsSum += ranges[i].duration();
+                }
+
+                var percentage = durationsSum / _duration * 100;
+                return percentage;
+            };
+
+
+            function addPastSessions() {
+                if (!player || typeof player.getPastSessionPlayedSegments !== 'function') {
+                    return;
+                }
+
+                var i;
+                var items = player.getPastSessionPlayedSegments();
+                for (i = 0; i < items.length; i += 1) {
+                    addTimeRange(items[i].start, items[i].end);
+                }
+            }
         }
 
 
-        self.addMoment = addMoment;
-        self.add = addTimeRange;
+        module.TimeRange = function Mediasite$TimeRange(startTime, endTime) {
+            var self = this;
+            var _startTime, _endTime;
 
-        self.played = {
-            start: getTimeRangeStart,
-            end: getTimeRangeEnd,
-            length: 0
-        };
+            // Set start and end times; reverse them if endTime < startTime
+            if (startTime < endTime) {
+                _startTime = startTime;
+                _endTime = endTime;
+            } else {
+                _startTime = endTime;
+                _endTime = startTime;
+            }
 
-        if (Object.defineProperty) {
-            Object.defineProperty(self.played, "length", {
-                get: getTimeRangeCount,
-                set: function () { /* read only */ },
-                configurable: false
-            });
+            self.start = function (time) {
+                if (typeof time != "undefined") {
+                    _startTime = time;
+                }
+
+                return _startTime;
+            };
+            self.end = function (time) {
+                if (typeof time != "undefined") {
+                    _endTime = time;
+                }
+
+                return _endTime;
+            };
+            self.duration = function () {
+                return _endTime - _startTime;
+            };
+            self.intersects = function (start, end, tolerance) {
+                tolerance = tolerance || 1;
+
+                if (_endTime < start - tolerance) return false;
+                if (end < _startTime - tolerance) return false;
+
+                return true;
+            };
+
+            self.merge = function (start, end, tolerance) {
+                /// <returns type="boolean">true for merged, false for could not merge</returns>
+                if (!self.intersects(start, end, tolerance)) return false;
+
+                _startTime = Math.min(_startTime, start);
+                _endTime = Math.max(_endTime, end);
+
+                return true;
+            };
         }
 
-
-        function getTimeRangeCount() {
-            /// <returns type="Number[integer]">Number of normalized time ranges available</returns>
-            var timeRanges = getNormalizedTimeRanges();
-            return timeRanges.length;
-        };
-
-        function getTimeRangeStart(index) {
-            /// <param name="index" type="Number[integer]">Which TimeRange you want</param>
-            /// <returns type="Number[integer:seconds]">Start time for the given TimeRange</returns>
-
-            var timeRanges = getNormalizedTimeRanges();
-
-            if (typeof index == "undefined" || index < 0) return;
-            if (index >= timeRanges.length) return;
-
-            var range = timeRanges[index];
-            if (range) {
-                return range.start();
-            }
-        };
-
-        function getTimeRangeEnd(index) {
-            /// <param name="index" type="Number[integer]">Which TimeRange you want</param>
-            /// <returns type="Number[seconds]">End time for the given TimeRange</returns>
-
-            var timeRanges = getNormalizedTimeRanges();
-            if (typeof index == "undefined" || index < 0) return;
-            if (index >= timeRanges.length) return;
-
-            var range = timeRanges[index];
-            if (range) {
-                return range.end();
-            }
-        };
-
-        self.setTolerance = setTolerance;
-        function setTolerance(tolerance) {
-            /// <param name="tolerance" type="Number[seconds]"></param>
-            _tolerance = Math.abs(tolerance);
-            if (typeof _tolerance != "number") {
-                _tolerance = 0;
-            }
-
-            _minChunkDuration = Math.min(1, _tolerance);
-        };
-
-        self.getTolerance = getTolerance;
-        function getTolerance() {
-            /// <returns type="Number[seconds]"></returns>
-            return _tolerance;
-        };
-
-        self.setDuration = setDuration;
-        function setDuration(time, updateIfLonger) {
-            /// <param name="time" type="Number[seconds]"></param>
-            if (typeof time == "undefined" || time <= 0) return;
-            if (updateIfLonger && time < _duration) return;
-            _duration = time;
-        };
-
-        self.getPercentageWatched = getPercentageWatched;
-        function getPercentageWatched() {
-            /// <returns type="Number[0 to 100]">
-            if (_duration <= 0) return;
-
-            var ranges = getNormalizedTimeRanges();
-            var durationsSum = 0;
-            for (var i = 0; i < ranges.length; i++) {
-                durationsSum += ranges[i].duration();
-            }
-
-            var percentage = durationsSum / _duration * 100;
-            return percentage;
-        };
-    }
+        return module;
+    })();
 
 
-    module.TimeRange = function Mediasite$TimeRange(startTime, endTime) {
+    function UniqueTemporaryIdGenerator(idScope) {
         var self = this;
-        var _startTime, _endTime;
 
-        // Set start and end times; reverse them if endTime < startTime
-        if (startTime < endTime) {
-            _startTime = startTime;
-            _endTime = endTime;
-        } else {
-            _startTime = endTime;
-            _endTime = startTime;
-        }
+        this.idScope = idScope;
+        this.idCounter = 0;
 
-        self.start = function (time) {
-            if (typeof time != "undefined") {
-                _startTime = time;
-            }
+        this.generate = function () {
+            self.idCounter += 1;
 
-            return _startTime;
-        };
-        self.end = function (time) {
-            if (typeof time != "undefined") {
-                _endTime = time;
-            }
-
-            return _endTime;
-        };
-        self.duration = function () {
-            return _endTime - _startTime;
-        };
-        self.intersects = function (start, end, tolerance) {
-            tolerance = tolerance || 1;
-
-            if (_endTime < start - tolerance) return false;
-            if (end < _startTime - tolerance) return false;
-
-            return true;
-        };
-
-        self.merge = function (start, end, tolerance) {
-            /// <returns type="boolean">true for merged, false for could not merge</returns>
-            if (!self.intersects(start, end, tolerance)) return false;
-
-            _startTime = Math.min(_startTime, start);
-            _endTime = Math.max(_endTime, end);
-
-            return true;
+            return ['TEMP', self.idScope, self.idCounter].join('-');
         };
     }
 
-    return module;
-})();
+
+    return Mediasite;
+}));

@@ -19,10 +19,6 @@
  */
 
 
- var textSize;
-    var textSize;
-
-
     String.prototype.replaceAll = function(search, replacement) {
         var target = this;
         return target.replace(new RegExp(search, 'g'), replacement);
@@ -39,9 +35,7 @@
         var classnames = [];
         var classtitles = [];
         var numUserSubmits = 0;
-        textSize = 12;
-        studentidmode = 0;
-        //username = "email@test.com";
+        var textSize = 12;
 
 
         // We assume the data contains identical data sets
@@ -68,7 +62,7 @@
                     classnames[i] = obj.graph.classnames[i];
                 }
                 if (classtitles[i] == null) {
-                    if (typeof obj.graph.classtitles != "undefined" && typeof obj.graph.classtitle[i] != "undefined" && obj.graph.classtitles[i] != "") {
+                    if (typeof obj.graph.classtitles != "undefined" && typeof obj.graph.classtitles[i] != "undefined" && obj.graph.classtitles[i] != "") {
                         classtitles[i] = obj.graph.classtitles[i];
                     }
                     else {
@@ -82,7 +76,7 @@
             switch (studentidmode) {
                 case 0:
                 case 2:
-                    if (obj.actor.mbox == 'mailto:' + username) {
+                    if (obj.actor.mbox == userEMail) {
                         matchactor = true;
                     }
                     break;
@@ -256,36 +250,37 @@
         );
     }
 
+    function matchActor(statement)
+    {
+        switch (studentidmode) {
+            case 0:
+            case 2:
+                if (statement.actor.mbox == 'mailto:' + username) {
+                    return true;
+                }
+                break;
+            case 1:
+                if (statement.actor.mbox_sha1sum == mboxsha1) {
+                    return true;
+                }
+                break;
+            case 3:
+                if (statement.actor.account != undefined && statement.actor.account.name == groupname) {
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+
     function filterOwnStatements(data) {
-        statements = [];
+        var statements = [];
         for (var i = 0; i < data.length; i++)
         {
-            statement = data[i];
-            matchactor = false;
-            switch (studentidmode) {
-                case 0:
-                case 2:
-                    if (statement.actor.mbox == 'mailto:' + username) {
-                        matchactor = true;
-                    }
-                    break;
-                case 1:
-                    if (statement.actor.mbox_sha1sum == mboxsha1) {
-                        matchactor = true;
-                    }
-                    break;
-                case 3:
-                    if (statement.actor.account.name == groupname) {
-                        matchactor = true;
-                    }
-                    break;
-            }
-
-            if (matchactor) {
+            if (matchActor(data[i])) {
               statements.push(data[i]);
             }
         }
-
         return statements;
     }
 
@@ -363,6 +358,7 @@
         type,
         retrieveAll,
         interactionIndex,
+        group,
         handler
     ) {
         url = xerteurl + xertelo + '/' + xertelabel.replace(/ /g, "_");
@@ -398,6 +394,10 @@
          */
         q['activity'] = url;
         q['verb'] = 'http://adlnet.gov/expapi/verbs/scored';
+        if (group != "")
+        {
+            q['group'] = group;
+        }
         /*
         queryStatements(
             lrsEndpoint + '/api/connection/statement',
@@ -444,6 +444,16 @@
     // pageChanged & sizeChanged functions are needed in every model file
     // other functions for model should also be in here to avoid conflicts.
     var adaptiveContent = new function() {
+        var xerteurl = "";
+        var xertelo = "";
+        var xertelabel = "";
+        var name = "";
+        var interactionType = "";
+        var opinionClass = "";
+        var url = "";
+        var divUrl = "";
+        var group = "";
+
         this.loadJS = function() {
             if (numLoaded < 2) {
                 var fileToLoad;
@@ -571,6 +581,33 @@
                 if (opinionClass == undefined) {
                     opinionClass = '';
                 }
+                group = interaction.getAttribute('groupFromUrl');
+                if (group == undefined) {
+                    group = '';
+                }
+                else {
+                    if (group == "true")
+                    {
+                        if (x_urlParams['group'] != undefined)
+                        {
+                            group = x_urlParams['group']
+                        }
+                        else
+                        {
+                            if (interaction.getAttribute('groupName') != undefined)
+                            {
+                                group = interaction.getAttribute('groupName');
+                            }
+                            else {
+                                group = "";
+                            }
+                        }
+                    }
+                    else {
+                        group = "";
+                    }
+                }
+
 
                 url = xerteurl + xertelo + '/' + xertelabel;
                 if (opinionClass != '') {
@@ -615,6 +652,7 @@
                         interactionType,
                         hasToRetrieveAll(interaction),
                         interactionIndex,
+                        group,
                         function(data, interaction, url, type, interactionIndex) {
                             statements = filterOwnStatements(data);
                             if (statements.length > 0) {
@@ -809,6 +847,7 @@
                             interactionType,
                             hasToRetrieveAll(interaction),
                             interactionIndex,
+                            group,
                             function(data, interaction, url, type, interactionIndex) {
                                 statements = filterOwnStatements(data);
                                 if (statements.length > 0) {
@@ -1007,6 +1046,7 @@
                         interactionType,
                         hasToRetrieveAll(interaction),
                         interactionIndex,
+                        group,
                         function(data, interaction, url, type, interactionIndex) {
                             jsonData = data.map(function(d) {
                                 var obj = {}
@@ -1034,6 +1074,69 @@
                             createDiagram(jsonData, identifier);
                         }
                     );
+                }
+                else if (interactionType == "open")
+                {
+                    statements = getStatements(
+                        xerteurl,
+                        xertelo,
+                        xertelabel,
+                        opinionClass,
+                        interactionType,
+                        hasToRetrieveAll(interaction),
+                        interactionIndex,
+                        group,
+                        function(data, interaction, url, type, interactionIndex) {
+                            statements = filterOwnStatements(data);
+                            if (statements.length > 0) {
+                                score = statements[0].result.score.raw;
+                                if (interaction.getAttribute("showScore") == "true") {
+                                    var txt = scoreLabelText;
+                                    txt = txt.replace(/\{0\}/, score);
+                                    $('#' + escapeUrl(url, type, interactionIndex) + ' .score').html('<p>' + txt + '%</p>');
+                                }
+                            }
+                            var allAnswers= [];
+                            var myAnswers = [];
+                            for (var i=0; i<data.length; i++) {
+                                var answer = "";
+                                if (data[i].result != undefined && data[i].result.response != undefined && data[i].result.response != "") {
+                                    answer = data[i].result.response;
+                                }
+                                if (answer != "") {
+                                    if (matchActor(data[i])) {
+                                        myAnswers.push(answer);
+                                    }
+                                    else {
+                                        allAnswers.push(answer);
+
+                                    }
+                                }
+                            }
+                            // Perhaps we want to do something with the number of answers
+                            var nrMyAnswers = myAnswers.length;
+                            var nrAnswers = allAnswers.length + nrMyAnswers;
+                            var html = "";
+                            if (nrMyAnswers > 0)
+                            {
+                                html = "<ol>";
+                                for (i=0; i<myAnswers.length; i++)
+                                {
+                                    html += "<li>" + myAnswers[i] + "</li>";
+                                }
+                                html += "</ol>";
+                            }
+                            if (allAnswers.length > 0)
+                            {
+                                html += "<ol>";
+                                for (i=0; i<allAnswers.length; i++)
+                                {
+                                    html += "<li>" + allAnswers[i] + "</li>";
+                                }
+                                html += "</ol>";
+                            }
+                            $('#' + escapeUrl(url, type, interactionIndex) + ' .message').html(html);
+                        });
                 }
 
 

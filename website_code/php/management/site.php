@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -71,17 +71,17 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_NEWS . "<form><textarea id=\"news_text\">" . base64_decode($row['news_text']) . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_POD_ONE . "<form><textarea id=\"pod_one\">" . base64_decode($row['pod_one']) . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_POD_ONE . "<form><textarea id=\"pod_one\">" . base64_decode($row['pod_one']) . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_POD_TWO . "<form><textarea id=\"pod_two\">" . base64_decode($row['pod_two']) . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_POD_TWO . "<form><textarea id=\"pod_two\">" . base64_decode($row['pod_two']) . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_COPYRIGHT . "<form><textarea id=\"copyright\">" . htmlspecialchars($row['copyright']) . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_DEMONSTRATION . "<form><textarea id=\"demonstration_page\">" . $row['demonstration_page'] . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_DEMONSTRATION . "<form><textarea id=\"demonstration_page\">" . $row['demonstration_page'] . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_LOGIN_FORM . "<form><textarea id=\"form_string\">" . base64_decode($row['form_string']) . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_LOGIN_FORM . "<form><textarea id=\"form_string\">" . base64_decode($row['form_string']) . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_PEER_FORM . "<form><textarea id=\"peer_form_string\">" . base64_decode($row['peer_form_string']) . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_PEER_FORM . "<form><textarea id=\"peer_form_string\">" . base64_decode($row['peer_form_string']) . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_FEEDBACK . "<form><textarea id=\"feedback_list\">" . $row['feedback_list'] . "</textarea></form></p>";
 
@@ -90,10 +90,10 @@ if(is_user_admin()){
     echo "<div class=\"template\" id=\"serverdetails\"><p>" . MANAGEMENT_SITE_SERVER . " <button type=\"button\" class=\"xerte_button\" id=\"serverdetails_btn\" onclick=\"javascript:templates_display('serverdetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"serverdetails_child\">";
 
     echo "<p>" . MANAGEMENT_SITE_HTACCESS . "<form><textarea id=\"apache\">" . $row['apache'] . "</textarea></form>
-        </p>";	
+        </p>";
 
     echo "<p>" . MANAGEMENT_SITE_SESSION_NAME . "<form><textarea id=\"site_session_name\">" . $row['site_session_name'] . "</textarea></form>
-        </p>";	
+        </p>";
 
     if (Xerte_Validate_FileMimeType::canRun()) {
         echo "<p>" . MANAGEMENT_SITE_ENABLE_MIME . "<form><textarea id=\"enable_mime_check\">" . $row['enable_mime_check'] . "</textarea></form>
@@ -104,7 +104,7 @@ if(is_user_admin()){
             </p>";
     }
     echo "<p>" . MANAGEMENT_SITE_MIME . "<form><textarea id=\"mimetypes\">" . $row['mimetypes'] . "</textarea></form>
-        </p>";	
+        </p>";
 
     if (Xerte_Validate_FileExtension::canRun()) {
         echo "<p>" . MANAGEMENT_SITE_ENABLE_FILE_EXT . "<form><textarea id=\"enable_file_ext_check\">" . $row['enable_file_ext_check'] . "</textarea></form>
@@ -134,19 +134,19 @@ if(is_user_admin()){
         </p>";
 
     echo "<p>" . MANAGEMENT_SITE_INTEGRATION . "<form><textarea id=\"integration_config_path\">" . $row['integration_config_path'] . "</textarea></form>
-        </p>";	
+        </p>";
 
     echo "<p>" . MANAGEMENT_SITE_ADMIN_USER . "<form><textarea id=\"admin_username\">" . $row['admin_username'] . "</textarea></form>
-        </p>";	
+        </p>";
 
     echo "<p>" . MANAGEMENT_SITE_ADMIN_PASSWORD . "<form><textarea id=\"admin_password\">" . htmlspecialchars($row['admin_password']) . "</textarea></form>
-        </p>";	
+        </p>";
 
     echo "</div>";
 
     echo "<div class=\"template\" id=\"rssdetails\"><p>" . MANAGEMENT_SITE_RSS . " <button type=\"button\" class=\"xerte_button\" id=\"rssdetails_btn\" onclick=\"javascript:templates_display('rssdetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"rssdetails_child\">";
 
-    echo "<p>" . MANAGEMENT_SITE_RSS_TITLE . "<form><textarea id=\"rss_title\">" . $row['rss_title'] . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_RSS_TITLE . "<form><textarea id=\"rss_title\">" . $row['rss_title'] . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_RSS_PUBLISHER . "<form><textarea id=\"synd_publisher\">" . $row['synd_publisher'] . "</textarea></form></p>";
 
@@ -158,31 +158,31 @@ if(is_user_admin()){
 
     echo "<div class=\"template\" id=\"pathdetails\"><p>" . MANAGEMENT_SITE_PATH . " <button type=\"button\" class=\"xerte_button\" id=\"pathdetails_btn\" onclick=\"javascript:templates_display('pathdetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"pathdetails_child\">";
 
-    echo "<p>" . MANAGEMENT_SITE_PATH_MODULE . "<form><textarea id=\"module_path\">" . $row['module_path'] . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_PATH_MODULE . "<form><textarea id=\"module_path\">" . $row['module_path'] . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_PATH_MODULE . "<form><textarea id=\"website_code_path\">" . $row['website_code_path'] . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_PATH_MODULE . "<form><textarea id=\"website_code_path\">" . $row['website_code_path'] . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_PATH_SHORT . "<form><textarea id=\"users_file_area_short\">" . $row['users_file_area_short'] . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_PATH_SHORT . "<form><textarea id=\"users_file_area_short\">" . $row['users_file_area_short'] . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_PATH_LIBRARY . "<form><textarea id=\"php_library_path\">" . $row['php_library_path'] . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_PATH_LIBRARY . "<form><textarea id=\"php_library_path\">" . $row['php_library_path'] . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_PATH_ROOT . "<form><textarea id=\"root_file_path\">" . str_replace("\\","/",$row['root_file_path']) . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_PATH_ROOT . "<form><textarea id=\"root_file_path\">" . str_replace("\\","/",$row['root_file_path']) . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_PATH_IMPORT . "<form><textarea id=\"import_path\">" . str_replace("\\","/",$row['import_path']) . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_PATH_IMPORT . "<form><textarea id=\"import_path\">" . str_replace("\\","/",$row['import_path']) . "</textarea></form></p>";
 
     echo "</div>";
 
     echo "<div class=\"template\" id=\"sqldetails\"><p>" . MANAGEMENT_SITE_SQL . " <button type=\"button\" class=\"xerte_button\" id=\"sqldetails_btn\" onclick=\"javascript:templates_display('sqldetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"sqldetails_child\">";
 
-    echo "<p>" . MANAGEMENT_SITE_QUERY . "<form><textarea rows=\"20\" id=\"play_edit_preview_query\">" . str_replace("$","\$",str_replace("\\","",base64_decode($row['play_edit_preview_query'])))  . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_QUERY . "<form><textarea rows=\"20\" id=\"play_edit_preview_query\">" . str_replace("$","\$",str_replace("\\","",base64_decode($row['play_edit_preview_query'])))  . "</textarea></form></p>";
 
     echo "</div>";
 
     echo "<div class=\"template\" id=\"errordetails\"><p>" . MANAGEMENT_SITE_ERROR_HANDLING . " <button type=\"button\" class=\"xerte_button\" id=\"errordetails_btn\" onclick=\"javascript:templates_display('errordetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"errordetails_child\">";
 
-    echo "<p>" . MANAGEMENT_SITE_ERROR_EMAIL_ACCOUNT . "<form><textarea id=\"error_log_message\">" . $row['error_log_message'] . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_ERROR_EMAIL_ACCOUNT . "<form><textarea id=\"error_log_message\">" . $row['error_log_message'] . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_ERROR_EMAIL . "<form><textarea id=\"error_email_list\">" . $row['email_error_list'] . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_ERROR_EMAIL . "<form><textarea id=\"error_email_list\">" . $row['email_error_list'] . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_ERROR_MAX . "<form><textarea id=\"max_error_size\">" . $row['max_error_size'] . "</textarea></form></p>";
 
@@ -203,7 +203,7 @@ if(is_user_admin()){
         echo "<option value=\"OAuth2\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'OAuth2') ? " selected" : "") . ">OAuth2</option>";
         echo "</select>";
 
-        echo "</form></p>"; 
+        echo "</form></p>";
 
     echo "</div>";
 
@@ -222,10 +222,10 @@ if(is_user_admin()){
     echo "<p>" . MANAGEMENT_SITE_LDAP_BIND . "<form><textarea id=\"bind_dn\">" . $row['bind_dn'] . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_LDAP_FILTER_ONE . "<form><textarea id=\"LDAP_preference\">" . $row['LDAP_preference'] . "</textarea></form>
-        </p>";	
+        </p>";
 
     echo "<p>" . MANAGEMENT_SITE_LDAP_FILTER_TWO . "<form><textarea id=\"LDAP_filter\">" . $row['LDAP_filter'] . "</textarea></form>
-        </p>";	
+        </p>";
 
     echo "</div>";
 
@@ -290,6 +290,8 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_DEFAULT_PERIOD . "<form><textarea id=\"site_xapi_dashboard_period\">" . $row['dashboard_period'] . "</textarea></form></p>";
 
+    echo "<p>" . MANAGEMENT_SITE_XAPI_DASHBOARD_ALLOWED_URLS . "<form><textarea id=\"xapi_dashboard_urls\">" . $row['dashboard_allowed_links'] . "</textarea></form></p>";
+
     echo "</div>";
 
 
@@ -317,7 +319,7 @@ if(!isset($mysqli)) {
 }
 if(!isset($lti)) {
   require_once('../../../LTI/ims-lti/UoN_LTI.php');
-  $lti = new UoN_LTI($mysqli);
+  $lti = new UoN_LTI($mysqli,$xerte_toolkits_site->database_table_prefix);
 }
 
 

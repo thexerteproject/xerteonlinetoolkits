@@ -599,7 +599,7 @@
   //  an object with defined methods
   Popcorn.extend(Popcorn.p, (function() {
 
-      var methods = "load play pause currentTime playbackRate volume duration preload playbackRate " +
+      var methods = "load play setVST pause currentTime playbackRate volume duration preload playbackRate " +
                     "autoplay loop controls muted buffered readyState seeking paused played seekable ended",
           ret = {};
 
@@ -618,6 +618,12 @@
               this.media.currentTime = Popcorn.util.toSeconds( arg );
             }
 
+            if ( arg != undefined )
+            {
+              this.media[ name ](arg);
+              return this;
+            }
+
             this.media[ name ]();
 
             return this;
@@ -626,13 +632,13 @@
           if ( arg != null ) {
             // Capture the current value of the attribute property
             previous = this.media[ name ];
-
             // Set the attribute property with the new value
             this.media[ name ] = arg;
 
             // If the new value is not the same as the old value
             // emit an "attrchanged event"
             if ( previous !== arg ) {
+
               this.emit( "attrchange", {
                 attribute: name,
                 previousValue: previous,
@@ -1591,7 +1597,6 @@
             runningPlugins.splice( runningPlugins.indexOf( byEnd ), 1 );
 
             if ( !obj.data.disabled[ type ] ) {
-
               natives.end.call( obj, event, byEnd );
 
               obj.emit( trackend,
@@ -1629,7 +1634,6 @@
             if ( !obj.data.disabled[ type ] ) {
 
               natives.start.call( obj, event, byStart );
-
               obj.emit( trackstart,
                 Popcorn.extend({}, byStart, {
                   plugin: type,
@@ -1986,6 +1990,7 @@
             }));
           }
         }
+
 
         this.data.trackEvents.add( options );
         TrackEvent.start( this, options );
@@ -4249,38 +4254,6 @@
     var CURRENT_TIME_MONITOR_MS = 16;
     var MEDIASITE_HOST = "mediamission.nl";
 
-    function MediasitePlayer( iframe )
-    {
-        var self = this;
-        var url = iframe.src;
-
-        //url = "http://localhost:25565";
-
-        function sendMessage( method, params ) {
-            var data = JSON.stringify({
-                method: method,
-                value: params
-            });
-
-            // The iframe has been destroyed, it just doesn't know it
-            if (!iframe.contentWindow) {
-                return;
-            }
-            //iframe.contentWindow.postMessage(data, url);
-        }
-
-        var methods = ("play pause stop seekTo getCurrentTime getCurrentChapter getCurrentSlide getCurrentCaption getChapters getTimedEvents"
-        + "getPlayState getDuration getPlayerState getVolume setVolume addEventListener").split(" ");
-
-        methods.forEach( function( method ) {
-            // All current methods take 0 or 1 args, always send arg0
-            self[ method ] = function( arg0 ) {
-                sendMessage( method, arg0 );
-
-            };
-        });
-    }
-
     function HTMLMediasiteVideoElement(id) {
         var self = new Popcorn._MediaElementProto(),
             parent = typeof id === "string" ? Popcorn.dom.find( id ) : id,
@@ -4337,23 +4310,36 @@
             }
 
             impl.src = aSrc;
-            aSrc = "http://deltion.mediamission.nl/Mediasite/Play/c550ff4fee9d493b8f5efebe45b777271d";
+
+            //WARNING
+            if(window.location.protocol !== "https:") {
+                aSrc = aSrc.replace("https://", "http://").trim();
+            }
+
             parent.appendChild(elem);
 
             $.getScript("modules/xerte/parent_templates/Nottingham/common_html5/js/popcorn/plugins/MediasitePlayerIFrameAPI.js")
                 .done(function () {
-                    console.log("Mediasiteplayer loaded" + aSrc + "\n" + elem);
+                    $("#mediasiteIframe").parent()[0].style.visibility = "hidden";
+                    console.log(" Mediasiteplayer loaded " + aSrc + "\n" + elem.id);
                     player = new Mediasite.Player(elem.id,
                         {
                             url: aSrc,
                             events: {
                                 "ready": onReady,
+                                "playcoverready": function () {
+                                    $("#mediasiteIframe")[0].style.width = "100%";
+                                    $("#mediasiteIframe")[0].style.height = "100%";
+
+                                    $("#mediasiteIframe").parent()[0].style.width = "100%";
+                                    $("#mediasiteIframe").parent()[0].style.height = "90%";
+
+                                    $("#mediasiteIframe").parent()[0].style.visibility = "visible";
+                                },
                                 "error": function (errorData) {
                                     console.log(errorData);
                                 },
-                                "playstatechanged": onPlayStateChanged,
-                                "playerstatechanged": onPlayerStateChanged,
-                                "currenttimechanged": onCurrentTimeChanged
+                                "playerstatechanged": onPlayerStateChanged
                             },
                             layoutOptions: {
                                 "BackgroundColor": "#FFFFFF"
@@ -4364,13 +4350,25 @@
                 .fail(function (a, b, c) {
                     console.log("Failed: " + c)
                 });
-        }
 
-            //elem.src = aSrc;
+            self.dispatchEvent("loadstart");
+            self.dispatchEvent("progress");
+        }
 
             function onReady()
             {
-              self.dispatchEvent("loadedmetadata");
+
+		        $("#mediasiteIframe")[0].style.width = "100%";
+                $("#mediasiteIframe")[0].style.height = "90%";
+
+                $("#mediasiteIframe").parent()[0].style.width = "100%";
+                $("#mediasiteIframe").parent()[0].style.height = "90%";
+
+                impl.duration = player.getDuration();
+                self.dispatchEvent("loadedmetadata");
+
+                currentTimeInterval = setInterval( monitorCurrentTime,
+                    CURRENT_TIME_MONITOR_MS );
 
                 self.dispatchEvent( "loadeddata" );
 
@@ -4385,30 +4383,39 @@
                 iframe.style.width = "100%";
 
                 player.currentTime = 0;
+
                 player.seekTo(0);
                 playerReady = true;
-              //addEvent("pause", onPause);
             }
 
-            function onPlayStateChanged ( data )
-            {
-              //console.log( data.playState + "playstate");
-            }
 
-            function onCurrentTimeChanged (data) {
-                impl.currentTime = data.currentTime;
-                //player.currentTime = impl.currentTime;
-                //player.seekTo(impl.currentTime);
-            }
+        function monitorCurrentTime() {
+            var playerTime = player.getCurrentTime();
 
-            function changeCurrentTime (data)
-            {
-                impl.currentTime = data;
-                player.seekTo(data);
+            if ( !impl.seeking ) {
+                if ( Math.abs( impl.currentTime - playerTime ) > CURRENT_TIME_MONITOR_MS ) {
+                    onSeeking();
+                    onSeeked();
+                }
+                impl.currentTime = playerTime;
+            } else if ( Math.abs( playerTime - impl.currentTime ) < 1 ) {
+                onSeeked();
             }
+        }
+
+
+        function changeCurrentTime( aTime ) {
+            if (aTime === impl.currentTime) {
+                return;
+            }
+            impl.currentTime = aTime;
+            onSeeking();
+            player.seekTo(aTime);
+        }
+
+
             function onPlayerStateChanged (data)
             {
-              //console.log( data.state );
               switch (data.state)
               {
                   case "Playing":
@@ -4419,6 +4426,10 @@
                       onPause();
                       break;
 
+                  case "Ended":
+                    onEnded();
+                    break;
+
               }
             }
 
@@ -4426,15 +4437,25 @@
                 self.dispatchEvent("timeupdate");
             }
 
-            function onPlay() {
-                if (playerPaused) {
-                    self.dispatchEvent("play")
-                    playerPaused = false;
-                    impl.paused = false;
-                    timeUpdateInterval = setInterval(onTimeUpdate,
-                        self._util.TIMEUPDATE_MS);
-                }
+        function onPlay() {
+            if( impl.ended ) {
+                changeCurrentTime( 0 );
+                impl.ended = false;
             }
+            impl.duration = player.getDuration();
+            self.dispatchEvent( "durationchange" );
+
+            timeUpdateInterval = setInterval( onTimeUpdate,
+                self._util.TIMEUPDATE_MS );
+            impl.paused = false;
+            if( playerPaused ) {
+                playerPaused = false;
+
+                self.dispatchEvent( "play" );
+
+                self.dispatchEvent( "playing" );
+            }
+        }
 
             self.play = function() {
                 impl.paused = false;
@@ -4456,7 +4477,6 @@
             }
 
             self.pause = function() {
-
                 impl.paused = true;
                 if( !playerReady ) {
                     addPlayerReadyCallback( function() { self.pause(); } );
@@ -4464,20 +4484,32 @@
                 player.pause();
             };
 
+            self.setVST = function(vst) {
+              player.setVisibleStreamTypes(vst.split(" ").map(parseIntOne));
+
+              function parseIntOne(str)
+              {
+                return parseInt(str);
+              }
+            };
+
+        function onSeeking() {
+            impl.seeking = true;
+            self.dispatchEvent( "seeking" );
+        }
+
+        function onSeeked() {
+            impl.ended = false;
+            impl.seeking = false;
+
+            self.dispatchEvent( "timeupdate" );
+            self.dispatchEvent( "seeked" );
+            self.dispatchEvent( "canplay" );
+            self.dispatchEvent( "canplaythrough" );
+        }
 
 
-
-            function addEvent (event, listener)
-            {
-               self.addEventListener(event, listener, false);
-
-               player.addHandler(event, listener);
-            }
-
-
-
-
-        function destroyPlayer() {
+        /*function destroyPlayer() {
             if( !( playerReady && player ) ) {
                 return;
             }
@@ -4487,14 +4519,14 @@
             window.removeEventListener( 'message', onStateChange, false );
             parent.removeChild( elem );
             elem = document.createElement( "iframe" );
+        }*/
+
+        function onEnded() {
+            impl.ended = true;
+            onPause();
+            self.dispatchEvent("timeupdate");
+            self.dispatchEvent("ended");
         }
-
-        function onStateChange( event )
-        {
-            debugger;
-        }
-
-
 
         Object.defineProperties( self, {
 
@@ -4509,9 +4541,30 @@
                 }
             },
 
+            seeking: {
+                get: function() {
+                    return impl.seeking;
+                }
+            },
+
+            loop: {
+                get: function() {
+                    return impl.loop;
+                },
+                set: function( aValue ) {
+                    impl.loop = self._util.isAttributeSet( aValue );
+                }
+            },
+
             paused: {
                 get: function() {
                     return impl.paused;
+                }
+            },
+
+            duration: {
+                get: function() {
+                    return impl.duration;
                 }
             },
 
@@ -6980,7 +7033,6 @@
           return impl.currentTime;
         },
         set: function( aValue ) {
-          debugger;
           changeCurrentTime( aValue );
         }
       },

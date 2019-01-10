@@ -22,7 +22,14 @@
 	// other functions for model should also be in here to avoid conflicts
 	var hotspotImage = new function() {
 		var	$img;
-		
+		var amountOfAttempts = x_currentPageXML.getAttribute("attempts");
+		var attempts = parseInt(amountOfAttempts, 10);
+		var counter = [];
+		var hits = [];
+		var pointsUpdated = [];
+		var canvas;
+		var gotHint = false;
+		var pointArray;
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$img = $("#image");
@@ -31,7 +38,7 @@
 			$("#infoHolder").html("");
 			$("#nextHS").button("enable");
 			$("#prevHS").button("disable");
-		}
+		};
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
@@ -40,10 +47,18 @@
 				"filter"	:'alpha(opacity=0)'
 			});
 			this.resizeImg(false);
-		}
+
+		};
 		
 		this.init = function() {
+		    x_currentPageXML.childNodes.forEach(function () {
+				hits.push(false);
+				counter.push(0);
+            });
+
 			$img = $("#image");
+
+
 
             if (x_currentPageXML.getAttribute("align") == "Right") {
 				$("#panel").addClass("left");
@@ -51,7 +66,6 @@
 				$("#panel").addClass("right");
 			}
 			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-			
 			$img
 				.css({
 						"opacity"	:0,
@@ -93,6 +107,7 @@
 						text	:false
 					})
 					.click(function() {
+
 						hotspotImage.selectHs("next");
 					});
 				
@@ -110,9 +125,11 @@
 					});
 			} else { // click explore
 				$("#pageContents button").remove();
+
 			}
+            this.selectHs("next");
 		}
-		
+
 		this.resizeImg = function(firstLoad) {
 			var imgMaxW = Math.round($x_pageHolder.width() * (400.0/800.0)),
 				imgMaxH = Math.round($x_pageHolder.height() * (550.0/600.0) - 100);
@@ -122,8 +139,11 @@
 				"opacity"	:1,
 				"filter"	:'alpha(opacity=100)'
 			});
-			
+
+            $("canvas")[0].width = $("#image").width();
+            $("canvas")[0].height = $("#image").height();
 			this.createHS();
+
 		}
 		
 		this.createHS = function() {
@@ -133,59 +153,11 @@
 			$("#hsHolder").html("");
 			
 			$(x_currentPageXML).children()
-				.each(function(i){
-					var _this = this;
-					
-					var $hotspot = $('<a class="hotspot transparent" href="#" tabindex="' + (i+2) + '" />');
-					$hotspot
-						.attr("title", this.getAttribute("name"))
-						.css({
-							width	:Math.round(this.getAttribute("w") * scale) + "px",
-							height	:Math.round(this.getAttribute("h") * scale) + "px",
-							left	:Math.round(this.getAttribute("x") * scale) + "px",
-							top		:Math.round(this.getAttribute("y") * scale) + "px"
-							})
-						.click(function() {
-							$("#infoHolder").html("<hr/><h3>" + _this.getAttribute("name") + "</h3><br/>" + x_addLineBreaks(_this.getAttribute("text")));
-							$(".selected").removeClass("selected");
-							var $this = $(this);
-							$this.addClass("selected");
-							if (x_currentPageXML.getAttribute("interactivity") == "Show Me") {
-								var nextHS = $("#nextHS"),
-									prevHS = $("#prevHS");
-								
-								if ($this.index() + 1 == $("#pageContents .hotspot").length) {
-									nextHS.button("disable");
-									prevHS.button("enable");
-								} else if ($this.index() == 0) {
-									nextHS.button("enable");
-									prevHS.button("disable");
-								} else {
-									nextHS.button("enable");
-									prevHS.button("enable");
-								}
-							}
-							})
-						.focusin(function() {
-							$(this)
-								.removeClass("transparent")
-								.addClass("highlight");
-							})
-						.focusout(function() {
-							$(this)
-								.removeClass("highlight")
-								.addClass("transparent");
-							})
-						.keypress(function(e) {
-							var charCode = e.charCode || e.keyCode;
-							if (charCode == 32) {
-								$(this).trigger("click");
-							}
-						});
-					
-					$("#hsHolder").append($hotspot);
-				});
-			
+				.each(function(i) {
+					return;
+
+
+                });
 			var highlightColour = "yellow";
 			if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
 				highlightColour = x_getColour(x_currentPageXML.getAttribute("hicol"));
@@ -198,36 +170,211 @@
 			if (selected != undefined) {
 				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
 			}
-		}
-		
+		};
+
+
 		this.selectHs = function(type) {
-			var currentSelection = $("#pageContents .selected"),
-				i = currentSelection.index();
-			
-			currentSelection.removeClass("selected");
-			
-			if (type == "next") {
-				$("#pageContents .hotspot:eq(" + (i + 1)  + ")").trigger("click");
-			} else {
-				$("#pageContents .hotspot:eq(" + (i - 1) + ")").trigger("click");
+
+            var i = Number( $("canvas").attr("data-child-index"));
+			pointsUpdated[i] = false;
+
+            if (type === "next") {
+                i +=1;
+
+            } else {
+                i-=1;
+            }
+            if(i > 0){
+                $("#prevHS").button("enable");
+			}else{
+                $("#prevHS").button("disable");
 			}
-		}
-	}
+
+			if(i < counter.length-1){
+                $("#nextHS").button("enable");
+			}else{
+                $("#nextHS").button("disable");
+			}
+
+            canvas = $("canvas")[0];
+
+            var context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            var points = x_currentPageXML.children[i].getAttribute("points");
+            origW = x_currentPageXML.children[i].getAttribute("w");
+            origH = x_currentPageXML.children[i].getAttribute("h");
+            pointArray = JSON.parse(points);
+
+            if(!pointsUpdated[i] && pointArray != undefined){
+                pointArray = pointArray.map(function (p) {
+                    p.x = p.x * ($("canvas").width());
+                    p.y = p.y * ($("canvas").height());
+                    return p;
+                });
+                pointsUpdated[i] = true;
+            }
+
+
+            $("canvas").attr("data-child-index", i);
+
+			if(counter[i] >= attempts || hits[i]){
+
+                redraw_points(canvas, pointArray, hits[i]);
+
+			}
+
+
+
+          //  $("#nextHS").button("enable");
+          //  $("#prevHS").button("disable");
+
+            $("#hint").html("");
+			$("#feedback").html("");
+            gotHint = false;
+
+            var _this = this;
+
+            $("canvas").off("click");
+            $("canvas").on("click", function (event) {
+
+                var i = Number( $("canvas").attr("data-child-index"));
+
+                if(!pointsUpdated[i] && pointArray != undefined){
+                    pointArray = pointArray.map(function (p) {
+                        p.x = p.x * ($("canvas").width());
+                        p.y = p.y * ($("canvas").height());
+                        return p;
+                    });
+                    pointsUpdated[i] = true;
+                }
+				if(hits[i]){
+                    return;
+				}
+				canvas = $(this)[0];
+                var rect = this.getBoundingClientRect();
+                var rect2 = $("canvas")[0].getBoundingClientRect();
+                var x = event.clientX - rect.x;
+                var y = event.clientY - rect.y;
+                var CI = checkIntersection(x, y, pointArray);
+                redraw_points(canvas, pointArray, CI);
+
+                var i = Number( $("canvas").attr("data-child-index"));
+
+                hits[i] = CI;
+
+                var $hint = $("#hint");
+                var $feedback = $("#feedback");
+                var feedback = x_currentPageXML.childNodes[i].getAttribute("feedback");
+                var hint = x_currentPageXML.childNodes[i].getAttribute("hint");
+                feedback = $("<div>").html(feedback).text().trim();
+                if (counter[i] <= attempts) {
+                    if (CI) {
+                        $feedback.append("<h3>" + "Feedback" + "</h3>");
+                        $feedback.append(feedback)
+
+                    } else {
+                        if(gotHint === false){
+
+							$hint.append( "<h3>" + "Hint" + "</h3>");
+                            $hint.append(hint);
+                            gotHint=true;
+						}
+                    }
+
+                }
+
+
+            });
+            pointsUpdated[i]=false;
+            var points = x_currentPageXML.children[i].getAttribute("points");
+            origW = x_currentPageXML.children[i].getAttribute("w");
+            origH = x_currentPageXML.children[i].getAttribute("h");
+            pointArray = JSON.parse(points);
+
+
+            checkIntersection = function (x, y, pointsArray) {
+                // ray-casting algorithm based on
+                // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
+
+                var inside = false;
+
+                for (var i = 0, j = pointsArray.length - 1; i < pointsArray.length; j = i++) {
+                    var xi = pointsArray[i].x, yi = pointsArray[i].y;
+                    var xj = pointsArray[j].x, yj = pointsArray[j].y;
+
+                    var intersect = ((yi > y) !== (yj > y))
+                        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                    if (intersect) inside = !inside;
+                }
+
+                return inside;
+            };
+
+            function redraw_points(canvas, points, isHit) {
+                var x = Number( $("canvas").attr("data-child-index"));
+                counter[x] = Number(counter[x]+1);
+
+
+                var context = canvas.getContext('2d');
+                context.beginPath();
+                context.lineWidth = 1;
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                // context.setLineDash([5, 5]);
+
+                var color = x_currentPageXML.getAttribute("hicol");
+                color = color.replace("0x", "#");
+                for (var i = 0; i < points.length + 1; i++) {
+                    point = points[i % points.length];
+                    if (i == 0) {
+                        context.moveTo(point.x, point.y);
+                    } else {
+                        context.lineTo(point.x, point.y);
+                    }
+                }
+
+                if (counter[x] >= attempts || isHit) {
+                    context.strokeStyle = color;
+                    context.fillStyle = color;
+                    context.globalAlpha = 0.3;
+                    context.fill();
+                    context.globalAlpha = 1;
+                    context.lineWidth = 2;
+                    context.stroke();
+                }
+
+            }
+
+        }
+	};
 	
 	hotspotImage.init();
 	
 </script>
 
 
+
 <div id="pageContents">
 	
 	<div id="panel" class="panel inline">
 		<div id="imageHolder">
-			<img id="image" />
+			<div class="overlayWrapper">
+				<img id="image"/>
+				<canvas class="canvas" data-child-index="-1"></canvas>
+			</div>
+
 			<div id="hsHolder"></div>
 			<div id="btnHolder">
 				<button id="prevHS"></button>
 				<button id="nextHS"></button>
+			</div>
+			<div id="hint">
+
+			</div>
+			<div id="feedback">
+
 			</div>
 		</div>
 	</div>
