@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,19 +30,20 @@
 			lang1,
 			lang2,
 			lang3,
-			
+
 			$pageContents,
 			$groupInfo,
 			$instructions,
-			
+
 			interactionText = "",
 			tempTxt = "",
 			tempTxtPos = 0,
 			tempTag = -1,
 			openTagInfo = [],
+			wrongFinds = 0,
 
-            checked = false;
-		
+			checked = false;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $("#pageContents");
@@ -51,13 +52,15 @@
 			$instructions = $("#instructions");
 			groupInfo = $pageContents.data("groupInfo");
 			subGroups = $pageContents.data("subGroups");
-			
+
 			$("#passage .group").removeClass("on");
+			for(var group = 0; group < groupInfo.length; group++)
+				$("#passage span").removeClass("wrongOn" + group);
 			$groupInfo
 				.html("")
 				.removeAttr("tabindex");
 			$("#btnHolder .listItem").removeClass("highlight");
-			
+
 			if (x_currentPageXML.getAttribute("interactivity") == "explore") {
 				$("#showBtn").hide();
 			} else if (x_currentPageXML.getAttribute("interactivity") == "show2") {
@@ -65,32 +68,34 @@
 				$("#nextBtn").button("enable");
 			} else if (x_currentPageXML.getAttribute("interactivity") == "mcq") {
 				this.createQuiz();
-			} else if (x_currentPageXML.getAttribute("interactivity") == "find") {
-				$("#feedback #countFb").hide();
-				$("#feedback #endFb").html("");
-				
+			} else if (x_currentPageXML.getAttribute("interactivity") == "find" || x_currentPageXML.getAttribute("interactivity") == "find2") {
+				$("#feedback").hide();
+
+				/* this was here, I'm not sure why you would delete the progress of a user when they change pages
 				$pageContents.data({
 					"found" : [],
+					"wrongFound": [],
 					"complete" : []
 				});
 				this.setUpFind(false);
+				*/
 			}
 		};
-		
+
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+
 		};
 
-        this.leavePage = function() {
-            var numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? mcqAnswers.length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? mcqAnswers.length : Number(x_currentPageXML.getAttribute("mcqNumQs"));
-            if (!interactiveText.checked && numQs > 0)
-            {
-                interactiveText.finishTracking();
-            }
-        };
-		
-        this.init = function() {
+		this.leavePage = function() {
+			var numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? mcqAnswers.length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? mcqAnswers.length : Number(x_currentPageXML.getAttribute("mcqNumQs"));
+			if (!interactiveText.checked && numQs > 0)
+			{
+				interactiveText.finishTracking();
+			}
+		};
+
+		this.init = function() {
 			$pageContents = $("#pageContents");
 			$pageContents.data("currentGroup", -1);
 			$groupInfo = $("#groupInfo");
@@ -98,15 +103,15 @@
 			lang1 = x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "moreInfo", "Press space to learn more");
 			lang2 = x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected");
 			lang3 = x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "toSelect", "Press space to select");
-			
+
 			interactionText = x_addLineBreaks(x_currentPageXML.getAttribute("passage"));
-			
+
 			if (x_currentPageXML.getAttribute("text") != "") {
 				$("#pageTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			} else {
 				$("#pageTxt").remove();
 			}
-			
+
 			// layout
 			if (x_currentPageXML.getAttribute("panelWidth") != "full") { // text to go on left with panel on right
 				if (x_browserInfo.mobile != true) {
@@ -128,10 +133,10 @@
 			} else { // text above
 				$("#passageHolder").insertAfter($instructions);
 			}
-			
+
 			var groupStyles = "<style type='text/css'>";
 			var illegalDelims = [];
-			
+
 			// get group info
 			for (var i=0; i<x_currentPageXML.childNodes.length; i++) {
 				if ("&<>;".indexOf(x_currentPageXML.childNodes[i].getAttribute("delimiter")) != -1) {
@@ -143,22 +148,25 @@
 					}
 					group.numSubGroups = 0;
 					groupInfo.push(group);
-					
+
 					var bgColour = x_getColour(group.bgColour);
-					
-					groupStyles += " .group" + i + ".on {color:" + x_blackOrWhite(bgColour) + "; background-color:" + bgColour + ";} ";
-					
+
+					groupStyles += " .group" + i + ".on {color:" + x_blackOrWhite(bgColour) + "; background-color:" + bgColour + "; " + "border-radius: 2px ;}";
+					if (x_currentPageXML.getAttribute("interactivity") == "find")
+						bgColour = 'red';
+					groupStyles += ".wrongOn" + i + "  {color:" + x_blackOrWhite(bgColour) + "; background-color:" + bgColour + "; " + "border-radius: 2px; padding-top: 5px}";
+
 					if (x_currentPageXML.getAttribute("highlight") == "true" && x_currentPageXML.getAttribute("interactivity") != "mcq" && x_currentPageXML.getAttribute("interactivity") != "find") {
 						$pageContents.addClass("line");
 						groupStyles += " .group" + i + " {border-bottom: 2px solid " + x_getColour(group.bgColour) + ";} ";
 					}
 				}
 			}
-			
+
 			groupStyles += "#pageContents a.listItem:link, #passageHolder a.listItem:visited, #passageHolder a.listItem:hover, #passageHolder a.listItem:active { color: " + $x_body.css("color") + "; } ";
 			groupStyles += "</style>";
 			$pageContents.prepend($(groupStyles));
-			
+
 			if (illegalDelims.length > 0) {
 				var str1 = "",
 					str2 = "";
@@ -177,19 +185,19 @@
 				delimiterErrorMsg = delimiterErrorMsg.replace("{n}", str1).replace("{m}", str2);
 				$("#pageContents").prepend('<p class="alert">' + delimiterErrorMsg + '</p>');
 			}
-			
+
 			// get info about position of every delimiter in every group - create subgroups from these with an opening & closing delimiter
 			for (var i=0; i<groupInfo.length; i++) {
 				var temp = interactionText,
 					index = 0,
 					open = true,
 					count = 0;
-								
+
 				if (temp.indexOf(groupInfo[i].delimiter) != -1) {
 					while (temp.indexOf(groupInfo[i].delimiter) != -1) {
 						var tempIndex = temp.indexOf(groupInfo[i].delimiter);
 						index = index + tempIndex;
-						
+
 						if (!(groupInfo[i].delimiter == "#" && temp.indexOf("&#") != -1 && temp.indexOf("&#") + 1 == tempIndex)) { // ignore if fits this as it's likely to be a html code not delimiter
 							if (open == true) {
 								var subGroup = new Object({
@@ -199,87 +207,148 @@
 									overlap:[]
 								});
 								subGroups.push(subGroup);
-								
+
 								count++;
 								open = false;
 							} else {
 								subGroups[subGroups.length-1].close = index;
 								open = true;
+
 							}
 						}
-						
+
 						temp = temp.substring(tempIndex + groupInfo[i].delimiter.length);
 						index += groupInfo[i].delimiter.length;
 					}
-					
+
 					// if the last delimiter isn't closed then ignore it
 					if (subGroups[subGroups.length-1].close == undefined) {
 						subGroups.pop();
 					}
 				}
-				
+
 				groupInfo[i].numSubGroups = count;
 			}
-			
+
 			// sort subgroups by opening tag position
 			subGroups.sort(function(a, b) { return a.open - b.open; });
-			
+
 			// check for any overlaps within subgroups (because spans can't overlap we will need to add some extra tags in to display them properly)
 			for (var i=0; i<subGroups.length; i++) {
 				var thisOpen = subGroups[i].open,
 					thisClose = subGroups[i].close;
-				
+
 				for (var j=0; j<subGroups.length - (i + 1); j++) { // check against every subsequent subgroups
 					var thatOpen = subGroups[j + i + 1].open,
 						thatClose = subGroups[j + i + 1].close;
-					
+
 					if (thisOpen < thatOpen && thisClose > thatOpen && thisClose < thatClose) {
 						subGroups[i].overlap.push(j + i + 1);
 					}
 				}
 			}
-			
-			if (x_currentPageXML.getAttribute("interactivity") == "show" || x_currentPageXML.getAttribute("interactivity") == "find") {
+
+			if (x_currentPageXML.getAttribute("interactivity") == "show" || x_currentPageXML.getAttribute("interactivity") == "find" || x_currentPageXML.getAttribute("interactivity") == "find2") {
 				tabIndex = tabIndex + groupInfo.length;
 			} else if (x_currentPageXML.getAttribute("interactivity") == "mcq") {
 				tabIndex--;
 				$instructions.remove();
 			}
-			
+
 			// insert span tags into interactionText
 			while (tempTxtPos != interactionText.length) {
 				this.createTags();
 			}
-			
 			interactionText = tempTxt;
+
 			$("#passage").html(interactionText);
-			
+
+			if (x_currentPageXML.getAttribute("interactivity") == "find" || x_currentPageXML.getAttribute("interactivity") == "find2"){
+				// Make every regular word a span so that they can be counted as wrong answers
+				var passage = $("#passage").children("p")[0];
+				var passageArray = passage.childNodes;
+				for (var i = 0; i < passageArray.length; i++){
+					if (passageArray[i].nodeName == "#text"){
+						var textArray = passageArray[i].textContent.split(/(\s+)/);
+						var newNodeArray = [];
+						for (var j = 0; j < textArray.length; j++){
+							if ( $.trim( textArray[j] ) != '' ){
+								var newNode = document.createElement('SPAN');
+								newNode.innerHTML = textArray[j];
+								newNode.className += 'wrongWord';
+								newNodeArray.push(newNode);
+							}else{
+								var newNode = document.createTextNode(textArray[j]);
+								newNodeArray.push(newNode);
+							}
+						}
+						debugger;
+						for (var k = 0; k < newNodeArray.length; k++) {
+							passage.insertBefore(newNodeArray[k], passageArray[i+k])
+						}
+						i += newNodeArray.length;
+						passageArray[i].remove();
+					}
+				}
+				correctOptions = [];
+				correctAnswers = [];
+				var index = 0;
+				$("#passage span").each(function(){
+					var span = $(this);
+					span.attr("data-index", index);
+					span.attr("tabindex", tabIndex + index);
+
+					if (span.hasClass("group")){
+						var groupNumber = parseInt(span.attr("class")[span.attr("class").length - 1]);
+						var groupName = groupInfo[groupNumber].name;
+						//correctOptions.push("Group: " + groupName + "; Text: " + span.text() + "; Index: " + span.attr("data-index"));
+						correctOptions.push(
+							{
+								source: groupName,
+								target: span.attr("data-index") + ": " + span.text()
+							}
+						)
+						correctAnswers.push(groupName + " --> " + span.attr("data-index") + ": " + span.text());
+					}
+					index++;
+				});
+
+				if (x_currentPageXML.getAttribute("interactivity") == "find2"){
+					// Track the page
+					this.weighting = 1.0;
+					if (x_currentPageXML.getAttribute("trackingWeight") != undefined){
+						this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+					}
+					XTSetPageType(x_currentPage, 'numeric', groupInfo.length, this.weighting);
+				}
+			}
+
 			$pageContents.data({
 				"groupInfo": groupInfo,
 				"subGroups": subGroups
 			});
-			
+
 			this.setUpInteraction();
-			
-			x_pageLoaded(); 
+
+			x_pageLoaded();
 		};
-		
+
 		this.createTags = function() {
 			if (openTagInfo.length == 0) { // there are no tags currently open...
 				if (subGroups.length - 1 == tempTag) { // ...no more tags to add
 					tempTxt += interactionText.substring(tempTxtPos);
 					tempTxtPos = interactionText.length;
-					
+
 				} else { // ...insert next tag
 					this.openTag();
 				}
-				
+
 			} else { // there are some tags already open...
 				var toClose = openTagInfo[0];
 				for (var i=0; i<openTagInfo.length-1; i++) {
 					toClose = subGroups[openTagInfo[i+1]].close < subGroups[toClose].close ? openTagInfo[i+1] : toClose;
 				}
-				
+
 				if (subGroups.length - 1 == tempTag || subGroups[toClose].close < subGroups[tempTag + 1].open) { // ...close a tag (ensuring no overlapping tags)
 					tempTxt += interactionText.substring(tempTxtPos, subGroups[toClose].close);
 					for (var j=0; j<subGroups[toClose].overlap.length; j++) {
@@ -294,13 +363,13 @@
 					openTagInfo = jQuery.grep(openTagInfo, function(value) {
 						return value != toClose;
 					});
-					
+
 				} else { //...open another tag
 					this.openTag();
 				}
 			}
 		};
-		
+
 		this.openTag = function() {
 			tabIndex++;
 			tempTag++;
@@ -309,32 +378,31 @@
 			tempTxtPos = subGroups[tempTag].open + subGroups[tempTag].delim.length;
 			openTagInfo.push(tempTag);
 		};
-		
+
 		this.setUpInteraction = function() {
 			var intType = x_currentPageXML.getAttribute("interactivity");
 			$pageContents.addClass(intType);
-			
 			// --- EXPLORE ---
 			// click any subgroup - you then get info about the group it falls into, with the option of showing all related subgroups
 			if (intType == "explore") {
 				$('<button id="showBtn"></button>')
 					.appendTo("#btnHolder")
 					.hide();
-				
+
 				var instructions = x_currentPageXML.getAttribute("exploreTxt") != undefined ? x_currentPageXML.getAttribute("exploreTxt") : "Explore the text. Click on a section to learn more.";
 				$instructions.html('<p>' + instructions + '</p>');
-				
-				
+
+
 				$("#passage").click(function(e) {
 					var $this = $(this);
 					$this.find(".group")
 						.removeClass("on")
 						.removeAttr("title");
-					
+
 					if ($(e.target).hasClass("group")) {
 						var clicked = $.merge($(e.target), $(e.target).parents(".group"));
 						interactiveText.clickExplore($(clicked[0]));
-						
+
 					} else {
 						$pageContents.data("currentGroup", -1);
 						$groupInfo
@@ -343,12 +411,12 @@
 						$("#showBtn").hide();
 					}
 				});
-				
+
 				$("#passage .group")
 					.focusin(function(e) {
 						var $this = $(this);
 						$this.addClass("highlight");
-						
+
 						if (!$this.hasClass("on")) {
 							$(this).attr("title", lang1);
 						}
@@ -356,7 +424,7 @@
 					.focusout(function() {
 						var $this = $(this);
 						$this.removeClass("highlight");
-						
+
 						if (!$this.hasClass("on")) {
 							$this.removeAttr("title");
 						}
@@ -367,11 +435,11 @@
 							$("#passage").find(".group")
 								.removeClass("on")
 								.removeAttr("title");
-							
+
 							interactiveText.clickExplore($(this));
 						}
 					});
-				
+
 				$("#showBtn")
 					.button({
 						label:	(x_currentPageXML.getAttribute("showBtnTxt") != undefined ? x_currentPageXML.getAttribute("showBtnTxt") : "Show All")
@@ -379,19 +447,19 @@
 						$("#passage .group" + $pageContents.data("currentGroup"))
 							.addClass("on")
 							.attr("title", lang2 + ": " + groupInfo[$pageContents.data("currentGroup")].name);
-						
+
 						$(this).hide();
 					});
-			
-			
+
+
 			// --- SHOW ME (BY NAME) ---
 			// group names are shown and subgroups are highlighted when a group is selected
 			} else if (intType == "show") {
 				$instructions.html('<p>' + (x_currentPageXML.getAttribute("showMeTxt2") != undefined ? x_currentPageXML.getAttribute("showMeTxt2") : "Click a group to learn more.") + '</p>');
-				
+
 				var $btnHolder = $("#btnHolder");
 				$btnHolder.insertBefore($("#passage"));
-				
+
 				for (var i=0; i<groupInfo.length; i++) {
 					var $groupBtn = $('<a/>');
 					$groupBtn
@@ -402,36 +470,36 @@
 							"href"		: "#group" + i
 							})
 						.data("index", i);
-					
+
 					$btnHolder.append($groupBtn);
 				}
-				
+
 				$btnHolder.find(".listItem")
 					.click(function() {
 						var index = $(this).data("index");
-						
+
 						if ($pageContents.data("currentGroup") != index) {
 							$("#btnHolder .listItem.highlight").removeClass("highlight");
 							$("#passage .group")
 								.removeClass("on")
 								.removeAttr("title");
-							
+
 							$(this).addClass("highlight");
 							$("#passage .group" + index)
 								.addClass("on")
 								.attr("title", lang2 + ": " + groupInfo[index].name);
-							
+
 							$groupInfo
 								.hide()
 								.html('<h3>' + groupInfo[index].name + '</h3>' + x_addLineBreaks(groupInfo[index].text))
 								.attr("tabindex", tabIndex++)
 								.fadeIn();
-							
+
 							$pageContents.data("currentGroup", index);
 						}
 					});
-				
-				
+
+
 			// --- SHOW ME (IN ORDER) ---
 			// next/prev buttons show details of each group in turn, highlighting relevant subgroups
 			} else if (intType == "show2") {
@@ -439,12 +507,12 @@
 				$("#btnHolder")
 					.html('<button id="nextBtn"></button><button id="prevBtn"></button>')
 					.insertAfter($("#passage"));
-				
+
 				var btnTxt = [
 					x_currentPageXML.getAttribute("nextTxt") != undefined ? x_currentPageXML.getAttribute("nextTxt") : "Next",
 					x_currentPageXML.getAttribute("prevTxt") != undefined ? x_currentPageXML.getAttribute("prevTxt") : "Previous"
 				];
-				
+
 				$("#nextBtn")
 					.button({
 						icons: {
@@ -456,30 +524,30 @@
 					.click(function() {
 						var currentGroup = $pageContents.data("currentGroup");
 						currentGroup++;
-						
+
 						$("#passage .group")
 							.removeClass("on")
 							.removeAttr("title");
-							
+
 						$("#passage .group" + currentGroup)
 							.addClass("on")
 							.attr("title", lang2 + ": " + groupInfo[currentGroup].name);
-						
+
 						$groupInfo
 							.hide()
 							.html('<h3>' + groupInfo[currentGroup].name + '</h3>' + x_addLineBreaks(groupInfo[currentGroup].text))
 							.attr("tabindex", tabIndex+3)
 							.fadeIn();
-						
+
 						if (currentGroup == groupInfo.length - 1) {
 							$(this).button("disable");
 						}
 						$("#prevBtn").button("enable");
-						
+
 						$pageContents.data("currentGroup", currentGroup);
 					})
 					.attr("tabindex", tabIndex+1);
-				
+
 				$("#prevBtn")
 					.button({
 						icons: {
@@ -495,7 +563,7 @@
 						$("#passage .group")
 							.removeClass("on")
 							.removeAttr("title");
-						
+
 						if (currentGroup == -1) {
 							$(this).button("disable");
 							$groupInfo
@@ -505,7 +573,7 @@
 							$("#passage .group" + currentGroup)
 								.addClass("on")
 								.attr("title", lang2 + ": " + groupInfo[currentGroup].name);
-							
+
 							$groupInfo
 								.hide()
 								.html('<h3>' + groupInfo[currentGroup].name + '</h3>' + x_addLineBreaks(groupInfo[currentGroup].text))
@@ -513,99 +581,138 @@
 								.fadeIn();
 						}
 						$("#nextBtn").button("enable");
-						
+
 						$pageContents.data("currentGroup", currentGroup);
 					})
 					.attr("tabindex", tabIndex+2);
-				
-				
+
+
 			// --- FIND ---
 			// select a group and then click to find all of its subgroups
-			} else if (intType == "find") {
-				$pageContents.data({
-					"found" : [],
-					"complete" : [],
-					"findTxt2" : x_currentPageXML.getAttribute("findTxt2") != undefined ? x_currentPageXML.getAttribute("findTxt2") : "You have found {i} of {n}"
-				});
-				
+			} else if (intType == "find" || intType=="find2") {
+				if (intType == "find"){
+					$pageContents.data({
+						"found" : [],
+						"wrongFound": [],
+						"complete" : [],
+						"findTxt2" : x_currentPageXML.getAttribute("findTxt2") != undefined ? x_currentPageXML.getAttribute("findTxt2") : "You have found {i} of {n}"
+					});
+				}else{
+					$pageContents.data({
+						"found" : [],
+						"wrongFound": [],
+						"complete" : [],
+						"findTxt2" : "You have selected {i} of {n}"
+					});
+				}
+
 				var $btnHolder = $("#btnHolder");
 				$btnHolder.insertBefore($("#passage"));
 				$("#questionHolder").hide();
-				
+
 				var count = this.setUpFind(true);
-				
+
 				$("#feedback")
 					.insertAfter($("#passage"))
-					.html('<div id="countFb"></div><div id="endFb"/>')
 					.attr("tabindex", tabIndex+1);
-				
+
+				//If the type is Find(Mark at End), add a button to let the user finish up
+				if (intType=="find2"){
+					$("<button disabled id = markAtEnd> Mark as Finished</button>").insertAfter($("#feedback"));
+				}
+
 				// there's only one group marked up - no need for listItems
 				if (count == 1) {
 					var currentGroup = $("#btnHolder .listItem").data("index");
 					$("#btnHolder .listItem").remove();
 					$instructions.html('<p>' + (x_currentPageXML.getAttribute("findTxt3") != undefined ? x_currentPageXML.getAttribute("findTxt3") : "Can you find all of the examples?") + '</p>');
-					
+
 					$groupInfo
 						.hide()
 						.html('<h3>' + groupInfo[currentGroup].name + '</h3>' + x_addLineBreaks(groupInfo[currentGroup].text))
 						.attr("tabindex", tabIndex+2)
 						.fadeIn();
-					
-					$("#feedback #countFb")
-						.html('<p>' + $pageContents.data("findTxt2").replace("{i}", $pageContents.data("found")[currentGroup].length).replace("{n}", groupInfo[currentGroup].numSubGroups) + '</p>')
-						.show();
-					
+
+					if (intType == "find"){
+						$("#feedback")
+							.html('<p>' + $pageContents.data("findTxt2")
+								.replace("{i}", $pageContents.data("found")[currentGroup].length)
+								.replace("{n}", groupInfo[currentGroup].numSubGroups) + '</p>')
+							.show();
+					} else if (intType == "find2"){
+						$("#feedback")
+							.html('<p>' + $pageContents.data("findTxt2")
+								.replace("{i}", $pageContents.data("found")[currentGroup].length + $pageContents.data("wrongFound")[currentGroup].length)
+								.replace("{n}", groupInfo[currentGroup].numSubGroups) + '</p>')
+							.show();
+					}
 					$pageContents.data("currentGroup", currentGroup);
 				} else {
 					$instructions.html('<p>' + (x_currentPageXML.getAttribute("findTxt") != undefined ? x_currentPageXML.getAttribute("findTxt") : "Click a group to begin, then click the text to find all examples.") + '</p>');
 				}
-				
+
 				$("#btnHolder .listItem").click(function() {
 					var index = $(this).data("index"),
 						currentGroup = $pageContents.data("currentGroup");
-					
+
 					if (currentGroup != index) {
 						currentGroup = index;
-						
 						$("#btnHolder .listItem.highlight").removeClass("highlight");
 						$(this).addClass("highlight");
-						
+
 						$groupInfo
 							.hide()
 							.html('<h3>' + groupInfo[index].name + '</h3>' + x_addLineBreaks(groupInfo[index].text))
 							.attr("tabindex", tabIndex+2)
 							.fadeIn();
-						
+
 						if ($.inArray(0, $pageContents.data("complete")) != -1) {
-							$("#feedback #countFb")
-								.hide()
-								.html('<p>' + $pageContents.data("findTxt2").replace("{i}", $pageContents.data("found")[currentGroup].length).replace("{n}", groupInfo[currentGroup].numSubGroups) + '</p>')
-								.fadeIn();
+							if (intType == "find"){
+								$("#feedback")
+									.html('<p>' + $pageContents.data("findTxt2")
+										.replace("{i}", $pageContents.data("found")[currentGroup].length)
+										.replace("{n}", groupInfo[currentGroup].numSubGroups) + '</p>')
+									.show();
+							} else if (intType == "find2"){
+								$("#feedback")
+									.html('<p>' + $pageContents.data("findTxt2")
+										.replace("{i}", $pageContents.data("found")[currentGroup].length + $pageContents.data("wrongFound")[currentGroup].length)
+										.replace("{n}", groupInfo[currentGroup].numSubGroups) + '</p>')
+									.show();
+							}
 						}
-						
+
+						// remove all highlights
 						$("#passage .group")
 							.removeClass("on")
 							.removeAttr("title");
-						
+
+						for (var group = 0; group < groupInfo.length; group++){
+							$("#passage span").removeClass("wrongOn" + group);
+						}
+
+						// add correct highlights for this group
 						for (var i=0; i<$pageContents.data("found")[index].length; i++) {
 							$("#passage .group" + currentGroup + "[data-index=" + $pageContents.data("found")[index][i] + "]")
 								.addClass("on")
 								.attr("title", lang2 + ": " + groupInfo[currentGroup].name);
 						}
-						
+
+						for (var i=0; i<$pageContents.data("wrongFound")[index].length; i++) {
+							$(".wrongGroup"+  currentGroup + "[data-index=" + $pageContents.data("wrongFound")[index][i] + "]")
+								.addClass("wrongOn" + currentGroup)
+						}
+
+						var passageList = $('#passage').children()[0].childNodes;
+
 						$pageContents.data("currentGroup", currentGroup);
 					}
 				});
-				
+
 				$("#passage").click(function(e) {
-					if ($(e.target).hasClass("group")) {
-						var clicked = $.merge($(e.target), $(e.target).parents(".group"));
-						for (var i=0; i<clicked.length; i++) {
-							interactiveText.clickFind($(clicked[i]));
-						}
-					}
+					interactiveText.clickFind($(e.target))
 				});
-				
+
 				$("#passage .group")
 					.focusin(function(e) {
 						if (!$(this).hasClass("on")) {
@@ -627,12 +734,13 @@
 							}
 						}
 					});
-			
-			
+
+				$("#markAtEnd").click(function () { interactiveText.endFindInteraction()});
+
 			// --- MCQ ---
 			// quiz asks what is highlighted
 			} else if (intType == "mcq") {
-				
+
 				// set up dialog object for later if it hasn't already been set up on another page of this type
 				// xenith.js contains the function used for creating/attaching dialogs - x_openDialog()
 				var newDialog = true;
@@ -652,14 +760,14 @@
 				var phrases = {},
 					langOptions = ["mcqText", "mcqQuesCount", "mcqCorrect", "mcqWrong", "mcqFeedback", "mcqMore", "mcqScore", "mcqBtnTxt", "mcqBtnTxt2", "mcqBtnTxt3", "mcqDialogClose"],
 					defaultText = ["What is highlighted in the text? Choose from the following options:", "Question {i} of {n}", "That's right.", "No, the correct answer is {i}.", "You have completed the quiz.", "More Information", "You scored {i} / {n}", "Check", "Next", "Restart", "Close"];
-				
+
 				for (var i=0; i<langOptions.length; i++) {
 					phrases[langOptions[i]] = x_currentPageXML.getAttribute(langOptions[i]) != undefined ? x_currentPageXML.getAttribute(langOptions[i]) : defaultText[i];
 				}
 				$pageContents.data("phrases", phrases);
-				
+
 				$("#questionHolder").html('<h3 id="qNum" tabindex="' + (tabIndex+1) + '"></h3><div id="qText" tabindex="' + (tabIndex+2) + '"><p>' + phrases.mcqText + '</p></div><div id="optionHolder"></div>');
-				
+
 				$("#feedback")
 					.html('<div id="marking"><a id="more" class="fa fa-x-info-circle fa-lg" title="' + phrases.mcqMore + '" href="#"/></div>')
 					.appendTo($("#questionHolder"))
@@ -668,48 +776,48 @@
 						var mcqAnswers = $pageContents.data("mcqAnswers"),
 							mcqCurrentQ = $pageContents.data("mcqCurrentQ"),
 							correctGroup = x_currentPageXML.getAttribute("mcqType") == "all" ? mcqAnswers[mcqCurrentQ] : subGroups[mcqAnswers[mcqCurrentQ]].ref;
-						
+
 						x_openDialog("interactiveText", groupInfo[correctGroup].name, $pageContents.data("phrases").mcqDialogClose, {left:"center", top:"middle", width:undefined, height:undefined}, x_addLineBreaks(groupInfo[correctGroup].text));
 					});
-				
+
 				$("#btnHolder")
 					.html('<button id="quizBtn"></button>')
 					.appendTo($("#questionHolder"))
 					.after($groupInfo);
-				
+
 				$("#quizBtn")
 					.button()
 					.click(function() {
 						var mcqAnswers = $pageContents.data("mcqAnswers"),
 							mcqCurrentQ = $pageContents.data("mcqCurrentQ"),
-                            correct,
-                            l_options = [],
-                            l_answer = [],
-                            l_feedback = [];
-						
+							correct,
+							l_options = [],
+							l_answer = [],
+							l_feedback = [];
+
 						$(".x_popupDialog").parent().detach();
-						
+
 						if ($(this).data("state") == 0) { // check
 							var correctGroup = x_currentPageXML.getAttribute("mcqType") == "all" ? mcqAnswers[mcqCurrentQ] : subGroups[mcqAnswers[mcqCurrentQ]].ref;
-							
+
 							var $moreInfo = $("#more");
 							$moreInfo.remove();
 
-                            l_options.push(parseInt($("#optionHolder input:checked").val()) + 1 + "");
-                            l_answer.push(mcqAnswerOptions[$("#optionHolder input:checked").val()]['text']);
-                            l_feedback.push($("#marking").text().trim());
+							l_options.push(parseInt($("#optionHolder input:checked").val()) + 1 + "");
+							l_answer.push(mcqAnswerOptions[$("#optionHolder input:checked").val()]['text']);
+							l_feedback.push($("#marking").text().trim());
 
-                            $("#optionHolder input").prop('disabled', true);
+							$("#optionHolder input").prop('disabled', true);
 
 							if (correctGroup == $("#optionHolder input:checked").val()) {
 								$("#marking").html('<p>' + $pageContents.data("phrases").mcqCorrect + '</p>');
 								$pageContents.data("mcqScore", $pageContents.data("mcqScore") + 1);
-                                correct = true;
+								correct = true;
 							} else {
 								$("#marking").html('<p>' + $pageContents.data("phrases").mcqWrong.replace("{i}", groupInfo[correctGroup].name) + '</p>');
-                                correct = false;
+								correct = false;
 							}
-							
+
 							$("#marking").children().last().append($moreInfo);
 							$("#feedback").show();
 							if ($("<div/>").html(groupInfo[correctGroup].text).text().trim() != "") {
@@ -718,16 +826,16 @@
 								$("#more").hide();
 							}
 
-                            var result = {
-                                success: correct,
-                                score: correct ? 100.0 : 0.0
-                            };
-                            XTExitInteraction(x_currentPage, mcqCurrentQ, result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
+							var result = {
+								success: correct,
+								score: correct ? 100.0 : 0.0
+							};
+							XTExitInteraction(x_currentPage, mcqCurrentQ, result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
 
 							$(this)
 								.button({"label":$pageContents.data("phrases").mcqBtnTxt2})
 								.data("state", 1);
-							
+
 						} else if ($(this).data("state") == 1) { // next
 							if (mcqCurrentQ + 1 == mcqAnswers.length) {
 								$("#passage .group")
@@ -749,19 +857,18 @@
 								$("#feedback").show();
 
 								if (XTGetMode() == "normal")
-                                {
-                                    $(this)
-                                        .button("disable").hide()
-                                        .data("state", 2);
-                                }
-                                else {
-                                    $(this)
-                                        .button({"label": $pageContents.data("phrases").mcqBtnTxt3})
-                                        .data("state", 2);
-                                }
+								{
+									$(this)
+										.button("disable").hide()
+										.data("state", 2);
+								}
+								else {
+									$(this)
+										.button({"label": $pageContents.data("phrases").mcqBtnTxt3})
+										.data("state", 2);
+								}
 
-                                interactiveText.finishTracking();
-
+								interactiveText.finishTracking();
 							} else {
 								interactiveText.createQ();
 							}
@@ -769,51 +876,52 @@
 							interactiveText.createQuiz();
 						}
 					});
-				
 				this.createQuiz();
 			}
 		};
-		
+
 		// only used in explore interaction - triggered when subgroup selected (with or without mouse)
 		this.clickExplore = function($this) {
 			var index = $this.data("index"),
 				currentGroup = $pageContents.data("currentGroup"),
 				prevGroup = currentGroup;
-			
+
 			currentGroup = subGroups[index].ref;
-			
+
 			$("#passage").find(".group[data-index='" + index + "']")
 				.addClass("on")
 				.attr("title", lang2 + ": " + groupInfo[currentGroup].name);
-			
+
 			$("#passage .group").removeClass("highlight");
-			
+
 			if (prevGroup != currentGroup) {
 				$groupInfo
 					.hide()
 					.html('<h3>' + groupInfo[currentGroup].name + '</h3>' + x_addLineBreaks(groupInfo[currentGroup].text))
 					.attr("tabindex", tabIndex++)
 					.fadeIn();
-				
+
 				$("#showBtn").hide();
 			}
-			
+
 			// button offers option of viewing all related subgroups
 			if ($("#passage").find(".group" + currentGroup).length > 1) {
 				$("#showBtn").fadeIn();
 			} else {
 				$("#showBtn").hide();
 			}
-			
+
 			$pageContents.data("currentGroup", currentGroup);
 		};
-		
+
 		// only used in find interactions - sets up arrays to hold found/complete data & create buttons
 		this.setUpFind = function(firstLoad) {
 			var count = 0;
 			for (var i=0; i<groupInfo.length; i++) {
-				$pageContents.data("found").push([]);
-				
+				if(firstLoad){
+					$pageContents.data("found").push([]);
+					$pageContents.data("wrongFound").push([]);
+				}
 				if (groupInfo[i].numSubGroups > 0) {
 					if (firstLoad == true) {
 						var $groupBtn = $('<a/>');
@@ -825,10 +933,10 @@
 								"href"		: "#group" + i
 								})
 							.data("index", i);
-						
+
 						$("#btnHolder").append($groupBtn);
 					}
-					
+
 					count++;
 					$pageContents.data("complete").push(0);
 				} else {
@@ -837,42 +945,159 @@
 			}
 			return count;
 		};
-		
+
 		// only used in find interaction - triggered when subgroup selected (with or without mouse)
 		this.clickFind = function($this) {
 			var currentGroup = $pageContents.data("currentGroup");
-			if ($this.hasClass("group" + currentGroup) && !$this.hasClass("on")) {
-				$this
-					.addClass("on")
-					.attr("title", lang2 + ": " + groupInfo[currentGroup].name);
-				
-				$pageContents.data("found")[currentGroup].push($this.data("index"));
-				$("#feedback #countFb")
-					.html('<p>' + $pageContents.data("findTxt2").replace("{i}", $pageContents.data("found")[currentGroup].length).replace("{n}", groupInfo[currentGroup].numSubGroups) + '</p>')
-					.show();
-				
-				if ($pageContents.data("found")[currentGroup].length == groupInfo[currentGroup].numSubGroups) {
-					$pageContents.data("complete").splice(currentGroup, 1, 1);
-					if ($.inArray(0, $pageContents.data("complete")) == -1) {
-						$("#feedback #countFb").hide();
-						$("#feedback #endFb").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "Well done! You have completed this activity.") + '</p>');
+			var intType = x_currentPageXML.getAttribute("interactivity");
+			if (currentGroup != -1){ // If no group is selected, do nothing.
+
+				// If the user wants to undo their choice:
+				if ($this.hasClass("on")){
+					$this.removeClass("on");
+					var arr = $pageContents.data("found")[currentGroup];
+					arr.splice(arr.indexOf($this.data("index")), 1);
+				} else if ($this.hasClass("wrongOn" + currentGroup)){
+					$this.removeClass("wrongOn" + currentGroup);
+					$this.removeClass("wrongGroup" + currentGroup);
+					var arr = $pageContents.data("wrongFound")[currentGroup];
+					arr.splice(arr.indexOf($this.data("index")), 1);
+				}
+				// if the clicked word is a "wrongWord" count it as wrong.
+				else if ($this.hasClass('wrongWord') && !$this.hasClass('group')){
+					markWrong($this, intType, currentGroup);
+				}
+
+				else if ($this.hasClass('group')){
+					var clicked = $.merge($this, $this.parents(".group"));
+					var wrong = true;
+					if (!checkComplete(intType, currentGroup)){
+						for (var i=0; i<clicked.length; i++) {
+							if ($(clicked[i]).hasClass("group" + currentGroup)) {
+								wrong = false;
+
+								if(!$(clicked[i]).hasClass('on')){
+									$(clicked[i])
+										.addClass("on")
+										.attr("title", lang2 + ": " + groupInfo[currentGroup].name);
+
+									//Add found (correct) answer to the found array
+									$pageContents.data("found")[currentGroup].push($(clicked[i]).data("index"));
+								}
+
+								break; // break out of loop when one correct answer is found, no need to check further parents, this would only result in false negatives
+							} else if (!$(clicked[i]).hasClass("on")) {
+								$(clicked[i]).removeAttr("title");
+							}
+						}
+					}
+					// if a grouped word was clicked, but it and its parents belong to the wrong group, count it as wrong.
+					if (wrong && !$this.hasClass('wrongWord')){
+						markWrong($this, intType, currentGroup);
 					}
 				}
-			} else if (!$this.hasClass("on")) {
-				$this.removeAttr("title");
+
+				//TODO: zorg dat hier completed goed werkt voor beide find interactivities
+				if (intType == "find"){
+					$("#feedback")
+								.html('<p>' + $pageContents.data("findTxt2")
+								.replace("{i}", $pageContents.data("found")[currentGroup].length)
+								.replace("{n}", groupInfo[currentGroup].numSubGroups) + '</p>')
+								.show();
+
+					// If all answers in this groups are found:
+					if ($pageContents.data("found")[currentGroup].length == groupInfo[currentGroup].numSubGroups) {
+						// Put a 1 in the complete array on the index of this group
+						$pageContents.data("complete").splice(currentGroup, 1, 1);
+
+						// If there are no more 0's in the "complete array" (aka everything is complete)
+						if ($.inArray(0, $pageContents.data("complete")) == -1) {
+							$("#feedback").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "Well done! You have completed this activity.") + '</p>');
+						}
+					}
+				} else if (intType == "find2"){
+					$("#feedback")
+								.html('<p>' + $pageContents.data("findTxt2")
+								.replace("{i}", $pageContents.data("found")[currentGroup].length + $pageContents.data("wrongFound")[currentGroup].length)
+								.replace("{n}", groupInfo[currentGroup].numSubGroups) + '</p>')
+								.show();
+
+					// If there are as many selections made as there are right answers to be found in this group:
+					if ($pageContents.data("found")[currentGroup].length + $pageContents.data("wrongFound")[currentGroup].length == groupInfo[currentGroup].numSubGroups) {
+						// Put a 1 in the complete array on the index of this group:
+						$pageContents.data("complete").splice(currentGroup, 1, 1);
+
+						// If there are no more 0's in the "complete array" (aka everything is complete)
+						if ($.inArray(0, $pageContents.data("complete")) == -1) {
+							$("#feedback").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "Well done! You have completed this activity.") + '</p>');
+							$("#markAtEnd").prop("disabled", false);
+						}
+					}
+				}
 			}
 		};
-		
+
+		//TODO: maak per group een multiple choice aan waarbij
+		//de goede antwoorden goed zijn en de verkeerde antwoorden die de gebruiker heeft gekozen als foute opties zijn ingesteld
+		this.endFindInteraction = function() {
+			//$pageContents.data("found")[currentGroup].length == groupInfo[currentGroup].numSubGroups
+			var correctFound = $pageContents.data("found");
+			var incorrectFound = $pageContents.data("wrongFound");
+			var groupInfo = $pageContents.data("groupInfo");
+			l_options = [];
+			l_answers = [];
+			for (var group = 0; group < correctFound.length; group++){
+
+				var groupName = groupInfo[group].name;
+				XTEnterInteraction(x_currentPage, group, 'matching', groupName, correctOptions, correctAnswers, [], x_currentPageXML.getAttribute("grouping"));
+
+				for (var i = 0; i < correctFound[group].length; i++){
+					debugger;
+					var span = $('*[data-index=' + correctFound[group][i]+ ']')
+					l_options.push(
+						{
+							source: groupName,
+							target: correctFound[group][i] + ": " + span.text()
+						}
+					);
+					l_answers.push(groupName + " --> " + span.attr("data-index") + ": " + span.text());
+				}
+				XTExitInteraction(x_currentPage, group, [], l_options, l_answers, []);
+			}
+			//XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswers, feedback)
+
+		};
+
+		function markWrong(target, intType, currentGroup){
+			if (checkComplete(intType, currentGroup)){
+				return;
+			}
+			if (!$(target).hasClass("wrongGroup" + currentGroup + " wrongOn" + currentGroup)){
+				$(target).addClass("wrongGroup" + currentGroup + " wrongOn" + currentGroup);
+
+				$pageContents.data("wrongFound")[currentGroup].push($(target).data("index"))
+			}
+		};
+
+
+		function checkComplete(intType, currentGroup){
+			if (intType == "find"){
+				return ($pageContents.data("found")[currentGroup].length >= groupInfo[currentGroup].numSubGroups);
+			}else if (intType == "find2"){
+				return ($pageContents.data("found")[currentGroup].length + $pageContents.data("wrongFound")[currentGroup].length >= groupInfo[currentGroup].numSubGroups);
+			}
+		};
+
 		// only used in mcq interaction - creates new quiz
 		this.createQuiz = function() {
 			mcqCurrentQ = -1;
 			mcqAnswers.length = 0;
 			mcqAnswerOptions.length = 0;
-			
+
 			$("#qText").show();
 			$("#questionHolder").show();
 			$("#feedback").hide();
-			
+
 			// highlight shown for question can be either for all group or an individual sub group
 			if (x_currentPageXML.getAttribute("mcqType") == "all") {
 				for (var i=0; i<groupInfo.length; i++) {
@@ -884,14 +1109,14 @@
 				}
 			}
 			x_shuffleArray(mcqAnswers);
-			
+
 			var numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? mcqAnswers.length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? mcqAnswers.length : Number(x_currentPageXML.getAttribute("mcqNumQs"));
 			mcqAnswers = mcqAnswers.slice(0, numQs);
-			
+
 			for (var i=0; i<groupInfo.length; i++) {
 				mcqAnswerOptions.push({index:i, text:groupInfo[i].name});
 			}
-			
+
 			$pageContents.data({
 				"mcqAnswers": mcqAnswers,
 				"mcqScore"	: 0
@@ -901,82 +1126,81 @@
 			this.startTracking();
 			this.createQ();
 		};
-		
+
 		// only used in mcq interaction - creates new question
 		this.createQ = function() {
 			mcqCurrentQ++;
 			$pageContents.data("mcqCurrentQ", mcqCurrentQ);
-			
+
 			$("#feedback").hide();
 			$("#passage .group")
 				.removeClass("on")
 				.removeAttr("title");
-			
+
 			$("#qNum").html($pageContents.data("phrases").mcqQuesCount.replace("{i}", (mcqCurrentQ + 1)).replace("{n}", mcqAnswers.length));
 			$("#quizBtn")
 				.button({"label":$pageContents.data("phrases").mcqBtnTxt})
 				.data("state", 0)
 				.hide();
-			
+
 			// turn on highlight & set up answers - correct answer plus number of random incorrect wrong answers
 			var options = mcqAnswerOptions.slice(0),
 				correct,
-                name,
-                correctOptions = [],
-                correctAnswer = [],
-                correctFeedback = [];
-			
+				name,
+				correctOptions = [],
+				correctAnswer = [],
+				correctFeedback = [];
+
 			if (x_currentPageXML.getAttribute("mcqType") == "all") {
 				$("#passage .group" + mcqAnswers[mcqCurrentQ])
 					.addClass("on")
 					.attr("title", lang2);
-				
+
 				correct = options[mcqAnswers[mcqCurrentQ]];
 				options.splice(mcqAnswers[mcqCurrentQ], 1);
-                name = mcqAnswerOptions[mcqAnswers[mcqCurrentQ]]['text'];
+				name = mcqAnswerOptions[mcqAnswers[mcqCurrentQ]]['text'];
 			} else {
 				$("#passage .group[data-index='" + mcqAnswers[mcqCurrentQ] + "']")
 					.addClass("on")
 					.attr("title", lang2);
-				
+
 				correct = options[subGroups[mcqAnswers[mcqCurrentQ]].ref];
 				options.splice(correct.index, 1);
-                name = $('#passage .on').html();
+				name = $('#passage .on').html();
 			}
 
 			// Push the correct answers to correctOptions array
-            correctOptions.push({
-                id: correct['index'] + 1 + "",
+			correctOptions.push({
+				id: correct['index'] + 1 + "",
 				answer: correct['text'],
-                result: true
-            });
-            correctAnswer.push(correct['text']);
-            correctFeedback.push($pageContents.data("phrases").mcqCorrect);
+				result: true
+			});
+			correctAnswer.push(correct['text']);
+			correctFeedback.push($pageContents.data("phrases").mcqCorrect);
 
 			x_shuffleArray(options);
 			var numOptions = x_currentPageXML.getAttribute("mcqNumAs") == undefined ? 3 : x_currentPageXML.getAttribute("mcqNumAs") == "*" ? options.length + 1 : isNaN(x_currentPageXML.getAttribute("mcqNumAs")) ? 3 : Number(x_currentPageXML.getAttribute("mcqNumAs"));
 			options = options.length <= numOptions - 1 ? options : options.slice(0, numOptions - 1);
 
 			// options conatins the added answers, add them to correctOptions, correctAnswers and correctDeedback
-            $.each(options, function(i, thisOption){
-                correctOptions.push({
-                    id: thisOption['index'] + 1 + "",
-                    answer: thisOption['text'],
-                    result: false
-                });
-                correctAnswer.push(thisOption['text']);
-                correctFeedback.push($pageContents.data("phrases").mcqWrong);
+			$.each(options, function(i, thisOption){
+				correctOptions.push({
+					id: thisOption['index'] + 1 + "",
+					answer: thisOption['text'],
+					result: false
+				});
+				correctAnswer.push(thisOption['text']);
+				correctFeedback.push($pageContents.data("phrases").mcqWrong);
 			});
 			options.push(correct);
 
 			x_shuffleArray(options);
 
-            XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
-
-            var $optionHolder = $("#questionHolder #optionHolder")
+			XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
+			var $optionHolder = $("#questionHolder #optionHolder")
 					.html('<div class="optionGroup"><input type="radio" name="option" /><label class="optionTxt"></label></div>')
 					.show();
-			
+
 			var	$optionGroup = $optionHolder.find(".optionGroup");
 			for (i=0; i<options.length; i++) {
 				var $thisOptionGroup;
@@ -985,7 +1209,7 @@
 				} else {
 					$thisOptionGroup = $optionGroup;
 				}
-				
+
 				$thisOptionGroup.find("input")
 					.attr({
 						"value"	:options[i].index,
@@ -1000,47 +1224,45 @@
 					.focusout(function() {
 						$(this).parent().removeClass("highlight");
 					});
-				
+
 				$thisOptionGroup.find(".optionTxt")
 					.attr("for", "option" + i)
 					.html(options[i].text);
 			}
 		};
 
-        this.startTracking = function() {
-            var numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? mcqAnswers.length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? mcqAnswers.length : Number(x_currentPageXML.getAttribute("mcqNumQs")),
-                weighting = (x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
-            XTSetPageType(x_currentPage, 'numeric', numQs, weighting);
-        };
+		this.startTracking = function() {
+			var numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? mcqAnswers.length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? mcqAnswers.length : Number(x_currentPageXML.getAttribute("mcqNumQs")),
+				weighting = (x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
+			XTSetPageType(x_currentPage, 'numeric', numQs, weighting);
+		};
 
-        this.finishTracking = function() {
-            var score = $pageContents.data("mcqScore"),
-                numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? mcqAnswers.length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? mcqAnswers.length : Number(x_currentPageXML.getAttribute("mcqNumQs"));
+		this.finishTracking = function() {
+			var score = $pageContents.data("mcqScore"),
+				numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? mcqAnswers.length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? mcqAnswers.length : Number(x_currentPageXML.getAttribute("mcqNumQs"));
 
-            if (numQs === 0)
-            {
-                XTSetPageScore(x_currentPage, score, x_currentPageXML.getAttribute("trackinglabel"));
-            }
-            else
-            {
-                XTSetPageScore(x_currentPage, score * 100 / numQs, x_currentPageXML.getAttribute("trackinglabel"));
-            }
+			if (numQs === 0)
+			{
+				XTSetPageScore(x_currentPage, score, x_currentPageXML.getAttribute("trackinglabel"));
+			}
+			else
+			{
+				XTSetPageScore(x_currentPage, score * 100 / numQs, x_currentPageXML.getAttribute("trackinglabel"));
+			}
 
-            interactiveText.checked = true;
-        };
+			interactiveText.checked = true;
+		};
 
-        this.showFeedBackandTrackResults = function() {
-            //
-        };
+		this.showFeedBackandTrackResults = function() {
+			//
+		};
 	};
-
-    interactiveText.init();
-
+	interactiveText.init();
 </script>
 
 
 <div id="pageContents">
-	
+
 	<div id="passageHolder" class="panel">
 		<div id="passage"/>
 	</div>
@@ -1050,6 +1272,6 @@
 	<div id="btnHolder"/>
 	<div id="questionHolder"/>
 	<div id="feedback"/>
-	
+
 </div>
 
