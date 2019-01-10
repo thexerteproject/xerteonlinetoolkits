@@ -66,10 +66,10 @@
                 }
 
                 XTExitInteraction(x_currentPage, 0, result,[], input, []);
-                debugger;
+
 
                 XTSetPageScore(x_currentPage, result);
-                debugger;
+
             };
 
             this.init = function() {
@@ -90,7 +90,8 @@
                     $("#pageContents .panel").appendTo($("#pageContents"));
                     $splitScreen.remove();
                 } else {
-                    $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
+
+                    $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("introduction")));
 
                     var textAlign = x_currentPageXML.getAttribute("align");
                     if (textAlign != "Right") {
@@ -122,14 +123,13 @@
                 var $pageContents = $("#pageContents");
 
                 var $textHolder = $("#textHolder");
-                var instruction = x_currentPageXML.getAttribute("instruction");
-                $textHolder.html(instruction);
 
                 var $question = $("#infoHolder #question");
                 var question = x_currentPageXML.getAttribute("wrongText");
                 question = $("<div>").html(question).text().trim();
                 $question.html(question);
 
+                var $answer = $("#infoHolder #answer");
                 var answer = x_currentPageXML.getAttribute("answer");
                 answer = $("<div>").html(answer).text().trim();
 
@@ -138,9 +138,9 @@
                 var $correctOrNot = $("#infoHolder #correctOrNot");
                 var correct = "Good job";
 
-                var $feedback = $("#infoHolder #feedback");
-                var feedback = x_currentPageXML.getAttribute("feedback");
-                feedback = $("<div>").html(feedback).text().trim();
+                var $FurtherClarification = $("#infoHolder #FurtherClarification");
+                var FurtherClarification = x_currentPageXML.getAttribute("FurtherClarification");
+                FurtherClarification = $("<div>").html(FurtherClarification).text().trim();
 
                 var $answer = $("#infoHolder #answer");
 
@@ -157,7 +157,7 @@
 
                 var resultLabel = x_currentPageXML.getAttribute("resultLabel");
 
-                var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+                var FurtherClarificationLabel = x_currentPageXML.getAttribute("FurtherClarificationLabel");
 
                 var answerLabel = x_currentPageXML.getAttribute("answerLabel");
 
@@ -175,13 +175,14 @@
                     .click(function () {
                         $(checkButton).button("disable");
 
-                        XTEnterInteraction(x_currentPage, 0, "text", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("question"), ""), "",answer, feedback);
-                        debugger;
+                        XTEnterInteraction(x_currentPage, 0, "text", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("introduction"), ""), "",answer, FurtherClarification);
+
                         //get value of text area
                         var input = $(".answer textarea").val();
-                        textCorrection.input = input;
+                        textCorrection.input =  input;
                         // decide if it is correct or not
                         $correctOrNot.append("<h3>"+resultLabel+"</h3>");
+
                         if(input === answer){
                             $correctOrNot.append(correct);
                             $correctOrNot.append(correctIcon)
@@ -200,8 +201,12 @@
                         }
                         textCorrection.hasExited = hadExited;
                         // show feedback
-                        $feedback.append("<h3>" + feedbackLabel + "</h3>");
-                        $feedback.append(feedback);
+
+                        if(x_currentPageXML.getAttribute("FurtherClarification") !== null){
+                            $FurtherClarification.append("<h3>" + FurtherClarificationLabel + "</h3>");
+                            $FurtherClarification.append(FurtherClarification);
+                        }
+
 
                         if(showAnswer === null || showAnswer === true){
 
@@ -227,22 +232,16 @@
         <div id="textHolder" class="left"></div>
         <div id="infoHolder" class="right">
             <div id="mainPanel" class="panel">
-                <h3 class="titleQuestion">
-                    <legend id="question"></legend>
-                </h3>
+                <div id="question">
+
+                </div>
                 <div id="optionHolder">
                     <div class="answer"><textarea rows="4" cols="50"></textarea></div>
                 </div>
                 <button id="checkButton"></button>
-                <div id="correctOrNot">
-
-                </div>
-                <div id="feedback">
-
-                </div>
-                <div id ="answer">
-
-                </div>
+                <div id="correctOrNot"></div>
+                <div id="FurtherClarification"></div>
+                <div id ="answer"></div>
             </div>
         </div>
     </div>

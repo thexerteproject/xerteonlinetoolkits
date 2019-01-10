@@ -74,44 +74,61 @@
 
                     });
                 }
+                if(x_currentPageXML.getAttribute("caseSensitivity")===true||x_currentPageXML.getAttribute("caseSensitivity")===undefined) {
+                    for (i = 0; i < inputs.length; i++) {
+                        var isCorrect = false;
+                        for (j = 0; j < answers.length; j++) {
+                            for (x = 0; x < answers[j].options.length; x++) {
 
+                                var givenAnswer = inputs[i];
+                                var correctAnswer = answers[j].options[x].trim();
 
-                for (i = 0; i < inputs.length; i++) {
-                    var isCorrect = false;
-                    for (j = 0; j < answers.length; j++) {
-                        for (x = 0; x < answers[j].options.length; x++) {
+                                if (givenAnswer === correctAnswer) {
+                                    isCorrect = true;
+                                    checkAnswers[i].correct = true;
+                                    answers[j].counter++;
+                                    amountOfGoodAnswers++;
 
-
-                            var givenAnswer = inputs[i];
-                            var correctAnswer = answers[j].options[x].trim();
-
-                            if (givenAnswer === correctAnswer) {
-                                isCorrect = true;
-                                checkAnswers[i].correct = true;
-                                answers[j].counter++;
-                                amountOfGoodAnswers++;
-
-                                if (answers[j].counter > 1) {
-                                    checkAnswers[i].correct = false;
-                                    checkAnswers[i].comment = "Duplicate";
-
+                                    if (answers[j].counter > 1) {
+                                        checkAnswers[i].correct = false;
+                                        checkAnswers[i].comment = "Duplicate";
+                                    }
+                                    break;
                                 }
-                                break;
-
-
                             }
-
-
                         }
-
-
+                        if (!isCorrect) {
+                            checkAnswers[i].comment = "Wrong Answer";
+                        }
                     }
-                    if (!isCorrect) {
-                        checkAnswers[i].comment = "Wrong Answer";
-                    }
+                }else {
+                    for (i = 0; i < inputs.length; i++) {
+                        var isCorrect = false;
+                        for (j = 0; j < answers.length; j++) {
+                            for (x = 0; x < answers[j].options.length; x++) {
 
+                                var givenAnswer = inputs[i].toLowerCase();
+                                var correctAnswer = answers[j].options[x].trim().toLowerCase();
+
+                                if (givenAnswer === correctAnswer) {
+                                    isCorrect = true;
+                                    checkAnswers[i].correct = true;
+                                    answers[j].counter++;
+                                    amountOfGoodAnswers++;
+
+                                    if (answers[j].counter > 1) {
+                                        checkAnswers[i].correct = false;
+                                        checkAnswers[i].comment = "Duplicate";
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        if (!isCorrect) {
+                            checkAnswers[i].comment = "Wrong Answer";
+                        }
+                    }
                 }
-
 
                 var doneAnswers = [];
                 for (i = 0; i < inputs.length; i++) {
@@ -256,14 +273,28 @@
                     });
                 }
                 topXQ.answers = answers;
+                if(x_currentPageXML.getAttribute("caseSensitivity")===true||x_currentPageXML.getAttribute("caseSensitivity")===undefined) {
 
-                var correctAnswers = [];
-                for (i = 0; i < answers.length; i++) {
-                    for (var j = 0; j < answers[i].options.length; j++) {
-                        if (correctAnswers[i] === undefined) {
-                            correctAnswers.push([]);
+                    var correctAnswers = [];
+                    for (i = 0; i < answers.length; i++) {
+                        for (var j = 0; j < answers[i].options.length; j++) {
+                            if (correctAnswers[i] === undefined) {
+                                correctAnswers.push([]);
+                            }
+                            lowercase = answers[i].options[j];
+                            correctAnswers[i].push(lowercase);
                         }
-                        correctAnswers[i].push(answers[i].options[j]);
+                    }
+                }else{
+                    var correctAnswers = [];
+                    for (i = 0; i < answers.length; i++) {
+                        for (var j = 0; j < answers[i].options.length; j++) {
+                            if (correctAnswers[i] === undefined) {
+                                correctAnswers.push([]);
+                            }
+                            lowercase = answers[i].options[j].toLowerCase();
+                            correctAnswers[i].push(lowercase);
+                        }
                     }
                 }
 
@@ -306,6 +337,7 @@
                                     }
                                 }
                             }
+
                             var blankAnswers = [];
                             for (i = 0; i < x_currentPageXML.getAttribute("numberAnswers"); i++) {
                                 blankAnswers.push("-");
@@ -339,11 +371,20 @@
 
                             for (i = 0; i < elements.length; i++) {
                                 if (elements[i].feedback !== "") {
-                                    $("#feedbackAnswers ul").append("<li><div class='answerFeedback'>" + elements[i].answer + " :" + "</div></li>");
+                                    var answer ="";
+                                    for(j = 0; j < elements[i].answer.length; j++){
+                                        if(elements[i].answer[j] != ","){
+                                            answer+= elements[i].answer[j]
+                                        }else{
+                                            break;
+                                        }
+                                    }
+
+                                    $("#feedbackAnswers ul").append("<li><div class='answerFeedback'>" + answer + " :" + "</div></li>");
                                     $("#feedbackAnswers ul li:last").append("<div>" + elements[i].feedback + "</div>");
                                 }
-                            }
 
+                            }
 
                             var passedTxt = x_currentPageXML.getAttribute("passed");
                             if (passedTxt === undefined) {
@@ -362,7 +403,7 @@
                             } else {
                                 average = 0
                             }
-
+                            average *=100;
 
                             var passedOrFailed = "";
                             var mainFeedback = x_currentPageXML.getAttribute("feedback");
@@ -370,10 +411,8 @@
                                 mainFeedback = ""
                             }
 
-                            passedScore = state.lo_passed;
-                            if (state.trackingmode !== "none") {
-                                passedScore = 0.55;
-                            }
+                            var passedScore = parseInt(x_currentPageXML.getAttribute("SuccessRate"));
+
                             if (average >= passedScore) {
                                 passedOrFailed = passedTxt
                             } else {
@@ -409,18 +448,19 @@
 
                     </div>
                     <button id="checkButton"></button>
-                    <div id="correctAnswer" aria-live="polite">
-                        <h3></h3>
-                        <ul>
 
-                        </ul>
-                    </div>
                     <div id="feedback" aria-live="polite"></div>
                     <div id="feedbackAnswers" aria-live="polite">
                         <ul>
 
                         </ul>
 
+                    </div>
+                    <div id="correctAnswer" aria-live="polite">
+                        <h3></h3>
+                        <ul>
+
+                        </ul>
                     </div>
                     <div id="mainFeedback" aria-live="polite">
 
