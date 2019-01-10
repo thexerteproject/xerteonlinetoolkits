@@ -17,13 +17,11 @@
 		position: absolute;
 		height: auto;
 		width: auto;
-		/*padding: 5px;*/
+		padding: 5px;
 		text-align: center;
-		left: 50px;
-		top: 50px;
-		/*border-radius: 5px;*/
+		border-radius: 5px;
 		background-color: #CFCFCF;
-		opacity: 0.95;
+		opacity: 0.9;
 		z-index: 4;
 
 	}

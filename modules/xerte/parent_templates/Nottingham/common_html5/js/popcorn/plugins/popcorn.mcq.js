@@ -38,7 +38,7 @@ optional: feedback page synch play enable
 	Popcorn.plugin("mcq", function(options) {
 
 		// define plugin wide variables / functions here
-		var $target, $optHolder, $checkBtn, $feedbackDiv, $continueBtn, media, selected, judge, autoEnable, questions, $showBtn;
+		var $target, $optHolder, $checkBtn, $feedbackDiv, $continueBtn, media, selected, judge, autoEnable, questions, $showBtn, $showLbl;
 		
 		var finishTracking = function(options) {
             var allValid = true;
@@ -431,19 +431,20 @@ optional: feedback page synch play enable
 
                 if(options.mandatory === "true")
                 {
-                    $showBtn = $('<button class="mcqShowBtn"></button>').appendTo($target);
-                    $showBtn
-                        .button({
-                            "label": "Show"
-                        })
-                        .click(function () {
-                            $showBtn.hide();
-                            $optHolder.show();
-                            $checkBtn.show();
-                            $checkBtn.button("disable");
+                	var $tick = x_templateLocation + "common_html5/cross.png"
+					debugger;
+                	var $targett  = $('<div id="showbro"/>').appendTo($target);
+                    $showBtn = $('<image type="image" src="modules/xerte/parent_templates/Nottingham/common_html5/tick.png" width="24" height="24" class="mcqShowBtn" style="float: left; vertical-align: middle; border-radius: 25px">').appendTo($targett);
+                    $showLbl = $("<div style='float: right'>" + options.name + "</div>").appendTo($targett);
+                    $targett
+                		.click(function () {
+                    		$targett.hide();
+							$optHolder.show();
+							$checkBtn.show();
+							$checkBtn.button("disable");
 							$target.prepend($optionText);
-                            debugger;
-                        });
+               			 });
+                    //
                 }
                 else {
                     $optHolder.show();
@@ -493,6 +494,7 @@ optional: feedback page synch play enable
 					}
 
 					else {
+						debugger;
 						$target.prepend(options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text));
                         if ($checkBtn) {
                             $checkBtn
