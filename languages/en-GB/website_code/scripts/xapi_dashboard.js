@@ -42,3 +42,6 @@ var XAPI_DASHBOARD_AVERAGE_SCORE = "Average Score";
 var XAPI_DASHBOARD_NUMBER_OF_SESSIONS = "Number of sessions";
 var XAPI_DASHBOARD_COMPLETED_SESSIONS = "Completed sessions";
 var XAPI_DASHBOARD_AVERAGE_COMPLETED_PAGES = "Average completed pages";
+var XAPI_DASHBOARD_DISPLAY_COLUMNS = "Show/hide columns";
+var XAPI_DASHBOARD_DISPLAY_OVERVIEW = "Display overview";
+var XAPI_DASHBOARD_PAGE_SIZE = "Page size";
