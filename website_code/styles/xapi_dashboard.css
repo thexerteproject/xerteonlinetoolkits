@@ -30,10 +30,9 @@ table {
     width: 100%;
 }
 
-.journeyTable table{
+.journeyTable .table{
   overflow-x: scroll;
   border: 0px;
-  position:absolute;
 }
 
 .journeyTable th{
@@ -186,7 +185,7 @@ td a{
     display: none !important;
 }
 
-.show-hide-column-button{
+.show-display-options-button{
     float: right;
     padding:5px;
 }

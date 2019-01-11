@@ -193,16 +193,11 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         this.drawNumberOfCompletedSessions($('.journeyOverviewStats'), scoreCount);
         this.drawAverageCompletedPages($('.journeyOverviewStats'), Math.round(100 * totalCompletedPages / numberOfUsers) / 100);
 
-
-
-
-
-        debugger;
         // Add the average grade.
         this.drawAverageScore($('.journeyOverviewStats'), (Math.round((totalScore / scoreCount) * 10 * 10) / 10), first_launch, last_launch);
-
+        var pageOptions = "" //'<div class="row"><span>Left</span><span>Right</span><br></div>';
         // Add table with specific overview.
-        div.append('<div class="row journeyTable"><table class="table table-hover table-bordered table-responsive" id="' + learningObjectIndex +
+        div.append('<div class="row journeyTable">' + pageOptions + '<table class="table table-hover table-bordered table-responsive" id="' + learningObjectIndex +
             '"><thead></thead><tbody></tbody></table></div>');
         div.find("#" + learningObjectIndex + " thead").append("<tr><th>Started</th><th>Completed</th></tr>");
         if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
@@ -301,7 +296,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                     c.addClass("column-show");
                 }
             });
-            $(".journeyTable").width(Math.min($(".journeyTable thead").width(), $(".journeyOverview").width()));
+            //$(".journeyTable").width(Math.min($(".journeyTable thead").width(), $(".journeyOverview").width()));
         });
         /*
         menu = $("<div><ul></ul></div>");
@@ -317,10 +312,14 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         });
         $(".hide-show-column-checkbox");
 */
-        $(".show-hide-column-button").on('click', function() {
-            if (typeof $(this).data('bs.popover') == "undefined") {
+
+        $(".show-display-options-button").unbind("click");
+        $(".show-display-options-button").popover('dispose');
+        $(".show-display-options-button").on('click', function() {
+            if (typeof $(this).data('bs.popover') == "undefined" || $(this).data('bs.popover') == undefined) {
+
                 // Init the popover and show immediately
-                menu = $("<div><ul></ul></div>");
+                menu = $("<div><h5>" + XAPI_DASHBOARD_DISPLAY_COLUMNS + "</h5><ul></ul></div>");
                 interactions.forEach(function(i){
                     if(i.type == "page"){
                         header = $("th[data-interaction-index=" + i.interactionObjectIndex + "]");
@@ -329,29 +328,41 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                         if(isVisible){
                             checked = "checked"
                         }
-                        menu.append("<li><input class='hide-show-column-checkbox' type='checkbox' "
+                        menu.find("ul").append("<li><input class='hide-show-column-checkbox' type='checkbox' "
                             + checked
                             + " data-target='" + i.interactionObjectIndex + "'>" + i.name + "</li>");
                     }
                 });
-                $(".show-hide-column-button").popover({
+
+                menu.append("<h5>" + XAPI_DASHBOARD_DISPLAY_OVERVIEW + "</h5>");
+                menu.append("<div><label>" + XAPI_DASHBOARD_DISPLAY_OVERVIEW + "</label><input class='hide-show-overview' type='checkbox' checked></div>");
+                //menu.append("<div><label>" + XAPI_DASHBOARD_PAGE_SIZE + "</label><select></select></div>");
+                pagesizes = [5, 10, 20, 50, 100, "All"];
+                pagesizes.forEach(function(size){
+                    //menu.find("select").append("<option value='" + size + "'>" + size + "</option>");
+                })
+
+                //debugger;
+                $(".show-display-options-button").popover({
                     'content' : menu.html(),
                     'html' : true,
                     'placement' : "bottom",
                     'trigger' : 'click',
-                    'container' : $(".show-hide-column-button").parent()
+                    'container' : $(".show-display-options-button").parent()
                 }).popover('show');
 
-                $(".show-hide-column-button").on('show.bs.popover', function () {
+                $(".show-display-options-button").on('show.bs.popover', function () {
                     return false;
                 });
 
                 // Same for hide, don't let parent execute
-                $(".show-hide-column-button").on('hide.bs.popover', function () {
+                $(".show-display-options-button").on('hide.bs.popover', function () {
                     return false;
                 });
 
-                $(".hide-show-column-checkbox").unbind("click");
+
+
+                //$(".hide-show-column-checkbox").unbind("click");
                 $(".hide-show-column-checkbox").change(function(){
                     checkbox = $(this);
                     target = checkbox.data("target");
@@ -369,6 +380,13 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                         subQuestionToggle.click();
                     }
                 });
+
+                $(".hide-show-overview").change(function(){
+                    $(".journeyOverview").toggle();
+                });
+
+
+
             } else {
                 //debugger;
                 $(this).parent().find('.popover').toggle();
@@ -671,12 +689,12 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
             if (contentDiv.html() == "") {
                 interactions = $this.data.getInteractions(learningObjects[learningObjectIndex].url);
                 interaction = interactions[interactionIndex];
-                contentDiv.append('<div class="container"></div>');
+                contentDiv.append('<div class="journey-container"></div>');
                 if (interaction.children.length == 0 && interaction.type == "interaction") {
-                    contentDiv.find(".container").append("<div class='col-6 panel main-information'></div>");
+                    contentDiv.find(".journey-container").append("<div class='col-6 panel main-information'></div>");
                     var interactionDetails = $this.data.selectInteractionById(interactions, interaction.url);
                     var statements = $this.data.getInteractionStatements(interaction.url);
-                    contentDiv.find(".container div").append('<svg class="graph" id="model-svg-' + learningObjectIndex + '-' + interactionIndex +
+                    contentDiv.find(".journey-container div").append('<svg class="graph" id="model-svg-' + learningObjectIndex + '-' + interactionIndex +
                         '"></svg>');
                     $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' #model-svg-' +
                         learningObjectIndex +
@@ -684,26 +702,26 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
                     var question = $this.data.getQuestion(interactionDetails.url);
                     var pausedStatements = $this.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
                     if (question != undefined) {
-                        var questionDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.container'));
+                        var questionDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
                         $this.displayQuestionInformation(questionDiv, question, learningObjectIndex, interactionIndex);
                     } else if (pausedStatements.length > 0) {
                         var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.container'));
                         $this.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
                     }
-                    $this.displayPageInfo(contentDiv, ".container .main-information", interaction);
+                    $this.displayPageInfo(contentDiv, ".journey-container .main-information", interaction);
                     //getMultipleChoiceQuestion(learningObjects[learningObjectIndex].url, interaction.url);
                 } else {
                     statements = $this.data.getInteractionStatements(interaction.url);
-                    panelDiv =  $("<div class='panel col-6'></div>").appendTo(contentDiv.find(".container"));
+                    panelDiv =  $("<div class='panel col-6'></div>").appendTo(contentDiv.find(".journey-container"));
                     panelDiv.append("<svg class='graph'></svg>");
                     $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' svg');
                     panelDiv.append('<div class="page-info panel"></div>');
-                    $this.displayPageInfo(contentDiv, ".container .page-info", interaction);
+                    $this.displayPageInfo(contentDiv, ".journey-container .page-info", interaction);
                     childQuestions = interaction.children.map(function(c){
                         return $this.data.getQuestion(c);
                     });
                     if(childQuestions.filter(q => q != undefined && q.interactionType == "choice").length == childQuestions.length){
-                        var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.container'));
+                        var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
                         $this.displayQuizOverview(heatmapDiv, childQuestions);
                     }
 
@@ -840,7 +858,6 @@ xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
 
     });
 
-    debugger;
 }
 
 xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, interaction) {
