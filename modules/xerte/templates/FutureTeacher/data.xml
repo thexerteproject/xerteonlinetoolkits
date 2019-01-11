@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
-<learningObject editorVersion="3" targetFolder="Nottingham" name="Learning Object Title" language="en-GB" navigation="Linear" textSize="12" theme="futureteacher" displayMode="fill window" responsive="true"><title linkID="PG1528558702577" name="Enter Page Title" size="30"><![CDATA[Enter title here]]></title><text linkID="PG1528558708664" name="Enter Page Title"><![CDATA[<p>Let&#39;s see how block 1 is looking. <span class="panel2">Color each competance with the correct color, using one of the styles from the styles menu.</span></p>
+<learningObject editorVersion="3" targetFolder="Nottingham" name="Learning Object Title" language="en-GB"
+                navigation="Linear" textSize="12" theme="futureteacher" displayMode="fill window" responsive="true">
+    <title linkID="PG1528558702577" name="Enter Page Title" size="30"><![CDATA[Enter title here]]></title>
+    <text linkID="PG1528558708664" name="Enter Page Title"><![CDATA[<p>Let&#39;s see how block 1 is looking. <span class="panel2">Color each competance with the correct color, using one of the styles from the styles menu.</span></p>
 
 <p>&nbsp;</p>
-]]></text></learningObject>
+]]></text>
+</learningObject>

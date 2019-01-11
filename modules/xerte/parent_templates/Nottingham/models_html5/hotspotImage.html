@@ -235,7 +235,11 @@
 
             $("#hint").html("");
 			$("#feedback").html("");
-            gotHint = false;
+            if(x_currentPageXML.childNodes[i].getAttribute("hint") === null || x_currentPageXML.childNodes[i].getAttribute("hint") === ""){
+                gotHint = true
+			}else{
+                gotHint = false;
+			}
 
             var _this = this;
 
@@ -275,7 +279,7 @@
                 if (counter[i] <= attempts) {
                     if (CI) {
                         $feedback.append("<h3>" + "Feedback" + "</h3>");
-                        $feedback.append(feedback)
+                        $feedback.append(feedback);
 
                     } else {
                         if(gotHint === false){
