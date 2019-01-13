@@ -258,6 +258,8 @@ if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true
         // skip session_start() as we'll probably stomp on Moodle's session if we do.
     }
     else {
+
+        ini_set('session.cookie_httponly', '1');
         session_start();
     }
 }

@@ -914,15 +914,34 @@ function upgrade_19()
 
 function upgrade_20()
 {
-    if (! _db_field_exists('templatedetails', 'dashboard_allowed_links')) {
-        $error1 = _db_add_field('templatedetails', 'dashboard_allowed_links', 'text', '', 'tsugi_xapi_student_id_mode');
-        if($error1 === false)
-        {
-            return "Creating dashboard_allower_links field in templatedetails - ok ? false". "<br>";
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_useglobal')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_useglobal', 'int(1)', '0', 'tsugi_xapi_enabled');
+        $error1_returned = true;
+
+        if (($error1 === false)) {
+            $error1_returned = false;
         }
-        return "Creating dashboard_allower_links field in templatedetails - ok ? true". "<br>";
+
+        return "Tsugi xapi enabled field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
     }
-    return "Creating dashboard_allower_links field in templatedetails already present - ok ? ". "<br>";
+    else
+    {
+        return "Tsugi xapi enabled field already exists - ok ? true". "<br>";
+    }
 }
+
+function upgrade_21()
+{
+    if (!_db_field_exists('templatedetails', 'dashboard_allowed_links')) {
+        $error1 = _db_add_field('templatedetails', 'dashboard_allowed_links', 'text', '', 'tsugi_xapi_student_id_mode');
+        if ($error1 === false) {
+            return "Creating dashboard_allower_links field in templatedetails - ok ? false" . "<br>";
+        }
+        return "Creating dashboard_allower_links field in templatedetails - ok ? true" . "<br>";
+    }
+    return "Creating dashboard_allower_links field in templatedetails already present - ok ? " . "<br>";
+}
+
+
 
 ?>

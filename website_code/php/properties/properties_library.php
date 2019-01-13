@@ -595,17 +595,24 @@ function statistics_prepare($template_id)
             $prefix = $xerte_toolkits_site->database_table_prefix;
 
 
-            $query_for_names = "select td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links from {$prefix}templatedetails td where template_id=?";
+            $query_for_names = "select td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode td.dashboard_allowed_links from {$prefix}templatedetails td where template_id=?";
 
             $params = array($template_id);
             $row = db_query_one($query_for_names, $params);
             $row_sitedetails = db_query_one("select dashboard_allowed_links from {$prefix}sitedetails");
-            if ($row['tsugi_xapi_enabled'] && $row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != "") {
+
+            if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != ""))) {
                 $info->info = $html;
                 $lrs = new stdClass();
-                $lrs->lrsendpoint = $row['tsugi_xapi_endpoint'];
-                $lrs->lrskey = $row['tsugi_xapi_key'];
-                $lrs->lrssecret = $row['tsugi_xapi_secret'];
+                $lrs->lrsendpoint = $xerte_toolkits_site->site_url . "xapi_proxy.php";
+                // Make sure we adapt for protocol (mainly to make debugging easier)
+
+                if (!isset($_SERVER['HTTPS']) && strpos($xerte_toolkits_site->site_url, ':') == 5)
+                {
+                    $lrs->lrsendpoint = "http" . substr($lrs->lrsendpoint, 5);
+                }
+                $lrs->lrskey = "";
+                $lrs->lrssecret = "";
                 $lrs->lrsurls = $row['dashboard_allowed_links'];
                 $lrs->site_allowed_urls = $row_sitedetails["dashboard_allowed_links"];
                 if($lrs->lrsurls == null)
@@ -782,7 +789,7 @@ function access_info($template_id){
             }
     }
     $info .=  PROJECT_INFO_ACCESS_SET_AS . " " . $accessTranslation;
-    if ($nrViews != "")
+    if (isset($nrViews) && $nrViews!= "")
     {
         $info .= str_replace("%n", $nrViews, PROJECT_INFO_NRVIEWS);
     }
@@ -1005,12 +1012,13 @@ function tsugi_display($id, $lti_def, $mesg = "")
     }
     ?>
 
-        <label for="tsugi_xapi"><?php echo PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI; ?></label><input id="xChk" type="checkbox" name="tsugi_xapi" <?php echo ($lti_def->xapi_enabled ? "checked" : "");?>><br>
+        <label for="xChk"><?php echo PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI; ?></label><input id="xChk" type="checkbox" name="tsugi_xapi" <?php echo ($lti_def->xapi_enabled ? "checked" : "");?>><br>
         <div id="xApi">
-            <label for="tsugi_xapi_endpoint"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_ENDPOINT; ?></label><input type="text" name="tsugi_xapi_endpoint" value="<?php echo $lti_def->xapi_endpoint;?>"><br>
-            <label for="tsugi_xapi_username"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USERNAME; ?></label><input type="text" name="tsugi_xapi_username" value="<?php echo $lti_def->xapi_username;?>"><br>
-            <label for="tsugi_xapi_password"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_PASSWORD; ?></label><input type="text" name="tsugi_xapi_password" value="<?php echo $lti_def->xapi_password;?>"><br>
-            <label for="tsugi_xapi_student_id_mode"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE; ?></label><select name="tsugi_xapi_student_id_mode">
+            <label for="tsugi_xapi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USEGLOBAL; ?></label><input type="checkbox" onchange="javascript:xapi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_xapi_useglobal" id="tsugi_xapi_useglobal" <?php echo ($lti_def->xapi_useglobal ? "checked" : "");?>><br>
+            <label for="tsugi_xapi_endpoint"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_ENDPOINT; ?></label><input type="text" name="tsugi_xapi_endpoint" id="tsugi_xapi_endpoint" <?php echo ($lti_def->xapi_useglobal ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_endpoint . "\""); ?>"><br>
+            <label for="tsugi_xapi_username"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USERNAME; ?></label><input type="text" name="tsugi_xapi_username" id="tsugi_xapi_username" <?php echo ($lti_def->xapi_useglobal ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_username . "\""); ?>"><br>
+            <label for="tsugi_xapi_password"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_PASSWORD; ?></label><input type="text" name="tsugi_xapi_password" id="tsugi_xapi_password" <?php echo ($lti_def->xapi_useglobal ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_password . "\""); ?>"><br>
+            <label for="tsugi_xapi_student_id_mode"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE; ?></label><select name="tsugi_xapi_student_id_mode" id="tsugi_xapi_student_id_mode">
                 <?php
                 for ($i=0; $i<4; $i++)
                 {

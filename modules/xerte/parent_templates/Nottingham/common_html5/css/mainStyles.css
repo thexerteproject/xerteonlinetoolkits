@@ -586,8 +586,8 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
     cursor: pointer;
 }
 #x_footerShowHide{
-    padding-left: 8px; 
-    padding-top: 15px;
+    /*padding-left: 8px;
+    padding-top: 15px;*/
     float:left;
 }
 
@@ -617,4 +617,11 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 .pbTxt {
 	font-size: 10px;
 	text-align: center;
+}
+
+/* Specifiaclly for grayscale handling on IE browsers */
+body > svg
+{
+	width: 0px;
+	height: 0px;
 }

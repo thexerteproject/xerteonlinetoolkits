@@ -51,6 +51,7 @@
 	
 	#targetHolder select[disabled] {
 		color:	green;
+		background:inherit;
 	}
 	
 	#targetHolder select[disabled].answerShown {

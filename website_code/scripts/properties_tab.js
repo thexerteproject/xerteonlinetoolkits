@@ -1447,11 +1447,37 @@ function lti_update(id)
 			+ '&tsugi_key=' + $("[name=tsugi_key]").val()
             + '&tsugi_secret=' + $("[name=tsugi_secret]").val()
 			+ '&tsugi_xapi=' + $("#xChk").prop('checked')
+<<<<<<< HEAD
 			+ '&tsugi_xapi_endpoint=' + $("[name=tsugi_xapi_endpoint]").val()
             + '&tsugi_xapi_username=' + $("[name=tsugi_xapi_username]").val()
             + '&tsugi_xapi_password=' + $("[name=tsugi_xapi_password]").val()
             + '&dashboard_urls=' + $("[name=dashboard_urls]").val()
             + '&tsugi_xapi_student_id_mode=' + $("[name=tsugi_xapi_student_id_mode]").val());
+=======
+			+ '&tsugi_xapi_useglobal=' + $("#tsugi_xapi_useglobal").prop('checked')
+			+ '&tsugi_xapi_endpoint=' + $("#tsugi_xapi_endpoint").val()
+            + '&tsugi_xapi_username=' + $("#tsugi_xapi_username").val()
+            + '&tsugi_xapi_password=' + $("#tsugi_xapi_password").val()
+            + '&tsugi_xapi_student_id_mode=' + $("#tsugi_xapi_student_id_mode").val());
+>>>>>>> 9d7cbbf517d22e0b0efcd4659515e55b0a43142e
     }
+}
+
+function xapi_toggle_useglobal(lti_def_str)
+{
+	var useglobal = $("#tsugi_xapi_useglobal").prop('checked');
+	var lti_def = JSON.parse(lti_def_str);
+	$("#tsugi_xapi_useglobal").prop('checked', useglobal);
+	if (useglobal) {
+        $("#tsugi_xapi_endpoint").val("").prop('disabled', true);
+        $("#tsugi_xapi_username").val("").prop('disabled', true);
+        $("#tsugi_xapi_password").val("").prop('disabled', true);
+    }
+    else {
+        $("#tsugi_xapi_endpoint").val(lti_def['xapi_endpoint']).prop('disabled', false);
+        $("#tsugi_xapi_username").val(lti_def['xapi_username']).prop('disabled', false);
+        $("#tsugi_xapi_password").val(lti_def['xapi_password']).prop('disabled', false);
+
+	}
 }
 
