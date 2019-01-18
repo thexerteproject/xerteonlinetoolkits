@@ -58,6 +58,11 @@
 		margin-top:	0.5em;
 	}
 
+	#pageContents.find2 #feedback h3 {
+		border-top: 1px solid #ccc;
+		padding-top: 1em;
+	}
+
 	#groupInfo h3 {
 		border-top: 1px solid #ccc;
 		padding-top: 1em;
