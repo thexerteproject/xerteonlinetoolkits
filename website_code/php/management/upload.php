@@ -34,12 +34,16 @@ if($_FILES["fileToUpload"]["name"]) {
     {
         $description = $_POST["templateDescription"];
     }
+    else
+    {
+        die("Description can't be empty!");
+    }
 
 
     $source = $_FILES["fileToUpload"]["tmp_name"];
     $temp_loc = dirname($source);
     $type = $_FILES["fileToUpload"]["type"];
-    $template_location = "C:/Users/Akshay/Desktop/test/";
+    $template_location = $xerte_toolkits_site->basic_template_path. 'xerte' . DIRECTORY_SEPARATOR . 'templates'. DIRECTORY_SEPARATOR;
     $path = $template_location . $filename;
 
     $isZip = strtolower($name[1]) == 'zip' ? true : false;
@@ -75,6 +79,17 @@ if($_FILES["fileToUpload"]["name"]) {
             {
                 $mediaFound = true;
             }
+            else
+            {
+                if($templateFound === false)
+                {
+                    die("No template.xml found!");
+                }
+                if($mediaFound === false)
+                {
+                    die("No media folder found!");
+                }
+            }
 
         }
         if($templateFound === true && $mediaFound === true)
@@ -87,7 +102,7 @@ if($_FILES["fileToUpload"]["name"]) {
             $zip->close();
 
 
-            copy($temp_loc . DIRECTORY_SEPARATOR . "template.xml", $template_location . $name[0] . DIRECTORY_SEPARATOR . "template.xml");
+            copy($temp_loc . DIRECTORY_SEPARATOR . "template.xml", $template_location . $name[0] . DIRECTORY_SEPARATOR . "data.xml");
 
             $xml = new XerteXMLInspector();
             //Is false als hij niet correct is, NULL is wel correct
@@ -122,7 +137,11 @@ if($_FILES["fileToUpload"]["name"]) {
             $lastId = db_query($query, $param);
             $infoContents = returnInfoFile($row['template_framework'], $row['template_name']);
 
-            editInfoFile($infoContents, $name[0], $description);
+            $contents = editInfoFile($infoContents, $name[0], $description);
+            var_dump($contents);
+
+            createInfoFile($template_location, $name[0], $contents);
+            deleteZip($template_location, $name[0]);
 
         }
     }
@@ -198,6 +217,30 @@ function editInfoFile($infoContents, $displayName, $description)
 
     return $list;
 }
+
+function createInfoFile($dir, $templateName, $content)
+{
+    $file = fopen($dir . $templateName . DIRECTORY_SEPARATOR . $templateName . ".info" , 'w');
+    fwrite($file, $content);
+    fclose($file);
+}
+
+function deleteZip($dir, $templateName)
+{
+    $files = glob($dir . '*');
+
+    foreach($files as $file)
+    {
+        if(strpos($file, $templateName . ".zip") !== false)
+        {
+            var_dump("Hier kom ook!");
+            unlink($file);
+        }
+    }
+
+}
+
+
 
 ?>
 
