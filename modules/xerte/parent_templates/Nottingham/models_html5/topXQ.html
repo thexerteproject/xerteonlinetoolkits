@@ -74,7 +74,9 @@
 
                     });
                 }
-                if(x_currentPageXML.getAttribute("caseSensitivity")===true||x_currentPageXML.getAttribute("caseSensitivity")===undefined) {
+                debugger;
+                if(x_currentPageXML.getAttribute("caseSensitivity")=="true"||x_currentPageXML.getAttribute("caseSensitivity")==undefined) {
+
                     for (i = 0; i < inputs.length; i++) {
                         var isCorrect = false;
                         for (j = 0; j < answers.length; j++) {
@@ -273,7 +275,7 @@
                     });
                 }
                 topXQ.answers = answers;
-                if(x_currentPageXML.getAttribute("caseSensitivity")===true||x_currentPageXML.getAttribute("caseSensitivity")===undefined) {
+                if(x_currentPageXML.getAttribute("caseSensitivity")=="true"||x_currentPageXML.getAttribute("caseSensitivity")==undefined) {
 
                     var correctAnswers = [];
                     for (i = 0; i < answers.length; i++) {
