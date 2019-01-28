@@ -2657,9 +2657,7 @@ function XTGetStatements(q, one, callback) {
                 {
                     continue;
                 }
-                {
-                    statements.push(body.statements[x]);
-                }
+                statements.push(body.statements[x]);
             }
             //stringObjects.push(lastSubmit);
             if (err !== null) {

@@ -451,7 +451,7 @@
             {
                 url=data[0].object.id;
                 interaction = $(x_currentPageXML).children()[interactionIndex];
-                if (data.length >= 1 && filterOwnStatements(data).length >= 1) {
+                if (data.length >= 1 && (retrieveAll || filterOwnStatements(data).length >= 1)) {
                     handler(data, interaction, url, type, interactionIndex);
                 }
                 else {
@@ -671,12 +671,230 @@
                                     }
                                 }
                             }
+                        }
+                        if (interaction.getAttribute('graph') === 'true') {
+                            div = $('#' + escapeUrl(url, type, interactionIndex) + ' .score');
+                            div.append(
+                                "<div><svg id='" +
+                                escapeUrl(url, type, interactionIndex) +
+                                "-graph'></svg></div>"
+                            );
+
+                            if (interaction.getAttribute('graphType') == 'bar_answers') {
+                                var dash = new ADL.XAPIDashboard();
+                                dash.addStatements(data);
+                                var chart = dash.createBarChart(
+                                    {
+                                        container: '#' + escapeUrl(
+                                            url,
+                                            type,
+                                            interactionIndex
+                                        ) + '-graph',
+                                        groupBy: 'result.response',
+                                        aggregate: ADL.count(),
+                                        post: function (d) {
+                                            d.contents.map(function (el) {
+                                                el.out *= 1 / data.length * 100;
+                                            });
+                                        },
+                                        customize: function (chart) {
+                                            chart.xAxis.rotateLabels(45).axisLabel('Answers given');
+                                            chart.yDomain([0, 100]);
+                                            chart.yAxis.axisLabel('Number of answers');
+                                            if(fullWidth){
+                                                chart.width(700);
+                                            }else{
+                                                chart.width(300);
+                                            }
+                                            chart.height(300);
+                                        }
+                                    }
+                                );
+                                chart.draw();
+                            }
+                            else if (interaction.getAttribute('graphType') == 'bar_marks') {
+                                var dash = new ADL.XAPIDashboard();
+                                dash.addStatements(data);
+                                data.map(function (x) {
+                                    x.result.score.raw;
+                                    return x;
+                                });
+                                var chart = dash.createBarChart(
+                                    {
+                                        container: '#' + escapeUrl(
+                                            url,
+                                            type,
+                                            interactionIndex
+                                        ) + '-graph',
+                                        groupBy: 'result.score.raw',
+                                        aggregate: ADL.count(),
+                                        range: {start: 0.0, end: 100.0, increment: 10},
+                                        post: function (d) {
+                                            d.contents.map(function (el) {
+                                                el.out *= 1 / data.length * 100;
+                                            });
+                                        },
+                                        customize: function (chart) {
+                                            chart.xAxis.rotateLabels(45).axisLabel("Score Range [%]");
+                                            chart.yAxis.axisLabel("% of Group");
+                                            if(fullWidth){
+                                                chart.width(700);
+                                            }else{
+                                                chart.width(300);
+                                            }
+                                            chart.height(300);
+                                            chart.yDomain([0, 100]);
+                                        }
+
+                                    }
+                                );
+                                chart.draw();
+                            }
+                            else if (interaction.getAttribute("graphType") == "line_average_marks") {
+                                var dash = new ADL.XAPIDashboard();
+                                dash.addStatements(data);
+                                data.map(function (x) {
+                                    x.result.score.raw;
+                                    return x;
+                                });
+
+                                var chart = dash.createLineChart(
+                                    {
+                                        container: '#' + escapeUrl(
+                                            url,
+                                            type,
+                                            interactionIndex
+                                        ) + '-graph',
+                                        groupBy: 'result.score.raw',
+                                        aggregate: ADL.count(),
+                                        range: {start: 0.0, end: 100.0, increment: 10},
+                                        rangeLabel: 'start',
+                                        post: function (d) {
+                                            d.contents.map(function (el) {
+                                                el.out *= 1 / data.length * 100;
+                                            });
+                                        },
+                                        customize: function (chart) {
+                                            chart.xAxis.rotateLabels(45).axisLabel('Score Range [%]');
+                                            chart.yAxis.axisLabel('% of Group');
+                                            if(fullWidth){
+                                                chart.width(700);
+                                            }else{
+                                                chart.width(300);
+                                            }
+                                            chart.tooltips(false);
+                                            chart.height(300);
+                                            chart.yDomain([0, 100]);
+                                        }
+
+                                    }
+                                );
+                                chart.draw();
+                            }
+                            else if (interaction.getAttribute("graphType") == "line_own_marks") {
+                                var dash = new ADL.XAPIDashboard();
+                                data.map(function (x) {
+                                    x.result.score.raw;
+                                    return x;
+                                });
+
+                                dash.addStatements(statements);
+                                end = new Date();
+                                begin = end;
+                                for (statement in statements) {
+                                    if (begin.getTime() > new Date(statements[statement].timestamp).getTime()) {
+                                        begin = new Date(statements[statement].timestamp);
+                                    }
+                                }
+
+                                begin = new Date(begin.getTime() - 1 * 24 * 60 * 60 * 1000)
+                                var chart = dash.createLineChart(
+                                    {
+                                        container: '#' + escapeUrl(
+                                            url,
+                                            type,
+                                            interactionIndex
+                                        ) + '-graph',
+                                        groupBy: 'timestamp',
+                                        range: {
+                                            start: begin.toISOString(),
+                                            end: end.toISOString(),
+                                            increment: 1000 * 60 * 15
+                                        },
+                                        aggregate: ADL.average('result.score.raw'),
+                                        rangeLabel: 'start',
+                                        customize: function (chart) {
+                                            if(fullWidth){
+                                                chart.width(700);
+                                            }else{
+                                                chart.width(700);
+                                            }
+                                            chart.height(300);
+                                            chart.tooltips(false);
+                                            chart.yDomain([0, 10]);
+                                            chart.xAxis.tickFormat(function (label) {
+                                                return d3.time.format('%b %d')(new Date(label));
+                                            });
+                                        },
+                                        post: function (data) {
+                                            data.contents.map(function (el) {
+                                                el.out = el.out / 10;
+                                                el.in = Date.parse(el.in);
+                                            });
+                                        }
+                                    }
+                                );
+                                chart.draw();
+                            }
+                        }
+                    });
+                }
+                else if (interactionType == 'answer') {
+                    statements = getStatements(
+                        xerteurl,
+                        xertelo,
+                        xertelabel,
+                        opinionClass,
+                        interactionType,
+                        hasToRetrieveAll(interaction),
+                        interactionIndex,
+                        group,
+                        function(data, interaction, url, type, interactionIndex) {
+                            statements = filterOwnStatements(data);
+                            if (statements.length > 0) {
+                                givenAnswer = statements[0].result.response;
+                                if (interaction.getAttribute("showScore") == "true") {
+                                    var txt = answerLabelText;
+                                    txt = txt.replace(/\{0\}/, givenAnswer);
+                                    $('#' + escapeUrl(url, type, interactionIndex) + ' .score').html('<p>' + txt + '</p>');
+                                }
+                                for (blockIndex = 0; blockIndex < interaction.children.length; blockIndex++) {
+                                    block = interaction.children[blockIndex];
+                                    conScoreAnswer = block.getAttribute('conScoreAnswer');
+                                    if (conScoreAnswer == givenAnswer) {
+                                        $('#' + escapeUrl(
+                                            url,
+                                            type,
+                                            interactionIndex
+                                        ) + ' .message').html(
+                                            block.getAttribute('adaptiveContent')
+                                        );
+
+                                        break;
+                                    }
+                                }
+                            }
                             if (interaction.getAttribute('graph') === 'true') {
-                                div = $('#' + escapeUrl(url, type, interactionIndex) + ' .score');
+                                div = $('#' + escapeUrl(
+                                        url,
+                                        type,
+                                        interactionIndex
+                                    ) + '.score');
+
                                 div.append(
                                     "<div><svg id='" +
                                     escapeUrl(url, type, interactionIndex) +
-                                    "-graph'></svg></div>"
+                                    "-graph'></svg></div>",
                                 );
 
                                 if (interaction.getAttribute('graphType') == 'bar_answers') {
@@ -700,11 +918,7 @@
                                                 chart.xAxis.rotateLabels(45).axisLabel('Answers given');
                                                 chart.yDomain([0, 100]);
                                                 chart.yAxis.axisLabel('Number of answers');
-                                                if(fullWidth){
-                                                    chart.width(700);
-                                                }else{
-                                                    chart.width(300);
-                                                }
+                                                chart.width(700);
                                                 chart.height(300);
                                             }
                                         }
@@ -718,6 +932,7 @@
                                         x.result.score.raw;
                                         return x;
                                     });
+
                                     var chart = dash.createBarChart(
                                         {
                                             container: '#' + escapeUrl(
@@ -734,22 +949,17 @@
                                                 });
                                             },
                                             customize: function (chart) {
-                                                chart.xAxis.rotateLabels(45).axisLabel("Score Range [%]");
-                                                chart.yAxis.axisLabel("% of Group");
-                                                if(fullWidth){
-                                                    chart.width(700);
-                                                }else{
-                                                    chart.width(300);
-                                                }
+                                                chart.xAxis.rotateLabels(45).axisLabel('Score Range [%]');
+                                                chart.yAxis.axisLabel('% of Group');
+                                                chart.width(700);
                                                 chart.height(300);
                                                 chart.yDomain([0, 100]);
                                             }
-
                                         }
                                     );
                                     chart.draw();
                                 }
-                                else if (interaction.getAttribute("graphType") == "line_average_marks") {
+                                else if (interaction.getAttribute('graphType') == 'line_average_marks') {
                                     var dash = new ADL.XAPIDashboard();
                                     dash.addStatements(data);
                                     data.map(function (x) {
@@ -766,7 +976,7 @@
                                             ) + '-graph',
                                             groupBy: 'result.score.raw',
                                             aggregate: ADL.count(),
-                                            range: {start: 0.0, end: 100.0, increment: 10},
+                                            range: {start: 0.0, end: 100, increment: 10},
                                             rangeLabel: 'start',
                                             post: function (d) {
                                                 d.contents.map(function (el) {
@@ -776,24 +986,19 @@
                                             customize: function (chart) {
                                                 chart.xAxis.rotateLabels(45).axisLabel('Score Range [%]');
                                                 chart.yAxis.axisLabel('% of Group');
-                                                if(fullWidth){
-                                                    chart.width(700);
-                                                }else{
-                                                    chart.width(300);
-                                                }
+                                                chart.width(700);
                                                 chart.tooltips(false);
                                                 chart.height(300);
                                                 chart.yDomain([0, 100]);
                                             }
-
                                         }
                                     );
                                     chart.draw();
                                 }
-                                else if (interaction.getAttribute("graphType") == "line_own_marks") {
+                                else if (interaction.getAttribute('graphType') == 'line_own_marks') {
                                     var dash = new ADL.XAPIDashboard();
                                     data.map(function (x) {
-                                        x.result.score.raw;
+                                        x.result.score.raw /= 10;
                                         return x;
                                     });
 
@@ -823,11 +1028,7 @@
                                             aggregate: ADL.average('result.score.raw'),
                                             rangeLabel: 'start',
                                             customize: function (chart) {
-                                                if(fullWidth){
-                                                    chart.width(700);
-                                                }else{
-                                                    chart.width(700);
-                                                }
+                                                chart.width(700);
                                                 chart.height(300);
                                                 chart.tooltips(false);
                                                 chart.yDomain([0, 10]);
@@ -837,7 +1038,6 @@
                                             },
                                             post: function (data) {
                                                 data.contents.map(function (el) {
-                                                    el.out = el.out / 10;
                                                     el.in = Date.parse(el.in);
                                                 });
                                             }
@@ -846,206 +1046,7 @@
                                     chart.draw();
                                 }
                             }
-                        }
-                    });
-                }
-                else if (interactionType == 'answer') {
-                    statements = getStatements(
-                        xerteurl,
-                        xertelo,
-                        xertelabel,
-                        opinionClass,
-                        interactionType,
-                        hasToRetrieveAll(interaction),
-                        interactionIndex,
-                        group,
-                        function(data, interaction, url, type, interactionIndex) {
-                            statements = filterOwnStatements(data);
-                            if (statements.length > 0) {
-                                givenAnswer = statements[0].result.response;
-                                if (interaction.getAttribute("showScore") == "true") {
-                                    var txt = answerLabelText;
-                                    txt = txt.replace(/\{0\}/, givenAnswer);
-                                    $('#' + escapeUrl(url, type, interactionIndex) + ' .score').html('<p>' + txt + '</p>');
-                                }
-                                for (blockIndex = 0; blockIndex < interaction.children.length; blockIndex++) {
-                                    block = interaction.children[blockIndex];
-                                    conScoreAnswer = block.getAttribute('conScoreAnswer');
-                                    if (conScoreAnswer == givenAnswer) {
-                                        $('#' + escapeUrl(
-                                                url,
-                                                type,
-                                                interactionIndex
-                                            ) + ' .message').html(
-                                            block.getAttribute('adaptiveContent')
-                                        );
 
-                                        break;
-                                    }
-                                }
-                                if (interaction.getAttribute('graph') === 'true') {
-                                    div = $('#' + escapeUrl(
-                                            url,
-                                            type,
-                                            interactionIndex
-                                        ) + '.score');
-
-                                    div.append(
-                                        "<div><svg id='" +
-                                        escapeUrl(url, type, interactionIndex) +
-                                        "-graph'></svg></div>",
-                                    );
-
-                                    if (interaction.getAttribute('graphType') == 'bar_answers') {
-                                        var dash = new ADL.XAPIDashboard();
-                                        dash.addStatements(data);
-                                        var chart = dash.createBarChart(
-                                            {
-                                                container: '#' + escapeUrl(
-                                                    url,
-                                                    type,
-                                                    interactionIndex
-                                                ) + '-graph',
-                                                groupBy: 'result.response',
-                                                aggregate: ADL.count(),
-                                                post: function (d) {
-                                                    d.contents.map(function (el) {
-                                                        el.out *= 1 / data.length * 100;
-                                                    });
-                                                },
-                                                customize: function (chart) {
-                                                    chart.xAxis.rotateLabels(45).axisLabel('Answers given');
-                                                    chart.yDomain([0, 100]);
-                                                    chart.yAxis.axisLabel('Number of answers');
-                                                    chart.width(700);
-                                                    chart.height(300);
-                                                }
-                                            }
-                                        );
-                                        chart.draw();
-                                    }
-                                    else if (interaction.getAttribute('graphType') == 'bar_marks') {
-                                        var dash = new ADL.XAPIDashboard();
-                                        dash.addStatements(data);
-                                        data.map(function (x) {
-                                            x.result.score.raw;
-                                            return x;
-                                        });
-
-                                        var chart = dash.createBarChart(
-                                            {
-                                                container: '#' + escapeUrl(
-                                                    url,
-                                                    type,
-                                                    interactionIndex
-                                                ) + '-graph',
-                                                groupBy: 'result.score.raw',
-                                                aggregate: ADL.count(),
-                                                range: {start: 0.0, end: 100.0, increment: 10},
-                                                post: function (d) {
-                                                    d.contents.map(function (el) {
-                                                        el.out *= 1 / data.length * 100;
-                                                    });
-                                                },
-                                                customize: function (chart) {
-                                                    chart.xAxis.rotateLabels(45).axisLabel('Score Range [%]');
-                                                    chart.yAxis.axisLabel('% of Group');
-                                                    chart.width(700);
-                                                    chart.height(300);
-                                                    chart.yDomain([0, 100]);
-                                                }
-                                            }
-                                        );
-                                        chart.draw();
-                                    }
-                                    else if (interaction.getAttribute('graphType') == 'line_average_marks') {
-                                        var dash = new ADL.XAPIDashboard();
-                                        dash.addStatements(data);
-                                        data.map(function (x) {
-                                            x.result.score.raw;
-                                            return x;
-                                        });
-
-                                        var chart = dash.createLineChart(
-                                            {
-                                                container: '#' + escapeUrl(
-                                                    url,
-                                                    type,
-                                                    interactionIndex
-                                                ) + '-graph',
-                                                groupBy: 'result.score.raw',
-                                                aggregate: ADL.count(),
-                                                range: {start: 0.0, end: 100, increment: 10},
-                                                rangeLabel: 'start',
-                                                post: function (d) {
-                                                    d.contents.map(function (el) {
-                                                        el.out *= 1 / data.length * 100;
-                                                    });
-                                                },
-                                                customize: function (chart) {
-                                                    chart.xAxis.rotateLabels(45).axisLabel('Score Range [%]');
-                                                    chart.yAxis.axisLabel('% of Group');
-                                                    chart.width(700);
-                                                    chart.tooltips(false);
-                                                    chart.height(300);
-                                                    chart.yDomain([0, 100]);
-                                                }
-                                            }
-                                        );
-                                        chart.draw();
-                                    }
-                                    else if (interaction.getAttribute('graphType') == 'line_own_marks') {
-                                        var dash = new ADL.XAPIDashboard();
-                                        data.map(function (x) {
-                                            x.result.score.raw /= 10;
-                                            return x;
-                                        });
-
-                                        dash.addStatements(statements);
-                                        end = new Date();
-                                        begin = end;
-                                        for (statement in statements) {
-                                            if (begin.getTime() > new Date(statements[statement].timestamp).getTime()) {
-                                                begin = new Date(statements[statement].timestamp);
-                                            }
-                                        }
-
-                                        begin = new Date(begin.getTime() - 1 * 24 * 60 * 60 * 1000)
-                                        var chart = dash.createLineChart(
-                                            {
-                                                container: '#' + escapeUrl(
-                                                    url,
-                                                    type,
-                                                    interactionIndex
-                                                ) + '-graph',
-                                                groupBy: 'timestamp',
-                                                range: {
-                                                    start: begin.toISOString(),
-                                                    end: end.toISOString(),
-                                                    increment: 1000 * 60 * 15
-                                                },
-                                                aggregate: ADL.average('result.score.raw'),
-                                                rangeLabel: 'start',
-                                                customize: function (chart) {
-                                                    chart.width(700);
-                                                    chart.height(300);
-                                                    chart.tooltips(false);
-                                                    chart.yDomain([0, 10]);
-                                                    chart.xAxis.tickFormat(function (label) {
-                                                        return d3.time.format('%b %d')(new Date(label));
-                                                    });
-                                                },
-                                                post: function (data) {
-                                                    data.contents.map(function (el) {
-                                                        el.in = Date.parse(el.in);
-                                                    });
-                                                }
-                                            }
-                                        );
-                                        chart.draw();
-                                    }
-                                }
-                            }
                 });
             }
             else if (interactionType == 'opinion') {
