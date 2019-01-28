@@ -544,7 +544,7 @@ div#shorturltodisplay a {
 #menuItems .menuItem.current {
   border: 2px solid #0087C6; }
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 600px) {
   #x_footerProgress {
     display: block; }
 
@@ -552,7 +552,10 @@ div#shorturltodisplay a {
     vertical-align: top;
     text-align: center;
     display: inline-block;
-    padding: 12px 5px 0 5px;
+    padding-top: 12px;
+    padding-right: 5px;
+    padding-bottom: 0px;
+    padding-left: 5px;
     margin-right: -5px;
     height: 30px;
     width: auto;
@@ -560,16 +563,43 @@ div#shorturltodisplay a {
     font-size: 12px; }
 
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    font-size: 1.6em;
+    width: 1.2em;
     margin-left: 5px; }
 
   .pbContainer {
-    display: block;
     margin-top: 1.2em; }
 
   .pbTxt {
-    display: block;
+    font-size: 6px;
+    text-align: center; } }
+@media only screen and (max-width: 320px) {
+  #x_footerProgress {
+    display: block; }
+
+  #x_pageNo {
+    vertical-align: top;
+    text-align: center;
+    display: inline-block;
+    padding-top: 12px;
+    padding-right: 5px;
+    padding-bottom: 0px;
+    padding-left: 5px;
+    margin-right: -5px;
+    height: 30px;
+    width: auto;
+    z-index: 100;
+    font-size: 12px; }
+
+  #x_footerBlock button {
+    font-size: 1.3em;
+    width: 1.1em;
+    margin-left: 5px; }
+
+  .pbContainer {
+    margin-top: 1.2em; }
+
+  .pbTxt {
     font-size: 6px;
     text-align: center; } }
 #x_pageHolder {
