@@ -152,6 +152,7 @@ class XerteXMLInspector
         // We don't really want to load external entities into our XML; but have no choice here. Make sure it's enabled (revert it later on).
         // This can be a security issue - see .e.g http://php.net/manual/en/function.libxml-disable-entity-loader.php
         // Supported from 5.2.11, so allow for older versions to work as well.
+
         $orig_error_setting = libxml_use_internal_errors(true);
         if (function_exists('libxml_disable_entity_loader'))
         {

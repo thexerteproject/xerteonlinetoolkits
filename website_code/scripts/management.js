@@ -8,7 +8,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@ var management_ajax_php_path = "website_code/php/management/";
 
 if(typeof(String.prototype.trim) === "undefined")
 {
-    String.prototype.trim = function() 
+    String.prototype.trim = function()
     {
         return String(this).replace(/^\s+|\s+$/g, '');
     };
@@ -38,19 +38,19 @@ function management_ajax_send_prepare(url){
    	xmlHttp.open("post",management_ajax_php_path + url,true);
 	xmlHttp.onreadystatechange=management_stateChanged;
 	xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	
+
 }
 
 // Function management state changed update screen
 //
 // Generic ajax handler for this script
 
-function management_stateChanged(){ 
+function management_stateChanged(){
 
-	if (xmlHttp.readyState==4){ 
+	if (xmlHttp.readyState==4){
 
 		if(xmlHttp.responseText!=""){
-			
+
 			document.getElementById('admin_area').innerHTML = xmlHttp.responseText;
 
 		}
@@ -61,17 +61,21 @@ function management_stateChanged(){
 //
 // Generic ajax handler for this script
 
-function management_alert_stateChanged(){ 
+function management_alert_stateChanged(){
 
-	if (xmlHttp.readyState==4){ 
+	if (xmlHttp.readyState==4){
 
 		response = xmlHttp.responseText.trim();
 		if(response!=""){
-			
+
 			alert(response);
 
 		}
 	}
+}
+
+function upload_template(){
+	
 }
 
 // Function feeds list
@@ -86,7 +90,7 @@ function feeds_list(){
 
 		management_ajax_send_prepare(url)
 
-		xmlHttp.send('no_id=1'); 
+		xmlHttp.send('no_id=1');
 
 	}
 }
@@ -107,24 +111,24 @@ function remove_feed(id,type){
 
 			if(type=="RSS"){
 
-				xmlHttp.send('template_id=' + id + '&rss=setfalse'); 
+				xmlHttp.send('template_id=' + id + '&rss=setfalse');
 
 			}
 
 			if(type=="EXPORT"){
 
-				xmlHttp.send('template_id=' + id + '&export=setfalse'); 
+				xmlHttp.send('template_id=' + id + '&export=setfalse');
 
 			}
 
 			if(type=="SYND"){
 
-				xmlHttp.send('template_id=' + id + '&synd=setfalse'); 
+				xmlHttp.send('template_id=' + id + '&synd=setfalse');
 
 			}
 
 		}
-		
+
 	}
 }
 
@@ -140,7 +144,7 @@ function licenses_list(){
 
 		management_ajax_send_prepare(url)
 
-		xmlHttp.send('no_id=1'); 
+		xmlHttp.send('no_id=1');
 
 	}
 }
@@ -159,10 +163,10 @@ function remove_licenses(id){
 
 			management_ajax_send_prepare(url)
 
-			xmlHttp.send('remove=' + id); 
+			xmlHttp.send('remove=' + id);
 
 		}
-	
+
 	}
 }
 
@@ -180,7 +184,7 @@ function categories_list(){
 
 		management_ajax_send_prepare(url)
 
-		xmlHttp.send('no_id=1'); 
+		xmlHttp.send('no_id=1');
 
 	}
 }
@@ -258,7 +262,7 @@ function user_templates_list(){
 
 		management_ajax_send_prepare(url)
 
-		xmlHttp.send('no_id=1'); 
+		xmlHttp.send('no_id=1');
 
 	}
 }
@@ -286,7 +290,7 @@ function users_list(){
 
 		management_ajax_send_prepare(url)
 
-		xmlHttp.send('no_id=1'); 
+		xmlHttp.send('no_id=1');
 
 	}
 }
@@ -303,7 +307,7 @@ function template_sync(){
 
 		management_ajax_send_prepare(url)
 
-		xmlHttp.send('no_id=1'); 
+		xmlHttp.send('no_id=1');
 
 	}
 }
@@ -322,7 +326,7 @@ function site_list(){
 
 		management_ajax_send_prepare(url)
 
-		xmlHttp.send('no_id=1'); 
+		xmlHttp.send('no_id=1');
 
 	}
 }
@@ -341,7 +345,7 @@ function templates_list(){
 
 		management_ajax_send_prepare(url)
 
-		xmlHttp.send('no_id=1'); 
+		xmlHttp.send('no_id=1');
 
 	}
 }
@@ -353,20 +357,20 @@ function templates_list(){
 function update_template(){
 
 	if(setup_ajax()!=false){
-	
+
 		var url="template_details_management.php";
 
 		xmlHttp.open("post",management_ajax_php_path + url,true);
 		xmlHttp.onreadystatechange=management_alert_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		xmlHttp.send('template_id=' + active_section + 
-					 '&desc=' + document.getElementById(active_section + "desc").value + 
-					 '&display=' + document.getElementById(active_section + "display").value + 
-					 '&date_uploaded=' + document.getElementById(active_section + "_date_uploaded").value + 
-					 '&example=' + document.getElementById(active_section + "example").value + 
-					 '&access=' + document.getElementById(active_section + "access").value + 
-					 '&active=' + document.getElementById(active_section + "active").value); 		
+		xmlHttp.send('template_id=' + active_section +
+					 '&desc=' + document.getElementById(active_section + "desc").value +
+					 '&display=' + document.getElementById(active_section + "display").value +
+					 '&date_uploaded=' + document.getElementById(active_section + "_date_uploaded").value +
+					 '&example=' + document.getElementById(active_section + "example").value +
+					 '&access=' + document.getElementById(active_section + "access").value +
+					 '&active=' + document.getElementById(active_section + "active").value);
 
 	}
 
@@ -386,10 +390,10 @@ function update_play_security(){
 		xmlHttp.onreadystatechange=management_alert_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		xmlHttp.send('play_id=' + active_section + 
-					 '&security=' + document.getElementById(active_section + "security").value + 
-					 '&data=' + document.getElementById(active_section + "data").value + 
-					 '&info=' + document.getElementById(active_section + "info").value); 		
+		xmlHttp.send('play_id=' + active_section +
+					 '&security=' + document.getElementById(active_section + "security").value +
+					 '&data=' + document.getElementById(active_section + "data").value +
+					 '&info=' + document.getElementById(active_section + "info").value);
 
 	}
 
@@ -409,7 +413,7 @@ function remove_security(){
 
 			var url="remove_play_security.php";
 
-			xmlHttp.open("post",management_ajax_php_path + url,true);	
+			xmlHttp.open("post",management_ajax_php_path + url,true);
 			xmlHttp.onreadystatechange=management_stateChanged;
 			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
@@ -437,52 +441,52 @@ function update_site(){
 		copyright = document.getElementById("copyright").value;
 		copyright = copyright.split("�").join("AAA");
 
-		xmlHttp.send('site_url=' + document.getElementById("site_url").value + 
-					 '&apache=' + document.getElementById("apache").value + 
-					 '&site_title=' + document.getElementById("site_title").value + 
-					 '&site_name=' + document.getElementById("site_name").value + 
-					 '&site_logo=' + document.getElementById("site_logo").value + 
-					 '&organisational_logo=' + document.getElementById("organisational_logo").value + 
-					 '&welcome_message=' + document.getElementById("welcome_message").value + 
+		xmlHttp.send('site_url=' + document.getElementById("site_url").value +
+					 '&apache=' + document.getElementById("apache").value +
+					 '&site_title=' + document.getElementById("site_title").value +
+					 '&site_name=' + document.getElementById("site_name").value +
+					 '&site_logo=' + document.getElementById("site_logo").value +
+					 '&organisational_logo=' + document.getElementById("organisational_logo").value +
+					 '&welcome_message=' + document.getElementById("welcome_message").value +
 					 '&site_text=' + document.getElementById("site_text").value +
 					 '&tutorial_text=' + document.getElementById("tutorial_text").value +
 					 '&news_text=' + document.getElementById("news_text").value +
-					 '&pod_one=' + document.getElementById("pod_one").value + 
-					 '&pod_two=' + document.getElementById("pod_two").value + 
+					 '&pod_one=' + document.getElementById("pod_one").value +
+					 '&pod_two=' + document.getElementById("pod_two").value +
 					 '&copyright=' + encodeURIComponent(document.getElementById("copyright").value) +
-					 '&demonstration_page=' + document.getElementById("demonstration_page").value + 
-					 '&form_string=' + document.getElementById("form_string").value + 
-					 '&peer_form_string=' + document.getElementById("peer_form_string").value + 
-					 '&feedback_list=' + document.getElementById("feedback_list").value + 
-					 '&rss_title=' + document.getElementById("rss_title").value + 
-					 '&module_path=' + document.getElementById("module_path").value + 
-					 '&website_code_path=' + document.getElementById("website_code_path").value + 
-					 '&users_file_area_short=' + document.getElementById("users_file_area_short").value + 
-					 '&php_library_path=' + document.getElementById("php_library_path").value + 
-					 '&root_file_path=' + document.getElementById("root_file_path").value + 
-					 '&play_edit_preview_query=' + document.getElementById("play_edit_preview_query").value + 
-					 '&email_error_list=' + document.getElementById("error_email_list").value + 
-					 '&error_log_message=' + document.getElementById("error_log_message").value + 
-					 '&max_error_size=' + document.getElementById("max_error_size").value + 
-					 '&authentication_method=' + document.getElementById("authentication_method").value + 
-					 '&ldap_host=' + document.getElementById("ldap_host").value	+ 
-					 '&ldap_port=' + document.getElementById("ldap_port").value + 
+					 '&demonstration_page=' + document.getElementById("demonstration_page").value +
+					 '&form_string=' + document.getElementById("form_string").value +
+					 '&peer_form_string=' + document.getElementById("peer_form_string").value +
+					 '&feedback_list=' + document.getElementById("feedback_list").value +
+					 '&rss_title=' + document.getElementById("rss_title").value +
+					 '&module_path=' + document.getElementById("module_path").value +
+					 '&website_code_path=' + document.getElementById("website_code_path").value +
+					 '&users_file_area_short=' + document.getElementById("users_file_area_short").value +
+					 '&php_library_path=' + document.getElementById("php_library_path").value +
+					 '&root_file_path=' + document.getElementById("root_file_path").value +
+					 '&play_edit_preview_query=' + document.getElementById("play_edit_preview_query").value +
+					 '&email_error_list=' + document.getElementById("error_email_list").value +
+					 '&error_log_message=' + document.getElementById("error_log_message").value +
+					 '&max_error_size=' + document.getElementById("max_error_size").value +
+					 '&authentication_method=' + document.getElementById("authentication_method").value +
+					 '&ldap_host=' + document.getElementById("ldap_host").value	+
+					 '&ldap_port=' + document.getElementById("ldap_port").value +
 					 '&bind_pwd=' + encodeURIComponent(document.getElementById("bind_pwd").value) +
-					 '&base_dn=' + document.getElementById("base_dn").value + 
-					 '&bind_dn=' + document.getElementById("bind_dn").value + 
-					 '&flash_save_path=' + document.getElementById("flash_save_path").value + 
-					 '&flash_upload_path=' + document.getElementById("flash_upload_path").value + 
-					 '&flash_preview_check_path=' + document.getElementById("flash_preview_check_path").value + 
-					 '&flash_flv_skin=' + document.getElementById("flash_flv_skin").value + 
-					 '&site_email_account=' + document.getElementById("site_email_account").value + 
-					 '&headers=' + document.getElementById("headers").value + 
-					 '&email_to_add_to_username=' + document.getElementById("email_to_add_to_username").value + 
-					 '&proxy1=' + document.getElementById("proxy1").value + 
-					 '&port1=' + document.getElementById("port1").value + 
-					 '&site_session_name=' + document.getElementById("site_session_name").value + 
-					 '&synd_publisher=' + document.getElementById("synd_publisher").value + 
-					 '&synd_rights=' + document.getElementById("synd_rights").value + 
-					 '&synd_license=' + document.getElementById("synd_license").value + 
+					 '&base_dn=' + document.getElementById("base_dn").value +
+					 '&bind_dn=' + document.getElementById("bind_dn").value +
+					 '&flash_save_path=' + document.getElementById("flash_save_path").value +
+					 '&flash_upload_path=' + document.getElementById("flash_upload_path").value +
+					 '&flash_preview_check_path=' + document.getElementById("flash_preview_check_path").value +
+					 '&flash_flv_skin=' + document.getElementById("flash_flv_skin").value +
+					 '&site_email_account=' + document.getElementById("site_email_account").value +
+					 '&headers=' + document.getElementById("headers").value +
+					 '&email_to_add_to_username=' + document.getElementById("email_to_add_to_username").value +
+					 '&proxy1=' + document.getElementById("proxy1").value +
+					 '&port1=' + document.getElementById("port1").value +
+					 '&site_session_name=' + document.getElementById("site_session_name").value +
+					 '&synd_publisher=' + document.getElementById("synd_publisher").value +
+					 '&synd_rights=' + document.getElementById("synd_rights").value +
+					 '&synd_license=' + document.getElementById("synd_license").value +
 					 '&import_path=' + document.getElementById("import_path").value +
 					 '&enable_mime_check=' + document.getElementById("enable_mime_check").value +
 					 '&mimetypes=' + document.getElementById("mimetypes").value +
@@ -491,10 +495,10 @@ function update_site(){
 					 '&enable_clamav_check=' + document.getElementById("enable_clamav_check").value +
 					 '&clamav_cmd=' + document.getElementById("clamav_cmd").value +
 					 '&clamav_opts=' + document.getElementById("clamav_opts").value +
-					 '&LDAP_preference=' + document.getElementById("LDAP_preference").value + 
-					 '&LDAP_filter=' + document.getElementById("LDAP_filter").value + 
-					 '&integration_config_path=' + document.getElementById("integration_config_path").value + 
-					 '&admin_username=' + document.getElementById("admin_username").value + 
+					 '&LDAP_preference=' + document.getElementById("LDAP_preference").value +
+					 '&LDAP_filter=' + document.getElementById("LDAP_filter").value +
+					 '&integration_config_path=' + document.getElementById("integration_config_path").value +
+					 '&admin_username=' + document.getElementById("admin_username").value +
 					 '&admin_password=' + encodeURIComponent(document.getElementById("admin_password").value) +
 					 '&site_xapi_endpoint=' + document.getElementById("site_xapi_endpoint").value +
 					 '&site_xapi_key=' + document.getElementById("site_xapi_key").value +
@@ -502,6 +506,7 @@ function update_site(){
  					 '&site_xapi_dashboard_enable=' + document.getElementById("site_xapi_dashboard_enable").value +
 					 '&site_xapi_dashboard_nonanonymous=' + document.getElementById("site_xapi_dashboard_nonanonymous").value +
 					 '&xapi_dashboard_minrole=' + document.getElementById("xapi_dashboard_minrole").value +
+                     '&xapi_dashboard_urls=' + document.getElementById("xapi_dashboard_urls").value +
 					 '&site_xapi_dashboard_period=' + document.getElementById("site_xapi_dashboard_period").value);
 
 	}
@@ -522,10 +527,10 @@ function user_template(){
 		xmlHttp.onreadystatechange=management_alert_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		xmlHttp.send('user_id=' + active_section + 
-					 '&firstname=' + document.getElementById("firstname" + active_section).value + 
-					 '&surname=' + document.getElementById("surname"+active_section).value + 
-					 '&username=' + document.getElementById("username"+active_section).value ); 		
+		xmlHttp.send('user_id=' + active_section +
+					 '&firstname=' + document.getElementById("firstname" + active_section).value +
+					 '&surname=' + document.getElementById("surname"+active_section).value +
+					 '&username=' + document.getElementById("username"+active_section).value );
 
 	}
 
@@ -545,7 +550,7 @@ function play_security_list(template){
 
 		management_ajax_send_prepare(url);
 
-		xmlHttp.send('logon_id=1'); 
+		xmlHttp.send('logon_id=1');
 
 	}
 
@@ -723,7 +728,7 @@ function errors_list(template){
 
 		management_ajax_send_prepare(url);
 
-		xmlHttp.send('logon_id=1'); 
+		xmlHttp.send('logon_id=1');
 
 	}
 
@@ -736,17 +741,17 @@ function errors_list(template){
 function delete_error_logs(){
 
 	if (confirm(DELETE_PROMPT)) {
-	
+
 		if(setup_ajax()!=false){
 
 			var url="delete_error_list.php";
 
 			management_ajax_send_prepare(url);
 
-			xmlHttp.send('logon_id=1'); 
+			xmlHttp.send('logon_id=1');
 
 		}
-	
+
 	}
 
 }
@@ -763,7 +768,7 @@ function delete_template(template){
 
 		management_ajax_send_prepare(url);
 
-		xmlHttp.send('template_id=' + template); 
+		xmlHttp.send('template_id=' + template);
 
 	}
 
@@ -923,7 +928,7 @@ function refresh_languages()
         xmlHttp.send();
     }
 }
-// Function give a project 
+// Function give a project
 //
 // remove a share, and check who did it
 
@@ -936,7 +941,7 @@ function change_owner(template_id){
 		xmlHttp.open("post",management_ajax_php_path + url,true);
 		xmlHttp.onreadystatechange=change_owner_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-		
+
 		login = (document.getElementById(template_id + "_new_owner").value);
 
 		xmlHttp.send('template_id=' + template_id + '&new_user=' + login);
@@ -945,23 +950,23 @@ function change_owner(template_id){
 
 }
 
-// Function give a project 
+// Function give a project
 //
 // remove a share, and check who did it
 
 function change_owner_stateChanged(){
 
-	if (xmlHttp.readyState==4){ 
+	if (xmlHttp.readyState==4){
 
 		if(xmlHttp.responseText!=""){
-			
+
 			alert(USER_CHANGED);
-			users_list();			
+			users_list();
 
 		}else{
-		
+
 			alert("ERROR " + xmlHttp.responseText);
-		
+
 		}
 	}
 
@@ -985,7 +990,7 @@ function templates_display(tag){
         document.getElementById(button_tag).innerHTML = MANAGEMENT_HIDE;
 
 	}
-	
+
 }
 
 function save_changes(){

@@ -55,6 +55,7 @@ $sql = "SELECT template_id, user_id, firstname, surname, role FROM " .
     " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}templaterights.user_id and template_id= ? and user_id = ?";
 
 $row = db_query_one($sql, array($_POST['template_id'], $_SESSION['toolkits_logon_id']));
+
 $info->role = $row['role'];
 
 echo json_encode($info);

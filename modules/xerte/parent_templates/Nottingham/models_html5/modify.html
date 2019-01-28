@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,17 +24,17 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$("#button").show();
-			
+
 			$("#modelTxt")
 				.hide()
 				.html("");
 		}
-		
+
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+
 		}
-		
+
 		this.init = function() {
 			var answerHeaderTxt = x_currentPageXML.getAttribute("answerHeaderTxt");
 			if (answerHeaderTxt == undefined) {
@@ -48,14 +48,31 @@
 			if (feedbackBtnTip == undefined) {
 				feedbackBtnTip = "Feedback"
 			};
-			
+            this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+			XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+            var label = "";
+            var modelAnswerTxt = "";
+            if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+            {
+                label = x_currentPageXML.getAttribute("trackinglabel");
+            }
+            if (x_currentPageXML.getAttribute("answer") != null && x_currentPageXML.getAttribute("answer") != "")
+            {
+                modelAnswerTxt = x_currentPageXML.getAttribute("answer");
+            }
+
+            XTEnterInteraction(x_currentPage, 0, 'text', label, [], modelAnswerTxt, [], x_currentPageXML.getAttribute("grouping"));
 			$("#instruction").html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
 			$("#initText").html(x_currentPageXML.getAttribute("text"));
 			$("#answer").html(answerHeaderTxt);
 			$("#answerTxt").html(x_currentPageXML.getAttribute("prompt"));
-			
+
 			$("#modelTxt").hide();
-			
+
 			$("#button")
 				.button({ label: feedbackBtnTxt })
 				.click(function() {
@@ -63,24 +80,33 @@
 					$("#modelTxt")
 						.show()
 						.html(x_currentPageXML.getAttribute("answer"));
+                        var answerTxt = $("#answerTxt").val();
+                        result =
+                            {
+                                success: (answerTxt.trim() == "" ? false : true),
+                                score: (answerTxt.trim() == "" ? 0.0 : 100.0)
+                            };
+
+                        XTExitInteraction(x_currentPage, 0, result, [], answerTxt, []);
+                        XTSetPageScore(x_currentPage, (answerTxt.trim() == "" ? 0.0 : 100.0));
 				});
-			
+
 			x_pageLoaded();
 		}
 	}
-	
+
 	modify.init();
-	
+
 </script>
 
 
 <div id="pageContents">
-	
+
 	<p id="instruction"></p>
-	<textarea id="initText" rows="5" readonly></textarea> 
+	<textarea id="initText" rows="5" readonly></textarea>
 	<p id="answer"></p>
 	<textarea id="answerTxt" rows="5"></textarea>
 	<button id="button"></button>
 	<textarea id="modelTxt" rows="5" readonly aria-live="polite"></textarea>
-	
+
 </div>
