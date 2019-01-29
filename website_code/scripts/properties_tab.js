@@ -1447,19 +1447,12 @@ function lti_update(id)
 			+ '&tsugi_key=' + $("[name=tsugi_key]").val()
             + '&tsugi_secret=' + $("[name=tsugi_secret]").val()
 			+ '&tsugi_xapi=' + $("#xChk").prop('checked')
-<<<<<<< HEAD
+            + '&tsugi_xapi_useglobal=' + $("#tsugi_xapi_useglobal").prop('checked')
 			+ '&tsugi_xapi_endpoint=' + $("[name=tsugi_xapi_endpoint]").val()
             + '&tsugi_xapi_username=' + $("[name=tsugi_xapi_username]").val()
             + '&tsugi_xapi_password=' + $("[name=tsugi_xapi_password]").val()
             + '&dashboard_urls=' + $("[name=dashboard_urls]").val()
             + '&tsugi_xapi_student_id_mode=' + $("[name=tsugi_xapi_student_id_mode]").val());
-=======
-			+ '&tsugi_xapi_useglobal=' + $("#tsugi_xapi_useglobal").prop('checked')
-			+ '&tsugi_xapi_endpoint=' + $("#tsugi_xapi_endpoint").val()
-            + '&tsugi_xapi_username=' + $("#tsugi_xapi_username").val()
-            + '&tsugi_xapi_password=' + $("#tsugi_xapi_password").val()
-            + '&tsugi_xapi_student_id_mode=' + $("#tsugi_xapi_student_id_mode").val());
->>>>>>> 9d7cbbf517d22e0b0efcd4659515e55b0a43142e
     }
 }
 
