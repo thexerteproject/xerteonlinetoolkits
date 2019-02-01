@@ -18,6 +18,8 @@ function DashboardState(info) {
     this.isSessionData = false;
     this.username = info.lrs.lrskey;
     this.password = info.lrs.secret;
+    this.pageIndex = 0;
+    this.pageSize = 5;
 }
 
 DashboardState.prototype.clear = function() {
@@ -27,6 +29,8 @@ DashboardState.prototype.clear = function() {
     this.groupedData = undefined;
     this.interactions = undefined;
     this.dashboard = new ADL.XAPIDashboard();
+    this.pageIndex = 0;
+    this.pageSize = 5;
 };
 
 DashboardState.prototype.getStatements = function(q, one, callback) {

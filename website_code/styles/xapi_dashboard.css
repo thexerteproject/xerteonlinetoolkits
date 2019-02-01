@@ -356,3 +356,11 @@ td.x-dashboard-interaction
 .jorneyData-container1{
     overflow-x: scroll;
 }
+
+#pageButtonRight{
+    float:right;
+}
+
+.page-button{
+    margin: 5%;
+}
