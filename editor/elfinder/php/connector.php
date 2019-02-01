@@ -92,7 +92,17 @@ $opts = array(
 			'accessControl' => 'access',             // disable and hide dot starting files (OPTIONAL)
             'tmbPath'       => $rootpath . "/media//.tmb",
             'tmbURL'        => $rooturl . "/media/.tmb",
-            'tmbCrop'       => false
+            'tmbCrop'       => false,
+            'uploadDeny' => array('text/x-php'),
+            'attributes' => array(
+                array( // hide readmes
+                    'pattern' => '/\.(txt|html|php|php5|php*|py|pl|sh|xml)$/i',
+                    'read'   => false,
+                    'write'  => false,
+                    'locked' => true,
+                    'hidden' => true
+                )
+            )
 		)
 	)
 );

@@ -2598,7 +2598,7 @@ var EDITOR = (function ($, parent) {
                                             }
                                             var stringVal = JSON.stringify(npoints);
                                             img = $('#featherlight-content img');
-                                            setAttributeValue(key, ["points", "w", "h"], [stringVal, img.width(), img.height()]);
+                                            setAttributeValue(key, ["points", "w", "h", "mode"], [stringVal, img.width(), img.height(), shape]);
 
                                             current.close();
                                             parent.tree.showNodeData(key);
@@ -2636,16 +2636,32 @@ var EDITOR = (function ($, parent) {
                                                 "y" : middelY-Yoff
                                             });
                                             points.push({
+                                                "x" : middelX,
+                                                "y" : middelY-Yoff
+                                            });
+                                            points.push({
                                                 "x" : middelX+Xoff,
                                                 "y" : middelY-Yoff
                                             });
                                             points.push({
                                                 "x" : middelX+Xoff,
+                                                "y" : middelY
+                                            });
+                                            points.push({
+                                                "x" : middelX+Xoff,
+                                                "y" : middelY+Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX,
                                                 "y" : middelY+Yoff
                                             });
                                             points.push({
                                                 "x" : middelX-Xoff,
                                                 "y" : middelY+Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX-Xoff,
+                                                "y" : middelY
                                             });
                                             for(var i = 0; i < points.length; i++){
                                                 var point = points[i];
@@ -2664,6 +2680,7 @@ var EDITOR = (function ($, parent) {
                                         $("#outer_img_" + id + " canvas")[0].width = $("#outer_img_" + id + " img").width();
                                         $("#outer_img_" + id + " canvas")[0].height = $("#outer_img_" + id + " img").height();
                                         points = JSON.parse(hsattrs.points);
+                                        shape = hsattrs.mode;
                                         var uniq_id = points.length;
                                         var canvas = $("#outer_img_" + id + " canvas").get(0);
                                         for(var i = 0; i < points.length; i++){
@@ -2701,8 +2718,69 @@ var EDITOR = (function ($, parent) {
                                             };
                                         }
 
-                                        function redraw_points(canvas)
+                                        function  recalculate_points(canvas) {
+                                            for(var i=1; i< points.length; i+=2){
+                                                if(i == 1 || i == 3){
+                                                    points[i].x = Math.min(points[i-1].x, points[(i+1) % 8].x) - (Math.abs(points[i-1].x) - points[(i+1)%8].x)/2;
+                                                    points[i].y = Math.min(points[i-1].y, points[(i+1)%8].y) - (Math.abs(points[i-1].y) - points[(i+1)%8].y)/2;
+                                                }else{
+                                                    points[i].x = Math.min(points[i-1].x, points[(i+1) % 8].x) + (Math.abs(points[i-1].x) - points[(i+1)%8].x)/2;
+                                                    points[i].y = Math.min(points[i-1].y, points[(i+1)%8].y) + (Math.abs(points[i-1].y) - points[(i+1)%8].y)/2;
+                                                }
+
+                                                $("#handle_" + i).css("top", points[i].y * canvas.height).css("left", points[i].x * canvas.width);
+
+                                            }
+                                        }
+
+                                        function minimal_size(index){
+
+                                            if(index != undefined){
+                                                var smallestSize = 0.030;
+                                                var opposite = (((Number(index)+8+4)%8));
+                                                var minX = points[0].x;
+                                                var maxX = points[2].x;
+                                                var minY = points[0].y;
+                                                var maxY = points[6].y;
+
+
+                                                if(minX+smallestSize > maxX){
+                                                    if(index == 0 || index == 6 || index == 7){
+                                                        points[0].x = points[2].x - smallestSize;
+                                                        points[6].x = points[4].x - smallestSize;
+                                                    }
+                                                    if(index == 2 || index == 3 || index == 4){
+                                                        points[2].x = points[0].x + smallestSize;
+                                                        points[4].x = points[6].x + smallestSize;
+                                                    }
+                                                }
+                                                if(minY+smallestSize > maxY){
+                                                    if(index == 0 || index == 1 || index == 2){
+                                                        points[0].y = points[6].y - smallestSize;
+                                                        points[2].y = points[4].y - smallestSize;
+                                                    }
+                                                    if(index == 4 || index == 5 || index == 6){
+                                                        points[4].y = points[2].y + smallestSize;
+                                                        points[6].y = points[0].y + smallestSize;
+                                                    }
+                                                }
+
+                                                if(Math.abs(points[opposite].x - points[index].x) < smallestSize ){
+                                                    //points[index].x = Math.min(points[opposite].x, points[index].x) + smallestSize;
+                                                }
+                                                else if(points[opposite].y - points[index].y < smallestSize ){
+
+                                                }
+                                            }
+                                        }
+
+                                        function redraw_points(canvas, index)
                                         {
+                                            if(shape == "square"){
+                                                minimal_size(index);
+                                                recalculate_points(canvas);
+                                            }
+
                                             var context = canvas.getContext('2d');
                                             context.beginPath();
                                             context.lineWidth = 1;
@@ -2725,6 +2803,12 @@ var EDITOR = (function ($, parent) {
                                             context.stroke();
                                             context.fillStyle = "rgba(150, 150, 150, 0.3)"
                                             context.fill();
+                                            for(var i = 0; i < points.length; i++){
+                                                var point = points[i];
+                                                var handle = $("#handle_" + i);
+                                                handle.css("left", point.x * canvas.width);
+                                                handle.css("top", point.y * canvas.height);
+                                            }
                                         }
                                         var last_mousedown = undefined;
                                         dragging = false;
@@ -2778,7 +2862,6 @@ var EDITOR = (function ($, parent) {
                                                             last_mousedown = undefined;
                                                         }
                                                         if (dragging) {
-                                                            debugger;
                                                             var canvas = $("#outer_img_" + id + " canvas").get(0);
 
                                                             point = points.filter(p => p.id == current_handle)[0];
@@ -2816,29 +2899,39 @@ var EDITOR = (function ($, parent) {
                                                             point.y = mouse.y;
 
 
-                                                            var Firstindexnumber = (((Number(index)+4+1)%4));
-                                                            var Secondindexnumber = (((Number(index)+4-1)%4));
+                                                            var NextCorner = (((Number(index)+8+2)%8));
+                                                            var PreviousCorner = (((Number(index)+8-2)%8));
 
-                                                            $("#" + current_handle).css("top", point.y * canvas.height).css("left", point.x * canvas.width);
-                                                            handle_p =  $("#handle_" + Firstindexnumber);
-                                                            handle_n = $("#handle_" +Secondindexnumber);
-                                                            //debugger;
-                                                            if(index % 2 == 0) {
-                                                                handle_p.css("top", point.y * canvas.height);
-                                                                handle_n.css("left", point.x * canvas.width);
-                                                                points[Firstindexnumber].y = point.y;
-                                                                points[Secondindexnumber].x = point.x;
-                                                            }else{
-                                                                handle_n.css("top", point.y * canvas.height);
-                                                                handle_p.css("left", point.x * canvas.width);
-                                                                points[Secondindexnumber].y = point.y;
-                                                                points[Firstindexnumber].x = point.x;
+                                                            //Left top and Right bottom.
+                                                            if(index % 4 == 0) {
+                                                                points[NextCorner].y = point.y;
+                                                                points[PreviousCorner].x = point.x;
                                                             }
+                                                            //Right top and Left bottom.
+                                                            else if(index % 2 == 0){
+                                                                points[PreviousCorner].y = point.y;
+                                                                points[NextCorner].x = point.x;
+                                                            }
+                                                            //All the middle points
+                                                            else{
+
+                                                                NextCorner = (((Number(index)+8+1)%8));
+                                                                PreviousCorner = (((Number(index)+8-1)%8));
+
+                                                                if(index % 4 == 1){
+                                                                    points[NextCorner].y = point.y;
+                                                                    points[PreviousCorner].y = point.y;
+                                                                }else{
+                                                                    points[NextCorner].x = point.x;
+                                                                    points[PreviousCorner].x = point.x;
+                                                                }
+                                                            }
+
                                                             last_mousedown = e;
-                                                            redraw_points(canvas);
+                                                            redraw_points(canvas, index);
                                                         }
 
-                                                        //debugger;
+
                                                     }
                                                 }
                                             });

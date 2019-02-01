@@ -35,6 +35,7 @@ $lti_def->published = isset($_POST["tsugi_published"]) && $_POST["tsugi_publishe
 $lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
 $lti_def->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
 $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
+$lti_def->xapi_useglobal = isset($_POST["tsugi_xapi_useglobal"]) && $_POST["tsugi_xapi_useglobal"] == "true";
 $lti_def->xapi_endpoint = (isset($_POST["tsugi_xapi_endpoint"]) ? htmlspecialchars($_POST["tsugi_xapi_endpoint"]) : "");
 $lti_def->xapi_username = (isset($_POST["tsugi_xapi_username"]) ? htmlspecialchars($_POST["tsugi_xapi_username"]) : "");
 $lti_def->xapi_password = (isset($_POST["tsugi_xapi_password"]) ? htmlspecialchars($_POST["tsugi_xapi_password"]) : "");
@@ -60,6 +61,7 @@ if ($tsugi_installed) {
     _debug("Detele " . $url);
 
 
+    /*
     if ($tsugi_publish) {
 
         $rows = $PDOX->allRowsDie("SELECT * FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE k.key_sha256 = :KEY and c.key_id = k.key_id and l.context_id=c.context_id and l.path != :URL", array(
@@ -72,7 +74,7 @@ if ($tsugi_installed) {
         }
 
     }
-
+    */
 
     // Remove key from tsugi
     $rows = $PDOX->allRowsDie("SELECT * FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE c.key_id = k.key_id and l.context_id=c.context_id and l.path = :URL", array(
@@ -137,11 +139,12 @@ if ($tsugi_installed) {
 
     }
 }
-$sql = "UPDATE {$xp}templatedetails SET tsugi_published = ?, tsugi_xapi_enabled = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ?, dashboard_allowed_links = ? WHERE template_id = ?";
+$sql = "UPDATE {$xp}templatedetails SET tsugi_published = ?, tsugi_xapi_enabled = ?, tsugi_xapi_useglobal = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ?, dashboard_allowed_links = ? WHERE template_id = ?";
 db_query($sql,
     array(
         $lti_def->published ? "1" : "0",
         $lti_def->xapi_enabled ? "1" : "0",
+        $lti_def->xapi_enabled ? ($lti_def->xapi_useglobal ? "1" : "0") : "1",
         $lti_def->xapi_enabled ? $lti_def->xapi_endpoint : "",
         $lti_def->xapi_enabled ? $lti_def->xapi_username : "",
         $lti_def->xapi_enabled ? $lti_def->xapi_password : "",

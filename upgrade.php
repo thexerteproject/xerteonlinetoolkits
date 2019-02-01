@@ -885,12 +885,14 @@ function upgrade_19()
 {
     if (! _db_field_exists('originaltemplatesdetails', 'parent_template')) {
         $error1 = _db_add_field('originaltemplatesdetails', 'parent_template', 'char(255)', '', 'template_name');
+        $error1_returned = true;
         if ($error1 !== false)
         {
             // Populate
             $table = table_by_key('originaltemplatesdetails');
             $sql = "UPDATE $table SET parent_template = template_name";
             $error2 = db_query($sql);
+            $error2_returned = true;
         }
         else
         {
@@ -914,15 +916,44 @@ function upgrade_19()
 
 function upgrade_20()
 {
-    if (! _db_field_exists('templatedetails', 'dashboard_allowed_links')) {
+    if (! _db_field_exists('templatedetails', 'tsugi_xapi_useglobal')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_useglobal', 'int(1)', '0', 'tsugi_xapi_enabled');
+        $error1_returned = true;
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        return "Tsugi xapi enabled field added - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Tsugi xapi enabled field already exists - ok ? true". "<br>";
+    }
+}
+
+function upgrade_21()
+{
+    if (!_db_field_exists('templatedetails', 'dashboard_allowed_links')) {
         $error1 = _db_add_field('templatedetails', 'dashboard_allowed_links', 'text', '', 'tsugi_xapi_student_id_mode');
+        $error1_returned = true;
         if($error1 === false)
         {
-            return "Creating dashboard_allower_links field in templatedetails - ok ? false". "<br>";
+            $error1_returned = false;
         }
-        return "Creating dashboard_allower_links field in templatedetails - ok ? true". "<br>";
+        if (! _db_field_exists('sitedetails', 'dashboard_enabled')) {
+            $error2 = _db_add_field('sitedetails', 'dashboard_allowed_links', 'text', '', 'dashboard_period');
+            $error2_returned = true;
+            if ($error2 === false)
+            {
+                $error2_returned = false;
+            }
+        }
+        return "Creating dashboard_allowed_links field in templatedetails - ok ? "  . ($error1_returned && $error2_returned ? 'true' : 'false') . "<br>";
     }
-    return "Creating dashboard_allower_links field in templatedetails already present - ok ? ". "<br>";
+    return "Creating dashboard_allowed_links field in templatedetails already present - ok ? ". "<br>";
 }
+
+
 
 ?>
