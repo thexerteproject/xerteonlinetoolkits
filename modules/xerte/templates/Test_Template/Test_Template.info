@@ -1,8 +1,0 @@
-display name: Test_Template
-description: A flexible template for creating test learning objects.
-editor size: 1280, 768
-preview size: 802,602
-preview filename: preview.xml
-public filename: data.xml
-supports: media,export,give,peer,xml,lti/xapi
-parent: Test_Template
