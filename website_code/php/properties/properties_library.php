@@ -595,7 +595,7 @@ function statistics_prepare($template_id)
             $prefix = $xerte_toolkits_site->database_table_prefix;
 
 
-            $query_for_names = "select td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode td.dashboard_allowed_links from {$prefix}templatedetails td where template_id=?";
+            $query_for_names = "select td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links from {$prefix}templatedetails td where template_id=?";
 
             $params = array($template_id);
             $row = db_query_one($query_for_names, $params);
