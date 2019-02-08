@@ -1468,9 +1468,9 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
 
     if (this.data.info.dashboard.enable_nonanonymous == 'true') {
         $(".unanonymous-view").show();
-        this.data.info.dashboard.anonymous = true;
+        this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
         $("#dp-unanonymous-view").change(function(event) {
-            $this.data.info.dashboard.anonymous = !$this.data.info.dashboard.anonymous;
+            $this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
 
             $this.regenerate_dashboard();
 
