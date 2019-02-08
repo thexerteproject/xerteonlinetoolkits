@@ -19,7 +19,7 @@ function DashboardState(info) {
     this.username = info.lrs.lrskey;
     this.password = info.lrs.secret;
     this.pageIndex = 0;
-    this.pageSize = 5;
+    this.pageSize = JSON.parse(info.dashboard.display_options).pageSize;
 }
 
 DashboardState.prototype.clear = function() {
@@ -30,7 +30,6 @@ DashboardState.prototype.clear = function() {
     this.interactions = undefined;
     this.dashboard = new ADL.XAPIDashboard();
     this.pageIndex = 0;
-    this.pageSize = 5;
 };
 
 DashboardState.prototype.getStatements = function(q, one, callback) {

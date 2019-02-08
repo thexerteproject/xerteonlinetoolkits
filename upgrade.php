@@ -954,6 +954,20 @@ function upgrade_21()
     return "Creating dashboard_allowed_links field in templatedetails already present - ok ? ". "<br>";
 }
 
+function upgrade_22()
+{
+    if (!_db_field_exists('templatedetails', 'dashboard_display_options')) {
+        $error1 = _db_add_field('templatedetails', 'dashboard_display_options', 'text', '{}', 'dashboard_allowed_links');
+        $error1_returned = true;
+        if($error1 === false)
+        {
+            $error1_returned = false;
+        }
+        return "Creating dashboard_display_options field in templatedetails - ok ? "  . ($error1_returned ? 'true' : 'false') . "<br>";
+    }
+    return "Creating dashboard_display_options field in templatedetails already present - ok ? ". "<br>";
+}
+
 
 
 ?>

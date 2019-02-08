@@ -198,7 +198,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         leftButton = "<button class='page-button btn btn-info' id='pageButtonLeft'>Left</button>";
         rightButton = "<button class='page-button btn btn-info' id='pageButtonRight'>Right</button>";
 
-        var pageOptions = '<div class="row container-fluid"><span class="col col-md-1 align-self-start">' + leftButton + '</span><span class="col-md-10"></span><span class="col col-md-1 align-self-end">' + rightButton + '</span><br></div>';
+        var pageOptions = '<div class="row container-fluid"><span class="col col-md-1 align-self-start">' + leftButton + '</span><span id="page-information" class="col-md-1"></span><span class="col-md-9"></span><span class="col col-md-1 align-self-end">' + rightButton + '</span><br></div>';
         // Add table with specific overview.
         div.append('<div class="row journeyTable">' + pageOptions + '<table class="table table-hover table-bordered table-responsive" id="' + learningObjectIndex +
             '"><thead></thead><tbody></tbody></table></div>');
@@ -313,8 +313,8 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             }else if(e.target.id == "pageButtonRight" && !init)
             {
                 $this.pageIndex = Math.min($this.pageIndex += $this.pageSize, Object.keys($this.groupedData).length - 1);
-            }else{
-                
+            }else if(Object.keys($this.groupedData).length < $this.pageSize){
+                $this.pageIndex = 0;
             }
 
             if($this.pageIndex > 0)
@@ -329,8 +329,10 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             }else{
                 $("#pageButtonRight").prop("disabled", true);
             }
-
             pageState.drawPages($this.pageIndex);
+            curPage = Math.ceil($this.pageIndex / $this.pageSize) + 1;
+            maxPage = Math.ceil(Object.keys($this.groupedData).length / $this.pageSize);
+            $("#page-information").html("Current page: " + (curPage) + " of " + maxPage);
 
         });
         $(".page-button").trigger("click", [true]);
@@ -376,8 +378,16 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 menu.append("<div><label>" + XAPI_DASHBOARD_DISPLAY_OVERVIEW + "</label><input class='hide-show-overview' type='checkbox' checked></div>");
                 menu.append("<div><label>" + XAPI_DASHBOARD_PAGE_SIZE + "</label><select id='pageSize'></select></div>");
                 pagesizes = [5, 10, 20, 50, 100, "All"];
+                defaultSize = $this.pageSize;
                 pagesizes.forEach(function(size){
-                    menu.find("select").append("<option value='" + size + "'>" + size + "</option>");
+                    var selected = "";
+                    if(defaultSize == size)
+                    {
+                        selected = "selected"
+                    }
+                    menu.find("select").append("<option " + selected + " value='" + size + "'>" + size + "</option>");
+
+
                 })
 
                 //debugger;
@@ -425,7 +435,18 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 $("#pageSize").change(function(){
                     $this.pageSize = Number($("#pageSize").val());
                     $(".page-button").trigger("click", [true]);
-                    debugger;
+                    var display_options = JSON.parse($this.info.dashboard.display_options);
+                    display_options.pageSize = $this.pageSize;
+                    $this.info.dashboard.display_options = JSON.stringify(display_options);
+                    $.post("http://localhost:8080/Integrat-ED/xerteonlinetoolkits/website_code/php/xAPI/update_dashboard_display_properties.php",
+                        {
+                            "id": $this.info.template_id,
+                            "properties" : $this.info.dashboard.display_options
+                        },
+                        function(data) {
+                            }
+
+                    );
                 })
 
 
@@ -1379,6 +1400,8 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
             jquery_language = "";
         }
     }
+
+    $this.data.pageSize = JSON.parse($this.data.info.dashboard.display_options).pageSize;
     $.datepicker.setDefaults(
         $.extend({},
             $.datepicker.regional[jquery_language]
@@ -1434,6 +1457,7 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
         this.data.info.dashboard.anonymous = true;
         $("#dp-unanonymous-view").change(function(event) {
             $this.data.info.dashboard.anonymous = !$this.data.info.dashboard.anonymous;
+
             $this.regenerate_dashboard();
 
         });
