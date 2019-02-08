@@ -306,14 +306,18 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         var pageState = this;
         $(".page-button").click(function(e, init){
 
+            var pageSize = $this.pageSize;
+            if(pageSize == -1){
+                pageSize = Object.keys($this.groupedData).length;
+            }
 
             if(e.target.id == "pageButtonLeft" && !init)
             {
-                $this.pageIndex = Math.max($this.pageIndex -= $this.pageSize, 0);
+                $this.pageIndex = Math.max($this.pageIndex -= pageSize, 0);
             }else if(e.target.id == "pageButtonRight" && !init)
             {
-                $this.pageIndex = Math.min($this.pageIndex += $this.pageSize, Object.keys($this.groupedData).length - 1);
-            }else if(Object.keys($this.groupedData).length < $this.pageSize){
+                $this.pageIndex = Math.min($this.pageIndex +=pageSize, Object.keys($this.groupedData).length - 1);
+            }else if(Object.keys($this.groupedData).length < pageSize){
                 $this.pageIndex = 0;
             }
 
@@ -323,15 +327,17 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             }else{
                 $("#pageButtonLeft").prop("disabled", true);
             }
-            if($this.pageIndex + $this.pageSize < Object.keys($this.groupedData).length - 1)
+            if($this.pageIndex + pageSize < Object.keys($this.groupedData).length - 1)
             {
                 $("#pageButtonRight").prop("disabled", false);
             }else{
                 $("#pageButtonRight").prop("disabled", true);
             }
-            pageState.drawPages($this.pageIndex);
-            curPage = Math.ceil($this.pageIndex / $this.pageSize) + 1;
-            maxPage = Math.ceil(Object.keys($this.groupedData).length / $this.pageSize);
+            pageState.drawPages($this.pageIndex, pageSize);
+
+            curPage = Math.ceil($this.pageIndex / pageSize) + 1;
+            maxPage = Math.ceil(Object.keys($this.groupedData).length / pageSize);
+
             $("#page-information").html("Current page: " + (curPage) + " of " + maxPage);
 
         });
@@ -381,7 +387,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 defaultSize = $this.pageSize;
                 pagesizes.forEach(function(size){
                     var selected = "";
-                    if(defaultSize == size)
+                    if(defaultSize == size || (size == "All" && defaultSize == -1))
                     {
                         selected = "selected"
                     }
@@ -434,6 +440,10 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 });
                 $("#pageSize").change(function(){
                     $this.pageSize = Number($("#pageSize").val());
+                    if(isNaN($this.pageSize))
+                    {
+                        $this.pageSize = -1;
+                    }
                     $(".page-button").trigger("click", [true]);
                     var display_options = JSON.parse($this.info.dashboard.display_options);
                     display_options.pageSize = $this.pageSize;
@@ -462,9 +472,9 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
     }
 };
 
-xAPIDashboard.prototype.drawPages = function(startingIndex) {
+xAPIDashboard.prototype.drawPages = function(startingIndex, pageSize) {
     var from = startingIndex;
-    var pageSize = $this.pageSize;
+    var pageSize = pageSize;
     var to = Math.min(startingIndex + pageSize, Object.keys($this.groupedData).length);
     $(".session-row").each(function(row){
         var rowIndex = $(this).data("index");
@@ -1402,6 +1412,10 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
     }
 
     $this.data.pageSize = JSON.parse($this.data.info.dashboard.display_options).pageSize;
+    if($this.data.pageSize == undefined)
+    {
+        $this.data.pageSize = 5;
+    }
     $.datepicker.setDefaults(
         $.extend({},
             $.datepicker.regional[jquery_language]
