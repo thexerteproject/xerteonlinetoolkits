@@ -5,7 +5,7 @@
  * Date: 10/17/2018
  * Time: 3:12 PM
  */
-
+//die("Dit is een test bericht, als je dit ziet ben je goed beizg");
 include ('../xmlInspector.php');
 
 require_once("../../../config.php");
@@ -18,13 +18,18 @@ ini_set('display_errors', 1);
 _load_language_file("/website_code/php/management/upload.inc");
 
 global $xerte_toolkits_site;
+$prefix = $xerte_toolkits_site->database_table_prefix;
 
-if($_FILES["fileToUpload"]["name"]) {
+if($_FILES["fileToUpload"]["name"])
+{
     $name = explode(".", $_FILES["fileToUpload"]["name"]);
 
-    if ($_POST["templateName"] == null) {
+    if ($_POST["templateName"] == null)
+    {
         $filename = $_FILES["fileToUpload"]["name"];
-    } else {
+    }
+    else
+    {
         $filename = $_POST['templateName'];
         $filename .= "." . $name[1];
         $name = explode(".", $filename);
@@ -36,7 +41,8 @@ if($_FILES["fileToUpload"]["name"]) {
     }
     else
     {
-        die("Description can't be empty!");
+        http_response_code(400);
+        die(EMPTY_DESCRIPTION);
     }
 
 
@@ -49,9 +55,11 @@ if($_FILES["fileToUpload"]["name"]) {
     $isZip = strtolower($name[1]) == 'zip' ? true : false;
     $success = true;
 
-    if (!$isZip) {
-        $message = UPLOAD_INCORRECT_FILE_TYPE;
+    if (!$isZip)
+    {
         $success = false;
+        http_response_code(400);
+        die(UPLOAD_INCORRECT_FILE_TYPE);
     }
     if ($success && move_uploaded_file($source, $path))
     {
@@ -61,9 +69,6 @@ if($_FILES["fileToUpload"]["name"]) {
         $templateFound = false;
         $mediaFound = false;
         $templateXML = "";
-
-
-
         //Loop through all the files in the zip
         for ($i = 0; $i < $zip->numFiles; $i++)
         {
@@ -79,19 +84,8 @@ if($_FILES["fileToUpload"]["name"]) {
             {
                 $mediaFound = true;
             }
-            else
-            {
-                if($templateFound === false)
-                {
-                    die("No template.xml found!");
-                }
-                if($mediaFound === false)
-                {
-                    die("No media folder found!");
-                }
-            }
-
         }
+
         if($templateFound === true && $mediaFound === true)
         {
             if (!is_dir($template_location . $name[0]))
@@ -100,6 +94,7 @@ if($_FILES["fileToUpload"]["name"]) {
             }
             $zip->extractTo($temp_loc);
             $zip->close();
+
 
 
             copy($temp_loc . DIRECTORY_SEPARATOR . "template.xml", $template_location . $name[0] . DIRECTORY_SEPARATOR . "data.xml");
@@ -125,11 +120,29 @@ if($_FILES["fileToUpload"]["name"]) {
             }
 
         }
+        else if($templateFound === false || $mediaFound === false)
+        {
+            $zip->close();
+            deleteZip($template_location, $name[0]);
+
+            if($templateFound === false)
+            {
+                http_response_code(400);
+                die(UPLOAD_HAS_NO_TEMPLATE_XML);
+            }
+            if($mediaFound === false)
+            {
+                http_response_code(400);
+                die(UPLOAD_HAS_NO_MEDIA);
+            }
+
+
+        }
         if($success && $templateFound === true && $mediaFound === true)
         {
             $row = returnParentObject(returnTargetFolderName($templateXML));
 
-            $query = "INSERT INTO `originaltemplatesdetails`"
+            $query = "INSERT INTO {$prefix}originaltemplatesdetails"
                       . "(template_framework, template_name, parent_template, description, date_uploaded, display_name, display_id, access_rights, active)"
                       . "VALUES(?,?,?,?,?,?,?,?,?)";
             $param = array($row['template_framework'], $name[0], $row['template_name'], $description, date("Y-m-d H:i:s"), $row['display_name'], $row['display_id'], $row['access_rights'], $row['active']);
@@ -138,13 +151,19 @@ if($_FILES["fileToUpload"]["name"]) {
             $infoContents = returnInfoFile($row['template_framework'], $row['template_name']);
 
             $contents = editInfoFile($infoContents, $name[0], $description);
-            var_dump($contents);
 
             createInfoFile($template_location, $name[0], $contents);
             deleteZip($template_location, $name[0]);
 
+            exit(FILE_UPLOAD_SUCCESS);
         }
     }
+    else
+    {
+        http_response_code(400);
+        die(FILE_CANT_BE_UPLOADED);
+    }
+
 }
 
 function returnTargetFolderName($templateXML)
@@ -190,8 +209,6 @@ function returnInfoFile($parentTemplateFramework, $parentTemplateName)
 
     return $file;
 
-
-
 }
 
 function editInfoFile($infoContents, $displayName, $description)
@@ -233,15 +250,11 @@ function deleteZip($dir, $templateName)
     {
         if(strpos($file, $templateName . ".zip") !== false)
         {
-            var_dump("Hier kom ook!");
             unlink($file);
         }
     }
 
 }
 
-
-
-?>
 
 
