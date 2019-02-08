@@ -137,12 +137,16 @@ DashboardState.prototype.getStatements = function(query, handler) {
 
 DashboardState.prototype.combineUrls = function()
 {
-    var urls = [site_url + this.info.template_id].concat(this.info.lrs.lrsurls.split(",")).concat(this.info.lrs.site_allowed_urls.split(",").map(url => url + this.info.template_id)).filter(url => url != "");
-    urls.push(site_url + this.info.template_id)
+    var url = site_url + this.info.template_id;
+    var urls = [url];
+    if (this.info.lrs.lrsurls != null && this.info.lrs.lrsurls != "undefined" && this.info.lrs.lrsurls != ""
+        && this.info.lrs.site_allowed_urls != null && this.info.lrs.site_allowed_urls != "undefined" && this.info.lrs.site_allowed_urls != "") {
+        urls = [url].concat(this.info.lrs.lrsurls.split(",")).concat(this.info.lrs.site_allowed_urls.split(",").map(url => url + this.info.template_id)).filter(url => url != "");
+    }
     var mapping = function(url)
     {
         return url;
-    }
+    };
     if(urls.length > 1)
     {
         mapping = function(url)

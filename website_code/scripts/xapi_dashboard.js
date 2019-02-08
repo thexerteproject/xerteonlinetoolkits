@@ -1400,8 +1400,7 @@ xAPIDashboard.prototype.helperGetDate = function(datetimepicker) {
     return mTime;
 };
 
-xAPIDashboard.prototype.regenerate_dashboard = function()
-{
+xAPIDashboard.prototype.regenerate_dashboard = function() {
     $("#journeyData").html("<img class='loading-gif' src='editor/img/loading16.gif'/>");
     $("#group-select option:not(:first-child)").remove();
     var url = site_url + this.data.info.template_id;
@@ -1409,7 +1408,11 @@ xAPIDashboard.prototype.regenerate_dashboard = function()
     var end = this.helperGetDate('#dp-end');
     end = new Date(moment(end).add(1, 'days').toISOString());
     var q = {};
-    q['activities'] = [url].concat(this.data.info.lrs.lrsurls.split(",")).concat(this.data.info.lrs.site_allowed_urls.split(",").map(url => url + this.data.info.template_id)).filter(url => url != "");
+    if (this.data.info.lrs.lrsurls != null && this.data.info.lrs.lrsurls != "undefined" && this.data.info.lrs.lrsurls != ""
+        && this.data.info.lrs.site_allowed_urls != null && this.data.info.lrs.site_allowed_urls != "undefined" && this.data.info.lrs.site_allowed_urls != "")
+    {
+        q['activities'] = [url].concat(this.data.info.lrs.lrsurls.split(",")).concat(this.data.info.lrs.site_allowed_urls.split(",").map(url => url + this.data.info.template_id)).filter(url => url != "");
+    }
     q['activity'] = url;
     q['related_activities'] = true;
     q['since'] = start.toISOString();

@@ -364,7 +364,15 @@ if (!isset($_SESSION['XAPI_PROXY']))
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($ch, CURLOPT_USERPWD, $lrs_key . ':' . $lrs_secret);
 
-            list($header, $contents) = preg_split('/([\r\n][\r\n])\\1/', curl_exec($ch), 2);
+            // Disable SSL peer verification
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+            $response = curl_exec($ch);
+            if ($response === false)
+            {
+                 _debug("Error: ", curl_error($ch));
+            }
+            list($header, $contents) = preg_split('/([\r\n][\r\n])\\1/', $response, 2);
 
             $status = curl_getinfo($ch);
             $info = curl_getinfo($ch, CURLINFO_HEADER_OUT);

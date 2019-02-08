@@ -702,7 +702,9 @@ function getProjectInformation_stateChanged() {
             url = site_url + info.template_id;
             q = {};
 
-            q['activities'] = [url].concat(info.lrs.lrsurls.split(",")).concat(info.lrs.site_allowed_urls.split(",").map(url => url + info.template_id)).filter(url => url != "");
+            if (info.lrs.site_allowed_urls != null && info.lrs.site_allowed_urls != undefined && info.lrs.site_allowed_urls != "") {
+                q['activities'] = [url].concat(info.lrs.lrsurls.split(",")).concat(info.lrs.site_allowed_urls.split(",").map(url => url + info.template_id)).filter(url => url != "");
+            }
             q['activity'] = url;
 
             q['verb'] = "http://adlnet.gov/expapi/verbs/launched";
