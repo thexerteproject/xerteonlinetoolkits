@@ -8,7 +8,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,16 +41,16 @@ var EDITOR = (function ($, parent) {
                 html: itemData.name,
                 class: itemData.name
             };
-
+            
             if (itemData.icon != undefined) {
                 data.icon = itemData.icon;
 				data.html = '<img class="icon" src="' + moduleurlvariable + 'icons/' + itemData.icon + '.png"/>' + data.html;
             }
-
+			
             var item = $("<li>")
 				.append($("<a>", data))
 				.attr("item", itemData.item);
-
+			
 			// it's a category
 			if (itemData.submenu != undefined) {
                 var subList = $("<ul>");
@@ -60,32 +60,32 @@ var EDITOR = (function ($, parent) {
                     }
                 });
                 item.append(subList);
-
+				
 			// it's a page type
             } else if (itemData.item != undefined) {
 				var hint = itemData.hint != undefined ? '<p>' + itemData.hint + '</p>' : "";
 				hint = itemData.thumb != undefined ? '<div>' + language.insertDialog.$preview + ':</div><img class="preview_thumb" alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + hint : hint;
 				hint = hint != "" ? '<hr/>' + hint : hint;
-
+				
 				var $insertInfo = $('<ul class="details"><li><a href="#"><div class="insert_buttons"/>' + hint + '</a></li></ul>'),
 					label = language.insertDialog.$label + ":",
 					pos = label.indexOf('{i}');
-
+				
 				label = pos >= 0 ? label.substr(0, pos) + itemData.name + label.substr(pos + 3) : label;
-
+				
 				$insertInfo.find(".insert_buttons").append('<div>' + label + '</div>');
-
+				
 				$insertInfo.appendTo(item);
 			}
-
+			
             return item;
         };
-
+		
 		// create 1st level of menu and call getMenuItem to add every item and submenu to it
         var $menu = $("<ul>", {
             id: 'menu'
         });
-
+        
         $.each(menu_data.menu, function () {
             if (!this.deprecated) {
                 $menu.append(
@@ -93,7 +93,7 @@ var EDITOR = (function ($, parent) {
                 )
             };
         });
-
+		
 		// create insert buttons above the page hints / thumbs
             $([
 
@@ -184,7 +184,7 @@ var EDITOR = (function ($, parent) {
         $("#insert_menu").append($menu.menu());
 		$menu.find(".ui-menu-item a").first().attr("tabindex", 2);
     },
-
+    
     //Loads the data into the import screen
 	insert_import = function() {
 		parent.tree.refresh_workspaceMerge()
@@ -349,7 +349,7 @@ var EDITOR = (function ($, parent) {
         if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4)  // cdata-section
         {
             lo_data[key]['data'] = makeAbsolute(xmlData[0].firstChild.data);
-
+			
 			if (!alreadyUpgraded)
 			{
 				lo_data[key]['data'] = addLineBreaks(lo_data[key]['data']);
@@ -448,7 +448,7 @@ var EDITOR = (function ($, parent) {
         }
         return {found : true, value: attribute_value};
     },
-
+	
 
     displayParameter = function (id, all_options, name, value, key, nodelabel)
     {
@@ -456,7 +456,7 @@ var EDITOR = (function ($, parent) {
         var label = (nodelabel ? nodelabel : options.label);
         var deprecated = false,
 			groupChild = $(id).parents('.wizardgroup').length > 0 ? true : false;
-
+		
         if (options != null)
         {
             var flashonly = $('<img>')
@@ -475,7 +475,7 @@ var EDITOR = (function ($, parent) {
 						.attr('title', options.deprecated)
                         .height(14)
                         .addClass("deprecated deprecatedIcon"));
-
+				
                 if (options.optional == 'true' && groupChild == false) {
                     var opt = $('<i>').attr('id', 'optbtn_' + name)
                         .addClass('fa')
@@ -537,20 +537,20 @@ var EDITOR = (function ($, parent) {
                 tdlabel.addClass("wizarddeprecated")
             }
             tdlabel.append(label);
-
+			
 			if (options.tooltip) {
 				$('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
 					.attr('title', options.tooltip)
 					.appendTo(tdlabel);
 			}
-
+			
             tr.append(tdlabel)
                 .append($('<td>')
                     .addClass("wizardvalue")
                     .append($('<div>')
                         .addClass("wizardvalue_inner")
                         .append(displayDataType(value, options, name, key))));
-
+			
             $(id).append(tr);
             if (options.optional == 'true' && groupChild == false) {
                 $("#optbtn_"+ name).on("click", function () {
@@ -560,24 +560,24 @@ var EDITOR = (function ($, parent) {
             }
         }
     },
-
-
+	
+	
 	displayGroup = function (id, name, options, key)
     {
 		var tr = $('<tr><td colspan="3"/></tr>');
 		var group = $('<fieldset class="wizardgroup"></fieldset>').appendTo(tr.find('td'));
 		var legend = $('<legend></legend>').appendTo(group);
-
+		
 		if (options.deprecated) {
 			group.addClass("wizarddeprecated");
-
+			
 			legend
 				.append($('<img>')
 				.attr('id', 'deprbtn_' + name)
 				.attr('src', 'editor/img/deprecated.png')
 				.attr('title', options.deprecated)
 				.addClass("deprecated"));
-
+			
 			if (options.optional == 'true') {
 				legend.prepend($('<i>')
 					.attr('id', 'optbtn_' + name)
@@ -587,16 +587,16 @@ var EDITOR = (function ($, parent) {
 					.height(14)
 					.addClass("optional"));
 			}
-
+			
 			legend.append('<span class="legend_label">' + options.label + '</span>');
-
+			
 			tr.attr('id', 'group_' + name)
 				.addClass("wizardattribute")
 				.addClass("wizarddeprecated")
-
+			
 		} else if (options.optional == 'true') {
 			group.addClass("wizardoptional")
-
+			
 			legend
 				.append($('<i>')
 				.attr('id', 'optbtn_' + name)
@@ -605,56 +605,56 @@ var EDITOR = (function ($, parent) {
 				.addClass("xerte-icon")
 				.height(14)
 				.addClass("optional"));
-
+			
 			group.find('legend').append('<span class="legend_label">' + options.label + '</span>');
-
+			
 			tr.attr('id', 'group_' + name)
 				.addClass("wizardattribute")
-
+			
 		} else {
 			group.addClass("wizardparameter");
-
+			
 			group.find('legend').append('<span class="legend_label">' + options.label + '</span>');
-
+			
 			tr.attr('id', 'group_' + name)
 				.addClass("wizardattribute");
 		}
-
+		
 		if (options.tooltip) {
 			$('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
 				.attr('title', options.tooltip)
 				.appendTo(legend.find('.legend_label'));
 		}
-
+		
 		$('<i class="minMaxIcon fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
-
+		
 		legend.find('.legend_label').click(function() {
 			var $icon = $(this).find('i.minMaxIcon');
 			var $fieldset = $(this).parents('fieldset');
-
+			
 			if ($fieldset.find('.table_holder').is(':visible')) {
 				$fieldset.find('.table_holder').slideUp(400, function() {
 					$icon
 						.removeClass('fa-caret-up')
 						.addClass('fa-caret-down');
-
+					
 					$fieldset.addClass('collapsed');
 				});
-
+				
 			} else {
 				$fieldset.find('.table_holder').slideDown(400);
-
+				
 				$icon
 					.removeClass('fa-caret-down')
 					.addClass('fa-caret-up');
-
+				
 				$fieldset.removeClass('collapsed');
 			}
 		});
-
+		
 		var info = "";
 		if (options.info) info = '<div class="group_info">' + options.info + '</div>';
-
+		
 		group.append('<div class="table_holder">' + info + '</div>');
 		group.find('.table_holder').append(
 			$('<table width="100%" class="column_table"><tr></table>')
@@ -671,9 +671,9 @@ var EDITOR = (function ($, parent) {
 					.append(group_table)
 			);
 		}
-
+		
 		$(id).append(tr);
-
+		
 		if (options.optional == 'true') {
 			$("#optbtn_" + name).on("click", function () {
 				removeOptionalProperty(name, options.children);
@@ -706,9 +706,9 @@ var EDITOR = (function ($, parent) {
         if (!confirm('Are you sure?')) {
             return;
         }
-
+		
 		var toDelete = [];
-
+		
 		// if it's a group being deleted then remove all of its children
 		if (children) {
 			for (var i=0; i<children.length; i++) {
@@ -717,10 +717,10 @@ var EDITOR = (function ($, parent) {
 		} else {
 			toDelete.push(name);
 		}
-
+		
         // Find the property in the data store
         var key = parent.tree.getSelectedNodeKeys();
-
+		
 		for (var i=0; i<toDelete.length; i++) {
 			if (toDelete[i] == "hidePage") {
 			    changeNodeStatus(key, "hidden", false);
@@ -742,9 +742,9 @@ var EDITOR = (function ($, parent) {
 				delete lo_data[key]["attributes"][toDelete[i]];
 			};
 		}
-
+		
 		console.log(lo_data[key]["attributes"]);
-
+		
         /**
          * TOR 20150614
          *
@@ -775,7 +775,7 @@ var EDITOR = (function ($, parent) {
 		$('#insert_opt_' + name)
 			.switchClass('enabled', 'disabled')
 			.prop('disabled', true);
-
+		
 		if (load != false) {
 			parent.tree.showNodeData(key);
 		}
@@ -802,7 +802,7 @@ var EDITOR = (function ($, parent) {
             rowid,
             addMode,
             oldValueOfSortColumn;
-
+		
 		// replaces contents in empty cells with " " to avoid them being interpreted as end of row
 		$.each(postdata, function(key, element, i) {
 			if (key.indexOf("col_") == 0 && element == "") {
@@ -1203,8 +1203,12 @@ var EDITOR = (function ($, parent) {
             }
             if (options.options.type != 'script')
             {
+                var ckeditorcontents = $('#'+options.id).data('afterckeditor');
                 $('#'+options.id).ckeditor(function(){
                 		var self = this;
+
+                    if (ckeditorcontents) this.setData(ckeditorcontents);
+
                     // Editor is ready, attach change event
                     this.on('change', function(){
                         inputChanged(options.id, options.key, options.name, self.getData(), self);
@@ -1212,7 +1216,7 @@ var EDITOR = (function ($, parent) {
 										this.on('fileUploadResponse', function(e) {
 											/*self.on('NO-EVENT-WORKS-HERE', function(e) {
 												e.removeListener();
-												inputChanged(options.id, options.key, options.name, self.getData(), self);
+												inputChanged(options.id, options.key, options.name, self.getData(), self);	
 											});*/
 											setTimeout(function () {
 														self.fire('change');
@@ -1266,7 +1270,7 @@ var EDITOR = (function ($, parent) {
             return val;
         }
     },
-
+    
     convertTextInputs = function () {
         $.each(textinputs_options, function (i, options) {
             if (options) {
@@ -1352,7 +1356,7 @@ var EDITOR = (function ($, parent) {
     {
         $.each(colorpickers, function (i, options){
 			var myPicker = new jscolor.color(document.getElementById(options.id), {'required':false});
-
+			
 			if (options.value != undefined) {
 				myPicker.fromString(Array(7-options.value.length).join('0') + options.value);
 			}
@@ -1692,7 +1696,7 @@ var EDITOR = (function ($, parent) {
                 });
                 buttons.append($('<br>'));
             }
-
+			
 			// can't get jqGrid to be automatically responsive so listens to window resize to manually resize the grids
 			if (jqGridSetUp != true) {
 				$(window).resize(function() {
@@ -1703,7 +1707,7 @@ var EDITOR = (function ($, parent) {
 						$(this).trigger("resizeEnd");
 					}, 200)
 				});
-
+				
 				$(window).on("resizeEnd", function() {
 					console.log("resize end");
 					$("#mainPanel .ui-jqgrid").hide();
@@ -1711,7 +1715,7 @@ var EDITOR = (function ($, parent) {
 					$("#mainPanel .ui-jqgrid").show();
 					$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
 				});
-
+				
 				jqGridSetUp == true;
 			}
 
@@ -1904,6 +1908,90 @@ var EDITOR = (function ($, parent) {
         setAttributeValue(key, [name], [actvalue]);
     },
 
+    hotspotChanged = function(id, key, name, img, selection)
+    {
+        console.log("Hotspot edited: " + name + ", (" + selection.x1 + ", " + selection.y1 + "), (" + selection.x2 + ", " + selection.y2 + ")");
+        var x = selection.x1,
+            y = selection.y1,
+            w = selection.width,
+            h = selection.height;
+        $('#' + id + '_x').val(x);
+        $('#' + id + '_y').val(y);
+        $('#' + id + '_w').val(w);
+        $('#' + id + '_h').val(h);
+        $('#' + id + '_set').val(1);
+    },
+
+    showHotSpotSelection = function(initialised, id, key, name, orgwidth, orgheight, hsx1, hsy1, hsx2, hsy2)
+    {
+        if (initialised)
+        {
+            // All the items exist
+            $('#featherlight-content img').imgAreaSelect({
+                x1: hsx1, y1: hsy1, x2: hsx2, y2: hsy2,
+                handles: true,
+                imageWidth: orgwidth,
+                imageHeight: orgheight,
+
+                parent: '#featherlight-content',
+                persistent: true,
+                onSelectEnd: function (img, selection) {
+                    hotspotChanged(id, key, name, img, selection);
+                }
+            });
+
+            // Only now are we able to bind call-backs to the correct buttons.
+            $('#featherlight-content').unbind('click');
+            var okbutton = $('#featherlight-content button[name="ok"]');
+            okbutton.click({id:id, key:key, name:name}, function(event){
+                var par = event.data;
+                okHotSpotSelection(par.id, par.key, par.name);
+            });
+
+            var cancelbutton = $('#featherlight-content button[name="cancel"]');
+            cancelbutton.click({id:id, key:key, name:name}, function(event){
+                var par = event.data;
+                cancelHotSpotSelection(par.id, par.key, par.name);
+            });
+
+        }
+        else
+        {
+            setTimeout(function(){
+                showHotSpotSelection(true, id, key, name, orgwidth, orgheight, hsx1, hsy1, hsx2, hsy2);
+            }, 100);
+        }
+    },
+
+    okHotSpotSelection = function(id, key, name)
+    {
+        var current = $.featherlight.current()
+        var set = $('#' + id + '_set').val();
+        if (set == 1)
+        {
+            var x = $('#' + id + '_x').val(),
+                y = $('#' + id + '_y').val(),
+                w = $('#' + id + '_w').val() - 1,
+                h = $('#' + id + '_h').val() - 1;
+
+            setAttributeValue(key, ["x", "y", "w", "h"], [x, y, w, h]);
+        }
+        current.close();
+        parent.tree.showNodeData(key);
+    },
+
+    cancelHotSpotSelection = function(id, key, name)
+    {
+        var current = $.featherlight.current()
+        current.close();
+        parent.tree.showNodeData(key);
+    },
+
+    closeHotSpotSelection = function(evt, key)
+    {
+        parent.tree.showNodeData(key);
+    },
+
     browseFile = function (id, key, name, value, obj)
     {
         //console.log('Browse file: ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
@@ -1922,12 +2010,12 @@ var EDITOR = (function ($, parent) {
         };
         window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable, 'Browse file', "height=600, width=800");
     },
-
+	
 	previewFile = function(alt, src, title)
 	{
 		// ** currently only previews images - need to allow other file types too
 		src = src.indexOf("FileLocation + '") == 0 ? rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1) : src;
-
+		
 		var $previewImg = $('<img class="previewFile"/>')
 				.on("error", function() {
 						$('.featherlight .previewFile')
@@ -1938,14 +2026,14 @@ var EDITOR = (function ($, parent) {
 					"src": src,
 					"alt": alt
 				})
-
+		
 		var $preview = $('<div/>')
 				.append($previewImg);
-
+		
 		if (title != undefined && title != '') {
 			$preview.prepend('<div class="preview_title">' + title + '</div>');
 		}
-
+		
 		$.featherlight($preview);
 	},
 
@@ -2038,11 +2126,11 @@ var EDITOR = (function ($, parent) {
      */
         getPageList = function()
         {
-
+        	
             var tree = $.jstree.reference("#treeview");
             var lo_node = tree.get_node("treeroot", false);
             var pages=[];
-
+            
             if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
             	pages = [
             						[language.XotLinkRelativePages.firstpage,'[first]'],
@@ -2055,7 +2143,7 @@ var EDITOR = (function ($, parent) {
 									var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
 									var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
 									var hidden = lo_data[key]['attributes'].hidePage;
-
+									
 									if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
 									{
 											var page = [];
@@ -2084,7 +2172,7 @@ var EDITOR = (function ($, parent) {
 									}
 							});
 						}
-
+            
             return pages;
         },
 
@@ -2099,13 +2187,13 @@ var EDITOR = (function ($, parent) {
 			//{
 			//	return text; // Return text unchanged
 			//}
-
+	
 			// Now try to identify v3beta created LOs
 			if ((text.trim().indexOf("<p") == 0 || text.trim().indexOf("<h") == 0) && (text.trim().lastIndexOf("</p") == text.trim().length-4 || text.trim().lastIndexOf("</h") == text.trim().length-5))
 			{
 				return text; // Return text unchanged
 			}
-
+	
 			// Now assume it's v2.1 or before
 			if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1)
 			{
@@ -2143,7 +2231,7 @@ var EDITOR = (function ($, parent) {
 				} else if (newText.indexOf("<table") != -1) { // no math tags - so just check table tags
 					var tempText = "",
 						tableNum = 0;
-
+					
 					while (newText.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) {
 						tempText += newText.substring(tableNum, newText.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
 						tempText += newText.substring(newText.indexOf("<table", tableNum), newText.indexOf("</table>", tableNum) + 8);
@@ -2207,11 +2295,11 @@ var EDITOR = (function ($, parent) {
                         {
                             selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
-
+					
 					if (value == '') {
 						html.append($('<option>').attr('value', '').prop('selected', true));
 					}
-
+					
                     for (var i=0; i<s_options.length; i++) {
                         var option = $('<option>')
                             .attr('value', s_data[i]);
@@ -2231,17 +2319,23 @@ var EDITOR = (function ($, parent) {
                 case 'html':
                 case 'textarea':
                     var id = "textarea_" + form_id_offset;
-                    var textvalue = value;
+                    var textvalue = "";
 
                     form_id_offset++;
 
-                    var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
-                    if (options.height) html += "height:" + options.height + "px";
-                    textarea += "\">" + textvalue + "</textarea>";
+					if (value.toLowerCase().indexOf('<textarea') == -1) textvalue = value;
 
-                    html = $('<div>')
+                    var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
+                    if (options.height) textarea += "height:" + options.height + "px";
+                    textarea += "\">" + textvalue + "</textarea>";
+                    $textarea = $(textarea);
+
+                    if (textvalue.length == 0) $textarea.data('afterckeditor', value);
+
+                	html = $('<div>')
                         .attr('style', 'width:100%')
-                        .append(textarea);
+                        .append($textarea);
+
                     textareas_options.push({id: id, key: key, name: name, options: options});
                     break;
                 case 'numericstepper':
@@ -2350,9 +2444,9 @@ var EDITOR = (function ($, parent) {
                             {
                                 inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                             });
-
+						
 						colorpickers.push({id: id, options: options});
-
+						
 						if (colorvalue != '') {
 							html.attr('value', colorvalue);
 							colorpickers[colorpickers.length-1].value = colorvalue;
@@ -2410,7 +2504,7 @@ var EDITOR = (function ($, parent) {
 						.click(function() {
 							previewFile($(this).attr('alt'), $(this).attr('src'), $(this).attr('alt'));
 						});
-
+						
                     html.append(preview);
                     var description = $("<div>" + theme_list[currtheme].description + "</div><div class='theme_url_param'>" + language.ThemeUrlParam + " " + theme_list[currtheme].name + "</div>");
                     var description_box = $('<div>')
@@ -2507,496 +2601,143 @@ var EDITOR = (function ($, parent) {
                     var id = 'hotspot_' + form_id_offset;
                     form_id_offset++;
 
+                    // this is a special one. the attributes in the node are called x, y, w, h
                     // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
                     // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
-                    hsattrs = lo_data[key].attributes;
+                    var hsattrs = lo_data[key].attributes;
                     var hsparent = parent.tree.getParent(key);
                     var hspattrs = lo_data[hsparent].attributes;
+                    var div = $('<div>')
+                        .attr('id', 'inner_' + id);
                     if (hspattrs.nodeName.toLowerCase() == "hotspotgroup")
                     {
                         // go one further up
                         hsparent = parent.tree.getParent(hsparent);
                         hspattrs = lo_data[hsparent].attributes;
                     }
-
+                    
                     // Create the container
                     html = $('<div>').attr('id', id);
-
+                    
                     var url = hspattrs.url;
                     // Replace FileLocation + ' with full url
                     url = makeAbsolute(url);
                     // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
                     if (url.substring(0,4) == "http")
                     {
-                        var shape = "square";
-                        html.addClass('clickableHotspot');
-                        html.append("<img>");
-                        var cur_key = key;
-                        html.find('img')
-                            .attr('id', 'inner_img_' + id)
-                            .attr("data-key", cur_key)
-                            .attr("src", url)
-                            .load(function(){
+                        div.addClass('clickableHotspot')
+                        		.append($('<img>')
+                                .attr('id', 'inner_img_' + id)
+                                .attr('src', url)
+                                .load(function(){
+                                    var orgwidth = this.naturalWidth;
+                                    var orgheight = this.naturalHeight;
+                                    var width = this.width;
+                                    var hsleft = parseInt(hsattrs.x),
+                                        hstop = parseInt(hsattrs.y),
+                                        hsbottom = orgheight - hstop - parseInt(hsattrs.h),
+                                        hsright = orgwidth - hsleft - parseInt(hsattrs.w);
+                                    var scale = width / orgwidth;
+                                    
+                                    $(this).css({width: parseInt(scale * orgwidth) + 'px', height: parseInt(scale * orgheight) + 'px'});
 
-                                $(this).css({width: '100%'});
-                            }).click(function(){
-                                edit_img = $("<div></div>")
-                                    //.css("background", "url(" + url + ")")
-                                edit_img.attr('id', 'outer_img_' + id)
-                                edit_img.data("id", id);
-                                edit_img.append('<button id="poly"><i class="fas fa-draw-polygon"></i></button><button id="square"><i class="fas fa-vector-square"></i></button>');
-                                edit_img.append('<div class="overlayWrapper"><img class="overlayImage"><canvas class="overlayCanvas"></canvas><div class="overlayDiv"></div></div>');
-                                edit_img.append('<div class="instructions">'+
-                                    language.HotspotInstructions.header +
-                                    "<ul>" +
-                                        "<li>" + language.HotspotInstructions.add + "</li>" +
-                                        "<li>" + language.HotspotInstructions.edit + "</li>" +
-                                        "<li>" + language.HotspotInstructions.remove + "</li>" +
-                                    "</ul>" +
-                                    language.HotspotInstructions.save
-                                + '</div>');
-                                edit_img.append($('<button>')
-                                    .attr('id', id + '_ok')
-                                    .attr('name', 'ok')
-                                    .attr('type', 'button')
-                                    .addClass('editorbutton')
-                                    .append(language.Alert.oklabel)
-                                )
-                                .append($('<button>')
-                                    .attr('id', id + '_cancel')
-                                    .attr('name', 'cancel')
-                                    .attr('type', 'button')
-                                    .addClass('editorbutton')
-                                    .append(language.Alert.cancellabel)
-                                );
+                                    hsleft = Math.round(hsleft * scale);
+                                    hstop = Math.round(hstop * scale);
+                                    hsbottom = Math.round(hsbottom * scale);
+                                    hsright = Math.round(hsright * scale);
 
+                                    var cssobj = {
+                                        position:  "absolute",
+                                        left: hsleft + "px",
+                                        top:  hstop + "px",
+                                        right: hsright + "px",
+                                        bottom: (hsbottom + 4) + "px",
+                                        background: "#ff0000",
+                                        opacity: "0.4"
+                                    };
 
-                                edit_img.find("img").attr("src", url);
-                                img_width = edit_img.find("img").get(0).naturalWidth;
-                                img_height = edit_img.find("img").get(0).naturalHeight;
-                                ratio = img_height / img_width;
-                                edit_img.find(".overlayWrapper").css("width", parseInt(0.8 * $("body").width()))
-                                        .css("height", parseInt(ratio * $("body").width() + $(".editorbutton").height()));
+                                    var hsdiv = $('<div>')
+                                        .attr('id', 'inner_hs_' + id)
+                                        .css(cssobj);
+                                    div.append(hsdiv);
 
-                                $.featherlight(edit_img, {
-                                    afterOpen: function()
-                                    {
-                                        var id = $(this).get(0).target.data("id");
-                                        $('#featherlight-content').unbind('click');
-                                        var okbutton = $('#featherlight-content button[name="ok"]');
-                                        okbutton.click(function(event){
-                                            var key = $("#inner_img_" + id).data("key");
-                                            var current = $.featherlight.current();
-                                            var npoints = [];
-                                            for(pi in points)
-                                            {
-                                                var point = points[pi];
-                                                npoints.push({
-                                                    "x" : point.x,
-                                                    "y" : point.y
-                                                });
-                                            }
-                                            var stringVal = JSON.stringify(npoints);
-                                            img = $('#featherlight-content img');
-                                            setAttributeValue(key, ["points", "w", "h", "mode"], [stringVal, img.width(), img.height(), shape]);
+                                })
+                        );
+						
+						// Ok, now create the content to be shown in the lightbox
+						var editdiv = $('<div>')
+							.attr('id', 'edit_' + id)
+							.addClass('hotspotLightbox');
+						var editimg = $('<img>')
+							.attr('id', 'edit_img_' + id)
+							.addClass('hotspotLightboxImg')
+							.attr('src', url)
+							.load(function()
+							{
+								var orgwidth = this.naturalWidth;
+								var orgheight = this.naturalHeight;
+								var hsx1 = parseInt(hsattrs.x),
+									hsy1 = parseInt(hsattrs.y),
+									hsx2 = hsx1 + parseInt(hsattrs.w),
+									hsy2 = hsy1 + parseInt(hsattrs.h);
 
-                                            current.close();
-                                            parent.tree.showNodeData(key);
-                                        });
+								$('#link_' + id).featherlight({afterClose: function(evt){closeHotSpotSelection(evt, key);}});
+								$('#link_' + id).click({id:id, key:key, name:name, orgwidth:orgwidth, orgheight:orgheight, hsx1:hsx1, hsy1:hsy1, hsx2:hsx2, hsy2:hsy2}, function(event){
+									var par = event.data;
+									showHotSpotSelection(false, par.id, par.key, par.name, par.orgwidth, par.orgheight, par.hsx1, par.hsy1, par.hsx2, par.hsy2);
+								});
 
-                                        var cancelbutton = $('#featherlight-content button[name="cancel"]');
-                                        cancelbutton.click(function(event){
-                                            var key = $("#inner_img_" + id).data("key");
-                                            var current = $.featherlight.current()
-                                            current.close();
-                                            parent.tree.showNodeData(key);
-                                        });
+							});
+						editdiv.append(editimg);
 
-                                        var polygonbutton = $('#featherlight-content #poly');
-                                        polygonbutton.click(function (event) {
-                                            shape = "polygon";
-                                            points =[];
-                                            $(".hotspot-handle").remove();
-                                            redraw_points(canvas);
+						editdiv.append($('<div>')
+								.attr('id', id + '_edit_buttons')
+								.append($('<input>')
+									.attr('id', id + '_x')
+									.attr('type', 'hidden')
+							)
+								.append($('<input>')
+									.attr('id', id + '_y')
+									.attr('type', 'hidden')
+							)
+								.append($('<input>')
+									.attr('id', id + '_h')
+									.attr('type', 'hidden')
+							)
+								.append($('<input>')
+									.attr('id', id + '_w')
+									.attr('type', 'hidden')
+							)
+								.append($('<input>')
+									.attr('id', id + '_set')
+									.attr('type', 'hidden')
+									.attr('value', '0')
+							)
+								.append($('<button>')
+									.attr('id', id + '_ok')
+									.attr('name', 'ok')
+									.attr('type', 'button')
+									.addClass('editorbutton')
+									.append(language.Alert.oklabel)
+							)
+								.append($('<button>')
+									.attr('id', id + '_cancel')
+									.attr('name', 'cancel')
+									.attr('type', 'button')
+									.addClass('editorbutton')
+									.append(language.Alert.cancellabel)
+							)
+						);
+						
 
-
-                                        });
-
-                                        var squarebutton = $('#featherlight-content #square');
-                                        squarebutton.click(function (event) {
-                                            shape = "square";
-                                            var middelX = $("#outer_img_" + id + " img").width()/canvas.width/2;
-                                            var Xoff = middelX/4;
-                                            var middelY =  $("#outer_img_" + id + " img").height()/canvas.height/2;
-                                            var Yoff = middelY/4;
-                                            points =[];
-                                            $(".hotspot-handle").remove();
-                                            points.push({
-                                                "x" : middelX-Xoff,
-                                                "y" : middelY-Yoff
-                                            });
-                                            points.push({
-                                                "x" : middelX,
-                                                "y" : middelY-Yoff
-                                            });
-                                            points.push({
-                                                "x" : middelX+Xoff,
-                                                "y" : middelY-Yoff
-                                            });
-                                            points.push({
-                                                "x" : middelX+Xoff,
-                                                "y" : middelY
-                                            });
-                                            points.push({
-                                                "x" : middelX+Xoff,
-                                                "y" : middelY+Yoff
-                                            });
-                                            points.push({
-                                                "x" : middelX,
-                                                "y" : middelY+Yoff
-                                            });
-                                            points.push({
-                                                "x" : middelX-Xoff,
-                                                "y" : middelY+Yoff
-                                            });
-                                            points.push({
-                                                "x" : middelX-Xoff,
-                                                "y" : middelY
-                                            });
-                                            for(var i = 0; i < points.length; i++){
-                                                var point = points[i];
-                                                var handle = $(handle_shell);
-                                                point.id = "handle_" + i;
-                                                handle.attr("id", point.id);
-                                                handle.css("left", point.x * canvas.width);
-                                                handle.css("top", point.y * canvas.height);
-                                                $("#outer_img_" + id + " .overlayDiv").append(handle.prop("outerHTML"));
-                                            }
-                                            redraw_points(canvas);
-
-                                        });
-
-                                        var handle_shell = '<div class="hotspot-handle" id=""></div>';
-                                        $("#outer_img_" + id + " canvas")[0].width = $("#outer_img_" + id + " img").width();
-                                        $("#outer_img_" + id + " canvas")[0].height = $("#outer_img_" + id + " img").height();
-                                        points = JSON.parse(hsattrs.points);
-                                        shape = hsattrs.mode;
-                                        var uniq_id = points.length;
-                                        var canvas = $("#outer_img_" + id + " canvas").get(0);
-                                        for(var i = 0; i < points.length; i++){
-                                            var point = points[i];
-                                            var handle = $(handle_shell);
-                                            point.id = "handle_" + i;
-                                            handle.attr("id", point.id);
-                                            handle.css("left", point.x * canvas.width);
-                                            handle.css("top", point.y * canvas.height);
-                                            $("#outer_img_" + id + " .overlayDiv").append(handle.prop("outerHTML"));
-                                        }
-
-                                        redraw_points(canvas);
-
-
-
-
-                                        function getMousePosition(canvas, e){
-                                            var x;
-                                            var y;
-                                            var rect = canvas.getBoundingClientRect();
-                                            if (e.pageX || e.pageY) {
-                                              x = e.pageX;
-                                              y = e.pageY;
-                                            }
-                                            else {
-                                              x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-                                              y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-                                            }
-                                            x -= rect.left;
-                                            y -= rect.top;
-                                            return {
-                                                x: x / canvas.width,
-                                                y: y / canvas.height
-                                            };
-                                        }
-
-                                        function  recalculate_points(canvas) {
-                                            for(var i=1; i< points.length; i+=2){
-                                                if(i == 1 || i == 3){
-                                                    points[i].x = Math.min(points[i-1].x, points[(i+1) % 8].x) - (Math.abs(points[i-1].x) - points[(i+1)%8].x)/2;
-                                                    points[i].y = Math.min(points[i-1].y, points[(i+1)%8].y) - (Math.abs(points[i-1].y) - points[(i+1)%8].y)/2;
-                                                }else{
-                                                    points[i].x = Math.min(points[i-1].x, points[(i+1) % 8].x) + (Math.abs(points[i-1].x) - points[(i+1)%8].x)/2;
-                                                    points[i].y = Math.min(points[i-1].y, points[(i+1)%8].y) + (Math.abs(points[i-1].y) - points[(i+1)%8].y)/2;
-                                                }
-
-                                                $("#handle_" + i).css("top", points[i].y * canvas.height).css("left", points[i].x * canvas.width);
-
-                                            }
-                                        }
-
-                                        function minimal_size(index){
-
-                                            if(index != undefined){
-                                                var smallestSize = 0.030;
-                                                var opposite = (((Number(index)+8+4)%8));
-                                                var minX = points[0].x;
-                                                var maxX = points[2].x;
-                                                var minY = points[0].y;
-                                                var maxY = points[6].y;
-
-
-                                                if(minX+smallestSize > maxX){
-                                                    if(index == 0 || index == 6 || index == 7){
-                                                        points[0].x = points[2].x - smallestSize;
-                                                        points[6].x = points[4].x - smallestSize;
-                                                    }
-                                                    if(index == 2 || index == 3 || index == 4){
-                                                        points[2].x = points[0].x + smallestSize;
-                                                        points[4].x = points[6].x + smallestSize;
-                                                    }
-                                                }
-                                                if(minY+smallestSize > maxY){
-                                                    if(index == 0 || index == 1 || index == 2){
-                                                        points[0].y = points[6].y - smallestSize;
-                                                        points[2].y = points[4].y - smallestSize;
-                                                    }
-                                                    if(index == 4 || index == 5 || index == 6){
-                                                        points[4].y = points[2].y + smallestSize;
-                                                        points[6].y = points[0].y + smallestSize;
-                                                    }
-                                                }
-
-                                                if(Math.abs(points[opposite].x - points[index].x) < smallestSize ){
-                                                    //points[index].x = Math.min(points[opposite].x, points[index].x) + smallestSize;
-                                                }
-                                                else if(points[opposite].y - points[index].y < smallestSize ){
-
-                                                }
-                                            }
-                                        }
-
-                                        function redraw_points(canvas, index)
-                                        {
-                                            if(shape == "square"){
-                                                minimal_size(index);
-                                                recalculate_points(canvas);
-                                            }
-
-                                            var context = canvas.getContext('2d');
-                                            context.beginPath();
-                                            context.lineWidth = 1;
-                                            context.clearRect(0, 0, canvas.width, canvas.height);
-                                            context.setLineDash([5, 5]);
-                                            if(points.length == 0)
-                                            {
-                                                return;
-                                            }
-                                            for(var i = 0; i < points.length + 1; i++)
-                                            {
-                                                point = points[i % points.length];
-                                                if(i == 0)
-                                                {
-                                                    context.moveTo(point.x * canvas.width, point.y * canvas.height);
-                                                }else{
-                                                    context.lineTo(point.x * canvas.width, point.y * canvas.height);
-                                                }
-                                            }
-                                            context.stroke();
-                                            context.fillStyle = "rgba(150, 150, 150, 0.3)"
-                                            context.fill();
-                                            for(var i = 0; i < points.length; i++){
-                                                var point = points[i];
-                                                var handle = $("#handle_" + i);
-                                                handle.css("left", point.x * canvas.width);
-                                                handle.css("top", point.y * canvas.height);
-                                            }
-                                        }
-                                        var last_mousedown = undefined;
-                                        dragging = false;
-                                        current_handle = "";
-                                        $("#outer_img_" + id + " .overlayDiv").contextmenu(function() {
-                                            return false;
-                                        });
-                                        $("#outer_img_" + id + " .overlayImage").contextmenu(function() {
-                                            return false;
-                                        });
-                                            $("#outer_img_" + id + " .overlayDiv").on("mousedown mouseup mousemove", function (e) {
-                                                // right mouse click
-
-                                                if(shape === "polygon") {
-                                                    if (e.which == 3) {
-                                                        if (e.type == "mousedown" && e.target.className == "hotspot-handle") {
-                                                            npoints = [];
-                                                            for (var i = 0; i < points.length; i++) {
-                                                                p = points[i];
-                                                                if (p.id != e.target.id) {
-                                                                    npoints.push(points[i]);
-                                                                }
-                                                            }
-                                                            points = npoints;
-
-                                                            $("#" + e.target.id).remove();
-                                                            var canvas = $("#outer_img_" + id + " canvas").get(0);
-                                                            redraw_points(canvas);
-                                                        }
-                                                        return;
-                                                    }
-                                                    if (e.type == "mousedown" && e.target.className == "hotspot-handle") {
-                                                        last_mousedown = e;
-                                                        dragging = true;
-                                                        current_handle = e.target.id;
-                                                    } else if (
-                                                        !dragging
-                                                        && e.type == "mouseup"
-                                                        && e.target.className != "hotspot-handle"
-                                                        &&
-                                                        (
-                                                            last_mousedown == undefined
-                                                            || e.screenX == last_mousedown.screenX
-                                                            && e.screenY == last_mousedown.screenY
-                                                        )
-                                                    ) {
-                                                        clickHandler(e);
-                                                    } else if (dragging && (e.type == "mouseup" || e.type == "mousemove")) {
-                                                        if (e.type == "mouseup") {
-                                                            dragging = false;
-                                                            last_mousedown = undefined;
-                                                        }
-                                                        if (dragging) {
-                                                            var canvas = $("#outer_img_" + id + " canvas").get(0);
-
-                                                            point = points.filter(p => p.id == current_handle)[0];
-                                                            mouse = getMousePosition(canvas, e);
-                                                            point.x = mouse.x;
-                                                            point.y = mouse.y;
-
-                                                            $("#" + current_handle).css("top", point.y * canvas.height).css("left", point.x * canvas.width);
-                                                            last_mousedown = e;
-                                                            redraw_points(canvas);
-                                                        }
-                                                    }
-                                                }else if(shape === "square"){
-                                                    if (e.type == "mousedown" && e.target.className == "hotspot-handle") {
-                                                        last_mousedown = e;
-                                                        dragging = true;
-                                                        current_handle = e.target.id;
-                                                    }else if (dragging && (e.type == "mouseup" || e.type == "mousemove")) {
-                                                        if (e.type == "mouseup") {
-                                                            dragging = false;
-                                                            last_mousedown = undefined;
-                                                        }
-                                                        if (dragging) {
-                                                            var canvas = $("#outer_img_" + id + " canvas").get(0);
-                                                            var index;
-                                                            for(var i in points){
-                                                                if(points[i].id == current_handle)
-                                                                {
-                                                                    index = i;
-                                                                }
-                                                            }
-                                                            point = points[index];
-                                                            mouse = getMousePosition(canvas, e);
-                                                            point.x = mouse.x;
-                                                            point.y = mouse.y;
-
-
-                                                            var NextCorner = (((Number(index)+8+2)%8));
-                                                            var PreviousCorner = (((Number(index)+8-2)%8));
-
-                                                            //Left top and Right bottom.
-                                                            if(index % 4 == 0) {
-                                                                points[NextCorner].y = point.y;
-                                                                points[PreviousCorner].x = point.x;
-                                                            }
-                                                            //Right top and Left bottom.
-                                                            else if(index % 2 == 0){
-                                                                points[PreviousCorner].y = point.y;
-                                                                points[NextCorner].x = point.x;
-                                                            }
-                                                            //All the middle points
-                                                            else{
-
-                                                                NextCorner = (((Number(index)+8+1)%8));
-                                                                PreviousCorner = (((Number(index)+8-1)%8));
-
-                                                                if(index % 4 == 1){
-                                                                    points[NextCorner].y = point.y;
-                                                                    points[PreviousCorner].y = point.y;
-                                                                }else{
-                                                                    points[NextCorner].x = point.x;
-                                                                    points[PreviousCorner].x = point.x;
-                                                                }
-                                                            }
-
-                                                            last_mousedown = e;
-                                                            redraw_points(canvas, index);
-                                                        }
-
-
-                                                    }
-                                                }
-                                            });
-
-
-                                        function clickHandler(e){
-                                            var canvas = $("#outer_img_" + id + " canvas").get(0);
-                                            center = getMousePosition(canvas, e);
-
-                                            center.id = "handle_" + uniq_id;
-                                            uniq_id ++;
-                                            if(points.length == 0)
-                                            {
-                                                center.previous = "";
-                                            }else{
-                                                center.previous = points[points.length - 1].id;
-                                            }
-                                            var index = 0;
-                                            var pow = function(x){return Math.abs(x) * Math.abs(x);}
-                                            lengths = points.map(function(p){return {
-                                                "index": index++,
-                                                "point": p,
-                                                "len": Math.sqrt(pow(p.x - center.x) + pow(p.y - center.y))
-                                            }}).sort(function(a, b){
-                                                if (a.len < b.len)
-                                                  return -1;
-                                                if (a.len > b.len)
-                                                  return 1;
-                                                return 0;
-                                            });
-                                            if(lengths.length > 2)
-                                            {
-                                                closest = lengths[0];
-                                                neighbors = lengths.filter(l => l.index == (closest.index + 1) % lengths.length || l.index == (closest.index + lengths.length - 1) % lengths.length);
-                                                if (neighbors[0].len > neighbors[1].len)
-                                                {
-                                                    closestNeighbor = neighbors[1]
-                                                }else{
-                                                    closestNeighbor = neighbors[0];
-                                                }
-                                                if(Math.abs(closest.index - closestNeighbor.index) > 1)
-                                                {
-                                                    points.push(center);
-                                                    smallestIndex = points.length - 1;
-                                                }else{
-                                                    smallestIndex = Math.min(closest.index, closestNeighbor.index) + 1;
-                                                    points.splice(smallestIndex, 0, center);
-                                                }
-
-                                                points[smallestIndex].previous = points[(smallestIndex + 1) % points.length].id;
-                                                points[(smallestIndex + points.length - 1) % points.length].previous = center.id;
-                                            }else{
-                                                points.push(center);
-                                            }
-
-                                            var handle = $(handle_shell);
-                                            handle.attr("id", center.id);
-                                            handle.css("left", center.x * canvas.width);
-                                            handle.css("top", center.y * canvas.height);
-                                            $("#outer_img_" + id + " .overlayDiv").append(handle.prop("outerHTML"));
-                                            redraw_points(canvas);
-                                        }
-                                    }
-                                });
-                            });
+						html.append(editdiv)
+							.append($('<a>')
+								.attr('id', 'link_' + id)
+								.attr('href', '#')
+								.attr('data-featherlight', '#edit_' + id)
+								.attr('title', language.edit.$tooltip)
+								.append(div));
+                    
                     }
                     else
                     {
@@ -3018,7 +2759,7 @@ var EDITOR = (function ($, parent) {
                                 inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                             })
                             .attr('value', value));
-
+					
                     var td2 = $('<td>');
 					var btnHolder = $('<div style="width:4.2em"></div>').appendTo(td2);
                     btnHolder.append($('<button>')
@@ -3031,7 +2772,7 @@ var EDITOR = (function ($, parent) {
 							browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
 						})
 						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')))
-
+					
 					btnHolder.append($('<button>')
 						.attr('id', 'preview_' + id)
 						.attr('title', language.compPreview.$tooltip)
@@ -3041,7 +2782,7 @@ var EDITOR = (function ($, parent) {
 							previewFile(options.label, $(this).closest('tr').find('input')[0].value);
 						})
 						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon')));
-
+							
                     html = $('<div>')
                         .attr('id', 'container_' + id)
                         .addClass('media_container');
@@ -3091,7 +2832,7 @@ var EDITOR = (function ($, parent) {
 								selectOtherMonths: true,
 								dateFormat: 'yy-mm-dd'
 							}));
-
+					
                     var td2 = $('<td>');
 					var btnHolder = $('<div style="width:4.2em"></div>').appendTo(td2);
                     btnHolder.append($('<button>')
@@ -3103,7 +2844,7 @@ var EDITOR = (function ($, parent) {
 							td1.datepicker("show");
 						})
 						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-calendar').addClass('xerte-icon')))
-
+					
                     html = $('<div>')
                         .attr('id', 'container_' + id)
                         .addClass('media_container');
@@ -3139,7 +2880,7 @@ var EDITOR = (function ($, parent) {
                             .addClass('inlinewysiwyg')
                             .attr('contenteditable', 'true')
 							.append('<p>' + value + '</p>');
-
+						
                         textinputs_options.push({id: id, key: key, name: name, options: options});
                     }
                     else {
@@ -3175,7 +2916,7 @@ var EDITOR = (function ($, parent) {
             return html;
         };
 
-
+		
 	CKEDITOR.on('dialogDefinition', function(event) {
 		try {
 			var dialogName = event.data.name;
@@ -3187,7 +2928,7 @@ var EDITOR = (function ($, parent) {
 			}
 		} catch(e) {};
 	});
-
+	
     // Add the functions that need to be public
     my.getExtraTreeIcon = getExtraTreeIcon;
     my.changeNodeStatus = changeNodeStatus;
