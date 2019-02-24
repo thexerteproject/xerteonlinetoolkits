@@ -2763,7 +2763,9 @@ var EDITOR = (function ($, parent) {
                                 select.addClass("deprecated_option_selected")
                             }
                             html.append(select);
-                            html.append('<i class="deprecated fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;');
+                            if (value != "" && !currselected) {
+                                html.append('<i class="deprecated fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;');
+                            }
                         }
 
                     }
