@@ -77,7 +77,7 @@
 	</tracking>
 
 	<meta type="group" label="Meta data" optional="true">
-	   	<course label="Course" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
+	   	<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
 	   	<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
     </meta>
 
@@ -276,7 +276,7 @@
   </nestedPage><adaptiveContent menu="Interactivity" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
       <name label="Page Title" type="TextInput" wysiwyg="true"/>
       <introduction label="Introduction" type="textArea" height="120"/>
-      <displayMode label="Display Mode" optional="true" type="combobox" options="unlisted,listed" wysiwyg="true" default=""/>
+      <displayMode label="Display Mode" optional="true" type="combobox" options="Unlisted,Listed" default="Unlisted" wysiwyg="true"/>
       <newNodes>
         <interaction><![CDATA[<interaction name="Enter title here" introduction="Enter introduction here" xerteurl="" xertelo="" label="" interactionType="score" PersonalAvgLabel = "Avg. of your attempts"
       PersonalLastLabel = "Your last attempt"

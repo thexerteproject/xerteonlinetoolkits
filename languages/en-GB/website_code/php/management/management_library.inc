@@ -24,6 +24,12 @@
     define("MANAGEMENT_LIBRARY_NEW_GROUPING_NAME", "Enter name here");
     define("MANAGEMENT_LIBRARY_EXISTING_GROUPINGS", "Manage existing groupings");
 
+    define("MANAGEMENT_LIBRARY_ADD_COURSE", "Add a new course");
+    define("MANAGEMENT_LIBRARY_NEW_COURSE", "The new course is");
+    define("MANAGEMENT_LIBRARY_NEW_COURSE_NAME", "Enter name here");
+    define("MANAGEMENT_LIBRARY_EXISTING_COURSES", "Manage existing courses");
+    define("MANAGEMENT_COURSE_FREE_TEXT_ENABLE", "Enable free text input for courses");
+
     define("MANAGEMENT_LIBRARY_FEEDS_NO_FEEDS", "No projects have been added to the feeds yet.");
 	define("MANAGEMENT_LIBRARY_REMOVE_RSS", "Remove from RSS");
 	define("MANAGEMENT_LIBRARY_REMOVE_EXPORT", "Remove from Export");

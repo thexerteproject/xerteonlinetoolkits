@@ -175,6 +175,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $sql = "select * from {$xerte_toolkits_site->database_table_prefix}grouping";
     $grouping = db_query($sql);
 
+    /**
+     * Build Course List
+     */
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}course";
+    $course = db_query($sql);
+
 
     /**
      * sort of the screen sies required for the preview window
@@ -368,6 +374,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
     echo "category_list=" . json_encode($categories) . ";\n";
     echo "grouping_list=" . json_encode($grouping) . ";\n";
+    echo "course_list=" . json_encode($course) . ";\n";
+    echo "course_freetext_enabled=" . $xerte_toolkits_site->course_freetext_enabled . ";\n";
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     ?>
 

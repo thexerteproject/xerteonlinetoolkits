@@ -415,6 +415,7 @@ xAPIDashboard.prototype.getLastUserAttempt = function(data) {
             return lastStatements;
         }
     }
+    lastStatements.statements.reverse();
     return lastStatements;
 };
 

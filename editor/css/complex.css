@@ -626,6 +626,7 @@ div.inputtext {
 
 }
 
+
 .inlinewysiwyg p{
     border-radius: 4px;
     padding: 4px 7px;
@@ -635,12 +636,29 @@ div.inputtext {
     box-sizing: border-box;
 }
 
-
 input.inputtext{
     margin: 0;
     border: 1px solid lightgray;
     background-color: white;
     width:99%;
+}
+
+input.course_freetext {
+	width: 49%;
+	margin-left: 1%;
+}
+
+
+i.deprecated{
+	color:red;
+}
+
+select.deprecated option {
+	color:black;
+}
+
+select.deprecated option:last-child{
+	color: red;
 }
 
 select, input, textarea
@@ -657,6 +675,15 @@ select, input, textarea
     width: 100%;
     box-sizing: border-box;
 }
+
+#mainPanel select.deprecated {
+	width: 95%;
+}
+
+#mainPanel select.deprecated_option_selected {
+	color:red;
+}
+
 
 #mainPanel input
 {
