@@ -175,7 +175,12 @@ h3 {
 
 /*styling for optional show/hider footer tools*/
 #x_footerChevron{
-    color: grey;
+    /*color: grey;*/
+	background: none;
+	border: none;
+	height:45px;
+	font-size: 14px !important;
+	width:25px !important;
 }
 
 /* PROGRESS BAR */

@@ -1203,8 +1203,12 @@ var EDITOR = (function ($, parent) {
             }
             if (options.options.type != 'script')
             {
+                var ckeditorcontents = $('#'+options.id).data('afterckeditor');
                 $('#'+options.id).ckeditor(function(){
                 		var self = this;
+
+                    if (ckeditorcontents) this.setData(ckeditorcontents);
+
                     // Editor is ready, attach change event
                     this.on('change', function(){
                         inputChanged(options.id, options.key, options.name, self.getData(), self);
@@ -1904,6 +1908,63 @@ var EDITOR = (function ($, parent) {
         setAttributeValue(key, [name], [actvalue]);
     },
 
+    courseChanged = function (id, key, name, form_id, value, obj)
+    {
+        //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+        var actvalue = value;
+
+        if (actvalue == language.course.FreeText.$label)
+        {
+            // Enable free text input box
+            $("#" + id).css("width", "50%");
+            $("#course_freetext_" + form_id).show();
+            actvalue = $("#course_freetext_" + form_id).val();
+            actvalue = stripP(actvalue);
+        }
+        else
+        {
+            $("#course_freetext_" + form_id).hide();
+            $("#" + id).css("width", "");
+        }
+
+        var sel = $("#" + id + ".deprecated");
+        if (sel.length > 0) {
+            if (sel[0].selectedIndex == sel[0].length - 1) {
+                sel.addClass("deprecated_option_selected");
+            }
+            else {
+                sel.removeClass("deprecated_option_selected");
+            }
+        }
+        setAttributeValue(key, [name], [actvalue]);
+    },
+
+    courseFreeTextChanged = function (id, key, name, form_id, value, obj)
+    {
+        //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+        var actvalue = value;
+
+        if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
+        {
+            actvalue = value;
+            actvalue = stripP(actvalue);
+        }
+        if (id.indexOf('color')>=0)
+        {
+            if (actvalue.indexOf('#') == 0)
+                actvalue = actvalue.substr(1);
+            actvalue = '0x' + actvalue;
+        }
+        if (actvalue.indexOf('FileLocation +') >=0)
+        {
+            // Make sure the &#39; is translated to a '
+            console.log("Convert " + actvalue);
+            actvalue = $('<textarea/>').html(actvalue).val();
+            console.log("    ..to " + actvalue);
+        }
+        setAttributeValue(key, [name], [actvalue]);
+    },
+
     hotspotChanged = function(id, key, name, img, selection)
     {
         console.log("Hotspot edited: " + name + ", (" + selection.x1 + ", " + selection.y1 + "), (" + selection.x2 + ", " + selection.y2 + ")");
@@ -2315,17 +2376,23 @@ var EDITOR = (function ($, parent) {
                 case 'html':
                 case 'textarea':
                     var id = "textarea_" + form_id_offset;
-                    var textvalue = value;
+                    var textvalue = "";
 
                     form_id_offset++;
 
-                    var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
-                    if (options.height) html += "height:" + options.height + "px";
-                    textarea += "\">" + textvalue + "</textarea>";
+					if (value.toLowerCase().indexOf('<textarea') == -1) textvalue = value;
 
-                    html = $('<div>')
+                    var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
+                    if (options.height) textarea += "height:" + options.height + "px";
+                    textarea += "\">" + textvalue + "</textarea>";
+                    $textarea = $(textarea);
+
+                    if (textvalue.length == 0) $textarea.data('afterckeditor', value);
+
+                	html = $('<div>')
                         .attr('style', 'width:100%')
-                        .append(textarea);
+                        .append($textarea);
+
                     textareas_options.push({id: id, key: key, name: name, options: options});
                     break;
                 case 'numericstepper':
@@ -2582,10 +2649,126 @@ var EDITOR = (function ($, parent) {
                         var option = $('<option>')
                             .attr('value', value);
                         option.prop('selected', true);
-                        option.append(value);
+                        option.append('<i class="fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;' + value);
                         select.append(option);
                     }
                     html.append(select);
+                    break;
+                case 'course':
+                    if (course_list.length == 0)
+                    {
+                        // Create a non-wysiwyg textinput
+                        var id = 'textinput_' + form_id_offset;
+                        html = $('<input>')
+                            .attr('type', "text")
+                            .addClass('inputtext')
+                            .attr('id', id)
+                            .keyup({name: name, key: key, options: options}, function()
+                            {
+                                if (name == 'name') {
+                                    // Rename the node
+                                    var tree = $.jstree.reference("#treeview");
+                                    tree.rename_node(tree.get_node(key, false), $(this).val());
+                                }
+                            })
+                            .change({id:id, key:key, name:name}, function(event)
+                            {
+                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            })
+                            .attr('value', value);
+                    }
+                    else {
+                        var id = 'select_' + form_id_offset;
+                        var html = $('<div>')
+                            .attr('id', 'course_div_' + form_id_offset);
+                        var currselected = false;
+                        var select = $('<select>')
+                            .attr('id', id)
+                            .change({id: id, key: key, name: name, form_id: form_id_offset}, function (event) {
+                                courseChanged(event.data.id, event.data.key, event.data.name, event.data.form_id, this.value, this);
+                            });
+                        // Add empty option
+                        var option = $('<option>')
+                            .attr('value', "");
+                        if (value == "") {
+                            option.prop('selected', true);
+                            currselected = true;
+                        }
+                        option.append("");
+                        select.append(option);
+                        for (var i = 0; i < course_list.length; i++) {
+                            var option = $('<option>')
+                                .attr('value', course_list[i].course_name);
+                            if (course_list[i].course_name == value) {
+                                option.prop('selected', true);
+                                currselected = true;
+                            }
+                            option.append(course_list[i].course_name);
+                            select.append(option);
+                        }
+                        if (course_freetext_enabled)
+                        {
+                            var option = $('<option>')
+                                .attr('value', language.course.FreeText.$label);
+                            option.append(language.course.FreeText.$label);
+                            if (!currselected)
+                            {
+                                option.prop('selected', true);
+                                select.css("width", "50%");
+
+                            }
+                            select.append(option);
+                            html.append(select);
+
+                            // Add textinput after select
+                            // Create a non-wysiwyg textinput
+                            var id = 'course_freetext_' + form_id_offset;
+                            var textinput = $('<input>')
+                                .attr('type', "text")
+                                .addClass('inputtext')
+                                .addClass('course_freetext')
+                                .attr('id', id)
+                                .keyup({name: name, key: key, options: options}, function()
+                                {
+                                    if (name == 'name') {
+                                        // Rename the node
+                                        var tree = $.jstree.reference("#treeview");
+                                        tree.rename_node(tree.get_node(key, false), $(this).val());
+                                    }
+                                })
+                                .change({id:id, key:key, name:name}, function(event)
+                                {
+                                    inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                                });
+                            if (currselected)
+                            {
+                                // Disabled
+                                textinput.hide();
+                            }
+                            else {
+                                textinput.attr('value', value);
+                            }
+                            html.append(textinput);
+                        }
+                        else
+                        {
+                            if (value != "" && !currselected) {
+                                //  Add current value as option, even though it is not in the list
+                                var option = $('<option>')
+                                    .attr('value', value);
+                                option.prop('selected', true);
+                                option.append(value);
+                                select.append(option);
+                                select.addClass("deprecated");
+                                select.addClass("deprecated_option_selected")
+                            }
+                            html.append(select);
+                            if (value != "" && !currselected) {
+                                html.append('<i class="deprecated fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;');
+                            }
+                        }
+
+                    }
                     break;
                 case 'hotspot':
                     var id = 'hotspot_' + form_id_offset;

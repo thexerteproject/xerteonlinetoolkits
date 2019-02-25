@@ -1,7 +1,7 @@
-<?PHP     
+<?PHP
 
 	/**
-	 * 
+	 *
 	 * management site english language file
 	 *
 	 * @author Patrick Lockley
@@ -12,7 +12,7 @@
 	 * PLEASE USE DOUBLE QUOTES IN THESE FILES, OTHERWISE XERTE TRANS DOES NOT WORK!
 	 *
 	 */
-	 
+
 
 	define("MANAGEMENT_SITE_TITLE", "Site settings (HTML / Images)");
 
@@ -51,7 +51,7 @@
 	define("MANAGEMENT_SITE_FEEDBACK", "The site's feedback list is (A semi-colon separated list of email addresses to receive feedback from the feedback page)");
 
 	define("MANAGEMENT_SITE_SERVER", "Server Settings ");
-		
+
 	define("MANAGEMENT_VIEW", "Show");
 
 	define("MANAGEMENT_SITE_HTACCESS", "The HTACCESS setting is (Whether or not you are using a .htaccess file on the site)");
@@ -105,7 +105,7 @@
 	define("MANAGEMENT_SITE_SQL", "SQL query settings ");
 
 	define("MANAGEMENT_SITE_QUERY", "The play edit preview query is ");
-	
+
 	define("MANAGEMENT_SITE_ERROR_HANDLING", "Error handling settings ");
 
 	define("MANAGEMENT_SITE_ERROR_EMAIL", "The email error list is (Accounts to receive email messages from the error logger)");
@@ -115,14 +115,14 @@
 	define("MANAGEMENT_SITE_ERROR_MAX", "The maximum error size is (The maximum number of entries per error log)");
 
 	define("MANAGEMENT_SITE_LDAP", "LDAP settings ");
-	
+
 	define("MANAGEMENT_SITE_LDAP_DELIMIT", "You can set up multiple hosts by separating entries in each of these fields with the $$$ string as a delimiter");
 
 	define("MANAGEMENT_SITE_LDAP_HOST", "The ldap host is ");
 
 	define("MANAGEMENT_SITE_LDAP_PORT", "The ldap port is ");
 
-	define("MANAGEMENT_SITE_LDAP_PASSWORD", "The ldap password is"); 
+	define("MANAGEMENT_SITE_LDAP_PASSWORD", "The ldap password is");
 
 	define("MANAGEMENT_SITE_LDAP_BASE", "The ldap base is ");
 
@@ -161,13 +161,13 @@
   define("MANAGEMENT_SITE_AUTH_METHOD", "The authentication method to use");
 
   define("MANAGEMENT_SITE_LTI","LTI/Moodle settings. (Not Tsugi/LTI)");
-  
+
   define("MANAGEMENT_SITE_XAPI", "xAPI settings");
-  
+
   define("MANAGEMENT_SITE_XAPI_ENDPOINT", "xAPI endpoint (url)");
-  
+
   define("MANAGEMENT_SITE_XAPI_KEY", "xAPI key (username)");
-  
+
   define("MANAGEMENT_SITE_XAPI_SECRET", "xAPI secret (password)");
 
   define("MANAGEMENT_SITE_XAPI_DASHBOARD_ENABLE", "Enable xAPI dashboard");
@@ -177,6 +177,8 @@
   define("MANAGEMENT_SITE_XAPI_DASHBOARD_DEFAULT_PERIOD", "xAPI dashboard default period (in days)");
 
   define("MANAGEMENT_SITE_XAPI_DASHBOARD_MINIMUM_ROLE", "xAPI dashboard minimum role to view dashboard");
+
+  define("MANAGEMENT_SITE_XAPI_DASHBOARD_ALLOWED_URLS", "xAPI dashboard urls to show (seperated by commas)");
 
 define("LTI_TOGGLE","View");
 

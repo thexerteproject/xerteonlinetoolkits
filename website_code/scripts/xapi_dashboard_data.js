@@ -35,8 +35,10 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
     ADL.XAPIWrapper.changeConfig(this.conf);
 
     var search = ADL.XAPIWrapper.searchParams();
+    activities = q.activities;
     $.each(q, function(i, value) {
-        search[i] = value;
+        if(i != "activities")
+            search[i] = value;
     });
     if (one) {
         search['limit'] = 1;
@@ -92,7 +94,21 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
             if (body.more && body.more !== "") {
                 ADL.XAPIWrapper.getStatements(null, body.more, getmorestatements);
             } else {
-                callback();
+                if(activities == undefined)
+                {
+                    activities = [];
+                }
+                activities[0] = undefined;
+                activities = activities.filter(s => s != undefined)
+                if(activities.length > 0)
+                {
+                    q.activities = activities;
+                    q["activity"] = activities[0];
+                    delete q.activities;
+                    ADL.XAPIWrapper.getStatements(q, body.more, getmorestatements);
+                }else{
+                    callback();
+                }
             }
         }
     );
@@ -119,6 +135,43 @@ DashboardState.prototype.getStatements = function(query, handler) {
 
 */
 
+DashboardState.prototype.combineUrls = function()
+{
+    var url = site_url + this.info.template_id;
+    var urls = [url];
+    if (this.info.lrs.lrsurls != null && this.info.lrs.lrsurls != "undefined" && this.info.lrs.lrsurls != ""
+        && this.info.lrs.site_allowed_urls != null && this.info.lrs.site_allowed_urls != "undefined" && this.info.lrs.site_allowed_urls != "") {
+        urls = [url].concat(this.info.lrs.lrsurls.split(",")).concat(this.info.lrs.site_allowed_urls.split(",").map(url => url + this.info.template_id)).filter(url => url != "");
+    }
+    var mapping = function(url)
+    {
+        return url;
+    };
+    if(urls.length > 1)
+    {
+        mapping = function(url)
+        {
+            urls.forEach(function(mUrl){
+                url = url.replace(mUrl, urls[0]);
+            });
+            return url;
+        }
+
+    }
+    for(index in this.rawData)
+    {
+        statement = this.rawData[index];
+        statement.object.id = mapping(statement.object.id);
+        if(statement.context != undefined)
+        {
+            statement.context.extensions["http://xerte.org.uk/learningObjectId"] = mapping(statement.context.extensions["http://xerte.org.uk/learningObjectId"]);
+        }
+        this.rawData[index] = statement;
+    }
+    return this.rawData;
+
+}
+
 DashboardState.prototype.filterStatements = function(data, handler) {
     return data.contents.filter(handler);
 };
@@ -140,10 +193,20 @@ DashboardState.prototype.groupStatements = function(data) {
             data = this.rawData;
         }
     }
+    groups = [];
     data.forEach(function(statement) {
         var attempt = {
             statements: []
         };
+
+        if(statement.context.team != undefined)
+        {
+            var group = statement.context.team.account.name;
+            if(groups.indexOf(group) == -1)
+            {
+                groups.push(group);
+            }
+        }
         if (statement.actor.mbox != undefined) {
             // Key is email
             // Cutoff mailto:
@@ -193,6 +256,7 @@ DashboardState.prototype.groupStatements = function(data) {
             }
         }
     });
+    this.groups = groups;
     this.groupedData = groupedData;
     return groupedData;
 };
@@ -249,14 +313,39 @@ DashboardState.prototype.calculateDuration = function(statements) {
     totalDuration = 0;
     total = 0;
     for (var i in statements) {
+        startedVerbs = ["http://adlnet.gov/expapi/verbs/initialized"]
+        exitedVerbs = ["http://adlnet.gov/expapi/verbs/exited", "http://adlnet.gov/expapi/verbs/scored"]
         statement = statements[i];
-        if (statement.length == 2) {
-            total++;
-            start = statement[0];
-            end = statement[1];
-            startTime = new Date(start.timestamp);
-            endTime = new Date(end.timestamp);
-            totalDuration += (endTime - startTime) / 1000;
+        statement.sort(function(a, b){
+            return new Date(a.timestamp) - new Date(b.timestamp);
+        });
+        var nStatements = [];
+        for(var i = 0; i < statement.length; i++)
+        {
+            if(i == 0)
+            {
+                nStatements.push(statement[i])
+            }else{
+                if(
+                    (startedVerbs.indexOf(statement[i].verb.id) >= 0 &&  exitedVerbs.indexOf(statement[i-1].verb.id) >= 0) ||
+                    (exitedVerbs.indexOf(statement[i].verb.id) >= 0 &&  startedVerbs.indexOf(statement[i-1].verb.id) >= 0)
+                )
+                {
+                    nStatements.push(statement[i]);
+                }
+            }
+        }
+        statement = nStatements;
+        for(var i = 0; i < statement.length; i+=2) {
+
+                start = statement[i];
+                end = statement[i+1];
+                startTime = new Date(start.timestamp);
+                if(end != undefined){
+                    endTime = new Date(end.timestamp);
+                    total++;
+                    totalDuration += (endTime - startTime) / 1000;
+                }
         }
     }
     return totalDuration / total;
@@ -435,11 +524,21 @@ DashboardState.prototype.getAllInteractions = function(data = undefined) {
                             }
                             children[parent].push(objectId);
                         }
+
+                        var interaction_name;
+                        if(statement.object.definition.name.en != undefined)
+                        {
+                            interaction_name = statement.object.definition.name.en;
+                        }else if(statement.object.definition.name["en-US"] != undefined)
+                        {
+                            interaction_name = statement.object.definition.name["en-US"]
+                        }else{
+                            interaction_name = "";
+                        }
                         interactionObjects.push({
                             type: type,
                             url: objectId,
-                            name: statement.object.definition
-                                .name.en,
+                            name: interaction_name,
                             parent: parent,
                             learningObjectIndex: lIndex,
                             interactionObjectIndex: iIndex
@@ -456,6 +555,22 @@ DashboardState.prototype.getAllInteractions = function(data = undefined) {
         lIndex++;
     });
     interactions = this.filterNotPassedFailed(interactions);
+    for(lo in interactions){
+        lo_interactions = interactions[lo];
+        n_interactions = [];
+        lo_interactions.forEach(function(parent){
+            if(parent.parent == ""){
+                n_interactions.push(parent);
+                lo_interactions.forEach(function(child){
+                    if(parent.url == child.parent)
+                    {
+                        n_interactions.push(child);
+                    }
+                });
+            }
+        });
+        interactions[lo] = n_interactions;
+    }
     this.interactions = interactions;
 
     return interactions;
@@ -465,12 +580,12 @@ DashboardState.prototype.filterNotPassedFailed = function(allInteractions) {
     $this = this;
     newInteractions = [];
     for (interactionIndex in allInteractions) {
-        interactions = allInteractions[interactionIndex];
+        var interactions = allInteractions[interactionIndex];
         newInteractions[interactionIndex] = [];
         interactions.forEach(function(interaction) {
             statements = $this.rawData;
             hasPassedOrFailed = false;
-            url = interaction.url;
+            var url = interaction.url;
             statements.forEach(function(s) {
                 if (s.object.id == url && (s.verb.id == "http://adlnet.gov/expapi/verbs/failed" || s.verb.id ==
                         "http://adlnet.gov/expapi/verbs/passed" || s.verb.id ==
@@ -521,21 +636,25 @@ DashboardState.prototype.hasStartedLearningObject = function(userdata, learningO
     var statements = userdata['statements'];
     var statementList = this.getStatementsList(statements,
         "http://adlnet.gov/expapi/verbs/launched");
-    res = statementList.filter(function(statement) {
+    var res = statementList.filter(function(statement) {
         return statement.object.id == learningObjectUrl;
     }).length > 0;
     return res;
 };
 
 DashboardState.prototype.getExitedStatements = function(userdata, learningObjectUrl) {
-    return this.getFilteredStatements(userdata, "http://adlnet.gov/expapi/verbs/exiteded", learningObjectUrl);
+    return this.getFilteredStatements(userdata, "http://adlnet.gov/expapi/verbs/exited", learningObjectUrl);
 }
 
 DashboardState.prototype.hasCompletedInteraction = function(userdata, interactionUrl) {
     var statements = userdata['statements'];
     var statementList = this.getStatementsList(statements,
         "http://adlnet.gov/expapi/verbs/scored");
-    res = statementList.filter(function(statement) {
+    var res = statementList.filter(function(statement) {
+        if(statement.object.id + "/video" == interactionUrl && statement.verb.id == "http://id.tincanapi.com/verb/viewed")
+        {
+            return true;
+        }
         return statement.result != undefined && statement.result.completion &&
             statement.object.id == interactionUrl;
     }).length > 0;
@@ -544,8 +663,13 @@ DashboardState.prototype.hasCompletedInteraction = function(userdata, interactio
 
 DashboardState.prototype.hasPassedInteraction = function(userdata, interactionUrl) {
     var statements = userdata['statements'];
-    var statementList = this.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/scored");
-    res = statementList.filter(function(statement) {
+    var statementList = this.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/scored")
+        .concat(this.getStatementsList(statements, "http://id.tincanapi.com/verb/viewed"));
+    var res = statementList.filter(function(statement) {
+        if(statement.object.id + "/video" == interactionUrl && statement.verb.id == "http://id.tincanapi.com/verb/viewed")
+        {
+            return statement.result.score.scaled > 0.55;
+        }
         return statement.result != undefined && statement.result.completion &&
             statement.result.success &&
             statement.object.id == interactionUrl;
@@ -595,6 +719,62 @@ DashboardState.prototype.getAllDurations = function(userdata, interactionUrl) {
     return durations;
 };
 
+DashboardState.prototype.consolidateSegments = function (pausedSegments) {
+    // 1. Sort played segments on start time (first make a copy)
+    if (pausedSegments.length == 0) {
+        return 0;
+    }
+    csegments = pausedSegments.map(function(s) {
+        segments = s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"].split("[,]");
+        if (segments[0] == "") {
+            return [];
+        }
+        return segments.map(function(segment) {
+            return {
+                start: Math.round(segment.split("[.]")[0]),
+                end: Math.round(segment.split("[.]")[1])
+            };
+        });
+    });
+    segments = [];
+    csegments.forEach(function(segment) {
+        segment.forEach(function(seg) {
+            segments.push(seg);
+        });
+    });
+    segments.sort(function(a, b) {
+        return (parseFloat(a.start) > parseFloat(b.start)) ? 1 : ((parseFloat(b.start) > parseFloat(a.start)) ? -1 : parseFloat(a.end) - parseFloat(b.end));
+    });
+    // 2. Combine the segments
+    var csegments = [];
+    var i = 0;
+    while (i < segments.length) {
+        var segment = $.extend(true, {}, segments[i]);
+        i++;
+        while (i < segments.length && parseFloat(segment.end) >= parseFloat(segments[i].start)) {
+            segment.end = segments[i].end;
+            i++;
+        }
+        csegments.push(segment);
+    }
+    return csegments;
+}
+
+DashboardState.prototype.getDurationBlocks = function(userdata, interactionUrl)
+{
+    var statements = userdata['statements'].filter(function(statement) {
+        return statement.object.id == interactionUrl + "/video";
+    });
+    var statementList = this.getStatementsList(statements, "https://w3id.org/xapi/video/verbs/paused");
+    var durations = statementList.map(s => s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]);
+    if(durations.length > 0)
+    {
+        segments = this.consolidateSegments(statementList);
+        return segments
+    }
+    return [];
+}
+
 DashboardState.prototype.hasStartedInteraction = function(userdata, interaction) {
     var statements = userdata['statements'];
     var statementList = this.getStatementsList(statements,
@@ -607,7 +787,7 @@ DashboardState.prototype.hasStartedInteraction = function(userdata, interaction)
 // TODO: get last statement, not first
 DashboardState.prototype.getStatement = function(statements, verb) {
     for (var i in statements) {
-        statement = statements[i];
+        var statement = statements[i];
         if (statement.verb.id == verb) {
             return statement;
         }
@@ -616,9 +796,9 @@ DashboardState.prototype.getStatement = function(statements, verb) {
 };
 
 DashboardState.prototype.getStatementsList = function(statements, verb) {
-    foundStatements = [];
+    var foundStatements = [];
     for (var i in statements) {
-        statement = statements[i];
+        var statement = statements[i];
         if (statement.verb.id == verb) {
             foundStatements.push(statement);
         }
@@ -627,11 +807,11 @@ DashboardState.prototype.getStatementsList = function(statements, verb) {
 };
 
 DashboardState.prototype.getInteractionStatements = function(interaction) {
-    statements = [];
+    var statements = [];
     for (var user in this.groupedData) {
-        userData = this.groupedData[user]['statements'];
+        var userData = this.groupedData[user]['statements'];
         for (var i in userData) {
-            statement = userData[i];
+            var statement = userData[i];
             if (statement.object.id == interaction) {
                 statements.push(statement);
             }
@@ -657,8 +837,9 @@ DashboardState.prototype.getQuestion = function(interactionObjectUrl) {
                 statement.verb.id == "http://adlnet.gov/expapi/verbs/answered";
         })
         .forEach(function(statement) {
-            if (question == undefined) {
+            if (question == undefined || question.interactionType == undefined) {
                 question = statement.object.definition;
+                question.interactionUrl = statement.object.id;
             }
 
         });

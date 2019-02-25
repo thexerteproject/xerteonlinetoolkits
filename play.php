@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -66,7 +66,9 @@ function check_host($hostname, $setting)
     if (strlen(hostname) != 0) {
         foreach ($test_string as $item) {
             $item = trim($item);
+            _debug("Checking host: " . $hostname . " in " . $item);
             if (strpos($hostname, $item) === 0) {
+                _debug("Matched host " . $hostname);
                 return true;
             }
         }
@@ -103,10 +105,8 @@ function check_ip($ip_address, $security_settings)
              */
 
             if (strcmp($ip_address, $host_ip) == 0) {
-
                 $flag = true;
             } else {
-
                 $flag = false;
             }
         } else {
@@ -183,7 +183,7 @@ $safe_template_id = (int) $_GET['template_id'];
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
 $sql = "SELECT otd.template_name, otd.parent_template, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags, td.template_name as zipname, " .
-    " td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, tsugi_xapi_student_id_mode ".
+    " td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, tsugi_xapi_student_id_mode, dashboard_allowed_links ".
     " FROM {$prefix}originaltemplatesdetails otd, {$prefix}templaterights tr, {$prefix}templatedetails td, {$prefix}logindetails ld " .
     " WHERE td.template_type_id = otd.template_type_id AND td.creator_id = ld.login_id AND tr.template_id = td.template_id AND tr.template_id= ? AND (role=? OR role=?)";
 

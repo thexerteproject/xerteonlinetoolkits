@@ -44,6 +44,8 @@
 
 	define("MANAGEMENT_MENUBAR_GROUPINGS","Groupings");
 
+	define("MANAGEMENT_MENUBAR_COURSES","Courses");
+
 	define("MANAGEMENT_MENUBAR_LICENCES","Licences");
 	
 	define("MANAGEMENT_MENUBAR_FEEDS","Feeds");

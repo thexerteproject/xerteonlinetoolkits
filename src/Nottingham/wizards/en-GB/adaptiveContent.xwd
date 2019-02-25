@@ -9,6 +9,7 @@
     <adaptiveContent menu="Interactivity" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
       <name label="Page Title" type="TextInput" wysiwyg="true" />
       <introduction label="Introduction" type="textArea"  height="120"/>
+      <displayMode label="Display Mode" optional="true" type="combobox" options="Unlisted,Listed" default="Unlisted" wysiwyg="true" />
       <newNodes>
         <interaction ><![CDATA[<interaction name="Enter title here" introduction="Enter introduction here" xerteurl="" xertelo="" label="" interactionType="score" PersonalAvgLabel = "Avg. of your attempts"
       PersonalLastLabel = "Your last attempt"
@@ -26,7 +27,7 @@
         <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue="" />
         <xertelo label="ID of Xerte learning object" type="xertelo" mandatory="true" defaultValue="" />
         <label label="Tracking Label of source" type="TextInput" wysiwyg="false" />
-        <interactionType label="Interaction type" type="combobox" data="score,answer,opinion" options="Based on end score,Based on specific answer,Based on 2D opinion" />
+        <interactionType label="Interaction type" type="combobox" data="score,answer,opinion,open" options="Based on end score,Based on specific answer,Based on 2D opinion,Open answer" tooltip="Score: use 'Score between' to add one or more interaction blocks; Answer: use 'Result label equals' to add one or more interaction block; Based on 2D opinion: use in combination with class to get a score; Open: Just shows one interaction block with all the given answers, all given interaction blocks will just be ignored."/>
         <opinionClass label="Opinion Class" type="TextInput" wysiwyg="false" optional="true" defaultValue="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interactiontype is based on 2D opinion" />
         <showScore label="Show score/answer" type="CheckBox" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based" />
         <scoreText label="Score text" type="TextInput" wysiwyg="true" language="true" />
@@ -34,6 +35,10 @@
         <AvgLabel label="Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
         <PersonalLastLabel label="Personal Graph Label" type="TextInput" wysiwyg="true" language="true" />
         <PersonalAvgLabel label="Personal Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
+        <group type="group" label="Group filtering" optional="true">
+             <groupFromUrl label="Filter on group from URL" type="checkbox" defaultValue="false" optional="true" tooltip="Filter on groupname, where the groupname is extracted from the URL (group=groupname)"/>
+             <groupName label="Filter group name" type="TextInput" defaultValue="" wysiwyg="false" optional="true" tooltip="Filter on groupname, use this groupname, if the group is not specified on the URL (group=groupname)"/>
+        </group>
 
       <newNodes>
           <interactionBlock ><![CDATA[<interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100" ></interactionBlock>]]></interactionBlock>

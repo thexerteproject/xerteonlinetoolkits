@@ -157,7 +157,7 @@
 		<changeLanguage>
 			<prompt>Do you want to change all the language options to the default values of language </prompt>
 		</changeLanguage>
-		
+
 	</Alert>
 	<XotLinkRelativePages>
 		<firstpage>* first page *</firstpage>
@@ -166,4 +166,16 @@
 		<prevpage>* previous page*</prevpage>
 	</XotLinkRelativePages>
 	<ThemeUrlParam>Theme url parameter:</ThemeUrlParam>
+    <HotspotInstructions>
+        <header>Hotspot instructions:</header>
+        <add>To add a point, click on the image above</add>
+        <edit>To edit a point, drag an existing point to some other place on the image with the mouse</edit>
+        <remove>To remove a point, click with the right mouse button on the point you want to remove</remove>
+        <save>To save your selection, click the Ok button. If you want to go back without saving, click the cancel button.</save>
+    </HotspotInstructions>
+	<grouping deprecated="Deprecated - the red option is no longer allowed by the course list in the management page"></grouping>
+	<category deprecated="Deprecated - the red option is no longer allowed by the course list in the management page"></category>
+	<course deprecated="Deprecated - the red option is no longer allowed by the course list in the management page">
+		<FreeText label="Other"></FreeText>
+	</course>
 </language>

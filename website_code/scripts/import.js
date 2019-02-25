@@ -8,7 +8,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,70 +17,70 @@
  * limitations under the License.
  */
 
-	/**	
-	 * 
-	 * import, javascript for the import action
-	 *
-	 * @author Patrick Lockley
-	 * @version 1.0
-	 * @package
-	 */
+/**
+ *
+ * import, javascript for the import action
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @package
+ */
 
-	 /**
-	 * 
-	 * Function iframe check upload
- 	 * This function looks at the iframe where the upload takes place for the end of string marker to see when the code has finished (used on the media upload page).
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ *
+ * Function iframe check upload
+ * This function looks at the iframe where the upload takes place for the end of string marker to see when the code has finished (used on the media upload page).
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 var iframe_interval = 0;
 
-function iframe_check_upload(){
+function iframe_check_upload() {
 
-	if(window["upload_iframe"].document.body.innerHTML!=""){
+    if (window["upload_iframe"].document.body.innerHTML != "") {
 
-		var string = document.getElementById("submitbutton").innerHTML;
+        var string = document.getElementById("submitbutton").innerHTML;
 
-		if (string.indexOf('fa-spin') != -1) {
-			var found = false;
+        if (string.indexOf('fa-spin') != -1) {
+            var found = false;
 
-			// We have received a reply and found a spinner, so replace the spinner with the default button icon.
-			if (typeof IMPORT_BUTTON_IMPORTING !== 'undefined' && string.indexOf('</i> ' + IMPORT_BUTTON_IMPORTING) != -1) {
-				found = true;
-				string = string.replace('<i class="fa fa-spinner fa-spin"></i> ' + IMPORT_BUTTON_IMPORTING, '<i class="fa fa-upload"></i> ' + IMPORT_BUTTON_IMPORT);
-			}
-			else if (typeof WORKSPACE_UPLOADING !== 'undefined' && string.indexOf('</i> ' + WORKSPACE_UPLOADING) != -1) {
-				found = true;
-				string = string.replace('<i class="fa fa-spinner fa-spin"></i> ' + WORKSPACE_UPLOADING, '<i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD);
-			}
+            // We have received a reply and found a spinner, so replace the spinner with the default button icon.
+            if (typeof IMPORT_BUTTON_IMPORTING !== 'undefined' && string.indexOf('</i> ' + IMPORT_BUTTON_IMPORTING) != -1) {
+                found = true;
+                string = string.replace('<i class="fa fa-spinner fa-spin"></i> ' + IMPORT_BUTTON_IMPORTING, '<i class="fa fa-upload"></i> ' + IMPORT_BUTTON_IMPORT);
+            }
+            else if (typeof WORKSPACE_UPLOADING !== 'undefined' && string.indexOf('</i> ' + WORKSPACE_UPLOADING) != -1) {
+                found = true;
+                string = string.replace('<i class="fa fa-spinner fa-spin"></i> ' + WORKSPACE_UPLOADING, '<i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD);
+            }
 
-			if (found) {
-				document.getElementById('submitbutton').innerHTML = string;
-				document.getElementById('submitbutton').disabled = false;
+            if (found) {
+                document.getElementById('submitbutton').innerHTML = string;
+                document.getElementById('submitbutton').disabled = false;
 //				document.getElementById('importpopup').reset();
-			}
-		}
+            }
+        }
 
-		if(window["upload_iframe"].document.body.innerHTML.indexOf("****")!=-1){
+        if (window["upload_iframe"].document.body.innerHTML.indexOf("****") != -1) {
 
-			clearInterval(iframe_interval);
+            clearInterval(iframe_interval);
 
-			string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">")+1);
+            string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">") + 1);
 
-			string = string.substr(0,string.length-4);
+            string = string.substr(0, string.length - 4);
 
-			alert("Upload: " + string);
+            alert("Upload: " + string);
 
-			media_and_quota_template();
+            media_and_quota_template();
 
-			window["upload_iframe"].document.body.innerHTML="";
+            window["upload_iframe"].document.body.innerHTML = "";
 
-		}else{
+        } else {
+            debugger;
+            clearInterval(iframe_interval);
 
-			clearInterval(iframe_interval);
-
-			string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">")+1);
+            string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">") + 1);
 
             $("#errorpopup").html(string);
             $("errorpopup").dialog({
@@ -88,96 +88,63 @@ function iframe_check_upload(){
                 buttons: [
                     {
                         text: "OK",
-                        click: function() {
-                            $( this ).dialog( "close" );
+                        click: function () {
+                            $(this).dialog("close");
                         }
                     }
                 ]
             });
-			//alert(PHP_ERROR + " - " + string);
+            //alert(PHP_ERROR + " - " + string);
 
-		}
+        }
 
-	}
-	
+    }
+
 }
 
-	 /**
-	 * 
-	 * Function iframe check
- 	 * This function looks at the iframe where the upload takes place for the end of string marker to see when the code has finished
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ *
+ * Function iframe check
+ * This function looks at the iframe where the upload takes place for the end of string marker to see when the code has finished
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 var iframe_interval = 0;
 
-function iframe_check(){
+function iframe_check() {
 
-	if(window["upload_iframe"].document.body.innerHTML!=""){
+    if (window["upload_iframe"].document.body.innerHTML != "") {
 
-		var string = document.getElementById("submitbutton").innerHTML;
+        var string = document.getElementById("submitbutton").innerHTML;
 
-		if (string.indexOf('fa-spin') != -1) {
-			var found = false;
+        if (string.indexOf('fa-spin') != -1) {
+            var found = false;
 
-			// We have received a reply and found a spinner, so replace the spinner with the default button icon.
-			if (typeof IMPORT_BUTTON_IMPORTING !== 'undefined' && string.indexOf('</i> ' + IMPORT_BUTTON_IMPORTING) != -1) {
-				found = true;
-				string = string.replace('<i class="fa fa-spinner fa-spin"></i> ' + IMPORT_BUTTON_IMPORTING, '<i class="fa fa-upload"></i> ' + IMPORT_BUTTON_IMPORT);
-			}
-			else if (typeof WORKSPACE_UPLOADING !== 'undefined' && string.indexOf('</i> ' + WORKSPACE_UPLOADING) != -1) {
-				found = true;
-				string = string.replace('<i class="fa fa-spinner fa-spin"></i> ' + WORKSPACE_UPLOADING, '<i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD);
-			}
-
-			if (found) {
-				document.getElementById('submitbutton').innerHTML = string;
-				document.getElementById('submitbutton').disabled = false;
-//				document.getElementById('importpopup').reset();
-			}
-		}
-
-		if(window["upload_iframe"].document.body.innerHTML.indexOf("****")!=-1){
-
-			clearInterval(iframe_interval);
-
-			string = window["upload_iframe"].document.body.innerHTML;
-
-			string = string.substr(0,string.length-4);
-
-            $("#errorpopup").html(string);
-            $("#errorpopup").dialog({
-                dialogClass: "no-close",
-                buttons: [
-                    {
-                        text: "OK",
-                        click: function() {
-                            $( this ).dialog( "close" );
-                        }
-                    }
-                ]
-            });
-			//alert(string);
-			
-			if(typeof window_reference==="undefined"){
-                
-                //window.opener.screen_refresh();
-                window.opener.refresh_workspace();
-            }else{
-                
-                //window_reference.screen_refresh();
-                window_reference.refresh_workspace();
-                
+            // We have received a reply and found a spinner, so replace the spinner with the default button icon.
+            if (typeof IMPORT_BUTTON_IMPORTING !== 'undefined' && string.indexOf('</i> ' + IMPORT_BUTTON_IMPORTING) != -1) {
+                found = true;
+                string = string.replace('<i class="fa fa-spinner fa-spin"></i> ' + IMPORT_BUTTON_IMPORTING, '<i class="fa fa-upload"></i> ' + IMPORT_BUTTON_IMPORT);
+            }
+            else if (typeof WORKSPACE_UPLOADING !== 'undefined' && string.indexOf('</i> ' + WORKSPACE_UPLOADING) != -1) {
+                found = true;
+                string = string.replace('<i class="fa fa-spinner fa-spin"></i> ' + WORKSPACE_UPLOADING, '<i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD);
             }
 
-			window["upload_iframe"].document.body.innerHTML="";
+            if (found) {
+                document.getElementById('submitbutton').innerHTML = string;
+                document.getElementById('submitbutton').disabled = false;
+//				document.getElementById('importpopup').reset();
+            }
+        }
 
-		}else{
+        if (window["upload_iframe"].document.body.innerHTML.indexOf("****") != -1) {
 
-			clearInterval(iframe_interval);
+            clearInterval(iframe_interval);
 
-			string = window["upload_iframe"].document.body.innerHTML;
+            string = window["upload_iframe"].document.body.innerHTML;
+
+            string = string.substr(0, string.length - 4);
 
             $("#errorpopup").html(string);
             $("#errorpopup").dialog({
@@ -185,219 +152,252 @@ function iframe_check(){
                 buttons: [
                     {
                         text: "OK",
-                        click: function() {
-                            $( this ).dialog( "close" );
+                        click: function () {
+                            $(this).dialog("close");
                         }
                     }
                 ]
             });
-			//alert(PHP_ERROR + " - " + string);
+            //alert(string);
 
-		}
+            if (typeof window_reference === "undefined") {
 
-	}
+                //window.opener.screen_refresh();
+                window.opener.refresh_workspace();
+            } else {
 
-}
+                //window_reference.screen_refresh();
+                window_reference.refresh_workspace();
 
-	 /**
-	 * 
-	 * Function iframe upload check initialise
- 	 * This function starts checking the iframe for the response text every 5 seconds (used by the media quota import page).
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+            }
 
-function iframe_upload_check_initialise(disable_btn){
+            window["upload_iframe"].document.body.innerHTML = "";
 
-	if (typeof disable_btn !== 'undefined') {
-		document.getElementById('submitbutton').disabled = true;
-	}
+        } else {
 
-	iframe_interval = setInterval("iframe_check_upload()",500);
+            clearInterval(iframe_interval);
 
-}
+            string = window["upload_iframe"].document.body.innerHTML;
 
+            $("#errorpopup").html(string);
+            $("#errorpopup").dialog({
+                dialogClass: "no-close",
+                buttons: [
+                    {
+                        text: "OK",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+            //alert(PHP_ERROR + " - " + string);
 
-	 /**
-	 * 
-	 * Function iframe check initialise
- 	 * This function starts checking the iframe for the response text every 5 seconds
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+        }
 
-function iframe_check_initialise(disable_btn){
-
-	if (typeof disable_btn !== 'undefined') {
-		document.getElementById('submitbutton').disabled = true;
-	}
-
-	iframe_interval = setInterval("iframe_check()",500);
+    }
 
 }
 
-	 /**
-	 * 
-	 * Function import template pop up (OSBOLETE)
- 	 * This function repurposes the folder pop up for the import action
-	 * @param string id_to_replace = the id of the template we might replace
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ *
+ * Function iframe upload check initialise
+ * This function starts checking the iframe for the response text every 5 seconds (used by the media quota import page).
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
-function import_template_pop_up(id_to_replace){
+function iframe_upload_check_initialise(disable_btn) {
 
-	/*
-	* place the folder popup
-	*/
+    if (typeof disable_btn !== 'undefined') {
+        document.getElementById('submitbutton').disabled = true;
+    }
 
-	tag = document.getElementById("file_area");
-
-	x=0;
-	y=0;	
-
-	while(tag.className!="pagecontainer"){
-
-		x += tag.offsetLeft;
-		y += tag.offsetTop;
-	
-		if(tag.parentNode){
-
-			tag = tag.parentNode;
-
-		}else{
-
-			break;
-
-		}
-
-	} 
-	
-	file_area_width = document.getElementById("file_area").offsetWidth;
-
-	document.getElementById("message_box").style.left = x + (file_area_width/2) - 150 + "px";
-	document.getElementById("message_box").style.top = y + 100 +"px";	
-	document.getElementById("message_box").style.display = "block";
-
-	if(id_to_replace!=undefined){
-
-		if(id_to_replace.indexOf("folder")!=-1){
-
-		/*
-		* Importing into a folder
-		*/
-
-			document.getElementById(id_to_replace).open=true;
-			open_folders.push(document.getElementById(id_to_replace));
-
-			document.getElementById("message_box").innerHTML = '<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;"></div><div class="main_area_holder_1"><div class="main_area_holder_2"><div class="main_area" id="dynamic_section"><p>" + IMPORT_TEXT + "</p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><input type="hidden" name="folder" value="' + id_to_replace.substr(id_to_replace.indexOf("_")+1) + '" /><button type="submit" name="submitBtn" value="Upload" onsubmit="javascript:iframe_check_initialise()" /></form><p><img src="website_code/images/Bttn_CloseOff.gif" onmouseover="this.src=\'website_code/images/Bttn_CloseOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_CloseClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_CloseOff.gif\'" onclick="javascript:popup_close()" style="padding-right:5px" /><span id="folder_feedback"></span></p></div></div></div><div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;"></div>';
-
-		}else{
-
-			document.getElementById("message_box").style.height = "220px";
-
-			document.getElementById("message_box").innerHTML = '<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;"></div><div class="main_area_holder_1"><div class="main_area_holder_2"><div class="main_area" id="dynamic_section"><p style="color:#f00; font-weight:bold">" + IMPORT_PROMPT + "</p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><input type="hidden" name="replace" value="' + id_to_replace.substr(id_to_replace.indexOf("_")+1) + '" /><input type="submit" name="submitBtn" value="Upload" onsubmit="javascript:iframe_check_initialise()" /></form><p><img src="website_code/images/Bttn_CloseOff.gif" onmouseover="this.src=\'website_code/images/Bttn_CloseOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_CloseClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_CloseOff.gif\'" onclick="javascript:popup_close()" style="padding-right:5px" /><span id="folder_feedback"></span></p></div></div></div><div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;"></div>';
-
-		}
-
-	}else{
-
-		document.getElementById("message_box").innerHTML = '<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;"></div><div class="main_area_holder_1"><div class="main_area_holder_2"><div class="main_area" id="dynamic_section"><p>" + IMPORT_TEXT + "</p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><br />" + NEW_PROJECT_NAME + "<br /><br /><input name="templatename" type="text" onkeyup="new_template_name()" /><p id="name_wrong"></p><button type="submit" class = "xerte_button" name="submitBtn" value="Upload" onsubmit="javascript:iframe_check_initialise()">' + IMPORT_BUTTON_UPLOAD + '</button></form><p><button type="button" onclick="javascript:popup_close()" style="padding-right:5px">'+IMPORT_BUTTON_CLOSE+'</button><span id="folder_feedback"></span></p></div></div></div><div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;"></div>';
-		
-	}
-
-	document.importform.submitBtn.disabled = true;
-
-	document.getElementById("message_box").style.zindex = 2;
+    iframe_interval = setInterval("iframe_check_upload()", 500);
 
 }
 
 
-	 /**
-	 * 
-	 * Function new template name
- 	 * This function prevents imported names being invalid
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ *
+ * Function iframe check initialise
+ * This function starts checking the iframe for the response text every 5 seconds
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
-function new_template_name(){
+function iframe_check_initialise(disable_btn) {
 
-	if(document.importform.templatename.value!=""){		
+    if (typeof disable_btn !== 'undefined') {
+        document.getElementById('submitbutton').disabled = true;
+    }
 
-		if(is_ok_name(document.importform.templatename.value)){
-
-			document.getElementById("namewrong").innerHTML = "";
-			document.getElementById("submitbutton").disabled = false;
-
-		}else{
-
-			document.getElementById("namewrong").innerHTML = NAME_FAIL_IMPORT;
-
-		}
-
-	}else{
-
-		document.importform.submitBtn.disabled = true;
-
-	}
+    iframe_interval = setInterval("iframe_check()", 500);
 
 }
 
-	 /**
-	 * 
-	 * Function import template
- 	 * This function handles the display of the import pop up
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ *
+ * Function import template pop up (OSBOLETE)
+ * This function repurposes the folder pop up for the import action
+ * @param string id_to_replace = the id of the template we might replace
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function import_template_pop_up(id_to_replace) {
+
+    /*
+    * place the folder popup
+    */
+
+    tag = document.getElementById("file_area");
+
+    x = 0;
+    y = 0;
+
+    while (tag.className != "pagecontainer") {
+
+        x += tag.offsetLeft;
+        y += tag.offsetTop;
+
+        if (tag.parentNode) {
+
+            tag = tag.parentNode;
+
+        } else {
+
+            break;
+
+        }
+
+    }
+
+    file_area_width = document.getElementById("file_area").offsetWidth;
+
+    document.getElementById("message_box").style.left = x + (file_area_width / 2) - 150 + "px";
+    document.getElementById("message_box").style.top = y + 100 + "px";
+    document.getElementById("message_box").style.display = "block";
+
+    if (id_to_replace != undefined) {
+
+        if (id_to_replace.indexOf("folder") != -1) {
+
+            /*
+            * Importing into a folder
+            */
+
+            document.getElementById(id_to_replace).open = true;
+            open_folders.push(document.getElementById(id_to_replace));
+
+            document.getElementById("message_box").innerHTML = '<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;"></div><div class="main_area_holder_1"><div class="main_area_holder_2"><div class="main_area" id="dynamic_section"><p>" + IMPORT_TEXT + "</p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><input type="hidden" name="folder" value="' + id_to_replace.substr(id_to_replace.indexOf("_") + 1) + '" /><button type="submit" name="submitBtn" value="Upload" onsubmit="javascript:iframe_check_initialise()" /></form><p><img src="website_code/images/Bttn_CloseOff.gif" onmouseover="this.src=\'website_code/images/Bttn_CloseOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_CloseClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_CloseOff.gif\'" onclick="javascript:popup_close()" style="padding-right:5px" /><span id="folder_feedback"></span></p></div></div></div><div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;"></div>';
+
+        } else {
+
+            document.getElementById("message_box").style.height = "220px";
+
+            document.getElementById("message_box").innerHTML = '<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;"></div><div class="main_area_holder_1"><div class="main_area_holder_2"><div class="main_area" id="dynamic_section"><p style="color:#f00; font-weight:bold">" + IMPORT_PROMPT + "</p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><input type="hidden" name="replace" value="' + id_to_replace.substr(id_to_replace.indexOf("_") + 1) + '" /><input type="submit" name="submitBtn" value="Upload" onsubmit="javascript:iframe_check_initialise()" /></form><p><img src="website_code/images/Bttn_CloseOff.gif" onmouseover="this.src=\'website_code/images/Bttn_CloseOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_CloseClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_CloseOff.gif\'" onclick="javascript:popup_close()" style="padding-right:5px" /><span id="folder_feedback"></span></p></div></div></div><div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;"></div>';
+
+        }
+
+    } else {
+
+        document.getElementById("message_box").innerHTML = '<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;"></div><div class="main_area_holder_1"><div class="main_area_holder_2"><div class="main_area" id="dynamic_section"><p>" + IMPORT_TEXT + "</p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><br />" + NEW_PROJECT_NAME + "<br /><br /><input name="templatename" type="text" onkeyup="new_template_name()" /><p id="name_wrong"></p><button type="submit" class = "xerte_button" name="submitBtn" value="Upload" onsubmit="javascript:iframe_check_initialise()">' + IMPORT_BUTTON_UPLOAD + '</button></form><p><button type="button" onclick="javascript:popup_close()" style="padding-right:5px">' + IMPORT_BUTTON_CLOSE + '</button><span id="folder_feedback"></span></p></div></div></div><div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;"></div>';
+
+    }
+
+    document.importform.submitBtn.disabled = true;
+
+    document.getElementById("message_box").style.zindex = 2;
+
+}
 
 
-function import_template(){
+/**
+ *
+ * Function new template name
+ * This function prevents imported names being invalid
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
-	if(drag_manager.selected_items.length>=2){
+function new_template_name() {
 
-		alert(ONE_TEMPLATE_ERROR);
+    if (document.importform.templatename.value != "") {
 
-	}else if(drag_manager.selected_items.length==1){
+        if (is_ok_name(document.importform.templatename.value)) {
 
-		if(drag_manager.selected_items[0].className=="file"){
+            document.getElementById("namewrong").innerHTML = "";
+            document.getElementById("submitbutton").disabled = false;
 
-			alert(IMPORT_OVER);
+        } else {
 
-			/*
-			var answer = confirm("By selecting this option you will replace this template with a new version - are you sure?");
+            document.getElementById("namewrong").innerHTML = NAME_FAIL_IMPORT;
 
-			if(answer){
+        }
 
-				import_template_pop_up(drag_manager.selected_items[0].id);
+    } else {
 
-			}*/
+        document.importform.submitBtn.disabled = true;
 
-		}else{
+    }
 
-			var answer = confirm(IMPORT_OVERWRITE_CONFIRM);
+}
 
-			if(answer){
+/**
+ *
+ * Function import template
+ * This function handles the display of the import pop up
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
-				import_template_pop_up(drag_manager.selected_items[0].id);
 
-			}
+function import_template() {
 
-		}
+    if (drag_manager.selected_items.length >= 2) {
 
-	}else if(drag_manager.selected_items.length==0){
+        alert(ONE_TEMPLATE_ERROR);
 
-		var answer = confirm(IMPORT_CONFIRM);
+    } else if (drag_manager.selected_items.length == 1) {
 
-		if(answer){
+        if (drag_manager.selected_items[0].className == "file") {
 
-			import_template_pop_up();			
+            alert(IMPORT_OVER);
 
-		}
+            /*
+            var answer = confirm("By selecting this option you will replace this template with a new version - are you sure?");
 
-	}
-	
+            if(answer){
+
+                import_template_pop_up(drag_manager.selected_items[0].id);
+
+            }*/
+
+        } else {
+
+            var answer = confirm(IMPORT_OVERWRITE_CONFIRM);
+
+            if (answer) {
+
+                import_template_pop_up(drag_manager.selected_items[0].id);
+
+            }
+
+        }
+
+    } else if (drag_manager.selected_items.length == 0) {
+
+        var answer = confirm(IMPORT_CONFIRM);
+
+        if (answer) {
+
+            import_template_pop_up();
+
+        }
+
+    }
+
 }
 
 
@@ -409,16 +409,16 @@ function import_template(){
 
 function load_button_spinner(this1) {
 
-	var string = this1.innerHTML;
+    var string = this1.innerHTML;
+    debugger;
+    if (string.indexOf('fa-upload') != -1) {
+        if (typeof IMPORT_BUTTON_IMPORT !== 'undefined' && string.indexOf('</i> ' + IMPORT_BUTTON_IMPORT) != -1) {
+            string = string.replace('<i class="fa fa-upload"></i> ' + IMPORT_BUTTON_IMPORT, '<i class="fa fa-spinner fa-spin"></i> ' + IMPORT_BUTTON_IMPORTING);
+        }
+        else if (typeof WORKSPACE_UPLOAD !== 'undefined' && string.indexOf('</i> ' + WORKSPACE_UPLOAD) != -1) {
+            string = string.replace('<i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD, '<i class="fa fa-spinner fa-spin"></i> ' + WORKSPACE_UPLOADING);
+        }
+    }
 
-	if (string.indexOf('fa-upload') != -1) {
-		if (typeof IMPORT_BUTTON_IMPORT !== 'undefined' && string.indexOf('</i> ' + IMPORT_BUTTON_IMPORT) != -1) {
-			string = string.replace('<i class="fa fa-upload"></i> ' + IMPORT_BUTTON_IMPORT, '<i class="fa fa-spinner fa-spin"></i> ' + IMPORT_BUTTON_IMPORTING);
-		}
-		else if (typeof WORKSPACE_UPLOAD !== 'undefined' && string.indexOf('</i> ' + WORKSPACE_UPLOAD) != -1) {
-			string = string.replace('<i class="fa fa-upload"></i> ' + WORKSPACE_UPLOAD, '<i class="fa fa-spinner fa-spin"></i> ' + WORKSPACE_UPLOADING);
-		}
-	}
-
-	this1.innerHTML = string;
+    this1.innerHTML = string;
 }

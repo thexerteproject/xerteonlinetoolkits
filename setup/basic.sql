@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS `$play_security_details` ;
 DROP TABLE IF EXISTS `$sitedetails` ;
 DROP TABLE IF EXISTS `$syndicationcategories` ;
 DROP TABLE IF EXISTS `$grouping` ;
+DROP TABLE IF EXISTS `$course`;
 DROP TABLE IF EXISTS `$syndicationlicenses` ;
 DROP TABLE IF EXISTS `$templatedetails` ;
 DROP TABLE IF EXISTS `$templaterights` ;
@@ -158,6 +159,8 @@ CREATE TABLE `$sitedetails` (
   `dashboard_nonanonymous` char(255) DEFAULT 'true',
   `xapi_dashboard_minrole` char(255) DEFAULT 'co-author',
   `dashboard_period` int DEFAULT 14,
+  `dashboard_allowed_links` text,
+  `course_freetext_enabled` char(255) DEFAULT 'true',
   `tsugi_dir` text,
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -200,10 +203,12 @@ CREATE TABLE `$templatedetails` (
   `extra_flags` varchar(45) DEFAULT NULL,
   `tsugi_published` int DEFAULT 0,
   `tsugi_xapi_enabled` int DEFAULT 0,
+  `tsugi_xapi_useglobal` int(1) DEFAULT 1,
   `tsugi_xapi_endpoint` text,
   `tsugi_xapi_key` text,
   `tsugi_xapi_secret` text,
   `tsugi_xapi_student_id_mode` int DEFAULT 0,
+  `dashboard_allowed_links` text,
   PRIMARY KEY (`template_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

@@ -1865,6 +1865,26 @@ function XTSetOption(option, value) {
         case "force_tracking_mode":
             state.forcetrackingmode = value;
             break;
+        case "course":
+            // If overruled by request parameters (or LTI) do not use coursename, else set coursename and course
+            if (state.coursename != "" && value != undefined && value != "")
+            {
+                state.course = {
+                    id: baseUrl() + 'course/' + value
+                };
+                state.coursename = value;
+            }
+            break;
+        case "module":
+            // If overruled by request parameters (or LTI) do not use coursename, else set coursename and course
+            if (state.modulename != "" && value != undefined && value != "")
+            {
+                state.module = {
+                    id: baseUrl() + 'modules/' + value
+                };
+                state.modulename = value;
+            }
+            break;
     }
 }
 
@@ -2606,6 +2626,12 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
 
 function XTGetStatements(q, one, callback) {
     var search = ADL.XAPIWrapper.searchParams();
+    var group = "";
+    if (q['group'] != undefined)
+    {
+        group = q['group'];
+        delete q['group'];
+    }
     $.each(q, function(i, value) {
         search[i] = value;
     });
@@ -2623,7 +2649,14 @@ function XTGetStatements(q, one, callback) {
                 //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
                 //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                 //}
-
+                if (group != ""
+                    && body.statements[x].context.team != undefined
+                    && body.statements[x].context.team.account != undefined
+                    && body.statements[x].context.team.account.name != undefined
+                    && body.statements[x].context.team.account.name != group)
+                {
+                    continue;
+                }
                 statements.push(body.statements[x]);
             }
             //stringObjects.push(lastSubmit);
@@ -2875,10 +2908,10 @@ function XTTerminate() {
         if (lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
-            if (url.indexOf("launch_lti.php") >= 0) {
-                url = url.replace("launch_lti.php", "website_code/php/lti/sendgrade.php");
-            } else if (url.indexOf("launch_lti2.php") >= 0) {
-                url = url.replace("launch_lti2.php", "website_code/php/lti/sendgrade.php");
+            if (url.indexOf("lti_launch.php") >= 0) {
+                url = url.replace("lti_launch.php", "website_code/php/lti/sendgrade.php");
+            } else if (url.indexOf("lti2_launch.php") >= 0) {
+                url = url.replace("lti2_launch.php", "website_code/php/lti/sendgrade.php");
             } else {
                 url = "";
             }

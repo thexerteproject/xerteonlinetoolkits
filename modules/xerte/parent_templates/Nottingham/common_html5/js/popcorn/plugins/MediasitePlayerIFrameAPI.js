@@ -355,7 +355,6 @@
 
         function onPlayCoverReady() {
             _model.Set("playCoverReady", true);
-            debugger;
             console.log($(".play-button"));
             $(".play-button").click();
         }
