@@ -21,4 +21,8 @@
     define("FILE_CANT_BE_UPLOADED", "Something went wrong with moving the current zip file! Please try again!");
 
     define("FILE_UPLOAD_SUCCESS", "File uploaded successfully!");
+
+    define("CANT_UPLOAD_PARENT", "Parent objects can't be overwritten!");
+
+    define("NO_FILE_SELECTED", "There is no file selected!");
 ?>

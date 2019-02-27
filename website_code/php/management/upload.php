@@ -5,7 +5,6 @@
  * Date: 10/17/2018
  * Time: 3:12 PM
  */
-//die("Dit is een test bericht, als je dit ziet ben je goed beizg");
 include ('../xmlInspector.php');
 
 require_once("../../../config.php");
@@ -19,6 +18,12 @@ _load_language_file("/website_code/php/management/upload.inc");
 
 global $xerte_toolkits_site;
 $prefix = $xerte_toolkits_site->database_table_prefix;
+
+if($_FILES['fileToUpload']['error'] == 4)
+{
+    http_response_code(400);
+    die(NO_FILE_SELECTED);
+}
 
 if($_FILES["fileToUpload"]["name"])
 {
@@ -88,6 +93,15 @@ if($_FILES["fileToUpload"]["name"])
 
         if($templateFound === true && $mediaFound === true)
         {
+            $row = returnParentObject(returnTargetFolderName($templateXML));
+            if(checkParent($name[0]) === true)
+            {
+                $zip->close();
+                deleteZip($template_location, $name[0]);
+                http_response_code(400);
+                die(CANT_UPLOAD_PARENT);
+            }
+
             if (!is_dir($template_location . $name[0]))
             {
                 mkdir($template_location . $name[0], 0755);
@@ -135,13 +149,9 @@ if($_FILES["fileToUpload"]["name"])
                 http_response_code(400);
                 die(UPLOAD_HAS_NO_MEDIA);
             }
-
-
         }
         if($success && $templateFound === true && $mediaFound === true)
         {
-            $row = returnParentObject(returnTargetFolderName($templateXML));
-
             $query = "INSERT INTO {$prefix}originaltemplatesdetails"
                       . "(template_framework, template_name, parent_template, description, date_uploaded, display_name, display_id, access_rights, active)"
                       . "VALUES(?,?,?,?,?,?,?,?,?)";
@@ -254,6 +264,26 @@ function deleteZip($dir, $templateName)
         }
     }
 
+}
+
+function checkParent($templateName)
+{
+    if($templateName == null)
+    {
+        return 0;
+    }
+
+    $query = "SELECT * FROM `originaltemplatesdetails` WHERE template_name=?";
+    $params = array($templateName);
+
+    $row = db_query_one($query, $params);
+
+    if(strcasecmp($templateName, $row['parent_template']) === 0)
+    {
+        return true;
+    }
+
+    return false;
 }
 
 
