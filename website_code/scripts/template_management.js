@@ -703,7 +703,7 @@ function getProjectInformation_stateChanged() {
             q = {};
 
             if (info.lrs.site_allowed_urls != null && info.lrs.site_allowed_urls != undefined && info.lrs.site_allowed_urls != "") {
-                q['activities'] = [url].concat(info.lrs.lrsurls.split(",")).concat(info.lrs.site_allowed_urls.split(",").map(url => url + info.template_id)).filter(url => url != "");
+                q['activities'] = [url].concat(info.lrs.lrsurls.split(",")).concat(info.lrs.site_allowed_urls.split(",").map(function(url) {return url + info.template_id})).filter(function(url) {return  url != ""});
             }
             q['activity'] = url;
 

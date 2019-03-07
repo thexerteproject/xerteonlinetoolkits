@@ -99,7 +99,7 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
                     activities = [];
                 }
                 activities[0] = undefined;
-                activities = activities.filter(s => s != undefined)
+                activities = activities.filter(function(s) {return s != undefined})
                 if(activities.length > 0)
                 {
                     q.activities = activities;
@@ -141,7 +141,7 @@ DashboardState.prototype.combineUrls = function()
     var urls = [url];
     if (this.info.lrs.lrsurls != null && this.info.lrs.lrsurls != "undefined" && this.info.lrs.lrsurls != ""
         && this.info.lrs.site_allowed_urls != null && this.info.lrs.site_allowed_urls != "undefined" && this.info.lrs.site_allowed_urls != "") {
-        urls = [url].concat(this.info.lrs.lrsurls.split(",")).concat(this.info.lrs.site_allowed_urls.split(",").map(url => url + this.info.template_id)).filter(url => url != "");
+        urls = [url].concat(this.info.lrs.lrsurls.split(",")).concat(this.info.lrs.site_allowed_urls.split(",").map(function(url) {return url + this.info.template_id})).filter(function(url) {return url != ""});
     }
     var mapping = function(url)
     {
@@ -597,9 +597,9 @@ DashboardState.prototype.filterNotPassedFailed = function(allInteractions) {
 
             if (!hasPassedOrFailed && statements.length > 0) {
 
-                $this.rawData.filter(s => s.object.id != url);
+                $this.rawData.filter(function(s) { return s.object.id != url});
                 for (user in $this.groupedData) {
-                    $this.groupedData[user].statements.filter(s => s.object.id != url);
+                    $this.groupedData[user].statements.filter(function(s) {return s.object.id != url});
                 }
 
             } else {
@@ -766,7 +766,7 @@ DashboardState.prototype.getDurationBlocks = function(userdata, interactionUrl)
         return statement.object.id == interactionUrl + "/video";
     });
     var statementList = this.getStatementsList(statements, "https://w3id.org/xapi/video/verbs/paused");
-    var durations = statementList.map(s => s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]);
+    var durations = statementList.map(function(s) {return s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]});
     if(durations.length > 0)
     {
         segments = this.consolidateSegments(statementList);
