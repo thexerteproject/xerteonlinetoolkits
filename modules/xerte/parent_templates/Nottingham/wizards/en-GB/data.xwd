@@ -108,7 +108,7 @@
 	  >CDATA</customHotspots>]]></customHotspots><decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" closeBtn="Close" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20" panelWidth="Medium" 
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" panelWidth="Large" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
 	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="Enter text for the page here" intro="Enter introductory text here" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No media selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
-	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" interactivity="Describe" submitText="Submit" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashCards><![CDATA[<flashCards name="Enter Page Title" text="Enter text for the page here" interactivity="flip" cardNoTxt="Card {i} of {n}" flipTxt="Flip Card" nextTxt="Next" prevTxt="Previous"
+	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" interactivity="Describe" submitText="Submit" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashCards><![CDATA[<flashCards name="Enter Page Title" text="Enter text for the page here" cardNoTxt="Card {i} of {n}" flipTxt="Flip Card" nextTxt="Next" prevTxt="Previous" backScrollTip="Scroll Back" nextScrollTip="Scroll Forward"
 	  />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong."/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
@@ -1613,13 +1613,22 @@
 	
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="120"/>
+	<!--<align label="Text Align" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" mandatory="true"/>-->
 	<random label="Randomise Cards" type="Checkbox" optional="true"/>
     <amountToShow label="Cards To Show" type="NumericStepper" min="1" max="1000" step="1" defaultValue="1" optional="true" tooltip="Use with 'Randomise Cards' to show a limited number of randomly selected cards"/>
+	<displayStyle label="Card Layout" type="ComboBox" options="One at a time,In a row: Horizontal,In a row: Vertical" data="one,horizontal,vertical" optional="true" defaultValue="one" tooltip="Display cards one at a time or in a row"/>
+
+	<sizing type="group" label="Card Size" optional="true">
+		<cardSize label="Width" type="ComboBox" options="Small,Medium,Large,Full" data="small,medium,large,full" defaultValue="medium" width="100" optional="true"/>
+		<cardHeight label="Height" type="ComboBox" options="Fill Space,Fit to Content,Match Tallest Card" data="default,fit,match" defaultValue="default" width="100" optional="true"/>
+	</sizing>
 	
 	<cardNoTxt label="Card No. Text" type="TextInput" language="true"/>
     <flipTxt label="Flip Button Label" type="TextInput" language="true"/>
 	<nextTxt label="Next Button Label" type="TextInput" language="true"/>
 	<prevTxt label="Previous Button Label" type="TextInput" language="true"/>
+	<backScrollTip label="Scroll Back Label" type="TextInput" wysiwyg="true" language="true"/>
+    <nextScrollTip label="Scroll Forward Label" type="TextInput" wysiwyg="true" language="true"/>
 	
     <newNodes>
       <card><![CDATA[<card name="Enter Title Here" side1="Content for side one of the card" side2="Content for side two of the card"/>]]></card>
@@ -1660,13 +1669,13 @@
 	<side2 label="Side 2 Text" type="TextArea" height="120"/>
 	
 	<side1Media type="group" label="Side 1 Media" optional="true">
-		<media1 label="File" type="Media" optional="true" defaultValue="Select an Image"/>
+		<media1 label="File" type="Media" optional="true" defaultValue="Select a File"/>
 		<tip1 label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
 		<align1 label="Position" options="Top,Bottom" type="ComboBox" optional="true" data="Top,Bottom" defaultValue="Bottom" width="100"/>
 	</side1Media>
 	
 	<side2Media type="group" label="Side 2 Media" optional="true">
-		<media2 label="File" type="Media" optional="true" defaultValue="Select an Image"/>
+		<media2 label="File" type="Media" optional="true" defaultValue="Select a File"/>
 		<tip2 label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
 		<align2 label="Position" options="Top,Bottom" type="ComboBox" optional="true" data="Top,Bottom" defaultValue="Bottom" width="100"/>
 	</side2Media>
