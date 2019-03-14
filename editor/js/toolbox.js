@@ -2934,7 +2934,7 @@ var EDITOR = (function ($, parent) {
                             .attr('value', value));
 					
                     var td2 = $('<td>');
-					var btnHolder = $('<div style="width:4.2em"></div>').appendTo(td2);
+					var btnHolder = $('<div style="width:4.5em"></div>').appendTo(td2);
                     btnHolder.append($('<button>')
 						.attr('id', 'browse_' + id)
 						.attr('title', language.compMedia.$tooltip)
@@ -3007,7 +3007,7 @@ var EDITOR = (function ($, parent) {
 							}));
 					
                     var td2 = $('<td>');
-					var btnHolder = $('<div style="width:4.2em"></div>').appendTo(td2);
+					var btnHolder = $('<div style="width:4.5em"></div>').appendTo(td2);
                     btnHolder.append($('<button>')
 						.attr('id', 'calendar_' + id)
 						.attr('title', language.calendar != undefined ? language.calendar.$tooltip : '')
