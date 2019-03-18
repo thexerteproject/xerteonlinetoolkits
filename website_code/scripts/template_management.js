@@ -1386,6 +1386,28 @@ function create_tutorial(tutorial) {
     }
 }
 
+function template_submit()
+{
+
+    var url = "website_code/php/management/upload.php";
+    var form = document.getElementById("form-template-upload");
+    var formData = new FormData(form);
+    xmlHttp.open("post", url, true);
+    xmlHttp.onreadystatechange = function(e)
+    {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 400)
+        {
+            alert(xmlHttp.responseText);
+        }
+        else if(xmlHttp.readyState == 4 && xmlHttp.status == 200)
+        {
+            alert(xmlHttp.responseText);
+        }
+    }
+    xmlHttp.send(formData);
+
+    return false;
+}
 
 /********** CHECK **************/
 
@@ -1411,3 +1433,4 @@ function example_alert() {
 
     }
 }
+

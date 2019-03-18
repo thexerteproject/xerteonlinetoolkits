@@ -18,6 +18,11 @@ function DashboardState(info) {
     this.isSessionData = false;
     this.username = info.lrs.lrskey;
     this.password = info.lrs.secret;
+    this.pageIndex = 0;
+    this.pageSize = JSON.parse(info.dashboard.display_options).pageSize;
+    if(this.pageSize == undefined){
+        this.pageSize = 5;
+    }
 }
 
 DashboardState.prototype.clear = function() {
@@ -27,6 +32,7 @@ DashboardState.prototype.clear = function() {
     this.groupedData = undefined;
     this.interactions = undefined;
     this.dashboard = new ADL.XAPIDashboard();
+    this.pageIndex = 0;
 };
 
 DashboardState.prototype.getStatements = function(q, one, callback) {
@@ -587,7 +593,7 @@ DashboardState.prototype.filterNotPassedFailed = function(allInteractions) {
             hasPassedOrFailed = false;
             var url = interaction.url;
             statements.forEach(function(s) {
-                if (s.object.id == url && (s.verb.id == "http://adlnet.gov/expapi/verbs/failed" || s.verb.id ==
+                if ((s.object.id == url || url.indexOf(s.object.id) != -1) && (s.verb.id == "http://adlnet.gov/expapi/verbs/failed" || s.verb.id ==
                         "http://adlnet.gov/expapi/verbs/passed" || s.verb.id ==
                         "http://adlnet.gov/expapi/verbs/scored" || s.verb.id == "https://w3id.org/xapi/video/verbs/paused" || s.verb.id ==
                         "https://w3id.org/xapi/video/verbs/played" || s.verb.id == "http://adlnet.gov/expapi/verbs/answered")) {
