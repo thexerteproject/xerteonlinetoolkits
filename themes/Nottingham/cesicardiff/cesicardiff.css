@@ -1225,7 +1225,7 @@ ol {
   font-size: 1.2em;
   margin: 0; }
 
-ol {
+ol ol {
   font-size: inherit; }
 
 ol ul {

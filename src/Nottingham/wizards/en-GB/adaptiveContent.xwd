@@ -9,7 +9,7 @@
     <adaptiveContent menu="Interactivity" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
       <name label="Page Title" type="TextInput" wysiwyg="true" />
       <introduction label="Introduction" type="textArea"  height="120"/>
-      <displayMode label="Display Mode" optional="true" type="combobox" options="Unlisted,Listed" default="Unlisted" wysiwyg="true" default=""/>
+      <displayMode label="Display Mode" optional="true" type="combobox" options="Unlisted,Listed" default="Unlisted" wysiwyg="true" />
       <newNodes>
         <interaction ><![CDATA[<interaction name="Enter title here" introduction="Enter introduction here" xerteurl="" xertelo="" label="" interactionType="score" PersonalAvgLabel = "Avg. of your attempts"
       PersonalLastLabel = "Your last attempt"

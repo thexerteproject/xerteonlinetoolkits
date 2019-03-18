@@ -188,5 +188,4 @@
 		<error unable="Niet mogelijk om te berekenen" invalid="Ongeldige waarde" none="Geen variabele data"/>
 		<info undef="Refereerd aan een ongedefinieerde variabele" minMax="min > max" alueMin="waarde &lt; min" valueMax="waarde > max" exclude="{n} is uitgesloten" circular="Cirkelvormige variabele referentie" none="Alle mogelijke waarden zijn uitgesloten of vallen buiten de min &amp; max reeks" none2="{n} pogingen hebben geen acceptabele waarde opgeleverd." attempts="{n} pogingen om een gelduge waarde te berekenen" default="Terugvallen op standaard waarde"/>
 	</authorVarsInfo>
-
 </language>

@@ -128,7 +128,7 @@ function db_query($sql, $params = array())
 
     $ok = $statement->execute($params);
     if ($ok === false) {
-        _debug("Failed to execute query : $sql : " . print_r($connection->errorInfo(), true));
+        _debug("Failed to execute query : $sql : " . print_r($statement->errorInfo(), true));
         $statement = null;
         $connection = null;
         return false;

@@ -173,4 +173,9 @@
         <remove>To remove a point, click with the right mouse button on the point you want to remove</remove>
         <save>To save your selection, click the Ok button. If you want to go back without saving, click the cancel button.</save>
     </HotspotInstructions>
+	<grouping deprecated="Deprecated - the red option is no longer allowed by the course list in the management page"></grouping>
+	<category deprecated="Deprecated - the red option is no longer allowed by the course list in the management page"></category>
+	<course deprecated="Deprecated - the red option is no longer allowed by the course list in the management page">
+		<FreeText label="Other"></FreeText>
+	</course>
 </language>

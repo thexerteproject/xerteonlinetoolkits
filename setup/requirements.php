@@ -45,7 +45,7 @@ $xot_setup->check['mysql']  = SetupRequirements::MysqlCheck(); ?>
 
                 <div class="error">
                     <p>Your version of PHP does not seem to have MySQL support.</p>
-                    <p>Please see <a href="http://uk3.php.net/manual/en/mysql.installation.php">PHP's own guide</a> for more details.</p>
+                    <p>Please see <a href="http://uk3.php.net/manual/en/ref.pdo-mysql.php">PHP's own guide</a> for more details.</p>
                     <p>Xampp installs come with MySQL installed. However, some versions of PHP may or may not have MySQL installed by default. If you can find a section headed "MySQL" on the PHP Info page, then you should find that MySQL is installed.</p>
                 </div>
 

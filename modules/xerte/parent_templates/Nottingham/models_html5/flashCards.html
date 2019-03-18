@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var flashCards = new function () {
@@ -33,175 +33,214 @@
 		}
 		
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function() {
-		    if (x_browserInfo.mobile == false) {
-				
-				// reset heights/widths initially...
-				$('.mediaHolder').hide();
-				$pageContents.add('.card, #cards').css({ 'width': '', 'height': '' });
-				$('.cardInner').css('height', '');
-                $('.card, #cards').css('max-width', '');
-
-                // Check whether boxshadow is set, if not reset the values from NaN to something more sensible;
-				if ($pageContents.data('boxShadow').top !== $pageContents.data('boxShadow').top
-					|| $pageContents.data('boxShadow').bottom !== $pageContents.data('boxShadow').bottom
-					|| $pageContents.data('boxShadow').left !== $pageContents.data('boxShadow').left
-					|| $pageContents.data('boxShadow').right !== $pageContents.data('boxShadow').right)
-				{
-				    // $pageContents.data('boxShadow').top is NaN
-                    $pageContents.data('boxShadow').top = 0;
-                    $pageContents.data('boxShadow').bottom = 0;
-                    $pageContents.data('boxShadow').left = 0;
-                    $pageContents.data('boxShadow').right = 0;
+		this.sizeChanged = function(firstLoad) {
+			
+			// temporarily show hidden cards so any resizing can be done
+			var $hiddenCards = $('.card:hidden');
+			$hiddenCards.show();
+			
+			var $cards = $('#cards');
+			$cards.find('div.card').removeClass('fitHeight');
+			
+			if (firstLoad == true) {
+				// adds class re. the card sizing: small,medium,large,full,fit
+				if (x_browserInfo.mobile == true) {
+					$cards.addClass('large');
+					$cards.addClass(x_currentPageXML.getAttribute('cardSize') != 'full' ? 'large' : x_currentPageXML.getAttribute('cardSize'));
+				} else {
+					$cards.addClass(x_currentPageXML.getAttribute('cardSize') == undefined || x_currentPageXML.getAttribute('cardSize') == '' ? 'medium' : x_currentPageXML.getAttribute('cardSize'));
 				}
-				
-				// ...then recalculate the best sizes...
-				$pageContents
-					.height($x_pageHolder.height() - parseInt($x_pageDiv.css('padding-top')) * 2 - 2) //parseInt($("#cards .panel").css('padding-top')) * 2 - 2)
-					.width($x_pageHolder.width() - parseInt($x_pageDiv.css('padding-left')) * 2 - 2); //parseInt($("#cards .panel").css('padding-left')) * 2 - 2);
-
-				$("#cardHolder").width($pageContents.width());
-				$("#cardHolder").css('max-width', $pageContents.width());
-
-                var paddingright = parseInt($("#cards .panel").css('padding-left')) + parseInt($("#cards .panel").css('padding-right')),
-                    paddingbottom = parseInt($("#cards .panel").css('padding-top')) + parseInt($("#cards .panel").css('padding-bottom'));
-
-                $('#cards').css('padding',  '0px ' + paddingright + 'px ' + paddingbottom + 'px 0px');
-
-                $('.card, #cards')
-					.height($('#cardCtrls').height() + $pageContents.data('boxShadow').top + $pageContents.data('boxShadow').bottom)
-                    .width(Math.min(($('#cardCtrls').height() * 1.3) - $pageContents.data('boxShadow').top - $pageContents.data('boxShadow').bottom, $pageContents.width() - ($('.btnHolder button').width() * 2)) - $pageContents.data('boxShadow').right - $pageContents.data('boxShadow').left - parseInt($x_pageHolder.css('padding-left')) * 2);
-                	//.width($pageContents.width() - ($('.btnHolder button').width() * 2)) + $pageContents.data('boxShadow').right + $pageContents.data('boxShadow').left - parseInt($x_pageHolder.css('padding-left')) * 2;
-
-				var cardwidth = $pageContents.width() - $('#leftBtn').width() - $('#rightBtn').width() - paddingright;
-				if (cardwidth < $('#cards').width())
-				{
-                    $('.card, #cards').width(cardwidth);
-				}
-				$('.card, #cards').css('max-width', $('#cards').width() + 'px');
-
-                $('.cardInner')
-					.height($('#cards').outerHeight() - $('.flipBtnHolder').data('height') - parseInt($('.cardInner').css('padding-top')) * 2 - 10);
-				
-				$('.mediaHolder').show();
-				
-			} else {
-				// ** mobile layout (same for now)
-                // reset heights/widths initially...
-                $('.mediaHolder').hide();
-                $pageContents.add('.card, #cards').css({ 'width': '', 'height': '' });
-                $('.cardInner').css('height', '');
-                $('.card, #cards').css('max-width', '');
-
-                // ...then recalculate the best sizes...
-                $pageContents
-                    .height($x_pageHolder.height() - parseInt($x_pageDiv.css('padding-top')) * 2 - 2) //parseInt($("#cards .panel").css('padding-top')) * 2 - 2)
-                    .width($x_pageHolder.width() - parseInt($x_pageDiv.css('padding-left')) * 2 - 2); //parseInt($("#cards .panel").css('padding-left')) * 2 - 2);
-
-                $("#cardHolder").width($pageContents.width());
-                $("#cardHolder").css('max-width', $pageContents.width());
-
-                var paddingright = parseInt($("#cards .panel").css('padding-left')) + parseInt($("#cards .panel").css('padding-right')),
-                    paddingbottom = parseInt($("#cards .panel").css('padding-top')) + parseInt($("#cards .panel").css('padding-bottom'));
-
-                $('#cards').css('padding',  '0px ' + paddingright + 'px ' + paddingbottom + 'px 0px');
-
-                $('.card, #cards')
-                    .height($('#cardCtrls').height() + $pageContents.data('boxShadow').top + $pageContents.data('boxShadow').bottom)
-                    .width(Math.min(($('#cardCtrls').height() * 1.3) - $pageContents.data('boxShadow').top - $pageContents.data('boxShadow').bottom, $pageContents.width() - ($('.btnHolder button').width() * 2)) - $pageContents.data('boxShadow').right - $pageContents.data('boxShadow').left - parseInt($x_pageHolder.css('padding-left')) * 2);
-                //.width($pageContents.width() - ($('.btnHolder button').width() * 2)) + $pageContents.data('boxShadow').right + $pageContents.data('boxShadow').left - parseInt($x_pageHolder.css('padding-left')) * 2;
-
-                var cardwidth = $pageContents.width() - $('#leftBtn').width() - $('#rightBtn').width() - paddingright;
-                if (cardwidth < $('#cards').width())
-                {
-                    $('.card, #cards').width(cardwidth);
-                }
-                $('.card, #cards').css('max-width', $('#cards').width() + 'px');
-
-                $('.cardInner')
-                    .height($('#cards').outerHeight() - $('.flipBtnHolder').data('height') - parseInt($('.cardInner').css('padding-top')) * 2 - 10);
-
-                $('.mediaHolder').show();
 			}
 			
-			flashCards.resizeMedia();
+			var btnsShown = false;
+			
+			if ($pageContents.hasClass('horiz')) {
+				
+				$('.btnHolder').hide();
+				
+				// size these cards manually as the % won't work in the scrolling div
+				if ($cards.hasClass('small')) {
+					$cards.find('.card').width(Math.floor($pageContents.width() * 0.2));
+				} else if ($cards.hasClass('medium')) {
+					$cards.find('.card').width(Math.floor($pageContents.width() * 0.3));
+				} else if ($cards.hasClass('large')) {
+					$cards.find('.card').width(Math.floor($pageContents.width() * 0.4));
+				}
+				
+				// are scroll buttons required?
+				if ($cards[0].scrollWidth > $cards[0].clientWidth) {
+					
+					$('.btnHolder').show();
+					btnsShown = true;
+					
+					if ($cards[0].scrollLeft >= $cards[0].scrollWidth) {
+						this.toggleBtn($('#nextBtn'), 'disable');
+					} else {
+						this.toggleBtn($('#nextBtn'), 'enable');
+					}
+					
+					if ($cards[0].scrollLeft <= 0) {
+						this.toggleBtn($('#prevBtn'), 'disable');
+					} else {
+						this.toggleBtn($('#prevBtn'), 'enable');
+					}
+				}
+			}
+			
+			if (x_currentPageXML.getAttribute('cardHeight') == undefined || x_currentPageXML.getAttribute('cardHeight') == '' || x_currentPageXML.getAttribute('cardHeight') == 'default') {
+				
+				var totalSpace = $x_pageHolder.height() - (parseInt($x_pageDiv.css('padding-top')) * 2);
+				
+				if (x_browserInfo.mobile == true) {
+					totalSpace = $x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
+				}
+				
+				var spaceTaken = (x_browserInfo.mobile == true ? 0 : $('#textHolder').outerHeight(true)) + $('#cardNoHolder').height() + parseInt($cards.find('div.card').css('margin-top')) + parseInt($cards.find('div.card').css('margin-bottom')) + 10;
+				var maxH = Math.floor(totalSpace - spaceTaken);
+				
+				if (maxH < totalSpace / 3 || maxH < 200) {
+					maxH = Math.max(totalSpace / 3, 200);
+				}
+				
+				$cards.find('div.card')
+					.addClass('fitHeight')
+					.find('.front, .back').height(maxH);
+				
+				$cards.find('.panel .cardInner, .cardImg img').css('max-height', Math.floor(maxH - parseInt($cards.find('.panel .cardInner').css('margin-top')) - $('.flipBtnHolder').outerHeight(true)));
+				
+			// each card is the height of its tallest side
+			} else if (x_currentPageXML.getAttribute('cardHeight') == 'fit') {
+				
+				$cards.find('div.card').each(function() {
+					var $this = $(this);
+					var maxH = Math.max($this.find('.front').height(), $this.find('.back').height());
+					
+					$this.find('.front').height(maxH);
+					$this.find('.back').height(maxH);
+					
+					$this.addClass('fitHeight');
+				});
+				
+			// each card is the height of the tallest card side
+			} else {
+				
+				var maxH = 0;
+				
+				$cards.find('div.card').each(function(e) {
+					var $this = $(this);
+					
+					maxH = Math.max(maxH, Math.max($this.find('.front').height(), $this.find('.back').height()));
+				});
+				
+				$cards.find('div.card')
+					.addClass('fitHeight')
+					.find('.front, .back').height(maxH);
+			}
+			
+			if ($pageContents.hasClass('horiz') && btnsShown == true) {
+				$('.btnHolder')
+					.css('margin-top', 0)
+					.css('margin-top', ($cards.height() - $('.btnHolder').height()) / 2)
+			}
+			
+			this.resizeMedia();
+			this.resizeiFrame();
+			
+			$hiddenCards.hide();
+			
+		}
+		
+		// function resizes iFrames on cards
+		this.resizeiFrame = function() {
+			
+			$('iframe.mediaHolder').each(function() {
+				var $this = $(this),
+					maxH = Math.floor($this.closest('.panel').height() - parseInt($this.closest('.cardInner').css('margin-top')) - $this.closest('.panel').find('.flipBtnHolder').outerHeight(true))
+				
+				$this.height(maxH);
+			})
 		}
 		
 		// function resizes media controls
-		this.resizeMedia = function(deal) {
+		this.resizeMedia = function() {
 			// resize if the media is now the wrong size for its holder
 			// this is done by manually triggering the window resize event (mediaelement.js listens to this event)
-			var triggerResize = true;
+			var triggerResize = false;
 			
-			$('.cardVideo video').each(function(i) {
+			$('.cardVideo video').each(function() {
 				var	$this = $(this),
 					$cardVideo = $this.closest('.cardVideo');
 				
-				var tempW = $cardVideo.data('max-width'), tempH = $cardVideo.data('max-height');
-				if (tempW > $cardVideo.closest('.panel').width()) {
-					var scale = $cardVideo.closest('.panel').width() / tempW;
-					tempW = $cardVideo.closest('.panel').width();
+				var tempW = $cardVideo.data('max-width'),
+					tempH = $cardVideo.data('max-height'),
+					maxW = $cardVideo.closest('.panel').width() - (parseInt($cardVideo.closest('.cardInner').css('margin-left')) * 2),
+					maxH = $cardVideo.closest('.panel').height() - parseInt($cardVideo.closest('.cardInner').css('margin-top')) - $cardVideo.closest('.cardInner').find('.emptyDiv').height();
+				
+				if (tempW > maxW) {
+					var scale = maxW / tempW;
+					tempW = maxW;
 					tempH = Math.floor(tempH * scale);
 				}
-				if (tempH > $cardVideo.closest('.panel').height()) {
-					var scale = $cardVideo.closest('.panel').height() / tempH;
-					tempH = $cardVideo.closest('.panel').height();
+				if (tempH > maxH) {
+					var scale = maxH / tempH;
+					tempH = maxH;
 					tempW = Math.floor(tempW * scale);
 				}
 				
 				$cardVideo.css({
-						'max-width'	:tempW,
-						'max-height':tempH
-					});
+					'max-width'	:tempW,
+					'max-height':tempH
+				});
 				
-				if ($this.is(':visible') && $this.width() != $cardVideo.width() && triggerResize == true) {
-					triggerResize = false;
-					$x_window.resize();
+				if ($this.is(':visible') && ($this.width() > $cardVideo.width() || $this.width() <= $cardVideo.width() - 20)) {
+					triggerResize = true;
 					return false;
 				}
 			});
 			
-			$('.cardAudio audio').each(function(i) {
-				var audioBarW = 0,
-					$this = $(this);
-				var $cardAudio = $this.closest('.cardAudio');
-				
-				$this.closest('.mejs-inner').find('.mejs-controls').children().each(function() {
-					audioBarW += $(this).outerWidth();
+			if (triggerResize == false) {
+				$('.cardAudio audio').each(function(i) {
+					
+					var audioBarW = 0,
+						$this = $(this);
+					var $cardAudio = $this.closest('.cardAudio');
+					
+					$this.closest('.mejs-inner').find('.mejs-controls').children().each(function() {
+						audioBarW += $(this).outerWidth();
+					});
+					
+					if ($cardAudio.is(':visible') && (audioBarW <= $cardAudio.width() - 20 || audioBarW > $cardAudio.width())) {
+						triggerResize = true;
+						return false;
+					}
+					
 				});
-				
-				if ($cardAudio.is(':visible') && (audioBarW <= $cardAudio.width() - 10 || audioBarW > $cardAudio.width()) && triggerResize == true) {
-					triggerResize = false;
-					$x_window.resize();
-					return false;
-				}
-			});
+			}
+			
+			if (triggerResize == true) {
+				$x_window.resize();
+			}
 		}
 		
 		this.init = function () {
-			if (x_currentPageXML.getAttribute('interactivity') == 'flip') {
-				// Load in the required scripts before we can begin
-				$script.path(x_templateLocation + 'common_html5/js/');
-				$script('jquery.flip.min.js', function () {
-					flashCards.setUp();
-				});
-			} else {
-				this.setUp();
-			}
+			// Load in the required scripts before we can begin
+			$script.path(x_templateLocation + 'common_html5/js/');
+			$script('jquery.flip.min.js', function () {
+				flashCards.setUp();
+			});
 		}
 		
 		this.setUp = function() {
 			$pageContents = $('#pageContents');
 			$pageContents.data('currentCard', 0);
 			
-
+			// set up text
 			var $textHolder	= $('#textHolder');
 			if (x_currentPageXML.getAttribute('text') != '') {
 				$textHolder.html(x_currentPageXML.getAttribute('text'));
-				
 			} else {
 				$textHolder.remove();
-				$('#cardHolder').addClass('full');
+				//$('#cardHolder').addClass('full');
 			}
 			
 			var $cards = $('#cards'),
@@ -240,15 +279,15 @@
 				var thisInfo = this;
 
 				$thisCard = $('<div>')
-											.addClass('card')
-											.append(
-												$('<div>')
-													.addClass('front panel')
-											)
-											.append(
-												$('<div>')
-													.addClass('back panel')
-											)
+								.addClass('card')
+								.append(
+									$('<div>')
+										.addClass('front panel')
+								)
+								.append(
+									$('<div>')
+										.addClass('back panel')
+								)
 				$thisCard.appendTo($cards);
 
 				$thisCard.attr('id', 'card' + i);
@@ -267,178 +306,220 @@
 						$this.append(thisInfo.getAttribute('side' + index));
 					}
 					
-					// media on card...
+					// add media to card
 					var url = thisInfo.getAttribute('media' + index),
-						tip = thisInfo.getAttribute('tip' + index);
+						tip = thisInfo.getAttribute('tip' + index) != undefined && thisInfo.getAttribute('tip' + index) != '' ? thisInfo.getAttribute('tip' + index) : '';
 					
 					if (url != undefined && url != '') {
-						var $mediaHolder = $('<div class="mediaHolder"></div>'),
-							$media;
 						
-						if (url.split('.').pop() == 'mp4') {
-							// video
-							$media = $('<div class="cardVideo">')
-										.appendTo($mediaHolder);
+						var $mediaHolder,
+							fileExt = url.split('.').pop().toLowerCase();
+						
+						// audio
+						if (fileExt == "mp3") {
 							
-							if (tip != undefined && tip != '') { $media.attr('title', tip); };
+							$mediaHolder = $('<div class="cardAudio">');
 							
-							$media.mediaPlayer({
-								width: '100%',
-								height: '100%',
-								type: 'video',
-								source: url
-							});
-							
-						} else if (url.split('.').pop() == 'mp3') {
-							// audio
-							$media = $('<div class="cardAudio">')
-										.appendTo($mediaHolder);
-							
-							if (tip != undefined && tip != '') { $media.attr('title', tip); };
-								
-							$media.mediaPlayer({
-								type: 'audio',
+							$mediaHolder.data({
 								source: url,
-								width: '100%'
+								title: tip
 							});
 							
-						} else {
-							// image
-							$media = $('<img class="cardImg">')
-										.attr('src', url)
-										.appendTo($mediaHolder);
+						// image
+						} else if (fileExt == "jpeg" || fileExt == "jpg" || fileExt == "png" || fileExt == "gif") {
+							$mediaHolder = $('<div class="cardImg"><img src="' + url + '" alt="' + tip + '"' + '/></div>');
 							
-							if (tip != undefined && tip != '') { $media.attr('alt', tip); };
+						// iframe
+						} else if (url.substr(0,7) == "<iframe") {
+							if ($(url).first().is("[srcdoc]") == false) {
+								$mediaHolder = $(url).first();
+								$mediaHolder
+									.removeAttr('width')
+									.removeAttr('height');
+							}
+							
+						// uploaded video / youtube / vimeo
+						} else if (fileExt == "mp4" || x_isYouTubeVimeo(url) != false) {
+							$mediaHolder = $('<div class="cardVideo"></div>');
+							
+							$mediaHolder.data({
+								source: url,
+								title: tip
+							});
+							
+							var yt = x_isYouTubeVimeo(url);
+							if (yt != false) {
+								$mediaHolder.addClass(yt);
+							}
 						}
 						
-						if (thisInfo.getAttribute('align' + index) == 'Top') {
-							if (thisInfo.getAttribute('name') != '') {
-								$mediaHolder.insertAfter($this.find('h3')[0]);
+						if ($mediaHolder != '' && $mediaHolder != undefined) {
+							
+							$mediaHolder.addClass('mediaHolder');
+							
+							if (thisInfo.getAttribute('align' + index) == 'Top') {
+								if (thisInfo.getAttribute('name') != '') {
+									$mediaHolder.insertAfter($this.find('h3')[0]);
+								} else {
+									$this.prepend($mediaHolder);
+								}
 							} else {
-								$this.prepend($mediaHolder);
+								$this.append($mediaHolder);
 							}
-						} else {
-							$this.append($mediaHolder);
+							
+							if ($mediaHolder.hasClass('cardVideo')) {
+								$mediaHolder
+									.mediaPlayer({
+										type: "video",
+										source: $mediaHolder.data('source'),
+										width: "100%",
+										height: "100%",
+										title: $mediaHolder.data('title')
+									});
+								
+							} else if ($mediaHolder.hasClass('cardAudio')) {
+								
+								$mediaHolder
+									.mediaPlayer({
+										type: "audio",
+										source: $mediaHolder.data('source'),
+										width: "100%",
+										height: "100%",
+										title: $mediaHolder.data('title')
+									});
+							}
 						}
 					}
 					
 					$this.wrapInner('<div class="cardInner"></div>');
-					
-					$this.append('<div class="flipBtnHolder"><button class="flipBtn circleBtn"></button></div>');
+					$this.append('<div class="flipBtnHolder"><button class="flipBtn circleBtn"></button></div><div class="emptyDiv"></div>');
 				});
 				
 				$thisCard.flip({ trigger: 'manual'});
 			});
-
-
-			if ($('.card').length < 2) {
-				$('#prevBtn, #nextBtn, #cardNoTxt').remove();
+			
+			var displayStyle = x_currentPageXML.getAttribute('displayStyle');
+			
+			// set up buttons
+			// vertical layout
+			if ($('.card').length < 2 || displayStyle == 'vertical' || (displayStyle == 'horizontal' && x_browserInfo.mobile == true)) {
 				
+				$('#cardNoTxt').remove();
+				
+				if (displayStyle == 'horizontal') {
+					displayStyle = 'vertical';
+				}
+				
+				if (displayStyle == 'vertical') {
+					$('.btnHolder').remove();
+				} else {
+					$('.btnHolder').css('visibility', 'hidden');
+				}
+				
+			// horizontal layout (either scroll or one at time)
 			} else {
 				$('#prevBtn')
 					.button({
-						icons: {
-							primary: 'fa fa-x-prev'
-						},
-						label:	x_currentPageXML.getAttribute('prevTxt'),
-						text:	false
+						icons: {primary: 'fa fa-x-prev-circle'},
+						label: displayStyle == 'horizontal' || displayStyle == 'vertical' ? (x_currentPageXML.getAttribute('backScrollTip') != undefined ? x_currentPageXML.getAttribute('backScrollTip') : 'Scroll Back') : x_currentPageXML.getAttribute('prevTxt'),
+						text: false
 					})
 					.click(function() {
-						flashCards.newCard(false);
-					});
+						
+						$('.cardVideo video, .cardAudio audio').each(function() {
+							this.pause();
+						});
+						
+						if (displayStyle == 'horizontal' || displayStyle == 'vertical') {	
+							flashCards.scroll(false);
+						} else {
+							flashCards.removeCard(false);
+						}
+					})
+					.css('visibility', 'hidden');
 				
 				$('#nextBtn')
 					.button({
-						icons: {
-							primary: 'fa fa-x-next'
-						},
-						label:	x_currentPageXML.getAttribute('nextTxt'),
+						icons: {primary: 'fa fa-x-next-circle'},
+						label: displayStyle == 'horizontal' || displayStyle == 'vertical' ? (x_currentPageXML.getAttribute('nextScrollTip') != undefined ? x_currentPageXML.getAttribute('nextScrollTip') : 'Scroll Forwards') : x_currentPageXML.getAttribute('nextTxt'),
 						text:	false
 					})
 					.click(function() {
-						flashCards.newCard(true);
-					});
+						$('.cardVideo video, .cardAudio audio').each(function() {
+							this.pause();
+						});
+						
+						if (displayStyle == 'horizontal' || displayStyle == 'vertical') {
+							flashCards.scroll(true);
+						} else {
+							flashCards.removeCard(true);
+						}
+					})
+					.css('visibility', 'hidden');
+				
+				if (displayStyle == 'horizontal') {
+					$('#leftBtn').after($('#rightBtn'));
+					$('#cardNoTxt').remove();
+					
+					this.toggleBtn($('#prevBtn'), 'enable');
+					this.toggleBtn($('#nextBtn'), 'enable');
+				}
 			}
-
-            // these are used later for sizing / layout:
-            var boxShadow = $('.panel').css('box-shadow'),
-                h, v, b, s,
-                top = 0, right = 0, bottom = 0, left = 0;
-
-            if (boxShadow) {
-                boxShadow = $.trim(boxShadow.split(')')[1]).split(' ');
-                h = parseInt(boxShadow[0]); v = parseInt(boxShadow[1]); b = parseInt(boxShadow[2]); s = parseInt(boxShadow[3]);
-                top = s + b - v + 2;
-                right = s + b + h + 2;
-                bottom = s + b + v + 2;
-                left = s + b - h + 2;
-            }
-
-            $pageContents.data('boxShadow', { top: top, right: right, bottom: bottom, left: left });
-
-
+			
+			// set up button to show other side of card
             $('.flipBtn')
 				.button({
-					icons: {
+					icons:	{
 						primary: 'fa fa-x-refresh'
 					},
-					label:	x_currentPageXML.getAttribute('flipTxt'),
-					text:	false
+					label: x_currentPageXML.getAttribute('flipTxt'),
+					text: false
 				})
 				.click(function() {
+					$('.cardVideo video, .cardAudio audio').each(function() {
+						this.pause();
+					});
+					
+					// scroll to top the side that's about to come into view
+					var hiddenSide = $(this).closest('.card').data("flip-model").isFlipped == true ? 0 : 1;
+					$(this).closest('.card').find('.panel:eq(' + hiddenSide + ') .cardInner').scrollTop(0);
+					
+					// then flip
 					$(this).closest('.card').flip('toggle');
 				})
 			
-			$('.flipBtnHolder').data('height', $('.flipBtnHolder').height() + parseInt($('.flipBtnHolder').css('margin-bottom')) * 2);
-			
-			if ($('.card').length < 2) {
-				$('#btnHolder').remove();
-			}
-			
-			$('.card').hide();
-			
-			this.sizeChanged();
-			
-			// call this function in every model once everything's loaded
-			x_pageLoaded();
-			
-			this.dealCard();
-		}
-		
-		this.dealCard = function(next) {
-			if (next == true) {
-				this.toggleBtn($('#prevBtn'), 'enable');
-				if ($pageContents.data('currentCard') + 1 == $('#cards .card').length) {
-					this.toggleBtn($('#nextBtn'), 'disable');
-				} else {
-					this.toggleBtn($('#nextBtn'), 'enable');
+			if (displayStyle != 'horizontal' && displayStyle != 'vertical') {
+				$pageContents.addClass('displaySingle');
+				
+				if ($('.card').length > 1) {
+					$('.card').hide();
 				}
+				
 			} else {
-				this.toggleBtn($('#nextBtn'), 'enable');
-				if ($pageContents.data('currentCard') == 0) {
-					this.toggleBtn($('#prevBtn'), 'disable');
+				$pageContents.addClass('displayMultiple');
+				
+				if (displayStyle == 'horizontal') {
+					$pageContents.addClass('horiz');
 				} else {
-					this.toggleBtn($('#prevBtn'), 'enable');
+					$pageContents.addClass('vert');
 				}
 			}
 			
-			var $thisCard = $('#card' + $pageContents.data('currentCard'));
+			$pageContents.data('displayStyle', displayStyle);
 			
-			$thisCard.flip(false);
-			$('#cards').addClass('hideOverflow');
+			this.sizeChanged(true);
 			
-			$thisCard.effect('slide', {direction:(next != false ? 'right' : 'left'), mode: 'show'}, 500, flashCards.callback(false));
-			
-			if ($thisCard.find('.mediaHolder video, .mediaHolder audio').length > 0) {
-				this.resizeMedia(true);
+			x_pageLoaded();
+				
+			if ($('#pageContents').data('displayStyle') != 'horizontal' && $('#pageContents').data('displayStyle') != 'vertical' && $('.card').length > 1) {	
+				flashCards.dealCard();
 			}
-			
-			$('#cardNoTxt')
-				.html('<p>' + x_currentPageXML.getAttribute('cardNoTxt').replace('{i}', $pageContents.data('currentCard') + 1).replace('{n}', $('#cards .card').length) + '</p>')
-				.fadeIn();
 		}
 		
-		this.newCard = function(next) {
+		// _____________ FUNCTIONS FOR CARD DEALING WHEN SINGLE CARD SHOWN ON SCREEN _____________
+		// function slides the current card away to make space for the next one
+		this.removeCard = function(next) {
+			
 			this.toggleBtn($('#prevBtn'), 'disable');
 			this.toggleBtn($('#nextBtn'), 'disable');
 			
@@ -447,7 +528,7 @@
 			$('#cards').addClass('hideOverflow');
 			$('#card' + $pageContents.data('currentCard')).effect('slide', {direction:(next == true ? 'left' : 'right'), mode: 'hide'}, 500, flashCards.callback(true));
 			
-			$('#cardNoTxt').html('<p>&nbsp;</p>')
+			$('#cardNoTxt').html('<p>&nbsp;</p>');
 			
 			if (next == true) {
 				$pageContents.data('currentCard', $pageContents.data('currentCard') + 1);
@@ -456,18 +537,116 @@
 			}
 		}
 		
-		this.toggleBtn = function($btn, state) {
-			$btn.button(state);
+		// function slides in a new card
+		this.dealCard = function(next) {
+			
+			var $thisCard = $('#card' + $pageContents.data('currentCard'));
+			
+			$thisCard.flip(false);
+			$('#cards').addClass('hideOverflow');
+			
+			$thisCard.effect('slide', {direction:(next != false ? 'right' : 'left'), mode: 'show'}, 500, flashCards.callback(false, next));
+			
+			if ($thisCard.find('.mediaHolder video, .mediaHolder audio').length > 0) {
+				this.resizeMedia();
+			}
 		}
 		
-		this.callback = function(deal) {
+		// function called after card slide has finished
+		this.callback = function(deal, next) {
 			return function(e) {
+				
 				$('#cards').removeClass('hideOverflow');
+				
+				// a card has just slid off screen - deal the next one
 				if (deal == true) {
+					
 					flashCards.dealCard($pageContents.data('next'));
+					
+				// show the card no. when new card has been dealed
+				} else {
+					$('#cardNoTxt')
+						.html('<p>' + x_currentPageXML.getAttribute('cardNoTxt').replace('{i}', $pageContents.data('currentCard') + 1).replace('{n}', $('#cards .card').length) + '</p>')
+						.fadeIn();
+					
+					// reenable required buttons
+					if (next == true) {
+						
+						flashCards.toggleBtn($('#prevBtn'), 'enable');
+						
+						if ($pageContents.data('currentCard') + 1 == $('#cards .card').length) {
+							flashCards.toggleBtn($('#nextBtn'), 'disable');
+						} else {
+							flashCards.toggleBtn($('#nextBtn'), 'enable');
+						}
+						
+					} else {
+						
+						flashCards.toggleBtn($('#nextBtn'), 'enable');
+						
+						if ($pageContents.data('currentCard') == 0) {
+							flashCards.toggleBtn($('#prevBtn'), 'disable');
+						} else {
+							flashCards.toggleBtn($('#prevBtn'), 'enable');
+						}
+					}
 				}
 			};
 		}
+		
+		// function toggles disable/enable button states
+		this.toggleBtn = function($btn, state) {
+			if (state == 'disable') {
+				$btn.css('visibility', 'hidden');
+			} else {
+				$btn.css('visibility', 'visible');
+			}
+		}
+		
+		// _____________ FUNCTIONS FOR CARD SCROLLING WHEN MULTIPLE CARDS SHOWN ON SCREEN _____________
+		// function scrolls cards left & right when displayed in horizontal list
+		this.scroll = function(fwd) {
+			
+			var $cards = $('#cards'),
+				scrollL;
+			
+			if (fwd == false) {
+				scrollL = 0;
+				
+				$(".card").each(function(i) {
+					if ($(this).position().left + parseInt($(this).css('marginLeft')) - $cards.position().left >= 0) {
+						scrollL = $cards.scrollLeft() - ($cards.width() - ($(this).position().left - $cards.position().left));
+						return false;
+					}
+				});
+				
+			} else {
+				scrollL = $cards.scrollLeft() + $cards.width()
+				
+				$(".card").each(function(i) {
+					if ($(this).offset().left - $cards.offset().left + $(this).width() > $cards.width()) {
+						scrollL = $(this).position().left + $cards.scrollLeft() - $cards.position().left;
+						return false;
+					}
+				});
+			}
+			
+			if ($cards[0].scrollWidth - $cards.width() <= Math.floor(scrollL)) {
+				this.toggleBtn($('#nextBtn'), 'disable');
+			} else {
+				this.toggleBtn($('#nextBtn'), 'enable');
+			}
+			
+			if (Math.floor(scrollL) <=0) {
+				this.toggleBtn($('#prevBtn'), 'disable');
+			} else {
+				this.toggleBtn($('#prevBtn'), 'enable');
+			}
+			
+			$cards.animate({scrollLeft: scrollL}, 800, "easeInOutCubic");
+		}
+		
+		
 		
 		// function receives dimensions of video from mediaPlayer.js to set its max dimensions
 		this.mediaMetadata = function($video, dimensions) {
@@ -499,14 +678,14 @@
 		<div id="cardCtrls">
 		
 			<div id="leftBtn" class="btnHolder">
-				<button id="prevBtn" class="circleBtn flatRBtn"></button>
+				<button id="prevBtn"></button>
 			</div>
 			
 			<div id="cards">
 			</div>
 			
 			<div id="rightBtn" class="btnHolder">
-				<button id="nextBtn" class="circleBtn flatLBtn"></button>
+				<button id="nextBtn"></button>
 			</div>
 		
 		</div>

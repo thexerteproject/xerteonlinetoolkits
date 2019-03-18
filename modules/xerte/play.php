@@ -151,7 +151,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         {
             $tracking .= "<script>\n";
             if($row["tsugi_xapi_enabled"] == 1) {
-                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . "xapi_proxy.php';\n";
+                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
@@ -249,7 +249,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 $tracking .= "  var lti_enabled=false;\n";
             }
             if($row["tsugi_xapi_enabled"] == 1) {
-                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . "xapi_proxy.php';\n";
+                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";

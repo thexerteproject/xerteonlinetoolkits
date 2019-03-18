@@ -179,7 +179,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 sessions.push(sessionId);
             }
             if(s.verb.id == "http://adlnet.gov/expapi/verbs/exited"){
-                var pages = interactions.filter(i => i.type == "page").map(p => p.url);
+                var pages = interactions.filter(function(i) {return i.type == "page"}).map(function(p) {return p.url});
                 if(pages.indexOf(s.object.id) >= 0)
                 {
                     totalCompletedPages++;
@@ -503,6 +503,7 @@ xAPIDashboard.prototype.getLastUserAttempt = function(data) {
             return lastStatements;
         }
     }
+    lastStatements.statements.reverse();
     return lastStatements;
 };
 
@@ -808,7 +809,7 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
                     childQuestions = interaction.children.map(function(c){
                         return $this.data.getQuestion(c);
                     });
-                    if(childQuestions.filter(q => q != undefined && q.interactionType == "choice").length == childQuestions.length){
+                    if(childQuestions.filter(function(q) {return q != undefined && q.interactionType == "choice"}).length == childQuestions.length){
                         var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
                         $this.displayQuizOverview(heatmapDiv, childQuestions);
                     }
@@ -831,10 +832,10 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
         videoLength = pausedstatements[0].result.extensions["https://w3id&46;org/xapi/video/extensions/time"];
 
     }else{
-        videoLength = Math.max(...pausedStatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/time"]));
+        videoLength = Math.max(...pausedStatements.map(function(s) { return s.result.extensions["https://w3id&46;org/xapi/video/extensions/time"]}));
     }
     // Gets all the ranges from the data.
-    var stringRanges = pausedstatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/played-segments"]);
+    var stringRanges = pausedstatements.map(function(s) {return s.result.extensions["https://w3id&46;org/xapi/video/extensions/played-segments"]});
     var totalViewed = [];
     for (var i = 0; i < total; i++) {
         totalViewed.push(0);
@@ -923,8 +924,8 @@ xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
 
     contentDiv.append("<div class='question-overview'><ul></ul></div>");
     questions.forEach(function(q){
-        answerStatements = $this.rawData.filter(s => s.object.id == q.interactionUrl && s.verb.id == "http://adlnet.gov/expapi/verbs/answered");
-        answers = answerStatements.map(s => s.result.response);
+        answerStatements = $this.rawData.filter(function(s) { return s.object.id == q.interactionUrl && s.verb.id == "http://adlnet.gov/expapi/verbs/answered"});
+        answers = answerStatements.map(function(s) {return s.result.response});
         contentDiv.find(".question-overview ul").append("<li>" + q.name["en-US"] + "</li>");
         var ol = $("<ol></ol>").appendTo(contentDiv.find(".question-overview ul li:last"));
         q.choices.forEach(function(c){
@@ -954,9 +955,9 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
     var completed = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/exited").concat(
          this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/scored")
     );
-    var uniqIds = completed.map(s => s.actor.mbox_sha1sum).filter((v, i, a) => a.indexOf(v) === i);
+    var uniqIds = completed.map(function(s) {return s.actor.mbox_sha1sum} ).filter(function(v, i, a) { return a.indexOf(v) === i});
     started = started.filter(function(v, i, a){
-        return a.map(s => s.actor).indexOf(v.actor) === i;
+        return a.map(function(s) {return s.actor}).indexOf(v.actor) === i;
     });
 
     users = Object.keys(this.data.groupedData);
@@ -1048,7 +1049,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
     });
     options += '</ol>';
     var pairs = question.correctResponsesPattern[0].split("[,]");
-    pairs = pairs.map(x => x.split("[.]").join(" <i class=\"fa fa-long-arrow-right\"></i> "));
+    pairs = pairs.map(function(x) {x.split("[.]").join(" <i class=\"fa fa-long-arrow-right\"></i> ")});
     options += XAPI_DASHBOARD_CORRECTANSWERS;
     options += "<ul>";
     pairs.forEach(function(p) {
@@ -1107,7 +1108,7 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
     choices = question.choices;
     var dash = new ADL.XAPIDashboard();
     var statements = this.data.getQuestionResponses(interactionObjectUrl);
-    var numberOfAnswers = statements.filter(s => s.result != undefined && s.result.response != undefined).length;
+    var numberOfAnswers = statements.filter(function(s) {s.result != undefined && s.result.response != undefined}).length;
     question.choices.forEach(function(option) {
         var correct = "";
         if (question.correctResponsesPattern.indexOf(option.id) != -1) {
@@ -1115,7 +1116,7 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
         } else {
             correct = "<i class=\"fa fa-x-cross\"></i>";
         }
-        var percentage = Math.round(1000 * statements.filter(s => s.result != undefined && s.result.response == option.id).length / numberOfAnswers) / 10 + "%"
+        var percentage = Math.round(1000 * statements.filter(function(s) {s.result != undefined && s.result.response == option.id}).length / numberOfAnswers) / 10 + "%";
         options += "<li>" + correct + option.description["en-US"] + " - " + percentage + "</li>";
     });
 
@@ -1154,7 +1155,7 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
                 updatedAnswers = [];
                 answers.forEach(function(a)
                 {
-                    updatedAnswers.push(choices.map(c => c.id).indexOf(a) + 1);
+                    updatedAnswers.push(choices.map(function(c) { return c.id} ).indexOf(a) + 1);
                 })
                 d.in = updatedAnswers.join(",");
                 d.correct = question.correctResponsesPattern.indexOf(origAnswer) != -1;
@@ -1495,8 +1496,7 @@ xAPIDashboard.prototype.helperGetDate = function(datetimepicker) {
     return mTime;
 };
 
-xAPIDashboard.prototype.regenerate_dashboard = function()
-{
+xAPIDashboard.prototype.regenerate_dashboard = function() {
     $("#journeyData").html("<img class='loading-gif' src='editor/img/loading16.gif'/>");
     $("#group-select option:not(:first-child)").remove();
     var url = site_url + this.data.info.template_id;
@@ -1504,7 +1504,11 @@ xAPIDashboard.prototype.regenerate_dashboard = function()
     var end = this.helperGetDate('#dp-end');
     end = new Date(moment(end).add(1, 'days').toISOString());
     var q = {};
-    q['activities'] = [url].concat(this.data.info.lrs.lrsurls.split(",")).concat(this.data.info.lrs.site_allowed_urls.split(",").map(url => url + this.data.info.template_id)).filter(url => url != "");
+    if (this.data.info.lrs.lrsurls != null && this.data.info.lrs.lrsurls != "undefined" && this.data.info.lrs.lrsurls != ""
+        && this.data.info.lrs.site_allowed_urls != null && this.data.info.lrs.site_allowed_urls != "undefined" && this.data.info.lrs.site_allowed_urls != "")
+    {
+        q['activities'] = [url].concat(this.data.info.lrs.lrsurls.split(",")).concat(this.data.info.lrs.site_allowed_urls.split(",").map(function(url) { return url + this.data.info.template_id})).filter(function(url) {url != ""});
+    }
     q['activity'] = url;
     q['related_activities'] = true;
     q['since'] = start.toISOString();
