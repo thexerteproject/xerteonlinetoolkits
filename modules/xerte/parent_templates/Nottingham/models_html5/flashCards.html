@@ -87,7 +87,12 @@
 				}
 			}
 			
-			if (x_currentPageXML.getAttribute('cardHeight') == undefined || x_currentPageXML.getAttribute('cardHeight') == '' || x_currentPageXML.getAttribute('cardHeight') == 'default') {
+			var cardHeight = x_currentPageXML.getAttribute('cardHeight') == undefined || x_currentPageXML.getAttribute('cardHeight') == '' ? 'default' : x_currentPageXML.getAttribute('cardHeight');
+			if (x_currentPageXML.getAttribute('displayStyle') == 'horizontal' && x_browserInfo.mobile == true) {
+				cardHeight = 'fit';
+			}
+			
+			if (cardHeight == 'default') {
 				
 				var totalSpace = $x_pageHolder.height() - (parseInt($x_pageDiv.css('padding-top')) * 2);
 				
@@ -109,7 +114,7 @@
 				$cards.find('.panel .cardInner, .cardImg img').css('max-height', Math.floor(maxH - parseInt($cards.find('.panel .cardInner').css('margin-top')) - $('.flipBtnHolder').outerHeight(true)));
 				
 			// each card is the height of its tallest side
-			} else if (x_currentPageXML.getAttribute('cardHeight') == 'fit') {
+			} else if (cardHeight == 'fit') {
 				
 				$cards.find('div.card').each(function() {
 					var $this = $(this);
