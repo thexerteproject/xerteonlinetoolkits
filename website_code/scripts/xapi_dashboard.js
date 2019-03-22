@@ -195,7 +195,10 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
         // Add the average grade.
         this.drawAverageScore($('.journeyOverviewStats'), (Math.round((totalScore / scoreCount) * 10 * 10) / 10), first_launch, last_launch);
-        var pageOptions = "" //'<div class="row"><span>Left</span><span>Right</span><br></div>';
+        leftButton = "<button class='page-button btn btn-info' id='pageButtonLeft'>Left</button>";
+        rightButton = "<button class='page-button btn btn-info' id='pageButtonRight'>Right</button>";
+
+        var pageOptions = '<div class="row container-fluid"><span class="col col-md-1 align-self-start">' + leftButton + '</span><span id="page-information" class="col-md-1"></span><span class="col-md-9"></span><span class="col col-md-1 align-self-end">' + rightButton + '</span><br></div>';
         // Add table with specific overview.
         div.append('<div class="row journeyTable">' + pageOptions + '<table class="table table-hover table-bordered table-responsive" id="' + learningObjectIndex +
             '"><thead></thead><tbody></tbody></table></div>');
@@ -213,6 +216,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         $.each(data, function(key, value) {
             console.log(key);
         });
+        var userCount = 0;
         for (var user in data) {
             var lastStatements = this.getLastUserAttempt(data[user]);
             group = "";
@@ -220,7 +224,8 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             {
                 group = lastStatements.statements[0].context.team.account.name;
             }
-            var row = "<tr class='session-row' id='session-" + learningObjectIndex + "-" + this.escapeId(user) + "' data-group='" + group + "'>";
+            var row = "<tr data-index='" + userCount + "' class='session-row' id='session-" + learningObjectIndex + "-" + this.escapeId(user) + "' data-group='" + group + "'>";
+            userCount++;
             if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
                 if (data[user]['mode'] == 'username') {
                     row += "<td class='name-column'>" + data[user]['username'] + "</td>";
@@ -298,6 +303,47 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             });
             //$(".journeyTable").width(Math.min($(".journeyTable thead").width(), $(".journeyOverview").width()));
         });
+        var pageState = this;
+        $(".page-button").click(function(e, init){
+
+            var pageSize = $this.pageSize;
+            if(pageSize == -1){
+                pageSize = Object.keys($this.groupedData).length;
+            }
+
+            if(e.target.id == "pageButtonLeft" && !init)
+            {
+                $this.pageIndex = Math.max($this.pageIndex -= pageSize, 0);
+            }else if(e.target.id == "pageButtonRight" && !init)
+            {
+                $this.pageIndex = Math.min($this.pageIndex +=pageSize, Object.keys($this.groupedData).length - 1);
+            }else if(Object.keys($this.groupedData).length < pageSize){
+                $this.pageIndex = 0;
+            }
+
+            if($this.pageIndex > 0)
+            {
+                $("#pageButtonLeft").prop("disabled", false);
+            }else{
+                $("#pageButtonLeft").prop("disabled", true);
+            }
+            if($this.pageIndex + pageSize < Object.keys($this.groupedData).length - 1)
+            {
+                $("#pageButtonRight").prop("disabled", false);
+            }else{
+                $("#pageButtonRight").prop("disabled", true);
+            }
+            pageState.drawPages($this.pageIndex, pageSize);
+
+            curPage = Math.ceil($this.pageIndex / pageSize) + 1;
+            maxPage = Math.ceil(Object.keys($this.groupedData).length / pageSize);
+
+            $("#page-information").html("Current page: " + (curPage) + " of " + maxPage);
+
+        });
+        $(".page-button").trigger("click", [true]);
+
+
         /*
         menu = $("<div><ul></ul></div>");
         interactions.forEach(function(i){
@@ -336,10 +382,18 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
                 menu.append("<h5>" + XAPI_DASHBOARD_DISPLAY_OVERVIEW + "</h5>");
                 menu.append("<div><label>" + XAPI_DASHBOARD_DISPLAY_OVERVIEW + "</label><input class='hide-show-overview' type='checkbox' checked></div>");
-                //menu.append("<div><label>" + XAPI_DASHBOARD_PAGE_SIZE + "</label><select></select></div>");
+                menu.append("<div><label>" + XAPI_DASHBOARD_PAGE_SIZE + "</label><select id='pageSize'></select></div>");
                 pagesizes = [5, 10, 20, 50, 100, "All"];
+                defaultSize = $this.pageSize;
                 pagesizes.forEach(function(size){
-                    //menu.find("select").append("<option value='" + size + "'>" + size + "</option>");
+                    var selected = "";
+                    if(defaultSize == size || (size == "All" && defaultSize == -1))
+                    {
+                        selected = "selected"
+                    }
+                    menu.find("select").append("<option " + selected + " value='" + size + "'>" + size + "</option>");
+
+
                 })
 
                 //debugger;
@@ -384,6 +438,26 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 $(".hide-show-overview").change(function(){
                     $(".journeyOverview").toggle();
                 });
+                $("#pageSize").change(function(){
+                    $this.pageSize = Number($("#pageSize").val());
+                    if(isNaN($this.pageSize))
+                    {
+                        $this.pageSize = -1;
+                    }
+                    $(".page-button").trigger("click", [true]);
+                    var display_options = JSON.parse($this.info.dashboard.display_options);
+                    display_options.pageSize = $this.pageSize;
+                    $this.info.dashboard.display_options = JSON.stringify(display_options);
+                    $.post("http://localhost:8080/Integrat-ED/xerteonlinetoolkits/website_code/php/xAPI/update_dashboard_display_properties.php",
+                        {
+                            "id": $this.info.template_id,
+                            "properties" : $this.info.dashboard.display_options
+                        },
+                        function(data) {
+                            }
+
+                    );
+                })
 
 
 
@@ -397,6 +471,20 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
     }
 };
+
+xAPIDashboard.prototype.drawPages = function(startingIndex, pageSize) {
+    var from = startingIndex;
+    var pageSize = pageSize;
+    var to = Math.min(startingIndex + pageSize, Object.keys($this.groupedData).length);
+    $(".session-row").each(function(row){
+        var rowIndex = $(this).data("index");
+        if(rowIndex < from || rowIndex >= to){
+            $(this).hide();
+        }else{
+            $(this).show();
+        }
+    });
+}
 
 xAPIDashboard.prototype.getLastUserAttempt = function(data) {
     data.statements.sort(function(a, b) {
@@ -1323,6 +1411,12 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
             jquery_language = "";
         }
     }
+
+    $this.data.pageSize = JSON.parse($this.data.info.dashboard.display_options).pageSize;
+    if($this.data.pageSize == undefined)
+    {
+        $this.data.pageSize = 5;
+    }
     $.datepicker.setDefaults(
         $.extend({},
             $.datepicker.regional[jquery_language]
@@ -1375,9 +1469,10 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
 
     if (this.data.info.dashboard.enable_nonanonymous == 'true') {
         $(".unanonymous-view").show();
-        this.data.info.dashboard.anonymous = true;
+        this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
         $("#dp-unanonymous-view").change(function(event) {
-            $this.data.info.dashboard.anonymous = !$this.data.info.dashboard.anonymous;
+            $this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
+
             $this.regenerate_dashboard();
 
         });

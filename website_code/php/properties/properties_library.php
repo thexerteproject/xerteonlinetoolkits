@@ -573,7 +573,6 @@ function statistics_prepare($template_id)
 
         // determine role and check against minrole
         $role = get_user_access_rights($template_id);
-
         $access = false;
         switch($xerte_toolkits_site->xapi_dashboard_minrole)
         {
@@ -590,12 +589,12 @@ function statistics_prepare($template_id)
                 $access = ($role == 'creator' || $role == 'co-author' || $role == 'editor' || $role=='read-only');
                 break;
         }
-
         if ($access) {
+
             $prefix = $xerte_toolkits_site->database_table_prefix;
 
 
-            $query_for_names = "select td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links from {$prefix}templatedetails td where template_id=?";
+            $query_for_names = "select td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links, td.dashboard_display_options from {$prefix}templatedetails td where template_id=?";
 
             $params = array($template_id);
             $row = db_query_one($query_for_names, $params);
@@ -625,6 +624,10 @@ function statistics_prepare($template_id)
                 $dashboard = new stdClass();
                 $dashboard->enable_nonanonymous = $xerte_toolkits_site->dashboard_nonanonymous;
                 $dashboard->default_period = (int)$xerte_toolkits_site->dashboard_period;
+                $dashboard->display_options = $row['dashboard_display_options'];
+                if($dashboard->display_options == NULL){
+                    $dashboard->display_options = "{}";
+                }
 
                 $info->dashboard = $dashboard;
             } else {
