@@ -364,3 +364,7 @@ td.x-dashboard-interaction
 .page-button{
     margin: 5%;
 }
+
+#page-information {
+    padding-top: 10px;
+}

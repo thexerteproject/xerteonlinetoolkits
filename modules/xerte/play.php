@@ -239,7 +239,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         if($tsugi_enabled)
         {
             $tracking .= "<script>\n";
-            if (!$pedit_enabled)
+            if (isset($lti_enabled) && $lti_enabled)
             {
                 // Set lti_enabled variable so that we can send back gradebook results through LTI
                 $tracking .= "  var lti_enabled=true;\n";

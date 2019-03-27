@@ -195,14 +195,29 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
         // Add the average grade.
         this.drawAverageScore($('.journeyOverviewStats'), (Math.round((totalScore / scoreCount) * 10 * 10) / 10), first_launch, last_launch);
-        leftButton = "<button class='page-button btn btn-info' id='pageButtonLeft'>Left</button>";
-        rightButton = "<button class='page-button btn btn-info' id='pageButtonRight'>Right</button>";
+        leftButton = "<button class='xerte_button_c_no_width page-button' id='pageButtonLeft'>" + XAPI_DASHBOARD_PAGE_PREV + "</button>";
+        rightButton = "<button class='xerte_button_c_no_width page-button' id='pageButtonRight'>" + XAPI_DASHBOARD_PAGE_NEXT + "</button>";
 
         var pageOptions = '<div class="row container-fluid"><span class="col col-md-1 align-self-start">' + leftButton + '</span><span id="page-information" class="col-md-1"></span><span class="col-md-9"></span><span class="col col-md-1 align-self-end">' + rightButton + '</span><br></div>';
         // Add table with specific overview.
         div.append('<div class="row journeyTable">' + pageOptions + '<table class="table table-hover table-bordered table-responsive" id="' + learningObjectIndex +
             '"><thead></thead><tbody></tbody></table></div>');
-        div.find("#" + learningObjectIndex + " thead").append("<tr><th>Started</th><th>Completed</th></tr>");
+        /*
+        if(this.data.pageIndex > 0)
+        {
+            $("#pageButtonLeft").prop("disabled", false).removeClass("diaabled");
+        }else{
+            $("#pageButtonLeft").prop("disabled", true).addClass("disabled");
+
+        }
+        if((this.data.pageIndex+1) * this.data.pageSize < Object.keys(this.data.groupedData).length - 1)
+        {
+            $("#pageButtonRight").prop("disabled", false).removeClass("diaabled");
+        }else{
+            $("#pageButtonRight").prop("disabled", true).addClass("disabled");
+        }
+        */
+        div.find("#" + learningObjectIndex + " thead").append("<tr><th>" + XAPI_DASHBOARD_STARTED + "</th><th>" +  XAPI_DASHBOARD_COMPLETED + "</th></tr>");
         if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
             div.find("#" + learningObjectIndex + " thead tr").prepend('<th>Users</th>');
         }
@@ -323,25 +338,29 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
             if($this.pageIndex > 0)
             {
-                $("#pageButtonLeft").prop("disabled", false);
+                $("#pageButtonLeft").prop("disabled", false).removeClass("disabled");
             }else{
-                $("#pageButtonLeft").prop("disabled", true);
+                $("#pageButtonLeft").prop("disabled", true).addClass("disabled");
+
             }
-            if($this.pageIndex + pageSize < Object.keys($this.groupedData).length - 1)
+            if($this.pageIndex + $this.pageSize < Object.keys($this.groupedData).length - 1)
             {
-                $("#pageButtonRight").prop("disabled", false);
+                $("#pageButtonRight").prop("disabled", false).removeClass("disabled");
             }else{
-                $("#pageButtonRight").prop("disabled", true);
+                $("#pageButtonRight").prop("disabled", true).addClass("disabled");
             }
             pageState.drawPages($this.pageIndex, pageSize);
 
-            curPage = Math.ceil($this.pageIndex / pageSize) + 1;
-            maxPage = Math.ceil(Object.keys($this.groupedData).length / pageSize);
+            var curPage = Math.ceil($this.pageIndex / pageSize) + 1;
+            var maxPage = Math.ceil(Object.keys($this.groupedData).length / pageSize);
 
-            $("#page-information").html("Current page: " + (curPage) + " of " + maxPage);
+            var pageinfo = XAPI_DASHBOARD_PAGE_OF_PAGE;
+            pageinfo = pageinfo.replace("{i}", curPage);
+            pageinfo = pageinfo.replace("{n}", maxPage);
+            $("#page-information").html(pageinfo);
 
         });
-        $(".page-button").trigger("click", [true]);
+        $("#pageButtonLeft").trigger("click", [true]);
 
 
         /*
@@ -448,7 +467,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                     var display_options = JSON.parse($this.info.dashboard.display_options);
                     display_options.pageSize = $this.pageSize;
                     $this.info.dashboard.display_options = JSON.stringify(display_options);
-                    $.post("http://localhost:8080/Integrat-ED/xerteonlinetoolkits/website_code/php/xAPI/update_dashboard_display_properties.php",
+                    $.post("website_code/php/xAPI/update_dashboard_display_properties.php",
                         {
                             "id": $this.info.template_id,
                             "properties" : $this.info.dashboard.display_options
@@ -600,7 +619,9 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
     var $this = this;
     var tdclass;
     if (interactionObject.type == "page" || this.data.selectInteractionById(interactions, interactionObject.parent) == undefined) {
-        showHide = "column-show";
+        if (interactionObject.children.length > 0) {
+            showHide = "column-show";
+        }
         tdclass = "x-dashboard-page";
     } else {
         parentId = this.data.selectInteractionById(interactions, interactionObject.parent).interactionObjectIndex;
@@ -735,10 +756,10 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
 
     if (interaction.parent == "" || this.data.selectInteractionById(interactions, interaction.parent) == undefined) {
         parentIndex = "-1";
-        showHide = "show";
         interactionTitle = interactionTitle;
 
         if (interaction.children.length > 0) {
+            showHide = "show";
             collapseIcon = '<div data-interaction="' + interactionIndex + '" class="icon-header icon-hide">&#9701</div>';
             thclass += "x-dashboard-has-children ";
         }
