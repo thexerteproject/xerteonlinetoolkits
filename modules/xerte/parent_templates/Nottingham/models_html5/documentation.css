@@ -98,3 +98,14 @@
 		margin-left: 3.5em;
 	}
 	
+	.table table {
+		width: 100%;
+	}
+	
+	.table table textarea {
+		width: 90%;
+	}
+	
+	.table table td.editable {
+		text-align: center;
+	}
