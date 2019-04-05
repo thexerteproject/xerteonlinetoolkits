@@ -21,7 +21,7 @@
     <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page Title Size" defaultValue="24" deprecated="This property is deprecated"/>
 	
 	<nfo optional="true" label="Help File" type="media"/>
-    <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
+    <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" defaultValue="term|definition" wysiwyg="false,true"/>
     <controller optional="true" label="Custom Interface" type="media" flashonly="true"/>
 	
 	<stylesheet optional="true" type="Media" label="Stylesheet"/>
@@ -853,7 +853,7 @@
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></chart><series menuItem="Series" remove="true" icon="icBullet">
     <name label="Series Name" type="TextInput" wysiwyg="true"/>
-    <data label="Chart Data" headers="X,Y" newRow="label,data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" rendererOptions="none,none"/>
+    <data label="Chart Data" headers="X,Y" newRow="label,data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1"/>
     <colour label="Colour" type="colourPicker" defaultValue="0xFF0000"/>
   </series><columnPage menu="Navigators" menuItem="Column Page" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
 
@@ -1461,7 +1461,7 @@
   </section><tableDoc menuItem="Editable Table" icon="icBullet">
     <name label="Table Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100"/>
-    <data label="Table Data" newRow=" " newCol=" " type="DataGrid" height="190" width="390" columns="2" editable="1,1" controls="1" addCols="true" showHeaderRow="false" rendererOptions="none,none" wysiwyg="true"/>
+    <data label="Table Data" newRow=" " newCol=" " type="DataGrid" height="190" width="390" columns="2" editable="1,1" controls="1" addCols="true" showHeaderRow="false" wysiwyg="full"/>
 	<replace label="Insert Text Areas" type="CheckBox" defaultValue="true" tooltip="Insert text area fields into empty cells in table. Use markup '[empty]' in the cell to force it to remain empty."/>
 	
 	<borders label="Borders" options="None,Full grid,Simple,Horizontal only,Vertical only,Outside border" type="ComboBox" data="none,full,simple,horizontal,vertical,outside" defaultValue="full" width="120"/>
@@ -1884,7 +1884,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<text label="Page Text" type="TextArea" height="150"/>
 	<feedback label="Feedback" type="TextArea" height="150"/>
-	<data label="Table Data" newRow="data,data" newCol="data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" controls="1" addCols="true" showHeaderRow="false" rendererOptions="none,none" wysiwyg="true"/>
+	<data label="Table Data" newRow="data,data" newCol="data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" controls="1" addCols="true" showHeaderRow="false" wysiwyg="true"/>
 	<constrain label="Constrain Labels" type="ComboBox" options="Off,On (Row),On (Column)" data="none,row,col"/>
 	<style label="Borders" type="ComboBox" options="None,Full Grid,Simple,Horizontal Only,Vertical Only,Outside Border" data="none,full,simple,horizontal,vertical,outside"/>
 	<align label="Text Align" type="ComboBox" options="Left,Right,Top" data="left,right,top" defaultValue="left" width="100"/>
@@ -4252,7 +4252,7 @@
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/></table><tableData menuItem="Table Data" duplicate="false" remove="false" icon="icBullet">
 
     <name label="Table Name" type="TextInput" wysiwyg="true"/>
-    <data label="Table Data" newRow="data,data" newCol="data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" addCols="true" showHeaderRow="false"/>
+    <data label="Table Data" newRow="data,data" newCol="data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" addCols="true" showHeaderRow="false" wysiwyg="full"/>
     <size label="Table Size" options="Small,Medium,Large,Full screen" type="ComboBox" data="small,medium,large,full screen" defaultValue="medium" width="120"/>
     <borders label="Borders" options="None,Full grid,Simple,Horizontal only,Vertical only,Outside border" type="ComboBox" data="none,full,simple,horizontal,vertical,outside" defaultValue="simple" width="120"/>
     <header label="Header/Footer Rows" options="None,Header,Footer,Both" type="ComboBox" data="none,header,footer,both" defaultValue="header" width="120"/>

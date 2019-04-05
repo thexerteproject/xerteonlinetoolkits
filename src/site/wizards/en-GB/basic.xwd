@@ -7,7 +7,7 @@
 		<themeurl type="CheckBox" label="Disable theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
 		
 		<glossaryGroup type="group" label="Glossary" optional="true">
-			<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition" optional="true"/>
+			<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" defaultValue="term|definition" optional="true" wysiwyg="false,true"/>
 			<glossaryHover label="Show Definition on Hover" type="Checkbox" defaultValue="true" optional="true"/>
 			<glossaryPage type="ComboBox" data="none,first,last" options="None,First Page,Last Page" optional="true" label="Glossary Page" defaultValue="none" width="175"/>
 			<glossaryMenu type="ComboBox" data="both,menu,headings,neither" options="Menu and Headings,Menu Only,Headings Only,No Menu or Headings" optional="true" label="Glossary Page Navigation" defaultValue="both" width="175"/>

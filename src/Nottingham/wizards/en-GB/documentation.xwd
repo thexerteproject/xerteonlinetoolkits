@@ -70,7 +70,7 @@
   <tableDoc menuItem="Editable Table" icon="icBullet">
     <name label="Table Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100"/>
-    <data label="Table Data" newRow=" " newCol=" " type="DataGrid" height="190" width="390" columns="2" editable="1,1" controls="1" addCols="true" showHeaderRow="false" rendererOptions="none,none" wysiwyg="true" />
+    <data label="Table Data" newRow=" " newCol=" " type="DataGrid" height="190" width="390" columns="2" editable="1,1" controls="1" addCols="true" showHeaderRow="false" wysiwyg="full" />
 	<replace label="Insert Text Areas" type="CheckBox" defaultValue="true" tooltip="Insert text area fields into empty cells in table. Use markup '[empty]' in the cell to force it to remain empty."/>
 	
 	<borders label="Borders" options="None,Full grid,Simple,Horizontal only,Vertical only,Outside border" type="ComboBox" data="none,full,simple,horizontal,vertical,outside" defaultValue="full" width="120"/>

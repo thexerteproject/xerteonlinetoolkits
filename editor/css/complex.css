@@ -1055,6 +1055,10 @@ div.wizardvalue_inner {
     height: auto!important;
 }
 
+.ui-jqgrid table tr.jqgrow td {
+	white-space: normal;
+}
+
 .featherlight-content {
 	min-width: 0 !important;
 }
