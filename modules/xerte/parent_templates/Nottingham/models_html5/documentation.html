@@ -734,7 +734,15 @@
 				i, j, k;
 			
 			for (i=0; i<temp.pages.length; i++) {
+                if (typeof temp.pages[i].sections == "undefined")
+				{
+                    temp.pages[i].sections = [];
+				}
 				for (j=0; j<temp.pages[i].sections.length; j++) {
+                    if (typeof temp.pages[i].sections[j].items == "undefined")
+					{
+                        temp.pages[i].sections[j].items = [];
+					}
 					for (k=0; k<temp.pages[i].sections[j].items.length; k++) {
 						if (jQuery.isEmptyObject(temp.pages[i].sections[j].items[k])) {
 							temp.pages[i].sections[j].items.splice(k, 1);
