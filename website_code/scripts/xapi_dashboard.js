@@ -1528,7 +1528,8 @@ xAPIDashboard.prototype.regenerate_dashboard = function() {
     if (this.data.info.lrs.lrsurls != null && this.data.info.lrs.lrsurls != "undefined" && this.data.info.lrs.lrsurls != ""
         && this.data.info.lrs.site_allowed_urls != null && this.data.info.lrs.site_allowed_urls != "undefined" && this.data.info.lrs.site_allowed_urls != "")
     {
-        q['activities'] = [url].concat(this.data.info.lrs.lrsurls.split(",")).concat(this.data.info.lrs.site_allowed_urls.split(",").map(function(url) { return url + this.data.info.template_id})).filter(function(url) {url != ""});
+        var $this = this;
+        q['activities'] = [url].concat(this.data.info.lrs.lrsurls.split(",")).concat(this.data.info.lrs.site_allowed_urls.split(",").map(function(url) { return url + $this.data.info.template_id})).filter(function(url) {return url != ""});
     }
     q['activity'] = url;
     q['related_activities'] = true;
