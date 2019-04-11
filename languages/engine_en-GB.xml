@@ -199,6 +199,10 @@
 	  <error unable="Unable to calculate" invalid="Invalid value" none="No variable data"/>
 	  <info undef="References an undefined variable" minMax="min > max" valueMin="value &lt; min" valueMax="value > max" exclude="{n} is excluded" circular="Circular variable reference" none="All possible values are excluded or fall outside the min &amp; max range" none2="{n} attempts have not returned an accepted value" attempts="{n} attempts to calculate a valid value" default="Fallback to default value"/>
   </authorVarsInfo>
+  
+  <submitBtnLabel label="Submit"/>
+  <submitConfirmMsg label="Your answers have been submitted"/>
+  <closeBtnLabel label="Close"/>
 
 
 </language>
