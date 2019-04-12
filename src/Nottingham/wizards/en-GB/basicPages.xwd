@@ -1,8 +1,8 @@
 <commonNodes>
-	<narrate type="group" label="Narration" optional="true">
+	<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
-		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true"/>
-		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
+		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
 	</narrate>
 	
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled."/>

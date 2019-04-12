@@ -67,16 +67,19 @@
     </newNodes>
   </section>
   
-  <tableDoc menuItem="Editable Table" icon="icBullet">
+  <tableDoc menuItem="Editable Table" icon="icTable">
     <name label="Table Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100"/>
     <data label="Table Data" newRow=" " newCol=" " type="DataGrid" height="190" width="390" columns="2" editable="1,1" controls="1" addCols="true" showHeaderRow="false" wysiwyg="full" />
-	<replace label="Insert Text Areas" type="CheckBox" defaultValue="true" tooltip="Insert text area fields into empty cells in table. Use markup '[empty]' in the cell to force it to remain empty."/>
 	
-	<borders label="Borders" options="None,Full grid,Simple,Horizontal only,Vertical only,Outside border" type="ComboBox" data="none,full,simple,horizontal,vertical,outside" defaultValue="full" width="120"/>
-    <header label="Header/Footer Rows" options="None,Header,Footer,Both" type="ComboBox" data="none,header,footer,both" defaultValue="none" width="120"/>
-    <shadeHeader label="Shade Header/Footer" type="Checkbox" defaultValue="true"/>
-    <shade label="Shade Alternate Rows" type="Checkbox" defaultValue="false"/>
+	<appearance type="group" label="Table Appearance">
+		<borders label="Borders" options="None,Full grid,Simple,Horizontal only,Vertical only,Outside border" type="ComboBox" data="none,full,simple,horizontal,vertical,outside" defaultValue="full" width="120"/>
+		<header label="Header/Footer Rows" options="None,Header,Footer,Both" type="ComboBox" data="none,header,footer,both" defaultValue="none" width="120"/>
+		<shadeHeader label="Shade Header/Footer" type="Checkbox" defaultValue="true"/>
+		<shade label="Shade Alternate Rows" type="Checkbox" defaultValue="false"/>
+	</appearance>
+	
+	<replace label="Insert Text Areas" type="CheckBox" defaultValue="true" tooltip="Insert text area fields into empty cells in table. Use markup '[empty]' in the cell to force it to remain empty."/>
 	
 	<rows label="Text Area Lines" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true"/>
 	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
@@ -119,8 +122,11 @@
   <media menuItem="Media" icon="icPicture">
     <name label="Media Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100"/>
-    <url label="Media" type="media"/>
-	<tip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility"/>
+	
+	<mediaGroup type="group" label="Media">
+		<url label="File" type="media"/>
+		<tip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility"/>
+	</mediaGroup>
 
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
   </media>
