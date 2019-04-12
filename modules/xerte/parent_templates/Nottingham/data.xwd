@@ -3993,6 +3993,8 @@
 	<align label="Text Align" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
     <url label="Feed URL" type="textInput"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>
+	
+	<appearance label="Feed View" options="Title Only,Title &amp; Snippet" type="ComboBox" data="title,snippet" defaultValue="snippet" width="100" optional="true"/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
