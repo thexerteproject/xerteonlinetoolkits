@@ -1763,11 +1763,12 @@ function x_changePageStep5(x_gotoPage) {
     // change page title and add narration / timer before the new page loads so $x_pageHolder margins can be sorted - these often need to be right so page layout is calculated correctly
     if (x_pageInfo[0].type == "menu" && x_currentPage == 0) {
         pageTitle = x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
+		
+		x_changePageStep6();
+		
     } else {
         pageTitle = x_currentPageXML.getAttribute("name");
-        x_addNarration();
-        x_addCountdownTimer();
-
+       
 		// add screen reader info for this page type (if exists)
 		var screenReaderInfo = x_pageInfo[x_currentPage].type != "nav" ? x_pageInfo[x_currentPage].type : x_currentPageXML.getAttribute("type") == "Acc" ? "accNav" : x_currentPageXML.getAttribute("type") == "Button" ? "buttonNav" : x_currentPageXML.getAttribute("type") == "Col" ? "columnPage" : x_currentPageXML.getAttribute("type") == "Slide" ? "slideshow" : "tabNav";
 		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", undefined) != undefined) {
@@ -1787,7 +1788,13 @@ function x_changePageStep5(x_gotoPage) {
 		}
 
 		pageTitle = pageTitle + extraTitle;
+		
+        x_addCountdownTimer();
+		x_addNarration('x_changePageStep6', '');
     }
+}
+
+function x_changePageStep6() {
 
     $("#x_headerBlock h2").html(pageTitle);
 
@@ -2200,7 +2207,7 @@ function x_pageLoaded() {
   };
 
 // function adds / reloads narration bar above main controls on interface
-function x_addNarration() {
+function x_addNarration(funct, arguments) {
     if (x_currentPageXML.getAttribute("narration") != null && x_currentPageXML.getAttribute("narration") != "") {
         x_checkMediaExists(x_evalURL(x_currentPageXML.getAttribute("narration")), function(mediaExists) {
 			if (mediaExists) {
@@ -2213,8 +2220,16 @@ function x_addNarration() {
 					autoNavigate:x_currentPageXML.getAttribute("narrationNavigate")
 				});
 			}
+			
+			if (funct != undefined) {
+				window[funct](arguments);
+			}
 		});
-    }
+    } else {
+		if (funct != undefined) {
+			window[funct](arguments);
+		}
+	}
 }
 
 
@@ -2381,6 +2396,7 @@ function x_loadPageBg(loadModel) {
 
 // function sorts out css that's dependant on screensize
 function x_updateCss(updatePage) {
+	
 	if (updatePage != false) {
 		// adjust width of narration controls - to get this to work consistently across browsers and with both html5/flash players the audio needs to be reset
 		if ($("#x_pageNarration").length > 0) {
@@ -2389,12 +2405,23 @@ function x_updateCss(updatePage) {
 				$("body div#me_flash_" + audioRefNum + "_container").remove();
 			}
 			$("#x_pageNarration").remove();
-			x_addNarration();
+			
+			x_addNarration('x_updateCss2', updatePage);
+			
+		} else {
+			x_updateCss2(updatePage);
 		}
+		
+	} else {
+		x_updateCss2(updatePage);
 	}
-	
+}
+
+// function isn't called until the narration bar has loaded
+function x_updateCss2(updatePage) {
     $x_pageHolder.css("margin-bottom", $x_footerBlock.height());
     $x_background.css("margin-bottom", $x_footerBlock.height());
+	
     if (x_browserInfo.mobile == false) {
         $x_pageHolder.css("margin-top", $x_headerBlock.height());
         $x_background.css("margin-top", $x_headerBlock.height());
