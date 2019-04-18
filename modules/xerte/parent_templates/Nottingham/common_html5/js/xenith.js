@@ -1768,7 +1768,7 @@ function x_changePageStep5(x_gotoPage) {
 		
     } else {
         pageTitle = x_currentPageXML.getAttribute("name");
-       
+
 		// add screen reader info for this page type (if exists)
 		var screenReaderInfo = x_pageInfo[x_currentPage].type != "nav" ? x_pageInfo[x_currentPage].type : x_currentPageXML.getAttribute("type") == "Acc" ? "accNav" : x_currentPageXML.getAttribute("type") == "Button" ? "buttonNav" : x_currentPageXML.getAttribute("type") == "Col" ? "columnPage" : x_currentPageXML.getAttribute("type") == "Slide" ? "slideshow" : "tabNav";
 		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(screenReaderInfo)[0], "description", undefined) != undefined) {
@@ -1789,7 +1789,7 @@ function x_changePageStep5(x_gotoPage) {
 
 		pageTitle = pageTitle + extraTitle;
 		
-        x_addCountdownTimer();
+		x_addCountdownTimer();
 		x_addNarration('x_changePageStep6', '');
     }
 }
@@ -2850,7 +2850,7 @@ function x_calcVar(thisVar, recalc, checkDefault) {
 	if (thisVar.ok == true && $.isNumeric(Number(thisVar.value))) {
 		// to significant figure
 		if ($.isNumeric(Number(thisVar.data[6]))) {
-			thisVar.value = Number(thisVar.value).toPrecision(Number(thisVar.data[6]));
+			thisVar.value = Number(thisVar.value).toPrecision(Number(thisVar.data[6])).includes('e') ? parseFloat(Number(thisVar.value).toPrecision(Number(thisVar.data[6]))) : Number(thisVar.value).toPrecision(Number(thisVar.data[6]));
 		}
 		// to decimal place
 		if ($.isNumeric(Number(thisVar.data[5]))) {
