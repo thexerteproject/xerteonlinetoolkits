@@ -2174,8 +2174,8 @@ function x_pageLoaded() {
 			}
 			
 			// submit confirmation message
-			if (x_currentPageXML.getAttribute('varConfirm') != '' && changed.length > 0) {
-				var submitConfirmMsg = x_getLangInfo(x_languageData.find("submitConfirmMsg")[0], "label", "Your answers have been submitted");
+			if (changed.length > 0) {
+				var submitConfirmMsg = x_currentPageXML.getAttribute('varConfirm') != undefined && x_currentPageXML.getAttribute('varConfirm') != '' ? x_currentPageXML.getAttribute('varConfirm') : x_getLangInfo(x_languageData.find("submitConfirmMsg")[0], "label", "Your answers have been submitted");
 				x_openDialog("msg", '', x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"), null, submitConfirmMsg);
 			}
 		});
