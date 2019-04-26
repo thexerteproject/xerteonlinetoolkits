@@ -226,14 +226,26 @@ function setUpInterface() {
 		if (allParams.logoAlt != undefined && allParams.logoAlt != "") {
 			alt = 'alt="' + allParams.logoAlt + '"';
 		}
-		$footerBlock.append('<img id="logo1" src="' + evalURL(allParams.logo) + '" ' + alt + ' />');
+		
+		var floatClass = allParams.logoPos == undefined || allParams.logoPos.indexOf('Left') > -1 ? 'floatL' : 'floatR';
+		if (allParams.logoPos == undefined || allParams.logoPos.indexOf('foot') > -1) {
+			$footerBlock.append('<img id="logo1" src="' + evalURL(allParams.logo) + '" ' + alt + ' class="' + floatClass + '" />');
+		} else {
+			$headerBlock.prepend('<img id="logo1" src="' + evalURL(allParams.logo) + '" ' + alt + ' class="' + floatClass + '" />');
+		}
 		
 		if (allParams.logo2 != undefined && allParams.logo2 != "") {
 			alt = "";
 			if (allParams.logoAlt2 != undefined && allParams.logoAlt2 != "") {
 				alt = 'alt="' + allParams.logoAlt2 + '"';
 			}
-			$footerBlock.append('<img id="logo2" class="floatR" src="' + evalURL(allParams.logo2) + '" ' + alt + ' />');
+			
+			floatClass = allParams.logoPos2 == undefined || allParams.logoPos2.indexOf('Right') > -1 ? 'floatR' : 'floatL';
+			if (allParams.logoPos2 == undefined || allParams.logoPos2.indexOf('foot') > -1) {
+				$footerBlock.append('<img id="logo2" src="' + evalURL(allParams.logo2) + '" ' + alt + ' class="' + floatClass + '" />');
+			} else {
+				$headerBlock.prepend('<img id="logo2" src="' + evalURL(allParams.logo2) + '" ' + alt + ' class="' + floatClass + '" />');
+			}
 		}
 		
 		// footerBlock's position should always be at bottom of window or content - which ever is lower
@@ -1545,26 +1557,62 @@ function fixLineBreaks(text) {
 
 // _____ REPLACE LINE BREAKS IN XML WITH HTML WHEN ADDING TO PAGE _____
 function addLineBreaks(text) {
-	if (text.indexOf("<table") == -1) {
-		return text.replace(/(\n|\r|\r\n)/g, "<br />");
-		
-	} else { // ignore any line breaks inside these tags as they don't work correctly with <br>
-		var newText = text;
-		if (newText.indexOf("<table") != -1) {
-			var tempText = "",
-				tableNum = 0;
-			while (newText.indexOf("<table", tableNum) != -1) {
-				tempText += newText.substring(tableNum, newText.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
-				tempText += newText.substring(newText.indexOf("<table", tableNum), newText.indexOf("</table>", tableNum) + 8);
-				tableNum = newText.indexOf("</table>", tableNum) + 8;
-			}
-			tempText += newText.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
-			newText = tempText;
-		}
-		
-		return newText;
+	// test to see if it was created in the new editor
+	var trimmedText = $.trim(text);
+	if ((trimmedText.indexOf("<p") == 0 || trimmedText.indexOf("<h") == 0) && (trimmedText.lastIndexOf("</p") == trimmedText.length-4 || trimmedText.lastIndexOf("</h") == trimmedText.length-5))
+	{
+		return text; // Return text unchanged
 	}
+	
+    // Now assume it's v2.1 or before
+    if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1) {
+        return text.replace(/(\n|\r|\r\n)/g, "<br />");
+		
+    } else { // ignore any line breaks inside these tags as they don't work correctly with <br>
+        var newText = text;
+        if (newText.indexOf("<math") != -1) { // math tag found
+            var tempText = "",
+                mathNum = 0;
+
+            while (newText.indexOf("<math", mathNum) != -1) {
+                var text1 = newText.substring(mathNum, newText.indexOf("<math", mathNum)),
+                    tableNum = 0;
+                while (text1.indexOf("<table", tableNum) != -1) { // check for table tags before/between math tags
+                    tempText += text1.substring(tableNum, text1.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
+                    tempText += text1.substring(text1.indexOf("<table", tableNum), text1.indexOf("</table>", tableNum) + 8);
+                    tableNum = text1.indexOf("</table>", tableNum) + 8;
+                }
+                tempText += text1.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
+                tempText += newText.substring(newText.indexOf("<math", mathNum), newText.indexOf("</math>", mathNum) + 7);
+                mathNum = newText.indexOf("</math>", mathNum) + 7;
+            }
+
+            var text2 = newText.substring(mathNum),
+                tableNum = 0;
+            while (text2.indexOf("<table", tableNum) != -1) { // check for table tags after math tags
+                tempText += text2.substring(tableNum, text2.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
+                tempText += text2.substring(text2.indexOf("<table", tableNum), text2.indexOf("</table>", tableNum) + 8);
+                tableNum = text2.indexOf("</table>", tableNum) + 8;
+            }
+            tempText += text2.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
+            newText = tempText;
+
+        } else if (newText.indexOf("<table") != -1) { // no math tags - so just check table tags
+            var tempText = "",
+                tableNum = 0;
+            while (newText.indexOf("<table", tableNum) != -1) {
+                tempText += newText.substring(tableNum, newText.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
+                tempText += newText.substring(newText.indexOf("<table", tableNum), newText.indexOf("</table>", tableNum) + 8);
+                tableNum = newText.indexOf("</table>", tableNum) + 8;
+            }
+            tempText += newText.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
+            newText = tempText;
+        }
+
+        return newText;
+    }
 }
+
 
 function evalURL(url) {
     if (url == null)
