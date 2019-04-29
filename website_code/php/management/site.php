@@ -61,6 +61,8 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_LOGO . "<form><textarea id=\"site_logo\">" . $row['site_logo'] . "</textarea></form></p>";
 
+    echo "<p>" . MANAGEMENT_ALERT_BANNER . "<form><textarea id=\"alert_banner\">" . $row['alert_banner'] . "</textarea></form></p>";
+
     echo "<p>" . MANAGEMENT_SITE_LOGO_ORG . "<form><textarea id=\"organisational_logo\">" . $row['organisational_logo'] . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_WELCOME . "<form><textarea id=\"welcome_message\">" . $row['welcome_message'] . "</textarea></form></p>";

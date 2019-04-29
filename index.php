@@ -256,7 +256,9 @@ Folder popup is the div that appears when creating a new folder
             }
             ?>
         </div>
-
+        <?php if($xerte_toolkits_site->alert_banner){ ?>
+        <div class="alert-banner" style="color:#fff; padding: 5px; text-align: center; background: red;"> <?php echo $xerte_toolkits_site->alert_banner;?></div>
+        <?php } ?>
         <div class="buttonbar">
             <div class="file_mgt_area_top">
                 

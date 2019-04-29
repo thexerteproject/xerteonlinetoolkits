@@ -110,6 +110,7 @@ CREATE TABLE `$sitedetails` (
   `site_title` char(255) DEFAULT NULL,
   `site_name` char(255) DEFAULT NULL,
   `site_logo` char(255) DEFAULT NULL,
+  `alert_banner` char(255) DEFAULT NULL,
   `organisational_logo` char(255) DEFAULT NULL,
   `welcome_message` char(255) DEFAULT NULL,
   `site_text` text DEFAULT NULL,

@@ -35,6 +35,8 @@ echo "<p>The site name is (This is part of index.php and the RSS and Syndication
 
 echo "<p>The site logo is (The logo in the top left, as you can currently see - number 3 on the diagram)<textarea name=\"site_logo\">website_code/images/xerteLogo.jpg</textarea></p>";
 
+echo "<p>Alert banner message when doing system maintenance or upgrades <textarea name=\"alert_banner\"></textarea></p>";
+
 echo "<p>The organisational logo is (The logo in the top right, as you can currently see - number 4 on the diagram)<textarea name=\"organisational_logo\">website_code/images/UofNLogo.jpg</textarea></p>";
 
 echo "<p>The Welcome message is (number 1 on the diagram)<textarea name=\"welcome_message\">Welcome to Xerte Online Toolkits</textarea></p>";
