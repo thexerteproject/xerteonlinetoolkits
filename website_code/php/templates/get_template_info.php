@@ -38,6 +38,7 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 
 $info = new stdClass();
 $info->template_id = $_POST['template_id'];
+$_SESSION["XAPI_PROXY"] = $_POST['template_id'];
 $info->properties = project_info($_POST['template_id']);
 $info->properties .= media_quota_info($_POST['template_id']);
 $info->properties .= access_info($_POST['template_id']);

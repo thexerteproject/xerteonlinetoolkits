@@ -74,12 +74,16 @@ function management_alert_stateChanged(){
 	}
 }
 
+function upload_template(){
+	
+}
+
 // Function feeds list
 //
 // remove a share, and check who did it
 
 function feeds_list(){
-
+    function_to_use="feeds";
 	if(setup_ajax()!=false){
 
 		var url="syndication.php";
@@ -133,7 +137,7 @@ function remove_feed(id,type){
 // remove a share, and check who did it
 
 function licenses_list(){
-
+    function_to_use="licenses";
 	if(setup_ajax()!=false){
 
 		var url="licenses.php";
@@ -172,7 +176,7 @@ function remove_licenses(id){
 
 function categories_list(){
 
-	function_to_use="user_templates";
+	function_to_use="categories";
 
 	if(setup_ajax()!=false){
 
@@ -185,12 +189,12 @@ function categories_list(){
 	}
 }
 
-// Function categories list
+// Function grouping list
 //
 // remove a share, and check who did it
 
 function grouping_list(){
-
+    function_to_use="grouping";
     if(setup_ajax()!=false){
 
         var url="grouping.php";
@@ -201,6 +205,23 @@ function grouping_list(){
 
     }
 }
+
+// Function course list
+//
+// remove a share, and check who did it
+
+function course_list(){
+    function_to_use="course";
+    if(setup_ajax()!=false){
+
+        var url="course.php";
+
+        management_ajax_send_prepare(url)
+
+        xmlHttp.send('no_id=1');
+    }
+}
+
 
 // Function remove category
 //
@@ -224,7 +245,7 @@ function remove_category(id){
 }
 
 
-// Function remove category
+// Function remove grouping
 //
 // remove a share, and check who did it
 
@@ -244,6 +265,28 @@ function remove_grouping(id){
 
     }
 }
+
+// Function remove course
+//
+// remove a share, and check who did it
+
+function remove_course(id){
+
+    if (confirm(REMOVE_PROMPT)) {
+
+        if(setup_ajax()!=false){
+
+            var url="remove_course.php";
+
+            management_ajax_send_prepare(url)
+
+            xmlHttp.send('remove=' + id);
+
+        }
+
+    }
+}
+
 // Function user templates list
 //
 // remove a share, and check who did it
@@ -509,6 +552,27 @@ function update_site(){
 
 }
 
+// Function update course
+//
+// remove a share, and check who did it
+
+function update_course(){
+
+    if(setup_ajax()!=false){
+
+        var url="course_details_management.php";
+
+        xmlHttp.open("post",management_ajax_php_path + url,true);
+        xmlHttp.onreadystatechange=management_alert_stateChanged;
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xmlHttp.send('course_freetext_enabled=' + document.getElementById("course_freetext_enabled").value);
+
+    }
+
+}
+
+
 // Function delete sharing template
 //
 // remove a share, and check who did it
@@ -692,6 +756,26 @@ function new_grouping(){
 
 }
 
+// Function new course
+//
+// remove a share, and check who did it
+
+function new_course(){
+
+    if(setup_ajax()!=false){
+
+        var url="new_course.php";
+
+        xmlHttp.open("post",management_ajax_php_path + url,true);
+        xmlHttp.onreadystatechange=management_stateChanged;
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xmlHttp.send('newcourse=' + document.getElementById("newcourse").value);
+
+    }
+
+}
+
 // Function new category
 //
 // remove a share, and check who did it
@@ -718,6 +802,7 @@ function new_license(){
 
 function errors_list(template){
 
+    function_to_use="errors";
 	if(setup_ajax()!=false){
 
 		var url="error_list.php";
@@ -994,13 +1079,15 @@ function save_changes(){
 	switch(function_to_use){
 
 		case "templates":update_template();
-				   break;
+		    break;
 		case "users":user_template();
-			      break;
+			break;
 		case "site":update_site();
-			      break;
+			break;
 		case "playsecurity":update_play_security();
-			      break;
+			  break;
+		case "course": update_course();
+			break;
 		default: break;
 
 

@@ -702,7 +702,9 @@ function getProjectInformation_stateChanged() {
             url = site_url + info.template_id;
             q = {};
 
-            q['activities'] = [url].concat(info.lrs.lrsurls.split(",")).concat(info.lrs.site_allowed_urls.split(",").map(url => url + info.template_id)).filter(url => url != "");
+            if (info.lrs.site_allowed_urls != null && info.lrs.site_allowed_urls != undefined && info.lrs.site_allowed_urls != "") {
+                q['activities'] = [url].concat(info.lrs.lrsurls.split(",")).concat(info.lrs.site_allowed_urls.split(",").map(function(url) {return url + info.template_id})).filter(function(url) {return  url != ""});
+            }
             q['activity'] = url;
 
             q['verb'] = "http://adlnet.gov/expapi/verbs/launched";
@@ -1384,6 +1386,28 @@ function create_tutorial(tutorial) {
     }
 }
 
+function template_submit()
+{
+
+    var url = "website_code/php/management/upload.php";
+    var form = document.getElementById("form-template-upload");
+    var formData = new FormData(form);
+    xmlHttp.open("post", url, true);
+    xmlHttp.onreadystatechange = function(e)
+    {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 400)
+        {
+            alert(xmlHttp.responseText);
+        }
+        else if(xmlHttp.readyState == 4 && xmlHttp.status == 200)
+        {
+            alert(xmlHttp.responseText);
+        }
+    }
+    xmlHttp.send(formData);
+
+    return false;
+}
 
 /********** CHECK **************/
 
@@ -1409,3 +1433,4 @@ function example_alert() {
 
     }
 }
+

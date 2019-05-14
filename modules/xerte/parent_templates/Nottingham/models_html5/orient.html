@@ -50,7 +50,23 @@
 				howtoHeader = "How to use this resource";
 			}
 			
-			$("#pageContents").html("<h3>" + goalsHeader + "</h3><p>" + x_addLineBreaks(x_currentPageXML.getAttribute("goals")) + "</p><br/><h3>" + audienceHeader + "</h3><p>" + x_addLineBreaks(x_currentPageXML.getAttribute("audience")) + "</p><br/><h3>" + prereqHeader + "</h3><p>" + x_addLineBreaks(x_currentPageXML.getAttribute("prereq")) + "</p><br/><h3>" + howtoHeader + "</h3><p>" + x_addLineBreaks(x_currentPageXML.getAttribute("howto")) + "</p><br/>");
+			var $pageContents = $("#pageContents");
+			
+			if (x_currentPageXML.getAttribute("goals") != undefined && x_currentPageXML.getAttribute("goals") != '') {
+				$pageContents.append("<div class='orientGroup'><h3>" + goalsHeader + "</h3>" + x_addLineBreaks(x_currentPageXML.getAttribute("goals")) + "</div>");
+			}
+			
+			if (x_currentPageXML.getAttribute("audience") != undefined && x_currentPageXML.getAttribute("audience") != '') {
+				$pageContents.append("<div class='orientGroup'><h3>" + audienceHeader + "</h3>" + x_addLineBreaks(x_currentPageXML.getAttribute("audience")) + "</div>");
+			}
+			
+			if (x_currentPageXML.getAttribute("prereq") != undefined && x_currentPageXML.getAttribute("prereq") != '') {
+				$pageContents.append("<div class='orientGroup'><h3>" + prereqHeader + "</h3>" + x_addLineBreaks(x_currentPageXML.getAttribute("prereq")) + "</div>");
+			}
+			
+			if (x_currentPageXML.getAttribute("howto") != undefined && x_currentPageXML.getAttribute("howto") != '') {
+				$pageContents.append("<div class='orientGroup'><h3>" + howtoHeader + "</h3>" + x_addLineBreaks(x_currentPageXML.getAttribute("howto")) + "</div>");
+			}
 			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();

@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" hicol="0xFFFF00" align="Left" attempts = "1"
+      <hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" hicol="0xFFFF00" align="Left" attempts = "1"
   	  nextTxt="Next"
 	  priorTxt="Previous"
 	  />]]></hotspotImage>
@@ -12,7 +12,7 @@
   <hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="250"/>
+    <text label="General Information" type="TextArea" height="250"/>
     <url label="Image" type="media"/>
 	<tip label="Image Description" type="TextInput"/>
     <interactivity label="Interactivity" options="Show Me,Click Explore" type="ComboBox" data="Show Me,Click Explore" defaultValue="Show Me" width="100"/>
@@ -24,7 +24,7 @@
 	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
 
     <newNodes>
-	  <hotspot><![CDATA[<hotspot name="Hotspot" text="Description for the hotspot" hint="Enter here the hint after the first try" feedback="Enter here the feedback" w="0" h="0" points="[]"/>]]></hotspot>
+	  <hotspot><![CDATA[<hotspot name="Hotspot" question="Enter here the question" hint="Enter here the hint after the first try" feedback="Enter here the feedback" w="0" h="0" points="[]"/>]]></hotspot>
     </newNodes>
 
   </hotspotImage>
@@ -33,7 +33,7 @@
   <hotspot type="hotSpot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
 
     <name label="Label" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
+    <question label="Question" type="TextArea" height="250"/>
     <feedback label="Feedback" type="TextArea" wysiwyg="true" DefaultValue="true"/>
     <hint label="Hint" type="TextArea" wysiwyg="true" optional="true"/>
 

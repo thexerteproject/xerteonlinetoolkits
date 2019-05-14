@@ -224,15 +224,15 @@ Folder popup is the div that appears when creating a new folder
                             onclick="javascript:close_dashboard()"><?php echo INDEX_XAPI_DASHBOARD_CLOSE; ?>
                     </button>
                 </div>
-                <div class="show-hide-column-button">
-                    <button type="button" class="xerte_button_c_no_width"><?php echo INDEX_XAPI_DASHBOARD_SHOW_HIDE_COLUMNS; ?>
+                <div class="show-display-options-button">
+                    <button type="button" class="xerte_button_c_no_width"><?php echo INDEX_XAPI_DASHBOARD_DISPLAY_OPTIONS; ?>
                     </button>
                 </div>
             </div>
         </div>
         <div id="dashboard-title"></div>
         <div class="jorneyData-container">
-            <div id="journeyData" class="journeyData container-fluid container"></div>
+            <div id="journeyData" class="journeyData journey-container"></div>
         </div>
     </div>
 </div>

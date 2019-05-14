@@ -52,4 +52,8 @@ if ($authmech->hasLogout())
     _debug("Single Logout");
     $authmech->logout();
 }
+session_unset();
 session_destroy();
+session_write_close();
+setcookie(session_name(),'',3600,'/');
+session_regenerate_id(true);

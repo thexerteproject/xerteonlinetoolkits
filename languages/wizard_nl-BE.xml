@@ -163,4 +163,17 @@
 		<nextpage>[volgende pagina]</nextpage>
 		<prevpage>[vorige pagina]</prevpage>
 	</XotLinkRelativePages>
+	<ThemeUrlParam>Theme url parameter:</ThemeUrlParam>
+	<HotspotInstructions>
+		<header>Hotspot instructies:</header>
+		<add>Om een punt to the voegen: klik op het plaatje hierboven</add>
+		<edit>Om een punt te wijzigen: Sleep een bestaand punt naar de gewenste plaats met de muis</edit>
+		<remove>Om een punt te verwijderen: klik met de rechtermuisknop op het punt wat verwijdert moet worden.</remove>
+		<save>Om de hotspot op te slaan: klik de OK knop. Als u de hotspot veranderingen niet wilt opslaan klik, op annuleren</save>
+	</HotspotInstructions>
+	<grouping deprecated="Verouderd - de rode waarde staat niet meer in de lijst in management.php"></grouping>
+	<category deprecated="Verouderd - de rode waarde staat niet meer in de lijst in management.php"></category>
+	<course deprecated="Verouderd - de rode waarde staat niet meer in de lijst in management.php">
+		<FreeText label="Anders"></FreeText>
+	</course>
 </language>

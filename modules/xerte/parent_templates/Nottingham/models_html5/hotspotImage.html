@@ -59,7 +59,6 @@
 			$img = $("#image");
 
 
-
             if (x_currentPageXML.getAttribute("align") == "Right") {
 				$("#panel").addClass("left");
 			} else {
@@ -128,7 +127,7 @@
 
 			}
             this.selectHs("next");
-		}
+		};
 
 		this.resizeImg = function(firstLoad) {
 			var imgMaxW = Math.round($x_pageHolder.width() * (400.0/800.0)),
@@ -224,6 +223,11 @@
 
 			}
 
+            var $question = $("#questionText");
+            var question = x_currentPageXML.childNodes[i].getAttribute("question");
+            question = $("<div>").html(question).text().trim();
+            $question.html(question);
+
 
 
           //  $("#nextHS").button("enable");
@@ -231,7 +235,11 @@
 
             $("#hint").html("");
 			$("#feedback").html("");
-            gotHint = false;
+            if(x_currentPageXML.childNodes[i].getAttribute("hint") === null || x_currentPageXML.childNodes[i].getAttribute("hint") === ""){
+                gotHint = true
+			}else{
+                gotHint = false;
+			}
 
             var _this = this;
 
@@ -271,7 +279,7 @@
                 if (counter[i] <= attempts) {
                     if (CI) {
                         $feedback.append("<h3>" + "Feedback" + "</h3>");
-                        $feedback.append(feedback)
+                        $feedback.append(feedback);
 
                     } else {
                         if(gotHint === false){
@@ -357,8 +365,9 @@
 
 
 <div id="pageContents">
-	
+
 	<div id="panel" class="panel inline">
+		<div id="questionText" class="right"/>
 		<div id="imageHolder">
 			<div class="overlayWrapper">
 				<img id="image"/>
@@ -381,7 +390,7 @@
 	
 	<div id="textContents">
 		<div id="mainText" tabindex="1"></div>
-		<div id="infoHolder" class="hsinfo"></div>
+		<div id="infoHolder" class="right"></div>
 	</div>
 	
 </div>
