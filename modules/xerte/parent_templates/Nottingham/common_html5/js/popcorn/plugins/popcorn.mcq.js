@@ -227,7 +227,7 @@ optional: feedback page synch play enable
 				autoEnable = true;
 				var tempEnable = false;
 
-				// is it to appear over media?
+				// is it to appear over media? DEPRECATED
 				if (options.overlay == "true" && (this.video != undefined || $(this.audio).closest(".mediaHolder").find(".audioImg").length > 0)) {
 					var $parent;
 					if (this.video != undefined) {
@@ -416,6 +416,8 @@ optional: feedback page synch play enable
 						.click(function () {
 							$target.hide();
 							media.play();
+                            if (options.overlayPan)
+                                $target.parent().hide();
                         });
 
 					$target.append('<div class="bottom"/>');
@@ -428,30 +430,33 @@ optional: feedback page synch play enable
 						$target.prepend("<hr/>");
 					}
 				}
+				if(options.overlayPan == true)
+				{
+                	if(options.mandatory == "true")
+					{
+						var $openPng = x_templateLocation + "common_html5/plus.png";
+						var $showHolder  = $('<div id="showHolder" />').appendTo($target);
+						$showBtn = $('<image class="showButton" type="image" src="' + $openPng + '" >').appendTo($showHolder);
+						$showLbl = $("<div class='showLabel'>" + options.name + "</div>").appendTo($showHolder);
+						$showHolder
+							.click(function () {
+                                $("#overlay").show();
+                                mediaLesson.popcornInstance.media.pause();
+                                $target.parent().addClass("qWindow");
+								$showHolder.hide();
+								$optHolder.show();
+								$checkBtn.show();
+								$checkBtn.button("disable");
+								$target.prepend($optionText);
+							 });
 
-                if(options.mandatory === "true")
-                {
-                	var $tick = x_templateLocation + "common_html5/cross.png"
-					debugger;
-                	var $targett  = $('<div id="showbro"/>').appendTo($target);
-                    $showBtn = $('<image type="image" src="modules/xerte/parent_templates/Nottingham/common_html5/tick.png" width="24" height="24" class="mcqShowBtn" style="float: left; vertical-align: middle; border-radius: 25px">').appendTo($targett);
-                    $showLbl = $("<div style='float: right'>" + options.name + "</div>").appendTo($targett);
-                    $targett
-                		.click(function () {
-                    		$targett.hide();
-							$optHolder.show();
-							$checkBtn.show();
-							$checkBtn.button("disable");
-							$target.prepend($optionText);
-               			 });
-                    //
-                }
-                else {
-                    $optHolder.show();
-                    $checkBtn.show();
-                    $checkBtn.button("disable");
-                }
-
+					}
+					else {
+						$optHolder.show();
+						$checkBtn.show();
+						$checkBtn.button("disable");
+					}
+				}
 			},
 			
 			start: function(event, options) {
@@ -494,7 +499,6 @@ optional: feedback page synch play enable
 					}
 
 					else {
-						debugger;
 						$target.prepend(options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text));
                         if ($checkBtn) {
                             $checkBtn
@@ -509,12 +513,33 @@ optional: feedback page synch play enable
 						mediaLesson.enableControls(this.media, true);
 					}
 				}
+				if (options.overlayPan) {
+					if (options.mandatory == "true")
+						$target.parent().css({"background": "none"}); //Set the correct background for a showbutton.
+					else
+						$target.parent().addClass("qWindow"); //Set the correct width for a question.
+                    //if (isNumeric(options.offsetTop) && isNumeric(options.offsetLeft))
+					$target.parent().css({
+						"top": options.offsetTop + "%",
+                        "left": options.offsetLeft + "%"});
+					debugger;
+                }
 				$target.show();
 			},
 			
 			end: function(event, options) {
 				// fire on options.end
 				mediaLesson.enableControls(this.media, true);
+                if (options.overlayPan) {
+                $target.parent().css(
+                	{
+						"top": 0,
+						"left": 0,
+						"width": "auto",
+                        "background-color": "#FEFEFE"
+                	}
+				).hide();
+                }
 				$target.hide();
 			},
 

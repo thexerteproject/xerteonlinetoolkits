@@ -70,12 +70,15 @@ optional: end position* line
 			
 			start: function(event, options) {
 				// fire on options.start
+                if (options.overlayPan)
+                	$target.parent().css({"top": options.offsetTop, "left": options.offsetLeft}).show();
 				$target.show();
 			},
 			
 			end: function(event, options) {
 				// fire on options.end
-				
+                if (options.overlayPan)
+                	$target.parent().css({"top": 0, "left": 0}).hide();
 				$target.hide();
 			}
 		};

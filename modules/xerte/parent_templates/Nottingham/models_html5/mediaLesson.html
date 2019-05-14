@@ -281,6 +281,8 @@
 		
 		this.resizeVimeo = function($vimeo) {
 			this.resizeYouTube($vimeo);
+			var h = $vimeo.width() / 16 * 9;
+			$vimeo.css({"height": h});
 		};
 
 		this.resizeMediasite = function($mediasite) {
@@ -288,8 +290,8 @@
 
 		  var parentt = $(" .panel tileH fullH ");
 
-		  $mediasite[0].style.height = "90%"//parent.style.height;
-		  $mediasite[0].style.width = "100%";
+		  //$mediasite[0].style.height = "90%"//parent.style.height;
+		  //$mediasite[0].style.width = "100%";
 		};
 
 		this.leavePage = function () {
@@ -405,6 +407,7 @@
 					if (jQuery.inArray(plugins[numLoaded - 1], css) != -1) {
 						x_insertCSS(x_templateLocation + "common_html5/js/popcorn/" + fileToLoad + ".css");
 					}
+                    x_insertCSS(x_templateLocation + "common_html5/js/popcorn/" + "plugins/popcorn.overlaystyle" + ".css");
 				}
 				
 				$.getScript(x_templateLocation + "common_html5/js/popcorn/" + fileToLoad + ".js")
@@ -671,13 +674,15 @@
 			//Append the overlay panel to the main media panel.
 			for(i = 0; i < panelData.length; i++) {
 			    if(panelData[i].getAttribute("overlay")) {
-                    $('<div class="overlay"></div>')
+                    $('<div class="overlay" id="mydiv"></div>')
                         .appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex)[0].children[1])
-                        .attr("id", mediaLesson.panelbaseid + i);
+                        .attr("id", mediaLesson.panelbaseid + i)
 						//.hide();
+					debugger;
                     $('<div class="overlayGray"></div>')
                         .appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex)[0].children[1])
-                        .attr("id", "overlay");
+                        .attr("id", "overlay")
+						.hide();
                     break;
                 }
             }
@@ -733,7 +738,7 @@
 
             });
             this.popcornInstance.on( "play", function() {
-                $("#overlay").css("z-index", "-1");
+                $("#overlay").hide();
 
                 var popTime = mediaLesson.popcornInstance.currentTime();
                 console.log("Play    : " + popTime);
@@ -1133,13 +1138,15 @@
                                 // there's no start or end synch on subtitle holder - store previous sibling's start for relative synching to be done against
                                 start = 0;
                             }
+                            var opt = this.attributes.optional == undefined ||this.attributes.optional.value == "false" ? "false" : "true";
+
                             data.push({
                                 type:			this.nodeName,
                                 start:			start,
                                 end:			end,
                                 target:			targetRef + "_" + j,
 								overlayPanel:	this.overlay,
-								optional:		this.attributes.optional.value,
+								optional:		opt,
                                 allInfo:		this
                             });
 					
@@ -1259,7 +1266,8 @@
 						start	:thisContent.start,
 						end		:thisContent.end,
 						target	:thisContent.target,
-						mandatory: thisContent.optional
+						mandatory: thisContent.optional,
+						overlayPan: thisContent.overlayPanel
 					};
 
 					// add other info to pluginAttributes
@@ -1314,7 +1322,7 @@
 							// Gray out the background and fix z-index if the media is paused on an overlay panel
 							if (thisContent.overlayPanel)
 							{
-							    overlayScreen.css("z-index", 3)
+							    overlayScreen.css("display", "inline-block");
 							}
                             if (thisContent.allInfo.getAttribute("overlay") != "true") {
                                 mediaLesson.exitFullScreen();
