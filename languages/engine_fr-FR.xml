@@ -160,7 +160,7 @@
   <colourChanger label="Modificateur de couleur" description="Modifier les couleurs." tooltip="Modifier les couleurs">
       <closeButton label="" description="Fermer le modificateur de couleur"/>
       <selectTxt label="Merci de choisir parmi l’une des options ci-dessous"/>
-      <adviceTxt label="Besoin d’autres conseils ? Rendez-vous sur le &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt; guide d’accessibilité à la trousse à outils Xerte &lt;/a&gt;."/>
+      <adviceTxt label="Besoin d’autres conseils ? Rendez-vous sur le &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt; guide d’accessibilité à la trousse à outils Xerte &lt;/a&gt;."/>
       <off label="Désactivé"/>
       <noBg label="Retirer les mages en arrière-plan"/>
       <invert label="Inverser"/>

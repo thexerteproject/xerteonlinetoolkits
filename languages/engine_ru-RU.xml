@@ -160,7 +160,7 @@
 <colourChangerlabel="Цветной чейнджер"description="Изменение цвета."tooltip="Изменение цвета">
 <closeButtonlabel=""description="Закрыть цветной чейнджер"/>
 <selectTxtlabel="Пожалуйста, выберите один из следующих вариантов:"/>
-<adviceTxtlabel="Нужно польше советов? Посетите &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Xerte Справочное пособие по инструментариям&lt;/a&gt;."/>
+<adviceTxtlabel="Нужно польше советов? Посетите &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Справочное пособие по инструментариям&lt;/a&gt;."/>
 <offlabel="Выключить"/>
 <noBglabel="Удаление фоновых изображений"/>
 <invertlabel="инвертировать"/>

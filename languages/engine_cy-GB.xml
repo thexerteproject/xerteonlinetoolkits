@@ -160,7 +160,7 @@
   <colourChanger label="Newidiwr Lliw" description="Newid y lliwiau." tooltip="Newid Lliwiau">
 	  <closeButton label="" description="Cau y Newidiwr Lliw"/>
 	  <selectTxt label="PDewiswch o blith yr opsiynau isod"/>
-	  <adviceTxt label="Angen mwy o gyngor? Ewch i &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt; ganllawiau hygyrchedd Offer Xerte&lt;/a&gt; Jisc TechDis."/>
+	  <adviceTxt label="Angen mwy o gyngor? Ewch i &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt; ganllawiau hygyrchedd Offer Xerte&lt;/a&gt; Jisc TechDis."/>
 	  <off label="Diffodd"/>
 	  <noBg label="Tynnu Delweddau'r Cefndir"/>
 	  <invert label="Gwrthdroi"/>

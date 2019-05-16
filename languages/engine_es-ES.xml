@@ -145,7 +145,7 @@
   <colourChanger label="Cambiador de Colores" description="Cambiador los colores.">
 	  <closeButton label="" description="Cerrar Cambiaor de Colores"/>
 	  <selectTxt label="Por favor seleccione alguna de las opciones debajo"/>
-	  <adviceTxt label="¿Necesita m&aacute;s ayuda? Visite la &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Gu&iacute;a de Accesibilidad de Herramientas de Xerte de Jisc TechDis&lt;/a&gt;."/>
+	  <adviceTxt label="¿Necesita m&aacute;s ayuda? Visite la &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Gu&iacute;a de Accesibilidad de Herramientas de Xerte de Jisc TechDis&lt;/a&gt;."/>
 	  <off label="Desactivado"/>
 	  <invert label="Invertir"/>
 	  <blackYellow label="Negro en Amarillo"/>
