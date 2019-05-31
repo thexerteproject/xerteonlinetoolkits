@@ -131,7 +131,7 @@
 						});
 					}
 					if (empty){
-						$feedback.html(x_currentPageXML.getAttribute("incomplete") != undefined ? x_currentPageXML.getAttribute("incomplete") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+						$feedback.html(x_currentPageXML.getAttribute("incomplete") != undefined ? '<p>' + x_currentPageXML.getAttribute("incomplete") + '</p>' : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 					}	
 					else if (correct == $("#labelHolder .label").length) {
 						$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));

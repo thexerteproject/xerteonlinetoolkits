@@ -2905,7 +2905,7 @@ function XTTerminate() {
         };
         statement.object.definition.name[state.language] = x_params.name;
         SaveStatement(statement, false);
-        if (lti_enabled) {
+        if (typeof lti_enabled !== 'undefined' && lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
             if (url.indexOf("lti_launch.php") >= 0) {

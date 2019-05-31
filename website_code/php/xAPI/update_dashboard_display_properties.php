@@ -9,7 +9,7 @@ $id = $_POST["id"];
 $properties = $_POST["properties"];
 if(is_numeric($id))
 {
-    if(is_user_creator_or_coauthor($id) || is_user_admin()){
+    if(isset($_SESSION['toolkits_logon_id'])){
         db_query("update templatedetails set dashboard_display_options = ? where template_id = ?", array($properties, $id));
     }
 }

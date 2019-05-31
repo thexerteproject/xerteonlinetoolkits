@@ -1193,7 +1193,7 @@ function XTTerminate()
             }
 
         }
-        if (lti_enabled) {
+        if (typeof lti_enabled !== 'undefined' && lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
             if (url.indexOf("lti_launch.php") >= 0) {
@@ -1211,11 +1211,12 @@ function XTTerminate()
                         grade: state.getdScaledScore()
                     }
                 })
-                    .done(function(msg) {
+                    .done(function (msg) {
                         //alert("Data Saved: " + msg);
                     });
             }
         }
+
     }
 }
 

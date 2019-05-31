@@ -489,9 +489,9 @@ function update_site(){
 					 '&welcome_message=' + document.getElementById("welcome_message").value +
 					 '&site_text=' + document.getElementById("site_text").value +
 					 '&tutorial_text=' + document.getElementById("tutorial_text").value +
-					 '&news_text=' + document.getElementById("news_text").value +
-					 '&pod_one=' + document.getElementById("pod_one").value +
-					 '&pod_two=' + document.getElementById("pod_two").value +
+					 '&news_text=' + encodeURIComponent(document.getElementById("news_text").value) +
+					 '&pod_one=' + encodeURIComponent(document.getElementById("pod_one").value) +
+					 '&pod_two=' + encodeURIComponent(document.getElementById("pod_two").value) +
 					 '&copyright=' + encodeURIComponent(document.getElementById("copyright").value) +
 					 '&demonstration_page=' + document.getElementById("demonstration_page").value +
 					 '&form_string=' + document.getElementById("form_string").value +

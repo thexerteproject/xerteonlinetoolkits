@@ -625,3 +625,7 @@ body > svg
 	width: 0px;
 	height: 0px;
 }
+
+textarea {
+	padding: 0.5em;
+}
