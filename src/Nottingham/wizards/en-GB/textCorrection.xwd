@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
     <pageWizard remove="true" duplicate="false">
         <newNodes>
-            <textCorrection><![CDATA[<textCorrection name="Enter Page Title" align="Left" introduction="Enter the introduction for the page here" FurtherClarification="Enter here further clarification" wrongText="Enter the wrong text here" answer="Enter the correct text here" feedback="Enter the feedback here" panelWidth="Medium" checkBtn="Check"  textRight="You passed this test" textWrong="You have no good answers"  resultLabel="Result" FurtherClarificationLabel="Further Clarification" answerLabel="Answer"  textIncomplete="You have not filled in any answers correctly. Please try again."/>]]></textCorrection>
+            <textCorrection><![CDATA[<textCorrection name="Enter Page Title" align="Left" introduction="Enter the introduction for the page here" FurtherClarification="Enter here further clarification" wrongText="Enter the wrong text here" answer="Enter the correct text here" feedback="Enter the feedback here" panelWidth="Medium" checkBtn="Check"  textRight="You passed this test" textWrong="Your answer is wrong"  resultLabel="Result" FurtherClarificationLabel="Further Clarification" answerLabel="Answer"  textIncomplete="You have not filled the question. Please try again."/>]]></textCorrection>
         </newNodes>
     </pageWizard>
 
@@ -10,7 +10,7 @@
         <align label = "Align Text" options = "Left,Right" type = "ComboBox" data = "Left,Right" defaultValue = "Left" width = "100"/>
         <introduction label="Introductory Text" type="TextArea" height="100"/>
         <wrongText label="Incorrect Text" type="TextArea" height="150"/>
-        <answer label="Correct Text" type="TextArea" height="150"/>
+        <answer label="Correct Text" type="TextArea" height="150" />
         <FurtherClarification label="Further Clarification" type="TextArea" height="50" optional="true" devaultValue="true"/>
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
         <showAnswers label = "Show Answers" defaultValue="true" type="CheckBox" optional="true"/>

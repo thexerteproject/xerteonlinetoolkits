@@ -123,11 +123,11 @@
                 var $pageContents = $("#pageContents");
 
                 var $textHolder = $("#textHolder");
-
                 var $question = $("#infoHolder #question");
                 var question = x_currentPageXML.getAttribute("wrongText");
-                question = $("<div>").html(question).text().trim();
-                $question.html(question);
+                var orginalQuestion = x_currentPageXML.getAttribute("wrongText");
+                orginalQuestion = $("<div>").html(orginalQuestion);
+                $question.html(orginalQuestion);
 
                 var $answer = $("#infoHolder #answer");
                 var answer = x_currentPageXML.getAttribute("answer");
@@ -177,40 +177,47 @@
 
                         XTEnterInteraction(x_currentPage, 0, "text", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("introduction"), ""), "",answer, FurtherClarification);
 
+
                         //get value of text area
                         var input = $(".answer textarea").val();
                         textCorrection.input =  input;
+                        $correctOrNot.html("");
+
                         // decide if it is correct or not
                         $correctOrNot.append("<h3>"+resultLabel+"</h3>");
-
-                        if(input === answer){
-                            $correctOrNot.append(correct);
-                            $correctOrNot.append(correctIcon)
-                        }
-                        if(input === ""){
+                        if (input === "") {
                             $correctOrNot.append(incompleet);
                             $correctOrNot.append(incorrectICon)
-                        }else if(input !== answer){
-                            $correctOrNot.append(incorrect);
-                            $correctOrNot.append(incorrectICon)
                         }
 
-                        if(!hadExited){
-                            textCorrection.exitTrackTextCorrection();
-                            hasExited = true;
-                        }
-                        textCorrection.hasExited = hadExited;
-                        // show feedback
+                        if(input !== "") {
+                            if (input === answer) {
+                                $correctOrNot.append(correct);
+                                $correctOrNot.append(correctIcon)
+                            }else{
+                                $correctOrNot.append(incorrect);
+                                $correctOrNot.append(incorrectICon)
+                            }
 
-                        if(x_currentPageXML.getAttribute("FurtherClarification") !== null){
-                            $FurtherClarification.append("<h3>" + FurtherClarificationLabel + "</h3>");
-                            $FurtherClarification.append(FurtherClarification);
-                        }
+                            if (!hadExited) {
+                                textCorrection.exitTrackTextCorrection();
+                                hasExited = true;
+                            }
+                            textCorrection.hasExited = hadExited;
+                            // show feedback
 
-                        if(showAnswer === null || showAnswer == "true"){
+                            if (x_currentPageXML.getAttribute("FurtherClarification") !== null) {
+                                $FurtherClarification.append("<h3>" + FurtherClarificationLabel + "</h3>");
+                                $FurtherClarification.append(FurtherClarification);
+                            }
 
-                            $answer.append("<h3>" + answerLabel + "</h3>");
-                            $answer.append(answer)
+                            if (showAnswer === null || showAnswer === "true") {
+
+                                $answer.append("<h3>" + answerLabel + "</h3>");
+                                $answer.append(x_currentPageXML.getAttribute("answer"))
+                            }
+                        }else{
+                            $(checkButton).button("enable");
                         }
 
                     });
