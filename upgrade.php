@@ -951,6 +951,14 @@ function upgrade_21()
         }
         return "Creating dashboard_allowed_links field in templatedetails - ok ? "  . ($error1_returned && $error2_returned ? 'true' : 'false') . "<br>";
     }
+    if (! _db_field_exists('sitedetails', 'dashboard_allowed_links')) {
+        $error2 = _db_add_field('sitedetails', 'dashboard_allowed_links', 'text', '', 'dashboard_period');
+        $error2_returned = true;
+        if ($error2 === false)
+        {
+            $error2_returned = false;
+        }
+    }
     return "Creating dashboard_allowed_links field in templatedetails already present - ok ? ". "<br>";
 }
 
