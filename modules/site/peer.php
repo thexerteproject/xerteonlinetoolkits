@@ -43,7 +43,7 @@ function show_peer_template($row)
     global $xerte_toolkits_site;
 
 
-    $peer_template = show_template_page($row, "data.xml");
+    $peer_template = show_template($row, "data.xml");
 
     echo $peer_template;
 }
