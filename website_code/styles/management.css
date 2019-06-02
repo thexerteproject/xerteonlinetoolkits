@@ -271,3 +271,7 @@ div#admin_area form textarea{
 	font-weight:normal;
 
 }
+
+.management_input {
+	margin-bottom: 5px;
+}

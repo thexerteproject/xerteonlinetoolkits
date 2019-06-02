@@ -27,13 +27,19 @@ if (is_user_admin()) {
     $database_id = database_connect("templates list connected", "template list failed");
 
 
-    echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_UPDATE_EXPLANATION . "<br /><br /><button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'><i class=\"fa fa-refresh\"></i> " . TEMPLATE_UPDATE . "</button></p>";
+    echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_UPDATE_EXPLANATION . "<br /><br />
+    <button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'><i class=\"fa fa-refresh\"></i> " . TEMPLATE_UPDATE . "</button></p>";
 
     echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_ADD_EXPLANATION .
     "<br><br>" .
     "<form action='website_code/php/management/upload.php' method='post' enctype='multipart/form-data' onsubmit='return template_submit()' id='form-template-upload'>" .
         "<input type='file' value='Search File' name='fileToUpload' id='file-select'>" .
-        "<p><input type='text' name='templateName'>&NonBreakingSpace;Enter the template name<br><br><input type='text' name='templateDescription'>&NonBreakingSpace;Enter the template description<br></p><br><button type='submit' id='upload-button' class='xerte_button'>upload</button>" .
+        "<p>
+            <input class='management_input' type='text' name='templateName'>&NonBreakingSpace;Enter the template name<br>
+            <input class='management_input' type='text' name='templateDisplayname'>&NonBreakingSpace;Enter the template display name<br>
+            <input class='management_input' type='text' name='templateDescription'>&NonBreakingSpace;Enter the template description<br>
+        </p><br>
+        <button type='submit' id='upload-button' class='xerte_button'><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button>" .
     "</form></p>";
 
 
