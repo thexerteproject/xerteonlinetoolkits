@@ -519,10 +519,13 @@
                 ADL.XAPIWrapper.changeConfig(conf);
                 ADL.XAPIWrapper.log.debug = true;
                 */
-                if(x_currentPageXML.attributes.displayMode.value == "unlisted" || x_currentPageXML.attributes.displayMode.value == undefined){
-                    this.setUpUnlisted();
-                }else if (x_currentPageXML.attributes.displayMode.value == "listed"){
+
+                if(typeof x_currentPageXML.attributes.displayMode != "undefined"
+                    && typeof x_currentPageXML.attributes.displayMode.value != "undefined"
+                    && x_currentPageXML.attributes.displayMode.value == "listed"){
                     this.setUpListed();
+                }else {
+                    this.setUpUnlisted();
                 }
 
             }
@@ -570,7 +573,13 @@
                 numLoaded = 0;
                 this.loadJS();
             } else {
-                this.setupUnlisted();
+                if(typeof x_currentPageXML.attributes.displayMode != "undefined"
+                    && typeof x_currentPageXML.attributes.displayMode.value != "undefined"
+                    && x_currentPageXML.attributes.displayMode.value == "listed"){
+                    this.setUpListed();
+                }else {
+                    this.setUpUnlisted();
+                }
             }
         };
 
