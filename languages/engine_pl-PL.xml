@@ -146,7 +146,7 @@
   <colourChanger label="Zmieniacz kolorów" description="Zmieniacz kolorów.">
 	  <closeButton label="" description="Zamknij zmieniacza kolorów"/>
 	  <selectTxt label="Proszę wybrać z poniższych opcji"/>
-	  <adviceTxt label="Potrzebujesz więcej porad? Odwiedź Jisc TechDis &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;przewodnik dostępności Xerte Toolkits&lt;/a&gt;."/>
+	  <adviceTxt label="Potrzebujesz więcej porad? Odwiedź Jisc TechDis &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;przewodnik dostępności Xerte Toolkits&lt;/a&gt;."/>
 	  <off label="Wyłącz"/>
 	  <noBg label="Usuń tła obrazków"/>
 	  <invert label="Odwróć"/>

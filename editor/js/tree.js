@@ -190,12 +190,11 @@ var EDITOR = (function ($, parent) {
         var tree = $.jstree.reference("#treeview");
         var node = tree.get_node(node_id, false);
         var obj = {};
-        //console.log(lo_data[node_id]);
+		
         $.each(lo_data[node_id], function(key , value){
             obj[key] = value;
         });
 
-        //console.log(node_id + ": " + node.children.length + " children");
         if (node.children.length > 0) {
             obj.children = {};
             for (var i=0; i<node.children.length; i++) {
@@ -203,7 +202,6 @@ var EDITOR = (function ($, parent) {
                 obj.children[i] = build_json(key);
             }
         }
-        //console.log(obj);
         return(obj);
     },
 
@@ -394,9 +392,7 @@ var EDITOR = (function ($, parent) {
 
     duplicateNodes = function(tree, id, parent_id, pos, select)
     {
-        console.log(id);
-
-        var current_node = tree.get_node(id, false); console.log(current_node);
+        var current_node = tree.get_node(id, false);
 
         // This will be the key for the new node
         var key = parent.tree.generate_lo_key();
@@ -431,7 +427,6 @@ var EDITOR = (function ($, parent) {
                 opened:true
             }
         }
-        console.log(this_json);
 
         // Add the node
         if (validateInsert(parent_id, current_node.type, tree))
@@ -470,9 +465,9 @@ var EDITOR = (function ($, parent) {
 
         // Determine pos
         var pos;
-        var current_node = tree.get_node(id, false); console.log(current_node);
-        var parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
-        var parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
+        var current_node = tree.get_node(id, false);
+        var parent_node_id = tree.get_parent(current_node);
+        var parent_node = tree.get_node(parent_node_id, false);
         // Walk and count children of 'treeroot' to figure out pos
         var i = 0;
         $.each(parent_node.children, function () {
@@ -610,6 +605,7 @@ var EDITOR = (function ($, parent) {
         {
             node_label = wizard_data[node_name].menu_options.label;
         }
+		
         // Clear editor array
         textareas_options = [];
         textinputs_options = [];
@@ -643,31 +639,104 @@ var EDITOR = (function ($, parent) {
         {
             toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, node_label);
         }
-
-        // The rest of the normal params
-        for (var i=0; i<node_options['normal'].length; i++)
-        {
+		
+        // check for property groups in the rest of the normal params
+		var propGroups = [],
+			propGroupChildren = [];
+		
+        for (var i=0; i<node_options['normal'].length; i++) {
+			if (node_options['normal'][i].value.type == "group") {
+				node_options['normal'][i].value.children = node_options['normal'][i].value.children == undefined ? [] : node_options['normal'][i].value.children;
+				propGroups.push(i);
+			}
+		}
+		
+		// ...find all properties that belong to them
+		if (propGroups.length > 0 && node_options['normal'][propGroups[0]].value.children.length == 0) {
+			for (var i=0; i<node_options['normal'].length; i++) {
+				for (var j=0; j<propGroups.length; j++) {
+					if (node_options['normal'][propGroups[j]].name == node_options['normal'][i].value.group) {
+						node_options['normal'][propGroups[j]].value.children.push(node_options['normal'][i]);
+						propGroupChildren.push(i);
+						break;
+					}
+				}
+			}
+			
+			// remove children of groups as they are now associated with group parent
+			propGroupChildren.sort(function(a, b){return b-a});
+			for (var i=0; i<propGroupChildren.length; i++) {
+				node_options['normal'].splice(propGroupChildren[i],1);
+			}
+			
+			// ignore groups with no children
+			for (var i=0; i<node_options['normal'].length; i++) {
+				if (node_options['normal'][i].value.children != undefined && node_options['normal'][i].value.children.length == 0) {
+					node_options['normal'].splice(i,1);
+					i--;
+				}
+			}
+		}
+		
+		// The rest of the normal params
+        for (var i=0; i<node_options['normal'].length; i++) {
             attribute_name = node_options['normal'][i].name;
-            attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
-
-            // The language attribute deserves some special treatment
-            // If the attribute exists, but the value is an empty string, replace it withe the currently chosen language
-            if (attribute_name == 'language')
-            {
-                if (attribute_value.found && attribute_value.value=="")
-                {
-                    attribute_value.value = language.$code;
-                    toolbox.setAttributeValue(key, [attribute_name], [attribute_value.value]);
-                }
-            }
-            if (attribute_value.found)
-            {
-                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, attribute_value.value, key);
-            }
-            else if (node_options['normal'][i].value.mandatory)
-            {
-                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, node_options['normal'][i].value.defaultValue, key);
-            }
+			if (node_options['normal'][i].value.children == undefined) {
+				attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
+				
+				// The language attribute deserves some special treatment
+				// If the attribute exists, but the value is an empty string, replace it withe the currently chosen language
+				if (attribute_name == 'language')
+				{
+					if (attribute_value.found && attribute_value.value == "")
+					{
+						attribute_value.value = language.$code;
+						toolbox.setAttributeValue(key, [attribute_name], [attribute_value.value]);
+					}
+				}
+				if (attribute_value.found)
+				{
+					toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, attribute_value.value, key);
+				}
+				else if (node_options['normal'][i].value.mandatory)
+				{
+					toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, node_options['normal'][i].value.defaultValue, key);
+				}
+				
+			} else {
+				// it's a group of properties - check each of the children to see if they exist in xml
+				var exists = false;
+				for (var j=0; j<node_options['normal'][i].value.children.length; j++) {
+					var child_attribute_name = node_options['normal'][i].value.children[j].name;
+					var child_attribute_value = toolbox.getAttributeValue(attributes, child_attribute_name, node_options, key);
+					if (child_attribute_value.found) {
+						exists = true;
+						break;
+					} else if (node_options['normal'][i].value.children[j].value.mandatory) {
+						exists = true;
+						break;
+					}
+				}
+				
+				// at least one of the group's children exists in xml or is mandatory so show whole group
+				if (exists == true) {
+					toolbox.displayGroup('#mainPanel .wizard', node_options['normal'][i].name, node_options['normal'][i].value, key);
+					
+					var groupChildren = node_options['normal'][i].value.children;
+					for (var j=0; j<groupChildren.length; j++) {
+						var tableOffset = (node_options['normal'][i].value.cols ? j % parseInt(node_options['normal'][i].value.cols, 10) : '');
+						if (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated) {
+							toolbox.displayParameter(
+								'#mainPanel .wizard #groupTable_' + node_options['normal'][i].name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
+								groupChildren,
+								groupChildren[j].name,
+								toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value,
+								key
+							);
+						}
+					}
+				}
+			}
         }
         // Optional parameters
         // 1. Empty right panel
@@ -1109,7 +1178,6 @@ var EDITOR = (function ($, parent) {
                 opened: true
             }
         }
-        console.log("Adding " + this_json);
         // Add the node
         if (validateInsert(key, nodeName, tree))
         {
@@ -1278,7 +1346,6 @@ var EDITOR = (function ($, parent) {
                     }
                 });
             }
-            //console.log("Type: " + page_name + ", valid children: " + lchildren);
             return {
                 icon: parent.toolbox.getIcon(page_name),
                 valid_children: lchildren
@@ -1294,7 +1361,6 @@ var EDITOR = (function ($, parent) {
 
         console.log(node_types);
 
-        //console.log(JSON.stringify(tree_json));
         var treeview = $('<div />').attr('id', 'treeview');
         $(".ui-layout-west .content").append(treeview);
         $("#treeview").jstree({

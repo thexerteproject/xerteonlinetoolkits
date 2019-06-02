@@ -50,5 +50,11 @@
 
 	define("TEMPLATE_REPLACE", "Upload a new version of this template");
 
+	define("TEMPLATE_ADD_EXPLANATION", "Add a custom learn object in Xerte");
+
+    define("TEMPLATE_ADD", "Add template");
+
+    define("TEMPLATE_UPLOAD_FILE", "Upload file");
+
 
 ?>

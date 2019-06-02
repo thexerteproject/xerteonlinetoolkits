@@ -151,9 +151,9 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         {
             $tracking .= "<script>\n";
             if($row["tsugi_xapi_enabled"] == 1) {
-                $tracking .= "  var lrsEndpoint = '" . $row['tsugi_xapi_endpoint'] . "';\n";
-                $tracking .= "  var lrsUsername = '" . $row['tsugi_xapi_key'] . "';\n";
-                $tracking .= "  var lrsPassword  = '" . $row['tsugi_xapi_secret'] . "';\n";
+                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
+                $tracking .= "  var lrsUsername = '';\n";
+                $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
                 if ($row["tsugi_published"] == 1) {
                     _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
@@ -239,7 +239,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         if($tsugi_enabled)
         {
             $tracking .= "<script>\n";
-            if (!$pedit_enabled)
+            if (isset($lti_enabled) && $lti_enabled)
             {
                 // Set lti_enabled variable so that we can send back gradebook results through LTI
                 $tracking .= "  var lti_enabled=true;\n";
@@ -249,9 +249,9 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 $tracking .= "  var lti_enabled=false;\n";
             }
             if($row["tsugi_xapi_enabled"] == 1) {
-                $tracking .= "  var lrsEndpoint = '" . $row['tsugi_xapi_endpoint'] . "';\n";
-                $tracking .= "  var lrsUsername = '" . $row['tsugi_xapi_key'] . "';\n";
-                $tracking .= "  var lrsPassword  = '" . $row['tsugi_xapi_secret'] . "';\n";
+                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
+                $tracking .= "  var lrsUsername = '';\n";
+                $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
                 if ($row["tsugi_published"] == 1) {
                     _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));

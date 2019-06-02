@@ -186,9 +186,14 @@ table {
 }
 //--end of TABLETS and above-----------------------------------------
 
-//******** Smartphones (portrait) change progress bar display-----------/
+//******** Smartphones 600px (portrait) change progress bar display-----------/
 @media only screen
-and (max-width :500px) {
+and (max-width:600px) {
+    //show progress bar in mobile portrait mode with this theme
+    //but also reduce font/button sizes to fit//
+    #x_footerProgress {
+        display: block;
+    }
     #x_pageNo {
         vertical-align: top;
         text-align: center;
@@ -204,8 +209,8 @@ and (max-width :500px) {
         font-size: 12px;
     }
     #x_footerBlock button {
-        font-size: 1em;
-        width: 1em;
+        font-size: 1.6em;
+        width: 1.2em;
         margin-left: 5px;
     }
     .pbContainer {
@@ -217,6 +222,46 @@ and (max-width :500px) {
     }
 }
 //----------------end of smartphones portrait---------------------------------
+
+
+//******** Smartphones 320px (portrait) change progress bar display-----------/
+@media only screen
+and (max-width:320px) {
+    //show progress bar in mobile portrait mode with this theme
+    //but also reduce font/button sizes to fit//
+    #x_footerProgress {
+        display: block;
+    }
+    #x_pageNo {
+        vertical-align: top;
+        text-align: center;
+        display: inline-block;
+        padding-top: 12px;
+        padding-right: 5px;
+        padding-bottom: 0px;
+        padding-left: 5px;
+        margin-right: -5px;
+        height: 30px;
+        width: auto;
+        z-index: 100;
+        font-size: 12px;
+    }
+    #x_footerBlock button {
+        font-size: 1.3em;
+        width: 1.1em;
+        margin-left: 5px;
+    }
+    .pbContainer {
+        margin-top: 1.2em;
+    }
+    .pbTxt {
+        font-size: 6px;
+        text-align: center;
+    }
+}
+//----------------end of smartphones portrait---------------------------------
+
+
 
 //--other @media queries not used or disabled at moment-----------------------------------------
 // --LARGE DESKTOP--------------------------------------------------------------

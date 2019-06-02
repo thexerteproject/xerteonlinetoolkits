@@ -44,6 +44,7 @@ else if(isset($_POST["template_id"]))
 if(is_numeric($id) || $id == null)
 {
 	$tsugi_enabled = true;
+	$lti_enabled = true;
     $LAUNCH = LTIX::requireData();
 
     if ($id == null)
@@ -103,6 +104,33 @@ if(is_numeric($id) || $id == null)
         $xerte_toolkits_site->course = $_REQUEST['module'];
     }
 
+    // Get LRS endpoint and see if xAPI is enabled
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    $q = "select * from {$prefix}templatedetails where template_id=?";
+    $params = array($id);
+    $row = db_query_one($q, $params);
+    if ($row === false)
+    {
+        die("template_id not found");
+    }
+    if ($row['tsugi_xapi_useglobal'])
+    {
+        $q = "select LRS_Endpoint, LRS_Key, LRS_Secret from {$prefix}sitedetails where site_id=1";
+        $globalrow = db_query_one($q);
+        $lrs = array('lrsendpoint' => $globalrow['LRS_Endpoint'],
+            'lrskey' => $globalrow['LRS_Key'],
+            'lrssecret' => $globalrow['LRS_Secret'],
+        );
+    }
+    else{
+        $lrs = array('lrsendpoint' => $row['tsugi_xapi_endpoint'],
+            'lrskey' => $row['tsugi_xapi_key'],
+            'lrssecret' => $row['tsugi_xapi_secret'],
+        );
+    }
+
+
+    $_SESSION['XAPI_PROXY'] = $lrs;
 
     require("play.php");
 

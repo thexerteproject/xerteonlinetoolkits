@@ -120,7 +120,7 @@
 			
             if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
 				var genFeedback = x_addLineBreaks(x_currentPageXML.getAttribute("feedback"));
-				if (!$(genFeedback).is('p')) {
+				if (genFeedback != "" && genFeedback.indexOf('<p') == -1) {
 					genFeedback = '<p>' + genFeedback + '</p>';
 				}
                 generalFeedback = '<br/>' + genFeedback;
@@ -129,7 +129,7 @@
             for (var i=0; i<selected.length; i++) {
                 var optionIndex = $(selected[i]).parent().index(),
 					selectedOption = this.optionElements[optionIndex],
-				currCorrect;
+					currCorrect;
 
 				if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
 					currCorrect = (
@@ -146,7 +146,7 @@
                 if ($(selected[i]).is(':checked')) {
 					var tempFeedback = "";
                     tempFeedback += selectedOption.feedback;
-					if (tempFeedback != "" && !$(tempFeedback).is('p')) {
+					if (tempFeedback != "" && tempFeedback.indexOf('<p') == -1) {
 						tempFeedback = '<p>' + tempFeedback + '</p>';
 					}
 					if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {

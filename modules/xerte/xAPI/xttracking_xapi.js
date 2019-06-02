@@ -405,7 +405,7 @@ function XApiTrackingState() {
      *
      *  correctoptions and correctanswer depends on the sit_iatype
      *
-     *  1. matching
+     *  1. match
      *      correctoptions: array of objects with source and target strings
      *              [
      *              {
@@ -2657,9 +2657,7 @@ function XTGetStatements(q, one, callback) {
                 {
                     continue;
                 }
-                {
-                    statements.push(body.statements[x]);
-                }
+                statements.push(body.statements[x]);
             }
             //stringObjects.push(lastSubmit);
             if (err !== null) {
@@ -2907,13 +2905,13 @@ function XTTerminate() {
         };
         statement.object.definition.name[state.language] = x_params.name;
         SaveStatement(statement, false);
-        if (lti_enabled) {
+        if (typeof lti_enabled !== 'undefined' && lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
-            if (url.indexOf("launch_lti.php") >= 0) {
-                url = url.replace("launch_lti.php", "website_code/php/lti/sendgrade.php");
-            } else if (url.indexOf("launch_lti2.php") >= 0) {
-                url = url.replace("launch_lti2.php", "website_code/php/lti/sendgrade.php");
+            if (url.indexOf("lti_launch.php") >= 0) {
+                url = url.replace("lti_launch.php", "website_code/php/lti/sendgrade.php");
+            } else if (url.indexOf("lti2_launch.php") >= 0) {
+                url = url.replace("lti2_launch.php", "website_code/php/lti/sendgrade.php");
             } else {
                 url = "";
             }

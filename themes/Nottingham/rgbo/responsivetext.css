@@ -164,7 +164,10 @@
 
   #thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3 {
     font-size: 1.5vmin; } }
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 600px) {
+  #x_footerProgress {
+    display: block; }
+
   #x_pageNo {
     vertical-align: top;
     text-align: center;
@@ -180,8 +183,37 @@
     font-size: 12px; }
 
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    font-size: 1.6em;
+    width: 1.2em;
+    margin-left: 5px; }
+
+  .pbContainer {
+    margin-top: 1.2em; }
+
+  .pbTxt {
+    font-size: 6px;
+    text-align: center; } }
+@media only screen and (max-width: 320px) {
+  #x_footerProgress {
+    display: block; }
+
+  #x_pageNo {
+    vertical-align: top;
+    text-align: center;
+    display: inline-block;
+    padding-top: 12px;
+    padding-right: 5px;
+    padding-bottom: 0px;
+    padding-left: 5px;
+    margin-right: -5px;
+    height: 30px;
+    width: auto;
+    z-index: 100;
+    font-size: 12px; }
+
+  #x_footerBlock button {
+    font-size: 1.3em;
+    width: 1.1em;
     margin-left: 5px; }
 
   .pbContainer {

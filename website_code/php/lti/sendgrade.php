@@ -19,7 +19,7 @@
  */
 
 $tsugi_disable_xerte_session = true;
-require_once(dirname(__FILE__) . "/config.php");
+require_once(dirname(__FILE__) . "/../../../config.php");
 require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
 
 ini_set('display_errors', 0);
@@ -27,6 +27,7 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
 
 use \Tsugi\Core\LTIX;
 use \Tsugi\Core\Settings;
+use \Tsugi\Core\Result;
 use \Tsugi\Util\Net;
 use \Tsugi\Grades\GradeUtil;
 
@@ -34,6 +35,7 @@ $LAUNCH = LTIX::requireData();
 
 if (isset($_POST['grade']))
 {
-    $res = Result::gradeSendStatic($_POST['grade']);
-    _debug("Sending grade: " . $res);
+    $gradetosend = $_POST['grade'];
+    $res = $LAUNCH->result->gradeSend($gradetosend);
+    _debug("Sending grade: " . $gradetosend . ": " . $res);
 }

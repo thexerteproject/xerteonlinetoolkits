@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 	var documentation = new function() {
 		var currentPage = 0,
 			docData = {
@@ -47,6 +47,12 @@
 		}
 		
 		this.init = function() {
+			// styles used in downloaded word doc
+			var styles = '';
+			styles += 'body, .ui-widget { font-family: Arial, sans-serif; -webkit-font-smoothing: antialiased; color: black; font-size: 12pt; } ';
+			styles += 'table.tableDoc { font-size: 1em; margin: 0.2em; padding: 0.2em; width: 100%; border-collapse: collapse; } ';
+			$('#pageContents').data('downloadStyles', styles);
+		
 			var pageIndex = 0;
 			
 			// Set up main layout structure & add in all non-subpage text
@@ -94,7 +100,6 @@
 			docData.documentName = x_currentPageXML.getAttribute('name');
 			docData.documentText = x_currentPageXML.getAttribute('text');
 			docData.documentIntro = x_currentPageXML.getAttribute('intro');
-			
 			
 			// Store 'No answer' text
 			if (x_currentPageXML.getAttribute('notAnswered')) notAnsweredDefault = x_currentPageXML.getAttribute('notAnswered');
@@ -303,7 +308,12 @@
 				docData.pages[page].sections[section].items[item] = {};
 				docData.pages[page].sections[section].items[item].itemName = xml.getAttribute('name');
 				docData.pages[page].sections[section].items[item].itemText = xml.getAttribute('text');
-				docData.pages[page].sections[section].items[item].itemValue = "";
+				
+				if (xml.nodeName != 'tableDoc') {
+					docData.pages[page].sections[section].items[item].itemValue = "";
+				} else {
+					docData.pages[page].sections[section].items[item].itemValue = documentation.formatTableForDownload(this.createTable(xml, 'tableDoc ' + xml.getAttribute("borders")), '');
+				}
 			}
 			
 			if (exclude != 'lo') {
@@ -425,6 +435,55 @@
 						}
 						break;
 					case 'description':
+						break;
+					case 'tableDoc':
+						var header = false,
+							footer = false,
+							classes = 'tableDoc ' + xml.getAttribute("borders");
+						
+						if (xml.getAttribute("header") == "header" || xml.getAttribute("header") == "both") {
+							header = true;
+							classes += ' header';
+						}
+						if (xml.getAttribute("header") == "footer" || xml.getAttribute("header") == "both") {
+							footer = true;
+							classes += ' footer';
+						}
+						if (xml.getAttribute("shadeHeader") == "true" && (header == true || footer == true)) {
+							classes += ' shaded';
+						}
+						
+						$element = this.createTable(xml, classes);
+						
+						if (xml.getAttribute("shade") == "true") {
+							var $tr = $element.find('tr');
+							
+							$element.find('table').children(0).children().each(function() {
+								var $this = $(this),
+									thisIndex = $this.index();
+								if (footer != true || thisIndex != $tr.length-1) {
+									if (header == true) { // shade even no. rows, except for 1st row
+										if (thisIndex%2 == 0 && thisIndex != 0) {
+											$this.addClass("shaded");
+										}
+									} else if (thisIndex%2 != 0) { // shade odd no. rows
+										$this.addClass("shaded");
+									}
+								}
+							});
+						}
+						
+						if (requiredKey.length > 0) $element.find('textarea').attr('id', requiredKey);
+						
+						if (exclude != 'doc') {
+							documentation.updateData(page, section, item, documentation.formatTableForDownload($element, notAnsweredText));
+							
+							(function (p, s, i) {
+								$element.find('textarea').on('change', function () {
+									documentation.updateData(p, s, i, documentation.formatTableForDownload($element, notAnsweredText));
+								})
+							})(page, section, item);
+						}
 						break;
 					case 'line':
 						if (exclude != 'doc') {
@@ -577,24 +636,30 @@
 		this.checkRequired = function (page) {
 			$(".alertBorder").removeClass('alertBorder');
 			var ok = true;
-
 			for(var i=0; i<required.length; i++) {
 				if (required[i].page == page) {
-					switch ($('#'+required[i].key).attr('type')) {
-						case 'checkbox':
-							if (! $('#'+required[i].key).prop('checked')) {
-								ok = false;
-								$('#'+required[i].key).closest('.item').addClass('alertBorder');
+					if ($('#'+required[i].key).attr('type') == 'checkbox') {
+						if (! $('#'+required[i].key).prop('checked')) {
+							ok = false;
+							$('#'+required[i].key).closest('.item').addClass('alertBorder');
+						}
+					} else {
+						if ($('#'+required[i].key).parents('table.tableDoc').length > 0) {
+							var $tableDoc = $('#'+required[i].key).parents('table.tableDoc');
+							// when an editable table is required all the text areas in it must be completed
+							for (var j=0; j<$tableDoc.find('textarea').length; j++) {
+								if ($tableDoc.find('textarea')[j].value == '') {
+									ok = false;
+									$('#'+required[i].key).closest('.item').addClass('alertBorder');
+									break;
+								}
 							}
-							break;
-						case 'textarea':
-						case 'textbox':
-						default:
+						} else {
 							if ($('#'+required[i].key).val() == '') {
 								ok = false;
 								$('#'+required[i].key).closest('.item').addClass('alertBorder');
 							}
-							break;
+						}
 					}
 				}
 			}
@@ -603,6 +668,55 @@
 			
 			return ok;
 		};
+		
+		this.createTable = function(xml, classes) {
+			var separators = ['||','|'],
+				tableString = '<table class="' + classes + '">',
+				rows = xml.getAttribute('data').split(separators[0]),
+				id = 0,
+				rowNum = xml.hasAttribute('rows') ? parseInt(xml.getAttribute('rows')) : 3;
+			
+			for (i=0; i<rows.length; i++) {
+				tableString += '<tr>';
+				
+				var cells = rows[i].split(separators[1]);
+				for (var j=0; j<cells.length; j++) {
+					if (xml.getAttribute('replace') != 'false') {
+						if ($.trim(cells[j]) == '') {
+							var textarea = '<textarea class="cell' + id + '" rows="' + rowNum + '"></textarea>';
+							tableString += '<td class="editable">' + textarea + '</td>';
+							id++;
+							
+						} else if ($.trim(cells[j]) == (xml.hasAttribute('empty') ? xml.getAttribute('empty') : '[empty]')) {
+							tableString += '<td></td>';
+						} else {
+							tableString += '<td>' + cells[j] + '</td>';
+						}
+					} else {
+						tableString += '<td>' + cells[j] + '</td>';
+					}
+				}
+				
+				tableString += '</tr>';
+			}
+			
+			tableString += '</table>';
+			
+			return $('<div class="table">' + tableString + '</div>');
+		}
+		
+		this.formatTableForDownload = function($table, notAnsweredText) {
+			var $tempTable = $('<div>').append($table.find('table').clone());
+			
+			$tempTable.find('textarea').each(function() {
+				$(this).before('<i>' + ($(this).val().length == 0 ? notAnsweredText : $(this).val().replace(/\r?\n/g, '<br>')) + '</i>');
+				$(this).remove();
+			});
+			
+			$tempTable.find('table').attr('border', '1');
+			
+			return '<span style="font-style:">' + $tempTable.html() + '</span>';
+		}
 		
 		this.download = function () {
 			if (documentation.checkRequired(currentPage)) {
@@ -620,7 +734,15 @@
 				i, j, k;
 			
 			for (i=0; i<temp.pages.length; i++) {
+                if (typeof temp.pages[i].sections == "undefined")
+				{
+                    temp.pages[i].sections = [];
+				}
 				for (j=0; j<temp.pages[i].sections.length; j++) {
+                    if (typeof temp.pages[i].sections[j].items == "undefined")
+					{
+                        temp.pages[i].sections[j].items = [];
+					}
 					for (k=0; k<temp.pages[i].sections[j].items.length; k++) {
 						if (jQuery.isEmptyObject(temp.pages[i].sections[j].items[k])) {
 							temp.pages[i].sections[j].items.splice(k, 1);
@@ -628,6 +750,10 @@
 					}
 				}
 			}
+			
+			temp.styles = $('#pageContents').data('downloadStyles');
+			temp.orientation = x_currentPageXML.getAttribute('fileOrientation') != '' && x_currentPageXML.getAttribute('fileOrientation') != undefined ? x_currentPageXML.getAttribute('fileOrientation') : 'portrait';
+			temp.size = x_currentPageXML.getAttribute('fileOrientation') == 'landscape' ? '841.7pt 595.45pt' : '595.45pt 841.7pt';
 			
 			var form = document.createElement("form");
 			form.method = 'post';

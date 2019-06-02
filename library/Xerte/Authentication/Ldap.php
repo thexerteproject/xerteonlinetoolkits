@@ -150,6 +150,13 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
 
             $ldapbind = null;
 
+            // This code is very inconsistent with expecting a '=' as part of the filter
+            $ldap_filter_attr = trim($ldap_filter_attr);
+            if (substr($ldap_filter_attr, -1) == '=') {
+                $ldap_filter_attr = substr($ldap_filter_attr, 0, strlen($ldap_filter_attr)-1);
+            }
+            $ldap_search_attr['login'] = $ldap_filter_attr;
+
             $ds = @ldap_connect($host, (int) $port);
             if (!$ds) {
                 $this->addError("Issue connecting to ldap server (#1) : Connecting");
@@ -167,16 +174,8 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
                     _debug("Failed to bind to ldap server- perhaps the dn($bind_dn) or password are incorrect?");
                     return false;
                 }
-                // Thi code is very inconsistent with expecting a '=' as part of the filter
-                if (substr(trim($ldap_filter_attr), -1) != '=') {
-                    // Add '='
-                    $sf = "(" . $ldap_filter_attr . "=" . $xot_username . ")";
-                }
-                else
-                {
-                    // No need to add extra '='
-                    $sf = "(" . $ldap_filter_attr . $xot_username . ")";
-                }
+                $sf = "(" . $ldap_filter_attr . "=" . $xot_username . ")";
+
                 _debug("Search filter: " . $sf);
                 $sr = @ldap_search($ds, $basedn, $sf, array_values($ldap_search_attr));
                 if (!$sr) {
@@ -184,7 +183,7 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
                     _debug("Failed to query ldap server" . ldap_error($ds));
                     return false;
                 }
-                _debug("Searched $basedn / $ldap_filter_attr $xot_username ");
+                _debug("Searched $basedn / $ldap_filter_attr=$xot_username ");
 
                 $entry = ldap_get_entries($ds, $sr);
                 //var_dump($entry);
@@ -199,12 +198,15 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
                          * valid login, so return true
                          */
 
-                        $this->_record = array('firstname' => $entry[0]['givenname'][0], 'surname' => $entry[0]['sn'][0], 'username' => $xot_username);
+                        $this->_record = array('firstname' => $entry[0]['givenname'][0], 'surname' => $entry[0]['sn'][0], 'username' => $entry[0][$ldap_filter_attr][0]);
+                        _debug("LDAP record: " . print_r($this->_record, true));
                         return true;
                     }
                 }
             }
-        } else {
+        }
+        else
+        {
             // Thi code is very inconsistent with expecting a '=' as part of the filter
             if (substr(trim($ldap_filter), -1) != '=') {
                 $filter = "(" . $ldap_filter . '=' . $xot_username . ")";

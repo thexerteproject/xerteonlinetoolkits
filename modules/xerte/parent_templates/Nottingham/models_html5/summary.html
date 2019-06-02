@@ -42,7 +42,15 @@
 				nextstepsHeader = "Next Steps";
 			}
 			
-			$("#pageContents").html("<h3>" + summaryHeader + "</h3><p>" + x_addLineBreaks(x_currentPageXML.getAttribute("summary")) + "</p><br/><h3>" + nextstepsHeader + "</h3><p>" + x_addLineBreaks(x_currentPageXML.getAttribute("nextsteps")) + "</p>");
+			var $pageContents = $("#pageContents");
+			
+			if (x_currentPageXML.getAttribute("summary") != undefined && x_currentPageXML.getAttribute("summary") != '') {
+				$pageContents.append("<div class='summaryGroup'><h3>" + summaryHeader + "</h3>" + x_addLineBreaks(x_currentPageXML.getAttribute("summary")) + "</div>");
+			}
+			
+			if (x_currentPageXML.getAttribute("nextsteps") != undefined && x_currentPageXML.getAttribute("nextsteps") != '') {
+				$pageContents.append("<div class='summaryGroup'><h3>" + nextstepsHeader + "</h3>" + x_addLineBreaks(x_currentPageXML.getAttribute("nextsteps")) + "</div>");
+			}
 			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();

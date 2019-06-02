@@ -160,7 +160,7 @@
   <colourChanger label="Cambiare Colore" description="Per cambiare i colori.">
 	  <closeButton label="" description="Chiudi la personalizzazione dei colori"/>
           <selectTxt label="Seleziona una delle opzioni seguenti"/>
-	  <adviceTxt label="Servono maggiori consigli? Visita la &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;guida di accesibilità di Xerte Toolkits&lt;/a&gt;."/>
+	  <adviceTxt label="Servono maggiori consigli? Visita la &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;guida di accesibilità di Xerte Toolkits&lt;/a&gt;."/>
 	  <off label="Off"/>
 	  <noBg label="Rimuovi Immagini di sfondo"/>
 	  <invert label="Inverti"/>

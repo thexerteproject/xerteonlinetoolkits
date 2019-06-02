@@ -98,4 +98,6 @@ define("INDEX_XAPI_DASHBOARD_SHOW_NAMES", "Show names and/or email addresses");
 
 define("INDEX_XAPI_DASHBOARD_CLOSE", "Close dashboard");
 
+define("INDEX_XAPI_DASHBOARD_DISPLAY_OPTIONS", "Display options");
+
 define("INDEX_XAPI_DASHBOARD_SHOW_HIDE_COLUMNS", "Show / hide columns");

@@ -1193,13 +1193,13 @@ function XTTerminate()
             }
 
         }
-        if (lti_enabled) {
+        if (typeof lti_enabled !== 'undefined' && lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
-            if (url.indexOf("launch_lti.php") >= 0) {
-                url = url.replace("launch_lti.php", "website_code/php/lti/sendgrade.php");
-            } else if (url.indexOf("launch_lti2.php") >= 0) {
-                url = url.replace("launch_lti2.php", "website_code/php/lti/sendgrade.php");
+            if (url.indexOf("lti_launch.php") >= 0) {
+                url = url.replace("lti_launch.php", "website_code/php/lti/sendgrade.php");
+            } else if (url.indexOf("lti2_launch.php") >= 0) {
+                url = url.replace("lti2_launch.php", "website_code/php/lti/sendgrade.php");
             } else {
                 url = "";
             }
@@ -1211,11 +1211,12 @@ function XTTerminate()
                         grade: state.getdScaledScore()
                     }
                 })
-                    .done(function(msg) {
+                    .done(function (msg) {
                         //alert("Data Saved: " + msg);
                     });
             }
         }
+
     }
 }
 

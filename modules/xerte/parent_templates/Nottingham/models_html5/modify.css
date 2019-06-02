@@ -1,21 +1,22 @@
 /* modify.html */
 	
 	#pageContents p#instruction {
-		margin-top:	0px;
+		margin-top: 0px;
 	}
 	
 	#pageContents textarea {
-		display:		block;
-		width:			100%;
-		resize:			vertical;
+		display: block;
+		width: 95%;
+		resize: vertical;
+		margin: 0.5em auto;
 	}
 	
 	#answer, #modelTxt {
-		margin-top:	20px;
+		margin-top: 1em;
 	}
 	
 	#pageContents button {
-		margin:		10px;
-		float:		right;
+		margin: 10px;
+		float: right;
 	}
 	

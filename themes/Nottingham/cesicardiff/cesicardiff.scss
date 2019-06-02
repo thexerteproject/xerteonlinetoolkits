@@ -27,7 +27,7 @@ $esc6: #c3c8cf ;
 	font-family:$mainfonts;
 	background: #fff;
 	display: table;
-	font-weight: normal;
+	font-weight: lighter;
 	margin-bottom: 7px;
 	margin-top: 5px;
 	padding: 10px;
@@ -234,7 +234,7 @@ blockquote:after {
 }
 .speech-bubble2 {
 	background: $esc2;
-	color:white;
+	color:$blackordarkest;
 }
 .speech-bubble2:after {
 	border-left-color: $esc2;
@@ -248,7 +248,7 @@ blockquote:after {
 }
 .speech-bubble4 {
 	background: $esc4;
-	color:$blackordarkest;
+	color:$whiteorlightest;
 }
 .speech-bubble4:after {
 	border-left-color: $esc4;
@@ -301,6 +301,7 @@ a {
 	font-weight:bold;
 	font-family:'Open Sans', sans-serif;
 }
+
 a:hover {
 	text-decoration:underline;
 	color:#152c51;
@@ -359,6 +360,9 @@ a:visited {
 .x_dragDropLabel_page #labelHolder .label {
 	margin: 0;
 }
+.x_dragDropLabel_page #infoHolder {
+	font-size: 1em;
+}
 #dragDropHolder .label {
 	border:1px solid #152c51;
 	padding-left:8px !important;
@@ -376,23 +380,38 @@ a:visited {
 	border-radius: 0px 20px 20px 0px;
 }
 #dragDropHolder .label p {
-	font-size:1.1em !important;
+	font-size:1.1em; //!important; //OC
 	font-weight:normal;
 }
 .hint p {
-	font-size: 1em !important;
+	font-size: 1em;//RM !important;
 }
 #feedback h3 {
 	border-bottom: 1px solid #aaa !important;
 	padding-bottom: 5px !important;
 }
-#iFrame,iframe {
-//	height:66vw!important;
-//	max-height:60vh;
-//	max-width:960px;
-//	max-width:80%;
-//	width:100%;
+p #iFrame,p iframe { //TBD
+	height:66vw!important;
+	max-height:60vh;
+	max-width:960px;
+	//max-width:80%; //OC - Assume added by ron
+	width:100%;
 }
+
+p .panel #iFrame, p .panel iframe {
+	width: 100%;
+	max-width: 960px;
+	height: auto !important;
+	max-height: 100%;
+}
+
+.embeddedContent iframe {
+	height: 66vw !important;
+	max-height: 60vh;
+	max-width: 960px;
+	width: 100%;
+}
+
 #imgCaption {
 	font-weight:lighter;
 }
@@ -400,6 +419,11 @@ a:visited {
 	background:#eee;
 	border:0;
 	padding:0;
+	font-size: 1.2em;
+	line-height: 1.4em;
+}
+#infoHolder button {
+	font-size: 0.8em; //OC
 }
 #infoHolder img {
 	max-width:100%;
@@ -415,10 +439,15 @@ a:visited {
 	color:black;
 	font-weight:700;
 	padding-left:0!important;
+	font-size: 1em;//RM !important;
+}
+
+#infoHolder p { //OC
+	font-size: 1em;
 }
 #initHolder {
 	margin:0 0 10px!important;
-//	width:49%!important;
+	//	width:49%!important;
 }
 #labelHolder .label {
 	font-size:1em;
@@ -440,7 +469,7 @@ a:visited {
 	padding:4px;
 }
 #linkHolder p {
-	font-size:1em;
+	font-size:1.2em; //OC
 }
 #menuItems .menuItem {
 	background:#eee;
@@ -459,9 +488,12 @@ a:visited {
 	max-width: 100%;
 }
 .x_videoSynch_page #pageContents {
-	 width: 50%;
-	max-width: 80%;
+	width: 50% !important; //OC
+	max-width: 80% !important; //OC
+	font-size: 1.2em;//RM !important; //OC
 }
+
+
 
 #question p {
 	font-size:inherit;
@@ -479,7 +511,7 @@ a:visited {
 }
 #targetHolder h3 {
 	border: 1px solid #152c51;
-	font-size: 1em !important;
+	font-size: 1em;//RM !important;
 	padding: 5px !important;
 	background: white;
 	position:relative;
@@ -503,8 +535,8 @@ a:visited {
 }
 #textHolder {
 	margin-bottom:0!important;
-//	max-width:960px;
-	max-width:80%;
+	max-width:960px; //OCWidth
+	//	max-width:80%;
 	margin:auto;
 }
 #textHolder img {
@@ -569,7 +601,7 @@ img {
 	-webkit-box-shadow:none;
 	box-shadow:none;
 }
-#pageContents p#instruction {
+#pageContents p #instruction {
 	font-size: 1em;
 }
 .right .panel {
@@ -595,6 +627,7 @@ img {
 	border-radius: 4px;
 	font-family: 'Roboto', sans-serif;
 }
+
 .cardInner {
 	background:white;
 	border:1px solid #152c51;
@@ -603,18 +636,18 @@ img {
 	padding: 1em;
 }
 .fa {
-	vertical-align:middle;
+	vertical-align:baseline;
 }
 .marker{
-	 background-color:#152c51;
-	 color:white;
-	 display:table;
-	 font-family:Roboto, sans-serif;
-	 font-weight:lighter;
-	 margin-bottom:7px;
-	 margin-top:5px;
-	 padding:10px;
- }
+	background-color:#152c51;
+	color:white;
+	display:table;
+	font-family:Roboto, sans-serif;
+	font-weight:lighter;
+	margin-bottom:7px;
+	margin-top:5px;
+	padding:10px;
+}
 .noStyle h3 {
 	background:none;
 	color:black;
@@ -638,14 +671,14 @@ img {
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 }
-.splitScreen,.ui-sortable h3 {
-	font-size:1em !important;
+.ui-sortable h3 {
+	font-size:1em !important; //OCEDIT - Splitscreen removed .splitScreen,
 }
 .splitScreen .right {
 	margin-left: 10px !important;
 }
 #dragDropHolder .ui-sortable .label p {
-//	font-size:0.9em !important;
+	font-size:0.9em;//RM !important; //OC
 }
 #dragDropHolder .ui-sortable .label:before {
 	content: none;
@@ -686,18 +719,19 @@ img {
 	margin-top:5px!important;
 }
 .ui-tabs .ui-tabs-nav li {
-//	background:#152c51;
-//	border:0;
+	//	background:#152c51;
+	//	border:0;
 
 	border: 1px solid;
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 	margin-right: 1px;
+	font-size: 0.8em; //OC
 }
 .ui-tabs .ui-tabs-nav li a {
 	border:0;
-//	color:white;
-//	font-size:.6em;
+	//	color:white;
+	//	font-size:.6em;
 	font-family: Roboto, sans-serif;
 	font-weight:normal;
 }
@@ -706,8 +740,22 @@ body {
 	font-family:Roboto, sans-serif;
 	font-weight:lighter;
 }
+//set editor background colour to same as theme background
 .cke_editable {
 	background: #efefef;
+}
+//font size of p text in editor window
+.cke_editable p{
+	font-size:1em;
+}
+//link style in editor window
+.cke_editable a{
+	font-weight:bold;
+}
+//font size and link style in editor list menu
+.cke_panel_listItem p,.cke_panel_listItem a{
+	font-size:.8em;
+	font-weight:normal;
 }
 cite {
 	font-family:'Open Sans', sans-serif;
@@ -736,7 +784,7 @@ h3 {
 	/*background:#152c51;
     color:white;*/
 	font-family: 'Roboto', sans-serif;
-	font-size: 1 em !important;
+	font-size: 1.2em;//RM !important; //OC
 	font-weight: bold;
 	padding-top: 10px !important;
 	padding-bottom: 5px !important;
@@ -748,7 +796,7 @@ h3:empty,#infoHolder hr {
 }
 h4 {
 	font-family: 'Roboto', sans-serif;
-	font-size: 1.1em !important;
+	font-size: 1.1em;//RM !important;
 	font-weight: normal;
 	padding-top: 10px !important;
 	padding-bottom: 5px !important;
@@ -758,7 +806,7 @@ h4 {
 }
 h5 {
 	font-family: 'Roboto', sans-serif;
-	font-size: 1.0em !important;
+	font-size: 1.0em;//RM !important;
 	font-weight: normal;
 	padding-top: 10px !important;
 	padding-bottom: 8px !important;
@@ -771,7 +819,7 @@ h5 {
 }
 h6 {
 	border-top:1px solid #152c51;
-	display:none;//was 0
+	//display:none;//was 0 //OC
 	font-family:Roboto, sans-serif;
 	font-size:1.1em;
 	font-weight:400;
@@ -783,7 +831,7 @@ hr {
 	border:1px solid #ddd;
 }
 img,#cropImg,#controlPanel {
-	border:1px solid #152c51;
+	border:1px solid #ccc; //OC
 }
 kbd {
 	background-color:#d3374a;
@@ -801,7 +849,7 @@ li {
 }
 p {
 	color:#000;
-//	font-size:1.2em;
+	font-size:1.2em; //OC
 	line-height:1.4em;
 }
 li p {
@@ -847,10 +895,15 @@ td {
 	background:#fff;
 	border-color: #152c51;
 	font-size:1.1em;
+	line-height: 1.4em; //OC
 	width:auto;
 }
-td li,.ui-tabs .ui-tabs-panel p {
-	font-size:.8em;
+td li {
+	//font-size: 0.85em; //OC
+}
+
+.ui-tabs .ui-tabs-panel p {
+	font-size:1em; //OC
 }
 th {
 	background:#152c51;
@@ -877,15 +930,15 @@ tt {
 	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 #imgHolder #mainPanel {
-//	width: 95%;
+	//	width: 95%;
 	margin:auto;
 }
 .fullScreen #mainPanel, #imgHolder #mainPanel #cropImg {
-//	width:100% !important;
+	//	width:100% !important;
 }
 #imgHolder #mainPanel #cropImg #pageImg  {
-//	min-width:100% !important;
-//	max-width:100%;
+	//	min-width:100% !important;
+	//	max-width:100%;
 }
 #imgHolder .x_floatRight {
 	max-width:35% !important;
@@ -893,7 +946,7 @@ tt {
 	margin-left:10px !important;
 }
 .fullScreen #mainPanel #cropImg #pageImg  {
-//	max-width:2000% !important;
+	//	max-width:2000% !important;
 }
 .x_gapFill_page #targetHolder .target {
 	padding: 4px;
@@ -902,25 +955,25 @@ tt {
 
 ul {
 	color:#000;
-	font-size:1em !important;
+	font-size:1.2em;//RM !important; //OC
 	margin:0;
 }
 ul ul {
-	font-size:inherit !important;
+	font-size:inherit;//RM !important;
 }
 ol {
 	color:#000;
-	font-size:1.2em !important;
+	font-size:1.2em;//RM !important;
 	margin:0;
 }
-ol ol {
-	font-size:inherit !important;
+ol ol{
+	font-size:inherit;//RM !important;
 }
 ol ul {
-	font-size:inherit !important;
+	font-size:inherit;//RM !important;
 }
 ul ol {
-	font-size:inherit !important;
+	font-size:inherit;//RM !important;
 }
 var {
 	background-color:#ccc;
@@ -937,12 +990,12 @@ var {
 	margin-right:-2px !important;
 }
 .titlePageTxt {
-	font-size: 3vw !important;
+	font-size: 3vw;//RM !important;
 }
 #pageContents{
-	width:95%;
-//	max-width:960px;
-	max-width:80%;
+	width:95%; //OCWidth
+	max-width:960px;
+	//	max-width:80%;
 }
 .withChild {
 	width:100% !important;
@@ -953,7 +1006,7 @@ var {
 }
 @media only screen and (max-width: 900px) {
 	.titlePageTxt{
-		font-size:4vw !important;
+		font-size:3.5vw;//RM !important;
 	}
 }
 @media only screen and (min-height: 700px) {
@@ -969,15 +1022,74 @@ var {
 .pbTxt {
 	color: #EEE;
 }
- #cards {
-//	width:90% !important;
+#cards {
+	width:90% !important; //OC
 	height: 60vh !important;
 
 }
-.x_flashCards .card {
+.x_flashCards_page .card { //OC
 	width:100% !important;
 }
 
 .x_grid_page table {
 	margin-top: 0;
+}
+
+//OC - Fixes for other pages that we didn't support at first
+#thumbHolder .thumbBox h3 {
+	font-size: 0.9em;//RM !important;
+	text-align: center;
+	overflow: hidden;
+	padding: 0px !important;
+	border: none !important;
+}
+
+.x_mediaLesson_page iframe, .x_mediaLesson_page #iframe {
+	width:100% !important;
+	height: 100% !important;
+}
+
+#mainText, #textHolder {
+	line-height: 1.4em;
+}
+
+#textHolder {
+	font-size: 1.2em;
+}
+#textHolder p{
+	font-size: inherit;
+	line-height: 1.6em;
+}
+
+#subMenuItems {
+	width: 100%;
+	margin:auto;
+	max-width:960px;
+}
+
+#subMenuItems .subMenuItem {
+	display: block;
+	margin-bottom: 5px;
+	text-align: left;
+	width: 100% !important;
+}
+
+.x_annotatedDiagram_page #canvas {
+	position: absolute;
+	top: 0px;
+	margin: 0;
+	right: 0;
+}
+
+
+#copyBtn {
+	font-size: 0.8em;
+}
+
+.x_tabNavExtra_page #pageContents {
+	font-size:1.1em;
+}
+
+#pageContents.mcq .optionTxt {
+	font-size: 1.2em;
 }
