@@ -35,9 +35,9 @@ if (is_user_admin()) {
     "<form action='website_code/php/management/upload.php' method='post' enctype='multipart/form-data' onsubmit='return template_submit()' id='form-template-upload'>" .
         "<input type='file' value='Search File' name='fileToUpload' id='file-select'>" .
         "<p>
-            <input class='management_input' type='text' name='templateName'>&NonBreakingSpace;Enter the template name<br>
-            <input class='management_input' type='text' name='templateDisplayname'>&NonBreakingSpace;Enter the template display name<br>
-            <input class='management_input' type='text' name='templateDescription'>&NonBreakingSpace;Enter the template description<br>
+            <input class='management_input' type='text' name='templateName'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATENAME . "<br>
+            <input class='management_input' type='text' name='templateDisplayname'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATEDISPLAYNAME . "<br>
+            <input class='management_input' type='text' name='templateDescription'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATEDESCRIPTION . "<br>
         </p><br>
         <button type='submit' id='upload-button' class='xerte_button'><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button>" .
     "</form></p>";

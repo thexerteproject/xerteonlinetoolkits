@@ -56,5 +56,11 @@
 
     define("TEMPLATE_UPLOAD_FILE", "Upload file");
 
+    define("TEMPLATE_UPLOAD_TEMPLATENAME", "Enter the template name");
+
+    define("TEMPLATE_UPLOAD_TEMPLATEDISPLAYNAME", "Enter the template display name");
+
+    define("TEMPLATE_UPLOAD_TEMPLATEDESCRIPTION", "Enter the template description");
+
 
 ?>
