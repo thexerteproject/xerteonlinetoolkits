@@ -75,6 +75,8 @@
             this.init = function() {
                 var hadExited = false;
 
+
+
                 this.weighting = 1.0;
                 if(x_currentPageXML.getAttribute("trackingWeight") != null){
                     this.weighting = x_currentPageXML.getAttribute("trackingWeight");
@@ -120,6 +122,9 @@
                     }
                 }
 
+                var $attempts = $("#attempts");
+                var amountofTries = x_currentPageXML.getAttribute("amountOfTries");
+
                 var $pageContents = $("#pageContents");
 
                 var $textHolder = $("#textHolder");
@@ -161,6 +166,13 @@
 
                 var answerLabel = x_currentPageXML.getAttribute("answerLabel");
 
+                var attemptLabel = x_currentPageXML.getAttribute("attemptLabel");
+                if( x_currentPageXML.getAttribute("attemptLabel") == null){
+                    attemptLabel = "Attempt";
+                }
+
+                $attempts.html(attemptLabel+ ": "+ amountofTries);
+
                 // pageScore
                 var correctIcon = $("<div>").addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
 
@@ -168,44 +180,91 @@
                 // if (checkBtnTxt == undefined) {
                 //     checkBtnTxt = "Check";
                 // }
+                var attempt = 1;
                 $("#checkButton")
                     .button({
                         label: checkButtonTxt
                     })
                     .click(function () {
+                        debugger;
+                        var tries = parseInt(x_currentPageXML.getAttribute("amountOfTries"));
+
+                        $correctOrNot.html("");
+
+                        amountofTries -= 1;
+
+                        if(amountofTries > 0) {
+                            $attempts.html(attemptLabel+ ": "+ amountofTries);
+                        }else{
+                            $attempts.html("");
+                        }
+
                         $(checkButton).button("disable");
 
                         XTEnterInteraction(x_currentPage, 0, "text", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("introduction"), ""), "",answer, FurtherClarification);
 
-
-                        //get value of text area
                         var input = $(".answer textarea").val();
-                        textCorrection.input =  input;
-                        $correctOrNot.html("");
+                        //get value of text area
+                        if(attempt < tries) {
+                            $(checkButton).button("enable");
 
-                        // decide if it is correct or not
-                        $correctOrNot.append("<h3>"+resultLabel+"</h3>");
-                        if (input === "") {
-                            $correctOrNot.append(incompleet);
-                            $correctOrNot.append(incorrectICon)
-                        }
 
-                        if(input !== "") {
-                            if (input === answer) {
-                                $correctOrNot.append(correct);
-                                $correctOrNot.append(correctIcon)
-                            }else{
-                                $correctOrNot.append(incorrect);
+                            textCorrection.input = input;
+
+                            $correctOrNot.append("<h3>"+resultLabel+"</h3>");
+                            if (input === "") {
+                                $correctOrNot.append(incompleet);
                                 $correctOrNot.append(incorrectICon)
                             }
 
-                            if (!hadExited) {
-                                textCorrection.exitTrackTextCorrection();
-                                hasExited = true;
-                            }
-                            textCorrection.hasExited = hadExited;
-                            // show feedback
+                            if(input !== "") {
+                                if (input === answer) {
+                                    $correctOrNot.append(correct);
+                                    $correctOrNot.append(correctIcon)
+                                }else{
+                                    $correctOrNot.append(incorrect);
+                                    $correctOrNot.append(incorrectICon)
+                                }
 
+                                if (!hadExited) {
+                                    textCorrection.exitTrackTextCorrection();
+                                    hasExited = true;
+                                }
+                                textCorrection.hasExited = hadExited;
+
+                            }else{
+                                $(checkButton).button("disable");
+                            }
+                        }else{
+                            $(checkButton).button("enable");
+                        }
+
+                        attempt ++;
+
+                        if(input === answer|| attempt > tries){
+                            $(checkButton).button("disable");
+                            $correctOrNot.html("");
+                            $attempts.html("");
+                            $correctOrNot.append("<h3>"+resultLabel+"</h3>");
+                            if (input === "") {
+                                $correctOrNot.append(incompleet);
+                                $correctOrNot.append(incorrectICon)
+                            }
+
+                            if(input !== "") {
+                                if (input === answer) {
+                                    $correctOrNot.append(correct);
+                                    $correctOrNot.append(correctIcon)
+                                } else {
+                                    $correctOrNot.append(incorrect);
+                                    $correctOrNot.append(incorrectICon)
+                                }
+
+                                if (!hadExited) {
+                                    textCorrection.exitTrackTextCorrection();
+                                    hasExited = true;
+                                }
+                            }
                             if (x_currentPageXML.getAttribute("FurtherClarification") !== null) {
                                 $FurtherClarification.append("<h3>" + FurtherClarificationLabel + "</h3>");
                                 $FurtherClarification.append(FurtherClarification);
@@ -216,8 +275,7 @@
                                 $answer.append("<h3>" + answerLabel + "</h3>");
                                 $answer.append(x_currentPageXML.getAttribute("answer"))
                             }
-                        }else{
-                            $(checkButton).button("enable");
+
                         }
 
                     });
@@ -245,6 +303,7 @@
                     <div class="answer"><textarea rows="4" cols="50"></textarea></div>
                 </div>
                 <button id="checkButton"></button>
+                <div id="attempts"></div>
                 <div id="correctOrNot"></div>
                 <div id="FurtherClarification"></div>
                 <div id ="answer"></div>
