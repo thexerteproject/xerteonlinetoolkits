@@ -81,6 +81,10 @@ $export_offline = false;
 $xAPI = false;
 $offline_includes="";
 $need_download_url = false;
+if (!isset($tsugi))
+{
+    $tsugi = false;
+}
 
 if (isset($_REQUEST['html5'])) {
     $export_html5 = ($_REQUEST['html5'] == 'true' ? true : false);

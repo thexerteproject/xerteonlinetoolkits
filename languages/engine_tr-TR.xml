@@ -156,7 +156,7 @@
   <colourChanger label="Renk Değiştirici" description="Renkleri değiştirir.">
 	  <closeButton label="" description="Renk değiştiriciyi kapat"/>
 	  <selectTxt label="Lütfen aşağıdaki seçeneklerden seçiniz"/>
-	  <adviceTxt label="Yardıma mı ihtiyacınız var? Ziyaret edin: &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Xerte Toolkits accessibility guide&lt;/a&gt;."/>
+	  <adviceTxt label="Yardıma mı ihtiyacınız var? Ziyaret edin: &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Toolkits accessibility guide&lt;/a&gt;."/>
 	  <off label="Yok"/>
 	  <noBg label="Arka zemin resimlerini kaldır"/>
 	  <invert label="Ters çevir"/>

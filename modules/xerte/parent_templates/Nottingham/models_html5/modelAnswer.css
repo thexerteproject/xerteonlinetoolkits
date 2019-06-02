@@ -28,9 +28,9 @@
 	
 	#answerTxt {
 		display:	block;
-		width:		100%;
+		width:		95%;
 		resize:		vertical;
-		margin-top:	1em;
+		margin:	0.5em auto;
 	}
 	
 	#copyTxt {

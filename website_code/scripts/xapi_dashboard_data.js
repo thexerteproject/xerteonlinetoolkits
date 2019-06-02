@@ -41,7 +41,8 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
     ADL.XAPIWrapper.changeConfig(this.conf);
 
     var search = ADL.XAPIWrapper.searchParams();
-    activities = q.activities;
+    var activities = q.activities;
+    var query = q;
     $.each(q, function(i, value) {
         if(i != "activities")
             search[i] = value;
@@ -49,10 +50,11 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
     if (one) {
         search['limit'] = 1;
     } else {
-        search['limit'] = 10000;
+        search['limit'] = 1000;
     }
+    var limit = search['limit'];
     this.clear();
-    var $this = this;
+    $this = this;
     ADL.XAPIWrapper.getStatements(search, null,
         function getmorestatements(err, res, body) {
             for (x = 0; x < body.statements.length; x++) {
@@ -108,10 +110,14 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
                 activities = activities.filter(function(s) {return s != undefined})
                 if(activities.length > 0)
                 {
-                    q.activities = activities;
-                    q["activity"] = activities[0];
-                    delete q.activities;
-                    ADL.XAPIWrapper.getStatements(q, body.more, getmorestatements);
+                    search = ADL.XAPIWrapper.searchParams();
+                    search["activity"] = activities[0];
+                    $.each(query, function(i, value) {
+                        if(i != "activities" && i != "activity")
+                            search[i] = value;
+                    });
+                    search['limit'] = limit;
+                    ADL.XAPIWrapper.getStatements(search, null, getmorestatements);
                 }else{
                     callback();
                 }
@@ -147,7 +153,8 @@ DashboardState.prototype.combineUrls = function()
     var urls = [url];
     if (this.info.lrs.lrsurls != null && this.info.lrs.lrsurls != "undefined" && this.info.lrs.lrsurls != ""
         && this.info.lrs.site_allowed_urls != null && this.info.lrs.site_allowed_urls != "undefined" && this.info.lrs.site_allowed_urls != "") {
-        urls = [url].concat(this.info.lrs.lrsurls.split(",")).concat(this.info.lrs.site_allowed_urls.split(",").map(function(url) {return url + this.info.template_id})).filter(function(url) {return url != ""});
+        $this = this;
+        urls = [url].concat(this.info.lrs.lrsurls.split(",")).concat(this.info.lrs.site_allowed_urls.split(",").map(function(url) {return url + $this.info.template_id})).filter(function(url) {return url != ""});
     }
     var mapping = function(url)
     {
