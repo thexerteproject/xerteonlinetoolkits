@@ -678,7 +678,6 @@
                         .appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex)[0].children[1])
                         .attr("id", mediaLesson.panelbaseid + i)
 						.hide();
-					debugger;
                     $('<div class="overlayGray"></div>')
                         .appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex)[0].children[1])
                         .attr("id", "overlay")
@@ -1266,7 +1265,7 @@
 						start	:thisContent.start,
 						end		:thisContent.end,
 						target	:thisContent.target,
-						mandatory: thisContent.optional,
+						optional: thisContent.optional,
 						overlayPan: thisContent.overlayPanel
 					};
 

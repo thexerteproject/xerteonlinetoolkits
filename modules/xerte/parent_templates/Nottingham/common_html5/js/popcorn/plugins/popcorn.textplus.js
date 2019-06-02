@@ -46,31 +46,32 @@ optional: end position* line
 				}
 				
 				$target = $("#" + options.target).hide();
-				//	.html(txt)
-				//	.hide();
-                if(options.mandatory === "true")
+                if(options.optional === "true")
                 {
-                    $showBtn = $('<button class="mcqShowBtn"></button>').appendTo($target);
-                    $showBtn
-                        .button({
-                            "label": "Show"
-                        })
+                    var $openPng = x_templateLocation + "common_html5/plus.png";
+					var $showHolder  = $('<div id="showHolder" />').appendTo($target);
+					$showBtn = $('<image class="showButton" type="image" src="' + $openPng + '" >').appendTo($showHolder);
+					$showLbl = $("<div class='showLabel'>" + options.name + "</div>").appendTo($showHolder);
+					$showHolder
                         .click(function () {
-                            $showBtn.hide();
-                            //$optHolder.show();
-                            $target.prepend(txt);
+                            $showHolder.hide();
+							$target.prepend(txt);
+							$target.parent().addClass("qWindow");
                         });
                 }
                 else {
-                    //$optHolder.show();
-                    //$checkBtn.button("disable");
                     $target.prepend(txt);
                 }
 			},
 			
 			start: function(event, options) {
 				// fire on options.start
-                if (options.overlayPan)
+				
+				if (options.overlayPan)
+					if (options.optional === "false")
+					{
+						$target.parent().addClass("qWindow");
+					}
                 	$target.parent().css({"top": options.offsetTop, "left": options.offsetLeft}).show();
 				$target.show();
 			},
@@ -78,7 +79,10 @@ optional: end position* line
 			end: function(event, options) {
 				// fire on options.end
                 if (options.overlayPan)
-                	$target.parent().css({"top": 0, "left": 0}).hide();
+				{
+					$target.parent().css({"top": 0, "left": 0}).hide();
+					$target.parent().removeClass("qWindow");
+				}
 				$target.hide();
 			}
 		};

@@ -432,7 +432,7 @@ optional: feedback page synch play enable
 				}
 				if(options.overlayPan == true)
 				{
-                	if(options.mandatory == "true") //I think this option got reversed somewhere along the way.
+                	if(options.optional == "true") 
 					{
 						var $openPng = x_templateLocation + "common_html5/plus.png";
 						var $showHolder  = $('<div id="showHolder" />').appendTo($target);
@@ -514,7 +514,7 @@ optional: feedback page synch play enable
 					}
 				}
 				if (options.overlayPan) {
-					if (options.mandatory == "false")
+					if (options.optional == "false")
 						$target.parent().addClass("qWindow");
                     //if (isNumeric(options.offsetTop) && isNumeric(options.offsetLeft))
 					$target.parent().css({
