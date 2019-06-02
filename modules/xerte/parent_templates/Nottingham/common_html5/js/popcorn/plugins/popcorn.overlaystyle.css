@@ -55,8 +55,11 @@
     cursor: pointer;
 }
 
-/* QUESTION MENUS */
+/* QUESTION MENUS 
+    Should have a bg but its set in code easier this way
+    INP add an Active class which handles this?*/
 .qWindow {
-    background-color: #FEFEFE;
     width: 60%;
+    background-color: #FEFEFE
 }
+

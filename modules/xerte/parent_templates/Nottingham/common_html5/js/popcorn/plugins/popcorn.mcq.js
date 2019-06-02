@@ -432,7 +432,7 @@ optional: feedback page synch play enable
 				}
 				if(options.overlayPan == true)
 				{
-                	if(options.mandatory == "true")
+                	if(options.mandatory == "true") //I think this option got reversed somewhere along the way.
 					{
 						var $openPng = x_templateLocation + "common_html5/plus.png";
 						var $showHolder  = $('<div id="showHolder" />').appendTo($target);
@@ -514,16 +514,14 @@ optional: feedback page synch play enable
 					}
 				}
 				if (options.overlayPan) {
-					if (options.mandatory == "true")
-						$target.parent().css({"background": "none"}); //Set the correct background for a showbutton.
-					else
-						$target.parent().addClass("qWindow"); //Set the correct width for a question.
+					if (options.mandatory == "false")
+						$target.parent().addClass("qWindow");
                     //if (isNumeric(options.offsetTop) && isNumeric(options.offsetLeft))
 					$target.parent().css({
 						"top": options.offsetTop + "%",
                         "left": options.offsetLeft + "%"});
-					debugger;
-                }
+				}
+				$target.parent().show();
 				$target.show();
 			},
 			
@@ -531,12 +529,11 @@ optional: feedback page synch play enable
 				// fire on options.end
 				mediaLesson.enableControls(this.media, true);
                 if (options.overlayPan) {
-                $target.parent().css(
+					$target.parent().removeClass("qWindow")
+                	$target.parent().css( //The overlay panel
                 	{
 						"top": 0,
-						"left": 0,
-						"width": "auto",
-                        "background-color": "#FEFEFE"
+						"left": 0
                 	}
 				).hide();
                 }
