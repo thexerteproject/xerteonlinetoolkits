@@ -115,7 +115,7 @@
 
 	define("PROPERTIES_LIBRARY_PEER", "Peer review");
 
-	define("PROPERTIES_LIBRARY_PEER_EXPLAINED", "In this section you can set up the peer review for one of your projects. This allows you to send a password protected link to staff, allowing them to access a project, and then giving them the facility to email you feedback");
+	define("PROPERTIES_LIBRARY_PEER_EXPLAINED", "In this section you can set up the peer review for one of your projects. This allows you to send a password protected link to colleagues or learners, allowing them to access a project, and then giving them the facility to email you feedback");
 
 	define("PROPERTIES_LIBRARY_PEER_STATUS", "Peer review is");
 
