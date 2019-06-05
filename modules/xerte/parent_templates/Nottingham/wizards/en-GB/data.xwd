@@ -285,11 +285,14 @@
   </nestedPage><adaptiveContent menu="Interactivity" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
       <name label="Page Title" type="TextInput" wysiwyg="true"/>
       <introduction label="Introduction" type="textArea" height="120"/>
-      <displayMode label="Display Mode" optional="true" type="combobox" options="Unlisted,Listed" default="Unlisted" wysiwyg="true"/>
+      <displayMode label="Display Mode" optional="true" type="combobox" options="Unlisted,Listed" data="Unlisted,Listed" defaultValue="Unlisted"/>
+      <startDate label="Start date" optional="true" type="dateField" defaultValue="" tooltip="Read records starting from this date"/>
+      <endDate label="Stop date" optional="true" type="dateField" defaultValue="" tooltip="Read records ending from this date"/>
+      <dashboardMode label="Dashboard mode" optional="true" type="checkbox" defaultValue="false" tooltip="Show data for the whole group"/>
       <newNodes>
         <interaction><![CDATA[<interaction name="Enter title here" introduction="Enter introduction here" xerteurl="" xertelo="" label="" interactionType="score" PersonalAvgLabel = "Avg. of your attempts"
       PersonalLastLabel = "Your last attempt"
-      AvgLabel = "Avg. of all attempts" scoreText="Your score is {0}" answerText="Your answer is {0}"><interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100"></interactionBlock></interaction>]]>
+      AvgLabel = "Avg. of all attempts" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"><interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100"></interactionBlock></interaction>]]>
         </interaction>
       </newNodes>
     <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -330,6 +333,10 @@
         <graph type="group" label="Graph" optional="true">
           <graph label="Show graph" type="checkbox" defaultValue="false" optional="true"/>
           <graphType label="Graph type" type="combobox" data="bar_answers,bar_marks,line_own_marks,line_average_marks" options="Bar graph for given answers,Bar graph for received marks,Line graph for own received marks,Line graph for average marks of others" defaultValue="bar_answers" optional="true"/>
+          <showExplanation label="Show graph explanation" type="checkbox" optional="true" defaulValue="false" tooltip="Show a box with a legend or other explanation next to the graph"/>
+          <graphExplanation label="Graph legend/explanation" type="textArea" height="120" optional="true" defaultValue="" wysiwyg="true" tooltip="The legend or other explanation shown next to the graph"/>
+          <graphExplanationPanelWidth label=" Legend panel width" type="textInput" defaultValue="40%" optional="true" tooltip="The width of the legend or other explanation panel, enter an acceptable width like 40% or 250px"/>
+          <graphNrDataPoints label="Nr of bars/points" type="NumericStepper" min="0" max="100" step="1" defaultValue="10" optional="true" tooltip="The number of bars in a bargraph, or the number of points in a line graph"/>
         </graph>
         <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue=""/>
         <xertelo label="ID of Xerte learning object" type="xertelo" mandatory="true" defaultValue=""/>
@@ -339,9 +346,22 @@
         <showScore label="Show score/answer" type="CheckBox" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based"/>
         <scoreText label="Score text" type="TextInput" wysiwyg="true" language="true"/>
         <answerText label="Answer text" type="TextInput" wysiwyg="true" language="true"/>
+        <!-- <showAvgScore label="Show average score" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the average score of the whole group" /> -->
+        <AvgScoreText label="Average Score Label" type="TextInput" wysiwyg="true" language="true"/>
+        <showNrOfParticipants label="Show nr of participants" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the number of participants of this group"/>
+        <NrParticipantsText label="Nr of Participants Label" type="TextInput" wysiwyg="true" language="true"/>
+
         <AvgLabel label="Average Graph Label" type="TextInput" wysiwyg="true" language="true"/>
         <PersonalLastLabel label="Personal Graph Label" type="TextInput" wysiwyg="true" language="true"/>
         <PersonalAvgLabel label="Personal Average Graph Label" type="TextInput" wysiwyg="true" language="true"/>
+
+        <openAnswerOptions type="group" label="'Open answer' extra options" optional="true" tooltip="Extra options that only make sense if the interaction type is 'Open answer'">
+            <showUserID label="Show user id" type="checkbox" defaultValue="false" optional="true" tooltip="Show a user id with each open answer, if that information is available"/>
+            <showDate label="Show date" type="checkbox" defaultVale="false" optional="true" tooltip="Show date of entry"/>
+            <sortOrder label="Sort order" type="combobox" defaultValue="decreasing" data="increasing,decreasing" options="Oldest first,Newest first" optional="true" tooltip="Sort order of answers"/>
+        </openAnswerOptions>
+        <myOpenAnswerText label="My Open Answers text" type="TextInput" wysiwyg="true" language="true"/>
+        <allOpenAnswerText label="All Open Answers text" type="TextInput" wysiwyg="true" language="true"/>
         <group type="group" label="Group filtering" optional="true">
              <groupFromUrl label="Filter on group from URL" type="checkbox" defaultValue="false" optional="true" tooltip="Filter on groupname, where the groupname is extracted from the URL (group=groupname)"/>
              <groupName label="Filter group name" type="TextInput" defaultValue="" wysiwyg="false" optional="true" tooltip="Filter on groupname, use this groupname, if the group is not specified on the URL (group=groupname)"/>
@@ -5095,8 +5115,12 @@
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <numberAnswers label="Amount of correct answers" type="TextInput" defaultValue="1"/>
     <SuccessRate label="Percentage to pass" type="number" name="points" step="3"/>
+    <answers label="Answers" options="Show everything,Show only given answers" type="ComboBox" data="Show everything,Show only given answers" defaultValue="Medium" width="100"/>
+    <amountOfTries label="Tries" type="TextInput" defaultValue="1"/>
+    <showAnswers label="Show Answers" defaultValue="true" type="CheckBox" optional="true"/>
     <amountOfTries label="Tries" type="TextInput" defaultValue="1" mandatory="true"/>
     <caseSensitivity label="Case Sensitivity" defaultValue="true" type="CheckBox" optional="true"/>
+
     <answerOptions type="group" label="Answers" optional="true">
         <showAnswers label="Show Answers" defaultValue="true" type="CheckBox" optional="true"/>
         <answers label="Which answers" options="Show everything,Show only given answers" type="ComboBox" data="Show everything,Show only given answers" defaultValue="Show only given answers" width="100" optional="true"/>

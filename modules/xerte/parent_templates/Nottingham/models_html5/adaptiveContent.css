@@ -10,3 +10,15 @@ canvas {
   margin-bottom: 5px;
   padding-bottom: 20px;
 }
+
+.graph-container {
+  display:flex;
+}
+
+.legend {
+  margin-left: 20px;
+}
+
+tr.openanswer {
+  color: inherit;
+}

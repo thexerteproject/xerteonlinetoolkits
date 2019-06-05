@@ -24,7 +24,7 @@
         return target.replace(new RegExp(search, 'g'), replacement);
     };
 
-    this.createDiagram = function(data, identifier) {
+    this.createDiagram = function(data, identifier, showall_only) {
         var importData = data;
         var numSubmits = importData.length;
         var latest_ts = "";
@@ -36,6 +36,7 @@
         var classtitles = [];
         var numUserSubmits = 0;
         var textSize = 12;
+
 
 
         // We assume the data contains identical data sets
@@ -167,7 +168,7 @@
         }
 
         var datasets = [];
-        if (latest == null) {
+        if (showall_only || latest == null) {
             // Only show mean_all
             datasets = [{
                 label: avgAllLabelText,
@@ -230,14 +231,34 @@
     };
 
     function hasToRetrieveAll(interaction) {
-        if (interaction.getAttribute('graph') == 'true') {
-            return (
-                interaction.getAttribute('graphType') == 'bar_answers' ||
-                interaction.getAttribute('graphType') == 'bar_marks' ||
-                interaction.getAttribute('graphType') == 'line_average_marks'
-            );
+        var dashboardMode = x_currentPageXML.getAttribute('dashboardMode');
+        if (dashboardMode == undefined)
+        {
+            dashboardMode = 'false';
         }
-        return false;
+        if (dashboardMode == 'true')
+        {
+            return true;
+        }
+        else
+        {
+            if (interaction.getAttribute('interactionType') != 'open') {
+
+                if (interaction.getAttribute('graph') == 'true') {
+                    return (
+                        interaction.getAttribute('graphType') == 'bar_answers' ||
+                        interaction.getAttribute('graphType') == 'bar_marks' ||
+                        interaction.getAttribute('graphType') == 'line_average_marks'
+                    );
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                return true;
+            }
+        }
     }
 
     function escapeUrl(url, type, interactionIndex) {
@@ -384,12 +405,24 @@
         handler
     ) {
 
-        url = xerteurl + xertelo + '/' + xertelabel.replace(/ /g, "_");
+
+        var url = xerteurl + xertelo + '/' + xertelabel.replace(/ /g, "_");
         if (opinionClass != '' && opinionClass != null) {
             url += '/' + opinionClass.replace(/ /g, "_");
         }
 
-        q = {};
+        var startDate = x_currentPageXML.getAttribute("startDate");
+        if (startDate == undefined)
+        {
+            startDate = "";
+        }
+        var endDate = x_currentPageXML.getAttribute("endDate");
+        if (endDate == undefined)
+        {
+            endDate = "";
+        }
+
+        var q = {};
         if (!retrieveAll) {
             /*
             switch(studentidmode) {
@@ -422,6 +455,17 @@
         {
             q['group'] = group;
         }
+        if (startDate != "")
+        {
+            var date = moment(startDate).toISOString();
+            q['since'] = date;
+        }
+        if (endDate != "")
+        {
+            var date = moment(endDate).add(1, 'days').toISOString();
+            q['until'] = date;
+        }
+
         /*
         queryStatements(
             lrsEndpoint + '/api/connection/statement',
@@ -477,9 +521,10 @@
         var url = "";
         var divUrl = "";
         var group = "";
+        var dashboardMode = 'false';
 
         this.loadJS = function() {
-            if (numLoaded < 2) {
+            if (numLoaded < 3) {
                 var fileToLoad;
                 if (numLoaded == 0) {
                     fileToLoad = x_templateLocation + 'common_html5/js/chart.min.js';
@@ -492,7 +537,9 @@
                 else if (numLoaded == 1) {
                     fileToLoad = 'modules/xerte/xAPI/xapicollection.min.js';
                 }
-
+                else if (numLoaded == 2) {
+                    fileToLoad = x_templateLocation + 'common_html5/js/moment-with-locales.min.js';
+                }
 
                 $.getScript(fileToLoad)
                     .done(function(script, textStatus) {
@@ -520,9 +567,8 @@
                 ADL.XAPIWrapper.log.debug = true;
                 */
 
-                if(typeof x_currentPageXML.attributes.displayMode != "undefined"
-                    && typeof x_currentPageXML.attributes.displayMode.value != "undefined"
-                    && x_currentPageXML.attributes.displayMode.value == "listed"){
+                var displayMode = x_currentPageXML.getAttribute('displayMode');
+                if(displayMode == "Listed"){
                     this.setUpListed();
                 }else {
                     this.setUpUnlisted();
@@ -560,6 +606,7 @@
         }
 
         this.init = function() {
+            debugger;
             var loadFiles = true;
             for (var i = 0; i < x_pageInfo.length; i++) {
                 if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
@@ -568,14 +615,17 @@
                     break;
                 }
             }
-
+            this.dashboardMode = x_currentPageXML.getAttribute('dashboardMode');
+            if (this.dashboardMode == undefined)
+            {
+                this.dashboardMode = 'false';
+            }
             if (loadFiles == true) {
                 numLoaded = 0;
                 this.loadJS();
             } else {
-                if(typeof x_currentPageXML.attributes.displayMode != "undefined"
-                    && typeof x_currentPageXML.attributes.displayMode.value != "undefined"
-                    && x_currentPageXML.attributes.displayMode.value == "listed"){
+                var displayMode = x_currentPageXML.getAttribute('displayMode');
+                if(displayMode == "Listed"){
                     this.setUpListed();
                 }else {
                     this.setUpUnlisted();
@@ -593,6 +643,11 @@
             name = interaction.getAttribute('name');
             interactionType = interaction.getAttribute('interactionType');
             opinionClass = interaction.getAttribute('opinionClass');
+            if (interactionType == 'open' && xertelabel.indexOf('/') == -1)
+            {
+                xertelabel += '/' + xertelabel;
+            }
+
             var scoreLabelText = x_currentPageXML.getAttribute('scoreText');
             if (scoreLabelText == undefined) {
                 scoreLabelText = 'Your score is {0}';
@@ -603,15 +658,20 @@
                 answerLabelText = 'Your answer is {0}';
             }
 
+            var nrParticipantsText = x_currentPageXML.getAttribute('NrParticipantsText');
+            if (nrParticipantsText == undefined) {
+                nrParticipantsText = 'The number of participants is {0}';
+            }
+
             url = xerteurl + xertelo + '/' + xertelabel;
             if (opinionClass != '' && opinionClass != null) {
                 url += '/' + opinionClass;
 
             }
-
+            var $this = this;
             divUrl = escapeUrl(url, interactionType, interactionIndex);
             name = interaction.getAttribute('name');
-            score = interaction.score;
+            var score = interaction.score;
             var div = $("<div>")
                 .attr('id', divUrl)
                 .attr('data-index', interactionIndex)
@@ -621,7 +681,7 @@
                 name +
                 "</p></h2><div class='introduction'>" +
                 interaction.getAttribute('introduction') +
-                "</div><div class='score'></div><div class='message'></div>");
+                "</div><div class='score'><div class='stats'></div><div class='graph-container'></div></div><div class='message'></div>");
 
             $(location).append(div);
 
@@ -657,14 +717,20 @@
                         name = interaction.getAttribute('name');
                         interactionType = interaction.getAttribute('interactionType');
                         opinionClass = interaction.getAttribute('opinionClass');
+                        var nrbars = interaction.getAttribute('graphNrDataPoints');
+                        if (nrbars == undefined)
+                        {
+                            nrbars = 10;
+                        }
                         if (statements.length > 0) {
                             score = statements[0].result.score.raw;
                             //score = interaction.score;
                             if (interaction.getAttribute("showScore") == "true") {
                                 var txt = scoreLabelText;
                                 txt = txt.replace(/\{0\}/, score);
-                                $('#' + escapeUrl(url, type, interactionIndex) + ' .score').html('<p>' + txt + '%</p>');
+                                $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '%</p>');
                             }
+
                             for (blockIndex = 0; blockIndex < interaction.children.length; blockIndex++) {
                                 block = interaction.children[blockIndex];
                                 scoreRange = block.getAttribute('conScoreBetween');
@@ -681,13 +747,37 @@
                                 }
                             }
                         }
+                        if (interaction.getAttribute("showNrOfParticipants") == "true") {
+                            var txt = nrParticipantsText;
+                            txt = txt.replace(/\{0\}/, data.length);
+                            $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '</p>');
+                        }
                         if (interaction.getAttribute('graph') === 'true') {
-                            div = $('#' + escapeUrl(url, type, interactionIndex) + ' .score');
+                            var showExplanation = interaction.getAttribute('showExplanation');
+                            var Explanation = interaction.getAttribute('graphExplanation');
+                            var ExplanationPanelWidth = interaction.getAttribute("graphExplanationPanelWidth");
+                            if (showExplanation == undefined)
+                            {
+                                showExplanation = 'false';
+                            }
+                            if (Explanation == undefined)
+                            {
+                                Explanation = "";
+                            }
+                            if (ExplanationPanelWidth == undefined)
+                            {
+                                ExplanationPanelWidth = "40%";
+                            }
+                            div = $('#' + escapeUrl(url, type, interactionIndex) + ' .score .graph-container');
                             div.append(
-                                "<div><svg id='" +
+                                "<div class='graph'><svg id='" +
                                 escapeUrl(url, type, interactionIndex) +
                                 "-graph'></svg></div>"
                             );
+                            if (showExplanation == 'true' && Explanation != "")
+                            {
+                                div.append("<div class=\"panel legend\" style=\"width: " + ExplanationPanelWidth + ";\">" + Explanation + "</div>");
+                            }
 
                             if (interaction.getAttribute('graphType') == 'bar_answers') {
                                 var dash = new ADL.XAPIDashboard();
@@ -737,7 +827,7 @@
                                         ) + '-graph',
                                         groupBy: 'result.score.raw',
                                         aggregate: ADL.count(),
-                                        range: {start: 0.0, end: 100.0, increment: 10},
+                                        range: {start: 0.0, end: 100.0, increment: Math.ceil(100/nrbars)},
                                         post: function (d) {
                                             d.contents.map(function (el) {
                                                 el.out *= 1 / data.length * 100;
@@ -776,7 +866,7 @@
                                         ) + '-graph',
                                         groupBy: 'result.score.raw',
                                         aggregate: ADL.count(),
-                                        range: {start: 0.0, end: 100.0, increment: 10},
+                                        range: {start: 0.0, end: 100.0, increment: Math.ceil(100/nrbars)},
                                         rangeLabel: 'start',
                                         post: function (d) {
                                             d.contents.map(function (el) {
@@ -869,13 +959,18 @@
                         interactionIndex,
                         group,
                         function(data, interaction, url, type, interactionIndex) {
+                            var nrbars = interaction.getAttribute('graphNrDataPoints');
+                            if (nrbars == undefined)
+                            {
+                                nrbars = 10;
+                            }
                             statements = filterOwnStatements(data);
                             if (statements.length > 0) {
                                 givenAnswer = statements[0].result.response;
                                 if (interaction.getAttribute("showScore") == "true") {
                                     var txt = answerLabelText;
                                     txt = txt.replace(/\{0\}/, givenAnswer);
-                                    $('#' + escapeUrl(url, type, interactionIndex) + ' .score').html('<p>' + txt + '</p>');
+                                    $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '</p>');
                                 }
                                 for (blockIndex = 0; blockIndex < interaction.children.length; blockIndex++) {
                                     block = interaction.children[blockIndex];
@@ -893,19 +988,42 @@
                                     }
                                 }
                             }
+                            if (interaction.getAttribute("showNrOfParticipants") == "true") {
+                                var txt = nrParticipantsText;
+                                txt = txt.replace(/\{0\}/, data.length);
+                                $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '</p>');
+                            }
                             if (interaction.getAttribute('graph') === 'true') {
+                                var showExplanation = interaction.getAttribute('showExplanation');
+                                var Explanation = interaction.getAttribute('graphExplanation');
+                                var ExplanationPanelWidth = interaction.getAttribute("graphExplanationPanelWidth");
+                                if (showExplanation == undefined)
+                                {
+                                    showExplanation = 'false';
+                                }
+                                if (Explanation == undefined)
+                                {
+                                    Explanation = "";
+                                }
+                                if (ExplanationPanelWidth == undefined)
+                                {
+                                    ExplanationPanelWidth = "40%";
+                                }
                                 div = $('#' + escapeUrl(
                                         url,
                                         type,
                                         interactionIndex
-                                    ) + '.score');
+                                    ) + '.score .graph');
 
                                 div.append(
-                                    "<div><svg id='" +
+                                    "<div class='x_floatLeft'><svg id='" +
                                     escapeUrl(url, type, interactionIndex) +
-                                    "-graph'></svg></div>",
+                                    "-graph'></svg></div>"
                                 );
-
+                                if (showExplanation == 'true' && Explanation != "")
+                                {
+                                    div.append("<div class=\"panel legend\" style=\"width: " + ExplanationPanelWidth + ";\" >" + Explanation + "</div>");
+                                }
                                 if (interaction.getAttribute('graphType') == 'bar_answers') {
                                     var dash = new ADL.XAPIDashboard();
                                     dash.addStatements(data);
@@ -951,7 +1069,7 @@
                                             ) + '-graph',
                                             groupBy: 'result.score.raw',
                                             aggregate: ADL.count(),
-                                            range: {start: 0.0, end: 100.0, increment: 10},
+                                            range: {start: 0.0, end: 100.0, increment: Math.ceil(100/nrbars)},
                                             post: function (d) {
                                                 d.contents.map(function (el) {
                                                     el.out *= 1 / data.length * 100;
@@ -985,7 +1103,7 @@
                                             ) + '-graph',
                                             groupBy: 'result.score.raw',
                                             aggregate: ADL.count(),
-                                            range: {start: 0.0, end: 100, increment: 10},
+                                            range: {start: 0.0, end: 100, increment: Math.ceil(100/nrbars)},
                                             rangeLabel: 'start',
                                             post: function (d) {
                                                 d.contents.map(function (el) {
@@ -1069,6 +1187,26 @@
                     interactionIndex,
                     group,
                     function(data, interaction, url, type, interactionIndex) {
+                        var showExplanation = interaction.getAttribute('showExplanation');
+                        var Explanation = interaction.getAttribute('graphExplanation');
+                        var ExplanationPanelWidth = interaction.getAttribute("graphExplanationPanelWidth");
+                        if (showExplanation == undefined)
+                        {
+                            showExplanation = 'false';
+                        }
+                        if (Explanation == undefined)
+                        {
+                            Explanation = "";
+                        }
+                        if (ExplanationPanelWidth == undefined)
+                        {
+                            ExplanationPanelWidth = "40%";
+                        }
+                        if (interaction.getAttribute("showNrOfParticipants") == "true") {
+                            var txt = nrParticipantsText;
+                            txt = txt.replace(/\{0\}/, data.length);
+                            $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '</p>');
+                        }
                         jsonData = data.map(function(d) {
                             var obj = {}
                             obj.timestamp = d.timestamp;
@@ -1081,23 +1219,48 @@
                             return obj;
                         });
                         jsonData = jsonData.filter(x => x != undefined);
-                        identifier = '#' + escapeUrl(
+                        div = $('#' + escapeUrl(
                             url,
                             type,
                             interactionIndex
-                        ) + ' .score';
+                        ) + ' .score .graph-container');
 
-                        $(identifier).append(
+                        div.append(
                             "<fieldset class='noStyle'><canvas aria-live='polite'></canvas></fieldset>"
                         );
-
-                        identifier += ' canvas';
-                        createDiagram(jsonData, identifier);
+                        if (showExplanation == 'true' && Explanation != "")
+                        {
+                            div.append("<div class=\"panel legend\" style=\"width: " + ExplanationPanelWidth + ";\" >" + Explanation + "</div>");
+                        }
+                        var identifier = '#' + escapeUrl(
+                            url,
+                            type,
+                            interactionIndex
+                        ) + ' .score .graph-container canvas';
+                        createDiagram(jsonData, identifier, $this.dashboardMode);
                     }
                 );
             }
             else if (interactionType == "open")
             {
+                debugger;
+                // check open question special options
+                var showUserID = 'false';
+                var showDate = 'false';
+                var sortOrder = 'false';
+                if (interaction.getAttribute('showUserID') != undefined)
+                {
+                    showUserId = interaction.getAttribute('showUserID');
+                }
+                if (interaction.getAttribute('showDate') != undefined)
+                {
+                    showDate = interaction.getAttribute('showDate');
+                }
+                if (interaction.getAttribute('sortOrder') != undefined)
+                {
+                    sortOrder = interaction.getAttribute('sortOrder');
+                }
+
                 statements = getStatements(
                     xerteurl,
                     xertelo,
@@ -1108,6 +1271,7 @@
                     interactionIndex,
                     group,
                     function(data, interaction, url, type, interactionIndex) {
+                        /*
                         statements = filterOwnStatements(data);
                         if (statements.length > 0) {
                             score = statements[0].result.score.raw;
@@ -1117,16 +1281,41 @@
                                 $('#' + escapeUrl(url, type, interactionIndex) + ' .score').html('<p>' + txt + '%</p>');
                             }
                         }
+
+                         */
+                        moment.locale(x_params.language);
                         var allAnswers= [];
                         var myAnswers = [];
                         for (var i=0; i<data.length; i++) {
-                            var answer = "";
+                            var answer = {};
                             if (data[i].result != undefined && data[i].result.response != undefined && data[i].result.response != "") {
-                                answer = data[i].result.response;
+                                answer['answer'] = data[i].result.response;
+                                var user;
+                                if (typeof data[i].actor.name != 'undefined')
+                                {
+                                    user = data[i].actor.name;
+                                }
+                                else if (typeof data[i].actor.mbox != 'undefined')
+                                {
+                                    user = data[i].actor.mbox;
+                                }
+                                else if (typeof data[i].actor.mbox_sha1 != 'undefined') {
+                                    user = data[i].actor.mbox_sha1;
+                                }
+                                else if (typeof data[i].actor.account != 'undefined' && typeof data[i].actor.account.name != 'undefined' ){
+                                    user = data[i].actor.account.name;
+                                }
+                                else {
+                                    user = "";
+                                }
+                                answer['user'] = user;
+                                answer['date'] = moment(data[i].timestamp).format('L');
+
                             }
-                            if (answer != "") {
+                            if (typeof answer['answer'] != "undefined") {
                                 if (matchActor(data[i])) {
                                     myAnswers.push(answer);
+                                    allAnswers.push(answer);
                                 }
                                 else {
                                     allAnswers.push(answer);
@@ -1137,24 +1326,77 @@
                         // Perhaps we want to do something with the number of answers
                         var nrMyAnswers = myAnswers.length;
                         var nrAnswers = allAnswers.length + nrMyAnswers;
-                        var html = "";
-                        if (nrMyAnswers > 0)
+                        var myOpenAnswerText = x_currentPageXML.getAttribute('myOpenAnswerText');
+                        if (myOpenAnswerText == undefined)
                         {
-                            html = "<ol>";
-                            for (i=0; i<myAnswers.length; i++)
-                            {
-                                html += "<li>" + myAnswers[i] + "</li>";
-                            }
-                            html += "</ol>";
+                            myOpenAnswerText = "My answers";
                         }
-                        if (allAnswers.length > 0)
+                        var allOpenAnswerText = x_currentPageXML.getAttribute('allOpenAnswerText');
+                        if (allOpenAnswerText == undefined)
                         {
-                            html += "<ol>";
-                            for (i=0; i<allAnswers.length; i++)
-                            {
-                                html += "<li>" + allAnswers[i] + "</li>";
+                            allOpenAnswerText = "All answers";
+                        }
+
+                        var html = "";
+                        if ($this.dashboardMode != 'true') {
+                            if (nrMyAnswers > 0) {
+                                if (sortOrder == 'increasing')
+                                {
+                                    // Reverse order
+                                    var reverse = [];
+                                    for(i=0; i<myAnswers.length; i++)
+                                    {
+                                        reverse[myAnswers.length-1-i] = myAnswers[i];
+                                    }
+                                    myAnswers = reverse;
+                                }
+                                html = "<h2><p>" + myOpenAnswerText + "</p></h2>";
+                                html += "<table>";
+                                for (i = 0; i < myAnswers.length; i++) {
+                                    var itemnr = i+1;
+                                    html += "<tr class='openanswer'>";
+                                    html += "<td>" + itemnr + "</td>";
+                                    if (showDate == 'true' && myAnswers[i]['date'] != "") {
+                                        html += "<td>" + myAnswers[i]['date'] + "</td>";
+                                    }
+                                    if (showUserId == 'true' && myAnswers[i]['user'] != "") {
+                                        html += "<td>" + myAnswers[i]['user'] + "</td>";
+                                    }
+                                    html += "<td>" + myAnswers[i]['answer'] + "</td>";
+                                    html += "</tr>";
+                                }
+                                html += "</table>";
                             }
-                            html += "</ol>";
+                        }
+                        else {
+                            if (allAnswers.length > 0) {
+                                if (sortOrder == 'increasing')
+                                {
+                                    // Reverse order
+                                    var reverse = [];
+                                    for(i=0; i<allAnswers.length; i++)
+                                    {
+                                        reverse[allAnswers.length-1-i] = allAnswers[i];
+                                    }
+                                    allAnswers = reverse;
+                                }
+                                html += "<h2><p>" + allOpenAnswerText + "</p></h2>";
+                                html += "<table>";
+                                for (i = 0; i < allAnswers.length; i++) {
+                                    var itemnr = i+1;
+                                    html += "<tr class='openanswer'>";
+                                    html += "<td>" + itemnr + "</td>";
+                                    if (showDate == 'true' && allAnswers[i]['date'] != "") {
+                                        html += "<td>" + allAnswers[i]['date'] + "</td>";
+                                    }
+                                    if (showUserId == 'true' && allAnswers[i]['user'] != "") {
+                                        html += "<td>" + allAnswers[i]['user'] + "</td>";
+                                    }
+                                    html += "<td>" + allAnswers[i]['answer'] + "</td>";
+                                    html += "</tr>";
+                                }
+                                html += "</table>";
+                            }
                         }
                         $('#' + escapeUrl(url, type, interactionIndex) + ' .message').html(html);
                     });
