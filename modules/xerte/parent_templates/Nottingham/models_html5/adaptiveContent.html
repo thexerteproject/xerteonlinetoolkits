@@ -658,6 +658,11 @@
                 answerLabelText = 'Your answer is {0}';
             }
 
+            var nrParticipantsText = x_currentPageXML.getAttribute('NrParticipantsText');
+            if (nrParticipantsText == undefined) {
+                nrParticipantsText = 'The number of participants is {0}';
+            }
+
             url = xerteurl + xertelo + '/' + xertelabel;
             if (opinionClass != '' && opinionClass != null) {
                 url += '/' + opinionClass;
@@ -723,8 +728,9 @@
                             if (interaction.getAttribute("showScore") == "true") {
                                 var txt = scoreLabelText;
                                 txt = txt.replace(/\{0\}/, score);
-                                $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').html('<p>' + txt + '%</p>');
+                                $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '%</p>');
                             }
+
                             for (blockIndex = 0; blockIndex < interaction.children.length; blockIndex++) {
                                 block = interaction.children[blockIndex];
                                 scoreRange = block.getAttribute('conScoreBetween');
@@ -740,6 +746,11 @@
                                     }
                                 }
                             }
+                        }
+                        if (interaction.getAttribute("showNrOfParticipants") == "true") {
+                            var txt = nrParticipantsText;
+                            txt = txt.replace(/\{0\}/, data.length);
+                            $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '</p>');
                         }
                         if (interaction.getAttribute('graph') === 'true') {
                             var showExplanation = interaction.getAttribute('showExplanation');
@@ -959,7 +970,7 @@
                                 if (interaction.getAttribute("showScore") == "true") {
                                     var txt = answerLabelText;
                                     txt = txt.replace(/\{0\}/, givenAnswer);
-                                    $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').html('<p>' + txt + '</p>');
+                                    $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '</p>');
                                 }
                                 for (blockIndex = 0; blockIndex < interaction.children.length; blockIndex++) {
                                     block = interaction.children[blockIndex];
@@ -976,6 +987,11 @@
                                         break;
                                     }
                                 }
+                            }
+                            if (interaction.getAttribute("showNrOfParticipants") == "true") {
+                                var txt = nrParticipantsText;
+                                txt = txt.replace(/\{0\}/, data.length);
+                                $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '</p>');
                             }
                             if (interaction.getAttribute('graph') === 'true') {
                                 var showExplanation = interaction.getAttribute('showExplanation');
@@ -1185,6 +1201,11 @@
                         if (ExplanationPanelWidth == undefined)
                         {
                             ExplanationPanelWidth = "40%";
+                        }
+                        if (interaction.getAttribute("showNrOfParticipants") == "true") {
+                            var txt = nrParticipantsText;
+                            txt = txt.replace(/\{0\}/, data.length);
+                            $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '</p>');
                         }
                         jsonData = data.map(function(d) {
                             var obj = {}

@@ -346,7 +346,7 @@
         <showScore label="Show score/answer" type="CheckBox" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based"/>
         <scoreText label="Score text" type="TextInput" wysiwyg="true" language="true"/>
         <answerText label="Answer text" type="TextInput" wysiwyg="true" language="true"/>
-        <showAvgScore label="Show average score" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the average score of the whole group"/>
+        <!-- <showAvgScore label="Show average score" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the average score of the whole group" /> -->
         <AvgScoreText label="Average Score Label" type="TextInput" wysiwyg="true" language="true"/>
         <showNrOfParticipants label="Show nr of participants" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the number of participants of this group"/>
         <NrParticipantsText label="Nr of Participants Label" type="TextInput" wysiwyg="true" language="true"/>
