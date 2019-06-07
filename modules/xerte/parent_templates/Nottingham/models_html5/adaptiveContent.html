@@ -648,17 +648,17 @@
                 xertelabel += '/' + xertelabel;
             }
 
-            var scoreLabelText = x_currentPageXML.getAttribute('scoreText');
+            var scoreLabelText = interaction.getAttribute('scoreText');
             if (scoreLabelText == undefined) {
                 scoreLabelText = 'Your score is {0}';
             }
 
-            var answerLabelText = x_currentPageXML.getAttribute('answerText');
+            var answerLabelText = interaction.getAttribute('answerText');
             if (answerLabelText == undefined) {
                 answerLabelText = 'Your answer is {0}';
             }
 
-            var nrParticipantsText = x_currentPageXML.getAttribute('NrParticipantsText');
+            var nrParticipantsText = interaction.getAttribute('NrParticipantsText');
             if (nrParticipantsText == undefined) {
                 nrParticipantsText = 'The number of participants is {0}';
             }
@@ -1326,12 +1326,12 @@
                         // Perhaps we want to do something with the number of answers
                         var nrMyAnswers = myAnswers.length;
                         var nrAnswers = allAnswers.length + nrMyAnswers;
-                        var myOpenAnswerText = x_currentPageXML.getAttribute('myOpenAnswerText');
+                        var myOpenAnswerText = interaction.getAttribute('myOpenAnswerText');
                         if (myOpenAnswerText == undefined)
                         {
                             myOpenAnswerText = "My answers";
                         }
-                        var allOpenAnswerText = x_currentPageXML.getAttribute('allOpenAnswerText');
+                        var allOpenAnswerText = interaction.getAttribute('allOpenAnswerText');
                         if (allOpenAnswerText == undefined)
                         {
                             allOpenAnswerText = "All answers";
