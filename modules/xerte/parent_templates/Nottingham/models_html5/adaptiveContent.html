@@ -24,7 +24,7 @@
         return target.replace(new RegExp(search, 'g'), replacement);
     };
 
-    this.createDiagram = function(data, identifier, showall_only) {
+    this.createDiagram = function(data, identifier, showall_only, interaction) {
         var importData = data;
         var numSubmits = importData.length;
         var latest_ts = "";
@@ -35,9 +35,8 @@
         var classnames = [];
         var classtitles = [];
         var numUserSubmits = 0;
-        var textSize = 12;
-
-
+        var textSize = Math.round(interaction.getAttribute("labelFontSize"));
+        if (textSize == undefined) textSize = 12;
 
         // We assume the data contains identical data sets
         // TODO: Check this
@@ -132,37 +131,37 @@
 
         var ctx = $(identifier);
         var bgColourIn = "0xff0000";
-        if (x_currentPageXML.getAttribute('colour') != null) {
-            bgColourIn = x_currentPageXML.getAttribute('colour');
+        if (interaction.getAttribute('colour') != null) {
+            bgColourIn = interaction.getAttribute('colour');
         }
         var bgColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 0.5);
         var lnColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 1);
 
         var pavgbgColourIn = "0x0000ff";
-        if (x_currentPageXML.getAttribute('colourPersonalAvg') != null) {
-            pavgbgColourIn = x_currentPageXML.getAttribute('colourPersonalAvg');
+        if (interaction.getAttribute('colourPersonalAvg') != null) {
+            pavgbgColourIn = interaction.getAttribute('colourPersonalAvg');
         }
         var pavgbgColour = hexToRgb(pavgbgColourIn.substr(pavgbgColourIn.length - 6), 0.5);
         var pavglnColour = hexToRgb(pavgbgColourIn.substr(pavgbgColourIn.length - 6), 1);
 
         var avgbgColourIn = "0x00ff00";
-        if (x_currentPageXML.getAttribute('colourAvg') != null) {
-            avgbgColourIn = x_currentPageXML.getAttribute('colourAvg');
+        if (interaction.getAttribute('colourAvg') != null) {
+            avgbgColourIn = interaction.getAttribute('colourAvg');
         }
         var avgbgColour = hexToRgb(avgbgColourIn.substr(avgbgColourIn.length - 6), 0.5);
         var avglnColour = hexToRgb(avgbgColourIn.substr(avgbgColourIn.length - 6), 1);
 
-        var avgAllLabelText = x_currentPageXML.getAttribute('AvgLabel');
+        var avgAllLabelText = interaction.getAttribute('AvgLabel');
         if (avgAllLabelText == undefined) {
             avgAllLabelText = 'Avg. of all attempts';
         }
 
-        var personalLabelText = x_currentPageXML.getAttribute('PersonalLastLabel');
+        var personalLabelText = interaction.getAttribute('PersonalLastLabel');
         if (personalLabelText == undefined) {
             personalLabelText = 'Your last attempt';
         }
 
-        var personalAvgLabelText = x_currentPageXML.getAttribute('PersonalAvgLabel');
+        var personalAvgLabelText = interaction.getAttribute('PersonalAvgLabel');
         if (personalAvgLabelText == undefined) {
             personalAvgLabelText = 'Avg. of your attempts';
         }
@@ -782,6 +781,10 @@
                             if (interaction.getAttribute('graphType') == 'bar_answers') {
                                 var dash = new ADL.XAPIDashboard();
                                 dash.addStatements(data);
+                                var xAxisLabelBarAnswers = interaction.getAttribute("xAxisLabelBarAnswers");
+                                var yAxisLabelBarAnswers = interaction.getAttribute("yAxisLabelBarAnswers");
+                                if (xAxisLabelBarAnswers == undefined) xAxisLabelBarAnswers = "Answers given";
+                                if (yAxisLabelBarAnswers == undefined) yAxisLabelBarAnswers = "Number of answers";
                                 var chart = dash.createBarChart(
                                     {
                                         container: '#' + escapeUrl(
@@ -797,9 +800,9 @@
                                             });
                                         },
                                         customize: function (chart) {
-                                            chart.xAxis.rotateLabels(45).axisLabel('Answers given');
+                                            chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarAnswers);
                                             chart.yDomain([0, 100]);
-                                            chart.yAxis.axisLabel('Number of answers');
+                                            chart.yAxis.axisLabel(yAxisLabelBarAnswers);
                                             if(fullWidth){
                                                 chart.width(700);
                                             }else{
@@ -812,6 +815,10 @@
                                 chart.draw();
                             }
                             else if (interaction.getAttribute('graphType') == 'bar_marks') {
+                                var xAxisLabelBarMarks = interaction.getAttribute("xAxisLabelBarMarks");
+                                var yAxisLabelBarMarks = interaction.getAttribute("yAxisLabelBarMarks");
+                                if (xAxisLabelBarMarks == undefined) xAxisLabelBarMarks = "Score Range [%]";
+                                if (yAxisLabelBarMarks == undefined) yAxisLabelBarMarks = "% of Group";
                                 var dash = new ADL.XAPIDashboard();
                                 dash.addStatements(data);
                                 data.map(function (x) {
@@ -834,8 +841,8 @@
                                             });
                                         },
                                         customize: function (chart) {
-                                            chart.xAxis.rotateLabels(45).axisLabel("Score Range [%]");
-                                            chart.yAxis.axisLabel("% of Group");
+                                            chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarMarks);
+                                            chart.yAxis.axisLabel(yAxisLabelBarMarks);
                                             if(fullWidth){
                                                 chart.width(700);
                                             }else{
@@ -850,6 +857,10 @@
                                 chart.draw();
                             }
                             else if (interaction.getAttribute("graphType") == "line_average_marks") {
+                                var xAxisLabelLineAvgMarks = interaction.getAttribute("xAxisLabelLineAvgMarks");
+                                var yAxisLabelLineAvgMarks = interaction.getAttribute("yAxisLabelLineAvgMarks");
+                                if (xAxisLabelLineAvgMarks == undefined) xAxisLabelLineAvgMarks = "Score Range [%]";
+                                if (yAxisLabelLineAvgMarks == undefined) yAxisLabelLineAvgMarks = "% of Group";
                                 var dash = new ADL.XAPIDashboard();
                                 dash.addStatements(data);
                                 data.map(function (x) {
@@ -874,8 +885,8 @@
                                             });
                                         },
                                         customize: function (chart) {
-                                            chart.xAxis.rotateLabels(45).axisLabel('Score Range [%]');
-                                            chart.yAxis.axisLabel('% of Group');
+                                            chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelLineAvgMarks);
+                                            chart.yAxis.axisLabel(yAxisLabelLineAvgMarks);
                                             if(fullWidth){
                                                 chart.width(700);
                                             }else{
@@ -891,6 +902,10 @@
                                 chart.draw();
                             }
                             else if (interaction.getAttribute("graphType") == "line_own_marks") {
+                                var xAxisLabelLineOwnMarks = interaction.getAttribute("xAxisLabelLineOwnMarks");
+                                var yAxisLabelLineOwnMarks = interaction.getAttribute("yAxisLabelLineOwnMarks");
+                                if (xAxisLabelLineOwnMarks == undefined) xAxisLabelLineOwnMarks = "Date";
+                                if (yAxisLabelLineOwnMarks == undefined) yAxisLabelLineOwnMarks = "Grade [0-10]";
                                 var dash = new ADL.XAPIDashboard();
                                 data.map(function (x) {
                                     x.result.score.raw;
@@ -931,6 +946,8 @@
                                             chart.height(300);
                                             chart.tooltips(false);
                                             chart.yDomain([0, 10]);
+                                            chart.xAxis.axisLabel(xAxisLabelLineOwnMarks);
+                                            chart.yAxis.axisLabel(yAxisLabelLineOwnMarks);
                                             chart.xAxis.tickFormat(function (label) {
                                                 return d3.time.format('%b %d')(new Date(label));
                                             });
@@ -1027,6 +1044,10 @@
                                 if (interaction.getAttribute('graphType') == 'bar_answers') {
                                     var dash = new ADL.XAPIDashboard();
                                     dash.addStatements(data);
+                                    var xAxisLabelBarAnswers = interaction.getAttribute("xAxisLabelBarAnswers");
+                                    var yAxisLabelBarAnswers = interaction.getAttribute("yAxisLabelBarAnswers");
+                                    if (xAxisLabelBarAnswers == undefined) xAxisLabelBarAnswers = "Answers given";
+                                    if (yAxisLabelBarAnswers == undefined) yAxisLabelBarAnswers = "Number of answers";
                                     var chart = dash.createBarChart(
                                         {
                                             container: '#' + escapeUrl(
@@ -1042,9 +1063,9 @@
                                                 });
                                             },
                                             customize: function (chart) {
-                                                chart.xAxis.rotateLabels(45).axisLabel('Answers given');
+                                                chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarAnswers);
                                                 chart.yDomain([0, 100]);
-                                                chart.yAxis.axisLabel('Number of answers');
+                                                chart.yAxis.axisLabel(yAxisLabelBarAnswers);
                                                 chart.width(700);
                                                 chart.height(300);
                                             }
@@ -1055,6 +1076,10 @@
                                 else if (interaction.getAttribute('graphType') == 'bar_marks') {
                                     var dash = new ADL.XAPIDashboard();
                                     dash.addStatements(data);
+                                    var xAxisLabelBarMarks = interaction.getAttribute("xAxisLabelBarMarks");
+                                    var yAxisLabelBarMarks = interaction.getAttribute("yAxisLabelBarMarks");
+                                    if (xAxisLabelBarMarks == undefined) xAxisLabelBarMarks = "Score Range [%]";
+                                    if (yAxisLabelBarMarks == undefined) yAxisLabelBarMarks = "% of Group";
                                     data.map(function (x) {
                                         x.result.score.raw;
                                         return x;
@@ -1076,8 +1101,8 @@
                                                 });
                                             },
                                             customize: function (chart) {
-                                                chart.xAxis.rotateLabels(45).axisLabel('Score Range [%]');
-                                                chart.yAxis.axisLabel('% of Group');
+                                                chart.xAxis.rotateLabels(45).axisLabel(xAxisLabelBarMarks);
+                                                chart.yAxis.axisLabel(yAxisLabelBarMarks);
                                                 chart.width(700);
                                                 chart.height(300);
                                                 chart.yDomain([0, 100]);
@@ -1089,6 +1114,10 @@
                                 else if (interaction.getAttribute('graphType') == 'line_average_marks') {
                                     var dash = new ADL.XAPIDashboard();
                                     dash.addStatements(data);
+                                    var xAxisLabelLineAvgMarks = interaction.getAttribute("xAxisLabelLineAvgMarks");
+                                    var yAxisLabelLineAvgMarks = interaction.getAttribute("yAxisLabelLineAvgMarks");
+                                    if (xAxisLabelLineAvgMarks == undefined) xAxisLabelLineAvgMarks = "Score Range [%]";
+                                    if (yAxisLabelLineAvgMarks == undefined) yAxisLabelLineAvgMarks = "% of Group";
                                     data.map(function (x) {
                                         x.result.score.raw;
                                         return x;
@@ -1111,8 +1140,8 @@
                                                 });
                                             },
                                             customize: function (chart) {
-                                                chart.xAxis.rotateLabels(45).axisLabel('Score Range [%]');
-                                                chart.yAxis.axisLabel('% of Group');
+                                                chart.xAxis.rotateLabels(45).axisLabel(yAxisLabelLineAvgMarks);
+                                                chart.yAxis.axisLabel(yAxisLabelLineAvgMarks);
                                                 chart.width(700);
                                                 chart.tooltips(false);
                                                 chart.height(300);
@@ -1123,6 +1152,10 @@
                                     chart.draw();
                                 }
                                 else if (interaction.getAttribute('graphType') == 'line_own_marks') {
+                                    var xAxisLabelLineOwnMarks = interaction.getAttribute("xAxisLabelLineOwnMarks");
+                                    var yAxisLabelLineOwnMarks = interaction.getAttribute("yAxisLabelLineOwnMarks");
+                                    if (xAxisLabelLineOwnMarks == undefined) xAxisLabelLineOwnMarks = "Date";
+                                    if (yAxisLabelLineOwnMarks == undefined) yAxisLabelLineOwnMarks = "Grade [0-10]";
                                     var dash = new ADL.XAPIDashboard();
                                     data.map(function (x) {
                                         x.result.score.raw /= 10;
@@ -1159,6 +1192,8 @@
                                                 chart.height(300);
                                                 chart.tooltips(false);
                                                 chart.yDomain([0, 10]);
+                                                chart.xAxis.axisLabel(xAxisLabelLineOwnMarks);
+                                                chart.yAxis.axisLabel(yAxisLabelLineOwnMarks);
                                                 chart.xAxis.tickFormat(function (label) {
                                                     return d3.time.format('%b %d')(new Date(label));
                                                 });
@@ -1237,7 +1272,7 @@
                             type,
                             interactionIndex
                         ) + ' .score .graph-container canvas';
-                        createDiagram(jsonData, identifier, $this.dashboardMode);
+                        createDiagram(jsonData, identifier, $this.dashboardMode, interaction);
                     }
                 );
             }
@@ -1355,14 +1390,14 @@
                                 for (i = 0; i < myAnswers.length; i++) {
                                     var itemnr = i+1;
                                     html += "<tr class='openanswer'>";
-                                    html += "<td>" + itemnr + "</td>";
+                                    html += "<td class='itemnr'>" + itemnr + "</td>";
                                     if (showDate == 'true' && myAnswers[i]['date'] != "") {
-                                        html += "<td>" + myAnswers[i]['date'] + "</td>";
+                                        html += "<td class='date'>" + myAnswers[i]['date'] + "</td>";
                                     }
                                     if (showUserId == 'true' && myAnswers[i]['user'] != "") {
-                                        html += "<td>" + myAnswers[i]['user'] + "</td>";
+                                        html += "<td class='user'>" + myAnswers[i]['user'] + "</td>";
                                     }
-                                    html += "<td>" + myAnswers[i]['answer'] + "</td>";
+                                    html += "<td class='answer'>" + myAnswers[i]['answer'] + "</td>";
                                     html += "</tr>";
                                 }
                                 html += "</table>";
@@ -1385,14 +1420,14 @@
                                 for (i = 0; i < allAnswers.length; i++) {
                                     var itemnr = i+1;
                                     html += "<tr class='openanswer'>";
-                                    html += "<td>" + itemnr + "</td>";
+                                    html += "<td class='itemnr'>" + itemnr + "</td>";
                                     if (showDate == 'true' && allAnswers[i]['date'] != "") {
-                                        html += "<td>" + allAnswers[i]['date'] + "</td>";
+                                        html += "<td class='date'>" + allAnswers[i]['date'] + "</td>";
                                     }
                                     if (showUserId == 'true' && allAnswers[i]['user'] != "") {
-                                        html += "<td>" + allAnswers[i]['user'] + "</td>";
+                                        html += "<td class='user'>" + allAnswers[i]['user'] + "</td>";
                                     }
-                                    html += "<td>" + allAnswers[i]['answer'] + "</td>";
+                                    html += "<td class='answer'>" + allAnswers[i]['answer'] + "</td>";
                                     html += "</tr>";
                                 }
                                 html += "</table>";
