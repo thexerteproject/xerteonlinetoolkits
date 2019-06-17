@@ -17,8 +17,13 @@ canvas {
 
 .legend {
   margin-left: 20px;
+  height: fit-content;
 }
 
 tr.openanswer {
   color: inherit;
+}
+
+.openanswer td.date {
+  white-space: nowrap;
 }

@@ -14,9 +14,20 @@
       <endDate label="Stop date" optional="true" type="dateField" defaultValue="" tooltip="Read records ending from this date" />
       <dashboardMode label="Dashboard mode" optional="true" type="checkbox" defaultValue="false" tooltip="Show data for the whole group" />
       <newNodes>
-        <interaction ><![CDATA[<interaction name="Enter title here" introduction="Enter introduction here" xerteurl="" xertelo="" label="" interactionType="score" PersonalAvgLabel = "Avg. of your attempts"
-      PersonalLastLabel = "Your last attempt"
-      AvgLabel = "Avg. of all attempts" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"><interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100"></interactionBlock></interaction>]]>
+        <interaction ><![CDATA[<interaction name="Enter title here" introduction="Enter introduction here" xerteurl="" xertelo="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
+        xAxisLabelBarAnswers = "Answers given"
+        yAxisLabelBarAnswers = "Number of answers"
+        xAxisLabelBarMarks = "Score Range [%]"
+        yAxisLabelBarMarks = "% of Group"
+        xAxisLabelLineAvgMarks = "Score Range [%]"
+        yAxisLabelLineAvgMarks = "% of Group"
+        xAxisLabelLineOwnMarks = "Date"
+        yAxisLabelLineOwnMarks = "Grade [0-10]"
+        personalAvgLabelText = "Avg. of your attempts"
+        personalLabelText = "Your last attempt"
+        avgAllLabelText = "Avg. of all attempts"
+
+        ><interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100"></interactionBlock></interaction>]]>
         </interaction>
       </newNodes>
     </adaptiveContent>
@@ -44,10 +55,25 @@
         <showNrOfParticipants label="Show nr of participants" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the number of participants of this group" />
         <NrParticipantsText label="Nr of Participants Label" type="TextInput" wysiwyg="true" language="true" />
 
-        <AvgLabel label="Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
-        <PersonalLastLabel label="Personal Graph Label" type="TextInput" wysiwyg="true" language="true" />
-        <PersonalAvgLabel label="Personal Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
+        <xAxisLabelBarAnswers label="X-Axis label of answer bargraph" type="TextInput" language="true" />
+        <yAxisLabelBarAnswers label="Y-Axis label of answer bargraph" type="TextInput" language="true" />
+        <xAxisLabelBarMarks label="X-Axis label of marks bargraph" type="TextInput" language="true" />
+        <yAxisLabelBarMarks label="Y-Axis label of marks bargraph" type="TextInput" language="true" />
+        <xAxisLabelLineAvgMarks label="X-Axis label of average mark linegraph" type="TextInput" language="true" />
+        <yAxisLabelLineAvgMarks label="Y-Axis label of average mark linegraph" type="TextInput" language="true" />
+        <xAxisLabelLineOwnMarks label="X-Axis label of own mark linegraph" type="TextInput" language="true" />
+        <yAxisLabelLineOwnMarks label="Y-Axis label of own mark linegraph" type="TextInput" language="true" />
 
+        <avgAllLabelText label="Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
+        <personalLabelText label="Personal Graph Label" type="TextInput" wysiwyg="true" language="true" />
+        <personalAvgLabelText label="Personal Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
+
+        <opinionOptions type="group" label="'Opinion 2D' extra options" optional="true" tooltip="Extra options that only make sense if the interaction type is 'Opinion 2D'">
+            <colour label="Personal graph" type="colourPicker" defaultValue="0xFF0000" optional="true"/>
+            <colourPersonalAvg label="Personal average graph" type="colourPicker" defaultValue="0x0000FF" optional="true"/>
+            <colourAvg label="Average graph" type="colourPicker" defaultValue="0x00FF00" optional="true"/>
+            <labelFontSize label="Font size of the labels" type="NumericStepper" min="4" max="100" step="1" defaultValue="12" optional="true" />
+        </opinionOptions>
         <openAnswerOptions type="group" label="'Open answer' extra options" optional="true" tooltip="Extra options that only make sense if the interaction type is 'Open answer'">
             <showUserID label="Show user id" type="checkbox" defaultValue="false" optional="true" tooltip="Show a user id with each open answer, if that information is available" />
             <showDate label="Show date" type="checkbox" defaultVale="false" optional="true" tooltip="Show date of entry" />
