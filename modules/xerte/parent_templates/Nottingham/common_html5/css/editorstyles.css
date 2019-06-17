@@ -5,6 +5,9 @@
 /* Important note: unlike some older Xerte themes this part of this default theme has been developed using sass and scss files */
 /*You should not edit the editorstyles.css file directly or change values directly unless you wish to override something*/
 /*Use SASS and the files in the scss folder name _allvariables.scss to start any customisation*/
+.cke_panel_listItem {
+  font-size: 12pt; }
+
 .panel1 {
   border-radius: 3px;
   display: table;
