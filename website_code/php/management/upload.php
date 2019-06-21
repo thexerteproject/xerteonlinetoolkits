@@ -58,8 +58,6 @@ if($_FILES["fileToUpload"]["name"])
     $source = $_FILES["fileToUpload"]["tmp_name"];
     $temp_loc = dirname($source);
     $type = $_FILES["fileToUpload"]["type"];
-    $template_location = $xerte_toolkits_site->basic_template_path. 'xerte' . DIRECTORY_SEPARATOR . 'templates'. DIRECTORY_SEPARATOR;
-    $path = $template_location . $name;
     $importpath = $xerte_toolkits_site->import_path . $name . "/";
     mkdir($importpath, 0755);
 
@@ -114,6 +112,9 @@ if($_FILES["fileToUpload"]["name"])
                 exit(TEMPLATE_UPLOAD_CANT_DETERMINE_PARENT_TEMPLATE);
             }
             $row = returnParentObject($targetFolder);
+            $template_location = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . DIRECTORY_SEPARATOR . 'templates'. DIRECTORY_SEPARATOR;
+            $path = $template_location . $name;
+
             if (count($row) == 0)
             {
                 $zip->close();
