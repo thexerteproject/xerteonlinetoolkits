@@ -7,6 +7,10 @@ global $xerte_toolkits_site;
 
 $tsugi_installed = false;
 if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+    if ($xerte_toolkits_site->authentication_method == "Moodle") {
+        define('XERTE_MOODLE_AUTHENTICATION', true);
+    }
+    define('COOKIE_SESSION', true);
     require_once($xerte_toolkits_site->tsugi_dir . "config.php");
     require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
     $tsugi_installed = true;

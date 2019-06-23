@@ -115,7 +115,7 @@ if (!database_connect($xerte_toolkits_site)) {
 
 $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
 
-if ($row['integration_config_path'] != "") {
+if ($row['integration_config_path'] != "" && (!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true)) {
     require_once($row['integration_config_path']);
 }
 
