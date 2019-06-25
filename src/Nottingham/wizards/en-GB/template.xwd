@@ -288,7 +288,11 @@
       <displayMode label="Display Mode" optional="true" type="combobox" options="Unlisted,Listed" data="Unlisted,Listed" defaultValue="Unlisted"/>
       <startDate label="Start date" optional="true" type="dateField" defaultValue="" tooltip="Read records starting from this date"/>
       <endDate label="Stop date" optional="true" type="dateField" defaultValue="" tooltip="Read records ending from this date"/>
-      <dashboardMode label="Dashboard mode" optional="true" type="checkbox" defaultValue="false" tooltip="Show data for the whole group"/>
+     <dashboardMode label="Dashboard mode" optional="true" type="checkbox" defaultValue="false" tooltip="Show data for the whole group"/>
+     <listedModeOptions type="group" optional="true" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
+         <sortOrder label="Sort order" optional="true" type="combobox" defaultValue="none" options="Increasing score,Decreasing score,None" data="increasing,decreasing,none" tooltip="Sort the list acoording to this criteria. Only has meaning for 'Listed' display mode"/>
+     </listedModeOptions>
+
       <newNodes>
         <interaction><![CDATA[<interaction name="Enter title here" introduction="Enter introduction here" xerteurl="" xertelo="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
         xAxisLabelBarAnswers = "Answers given"
@@ -361,6 +365,9 @@
         <AvgScoreText label="Average Score Label" type="TextInput" wysiwyg="true" language="true"/>
         <showNrOfParticipants label="Show nr of participants" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the number of participants of this group"/>
         <NrParticipantsText label="Nr of Participants Label" type="TextInput" wysiwyg="true" language="true"/>
+        <listedModeOptions type="group" optional="true" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
+            <doNotSort label="Do not sort this item" type="checkbox" defaultValue="false" optional="true" tooltip="Do not sort this item in listed mode, but keep at the location where it is. Use for example to keep a summary block at the top of the list."/>
+        </listedModeOptions>
 
         <xAxisLabelBarAnswers label="X-Axis label of answer bargraph" type="TextInput" language="true"/>
         <yAxisLabelBarAnswers label="Y-Axis label of answer bargraph" type="TextInput" language="true"/>
@@ -399,7 +406,7 @@
     </interaction><interactionBlock menuItem="Interaction Block">
           <conScoreBetween label="Score between" type="TextInput" optional="true" defaultValue="0,100" wysiwyg="false"/>
           <conScoreAnswer label="Result label equals" type="TextInput" optional="true" defaultValue="label of answer" wysiwyg="false"/>
-          <adaptiveContent type="TextArea" wysiwyg="true" height="360"/>
+          <adaptiveContent label="Content" type="TextArea" wysiwyg="true" height="360"/>
     </interactionBlock><annotatedDiagram menu="Interactivity" menuItem="Annotated Diagram" hint="An interaction for exploring labelled diagrams." icon="icPageWhiteStar" remove="true" thumb="thumbs/annotatedDiagram.jpg" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
