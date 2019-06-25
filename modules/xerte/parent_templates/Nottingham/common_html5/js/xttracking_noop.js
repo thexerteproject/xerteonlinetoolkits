@@ -963,14 +963,19 @@ function XTLogin(login, passwd)
     return true;
 }
 
-function XTGetMode()
+function XTGetMode(extended)
 {
     if (state.forcetrackingmode === 'true') {
         if (state.trackingmode !== "none") {
-            if (state.scoremode == "first")
+            if (extended != null && (extended == true || extended == 'true')) {
+                if (state.scoremode == "first")
+                    return "normal";
+                else
+                    return "normal-last";
+            }
+            else {
                 return "normal";
-            else
-                return "normal-last";
+            }
         }
         else {
             return "tracking";
