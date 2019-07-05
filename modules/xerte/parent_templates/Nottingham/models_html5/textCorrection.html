@@ -45,7 +45,7 @@
                 if(!hasExited){
                     this.exitTrackTextCorrection();
                 }
-            }
+            };
 
             this.exitTrackTextCorrection = function () {
                 answer = textCorrection.answer;
@@ -125,6 +125,8 @@
                 var $attempts = $("#attempts");
                 var amountofTries = x_currentPageXML.getAttribute("amountOfTries");
 
+
+
                 var $pageContents = $("#pageContents");
 
                 var $textHolder = $("#textHolder");
@@ -140,15 +142,24 @@
 
                 textCorrection.answer = answer;
 
+                debugger;
+                var copyText = x_currentPageXML.getAttribute("copyText").trim();
+                var $textArea = $("#text");
+                if( copyText === "true"){
+                    question = $("<div>").html(question).text().trim();
+                    $textArea.val(question)
+                }
+
                 var $correctOrNot = $("#infoHolder #correctOrNot");
                 var correct = "Good job";
 
                 var $FurtherClarification = $("#infoHolder #FurtherClarification");
                 var FurtherClarification = x_currentPageXML.getAttribute("FurtherClarification");
+                var AllowFurtherClarification = x_currentPageXML.getAttribute("showFurtherClarification");
+
                 FurtherClarification = $("<div>").html(FurtherClarification).text().trim();
 
                 var $answer = $("#infoHolder #answer");
-
                 var showAnswer =  x_currentPageXML.getAttribute("showAnswers");
 
                 //Translation
@@ -264,7 +275,8 @@
                                     hasExited = true;
                                 }
                             }
-                            if (x_currentPageXML.getAttribute("FurtherClarification") !== null) {
+                            debugger;
+                            if (AllowFurtherClarification === "true") {
                                 $FurtherClarification.append("<h3>" + FurtherClarificationLabel + "</h3>");
                                 $FurtherClarification.append(FurtherClarification);
                             }
@@ -299,7 +311,7 @@
 
                 </div>
                 <div id="optionHolder">
-                    <div class="answer"><textarea rows="4" cols="50"></textarea></div>
+                    <div class="answer"><textarea id="text" rows="4" cols="50" spellcheck="false"></textarea></div>
                 </div>
                 <button id="checkButton"></button>
                 <div id="attempts"></div>
