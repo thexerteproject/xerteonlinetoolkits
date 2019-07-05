@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
     <pageWizard remove="true" duplicate="false">
         <newNodes>
-            <textCorrection><![CDATA[<textCorrection name="Enter Page Title" amountOfTries="1"  FurtherClarification = "Enter here further clarification" copyText="false" align="Left" introduction="Enter the introduction for the page here" wrongText="Enter the wrong text here" answer="Enter the correct text here" feedback="Enter the feedback here" panelWidth="Medium" checkBtn="Check"  textRight="You passed this test" textWrong="Your answer is wrong"  resultLabel="Result" FurtherClarificationLabel="Further Clarification" answerLabel="Answer" attemptLabel="Attempts" textIncomplete="You have not filled the question. Please try again."/>]]></textCorrection>
+            <textCorrection><![CDATA[<textCorrection name="Enter Page Title"  FurtherClarification = "Enter here further clarification" copyText="false" align="Left" introduction="Enter the introduction for the page here" wrongText="Enter the wrong text here" answer="Enter the correct text here" feedback="Enter the feedback here" panelWidth="Medium" checkBtn="Check"  textRight="You passed this test" textWrong="Your answer is wrong"  resultLabel="Result" FurtherClarificationLabel="Further Clarification" answerLabel="Answer" attemptLabel="Attempts" textIncomplete="You have not filled the question. Please try again."/>]]></textCorrection>
         </newNodes>
     </pageWizard>
 
@@ -12,10 +12,10 @@
         <introduction label="Introductory Text" type="TextArea" height="100"/>
         <wrongText label="Incorrect Text" type="TextArea" height="150"/>
         <answer label="Correct Text" type="TextArea" height="150" />
-        <amountOfTries label="Tries" type="TextInput" defaultValue="1"/>
-        <copyText label="Copy Text" defaultValue="true" type="CheckBox"/>
+        <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true"/>
+        <copyText label="Copy Text" defaultValue="true" type="CheckBox" tooltip="Places the question in the text box"/>
         <showFurtherClarification label="Show Further Clarification" defaultValue="false" type="CheckBox" optional="true"/>
-        <FurtherClarification label="Further Clarification" type="TextArea" height="50"/>
+        <FurtherClarification label="Further Clarification" type="TextArea" height="50" tooltip='Add "Show Further Clarification" from the optional properties'/>
         <showAnswers label = "Show Answers" type="CheckBox" optional="true"/>
 
 

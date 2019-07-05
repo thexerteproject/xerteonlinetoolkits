@@ -124,7 +124,9 @@
 
                 var $attempts = $("#attempts");
                 var amountofTries = x_currentPageXML.getAttribute("amountOfTries");
-
+                if(amountofTries === null || amountofTries === undefined){
+                    amountofTries = "1";
+                }
 
 
                 var $pageContents = $("#pageContents");
@@ -197,7 +199,13 @@
                         label: checkButtonTxt
                     })
                     .click(function () {
-                        var tries = parseInt(x_currentPageXML.getAttribute("amountOfTries"));
+
+                        var amountOfTries = x_currentPageXML.getAttribute("amountOfTries");
+                        if(amountOfTries === null || amountOfTries === undefined){
+                            amountOfTries = "1";
+                        }
+
+                        var tries = parseInt(amountOfTries);
 
                         $correctOrNot.html("");
 
