@@ -162,7 +162,7 @@
                 FurtherClarification = $("<div>").html(FurtherClarification).text().trim();
 
                 var $answer = $("#infoHolder #answer");
-                var showAnswer =  x_currentPageXML.getAttribute("showAnswers");
+                var disableAnswer =  x_currentPageXML.getAttribute("disableAnswers");
 
                 //Translation
                 var incorrect = x_currentPageXML.getAttribute("textWrong");
@@ -288,7 +288,7 @@
                                 $FurtherClarification.append(FurtherClarification);
                             }
 
-                            if (showAnswer === null || showAnswer === "true") {
+                            if (disableAnswer === "false" ||disableAnswer === null) {
 
                                 $answer.append("<h3>" + answerLabel + "</h3>");
                                 $answer.append(x_currentPageXML.getAttribute("answer"))
