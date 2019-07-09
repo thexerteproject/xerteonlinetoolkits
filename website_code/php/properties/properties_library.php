@@ -604,12 +604,7 @@ function statistics_prepare($template_id)
                 $info->info = $html;
                 $lrs = new stdClass();
                 $lrs->lrsendpoint = $xerte_toolkits_site->site_url . "xapi_proxy.php";
-                // Make sure we adapt for protocol (mainly to make debugging easier)
 
-                if (!isset($_SERVER['HTTPS']) && strpos($xerte_toolkits_site->site_url, ':') == 5)
-                {
-                    $lrs->lrsendpoint = "http" . substr($lrs->lrsendpoint, 5);
-                }
                 $lrs->lrskey = "";
                 $lrs->lrssecret = "";
                 $lrs->lrsurls = $row['dashboard_allowed_links'];

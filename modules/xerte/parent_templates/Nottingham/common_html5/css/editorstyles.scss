@@ -11,6 +11,12 @@ $esc4: $accent2;
 $esc5: $darkestcolor;
 $esc6: $accent3;
 
+//set the default size of the list menu items e.g. for the Styles menu
+//no real need for this to mirror the size on the page in the list menu
+.cke_panel_listItem {
+  font-size: 12pt;
+}
+
 //*****editor styles*****/
 //****common styles for panels***//
 @mixin panel {
@@ -43,14 +49,14 @@ $esc6: $accent3;
 }
 @mixin beforeblockquote {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
 }
 @mixin afterblockquote{
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;

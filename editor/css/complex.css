@@ -965,6 +965,16 @@ button.editorbutton:hover {
     font-size: 1em;
 }
 
+div.hotspotLightbox button.editorbutton {
+	border-radius: 3px;
+    padding: 0.5em;
+	margin: 0 5px 0 0;
+	background: #ccc;
+}
+
+div.hotspotLightbox button.editorbutton:hover {
+    background: #f86718;
+}
 
 .xerte_button_dark {background: transparent; border: 0; color: #333;}
 

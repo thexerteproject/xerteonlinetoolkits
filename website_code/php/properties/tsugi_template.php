@@ -1,9 +1,14 @@
 <?php
+
 	require_once("../../../config.php");
 	global $xerte_toolkits_site;
 
     $tsugi_installed = false;
 	if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+        if ($xerte_toolkits_site->authentication_method == "Moodle") {
+            define('XERTE_MOODLE_AUTHENTICATION', true);
+        }
+        define('COOKIE_SESSION', true);
         require_once($xerte_toolkits_site->tsugi_dir . "config.php");
         require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
         $tsugi_installed = true;
@@ -73,9 +78,11 @@
 						FROM {$CFG->dbprefix}lti_key AS k, {$CFG->dbprefix}lti_context AS c, {$CFG->dbprefix}lti_link AS l
 							WHERE k.key_id = c.key_id AND c.context_id = l.context_id AND l.path = :DPATH",
                         array(':DPATH' => $lti_def->tsugi_url));
-                    $lti_def->key = $tsugirow["key_key"];
-                    $lti_def->secret = $tsugirow["secret"];
-                    $lti_def->title = $tsugirow["title"];
+                    if ($tsugirow !== false) {
+                        $lti_def->key = $tsugirow["key_key"];
+                        $lti_def->secret = $tsugirow["secret"];
+                        $lti_def->title = $tsugirow["title"];
+                    }
                 }
             }
             if($lti_def->xapi_enabled == 1)

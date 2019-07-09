@@ -9,10 +9,8 @@ include ('../xmlInspector.php');
 
 require_once("../../../config.php");
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
 
 _load_language_file("/website_code/php/management/upload.inc");
 
@@ -21,55 +19,63 @@ $prefix = $xerte_toolkits_site->database_table_prefix;
 
 if($_FILES['fileToUpload']['error'] == 4)
 {
-    http_response_code(400);
-    die(NO_FILE_SELECTED);
+    exit(TEMPLATE_UPLOAD_NO_FILE_SELECTED);
 }
 
 if($_FILES["fileToUpload"]["name"])
 {
-    $name = explode(".", $_FILES["fileToUpload"]["name"]);
+    $filename =  $_FILES["fileToUpload"]["name"];
+    $filename_parts = explode(".", $_FILES["fileToUpload"]["name"]);
 
-    if ($_POST["templateName"] == null)
+    if (isset($_POST["templateName"]) && $_POST["templateName"] != "")
     {
-        $filename = $_FILES["fileToUpload"]["name"];
+        $name = $_POST['templateName'];
     }
     else
     {
-        $filename = $_POST['templateName'];
-        $filename .= "." . $name[1];
-        $name = explode(".", $filename);
+        $name = $filename_parts[0];
     }
+    // Replace spaces etc
+    $name = preg_replace("/[^0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_]/u", "_", $name);
 
-    if($_POST["templateDescription"] != null)
+    if (isset($_POST["templateDisplayname"]) && $_POST["templateDisplayname"] != "")
     {
+        $displayname = $_POST["templateDisplayname"];
+    }
+    else
+    {
+        $displayname = $name;
+    }
+    if (isset($_POST["templateDescription"]) && $_POST["templateDescription"] != "")
+        {
         $description = $_POST["templateDescription"];
     }
     else
     {
-        http_response_code(400);
-        die(EMPTY_DESCRIPTION);
+        $description = "";
     }
-
 
     $source = $_FILES["fileToUpload"]["tmp_name"];
     $temp_loc = dirname($source);
     $type = $_FILES["fileToUpload"]["type"];
-    $template_location = $xerte_toolkits_site->basic_template_path. 'xerte' . DIRECTORY_SEPARATOR . 'templates'. DIRECTORY_SEPARATOR;
-    $path = $template_location . $filename;
+    $importpath = $xerte_toolkits_site->import_path . $name . "/";
+    mkdir($importpath, 0755);
 
-    $isZip = strtolower($name[1]) == 'zip' ? true : false;
+    $importfile = $importpath . $filename;
+
+    $isZip = strtolower($filename_parts[1]) == 'zip' ? true : false;
     $success = true;
 
     if (!$isZip)
     {
         $success = false;
-        http_response_code(400);
-        die(UPLOAD_INCORRECT_FILE_TYPE);
+        unlink($source);
+        exit(TEMPLATE_UPLOAD_INCORRECT_FILE_TYPE);
     }
-    if ($success && move_uploaded_file($source, $path))
+    if ($success && move_uploaded_file($source, $importfile))
     {
         $zip = new ZipArchive();
-        $x = $zip->open($path);
+        $x = $zip->open($importfile);
 
         $templateFound = false;
         $mediaFound = false;
@@ -83,7 +89,7 @@ if($_FILES["fileToUpload"]["name"])
             if ($stat["name"] === "template.xml")
             {
                 $templateFound = true;
-                $templateXML = file_get_contents($temp_loc . DIRECTORY_SEPARATOR . "template.xml");
+                //$templateXML = file_get_contents($temp_loc . DIRECTORY_SEPARATOR . "template.xml");
             }
             if (strpos($stat["name"], 'media/') !== false)
             {
@@ -93,94 +99,127 @@ if($_FILES["fileToUpload"]["name"])
 
         if($templateFound === true && $mediaFound === true)
         {
-            $row = returnParentObject(returnTargetFolderName($templateXML));
-            if(checkParent($name[0]) === true)
-            {
-                $zip->close();
-                deleteZip($template_location, $name[0]);
-                http_response_code(400);
-                die(CANT_UPLOAD_PARENT);
-            }
-
-            if (!is_dir($template_location . $name[0]))
-            {
-                mkdir($template_location . $name[0], 0755);
-            }
-            $zip->extractTo($temp_loc);
+            $zip->extractTo($importpath);
             $zip->close();
 
+            $templateXML = file_get_contents($importpath . DIRECTORY_SEPARATOR . "template.xml");
+
+            $targetFolder = returnTargetFolderName($templateXML);
+            if ($targetFolder == "")
+            {
+                $zip->close();
+                rrmdir($importpath);
+                exit(TEMPLATE_UPLOAD_CANT_DETERMINE_PARENT_TEMPLATE);
+            }
+            $row = returnParentObject($targetFolder);
+            $template_location = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . DIRECTORY_SEPARATOR . 'templates'. DIRECTORY_SEPARATOR;
+            $path = $template_location . $name;
+
+            if (count($row) == 0)
+            {
+                $zip->close();
+                rrmdir($importpath);
+                $mesg = str_replace("{0}", $targetFolder, TEMPLATE_UPLOAD_INVALID_PARENT_TEMPLATE);
+                exit($mesg);
+            }
+            if(checkParent($name) === true)
+            {
+                $zip->close();
+                rrmdir($importpath);
+                exit(TEMPLATE_UPLOAD_CANT_UPLOAD_PARENT);
+            }
+
+            if (!is_dir($template_location . $name))
+            {
+                mkdir($template_location . $name, 0755);
+            }
 
 
-            copy($temp_loc . DIRECTORY_SEPARATOR . "template.xml", $template_location . $name[0] . DIRECTORY_SEPARATOR . "data.xml");
-
-            $xml = new XerteXMLInspector();
-            //Is false als hij niet correct is, NULL is wel correct
-            $exists = $xml->loadTemplateXML($template_location . $name[0] . "/" . $stat['name']);
-
-
+            copy($importpath . "template.xml", $template_location . $name . DIRECTORY_SEPARATOR . "data.xml");
 
             $iterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($temp_loc . DIRECTORY_SEPARATOR . "media", \RecursiveDirectoryIterator::SKIP_DOTS),
+                new \RecursiveDirectoryIterator($importpath . "media", \RecursiveDirectoryIterator::SKIP_DOTS),
                 \RecursiveIteratorIterator::SELF_FIRST);
 
-            if (!is_dir($template_location . $name[0] . DIRECTORY_SEPARATOR . "media"))
+            if (!is_dir($template_location . $name . DIRECTORY_SEPARATOR . "media"))
             {
-                mkdir($template_location . $name[0]. DIRECTORY_SEPARATOR . "media", 0755);
+                mkdir($template_location . $name . DIRECTORY_SEPARATOR . "media", 0755);
             }
 
             foreach ($iterator as $item)
             {
-                copy($item, $template_location . $name[0]. DIRECTORY_SEPARATOR . "media" . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
+                if (is_dir($item))
+                {
+                    if (!is_dir($template_location . $name . DIRECTORY_SEPARATOR . "media" . DIRECTORY_SEPARATOR . $iterator->getSubPathName()))
+                    {
+                        mkdir($template_location . $name . DIRECTORY_SEPARATOR . "media" . DIRECTORY_SEPARATOR . $iterator->getSubPathName(), 0755);
+                    }
+                }
+                else
+                {
+                    copy($item, $template_location . $name . DIRECTORY_SEPARATOR . "media" . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
+                }
             }
-
+            $success = true;
         }
         else if($templateFound === false || $mediaFound === false)
         {
             $zip->close();
-            deleteZip($template_location, $name[0]);
-
+            rrmdir($importpath);
             if($templateFound === false)
             {
-                http_response_code(400);
-                die(UPLOAD_HAS_NO_TEMPLATE_XML);
+                exit(TEMPLATE_UPLOAD_HAS_NO_TEMPLATE_XML);
             }
             if($mediaFound === false)
             {
-                http_response_code(400);
-                die(UPLOAD_HAS_NO_MEDIA);
+                exit(TEMPLATE_UPLOAD_HAS_NO_MEDIA);
             }
         }
         if($success && $templateFound === true && $mediaFound === true)
         {
-            $query = "INSERT INTO {$prefix}originaltemplatesdetails"
-                      . "(template_framework, template_name, parent_template, description, date_uploaded, display_name, display_id, access_rights, active)"
-                      . "VALUES(?,?,?,?,?,?,?,?,?)";
-            $param = array($row['template_framework'], $name[0], $row['template_name'], $description, date("Y-m-d H:i:s"), $row['display_name'], $row['display_id'], $row['access_rights'], $row['active']);
+            // Check if already exists
+            $q = "select * from {$prefix}originaltemplatesdetails where template_name=?";
+            $param = array($name);
 
-            $lastId = db_query($query, $param);
+            $subtemplates = db_query($q, $param);
+            if (count($subtemplates) == 0) {
+                // Insert record
+                $query = "INSERT INTO {$prefix}originaltemplatesdetails"
+                    . "(template_framework, template_name, parent_template, description, date_uploaded, display_name, display_id, access_rights, active)"
+                    . "VALUES(?,?,?,?,?,?,?,?,?)";
+                $param = array($row['template_framework'], $name, $row['template_name'], $description, date("Y-m-d H:i:s"), $displayname, $row['display_id'], $row['access_rights'], $row['active']);
+
+                $lastId = db_query($query, $param);
+            }
+            else{
+                // Update record
+                $query = "UPDATE {$prefix}originaltemplatesdetails"
+                    . "set description=?, displayname=?, date_uploaded=? where template_name=?";
+                $param = array($description, $displayname, date("Y-m-d H:i:s"), $name);
+                $db_query = db_query($query, $param);
+            }
+
             $infoContents = returnInfoFile($row['template_framework'], $row['template_name']);
 
-            $contents = editInfoFile($infoContents, $name[0], $description);
+            $contents = editInfoFile($infoContents, $name, $description);
 
-            createInfoFile($template_location, $name[0], $contents);
-            deleteZip($template_location, $name[0]);
+            createInfoFile($template_location, $name, $contents);
+            rrmdir($importpath);
 
-            exit(FILE_UPLOAD_SUCCESS);
+            exit(TEMPLATE_UPLOAD_FILE_UPLOAD_SUCCESS);
         }
     }
     else
     {
-        http_response_code(400);
-        die(FILE_CANT_BE_UPLOADED);
+        exit(TEMPLATE_UPLOAD_FILE_CANT_BE_UPLOADED);
     }
-
 }
 
 function returnTargetFolderName($templateXML)
 {
     if($templateXML == null)
     {
-        return 0;
+        return "";
     }
 
     $dom = new DOMDocument();
@@ -188,7 +227,7 @@ function returnTargetFolderName($templateXML)
 
     $learningObject = $dom->getElementsByTagName('learningObject')->item(0);
 
-    return $learningObject->getAttribute('targetFolder');
+    return (string)$learningObject->getAttribute('targetFolder');
 }
 
 function returnParentObject($targetFolder)
@@ -205,6 +244,24 @@ function returnParentObject($targetFolder)
 
     return $row;
 
+}
+
+function rrmdir($src) {
+    if ($src != "") {
+        $dir = opendir($src);
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
+                $full = $src . '/' . $file;
+                if (is_dir($full)) {
+                    rrmdir($full);
+                } else {
+                    unlink($full);
+                }
+            }
+        }
+        closedir($dir);
+        rmdir($src);
+    }
 }
 
 function returnInfoFile($parentTemplateFramework, $parentTemplateName)
@@ -263,7 +320,6 @@ function deleteZip($dir, $templateName)
             unlink($file);
         }
     }
-
 }
 
 function checkParent($templateName)

@@ -157,8 +157,8 @@
 	  <seconds name="seconds"/>
   </timer>
 
-  <colourChanger label="Colour Changer" description="Change the colours." tooltip="Change Colours">
-	  <closeButton label="" description="Close Colour Changer"/>
+  <colourChanger label="Accessibility Options" description="Change the colours." tooltip="Accessibility Options">
+	  <closeButton label="" description="Close Accessibility Options"/>
 	  <selectTxt label="Please select from the options below"/>
 	  <adviceTxt label="Need more advice? Visit the &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Online Toolkits guide to accessibility&lt;/a&gt;."/>
 	  <off label="Off"/>

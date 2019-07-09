@@ -4,9 +4,92 @@ svg{
 }
 canvas {
   height: 400px;
+  width : 100%;
 }
 #adaptiveContent .panel {
   margin-top: 5px;
   margin-bottom: 5px;
   padding-bottom: 20px;
+}
+
+.graph-container {
+  display:flex;
+}
+
+.legend {
+  margin-left: 20px;
+  height: fit-content;
+}
+
+tr.openanswer {
+  color: inherit;
+}
+
+.openanswer td.date {
+  white-space: nowrap;
+}
+
+#listPanel ul li {
+  cursor: pointer;
+}
+
+#adaptiveContentList ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+#adaptiveContentList {
+  clear: both;
+}
+li.select-interaction {
+  background: #eeeeee;
+}
+
+li.select-interaction.selected {
+  background: #dddddd;
+}
+
+#listPanel {
+  min-height: 220px;
+}
+
+#loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200px;
+  margin-left: -100px; /* -1 * div width / 2 */
+  margin-top: -32px;  /* -1 * image height / 2 */
+  display: flex;
+  z-index: 10;
+  flex-direction: column;
+}
+
+#loader_image {
+  margin-left: auto;
+  margin-right:auto;
+  display:block;
+}
+
+#loader_text {
+  text-align: center;
+  color:#888888;
+  font-size:smaller;
+}
+
+#adaptiveContentMain .splitScreen .left, #adaptiveContentMain .splitScreen .right {
+  overflow-y: auto;
+}
+
+#adaptiveContentMain {
+  overflow-y: hidden;
+}
+
+.x_adaptiveContent_page #x_pageDiv > div:first-of-type{
+  height: 100%;
+}
+
+.graph-container fieldset.noStyle
+{
+  width: 100%;
 }

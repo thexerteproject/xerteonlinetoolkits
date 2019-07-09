@@ -34,6 +34,10 @@ require_once("../user_library.php");
 require_once("../template_library.php");
 require_once("../file_library.php");
 
+if(empty($_SESSION['toolkits_logon_id'])) {
+    die("Please login");
+}
+
 /*
  * get the root folder for this user
  */

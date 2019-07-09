@@ -16,11 +16,11 @@
 
 	define("TEMPLATE_VIEW", "Show");
 
-    define("TEMPLATE_UPDATE_EXPLANATION", "To add a template to your xot installation, please upload the template using ftp and press the button below to update");
+    define("TEMPLATE_UPDATE_EXPLANATION", "<h2>Parent templates</h2><p>To add a template to your xot installation, please upload the template using ftp and press the button below to update.</p>");
 
 	define("TEMPLATE_UPDATE", "Update template list");
 	
-	define("TEMPLATE_MANAGE", "Manage Existing templates");
+	define("TEMPLATE_MANAGE", "<h2>Manage Existing templates</h2>");
 
 	define("TEMPLATE_TYPE", "This template is of type");
 	
@@ -50,11 +50,17 @@
 
 	define("TEMPLATE_REPLACE", "Upload a new version of this template");
 
-	define("TEMPLATE_ADD_EXPLANATION", "Add a custom learn object in Xerte");
+	define("TEMPLATE_ADD_EXPLANATION", "<h2>Sub-templates</h2><p>Import an exported learning object as a new sub-template. If the sub-template already exists it will be replaced. The 'Template name' field identifies the sub-template. The 'Template display name' is the name shown to the user.</p><p>Do not use spaces or any other special characters in the template name, as this name is used as a foldername. If you do use special characters or spaces, these will be replaced by  a '_' character.</p>");
 
     define("TEMPLATE_ADD", "Add template");
 
     define("TEMPLATE_UPLOAD_FILE", "Upload file");
+
+    define("TEMPLATE_UPLOAD_TEMPLATENAME", "Enter the template name");
+
+    define("TEMPLATE_UPLOAD_TEMPLATEDISPLAYNAME", "Enter the template display name");
+
+    define("TEMPLATE_UPLOAD_TEMPLATEDESCRIPTION", "Enter the template description");
 
 
 ?>

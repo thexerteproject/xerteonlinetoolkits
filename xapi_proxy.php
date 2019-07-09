@@ -256,6 +256,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
                 $lrs['lrskey'] = $row['tsugi_xapi_key'];
                 $lrs['lrssecret'] = $row['tsugi_xapi_secret'];
             }
+            $_SESSION['XAPI_PROXY'] = $lrs;
         }
         else
         {
@@ -283,7 +284,16 @@ if (!isset($_SESSION['XAPI_PROXY']))
             $pos += 14;
         }
         if ($pos !== false) {
-            $url = $lrs['lrsendpoint'] . substr($_SERVER["REQUEST_URI"], $pos);
+            $proxy_url = substr($_SERVER['REQUEST_URI'], 0, $pos);
+            $api_call = substr($_SERVER["REQUEST_URI"], $pos);
+            $pos = strpos($api_call, '?');
+            if ($pos !== false) {
+                $api_call_path = substr($api_call, 0, $pos+1);
+            }
+            else{
+                $api_call_path = "?";
+            }
+            $url = $lrs['lrsendpoint'] . $api_call;
             $lrs_key = $lrs['lrskey'];
             $lrs_secret = $lrs['lrssecret'];
         }
@@ -380,6 +390,19 @@ if (!isset($_SESSION['XAPI_PROXY']))
             //_debug("xapi_proxy: info==" . print_r($info, true));
             //_debug("xapi_proxy: header=" . print_r($header, true));
             //_debug("xapi_proxy: contents=" . print_r($contents, true));
+
+            // Rebuild xapi_proxy.php path in "more", if "more" is present
+            $pos = strpos($contents, "\"more\"");
+            if ($pos !== false)
+            {
+                // Find $api_call_path
+                $path_pos = strpos($contents, $api_call_path, $pos);
+                if ($path_pos !== false) {
+                    $first_quote = strpos($contents, "\"", $pos + 6);
+                    // Replace
+                    $contents = substr($contents, 0, $first_quote + 1) . $proxy_url . substr($contents, $path_pos);
+                }
+            }
             curl_close($ch);
         }
     }
