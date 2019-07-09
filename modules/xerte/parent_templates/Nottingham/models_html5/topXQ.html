@@ -301,6 +301,11 @@
                     }
                 }
 
+                var attemptLabel = x_currentPageXML.getAttribute("attemptLabel");
+                if( x_currentPageXML.getAttribute("attemptLabel") == null){
+                    attemptLabel = "Attempt";
+                }
+
                 var instruction = x_currentPageXML.getAttribute("instruction");
                 $textHolder.html(instruction);
 
