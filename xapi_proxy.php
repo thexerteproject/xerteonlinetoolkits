@@ -157,8 +157,20 @@
 //     validates all URLs.
 //
 
-require_once ("config.php");
-$contents = "";
+if (isset($_GET['tsugisession']))
+{
+    $tsugi_disable_xerte_session=true;
+    require_once ("config.php");
+    $contents = "";
+
+    _debug("TSUGI session");
+    require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
+    session_start();
+}
+else
+{
+    require_once ("config.php");
+}
 
 if (!function_exists('getallheaders')) {
     /**
@@ -244,6 +256,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
                 $lrs['lrskey'] = $row['tsugi_xapi_key'];
                 $lrs['lrssecret'] = $row['tsugi_xapi_secret'];
             }
+            $_SESSION['XAPI_PROXY'] = $lrs;
         }
         else
         {
@@ -256,10 +269,31 @@ if (!isset($_SESSION['XAPI_PROXY']))
         $status = array('http_code' => 'ERROR');
 
     } else {
+        _debug("xapi_proxy: Request uri:  " . $_SERVER["REQUEST_URI"]);
 
         $pos = strpos($_SERVER["REQUEST_URI"], "xapi_proxy.php");
+	    // Skip the possible php session paramaters
+        $slashpos = strpos($_SERVER["REQUEST_URI"], "tsugisession=1");
+
+        if ($slashpos !== false)
+        {
+            $pos = $slashpos + 14;
+        }
+        else if ($pos !== false)
+        {
+            $pos += 14;
+        }
         if ($pos !== false) {
-            $url = $lrs['lrsendpoint'] . substr($_SERVER["REQUEST_URI"], $pos+14);
+            $proxy_url = substr($_SERVER['REQUEST_URI'], 0, $pos);
+            $api_call = substr($_SERVER["REQUEST_URI"], $pos);
+            $pos = strpos($api_call, '?');
+            if ($pos !== false) {
+                $api_call_path = substr($api_call, 0, $pos+1);
+            }
+            else{
+                $api_call_path = "?";
+            }
+            $url = $lrs['lrsendpoint'] . $api_call;
             $lrs_key = $lrs['lrskey'];
             $lrs_secret = $lrs['lrssecret'];
         }
@@ -310,7 +344,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
 
             }
 
-            if ($_GET['send_cookies']) {
+            if (isset($_GET['send_cookies']) && $_GET['send_cookies']) {
                 $cookie = array();
                 foreach ($_COOKIE as $key => $value) {
                     $cookie[] = $key . '=' . $value;
@@ -327,7 +361,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
             curl_setopt($ch, CURLOPT_HEADER, true);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-            curl_setopt($ch, CURLOPT_USERAGENT, $_GET['user_agent'] ? $_GET['user_agent'] : $_SERVER['HTTP_USER_AGENT']);
+            curl_setopt($ch, CURLOPT_USERAGENT, isset($_GET['user_agent']) && $_GET['user_agent'] ? $_GET['user_agent'] : $_SERVER['HTTP_USER_AGENT']);
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
             //curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             if (isset($headers['X-Experience-API-Version']))
@@ -340,21 +374,42 @@ if (!isset($_SESSION['XAPI_PROXY']))
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($ch, CURLOPT_USERPWD, $lrs_key . ':' . $lrs_secret);
 
-            list($header, $contents) = preg_split('/([\r\n][\r\n])\\1/', curl_exec($ch), 2);
+            // Disable SSL peer verification
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+            $response = curl_exec($ch);
+            if ($response === false)
+            {
+                 _debug("Error: ", curl_error($ch));
+            }
+            list($header, $contents) = preg_split('/([\r\n][\r\n])\\1/', $response, 2);
 
             $status = curl_getinfo($ch);
             $info = curl_getinfo($ch, CURLINFO_HEADER_OUT);
             _debug("xapi_proxy: status=" . print_r($status, true));
-            _debug("xapi_proxy: info==" . print_r($info, true));
-            _debug("xapi_proxy: header=" . print_r($header, true));
-            _debug("xapi_proxy: contents=" . print_r($contents, true));
+            //_debug("xapi_proxy: info==" . print_r($info, true));
+            //_debug("xapi_proxy: header=" . print_r($header, true));
+            //_debug("xapi_proxy: contents=" . print_r($contents, true));
+
+            // Rebuild xapi_proxy.php path in "more", if "more" is present
+            $pos = strpos($contents, "\"more\"");
+            if ($pos !== false)
+            {
+                // Find $api_call_path
+                $path_pos = strpos($contents, $api_call_path, $pos);
+                if ($path_pos !== false) {
+                    $first_quote = strpos($contents, "\"", $pos + 6);
+                    // Replace
+                    $contents = substr($contents, 0, $first_quote + 1) . $proxy_url . substr($contents, $path_pos);
+                }
+            }
             curl_close($ch);
         }
     }
 }
 // Split header text into an array.
 $header_text = preg_split( '/[\r\n]+/', $header );
-if ( $_GET['mode'] == 'native' || $force_native) {
+if ( (isset($_GET['mode'] ) && $_GET['mode'] == 'native') || $force_native) {
     if ( !$enable_native ) {
         $contents = 'ERROR: invalid mode';
         $status = array( 'http_code' => 'ERROR' );
@@ -375,7 +430,7 @@ if ( $_GET['mode'] == 'native' || $force_native) {
     $data = array();
 
     // Propagate all HTTP headers into the JSON data object.
-    if ( $_GET['full_headers'] ) {
+    if (isset($_GET['full_headers']) && $_GET['full_headers']) {
         $data['headers'] = array();
 
         foreach ( $header_text as $header ) {
@@ -387,7 +442,7 @@ if ( $_GET['mode'] == 'native' || $force_native) {
     }
 
     // Propagate all cURL request / response info to the JSON data object.
-    if ( $_GET['full_status'] ) {
+    if (isset($_GET['full_status']) && $_GET['full_status'] ) {
         $data['status'] = $status;
     } else {
         $data['status'] = array();

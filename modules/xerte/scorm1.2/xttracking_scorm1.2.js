@@ -1333,7 +1333,7 @@ function XTLogin(login, passwd)
     return true;
 }
 
-function XTGetMode()
+function XTGetMode(extended)
 {
     if (state.scormmode == "normal")
     {
@@ -1341,10 +1341,16 @@ function XTGetMode()
         {
             var sit=state.find(state.currentpageid);
             if (state.trackingmode !== 'none') {
-                if (state.scoremode == 'first')
+                if (extended != null && (extended == true || extended == 'true'))
+                {
+                    if (state.scoremode == 'first')
+                        return "normal";
+                    else
+                        return "normal_last";
+                }
+                else {
                     return "normal";
-                else
-                    return "normal_last";
+                }
             }
             else
             {

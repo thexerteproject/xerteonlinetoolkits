@@ -108,10 +108,23 @@
 					resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>'
 				}
 				else {
+					
 					$pageContents.find("#headerHolder").html("<h3>" + feed.description + "</h3>");
 
 					$.each(feed.entries, function (index, item) {
-						resultsString += '<div><a target="_blank" href="' + item.link + '">' + item.title + '</a><p>' + item.contentSnippet + '</p></div>';
+						resultsString += '<div><a target="_blank" href="' + item.link + '">' + item.title + '</a>';
+						
+						if (x_currentPageXML.getAttribute("appearance") != 'title') {
+							// snippet is a bit long so shorten it
+							if (item.contentSnippet.length == item.content.length && item.contentSnippet.length > 400) {
+								var cutOff = 400 + item.contentSnippet.substr(400).indexOf(' ');
+								resultsString += '<p>' + item.contentSnippet.substring(0, cutOff) + '...</p>';
+							} else {
+								resultsString += '<p>' + item.contentSnippet + '</p>';
+							}
+						}
+						
+						resultsString += '</div>';
 					});
 				}
 				$resultsHolder

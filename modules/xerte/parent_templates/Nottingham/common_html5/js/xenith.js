@@ -26,6 +26,7 @@ var x_languageData  = [],
     x_currentPageXML,
     x_glossary      = [],
 	x_variables		= [],
+	x_variableInfo  = [],
 	x_variableErrors= [],
     x_specialChars  = [],
     x_inputFocus    = false,
@@ -619,6 +620,7 @@ function x_setUp() {
 
 		// calculate author set variables
 		x_newVariables();
+		x_dialogInfo.push({type:'msg', built:false});
 
 		// hides header/footer if set in url
 		if (x_params.hideHeader == "true") {
@@ -661,6 +663,7 @@ function x_desktopSetUp() {
 				label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
 				text:	false
 			})
+            .attr("aria-label", $("#x_cssBtn").attr("title"))
 			.click(function() {
 				// Post flag to containing page for iframe resizing
 				if (window && window.parent && window.parent.postMessage) {
@@ -1113,6 +1116,7 @@ function x_continueSetUp1() {
 			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
 			text:	false
 		})
+        .attr("aria-label", $("#x_prevBtn").attr("title"))
 		.click(function() {
 			if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
 				x_changePage(x_currentPage -1);
@@ -1164,6 +1168,7 @@ function x_continueSetUp1() {
 			label:	x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
 			text:	false
 		})
+        .attr("aria-label", $("#x_nextBtn").attr("title"))
 		.click(function() {
 		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
 				//when moving forward history is generated so ensure button is historic style
@@ -1761,10 +1766,11 @@ function x_changePageStep5(x_gotoPage) {
     // change page title and add narration / timer before the new page loads so $x_pageHolder margins can be sorted - these often need to be right so page layout is calculated correctly
     if (x_pageInfo[0].type == "menu" && x_currentPage == 0) {
         pageTitle = x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
+		
+		x_changePageStep6();
+		
     } else {
         pageTitle = x_currentPageXML.getAttribute("name");
-        x_addNarration();
-        x_addCountdownTimer();
 
 		// add screen reader info for this page type (if exists)
 		var screenReaderInfo = x_pageInfo[x_currentPage].type != "nav" ? x_pageInfo[x_currentPage].type : x_currentPageXML.getAttribute("type") == "Acc" ? "accNav" : x_currentPageXML.getAttribute("type") == "Button" ? "buttonNav" : x_currentPageXML.getAttribute("type") == "Col" ? "columnPage" : x_currentPageXML.getAttribute("type") == "Slide" ? "slideshow" : "tabNav";
@@ -1785,7 +1791,13 @@ function x_changePageStep5(x_gotoPage) {
 		}
 
 		pageTitle = pageTitle + extraTitle;
+		
+		x_addCountdownTimer();
+		x_addNarration('x_changePageStep6', '');
     }
+}
+
+function x_changePageStep6() {
 
     $("#x_headerBlock h2").html(pageTitle);
 
@@ -1848,6 +1860,17 @@ function x_changePageStep5(x_gotoPage) {
                 	customHTML.pageChanged();
                 }
         }
+		
+		// updates variables as their values might have changed
+		if (x_currentPageXML.getAttribute('varUpdate') != 'false') {
+			// variables on screen
+			if (x_variables.length > 0 && $('.x_var').length > 0) {
+				x_updateVariable();
+			}
+			
+			// updates xml for page otherwise text that isn't on screen yet won't be updated
+			x_findText(x_currentPageXML, false, ['variables']);
+		}
 
         // checks if size has changed since last load - if it has, call function in current page model which does anything needed to adjust for the change
         var prevSize = builtPage.data("size");
@@ -1871,7 +1894,7 @@ function x_changePageStep5(x_gotoPage) {
 			if (x_currentPage != 0 || x_pageInfo[0].type != "menu") {
 				// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
 				if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-					x_findText(x_currentPageXML, ["glossary"]); // exclude glossary
+					x_findText(x_currentPageXML, true, ["glossary"]); // exclude glossary
 				} else {
 					x_findText(x_currentPageXML);
 				}
@@ -1989,7 +2012,6 @@ function x_setUpPage() {
         .html((x_currentPage+1) + " / " + x_pageInfo.length)
         .attr("title", x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + (x_currentPage+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_pageInfo.length);
 
-
     if (x_pageInfo[0].type == "menu" && x_currentPage == 0) {
         $x_menuBtn
             .button("disable")
@@ -2086,6 +2108,81 @@ function x_pageLoaded() {
 			$("#x_page" + x_currentPage).append('<style type="text/css">' +  x_currentPageXML.getAttribute("styles") + '</style>');
 		}
 	}
+	
+	// is there a submit button & at least one variable input?
+	if ($('.x_varSubmit').length > 0 && $('.x_varInput').length > 0) {
+		$('.x_varSubmit').click(function() {
+			var dependants = [],
+				changed = [],
+				i, j, k;
+			
+			// update the variables changed via text fields
+			for (i=0; i<$('.x_varInput').length; i++) {
+				if ($('.x_varInput')[i].value != '') {
+					changed.push($('.x_varInput')[i].name);
+					var temp = x_setVariable($('.x_varInput')[i].name, $('.x_varInput')[i].value);
+					if (temp.length > 0) {
+						$.merge(dependants, temp);
+					}
+				}
+			}
+			
+			// as well as updating any variables that have been directly changed there may be dependants of those variables to change too
+			if (dependants.length > 0) {
+				dependants = dependants.filter(function(a){if (!this[a]) {this[a] = 1; return a;}},{});
+				
+				for (i=0; i<dependants.length; i++) {
+					for (j=0; j<x_variables.length; j++) {
+						if (dependants[i] == x_variables[j].name) {
+							for (k=0; k<x_variables[j].requiredBy.length; k++) {
+								if ($.inArray(x_variables[j].requiredBy[k], dependants) == -1) {
+									dependants.push(x_variables[j].requiredBy[k]);
+								}
+							}
+						}
+					}
+				}
+				
+				var toCalc = [];
+				for (i=0; i<x_variableInfo.length; i++) {
+					if ($.inArray(x_variableInfo[i].name, dependants) > -1) {
+						changed.push(x_variableInfo[i].name);
+						toCalc.push(i);
+						
+						// clear current variable value
+						for (k=0; k<x_variables.length; k++) {
+							if (x_variableInfo[i].name == x_variables[k].name) {
+								x_variables.splice(k,1);
+								break;
+							}
+						}
+					}
+				}
+				
+				x_calcVariables(toCalc);
+			}
+			
+			// should this page be immediately updated to show changes to the variable values?
+			if (x_currentPageXML.getAttribute('varUpdate') != 'false') {
+				for (i=0; i<x_variables.length; i++) {
+					for (j=0; j<changed.length; j++) {
+						if (x_variables[i].name == changed[j]) {
+							$('.x_var_' + x_variables[i].name).html(x_checkDecimalSeparator(x_variables[i].value));
+							
+							// updates xml for page otherwise text that isn't on screen yet won't be updated
+							x_findText(x_currentPageXML, false, ['variables']);
+						}
+					}
+				}
+			}
+			
+			// submit confirmation message
+			if (changed.length > 0) {
+				var submitConfirmMsg = x_currentPageXML.getAttribute('varConfirm') != undefined && x_currentPageXML.getAttribute('varConfirm') != '' ? x_currentPageXML.getAttribute('varConfirm') : x_getLangInfo(x_languageData.find("submitConfirmMsg")[0], "label", "Your answers have been submitted");
+				x_openDialog("msg", '', x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"), null, submitConfirmMsg);
+			}
+		});
+	}
 
     $("#x_page" + x_currentPage)
         .hide()
@@ -2113,7 +2210,7 @@ function x_pageLoaded() {
   };
 
 // function adds / reloads narration bar above main controls on interface
-function x_addNarration() {
+function x_addNarration(funct, arguments) {
     if (x_currentPageXML.getAttribute("narration") != null && x_currentPageXML.getAttribute("narration") != "") {
         x_checkMediaExists(x_evalURL(x_currentPageXML.getAttribute("narration")), function(mediaExists) {
 			if (mediaExists) {
@@ -2126,8 +2223,16 @@ function x_addNarration() {
 					autoNavigate:x_currentPageXML.getAttribute("narrationNavigate")
 				});
 			}
+			
+			if (funct != undefined) {
+				window[funct](arguments);
+			}
 		});
-    }
+    } else {
+		if (funct != undefined) {
+			window[funct](arguments);
+		}
+	}
 }
 
 
@@ -2294,20 +2399,32 @@ function x_loadPageBg(loadModel) {
 
 // function sorts out css that's dependant on screensize
 function x_updateCss(updatePage) {
-    if (updatePage != false) {
-        // adjust width of narration controls - to get this to work consistently across browsers and with both html5/flash players the audio needs to be reset
-        if ($("#x_pageNarration").length > 0) {
-            if ($("#x_pageNarration audio").css("display") == "none") { // flash
-                var audioRefNum = $("#x_pageNarration .mejs-audio").attr("id").substring(4);
-                $("body div#me_flash_" + audioRefNum + "_container").remove();
-            }
-            $("#x_pageNarration").remove();
-            x_addNarration();
-        }
-    }
+	
+	if (updatePage != false) {
+		// adjust width of narration controls - to get this to work consistently across browsers and with both html5/flash players the audio needs to be reset
+		if ($("#x_pageNarration").length > 0) {
+			if ($("#x_pageNarration audio").css("display") == "none") { // flash
+				var audioRefNum = $("#x_pageNarration .mejs-audio").attr("id").substring(4);
+				$("body div#me_flash_" + audioRefNum + "_container").remove();
+			}
+			$("#x_pageNarration").remove();
+			
+			x_addNarration('x_updateCss2', updatePage);
+			
+		} else {
+			x_updateCss2(updatePage);
+		}
+		
+	} else {
+		x_updateCss2(updatePage);
+	}
+}
 
+// function isn't called until the narration bar has loaded
+function x_updateCss2(updatePage) {
     $x_pageHolder.css("margin-bottom", $x_footerBlock.height());
     $x_background.css("margin-bottom", $x_footerBlock.height());
+	
     if (x_browserInfo.mobile == false) {
         $x_pageHolder.css("margin-top", $x_headerBlock.height());
         $x_background.css("margin-top", $x_headerBlock.height());
@@ -2333,7 +2450,6 @@ function x_updateCss(updatePage) {
 
     $(".x_popupDialog").parent().detach();
 }
-
 
 // functions open dialogs e.g. glossary, table of contents - just reattach if it's already loaded previously
 function x_openDialog(type, title, close, position, load, onclose) {
@@ -2504,19 +2620,20 @@ function x_getLangInfo(node, attribute, fallBack) {
 function x_newVariables() {
 	// clears arrays if they have previously been calculated
 	x_variables.splice(0, x_variables.length);
+	x_variableInfo.splice(0, x_variableInfo.length);
 	x_variableErrors.splice(0, x_variableErrors.length);
 
 	if (x_params.variables != undefined) {
 		var i, j, k, temp, thisVar,
-			allVars = x_params.variables.split("||"),
-			toCalc = [],
-			lastLength, checkDefault;
+			toCalc = [];
+		
+		x_variableInfo = x_params.variables.split("||");
 
 		// get array of data for all uniquely named variables & sort them so empty strings etc. become undefined
-		for (i=0; i<allVars.length; i++) {
-			var temp = allVars[i].split("|");
+		for (i=0; i<x_variableInfo.length; i++) {
+			var temp = x_variableInfo[i].split("|");
 			thisVar = {name:$.trim(temp[0]), data:temp.slice(1), requires:[]}; // data = [fixed value, [random], min, max, step, decimal place, significant figure, trailing zero, [exclude], default]
-			if (thisVar.name != "" && allVars.filter(function(a){ return a.name == thisVar.name }).length == 0) {
+			if (thisVar.name != "" && x_variableInfo.filter(function(a){ return a.name == thisVar.name }).length == 0) {
 				for (j=0; j<thisVar.data.length; j++) {
 					if (j == 1 || j == 8) { // convert data (random/exclude) to array
 						thisVar.data.splice(j, 1, thisVar.data[j].split(","));
@@ -2538,60 +2655,68 @@ function x_newVariables() {
 					}
 				}
 
-				allVars.splice(i, 1, thisVar);
+				x_variableInfo.splice(i, 1, thisVar);
 				toCalc.push(i);
 
 			} else {
-				allVars.splice(i, 1);
+				x_variableInfo.splice(i, 1);
 				i--;
 			}
 		}
+		
+		x_calcVariables(toCalc);
+	}
+}
 
-		// goes through all variables and attempts to calculate their value
-		// may loop several times if variables require other variable values to be ready before calculating their value
-		// stops when no. var values calculated is no longer increasing - either all done or some vars can't be calculated (circular calculations or referencing non-existant vars)
-		while (toCalc.length > 0 && (toCalc.length != lastLength || checkDefault == true)) {
-			lastLength = toCalc.length;
+function x_calcVariables(toCalc) {
+	var lastLength, checkDefault,
+		thisVar, i;
 
-			for (i=0; i<toCalc.length; i++) {
-				thisVar = x_calcVariables(allVars[toCalc[i]], false, checkDefault);
-				if (thisVar.ok == true) {
-					thisVar.requiredBy = []; // requires & requiredBy not used at the moment but I've left here in case we want to do something with this data at some point
-					x_variables.push(thisVar);
-					toCalc.splice(i,1);
-					i--;
-					if (thisVar.default == true) {
-						checkDefault = false;
-					}
-				} else if (thisVar.ok == false) {
-					x_variableErrors.push(thisVar);
-					toCalc.splice(i,1);
-					i--;
-				}
-
-				if (i + 1 == toCalc.length && toCalc.length == lastLength) {
-					checkDefault = checkDefault == true ? false : true;
-				}
-			}
-		}
+	// goes through all variables and attempts to calculate their value
+	// may loop several times if variables require other variable values to be ready before calculating their value
+	// stops when no. var values calculated is no longer increasing - either all done or some vars can't be calculated (circular calculations or referencing non-existant vars)
+	while (toCalc.length > 0 && (toCalc.length != lastLength || checkDefault == true)) {
+		lastLength = toCalc.length;
 
 		for (i=0; i<toCalc.length; i++) {
-			thisVar = allVars[toCalc[i]];
-			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "undef", "References an undefined variable");
-			x_variableErrors.push(thisVar);
-			toCalc.splice(i,1);
-			i--;
-		}
+			thisVar = x_calcVar(x_variableInfo[toCalc[i]], false, checkDefault);
+			if (thisVar.ok == true) {
+				thisVar.requiredBy = [];
+				x_variables.push(thisVar);
+				toCalc.splice(i,1);
+				i--;
+				if (thisVar.default == true) {
+					checkDefault = false;
+				}
+			} else if (thisVar.ok == false) {
+				x_variableErrors.push(thisVar);
+				toCalc.splice(i,1);
+				i--;
+			}
 
-		if ($("#x_authorSupportMsg").length > 0 && (x_variables.length > 0 || x_variableErrors.length > 0)) {
-			$("#x_authorSupportMsg p").append('</br>' + '<a onclick="x_showVariables()" href="javascript:void(0)" style="color:red">' + x_getLangInfo(x_languageData.find("authorVars")[0], "label", "View variable data") + '</a>');
+			if (i + 1 == toCalc.length && toCalc.length == lastLength) {
+				checkDefault = checkDefault == true ? false : true;
+			}
 		}
+	}
+
+	for (i=0; i<toCalc.length; i++) {
+		thisVar = x_variableInfo[toCalc[i]];
+		thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "undef", "References an undefined variable");
+		x_variableErrors.push(thisVar);
+		toCalc.splice(i,1);
+		i--;
+	}
+
+	if ($("#x_authorSupportMsg").length > 0 && (x_variables.length > 0 || x_variableErrors.length > 0)) {
+		$('.x_varMsg').remove();
+		$("#x_authorSupportMsg p").append('<span class="x_varMsg"></br>' + '<a onclick="x_showVariables()" href="javascript:void(0)" style="color:red">' + x_getLangInfo(x_languageData.find("authorVars")[0], "label", "View variable data") + '</a></span>');
 	}
 }
 
 
 // function calculates the value of any author set variables
-function x_calcVariables(thisVar, recalc, checkDefault) {
+function x_calcVar(thisVar, recalc, checkDefault) {
 	thisVar.ok = undefined;
 
 	// calculate min / max / step values
@@ -2728,7 +2853,7 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 	if (thisVar.ok == true && $.isNumeric(Number(thisVar.value))) {
 		// to significant figure
 		if ($.isNumeric(Number(thisVar.data[6]))) {
-			thisVar.value = Number(thisVar.value).toPrecision(Number(thisVar.data[6]));
+			thisVar.value = Number(thisVar.value).toPrecision(Number(thisVar.data[6])).includes('e') ? parseFloat(Number(thisVar.value).toPrecision(Number(thisVar.data[6]))) : Number(thisVar.value).toPrecision(Number(thisVar.data[6]));
 		}
 		// to decimal place
 		if ($.isNumeric(Number(thisVar.data[5]))) {
@@ -2791,7 +2916,7 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 		if (recalc != true) {
 			var counter = 0;
 			do {
-				thisVar = x_calcVariables(thisVar, true);
+				thisVar = x_calcVar(thisVar, true);
 				counter++;
 			} while (counter < attempts && thisVar.ok == "retry");
 
@@ -2817,7 +2942,7 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 		thisVar.ok = true;
 		thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "default", "Fallback to default value");
 	}
-
+	
 	return thisVar;
 }
 
@@ -2831,15 +2956,49 @@ function x_getVariable(name)
     return null;
 }
 
-function x_setVariable(name, value)
-{
-    for (var i=0; i<x_variables.length; i++)
-    {
+// function updates a variable update
+function x_setVariable(name, value) {
+	
+	var dependants;
+	
+    for (var i=0; i<x_variables.length; i++) {
         if (x_variables[i].name == name) {
-            x_variables[i].value = value;
+            x_variables[i].value = x_checkDecimalSeparator(value, true);
+			dependants = x_variables[i].requiredBy;
             break;
         }
     }
+	
+	return dependants;
+}
+
+// function updates all variables on screen with the current value
+function x_updateVariable() {
+	
+	for (var i=0; i<$('.x_var').length; i++) {
+		
+		var $thisVarSpan = $($('.x_var')[i]),
+			classes = $thisVarSpan.attr('class').split(' '),
+			varName;
+		
+		for (var j=0; j<classes.length; j++) {
+			
+			if (classes[j].indexOf('x_var_') == 0) {
+				varName = classes[j].substring(6);
+				break;
+			}
+		}
+		
+		if (varName != '') {
+			for (var j=0; j<x_variables.length; j++) {
+				
+				if (x_variables[j].name == varName) {
+					$thisVarSpan.html(x_checkDecimalSeparator(x_variables[j].value));
+					break;
+				}
+			}
+		}
+	}
 }
 
 // function gets values of other variables needed for calculation and evals the value when everything's ready
@@ -2919,32 +3078,31 @@ function x_showVariables() {
 	window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12">' + pageText + '</p>');
 }
 
-
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
-function x_findText(pageXML, exclude) {
+function x_findText(pageXML, exclude, list) {
     var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt"],
         i, j, len;
 	if (pageXML.nodeName == "mcqStepOption") { attrToCheck.push("name"); } // don't include name normally as it's generally only used in titles
 
     for (i=0, len = pageXML.attributes.length; i<len; i++) {
         if ($.inArray(pageXML.attributes[i].name, attrToCheck) > -1) {
-            x_insertText(pageXML.attributes[i], exclude);
+            x_insertText(pageXML.attributes[i], exclude, list);
         }
     }
 
     for (i=0, len=pageXML.childNodes.length; i<len; i++) {
         if (pageXML.childNodes[i].nodeValue == null) {
-            x_findText(pageXML.childNodes[i], exclude); // it's a child node of node - check through this too
+            x_findText(pageXML.childNodes[i], exclude, list); // it's a child node of node - check through this too
         } else {
             if (pageXML.childNodes[i].nodeValue.replace(/^\s+|\s+$/g, "") != "") { // not blank
-                x_insertText(pageXML.childNodes[i], exclude);
+                x_insertText(pageXML.childNodes[i], exclude, list);
             }
         }
     }
 }
 
 // function adds glossary links, LaTeX, page links to text found in x_findText function
-function x_insertText(node, exclude) {
+function x_insertText(node, exclude, list) {
 	// Decode node.value in order to make sure it works for for foreign characters like é
 	// But keep html tags, so use textarea
 	// cf. http://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it (3rd answer)
@@ -2952,26 +3110,49 @@ function x_insertText(node, exclude) {
 	temp.innerHTML=node.nodeValue;
 	var tempText = temp.innerHTML;
 
-	exclude = exclude == undefined ? [] : exclude;
-
+	// if exclude == true then we don't look at those in list - if exclude == false then we only look at those in list
+	list = list == undefined ? [] : list;
+	
 	// check text for variables - if found replace with variable value
-	// also handle case where comma decimal separator has been requested
-	if (x_variables.length > 0 && exclude.indexOf("variables") == -1) {
-    for (var k=0; k<x_variables.length; k++) {
-			var regExp = new RegExp('\\[' + x_variables[k].name + '\\]', 'g');
-
-			if ($.isNumeric( x_variables[k].value ))
-				if (x_params.decimalseparator !== undefined && x_params.decimalseparator === 'comma')
-					tempText = tempText.replace(regExp, String(x_variables[k].value).replace('.', ','));
-				else
-					tempText = tempText.replace(regExp, x_variables[k].value);
-			else
-				tempText = tempText.replace(regExp, x_variables[k].value);
-    }
-  }
+	if (x_variables.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("variables") > -1) || (exclude == true && list.indexOf("variables") == -1))) {
+		for (var k=0; k<x_variables.length; k++) {
+			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
+			var regExp = new RegExp('\\[' + x_variables[k].name + '\\]|<span class="x_var x_var_' + x_variables[k].name + '">(.*?)</span>', 'g');
+			tempText = tempText.replace(regExp, '<span class="x_var x_var_' + x_variables[k].name + '">' + x_checkDecimalSeparator(x_variables[k].value) + '</span>');
+			
+			// replace with a text input field which the end user can use to set the value of the variable
+			regExp = new RegExp('\\[=' + x_variables[k].name + '\\]', 'g');
+			tempText = tempText.replace(regExp, '<input type="text" name="' + x_variables[k].name + '" class="x_varInput">');
+			
+			// this format of the text input field has specified a default value
+			regExp = new RegExp('\\[=' + x_variables[k].name + ':(.*?)\\]', 'g');
+			
+			var matches = tempText.match(regExp);
+			if (matches != null) {
+				for (var m=0; m<matches.length; m++) {
+					tempText = tempText.replace(matches[m], '<input type="text" name="' + x_variables[k].name + '" class="x_varInput" placeholder="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '">');
+				}
+			}
+		}
+		
+		// replace with a submit button which will submit all the new variable values entered on the page
+		var submitBtnLabel = x_getLangInfo(x_languageData.find("submitBtnLabel")[0], "label", "Submit");
+		var regExp = new RegExp('\\[\\+submit\\]', 'g');
+		tempText = tempText.replace(regExp, '<input type="submit" value="' + submitBtnLabel + '" class="x_varSubmit">');
+		
+		// this format of the submit button has specified a default value
+		regExp = new RegExp('\\[\\+submit:(.*?)\\]', 'g');
+		
+		var matches = tempText.match(regExp);
+		if (matches != null) {
+			for (var m=0; m<matches.length; m++) {
+				tempText = tempText.replace(matches[m], '<input type="submit" value="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '" class="x_varSubmit">');
+			}
+		}
+	}
 
 	// if project is being viewed as https then force iframe src to be https too
-	if (window.location.protocol == "https:" && exclude.indexOf("iframe") == -1) {
+	if (window.location.protocol == "https:" && (exclude == undefined || (exclude == false && list.indexOf("iframe") > -1) || (exclude == true && list.indexOf("iframe") == -1))) {
 		function changeProtocol(iframe) {
 			if (/src="http:/.test(iframe)){
 				iframe = iframe.replace(/src="http:/g, 'src="https:').replace(/src='http:/g, "src='https:");
@@ -2982,7 +3163,7 @@ function x_insertText(node, exclude) {
 	}
 
     // check text for glossary words - if found replace with a link
-    if (x_glossary.length > 0 && exclude.indexOf("glossary") == -1) {
+	if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
         for (var k=0, len=x_glossary.length; k<len; k++) {
 			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
 			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
@@ -3114,6 +3295,31 @@ function x_insertCSS(href, func, disable, id, keep) {
         // Create element
         document.getElementsByTagName("head")[0].appendChild(css);
     }
+}
+
+// handle case where comma decimal separator has been requested
+function x_checkDecimalSeparator(value, forcePeriod) {
+	if (forcePeriod == true) {
+		// force convert to . so any dependant variables can be calculated correctly (can later be converted to , when shown on page)
+		if (x_params.decimalseparator !== undefined && x_params.decimalseparator === 'comma') {
+			var temp = value.replace(/\,/g, '.');
+			if ($.isNumeric(temp)) {
+				return temp;
+			} else {
+				return value;
+			}
+		} else {
+			return value;
+		}
+		
+	} else {
+		// convert to , as it is to be shown on page
+		if ($.isNumeric(value) && x_params.decimalseparator !== undefined && x_params.decimalseparator === 'comma') {
+			return String(value).replace('.', ',');
+		} else {
+			return value;
+		}
+	}
 }
 
 

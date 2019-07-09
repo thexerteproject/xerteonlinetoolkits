@@ -917,7 +917,7 @@ function upgrade_19()
 function upgrade_20()
 {
     if (! _db_field_exists('templatedetails', 'tsugi_xapi_useglobal')) {
-        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_useglobal', 'int(1)', '0', 'tsugi_xapi_enabled');
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_useglobal', 'int(1)', '1', 'tsugi_xapi_enabled');
         $error1_returned = true;
 
         if (($error1 === false)) {
@@ -941,7 +941,7 @@ function upgrade_21()
         {
             $error1_returned = false;
         }
-        if (! _db_field_exists('sitedetails', 'dashboard_enabled')) {
+        if (! _db_field_exists('sitedetails', 'dashboard_allowed_links')) {
             $error2 = _db_add_field('sitedetails', 'dashboard_allowed_links', 'text', '', 'dashboard_period');
             $error2_returned = true;
             if ($error2 === false)
@@ -951,10 +951,41 @@ function upgrade_21()
         }
         return "Creating dashboard_allowed_links field in templatedetails - ok ? "  . ($error1_returned && $error2_returned ? 'true' : 'false') . "<br>";
     }
+    if (! _db_field_exists('sitedetails', 'dashboard_allowed_links')) {
+        $error2 = _db_add_field('sitedetails', 'dashboard_allowed_links', 'text', '', 'dashboard_period');
+        $error2_returned = true;
+        if ($error2 === false)
+        {
+            $error2_returned = false;
+        }
+    }
     return "Creating dashboard_allowed_links field in templatedetails already present - ok ? ". "<br>";
 }
 
 function upgrade_22()
+{
+    $table = table_by_key('course');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+      `course_id` int(11) NOT NULL AUTO_INCREMENT,
+      `course_name` char(255) DEFAULT NULL,
+      PRIMARY KEY (`course_id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message = "Creating course table - ok ? " . ($ok ? 'true' : 'false');
+    if (!_db_field_exists('sitedetails', 'course_freetext_enabled')) {
+        $error1 = _db_add_field('sitedetails', 'course_freetext_enabled', 'char(255)', 'true', 'dashboard_allowed_links');
+        $error1_returned = true;
+        if($error1 === false)
+        {
+            $error1_returned = false;
+        }
+    }
+    $message .= "<br>Creating course_freetext_enabled field in sitedetails = ok ? " . ($error1 ? 'true' : 'false');
+    return $message;
+}
+
+function upgrade_23()
 {
     if (!_db_field_exists('templatedetails', 'dashboard_display_options')) {
         $error1 = _db_add_field('templatedetails', 'dashboard_display_options', 'text', '{}', 'dashboard_allowed_links');
@@ -967,7 +998,5 @@ function upgrade_22()
     }
     return "Creating dashboard_display_options field in templatedetails already present - ok ? ". "<br>";
 }
-
-
 
 ?>

@@ -25,7 +25,7 @@
 
   <series menuItem="Series" remove="true" icon="icBullet">
     <name label="Series Name" type="TextInput" wysiwyg="true"/>
-    <data label="Chart Data" headers="X,Y" newRow="label,data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" rendererOptions="none,none"/>
+    <data label="Chart Data" headers="X,Y" newRow="label,data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1"/>
     <colour label="Colour" type="colourPicker" defaultValue="0xFF0000"/>
   </series>
 

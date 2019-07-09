@@ -58,12 +58,20 @@
                 amountOfInputs = topXQ.amountOfInputes;
                 correctAnswers = topXQ.correctAnwsers;
                 correctOptionsFeedback = topXQ.correctOptionsFeedback;
+                checkAnswers = topXQ.checkAnswers;
 
 
                 var inputs = [];
                 $('.input-answer').each(function () {
                     inputs.push($(this).val());
                 });
+
+                fillInputs = function(){
+                    inputs = [];
+                    $('.input-answer').each(function () {
+                        inputs.push($(this).val());
+                    });
+                }
 
                 var checkAnswers = [];
                 for (i = 0; i < inputs.length; i++) {
@@ -74,64 +82,126 @@
 
                     });
                 }
-                debugger;
-                if(x_currentPageXML.getAttribute("caseSensitivity")=="true"||x_currentPageXML.getAttribute("caseSensitivity")==undefined) {
+                fillCheckAnswer = function() {
+                    if (x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined) {
 
-                    for (i = 0; i < inputs.length; i++) {
-                        var isCorrect = false;
-                        for (j = 0; j < answers.length; j++) {
-                            for (x = 0; x < answers[j].options.length; x++) {
+                        for (i = 0; i < inputs.length; i++) {
+                            var isCorrect = false;
+                            for (j = 0; j < answers.length; j++) {
+                                for (x = 0; x < answers[j].options.length; x++) {
 
-                                var givenAnswer = inputs[i];
-                                var correctAnswer = answers[j].options[x].trim();
+                                    var givenAnswer = inputs[i];
+                                    var correctAnswer = answers[j].options[x].trim();
 
-                                if (givenAnswer === correctAnswer) {
-                                    isCorrect = true;
-                                    checkAnswers[i].correct = true;
-                                    answers[j].counter++;
-                                    amountOfGoodAnswers++;
+                                    if (givenAnswer === correctAnswer) {
+                                        isCorrect = true;
+                                        checkAnswers[i].correct = true;
+                                        answers[j].counter++;
+                                        amountOfGoodAnswers++;
 
-                                    if (answers[j].counter > 1) {
-                                        checkAnswers[i].correct = false;
-                                        checkAnswers[i].comment = "Duplicate";
+                                        if (answers[j].counter > 1) {
+                                            checkAnswers[i].correct = false;
+                                            checkAnswers[i].comment = "Duplicate";
+                                        }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
-                        }
-                        if (!isCorrect) {
-                            checkAnswers[i].comment = "Wrong Answer";
-                        }
-                    }
-                }else {
-                    for (i = 0; i < inputs.length; i++) {
-                        var isCorrect = false;
-                        for (j = 0; j < answers.length; j++) {
-                            for (x = 0; x < answers[j].options.length; x++) {
-
-                                var givenAnswer = inputs[i].toLowerCase();
-                                var correctAnswer = answers[j].options[x].trim().toLowerCase();
-
-                                if (givenAnswer === correctAnswer) {
-                                    isCorrect = true;
-                                    checkAnswers[i].correct = true;
-                                    answers[j].counter++;
-                                    amountOfGoodAnswers++;
-
-                                    if (answers[j].counter > 1) {
-                                        checkAnswers[i].correct = false;
-                                        checkAnswers[i].comment = "Duplicate";
-                                    }
-                                    break;
-                                }
+                            if (!isCorrect) {
+                                checkAnswers[i].comment = "Wrong Answer";
                             }
                         }
-                        if (!isCorrect) {
-                            checkAnswers[i].comment = "Wrong Answer";
+                    } else {
+                        for (i = 0; i < inputs.length; i++) {
+                            var isCorrect = false;
+                            for (j = 0; j < answers.length; j++) {
+                                for (x = 0; x < answers[j].options.length; x++) {
+
+                                    var givenAnswer = inputs[i].toLowerCase();
+                                    var correctAnswer = answers[j].options[x].trim().toLowerCase();
+
+                                    if (givenAnswer === correctAnswer) {
+                                        isCorrect = true;
+                                        checkAnswers[i].correct = true;
+                                        answers[j].counter++;
+                                        amountOfGoodAnswers++;
+
+                                        if (answers[j].counter > 1) {
+                                            checkAnswers[i].correct = false;
+                                            checkAnswers[i].comment = "Duplicate";
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!isCorrect) {
+                                checkAnswers[i].comment = "Wrong Answer";
+                            }
+
                         }
                     }
-                }
+                };
+                fillCheckAnswer();
 
+                checkSingleAnswer = function(i){
+                    if (x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined) {
+
+                            var isCorrect = false;
+                            for (j = 0; j < answers.length; j++) {
+                                for (x = 0; x < answers[j].options.length; x++) {
+
+                                    var givenAnswer = inputs[i];
+                                    var correctAnswer = answers[j].options[x].trim();
+
+                                    if (givenAnswer === correctAnswer) {
+                                        isCorrect = true;
+                                        checkAnswers[i].correct = true;
+                                        answers[j].counter++;
+                                        amountOfGoodAnswers++;
+
+                                        if (answers[j].counter > 1) {
+                                            checkAnswers[i].correct = false;
+                                            checkAnswers[i].comment = "Duplicate";
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!isCorrect) {
+                                checkAnswers[i].comment = "Wrong Answer";
+                            }
+
+                    } else {
+                            var isCorrect = false;
+                            for (j = 0; j < answers.length; j++) {
+                                for (x = 0; x < answers[j].options.length; x++) {
+
+                                    var givenAnswer = inputs[i].toLowerCase();
+                                    var correctAnswer = answers[j].options[x].trim().toLowerCase();
+
+                                    if (givenAnswer === correctAnswer) {
+                                        isCorrect = true;
+                                        checkAnswers[i].correct = true;
+                                        answers[j].counter++;
+                                        amountOfGoodAnswers++;
+
+                                        if (answers[j].counter > 1) {
+                                            checkAnswers[i].correct = false;
+                                            checkAnswers[i].comment = "Duplicate";
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!isCorrect) {
+                                checkAnswers[i].comment = "Wrong Answer";
+                            }
+
+                        }
+
+                };
+
+                topXQ.checkAnswers = checkAnswers;
                 var doneAnswers = [];
                 for (i = 0; i < inputs.length; i++) {
                     for (k = 0; k < answers.length; k++) {
@@ -149,39 +219,36 @@
                     }
                 }
 
-                amountOfCorrect = 0;
-                for (i = 0; i < inputs.length; i++) {
+                exitPage = function(){
+                    amountOfCorrect = 0;
+                    for (i = 0; i < inputs.length; i++) {
 
-                    var result = {
-                        success: checkAnswers[i].correct,
-                        score: checkAnswers[i].correct ? 100.0 : 0.0
-                    };
-                    XTExitInteraction(x_currentPage, i, result, "", inputs[i], "", x_currentPageXML.getAttribute("trackinglabel"));
+                        var result = {
+                            success: checkAnswers[i].correct,
+                            score: checkAnswers[i].correct ? 100.0 : 0.0
+                        };
+                        XTExitInteraction(x_currentPage, i, result, "", inputs[i], "", x_currentPageXML.getAttribute("trackinglabel"));
 
 
-                    if (checkAnswers[i].correct) {
-                        amountOfCorrect++;
+                        if (checkAnswers[i].correct) {
+                            amountOfCorrect++;
+                        }
                     }
-                }
 
-                var setScore = 0;
-                if (amountOfInputs === undefined || amountOfInputs === 0) {
-                    amountOfInputs = 0;
-                }
-
-                if (amountOfInputs > 0 && amountOfCorrect > 0) {
-                    setScore = 100 / amountOfInputs * amountOfCorrect;
-                }
-
-                XTSetPageScore(x_currentPage, setScore);
-                for (i = 0; i < checkAnswers.length; i++) {
-                    if (checkAnswers[i].correct) {
-                        $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
-
-                    } else {
-                        $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+                    var setScore = 0;
+                    if (amountOfInputs === undefined || amountOfInputs === 0) {
+                        amountOfInputs = 0;
                     }
-                }
+
+                    if (amountOfInputs > 0 && amountOfCorrect > 0) {
+                        setScore = 100 / amountOfInputs * amountOfCorrect;
+                    }
+
+                    XTSetPageScore(x_currentPage, setScore);
+                };
+
+
+
 
             };
 
@@ -234,6 +301,11 @@
                     }
                 }
 
+                var attemptLabel = x_currentPageXML.getAttribute("attemptLabel");
+                if( x_currentPageXML.getAttribute("attemptLabel") == null){
+                    attemptLabel = "Attempt";
+                }
+
                 var instruction = x_currentPageXML.getAttribute("instruction");
                 $textHolder.html(instruction);
 
@@ -243,6 +315,10 @@
 
                 var $panelWidth = x_currentPageXML.getAttribute("panelWidth");
                 var $optionHolder = $("#OptionHolder");
+
+                var $attempts = $("#attempts");
+                var amountofTries = x_currentPageXML.getAttribute("amountOfTries");
+                $attempts.html(x_currentPageXML.getAttribute("attemptLabel")+ ": "+ amountofTries);
 
                 var elements = [];
                 $(x_currentPageXML).children().each(function (i) {
@@ -255,6 +331,7 @@
                         }
                     );
                 });
+
                 this.optionElements = elements;
                 var j = 0;
 
@@ -263,7 +340,7 @@
                 }
 
                 for (i = 0; i < amountOfAnswers; i++) {
-                    $optionHolder.append('<div class="answer"><input class="input-answer"/><span id="topXQ-result-' + i + '"></span></div>');
+                    $optionHolder.append('<div class="answer"><input class="input-answer" id="input-answer-'+i+'"/><span id="topXQ-result-' + i + '"></span></div>');
                     j++;
                 }
                 var answers = [];
@@ -318,27 +395,26 @@
 
                 topXQ.amountOfInputes = amountOfInputs;
 
-
                 var checkBtnTxt = x_currentPageXML.getAttribute("checkBtnTxt");
                 if (checkBtnTxt === undefined) {
                     checkBtnTxt = "Check";
                 }
+                var attempt = 1;
                 $("#checkButton")
                     .button({
                         label: checkBtnTxt
                     })
                     .click(function () {
-                            $(checkButton).button("disable");
 
-                            if (x_currentPageXML.getAttribute("showAnswers") === "true" || x_currentPageXML.getAttribute("showAnswers") === undefined) {
+                        var tries = parseInt(x_currentPageXML.getAttribute("amountOfTries"));
+                        amountofTries -= 1;
+                        if(amountofTries > 0) {
+                            $attempts.html(x_currentPageXML.getAttribute("attemptLabel")+ ": "+ amountofTries);
+                        }else{
+                            $attempts.html("");
+                        }
+                        $(checkButton).button("disable");
 
-
-                                if ($('#correctAnswer ul').has("li").length === 0) {
-                                    for (i = 0; i < answers.length; i++) {
-                                        $("#correctAnswer ul").append("<li>" + answers[i].options + "<span id='topXQ-correctAnswer-" + i + "'></span> </li>" /*<span id= 'topXQ-correctAnswer-" + i + "'></span>"*/);
-                                    }
-                                }
-                            }
 
                             var blankAnswers = [];
                             for (i = 0; i < x_currentPageXML.getAttribute("numberAnswers"); i++) {
@@ -356,71 +432,169 @@
                             topXQ.hasExited = hasExited;
 
 
-                            var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+                            showFeedback = function () {
+
+                                var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
 
 
-                            if (feedbackLabel === undefined) {
-                                feedbackLabel = "Feedback";
-                            }
+                                if (feedbackLabel === undefined) {
+                                    feedbackLabel = "Feedback";
+                                }
 
-                            $("#feedback").html("<h3>" + feedbackLabel + "</h3>");
+                                $("#feedback").html("<h3>" + feedbackLabel + "</h3>");
 
-                            var correctAnswersLabel = x_currentPageXML.getAttribute("correctAnswersLabel");
+                                var correctAnswersLabel = x_currentPageXML.getAttribute("correctAnswersLabel");
 
-                            if (x_currentPageXML.getAttribute("showAnswers") === "true" || x_currentPageXML.getAttribute("showAnswers") === undefined) {
-                                $("#correctAnswer h3").html(correctAnswersLabel);
-                            }
+                                if (x_currentPageXML.getAttribute("showAnswers") === "true" || x_currentPageXML.getAttribute("showAnswers") === undefined) {
+                                    $("#correctAnswer h3").html(correctAnswersLabel);
+                                }
+                                if(x_currentPageXML.getAttribute("answers") == "Show everything") {
+                                    for (i = 0; i < elements.length; i++) {
+                                        if (elements[i].feedback !== "") {
+                                            var answer = "";
+                                            for (j = 0; j < elements[i].answer.length; j++)
+                                            {
+                                                if (elements[i].answer[j] != ",") {
+                                                    answer += elements[i].answer[j]
+                                                } else {
+                                                    break;
+                                                }
+                                            }
 
-                            for (i = 0; i < elements.length; i++) {
-                                if (elements[i].feedback !== "") {
-                                    var answer ="";
-                                    for(j = 0; j < elements[i].answer.length; j++){
-                                        if(elements[i].answer[j] != ","){
-                                            answer+= elements[i].answer[j]
-                                        }else{
-                                            break;
+                                            $("#feedbackAnswers ul").append("<li><div class='answerFeedback'>" + answer + " :" + "</div></li>");
+                                            $("#feedbackAnswers ul li:last").append("<div>" + elements[i].feedback + "</div>");
+                                        }
+
+                                    }
+                                }
+                                if(x_currentPageXML.getAttribute("answers") == "Show only given answers") {
+                                    for (i = 0; i < elements.length; i++) {
+                                        if (elements[i].feedback !== "") {
+                                            var answer = "";
+                                            for (j = 0; j < elements[i].answer.length; j++) {
+                                                if (elements[i].answer[j] != ",") {
+                                                    answer += elements[i].answer[j]
+                                                } else {
+                                                    break;
+                                                }
+                                            }
+
+                                                if (topXQ.checkAnswers[i].correct == true) {
+                                                    $("#feedbackAnswers ul").append("<li><div class='answerFeedback'>" + answer + " :" + "</div></li>");
+                                                    $("#feedbackAnswers ul li:last").append("<div>" + elements[i].feedback + "</div>");
+                                                }
                                         }
                                     }
+                                }
 
-                                    $("#feedbackAnswers ul").append("<li><div class='answerFeedback'>" + answer + " :" + "</div></li>");
-                                    $("#feedbackAnswers ul li:last").append("<div>" + elements[i].feedback + "</div>");
+                                if (x_currentPageXML.getAttribute("showAnswers") === "true" || x_currentPageXML.getAttribute("showAnswers") === undefined ) {
+                                    if ($('#correctAnswer ul').has("li").length === 0) {
+                                        for (i = 0; i < answers.length; i++) {
+                                            $("#correctAnswer ul").append("<li>" + answers[i].options + "<span id='topXQ-correctAnswer-" + i + "'></span> </li>" /*<span id= 'topXQ-correctAnswer-" + i + "'></span>"*/);
+                                        }
+                                    }
+                                }
+
+                                var passedTxt = x_currentPageXML.getAttribute("passed");
+                                if (passedTxt === undefined) {
+                                    passedTxt = "You passed the question";
+                                }
+
+                                var failedTxt = x_currentPageXML.getAttribute("failed");
+                                if (failedTxt === undefined) {
+                                    failedTxt = "You did not passed the question";
+                                }
+
+                                var average = 0;
+                                if (amountOfAnswers > 0) {
+                                    average = amountOfGoodAnswers / amountOfAnswers;
+                                } else {
+                                    average = 0
+                                }
+                                average *= 100;
+
+                                var passedOrFailed = "";
+                                var mainFeedback = x_currentPageXML.getAttribute("feedback");
+                                if (mainFeedback === null) {
+                                    mainFeedback = ""
+                                }
+
+                                var passedScore = parseInt(x_currentPageXML.getAttribute("SuccessRate"));
+
+                                if (average >= passedScore) {
+                                    passedOrFailed = passedTxt
+                                } else {
+                                    passedOrFailed = failedTxt
+                                }
+                                $("#mainFeedback").append("<div>" + passedOrFailed + mainFeedback + "</div>");
+
+                            };
+
+                        var wrong = topXQ.checkAnswers.length;
+
+                        if (attempt < tries && wrong > 0) {
+                            $(checkButton).button("enable");
+
+                            for (var i = 0; i < topXQ.checkAnswers.length; i++) {
+                                if (topXQ.checkAnswers[i].correct === false) {
+                                    fillInputs();
+                                    checkSingleAnswer(i);
+                                    if(topXQ.checkAnswers[i].correct === false){
+                                        $("#input-answer-" + i).val("");
+                                    }
+
+                                }
+                                if (topXQ.checkAnswers[i].correct === true) {
+                                    //disable the input field
+                                    $("#topXQ-result-" + i).removeClass("fa").removeClass("fa-fw").removeClass("fa-x-cross");
+                                    $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+                                    wrong --;
+                                }else{
+                                    if (topXQ.checkAnswers[i].correct === true) {
+                                        //disable the input field
+                                        $("#topXQ-result-" + i).removeClass("fa").removeClass("fa-fw").removeClass("fa-x-cross");
+                                        $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+                                        wrong --;
+                                    }else{
+                                        $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+                                    }
+
                                 }
 
                             }
+                            attempt++;
 
-                            var passedTxt = x_currentPageXML.getAttribute("passed");
-                            if (passedTxt === undefined) {
-                                passedTxt = "You passed the question";
+
+                        } else {
+
+                            $(checkButton).button("disable");
+
+                            for (var i = 0; i < topXQ.checkAnswers.length; i++) {
+                                if(tries == 1 && topXQ.checkAnswers[i].correct === true){
+                                    $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+                                }
+
+                                if (topXQ.checkAnswers[i].correct === false) {
+                                    fillInputs();
+                                    checkSingleAnswer(i);
+                                    if(topXQ.checkAnswers[i].correct === false) {
+                                        if (attempt === tries) {
+                                            $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+                                        }
+                                    }else{
+                                        $("#topXQ-result-" + i).removeClass("fa").removeClass("fa-fw").removeClass("fa-x-cross");
+                                        $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+                                    }
+                                }
                             }
-
-
-                            var failedTxt = x_currentPageXML.getAttribute("failed");
-                            if (failedTxt === undefined) {
-                                failedTxt = "You did not passed the question";
-                            }
-
-                            var average = 0;
-                            if (amountOfAnswers > 0) {
-                                average = amountOfGoodAnswers / amountOfAnswers;
-                            } else {
-                                average = 0
-                            }
-                            average *=100;
-
-                            var passedOrFailed = "";
-                            var mainFeedback = x_currentPageXML.getAttribute("feedback");
-                            if (mainFeedback === null) {
-                                mainFeedback = ""
-                            }
-
-                            var passedScore = parseInt(x_currentPageXML.getAttribute("SuccessRate"));
-
-                            if (average >= passedScore) {
-                                passedOrFailed = passedTxt
-                            } else {
-                                passedOrFailed = failedTxt
-                            }
-                            $("#mainFeedback").append("<div>" + passedOrFailed + mainFeedback + "</div>")
+                            showFeedback();
+                            exitPage();
+                        }
+                        if(wrong === 0){
+                            $(checkButton).button("disable");
+                            showFeedback();
+                            exitPage();
+                        }
 
 
                         }
@@ -450,7 +624,7 @@
 
                     </div>
                     <button id="checkButton"></button>
-
+                    <div id="attempts"></div>
                     <div id="feedback" aria-live="polite"></div>
                     <div id="feedbackAnswers" aria-live="polite">
                         <ul>

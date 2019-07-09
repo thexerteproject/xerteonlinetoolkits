@@ -626,6 +626,7 @@ div.inputtext {
 
 }
 
+
 .inlinewysiwyg p{
     border-radius: 4px;
     padding: 4px 7px;
@@ -635,12 +636,29 @@ div.inputtext {
     box-sizing: border-box;
 }
 
-
 input.inputtext{
     margin: 0;
     border: 1px solid lightgray;
     background-color: white;
     width:99%;
+}
+
+input.course_freetext {
+	width: 49%;
+	margin-left: 1%;
+}
+
+
+i.deprecated{
+	color:red;
+}
+
+select.deprecated option {
+	color:black;
+}
+
+select.deprecated option:last-child{
+	color: red;
 }
 
 select, input, textarea
@@ -657,6 +675,15 @@ select, input, textarea
     width: 100%;
     box-sizing: border-box;
 }
+
+#mainPanel select.deprecated {
+	width: 95%;
+}
+
+#mainPanel select.deprecated_option_selected {
+	color:red;
+}
+
 
 #mainPanel input
 {
@@ -681,12 +708,16 @@ td.wizardparameter{
 td.wizardlabel {
     width: 175px;
 }
+.wizardgroup td.wizardlabel {
+    width: 155px;
+}
 
 td.wizardvalue {
 }
 
 fieldset.wizardgroup {
 	border: 1px solid #ccc;
+	margin-top: 10px;
 }
 
 fieldset.wizardgroup.collapsed {
@@ -695,9 +726,12 @@ fieldset.wizardgroup.collapsed {
 }
 
 fieldset.wizardgroup legend {
-	margin-left: -17px;
 	padding-right: 10px;
 	cursor: pointer;
+}
+
+fieldset.wizardgroup.wizardoptional legend {
+	margin-left: -17px;
 }
 
 fieldset.wizardgroup legend i {
@@ -931,6 +965,16 @@ button.editorbutton:hover {
     font-size: 1em;
 }
 
+div.hotspotLightbox button.editorbutton {
+	border-radius: 3px;
+    padding: 0.5em;
+	margin: 0 5px 0 0;
+	background: #ccc;
+}
+
+div.hotspotLightbox button.editorbutton:hover {
+    background: #f86718;
+}
 
 .xerte_button_dark {background: transparent; border: 0; color: #333;}
 
@@ -1026,6 +1070,10 @@ div.wizardvalue_inner {
 .ui-jqgrid td
 {
     height: auto!important;
+}
+
+.ui-jqgrid table tr.jqgrow td {
+	white-space: normal;
 }
 
 .featherlight-content {

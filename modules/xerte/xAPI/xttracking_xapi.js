@@ -1784,9 +1784,17 @@ function XTLogin(login, passwd) {
     return true;
 }
 
-function XTGetMode() {
+function XTGetMode(extended) {
     if (state.forcetrackingmode === 'true')
-        return "normal";
+    {
+        if (extended != null && (extended == true || extended == 'true'))
+        {
+            return state.mode;
+        }
+        else {
+            return "normal";
+        }
+    }
     else
         return "";
 }
@@ -2905,7 +2913,7 @@ function XTTerminate() {
         };
         statement.object.definition.name[state.language] = x_params.name;
         SaveStatement(statement, false);
-        if (lti_enabled) {
+        if (typeof lti_enabled !== 'undefined' && lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
             if (url.indexOf("lti_launch.php") >= 0) {

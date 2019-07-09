@@ -54,7 +54,7 @@
 				copyTxt = "Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference.";
 			}
 			
-			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue) + '<hr/><div id="copyTxt">' + copyTxt + '</div><button id="copyBtn">' + copyBtnLabel + '</button>');
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue) + '<hr/><div id="copyTxt"><p>' + copyTxt + '</p></div><button id="copyBtn">' + copyBtnLabel + '</button>');
 			
 			$("#copyBtn")
 				.button({
@@ -81,10 +81,7 @@
 				var thisObject = x_pageInfo[i];
 				if (thisObject.type == "modelAnswer") {
 					if (thisObject.savedData != undefined) { // ignores skipped pages
-						if (dataString != "") {
-							dataString += '<br/><hr/><br/>';
-						}
-						dataString += '<p>' + thisObject.savedData + '</p>';
+						dataString += thisObject.savedData;
 					}
 				}
 			}

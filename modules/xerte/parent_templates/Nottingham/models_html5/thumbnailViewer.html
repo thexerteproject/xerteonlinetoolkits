@@ -216,14 +216,27 @@
 					}
 				});
 			
+			// close button hides image & shows intro text
+			$('#imgCloseBtn')
+				.button({
+					icons: {primary: "fa fa-x-close"},
+					label: x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"),
+					text: false
+				})
+				.click(function() {
+					$mainInfoHolder.fadeOut(400, function() {
+						$mainTxt.fadeIn();
+					});
+				})
+				.hide();
 			
 			// show text on rollover/focus
 			$panelLink
 				.on("mouseover focusin", function() {
-					$panelTxt.show();
+					$('.overlay').show();
 				})
 				.on("mouseout focusout", function() {
-					$panelTxt.hide();
+					$('.overlay').hide();
 				});
 			
 			
@@ -275,7 +288,8 @@
 		<div id="mainPanel" class="panel inline">
 			<a id="panelLink" href="#" target="_blank">
 				<div id="panelImg"></div>
-				<div id="panelTxt"></div>
+				<div id="panelTxt" class="overlay"></div>
+				<button id="imgCloseBtn" class="overlay"></button>
 			</a>
 		</div>
 	</div>

@@ -83,8 +83,8 @@
 			}
 			
 			$("#pageContents").data({
-				"dataString"	:instructA + ' ' + pageNo + ' ' + instructB + '</br>' + x_addLineBreaks(x_currentPageXML.getAttribute("prompt")) + '</br>' + x_addLineBreaks(responseTxt) + '</br>' + '{A}' + '</br></br>' + x_addLineBreaks(exampleTxt) + '</br>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")),
-				"noAnswerTxt"	:noAnswerTxt
+				"dataString"	:'<p class="pageBlock">' + instructA + ' ' + pageNo + ' ' + instructB + '</p>' + x_addLineBreaks(x_currentPageXML.getAttribute("prompt")) + '<p><br/>' + x_addLineBreaks(responseTxt) + '</p><p>' + '{A}' + '</p><p><br/>' + x_addLineBreaks(exampleTxt) + '</p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")),
+				"noAnswerTxt"	:'<p>' + noAnswerTxt + '</p>'
 			});
 
             var label = $('<div>').html(pageTitle).text();
@@ -225,7 +225,8 @@
 					$this.hide();
 					$("#fbTxt").html($("#pageContents").data("feedback"));
 					$("#copyBtn, #copyTxt").show();
-
+					// Queue reparsing of MathJax - fails if no network connection
+					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 					modelAnswer.tracked = true;
 					modelAnswer.finishTracking();
 					if (x_currentPageXML.getAttribute("copypasteinfo") != undefined && x_currentPageXML.getAttribute("copypasteinfo") != "") {

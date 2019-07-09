@@ -963,14 +963,19 @@ function XTLogin(login, passwd)
     return true;
 }
 
-function XTGetMode()
+function XTGetMode(extended)
 {
     if (state.forcetrackingmode === 'true') {
         if (state.trackingmode !== "none") {
-            if (state.scoremode == "first")
+            if (extended != null && (extended == true || extended == 'true')) {
+                if (state.scoremode == "first")
+                    return "normal";
+                else
+                    return "normal-last";
+            }
+            else {
                 return "normal";
-            else
-                return "normal-last";
+            }
         }
         else {
             return "tracking";
@@ -1193,7 +1198,7 @@ function XTTerminate()
             }
 
         }
-        if (lti_enabled) {
+        if (typeof lti_enabled !== 'undefined' && lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
             if (url.indexOf("lti_launch.php") >= 0) {
@@ -1211,11 +1216,12 @@ function XTTerminate()
                         grade: state.getdScaledScore()
                     }
                 })
-                    .done(function(msg) {
+                    .done(function (msg) {
                         //alert("Data Saved: " + msg);
                     });
             }
         }
+
     }
 }
 
