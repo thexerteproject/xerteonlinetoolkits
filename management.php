@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@ require_once(dirname(__FILE__) . "/config.php");
 _load_language_file("/management.inc");
 
 /**
- * 
+ *
  * Login page, self posts to become management page
  *
  * @author Patrick Lockley
@@ -53,7 +53,7 @@ function mgt_page($xerte_toolkits_site, $extra)
             <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
             <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
 
-            <!-- 
+            <!--
 
             HTML to use to set up the login page
             The {{}} pairs are replaced in the page formatting functions in display library
@@ -114,7 +114,7 @@ function mgt_page($xerte_toolkits_site, $extra)
                 ?>
             </div>
 
-						
+
 						<div class="mainbody">
 								<div class="title_holder">
 									<div class="title_welcome">
@@ -131,11 +131,11 @@ function mgt_page($xerte_toolkits_site, $extra)
 										</form>
 										<script>document.getElementById("login_box").focus();</script>
 										<!--<p><?PHP echo $extra; ?></p>-->
-									</div>		
+									</div>
 								</div>
-								<div style="clear:both;"></div>		
+								<div style="clear:both;"></div>
 						</div>
-						
+
 						<div class="bottompart">
 							<div class="border"></div>
 							<p class="copyright">
@@ -233,7 +233,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
         echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";
         ?></script>
 
-                <!-- 
+                <!--
 
                 HTML to use to set up the login page
                 The {{}} pairs are replaced in the page formatting functions in display library
@@ -242,6 +242,8 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
                 -->
 		<?php
+                echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "editor/js/vendor/jquery-1.9.1.min.js\"></script>";
+                _include_javascript_file("editor/js/vendor/jquery-1.9.1.min.js");
                 _include_javascript_file("website_code/scripts/file_system.js");
                 _include_javascript_file("website_code/scripts/screen_display.js");
                 _include_javascript_file("website_code/scripts/ajax_management.js");
@@ -266,10 +268,10 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
                 <iframe id="upload_iframe" name="upload_iframe" src="#" style="width:0px;height:0px; display:none;"></iframe>
 
-                <!-- 
-                
+                <!--
+
                 Folder popup is the div that appears when creating a new folder
-                
+
                 -->
                 <div class="topbar">
                     <?php
@@ -302,10 +304,10 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                     ?>
                 </div>
 
-                <!-- 
-            
+                <!--
+
                     Main part of the page
-            
+
                 -->
 
                 <div class="pagecontainer">
@@ -315,7 +317,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                    <div class="userbar">
                         <?php // echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " ";
                         echo "Admin"; ?>
-                        <button title="<?php echo MANAGEMENT_LOGOUT; ?>" 
+                        <button title="<?php echo MANAGEMENT_LOGOUT; ?>"
                             type="button" class="xerte_button_c_no_width"
                             onclick="javascript:logout()" style="margin-bottom: 8px;">
                             <i class="fa fa-sign-out"></i><?php echo MANAGEMENT_LOGOUT; ?>
@@ -329,8 +331,8 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                         <div class="admin_mgt_area_top">
                             <div class="top_left sign_in_TL m_b_d_2_child">
                                 <div class="top_right sign_in_TR m_b_d_2_child">
-                                    <p class="heading">			
-        <?PHP echo MANAGEMENT_TITLE; ?>					
+                                    <p class="heading">
+        <?PHP echo MANAGEMENT_TITLE; ?>
                                     </p>
                                 </div>
                             </div>
@@ -339,10 +341,10 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                         <div class="admin_mgt_area_middle">
                             <div class="admin_mgt_area_middle_button">
 
-                                <!-- 
-            
+                                <!--
+
                                     admin area menu
-            
+
                                 -->
 
                                 <div class="admin_mgt_area_middle_button_left">
@@ -359,7 +361,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                                 </div>
                                 <div class="admin_mgt_area_middle_button_right">
                                     <button type="button" class="xerte_button" onclick="javascript:save_changes()"><i class="fa fa-floppy-o"></i> <?PHP echo MANAGEMENT_MENUBAR_SAVE; ?></button>
-                                </div>					
+                                </div>
                                 <div id="admin_area">
                                 </div>
                             </div>
@@ -389,6 +391,6 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
     }
 }
-?>	
+?>
                             </body>
                             </html>

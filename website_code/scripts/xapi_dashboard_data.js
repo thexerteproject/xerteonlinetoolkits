@@ -23,6 +23,9 @@ function DashboardState(info) {
     if(this.pageSize == undefined){
         this.pageSize = 5;
     }
+    this.currentGroup = {
+        group_id: "all-groups"
+    }
 }
 
 DashboardState.prototype.clear = function() {
