@@ -124,8 +124,9 @@ xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element) {
     chart.draw();
 };
 
-getGroupFromStatements = function(statements){
-    first_statement = statements[0]
+xAPIDashboard.prototype.getGroupFromStatements = function(statements){
+    var cur_group="";
+    var first_statement = statements[0];
     if(     first_statement != undefined
         &&  first_statement.context != undefined
         &&  first_statement.context.team != undefined
@@ -134,7 +135,7 @@ getGroupFromStatements = function(statements){
         cur_group = first_statement.context.team.account.name
     }
     return cur_group;
-}
+};
 
 xAPIDashboard.prototype.setStatisticsValues = function(learningObjectIndex){
     var data = this.data.groupStatements();
@@ -147,8 +148,9 @@ xAPIDashboard.prototype.setStatisticsValues = function(learningObjectIndex){
 
     // Add the number of Users.
     var numberOfUsers = 0;
+    var dashboard=this;
     for (var user in data) {
-        if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == getGroupFromStatements(data[user].statements)) {
+        if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements(data[user].statements)) {
             numberOfUsers++;
         }
     }
@@ -157,7 +159,7 @@ xAPIDashboard.prototype.setStatisticsValues = function(learningObjectIndex){
     for(var i in this.data.groupedData){
         var curUser = this.data.groupedData[i];
         var completedStatements = this.data.getStatementsList(curUser.statements.filter(function(rd){
-            return $this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == getGroupFromStatements([rd]);
+            return $this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([rd]);
         }), "http://adlnet.gov/expapi/verbs/completed");
         if(completedStatements.length > 0)
         {
@@ -169,7 +171,7 @@ xAPIDashboard.prototype.setStatisticsValues = function(learningObjectIndex){
     var sessions = [];
     var totalCompletedPages = 0;
     this.data.rawData.forEach(function(s){
-        if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == getGroupFromStatements([s])){
+        if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([s])){
             sessionId = s.context.extensions["http://xerte.org.uk/sessionId"];
             if(sessions.indexOf(sessionId) === -1){
                 sessions.push(sessionId);
@@ -186,7 +188,7 @@ xAPIDashboard.prototype.setStatisticsValues = function(learningObjectIndex){
     // Add the number of launches.
     var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
     this.drawNumberOfInteractions($('.journeyOverviewStats'), this.data.rawData.filter(function(rd){
-        return $this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == getGroupFromStatements([rd]);
+        return $this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([rd]);
     }).length);
     this.drawNumberOfSessions($('.journeyOverviewStats'), sessions.length);
     this.drawNumberOfCompletedSessions($('.journeyOverviewStats'), scoreCount);
@@ -194,7 +196,7 @@ xAPIDashboard.prototype.setStatisticsValues = function(learningObjectIndex){
 
     // Add the average grade.
     this.drawAverageScore($('.journeyOverviewStats'), (Math.round((totalScore / scoreCount) * 10 * 10) / 10), first_launch, last_launch);
-}
+};
 
 xAPIDashboard.prototype.createJourneyTableSession = function(div) {
     this.data.rawData = this.data.combineUrls();
@@ -352,7 +354,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             var groupedData = {} //= $this.groupedData;
             for($key in $this.groupedData){
                 $val = $this.groupedData[$key];
-                if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == getGroupFromStatements($val.statements)) {
+                if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == pageState.getGroupFromStatements($val.statements)) {
                     groupedData[$key] = $val;
                 }
             }
@@ -1567,11 +1569,16 @@ xAPIDashboard.prototype.regenerate_dashboard = function() {
     var end = this.helperGetDate('#dp-end');
     end = new Date(moment(end).add(1, 'days').toISOString());
     var q = {};
-    if (this.data.info.lrs.lrsurls != null && this.data.info.lrs.lrsurls != "undefined" && this.data.info.lrs.lrsurls != ""
-        && this.data.info.lrs.site_allowed_urls != null && this.data.info.lrs.site_allowed_urls != "undefined" && this.data.info.lrs.site_allowed_urls != "")
+    q['activities'] = [url];
+    if (this.data.info.lrs.lrsurls != null && this.data.info.lrs.lrsurls != "undefined" && this.data.info.lrs.lrsurls != "")
     {
         var $this = this;
-        q['activities'] = [url].concat(this.data.info.lrs.lrsurls.split(",")).concat(this.data.info.lrs.site_allowed_urls.split(",").map(function(url) { return url + $this.data.info.template_id})).filter(function(url) {return url != ""});
+        q['activities'] = q['activities'].concat(this.data.info.lrs.lrsurls.split(","));
+    }
+    if (this.data.info.lrs.site_allowed_urls != null && this.data.info.lrs.site_allowed_urls != "undefined" && this.data.info.lrs.site_allowed_urls != "")
+    {
+        var $this = this;
+        q['activities'] = q['activities'].concat(this.data.info.lrs.site_allowed_urls.split(",").map(function(url) { return url + $this.data.info.template_id})).filter(function(url) {return url != ""});
     }
     q['activity'] = url;
     q['related_activities'] = true;
