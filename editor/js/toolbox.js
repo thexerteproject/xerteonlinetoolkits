@@ -2817,148 +2817,501 @@ var EDITOR = (function ($, parent) {
 				var id = 'hotspot_' + form_id_offset;
 				form_id_offset++;
 
-				// this is a special one. the attributes in the node are called x, y, w, h
-				// Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
-				// So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
+                    // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
+                    // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
 				var hsattrs = lo_data[key].attributes;
-				var hsparent = parent.tree.getParent(key);
-				var hspattrs = lo_data[hsparent].attributes;
-				var div = $('<div>')
-					.attr('id', 'inner_' + id);
-				if (hspattrs.nodeName.toLowerCase() == "hotspotgroup")
-				{
-					// go one further up
-					hsparent = parent.tree.getParent(hsparent);
-					hspattrs = lo_data[hsparent].attributes;
-				}
-				
-				// Create the container
-				html = $('<div>').attr('id', id);
-				
-				var url = hspattrs.url;
-				// Replace FileLocation + ' with full url
-				url = makeAbsolute(url);
-				// Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
-				if (url.substring(0,4) == "http")
-				{
-					div.addClass('clickableHotspot')
-							.append($('<img>')
-							.attr('id', 'inner_img_' + id)
-							.attr('src', url)
-							.load(function(){
-								var orgwidth = this.naturalWidth;
-								var orgheight = this.naturalHeight;
-								var width = this.width;
-								var hsleft = parseInt(hsattrs.x),
-									hstop = parseInt(hsattrs.y),
-									hsbottom = orgheight - hstop - parseInt(hsattrs.h),
-									hsright = orgwidth - hsleft - parseInt(hsattrs.w);
-								var scale = width / orgwidth;
-								
-								$(this).css({width: parseInt(scale * orgwidth) + 'px', height: parseInt(scale * orgheight) + 'px'});
+                    var hsparent = parent.tree.getParent(key);
+                    var hspattrs = lo_data[hsparent].attributes;
+                    if (hspattrs.nodeName.toLowerCase() == "hotspotgroup")
+                    {
+                        // go one further up
+                        hsparent = parent.tree.getParent(hsparent);
+                        hspattrs = lo_data[hsparent].attributes;
+                    }
 
-								hsleft = Math.round(hsleft * scale);
-								hstop = Math.round(hstop * scale);
-								hsbottom = Math.round(hsbottom * scale);
-								hsright = Math.round(hsright * scale);
+                    // Create the container
+                    html = $('<div>').attr('id', id);
 
-								var cssobj = {
-									position:  "absolute",
-									left: hsleft + "px",
-									top:  hstop + "px",
-									right: hsright + "px",
-									bottom: (hsbottom + 4) + "px",
-									background: "#ff0000",
-									opacity: "0.4"
-								};
+                    var url = hspattrs.url;
+                    // Replace FileLocation + ' with full url
+                    url = makeAbsolute(url);
+                    // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
+                    if (url.substring(0,4) == "http")
+                    {
+                        var shape = "square";
+                        html.addClass('clickableHotspot');
+                        html.append("<img>");
+                        var cur_key = key;
+                        html.find('img')
+                            .attr('id', 'inner_img_' + id)
+                            .attr("data-key", cur_key)
+                            .attr("src", url)
+                            .load(function(){
 
-								var hsdiv = $('<div>')
-									.attr('id', 'inner_hs_' + id)
-									.css(cssobj);
-								div.append(hsdiv);
+                                $(this).css({width: '100%'});
+                            }).click(function(){
+                                edit_img = $("<div></div>")
+                                    //.css("background", "url(" + url + ")")
+                                edit_img.attr('id', 'outer_img_' + id)
+                                edit_img.data("id", id);
+                                edit_img.append('<button id="poly"><i class="fas fa-draw-polygon"></i></button><button id="square"><i class="fas fa-vector-square"></i></button>');
+                                edit_img.append('<div class="overlayWrapper"><img class="overlayImage"><canvas class="overlayCanvas"></canvas><div class="overlayDiv"></div></div>');
+                                edit_img.append('<div class="instructions">'+
+                                    language.HotspotInstructions.header +
+                                    "<ul>" +
+                                        "<li>" + language.HotspotInstructions.add + "</li>" +
+                                        "<li>" + language.HotspotInstructions.edit + "</li>" +
+                                        "<li>" + language.HotspotInstructions.remove + "</li>" +
+                                    "</ul>" +
+                                    language.HotspotInstructions.save
+                                + '</div>');
+                                edit_img.append($('<button>')
+                                    .attr('id', id + '_ok')
+                                    .attr('name', 'ok')
+                                    .attr('type', 'button')
+                                    .addClass('editorbutton')
+                                    .append(language.Alert.oklabel)
+                                )
+                                .append($('<button>')
+                                    .attr('id', id + '_cancel')
+                                    .attr('name', 'cancel')
+                                    .attr('type', 'button')
+                                    .addClass('editorbutton')
+                                    .append(language.Alert.cancellabel)
+                                );
 
-							})
-					);
-					
-					// Ok, now create the content to be shown in the lightbox
-					var editdiv = $('<div>')
-						.attr('id', 'edit_' + id)
-						.addClass('hotspotLightbox');
-					var editimg = $('<img>')
-						.attr('id', 'edit_img_' + id)
-						.addClass('hotspotLightboxImg')
-						.attr('src', url)
-						.load(function()
-						{
-							var orgwidth = this.naturalWidth;
-							var orgheight = this.naturalHeight;
-							var hsx1 = parseInt(hsattrs.x),
-								hsy1 = parseInt(hsattrs.y),
-								hsx2 = hsx1 + parseInt(hsattrs.w),
-								hsy2 = hsy1 + parseInt(hsattrs.h);
 
-							$('#link_' + id).featherlight({afterClose: function(evt){closeHotSpotSelection(evt, key);}});
-							$('#link_' + id).click({id:id, key:key, name:name, orgwidth:orgwidth, orgheight:orgheight, hsx1:hsx1, hsy1:hsy1, hsx2:hsx2, hsy2:hsy2}, function(event){
-								var par = event.data;
-								showHotSpotSelection(false, par.id, par.key, par.name, par.orgwidth, par.orgheight, par.hsx1, par.hsy1, par.hsx2, par.hsy2);
-							});
+                                edit_img.find("img").attr("src", url);
+                                img_width = edit_img.find("img").get(0).naturalWidth;
+                                img_height = edit_img.find("img").get(0).naturalHeight;
+                                ratio = img_height / img_width;
+                                edit_img.find(".overlayWrapper").css("width", parseInt(0.8 * $("body").width()))
+                                        .css("height", parseInt(ratio * $("body").width() + $(".editorbutton").height()));
 
-						});
-					editdiv.append(editimg);
+                                $.featherlight(edit_img, {
+                                    afterOpen: function()
+                                    {
+                                        var id = $(this).get(0).target.data("id");
+                                        $('#featherlight-content').unbind('click');
+                                        var okbutton = $('#featherlight-content button[name="ok"]');
+                                        okbutton.click(function(event){
+                                            var key = $("#inner_img_" + id).data("key");
+                                            var current = $.featherlight.current();
+                                            var npoints = [];
+                                            for(pi in points)
+                                            {
+                                                var point = points[pi];
+                                                npoints.push({
+                                                    "x" : point.x,
+                                                    "y" : point.y
+                                                });
+                                            }
+                                            var stringVal = JSON.stringify(npoints);
+                                            img = $('#featherlight-content img');
+                                            setAttributeValue(key, ["points", "w", "h", "mode"], [stringVal, img.width(), img.height(), shape]);
 
-					editdiv.append($('<div>')
-							.attr('id', id + '_edit_buttons')
-							.append($('<input>')
-								.attr('id', id + '_x')
-								.attr('type', 'hidden')
-						)
-							.append($('<input>')
-								.attr('id', id + '_y')
-								.attr('type', 'hidden')
-						)
-							.append($('<input>')
-								.attr('id', id + '_h')
-								.attr('type', 'hidden')
-						)
-							.append($('<input>')
-								.attr('id', id + '_w')
-								.attr('type', 'hidden')
-						)
-							.append($('<input>')
-								.attr('id', id + '_set')
-								.attr('type', 'hidden')
-								.attr('value', '0')
-						)
-							.append($('<button>')
-								.attr('id', id + '_ok')
-								.attr('name', 'ok')
-								.attr('type', 'button')
-								.addClass('editorbutton')
-								.append(language.Alert.oklabel)
-						)
-							.append($('<button>')
-								.attr('id', id + '_cancel')
-								.attr('name', 'cancel')
-								.attr('type', 'button')
-								.addClass('editorbutton')
-								.append(language.Alert.cancellabel)
-						)
-					);
-					
+                                            current.close();
+                                            parent.tree.showNodeData(key);
+                                        });
 
-					html.append(editdiv)
-						.append($('<a>')
-							.attr('id', 'link_' + id)
-							.attr('href', '#')
-							.attr('data-featherlight', '#edit_' + id)
-							.attr('title', language.edit.$tooltip)
-							.append(div));
-				
-				}
-				else
-				{
-					html.append("select image first"); // ** shouldn't this be translated?
-				}
+                                        var cancelbutton = $('#featherlight-content button[name="cancel"]');
+                                        cancelbutton.click(function(event){
+                                            var key = $("#inner_img_" + id).data("key");
+                                            var current = $.featherlight.current()
+                                            current.close();
+                                            parent.tree.showNodeData(key);
+                                        });
+
+                                        var polygonbutton = $('#featherlight-content #poly');
+                                        polygonbutton.click(function (event) {
+                                            shape = "polygon";
+                                            points =[];
+                                            $(".hotspot-handle").remove();
+                                            redraw_points(canvas);
+
+
+                                        });
+
+                                        var squarebutton = $('#featherlight-content #square');
+                                        squarebutton.click(function (event) {
+                                            shape = "square";
+                                            var middelX = $("#outer_img_" + id + " img").width()/canvas.width/2;
+                                            var Xoff = middelX/4;
+                                            var middelY =  $("#outer_img_" + id + " img").height()/canvas.height/2;
+                                            var Yoff = middelY/4;
+                                            points =[];
+                                            $(".hotspot-handle").remove();
+                                            points.push({
+                                                "x" : middelX-Xoff,
+                                                "y" : middelY-Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX,
+                                                "y" : middelY-Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX+Xoff,
+                                                "y" : middelY-Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX+Xoff,
+                                                "y" : middelY
+                                            });
+                                            points.push({
+                                                "x" : middelX+Xoff,
+                                                "y" : middelY+Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX,
+                                                "y" : middelY+Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX-Xoff,
+                                                "y" : middelY+Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX-Xoff,
+                                                "y" : middelY
+                                            });
+                                            for(var i = 0; i < points.length; i++){
+                                                var point = points[i];
+                                                var handle = $(handle_shell);
+                                                point.id = "handle_" + i;
+                                                handle.attr("id", point.id);
+                                                handle.css("left", point.x * canvas.width);
+                                                handle.css("top", point.y * canvas.height);
+                                                $("#outer_img_" + id + " .overlayDiv").append(handle.prop("outerHTML"));
+                                            }
+                                            redraw_points(canvas);
+
+                                        });
+
+                                        var handle_shell = '<div class="hotspot-handle" id=""></div>';
+                                        $("#outer_img_" + id + " canvas")[0].width = $("#outer_img_" + id + " img").width();
+                                        $("#outer_img_" + id + " canvas")[0].height = $("#outer_img_" + id + " img").height();
+                                        points = JSON.parse(hsattrs.points);
+                                        shape = hsattrs.mode;
+                                        var uniq_id = points.length;
+                                        var canvas = $("#outer_img_" + id + " canvas").get(0);
+                                        for(var i = 0; i < points.length; i++){
+                                            var point = points[i];
+                                            var handle = $(handle_shell);
+                                            point.id = "handle_" + i;
+                                            handle.attr("id", point.id);
+                                            handle.css("left", point.x * canvas.width);
+                                            handle.css("top", point.y * canvas.height);
+                                            $("#outer_img_" + id + " .overlayDiv").append(handle.prop("outerHTML"));
+                                        }
+
+                                        redraw_points(canvas);
+
+
+
+
+                                        function getMousePosition(canvas, e){
+                                            var x;
+                                            var y;
+                                            var rect = canvas.getBoundingClientRect();
+                                            if (e.pageX || e.pageY) {
+                                              x = e.pageX;
+                                              y = e.pageY;
+                                            }
+                                            else {
+                                              x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+                                              y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+                                            }
+                                            x -= rect.left;
+                                            y -= rect.top;
+                                            return {
+                                                x: x / canvas.width,
+                                                y: y / canvas.height
+                                            };
+                                        }
+
+                                        function  recalculate_points(canvas) {
+                                            for(var i=1; i< points.length; i+=2){
+                                                if(i == 1 || i == 3){
+                                                    points[i].x = Math.min(points[i-1].x, points[(i+1) % 8].x) - (Math.abs(points[i-1].x) - points[(i+1)%8].x)/2;
+                                                    points[i].y = Math.min(points[i-1].y, points[(i+1)%8].y) - (Math.abs(points[i-1].y) - points[(i+1)%8].y)/2;
+                                                }else{
+                                                    points[i].x = Math.min(points[i-1].x, points[(i+1) % 8].x) + (Math.abs(points[i-1].x) - points[(i+1)%8].x)/2;
+                                                    points[i].y = Math.min(points[i-1].y, points[(i+1)%8].y) + (Math.abs(points[i-1].y) - points[(i+1)%8].y)/2;
+                                                }
+
+                                                $("#handle_" + i).css("top", points[i].y * canvas.height).css("left", points[i].x * canvas.width);
+
+                                            }
+                                        }
+
+                                        function minimal_size(index){
+
+                                            if(index != undefined){
+                                                var smallestSize = 0.030;
+                                                var opposite = (((Number(index)+8+4)%8));
+                                                var minX = points[0].x;
+                                                var maxX = points[2].x;
+                                                var minY = points[0].y;
+                                                var maxY = points[6].y;
+
+
+                                                if(minX+smallestSize > maxX){
+                                                    if(index == 0 || index == 6 || index == 7){
+                                                        points[0].x = points[2].x - smallestSize;
+                                                        points[6].x = points[4].x - smallestSize;
+                                                    }
+                                                    if(index == 2 || index == 3 || index == 4){
+                                                        points[2].x = points[0].x + smallestSize;
+                                                        points[4].x = points[6].x + smallestSize;
+                                                    }
+                                                }
+                                                if(minY+smallestSize > maxY){
+                                                    if(index == 0 || index == 1 || index == 2){
+                                                        points[0].y = points[6].y - smallestSize;
+                                                        points[2].y = points[4].y - smallestSize;
+                                                    }
+                                                    if(index == 4 || index == 5 || index == 6){
+                                                        points[4].y = points[2].y + smallestSize;
+                                                        points[6].y = points[0].y + smallestSize;
+                                                    }
+                                                }
+
+                                                if(Math.abs(points[opposite].x - points[index].x) < smallestSize ){
+                                                    //points[index].x = Math.min(points[opposite].x, points[index].x) + smallestSize;
+                                                }
+                                                else if(points[opposite].y - points[index].y < smallestSize ){
+
+                                                }
+                                            }
+                                        }
+
+                                        function redraw_points(canvas, index)
+                                        {
+                                            if(shape == "square"){
+                                                minimal_size(index);
+                                                recalculate_points(canvas);
+                                            }
+
+                                            var context = canvas.getContext('2d');
+                                            context.beginPath();
+                                            context.lineWidth = 1;
+                                            context.clearRect(0, 0, canvas.width, canvas.height);
+                                            context.setLineDash([5, 5]);
+                                            if(points.length == 0)
+                                            {
+                                                return;
+                                            }
+                                            for(var i = 0; i < points.length + 1; i++)
+                                            {
+                                                point = points[i % points.length];
+                                                if(i == 0)
+                                                {
+                                                    context.moveTo(point.x * canvas.width, point.y * canvas.height);
+                                                }else{
+                                                    context.lineTo(point.x * canvas.width, point.y * canvas.height);
+                                                }
+                                            }
+                                            context.stroke();
+                                            context.fillStyle = "rgba(150, 150, 150, 0.3)"
+                                            context.fill();
+                                            for(var i = 0; i < points.length; i++){
+                                                var point = points[i];
+                                                var handle = $("#handle_" + i);
+                                                handle.css("left", point.x * canvas.width);
+                                                handle.css("top", point.y * canvas.height);
+                                            }
+                                        }
+                                        var last_mousedown = undefined;
+                                        dragging = false;
+                                        current_handle = "";
+                                        $("#outer_img_" + id + " .overlayDiv").contextmenu(function() {
+                                            return false;
+                                        });
+                                        $("#outer_img_" + id + " .overlayImage").contextmenu(function() {
+                                            return false;
+                                        });
+                                            $("#outer_img_" + id + " .overlayDiv").on("mousedown mouseup mousemove", function (e) {
+                                                // right mouse click
+
+                                                if(shape === "polygon") {
+                                                    if (e.which == 3) {
+                                                        if (e.type == "mousedown" && e.target.className == "hotspot-handle") {
+                                                            npoints = [];
+                                                            for (var i = 0; i < points.length; i++) {
+                                                                p = points[i];
+                                                                if (p.id != e.target.id) {
+                                                                    npoints.push(points[i]);
+                                                                }
+                                                            }
+                                                            points = npoints;
+
+                                                            $("#" + e.target.id).remove();
+                                                            var canvas = $("#outer_img_" + id + " canvas").get(0);
+                                                            redraw_points(canvas);
+                                                        }
+                                                        return;
+                                                    }
+                                                    if (e.type == "mousedown" && e.target.className == "hotspot-handle") {
+                                                        last_mousedown = e;
+                                                        dragging = true;
+                                                        current_handle = e.target.id;
+                                                    } else if (
+                                                        !dragging
+                                                        && e.type == "mouseup"
+                                                        && e.target.className != "hotspot-handle"
+                                                        &&
+                                                        (
+                                                            last_mousedown == undefined
+                                                            || e.screenX == last_mousedown.screenX
+                                                            && e.screenY == last_mousedown.screenY
+                                                        )
+                                                    ) {
+                                                        clickHandler(e);
+                                                    } else if (dragging && (e.type == "mouseup" || e.type == "mousemove")) {
+                                                        if (e.type == "mouseup") {
+                                                            dragging = false;
+                                                            last_mousedown = undefined;
+                                                        }
+                                                        if (dragging) {
+                                                            var canvas = $("#outer_img_" + id + " canvas").get(0);
+
+                                                            point = points.filter(p => p.id == current_handle)[0];
+                                                            mouse = getMousePosition(canvas, e);
+                                                            point.x = mouse.x;
+                                                            point.y = mouse.y;
+
+                                                            $("#" + current_handle).css("top", point.y * canvas.height).css("left", point.x * canvas.width);
+                                                            last_mousedown = e;
+                                                            redraw_points(canvas);
+                                                        }
+                                                    }
+                                                }else if(shape === "square"){
+                                                    if (e.type == "mousedown" && e.target.className == "hotspot-handle") {
+                                                        last_mousedown = e;
+                                                        dragging = true;
+                                                        current_handle = e.target.id;
+                                                    }else if (dragging && (e.type == "mouseup" || e.type == "mousemove")) {
+                                                        if (e.type == "mouseup") {
+                                                            dragging = false;
+                                                            last_mousedown = undefined;
+                                                        }
+                                                        if (dragging) {
+                                                            var canvas = $("#outer_img_" + id + " canvas").get(0);
+                                                            var index;
+                                                            for(var i in points){
+                                                                if(points[i].id == current_handle)
+                                                                {
+                                                                    index = i;
+                                                                }
+                                                            }
+                                                            point = points[index];
+                                                            mouse = getMousePosition(canvas, e);
+                                                            point.x = mouse.x;
+                                                            point.y = mouse.y;
+
+
+                                                            var NextCorner = (((Number(index)+8+2)%8));
+                                                            var PreviousCorner = (((Number(index)+8-2)%8));
+
+                                                            //Left top and Right bottom.
+                                                            if(index % 4 == 0) {
+                                                                points[NextCorner].y = point.y;
+                                                                points[PreviousCorner].x = point.x;
+                                                            }
+                                                            //Right top and Left bottom.
+                                                            else if(index % 2 == 0){
+                                                                points[PreviousCorner].y = point.y;
+                                                                points[NextCorner].x = point.x;
+                                                            }
+                                                            //All the middle points
+                                                            else{
+
+                                                                NextCorner = (((Number(index)+8+1)%8));
+                                                                PreviousCorner = (((Number(index)+8-1)%8));
+
+                                                                if(index % 4 == 1){
+                                                                    points[NextCorner].y = point.y;
+                                                                    points[PreviousCorner].y = point.y;
+                                                                }else{
+                                                                    points[NextCorner].x = point.x;
+                                                                    points[PreviousCorner].x = point.x;
+                                                                }
+                                                            }
+
+                                                            last_mousedown = e;
+                                                            redraw_points(canvas, index);
+                                                        }
+
+
+                                                    }
+                                                }
+                                            });
+
+
+                                        function clickHandler(e){
+                                            var canvas = $("#outer_img_" + id + " canvas").get(0);
+                                            center = getMousePosition(canvas, e);
+
+                                            center.id = "handle_" + uniq_id;
+                                            uniq_id ++;
+                                            if(points.length == 0)
+                                            {
+                                                center.previous = "";
+                                            }else{
+                                                center.previous = points[points.length - 1].id;
+                                            }
+                                            var index = 0;
+                                            var pow = function(x){return Math.abs(x) * Math.abs(x);}
+                                            lengths = points.map(function(p){return {
+                                                "index": index++,
+                                                "point": p,
+                                                "len": Math.sqrt(pow(p.x - center.x) + pow(p.y - center.y))
+                                            }}).sort(function(a, b){
+                                                if (a.len < b.len)
+                                                  return -1;
+                                                if (a.len > b.len)
+                                                  return 1;
+                                                return 0;
+                                            });
+                                            if(lengths.length > 2)
+                                            {
+                                                closest = lengths[0];
+                                                neighbors = lengths.filter(l => l.index == (closest.index + 1) % lengths.length || l.index == (closest.index + lengths.length - 1) % lengths.length);
+                                                if (neighbors[0].len > neighbors[1].len)
+                                                {
+                                                    closestNeighbor = neighbors[1]
+                                                }else{
+                                                    closestNeighbor = neighbors[0];
+                                                }
+                                                if(Math.abs(closest.index - closestNeighbor.index) > 1)
+                                                {
+                                                    points.push(center);
+                                                    smallestIndex = points.length - 1;
+                                                }else{
+                                                    smallestIndex = Math.min(closest.index, closestNeighbor.index) + 1;
+                                                    points.splice(smallestIndex, 0, center);
+                                                }
+
+                                                points[smallestIndex].previous = points[(smallestIndex + 1) % points.length].id;
+                                                points[(smallestIndex + points.length - 1) % points.length].previous = center.id;
+                                            }else{
+                                                points.push(center);
+                                            }
+
+                                            var handle = $(handle_shell);
+                                            handle.attr("id", center.id);
+                                            handle.css("left", center.x * canvas.width);
+                                            handle.css("top", center.y * canvas.height);
+                                            $("#outer_img_" + id + " .overlayDiv").append(handle.prop("outerHTML"));
+                                            redraw_points(canvas);
+                                        }
+                                    }
+                                });
+                            });
+                    }
+                    else
+                    {
+                        html.append("select image first"); // ** shouldn't this be translated?
+                    }
 
 				break;
 			case 'media':

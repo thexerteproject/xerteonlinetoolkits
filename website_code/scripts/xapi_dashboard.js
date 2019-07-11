@@ -124,6 +124,79 @@ xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element) {
     chart.draw();
 };
 
+xAPIDashboard.prototype.getGroupFromStatements = function(statements){
+    var cur_group="";
+    var first_statement = statements[0];
+    if(     first_statement != undefined
+        &&  first_statement.context != undefined
+        &&  first_statement.context.team != undefined
+        &&  first_statement.context.team.account != undefined
+    ){
+        cur_group = first_statement.context.team.account.name
+    }
+    return cur_group;
+};
+
+xAPIDashboard.prototype.setStatisticsValues = function(learningObjectIndex){
+    var data = this.data.groupStatements();
+    var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
+    var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
+    var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
+    if($('.journeyOverviewActivity').html() == "") {
+        this.drawActivityChart($('.journeyOverviewActivity'), first_launch, last_launch, false);
+    }
+
+    // Add the number of Users.
+    var numberOfUsers = 0;
+    var dashboard=this;
+    for (var user in data) {
+        if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements(data[user].statements)) {
+            numberOfUsers++;
+        }
+    }
+    var totalScore = 0;
+    var scoreCount = 0;
+    for(var i in this.data.groupedData){
+        var curUser = this.data.groupedData[i];
+        var completedStatements = this.data.getStatementsList(curUser.statements.filter(function(rd){
+            return $this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([rd]);
+        }), "http://adlnet.gov/expapi/verbs/completed");
+        if(completedStatements.length > 0)
+        {
+            totalScore += completedStatements[0].result.score.scaled;
+            scoreCount++;
+        }
+    }
+    this.drawNumberOfUsers($('.journeyOverviewStats'), numberOfUsers);
+    var sessions = [];
+    var totalCompletedPages = 0;
+    this.data.rawData.forEach(function(s){
+        if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([s])){
+            sessionId = s.context.extensions["http://xerte.org.uk/sessionId"];
+            if(sessions.indexOf(sessionId) === -1){
+                sessions.push(sessionId);
+            }
+            if(s.verb.id == "http://adlnet.gov/expapi/verbs/exited"){
+                var pages = interactions.filter(i => i.type == "page").map(p => p.url);
+                if(pages.indexOf(s.object.id) >= 0)
+                {
+                    totalCompletedPages++;
+                }
+            }
+        }
+    });
+    // Add the number of launches.
+    var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
+    this.drawNumberOfInteractions($('.journeyOverviewStats'), this.data.rawData.filter(function(rd){
+        return $this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([rd]);
+    }).length);
+    this.drawNumberOfSessions($('.journeyOverviewStats'), sessions.length);
+    this.drawNumberOfCompletedSessions($('.journeyOverviewStats'), scoreCount);
+    this.drawAverageCompletedPages($('.journeyOverviewStats'), Math.round(100 * totalCompletedPages / numberOfUsers) / 100);
+
+    // Add the average grade.
+    this.drawAverageScore($('.journeyOverviewStats'), (Math.round((totalScore / scoreCount) * 10 * 10) / 10), first_launch, last_launch);
+};
 
 xAPIDashboard.prototype.createJourneyTableSession = function(div) {
     this.data.rawData = this.data.combineUrls();
@@ -150,51 +223,8 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         div.append(
             '<div class="journeyOverview"><div class="journeyOverviewHeader row"><h3>Overview</h3></div><div class="journeyOverviewActivity row"></div><div class="journeyOverviewStats row"></div></div>'
         );
-        var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
-        var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
-        this.drawActivityChart($('.journeyOverviewActivity'), first_launch, last_launch, false);
+        this.setStatisticsValues(learningObjectIndex);
 
-        // Add the number of Users.
-        var numberOfUsers = 0;
-        for (var user in data) {
-            numberOfUsers++;
-        }
-        var totalScore = 0;
-        var scoreCount = 0;
-        for(var i in this.data.groupedData){
-            var curUser = this.data.groupedData[i];
-            var completedStatements = this.data.getStatementsList(curUser.statements, "http://adlnet.gov/expapi/verbs/completed");
-            if(completedStatements.length > 0)
-            {
-                totalScore += completedStatements[0].result.score.scaled;
-                scoreCount++;
-            }
-        }
-        this.drawNumberOfUsers($('.journeyOverviewStats'), numberOfUsers);
-        var sessions = [];
-        var totalCompletedPages = 0;
-        this.data.rawData.forEach(function(s){
-            sessionId = s.context.extensions["http://xerte.org.uk/sessionId"];
-            if(sessions.indexOf(sessionId) === -1){
-                sessions.push(sessionId);
-            }
-            if(s.verb.id == "http://adlnet.gov/expapi/verbs/exited"){
-                var pages = interactions.filter(function(i) {return i.type == "page"}).map(function(p) {return p.url});
-                if(pages.indexOf(s.object.id) >= 0)
-                {
-                    totalCompletedPages++;
-                }
-            }
-        });
-        // Add the number of launches.
-        var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
-        this.drawNumberOfInteractions($('.journeyOverviewStats'), this.data.rawData.length);
-        this.drawNumberOfSessions($('.journeyOverviewStats'), sessions.length);
-        this.drawNumberOfCompletedSessions($('.journeyOverviewStats'), scoreCount);
-        this.drawAverageCompletedPages($('.journeyOverviewStats'), Math.round(100 * totalCompletedPages / numberOfUsers) / 100);
-
-        // Add the average grade.
-        this.drawAverageScore($('.journeyOverviewStats'), (Math.round((totalScore / scoreCount) * 10 * 10) / 10), first_launch, last_launch);
         leftButton = "<button class='xerte_button_c_no_width page-button' id='pageButtonLeft'>" + XAPI_DASHBOARD_PAGE_PREV + "</button>";
         rightButton = "<button class='xerte_button_c_no_width page-button' id='pageButtonRight'>" + XAPI_DASHBOARD_PAGE_NEXT + "</button>";
 
@@ -321,9 +351,17 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         var pageState = this;
         $(".page-button").click(function(e, init){
 
+            var groupedData = {} //= $this.groupedData;
+            for($key in $this.groupedData){
+                $val = $this.groupedData[$key];
+                if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == pageState.getGroupFromStatements($val.statements)) {
+                    groupedData[$key] = $val;
+                }
+            }
+
             var pageSize = $this.pageSize;
             if(pageSize == -1){
-                pageSize = Object.keys($this.groupedData).length;
+                pageSize = Object.keys(groupedData).length;
             }
 
             if(e.target.id == "pageButtonLeft" && !init)
@@ -331,8 +369,8 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 $this.pageIndex = Math.max($this.pageIndex -= pageSize, 0);
             }else if(e.target.id == "pageButtonRight" && !init)
             {
-                $this.pageIndex = Math.min($this.pageIndex +=pageSize, Object.keys($this.groupedData).length - 1);
-            }else if(Object.keys($this.groupedData).length < pageSize){
+                $this.pageIndex = Math.min($this.pageIndex +=pageSize, Object.keys(groupedData).length - 1);
+            }else if(Object.keys(groupedData).length < pageSize){
                 $this.pageIndex = 0;
             }
 
@@ -343,7 +381,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 $("#pageButtonLeft").prop("disabled", true).addClass("disabled");
 
             }
-            if($this.pageIndex + $this.pageSize < Object.keys($this.groupedData).length - 1)
+            if($this.pageIndex + $this.pageSize < Object.keys(groupedData).length - 1)
             {
                 $("#pageButtonRight").prop("disabled", false).removeClass("disabled");
             }else{
@@ -352,7 +390,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             pageState.drawPages($this.pageIndex, pageSize);
 
             var curPage = Math.ceil($this.pageIndex / pageSize) + 1;
-            var maxPage = Math.ceil(Object.keys($this.groupedData).length / pageSize);
+            var maxPage = Math.ceil(Object.keys(groupedData).length / pageSize);
 
             var pageinfo = XAPI_DASHBOARD_PAGE_OF_PAGE;
             pageinfo = pageinfo.replace("{i}", curPage);
@@ -494,7 +532,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 xAPIDashboard.prototype.drawPages = function(startingIndex, pageSize) {
     var from = startingIndex;
     var pageSize = pageSize;
-    var to = Math.min(startingIndex + pageSize, Object.keys($this.groupedData).length);
+    var to = Math.min(startingIndex + $this.pageSize, Object.keys($this.groupedData).length);
     $(".session-row").each(function(row){
         var rowIndex = $(this).data("index");
         if(rowIndex < from || rowIndex >= to){
@@ -1479,6 +1517,8 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
 
     $("#group-select").change(function(){
         var group = $(this).val();
+        $this.data.currentGroup.group_id = group;
+        $(".page-button").trigger("click", [false]);
         if(group == "all-groups")
         {
             $(".session-row").show();
@@ -1486,6 +1526,10 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
             $('.session-row:not([data-group="' + group + '"])').hide();
             $('.session-row[data-group="' + group + '"]').show();
         }
+
+        $(".journeyOverviewStats").html("");
+        $this.setStatisticsValues(0);
+
     });
 
     if (this.data.info.dashboard.enable_nonanonymous == 'true') {
@@ -1525,11 +1569,16 @@ xAPIDashboard.prototype.regenerate_dashboard = function() {
     var end = this.helperGetDate('#dp-end');
     end = new Date(moment(end).add(1, 'days').toISOString());
     var q = {};
-    if (this.data.info.lrs.lrsurls != null && this.data.info.lrs.lrsurls != "undefined" && this.data.info.lrs.lrsurls != ""
-        && this.data.info.lrs.site_allowed_urls != null && this.data.info.lrs.site_allowed_urls != "undefined" && this.data.info.lrs.site_allowed_urls != "")
+    q['activities'] = [url];
+    if (this.data.info.lrs.lrsurls != null && this.data.info.lrs.lrsurls != "undefined" && this.data.info.lrs.lrsurls != "")
     {
         var $this = this;
-        q['activities'] = [url].concat(this.data.info.lrs.lrsurls.split(",")).concat(this.data.info.lrs.site_allowed_urls.split(",").map(function(url) { return url + $this.data.info.template_id})).filter(function(url) {return url != ""});
+        q['activities'] = q['activities'].concat(this.data.info.lrs.lrsurls.split(","));
+    }
+    if (this.data.info.lrs.site_allowed_urls != null && this.data.info.lrs.site_allowed_urls != "undefined" && this.data.info.lrs.site_allowed_urls != "")
+    {
+        var $this = this;
+        q['activities'] = q['activities'].concat(this.data.info.lrs.site_allowed_urls.split(",").map(function(url) { return url + $this.data.info.template_id})).filter(function(url) {return url != ""});
     }
     q['activity'] = url;
     q['related_activities'] = true;

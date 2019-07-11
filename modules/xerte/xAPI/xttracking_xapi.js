@@ -1784,9 +1784,17 @@ function XTLogin(login, passwd) {
     return true;
 }
 
-function XTGetMode() {
+function XTGetMode(extended) {
     if (state.forcetrackingmode === 'true')
-        return "normal";
+    {
+        if (extended != null && (extended == true || extended == 'true'))
+        {
+            return state.mode;
+        }
+        else {
+            return "normal";
+        }
+    }
     else
         return "";
 }

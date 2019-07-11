@@ -1558,6 +1558,11 @@ function fixLineBreaks(text) {
 // _____ REPLACE LINE BREAKS IN XML WITH HTML WHEN ADDING TO PAGE _____
 function addLineBreaks(text) {
 	// test to see if it was created in the new editor
+	if (allParams.editorVersion && parseInt("0" + allParams.editorVersion, 10) >= 3)
+	{
+		return text; // Return text unchanged
+	}
+	// Now try to identify v3beta created LOs
 	var trimmedText = $.trim(text);
 	if ((trimmedText.indexOf("<p") == 0 || trimmedText.indexOf("<h") == 0) && (trimmedText.lastIndexOf("</p") == trimmedText.length-4 || trimmedText.lastIndexOf("</h") == trimmedText.length-5))
 	{

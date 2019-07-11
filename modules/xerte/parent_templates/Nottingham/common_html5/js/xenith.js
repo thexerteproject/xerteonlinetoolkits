@@ -663,6 +663,7 @@ function x_desktopSetUp() {
 				label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
 				text:	false
 			})
+            .attr("aria-label", $("#x_cssBtn").attr("title"))
 			.click(function() {
 				// Post flag to containing page for iframe resizing
 				if (window && window.parent && window.parent.postMessage) {
@@ -1115,6 +1116,7 @@ function x_continueSetUp1() {
 			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
 			text:	false
 		})
+        .attr("aria-label", $("#x_prevBtn").attr("title"))
 		.click(function() {
 			if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
 				x_changePage(x_currentPage -1);
@@ -1166,6 +1168,7 @@ function x_continueSetUp1() {
 			label:	x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
 			text:	false
 		})
+        .attr("aria-label", $("#x_nextBtn").attr("title"))
 		.click(function() {
 		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
 				//when moving forward history is generated so ensure button is historic style
