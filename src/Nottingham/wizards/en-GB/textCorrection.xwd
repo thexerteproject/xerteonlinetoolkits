@@ -16,7 +16,7 @@
         <copyText label="Copy Text" defaultValue="true" type="CheckBox" tooltip="Places the question in the text box"/>
         <clarification type="group" label="Clarification" optional="true">
             <showFurtherClarification label="Show Further Clarification" defaultValue="false" type="CheckBox"/>
-            <FurtherClarification label="Further Clarification" type="TextArea" height="50" tooltip='Add "Show Further Clarification" from the optional properties'/>
+            <FurtherClarification label="Further Clarification" type="TextArea" height="50" tooltip='Add "Show Further Clarification" from the optional properties' defaultValue="Enter here further clarification"/>
         </clarification>
         <disableAnswers label = "Disable Answers" type="CheckBox" optional="true"/>
 
