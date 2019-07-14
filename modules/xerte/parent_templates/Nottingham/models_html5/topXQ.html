@@ -257,9 +257,8 @@
 
                 var hasExited = false;
 
-
                 this.weighting = 1.0;
-                if (x_currentPageXML.getAttribute("trackingWeight") !== undefined) {
+                if (x_currentPageXML.getAttribute("trackingWeight") != undefined) {
                     this.weighting = x_currentPageXML.getAttribute("trackingWeight");
                 }
                 XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);

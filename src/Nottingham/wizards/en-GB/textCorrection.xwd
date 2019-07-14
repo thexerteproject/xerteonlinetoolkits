@@ -19,8 +19,7 @@
             <FurtherClarification label="Further Clarification" type="TextArea" height="50" tooltip='Add "Show Further Clarification" from the optional properties' defaultValue="Enter here further clarification"/>
         </clarification>
         <disableAnswers label = "Disable Answers" type="CheckBox" optional="true"/>
-
-
+        <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
 
         <checkBtn label="Check Button Text" type="TextInput" wysiwyg="true" language="true"/>
         <attemptLabel label="Attempt Label" type="TextInput" wysiwyg="false" language="true"/>
