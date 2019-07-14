@@ -519,13 +519,6 @@
                                     mainFeedback = ""
                                 }
 
-                                var passedScore = parseInt(x_currentPageXML.getAttribute("SuccessRate"));
-
-                                if (average >= passedScore) {
-                                    passedOrFailed = passedTxt
-                                } else {
-                                    passedOrFailed = failedTxt
-                                }
                                 $("#mainFeedback").append("<div>" + passedOrFailed + mainFeedback + "</div>");
 
                             };
@@ -625,13 +618,14 @@
                     </div>
                     <button id="checkButton"></button>
                     <div id="attempts"></div>
-                    <div id="feedback" aria-live="polite"></div>
-                    <div id="feedbackAnswers" aria-live="polite">
-                        <ul>
+                    <!--<div id="feedback" aria-live="polite"></div>-->
 
-                        </ul>
+                    <!--<div id="feedbackAnswers" aria-live="polite">-->
+                        <!--<ul>-->
 
-                    </div>
+                        <!--</ul>-->
+
+                    <!--</div>-->
                     <div id="correctAnswer" aria-live="polite">
                         <h3></h3>
                         <ul>
