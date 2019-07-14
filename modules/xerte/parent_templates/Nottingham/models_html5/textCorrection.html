@@ -53,7 +53,7 @@
 
             this.exitTrackTextCorrection = function () {
                 answer = textCorrection.answer;
-                input = textCorrection.input;
+                var input =  $(".answer textarea").val();
 
 
                 var checkAnswer = false;
@@ -68,7 +68,6 @@
                 }else{
                     result = 0;
                 }
-
                 XTExitInteraction(x_currentPage, 0, result,[], input, []);
 
 
@@ -220,7 +219,6 @@
                         }
 
                         $(checkButton).button("disable");
-
                         XTEnterInteraction(x_currentPage, 0, "text", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("introduction"), ""), "",answer, FurtherClarification);
 
                         var input = $(".answer textarea").val();
