@@ -219,6 +219,65 @@
                     }
                 }
 
+                AllAnswersCheckt = function(){
+
+                    var wrongs = 0;
+
+                    if (x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined) {
+
+                        for (i = 0; i < inputs.length; i++) {
+                            for (j = 0; j < answers.length; j++) {
+                                for (x = 0; x < answers[j].options.length; x++) {
+
+                                    var givenAnswer = inputs[i];
+                                    var correctAnswer = answers[j].options[x].trim();
+
+                                    if (givenAnswer === correctAnswer) {
+
+                                        answers[j].counter2++;
+
+                                        if (answers[j].counter2 > 1) {
+                                            wrongs++;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            if (givenAnswer !== correctAnswer) {
+                                 wrongs++;
+                            }
+                        }
+                    } else {
+                        for (i = 0; i < inputs.length; i++) {
+                            var isCorrect = false;
+                            for (j = 0; j < answers.length; j++) {
+                                for (x = 0; x < answers[j].options.length; x++) {
+
+                                    var givenAnswer = inputs[i].toLowerCase();
+                                    var correctAnswer = answers[j].options[x].trim().toLowerCase();
+
+                                    if (givenAnswer === correctAnswer) {
+
+                                        answers[j].counter2++;
+
+                                        if (answers[j].counter2 > 1) {
+                                            wrongs++;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            if (givenAnswer !== correctAnswer) {
+                                wrongs++;
+                            }
+
+                        }
+                    }
+                    if(wrongs > 0){
+                        return false;
+                    }
+                };
+
                 exitPage = function(){
                     amountOfCorrect = 0;
                     for (i = 0; i < inputs.length; i++) {
@@ -347,7 +406,8 @@
                     var answer = elements[i].answer.split(",");
                     answers.push({
                         options: answer,
-                        counter: 0
+                        counter: 0,
+                        counter2: 0
                     });
                 }
                 topXQ.answers = answers;
@@ -512,13 +572,16 @@
                                 }
                                 average *= 100;
 
+
                                 var passedOrFailed = "";
-                                var mainFeedback = x_currentPageXML.getAttribute("feedback");
-                                if (mainFeedback === null) {
-                                    mainFeedback = ""
+
+                                if(AllAnswersCheckt() === false){
+                                    passedOrFailed = failedTxt
+                                }else{
+                                    passedOrFailed = passedTxt
                                 }
 
-                                $("#mainFeedback").append("<div>" + passedOrFailed + mainFeedback + "</div>");
+                                $("#mainFeedback").append("<div>" + passedOrFailed + "</div>");
 
                             };
 
