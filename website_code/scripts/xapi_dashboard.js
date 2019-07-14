@@ -221,7 +221,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
         // Add statistics above the table.
         div.append(
-            '<div class="journeyOverview"><div class="journeyOverviewHeader row"><h3>Overview</h3></div><div class="journeyOverviewActivity row"></div><div class="journeyOverviewStats row"></div></div>'
+            '<div class="journeyOverview"><div class="journeyOverviewHeader row"><h3>' + XAPI_DASHBOARD_OVERVIEW + '</h3></div><div class="journeyOverviewActivity row"></div><div class="journeyOverviewStats row"></div></div>'
         );
         this.setStatisticsValues(learningObjectIndex);
 
@@ -794,27 +794,25 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
 
     if (interaction.parent == "" || this.data.selectInteractionById(interactions, interaction.parent) == undefined) {
         parentIndex = "-1";
-        interactionTitle = interactionTitle;
-
         if (interaction.children.length > 0) {
             showHide = "show";
             collapseIcon = '<div data-interaction="' + interactionIndex + '" class="icon-header icon-hide">&#9701</div>';
             thclass += "x-dashboard-has-children ";
         }
-        max_interaction_title_length = 25;
+        max_interaction_title_length = 15;
         thclass += "x-dashboard-page";
     } else {
 
         parentIndex = this.data.selectInteractionById(interactions, interaction.parent).interactionObjectIndex;
         thclass += "x-dashboard-interaction";
-        max_interaction_title_length = 35;
+        max_interaction_title_length = 15;
     }
     if(interactionTitle.length > max_interaction_title_length)
     {
         interactionTitle = interactionTitle.substr(0, max_interaction_title_length - 3) + "...";
     }
     var interactionHeader = '<th data-interaction-index="' + interaction.interactionObjectIndex + '" data-parent="' + parentIndex + '" class="column-' + showHide + thclass +
-        '"><a href="#" data-toggle="modal" data-target="#model-' +
+        '" title="' + interaction.name + '"><a href="#" data-toggle="modal" data-target="#model-' +
         learningObjectIndex + '-' + interactionIndex + '">' + interactionTitle + '</a>' + collapseIcon + '</th>';
     $('body').append('<div id="model-' + learningObjectIndex + '-' + interactionIndex + '" class="modal fade" role="dialog" >' +
         '<div class="modal-dialog">' +
@@ -1436,6 +1434,7 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
                 return intllabel;
             });
             chart.xAxis.tickValues(vals);
+            chart.color(['#f86718']);
         },
         post: function(data) {
             data.contents.map(function(el) {
