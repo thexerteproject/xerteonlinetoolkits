@@ -38,6 +38,10 @@
                         $x_window.resize();
                     }
                 }
+
+                var $mainPanel = $("#mainPanel");
+                var padding = $mainPanel.innerWidth() - $mainPanel.width();
+                $("#text").width($mainPanel.width() - padding);
             };
 
             this.leavePage = function () {
@@ -74,8 +78,6 @@
 
             this.init = function() {
                 var hadExited = false;
-
-
 
                 this.weighting = 1.0;
                 if(x_currentPageXML.getAttribute("trackingWeight") != null){
@@ -297,6 +299,7 @@
                         }
 
                     });
+                this.sizeChanged();
 
 
                 x_pageLoaded();
