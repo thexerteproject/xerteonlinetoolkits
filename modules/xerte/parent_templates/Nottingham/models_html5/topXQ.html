@@ -458,7 +458,7 @@
                         label: checkBtnTxt
                     })
                     .click(function () {
-                        
+
 
                         var tries = parseInt(x_currentPageXML.getAttribute("amountOfTries"));
                         amountofTries -= 1;
@@ -568,7 +568,12 @@
                                 average *= 100;
 
 
-                                var passedOrFailed = "";
+                                var mainFeedback = x_currentPageXML.getAttribute("feedback");
+                                if (mainFeedback === null) {
+                                    mainFeedback = "";
+                                }
+
+                                    var passedOrFailed = "";
 
                                 if(AllAnswersCheckt() === true){
                                     passedOrFailed = passedTxt
@@ -576,7 +581,9 @@
                                     passedOrFailed = failedTxt
                                 }
 
-                                $("#mainFeedback").append("<div>" + passedOrFailed + "</div>");
+                                $("#result").append(passedOrFailed);
+
+                                $("#mainFeedback").append(mainFeedback);
 
                             };
 
@@ -688,6 +695,9 @@
                         <ul>
 
                         </ul>
+                    </div>
+                    <div id="result" aria-live="polite">
+
                     </div>
                     <div id="mainFeedback" aria-live="polite">
 
