@@ -221,7 +221,7 @@
 
                 AllAnswersCheckt = function(){
 
-                    var wrongs = 0;
+                    var amountOfGood = 0;
 
                     if (x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined) {
 
@@ -235,16 +235,13 @@
                                     if (givenAnswer === correctAnswer) {
 
                                         answers[j].counter2++;
-
+                                        amountOfGood++;
                                         if (answers[j].counter2 > 1) {
-                                            wrongs++;
+                                            amountOfGood--;
                                         }
                                         break;
                                     }
                                 }
-                            }
-                            if (givenAnswer !== correctAnswer) {
-                                 wrongs++;
                             }
                         }
                     } else {
@@ -259,22 +256,19 @@
                                     if (givenAnswer === correctAnswer) {
 
                                         answers[j].counter2++;
-
+                                        amountOfGood++;
                                         if (answers[j].counter2 > 1) {
-                                            wrongs++;
+                                            amountOfGood--;
                                         }
                                         break;
                                     }
                                 }
                             }
-                            if (givenAnswer !== correctAnswer) {
-                                wrongs++;
-                            }
 
                         }
                     }
-                    if(wrongs > 0){
-                        return false;
+                    if(amountOfGood === answers.length){
+                        return true;
                     }
                 };
 
@@ -464,6 +458,7 @@
                         label: checkBtnTxt
                     })
                     .click(function () {
+                        debugger;
 
                         var tries = parseInt(x_currentPageXML.getAttribute("amountOfTries"));
                         amountofTries -= 1;
@@ -573,12 +568,14 @@
                                 average *= 100;
 
 
+                                debugger;
+
                                 var passedOrFailed = "";
 
-                                if(AllAnswersCheckt() === false){
-                                    passedOrFailed = failedTxt
-                                }else{
+                                if(AllAnswersCheckt() === true){
                                     passedOrFailed = passedTxt
+                                }else{
+                                    passedOrFailed = failedTxt
                                 }
 
                                 $("#mainFeedback").append("<div>" + passedOrFailed + "</div>");
