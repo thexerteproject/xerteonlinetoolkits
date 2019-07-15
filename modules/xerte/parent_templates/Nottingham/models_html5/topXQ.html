@@ -575,15 +575,28 @@
 
                                     var passedOrFailed = "";
 
-                                if(AllAnswersCheckt() === true){
+                                var passed = AllAnswersCheckt();
+                                if(passed === true){
                                     passedOrFailed = passedTxt
                                 }else{
                                     passedOrFailed = failedTxt
                                 }
 
                                 $("#result").append(passedOrFailed);
+                                $("#result").append('<span id="finalResult"></span>');
+                                debugger;
+
+                                if(passed=== true){
+
+                                    $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+                                }else{
+                                    $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+
+                                };
+
 
                                 $("#mainFeedback").append(mainFeedback);
+
 
                             };
 
