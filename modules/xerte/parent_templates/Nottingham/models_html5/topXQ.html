@@ -583,7 +583,7 @@
                                 }
 
                                 $("#result").append(passedOrFailed);
-                                $("#result").append('<span id="finalResult"></span>');
+                                $("#result").prepend('<span id="finalResult"></span>');
                                 debugger;
 
                                 if(passed=== true){
@@ -592,7 +592,7 @@
                                 }else{
                                     $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
 
-                                };
+                                }
 
 
                                 $("#mainFeedback").append(mainFeedback);
