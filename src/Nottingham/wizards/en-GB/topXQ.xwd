@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
     <pageWizard remove="true" dublicate="false">
         <newNodes>
-            <topXQ><![CDATA[<topXQ name="Enter Page Title" instruction = "Enter Your Instruction" amountOfTries="1" SuccessRate="60" prompt= "Enter Your Question"  align = "Left" panelWidth = "Medium" numberAnswers = "Enter amount of fields" feedbackLabel="Feedback" attemptLabel="Attempts" correctAnswersLabel="Correct answers" passed="You passed the question!" failed="You did not pass the question"
+            <topXQ><![CDATA[<topXQ name="Enter Page Title" instruction = "Enter Your Instruction" amountOfTries="1" prompt= "Enter Your Question"  align = "Left" panelWidth = "Medium" numberAnswers = "Enter amount of answers" feedbackLabel="Feedback" attemptLabel="Attempts" correctAnswersLabel="Correct answers" passed="You passed the question!" failed="Not all answers are correct"
 	  checkBtnTxt="Check"/>]]></topXQ>
         </newNodes>
     </pageWizard>
@@ -14,17 +14,11 @@
     <prompt label="Question" type="TextArea" height="100"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <numberAnswers label="Amount of correct answers" type="TextInput" defaultValue="1"/>
-    <SuccessRate label="Percentage to pass" type="number" name="points" step="3"/>
-    <answers label="Answers" options="Show everything,Show only given answers" type="ComboBox" data="Show everything,Show only given answers" defaultValue="Medium" width="100"/>
-    <amountOfTries label="Tries" type="TextInput" defaultValue="1"/>
     <showAnswers label = "Show Answers" defaultValue="true" type="CheckBox" optional="true"/>
-    <amountOfTries label="Tries" type="TextInput" defaultValue="1" mandatory="true" />
+    <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" />
+    <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
     <caseSensitivity label="Case Sensitivity" defaultValue="true" type="CheckBox" optional="true"/>
 
-    <answerOptions type="group" label="Answers" optional="true">
-        <showAnswers label = "Show Answers" defaultValue="true" type="CheckBox" optional="true"/>
-        <answers label="Which answers" options="Show everything,Show only given answers" type="ComboBox" data="Show everything,Show only given answers" defaultValue="Show only given answers" width="100" optional="true"/>
-    </answerOptions>
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="false" divider="true" language="true" />
     <correctAnswersLabel label="Correct Answers Label" type="TextInput" wysiwyg="false" language="true"/>
     <passed label="Passed" type="TextInput" wysiwyg="false" language="true"  />
@@ -35,7 +29,7 @@
     <checkBtnTip label="Check Button Tip" type="textInput" language="false" deprecated="This property is no longer required"/>
     <checkBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 
-    <feedback type="TextArea" height="40" label="General remark" optional="true"/>
+    <feedback type="TextArea" height="40" label="Feedback" optional="true" defaultValue="Enter your feedback here"/>
 
     <newNodes>
         <optionXQ><![CDATA[<option answer = "Here is an option" name = "Answer" feedback = "Feedback for this option" correct = "false"/>]]></optionXQ>
@@ -43,9 +37,8 @@
 </topXQ>
 
     <optionXQ menuItem = "Answer" icon = "icBullet">
-        <answer label = "Answer" type = "TextInput" height = "100" wysiwyg="false" mandatory="true"/>
-        <name label = "Label" type = "TextInput" hieght = "100"/>
-        <feedback label = "Feedback" type= "TextArea" height = "100" wysiwys="true"/>
+        <answer label = "Answer" type = "TextInput" wysiwyg="false" mandatory="true"/>
+        <name label = "Label" type = "TextInput" />
     </optionXQ>
 
 </wizard>
