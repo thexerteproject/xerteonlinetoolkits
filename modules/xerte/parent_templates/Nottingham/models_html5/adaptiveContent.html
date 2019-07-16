@@ -403,8 +403,12 @@
 
     function getUrl(xerteurl, xertelo, xertelabel, opinionClass)
     {
-        var url = xerteurl + xertelo + '/' + xertelabel.replace(/ /g, "_");
-        if (opinionClass != '' && opinionClass != null) {
+        var url = xerteurl + xertelo;
+        if (xertelabel != undefined && xertelabel != '')
+        {
+            url += '/' + xertelabel.replace(/ /g, "_");
+        }
+        if (opinionClass != undefined && opinionClass != '' ) {
             url += '/' + opinionClass.replace(/ /g, "_");
         }
         return url;
@@ -456,7 +460,7 @@
             }
             */
             if (typeof actor != "undefined") {
-                actor.account.homePage = xerteurl + xertelo;
+                //actor.account.homePage = xerteurl + xertelo;
                 q['agent'] = JSON.stringify(actor);
             }
         }
@@ -688,11 +692,7 @@
                 nrParticipantsText = 'The number of participants is {0}';
             }
 
-            url = xerteurl + xertelo + '/' + xertelabel;
-            if (opinionClass != '' && opinionClass != null) {
-                url += '/' + opinionClass;
-
-            }
+            url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
             var $this = this;
             divUrl = escapeUrl(url, interactionType, interactionIndex);
             name = interaction.getAttribute('name');
@@ -841,7 +841,7 @@
                 //score = interaction.score;
                 if (interaction.getAttribute("showScore") == "true") {
                     var txt = scoreLabelText;
-                    txt = txt.replace(/\{0\}/, score);
+                    txt = txt.replace(/\{0\}/, Math.round(score*10)/10);
                     $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '%</p>');
                 }
 
@@ -1748,7 +1748,7 @@
                     var scoretext = "";
                     if (interaction.score != Number.MAX_VALUE)
                     {
-                        scoretext = "<div class='score'><p>" + scoreLabelText.replace('{0}', interaction.score) + "</p></div>";
+                        scoretext = "<div class='score'><p>" + scoreLabelText.replace('{0}', Math.round(interaction.score*10)/10) + "</p></div>";
                     }
                     div.html('<h2><p>' +
                         name + '</p></h2>' +

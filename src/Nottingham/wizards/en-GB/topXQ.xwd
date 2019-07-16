@@ -26,8 +26,6 @@
     <attemptLabel label="Attempt Label" type="TextInput" wysiwyg="false" language="true"/>
 
     <checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="false" language="true" />
-    <checkBtnTip label="Check Button Tip" type="textInput" language="false" deprecated="This property is no longer required"/>
-    <checkBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 
     <feedback type="TextArea" height="40" label="Feedback" optional="true" defaultValue="Enter your feedback here"/>
 

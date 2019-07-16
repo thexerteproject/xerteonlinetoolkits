@@ -146,7 +146,11 @@
                 textCorrection.answer = answer;
 
 
-                var copyText = x_currentPageXML.getAttribute("copyText").trim();
+                var copyText = false;
+                if (x_currentPageXML.getAttribute("copyText") != undefined)
+                {
+                    copyText = x_currentPageXML.getAttribute("copyText").trim();
+                }
                 var $textArea = $("#text");
                 if( copyText === "true"){
                     question = $("<div>").html(question).text().trim();

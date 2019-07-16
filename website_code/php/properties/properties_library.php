@@ -22,6 +22,7 @@
 
 require_once("../../../config.php");
 require_once("../template_library.php");
+require_once("../xAPI/xAPI_library.php");
 
 
 _load_language_file("/website_code/php/properties/publish.inc");
@@ -598,12 +599,23 @@ function statistics_prepare($template_id)
 
             $params = array($template_id);
             $row = db_query_one($query_for_names, $params);
-            $row_sitedetails = db_query_one("select dashboard_allowed_links from {$prefix}sitedetails");
+            $row_sitedetails = db_query_one("select dashboard_allowed_links, LRS_Endpoint from {$prefix}sitedetails");
 
             if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != ""))) {
                 $info->info = $html;
+                $lrsendpoint = array();
+                if ($row['tsugi_xapi_useglobal'])
+                {
+                    $lrsendpoint['lrsendpoint'] = $row_sitedetails['LRS_Endpoint'];
+                }
+                else
+                {
+                    $lrsendpoint['lrsendpoint'] = $row['tsugi_xapi_endpoint'];
+                }
+                $lrsendpoint = CheckLearningLocker($lrsendpoint);
                 $lrs = new stdClass();
                 $lrs->lrsendpoint = $xerte_toolkits_site->site_url . "xapi_proxy.php";
+                $lrs->lrs_use_aggregate = $lrsendpoint['aggregate'];
 
                 $lrs->lrskey = "";
                 $lrs->lrssecret = "";

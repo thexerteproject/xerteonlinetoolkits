@@ -171,6 +171,7 @@ else
 {
     require_once ("config.php");
 }
+require_once("website_code/php/xAPI/xAPI_library.php");
 
 if (!function_exists('getallheaders')) {
     /**
@@ -256,6 +257,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
                 $lrs['lrskey'] = $row['tsugi_xapi_key'];
                 $lrs['lrssecret'] = $row['tsugi_xapi_secret'];
             }
+            $lrs = CheckLearningLocker($lrs);
             $_SESSION['XAPI_PROXY'] = $lrs;
         }
         else

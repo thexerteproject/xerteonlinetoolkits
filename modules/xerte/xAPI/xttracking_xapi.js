@@ -1673,6 +1673,18 @@ function XTInitialise(category) {
             }
         );
         */
+
+        // // Check if aggretate is set for the lrsEndpoint, than assume this is learning locker and change normal API accordingly and save aggregate for XTGetStatements
+        // if (lrsEndpoint.indexOf("api/statements/aggregate/") >= 0)
+        // {
+        //     state.aggregate = true;
+        //     state.lrsAggregateEndpoint = lrsEndpont;
+        //     apos = lrsEndpoint.indexOf("api/statements/aggregate");
+        //     lrsEndpoint = lrsEndpoint.substr(0, lrsEndpoint.Length - apos) + 'data/xAPI';
+        // }
+        // else {
+        //     state.aggregate = false;
+        // }
         var conf = {
             "endpoint": lrsEndpoint + '/',
             "user": lrsUsername,
@@ -3214,7 +3226,7 @@ function XTResults(fullcompletion) {
                     correctAnswer = state.interactions[i].correctAnswers;
                     break;
             }
-            if (state.interactions[i].ia_type != "match") {
+            if (state.interactions[i].ia_type != "match" && state.interactions[i].result != undefined) {
                 subinteraction.question = state.interactions[i].ia_name;
                 subinteraction.correct = state.interactions[i].result.success;
                 subinteraction.learnerAnswer = learnerAnswer;
