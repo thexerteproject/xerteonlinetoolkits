@@ -1606,31 +1606,9 @@ function XTTerminate()
         if (!state.finished)
         {
             // End tracking of page
+            var currentpageid = state.currentpageid;
             x_endPageTracking(false, -1);
 
-            // This code is probably obsolete, leave it in to allow for more testing
-            var currentpageid = "";
-            state.finished = true;
-            if (state.currentid)
-            {
-                var sit = state.find(currentid);
-                // there is still an interaction open, close it
-                if (sit != null)
-                {
-                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-                }
-            }
-            if (state.currentpageid)
-            {
-                currentpageid = state.currentpageid;
-                var sit = state.find(currentpageid);
-                // there is still an interaction open, close it
-                if (sit != null)
-                {
-                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-                }
-
-            }
             state.finishTracking(currentpageid);
         }
     }
