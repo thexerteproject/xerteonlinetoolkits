@@ -343,7 +343,7 @@
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
 	</variables></adaptiveContent><interaction menuItem="Source interaction">
-        <name label="Block title" type="textinput" wysiwyg="true"/>
+        <name label="Title" type="textinput" wysiwyg="true"/>
         <introduction label="Introduction" type="textarea" height="120" wysiwyg="true"/>
         <graph type="group" label="Graph" optional="true">
           <graph label="Show graph" type="checkbox" defaultValue="false" optional="true"/>
