@@ -46,7 +46,7 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
     else {
         this.getStatementsxAPI(q, one, callback);
     }
-}
+};
 
 DashboardState.prototype.getStatementsxAPI = function(q, one, callback) {
     //ADL.XAPIWrapper.log.debug = true;
@@ -139,139 +139,145 @@ DashboardState.prototype.getStatementsxAPI = function(q, one, callback) {
 };
 
 DashboardState.prototype.getStatementsAggregate = function(q, one, callback) {
-    state.startDate = getDate("#dp-start");
-    state.endDate = getDate("#dp-end");
-    var matchStore = '{"lrs_id" : { "$oid": "'  + state.info.lrs.lrsstore + '"}}';
+    var role = "teacher";
     var matchLaunched = '{"statement.verb.id" : { "$eq" : "http://adlnet.gov/expapi/verbs/launched" } }';
-    if (state.info.modules.usetemplateids == "1")
+    var matchCourse = '';
+    if (typeof q['activities'] != "undefined")
     {
-        // var xerteurl = state.info.modules.xerteurl;
-        // var matchCourse = '{ "statement.contextActivities.parent" : { "$elemMatch" : { "id" : { "$in" : [\n';
-        // for (var i=0; i<state.info.modules.modules.length; i++)
-        // {
-        //     matchCourse += '   "' + xerteurl + state.info.modules.modules[i].module + '"';
-        //     if (i < state.info.modules.modules.length-1)
-        //     {
-        //         matchCourse += ',\n';
-        //     }
-        //     else
-        //     {
-        //         matchCourse += '\n';
-        //     }
-        // }
-        // matchCourse += ']}}}}';
-        var xerteurl = state.info.modules.xerteurl;
-        var matchCourse = '{ "$or" : [';
-        for (var i=0; i<state.info.modules.modules.length; i++)
+
+        if (q['activities'].length == 1)
         {
-            matchCourse += '{"statement.context.extensions.http://xerte&46;org&46;uk/learningObjectId": {  "$eq": "' + xerteurl + state.info.modules.modules[i].module + '"}}';
-            if (i < state.info.modules.modules.length-1)
-            {
-                matchCourse += ',';
-            }
+            matchCourse = '{ "statement.object.id" :  { "$regex" :  "^' + q['activities'][0].replace(/\//g, "\\/") + '$" } }';
         }
-        matchCourse += ']}';
+        else
+        {
+            matchCourse = '{ "statement.object.id" :  { "$regex" :  "^(';
+            for (var i=0; i<q['activities'].length; i++)
+            {
+                matchCourse += q['activities'][i];
+                if (i<q['activities'].length - 1)
+                {
+                    matchCourse += '|'
+                }
+            }
+            matchCourse += ')$" } }';
 
+        }
     }
-    else {
-        var matchCourse = '{"statement.context.extensions.http://xerte&46;org&46;uk/course": {  "$eq": "' + course + '"}}';
+    else if (typeof q['activity'] != "undefined")
+    {
+        matchCourse = '{ "statement.object.id" :  { ' + q['activity'] + '}';
     }
-    var matchActor = '{"statement.actor.mbox" : "mailto:' + userEmail + '"}';
-    var matchStatementStartDate = '{"statement.timestamp": {"$gte": "' + getIsoDate("#dp-start") + '"}}';
-    var matchStatementEndDate = '{"statement.timestamp": {"$lte": "' + getIsoDate("#dp-end") + '"}}';
-    var matchDateRange = '{"timestamp": { "$gte": { "$dte": "' + getIsoDate("#dp-start") + '" }, "$lte": { "$dte": "' + getIsoDate("#dp-end") + '" }}}';
 
-    var startDate = getDate("#dp-start");
-    var endDate = getDate("#dp-end");
+    var matchActor = '';
+    if (typeof q['actor'] != "undefined")
+    {
+        matchActor = '{"statement.actor.mbox" : "mailto:' + q['actor'] + '"}';
+    }
+    var matchDateRange = '';
+    if (typeof q['since'] != "undefined" && typeof q['until'] != "undefined") {
+        matchDateRange = '{"timestamp": { "$gte": { "$dte": "' + q['since'] + '" }, "$lte": { "$dte": "' + q['until'] + '" }}}';
+    }
+    else if (typeof q['since'] != "undefined")
+    {
+        matchDateRange ='{"statement.timestamp": {"$gte": "' + q['since'] + '"}}';
+    }
+    else if (typeof q['until'] != "undefined")
+    {
+        matchDateRange = '{"statement.timestamp": {"$lte": "' + q['until'] + '"}}';
+    }
+
+    var startDate = moment(q['since']);
+    var endDate = moment(q['until']);
     // Create a week array
-    var weeks = [];
+    var periods = [];
     var currDate = endDate;
-    var beginOfPeriod = moment(currDate).subtract(7, 'days').add(1, 'ms');
+    var beginOfPeriod = moment(currDate).subtract(15, 'days').add(1, 'ms');
     while (startDate <= beginOfPeriod)
     {
-        weeks.push('{"timestamp": { "$gte": { "$dte": "' + beginOfPeriod.toISOString() + '" }, "$lte": { "$dte": "' + currDate.toISOString() + '" }}}');
-        currDate = moment(currDate).subtract(7, 'days');
-        beginOfPeriod = beginOfPeriod = moment(currDate).subtract(7, 'days').add(1, 'ms');
+        periods.push('{"timestamp": { "$gte": { "$dte": "' + beginOfPeriod.toISOString() + '" }, "$lte": { "$dte": "' + currDate.toISOString() + '" }}}');
+        currDate = moment(currDate).subtract(15, 'days');
+        beginOfPeriod = beginOfPeriod = moment(currDate).subtract(15, 'days').add(1, 'ms');
     }
-    weeks.push('{"timestamp": { "$gte": { "$dte": "' + startDate.toISOString() + '" }, "$lte": { "$dte": "' + currDate.toISOString() + '" }}}');
-
-    if (role == "Student") {
-        var match = '{ "$match": {"$and" : [' + matchCourse  + ', ' +  matchDateRange + ', ' + matchActor + ', ' + matchLaunched + ']}}';
-    }
-    else
-    {
-        var match = '{ "$match": {"$and" : [' + matchCourse + ', ' + matchLaunched + ', ' + matchDateRange + ']}}';
-    }
-
-    var sort = '{"$sort" : {   "timestamp": -1,   "_id": 1 }}';
-    var replaceRoot = '{ "$replaceRoot" :  { "newRoot" : "$statement" }}';
-    var groupStage = '{ "$group" : { _id : "$statement.actor", statements : {$push: "$statement"} } }';
+    periods.push('{"timestamp": { "$gte": { "$dte": "' + startDate.toISOString() + '" }, "$lte": { "$dte": "' + currDate.toISOString() + '" }}}');
 
     // var project = '{"$project": { "statement.actor": 1, "statement.context" : 1, "statement.id" : 1, "statement.object" : 1,  "statement.timestamp" : 1, "statement.stored" : 1, "statement.verb" :  1, "_id": 0 }}';
     var project = '{"$project": { "statement": 1, "_id": 0 }}';
-    var pipeline = '[' +  match  + ', ' + project  + ']';
-    var url = state.info.lrs.lrsendpoint + '?pipeline=' + encodeURIComponent(pipeline);
-    var auth = btoa(state.info.lrs.lrskey + ":" + state.info.lrs.lrssecret);
-
-    this.fetchData(role, [matchCourse, matchLaunched], matchActor, project, state.info.lrs.lrsendpoint + '?pipeline=', auth, weeks, 0, [], callback, this.retrieveDataThroughAggregate, PREPARE_RETRIEVAL);
+    var sort = '{"$sort" : {   "statement.timestamp": -1,   "_id": 1 }}';
+    var auth = btoa(this.info.lrs.lrskey + ":" + this.info.lrs.lrssecret);
+    this.clear();
+    if (typeof q['verb'] != "undefined" && q['verb'] == "http://adlnet.gov/expapi/verbs/launched")
+    {
+        this.fetchData(q, role, [matchCourse, matchLaunched], matchActor, [sort, project], this.info.lrs.lrsendpoint + '?pipeline=', auth, periods, 0, callback, null, "#loader_text", XAPI_DASHBOARD_DATA_PREPARE_RETRIEVAL);
+    }
+    else {
+        this.fetchData(q, role, [matchCourse, matchLaunched], matchActor, [sort, project], this.info.lrs.lrsendpoint + '?pipeline=', auth, periods, 0, callback, this.retrieveDataThroughAggregate, "#loader_text", XAPI_DASHBOARD_DATA_PREPARE_RETRIEVAL);
+    }
 
 };
 
-DashboardState.prototype.retrieveDataThroughAggregate = function(data, callback)
+DashboardState.prototype.retrieveDataThroughAggregate = function(q, dashboard_state, data, callback)
 {
-    state.startDate = getDate("#dp-start");
-    state.endDate = getDate("#dp-end");
-    var matchStore = '{"lrs_id" : { "$oid": "'  + state.info.lrs.lrsstore + '"}}';
-    var matchCourse = '{"statement.context.extensions.http://xerte&46;org&46;uk/course": {  "$eq": "' + course + '"}}';
-    if (state.info.modules.usetemplateids == "1")
-    {
-        // var xerteurl = state.info.modules.xerteurl;
-        // var matchCourse = '{ "statement.contextActivities.parent" : { "$elemMatch" : { "id" : { "$in" : [\n';
-        // for (var i=0; i<state.info.modules.modules.length; i++)
-        // {
-        //     matchCourse += '   "' + xerteurl + state.info.modules.modules[i].module + '"';
-        //     if (i < state.info.modules.modules.length-1)
-        //     {
-        //         matchCourse += ',\n';
-        //     }
-        //     else
-        //     {
-        //         matchCourse += '\n';
-        //     }
-        // }
-        // matchCourse += ']}}}}';
-        var xerteurl = state.info.modules.xerteurl;
-        var matchCourse = '{ "$or" : [';
-        for (var i=0; i<state.info.modules.modules.length; i++)
-        {
-            matchCourse += '{"statement.context.extensions.http://xerte&46;org&46;uk/learningObjectId": {  "$eq": "' + xerteurl  + + state.info.modules.modules[i].module + '"}}';
-            if (i < state.info.modules.modules.length-1)
-            {
-                matchCourse += ',';
-            }
-        }
-        matchCourse += ']}';
+    var role = "teacher";
+    var startDate = moment(q['since']);
+    var endDate = moment(q['until']);
 
+    var matchCourse = '';
+    var related_activities = false;
+    if (typeof q['related_activities'] != "undefined" && q['related_activities'] == true)
+    {
+        related_activities = true;
     }
-    else {
-        var matchCourse = '{"statement.context.extensions.http://xerte&46;org&46;uk/course": {  "$eq": "' + course + '"}}';
+    if (typeof q['activities'] != "undefined")
+    {
+        var postfix = '$';
+        if (related_activities)
+        {
+            postfix = '(\/|$)'
+        }
+
+        if (q['activities'].length == 1)
+        {
+            matchCourse = '{ "statement.object.id" :  { "$regex" :  "^' + q['activities'][0].replace(/\//g, "\\/") + postfix + '" } }';
+        }
+        else
+        {
+            matchCourse = '{ "statement.object.id" :  { "$regex" :  "^(';
+            for (var i=0; i<q['activities'].length; i++)
+            {
+                matchCourse += q['activities'][i];
+                if (i<q['activities'].length - 1)
+                {
+                    matchCourse += '|'
+                }
+            }
+            matchCourse += ')' + postfix + '" } }';
+
+        }
     }
-    var matchActor = '{"statement.actor.mbox" : "mailto:' + userEmail + '"}';
-    var matchStatementStartDate = '{"statement.timestamp": {"$gte": "' + getIsoDate("#dp-start") + '"}}';
-    var matchStatementEndDate = '{"statement.timestamp": {"$lte": "' + getIsoDate("#dp-end") + '"}}';
-    var matchDateRange = '{"timestamp": { "$gte": { "$dte": "' + getIsoDate("#dp-start") + '" }, "$lte": { "$dte": "' + getIsoDate("#dp-end") + '" }}}';
-    var matchverbs = '{ "statement.verb.id": { "$in": [ "'
-        + ADL.verbs.completed.id  + '", "'
-        + ADL.verbs.launched.id + '", "'
-        + ADL.verbs.exited.id + '", '
-        + '"https://w3id.org/xapi/video/verbs/paused", "'
-        + ADL.verbs.initialized.id + '", "'
-        + ADL.verbs.scored.id + '", "'
-        + ADL.verbs.answered.id + '"'
-        //+ '"http://id.tincanapi.com/verb/viewed"'
-        +'] } }';
-    var startDate = getDate("#dp-start");
-    var endDate = getDate("#dp-end");
+    else if (typeof q['activity'] != "undefined")
+    {
+        if (related_activities)
+        {
+            matchCourse = '{ "statement.object.id" :  { "$regex" :  "^' + q['activities'][0].replace(/\//g, "\\/") + '(\/|$)" } }';
+        }
+        else
+        {
+            matchCourse = '{ "statement.object.id" :  { ' + q['activity'] + '}';
+        }
+    }
+
+    var matchActor = '';
+    if (typeof q['actor'] != "undefined")
+    {
+        matchActor = '{"statement.actor.mbox" : "mailto:' + q['actor'] + '"}';
+    }
+
+    var matchVerb = '';
+    if (typeof q['verb'] != "undefined")
+    {
+        matchVerb = '{"statement.verb.id" : { "$eq" : "http://adlnet.gov/expapi/verbs/launched" } }';
+    }
     // Create a week array
     var periods = [];
     var currindex = 99;
@@ -279,42 +285,36 @@ DashboardState.prototype.retrieveDataThroughAggregate = function(data, callback)
     var beginOfPeriod;
     while (currindex < data.length)
     {
-        beginOfPeriod = moment(data[currindex].statement.timestamp).add(1, 'ms');
+        beginOfPeriod = moment(data[currindex].timestamp).add(1, 'ms');
         periods.push('{"timestamp": { "$gte": { "$dte": "' + beginOfPeriod.toISOString() + '" }, "$lte": { "$dte": "' + currDate.toISOString() + '" }}}');
-        currDate = moment(data[currindex].statement.timestamp);
+        currDate = moment(data[currindex].timestamp);
         currindex += 100;
     }
     periods.push('{"timestamp": { "$gte": { "$dte": "' + startDate.toISOString() + '" }, "$lte": { "$dte": "' + currDate.toISOString() + '" }}}');
-    if (role == "Student") {
-        var match = '{ "$match": {"$and" : [' + matchCourse  + ', ' +  matchDateRange + ', ' + matchActor + ']}}';
-    }
-    else
-    {
-        var match = '{ "$match": {"$and" : [' + matchCourse  + ', ' + matchDateRange + ']}}';
-    }
-
-    var sort = '{"$sort" : {   "timestamp": -1,   "_id": 1 }}';
-    var replaceRoot = '{ "$replaceRoot" :  { "newRoot" : "$statement" }}';
-    var groupStage = '{ "$group" : { _id : "$statement.actor", statements : {$push: "$statement"} } }';
-
-    // var project = '{"$project": { "statement.actor": 1, "statement.context" : 1, "statement.id" : 1, "statement.object" : 1,  "statement.timestamp" : 1, "statement.stored" : 1, "statement.verb" :  1, "_id": 0 }}';
+    var sort = '{"$sort" : {   "statement.timestamp": -1,   "_id": 1 }}';
     var project = '{"$project": { "statement": 1, "_id": 0 }}';
-    var pipeline = '[' +  match  + ', ' + project  + ']';
-    var url = state.info.lrs.lrsendpoint + '?pipeline=' + encodeURIComponent(pipeline);
-    var auth = btoa(state.info.lrs.lrskey + ":" + state.info.lrs.lrssecret);
-
-    this.fetchData([matchCourse, matchverbs], project, state.info.lrs.lrsendpoint + '?pipeline=', auth, periods, 0, [], callback, null, "#loader", RETRIEVE_DATA);
+    var auth = btoa(dashboard_state.info.lrs.lrskey + ":" + dashboard_state.info.lrs.lrssecret);
+    dashboard_state.clear();
+    dashboard_state.fetchData(q, role,[matchCourse, matchVerb], matchActor, [sort, project],dashboard_state.info.lrs.lrsendpoint + '?pipeline=', auth, periods, 0, callback, null, "#loader_text", XAPI_DASHBOARD_DATA_RETRIEVE_DATA);
 };
 
-DashboardState.prototype.fetchData = function(matcharray, project, url, auth, periods, currperiod, statementdata, orgcallback, callback, loaderid, label)
+DashboardState.prototype.fetchData = function(q, role, matcharray, matchactor, otherstages, url, auth, periods, currperiod, orgcallback, callback, loaderid, label)
 {
+    var $this = this;
     var match = '{ "$match": {"$and" : [' + periods[currperiod];
     for (var i=0; i<matcharray.length; i++) {
-        match += ', ' + matcharray[i];
+        if (matcharray[i] != '') {
+            match += ', ' + matcharray[i];
+        }
     }
     match +=  ']}}';
 
-    var pipeline = '[' +  match  + ', ' + project  + ']';
+    var pipeline = '[' +  match;
+    for (var i=0; i<otherstages.length; i++)
+    {
+        pipeline += ', ' + otherstages[i];
+    }
+    pipeline += ']';
 
     $(loaderid).html(label + ' ' + Math.round(currperiod * 100 / periods.length) + '%');
 
@@ -329,18 +329,27 @@ DashboardState.prototype.fetchData = function(matcharray, project, url, auth, pe
         success: function (data) {
             if (currperiod + 1 < periods.length)
             {
-                rawData = JSON.parse(data.replace(/&46;/g, '.'));
-                fetchData(role, matcharray, matchActor, project, url, auth, periods, currperiod + 1, statementdata.concat(rawData), orgcallback, callback, loaderid, label);
+                var rawData = JSON.parse(data.replace(/&46;/g, '.'));
+                for (var i=0; i<rawData.length; i++)
+                {
+                    $this.rawData.push(rawData[i].statement);
+                }
+                $this.fetchData(q, role, matcharray, matchactor, otherstages, url, auth, periods, currperiod + 1, orgcallback, callback, loaderid, label);
             }
             else
             {
-                rawData = JSON.parse(data.replace(/&46;/g, '.'));
+                var rawData = JSON.parse(data.replace(/&46;/g, '.'));
+                for (var i=0; i<rawData.length; i++)
+                {
+                    $this.rawData.push(rawData[i].statement);
+                }
                 if (callback != null) {
-                    callback(statementdata.concat(rawData), orgcallback);
+                    callback(q, $this, $this.rawData, orgcallback);
                 }
                 else
                 {
-                    orgcallback(statementdata.concat(rawData));
+                    $(loaderid).html(XAPI_DASHBOARD_DATA_PREPARE_GRAPHS);
+                    orgcallback($this.rawData);
                 }
             }
         }

@@ -615,7 +615,7 @@ function statistics_prepare($template_id)
                 $lrsendpoint = CheckLearningLocker($lrsendpoint);
                 $lrs = new stdClass();
                 $lrs->lrsendpoint = $xerte_toolkits_site->site_url . "xapi_proxy.php";
-                $lrs->lrs_use_aggregate = $lrsendpoint['aggregate'];
+                $lrs->aggregate = $lrsendpoint['aggregate'];
 
                 $lrs->lrskey = "";
                 $lrs->lrssecret = "";

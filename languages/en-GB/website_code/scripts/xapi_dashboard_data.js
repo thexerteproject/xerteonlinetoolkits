@@ -1,3 +1,3 @@
-/*
-Empty file, do not remove
- */
+var XAPI_DASHBOARD_DATA_PREPARE_RETRIEVAL = "Prepare retrieval";
+var XAPI_DASHBOARD_DATA_RETRIEVE_DATA = "Fetch data";
+var XAPI_DASHBOARD_DATA_PREPARE_GRAPHS = 'Prepare data';

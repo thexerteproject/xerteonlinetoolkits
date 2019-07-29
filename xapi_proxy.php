@@ -295,7 +295,14 @@ if (!isset($_SESSION['XAPI_PROXY']))
             else{
                 $api_call_path = "?";
             }
-            $url = $lrs['lrsendpoint'] . $api_call;
+            if ($lrs['aggregate']  && strpos($api_call, "pipeline") !== false)
+            {
+                $url = $lrs['aggregateendpoint'] . $api_call;
+            }
+            else
+            {
+                $url = $lrs['lrsendpoint'] . $api_call;
+            }
             $lrs_key = $lrs['lrskey'];
             $lrs_secret = $lrs['lrssecret'];
         }
