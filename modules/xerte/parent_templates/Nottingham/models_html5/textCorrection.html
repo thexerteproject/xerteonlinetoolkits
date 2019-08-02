@@ -38,6 +38,10 @@
                         $x_window.resize();
                     }
                 }
+
+                var $mainPanel = $("#mainPanel");
+                var padding = $mainPanel.innerWidth() - $mainPanel.width();
+                $("#text").width($mainPanel.width() - padding);
             };
 
             this.leavePage = function () {
@@ -49,7 +53,7 @@
 
             this.exitTrackTextCorrection = function () {
                 answer = textCorrection.answer;
-                input = textCorrection.input;
+                var input =  $(".answer textarea").val();
 
 
                 var checkAnswer = false;
@@ -64,7 +68,6 @@
                 }else{
                     result = 0;
                 }
-
                 XTExitInteraction(x_currentPage, 0, result,[], input, []);
 
 
@@ -74,8 +77,6 @@
 
             this.init = function() {
                 var hadExited = false;
-
-
 
                 this.weighting = 1.0;
                 if(x_currentPageXML.getAttribute("trackingWeight") != null){
@@ -218,7 +219,6 @@
                         }
 
                         $(checkButton).button("disable");
-
                         XTEnterInteraction(x_currentPage, 0, "text", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("introduction"), ""), "",answer, FurtherClarification);
 
                         var input = $(".answer textarea").val();
@@ -297,6 +297,7 @@
                         }
 
                     });
+                this.sizeChanged();
 
 
                 x_pageLoaded();

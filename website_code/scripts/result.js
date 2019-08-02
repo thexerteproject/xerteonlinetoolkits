@@ -658,7 +658,13 @@ function XTResults(fullcompletion, trackingState) {
                 }
                 if (trackingState.interactions[i].ia_type != "match") {
                     subinteraction.question = trackingState.interactions[i].ia_name;
-                    subinteraction.correct = trackingState.interactions[i].result.success;
+                    if (trackingState.interactions[i].result != undefined && trackingState.interactions[i].result.success != undefined) {
+                        subinteraction.correct = trackingState.interactions[i].result.success;
+                    }
+                    else
+                    {
+                        subinteraction.correct = false;
+                    }
                     subinteraction.learnerAnswer = learnerAnswer;
                     subinteraction.correctAnswer = correctAnswer;
                     results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
