@@ -351,14 +351,19 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         var pageState = this;
         $(".page-button").click(function(e, init){
 
-            var groupedData = {} //= $this.groupedData;
-            for($key in $this.groupedData){
+
+            if(init){
+                $this.groupedDataComplete = $this.groupedData;
+            }else{
+                $this.groupedData = $this.groupedDataComplete;
+            }
+            var groupedData = {};
+            for($key in $this.groupedData) {
                 $val = $this.groupedData[$key];
-                if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == pageState.getGroupFromStatements($val.statements)) {
+                if ($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == pageState.getGroupFromStatements($val.statements)) {
                     groupedData[$key] = $val;
                 }
             }
-
             var pageSize = $this.pageSize;
             if(pageSize == -1){
                 pageSize = Object.keys(groupedData).length;
@@ -381,13 +386,13 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 $("#pageButtonLeft").prop("disabled", true).addClass("disabled");
 
             }
-            if($this.pageIndex + $this.pageSize < Object.keys(groupedData).length - 1)
+            if($this.pageIndex + pageSize < Object.keys(groupedData).length - 1)
             {
                 $("#pageButtonRight").prop("disabled", false).removeClass("disabled");
             }else{
                 $("#pageButtonRight").prop("disabled", true).addClass("disabled");
             }
-            pageState.drawPages($this.pageIndex, pageSize);
+            pageState.drawPages($this.pageIndex, pageSize, groupedData);
 
             var curPage = Math.ceil($this.pageIndex / pageSize) + 1;
             var maxPage = Math.ceil(Object.keys(groupedData).length / pageSize);
@@ -529,10 +534,11 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
     }
 };
 
-xAPIDashboard.prototype.drawPages = function(startingIndex, pageSize) {
+xAPIDashboard.prototype.drawPages = function(startingIndex, pageSize, groupedData) {
     var from = startingIndex;
     var pageSize = pageSize;
-    var to = Math.min(startingIndex + $this.pageSize, Object.keys($this.groupedData).length);
+    var to = Math.min(startingIndex + pageSize, Object.keys(groupedData).length);
+    debugger;
     $(".session-row").each(function(row){
         var rowIndex = $(this).data("index");
         if(rowIndex < from || rowIndex >= to){
@@ -1517,7 +1523,8 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
     $("#group-select").change(function(){
         var group = $(this).val();
         $this.data.currentGroup.group_id = group;
-        $(".page-button").trigger("click", [false]);
+        $this.data.pageIndex = 0;
+        $(".page-button").eq(0).trigger("click", [false]);
         if(group == "all-groups")
         {
             $(".session-row").show();
@@ -1563,6 +1570,7 @@ xAPIDashboard.prototype.helperGetDate = function(datetimepicker) {
 xAPIDashboard.prototype.regenerate_dashboard = function() {
     $("#journeyData").html("<img class='loading-gif' src='editor/img/loading16.gif'/>");
     $("#group-select option:not(:first-child)").remove();
+    this.data.currentGroup.group_id = "all-groups";
     var url = site_url + this.data.info.template_id;
     var start = this.helperGetDate('#dp-start');
     var end = this.helperGetDate('#dp-end');
