@@ -54,7 +54,7 @@
 	}
 
 	#pageContents.find #feedback, #pageContents.find2 #feedback {
-		float:		right;
+		float:		left;
 		margin-top:	0.5em;
 	}
 
@@ -79,7 +79,7 @@
 
 	#btnHolder button {
 		margin:	10px;
-		float:	right;
+		float:	left;
 	}
 
 	#pageContents.show #btnHolder, #pageContents.find #btnHolder, #pageContents.find2 #btnHolder {

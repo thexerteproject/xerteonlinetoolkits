@@ -780,6 +780,7 @@
 				}
 				$pageContents.data("phrases", phrases);
 
+
 				$("#questionHolder").html('<h3 id="qNum" tabindex="' + (tabIndex+1) + '"></h3><div id="qText" tabindex="' + (tabIndex+2) + '"><p>' + phrases.mcqText + '</p></div><div id="optionHolder"></div>');
 
 				$("#feedback")
@@ -1028,7 +1029,7 @@
 
 						// If there are no more 0's in the "complete array" (aka everything is complete)
 						if ($.inArray(0, $pageContents.data("complete")) == -1) {
-							$("#feedback").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "Well done! You have completed this activity.") + '</p>');
+							$("#feedback").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "You have completed this activity.") + '</p>');
 						}
 					}
 				} else if (intType == "find2"){
@@ -1042,10 +1043,9 @@
 					if ($pageContents.data("found")[currentGroup].length + $pageContents.data("wrongFound")[currentGroup].length == groupInfo[currentGroup].numSubGroups) {
 						// Put a 1 in the complete array on the index of this group:
 						$pageContents.data("complete").splice(currentGroup, 1, 1);
-
 						// If there are no more 0's in the "complete array" (aka everything is complete)
 						if ($.inArray(0, $pageContents.data("complete")) == -1) {
-							$("#feedback").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "Well done! You have completed this activity.") + '</p>');
+							$("#feedback").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "You have completed this activity.") + '</p>');
 							$("#markAtEnd").prop("disabled", false);
 						}
 					}
@@ -1164,13 +1164,13 @@
 				text +=("</tr>");
 			}
 			text +=("</table>");
+
 			$("#feedback").empty().append(text).show();
 
 			for(var group = 0; group < correctOptions.length; group++){
 				for (var i = 0; i < correctOptions[group].length; i++){
 					if (correctOptions[group][i].result)
 						$("*[data-index="+ correctOptions[group][i].id + ']').css({"border-bottom": "2px solid " + x_getColour(groupInfo[group].bgColour)});
-					debugger;
 				}
 			}
 
@@ -1269,7 +1269,6 @@
 			x_shuffleArray(options);
 			var numOptions = x_currentPageXML.getAttribute("mcqNumAs") == undefined ? 3 : x_currentPageXML.getAttribute("mcqNumAs") == "*" ? options.length + 1 : isNaN(x_currentPageXML.getAttribute("mcqNumAs")) ? 3 : Number(x_currentPageXML.getAttribute("mcqNumAs"));
 			options = options.length <= numOptions - 1 ? options : options.slice(0, numOptions - 1);
-
 			// options conatins the added answers, add them to correctOptions, correctAnswers and correctDeedback
 			$.each(options, function(i, thisOption){
 				correctOptions.push({
@@ -1283,6 +1282,7 @@
 			options.push(correct);
 
 			x_shuffleArray(options);
+
 
 			XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 			var $optionHolder = $("#questionHolder #optionHolder")
@@ -1362,6 +1362,7 @@
 
 	<div id="passageHolder" class="panel">
 		<div id="passage"/>
+
 	</div>
 	<div id="pageTxt" tabindex="1"/>
 	<div id="instructions" tabindex="2"/>
@@ -1369,6 +1370,7 @@
 	<div id="btnHolder"/>
 	<div id="questionHolder"/>
 	<div id="feedback" aria-live="polite"/>
+
 
 </div>
 
