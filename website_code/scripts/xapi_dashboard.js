@@ -402,6 +402,12 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             pageinfo = pageinfo.replace("{n}", maxPage);
             $("#page-information").html(pageinfo);
 
+            var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
+            var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
+            $('.journeyOverviewActivity').html("");
+            pageState.drawActivityChart($('.journeyOverviewActivity'), first_launch, last_launch, false);
+
+
         });
         $("#pageButtonLeft").trigger("click", [true]);
 
@@ -538,7 +544,7 @@ xAPIDashboard.prototype.drawPages = function(startingIndex, pageSize, groupedDat
     var from = startingIndex;
     var pageSize = pageSize;
     var to = Math.min(startingIndex + pageSize, Object.keys(groupedData).length);
-    debugger;
+
     $(".session-row").each(function(row){
         var rowIndex = $(this).data("index");
         if(rowIndex < from || rowIndex >= to){
@@ -838,47 +844,57 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
         .on('show.bs.modal', function(e) {
             var contentDiv =
                 $('#model-' + learningObjectIndex + '-' + interactionIndex + ' .modal-body');
-            if (contentDiv.html() == "") {
-                interactions = $this.data.getInteractions(learningObjects[learningObjectIndex].url);
-                interaction = interactions[interactionIndex];
-                contentDiv.append('<div class="journey-container"></div>');
-                if (interaction.children.length == 0 && interaction.type == "interaction") {
-                    contentDiv.find(".journey-container").append("<div class='col-6 panel main-information'></div>");
-                    var interactionDetails = $this.data.selectInteractionById(interactions, interaction.url);
-                    var statements = $this.data.getInteractionStatements(interaction.url);
-                    contentDiv.find(".journey-container div").append('<svg class="graph" id="model-svg-' + learningObjectIndex + '-' + interactionIndex +
-                        '"></svg>');
-                    $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' #model-svg-' +
-                        learningObjectIndex +
-                        '-' + interactionIndex);
-                    var question = $this.data.getQuestion(interactionDetails.url);
-                    var pausedStatements = $this.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
-                    if (question != undefined) {
-                        var questionDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
-                        $this.displayQuestionInformation(questionDiv, question, learningObjectIndex, interactionIndex);
-                    } else if (pausedStatements.length > 0) {
-                        var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.container'));
-                        $this.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
+            contentDiv.html("");
+            interactions = $this.data.getInteractions(learningObjects[learningObjectIndex].url);
+            interaction = interactions[interactionIndex];
+            contentDiv.append('<div class="journey-container"></div>');
+            if (interaction.children.length == 0 && interaction.type == "interaction") {
+                contentDiv.find(".journey-container").append("<div class='col-6 panel main-information'></div>");
+                var interactionDetails = $this.data.selectInteractionById(interactions, interaction.url);
+                var statements = $this.data.getInteractionStatements(interaction.url).filter(function(s){
+                        g = $this.getGroupFromStatements([s]);
+                        cg = $this.data.currentGroup.group_id;
+                        return cg == undefined || cg == "all-groups" || cg == g;
                     }
-                    $this.displayPageInfo(contentDiv, ".journey-container .main-information", interaction);
-                    //getMultipleChoiceQuestion(learningObjects[learningObjectIndex].url, interaction.url);
-                } else {
-                    statements = $this.data.getInteractionStatements(interaction.url);
-                    panelDiv =  $("<div class='panel col-6'></div>").appendTo(contentDiv.find(".journey-container"));
-                    panelDiv.append("<svg class='graph'></svg>");
-                    $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' svg');
-                    panelDiv.append('<div class="page-info panel"></div>');
-                    $this.displayPageInfo(contentDiv, ".journey-container .page-info", interaction);
-                    childQuestions = interaction.children.map(function(c){
-                        return $this.data.getQuestion(c);
-                    });
-                    if(childQuestions.filter(function(q) {return q != undefined && q.interactionType == "choice"}).length == childQuestions.length){
-                        var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
-                        $this.displayQuizOverview(heatmapDiv, childQuestions);
-                    }
-
+                );
+                contentDiv.find(".journey-container div").append('<svg class="graph" id="model-svg-' + learningObjectIndex + '-' + interactionIndex +
+                    '"></svg>');
+                $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' #model-svg-' +
+                    learningObjectIndex +
+                    '-' + interactionIndex);
+                var question = $this.data.getQuestion(interactionDetails.url);
+                var pausedStatements = $this.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
+                if (question != undefined) {
+                    var questionDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
+                    $this.displayQuestionInformation(questionDiv, question, learningObjectIndex, interactionIndex);
+                } else if (pausedStatements.length > 0) {
+                    var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.container'));
+                    $this.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
                 }
+                $this.displayPageInfo(contentDiv, ".journey-container .main-information", interaction);
+                //getMultipleChoiceQuestion(learningObjects[learningObjectIndex].url, interaction.url);
+            } else {
+                statements = $this.data.getInteractionStatements(interaction.url).filter(function(s){
+                        g = $this.getGroupFromStatements([s]);
+                        cg = $this.data.currentGroup.group_id;
+                        return cg == undefined || cg == "all-groups" || cg == g;
+                    }
+                );
+                panelDiv =  $("<div class='panel col-6'></div>").appendTo(contentDiv.find(".journey-container"));
+                panelDiv.append("<svg class='graph'></svg>");
+                $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' svg');
+                panelDiv.append('<div class="page-info panel"></div>');
+                $this.displayPageInfo(contentDiv, ".journey-container .page-info", interaction);
+                childQuestions = interaction.children.map(function(c){
+                    return $this.data.getQuestion(c);
+                });
+                if(childQuestions.filter(function(q) {return q != undefined && q.interactionType == "choice"}).length == childQuestions.length){
+                    var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
+                    $this.displayQuizOverview(heatmapDiv, childQuestions);
+                }
+
             }
+
         });
 };
 
@@ -984,10 +1000,15 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
 
 xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
 {
-
+    var $this = this;
     contentDiv.append("<div class='question-overview'><ul></ul></div>");
     questions.forEach(function(q){
-        answerStatements = $this.rawData.filter(function(s) { return s.object.id == q.interactionUrl && s.verb.id == "http://adlnet.gov/expapi/verbs/answered"});
+        answerStatements = $this.data.rawData.filter(function(s){
+                g = $this.getGroupFromStatements([s]);
+                cg = $this.data.currentGroup.group_id;
+                return (cg == undefined || cg == "all-groups" || cg == g) && s.object.id == q.interactionUrl && s.verb.id == "http://adlnet.gov/expapi/verbs/answered";
+            }
+        );
         answers = answerStatements.map(function(s) {return s.result.response});
         contentDiv.find(".question-overview ul").append("<li>" + q.name["en-US"] + "</li>");
         var ol = $("<ol></ol>").appendTo(contentDiv.find(".question-overview ul li:last"));
@@ -1005,7 +1026,13 @@ xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
             } else {
                 correct = "<i class=\"fa fa-x-cross\"></i>";
             }
-            ol.append("<li>" + correct + c.description["en-US"] + " - " + Math.round(current / total * 1000) / 10 + "%</li>");
+            var rounded = Math.round(current / total * 1000) / 10;
+            if(isNaN(rounded)){
+                rounded = "0";
+
+            }
+
+            ol.append("<li>" + correct + c.description["en-US"] + " - " + rounded + "%</li>");
         });
 
     });
@@ -1013,7 +1040,13 @@ xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
 }
 
 xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, interaction) {
-    var statements = this.data.getInteractionStatements(interaction.url);
+    var $this = this;
+    var statements = this.data.getInteractionStatements(interaction.url).filter(function(s){
+            g = $this.getGroupFromStatements([s]);
+            cg = $this.data.currentGroup.group_id;
+            return cg == undefined || cg == "all-groups" || cg == g;
+        }
+    );
     var started = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/initialized");
     var completed = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/exited").concat(
          this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/scored")
@@ -1022,8 +1055,14 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
     started = started.filter(function(v, i, a){
         return a.map(function(s) {return s.actor}).indexOf(v.actor) === i;
     });
-
-    users = Object.keys(this.data.groupedData);
+    var groupedData = {};
+    for($key in $this.data.groupedData) {
+        $val = $this.data.groupedData[$key];
+        if ($this.data.currentGroup.group_id == "all-groups" || $this.data.currentGroup.group_id == $this.getGroupFromStatements($val.statements)) {
+            groupedData[$key] = $val;
+        }
+    }
+    users = Object.keys(groupedData);
     contentDiv.find(jqLocation).append("Number of users" + " " + users.length + "<br>");
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRATTEMPTS + " " + started.length + " = " + Math.round(started.length / users.length * 100) + "%<br>");
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRCOMPLETIONS + " " + uniqIds.length + " = " + Math.round(uniqIds.length / users.length * 100) + "%<br>");
@@ -1041,7 +1080,13 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
 
 xAPIDashboard.prototype.createPieChartInteraction = function(statements, div_location) {
     var dash = new ADL.XAPIDashboard();
-    statements = this.data.getAllScoreStatements(statements);
+    var $this = this;
+    statements = this.data.getAllScoreStatements(statements).filter(function(s){
+            g = $this.getGroupFromStatements([s]);
+            cg = $this.data.currentGroup.group_id;
+            return cg == undefined || cg == "all-groups" || cg == g;
+        }
+    );
     var newStatements = jQuery.extend(true, [], statements);
     newStatements.forEach(function(x) {
         if (x.result.score.isScaled == undefined || x.result.score.isScaled == false) {
@@ -1389,7 +1434,13 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
         });
     }
     var dash = new ADL.XAPIDashboard();
-    var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
+    var statements = this.data.rawData.filter(function(s){
+            g = $this.getGroupFromStatements([s]);
+            cg = $this.data.currentGroup.group_id;
+            return cg == undefined || cg == "all-groups" || cg == g;
+        }
+    );
+    var launchedStatements = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/launched");
     dash.addStatements(launchedStatements);
     template_id = this.data.info.template_id;
     var vals = [];
