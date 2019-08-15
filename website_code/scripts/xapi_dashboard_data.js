@@ -64,6 +64,14 @@ DashboardState.prototype.getStatementsxAPI = function(q, one, callback) {
     } else {
         search['limit'] = 1000;
     }
+    var beginDate = moment(q['since']);
+    var endDate = moment(q['until']);
+    var days = moment.duration(endDate.diff(beginDate)).as('days');
+    var nractivities =  1;
+    if (q['activities'] != undefined)
+    {
+        nractivities = q['activities'].length;
+    }
     var limit = search['limit'];
     this.clear();
     $this = this;
