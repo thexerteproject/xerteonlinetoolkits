@@ -1147,7 +1147,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             var i = 0;
 
                             for (i = 0; i < learnerOptions.length; i++) {
-                                var entry = learnerOptions[i].replace(
+                                var entry = learnerOptions[i]['answer'].replace(
                                     / /g, "_");
                                 scormAnswerArray.push(entry);
                             }
