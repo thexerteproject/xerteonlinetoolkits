@@ -365,3 +365,20 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
 	padding: 3px 5px;
 	color: #fff;
 }
+
+.vidHolder iframe {
+	width: 100%;
+}
+
+.vidHolder .mejs-mediaelement {
+	position: relative;
+}
+
+.navigator.carousel .mejs-container.mejs-video .mejs-overlay-play {
+	z-index: auto;
+}
+
+.navigator.carousel .mejs-container.mejs-video {
+	margin-left: auto;
+	margin-right: auto;
+}
