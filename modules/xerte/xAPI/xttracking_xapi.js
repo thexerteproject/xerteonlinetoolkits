@@ -1145,8 +1145,9 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             // Construct answers like a:Answerstring
                             var scormAnswerArray = [];
                             var i = 0;
+
                             for (i = 0; i < learnerOptions.length; i++) {
-                                var entry = learnerOptions[i]['answer'].replace(
+                                var entry = learnerOptions[i].replace(
                                     / /g, "_");
                                 scormAnswerArray.push(entry);
                             }
@@ -1154,7 +1155,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
 
                             // Do the same for the answer pattern
                             var scormArray = [];
-                            var scormCorrectArray = []
+                            var scormCorrectArray = [];
                             var i = 0;
                             for (i = 0; i < this.correctOptions.length; i++) {
                                 var entry = {
