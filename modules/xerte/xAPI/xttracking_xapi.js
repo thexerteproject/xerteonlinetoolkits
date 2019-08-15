@@ -1768,7 +1768,7 @@ function XTInitialise(category) {
 }
 
 function XTTrackingSystem() {
-    return "";
+    return "xAPI";
 }
 
 function XTLogin(login, passwd) {
