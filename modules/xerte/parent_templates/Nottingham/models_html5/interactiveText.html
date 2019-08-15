@@ -159,11 +159,11 @@
 						bgColour = 'red';
 						textDeco = "line-through";
 					}
+
 					groupStyles += ".wrongOn" + i + "  {color:" + x_blackOrWhite(bgColour) + "; background-color:" + bgColour + "; " + "text-decoration: " + textDeco + ";" + "border-radius: 2px; padding-top: 5px}";
-					if (x_currentPageXML.getAttribute("highlight") == "true"
-						&& x_currentPageXML.getAttribute("interactivity") != "mcq"
-						&& x_currentPageXML.getAttribute("interactivity") != "find"
-						|| x_currentPageXML.getAttribute("interactivity") != "find2") {
+
+					if (x_currentPageXML.getAttribute("highlight") == "true") {
+
 						$pageContents.addClass("line");
 						groupStyles += " .group" + i + " {border-bottom: 2px solid " + x_getColour(group.bgColour) + ";} ";
 					}
@@ -629,7 +629,7 @@
 
 				//If the type is Find(Mark at End), add a button to let the user finish up
 				if (intType=="find2"){
-					$("<button disabled id = markAtEnd>Check</button>").insertBefore($("#feedback"));
+					$("<div id='buttonHolder'><button disabled id = markAtEnd>Check</button></div>").insertBefore($("#feedback"));
 				}
 
 
