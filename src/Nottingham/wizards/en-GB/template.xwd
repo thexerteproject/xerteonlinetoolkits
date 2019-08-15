@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<wizard menus="Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc">
+<wizard menus="Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc,xAPI">
 
   <learningObject icon="icPackage" remove="false" duplicate="false">
 
@@ -282,7 +282,7 @@
 	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true" deprecated="This property is deprecated"/>
 	<synch label="Synch Point" type="TextInput"/><!-- for backwards compatibility with templates that used to use nestedPage -->
 
-  </nestedPage><adaptiveContent menu="Interactivity" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
+  </nestedPage><adaptiveContent menu="xAPI" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icAdaptiveContent" thumb="thumbs/adaptiveContent.jpg" remove="true">
       <name label="Page Title" type="TextInput" wysiwyg="true"/>
       <introduction label="Introduction" type="textArea" height="120"/>
       <displayMode label="Display Mode" optional="true" type="combobox" options="Unlisted,Listed" data="Unlisted,Listed" defaultValue="Unlisted"/>
@@ -3549,7 +3549,6 @@
     <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true"/>
     <feedback label="Feedback" type="textArea" height="120"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
-    <colour label="Colour" type="colourPicker" defaultValue="0xFF0000" optional="true"/>
 
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true"/>
@@ -3564,6 +3563,7 @@
       <list label="Show questions in list" type="checkbox" optional="true" tooltip="Show more than one question per page" defaultValue="false"/>
       <paging label="Use paging" type="checkbox" optional="true" tooltip="Group question list in pages if using list mode" defaultValue="true"/>
       <pagesize label="Max. page size" type="textinput" wysiwyg="false" optional="true" tooltip="Maximum number of questions shown per page if page mode is used." defaultValue="10"/>
+      <colour label="Colour" type="colourPicker" defaultValue="0xFF0000" optional="true"/>
     </layout>
 
       <newNodes>
@@ -4667,7 +4667,7 @@
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
-	</variables></text><textCorrection menu="Interactivity" menuItem="Text Correction" hint="" icon="icTextEntry" thumb="thumbs/gapFill.jpg" remove="true">
+	</variables></text><textCorrection menu="Interactivity" menuItem="Text Correction" hint="" icon="icTextCorrection" thumb="thumbs/textCorrection.jpg" remove="true">
         <name label="Page Title" type="textInput" wysiwyg="true"/>
         <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
@@ -5145,7 +5145,7 @@
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
-	</variables></title><topXQ menu="Interactivity" menuItem="Top X Question " hint="pose a question with multiple answers" icon="icComments" remove="true">
+	</variables></title><topXQ menu="Interactivity" menuItem="Top X Question " hint="pose a question with multiple answers" icon="icTopXQ" thumb="thumbs/topXQ.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
     <instruction label="Instruction" type="TextArea" height="100"/>

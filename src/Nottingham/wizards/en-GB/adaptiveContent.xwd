@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wizard menus="Interactivity">
+<wizard menus="xAPI">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction="Enter introduction text here"></adaptiveContent>]]></adaptiveContent>
       </newNodes>
     </pageWizard>
     <!-- Adaptive Content =============================================== -->
-    <adaptiveContent menu="Interactivity" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
+    <adaptiveContent menu="xAPI" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icAdaptiveContent" thumb="thumbs/adaptiveContent.jpg" remove="true">
       <name label="Page Title" type="TextInput" wysiwyg="true" />
       <introduction label="Introduction" type="textArea"  height="120"/>
       <displayMode label="Display Mode" optional="true" type="combobox" options="Unlisted,Listed" data="Unlisted,Listed" defaultValue="Unlisted" />
