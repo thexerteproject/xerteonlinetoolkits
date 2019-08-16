@@ -817,7 +817,9 @@
 							var $moreInfo = $("#more");
 							$moreInfo.remove();
 
-							l_options.push(parseInt($("#optionHolder input:checked").val()) + 1 + "");
+							l_options.push({
+								answer : parseInt($("#optionHolder input:checked").val()) + 1 + ""
+							});
 							l_answer.push(mcqAnswerOptions[$("#optionHolder input:checked").val()]['text']);
 							l_feedback.push($("#marking").text().trim());
 
@@ -844,6 +846,7 @@
 								success: correct,
 								score: correct ? 100.0 : 0.0
 							};
+							
 							XTExitInteraction(x_currentPage, mcqCurrentQ, result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
 
 							$(this)
