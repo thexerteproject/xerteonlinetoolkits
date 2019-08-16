@@ -846,7 +846,7 @@
 								success: correct,
 								score: correct ? 100.0 : 0.0
 							};
-							
+
 							XTExitInteraction(x_currentPage, mcqCurrentQ, result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
 
 							$(this)
@@ -871,6 +871,8 @@
 
 								$("#qNum").html($pageContents.data("phrases").mcqFeedback);
 
+                                var incorrectFound = $pageContents.data("wrongFound");
+                                finalFeedbackMcq($pageContents.data("mcqScore"), mcqAnswers.length);
 								$("#feedback").show();
 
 								if (XTGetMode() == "normal")
@@ -1028,9 +1030,10 @@
 					if ($pageContents.data("found")[currentGroup].length == groupInfo[currentGroup].numSubGroups) {
 						// Put a 1 in the complete array on the index of this group
 						$pageContents.data("complete").splice(currentGroup, 1, 1);
-
 						// If there are no more 0's in the "complete array" (aka everything is complete)
 						if ($.inArray(0, $pageContents.data("complete")) == -1) {
+                            var incorrectFound = $pageContents.data("wrongFound");
+                            finalFeedback(incorrectFound);
 							$("#feedback").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "You have completed this activity.") + '</p>');
 						}
 					}
@@ -1116,6 +1119,7 @@
 				XTEnterInteraction(x_currentPage, group, 'multiplechoice', groupName, correctOptions[group], correctAnswers[group], [], x_currentPageXML.getAttribute("grouping"));
 				XTExitInteraction(x_currentPage, group, result, l_options[group], l_answers[group], []);
 			}
+            finalFeedback(incorrectFound);
 			showAnswers(l_answers, correctAnswers, correctOptions);
 			var total = 0;
 			for (var i = 0; i < correctAnswers.length; i++)
@@ -1177,6 +1181,55 @@
 			}
 
 
+		}
+
+		function finalFeedback(incorrect){
+
+		    var correct = true;
+
+		    for(var i =0; i < incorrect.length; i++){
+		        if(incorrect[i].length !== 0){
+		            correct =false;
+				}
+			}
+
+            if(correct){
+                $("#feedbackTxt").append("You passed the question!");
+            }else{
+                $("#feedbackTxt").append("Not all answers are correct");
+            }
+
+            $("#feedbackTxt").prepend("<span id=finalResult/>")
+
+            if(correct){
+                $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+            }else{
+                $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+            }
+
+			}
+
+        function finalFeedbackMcq(good, total){
+		    
+		    var correct = true;
+
+		    if(good !== total){
+		        correct = false;
+			}
+
+            if(correct){
+                $("#feedbackTxt").append("You passed the question!");
+            }else{
+                $("#feedbackTxt").append("Not all answers are correct");
+            }
+
+            $("#feedbackTxt").prepend("<span id=finalResult/>")
+
+            if(correct){
+                $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+            }else{
+                $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+            }
 		}
 		// only used in mcq interaction - creates new quiz
 		this.createQuiz = function() {
@@ -1364,13 +1417,14 @@
 
 	<div id="passageHolder" class="panel">
 		<div id="passage"/>
-
+		<div id="feedbackTxt"/>
 	</div>
 	<div id="pageTxt" tabindex="1"/>
 	<div id="instructions" tabindex="2"/>
 	<div id="groupInfo"/>
 	<div id="btnHolder"/>
 	<div id="questionHolder"/>
+
 	<div id="feedback" aria-live="polite"/>
 
 
