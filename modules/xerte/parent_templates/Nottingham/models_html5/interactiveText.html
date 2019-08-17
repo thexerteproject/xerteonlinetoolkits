@@ -403,6 +403,7 @@
 				var instructions = x_currentPageXML.getAttribute("exploreTxt") != undefined ? x_currentPageXML.getAttribute("exploreTxt") : "Explore the text. Click on a section to learn more.";
 				$instructions.html('<p>' + instructions + '</p>');
 
+                $("#questionHolder").hide();
 
 				$("#passage").click(function(e) {
 					var $this = $(this);
@@ -891,7 +892,7 @@
 								interactiveText.createQ();
 							}
 						} else if (XTGetMode() != "normal") { // restart
-						    
+
 							$("#feedbackTxt").empty();
 							interactiveText.createQuiz();
 						}
