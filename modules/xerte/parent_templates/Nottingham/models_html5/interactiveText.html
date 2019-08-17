@@ -1092,7 +1092,7 @@
 							result: true
 						}
 					);
-					l_answers[group].push({text: span.text() + "<br>", correct: true});
+					l_answers[group].push(span.text() + "<br>");
 				}
 
 				var percentageCorrect = 0;
@@ -1110,7 +1110,7 @@
 						}
 					l_options[group].push(wrongOption);
 					correctOptions[group].push(wrongOption);
-					l_answers[group].push({text:span.text() + "<br>", correct:false});
+					l_answers[group].push(span.text() + "<br>");
 				}
 
 				var correct = percentageCorrect == 100;
@@ -1122,7 +1122,7 @@
 				XTExitInteraction(x_currentPage, group, result, l_options[group], l_answers[group], []);
 			}
             finalFeedback(incorrectFound);
-			showAnswers(l_answers, correctAnswers, correctOptions);
+			showAnswers(l_answers, l_options, correctAnswers, correctOptions);
 			var total = 0;
 			for (var i = 0; i < correctAnswers.length; i++)
 				total += correctAnswers[i].length;
@@ -1152,7 +1152,7 @@
 			}
 		};
 		// Show the answers in the find2 interaction, in feedback and colors wrong and right answers
-		function showAnswers(l_answers, correctAnswers, correctOptions){
+		function showAnswers(l_answers, l_options, correctAnswers, correctOptions){
 			var groupInfo = $pageContents.data("groupInfo");
 			var text = "<h3>Feedback</h3><table> <tr> <th>Group</th><th>Your Answers</th><th>Correct Answers</th></tr>";
 
@@ -1160,16 +1160,16 @@
 				text +=("<tr>");
 				text += ("<td>" + groupInfo[group].name + "</td>");
 				text += ("<td>");
+
 				for (var i = 0; i < l_answers[group].length; i++){
 
-				    if(l_answers[group][i].correct === true){
-                        text += '<span id="feedbackResult" class="fa fa-fw fa-x-tick"></span>';
-					}else{
-				        text += '<span id="finalResult" class="fa fa-fw fa-x-cross"></span>'
+					if (l_options[group][i].result === true) {
+                            text += '<span id="feedbackResult" class="fa fa-fw fa-x-tick"></span>';
+                            text += (l_answers[group][i]);
+					} else {
+                            text += '<span id="finalResult" class="fa fa-fw fa-x-cross"></span>'
+                            text += (l_answers[group][i]);
 					}
-
-                    text += (l_answers[group][i].text);
-
 				}
 				text += ("</td>");
 				text +=("<td>");
