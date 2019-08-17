@@ -891,6 +891,8 @@
 								interactiveText.createQ();
 							}
 						} else if (XTGetMode() != "normal") { // restart
+						    
+							$("#feedbackTxt").empty();
 							interactiveText.createQuiz();
 						}
 					});
@@ -1166,7 +1168,7 @@
 					}
 
                     text += (l_answers[group][i].text);
-					
+
 				}
 				text += ("</td>");
 				text +=("<td>");
