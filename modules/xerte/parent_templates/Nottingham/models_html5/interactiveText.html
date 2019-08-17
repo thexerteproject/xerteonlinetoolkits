@@ -319,7 +319,7 @@
 								result: true
 							}
 						)
-						correctAnswers[groupNumber].push("&#8226 " + span.text() + "<br>");
+						correctAnswers[groupNumber].push(span.text() + "<br>");
 					}
 					index++;
 				});
@@ -871,7 +871,6 @@
 
 								$("#qNum").html($pageContents.data("phrases").mcqFeedback);
 
-                                var incorrectFound = $pageContents.data("wrongFound");
                                 finalFeedbackMcq($pageContents.data("mcqScore"), mcqAnswers.length);
 								$("#feedback").show();
 
@@ -1090,7 +1089,7 @@
 							result: true
 						}
 					);
-					l_answers[group].push("&#8226 " + span.text() + "<br>");
+					l_answers[group].push({text: span.text() + "<br>", correct: true});
 				}
 
 				var percentageCorrect = 0;
@@ -1108,7 +1107,7 @@
 						}
 					l_options[group].push(wrongOption);
 					correctOptions[group].push(wrongOption);
-					l_answers[group].push("&#8226 " + span.text() + "<br>");
+					l_answers[group].push({text:span.text() + "<br>", correct:false});
 				}
 
 				var correct = percentageCorrect == 100;
@@ -1159,14 +1158,22 @@
 				text += ("<td>" + groupInfo[group].name + "</td>");
 				text += ("<td>");
 				for (var i = 0; i < l_answers[group].length; i++){
-					text += (l_answers[group][i]);
+
+				    if(l_answers[group][i].correct === true){
+                        text += '<span id="feedbackResult" class="fa fa-fw fa-x-tick"></span>';
+					}else{
+				        text += '<span id="finalResult" class="fa fa-fw fa-x-cross"></span>'
+					}
+
+                    text += (l_answers[group][i].text);
+					
 				}
 				text += ("</td>");
 				text +=("<td>");
 				for (var i = 0; i < correctAnswers[group].length; i++){
 					text +=(correctAnswers[group][i]);
 				}
-				text += ("</td>")
+				text += ("</td>");
 				text +=("</tr>");
 			}
 			text +=("</table>");
@@ -1210,7 +1217,7 @@
 			}
 
         function finalFeedbackMcq(good, total){
-		    
+
 		    var correct = true;
 
 		    if(good !== total){
