@@ -1700,7 +1700,7 @@ xAPIDashboard.prototype.helperGetDate = function(datetimepicker) {
 };
 
 xAPIDashboard.prototype.regenerate_dashboard = function() {
-    $("#journeyData").html("<img class='loading-gif' src='editor/img/loading16.gif'/>");
+    $("#journeyData").html("<div id=\"loader\"><img id=\"loader_image\" class=\"loading_gif\" src=\"editor/img/loading16.gif\" /><p id=\"loader_text\"></p>");
     $("#group-select option:not(:first-child)").remove();
     this.data.currentGroup.group_id = "all-groups";
     var url = site_url + this.data.info.template_id;

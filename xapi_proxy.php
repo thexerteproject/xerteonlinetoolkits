@@ -171,6 +171,7 @@ else
 {
     require_once ("config.php");
 }
+require_once("website_code/php/xAPI/xAPI_library.php");
 
 if (!function_exists('getallheaders')) {
     /**
@@ -256,6 +257,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
                 $lrs['lrskey'] = $row['tsugi_xapi_key'];
                 $lrs['lrssecret'] = $row['tsugi_xapi_secret'];
             }
+            $lrs = CheckLearningLocker($lrs);
             $_SESSION['XAPI_PROXY'] = $lrs;
         }
         else
@@ -293,7 +295,14 @@ if (!isset($_SESSION['XAPI_PROXY']))
             else{
                 $api_call_path = "?";
             }
-            $url = $lrs['lrsendpoint'] . $api_call;
+            if ($lrs['aggregate']  && strpos($api_call, "pipeline") !== false)
+            {
+                $url = $lrs['aggregateendpoint'] . $api_call;
+            }
+            else
+            {
+                $url = $lrs['lrsendpoint'] . $api_call;
+            }
             $lrs_key = $lrs['lrskey'];
             $lrs_secret = $lrs['lrssecret'];
         }

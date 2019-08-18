@@ -16,6 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
 $(document).ready(init);
 
 var data;
@@ -36,9 +37,64 @@ function init(){
 	loadContent();
 };
 
-function initMedia(){
+// called after all content loaded to set up mediaelement.js players
+function initMedia($media){
+	
+	$media.mediaelementplayer({
+		pauseOtherPlayers: true,
+		enableAutosize: true,
+		classPrefix: 'mejs-', // use the class naming format used in old version just in case some themes or projects use the old classes
+		
+		success: function (mediaElement, domObject) {
+			
+			var $mediaElement = $(mediaElement);
+			
+			// iframe scaling to maintain aspect ratio
+			if ($mediaElement.find('video').length > 0 && $mediaElement.find('video').attr('type') != 'video/mp4') {
+				iframeInit($mediaElement);
+				
+				// the vimeo video won't play with the media element controls so remove these so default vimeo controls can be used
+				if ($mediaElement.find('video').attr('type') == 'video/vimeo') {
+					$mediaElement.parents('.mejs-container').find('.mejs-iframe-overlay, .mejs-layers, .mejs-controls').remove();
+				}
+			}
+			
+			// stops mp4 videos being shown larger than original
+			mediaElement.addEventListener("loadedmetadata", function(e) {
+				var $video = $(e.detail.target);
+				$video.add($video.parents('.mejs-container')).css({
+					'max-width': e.detail.target.videoWidth,
+					'max-height': e.detail.target.videoHeight
+				});
+			});
+		},
+		error: function(mediaElement) {
+			console.log('mediaelement problem is detected: ', mediaElement);
+		}
+	});
+}
 
-	$('audio,video').mediaelementplayer();
+// function manually sets height of any media shown in iframes (e.g. youtube/vimeo) to maintain aspect ratios
+function iframeInit($mediaElement) {
+	if ($mediaElement.find('iframe').length > 0) {
+		iframeResize($mediaElement.find('iframe'));
+	} else {
+		// try again if iframe's not ready yet
+		setTimeout(function() {
+			iframeInit($mediaElement);
+		}, 200);
+	}
+}
+
+// resize iframe height to keep aspect ratio
+function iframeResize($iframe) {
+	if ($iframe.parents('.navigator.carousel').length > 0) {
+		$iframe.height(($iframe.parents('.navigator.carousel').width() / Number($iframe.parents('.vidHolder').data('iframeRatio')[0])) * Number($iframe.parents('.vidHolder').data('iframeRatio')[1]));
+		$iframe.parents('.mejs-container').height('auto');
+	} else {
+		$iframe.height(($iframe.width() / Number($iframe.parents('.vidHolder').data('iframeRatio')[0])) * Number($iframe.parents('.vidHolder').data('iframeRatio')[1]));
+		$iframe.parents('.mejs-container').height('auto');
+	}
 }
 
 function initSidebar(){
@@ -101,6 +157,22 @@ function loadContent(){
 			startSection = parseInt(pageLink.substring(pageLink.indexOf('section') + 7), 10);
 		}
  	}
+	
+	// some iframes will need height manually set to keep aspect ratio correct so keep track of window resize
+	$(window).resize(function() {
+		if (this.resizeTo) {
+			clearTimeout(this.resizeTo);
+		}
+		this.resizeTo = setTimeout(function() {
+			$(this).trigger("resizeEnd");
+		}, 200);
+	});
+
+	$(window).on("resizeEnd", function() {
+		$('.vidHolder iframe').each(function() {
+			iframeResize($(this))
+		});
+	});
 }
 
 function cssSetUp(param) {
@@ -969,7 +1041,12 @@ function parseContent(pageIndex, checkSection){
 					}
 					
 					if (this.nodeName == 'video'){
-						section.append('<p><video src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata" style="max-width: 100%" width="100%" height="100%"></video></p>');
+						var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), pageIndex + '_' + sectionIndex + '_' + itemIndex);
+						section.append('<p>' + videoInfo[0] + '</p>');
+						
+						if (videoInfo[1] != undefined) {
+							section.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+						}
 					}
 					
 					if (this.nodeName == 'pdf'){
@@ -1032,7 +1109,10 @@ function parseContent(pageIndex, checkSection){
 		});
 		
 		//finish initialising the piece now we have the content loaded
-		initMedia();
+		initMedia($('audio,video:not(.navigator video)'));
+		$('.vidHolder.iframe').each(function() {
+			iframeInit($(this));
+		});
 		
 		initSidebar();
 
@@ -1051,9 +1131,7 @@ function parseContent(pageIndex, checkSection){
 		//FB.XFBML.parse(); // REMOVED??
 		
 	} else {
-		
 		console.log("project contains no (unhidden) pages");
-		
 	}
 	
 	if (checkSection == true && startSection != undefined) {
@@ -1179,12 +1257,12 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 }
 
 function makeNav(node,section,type, sectionIndex, itemIndex){
-
+	
 	var sectionIndex = sectionIndex;
 	
 	var itemIndex = itemIndex;
 
-	var tabDiv = $( '<div class="tabbable"/>' );
+	var tabDiv = $( '<div class="navigator tabbable"/>' );
 	
 	if (type == 'tabs'){
 	
@@ -1199,7 +1277,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 	var content = $( '<div class="tab-content"/>' );
 	
-	var iframeKaltura = [],
+	var iframe = [],
 		pdf = [],
 		video = [];
 	
@@ -1220,7 +1298,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 		var i = index;
 		
-		$(this).children().each( function(index, value){
+		$(this).children().each( function(x, value){
 			
 			if ($(this).attr('showTitle') == 'true' || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
 				tab.append('<p><b>' + $(this).attr('name') + '</b></p>');
@@ -1230,7 +1308,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 				tab.append( '<p>' + $(this).text() + '</p>');
 				
 				if ($(this).text().indexOf("<iframe") != -1 && $(this).text().indexOf("kaltura_player") != -1) {
-					iframeKaltura.push(i);
+					iframe.push(i);
 				}
 			}
 			
@@ -1243,8 +1321,15 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'video'){
-				tab.append('<p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
+				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+				tab.append('<p>' + videoInfo[0] + '</p>');
+				
+				if (videoInfo[1] != undefined) {
+					tab.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				}
+				
 				video.push(tab.find('video'));
+				video.push(tab.find('.vidHolder.iframe'));
 			}
 			
 			if (this.nodeName == 'link'){
@@ -1287,28 +1372,16 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	
 	section.append(tabDiv);
 	
-	setTimeout( function(){
+	setTimeout( function() {
+		
 		var $first = $('#tab' + sectionIndex + '_' + itemIndex + ' a:first');
 		$first
 			.tab("show")
 			.parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']").data("refresh", true);
 		
-		// hacky fix for issue with UoN mediaspace videos embedded on navigators
 		var $iframeTabs = $(),
 			$pdfTabs = $(),
 			$videoTabs = $();
-		
-		for (var i=0; i<iframeKaltura.length; i++) {
-			$iframeTabs = $iframeTabs.add($('a[data-toggle="tab"]:eq(' + iframeKaltura[i] + ')'));
-		}
-		
-		$iframeTabs.on('shown.bs.tab', function (e) {
-			var iframeRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']");
-			if (iframeRefresh.data("refresh") != true) {
-				iframeRefresh[0].src = iframeRefresh[0].src;
-				iframeRefresh.data("refresh", true);
-			}
-		});
 		
 		// fix for issue where firefox doesn't zoom pdfs correctly if not on 1st pane of navigators
 		for (var i=0; i<pdf.length; i++) {
@@ -1326,17 +1399,25 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		});
 		
 		// fix for issue where videos don't load correct height if not on 1st pane of navigators
+		for (var i=0; i<iframe.length; i++) {
+			$iframeTabs = $iframeTabs.add($('a[data-toggle="tab"]:eq(' + iframe[i] + ')'));
+		}
+		
 		for (var i=0; i<video.length; i++) {
 			$videoTabs = $videoTabs.add($(video[i]).parents('.tabbable').find('ul a[data-toggle="tab"]:eq(' + $(video[i]).parents('.tab-pane').index() + ')'));
 		}
 		
 		$videoTabs.on('shown.bs.tab', function (e) {
-			var $videoRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active video");
-			if ($videoRefresh.data('forceLoad') != true) {
-				$videoRefresh
-					.data('forceLoad', true)
-					.load();
-			}
+			var $thisPane = $('#' + $(e.target).attr('href').substring(1));
+			$thisPane.find(".vidHolder iframe").parents('.vidHolder').each(function() {
+				iframeInit($(this));
+			});
+		});
+		
+		initMedia(tabDiv.find(".vidHolder video"));
+		
+		tabDiv.find('.vidHolder.iframe').each(function() {
+			iframeInit($(this));
 		});
 		
 	}, 0);
@@ -1345,7 +1426,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 
 function makeAccordion(node,section, sectionIndex, itemIndex){
 	
-	var accDiv = $( '<div class="accordion" id="acc' + sectionIndex + '_' + itemIndex + '">' );
+	var accDiv = $( '<div class="navigator accordion" id="acc' + sectionIndex + '_' + itemIndex + '">' );
 	
 	node.children().each( function(index, value){
 
@@ -1368,7 +1449,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 		
 		var inner = $('<div class="accordion-inner">');
 		
-		$(this).children().each( function(index, value){
+		$(this).children().each( function(i, value){
 						
 			if (this.nodeName == 'text'){
 				inner.append( '<p>' + $(this).text() + '</p>');
@@ -1383,7 +1464,12 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'video'){
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
+				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p>' + videoInfo[0] + '</p>');
+				
+				if (videoInfo[1] != undefined) {
+					inner.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				}
 			}
 			
 			if (this.nodeName == 'link'){
@@ -1422,6 +1508,10 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 	
 	section.append(accDiv);
 	
+	setTimeout( function() {
+		initMedia(accDiv.find('.vidHolder video'));
+	}, 0);
+	
 }
 
 
@@ -1433,7 +1523,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	
 	var itemIndex = itemIndex;
 	
-	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="carousel slide"/>');
+	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
 	
 	if (node.attr('autoPlay') == 'true') {
 		
@@ -1469,7 +1559,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			pane = $('<div class="item">');
 		}
 		
-		$(this).children().each( function(index, value){
+		$(this).children().each( function(i, value){
 						
 			if (this.nodeName == 'text'){
 				pane.append( '<p>' + $(this).text() + '</p>');
@@ -1484,7 +1574,13 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'video'){
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
+				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p>' + videoInfo[0] + '</p>');
+				
+				if (videoInfo[1] != undefined) {
+					pane.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				}
+				
 				video.push(pane.find('video'));
 			}
 			
@@ -1521,9 +1617,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	});
 	
 	carDiv.append(indicators);
-	
 	carDiv.append(items);
-	
 	carDiv.append( $('<a class="carousel-control left" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="prev">&lsaquo;</a>') );
 	carDiv.append( $('<a class="carousel-control right" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="next">&rsaquo;</a>') );
 	
@@ -1533,17 +1627,14 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 		
 		// fix for issue where videos don't load correct height if not on 1st pane of carousel
 		carDiv.bind('slide.bs.carousel', function (e) {
-			for (var i=0; i<video.length; i++) {
-				if ($(video[i]).closest('.item').is(e.relatedTarget) && $(video[i]).data('forceLoad') != true) {
-					$(video[i])
-						.data('forceLoad', true)
-						.load();
-				}
-			}
+			$(e.target).find('.vidHolder iframe').each(function() {
+				iframeResize($(this));
+			});
 		});
 		
+		initMedia(carDiv.find('.vidHolder video'));
+		
 	}, 0);
-
 }
 
 function findAnchor(name){
@@ -1739,5 +1830,56 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 		
 	} else {
 		return false;
+	}
+}
+
+// adds html for videos - whether they are mp4s,youtube,vimeo (all played using mediaelement.js) or iframe embed code
+function setUpVideo(url, iframeRatio, id) {
+	
+	function getAspectRatio(iframeRatio) {
+		var iframeRatio = iframeRatio != "" && iframeRatio != undefined ? iframeRatio : '16:9';
+		iframeRatio = iframeRatio.split(':');
+		
+		// iframe ratio can be one entered in editor or fallback to 16:9
+		if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
+			iframeRatio = [16,9];
+		}
+		
+		return iframeRatio;
+	}
+	
+	// iframe
+	if (url.substr(0,7) == "<iframe") {
+		
+		// remove width & height attributes from iframe
+		var iframe = $(url)
+						.removeAttr('width')
+						.removeAttr('height')
+						.prop('outerHTML');
+		
+		return ['<div class="vidHolder iframe">' + iframe + '</div>', getAspectRatio(iframeRatio)];
+	
+	// mp4 / youtube / vimeo
+	} else {
+		
+		var mimeType = 'mp4',
+			vidSrc = url;
+		
+		// is it from youtube or vimeo?
+		if (vidSrc.indexOf("www.youtube.com") != -1 || vidSrc.indexOf("//youtu") != -1) {
+			mimeType = "youtube";
+			iframeRatio = getAspectRatio(iframeRatio);
+			
+		} else if (vidSrc.indexOf("vimeo.com") != -1) {
+			mimeType = "vimeo";
+			iframeRatio = getAspectRatio(iframeRatio);
+			
+		} else {
+			vidSrc = eval(vidSrc);
+		}
+		
+		mimeType = 'video/' + mimeType;
+		
+		return ['<div class="vidHolder"><video src="' + vidSrc + '" type="' + mimeType + '" id="player' + id + '" controls="controls" preload="metadata" style="max-width: 100%" width="100%" height="100%"></video></div>', iframeRatio];
 	}
 }

@@ -13,7 +13,7 @@
         <wrongText label="Incorrect Text" type="TextArea" height="150"/>
         <answer label="Correct Text" type="TextArea" height="150" />
         <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true"/>
-        <copyText label="Copy Text" defaultValue="true" type="CheckBox" tooltip="Places the question in the text box"/>
+        <copyText label="Copy Text" defaultValue="false" type="CheckBox" optional="true" tooltip="Places the question in the text box"/>
         <clarification type="group" label="Clarification" optional="true">
             <showFurtherClarification label="Show Further Clarification" defaultValue="false" type="CheckBox"/>
             <FurtherClarification label="Further Clarification" type="TextArea" height="50" tooltip='Add "Show Further Clarification" from the optional properties' defaultValue="Enter here further clarification"/>
