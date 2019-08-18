@@ -221,9 +221,13 @@ td a{
     display: none !important;
 }
 
-.show-display-options-button{
+.show-display-options-button, .show-question-overview-button{
     float: right;
     padding:5px;
+}
+
+.class-overview-box{
+    display:flex;
 }
 
 .close-button {
