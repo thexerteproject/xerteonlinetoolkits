@@ -411,21 +411,93 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         });
         $("#pageButtonLeft").trigger("click", [true]);
 
+        /* Setup modal question overview */
+        $("body").append(
+            '<div id="model-question-overview" class="modal fade" role="dialog" >' +
+            '<div class="modal-dialog">' +
+            '<div class="modal-content">' +
+            '<div class="modal-header">' +
 
-        /*
-        menu = $("<div><ul></ul></div>");
-        interactions.forEach(function(i){
-            if(i.type == "page"){
-                menu.append("<li><input class='hide-show-column-checkbox' type='checkbox' checked data-target='" + i.interactionObjectIndex + "'>" + i.name + "</li>");
+            '<h4 class="modal-title">Question overview</h4>' +
+            '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+            '</div>' +
+            '<div class="modal-body col-md-12">' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>')
+
+
+        $(".show-question-overview-button").on('click', function() {
+            $("#model-question-overview .modal-body").html("");
+
+            $("#model-question-overview").modal();
+            for(var learningObjectIndex = 0; learningObjectIndex < learningObjects.length; learningObjectIndex++) {
+                interactions = pageState.data.getInteractions(learningObjects[learningObjectIndex].url);
+                for(var interactionIndex = 0; interactionIndex < interactions.length; interactionIndex++){
+
+                    var contentDiv = $('#model-question-overview .modal-body');
+                    interaction = interactions[interactionIndex];
+                    jcId = "journey-container-" + learningObjectIndex + "-" + interactionIndex;
+                    contentDiv.append("<h3>" + interaction.name + "</h3>")
+                    contentDiv.append('<div class="class-overview-box" id="'+jcId+'"></div>');
+                    contentDiv.append('<hr>');
+
+                    if (interaction.children.length == 0 && interaction.type == "interaction") {
+                        contentDiv.find("#" + jcId).append("<div class='col-6 panel main-information'></div>");
+                        var interactionDetails = pageState.data.selectInteractionById(interactions, interaction.url);
+                        var statements = pageState.data.getInteractionStatements(interaction.url).filter(function (s) {
+                                g = pageState.getGroupFromStatements([s]);
+                                cg = pageState.data.currentGroup.group_id;
+                                return cg == undefined || cg == "all-groups" || cg == g;
+                            }
+                        );
+                        contentDiv.find("#" + jcId + " div").append('<svg class="graph" id="model-svg-' + learningObjectIndex + '-' + interactionIndex +
+                            '"></svg>');
+                        pageState.createPieChartInteraction(statements, '#model-question-overview #model-svg-' +
+                            learningObjectIndex +
+                            '-' + interactionIndex);
+                        var question = pageState.data.getQuestion(interactionDetails.url);
+                        var pausedStatements = pageState.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
+                        if (question != undefined) {
+                            var questionDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find("#" + jcId));
+                            pageState.displayQuestionInformation(questionDiv, question, learningObjectIndex, interactionIndex);
+                        } else if (pausedStatements.length > 0) {
+                            var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find("#" + jcId));
+                            pageState.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
+                        }
+                        pageState.displayPageInfo(contentDiv, "#" + jcId + " .main-information", interaction);
+                        //getMultipleChoiceQuestion(learningObjects[learningObjectIndex].url, interaction.url);
+                    } else {
+                        statements = pageState.data.getInteractionStatements(interaction.url).filter(function (s) {
+                                g = pageState.getGroupFromStatements([s]);
+                                cg = pageState.data.currentGroup.group_id;
+                                return cg == undefined || cg == "all-groups" || cg == g;
+                            }
+                        );
+                        panelDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find("#" + jcId));
+                        panelDiv.append("<svg class='graph'></svg>");
+                        pageState.createPieChartInteraction(statements, '#' + jcId + " svg"); //#model-question-overview svg:last');
+                        panelDiv.append('<div class="page-info panel"></div>');
+                        pageState.displayPageInfo(contentDiv, "#" + jcId + " .page-info", interaction);
+                        childQuestions = interaction.children.map(function (c) {
+                            return pageState.data.getQuestion(c);
+                        });
+                        if (childQuestions.filter(function (q) {
+                            return q != undefined && q.interactionType == "choice"
+                        }).length == childQuestions.length) {
+                            var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find("#" + jcId));
+                            pageState.displayQuizOverview(heatmapDiv, childQuestions);
+                        }
+                    }
+
+                }
+
             }
+
+                //debugger;
         });
-        $(".show-hide-column-button").popover({
-            content : menu.html(),
-            html : true,
-            placement : "bottom"
-        });
-        $(".hide-show-column-checkbox");
-*/
+
 
         $(".show-display-options-button").unbind("click");
         $(".show-display-options-button").popover('dispose');
@@ -533,7 +605,11 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 //debugger;
                 $(this).parent().find('.popover').toggle();
             }
+
+
+
         });
+
 
 
 
@@ -841,7 +917,7 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
         '</div>');
     div.find("#" + learningObjectIndex + " thead tr").append(interactionHeader);
     $('#model-' + learningObjectIndex + '-' + interactionIndex)
-        .on('show.bs.modal', function(e) {
+        .on('show.bs.modal', function() {
             var contentDiv =
                 $('#model-' + learningObjectIndex + '-' + interactionIndex + ' .modal-body');
             contentDiv.html("");
@@ -908,13 +984,13 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
     var videoLength;
     if(pausedstatements.length == 1)
     {
-        videoLength = pausedstatements[0].result.extensions["https://w3id&46;org/xapi/video/extensions/time"];
+        videoLength = pausedstatements[0].result.extensions["https://w3id.org/xapi/video/extensions/time"];
 
     }else{
-        videoLength = Math.max(...pausedStatements.map(function(s) { return s.result.extensions["https://w3id&46;org/xapi/video/extensions/time"]}));
+        videoLength = Math.max(...pausedstatements.map(function(s) { return s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]}));
     }
     // Gets all the ranges from the data.
-    var stringRanges = pausedstatements.map(function(s) {return s.result.extensions["https://w3id&46;org/xapi/video/extensions/played-segments"]});
+    var stringRanges = pausedstatements.map(function(s) {return s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]});
     var totalViewed = [];
     for (var i = 0; i < total; i++) {
         totalViewed.push(0);
@@ -956,7 +1032,7 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
         yaxis: {
             title: '',
             ticks: '',
-            ticksuffix: pausedStatements[0].object.definition.name["en-US"],
+            ticksuffix: pausedstatements[0].object.definition.name["en-US"],
             y: "-15",
             tickangle: '-90',
             width: 700,
@@ -1031,7 +1107,6 @@ xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
                 rounded = "0";
 
             }
-
             ol.append("<li>" + correct + c.description["en-US"] + " - " + rounded + "%</li>");
         });
 
@@ -1178,6 +1253,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
             pairStatements.push(statement);
         });
     });
+    debugger;
     dash.addStatements(pairStatements);
     options += '<svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div>';
     contentDiv.append(options);
@@ -1216,7 +1292,7 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
     choices = question.choices;
     var dash = new ADL.XAPIDashboard();
     var statements = this.data.getQuestionResponses(interactionObjectUrl);
-    var numberOfAnswers = statements.filter(function(s) {s.result != undefined && s.result.response != undefined}).length;
+    var numberOfAnswers = statements.filter(function(s) {return s.result != undefined && s.result.response != undefined}).length;
     question.choices.forEach(function(option) {
         var correct = "";
         if (question.correctResponsesPattern.indexOf(option.id) != -1) {
@@ -1224,13 +1300,18 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
         } else {
             correct = "<i class=\"fa fa-x-cross\"></i>";
         }
-        var percentage = Math.round(1000 * statements.filter(function(s) {s.result != undefined && s.result.response == option.id}).length / numberOfAnswers) / 10 + "%";
-        options += "<li>" + correct + option.description["en-US"] + " - " + percentage + "</li>";
+        var percentage = Math.round(1000 * statements.filter(function(s) {return s.result != undefined && s.result.response == option.id}).length / numberOfAnswers) / 10;
+
+        if(isNaN(percentage)){
+            percentage = "0";
+        }
+        options += "<li>" + correct + option.description["en-US"] + " - " + percentage + "%</li>";
     });
 
     dash.addStatements(statements);
     options += '</ol><svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div>';
     contentDiv.append(options);
+
     var chart = dash.createBarChart({
         container: '#answers-' + learningObjectIndex + '-' + interactionIndex,
         groupBy: 'result.response',
