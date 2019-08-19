@@ -5,7 +5,7 @@
         </newNodes>
     </pageWizard>
 
-    <textCorrection menu="Interactivity" menuItem="Text Correction" hint="" icon="icTextCorrection" thumb="thumbs/textCorrection.jpg" remove="true">
+    <textCorrection menu="Interactivity" menuItem="Text Correction" hint="A page to compare texts. The user can rewrite a text with errors and then compare it with the correct answer." icon="icTextCorrection" thumb="thumbs/textCorrection.jpg" remove="true">
         <name label="Page Title" type="textInput" wysiwyg="true"/>
         <align label = "Align Text" options = "Left,Right" type = "ComboBox" data = "Left,Right" defaultValue = "Left" width = "100"/>
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
