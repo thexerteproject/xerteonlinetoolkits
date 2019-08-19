@@ -7,9 +7,10 @@
     </pageWizard>
 
     <!-- TXQ PAGE=============================-->
-<topXQ menu="Interactivity" menuItem="Top X Question" hint="Pose a question with multiple answers" icon="icTopXQ" thumb="thumbs/topXQ.jpg" remove = "true">
-    <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <instruction label="Page Text" type="TextArea" height="100"/>
+<topXQ menu = "Interactivity" menuItem = "Top X Question " hint = "Poses a question with multiple answers where the student can't see the answers like in a MSQ. The user can give the answers in any order." icon="icTopXQ" thumb="thumbs/topXQ.jpg" remove = "true">
+    <name label = "Page Title" type = "TextInput" wysiwyg = "true"/>
+    <align label = "Align Text" options = "Left,Right" type = "ComboBox" data = "Left,Right" defaultValue = "Left" width = "100"/>
+    <instruction label = "Instruction" type = "TextArea" height = "100"/>
     <prompt label="Question" type="TextArea" height="100"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>

@@ -5,7 +5,7 @@
         </newNodes>
     </pageWizard>
 
-    <textCorrection menu="Interactivity" menuItem="Text Correction" hint="" icon="icTextCorrection" thumb="thumbs/textCorrection.jpg" remove="true">
+    <textCorrection menu="Interactivity" menuItem="Text Correction" hint="A page to compare texts. The user can rewrite a text with errors and then compare it with the correct answer." icon="icTextCorrection" thumb="thumbs/textCorrection.jpg" remove="true">
         <name label="Page Title" type="textInput" wysiwyg="true"/>
         <introduction label="Page Text" type="TextArea" height="100"/>
         <wrongText label="Incorrect Text" type="TextArea" height="150"/>
