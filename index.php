@@ -86,6 +86,7 @@ $version = getVersion();
     <script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
     <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
     <script type="text/javascript" src="editor/js/vendor/jstree.js?version=<?php echo $version;?>"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
     <link href="website_code/styles/bootstrap.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
@@ -226,6 +227,10 @@ Folder popup is the div that appears when creating a new folder
                 </div>
                 <div class="show-display-options-button">
                     <button type="button" class="xerte_button_c_no_width"><?php echo INDEX_XAPI_DASHBOARD_DISPLAY_OPTIONS; ?>
+                    </button>
+                </div>
+                <div class="show-question-overview-button">
+                    <button type="button" class="xerte_button_c_no_width"><?php echo INDEX_XAPI_DASHBOARD_QUESTION_OVERVIEW; ?>
                     </button>
                 </div>
             </div>
