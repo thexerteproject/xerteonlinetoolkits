@@ -1118,6 +1118,7 @@
 								success: correct,
 								score: percentageCorrect
 							};
+
 				XTEnterInteraction(x_currentPage, group, 'multiplechoice', groupName, correctOptions[group], correctAnswers[group], [], x_currentPageXML.getAttribute("grouping"));
 				XTExitInteraction(x_currentPage, group, result, l_options[group], l_answers[group], []);
 			}
@@ -1348,8 +1349,11 @@
 
 			x_shuffleArray(options);
 
+			var answerText = [];
+			answerText.push(correct['text']);
 
-			XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
+			
+			XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, answerText, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 			var $optionHolder = $("#questionHolder #optionHolder")
 					.html('<div class="optionGroup"><input type="radio" name="option" /><label class="optionTxt"></label></div>')
 					.show();
