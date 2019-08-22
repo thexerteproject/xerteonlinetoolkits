@@ -18,13 +18,18 @@ table {
     overflow-y:auto;
 }
 
-.journeyOverview{
+.journeyOverview, .journeyOverviewModal{
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
 
+.journeyOverviewModal{
+    background: #eee;
+    padding: 2%;
+}
+
 .journeyOverviewActivity.row {
-  background:#ffffff;
+    background:#ffffff;
     border-radius: 5px;
 }
 
@@ -34,6 +39,20 @@ table {
 }
 
 .journeyOverviewActivity a{
+    width: 100%;
+}
+
+.journeyOverviewActivityModal.row {
+  background:#ffffff;
+    border-radius: 5px;
+}
+
+.journeyOverviewActivityModal{
+    margin-left: -1rem;
+    margin-right: -1rem;
+}
+
+.journeyOverviewActivityModal a{
     width: 100%;
 }
 
@@ -232,6 +251,11 @@ td a{
     display:flex;
 }
 
+#model-question-overview .modal-body{
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+}
+
 .close-button {
     float: right;
     padding:5px;
@@ -289,6 +313,7 @@ th.x-dashboard-interaction {
     overflow-x:hidden !important;
     padding: 0px 30px 20px 25px;
 }
+
 .journeyData th a{
     font-family: Arial;
     color: #000;
