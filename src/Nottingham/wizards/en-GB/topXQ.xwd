@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
     <pageWizard remove="true" dublicate="false">
         <newNodes>
-            <topXQ><![CDATA[<topXQ name="Enter Page Title" instruction = "Enter Your Instruction" amountOfTries="1" prompt= "Enter Your Question"  align = "Left" panelWidth = "Medium" numberAnswers = "Enter amount of answers" feedbackLabel="Feedback" attemptLabel="Attempts" correctAnswersLabel="Correct answers" passed="You passed the question!" failed="Not all answers are correct"
+            <topXQ><![CDATA[<topXQ name="Enter Page Title" instruction = "Enter Your Instruction" amountOfTries="1" prompt= "Enter Your Question"  align = "Left" panelWidth = "Medium" numberAnswers = "1" feedbackLabel="Feedback" attemptLabel="Attempts" correctAnswersLabel="Correct answers" passed="You passed the question!" failed="Not all answers are correct"
 	  checkBtnTxt="Check"/>]]></topXQ>
         </newNodes>
     </pageWizard>
@@ -17,7 +17,7 @@
     <showAnswers label = "Show Answers" defaultValue="true" type="CheckBox" optional="true"/>
     <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" />
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
-    <caseSensitivity label="Case Sensitivity" defaultValue="true" type="CheckBox" optional="true"/>
+    <caseSensitivity label="Case Sensitivity" defaultValue="false" type="CheckBox" optional="true"/>
 
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="false" divider="true" language="true" />
     <correctAnswersLabel label="Correct Answers Label" type="TextInput" wysiwyg="false" language="true"/>
