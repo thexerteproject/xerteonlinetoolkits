@@ -718,7 +718,7 @@ function getProjectInformation_stateChanged() {
             x_Dashboard = new xAPIDashboard(info);
             x_Dashboard.getStatements(q, false, function() {
                 $("#graph_" + info.template_id).html("");
-                x_Dashboard.drawActivityChart($("#graph_" + info.template_id), startstartofday, todayendofday);
+                x_Dashboard.drawActivityChart("", $("#graph_" + info.template_id), startstartofday, todayendofday);
             });
         }
     }
