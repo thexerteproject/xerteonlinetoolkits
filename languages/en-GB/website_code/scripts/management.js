@@ -1,5 +1,7 @@
 var REMOVE_PROMPT = "Are you sure you want to remove this setting?";
 
+var REMOVE_SUB = "Are you sure you want to remove this sub template?";
+
 var USER_CHANGED = "User successfully changed";
 
 var MANAGEMENT_SHOW = "Show";

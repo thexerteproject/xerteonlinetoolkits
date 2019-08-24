@@ -194,8 +194,8 @@ if($_FILES["fileToUpload"]["name"])
             else{
                 // Update record
                 $query = "UPDATE {$prefix}originaltemplatesdetails"
-                    . "set description=?, displayname=?, date_uploaded=? where template_name=?";
-                $param = array($description, $displayname, date("Y-m-d H:i:s"), $name);
+                    . "set description=?, displayname=?, date_uploaded=?, access=? where template_name=?";
+                $param = array($description, $displayname, date("Y-m-d H:i:s"), $row['access_rights'], $name);
                 $db_query = db_query($query, $param);
             }
 
