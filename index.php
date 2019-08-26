@@ -233,6 +233,10 @@ Folder popup is the div that appears when creating a new folder
                     <button type="button" class="xerte_button_c_no_width"><?php echo INDEX_XAPI_DASHBOARD_QUESTION_OVERVIEW; ?>
                     </button>
                 </div>
+                <div class="dashboard-print-button">
+                    <button type="button" class="xerte_button_c_no_width"><?php echo INDEX_XAPI_DASHBOARD_PRINT; ?>
+                    </button>
+                </div>
             </div>
         </div>
         <div id="dashboard-title"></div>
