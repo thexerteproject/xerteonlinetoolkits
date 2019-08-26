@@ -23,6 +23,10 @@
 	define("TEMPLATE_MANAGE", "<h2>Manage Existing templates</h2>");
 
 	define("TEMPLATE_TYPE", "This template is of type");
+
+	define("TEMPLATE_SUB_TYPE", "This template is a sub-type of");
+
+	define("TEMPLATE_SUB_DELETE", "Delete");
 	
 	define("TEMPLATE_INSTALL", " This template relies on the module ");
 	

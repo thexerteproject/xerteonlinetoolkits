@@ -46,7 +46,7 @@ if (is_user_admin()) {
     echo "<p style=\"margin:20px 0 0 5px\">" . TEMPLATE_MANAGE . "</p>";
     $last_template_type = "";
 
-    $query = "select * from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails order by template_framework";
+    $query = "select * from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where access_rights != 'deleted' order by template_framework, parent_template, template_name";
     $query_response = db_query($query);
     foreach ($query_response as $row) {
 
@@ -59,9 +59,12 @@ if (is_user_admin()) {
 
         }
 
-        echo "<div class=\"template\" id=\"" . $row['template_name'] . "\" savevalue=\"" . $row['template_type_id'] . "\"><p>" . $row['template_name'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['template_name'] . "_btn\" onclick=\"javascript:templates_display('" . $row['template_name'] . "')\">" . TEMPLATE_VIEW . "</button></p></div><div class=\"template_details\" id=\"" . $row['template_name'] . "_child\">";
+        echo "<div class=\"template\" id=\"" . $row['template_name'] . "\" savevalue=\"" . $row['template_type_id'] . "\"><p>" . str_replace('_', ' ', $row['template_name']) . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['template_name'] . "_btn\" onclick=\"javascript:templates_display('" . $row['template_name'] . "')\">" . TEMPLATE_VIEW . "</button></p></div><div class=\"template_details\" id=\"" . $row['template_name'] . "_child\">";
         echo "<p>" . TEMPLATE_TYPE . " " . $row['template_framework'] . "</p>";
-
+        if ($row['template_name'] != $row['parent_template'])
+        {
+            echo "<p>" . TEMPLATE_SUB_TYPE . " "  . $row['parent_template'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['template_name'] . "_del_btn\" onclick=\"javascript:templates_delete_sub('" . $row['template_type_id'] . "')\">" . TEMPLATE_SUB_DELETE . "</button></p>";
+        }
         if ($row['template_framework'] == "xerte") {
 
             $template_check = file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $row['template_name'] . "/" . $row['template_name'] . ".rlt");

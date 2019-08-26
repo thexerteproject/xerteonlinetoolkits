@@ -93,7 +93,7 @@ if($lastid !== false) {
         _debug("Setup template rights ok");
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
         include $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $row_template_type['template_framework']  . "/new_template.php";
-        create_new_template($lastid, $_POST['templatename']);
+        create_new_template($lastid, $_POST['templatename'], $row_template_type['parent_template']);
         echo trim($lastid);
 		echo "," . $xerte_toolkits_site->learning_objects->{$row_template_type['template_framework'] . "_" . $row_template_type['template_name']}->editor_size;
     }else{

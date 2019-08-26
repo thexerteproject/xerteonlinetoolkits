@@ -74,6 +74,24 @@ function management_alert_stateChanged(){
 	}
 }
 
+// Function management state changed alert
+//
+// Generic ajax handler for this script
+
+function management_delete_sub_stateChanged(){
+
+	if (xmlHttp.readyState==4){
+
+		response = xmlHttp.responseText.trim();
+		if(response!=""){
+
+			alert(response);
+
+		}
+		templates_list();
+	}
+}
+
 function upload_template(){
 	
 }
@@ -1072,6 +1090,21 @@ function templates_display(tag){
 
 	}
 
+}
+
+function templates_delete_sub(id){
+	if (confirm(REMOVE_SUB)) {
+		if (setup_ajax() != false) {
+
+			var url = "template_delete_sub.php";
+
+			xmlHttp.open("post", management_ajax_php_path + url, true);
+			xmlHttp.onreadystatechange = management_delete_sub_stateChanged;
+			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			xmlHttp.send('template_id=' + id);
+		}
+	}
 }
 
 function save_changes(){
