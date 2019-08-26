@@ -22,6 +22,8 @@ _load_language_file("/website_code/php/management/templates.inc");
 require("../user_library.php");
 require("management_library.php");
 
+
+
 if (is_user_admin()) {
 
     $database_id = database_connect("templates list connected", "template list failed");
@@ -41,6 +43,18 @@ if (is_user_admin()) {
         </p><br>
         <button type='submit' id='upload-button' class='xerte_button'><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button>" .
     "</form></p>";
+
+    echo "<p style=\"margin:20px 0 0 5px\">"  . TEMPLATE_RESTRICT_NOTTINGHAM . "</p>";
+
+    echo "<p style=\"...\">" . TEMPLATE_RESTRICT_NOTTINGHAM_DESCRIPTION . "</p>";
+
+    echo "</br><button type='button' class='xerte_button' id='nottingham_btn'>manage</button>";
+    $kaas = 'kaas';
+    echo "<div id='nottingham_modal' class='modal'>" .
+            "<div class='modal-content'>" .
+                "<span class='close'>&times;</span>" .
+                "<div>". NOTTINGHAM_TEMPLATES ."</div>" .
+                "</div></div>";
 
 
     echo "<p style=\"margin:20px 0 0 5px\">" . TEMPLATE_MANAGE . "</p>";
@@ -107,5 +121,5 @@ if (is_user_admin()) {
     management_fail();
 
 }
-
 ?>
+

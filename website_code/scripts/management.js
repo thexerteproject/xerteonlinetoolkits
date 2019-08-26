@@ -52,7 +52,7 @@ function management_stateChanged(){
 		if(xmlHttp.responseText!=""){
 
 			document.getElementById('admin_area').innerHTML = xmlHttp.responseText;
-
+			loadModal();
 		}
 	}
 }
@@ -1048,7 +1048,7 @@ function change_owner_stateChanged(){
 
 			alert("ERROR " + xmlHttp.responseText);
 
-		}
+			}
 	}
 
 }
@@ -1132,4 +1132,42 @@ function list_templates_for_user_stateChanged(){
         }
     }
 
+}
+
+function loadModal() {
+
+    var modal = document.getElementById("nottingham_modal");
+    var btn = document.getElementById("nottingham_btn");
+
+    if (modal !== null) {
+        btn.onclick = function () {
+            modal.style.display = "block";
+            load();
+        }
+    }
+};
+
+function load()
+{
+	var x;
+	$.get("website_code/php/management/query_templates.php", {queryData: 'modal'}, function(data){
+		x = data;
+
+        var span = document.getElementsByClassName("close");
+
+        if(span.length !== 0)
+        {
+            span[0].onclick = function () {
+                modal.style.display = "none";
+            }
+        }
+
+        window.onclick = function(event)
+        {
+            if(event.target == modal)
+            {
+                modal.style.display = "none";
+            }
+        }
+	})
 }

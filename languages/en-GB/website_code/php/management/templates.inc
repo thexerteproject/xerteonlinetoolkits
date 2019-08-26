@@ -62,5 +62,11 @@
 
     define("TEMPLATE_UPLOAD_TEMPLATEDESCRIPTION", "Enter the template description");
 
+    define("TEMPLATE_RESTRICT_NOTTINGHAM", "<h2>Manage Nottingham pages</h2>");
+
+    define("TEMPLATE_RESTRICT_NOTTINGHAM_DESCRIPTION","Restricting specific pages for usage for a template that is derived from the Nottingham template.");
+
+    define("NOTTINGHAM_TEMPLATES", "<h2>Nottingham templates:</h2>");
+
 
 ?>
