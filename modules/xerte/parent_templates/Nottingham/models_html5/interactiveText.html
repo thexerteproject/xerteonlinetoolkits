@@ -1152,10 +1152,11 @@
 				return ($pageContents.data("found")[currentGroup].length + $pageContents.data("wrongFound")[currentGroup].length >= groupInfo[currentGroup].numSubGroups);
 			}
 		};
+		
 		// Show the answers in the find2 interaction, in feedback and colors wrong and right answers
 		function showAnswers(l_answers, l_options, correctAnswers, correctOptions){
 			var groupInfo = $pageContents.data("groupInfo");
-			var text = "<h3>Feedback</h3><table> <tr> <th>Group</th><th>Your Answers</th><th>Correct Answers</th></tr>";
+			var text = "<h3>" + x_currentPageXML.getAttribute('feedbackTxt') + "</h3><table> <tr> <th>"+x_currentPageXML.getAttribute('groupTxt')+"</th><th>"+x_currentPageXML.getAttribute('yourAnswerTxt')+"</th><th>"+x_currentPageXML.getAttribute('correctAnswerTxt')+"</th></tr>";
 
 			for (var group = 0; group < correctAnswers.length; group++){
 				text +=("<tr>");
@@ -1205,9 +1206,9 @@
 			}
 
             if(correct){
-                $("#feedbackTxt").append("You passed the question!");
+                $("#feedbackTxt").append(x_currentPageXML.getAttribute("passedQuestionTxt"));
             }else{
-                $("#feedbackTxt").append("Not all answers are correct");
+                $("#feedbackTxt").append(x_currentPageXML.getAttribute("failedQuestionTxt"));
             }
 
             $("#feedbackTxt").prepend("<span id=finalResult/>")
