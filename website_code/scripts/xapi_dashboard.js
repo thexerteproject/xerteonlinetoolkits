@@ -420,7 +420,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             '<div class="modal-header">' +
 
             '<h4 class="modal-title">Interaction overview</h4>' +
-            '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+            '<a href="#" id="interaction-overview-print">Print</a><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
             '</div>' +
             '<div class="modal-body col-md-12">' +
             '</div>' +
@@ -429,10 +429,52 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             '</div>')
 
 
+
+        $("#dashboard-print-button").click(function(e){
+            e.preventDefault();
+            var currentUrl = window.location.href;
+            if(currentUrl.endsWith("#")){
+                currentUrl = currentUrl.slice(0, -1);
+            }
+            if(!currentUrl.endsWith("/")){
+                currentUrl = currentUrl + "/";
+            }
+            var w = window.open();
+            var htmlHead = $("head").html();
+            var htmlBody = $("#model-question-overview .modal-body").html();
+            $(w.document.body).parent().find("head").html(htmlHead);
+            $(w.document.body).html("<div id='print-overview'>" + htmlBody + "</div>");
+
+            debugger;
+
+            $(w.document.body).parent().find("link").each(function(l){
+                var href = $(this).attr('href');
+                if(href.includes("frontpage.css")){
+                    $(this).remove();
+                }
+                if(!href.startsWith("http://") && !href.startsWith("https://")) {
+                    $(this).attr("href", currentUrl + href);
+                }
+            });
+
+        });journeyData
+
+
         $(".show-question-overview-button").on('click', function() {
-            $("#model-question-overview .modal-body").html('<div class="journeyOverviewModal"><div class="journeyOverviewHeader row"><h3>' + XAPI_DASHBOARD_OVERVIEW + '</h3></div><div class="journeyOverviewActivityModal row"></div><div class="journeyOverviewStats row"></div></div>');
+            var drawOverviewCheckbox = $(".hide-show-overview-interaction-overview");
+            var drawOverview = drawOverviewCheckbox.length == 0 || drawOverviewCheckbox.is(":checked");
+
+            if(drawOverview){
+                $("#model-question-overview .modal-body").html('<div class="journeyOverviewModal"><div class="journeyOverviewHeader row"><h3>' + XAPI_DASHBOARD_OVERVIEW + '</h3></div><div class="journeyOverviewActivityModal row"></div><div class="journeyOverviewStats row"></div></div>');
+            }else{
+                $("#model-question-overview .modal-body").html('');
+            }
+
+
             $("#model-question-overview").modal();
-            pageState.setStatisticsValues(".journeyOverviewModal ", 0);
+            if(drawOverview) {
+                pageState.setStatisticsValues(".journeyOverviewModal ", 0);
+            }
 
             var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
             var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
@@ -454,6 +496,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                     contentDiv.append('<hr>');
 
                     if (interaction.children.length == 0 && interaction.type == "interaction") {
+                        contentDiv.find("#" + jcId).addClass("sub-interaction");
                         contentDiv.find("#" + jcId).append("<div class='offset-1 col-5 panel main-information'></div>");
                         var interactionDetails = pageState.data.selectInteractionById(interactions, interaction.url);
                         var statements = pageState.data.getInteractionStatements(interaction.url).filter(function (s) {
@@ -479,6 +522,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                         pageState.displayPageInfo(contentDiv, "#" + jcId + " .main-information", interaction);
                         //getMultipleChoiceQuestion(learningObjects[learningObjectIndex].url, interaction.url);
                     } else {
+                        contentDiv.find("#" + jcId).addClass("main-interaction");
                         statements = pageState.data.getInteractionStatements(interaction.url).filter(function (s) {
                                 g = pageState.getGroupFromStatements([s]);
                                 cg = pageState.data.currentGroup.group_id;
@@ -504,9 +548,40 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 }
 
             }
-            pageState.drawActivityChart(".journeyOverviewModal ", $('.journeyOverviewActivityModal'), first_launch, last_launch, false);
+            if(drawOverview) {
+                pageState.drawActivityChart(".journeyOverviewModal ", $('.journeyOverviewActivityModal'), first_launch, last_launch, false);
+            }
 
                 //debugger;
+        });
+
+        $(".dashboard-print-button").on('click', function(e){
+
+            e.preventDefault();
+            var currentUrl = window.location.href;
+            if(currentUrl.endsWith("#")){
+                currentUrl = currentUrl.slice(0, -1);
+            }
+            if(!currentUrl.endsWith("/")){
+                currentUrl = currentUrl + "/";
+            }
+            var w = window.open();
+            var htmlHead = $("head").html();
+            var htmlBody = $(".jorneyData-container").html();
+            $(w.document.body).parent().find("head").html(htmlHead);
+            $(w.document.body).html("<div id='print-overview'>" + htmlBody + "</div>");
+
+
+            $(w.document.body).parent().find("link").each(function(l){
+                var href = $(this).attr('href');
+                if(href.includes("frontpage.css")){
+                    $(this).remove();
+                }
+                if(!href.startsWith("http://") && !href.startsWith("https://")) {
+                    $(this).attr("href", currentUrl + href);
+                }
+            });
+
         });
 
 
@@ -533,6 +608,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
                 menu.append("<h5>" + XAPI_DASHBOARD_DISPLAY_OVERVIEW + "</h5>");
                 menu.append("<div><label>" + XAPI_DASHBOARD_DISPLAY_OVERVIEW + "</label><input class='hide-show-overview' type='checkbox' checked></div>");
+                menu.append("<div><label>" + XAPI_DASHBOARD_DISPLAY_INTERACTION_OVERVIEW + "</label><input class='hide-show-overview-interaction-overview' type='checkbox' checked></div>");
                 menu.append("<div><label>" + XAPI_DASHBOARD_PAGE_SIZE + "</label><select id='pageSize'></select></div>");
                 pagesizes = [5, 10, 20, 50, 100, "All"];
                 defaultSize = $this.pageSize;

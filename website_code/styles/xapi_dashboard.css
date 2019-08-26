@@ -81,6 +81,11 @@ button#pageButtonLeft {
   white-space: nowrap;
 }
 
+#print-overview{
+    width: 100%;
+    height: 100%;
+}
+
 .status-indicator{
     height: 100%;
     width: 21px;
@@ -242,7 +247,7 @@ td a{
     display: none !important;
 }
 
-.show-display-options-button, .show-question-overview-button{
+.show-display-options-button, .show-question-overview-button, .dashboard-print-button{
     float: right;
     padding:5px;
 }
