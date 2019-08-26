@@ -1204,9 +1204,10 @@ xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
 
 xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, interaction) {
     var dashboard = this;
+    var $this = this;
     var sessions = [];
     this.data.rawData.forEach(function(s) {
-        if ($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([s])) {
+        if (dashboard.data.currentGroup.group_id == "all-groups" || dashboard.data.currentGroup.group_id == dashboard.getGroupFromStatements([s])) {
             sessionId = s.context.extensions["http://xerte.org.uk/sessionId"];
             if (sessions.indexOf(sessionId) === -1) {
                 sessions.push(sessionId);
@@ -1214,7 +1215,7 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
         }
     });
 
-    var $this = this;
+
     var statements = this.data.getInteractionStatements(interaction.url).filter(function(s){
             g = $this.getGroupFromStatements([s]);
             cg = $this.data.currentGroup.group_id;
