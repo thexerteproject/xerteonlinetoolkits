@@ -13,7 +13,6 @@ CKEDITOR.editorConfig = function( config ) {
         { name: 'document',	   groups: [ 'mode' ] },
         { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
         { name: 'editing',     groups: [ 'spellchecker' ] },
-        //{ name: 'forms' },
         { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
         { name: 'links' },
         { name: 'styles' },
@@ -24,12 +23,10 @@ CKEDITOR.editorConfig = function( config ) {
         { name: 'others' }
     ];
 
-
-    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,rubytext,wrapstyle,link';
+    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,rubytext,wrapstyle,link,emoji';
     // The default plugins included in the basic setup define some buttons that
     // we don't want too have in a basic editor. We remove them here.
-    //config.removeButtons = 'Cut,Copy,Paste,Undo,Redo,Anchor,Underline,Strike,Subscript,Superscript';
-    config.removeButtons = 'Cut,Copy,Paste,Save,NewPage,Preview,Print,PageBreak,CreateDiv,Anchor';
+    config.removeButtons = 'Cut,Copy,Paste,Save,NewPage,Preview,Print,PageBreak,CreateDiv,Anchor,Smiley';
     
     config.format_tags = 'p;h3;h4;h5;h6;pre;address;div';
 
@@ -38,12 +35,6 @@ CKEDITOR.editorConfig = function( config ) {
     config.toolbarCanCollapse = true;
     config.allowedContent = true;
     config.extraAllowedContent = 'p(*)[*]{*};div(*)[*]{*};li(*)[*]{*};ul(*)[*]{*}';
-    //config.contentsCss = ['editor/js/vendor/ckeditor/contents.css',
-    //    'modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css',
-    //    'modules/xerte/parent_templates/Nottingham/common_html5/css/themeStyles.css',
-    //    'modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css',
-    //    'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css',
-    //    'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css'
 
     config.uploadUrl = '',
 
