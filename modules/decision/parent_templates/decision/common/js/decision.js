@@ -33,7 +33,7 @@ var allParams		= {},	// all attributes of learningObject
 	languageData	= [],
 	x_theme 		= "default",
 	x_volume        = 1,
-	x_audioBarH     = 30,
+	x_audioBarH     = 40,
 	x_mediaText     = [];
 
 var $mainHolder, $headerBlock, $backBtn, $infoBtn,	$fwdBtn, $newBtn,	$contentHolder,	$stepHolder, $submitBtn, $introHolder, $overviewHolder, $footerBlock,	$dialog, $head;
@@ -163,6 +163,11 @@ function sortLangData() {
 			description: getLangInfo(languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
 		});
 	}
+	
+	x_mediaText.push(
+		{label: getLangInfo(languageData.find("mediaElementControls")[0], "video", "")},
+		{label: getLangInfo(languageData.find("mediaElementControls")[0], "audio", "")}
+	);
 }
 
 
@@ -251,15 +256,6 @@ function setUpInterface() {
 		// footerBlock's position should always be at bottom of window or content - which ever is lower
 		// trigger function that sorts this on window resize / device orientation change
 		var $window = $(window);
-		$window.resize(function() {
-			if (this.resizeTo) {
-				clearTimeout(this.resizeTo);
-			}
-			this.resizeTo = setTimeout(function() {
-				$(this).trigger("resizeEnd");
-			}, 200);
-		});
-		
 		$window.on("resizeEnd", function() {
 			setFooterPosition();
 		});
@@ -596,7 +592,7 @@ function setUpQ(isNew) {
 		
 		setUpSection(currentStepInfo.section, $thisStep);
 		
-		if ($(".stepAudio audio, .stepVideo video").length > 0) {
+		if ($(".stepAudio audio, .stepVideo:not(.iframe) video").length > 0) {
 			$(".stepAudio audio, .stepVideo video")[0].setCurrentTime(0);
 		}
 		
@@ -669,6 +665,8 @@ function setUpQ(isNew) {
 				$submitBtn.button("enable");
 			}
 		}
+		
+		sizeChanged();
 	
 	
 	} else {
@@ -688,6 +686,39 @@ function setUpQ(isNew) {
 		
 		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="instruction">' + mediaInfo[0] + authorSupport + addLineBreaks(iFrameCheck(currentStepInfo.text)) + '</div></div>');
 		
+		if (mediaInfo[1] == 'loadVideo') {
+			var $stepVideo = $stepHolder.find('.step').last().find('.stepVideo');
+			
+			// VIDEO SCALING
+			// 1. if video size optional property is added then this overrides all other sizing options
+			var videoDimensions = [];
+			if (currentStepInfo.movieSize != "" && currentStepInfo.movieSize != undefined) {
+				var dimensions = currentStepInfo.movieSize.split(",");
+				if (dimensions[0] != 0 && dimensions[1] != 0) {
+					videoDimensions = dimensions;
+				}
+			}
+			
+			if (videoDimensions.length == 2) {
+				$stepVideo.data('dimensions', videoDimensions);
+				
+			// 2. if embedded video (youtube/vimeo) or an iframe is in the src field then an iframeRatio will be used
+			} else if (currentStepInfo.img.substr(0,7) == "<iframe" || currentStepInfo.img.substr(0,4) == "http") {
+				var iframeRatio = currentStepInfo.iframeRatio != "" && currentStepInfo.iframeRatio != undefined ? currentStepInfo.iframeRatio : '16:9';
+				iframeRatio = iframeRatio.split(':');
+				
+				// iframe ratio can be one entered in editor or fallback to 16:9
+				if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
+					iframeRatio = [16,9];
+				}
+				$stepVideo
+					.data('iframeRatio', iframeRatio)
+					.addClass('iframe');
+			}
+			
+			// 3. if uploaded video & none of above apply then we'll wait until we have metadata & just video responsive (never exceeding orig size)
+		}
+		
 		var $thisStep = $stepHolder.children(".step");
 		
 		if (currentStepInfo.options.length == 0) {
@@ -703,6 +734,10 @@ function setUpQ(isNew) {
 			}
 			
 			setUpSection(currentStepInfo.section, $thisStep);
+			
+			if (currentStepInfo.helpTxt != undefined && currentStepInfo.helpTxt != "") {
+				setUpHelp($thisStep);
+			}
 			
 			if (currentStepInfo.type == "mcq") {
 				
@@ -862,10 +897,6 @@ function setUpQ(isNew) {
 				$submitBtn.button("enable");
 			}
 			
-			if (currentStepInfo.helpTxt != undefined && currentStepInfo.helpTxt != "") {
-				setUpHelp($thisStep);
-			}
-			
 			// save reference to this step so it can be reloaded later if needed
 			allSteps[currentStepInfo.index].built = $thisStep;
 		}
@@ -992,13 +1023,14 @@ function checkForMedia() {
 	
 	if (currentStepInfo.img != undefined && currentStepInfo.img != "") {
 		// image
-		if (currentStepInfo.img.indexOf(".jpeg") != -1 || currentStepInfo.img.indexOf(".jpg") != -1 || currentStepInfo.img.indexOf(".gif") != -1 || currentStepInfo.img.indexOf(".png") != -1) {
+		var mediaFile = currentStepInfo.img.toLowerCase();
+		if (mediaFile.indexOf(".jpeg") != -1 || mediaFile.indexOf(".jpg") != -1 || mediaFile.indexOf(".gif") != -1 || mediaFile.indexOf(".png") != -1) {
 			var css = smallScreen == true ? ' class="stepImg small"' : ' class="stepImg"';
 			alt = alt != "" ? ' alt="' + alt + '"' : "";
 			mediaInfo.push('<img src="' + evalURL(currentStepInfo.img) + '"' + alt + css + ' />');
 			
 		// audio
-		} else if (currentStepInfo.img.indexOf(".mp3") != -1) {
+		} else if (mediaFile.indexOf(".mp3") != -1) {
 			alt = alt != "" ? ' title="' + alt + '"' : "";
 			mediaInfo.push('<div class="stepAudio" ' + alt + '></div>', "loadAudio");
 			
@@ -1015,71 +1047,47 @@ function checkForMedia() {
 }
 
 function loadVideo($video, src) {
-	var w = "100%", h = "100%";
-	if (src.indexOf("//www.youtube.com") != -1 || src.indexOf("//youtu") != -1 || src.indexOf("vimeo.com") != -1) {
-		// youtube/vimeo videos won't trigger mediaMetadata() from mediaPlayer.js so size needs to be set initially
-		if ($video.closest(".overviewStep").length > 0 || smallScreen == true) {
-			w = 200; h = 150;
-		} else {
-			w = 320; h = 240;
-		}
-		
-	}else {
-		$video.css("visibility", "hidden");
+	
+	if ($video.data("dimensions") != undefined) {
+		$video.css({
+			'width': 'auto',
+			'min-width': 'auto'
+		});
 	}
 	
 	$video.mediaPlayer({
-		type	:"video",
-		source	:src,
-		width	:w,
-		height	:h,
-		pageName:"decisionTemplate"
+		type: 'video',
+		source: src,
+		width: $video.data("dimensions") != undefined ? $video.data("dimensions")[0] : undefined,
+		height: $video.data("dimensions") != undefined ? $video.data("dimensions")[1] : undefined,
+		title: $video.attr('title')
 	});
 }
 
 
 function loadAudio($audio, src) {
 	$audio.mediaPlayer({
-		type	:"audio",
-		source	:src,
-		width	:"100%",
-		pageName:"decisionTemplate"
+		type: "audio",
+		source: src,
+		width: "100%"
 	});
 }
 
-
-function mediaMetadata(video, dimensions) {
-	var maxW = 320,
-		maxH = 240,
-		imgW = dimensions[0],
-		imgH = dimensions[1];
+function mediaMetadata(video, wh) {
 	
-	if ($(video).closest(".overviewStep").length > 0 || smallScreen == true) {
-		maxW = 200;
-		maxH = 150;
+	var $stepVideo = $(video).parents('.stepVideo');
+	
+	if (wh != undefined) {
+		// video isn't a fixed size so set up to be responsive
+		if ($stepVideo.data('dimensions') == undefined && $stepVideo.data('iframeRatio') == undefined) {
+			// info received about orig size of video - don't show larger than this & keep aspect ratio
+			$stepVideo
+				.css('max-width', wh[0])
+				.data('mediaProp', wh[0] / wh[1]);
+		}
 	}
 	
-	if (imgW > maxW) {
-		var scale = maxW / imgW;
-		imgW = imgW * scale;
-		imgH = imgH * scale;
-	}
-	if (imgH > maxH) {
-		var scale = maxH / imgH;
-		imgH = imgH * scale;
-		imgW = imgW * scale;
-	}
-	imgW = Math.round(imgW);
-	imgH = Math.round(imgH);
-	
-	var $stepVideo = $(video).closest(".stepVideo")
-		.css({
-			"width"	: imgW + "px",
-			"height": imgH + "px"
-		});
-	
-	$(window).resize();
-	$stepVideo.css("visibility", "visible");
+	sizeChanged();
 }
 
 
@@ -1490,7 +1498,7 @@ function showHideHolders($show) {
 		$(".section").remove();
 	} else {
 		setUpSection(currentStepInfo.section, $stepHolder.children(".step"));
-		$(window).resize();
+		sizeChanged();
 	}
 	
 	setFooterPosition();
@@ -1650,6 +1658,62 @@ function iFrameCheck(txt) {
 	}
 	
 	return txt;
+}
+
+
+$(window).resize(function() {
+	sizeChanged();
+});
+
+function sizeChanged() {
+	if (this.resizeTo) {
+		clearTimeout(this.resizeTo);
+	}
+	this.resizeTo = setTimeout(function() {
+		$(this).trigger("resizeEnd");
+	}, 200);
+	
+	var $pageVideo = $(".stepVideo");
+	
+	// the video isn't a fixed size
+	if ($pageVideo.data('dimensions') == undefined) {
+		// iframe aspect ratio
+		if ($pageVideo.data('iframeRatio') != undefined) {
+			// scale the iframe so it stays the right aspect ratio
+			var width = $('#contentHolder').width() * (smallScreen == true ? 1 : 0.6);
+				height = (width / Number($pageVideo.data('iframeRatio')[0])) * Number($pageVideo.data('iframeRatio')[1]);
+			
+			$pageVideo.height(height);
+		
+		// responsive
+		} else {
+			
+			// some divs might need to be manually resized
+			var divsToScale = [$('.stepVideo .mejs-video video'), $('.stepVideo .mejs-container'), $('.stepVideo .mejs-mediaelement'), $('.stepVideo .mejs-overlay-play')],
+				maxW, minW;
+			
+			for (var i=0; i<divsToScale.length; i++) {
+				if (i == 0) {
+					maxW = divsToScale[i].width();
+					minW = divsToScale[i].width();
+				} else {
+					maxW = Math.max(maxW, divsToScale[i].width());
+					minW = Math.min(minW, divsToScale[i].width());
+				}
+			}
+			
+			if ($('.stepVideo').width() < maxW || $('.stepVideo').width() > minW) {
+				for (var i=0; i<divsToScale.length; i++) {
+					divsToScale[i].css({
+						width: $('.stepVideo').width(),
+						height: $('.stepVideo').width() / $('.stepVideo').data('mediaProp'),
+						'max-width': $('.stepVideo').width(),
+						'max-height': $('.stepVideo').width() / $('.stepVideo').data('mediaProp')
+					});
+				}
+			}
+		}
+	}
 }
 
 $(document).ready(init);

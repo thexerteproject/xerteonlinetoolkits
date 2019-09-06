@@ -57,8 +57,9 @@ p {
 	padding:			2px;
 	margin-left:		10px;
 	margin-bottom:		10px;
-	max-width:			500px;
+	max-width:			50%;
 	max-height:			400px;
+	min-width:			200px;
 }
 
 .stepImg.small {
@@ -81,8 +82,32 @@ p {
 	margin-bottom:		10px;
 }
 
+.stepVideo.iframe {
+	position: relative;
+	overflow: hidden;
+}
+
+.stepVideo.iframe iframe {
+	position: absolute;
+	top:0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.stepVideo.iframe .mejs-container {
+	width: 100% !important;
+	height: 100% !important;
+}
+
+.stepVideo {
+	width: 60%;
+	min-width: 200px;
+}
+
 #submitBtn {
-	clear:	both;
+	clear:	left;
+	margin-top: 1em;
 }
 
 
@@ -231,7 +256,7 @@ img.sectionIcon {
 }
 
 #stepHolder .radioAnswers div {
-	padding:		5px 6px;
+	padding:		0.5em;
 }
 
 #stepHolder .radioAnswers input {
@@ -245,7 +270,7 @@ img.sectionIcon {
 	cursor:			pointer;
 	display:		block;
 	position:		relative;
-	margin-left:	30px;
+	margin-left:	40px;
 }
 
 #stepHolder .dropDownAnswer {
@@ -346,7 +371,11 @@ img.sectionIcon {
 	padding:		2px;
 	margin-left:	10px;
 	margin-bottom:	10px;
-	width:			25px;
+	width:			40px;
+}
+
+#overviewHolder .stepAudio .mejs-playpause-button button {
+	margin-left: 0;
 }
 
 #overviewHolder .stepAudio .mejs-controls div {

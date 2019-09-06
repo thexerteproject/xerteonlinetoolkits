@@ -100,6 +100,9 @@
 			<imgTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
 		</media>
 		
+		<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+		<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
+		
 		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
 	
 		<newNodes>
@@ -137,6 +140,9 @@
 			<imgTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
 		</media>
 		
+		<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+		<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
+		
 		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
 	
 		<newNodes>
@@ -172,6 +178,9 @@
 			<imgTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
 		</media>
 		
+		<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+		<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
+		
 		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
 		
 	</info>
@@ -189,6 +198,9 @@
 			<img label="File" type="media" defaultValue="Select a File" optional="true"/>
 			<imgTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
 		</media>
+		
+		<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+		<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
 		
 	</result>
 	
