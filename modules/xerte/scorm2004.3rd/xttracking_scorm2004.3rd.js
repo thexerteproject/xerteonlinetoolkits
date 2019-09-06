@@ -165,6 +165,7 @@ function ScormTrackingState()
     this.findcreate = findcreate;
     this.findPage = findPage;
     this.findInteraction = findInteraction;
+    this.findAllInteraction = findAllInteractions;
     this.countInteractions = countInteractions;
     this.enter = enter;
     this.exit = exit;
@@ -192,13 +193,10 @@ function ScormTrackingState()
 
     function pageCompleted(sit)
     {
-        for (i=0; i<sit.nrinteractions; i++)
+        var sits = this.findAllInteractions(sit.page_nr);
+        if (sits.length != sit.nrinteractions)
         {
-            var sit2 = this.findInteraction(sit.page_nr, i);
-            if (sit2 == null)
-            {
-                return false;
-            }
+            return false;
         }
         if (sit.ia_type=="page" && sit.duration < this.page_timeout)
         {
@@ -206,7 +204,6 @@ function ScormTrackingState()
         }
         return true;
     }
-
 
     function setVars(jsonStr)
     {
@@ -298,6 +295,18 @@ function ScormTrackingState()
                 return this.interactions[i];
         }
         return null;
+    }
+
+    function findAllInteractions(page_nr)
+    {
+        var i=0;
+        tmpinteractions = [];
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr != -1)
+                tmpinteractions.push(i);
+        }
+        return tmpinteractions;
     }
 
     function countInteractions(page_nr)

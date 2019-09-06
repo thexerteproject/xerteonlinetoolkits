@@ -78,6 +78,7 @@ function XApiTrackingState() {
     this.find = find;
     this.findPage = findPage;
     this.findInteraction = findInteraction;
+    this.findAllInteractions = findAllInteractions;
     this.findCreate = findCreate;
     this.enterPage = enterPage;
     this.formatDate = formatDate;
@@ -234,19 +235,20 @@ function XApiTrackingState() {
         return this.getdMaxScore() + "";
     }
 
-    function pageCompleted(sit) {
-        for (i = 0; i < sit.nrinteractions; i++) {
-            var sit2 = this.findInteraction(sit.page_nr, i);
-            if (sit2 == null) {
-                return false;
-            }
+    function pageCompleted(sit)
+    {
+        var sits = this.findAllInteractions(sit.page_nr);
+        if (sits.length != sit.nrinteractions)
+        {
+            return false;
         }
-        if (sit.ia_type == "page" && sit.duration < this.page_timeout) {
+        if (sit.ia_type=="page" && sit.duration < this.page_timeout)
+        {
             return false;
         }
         return true;
     }
-
+    
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions,
         correctanswer, feedback, grouping) {
         this.verifyEnterInteractionParameters(ia_type, ia_name, correctoptions,
@@ -350,6 +352,18 @@ function XApiTrackingState() {
                 return this.interactions[i];
         }
         return null;
+    }
+
+    function findAllInteractions(page_nr)
+    {
+        var i=0;
+        tmpinteractions = [];
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr != -1)
+                tmpinteractions.push(i);
+        }
+        return tmpinteractions;
     }
 
     function findCreate(page_nr, ia_nr, ia_type, ia_name) {
