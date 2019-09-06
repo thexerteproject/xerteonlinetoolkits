@@ -26,6 +26,10 @@ div.cke_editable_inline * {
 	font-family: inherit;
 }
 
+div.cke_editable_inline i.fa {
+	font-family: FontAwesome;
+}
+
 #insert_subnodes {border-top: 1px solid #ccc!important; margin-top: 20px; padding-top: 20px;}
 
 #insert_subnodes hr {display: none;}
@@ -628,7 +632,7 @@ div.inputtext {
 
 
 .inlinewysiwyg p{
-    border-radius: 4px;
+   /* border-radius: 4px; */
     padding: 4px 7px;
     margin: 0;
     background: #fff;
@@ -670,7 +674,7 @@ select, input, textarea
 #mainPanel select,  #mainPanel textarea {
     /* background: #ececed; */
     background: #fff;
-    border-radius: 4px;
+   /* border-radius: 4px;*/
     border: 1px solid #cdcdcd;
     width: 100%;
     box-sizing: border-box;
@@ -688,7 +692,7 @@ select, input, textarea
 #mainPanel input
 {
     background: #fff;
-    border-radius: 4px;
+    /*border-radius: 4px;*/
     border: 1px solid #cdcdcd;
     /* width: 100%; */
     box-sizing: border-box;

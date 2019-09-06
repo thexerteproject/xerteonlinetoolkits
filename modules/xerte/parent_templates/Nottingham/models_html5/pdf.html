@@ -38,38 +38,77 @@
 		}
 		
 		this.init = function() {
+			
 			$pageContents = $("#pageContents");
 			
 			var textContents = x_addLineBreaks(x_currentPageXML.getAttribute("text")),
 				pdfWidth = x_currentPageXML.getAttribute("pdfWidth");
 			
-			// Full screen or not?
-			if (pdfWidth == undefined || pdfWidth == "") {
-				if (textContents == undefined || textContents == "") {
-					pdfWidth = "full";
-				} else {
-					pdfWidth = "medium";
-				}
-			}
-
-			// Set the with of the pdf
-			if (pdfWidth == "full") {
+			// text is top or no text & full width pdf
+			if ((x_currentPageXML.getAttribute("position") == "T" && textContents != undefined && textContents != "") || pdfWidth == "full" || textContents == undefined || textContents == "") {
+				
+				$("#textHolder")
+					.appendTo($pageContents)
+					.removeClass('left');
+				
 				$("#pageContents .panel").appendTo($pageContents);
 				$("#pageContents .splitScreen").remove();
+				
+				pdfWidth == "full";
+				
+			// text is removed because pdf is full & it's not positioned above it
+			} else if (pdfWidth == "full" && (x_currentPageXML.getAttribute("position") != "T" || (textContents == undefined && textContents == ""))) {
+				
+				$("#textHolder").remove();
+				
+			} else if (pdfWidth == undefined || pdfWidth == "") {
+				
+				pdfWidth = "medium";
+				
 			}
-			else {
-				if (textContents != undefined && textContents != "") {
-					$("#textHolder").html(textContents);
+			
+			// remove text holder if there is no text
+			if (textContents != undefined && textContents != "") {
+				
+				$("#textHolder").html(textContents);
+				
+			} else {
+				
+				$("#textHolder").remove();
+				
+			}
+			
+			// swap positions of text & pdf
+			if (x_currentPageXML.getAttribute("position") == "R") {
+				
+				$(".splitScreen .right")
+					.removeClass("right")
+					.addClass("left");
+				
+				$("#textHolder")
+					.removeClass("left")
+					.addClass("right")
+					.insertAfter(".splitScreen.left");
+				
+				// Set the width of the pdf
+				if (pdfWidth == "small") {
+					$("#pageContents .splitScreen").addClass("medium");
+				} else if (pdfWidth == "large") {
+					$("#pageContents .splitScreen").addClass("xlarge");
 				} else {
-					$("#textHolder").remove();
+					$("#pageContents .splitScreen").addClass("large");
 				}
+				
+			} else {
+				
+				// Set the width of the pdf
 				if (pdfWidth == "small") {
 					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
 				} else if (pdfWidth == "large") {
 					$("#pageContents .splitScreen").addClass("small");
 				} else {
 					$("#pageContents .splitScreen").addClass("medium");
-				} 
+				}
 			}
 
 			pdf.setUp();
