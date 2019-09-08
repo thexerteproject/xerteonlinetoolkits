@@ -26,8 +26,64 @@
 include 'Snoopy.class.php';
 require_once(dirname(__FILE__) . "/config.php");
 
+class SimpleXmlToObject {
+    public $xml;
+    public $object;
+
+    public function __construct( $xml ) {
+        $this->xml=$xml;
+        $this->object = new stdClass();
+        $this->object->rss = $this->recursive_parse( $this->xml );
+    }
+    private function recursive_parse( $data ) {
+        $output = new stdClass();
+        $objectmode = true;
+        if (is_array($data)){
+            settype($output, 'array');
+            $objectmode = false;
+        }
+        if ($objectmode) {
+            $output->attributes = array();
+            foreach ($data->attributes() as $key => $value) {
+                if ($key) {
+                    $output->attributes[$key] = (string)$value;
+                }
+            }
+        }
+        if (is_object($data)){
+            settype($data, 'array');
+        }
+        $index = 0;
+        foreach ($data as $key => $value){
+            if ($key == 'comment' || $key == '@attributes')
+                unset($key);
+            if (isset($key) || !$objectmode) {
+                if (is_array($value) || (is_object($value) && count($value->children()) > 0)) {
+                    if ($objectmode) {
+                        $output->$key = $this->recursive_parse($value);
+                    }
+                    else {
+                        $output[$index] = $this->recursive_parse($value);
+                        $index++;
+                    }
+                } else {
+                    if ($objectmode) {
+                        $output->$key = (string)$value;
+                    }
+                    else {
+                        $output[$index] = (string)$value;
+                        $index++;
+                    }
+                }
+            }
+        }
+        return $output;
+    }
+}
+
 $snoopy = new Snoopy;
 
+// Url is automaticelly decode
 $url = $_GET['rss'];
 
 if (isset($xerte_toolkits_site->proxy1)) $snoopy->proxy_host1=$xerte_toolkits_site->proxy1;				
@@ -40,8 +96,47 @@ if (isset($xerte_toolkits_site->port3)) $snoopy->proxy_port3=$xerte_toolkits_sit
 if (isset($xerte_toolkits_site->port4)) $snoopy->proxy_port4=$xerte_toolkits_site->port4;
 
 /** XXX TODO SECURITY ? Someone can fetch any arbitrary remote URL using this script. Should re require users are logged in or something ? */
-$content = $snoopy->fetch($url);
 
-echo $snoopy->results;
+_debug("RSS: raw url    :" . $url);
+$url = str_replace(" ", "%20", $url);
+_debug("RSS: encoded url:" . $url); 
+$content = $snoopy->fetch($url);
+if ($snoopy->status != 200)
+{
+   _debug("RSS: complete dump of return: " . print_r($snoopy, true));
+}
+_debug("RSS: raw result:" . $snoopy->results);
+
+
+//Namespace handling in simplexml is no fun....
+// Gets rid of all namespace definitions
+$xml_string = preg_replace('/xmlns[^=]*="[^"]*"/i', '', $snoopy->results);
+
+// Gets rid of all namespace references
+$xml_string = preg_replace('/(<\/|<)[a-zA-Z]+:([a-zA-Z0-9]+[ =>])/', '$1$2', $xml_string);
+
+// Make sure this is rss content
+//_debug("RSS XML: " . print_r($xml_string, true));
+$xml = simplexml_load_string($xml_string);
+
+// Toplevel item needs to be rss
+if (strtolower($xml->getName()) == 'rss')
+{
+    if ($_GET['format'] == 'json')
+    {
+
+
+        $rssparse = new SimpleXmlToObject($xml, null, LIBXML_NOCDATA);
+        $json = json_encode($rssparse->object);
+        echo $json;
+    }
+    else {
+        echo $snoopy->results;
+    }
+}
+else
+{
+    echo "Not RSS data";
+}
 
 ?>
