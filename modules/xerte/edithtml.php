@@ -339,6 +339,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/xml2json.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/featherlight/featherlight.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/imgareaselect/jquery.imgareaselect.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/fabric.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery-migrate-1.2.1.js"></script>
 <script type="text/javascript" src="<?php echo $jqgridlangfile; ?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery.jqGrid.min.js?version=<?php echo $version;?>"></script>

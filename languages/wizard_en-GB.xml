@@ -166,13 +166,25 @@
 		<prevpage>* previous page*</prevpage>
 	</XotLinkRelativePages>
 	<ThemeUrlParam>Theme url parameter:</ThemeUrlParam>
-    <HotspotInstructions>
-        <header>Hotspot instructions:</header>
-        <add>To add a point, click on the image above</add>
-        <edit>To edit a point, drag an existing point to some other place on the image with the mouse</edit>
-        <remove>To remove a point, click with the right mouse button on the point you want to remove</remove>
-        <save>To save your selection, click the Ok button. If you want to go back without saving, click the cancel button.</save>
-    </HotspotInstructions>
+    <editHotspot>
+		<Buttons>
+			<Rectangle>Rectangle mode</Rectangle>
+			<Polygon>Polygon mode</Polygon>
+			<Reset>Reset</Reset>
+		</Buttons>
+		<Instructions>
+			<header>Hotspot instructions:</header>
+			<rectangle>Draw a rectangle by pressing the left mouse button and dragging</rectangle>
+			<polygon>Click to add points to the polygon. Click the first (red) point to stop</polygon>
+			<reset>Press the reset button to start over</reset>
+			<edit>The hotspot can be moved and change by clicking on it</edit>
+			<save>To save your selection, click the Ok button. If you want to go back without saving, click the cancel button.</save>
+			<forceRectangle>Only rectangles can be drawn, flexible hotspots are not available</forceRectangle>
+		</Instructions>
+		<Error>
+			<selectFile>Select image first!</selectFile>
+		</Error>
+    </editHotspot>
 	<grouping deprecated="Deprecated - the red option is no longer allowed by the course list in the management page"></grouping>
 	<category deprecated="Deprecated - the red option is no longer allowed by the course list in the management page"></category>
 	<course deprecated="Deprecated - the red option is no longer allowed by the course list in the management page">

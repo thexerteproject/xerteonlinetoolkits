@@ -81,6 +81,7 @@ var EDITOR = (function ($, parent) {
             var normal_options = [];
             var opt_options  = [];
             var lang_options = [];
+            var wizard_options = [];
 
             var attributes = {};
             for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
@@ -104,7 +105,7 @@ var EDITOR = (function ($, parent) {
                         "hint"  : attributes.hint,
                         "thumb" : attributes.thumb,
                         "icon"  : attributes.icon
-                    }
+                    };
                     if (attributes.deprecated)
                     {
                         item["deprecated"] = attributes.deprecated;
@@ -180,13 +181,11 @@ var EDITOR = (function ($, parent) {
                 {
                     lang_options.push(option);
                 }
-                else
+                else if (option.name != 'name' || option.value.wysiwyg == undefined || option.value.wysiwyg != "true")
                 {
-                    if (option.name != 'name' || option.value.wysiwyg == undefined || option.value.wysiwyg != "true")
-                    {
-                        normal_options.push(option);
-                    }
+                    normal_options.push(option);
                 }
+
             });
             // Add cdata also to all_options
             if (node_options['cdata_name'])

@@ -56,19 +56,24 @@ div.ui-layout-north div.content {background-image: none; background-color: #4D58
     vertical-align: text-bottom;
 }
 
-#poly{
-	height: 50px;
-	width: 50px;
-	padding: 12px 16px;
+.hseditModeButton
+{
+	height: 40px;
+	width: 40px;
+	padding: 2px;
 	cursor: pointer;
-}
-#square{
-	height: 50px;
-	width: 50px;
-	padding: 12px 16px;
-	cursor: pointer;
+	border-radius: 4px;
 }
 
+.hseditModeButton.selected
+{
+	background: #f86718;
+}
+
+.hseditModeButton.firstoption
+{
+	margin-left:20px;
+}
 
 h1 {
 	font-size: 2em;
@@ -906,6 +911,25 @@ td.flashonly, td.deprecated{
   width:100%;
   height:100%;
   position:relative;
+  margin:auto;
+}
+
+div.hsinstructions
+{
+	font-size:smaller;
+}
+
+div.hotspotEditor {
+	background-color: #f0f0f2;
+}
+
+.hsbutton_holder
+{
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	background-color: #f0f0f2;
+	padding: 5px;
+	border-bottom: 1px solid #e0e0e0;
 }
 .overlayImage {
   width:100%;
@@ -941,6 +965,16 @@ td.flashonly, td.deprecated{
     position: absolute;
     margin: -4px;
     background-color: rgba(50, 50, 50, 1);
+}
+
+.featherlight .featherlight-content
+{
+	padding:5px 5px 0 !important;
+}
+
+.hotspotEditor
+{
+	padding: 5px;
 }
 
 .instructions{
@@ -1000,6 +1034,11 @@ button:hover {background: #f86718; color: #000000;}
 .xerte_button.disabled .xerte-icon {
     color:#ccc;
 }
+
+button.hseditModeButton:hover {background: transparent; color: graytext;}
+
+button.hseditModeButton:hover:enabled {background: #f86718; color: #000000;}
+
 
 #mainPanel .xerte_button { color: #000; }
 #mainPanel .xerte_button.disabled { color: #ccc; font-size: 1em; }
