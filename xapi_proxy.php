@@ -332,6 +332,8 @@ if (!isset($_SESSION['XAPI_PROXY']))
             $headers = getallheaders();
             $cHeader = convertToCurl($headers);
 
+            _debug("Headers: " . print_r($headers, true));
+
             $sendHeaders = array();
 
             $ch = curl_init($url);
@@ -376,6 +378,10 @@ if (!isset($_SESSION['XAPI_PROXY']))
             if (isset($headers['X-Experience-API-Version']))
             {
                 $sendHeaders[] = 'X-Experience-API-Version: ' . $headers['X-Experience-API-Version'];
+            }
+            if (isset($headers['x-experience-api-version']))
+            {
+                $sendHeaders[] = 'X-Experience-API-Version: ' . $headers['x-experience-api-version'];
             }
             curl_setopt($ch, CURLOPT_HTTPHEADER, $sendHeaders);
 
