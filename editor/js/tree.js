@@ -906,7 +906,7 @@ var EDITOR = (function ($, parent) {
 								'#mainPanel .wizard #groupTable_' + node_options['optional'][i].name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
 								groupChildren,
 								groupChildren[j].name,
-								toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value,
+                                (found[j] ? toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
 								key
 							);
 						}
