@@ -40,7 +40,11 @@
 
 				$("area").mapster('select');
 			}
-		}
+            else {
+                // Keep unselected
+                $("area").mapster('deselect');
+            }
+		};
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
@@ -362,6 +366,12 @@
 									$("area").mapster('select');
 								}, 100);
 							}
+							else {
+							    // Keep unselected
+                                setTimeout(function() {
+                                    $("area").mapster('deselect');
+                                }, 100);
+                            }
 
 						})
 						.focusin(function() {
@@ -397,7 +407,7 @@
 			}
 			if (x_currentPageXML.getAttribute("hs_strokeWidth") != undefined && x_currentPageXML.getAttribute("hs_strokeWidth") != "") {
 				strokeWidth = parseInt(x_currentPageXML.getAttribute("hs_strokeWidth"));
-				if (strokeWidth == 0 || x_currentPageXML.getAttribute("highlight") !== "true")
+				if (strokeWidth == 0)
 				{
 					stroke = false;
 				}
@@ -418,14 +428,13 @@
 			if (selected != undefined) {
 				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
 			}
-			debugger;
 			options = {
 				render_highlight:
 						{
-							fill: fill,
+							fill: false,
 							fillColor: fillColor.substr(1),
 							fillOpacity: fillOpacity,
-							stroke: stroke,
+							stroke: false,
 							strokeColor: highlightColour.substr(1),
 							strokeOpacity: strokeOpacity,
 							strokeWidth: strokeWidth
