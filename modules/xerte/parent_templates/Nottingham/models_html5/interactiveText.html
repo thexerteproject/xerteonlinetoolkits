@@ -531,7 +531,8 @@
 							primary: "fa fa-x-next"
 						},
 						label:	btnTxt[0],
-						text:	false
+						text:	false,
+						disabled:	(groupInfo.length == 0)
 					})
 					.click(function() {
 						var currentGroup = $pageContents.data("currentGroup");
