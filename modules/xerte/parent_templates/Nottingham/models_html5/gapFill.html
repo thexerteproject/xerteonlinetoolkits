@@ -1017,7 +1017,7 @@
                     var correct = false;
                     var answer = currvalue;
 
-                    if (answerData[$this.data("index")].indexOf(currvalue) != -1) { // correct
+                    if (answerData.length > 0 && answerData[$this.data("index")].indexOf(currvalue) != -1) { // correct
                         $this.attr("readonly", "readonly");
                         $this.attr("correct", "correct");
                         feedback = "Correct";
