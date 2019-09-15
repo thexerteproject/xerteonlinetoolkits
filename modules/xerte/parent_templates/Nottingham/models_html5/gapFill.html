@@ -170,8 +170,15 @@
 						if (dropDownNoise != undefined) {
 							allAnswers = allAnswers.concat(dropDownNoise);
 						}
-						allAnswers.sort();
-						
+
+						dropDownSort = x_currentPageXML.getAttribute("dropDownSort");
+						if (dropDownSort != undefined && dropDownSort != "" && dropDownSort != "alphabetic") // must be random
+						    allAnswers.sort(
+						        function() { return 0.5 - Math.random(); }
+						    );
+						else
+						    allAnswers.sort();
+
 						for (var j=0; j<allAnswers.length; j++) {
 							while (allAnswers[j] == allAnswers[j+1]) {
 								allAnswers.splice(j+1,1);
