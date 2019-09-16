@@ -1143,6 +1143,10 @@
 			var l_options = [];
 			var l_answers = [];
 			for (var group = 0; group < correctFound.length; group++){
+				if (groupInfo[group].name == "#distractor#")
+				{
+					continue;
+				}
 				l_options[group] = [];
 				l_answers[group] = [];
 
