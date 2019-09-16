@@ -1,5 +1,7 @@
 <commonNodes>
 	
+	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project."/>
+	
 	<headerGroup type="group" label="Header" optional="true">
 		<header type="Media" optional="true" label="Image"/>
 		<headerPos type="ComboBox" data="left,center,right" options="Left,Centre,Right" optional="true" label="Image Position" defaultValue="left" width="175"/>
