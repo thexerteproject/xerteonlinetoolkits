@@ -1153,7 +1153,7 @@
 				var groupName = groupInfo[group].name;
 
 				for (var i = 0; i < correctFound[group].length; i++){
-					var span = $('*[data-index=' + correctFound[group][i]+ ']')
+					var span = $('*[data-index=' + correctFound[group][i]+ ']');
 					l_options[group].push(
 						{
 							id: span.attr("data-index"),
@@ -1167,7 +1167,8 @@
 				var percentageCorrect = 0;
 				if (correctOptions[group].length != 0)
 					percentageCorrect = correctFound[group].length / correctOptions[group].length * 100;
-				endScore += correctFound[group].length;
+				// endScore += correctFound[group].length;
+				endScore += (correctFound[group].length == correctOptions[group].length ? 1 : 0);
 
 				for (var i = 0; i < incorrectFound[group].length; i++){
 					var span = $('*[data-index=' + incorrectFound[group][i]+ ']')
@@ -1185,7 +1186,8 @@
 				var correct = percentageCorrect == 100;
 				var result = {
 								success: correct,
-								score: percentageCorrect
+								//score: percentageCorrect
+								score: (correct ? 100 : 0)
 							};
 
 				XTEnterInteraction(x_currentPage, group, 'multiplechoice', groupName, correctOptions[group], correctAnswers[group], [], x_currentPageXML.getAttribute("grouping"));
@@ -1194,8 +1196,15 @@
             //finalFeedback(incorrectFound);
 			showAnswers(l_answers, l_options, correctAnswers, correctOptions);
 			var total = 0;
-			for (var i = 0; i < correctAnswers.length; i++)
-				total += correctAnswers[i].length;
+			//for (var i = 0; i < correctAnswers.length; i++)
+			//	total += correctAnswers[i].length;
+			// var score = endScore / total * 100;
+			for (var group = 0; group < correctFound.length; group++) {
+				if (groupInfo[group].name == "#distractor#") {
+					continue;
+				}
+				total++;
+			}
 			var score = endScore / total * 100;
 			XTSetPageScore(x_currentPage, score);
 			interactiveText.checked = true;
