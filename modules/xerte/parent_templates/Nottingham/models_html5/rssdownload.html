@@ -148,13 +148,13 @@
 						{
 							resultsString += '<span class="rssDownloadScorm12"><a target="_blank" href="' + item.scorm12link + '"><i class="fa fa-cube" aria-hidden="true"></i> Download SCORM 1.2</a>';
 						}+'</div>'
-						if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.contentSnippet != "undefined") {
+						if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.description != "undefined") {
 							// snippet is a bit long so shorten it
-							if (typeof item.contentSnippet != "undefined" && typeof item.content != "undefined"  && item.contentSnippet.length == item.content.length && item.contentSnippet.length > 400) {
-								var cutOff = 400 + item.contentSnippet.substr(400).indexOf(' ');
-								resultsString += '<p>' + item.contentSnippet.substring(0, cutOff) + '...</p>';
+							if (typeof item.description != "undefined" && typeof item.description != "undefined"  && item.description.length == item.description.length && item.description.length > 400) {
+								var cutOff = 400 + item.description.substr(400).indexOf(' ');
+								resultsString += '<br><br><p>' + item.description.substring(0, cutOff) + '...</p>';
 							} else {
-								resultsString += '<p>' + item.contentSnippet + '</p>';
+								resultsString += '<br><br><p>' + item.description + '</p>';
 							}
 						}
 						
