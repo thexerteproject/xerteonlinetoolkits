@@ -135,6 +135,11 @@
 				//	$pageContents.find("#headerHolder").html("<h3>" + feed.rss.channel.description + "</h3>");
 
 					$.each(feed.rss.channel.item, function (index, item) {
+						var xertefeed = (typeof item.xertedescription != "undefined");
+						var description = (typeof item.xertedescription != "undefined" ? item.xertedescription : item.description);
+						var templatename = (typeof item.xertetemplatename != "undefined" ? item.xertetemplatename : "");
+						var author = (typeof item.xerteauthor != "undefined" ? item.xerteauthor : (typeof item.author != "undefined" ? item.author : ""));
+						debugger;
 						resultsString += '<div><a target="_blank" href="' + item.link + '"><i class="fa fa-globe" aria-hidden="true"></i> View ' + item.title + '</a><br><br>';
 						if (typeof item.exportlink != "undefined")
 						{
