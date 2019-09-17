@@ -155,9 +155,9 @@ foreach($rows as $row) {
         <description><![CDATA[" . $row['description'] . "<br><br>" . str_replace("_"," ",$row['template_name']) . " " . RSS_DEVELOP . $user . "]]></description>
         <pubDate>" . date(DATE_RSS, strtotime($row['date_created'])) . "</pubDate>
         <guid><![CDATA[" . $xerte_toolkits_site->site_url . url_return($action, $row['template_id']) . "]]></guid>
-        <xerte:description><![CDATA[" . $row['description'] . "]]></xerte:description>
-        <xerte:template_name>" . str_replace("_"," ",$row['template_name']) . "</xerte:template_name>
-        <xerte:author>" . $user . "</xerte:author>";
+        <xerte:xertedescription><![CDATA[" . $row['description'] . "]]></xerte:xertedescription>
+        <xerte:xertetemplatename>" . str_replace("_"," ",$row['template_name']) . "</xerte:xertetemplatename>
+        <xerte:xerteauthor>" . $user . "</xerte:xerteauthor>";
 
     if ($row['export'] == "true")
     {
