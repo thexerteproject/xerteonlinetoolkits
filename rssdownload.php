@@ -155,11 +155,18 @@ foreach($rows as $row) {
         <description><![CDATA[" . $row['description'] . "<br><br>" . str_replace("_"," ",$row['template_name']) . " " . RSS_DEVELOP . $user . "]]></description>
         <pubDate>" . date(DATE_RSS, strtotime($row['date_created'])) . "</pubDate>
         <guid><![CDATA[" . $xerte_toolkits_site->site_url . url_return($action, $row['template_id']) . "]]></guid>
-        <xerte:exportlink><![CDATA[" . $xerte_toolkits_site->site_url . url_return('export', $row['template_id']) . "]]></xerte:exportlink>";
-    if ($row['template_framework'] == 'xerte') {
+        <xerte:description><![CDATA[" . $row['description'] . "]]></xerte:description>
+        <xerte:template_name><" . str_replace("_"," ",$row['template_name']) . "></xerte:template_name>
+        <xerte:author><" . $user . "></xerte:author>";
 
-        echo "<xerte:scorm12link><![CDATA[" . $xerte_toolkits_site->site_url . url_return('export', $row['template_id']) . "]]></xerte:scorm12link>
+    if ($row['export'] == "true")
+    {
+        echo "<xerte:exportlink><![CDATA[" . $xerte_toolkits_site->site_url . url_return('export', $row['template_id']) . "]]></xerte:exportlink>";
+        if ($row['template_framework'] == 'xerte') {
+
+            echo "<xerte:scorm12link><![CDATA[" . $xerte_toolkits_site->site_url . url_return('export', $row['template_id']) . "]]></xerte:scorm12link>
             <xerte:scorm2004link><![CDATA[" . $xerte_toolkits_site->site_url . url_return('export', $row['template_id']) . "]]></xerte:scorm2004link>";
+        }
     }
     echo "<xerte:keywords>" . $row['keywords'] . "</xerte:keywords>
         <xerte:syndication>" . $row['syndication'] . "</xerte:syndication>
