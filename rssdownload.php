@@ -153,7 +153,7 @@ foreach($rows as $row) {
         <title>" . str_replace("_"," ",$row['template_name']) . "</title>
         <link><![CDATA[" . $xerte_toolkits_site->site_url . url_return($action, $row['template_id']) . "]]></link>
         <description><![CDATA[" . $row['description'] . "<br><br>" . str_replace("_"," ",$row['template_name']) . " " . RSS_DEVELOP . $user . "]]></description>
-        <pubDate>" . date(DATE_RSS, strtotime($row['date_created'])) . "</pubDate>
+        <pubDate>" . date(DATE_RSS, strtotime($row['date_modified'])) . "</pubDate>
         <guid><![CDATA[" . $xerte_toolkits_site->site_url . url_return($action, $row['template_id']) . "]]></guid>
         <xerte:xertedescription><![CDATA[" . $row['description'] . "]]></xerte:xertedescription>
         <xerte:xertetemplatename>" . str_replace("_"," ",$row['template_name']) . "</xerte:xertetemplatename>

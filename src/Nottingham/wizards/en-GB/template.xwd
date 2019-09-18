@@ -4137,7 +4137,17 @@
     <url label="Feed URL" type="textInput"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>
 	
-	<appearance label="Feed View" options="Title Only,Title &amp; Snippet" type="ComboBox" data="title,snippet" defaultValue="snippet" width="100" optional="true"/>
+	<appearance label="Feed View" options="Title Only,Title &amp; Description" type="ComboBox" data="title,snippet" defaultValue="snippet" width="100" optional="true"/>
+
+	<rssDLLinks type="group" label="Download links &amp; info" optional="true" tooltip="By default each of the download links are shown and some info elements are hidden. Show/Hide items via these options e.g. tick to show, untick to hide.">
+    		<deployment label="Deployment" type="CheckBox" defaultValue="true" optional="true"/>
+    		<scorm12 label="SCORM 1.2 (XOT Projects)" type="CheckBox" defaultValue="true" optional="true"/>
+    		<scorm2004 label="SCORM 2004 (XOT Projects)" type="CheckBox" defaultValue="true" optional="true"/>
+    		<author label="Project author" type="CheckBox" defaultValue="false" optional="true"/>
+    		<license label="License" type="CheckBox" defaultValue="false" optional="true"/>
+    		<moddate label="Last modified date" type="CheckBox" defaultValue="false" optional="true"/>
+    		<feedheader label="RSS feed header" type="CheckBox" defaultValue="false" optional="true"/>
+    	</rssDLLinks>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>

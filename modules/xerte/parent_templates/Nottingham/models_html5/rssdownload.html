@@ -131,38 +131,60 @@
 					resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>'
 				}
 				else {
-				//hide the feed title until we add this as an optional property
-				//	$pageContents.find("#headerHolder").html("<h3>" + feed.rss.channel.description + "</h3>");
+					//get optional properties to show/hide links and info
+					var optdeployment=x_currentPageXML.getAttribute("deployment");
+					var optscorm2004=x_currentPageXML.getAttribute("scorm2004");
+					var optscorm12=x_currentPageXML.getAttribute("scorm12");
+					var optauthor=x_currentPageXML.getAttribute("author");
+					var optlicense=x_currentPageXML.getAttribute("license");
+					var optmoddate=x_currentPageXML.getAttribute("moddate");
+					var optfeedheader=x_currentPageXML.getAttribute("feedheader");
+
+					//hide or show the feed header based on optional property
+					if (optfeedheader !="false" && optfeedheader !=null) {
+							$pageContents.find("#headerHolder").html("<h3>" + feed.rss.channel.description + "</h3>");
+					}
+
+
 
 					$.each(feed.rss.channel.item, function (index, item) {
 						var xertefeed = (typeof item.xertedescription != "undefined");
 						var description = (typeof item.xertedescription != "undefined" ? item.xertedescription : item.description);
 						var templatename = (typeof item.xertetemplatename != "undefined" ? item.xertetemplatename : "");
 						var author = (typeof item.xerteauthor != "undefined" ? item.xerteauthor : (typeof item.author != "undefined" ? item.author : ""));
-						debugger;
 						resultsString += '<div><a target="_blank" href="' + item.link + '"><i class="fa fa-globe" aria-hidden="true"></i> View ' + item.title + '</a><br><br>';
-						if (typeof item.exportlink != "undefined")
+						if (typeof item.exportlink != "undefined" && optdeployment !="false")
 						{
 							resultsString += '<span class="rssDownloadDeployment"><a target="_blank" href="' + item.exportlink + '"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Download Deployment</a></span>';
 						}
-						if (typeof item.scorm2004link != "undefined")
+						if (typeof item.scorm2004link != "undefined" && optscorm2004 !="false")
 						{
 							resultsString += '<span class="rssDownloadScorm2004"><a target="_blank" href="' + item.scorm2004link + '"><i class="fa fa-cubes" aria-hidden="true"></i>  Download SCORM 2004 3rdEd</a></span>';
 						}
-						if (typeof item.scorm12link != "undefined")
+						if (typeof item.scorm12link != "undefined" && optscorm12 !="false")
 						{
-							resultsString += '<span class="rssDownloadScorm12"><a target="_blank" href="' + item.scorm12link + '"><i class="fa fa-cube" aria-hidden="true"></i> Download SCORM 1.2</a>';
+							resultsString += '<span class="rssDownloadScorm12"><a target="_blank" href="' + item.scorm12link + '"><i class="fa fa-cube" aria-hidden="true"></i> Download SCORM 1.2</a></span>';
 						}+'</div>'
 						if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.description != "undefined") {
 							// snippet is a bit long so shorten it
-							if (typeof item.description != "undefined" && typeof item.description != "undefined"  && item.description.length == item.description.length && item.description.length > 400) {
-								var cutOff = 400 + item.description.substr(400).indexOf(' ');
-								resultsString += '<br><br><p>' + item.description.substring(0, cutOff) + '...</p>';
+							if (description != "undefined" && description.length > 400) {
+								var cutOff = 400 + description.substr(400).indexOf(' ');
+								resultsString += '<p class="rssDescription">' + description.substring(0, cutOff) + '...</p>';
 							} else {
-								resultsString += '<br><br><p>' + item.description + '</p>';
+								resultsString += '<p class="rssDescription">' + description + '</p>';
 							}
 						}
-						
+						if (optauthor !="false" && optauthor !=null) {
+							resultsString += '<p class="rssAuthor">' + x_getLangInfo(x_languageData.find("rssDLAuthor")[0], "label", "Created by:") + " " + author + '</p>';
+						}
+
+						if (optlicense !="false" && optlicense !=null) {
+							resultsString += '<p class="rssLicense">' + x_getLangInfo(x_languageData.find("rssDLLicense")[0], "label", "License:") + " " + item.license + '</p>';
+						}
+						if (optmoddate !="false" && optmoddate !=null) {
+							var pubDate = item.pubDate.substring(0, 16);
+							resultsString += '<p class="rssModDate">' + x_getLangInfo(x_languageData.find("rssDLModDate")[0], "label", "Last modified:") + " " + pubDate + '</p>';
+						}
 						resultsString += '</div>';
 					});
 				}

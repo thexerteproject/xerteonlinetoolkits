@@ -14,9 +14,9 @@
 		padding-top:	1em;
 		padding-bottom:	1em;
 	}
-.rssDownloadScorm2004, .rssDownloadScorm12{
-		margin-left:1.4em;
+.rssDownloadDeployment, .rssDownloadScorm2004, .rssDownloadScorm12{
 	line-height:1.8em;
+	margin-right:1.4em;
 	}
 
 	#resultsHolder div p {
@@ -47,7 +47,7 @@
 	}
 
 	.shadedDiv {
-		background-color: #E3FFD6;
+		background-color: #fdfdff;
 	}
 
 	#loadingSpinner {
@@ -69,3 +69,7 @@
 		overflow: auto;
 	}
 
+.rssLinks, .rssDescription, .rssAuthor, .rssModDate, .rssLicense, .rssModDate{
+	margin-top:0.3em !important;
+	margin-bottom:0.3em !important;
+}

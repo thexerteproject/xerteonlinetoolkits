@@ -150,6 +150,10 @@
   <errorResults label="There was an error loading the results"/>
   <loadError label="Error loading"/>
   <noResults label="No results returned"/>
+
+	<rssDLAuthor label="Created by:"/>
+	<rssDLLicense label="License:"/>
+	<rssDLModDate label="Last modified:"/>
   
   <timer>
 	  <remaining name="Time remaining"/>
