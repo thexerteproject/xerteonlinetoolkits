@@ -41,7 +41,8 @@ var x_languageData  = [],
     x_deepLink		= "",
     x_timer,        // use as reference to any timers in page models - they are cancelled on page change
 	x_responsive = [], // list of any responsivetext.css files in use
-	x_cssFiles = [];
+	x_cssFiles = [],
+	x_pageLoadPause = false;
 
 // Determine whether offline mode or not
 var xot_offline = !(typeof modelfilestrs === 'undefined');
@@ -1293,7 +1294,14 @@ function x_continueSetUp1() {
 	});
 
 	$x_window.on("resizeEnd", function() {
-		x_updateCss();
+		if (x_pageLoadPause !== false && $x_body.width() > 0) {
+			var pagePaused = x_pageLoadPause;
+			x_pageLoadPause = false;
+			x_changePage(pagePaused)
+			
+		} else {
+			x_updateCss();
+		}
 	});
 
 
@@ -1624,24 +1632,31 @@ function x_lookupPage(pageType, pageID) {
 // function called on page change to remove old page and load new page model
 // If x_currentPage == -1, than do not try to exit tracking of the page
 function x_changePage(x_gotoPage) {
-	// Prevent content from behaving weird as we remove css files
-    $("#x_pageDiv").hide();
+	
+	if ($x_body.width() == 0 && $x_body.height() == 0) {
+		// don't load page yet as they probably won't load properly (possibly because it's being loaded in an iframe on non-active tab on a navigator)
+		x_pageLoadPause = x_gotoPage;
+		
+	} else {
+		// Prevent content from behaving weird as we remove css files
+		$("#x_pageDiv").hide();
 
 
-    var modelfile = x_pageInfo[x_gotoPage].type;
+		var modelfile = x_pageInfo[x_gotoPage].type;
 
-	var classList = $x_mainHolder.attr('class') == undefined ? [] : $x_mainHolder.attr('class').split(/\s+/);
-	$.each(classList, function(index, item) {
-		if (item.substring(0,2) == "x_" && item.substr(item.length-5,item.length) == "_page") {
-			$x_mainHolder.removeClass(item);
-		}
-	});
+		var classList = $x_mainHolder.attr('class') == undefined ? [] : $x_mainHolder.attr('class').split(/\s+/);
+		$.each(classList, function(index, item) {
+			if (item.substring(0,2) == "x_" && item.substr(item.length-5,item.length) == "_page") {
+				$x_mainHolder.removeClass(item);
+			}
+		});
 
-	$x_mainHolder.addClass("x_" + modelfile + "_page");
+		$x_mainHolder.addClass("x_" + modelfile + "_page");
 
-	x_insertCSS(x_templateLocation + "models_html5/" + modelfile + ".css", function () {
-		x_changePageStep2(x_gotoPage);
-	}, false, "page_model_css");
+		x_insertCSS(x_templateLocation + "models_html5/" + modelfile + ".css", function () {
+			x_changePageStep2(x_gotoPage);
+		}, false, "page_model_css");
+	}
 }
 
 function x_changePageStep2(x_gotoPage) {
