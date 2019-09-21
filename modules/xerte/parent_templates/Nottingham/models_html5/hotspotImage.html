@@ -301,7 +301,6 @@
 							strokeOpacity: strokeOpacity,
 							strokeWidth: strokeWidth
 						},
-
 				scaleMap: true,
 				clickNavigate: true
 			};
@@ -313,7 +312,9 @@
 					$("area").mapster('select');
 				}, 100);
 			}
-
+			else {
+				$("#pageContents .hotspot.selected").mapster("select");
+			}
 		};
 
 
