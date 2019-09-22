@@ -273,8 +273,8 @@
 			else if(x_currentPageXML.getAttribute("interactivity") == "Drag Drop"){
 			    correctAnswers = [];
                 correctOptions = [];
+                name = x_currentPageXML.getAttribute("name");
 				for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
-					name = "interaction number" + " " + interactionNumber;
 					correctAnswer = answerData[interactionNumber][0];
 					correctAnswer = correctAnswer + "-->" + correctAnswer;
 					correctAnswers.push(correctAnswer);
