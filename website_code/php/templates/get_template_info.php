@@ -43,8 +43,19 @@ $info->properties = project_info($_POST['template_id']);
 $info->properties .= media_quota_info($_POST['template_id']);
 $info->properties .= access_info($_POST['template_id']);
 $info->properties .= sharing_info($_POST['template_id']);
+$info->properties .= rss_syndication($_POST['template_id']);
 
 $statistics_available = statistics_prepare($_POST['template_id']);
+
+if ($statistics_available->published) {
+    $info->properties .= $statistics_available->linkinfo;
+}
+
+if (!$statistics_available->published && $statistics_available->available)
+{
+    $info->properties .= $statistics_available->linkinfo;
+    $info->properties .= "<li><a href='" . $statistics_available->url . "'>" . $statistics_available->url . "</a></li>";
+}
 $info->properties .= $statistics_available->info;
 $info->fetch_statistics = $statistics_available->available;
 $info->lrs = $statistics_available->lrs;

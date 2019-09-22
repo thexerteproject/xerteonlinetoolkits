@@ -562,13 +562,16 @@ function project_info($template_id){
 
 function statistics_prepare($template_id)
 {
+    global $xerte_toolkits_site;
 
+    $tsugi_installed = false;
+    if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+        $tsugi_installed = true;
+    }
     $info = new stdClass();
     $info->available = false;
 
     $html = "<div id='graph_" . $template_id . "' class='statistics'><img src='editor/img/loading16.gif'/></div>";
-
-    global $xerte_toolkits_site;
 
     if ($xerte_toolkits_site->dashboard_enabled != 'false') {
 
@@ -595,14 +598,28 @@ function statistics_prepare($template_id)
             $prefix = $xerte_toolkits_site->database_table_prefix;
 
 
-            $query_for_names = "select td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links, td.dashboard_display_options from {$prefix}templatedetails td where template_id=?";
+            $query_for_names = "select td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links, td.dashboard_display_options from {$prefix}templatedetails td where template_id=?";
 
             $params = array($template_id);
             $row = db_query_one($query_for_names, $params);
             $row_sitedetails = db_query_one("select dashboard_allowed_links, LRS_Endpoint from {$prefix}sitedetails");
-
+            if ($row['tsugi_published'] && $tsugi_installed)
+            {
+                $info->published = $row["tsugi_published"];
+                $info->linkinfo = PROJECT_INFO_LTI_PUBLISHED;
+                $info->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
+            }
+            else
+            {
+                $info->published = false;
+            }
             if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != ""))) {
                 $info->info = $html;
+                if (!$info->published)
+                {
+                    $info->linkinfo = PROJECT_INFO_XAPI_PUBLISHED;
+                    $info->url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
+                }
                 $lrsendpoint = array();
                 if ($row['tsugi_xapi_useglobal'])
                 {
@@ -628,6 +645,7 @@ function statistics_prepare($template_id)
                 $lrs->groupmode = $row['tsugi_xapi_student_id_mode'];
                 $info->lrs = $lrs;
                 $info->available = true;
+
                 $dashboard = new stdClass();
                 $dashboard->enable_nonanonymous = $xerte_toolkits_site->dashboard_nonanonymous;
                 $dashboard->default_period = (int)$xerte_toolkits_site->dashboard_period;
@@ -716,7 +734,7 @@ function sharing_info($template_id)
     global $xerte_toolkits_site;
 
     if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
-        return;
+        return "";
     }
 
     $sql = "SELECT template_id, user_id, firstname, surname, username, role FROM " .
@@ -756,6 +774,45 @@ function sharing_info($template_id)
     $info .=  "</ul>";
 
     return $info;
+}
+
+function rss_syndication($template_id)
+{
+    global $xerte_toolkits_site;
+
+    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+        return "";
+    }
+
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    $sql = "SELECT * FROM {$prefix}templatesyndication WHERE template_id = ?";
+
+    $row = db_query_one($sql, array($template_id));
+
+    $info =  PROJECT_INFO_RSS_SYNDICATION . "<br/>";
+
+    if ($row['rss'] != 'true' && $row['export'] != 'true' && $row['syndication'] != 'true')
+    {
+        return "";
+    }
+    else
+    {
+        if ($row['rss'] == 'true')
+        {
+            $info .= "<li>" . PROJECT_INFO_RSS_SYNDICATION_RSSENABLED . "</li>";
+        }
+        if ($row['export'] == 'true')
+        {
+            $info .= "<li>" . PROJECT_INFO_RSS_SYNDICATION_EXPORTENABLED . "</li>";
+        }
+        if ($row['syndication'] == 'true')
+        {
+            $info .= "<li>" . PROJECT_INFO_RSS_SYNDICATION_SYNDICATIONENABLED . "</li>";
+        }
+
+        return $info;
+    }
+
 }
 
 function access_info($template_id){
