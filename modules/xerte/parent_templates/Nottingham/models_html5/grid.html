@@ -790,15 +790,37 @@
 		correctFeedback = [];
 		rows = x_currentPageXML.getAttribute("data").split("||");
 		rowCount = 1;
+
+		debugger;
+		var header = (x_currentPageXML.getAttribute("header") != undefined ? x_currentPageXML.getAttribute("header") : "");
+		var fixedCells = (x_currentPageXML.getAttribute("fixedCells") != undefined ? x_currentPageXML.getAttribute("fixedCells") : "");
+		var fixedRows = (x_currentPageXML.getAttribute("fixedRows") != undefined ? x_currentPageXML.getAttribute("fixedRows") : "");
+		var fixedCols = (x_currentPageXML.getAttribute("fixedCols") != undefined ? x_currentPageXML.getAttribute("fixedCols") : "");
+
+		fixedCells = fixedCells.trim().replace(/ /g, '');
+		fixedRows = fixedRows.trim().replace(/ /g, '');
+		fixedCols = fixedCols.trim().replace(/ /g, '');
+
 		for(row in rows)
 		{
+			if (rowCount == 1 && (header == "row" || header == "both"))
+			{
+				rowCount++;
+				continue;
+			}
 			columnCount = 1;
+
 			columns = rows[row].split("|");
 			for(column in columns)
 			{
-				if((x_currentPageXML.getAttribute("fixedCells") == undefined || x_currentPageXML.getAttribute("fixedCells").indexOf(columnCount + "," + rowCount) == -1) &&
-						(x_currentPageXML.getAttribute("fixedRows") == undefined || x_currentPageXML.getAttribute("fixedRows").indexOf(rowCount) == -1) &&
-						(x_currentPageXML.getAttribute("fixedCols") == undefined || x_currentPageXML.getAttribute("fixedCols").indexOf(columnCount) == -1))
+				if (columnCount == 1 && (header == "col" || header == "both"))
+				{
+					columnCount++;
+					continue;
+				}
+				if(fixedCells.indexOf(columnCount + "," + rowCount) == -1 &&
+					fixedRows.indexOf(rowCount) == -1 &&
+					fixedCols.indexOf(columnCount) == -1)
 				{
 					correctAnswer.push(columns[column] + " --> [" + columnCount + "," + rowCount +"]");
 					correctFeedback.push("Correct");
