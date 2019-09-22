@@ -109,7 +109,8 @@ if(!isset($_GET['username'])){
             WHERE $query_modifier='true' AND creator_id=? AND td.template_id = ts.template_id AND td.template_type_id=ot.template_type_id";
         $params[] = $row_create['login_id'];
     }else{
-        $row_folder = db_query_one("SELECT folder_id FROM {$xerte_toolkits_site->database_table_prefix}folderdetails WHERE folder_name = ?", array(str_replace("_", " ", $_GET['folder_name'])));
+        $row_folder = db_query_one("SELECT folder_id FROM {$xerte_toolkits_site->database_table_prefix}folderdetails WHERE 
+            folder_name = ? or folder_name = ?", array(str_replace("_", " ", $_GET['folder_name']), $_GET['folder_name']));
 
         if(empty($row_folder)) {
             die("Invalid folder name");

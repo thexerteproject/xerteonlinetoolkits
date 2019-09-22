@@ -40,7 +40,7 @@ if(is_numeric($_POST['folder_id'])&&is_string($_POST['folder_name'])){
     $prefix = $xerte_toolkits_site->database_table_prefix;
     
     $query = "update {$prefix}folderdetails SET folder_name = ? WHERE folder_id = ?";
-    $params = array(str_replace(" ", "_", $_POST['folder_name']), $_POST['folder_id']);
+    $params = array($_POST['folder_name'], $_POST['folder_id']);
 
     $ok = db_query($query, $params);
     
@@ -48,7 +48,7 @@ if(is_numeric($_POST['folder_id'])&&is_string($_POST['folder_name'])){
 
         echo "<p class=\"header\"><span>" . FOLDER_PROPERTIES_PROPERTIES . "</span></p>";			
 
-        echo "<p>" . FOLDER_PROPERTIES_CALLED . " " . str_replace("_", " ", $_POST['folder_name']) . "</p>";
+        echo "<p>" . FOLDER_PROPERTIES_CALLED . " " . $_POST['folder_name'] . "</p>";
 
         echo "<p>" . FOLDER_PROPERTIES_CHANGE . "</p>";
 

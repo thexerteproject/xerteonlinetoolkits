@@ -33,7 +33,7 @@ if(isset($_GET['export'])){
 
     $query_modifier = "export";
 
-    $action_modifder = "export";
+    $action_modifier = "export";
 
 }
 if(isset($_GET['html5'])){
@@ -105,8 +105,8 @@ if(!isset($_GET['username'])){
             WHERE $query_modifier='true' AND creator_id=? AND {$xerte_toolkits_site->database_table_prefix}templatedetails.template_id = {$xerte_toolkits_site->database_table_prefix}templatesyndication.template_id";
         $params[] = $row_create['login_id'];
     }else{
-        $row_folder = db_query_one("SELECT folder_id FROM {$xerte_toolkits_site->database_table_prefix}folderdetails WHERE folder_name = ?", array(str_replace("_", " ", $_GET['folder_name'])));
-
+        $row_folder = db_query_one("SELECT folder_id FROM {$xerte_toolkits_site->database_table_prefix}folderdetails WHERE 
+            folder_name = ? or folder_name = ?", array(str_replace("_", " ", $_GET['folder_name']), $_GET['folder_name']));
         if(empty($row_folder)) {
             die("Invalid folder name");
         }
