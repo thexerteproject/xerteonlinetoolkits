@@ -33,7 +33,7 @@ if(isset($_GET['export'])){
 
     $query_modifier = "export";
 
-    $action_modifier = "export";
+    $action_modifder = "export";
 
 }
 if(isset($_GET['html5'])){
@@ -50,7 +50,9 @@ if(!isset($_GET['username'])){
      * Change this to reflect site settings
      */
 
-    echo "<rss version=\"2.0\">
+    echo "<rss version=\"2.0\"
+                    xmlns=\"http://backend.userland.com/rss2\"
+                    xmlns:xerte=\"http://xert.org.uk/rssDownload\">
         <channel><title>{$xerte_toolkits_site->name}</title>
         <link>{$xerte_toolkits_site->site_url}</link>
         <description>" . RSS_DESCRIPTION . " " . $xerte_toolkits_site->name . "</description>
@@ -77,7 +79,9 @@ if(!isset($_GET['username'])){
             $folder_string = " - " . _html_escape(str_replace("_", " ", $_GET['folder_name']));
         }
 
-        echo "<rss version=\"2.0\">
+        echo "<rss version=\"2.0\"
+                    xmlns=\"http://backend.userland.com/rss2\"
+                    xmlns:xerte=\"http://xert.org.uk/rssDownload\">
         <channel><title>{$xerte_toolkits_site->name}</title>
         <link>{$xerte_toolkits_site->site_url}</link>
         <description>" . RSS_DESCRIPTION . " " . $xerte_toolkits_site->name . "</description>
@@ -94,27 +98,34 @@ if(!isset($_GET['username'])){
 $params = array();
 
 if(!isset($_GET['username'])){
-    $query = "select {$xerte_toolkits_site->database_table_prefix}templatedetails.template_id,creator_id,date_created,template_name,description 
-        FROM {$xerte_toolkits_site->database_table_prefix}templatedetails, {$xerte_toolkits_site->database_table_prefix}templatesyndication 
-        WHERE $query_modifier='true' AND {$xerte_toolkits_site->database_table_prefix}templatedetails.template_id = {$xerte_toolkits_site->database_table_prefix}templatesyndication.template_id";
+    $query = "select td.*, ts.*,ot.template_framework
+        FROM {$xerte_toolkits_site->database_table_prefix}templatedetails td, {$xerte_toolkits_site->database_table_prefix}templatesyndication ts, {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails ot
+        WHERE $query_modifier='true' AND td.template_id = ts.template_id AND td.template_type_id=ot.template_type_id";
 
 }else{
     if(!isset($_GET['folder_name'])){
-        $query = "select {$xerte_toolkits_site->database_table_prefix}templatedetails.template_id,creator_id,date_created,template_name,description 
-            FROM {$xerte_toolkits_site->database_table_prefix}templatedetails, {$xerte_toolkits_site->database_table_prefix}templatesyndication 
-            WHERE $query_modifier='true' AND creator_id=? AND {$xerte_toolkits_site->database_table_prefix}templatedetails.template_id = {$xerte_toolkits_site->database_table_prefix}templatesyndication.template_id";
+        $query = "select td.*,ts.*,,ot.template_framework
+            FROM {$xerte_toolkits_site->database_table_prefix}templatedetails td, {$xerte_toolkits_site->database_table_prefix}templatesyndication ts, {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails ot
+            WHERE $query_modifier='true' AND creator_id=? AND td.template_id = ts.template_id AND td.template_type_id=ot.template_type_id";
         $params[] = $row_create['login_id'];
     }else{
         $row_folder = db_query_one("SELECT folder_id FROM {$xerte_toolkits_site->database_table_prefix}folderdetails WHERE 
             folder_name = ? or folder_name = ?", array(str_replace("_", " ", $_GET['folder_name']), $_GET['folder_name']));
+
         if(empty($row_folder)) {
             die("Invalid folder name");
         }
 
-        $query = "select * from {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}templatedetails, {$xerte_toolkits_site->database_table_prefix}templatesyndication 
+        $query = "select td.*, ts.*, tr.*, ot.template_framework from 
+            {$xerte_toolkits_site->database_table_prefix}templaterights tr, 
+            {$xerte_toolkits_site->database_table_prefix}templatedetails td, 
+            {$xerte_toolkits_site->database_table_prefix}templatesyndication ts,
+            {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails ot 
             WHERE folder = ?
-            AND {$xerte_toolkits_site->database_table_prefix}templaterights.template_id = {$xerte_toolkits_site->database_table_prefix}templatedetails.template_id 
-            AND {$xerte_toolkits_site->database_table_prefix}templatesyndication.template_id = {$xerte_toolkits_site->database_table_prefix}templaterights.template_id and rss = 'true'";
+            AND tr.template_id = td.template_id 
+            AND ts.template_id = tr.template_id
+            AND td.template_type_id=ot.template_type_id 
+            AND rss = 'true'";
         $params[] = $row_folder['folder_id'];
     }
 
@@ -143,8 +154,24 @@ foreach($rows as $row) {
         <title>" . str_replace("_"," ",$row['template_name']) . "</title>
         <link><![CDATA[" . $xerte_toolkits_site->site_url . url_return($action, $row['template_id']) . "]]></link>
         <description><![CDATA[" . $row['description'] . "<br><br>" . str_replace("_"," ",$row['template_name']) . " " . RSS_DEVELOP . $user . "]]></description>
-        <pubDate>" . date(DATE_RSS, strtotime($row['date_created'])) . "</pubDate>
+        <pubDate>" . date(DATE_RSS, strtotime($row['date_modified'])) . "</pubDate>
         <guid><![CDATA[" . $xerte_toolkits_site->site_url . url_return($action, $row['template_id']) . "]]></guid>
+        <xerte:xertedescription><![CDATA[" . $row['description'] . "]]></xerte:xertedescription>
+        <xerte:xertetemplatename>" . str_replace("_"," ",$row['template_name']) . "</xerte:xertetemplatename>
+        <xerte:xerteauthor>" . $user . "</xerte:xerteauthor>";
+
+    if ($row['export'] == "true")
+    {
+        echo "<xerte:exportlink><![CDATA[" . $xerte_toolkits_site->site_url . url_return('export', $row['template_id']) . "]]></xerte:exportlink>";
+        if ($row['template_framework'] == 'xerte') {
+
+            echo "<xerte:scorm12link><![CDATA[" . $xerte_toolkits_site->site_url . url_return('export', $row['template_id']) . "]]></xerte:scorm12link>
+            <xerte:scorm2004link><![CDATA[" . $xerte_toolkits_site->site_url . url_return('export', $row['template_id']) . "]]></xerte:scorm2004link>";
+        }
+    }
+    echo "<xerte:keywords>" . $row['keywords'] . "</xerte:keywords>
+        <xerte:syndication>" . $row['syndication'] . "</xerte:syndication>
+        <xerte:license>" . $row['license'] . "</xerte:license>
         </item>\n";
 }
 
