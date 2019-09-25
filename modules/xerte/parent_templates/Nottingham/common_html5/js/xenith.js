@@ -1387,6 +1387,11 @@ function x_continueSetUp1() {
 							"opacity"	:Number(alpha/100),
 							"filter"	:"alpha(opacity=" + alpha + ")"
 						});
+                        if(x_params.backgroundFit != undefined && x_params.backgroundFit == "cover") {
+                            $("#x_mainBg").css({
+                                "object-fit": "cover"
+                            });
+                        }
 						// grey function called on image when unhidden later as it won't work properly otherwise
 					});
 				} else {
@@ -1395,6 +1400,11 @@ function x_continueSetUp1() {
 						"opacity"	:Number(alpha/100),
 						"filter"	:"alpha(opacity=" + alpha + ")"
 					});
+                    if(x_params.backgroundFit != undefined && x_params.backgroundFit == "cover") {
+                        $("#x_mainBg").css({
+                            "object-fit": "cover"
+                        });
+                    }
 				}
 				if (x_params.backgroundDark != undefined && x_params.backgroundDark != "" && x_params.backgroundDark != "0") {
 					$x_background.append('<div id="x_bgDarken" />');
@@ -2379,6 +2389,12 @@ function x_loadPageBg(loadModel) {
 		});
 
 	$x_background.prepend($pageBg);
+    //change object-fit to cover if selected in dropdown list
+    if (x_currentPageXML.getAttribute("backgroundFit") != undefined && x_currentPageXML.getAttribute("backgroundFit") == "cover"){
+        $(".pageBg").css({
+            "object-fit": "cover"
+        });
+    }
 
 	if (x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
 		var $bgDarken = $("#x_bgDarken").length > 0 ? $("#x_bgDarken") : $('<div id="x_bgDarken" />').appendTo($x_background);

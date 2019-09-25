@@ -68,6 +68,7 @@
 	
 	<bg type="group" label="Background" optional="true">
 		<background optional="true" type="media" label="Image" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="30" label="Opacity"/>
 		<backgroundDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<backgroundGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -216,6 +217,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -259,6 +261,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -334,6 +337,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -454,6 +458,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -511,6 +516,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -578,6 +584,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -618,6 +625,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -662,6 +670,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -706,6 +715,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -749,6 +759,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -803,6 +814,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -844,6 +856,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -892,6 +905,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -948,6 +962,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -995,6 +1010,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -1066,6 +1082,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -1137,6 +1154,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -1215,6 +1233,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -1281,6 +1300,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -1390,6 +1410,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -1441,6 +1462,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -1507,6 +1529,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -1567,6 +1590,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -1745,6 +1769,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -1789,6 +1814,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -1846,6 +1872,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -1900,6 +1927,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -1945,6 +1973,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2017,6 +2046,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2056,6 +2086,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2117,6 +2148,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2159,6 +2191,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2222,6 +2255,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2270,6 +2304,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2319,6 +2354,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2408,6 +2444,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2479,6 +2516,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2539,6 +2577,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2603,6 +2642,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2651,6 +2691,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2697,6 +2738,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2750,6 +2792,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2796,6 +2839,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2857,6 +2901,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -2911,6 +2956,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -3243,6 +3289,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -3312,6 +3359,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -3353,6 +3401,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -3398,6 +3447,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -3451,6 +3501,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -3505,6 +3556,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -3570,6 +3622,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -3633,6 +3686,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -3713,6 +3767,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -3759,6 +3814,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -3821,6 +3877,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -3951,6 +4008,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4007,6 +4065,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4077,6 +4136,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4119,6 +4179,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4171,6 +4232,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4243,6 +4305,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4419,6 +4482,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4463,6 +4527,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4503,6 +4568,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4549,6 +4615,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4594,6 +4661,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4638,6 +4706,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4694,6 +4763,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4754,6 +4824,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4813,6 +4884,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4852,6 +4924,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4903,6 +4976,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -4960,6 +5034,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -5011,6 +5086,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -5065,6 +5141,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -5111,6 +5188,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -5179,6 +5257,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -5235,6 +5314,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -5293,6 +5373,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -5341,6 +5422,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -5393,6 +5475,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -5445,6 +5528,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -5497,6 +5581,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -5537,6 +5622,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -5580,6 +5666,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -5622,6 +5709,7 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts><background type="group" label="Background" optional="true" common="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>

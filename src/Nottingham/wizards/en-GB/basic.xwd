@@ -67,6 +67,7 @@
 	
 	<bg type="group" label="Background" optional="true">
 		<background optional="true" type="media" label="Image" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="30" label="Opacity"/>
 		<backgroundDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<backgroundGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
