@@ -1376,6 +1376,7 @@ function x_continueSetUp1() {
 		x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
 			if (mediaExists) {
 				var alpha = 30;
+                var lo_objectfit =  (x_params.backgroundFit != undefined && x_params.backgroundFit == "cover" ? "cover" : "fill");
 				if (x_params.backgroundopacity != undefined) {
 					alpha = x_params.backgroundopacity;
 				}
@@ -1385,26 +1386,18 @@ function x_continueSetUp1() {
 						$x_background.append('<img id="x_mainBg" class="grayscale" src="' + x_evalURL(x_params.background) + '"/>');
 						$("#x_mainBg").css({
 							"opacity"	:Number(alpha/100),
+                            "object-fit"    : lo_objectfit,
 							"filter"	:"alpha(opacity=" + alpha + ")"
 						});
-                        if(x_params.backgroundFit != undefined && x_params.backgroundFit == "cover") {
-                            $("#x_mainBg").css({
-                                "object-fit": "cover"
-                            });
-                        }
 						// grey function called on image when unhidden later as it won't work properly otherwise
 					});
 				} else {
 					$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
 					$("#x_mainBg").css({
 						"opacity"	:Number(alpha/100),
+                        "object-fit"    : lo_objectfit,
 						"filter"	:"alpha(opacity=" + alpha + ")"
 					});
-                    if(x_params.backgroundFit != undefined && x_params.backgroundFit == "cover") {
-                        $("#x_mainBg").css({
-                            "object-fit": "cover"
-                        });
-                    }
 				}
 				if (x_params.backgroundDark != undefined && x_params.backgroundDark != "" && x_params.backgroundDark != "0") {
 					$x_background.append('<div id="x_bgDarken" />');
