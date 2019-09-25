@@ -174,9 +174,9 @@
 			<header>Hotspot instructies:</header>
 			<rectangle>Teken een rechthoek door op de linker muisknop te drukken en de muis te slepen</rectangle>
 			<polygon>Klik om punten aan het polygon toe te voegen. Klik op het eerste (rode) punt om te stoppen</polygon>
-			<reset>Klik op 'Herstart' om opneiuw te beginnen</reset>
+			<reset>Klik op de &#8634; herstart knop om opnieuw te beginnen</reset>
 			<edit>De hotspot kan verlaatst en vrandert worden door er op te klikken</edit>
-			<save>Klik op 'Ok' om je selectie op te slaan. Op 'Annuleren' om de selectie en wijzigen te negeren.</save>
+			<save>Klik op &#9745; Ok om je selectie op te slaan. Op &#9746; annuleren om de selectie en wijzigen te negeren.</save>
 			<forceRectangle>Alleen rechthoeken kunnen worden gemaakt. Flexibele hotspot is niet beschikbaar</forceRectangle>
 		</Instructions>
 		<Error>
