@@ -2394,6 +2394,10 @@ function x_loadPageBg(loadModel) {
         $(".pageBg").css({
             "object-fit": "cover"
         });
+    }else{
+        $(".pageBg").css({
+            "object-fit": "fill"
+        });
     }
 
 	if (x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
