@@ -2322,12 +2322,14 @@ function x_loadPageBg(loadModel) {
 		alpha = x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "" ? x_currentPageXML.getAttribute("bgImageAlpha") : 100;
 
 	var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg"/>');
+    var objectfit =  (x_currentPageXML.getAttribute("backgroundFit") != undefined && x_currentPageXML.getAttribute("backgroundFit") == "cover" ? "cover" : "fill");
 	$pageBg
 		.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))
 		.css({
 			"opacity"		:Number(alpha/100),
 			"filter"		:"alpha(opacity=" + alpha + ")",
-			"visibility"	:"hidden"
+			"visibility"	:"hidden",
+            "object-fit"    : objectfit
 		})
 		.addClass(x_currentPageXML.getAttribute("bgImageGrey") == "true" ? "grayscale" :"")
 		.one("load", function() {
@@ -2389,17 +2391,7 @@ function x_loadPageBg(loadModel) {
 		});
 
 	$x_background.prepend($pageBg);
-    //change object-fit to cover if selected in dropdown list
-    if (x_currentPageXML.getAttribute("backgroundFit") != undefined && x_currentPageXML.getAttribute("backgroundFit") == "cover"){
-        $(".pageBg").css({
-            "object-fit": "cover"
-        });
-    }else{
-        $(".pageBg").css({
-            "object-fit": "fill"
-        });
-    }
-
+    
 	if (x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
 		var $bgDarken = $("#x_bgDarken").length > 0 ? $("#x_bgDarken") : $('<div id="x_bgDarken" />').appendTo($x_background);
 
