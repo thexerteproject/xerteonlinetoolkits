@@ -174,12 +174,12 @@
 		</Buttons>
 		<Instructions>
 			<header>Hotspot instructions:</header>
-			<rectangle>Draw a rectangle by pressing the left mouse button and dragging</rectangle>
-			<polygon>Click to add points to the polygon. Click the first (red) point to stop</polygon>
-			<reset>Press the reset button to start over</reset>
-			<edit>The hotspot can be moved and change by clicking on it</edit>
-			<save>To save your selection, click the Ok button. If you want to go back without saving, click the cancel button.</save>
-			<forceRectangle>Only rectangles can be drawn, flexible hotspots are not available</forceRectangle>
+			<rectangle>Draw a rectangle by pressing the left mouse button and dragging.</rectangle>
+			<polygon>Click to add points to the polygon. Click the first (red) point to stop.</polygon>
+			<reset>Press the &#8634; reset button to start over.</reset>
+			<edit>The hotspot can be moved and changed by clicking on it.</edit>
+			<save>To save your selection, click the &#9745; Ok button. If you want to go back without saving, click the &#9746; cancel button.</save>
+			<forceRectangle>Only rectangles can be drawn, flexible hotspots are not available.</forceRectangle>
 		</Instructions>
 		<Error>
 			<selectFile>Select image first!</selectFile>
