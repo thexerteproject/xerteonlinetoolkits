@@ -1362,15 +1362,14 @@ var EDITOR = (function ($, parent) {
                             }
                         }
                     });
-                    // Fix for known issue in webkit browsers that cahnge contenteditable when an outer div is hidden
+                    // Fix for known issue in webkit browsers that change contenteditable when an outer div is hidden
                     this.on('focus', function () {
                         this.setReadOnly(false);
                     });
                 }, { toolbar:
                     [
                         [ 'Font', 'FontSize', 'TextColor', 'BGColor' ],
-                        [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript'],
-						//[ 'JustifyLeft', 'JustifyCenter', 'JustifyRight' ],
+                        [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript', 'rubytext' ],
                         [ 'Sourcedialog' ],
                         [ 'FontAwesome']
                     ],
@@ -1380,7 +1379,7 @@ var EDITOR = (function ($, parent) {
                     uploadUrl : 'editor/uploadImage.php?mode=dragdrop&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     mathJaxClass :  'mathjax',
                     mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
-                    extraPlugins : 'sourcedialog,image3,fontawesome',
+                    extraPlugins : 'sourcedialog,image3,fontawesome,rubytext',
                     language : language.$code.substr(0,2)
                 });
             }
