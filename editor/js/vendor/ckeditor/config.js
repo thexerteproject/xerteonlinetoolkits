@@ -43,8 +43,12 @@ CKEDITOR.editorConfig = function( config ) {
         'modules/xerte/parent_templates/Nottingham/common_html5/css/editorStyles.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css'
+        'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css',
+		'modules/xerte/parent_templates/Nottingham/common_html5/css/fonts.css'
     ];
+	
+	// custom fonts can be added here that have been included in fonts.css:
+	//config.font_names = 'fontnametodisplay/yourfontname;' + config.font_names;
 
     if (typeof lo_data['treeroot']["attributes"]["theme"] != 'undefined' && lo_data['treeroot']["attributes"]["theme"] != 'default')
     {
