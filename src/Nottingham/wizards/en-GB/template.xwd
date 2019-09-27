@@ -2705,7 +2705,7 @@
 	</variables></links><link menuItem="Link" icon="icTagGreen" remove="true">
     <name label="Link Title" type="TextInput" wysiwyg="true"/>
     <text label="Description" type="TextArea" height="100"/>
-    <url label="URL" type="TextInput"/>
+    <url label="URL" type="TextInput" tooltip="Tip: You can add your link(s) to the text area above and leave this URL field blank. This allows more control over where the links appear as well as control over the specific text and/or images to which the links are attached."/>
   </link><list menu="Interactivity" menuItem="Interactive List" hint="Present an interactive list where each list item presents further information." icon="icList" thumb="thumbs/interactiveList.jpg" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
