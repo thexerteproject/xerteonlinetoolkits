@@ -147,20 +147,31 @@ td a{
 
 }
 
+.status-gray{
+    font-size: x-large;
+}
 .status-green{
-    background-color: #7FB821
+    /* background-color: #7FB821 !important; */
+    color: #7FB821;
+    font-size: x-large;
 }
 
 .status-red{
-    background-color: #D93223
+    /* background-color: #D93223 !important; */
+    color: #D93223;
+    font-size: x-large;
 }
 
 .status-orange{
-    background-color: #F2A01B
+    /* background-color: #F2A01B !important; */
+    color: #F2A01B;
+    font-size: x-large;
 }
 
 .status-gray{
-    background-color: #67666A
+    /* background-color: #67666A !important; */
+    color: #67666A;
+    font-size: x-large;
 }
 
 .card{
@@ -339,7 +350,9 @@ th.x-dashboard-interaction {
 }
 
 .dashboard .table td {
-    padding: 5px;
+    padding: 2px;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .unanonymous-view {
@@ -461,4 +474,30 @@ td.x-dashboard-interaction
 #page-information {
     padding-top: 10px;
     font-size: 0.8rem;
+}
+
+#interaction-overview-print {
+    margin: auto;
+}
+
+#print-overview .journeyData {
+    overflow-y: hidden !important;
+}
+
+#print-overview .journeyTable .table {
+    overflow-x: unset;
+}
+
+#print-overview .journeyOverviewStats div, #print-overview .journeyOverviewActivity {
+    border: solid 1px;
+}
+
+@media print {
+    .noprint {
+        display: none !important;
+    }
+}
+
+.print_block {
+    page-break-inside: avoid;
 }

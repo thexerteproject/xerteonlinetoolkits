@@ -255,10 +255,16 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         for (var interactionIndex in interactions) {
             interactionHeader = this.insertInteractionModal(div, learningObjectIndex, interactionIndex, interactions[interactionIndex]);
         }
+        /*
         var redDiv = '<div class="status-indicator status-red">&nbsp;</div>';
         var greenDiv = '<div class="status-indicator status-green">&nbsp;</div>';
         var orangeDiv = '<div class="status-indicator status-orange">&nbsp;</div>';
         var greyDiv = '<div class="status-indicator status-gray">&nbsp;</div>';
+        */
+        var redDiv = '<i class="status-indicator status-red fa fa-square"></i>';
+        var greenDiv = '<i class="status-indicator status-green fa fa-square"></i>';
+        var orangeDiv = '<i class="status-indicator status-orange fa fa-square"></i>';
+        var greyDiv = '<i class="status-indicator status-gray fa fa-square"></i>';
         $.each(data, function(key, value) {
             console.log(key);
         });
@@ -286,15 +292,15 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 }
             }
             if (this.data.hasStartedLearningObject(lastStatements, learningObjects[learningObjectIndex].url)) {
-                started = "<i class=\"fa fa-x-tick\">";
+                started = "<i class=\"status fa fa-x-tick\">";
             } else {
                 continue;
             }
             row += "<td>" + started + "</td>";
             if (this.data.hasCompletedLearningObject(lastStatements, learningObjects[learningObjectIndex].url)) {
-                completed = "<i class=\"fa fa-x-tick\">";
+                completed = "<i class=\"status fa fa-x-tick\">";
             } else {
-                completed = "<i class=\"fa fa-x-cross\">";
+                completed = "<i class=\"status fa fa-x-cross\">";
             }
             row += "<td>" + completed + "</td>";
             div.find("tbody").last().append(row);
@@ -420,17 +426,17 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             '<div class="modal-header">' +
 
             '<h4 class="modal-title">Interaction overview</h4>' +
-            '<a href="#" id="interaction-overview-print">Print</a><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+            '<button id="interaction-overview-print" type="button" class="xerte_button_c_no_width">Print</button><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
             '</div>' +
             '<div class="modal-body col-md-12">' +
             '</div>' +
             '</div>' +
             '</div>' +
-            '</div>')
+            '</div>');
 
 
 
-        $("#dashboard-print-button").click(function(e){
+        $("#interaction-overview-print").click(function(e){
             e.preventDefault();
             var currentUrl = window.location.href;
             if(currentUrl.endsWith("#")){
@@ -443,9 +449,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             var htmlHead = $("head").html();
             var htmlBody = $("#model-question-overview .modal-body").html();
             $(w.document.body).parent().find("head").html(htmlHead);
-            $(w.document.body).html("<div id='print-overview'>" + htmlBody + "</div>");
-
-            debugger;
+            $(w.document.body).html("<button id='doprint' type='button' class='xerte_button_c_no_width noprint' onclick='window.print();'>Do print</button><div id='print-overview' class='dashboard'>" + htmlBody + "</div>");
 
             $(w.document.body).parent().find("link").each(function(l){
                 var href = $(this).attr('href');
@@ -457,7 +461,16 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 }
             });
 
-        });journeyData
+            $(w.document.body).find("button").each(function(l){
+                $(this).hide();
+            });
+
+            $(w.document).find(".noprint").each(function(l){
+                $(this).show();
+            });
+
+        });
+
 
 
         $(".show-question-overview-button").on('click', function() {
@@ -487,13 +500,15 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                     var contentDiv = $('#model-question-overview .modal-body');
                     interaction = interactions[interactionIndex];
                     jcId = "journey-container-" + learningObjectIndex + "-" + interactionIndex;
+                    var block = "";
                     if (interaction.children.length == 0 && interaction.type == "interaction") {
-                        contentDiv.append("<h4 class='offset-1'>" + interaction.name + "</h4>")
+                        block += "<div class='print_block'><h4 class='offset-1'>" + interaction.name + "</h4>";
                     }else{
-                        contentDiv.append("<h3>" + interaction.name + "</h3>")
+                        block += "<div class='print_block'><h3>" + interaction.name + "</h3>";
                     }
-                    contentDiv.append('<div class="class-overview-box" id="'+jcId+'"></div>');
-                    contentDiv.append('<hr>');
+                    block += '<div class="class-overview-box" id="'+jcId+'"></div>';
+                    block += '<hr></div>';
+                    contentDiv.append(block);
 
                     if (interaction.children.length == 0 && interaction.type == "interaction") {
                         contentDiv.find("#" + jcId).addClass("sub-interaction");
@@ -569,7 +584,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             var htmlHead = $("head").html();
             var htmlBody = $(".jorneyData-container").html();
             $(w.document.body).parent().find("head").html(htmlHead);
-            $(w.document.body).html("<div id='print-overview'>" + htmlBody + "</div>");
+            $(w.document.body).html("<button id='doprint' type='button' class='xerte_button_c_no_width noprint' onclick='window.print();'>Do print</button><div id='print-overview' class='dashboard'>" + htmlBody + "</div>");
 
 
             $(w.document.body).parent().find("link").each(function(l){
@@ -582,6 +597,14 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 }
             });
 
+            $(w.document.body).find("button").each(function(l){
+                $(this).hide();
+            });
+            $(w.document).find(".noprint").each(function(l){
+                $(this).show();
+            });
+
+            $(w.document.body).find("#journeyData").css("position", "unset");
         });
 
 
