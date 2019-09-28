@@ -2375,8 +2375,8 @@
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 
     <findOptions type="group" label="Find options" optional="true">
-        <findAllowSelectionOfAllWords label="Allow the selection of all the individual words, not only delimited ones" type="CheckBox" defaultValue="false" optional="true"/>
-        <findUseDistractors label="Use distractors" type="CheckBox" defaultValue="false" optional="true" tooltip="Be able to mark distractors by setting the distractor delimiter below."/>
+        <findAllowSelectionOfAllWords label="Automatic distractors" tooltip="Allow the selection of all the individual words, not only delimited ones" type="CheckBox" defaultValue="false" optional="true"/>
+        <findUseDistractors label="Custom distractors" type="CheckBox" defaultValue="false" optional="true" tooltip="Be able to mark distractors by setting the distractor delimiter below."/>
         <findDistractorDelimiter label="Distractor delimiter" type="TextInput" optional="true" defaultValue="The character used to mark up this group in the interactive text, e.g. *" tooltip="The character used to mark up this group in the interactive text, e.g. *. This delimiter can only be sued if 'Use distractors' is enabled."/>
     </findOptions>
 	<mcqOptions type="group" label="MCQ" optional="true">
