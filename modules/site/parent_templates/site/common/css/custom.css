@@ -382,3 +382,15 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
 	margin-left: auto;
 	margin-right: auto;
 }
+
+/* --TABLES-------------------------------------------------------------- */
+
+table {
+	text-align: left;
+	border-collapse: collapse;
+}
+
+table td, table th {
+	padding: 10px;
+	vertical-align: top;
+}

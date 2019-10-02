@@ -423,3 +423,15 @@ img.sectionIcon {
 	font-weight:	bold;
 	color:			red;
 }
+
+/* --TABLES-------------------------------------------------------------- */
+
+table {
+	text-align: left;
+	border-collapse: collapse;
+}
+
+table td, table th {
+	padding: 10px;
+	vertical-align: top;
+}
