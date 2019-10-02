@@ -168,7 +168,17 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 else
                 {
                     // Only xAPI - force group mode
-                    $tracking .= "   var studentidmode = 3;\n";
+                    if (isset($xerte_toolkits_site->xapi_user))
+                    {
+                        // actor is set
+                        _debug("xAPI User detected: " . print_r($xerte_toolkits_site->xapi_user, true));
+                        $tracking .= "   var username = '" . $xerte_toolkits_site->xapi_user->email . "';\n";
+                        $tracking .= "   var fullusername = '" . $xerte_toolkits_site->xapi_user->displayname . "';\n";
+                        $tracking .= "   var studentidmode = 0;\n";
+                    }
+                    else {
+                        $tracking .= "   var studentidmode = 3;\n";
+                    }
                 }
                 if (isset($xerte_toolkits_site->group))
                 {
@@ -266,7 +276,17 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 else
                 {
                     // Only xAPI - force group mode
-                    $tracking .= "   var studentidmode = 3;\n";
+                    if (isset($xerte_toolkits_site->xapi_user))
+                    {
+                        // actor is set
+                        _debug("xAPI User detected: " . print_r($xerte_toolkits_site->xapi_user, true));
+                        $tracking .= "   var username = '" . $xerte_toolkits_site->xapi_user->email . "';\n";
+                        $tracking .= "   var fullusername = '" . $xerte_toolkits_site->xapi_user->displayname . "';\n";
+                        $tracking .= "   var studentidmode = " . $xerte_toolkits_site->xapi_user->studentidmode . ";\n";
+                    }
+                    else {
+                        $tracking .= "   var studentidmode = 3;\n";
+                    }
                 }
                 if (isset($xerte_toolkits_site->group))
                 {
