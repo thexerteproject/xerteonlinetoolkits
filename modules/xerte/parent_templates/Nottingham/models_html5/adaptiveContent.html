@@ -1439,10 +1439,10 @@
                     }
                     else if (typeof data[i].actor.mbox != 'undefined')
                     {
-                        user = data[i].actor.mbox;
+                        user = data[i].actor.mbox.substr(7);
                     }
                     else if (typeof data[i].actor.mbox_sha1 != 'undefined') {
-                        user = data[i].actor.mbox_sha1;
+                        user = data[i].actor.mbox_sha1.substr(7);
                     }
                     else if (typeof data[i].actor.account != 'undefined' && typeof data[i].actor.account.name != 'undefined' ){
                         user = data[i].actor.account.name;
