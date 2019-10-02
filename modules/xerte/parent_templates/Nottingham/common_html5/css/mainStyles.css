@@ -447,7 +447,7 @@ fieldset.noStyle legend {
 	border-collapse:	collapse;
 }
 
-#x_pageDiv table td {
+#x_pageDiv table td, #x_pageDiv table th {
 	padding:		10px;
 	vertical-align:	top;
 }
