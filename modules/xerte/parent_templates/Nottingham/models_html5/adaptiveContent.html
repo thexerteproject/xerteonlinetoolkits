@@ -341,7 +341,7 @@
         var statements = [];
         url = endpoint + '?first=1000&' + search;
         requestJSON(url, function(data) {
-            statements = data.edges.map(s => s.node.statement);
+            statements = data.edges.map(function(s) {return s.node.statement } );
             requestMoreStatement(url, data, statements, interactionIndex, handler);
          });
     }
@@ -349,7 +349,7 @@
     function requestMoreStatement(endpoint, data, statements, interactionIndex, doneHandler) {
         if (data.pageInfo.hasNextPage) {
             requestJSON(endpoint + '&first=1000&after=' + data.pageInfo.endCursor, function(res) {
-                statements = statements.concat(res.edges.map(s => s.node.statement));
+                statements = statements.concat(res.edges.map(function(s) { return s.node.statement }));
                 requestMoreStatement(endpoint, res, statements, interactionIndex, doneHandler);
             });
         }
@@ -1375,7 +1375,7 @@
                 obj.graph = JSON.parse(d.result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                 return obj;
             });
-            jsonData = jsonData.filter(x => x != undefined);
+            jsonData = jsonData.filter(function(x) { return x != undefined } );
             div = $('#' + escapeUrl(
                 url,
                 type,
