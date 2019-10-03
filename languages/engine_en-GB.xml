@@ -207,6 +207,7 @@
   <submitBtnLabel label="Submit"/>
   <submitConfirmMsg label="Your answers have been submitted"/>
   <closeBtnLabel label="Close"/>
-
+  
+  <search title="Search" searchBtn="Search" goBtn="Go" newBtn="New Search" resultTitle="Results" matchTitle1="Matches" matchTitle2="Best matches" matchTitle3="Partial matches" showMatch="Show partial matches" noMatch1="No pages or sections match your selection." noMatch2="No pages or sections completely match your criteria. Partial matches are listed below." />
 
 </language>

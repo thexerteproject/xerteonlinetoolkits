@@ -269,7 +269,6 @@ var EDITOR = (function ($, parent) {
         {
             var tree = $.jstree.reference("#treeview");
             var node = tree.get_node(key, false);
-            console.log(node);
 
             if (deprecatedState) {
                 tooltip = $("#" + key + '_deprecated')[0].attributes['title'];
@@ -291,7 +290,6 @@ var EDITOR = (function ($, parent) {
             //tree.refresh();
             // debugging
             node = tree.get_node(key, false);
-            console.log(node);
         }
     },
 
@@ -697,9 +695,6 @@ var EDITOR = (function ($, parent) {
         {
             delete lo_data[key]["attributes"][name];
         };
-
-        console.log(lo_data[key]["attributes"]);
-
     },
 
     removeOptionalProperty = function (name, children) {
@@ -742,8 +737,6 @@ var EDITOR = (function ($, parent) {
 				delete lo_data[key]["attributes"][toDelete[i]];
 			};
 		}
-		
-		console.log(lo_data[key]["attributes"]);
 		
         /**
          * TOR 20150614
@@ -1922,7 +1915,19 @@ var EDITOR = (function ($, parent) {
     {
         setAttributeValue(key, [name], [value]);
     },
-
+	
+	catListChanged = function (id, key, name, $parentDiv, obj)
+	{
+		var checked = $parentDiv.data('checked');
+		if ($(obj).prop('checked') == true && $.inArray(obj.id.substring(4), checked) == -1) {
+			checked.push(obj.id.substring(4));
+		} else if ($.inArray(obj.id.substring(4), checked) > -1) {
+			checked.splice($.inArray(obj.id.substring(4), checked), 1);
+		}
+		$parentDiv.data('checked', checked);
+		
+		setAttributeValue(key, [name], [checked.toString()]);
+	},
 
     inputChanged = function (id, key, name, value, obj)
     {
@@ -3148,6 +3153,92 @@ var EDITOR = (function ($, parent) {
 					option.append(this[0]);
 					html.append(option);
 				});
+				break;
+			case 'categorylist':
+				var id = 'select_' + form_id_offset;
+				form_id_offset++;
+				html = $('<div id="' + id + '" class="categoryListHolder">').data('checked', value != '' ? value.split(',') : []);
+				
+				if (lo_data.treeroot['attributes'][options.target] != undefined) {
+					// set up all the categories & their checkboxes
+					var categories = lo_data.treeroot['attributes'][options.target].split('||');
+					
+					// work out what categories & options there are
+					for (var i=0; i<categories.length; i++) {
+						var categoryInfo = categories[i].split('|');
+						
+						if (categoryInfo.length == 2) {
+							var catTitle = categoryInfo[0].trim(),
+								catOpts = categoryInfo[1].split('\n');
+							
+							for (var j=0; j<catOpts.length; j++) {
+								catOpts.splice(j, 1, catOpts[j].trim());
+								
+								if (catOpts[j].length == 0) {
+									catOpts.splice(j, 1);
+									j--;
+								} else {
+									var stripTags = $("<div/>").html(catOpts[j]).text().trim();
+									if (stripTags.length > 0) {
+										var optInfo = stripTags.split('(');
+										if (optInfo.length > 1 && optInfo[1].trim().length > 0) {
+											catOpts.splice(j, 1, { id: optInfo[0].trim(), name: optInfo[1].trim().slice(0, -1) });
+										} else {
+											catOpts.splice(j, 1, { id: optInfo[0].replace(/ /g, "_"), name: optInfo[0] });
+										}
+									} else {
+										catOpts.splice(j, 1);
+										j--;
+									}
+								}
+							}
+							
+							if (catTitle.length > 0 && catOpts.length > 0) {
+								categories.splice(i, 1, { name: catTitle, options: catOpts });
+							} else {
+								categories.splice(i, 1);
+								i--;
+							}
+						} else {
+							categories.splice(i, 1);
+							i--;
+						}
+					}
+					
+					// if some categories exist add them to the page
+					if (categories.length > 0) {
+						for (var i=0; i<categories.length; i++) {
+							var option = $('<div class="categoryList"><div class="catTitle">' + categories[i].name + ':</div></div>');
+							
+							for (var j=0; j<categories[i].options.length; j++) {
+								var checkbox = $('<input>')
+									.attr({
+										'type': 'checkbox',
+										'name': 'cat_' + categories[i].options[j].id,
+										'id': 'cat_' + categories[i].options[j].id
+									})
+									.prop('checked', $.inArray(categories[i].options[j].id, html.data('checked')) > -1 ? true : false)
+									.change({id:id, key:key, name:name}, function(event) {
+										catListChanged(event.data.id, event.data.key, event.data.name, html, this);
+									});
+								
+								var label = $('<label for="cat_' + categories[i].options[j].id + '">' + categories[i].options[j].name + '</label>');
+								
+								$('<div class="catGroup">')
+									.appendTo(option)
+									.append(checkbox)
+									.append(label);
+							}
+							html.append(option);
+						}
+					} else {
+						var optName = wizard_data['learningObject'].node_options.all.find((o) => { return o['name'] === options.target}).value.label;
+						html.append('<span class="error">' + language.categoryList.errorEmpty.replace('{x}', "'" + optName + "'") + "</span>");
+					}
+				} else {
+					var optName = wizard_data['learningObject'].node_options.all.find((o) => { return o['name'] === options.target}).value.label;
+					html.append('<span class="error">' + language.categoryList.error.replace('{x}', "'" + optName + "'") + "</span>");
+				}
 				break;
 			case 'colourpicker':
 				var colorvalue = value;

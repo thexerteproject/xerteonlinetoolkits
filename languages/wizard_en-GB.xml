@@ -190,4 +190,8 @@
 	<course deprecated="Deprecated - the red option is no longer allowed by the course list in the management page">
 		<FreeText label="Other"></FreeText>
 	</course>
+	<categoryList>
+		<error>Add {x} to project first</error>
+		<errorEmpty>Add data to {x} first</errorEmpty>
+	</categoryList>
 </language>

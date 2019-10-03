@@ -1220,6 +1220,34 @@ div.theme_description
 	font-size:small;
 }
 
+.categoryListHolder {
+	column-count: 2;
+	column-gap: 7px;
+}
+
+.categoryList {
+	display: inline-block;
+	width: 100%;
+	margin-bottom: 5px;
+	border: #ccc 1px dashed;
+}
+
+.categoryList .catTitle {
+	margin: 1em 1em 0em;
+}
+
+.categoryList .catGroup {
+	margin: 0.5em 1em 0;
+}
+
+.categoryList .catGroup:last-child {
+	margin-bottom: 1em;
+}
+
+.categoryList input {
+	margin-right: 1em;
+}
+
 /* start of xertecss.css
 
 body {background: #b3b3b5; padding-bottom: 30px;}
