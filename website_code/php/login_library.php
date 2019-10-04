@@ -30,8 +30,7 @@ _load_language_file("/index.inc");
 
 function html_headers() {
   global $xerte_toolkits_site;
-
-  print <<<END
+?>
 <!DOCTYPE html>
 <html><head>
 
@@ -43,12 +42,19 @@ function html_headers() {
 
     -->
 
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>$xerte_toolkits_site->site_title</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>$xerte_toolkits_site->site_title</title>
 
-        <link href="../website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
-        <link href="../website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" />
-END;
+  <link href="../website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+  <link href="../website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" />
+  <?php
+  if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
+  {
+     ?>
+     <link href='branding/branding.css' rel='stylesheet' type='text/css'>
+     <?php
+  }
+
   _include_javascript_file("../website_code/scripts/file_system.js");
   _include_javascript_file("../website_code/scripts/screen_display.js");
   _include_javascript_file("../website_code/scripts/ajax_management.js");
