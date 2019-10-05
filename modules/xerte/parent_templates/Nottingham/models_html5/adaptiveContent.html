@@ -250,13 +250,13 @@
         }
         else
         {
-            if (interaction.getAttribute('interactionType') != 'open') {
+            if (interaction.getAttribute('interactionType') !== 'open' && interaction.getAttribute('interactionType') !== 'opinion' && interaction.getAttribute('opinionClass') != undefined ) {
 
-                if (interaction.getAttribute('graph') == 'true') {
+                if (interaction.getAttribute('graph') === 'true') {
                     return (
-                        interaction.getAttribute('graphType') == 'bar_answers' ||
-                        interaction.getAttribute('graphType') == 'bar_marks' ||
-                        interaction.getAttribute('graphType') == 'line_average_marks'
+                        interaction.getAttribute('graphType') === 'bar_answers' ||
+                        interaction.getAttribute('graphType') === 'bar_marks' ||
+                        interaction.getAttribute('graphType') === 'line_average_marks'
                     );
                 }
                 else {
@@ -1775,7 +1775,7 @@
 
             });
             x_pageLoaded();
-        }
+        };
 
         this.setUpUnlisted = function()
         {
