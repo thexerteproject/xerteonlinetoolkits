@@ -146,16 +146,16 @@
 		<seconds name="seconden"/>
 	</timer>
 
-	<colourChanger label="Kleur veranderaar" description="Verander de kleuren." tooltip="Verander Kleuren">
-		<closeButton label="" description="Sluit kleur veranderaar"/>
+	<colourChanger label="Toegankelijkheid" description="Toegankelijkheid." tooltip="Toegankelijkheid">
+		<closeButton label="" description="Sluit toegankelijkheid"/>
 		<selectTxt label="Selecteer ui de onderstaande opties"/>
-		<adviceTxt label="Meer advies nodig? Ga naar de &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Toolkits toegankelijkheids gids&lt;/a&gt;."/>
+		<adviceTxt label="Meer advies nodig? Ga naar de &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=168&apos;&gt;Xerte Toolkits toegankelijkheids gids&lt;/a&gt;."/>
 		<off label="Uit"/>
 		<noBg label="Verwijder achtergrond afbeeldingen"/>
-		<invert label="Draai om"/>
+		<invert label="Draai kleuren om"/>
 		<blackYellow label="Zwart op geel"/>
 	</colourChanger>
-
+	
 	<screenReaderInfo label="Screenreader informatie" newWindow="Deze link opent een nieuw venster" thisWindow="Deze link opent in het huidige venster" dialog="Deze knop opent een dialoog venster" >
 		<tabNav description="Deze pagina bevat tabs waarbij iedere tab andere informatie bevat. Om een tab te selecteren: Klik twee maal Enter (Jaws) of gebruik Shift-Enter (NVDA)."/>
 		<accNav description="Deze pagina bevat accordeon tabs waarbij iedere tab andere informatie bevat. Om een tab te selecteren klik Enter of Spatie."  click="Klik om informatie te bekijken to reveal information"/>
