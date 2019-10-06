@@ -177,7 +177,7 @@ xAPIDashboard.prototype.setStatisticsValues = function(base, learningObjectIndex
                 sessions.push(sessionId);
             }
             if(s.verb.id == "http://adlnet.gov/expapi/verbs/exited"){
-                var pages = interactions.filter(i => i.type == "page").map(p => p.url);
+                var pages = interactions.filter(function(i){ return i.type == "page" }).map(function(p) {return  p.url});
                 if(pages.indexOf(s.object.id) >= 0)
                 {
                     totalCompletedPages++;
@@ -869,7 +869,7 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
         colorDiv + "</a></td>";
 
     div.find("tr").last().append(colorDiv);
-    title = interactionObject.name;
+    var title = interactionObject.name;
     if (title == undefined) {
         title = "";
     }
@@ -983,12 +983,13 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
     var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
     var interaction = interactions[interactionIndex];
     var interactionTitle = interaction.name;
+    var colinteractionTitle = interactionTitle;
     var collapseIcon = "";
     var showHide = "hide";
     var parentIndex = "";
     var $this = this;
     var thclass = " ";
-    var max_interaction_title_length;
+    var max_colinteraction_title_length;
 
     if (interaction.parent == "" || this.data.selectInteractionById(interactions, interaction.parent) == undefined) {
         parentIndex = "-1";
@@ -997,21 +998,21 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
             collapseIcon = '<div data-interaction="' + interactionIndex + '" class="icon-header icon-hide">&#9701</div>';
             thclass += "x-dashboard-has-children ";
         }
-        max_interaction_title_length = 15;
+        max_colinteraction_title_length = 15;
         thclass += "x-dashboard-page";
     } else {
 
         parentIndex = this.data.selectInteractionById(interactions, interaction.parent).interactionObjectIndex;
         thclass += "x-dashboard-interaction";
-        max_interaction_title_length = 15;
+        max_colinteraction_title_length = 15;
     }
-    if(interactionTitle.length > max_interaction_title_length)
+    if(colinteractionTitle.length > max_colinteraction_title_length)
     {
-        interactionTitle = interactionTitle.substr(0, max_interaction_title_length - 3) + "...";
+        colinteractionTitle = colinteractionTitle.substr(0, max_colinteraction_title_length - 3) + "...";
     }
     var interactionHeader = '<th data-interaction-index="' + interaction.interactionObjectIndex + '" data-parent="' + parentIndex + '" class="column-' + showHide + thclass +
         '" title="' + interaction.name + '"><a href="#" data-toggle="modal" data-target="#model-' +
-        learningObjectIndex + '-' + interactionIndex + '">' + interactionTitle + '</a>' + collapseIcon + '</th>';
+        learningObjectIndex + '-' + interactionIndex + '">' + colinteractionTitle + '</a>' + collapseIcon + '</th>';
     $('body').append('<div id="model-' + learningObjectIndex + '-' + interactionIndex + '" class="modal fade" role="dialog" >' +
         '<div class="modal-dialog">' +
         '<div class="modal-content">' +
@@ -1049,13 +1050,17 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
                     learningObjectIndex +
                     '-' + interactionIndex);
                 var question = $this.data.getQuestion(interactionDetails.url);
-                var pausedStatements = $this.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
                 if (question != undefined) {
                     var questionDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
                     $this.displayQuestionInformation(questionDiv, question, learningObjectIndex, interactionIndex);
-                } else if (pausedStatements.length > 0) {
-                    var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.container'));
-                    $this.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
+                }
+                else
+                {
+                    var pausedStatements = $this.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
+                    if (pausedStatements.length > 0) {
+                        var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.container'));
+                        $this.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
+                    }
                 }
                 $this.displayPageInfo(contentDiv, ".journey-container .main-information", interaction);
                 //getMultipleChoiceQuestion(learningObjects[learningObjectIndex].url, interaction.url);
@@ -1097,7 +1102,8 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
         videoLength = pausedstatements[0].result.extensions["https://w3id.org/xapi/video/extensions/time"];
 
     }else{
-        videoLength = Math.max(...pausedstatements.map(function(s) { return s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]}));
+        videoLength = pausedstatements.map(function(s) { return s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]})
+            .reduce(function(a,b){ return Math.max(a,b)});
     }
     // Gets all the ranges from the data.
     var stringRanges = pausedstatements.map(function(s) {return s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]});
@@ -1222,7 +1228,7 @@ xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
 
     });
 
-}
+};
 
 xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, interaction) {
     var $this = this;
@@ -1276,7 +1282,7 @@ xAPIDashboard.prototype.createPieChartInteraction = function(statements, div_loc
     newStatements.forEach(function(x) {
         if (x.result.score.isScaled == undefined || x.result.score.isScaled == false) {
             x.result.score.isScaled = true;
-            x.result.score.scaled *= 10;
+            x.result.score.scaled *= 100;
         }
         return x;
     });
@@ -1287,8 +1293,8 @@ xAPIDashboard.prototype.createPieChartInteraction = function(statements, div_loc
         aggregate: ADL.count(),
         range: {
             start: 0.0,
-            end: 10.0,
-            increment: 1
+            end: 100.0,
+            increment: 10
         },
         post: function(data) {
             data.contents.map(function(el) {
@@ -1318,6 +1324,9 @@ xAPIDashboard.prototype.displayQuestionInformation = function(contentDiv, questi
         case "fill-in":
             this.displayFillInQuestionInformation(contentDiv, question, learningObjectIndex, interactionIndex);
             break;
+        case "text":  // Special case for open ansers, see also DashboardState.prototype.getQuestion
+            this.displayTextQuestionInformation(contentDiv, question, learningObjectIndex, interactionIndex);
+            break;
         default:
             debugger;
             console.log("Invalid interaction type");
@@ -1330,7 +1339,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
     var interaction = interactions[interactionIndex];
     var learningObjectUrl = learningObjects[learningObjectIndex].url;
     var interactionObjectUrl = interaction.url;
-    contentDiv.append(question.name["en-US"]);
+    //contentDiv.append(question.name["en-US"]);
     var options = "<div>" + XAPI_DASHBOARD_SOURCES + "<ol>";
     question.source.forEach(function(s) {
         options += "<li>" + s.description["en-US"] + "</li>";
@@ -1342,7 +1351,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
     });
     options += '</ol>';
     var pairs = question.correctResponsesPattern[0].split("[,]");
-    pairs = pairs.map(function(x) {x.split("[.]").join(" <i class=\"fa fa-long-arrow-right\"></i> ")});
+    pairs = pairs.map(function(x) {return x.split("[.]").join(" <i class=\"fa fa-long-arrow-right\"></i> ")});
     options += XAPI_DASHBOARD_CORRECTANSWERS;
     options += "<ul>";
     pairs.forEach(function(p) {
@@ -1364,7 +1373,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
         });
     });
     dash.addStatements(pairStatements);
-    options += '<svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div>';
+    options += '<div><svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div></div>';
     contentDiv.append(options);
     var chart = dash.createBarChart({
         container: '#answers-' + learningObjectIndex + '-' + interactionIndex,
@@ -1396,7 +1405,7 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
     var interaction = interactions[interactionIndex];
     var learningObjectUrl = learningObjects[learningObjectIndex].url;
     var interactionObjectUrl = interaction.url;
-    contentDiv.append(XAPI_DASHBOARD_QUESTION + " " + question.name["en-US"]);
+    //contentDiv.append(XAPI_DASHBOARD_QUESTION + " " + question.name["en-US"]);
     var options = "<div>" + XAPI_DASHBOARD_ANSWERS + "<ol>";
     choices = question.choices;
     var dash = new ADL.XAPIDashboard();
@@ -1418,7 +1427,7 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
     });
 
     dash.addStatements(statements);
-    options += '</ol><svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div>';
+    options += '</ol><div><svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div></div>';
     contentDiv.append(options);
 
     var chart = dash.createBarChart({
@@ -1471,7 +1480,7 @@ xAPIDashboard.prototype.displayFillInQuestionInformation = function(contentDiv, 
     var interaction = interactions[interactionIndex];
     var learningObjectUrl = learningObjects[learningObjectIndex].url;
     var interactionObjectUrl = interaction.url;
-    contentDiv.append(question.name["en-US"]);
+    //contentDiv.append(question.name["en-US"]);
     var options = "<div><ul>";
     question.correctResponsesPattern.forEach(function(option) {
         options += "<li>" + option + "</li>";
@@ -1479,7 +1488,7 @@ xAPIDashboard.prototype.displayFillInQuestionInformation = function(contentDiv, 
     var dash = new ADL.XAPIDashboard();
     var statements = this.data.getQuestionResponses(interactionObjectUrl);
     dash.addStatements(statements);
-    options += '</ul><svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div>';
+    options += '</ul><div><svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div></div>';
     contentDiv.append(options);
     var chart = dash.createBarChart({
         container: '#answers-' + learningObjectIndex + '-' + interactionIndex,
@@ -1496,48 +1505,67 @@ xAPIDashboard.prototype.displayFillInQuestionInformation = function(contentDiv, 
     chart.draw();
 };
 
+xAPIDashboard.prototype.displayTextQuestionInformation = function(contentDiv, question, learningObjectIndex, interactionIndex) {
+    var learningObjects = this.data.getLearningObjects();
+    var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
+    var interaction = interactions[interactionIndex];
+    var learningObjectUrl = learningObjects[learningObjectIndex].url;
+    var interactionObjectUrl = interaction.url;
+    //contentDiv.append(question.name["en-US"]);
+    var statements = this.data.getQuestionResponses(interactionObjectUrl);
+    var answers = "<div class='openanwers'><ul>";
+    statements.forEach(function(statement){
+        if (statement.result.response != undefined && statement.result.response != "") {
+            answers += "<li>" + statement.result.response + "</li>";
+        }
+    });
+    answers += "</ul></div>";
+    contentDiv.append(answers);
+};
+
+
 xAPIDashboard.prototype.getResultPage = function(div, userdata, learningObject, statement) {
     var classIdentifier = "row-pagecontents-" + learningObject + "-" + this.escapeId(userdata['key']);
     if (statement.result != undefined && statement.result.extensions["http://xerte.org.uk/xapi/trackingstate"] != undefined) {
         var trackingState = JSON.parse(statement.result.extensions["http://xerte.org.uk/xapi/trackingstate"]);
-        html = `<div id=` + classIdentifier +
-            `>
-        <div class="pageContents">
+        html = '<div id='  + classIdentifier +
+            '>\n' +
+        '<div class="pageContents">\n' +
 
-    <div class="pdfContent">
-        <h3 class="generalResultsTxt"></h3>
-        <table class="general_summary" rules="rows">
-            <tr>
-                <td class="averageTxt"></td>
-                <td><span class="averageScore"></span></td>
-            </tr>
-            <tr>
-                <td class="completionTxt"></td>
-                <td><span class="completion"></span></td>
-            </tr>
-            <tr>
-                <td class="startTimeTxt"></td>
-                <td><span class="startTime"></span></td>
-            </tr>
-            <tr>
-                <td class="durationTxt1"></td>
-                <td><span class="totalDuration"></span></td>
-            </tr>
-        </table>
-        <div class ="specific">
-        <h3 class="interactivityResultsTxt"></h3>
-        <h3 class="globalResultsTxt"></h3>
-        <table class="questionScores" rules="rows">
-        </table>
-        <br />
-        <h3 class="specificResultsTxt">Specific Results</h3>
-        <div class="fullResults">
+    '<div class="pdfContent">\n' +
+    '    <h3 class="generalResultsTxt"></h3>\n' +
+    '    <table class="general_summary" rules="rows">\n' +
+    '        <tr>\n' +
+    '            <td class="averageTxt"></td>\n' +
+    '            <td><span class="averageScore"></span></td>\n' +
+    '        </tr>\n' +
+    '        <tr>\n' +
+    '            <td class="completionTxt"></td>\n' +
+    '            <td><span class="completion"></span></td>\n' +
+    '        </tr>\n' +
+    '        <tr>\n' +
+    '            <td class="startTimeTxt"></td>\n' +
+    '            <td><span class="startTime"></span></td>\n' +
+    '        </tr>\n' +
+    '        <tr>\n' +
+    '            <td class="durationTxt1"></td>\n' +
+    '            <td><span class="totalDuration"></span></td>\n' +
+    '        </tr>\n' +
+    '    </table>\n' +
+    '    <div class ="specific">\n' +
+    '    <h3 class="interactivityResultsTxt"></h3>\n' +
+    '    <h3 class="globalResultsTxt"></h3>\n' +
+    '    <table class="questionScores" rules="rows">\n' +
+    '    </table>\n' +
+    '    <br />\n' +
+    '    <h3 class="specificResultsTxt">Specific Results</h3>\n' +
+    '    <div class="fullResults">\n' +
 
-        </div>
-        <br />
-    </div>
-    </div>
-</div></div>`;
+    '    </div>\n' +
+    '    <br />\n' +
+    '</div>\n' +
+    '</div>\n' +
+'</div></div>\n';
         div.append(html);
         results.init(classIdentifier, trackingState);
     } else {
@@ -1613,7 +1641,11 @@ xAPIDashboard.prototype.drawAverageScore = function(elmnt, averageGrade) {
     elmnt.append(row);
 };
 
-xAPIDashboard.prototype.drawActivityChart = function(base, elmnt, begin, end, link = true) {
+xAPIDashboard.prototype.drawActivityChart = function(base, elmnt, begin, end, link) {
+    if (link == undefined)
+    {
+        link = true;
+    }
     var row = "<a id='graph_link_" + this.data.info.template_id + "' href='#'><div id='graph-svg-wrapper-" + this.data.info.template_id +
         "' class='graph-svg-wrapper'><svg></svg></div></a>";
     elmnt.append(row);

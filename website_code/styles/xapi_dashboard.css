@@ -350,7 +350,9 @@ th.x-dashboard-interaction {
 }
 
 .dashboard .table td {
-    padding: 2px;
+    padding:2px;
+}
+.dashboard .table .session-row td {
     text-align: center;
     vertical-align: middle;
 }
@@ -384,12 +386,16 @@ td.x-dashboard-interaction
 
 .panel{
     padding: 5px;
-    border: solid 1px #000000;
+    border: solid 1px lightgray;
     border-radius: 5px;
     margin-bottom:10px;
     float:left;
 }
 
+.panel.col-6 {
+    margin: 5px;
+    max-width: 49%;
+}
 
 #loader {
     position: absolute;
