@@ -245,11 +245,8 @@
 
 	define("PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI", "Enable xAPI:");
 
-<<<<<<< HEAD
-=======
     define("PROPERTIES_LIBRARY_TSUGI_DASHBOARD_URLS", "Dashboard urls (separated by commas)");
 
->>>>>>> origin/develop
 	define("PROPERTIES_LIBRARY_TSUGI_XAPI_USEGLOBAL", "Use globally configured xAPI LRS:");
 
 	define("PROPERTIES_LIBRARY_TSUGI_XAPI_ENDPOINT", "xAPI LRS end-point:");
