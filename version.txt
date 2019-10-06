@@ -1,1 +1,1 @@
-X (3.7) - installed from github
+3.8 - installed from github
