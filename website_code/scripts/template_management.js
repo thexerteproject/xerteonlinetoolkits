@@ -482,7 +482,6 @@ function preview_window(admin) {
                 if (node.xot_type == "file") {
 
                     size = node.preview_size.split(",");
-
                     if (size.length != 1) {
 
 
@@ -702,7 +701,12 @@ function getProjectInformation_stateChanged() {
         if (info.fetch_statistics) {
             url = site_url + info.template_id;
             q = {};
+
+            if (info.lrs.site_allowed_urls != null && info.lrs.site_allowed_urls != undefined && info.lrs.site_allowed_urls != "") {
+                q['activities'] = [url].concat(info.lrs.lrsurls.split(",")).concat(info.lrs.site_allowed_urls.split(",").map(function(url) {return url + info.template_id})).filter(function(url) {return  url != ""});
+            }
             q['activity'] = url;
+
             q['verb'] = "http://adlnet.gov/expapi/verbs/launched";
             q['related_activities'] = false;
 
@@ -714,7 +718,7 @@ function getProjectInformation_stateChanged() {
             x_Dashboard = new xAPIDashboard(info);
             x_Dashboard.getStatements(q, false, function() {
                 $("#graph_" + info.template_id).html("");
-                x_Dashboard.drawActivityChart($("#graph_" + info.template_id), startstartofday, todayendofday);
+                x_Dashboard.drawActivityChart("", $("#graph_" + info.template_id), startstartofday, todayendofday);
             });
         }
     }
@@ -1382,6 +1386,28 @@ function create_tutorial(tutorial) {
     }
 }
 
+function template_submit()
+{
+
+    var url = "website_code/php/management/upload.php";
+    var form = document.getElementById("form-template-upload");
+    var formData = new FormData(form);
+    xmlHttp.open("post", url, true);
+    xmlHttp.onreadystatechange = function(e)
+    {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 400)
+        {
+            alert(xmlHttp.responseText);
+        }
+        else if(xmlHttp.readyState == 4 && xmlHttp.status == 200)
+        {
+            alert(xmlHttp.responseText);
+        }
+    }
+    xmlHttp.send(formData);
+
+    return false;
+}
 
 /********** CHECK **************/
 
@@ -1407,3 +1433,4 @@ function example_alert() {
 
     }
 }
+

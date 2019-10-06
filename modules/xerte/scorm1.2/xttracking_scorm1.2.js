@@ -154,18 +154,20 @@ function ScormTrackingState()
     this.duration_previous_attempts = 0;
     this.lo_type = "pages only";
     this.lo_passed = -1.0;
-    this.page_timeout = 5000;
+    this.page_timeout = 0;
     this.lo_completed = "unknown";
     this.finished = false;
     this.interactions = new Array();
     this.debug = false;
 
     this.setVars = setVars;
+    this.getVars = getVars;
     this.pageCompleted = pageCompleted;
     this.find = find;
     this.findcreate = findcreate;
     this.findPage = findPage;
     this.findInteraction = findInteraction;
+    this.findAllInteractions = findAllInteractions;
     this.countInteractions = countInteractions;
     this.enter = enter;
     this.exit = exit;
@@ -193,13 +195,10 @@ function ScormTrackingState()
 
     function pageCompleted(sit)
     {
-        for (i=0; i<sit.nrinteractions; i++)
+        var sits = this.findAllInteractions(sit.page_nr);
+        if (sits.length != sit.nrinteractions)
         {
-            var sit2 = this.findInteraction(sit.page_nr, i);
-            if (sit2 == null)
-            {
-                return false;
-            }
+            return false;
         }
         if (sit.ia_type=="page" && sit.duration < this.page_timeout)
         {
@@ -207,6 +206,7 @@ function ScormTrackingState()
         }
         return true;
     }
+
 
 
 
@@ -239,6 +239,43 @@ function ScormTrackingState()
                 this.interactions.push(sit);
             }
         }
+    }
+
+    function getVars()
+    {
+        // SCORM 1.2 only allows for 4kb of suspend data, so do not store all interaction data , but just the bare minimum to be able to resume.
+        var jsonObj = {};
+        jsonObj.currentid = this.currentid;
+        jsonObj.currentpageid = this.currentpageid;
+        jsonObj.trackingmode = this.trackingmode;
+        jsonObj.scoremode = this.scoremode;
+        jsonObj.nrpages = this.nrpages;
+        jsonObj.pages_visited=this.pages_visited;
+//            this.start = new Date(jsonObj.start);
+        jsonObj.duration_previous_attempts = this.duration_previous_attempts;
+        jsonObj.lo_type = this.lo_type;
+        jsonObj.lo_passed = this.lo_passed;
+        jsonObj.page_timout = this.page_timeout;
+        jsonObj.lo_completed = this.lo_completed;
+//            this.finished = jsonObj.finished;
+        jsonObj.interactions = new Array();
+
+        // Only push the cureent page interaction
+        var sit = this.find(this.currentpageid);
+        jsonObj.interactions.push(sit);
+        /*
+        var i=0;
+        for (i=0; i<this.interactions.length; i++)
+        {
+            var jsonSit = this.interactions[i];
+            // Only create empty interactions, to make string as short as possible
+            var sit = new ScormInteractionTracking(jsonSit.page_nr, jsonSit.ia_nr, jsonSit.ia_type, jsonSit.ia_name);
+
+            //sit.setVars(jsonSit);
+            jsonObj.interactions.push(sit);
+        }
+         */
+        return JSON.stringify(jsonObj);
     }
 
     function findcreate(page_nr, ia_nr, ia_type, ia_name)
@@ -300,6 +337,18 @@ function ScormTrackingState()
                 return this.interactions[i];
         }
         return null;
+    }
+
+    function findAllInteractions(page_nr)
+    {
+        var i=0;
+        tmpinteractions = [];
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr != -1)
+                tmpinteractions.push(i);
+        }
+        return tmpinteractions;
     }
 
     function countInteractions(page_nr)
@@ -756,7 +805,7 @@ function ScormTrackingState()
 
             setValue('cmi.core.lesson_status', lessonStatus);
             state.currentpageid = currentid;
-            var suspend_str = JSON.stringify(this);
+            var suspend_str = this.getVars();
             if (lessonStatus == 'incomplete') {
                 setValue('cmi.core.exit', 'suspend');
                 setValue('cmi.suspend_data', suspend_str);
@@ -1333,7 +1382,7 @@ function XTLogin(login, passwd)
     return true;
 }
 
-function XTGetMode()
+function XTGetMode(extended)
 {
     if (state.scormmode == "normal")
     {
@@ -1341,10 +1390,16 @@ function XTGetMode()
         {
             var sit=state.find(state.currentpageid);
             if (state.trackingmode !== 'none') {
-                if (state.scoremode == 'first')
+                if (extended != null && (extended == true || extended == 'true'))
+                {
+                    if (state.scoremode == 'first')
+                        return "normal";
+                    else
+                        return "normal_last";
+                }
+                else {
                     return "normal";
-                else
-                    return "normal_last";
+                }
             }
             else
             {
@@ -1614,32 +1669,12 @@ function XTTerminate()
     {
         if (!state.finished)
         {
+            var currentpageid = state.currentpageid;
+
             // End tracking of page
             x_endPageTracking(false, -1);
 
             // This code is probably obsolete, leave it in to allow for more testing
-            var currentpageid = "";
-            state.finished = true;
-            if (state.currentid)
-            {
-                var sit = state.find(currentid);
-                // there is still an interaction open, close it
-                if (sit != null)
-                {
-                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-                }
-            }
-            if (state.currentpageid)
-            {
-                currentpageid = state.currentpageid;
-                var sit = state.find(currentpageid);
-                // there is still an interaction open, close it
-                if (sit != null)
-                {
-                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-                }
-
-            }
             state.finishTracking(currentpageid, false);
         }
     }

@@ -170,8 +170,15 @@
 						if (dropDownNoise != undefined) {
 							allAnswers = allAnswers.concat(dropDownNoise);
 						}
-						allAnswers.sort();
-						
+
+						dropDownSort = x_currentPageXML.getAttribute("dropDownSort");
+						if (dropDownSort != undefined && dropDownSort != "" && dropDownSort != "alphabetic") // must be random
+						    allAnswers.sort(
+						        function() { return 0.5 - Math.random(); }
+						    );
+						else
+						    allAnswers.sort();
+
 						for (var j=0; j<allAnswers.length; j++) {
 							while (allAnswers[j] == allAnswers[j+1]) {
 								allAnswers.splice(j+1,1);
@@ -186,7 +193,8 @@
 						gapFillStr += '</select>';
 						
 					} else { // fill in the blank
-						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + decodedAnswer + '" tabindex="' + tabIndex + '"/>';
+
+						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + decodedAnswer + '" tabindex="' + tabIndex + '" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" />';
 
 						var tempArray = [];
 						tempArray = decodedAnswer.split(delimiter);
@@ -265,8 +273,8 @@
 			else if(x_currentPageXML.getAttribute("interactivity") == "Drag Drop"){
 			    correctAnswers = [];
                 correctOptions = [];
+                name = x_currentPageXML.getAttribute("name");
 				for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
-					name = "interaction number" + " " + interactionNumber;
 					correctAnswer = answerData[interactionNumber][0];
 					correctAnswer = correctAnswer + "-->" + correctAnswer;
 					correctAnswers.push(correctAnswer);
@@ -314,6 +322,10 @@
 		this.setUpDropDown = function() {
 			tabIndex++;
 			$("#labelHolder").remove();
+			
+			if (x_currentPageXML.getAttribute("spaceLines") != "false") {
+				$targetHolder.find("span").css("line-height", $targetHolder.find("select").outerHeight() + 12 + "px");
+			}
 			
 			$("#submitBtn")
 				.button({
@@ -364,6 +376,10 @@
 		this.setUpFillBlank = function() {
 			$("#labelHolder").remove();
 
+			if (x_currentPageXML.getAttribute("spaceLines") != "false") {
+				$targetHolder.find("span").css("line-height", $targetHolder.find("input").outerHeight() + 12 + "px");
+			}
+			
 			var	maxW = 0,
 				i;
 			for (i=0; i<$targetHolder.find("input").length; i++) {
@@ -389,10 +405,7 @@
 						var $this = $(this);
 
 						setTimeout(function() {
-							currvalue = $this.val();
-							if (!casesensitive) {
-								currvalue = $this.val().toLowerCase();
-							}
+							var currvalue = !casesensitive ? $this.val().trim().toLowerCase() : $this.val().trim();
 							if (answerData[$this.data("index")].indexOf(currvalue) != -1) { // correct
 								$this
 									.attr("readonly", "readonly")
@@ -477,7 +490,7 @@
 									}
 								}
 							}
-						}, 0);
+						}, 10);
 					});
 				
 			} else {
@@ -506,9 +519,9 @@
 					})
 					//.attr("tabindex",tabIndex) // **
 					.click(function() {
-						 $targetHolder.find("input").each(function() {
+						$targetHolder.find("input").each(function() {
 							var $this = $(this),
-								currvalue = !casesensitive ? $this.val().toLowerCase() : $this.val();
+								currvalue = !casesensitive ? $this.val().trim().toLowerCase() : $this.val().trim();
 							
 							if (answerData[$this.data("index")].indexOf(currvalue) != -1) {
 								$this.attr("readonly", "readonly");
@@ -540,6 +553,7 @@
 
 				
 			} else {
+				tabIndex++;
 				$("#submitBtn")
 					.button({
 						label:	x_currentPageXML.getAttribute("checkBtn") != undefined && x_currentPageXML.getAttribute("checkBtn") != "" ? x_currentPageXML.getAttribute("checkBtn") : "Check"
@@ -610,6 +624,10 @@
 						gapFill.dropLabel($(this), ui.draggable); // target, label
 					}
 					});
+			
+			if (x_currentPageXML.getAttribute("spaceLines") != "false") {
+				$targetHolder.find("span:not(.target)").css("line-height", parseInt($targetHolder.find(".target").css("line-height")) + 10 + "px");
+			}
 			
 			this.setUpTargetListeners($targetHolder.find(".target"));
 			
@@ -716,7 +734,6 @@
 					$thisLabel.add($thisTarget).data("correct", true);
 				}
 			} else {
-                debugger;
 				$thisTarget.addClass("correct");
                 if ($thisLabel.data("answer") == $thisTarget.data("answer")) {
                     $pageContents.data("score", $pageContents.data("score") + 1);
@@ -973,7 +990,6 @@
         };
 
 		this.fillInSubmit = function(forceTracking){
-		    debugger;
             var empty = 0;
             $targetHolder.find("input").each(function() {
                 if ($(this).val() == "") {
@@ -996,12 +1012,12 @@
 				
                 $targetHolder.find("input").each(function() {
                     var $this = $(this),
-                        currvalue = !casesensitive ? $this.val().toLowerCase() : $this.val();
-                    var feedback = "Incorrect"
+                        currvalue = !casesensitive ? $this.val().trim().toLowerCase() : $this.val().trim();
+                    var feedback = "Incorrect";
                     var correct = false;
                     var answer = currvalue;
 
-                    if (answerData[$this.data("index")].indexOf(currvalue) != -1) { // correct
+                    if (answerData.length > 0 && answerData[$this.data("index")].indexOf(currvalue) != -1) { // correct
                         $this.attr("readonly", "readonly");
                         $this.attr("correct", "correct");
                         feedback = "Correct";

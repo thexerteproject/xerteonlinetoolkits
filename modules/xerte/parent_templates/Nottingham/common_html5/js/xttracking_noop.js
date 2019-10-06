@@ -63,7 +63,7 @@ function NoopTrackingState()
     this.interactions = new Array();
     this.lo_completed = 0;
     this.lo_passed = -1;
-    this.page_timeout = 5000;
+    this.page_timeout = 0;
     this.forcetrackingmode = false;
     this.debug = false;
 
@@ -86,6 +86,7 @@ function NoopTrackingState()
     this.exitInteraction = exitInteraction;
     this.findPage = findPage;
     this.findInteraction = findInteraction;
+    this.findAllInteractions = findAllInteractions;
     this.findCreate = findCreate;
     this.enterPage = enterPage;
     this.verifyResult = verifyResult;
@@ -251,13 +252,10 @@ function NoopTrackingState()
 
     function pageCompleted(sit)
     {
-        for (i=0; i<sit.nrinteractions; i++)
+        var sits = this.findAllInteractions(sit.page_nr);
+        if (sits.length != sit.nrinteractions)
         {
-            var sit2 = this.findInteraction(sit.page_nr, i);
-            if (sit2 == null)
-            {
-                return false;
-            }
+            return false;
         }
         if (sit.ia_type=="page" && sit.duration < this.page_timeout)
         {
@@ -390,6 +388,18 @@ function NoopTrackingState()
                 return this.interactions[i];
         }
         return null;
+    }
+
+    function findAllInteractions(page_nr)
+    {
+        var i=0;
+        tmpinteractions = [];
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr != -1)
+                tmpinteractions.push(i);
+        }
+        return tmpinteractions;
     }
 
 
@@ -963,14 +973,19 @@ function XTLogin(login, passwd)
     return true;
 }
 
-function XTGetMode()
+function XTGetMode(extended)
 {
     if (state.forcetrackingmode === 'true') {
         if (state.trackingmode !== "none") {
-            if (state.scoremode == "first")
+            if (extended != null && (extended == true || extended == 'true')) {
+                if (state.scoremode == "first")
+                    return "normal";
+                else
+                    return "normal-last";
+            }
+            else {
                 return "normal";
-            else
-                return "normal-last";
+            }
         }
         else {
             return "tracking";
@@ -1193,6 +1208,30 @@ function XTTerminate()
             }
 
         }
+        if (typeof lti_enabled !== 'undefined' && lti_enabled) {
+            // Send ajax request to store grade through LTI to gradebook
+            var url = window.location.href;
+            if (url.indexOf("lti_launch.php") >= 0) {
+                url = url.replace("lti_launch.php", "website_code/php/lti/sendgrade.php");
+            } else if (url.indexOf("lti2_launch.php") >= 0) {
+                url = url.replace("lti2_launch.php", "website_code/php/lti/sendgrade.php");
+            } else {
+                url = "";
+            }
+            if (url.length > 0) {
+                $.ajax({
+                    method: "POST",
+                    url: url,
+                    data: {
+                        grade: state.getdScaledScore()
+                    }
+                })
+                    .done(function (msg) {
+                        //alert("Data Saved: " + msg);
+                    });
+            }
+        }
+
     }
 }
 

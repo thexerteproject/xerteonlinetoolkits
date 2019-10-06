@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 // Load the plugin files and fire a startup action
 require_once(dirname(__FILE__) . "/plugins.php");
 
@@ -86,18 +86,19 @@ $version = getVersion();
     <script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
     <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
     <script type="text/javascript" src="editor/js/vendor/jstree.js?version=<?php echo $version;?>"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
-    <link href="website_code/styles/bootstrap.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
-    <link href="website_code/styles/nv.d3.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
-    <link href="website_code/styles/xapi_dashboard.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
-    <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
-    <link href="website_code/styles/folder_popup.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
-    <link href="website_code/styles/jquery-ui-layout.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
-    <link href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
-    <link href="website_code/styles/frontpage.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>">
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
+    <link href="website_code/styles/bootstrap.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/nv.d3.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/xapi_dashboard.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
+    <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
+    <link href="website_code/styles/folder_popup.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/jquery-ui-layout.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/frontpage.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
     <?php
@@ -211,15 +212,37 @@ Folder popup is the div that appears when creating a new folder
                     </label>
                     <input type="text" id="dp-end">
                 </div>
+                <div class="dash-col-1">
+                    <label for="dp-end">
+                        <?php echo INDEX_XAPI_DASHBOARD_GROUP_SELECT; ?>
+                    </label>
+                    <select type="text" id="group-select">
+                        <option value="all-groups"><?php echo INDEX_XAPI_DASHBOARD_GROUP_ALL; ?></option>
+                    </select>
+                </div>
                 <div class="close-button">
                     <button type="button" class="xerte_button_c_no_width"
                             onclick="javascript:close_dashboard()"><?php echo INDEX_XAPI_DASHBOARD_CLOSE; ?>
                     </button>
                 </div>
+                <div class="show-display-options-button">
+                    <button type="button" class="xerte_button_c_no_width"><?php echo INDEX_XAPI_DASHBOARD_DISPLAY_OPTIONS; ?>
+                    </button>
+                </div>
+                <div class="show-question-overview-button">
+                    <button type="button" class="xerte_button_c_no_width"><?php echo INDEX_XAPI_DASHBOARD_QUESTION_OVERVIEW; ?>
+                    </button>
+                </div>
+                <div class="dashboard-print-button">
+                    <button type="button" class="xerte_button_c_no_width"><?php echo INDEX_XAPI_DASHBOARD_PRINT; ?>
+                    </button>
+                </div>
             </div>
         </div>
         <div id="dashboard-title"></div>
-        <div id="journeyData" class="journeyData container-fluid container"></div>
+        <div class="jorneyData-container">
+            <div id="journeyData" class="journeyData journey-container"></div>
+        </div>
     </div>
 </div>
 
@@ -259,7 +282,7 @@ Folder popup is the div that appears when creating a new folder
 
         <div class="buttonbar">
             <div class="file_mgt_area_top">
-                
+
 
             </div>
 
@@ -299,13 +322,13 @@ Folder popup is the div that appears when creating a new folder
 					<button title="<?php echo INDEX_BUTTON_PREVIEW; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="preview"><i class="fa fa-play xerte-icon"></i></button>
 				</div>
-				
+
 				<div class="file_mgt_area_middle_button_left">
 					<button title="<?php echo INDEX_BUTTON_NEWFOLDER; ?>" type="button" class="xerte_workspace_button" id="newfolder" onClick="javascript:make_new_folder()">
 						<i class="fa fa-folder xerte-icon"></i>
 					</button>
 				</div>
-				
+
 				<div class="file_mgt_area_middle_button_right">
 					<button title="<?php echo INDEX_BUTTON_DELETE; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="delete"><i class="fa  fa-trash xerte-icon"></i></button>
@@ -355,11 +378,11 @@ Folder popup is the div that appears when creating a new folder
     </div>
 
     <div class="ui-layout-east">
-	
+
         <div class="header" id="inner_right_header">
             <p class="heading"><i class="fa  icon-wrench xerte-icon"></i>&nbsp;<?PHP echo INDEX_CREATE; ?></p>
         </div>
-		
+
         <div class="content">
             <div class="new_template_area_middle">
                 <div id="new_template_area_middle_ajax" class="new_template_area_middle_scroll"><?PHP

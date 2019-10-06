@@ -1,0 +1,43 @@
+<wizard menus="Interactivity">
+    <pageWizard remove="true" dublicate="false">
+        <newNodes>
+            <topXQ><![CDATA[<topXQ name="Enter Page Title" instruction = "Enter Your Instruction" amountOfTries="1" prompt= "Enter Your Question"  align = "Left" panelWidth = "Medium" numberAnswers = "1" feedbackLabel="Feedback" attemptLabel="Attempts" correctAnswersLabel="Correct answers" passed="You passed the question!" failed="Not all answers are correct"
+	  checkBtnTxt="Check"/>]]></topXQ>
+        </newNodes>
+    </pageWizard>
+
+    <!-- TXQ PAGE=============================-->
+<topXQ menu = "Interactivity" menuItem = "Answer X of Y" hint = "Poses a question with multiple answers where the student can't see the answers like in a MCQ. The user can give the answers in any order." icon="icTopXQ" thumb="thumbs/topXQ.jpg" remove = "true">
+    <name label = "Page Title" type = "TextInput" wysiwyg = "true"/>
+    <align label = "Align Text" options = "Left,Right" type = "ComboBox" data = "Left,Right" defaultValue = "Left" width = "100"/>
+    <instruction label = "Instruction" type = "TextArea" height = "100"/>
+    <prompt label="Question" type="TextArea" height="100"/>
+	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+    <numberAnswers label="Number of Answers" type="TextInput" defaultValue="1" tooltip="Number of answer fields shown on the page"/>
+	
+	<feedback type="TextArea" height="40" label="Feedback" optional="true" defaultValue="Enter your feedback here"/>
+    <showAnswers label = "Show Answers" defaultValue="true" type="CheckBox" optional="true" tooltip="Show all possible answers when activity is complete"/>
+	<caseSensitivity label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat answers as case sensitive"/>
+    <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" tooltip="Attempts allowed before feedback is given"/>
+    <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+
+
+    <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="false" divider="true" language="true" />
+    <correctAnswersLabel label="Correct Answers Label" type="TextInput" wysiwyg="false" language="true"/>
+    <passed label="Passed" type="TextInput" wysiwyg="false" language="true"  />
+    <failed label="Failed" type="TextInput" wysiwyg="false" language="true" />
+    <attemptLabel label="Attempt Label" type="TextInput" wysiwyg="false" language="true"/>
+    <checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="false" language="true" />
+
+    <newNodes>
+        <optionXQ><![CDATA[<option answer = "Here is an option" name = "Answer" feedback = "Feedback for this option" correct = "false"/>]]></optionXQ>
+    </newNodes>
+</topXQ>
+
+    <optionXQ menuItem="Answer" icon="icBullet">
+        <answer label="Answer" type="TextInput" wysiwyg="false" mandatory="true"/>
+        <name label="Label" type="TextInput" />
+    </optionXQ>
+
+</wizard>

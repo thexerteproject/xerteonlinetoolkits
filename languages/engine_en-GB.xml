@@ -150,6 +150,10 @@
   <errorResults label="There was an error loading the results"/>
   <loadError label="Error loading"/>
   <noResults label="No results returned"/>
+
+	<rssDLAuthor label="Created by:"/>
+	<rssDLLicense label="License:"/>
+	<rssDLModDate label="Last modified:"/>
   
   <timer>
 	  <remaining name="Time remaining"/>
@@ -157,11 +161,11 @@
 	  <seconds name="seconds"/>
   </timer>
 
-  <colourChanger label="Colour Changer" description="Change the colours." tooltip="Change Colours">
-	  <closeButton label="" description="Close Colour Changer"/>
+  <colourChanger label="Accessibility Options" description="Change the colours." tooltip="Accessibility Options">
+	  <closeButton label="" description="Close Accessibility Options"/>
 	  <selectTxt label="Please select from the options below"/>
-	  <adviceTxt label="Need more advice? Visit the &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Xerte Toolkits accessibility guide&lt;/a&gt;."/>
-	  <off label="Off"/>
+	  <adviceTxt label="Need more advice? Visit the &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Online Toolkits guide to accessibility&lt;/a&gt;."/>
+	  <off label="Default"/>
 	  <noBg label="Remove Background Images"/>
 	  <invert label="Invert"/>
 	  <blackYellow label="Black on Yellow"/>
@@ -199,5 +203,11 @@
 	  <error unable="Unable to calculate" invalid="Invalid value" none="No variable data"/>
 	  <info undef="References an undefined variable" minMax="min > max" valueMin="value &lt; min" valueMax="value > max" exclude="{n} is excluded" circular="Circular variable reference" none="All possible values are excluded or fall outside the min &amp; max range" none2="{n} attempts have not returned an accepted value" attempts="{n} attempts to calculate a valid value" default="Fallback to default value"/>
   </authorVarsInfo>
+  
+  <submitBtnLabel label="Submit"/>
+  <submitConfirmMsg label="Your answers have been submitted"/>
+  <closeBtnLabel label="Close"/>
+  
+  <search title="Search" searchBtn="Search" goBtn="Go" newBtn="New Search" resultTitle="Results" matchTitle1="Matches" matchTitle2="Best matches" matchTitle3="Partial matches" showMatch="Show partial matches" noMatch1="No pages or sections match your selection." noMatch2="No pages or sections completely match your criteria. Partial matches are listed below." />
 
 </language>

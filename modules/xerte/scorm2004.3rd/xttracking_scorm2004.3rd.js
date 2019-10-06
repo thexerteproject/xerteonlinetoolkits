@@ -153,7 +153,7 @@ function ScormTrackingState()
     this.duration_previous_attempts = 0;
     this.lo_type = "pages only";
     this.lo_passed = -1.0;
-    this.page_timeout = 5000;
+    this.page_timeout = 0;
     this.lo_completed = "unknown";
     this.finished = false;
     this.interactions = new Array();
@@ -165,6 +165,7 @@ function ScormTrackingState()
     this.findcreate = findcreate;
     this.findPage = findPage;
     this.findInteraction = findInteraction;
+    this.findAllInteraction = findAllInteractions;
     this.countInteractions = countInteractions;
     this.enter = enter;
     this.exit = exit;
@@ -192,13 +193,10 @@ function ScormTrackingState()
 
     function pageCompleted(sit)
     {
-        for (i=0; i<sit.nrinteractions; i++)
+        var sits = this.findAllInteractions(sit.page_nr);
+        if (sits.length != sit.nrinteractions)
         {
-            var sit2 = this.findInteraction(sit.page_nr, i);
-            if (sit2 == null)
-            {
-                return false;
-            }
+            return false;
         }
         if (sit.ia_type=="page" && sit.duration < this.page_timeout)
         {
@@ -206,7 +204,6 @@ function ScormTrackingState()
         }
         return true;
     }
-
 
     function setVars(jsonStr)
     {
@@ -298,6 +295,18 @@ function ScormTrackingState()
                 return this.interactions[i];
         }
         return null;
+    }
+
+    function findAllInteractions(page_nr)
+    {
+        var i=0;
+        tmpinteractions = [];
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr != -1)
+                tmpinteractions.push(i);
+        }
+        return tmpinteractions;
     }
 
     function countInteractions(page_nr)
@@ -1306,7 +1315,7 @@ function XTLogin(login, passwd)
     return true;
 }
 
-function XTGetMode()
+function XTGetMode(extended)
 {
     if (state.scormmode == "normal")
     {
@@ -1316,10 +1325,16 @@ function XTGetMode()
             if (sit != null)
             {
                 if (state.trackingmode !== 'none') {
-                    if (state.scoremode == 'first')
+                    if (extended != null && (extended == true || extended == 'true'))
+                    {
+                        if (state.scoremode == 'first')
+                            return "normal";
+                        else
+                            return "normal_last";
+                    }
+                    else {
                         return "normal";
-                    else
-                        return "normal_last";
+                    }
                 }
                 else
                 {
@@ -1600,31 +1615,9 @@ function XTTerminate()
         if (!state.finished)
         {
             // End tracking of page
+            var currentpageid = state.currentpageid;
             x_endPageTracking(false, -1);
 
-            // This code is probably obsolete, leave it in to allow for more testing
-            var currentpageid = "";
-            state.finished = true;
-            if (state.currentid)
-            {
-                var sit = state.find(currentid);
-                // there is still an interaction open, close it
-                if (sit != null)
-                {
-                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-                }
-            }
-            if (state.currentpageid)
-            {
-                currentpageid = state.currentpageid;
-                var sit = state.find(currentpageid);
-                // there is still an interaction open, close it
-                if (sit != null)
-                {
-                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-                }
-
-            }
             state.finishTracking(currentpageid);
         }
     }

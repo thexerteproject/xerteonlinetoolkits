@@ -1,0 +1,28 @@
+#textHolder {
+    margin-bottom:	10px;
+}
+#correctOrNot h3{
+    padding-top: 2em;
+}
+#FurtherClarification h3 {
+     border-top: 1px solid #ccc;
+     padding-top: 1em;
+ }
+#answer h3 {
+    border-top: 1px solid #ccc;
+    padding-top: 1em;
+}
+
+#question{
+    padding-bottom: 10px;
+}
+
+#attempts{
+    margin-top: 5%;
+    padding-bottom: 0;
+}
+
+#text
+{
+    width: 95%;
+}

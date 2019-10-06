@@ -81,6 +81,10 @@ $export_offline = false;
 $xAPI = false;
 $offline_includes="";
 $need_download_url = false;
+if (!isset($tsugi))
+{
+    $tsugi = false;
+}
 
 if (isset($_REQUEST['html5'])) {
     $export_html5 = ($_REQUEST['html5'] == 'true' ? true : false);
@@ -219,6 +223,8 @@ if ($fullArchive) {
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.xot.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.mediaplus.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.mcq.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/MediasitePlayerIFrameAPI.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/MediasitePlayerControls.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.slides.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.sortholder.js\"></script>\n";
 

@@ -175,6 +175,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $sql = "select * from {$xerte_toolkits_site->database_table_prefix}grouping";
     $grouping = db_query($sql);
 
+    /**
+     * Build Course List
+     */
+    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}course";
+    $course = db_query($sql);
+
 
     /**
      * sort of the screen sies required for the preview window
@@ -212,12 +218,14 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/css/complex.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" type="text/css" href="editor/css/fonts.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/featherlight/featherlight.min.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/jqgrid/css/ui.jqgrid.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>">
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
@@ -332,6 +340,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/xml2json.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/featherlight/featherlight.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/imgareaselect/jquery.imgareaselect.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/fabric.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery-migrate-1.2.1.js"></script>
 <script type="text/javascript" src="<?php echo $jqgridlangfile; ?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery.jqGrid.min.js?version=<?php echo $version;?>"></script>
@@ -367,6 +376,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
     echo "category_list=" . json_encode($categories) . ";\n";
     echo "grouping_list=" . json_encode($grouping) . ";\n";
+    echo "course_list=" . json_encode($course) . ";\n";
+    echo "course_freetext_enabled=" . $xerte_toolkits_site->course_freetext_enabled . ";\n";
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     ?>
 

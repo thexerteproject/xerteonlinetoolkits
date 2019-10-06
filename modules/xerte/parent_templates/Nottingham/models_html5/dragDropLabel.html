@@ -692,6 +692,16 @@
                                             "background" : "transparent"
                                         });
                             });
+                    debugger;
+                    if($this.data("target") === undefined || $this.data("target") === "")
+                    {
+                        l_options.push({source: $this.html(), target: " "});
+                        l_answer.push($this.html() + " -->  ");
+                    }
+                    else {
+                        l_options.push({source: $this.html(), target: $(x_currentPageXML).children()[$this.data("target")].getAttribute("name")});
+                        l_answer.push($this.html() + " --> " + $(x_currentPageXML).children()[$this.data("target")].getAttribute("name"));
+                    }
                     if ($this.data("correct") === $this.data("target")) {
                         //make sure only one tick is added
                         numCorrect++;
@@ -726,15 +736,6 @@
                         }
                     }
 
-                    if($this.data("target") === undefined || $this.data("target") === "")
-                    {
-                        l_options.push({source: $this.html(), target: " "});
-                        l_answer.push($this.html() + " -->  ");
-                    }
-                    else {
-                        l_options.push({source: $this.html(), target: $(x_currentPageXML).children()[$this.data("target")].getAttribute("name")});
-                        l_answer.push($this.html() + " --> " + $(x_currentPageXML).children()[$this.data("target")].getAttribute("name"));
-                    }
                 });
                 // Track answer
                 var result =

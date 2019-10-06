@@ -16,6 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
 $(document).ready(init);
 
 var data;
@@ -30,15 +31,71 @@ var currentPage = 0;
 var glossary = [];
 var defaultHeaderCss;
 var urlParams = {};
+var categories;
 
 
 function init(){
 	loadContent();
 };
 
-function initMedia(){
+// called after all content loaded to set up mediaelement.js players
+function initMedia($media){
+	
+	$media.mediaelementplayer({
+		pauseOtherPlayers: true,
+		enableAutosize: true,
+		classPrefix: 'mejs-', // use the class naming format used in old version just in case some themes or projects use the old classes
+		
+		success: function (mediaElement, domObject) {
+			
+			var $mediaElement = $(mediaElement);
+			
+			// iframe scaling to maintain aspect ratio
+			if ($mediaElement.find('video').length > 0 && $mediaElement.find('video').attr('type') != 'video/mp4') {
+				iframeInit($mediaElement);
+				
+				// the vimeo video won't play with the media element controls so remove these so default vimeo controls can be used
+				if ($mediaElement.find('video').attr('type') == 'video/vimeo') {
+					$mediaElement.parents('.mejs-container').find('.mejs-iframe-overlay, .mejs-layers, .mejs-controls').remove();
+				}
+			}
+			
+			// stops mp4 videos being shown larger than original
+			mediaElement.addEventListener("loadedmetadata", function(e) {
+				var $video = $(e.detail.target);
+				$video.add($video.parents('.mejs-container')).css({
+					'max-width': e.detail.target.videoWidth,
+					'max-height': e.detail.target.videoHeight
+				});
+			});
+		},
+		error: function(mediaElement) {
+			console.log('mediaelement problem is detected: ', mediaElement);
+		}
+	});
+}
 
-	$('audio,video').mediaelementplayer();
+// function manually sets height of any media shown in iframes (e.g. youtube/vimeo) to maintain aspect ratios
+function iframeInit($mediaElement) {
+	if ($mediaElement.find('iframe').length > 0) {
+		iframeResize($mediaElement.find('iframe'));
+	} else {
+		// try again if iframe's not ready yet
+		setTimeout(function() {
+			iframeInit($mediaElement);
+		}, 200);
+	}
+}
+
+// resize iframe height to keep aspect ratio
+function iframeResize($iframe) {
+	if ($iframe.parents('.navigator.carousel').length > 0) {
+		$iframe.height(($iframe.parents('.navigator.carousel').width() / Number($iframe.parents('.vidHolder').data('iframeRatio')[0])) * Number($iframe.parents('.vidHolder').data('iframeRatio')[1]));
+		$iframe.parents('.mejs-container').height('auto');
+	} else {
+		$iframe.height(($iframe.width() / Number($iframe.parents('.vidHolder').data('iframeRatio')[0])) * Number($iframe.parents('.vidHolder').data('iframeRatio')[1]));
+		$iframe.parents('.mejs-container').height('auto');
+	}
 }
 
 function initSidebar(){
@@ -101,6 +158,25 @@ function loadContent(){
 			startSection = parseInt(pageLink.substring(pageLink.indexOf('section') + 7), 10);
 		}
  	}
+	
+	// some iframes will need height manually set to keep aspect ratio correct so keep track of window resize
+	$(window).resize(function() {
+		
+		$.featherlight.close();
+		
+		if (this.resizeTo) {
+			clearTimeout(this.resizeTo);
+		}
+		this.resizeTo = setTimeout(function() {
+			$(this).trigger("resizeEnd");
+		}, 200);
+	});
+
+	$(window).on("resizeEnd", function() {
+		$('.vidHolder iframe').each(function() {
+			iframeResize($(this))
+		});
+	});
 }
 
 function cssSetUp(param) {
@@ -374,7 +450,6 @@ function setup(){
 
 	//add all the pages to the pages menu: this links back to the same page
 	$(data).find('page').each( function(index, value){
-		
 		// work out whether the page is hidden or not - can be simply hidden or hidden between specific dates/times
 		var hidePage = checkIfHidden($(this).attr('hidePage'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Page');
 		if ($.isArray(hidePage)) {
@@ -400,6 +475,365 @@ function setup(){
 		}
 		
 	});
+	
+	// set up search functionality
+	if ($(data).find('learningObject').attr('search') == 'true' || $(data).find('learningObject').attr('category') == 'true') {
+		
+		var $searchHolder = $('<div id="searchHolder"></div>'),
+			$searchInner = $('<div id="searchInner"></div>');
+		
+		// text search - not working yet
+		/*if ($(data).find('learningObject').attr('search') == 'true') {
+			var freeSearchType = $(data).find('learningObject').attr('searchType') != undefined ? $(data).find('learningObject').attr('searchType') : 'meta';
+			
+			$('<div id="textSearch"><input class="form-control" type="text" placeholder="Search" aria-label="Search"></div>')
+				.appendTo($searchInner);
+		}*/
+		
+		// category search
+		if ($(data).find('learningObject').attr('category') == 'true' && $(data).find('learningObject').attr('categoryInfo') != '') {
+			categories = $(data).find('learningObject').attr('categoryInfo').split('||');
+			for (var i=0; i<categories.length; i++) {
+				var categoryInfo = categories[i].split('|');
+				
+				if (categoryInfo.length == 2) {
+					var title = categoryInfo[0].trim(),
+						opts = categoryInfo[1].split('\n');
+					
+					for (var j=0; j<opts.length; j++) {
+						opts.splice(j, 1, opts[j].trim());
+						
+						if (opts[j].length == 0) {
+							opts.splice(j, 1);
+							j--;
+						} else {
+							var stripTags = $("<div/>").html(opts[j]).text().trim();
+							if (stripTags.length > 0) {
+								var optInfo = stripTags.split('(');
+								if (optInfo.length > 1 && optInfo[1].trim().length > 0) {
+									opts.splice(j, 1, { id: optInfo[0].trim(), name: optInfo[1].trim().slice(0, -1) });
+								} else {
+									opts.splice(j, 1, { id: optInfo[0].replace(/ /g, "_"), name: optInfo[0] });
+								}
+							} else {
+								opts.splice(j, 1);
+								j--;
+							}
+						}
+					}
+					
+					if (title.length > 0 && opts.length > 0) {
+						categories.splice(i, 1, { name: title, options: opts});
+					} else {
+						categories.splice(i, 1);
+						i--;
+					}
+				} else {
+					categories.splice(i, 1);
+					i--;
+				}
+			}
+			
+			// some categories exist - create menu
+			if (categories.length > 0) {
+				var $categorySearch = $('<div id="categorySearch"></div>');
+				
+				for (var i=0; i<categories.length; i++) {
+					var $optGroup = $('<div id="cat' + i + '" class="catBlock"><div class="catContents"><h2 class="catName">' + categories[i].name + ':</h2></div></div>').appendTo($categorySearch);
+					
+					for (var j=0; j<categories[i].options.length; j++) {
+						$optGroup.find('.catContents').append('<div class="inputGroup"><input type="checkbox" name="' + categories[i].name + '" id="cat' + i + '_' + j + '" value="cat' + i + '_' + j + '"><label for="cat' + i + '_' + j + '">' + categories[i].options[j].name + '</label></div>');
+					}
+				}
+				
+				$categorySearch.appendTo($searchInner);
+				
+				// work out what categories each page / section falls under
+				$(data).find('page').each(function(index, value) {
+					var $page = $(this);
+					
+					if ($page.attr('hidePage') != false) {
+						if ($page.attr('filter') != undefined && $page.attr('filter') != '') {
+							var catIds = [],
+								categoryInfo = $page.attr('filter').split(',');
+							
+							for (var i=0; i<categoryInfo.length; i++) {
+								var category = categoryInfo[i].trim(),
+									found = false;
+								
+								for (var j=0; j<categories.length; j++) {
+									for (var k=0; k<categories[j].options.length; k++) {
+										if (category.toLowerCase() == categories[j].options[k].id.toLowerCase()) {
+											catIds.push('cat' + j + '_' + k);
+											found = true;
+											break;
+										}
+									}
+									
+									if (found == true) {
+										break;
+									}
+								}
+							}
+							
+							$page.attr('filter', catIds);
+						}
+						
+						$page.children().each(function(index, value) {
+							var $section = $(this);
+							
+							if ($section.attr('filter') != undefined && $section.attr('filter') != '') {
+								var catIds = [],
+									categoryInfo = $section.attr('filter').split(',');
+								
+								for (var i=0; i<categoryInfo.length; i++) {
+									var category = categoryInfo[i].trim(),
+										found = false;
+									
+									for (var j=0; j<categories.length; j++) {
+										for (var k=0; k<categories[j].options.length; k++) {
+											if (category.toLowerCase() == categories[j].options[k].id.toLowerCase()) {
+												catIds.push('cat' + j + '_' + k);
+												found = true;
+												break;
+											}
+										}
+										
+										if (found == true) {
+											break;
+										}
+									}
+								}
+								
+								$section.attr('filter', catIds);
+							}
+						});
+					}
+				});
+			}
+		}
+		
+		if ($searchInner.children().length > 0) {
+			$searchInner
+				.prepend('<h1 class="searchTitle"></h1><div class="searchIntro"></div>')
+				.find('.searchTitle').html((languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('title') != null ? languageData.find("search")[0].getAttribute('title') : "Search") + ':');
+			
+			if ($(data).find('learningObject').attr('categoryTxt') != '' && $(data).find('learningObject').attr('categoryTxt') != undefined) {
+				$searchInner.find('.searchIntro').html($(data).find('learningObject').attr('categoryTxt'));
+			} else {
+				$searchInner.find('.searchIntro').remove();
+			}
+			
+			$searchHolder
+				.append($searchInner)
+				.append('<div id="searchResults" class=""></div></li></ul>')
+				.find('#searchInner').append('<button id="searchBtn" type="button" class="searchBtn btn btn-primary">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('goBtn') != null ? languageData.find("search")[0].getAttribute('goBtn') : "Go") + '</button>');
+			
+			$('<li id="searchIcon"><a href="#"><i class="fa fa-search text-white ml-3" aria-hidden="true"></i>' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('searchBtn') != null ? languageData.find("search")[0].getAttribute('searchBtn') : "Search") + '</a></li>')
+				.appendTo('#nav')
+				.click(function() {
+					$searchHolder
+						.css({
+							width: $('.container').width() * 0.80,
+							height: $(window).height() * 0.80
+						});
+					
+					$.featherlight($searchHolder, {
+						persist: true,
+						afterClose: function(e) {
+							// if closed because of link to a page section then this stops it jumping back to top of page afterwards
+							if (e == true) {
+								this._previouslyActive = sectionJump;
+							}
+							
+							// clear checkboxes if search wasn't carried out or returned no results
+							if ($searchHolder.find('#noSearchResults').length > 0 || $searchHolder.find('#searchResults .result').length == 0) {
+								
+								$searchHolder.find('#categorySearch input').prop("checked", false);
+								
+								$searchHolder.find('#searchResults')
+									.empty()
+									.hide();
+							}
+						}
+					});
+				});
+			
+			$searchHolder.find('#searchBtn')
+				.button()
+				.click(function() {
+						
+					var $searchLightbox = $('#searchHolder'),
+						results = [], // the pages / sections which match search terms
+						catsUsed = [],
+						numResults = 0;
+					
+					// text search
+					/*if ($searchLightbox.find('#textSearch input').length > 0 && $searchLightbox.find('#textSearch input').val().trim() != '') {
+						//$searchLightbox.find('#textSearch input').val());
+					}*/
+					
+					if ($searchLightbox.find('#categorySearch').length > 0) {
+						
+						$searchLightbox.find('#categorySearch input:checked').each(function() {
+							var lookingFor = $(this).attr('value'),
+								thisCat = lookingFor.substring(3).split('_');
+							
+							if ($.inArray(lookingFor.substring(3).split('_')[0], catsUsed) == -1) {
+								catsUsed.push(lookingFor.substring(3).split('_')[0]);
+							}
+							
+							$(data).find('page').each(function(index, value) {
+								var $page = $(this),
+									pageIndex = index;
+								
+								if (results.length < $(data).find('page').length) {
+									results.push( { match: [], sections: [] } );
+								}
+								
+								if ($page.attr('hidePage') != false) {
+									if ($page.attr('filter') != undefined && $page.attr('filter').split(',').length > 0) {
+										var indexInArray = $.inArray(lookingFor, $page.attr('filter').split(','));
+										
+										if (indexInArray > -1) {
+											results[pageIndex].match.push(lookingFor);
+											numResults++;
+										}
+									}
+									
+									$page.children().each(function(index, value) {
+										var $section = $(this);
+										
+										if (results[pageIndex].sections.length < $page.children().length) {
+											results[pageIndex].sections.push( { match: [] } );
+										}
+										
+										if ($section.attr('hidePage') != false && $section.attr('filter') != undefined && $section.attr('filter').split(',').length > 0) {
+											var indexInArray = $.inArray(lookingFor, $section.attr('filter').split(','));
+											
+											if (indexInArray > -1) {
+												results[pageIndex].sections[index].match.push(lookingFor);
+												numResults++;
+											}
+										}
+									});
+								}
+							});
+						});
+					}
+					
+					var $searchResults = $('#searchResults').empty();
+					
+					if (numResults != 0) {
+						
+						$searchResults
+							.append('<h1 class="searchTitle">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('resultTitle') != null ? languageData.find("search")[0].getAttribute('resultTitle') : "Results") + ':</h1>')
+							.append('<button id="newSearchBtn" type="button" class="searchBtn btn btn-primary">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('newBtn') != null ? languageData.find("search")[0].getAttribute('newBtn') : "New Search") + '</button>');
+						
+						// create the list of results - ordered into list according to those matching the most filter categories
+						function createResultDivs(pageOrSection, index) {
+							var title = $(data).find('page').eq(index[0]).attr('name') + (index.length > 1 ? ': ' + $(data).find('page').eq(index[0]).children().eq(index[1]).attr('name') : ''),
+								faIcon = index.length == 1 ? 'fa-file' : 'fa-tag',
+								catMatches = '',
+								uniqueCats = [];
+							
+							for (var k=0; k<pageOrSection.match.length; k++) {
+								var info = pageOrSection.match[k].substring(3).split('_');
+								catMatches += categories[info[0]].options[info[1]].name + ', ';
+								
+								if ($.inArray(info[0], uniqueCats) == -1) {
+									uniqueCats.push(info[0]);
+								}
+							}
+							catMatches = catMatches.substring(0, catMatches.length - 2);
+							
+							var linkAction;
+							if (index.length == 1) {
+								linkAction = "x_navigateToPage(false, { type:'linkID', ID:'" + $(data).find('page').eq(index[0]).attr('linkID') + "' }); $.featherlight.close(true); return false;";
+							} else {
+								linkAction = "x_navigateToPage(false, { type:'linkID', ID:'" + $(data).find('page').eq(index[0]).children().eq(index[1]).attr('linkID') + "' }); $.featherlight.close(true); return false;";
+							}
+							
+							var matchType = uniqueCats.length == catsUsed.length ? 'fullMatch' : 'partialMatch',
+								$resultDiv = $('<div class="result ' + matchType + '"><a href="#" onclick="' + linkAction + '"><i class="fa ' + faIcon + ' text-white ml-3" aria-hidden="true"></i>' + title + '</a>' + '<div class="matchList"><i>' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('matchTitle1') != null ? languageData.find("search")[0].getAttribute('matchTitle1') : "Matches") + ': ' + catMatches + '</i></div></div>');
+							
+							$resultDiv
+								.data({
+									'match': pageOrSection.match,
+									'numCats': uniqueCats.length
+								});
+							
+							if ($searchResults.find('.result').length > 0) {
+								
+								$searchResults.find('.result').each(function(k) {
+									if (uniqueCats.length > $(this).data('numCats')) {
+										$resultDiv.insertBefore($(this));
+										return false;
+									} else if ($searchResults.find('.result').length - 1 == k) {
+										$searchResults.append($resultDiv);
+									}
+								});
+								
+							} else {
+								$searchResults.append($resultDiv);
+							}
+						}
+						
+						for (var i=0; i<results.length; i++) {
+							if (results[i].match.length > 0) {
+								createResultDivs(results[i], [i]);
+							}
+							
+							for (var j=0; j<results[i].sections.length; j++) {
+								if (results[i].sections[j].match.length > 0) {
+									createResultDivs(results[i].sections[j], [i,j]);
+								}
+							}
+						}
+						
+						// add headings to show which are full/partial matches
+						if ($searchResults.find('.fullMatch').length > 0) {
+							$('<h2 id="fullMatch" class="searchResultInfo">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('matchTitle2') != null ? languageData.find("search")[0].getAttribute('matchTitle2') : "Best matches") + ':</h2>').insertBefore($searchResults.find('.fullMatch').eq(0));
+						}
+						
+						if ($searchResults.find('.partialMatch').length > 0) {
+							var $partialMatch = $('<h2 id="partialMatch" class="searchResultInfo"></h2>').insertBefore($searchResults.find('.partialMatch').eq(0));
+							
+							if ($searchResults.find('#fullMatch').length == 0) {
+								$partialMatch.html((languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('noMatch2') != null ? languageData.find("search")[0].getAttribute('noMatch2') : 'No pages or sections completely match your criteria. Partial matches are listed below') + ':');
+								
+							} else {
+								$searchResults.find('.partialMatch').hide();
+								
+								function showPartialResults() {
+									$searchResults.find('.partialMatch').show();
+								}
+								
+								$partialMatch
+									.html('<a href="#">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('showMatch') != null ? languageData.find("search")[0].getAttribute('showMatch') : "Show partial matches") + '</a>')
+									.find('a').click(function() {
+										$searchResults.find('.partialMatch').show();
+										$partialMatch.html((languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('matchTitle3') != null ? languageData.find("search")[0].getAttribute('matchTitle3') : "Partial matches") + ':');
+									});
+							}
+						}
+						
+						$searchResults.find('#newSearchBtn').click(function() {
+							$('#searchHolder').find('#searchInner').show();
+							$('#searchResults').hide();
+						});
+						
+						$searchLightbox.find('#searchInner').hide();
+						$searchResults.show();
+						
+					} else {
+						$searchResults
+							.append('<p id="noSearchResults">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('noMatch1') != null ? languageData.find("search")[0].getAttribute('noMatch1') : "No pages or sections match your selection.") + '</p>')
+							.show();
+					}
+				});
+		}
+	}
 	
 	// --------------- Optional Header properties --------------------
 	
@@ -770,9 +1204,11 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 	}
 }
 
+var sectionJump;
 function goToSection(pageId) {
-	if (document.getElementById(pageId) == null || document.getElementById(pageId) == undefined) return;
-	document.location.hash = '#' + pageId;
+	sectionJump = document.getElementById(pageId);
+	var top = sectionJump.offsetTop;
+	window.scrollTo(0, top);
 }
 
 function parseContent(pageIndex, checkSection){
@@ -969,7 +1405,12 @@ function parseContent(pageIndex, checkSection){
 					}
 					
 					if (this.nodeName == 'video'){
-						section.append('<p><video src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata" style="max-width: 100%" width="100%" height="100%"></video></p>');
+						var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), pageIndex + '_' + sectionIndex + '_' + itemIndex);
+						section.append('<p>' + videoInfo[0] + '</p>');
+						
+						if (videoInfo[1] != undefined) {
+							section.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+						}
 					}
 					
 					if (this.nodeName == 'pdf'){
@@ -1032,7 +1473,10 @@ function parseContent(pageIndex, checkSection){
 		});
 		
 		//finish initialising the piece now we have the content loaded
-		initMedia();
+		initMedia($('audio,video:not(.navigator video)'));
+		$('.vidHolder.iframe').each(function() {
+			iframeInit($(this));
+		});
 		
 		initSidebar();
 
@@ -1051,9 +1495,7 @@ function parseContent(pageIndex, checkSection){
 		//FB.XFBML.parse(); // REMOVED??
 		
 	} else {
-		
 		console.log("project contains no (unhidden) pages");
-		
 	}
 	
 	if (checkSection == true && startSection != undefined) {
@@ -1179,12 +1621,12 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 }
 
 function makeNav(node,section,type, sectionIndex, itemIndex){
-
+	
 	var sectionIndex = sectionIndex;
 	
 	var itemIndex = itemIndex;
 
-	var tabDiv = $( '<div class="tabbable"/>' );
+	var tabDiv = $( '<div class="navigator tabbable"/>' );
 	
 	if (type == 'tabs'){
 	
@@ -1199,7 +1641,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 	var content = $( '<div class="tab-content"/>' );
 	
-	var iframeKaltura = [],
+	var iframe = [],
 		pdf = [],
 		video = [];
 	
@@ -1220,7 +1662,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 		var i = index;
 		
-		$(this).children().each( function(index, value){
+		$(this).children().each( function(x, value){
 			
 			if ($(this).attr('showTitle') == 'true' || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
 				tab.append('<p><b>' + $(this).attr('name') + '</b></p>');
@@ -1230,7 +1672,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 				tab.append( '<p>' + $(this).text() + '</p>');
 				
 				if ($(this).text().indexOf("<iframe") != -1 && $(this).text().indexOf("kaltura_player") != -1) {
-					iframeKaltura.push(i);
+					iframe.push(i);
 				}
 			}
 			
@@ -1243,8 +1685,15 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'video'){
-				tab.append('<p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
+				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+				tab.append('<p>' + videoInfo[0] + '</p>');
+				
+				if (videoInfo[1] != undefined) {
+					tab.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				}
+				
 				video.push(tab.find('video'));
+				video.push(tab.find('.vidHolder.iframe'));
 			}
 			
 			if (this.nodeName == 'link'){
@@ -1287,28 +1736,16 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	
 	section.append(tabDiv);
 	
-	setTimeout( function(){
+	setTimeout( function() {
+		
 		var $first = $('#tab' + sectionIndex + '_' + itemIndex + ' a:first');
 		$first
 			.tab("show")
 			.parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']").data("refresh", true);
 		
-		// hacky fix for issue with UoN mediaspace videos embedded on navigators
 		var $iframeTabs = $(),
 			$pdfTabs = $(),
 			$videoTabs = $();
-		
-		for (var i=0; i<iframeKaltura.length; i++) {
-			$iframeTabs = $iframeTabs.add($('a[data-toggle="tab"]:eq(' + iframeKaltura[i] + ')'));
-		}
-		
-		$iframeTabs.on('shown.bs.tab', function (e) {
-			var iframeRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']");
-			if (iframeRefresh.data("refresh") != true) {
-				iframeRefresh[0].src = iframeRefresh[0].src;
-				iframeRefresh.data("refresh", true);
-			}
-		});
 		
 		// fix for issue where firefox doesn't zoom pdfs correctly if not on 1st pane of navigators
 		for (var i=0; i<pdf.length; i++) {
@@ -1326,17 +1763,25 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		});
 		
 		// fix for issue where videos don't load correct height if not on 1st pane of navigators
+		for (var i=0; i<iframe.length; i++) {
+			$iframeTabs = $iframeTabs.add($('a[data-toggle="tab"]:eq(' + iframe[i] + ')'));
+		}
+		
 		for (var i=0; i<video.length; i++) {
 			$videoTabs = $videoTabs.add($(video[i]).parents('.tabbable').find('ul a[data-toggle="tab"]:eq(' + $(video[i]).parents('.tab-pane').index() + ')'));
 		}
 		
 		$videoTabs.on('shown.bs.tab', function (e) {
-			var $videoRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active video");
-			if ($videoRefresh.data('forceLoad') != true) {
-				$videoRefresh
-					.data('forceLoad', true)
-					.load();
-			}
+			var $thisPane = $('#' + $(e.target).attr('href').substring(1));
+			$thisPane.find(".vidHolder iframe").parents('.vidHolder').each(function() {
+				iframeInit($(this));
+			});
+		});
+		
+		initMedia(tabDiv.find(".vidHolder video"));
+		
+		tabDiv.find('.vidHolder.iframe').each(function() {
+			iframeInit($(this));
 		});
 		
 	}, 0);
@@ -1345,7 +1790,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 
 function makeAccordion(node,section, sectionIndex, itemIndex){
 	
-	var accDiv = $( '<div class="accordion" id="acc' + sectionIndex + '_' + itemIndex + '">' );
+	var accDiv = $( '<div class="navigator accordion" id="acc' + sectionIndex + '_' + itemIndex + '">' );
 	
 	node.children().each( function(index, value){
 
@@ -1368,7 +1813,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 		
 		var inner = $('<div class="accordion-inner">');
 		
-		$(this).children().each( function(index, value){
+		$(this).children().each( function(i, value){
 						
 			if (this.nodeName == 'text'){
 				inner.append( '<p>' + $(this).text() + '</p>');
@@ -1383,7 +1828,12 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'video'){
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
+				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p>' + videoInfo[0] + '</p>');
+				
+				if (videoInfo[1] != undefined) {
+					inner.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				}
 			}
 			
 			if (this.nodeName == 'link'){
@@ -1422,6 +1872,10 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 	
 	section.append(accDiv);
 	
+	setTimeout( function() {
+		initMedia(accDiv.find('.vidHolder video'));
+	}, 0);
+	
 }
 
 
@@ -1433,7 +1887,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	
 	var itemIndex = itemIndex;
 	
-	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="carousel slide"/>');
+	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
 	
 	if (node.attr('autoPlay') == 'true') {
 		
@@ -1469,7 +1923,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			pane = $('<div class="item">');
 		}
 		
-		$(this).children().each( function(index, value){
+		$(this).children().each( function(i, value){
 						
 			if (this.nodeName == 'text'){
 				pane.append( '<p>' + $(this).text() + '</p>');
@@ -1484,7 +1938,13 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'video'){
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
+				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p>' + videoInfo[0] + '</p>');
+				
+				if (videoInfo[1] != undefined) {
+					pane.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				}
+				
 				video.push(pane.find('video'));
 			}
 			
@@ -1521,9 +1981,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	});
 	
 	carDiv.append(indicators);
-	
 	carDiv.append(items);
-	
 	carDiv.append( $('<a class="carousel-control left" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="prev">&lsaquo;</a>') );
 	carDiv.append( $('<a class="carousel-control right" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="next">&rsaquo;</a>') );
 	
@@ -1533,17 +1991,14 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 		
 		// fix for issue where videos don't load correct height if not on 1st pane of carousel
 		carDiv.bind('slide.bs.carousel', function (e) {
-			for (var i=0; i<video.length; i++) {
-				if ($(video[i]).closest('.item').is(e.relatedTarget) && $(video[i]).data('forceLoad') != true) {
-					$(video[i])
-						.data('forceLoad', true)
-						.load();
-				}
-			}
+			$(e.target).find('.vidHolder iframe').each(function() {
+				iframeResize($(this));
+			});
 		});
 		
+		initMedia(carDiv.find('.vidHolder video'));
+		
 	}, 0);
-
 }
 
 function findAnchor(name){
@@ -1739,5 +2194,56 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 		
 	} else {
 		return false;
+	}
+}
+
+// adds html for videos - whether they are mp4s,youtube,vimeo (all played using mediaelement.js) or iframe embed code
+function setUpVideo(url, iframeRatio, id) {
+	
+	function getAspectRatio(iframeRatio) {
+		var iframeRatio = iframeRatio != "" && iframeRatio != undefined ? iframeRatio : '16:9';
+		iframeRatio = iframeRatio.split(':');
+		
+		// iframe ratio can be one entered in editor or fallback to 16:9
+		if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
+			iframeRatio = [16,9];
+		}
+		
+		return iframeRatio;
+	}
+	
+	// iframe
+	if (url.substr(0,7) == "<iframe") {
+		
+		// remove width & height attributes from iframe
+		var iframe = $(url)
+						.removeAttr('width')
+						.removeAttr('height')
+						.prop('outerHTML');
+		
+		return ['<div class="vidHolder iframe">' + iframe + '</div>', getAspectRatio(iframeRatio)];
+	
+	// mp4 / youtube / vimeo
+	} else {
+		
+		var mimeType = 'mp4',
+			vidSrc = url;
+		
+		// is it from youtube or vimeo?
+		if (vidSrc.indexOf("www.youtube.com") != -1 || vidSrc.indexOf("//youtu") != -1) {
+			mimeType = "youtube";
+			iframeRatio = getAspectRatio(iframeRatio);
+			
+		} else if (vidSrc.indexOf("vimeo.com") != -1) {
+			mimeType = "vimeo";
+			iframeRatio = getAspectRatio(iframeRatio);
+			
+		} else {
+			vidSrc = eval(vidSrc);
+		}
+		
+		mimeType = 'video/' + mimeType;
+		
+		return ['<div class="vidHolder"><video src="' + vidSrc + '" type="' + mimeType + '" id="player' + id + '" controls="controls" preload="metadata" style="max-width: 100%" width="100%" height="100%"></video></div>', iframeRatio];
 	}
 }

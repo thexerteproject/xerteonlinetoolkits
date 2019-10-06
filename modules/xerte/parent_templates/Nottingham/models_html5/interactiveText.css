@@ -1,98 +1,118 @@
 /* interactiveText.html */
-	
+
 	h3 {
 		padding: 5px;
 	}
-	
+
 	#passageHolder {
 		margin: 20px 10px;
 		overflow:	hidden;
 	}
-	
+
 	#passageHolder.inline {
 		margin:	0px 0px 20px 20px;
 	}
-	
+
 	#passageHolder.mobileInline {
 		margin:	20px 0px 20px -10px;
 	}
-	
+
 	#passage {
 		margin:			0px;
 		display:		block;
 		line-height:	2;
 	}
-	
+
 	#passage span {
 		padding-bottom:	2px;
+		-moz-transition: background-color 200ms linear;
+		-ms-transition: background-color 200ms linear;
+		-o-transition: background-color 200ms linear;
+		-webkit-transition: background-color 200ms linear;
+		transition: background-color 200ms linear;
 	}
-	
+
 	#passage .highlight {
 		padding-top:	5px;
 		padding-bottom:	5px;
 	}
-	
+
 	#pageContents.line #passage .highlight {
 		padding-bottom:	2px;
 	}
-	
+
 	#passage .on {
 		padding-top:	5px;
-		padding-bottom:	5px;
 	}
-	
+
 	#pageContents.line #passage .on {
 		padding-bottom:	3px;
 	}
-	
-	#pageContents.explore #passage, #pageContents.find #passage {
+
+	#pageContents.explore #passage, #pageContents.find #passage, #pageContents.find2 #passage {
 		cursor: pointer;
 	}
-	
-	#pageContents.find #feedback {
-		float:		right;
+
+	#pageContents.find #feedback, #pageContents.find2 #feedback {
+		float:		left;
 		margin-top:	0.5em;
+		width: 100%;
 	}
-	
+
+	#pageContents #feedbackTxt{
+		padding-top: 10px;
+		padding-left: 5px;
+		font-size: 2.5vmin;
+	}
+
+	#pageContents table {
+		margin-left: 5px;
+	}
+
+	#pageContents.find2 #feedback h3 {
+		border-top: 1px solid #ccc;
+		padding-top: 1em;
+	}
+
 	#groupInfo h3 {
 		border-top: 1px solid #ccc;
 		padding-top: 1em;
 	}
-	
+
 	#groupInfo, #questionHolder {
 		margin-top:	1em;
 		padding-top: 1em;
 	}
-	
+
 	#questionHolder {
 		border-top: 1px solid #ccc;
 	}
-	
+
 	#btnHolder button {
 		margin:	10px;
-		float:	right;
+		float:	left;
 	}
-	
-	#pageContents.show #btnHolder, #pageContents.find #btnHolder {
+
+	#pageContents.show #btnHolder, #pageContents.find #btnHolder, #pageContents.find2 #btnHolder {
 		border-bottom:	1px solid #CCCCCC;
 		padding-bottom:	0.8em;
 		margin-bottom:	1em;
 	}
-	
+
 	#pageContents.show2 #btnHolder {
 		border-top: 1px solid #CCCCCC;
 		padding-top: 0.5em;
 		margin-top: 0.5em;
 	}
-	
+
 	#pageContents.show2 #btnHolder button {
 		margin:	0px;
 	}
-	
+
 	#pageContents.show2 #btnHolder #prevBtn {
 		margin-right: 0.5em;
 	}
-	
+
 	#pageContents .listItem {
 		cursor:			pointer;
 		font-weight:	bold;
@@ -100,12 +120,12 @@
 		padding:		5px;
 		text-decoration: none;
 	}
-	
-	#pageContents.show .listItem, #pageContents.find .listItem {
+
+	#pageContents.show .listItem, #pageContents.find .listItem, #pageContents.find2 .listItem {
 		display:	inline-block;
 		margin-right:	1em;
 	}
-	
+
 	#pageContents.mcq #optionHolder {
 		margin-top:	15px;
 		margin-bottom:	15px;
@@ -127,9 +147,9 @@
 		margin-left:	2em;
 		display:		block;
 	}
-	
+
 	#more {
 		text-decoration:none;
 		margin-left:	0.5em;
 	}
-	
+

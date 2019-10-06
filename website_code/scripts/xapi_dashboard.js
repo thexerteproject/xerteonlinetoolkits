@@ -79,6 +79,22 @@ xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element) {
     begin.setDate(begin.getDate() - 1);
     end = new Date(dashstatements[dashstatements.length - 1].timestamp);
     end.setDate(end.getDate() + 1);
+
+    var vals = [];
+    var timeFrame = end.getTime() - begin.getTime();
+    var tickmarkDuration = timeFrame / 8;
+    //round to nearset day
+    var tickMarkNrDays = Math.round(tickmarkDuration / (1000 * 3600 * 24));
+    if (tickMarkNrDays < 1)
+    {
+        tickMarkNrDays = 1;
+    }
+    var tick = begin.getTime();
+    while(tick < end.getTime()) {
+        vals.push(tick);
+        tick += (tickMarkNrDays * 1000 * 3600 * 24);
+    }
+
     var dash = new ADL.XAPIDashboard();
     dash.addStatements(dashstatements);
     var chart = dash.createLineChart({
@@ -108,11 +124,89 @@ xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element) {
     chart.draw();
 };
 
+xAPIDashboard.prototype.getGroupFromStatements = function(statements){
+    var cur_group="";
+    var first_statement = statements[0];
+    if(     first_statement != undefined
+        &&  first_statement.context != undefined
+        &&  first_statement.context.team != undefined
+        &&  first_statement.context.team.account != undefined
+    ){
+        cur_group = first_statement.context.team.account.name
+    }
+    return cur_group;
+};
+
+xAPIDashboard.prototype.setStatisticsValues = function(base, learningObjectIndex){
+    var data = this.data.groupStatements();
+    var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
+    var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
+    var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
+    if($('.journeyOverviewActivity').html() == "") {
+        this.drawActivityChart(base, $(base + '.journeyOverviewActivity'), first_launch, last_launch, false);
+    }
+
+    // Add the number of Users.
+    var numberOfUsers = 0;
+    var dashboard=this;
+    for (var user in data) {
+        if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements(data[user].statements)) {
+            numberOfUsers++;
+        }
+    }
+    var totalScore = 0;
+    var scoreCount = 0;
+    for(var i in this.data.groupedData){
+        var curUser = this.data.groupedData[i];
+        var completedStatements = this.data.getStatementsList(curUser.statements.filter(function(rd){
+            return $this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([rd]);
+        }), "http://adlnet.gov/expapi/verbs/completed");
+        if(completedStatements.length > 0)
+        {
+            totalScore += completedStatements[0].result.score.scaled;
+            scoreCount++;
+        }
+    }
+    this.drawNumberOfUsers($(base + '.journeyOverviewStats'), numberOfUsers);
+    var sessions = [];
+    var totalCompletedPages = 0;
+    this.data.rawData.forEach(function(s){
+        if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([s])){
+            sessionId = s.context.extensions["http://xerte.org.uk/sessionId"];
+            if(sessions.indexOf(sessionId) === -1){
+                sessions.push(sessionId);
+            }
+            if(s.verb.id == "http://adlnet.gov/expapi/verbs/exited"){
+                var pages = interactions.filter(function(i){ return i.type == "page" }).map(function(p) {return  p.url});
+                if(pages.indexOf(s.object.id) >= 0)
+                {
+                    totalCompletedPages++;
+                }
+            }
+        }
+    });
+    // Add the number of launches.
+
+    var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
+    this.drawNumberOfInteractions($(base + '.journeyOverviewStats'), this.data.rawData.filter(function(rd){
+        return $this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([rd]);
+    }).length);
+    this.drawNumberOfSessions($(base + '.journeyOverviewStats'), sessions.length);
+    this.drawNumberOfCompletedSessions($(base + '.journeyOverviewStats'), scoreCount);
+    this.drawAverageCompletedPages($(base + '.journeyOverviewStats'), Math.round(100 * totalCompletedPages / numberOfUsers) / 100);
+
+    // Add the average grade.
+    this.drawAverageScore($(base + '.journeyOverviewStats'), (Math.round((totalScore / scoreCount) * 10 * 10) / 10), first_launch, last_launch);
+};
 
 xAPIDashboard.prototype.createJourneyTableSession = function(div) {
+    this.data.rawData = this.data.combineUrls();
     var learningObjects = this.data.getLearningObjects();
+    this.data.getAllInteractions(this.rawData);
     var data = this.data.groupStatements();
-
+    this.data.groups.forEach(function(group){
+        $("#group-select").append('<option value="' + group + '">'+group+'</option>')
+    });
     for (var learningObjectIndex = 0; learningObjectIndex < learningObjects.length; learningObjectIndex++) {
         //if (learningObjects[learningObjectIndex].url != learningObjectUrl) {
         //    continue;
@@ -128,75 +222,85 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
         // Add statistics above the table.
         div.append(
-            '<div class="journeyOverview"><div class="journeyOverviewHeader row"><h3>Overview</h3></div><div class="journeyOverviewActivity row"></div><div class="journeyOverviewStats row"></div></div>'
+            '<div class="journeyOverview"><div class="journeyOverviewHeader row"><h3>' + XAPI_DASHBOARD_OVERVIEW + '</h3></div><div class="journeyOverviewActivity row"></div><div class="journeyOverviewStats row"></div></div>'
         );
-        var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
-        var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
-        this.drawActivityChart($('.journeyOverviewActivity'), first_launch, last_launch, false);
+        this.setStatisticsValues(".journeyOverview ", learningObjectIndex);
 
-        // Add the number of Users.
-        var numberOfUsers = 0;
-        for (var user in data) {
-            numberOfUsers++;
-        }
-        this.drawNumberOfUsers($('.journeyOverviewStats'), numberOfUsers);
+        leftButton = "<button class='xerte_button_c_no_width page-button' id='pageButtonLeft'>" + XAPI_DASHBOARD_PAGE_PREV + "</button>";
+        rightButton = "<button class='xerte_button_c_no_width page-button' id='pageButtonRight'>" + XAPI_DASHBOARD_PAGE_NEXT + "</button>";
 
-        // Add the number of launches.
-        var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
-        this.drawNumberOfInteractions($('.journeyOverviewStats'), this.data.rawData.length);
-
-        // Add the average grade.
-        var completedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/completed");
-        completedStatements.sort(function(a, b) {
-            return (new Date(a.timestamp) < new Date(b.timestamp)) ? 1 : ((new Date(b.timestamp) < new Date(a.timestamp)) ? -1 : 0);
-        });
-        var userList = [];
-        var totalScore = 0;
-        for (var i = 0; i < completedStatements.length; i++) {
-            if (!userList.some(e => e == completedStatements[i].actor.mbox_sha1sum)) {
-                userList.push(completedStatements[i].actor.mbox_sha1sum);
-                totalScore += completedStatements[i].result.score.scaled;
-            }
-        }
-        this.drawAverageScore($('.journeyOverviewStats'), (Math.round((totalScore / completedStatements.length) * 10 * 10) / 10), first_launch, last_launch);
-
+        var pageOptions = '<div class="row container-fluid"><span class="col col-md-1 align-self-start">' + leftButton + '</span><span id="page-information" class="col-md-1"></span><span class="col-md-9"></span><span class="col col-md-1 align-self-end">' + rightButton + '</span><br></div>';
         // Add table with specific overview.
-        div.append('<div class="row journeyTable"><table class="table table-hover table-bordered table-responsive" id="' + learningObjectIndex +
+        div.append('<div class="row journeyTable">' + pageOptions + '<table class="table table-hover table-bordered table-responsive" id="' + learningObjectIndex +
             '"><thead></thead><tbody></tbody></table></div>');
-        div.find("#" + learningObjectIndex + " thead").append("<tr><th>Started</th><th>Completed</th></tr>");
+        /*
+        if(this.data.pageIndex > 0)
+        {
+            $("#pageButtonLeft").prop("disabled", false).removeClass("diaabled");
+        }else{
+            $("#pageButtonLeft").prop("disabled", true).addClass("disabled");
+
+        }
+        if((this.data.pageIndex+1) * this.data.pageSize < Object.keys(this.data.groupedData).length - 1)
+        {
+            $("#pageButtonRight").prop("disabled", false).removeClass("diaabled");
+        }else{
+            $("#pageButtonRight").prop("disabled", true).addClass("disabled");
+        }
+        */
+        div.find("#" + learningObjectIndex + " thead").append("<tr><th>" + XAPI_DASHBOARD_STARTED + "</th><th>" +  XAPI_DASHBOARD_COMPLETED + "</th></tr>");
         if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
             div.find("#" + learningObjectIndex + " thead tr").prepend('<th>Users</th>');
         }
-        for (var interaction in interactions) {
-            interactionHeader = this.insertInteractionModal(div, learningObjectIndex, interaction);
+        for (var interactionIndex in interactions) {
+            interactionHeader = this.insertInteractionModal(div, learningObjectIndex, interactionIndex, interactions[interactionIndex]);
         }
+        /*
         var redDiv = '<div class="status-indicator status-red">&nbsp;</div>';
         var greenDiv = '<div class="status-indicator status-green">&nbsp;</div>';
         var orangeDiv = '<div class="status-indicator status-orange">&nbsp;</div>';
         var greyDiv = '<div class="status-indicator status-gray">&nbsp;</div>';
+        */
+        var redDiv = '<i class="status-indicator status-red fa fa-square"></i>';
+        var greenDiv = '<i class="status-indicator status-green fa fa-square"></i>';
+        var orangeDiv = '<i class="status-indicator status-orange fa fa-square"></i>';
+        var greyDiv = '<i class="status-indicator status-gray fa fa-square"></i>';
         $.each(data, function(key, value) {
             console.log(key);
         });
+        var userCount = 0;
         for (var user in data) {
             var lastStatements = this.getLastUserAttempt(data[user]);
-            var row = "<tr class='session-row' id='session-" + learningObjectIndex + "-" + this.escapeId(user) + "'>";
+            group = "";
+            if(lastStatements.statements[0].context.team != undefined)
+            {
+                group = lastStatements.statements[0].context.team.account.name;
+            }
+            var row = "<tr data-index='" + userCount + "' class='session-row' id='session-" + learningObjectIndex + "-" + this.escapeId(user) + "' data-group='" + group + "'>";
+            userCount++;
             if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
                 if (data[user]['mode'] == 'username') {
                     row += "<td class='name-column'>" + data[user]['username'] + "</td>";
                 } else {
-                    row += "<td class='name-column'>" + user + "</td>";
+                    actor = lastStatements.statements[0].actor;
+                    var group = "";
+                    if(actor.account != undefined)
+                    {
+                        group = " - " + lastStatements.statements[0].actor.account.name;
+                    }
+                    row += "<td class='name-column'>" + user + group +"</td>";
                 }
             }
             if (this.data.hasStartedLearningObject(lastStatements, learningObjects[learningObjectIndex].url)) {
-                started = "<i class=\"fa fa-x-tick\">";
+                started = "<i class=\"status fa fa-x-tick\">";
             } else {
                 continue;
             }
             row += "<td>" + started + "</td>";
             if (this.data.hasCompletedLearningObject(lastStatements, learningObjects[learningObjectIndex].url)) {
-                completed = "<i class=\"fa fa-x-tick\">";
+                completed = "<i class=\"status fa fa-x-tick\">";
             } else {
-                completed = "<i class=\"fa fa-x-cross\">";
+                completed = "<i class=\"status fa fa-x-cross\">";
             }
             row += "<td>" + completed + "</td>";
             div.find("tbody").last().append(row);
@@ -223,6 +327,9 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             this.handleCollapse(div, data[user], learningObjectIndex);
 
         }
+        $(".close-results").click(function(){
+            $(this).closest(".collapse").collapse('toggle');
+        });
         $(".icon-header").click(function() {
             if ($(this).hasClass("icon-hide")) {
                 $(this).removeClass("icon-hide");
@@ -234,6 +341,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
             interactionIndex = $(this)[0].attributes.getNamedItem("data-interaction").value;
             interaction = interactions[interactionIndex];
+
             column = $(this).closest("table").find("[data-parent=" + interaction.interactionObjectIndex + "]");
             column.each(function(ci) {
                 c = $(column[ci]);
@@ -245,10 +353,393 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                     c.addClass("column-show");
                 }
             });
-            $(".journeyTable").width(Math.min($(".journeyTable thead").width(), $(".journeyOverview").width()));
+            //$(".journeyTable").width(Math.min($(".journeyTable thead").width(), $(".journeyOverview").width()));
         });
+        var pageState = this;
+        $(".page-button").click(function(e, init){
+
+
+            if(init){
+                $this.groupedDataComplete = $this.groupedData;
+            }else{
+                $this.groupedData = $this.groupedDataComplete;
+            }
+            var groupedData = {};
+            for($key in $this.groupedData) {
+                $val = $this.groupedData[$key];
+                if ($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == pageState.getGroupFromStatements($val.statements)) {
+                    groupedData[$key] = $val;
+                }
+            }
+            var pageSize = $this.pageSize;
+            if(pageSize == -1){
+                pageSize = Object.keys(groupedData).length;
+            }
+
+            if(e.target.id == "pageButtonLeft" && !init)
+            {
+                $this.pageIndex = Math.max($this.pageIndex -= pageSize, 0);
+            }else if(e.target.id == "pageButtonRight" && !init)
+            {
+                $this.pageIndex = Math.min($this.pageIndex +=pageSize, Object.keys(groupedData).length - 1);
+            }else if(Object.keys(groupedData).length < pageSize){
+                $this.pageIndex = 0;
+            }
+
+            if($this.pageIndex > 0)
+            {
+                $("#pageButtonLeft").prop("disabled", false).removeClass("disabled");
+            }else{
+                $("#pageButtonLeft").prop("disabled", true).addClass("disabled");
+
+            }
+            if($this.pageIndex + pageSize < Object.keys(groupedData).length - 1)
+            {
+                $("#pageButtonRight").prop("disabled", false).removeClass("disabled");
+            }else{
+                $("#pageButtonRight").prop("disabled", true).addClass("disabled");
+            }
+            pageState.drawPages($this.pageIndex, pageSize, groupedData);
+
+            var curPage = Math.ceil($this.pageIndex / pageSize) + 1;
+            var maxPage = Math.ceil(Object.keys(groupedData).length / pageSize);
+
+            var pageinfo = XAPI_DASHBOARD_PAGE_OF_PAGE;
+            pageinfo = pageinfo.replace("{i}", curPage);
+            pageinfo = pageinfo.replace("{n}", maxPage);
+            $("#page-information").html(pageinfo);
+
+            var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
+            var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
+            $('.journeyOverviewActivity').html("");
+            pageState.drawActivityChart("", $('.journeyOverviewActivity'), first_launch, last_launch, false);
+
+
+        });
+        $("#pageButtonLeft").trigger("click", [true]);
+
+        /* Setup modal question overview */
+        $("body").append(
+            '<div id="model-question-overview" class="modal fade" role="dialog" >' +
+            '<div class="modal-dialog">' +
+            '<div class="modal-content">' +
+            '<div class="modal-header">' +
+
+            '<h4 class="modal-title">Interaction overview</h4>' +
+            '<button id="interaction-overview-print" type="button" class="xerte_button_c_no_width">Print</button><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+            '</div>' +
+            '<div class="modal-body col-md-12">' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>');
+
+
+
+        $("#interaction-overview-print").click(function(e){
+            e.preventDefault();
+            var currentUrl = window.location.href;
+            if(currentUrl.endsWith("#")){
+                currentUrl = currentUrl.slice(0, -1);
+            }
+            if(!currentUrl.endsWith("/")){
+                currentUrl = currentUrl + "/";
+            }
+            var w = window.open();
+            var htmlHead = $("head").html();
+            var htmlBody = $("#model-question-overview .modal-body").html();
+            $(w.document.body).parent().find("head").html(htmlHead);
+            $(w.document.body).html("<button id='doprint' type='button' class='xerte_button_c_no_width noprint' onclick='window.print();'>Do print</button><div id='print-overview' class='dashboard'>" + htmlBody + "</div>");
+
+            $(w.document.body).parent().find("link").each(function(l){
+                var href = $(this).attr('href');
+                if(href.includes("frontpage.css")){
+                    $(this).remove();
+                }
+                if(!href.startsWith("http://") && !href.startsWith("https://")) {
+                    $(this).attr("href", currentUrl + href);
+                }
+            });
+
+            $(w.document.body).find("button").each(function(l){
+                $(this).hide();
+            });
+
+            $(w.document).find(".noprint").each(function(l){
+                $(this).show();
+            });
+
+        });
+
+
+
+        $(".show-question-overview-button").on('click', function() {
+            var drawOverviewCheckbox = $(".hide-show-overview-interaction-overview");
+            var drawOverview = drawOverviewCheckbox.length == 0 || drawOverviewCheckbox.is(":checked");
+
+            if(drawOverview){
+                $("#model-question-overview .modal-body").html('<div class="journeyOverviewModal"><div class="journeyOverviewHeader row"><h3>' + XAPI_DASHBOARD_OVERVIEW + '</h3></div><div class="journeyOverviewActivityModal row"></div><div class="journeyOverviewStats row"></div></div>');
+            }else{
+                $("#model-question-overview .modal-body").html('');
+            }
+
+
+            $("#model-question-overview").modal();
+            if(drawOverview) {
+                pageState.setStatisticsValues(".journeyOverviewModal ", 0);
+            }
+
+            var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
+            var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
+
+
+            for(var learningObjectIndex = 0; learningObjectIndex < learningObjects.length; learningObjectIndex++) {
+                interactions = pageState.data.getInteractions(learningObjects[learningObjectIndex].url);
+                for(var interactionIndex = 0; interactionIndex < interactions.length; interactionIndex++){
+
+                    var contentDiv = $('#model-question-overview .modal-body');
+                    interaction = interactions[interactionIndex];
+                    jcId = "journey-container-" + learningObjectIndex + "-" + interactionIndex;
+                    var block = "";
+                    if (interaction.children.length == 0 && interaction.type == "interaction") {
+                        block += "<div class='print_block'><h4 class='offset-1'>" + interaction.name + "</h4>";
+                    }else{
+                        block += "<div class='print_block'><h3>" + interaction.name + "</h3>";
+                    }
+                    block += '<div class="class-overview-box" id="'+jcId+'"></div>';
+                    block += '<hr></div>';
+                    contentDiv.append(block);
+
+                    if (interaction.children.length == 0 && interaction.type == "interaction") {
+                        contentDiv.find("#" + jcId).addClass("sub-interaction");
+                        contentDiv.find("#" + jcId).append("<div class='offset-1 col-5 panel main-information'></div>");
+                        var interactionDetails = pageState.data.selectInteractionById(interactions, interaction.url);
+                        var statements = pageState.data.getInteractionStatements(interaction.url).filter(function (s) {
+                                g = pageState.getGroupFromStatements([s]);
+                                cg = pageState.data.currentGroup.group_id;
+                                return cg == undefined || cg == "all-groups" || cg == g;
+                            }
+                        );
+                        contentDiv.find("#" + jcId + " div").append('<svg class="graph" id="model-svg-' + learningObjectIndex + '-' + interactionIndex +
+                            '"></svg>');
+                        pageState.createPieChartInteraction(statements, '#model-question-overview #model-svg-' +
+                            learningObjectIndex +
+                            '-' + interactionIndex);
+                        var question = pageState.data.getQuestion(interactionDetails.url);
+                        var pausedStatements = pageState.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
+                        if (question != undefined) {
+                            var questionDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find("#" + jcId));
+                            pageState.displayQuestionInformation(questionDiv, question, learningObjectIndex, interactionIndex);
+                        } else if (pausedStatements.length > 0) {
+                            var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find("#" + jcId));
+                            pageState.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
+                        }
+                        pageState.displayPageInfo(contentDiv, "#" + jcId + " .main-information", interaction);
+                        //getMultipleChoiceQuestion(learningObjects[learningObjectIndex].url, interaction.url);
+                    } else {
+                        contentDiv.find("#" + jcId).addClass("main-interaction");
+                        statements = pageState.data.getInteractionStatements(interaction.url).filter(function (s) {
+                                g = pageState.getGroupFromStatements([s]);
+                                cg = pageState.data.currentGroup.group_id;
+                                return cg == undefined || cg == "all-groups" || cg == g;
+                            }
+                        );
+                        panelDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find("#" + jcId));
+                        panelDiv.append("<svg class='graph'></svg>");
+                        pageState.createPieChartInteraction(statements, '#' + jcId + " svg"); //#model-question-overview svg:last');
+                        panelDiv.append('<div class="page-info panel"></div>');
+                        pageState.displayPageInfo(contentDiv, "#" + jcId + " .page-info", interaction);
+                        childQuestions = interaction.children.map(function (c) {
+                            return pageState.data.getQuestion(c);
+                        });
+                        if (childQuestions.filter(function (q) {
+                            return q != undefined && q.interactionType == "choice"
+                        }).length == childQuestions.length) {
+                            var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find("#" + jcId));
+                            pageState.displayQuizOverview(heatmapDiv, childQuestions);
+                        }
+                    }
+
+                }
+
+            }
+            if(drawOverview) {
+                pageState.drawActivityChart(".journeyOverviewModal ", $('.journeyOverviewActivityModal'), first_launch, last_launch, false);
+            }
+
+                //debugger;
+        });
+
+        $(".dashboard-print-button").on('click', function(e){
+
+            e.preventDefault();
+            var currentUrl = window.location.href;
+            if(currentUrl.endsWith("#")){
+                currentUrl = currentUrl.slice(0, -1);
+            }
+            if(!currentUrl.endsWith("/")){
+                currentUrl = currentUrl + "/";
+            }
+            var w = window.open();
+            var htmlHead = $("head").html();
+            var htmlBody = $(".jorneyData-container").html();
+            $(w.document.body).parent().find("head").html(htmlHead);
+            $(w.document.body).html("<button id='doprint' type='button' class='xerte_button_c_no_width noprint' onclick='window.print();'>Do print</button><div id='print-overview' class='dashboard'>" + htmlBody + "</div>");
+
+
+            $(w.document.body).parent().find("link").each(function(l){
+                var href = $(this).attr('href');
+                if(href.includes("frontpage.css")){
+                    $(this).remove();
+                }
+                if(!href.startsWith("http://") && !href.startsWith("https://")) {
+                    $(this).attr("href", currentUrl + href);
+                }
+            });
+
+            $(w.document.body).find("button").each(function(l){
+                $(this).hide();
+            });
+            $(w.document).find(".noprint").each(function(l){
+                $(this).show();
+            });
+
+            $(w.document.body).find("#journeyData").css("position", "unset");
+        });
+
+
+        $(".show-display-options-button").unbind("click");
+        $(".show-display-options-button").popover('dispose');
+        $(".show-display-options-button").on('click', function() {
+            if (typeof $(this).data('bs.popover') == "undefined" || $(this).data('bs.popover') == undefined) {
+
+                // Init the popover and show immediately
+                menu = $("<div><h5>" + XAPI_DASHBOARD_DISPLAY_COLUMNS + "</h5><ul></ul></div>");
+                interactions.forEach(function(i){
+                    if(i.type == "page"){
+                        header = $("th[data-interaction-index=" + i.interactionObjectIndex + "]");
+                        isVisible = header.is(":visible");
+                        checked = "";
+                        if(isVisible){
+                            checked = "checked"
+                        }
+                        menu.find("ul").append("<li><input class='hide-show-column-checkbox' type='checkbox' "
+                            + checked
+                            + " data-target='" + i.interactionObjectIndex + "'>" + i.name + "</li>");
+                    }
+                });
+
+                menu.append("<h5>" + XAPI_DASHBOARD_DISPLAY_OVERVIEW + "</h5>");
+                menu.append("<div><label>" + XAPI_DASHBOARD_DISPLAY_OVERVIEW + "</label><input class='hide-show-overview' type='checkbox' checked></div>");
+                menu.append("<div><label>" + XAPI_DASHBOARD_DISPLAY_INTERACTION_OVERVIEW + "</label><input class='hide-show-overview-interaction-overview' type='checkbox' checked></div>");
+                menu.append("<div><label>" + XAPI_DASHBOARD_PAGE_SIZE + "</label><select id='pageSize'></select></div>");
+                pagesizes = [5, 10, 20, 50, 100, "All"];
+                defaultSize = $this.pageSize;
+                pagesizes.forEach(function(size){
+                    var selected = "";
+                    if(defaultSize == size || (size == "All" && defaultSize == -1))
+                    {
+                        selected = "selected"
+                    }
+                    menu.find("select").append("<option " + selected + " value='" + size + "'>" + size + "</option>");
+
+
+                })
+
+                //debugger;
+                $(".show-display-options-button").popover({
+                    'content' : menu.html(),
+                    'html' : true,
+                    'placement' : "bottom",
+                    'trigger' : 'click',
+                    'container' : $(".show-display-options-button").parent()
+                }).popover('show');
+
+                $(".show-display-options-button").on('show.bs.popover', function () {
+                    return false;
+                });
+
+                // Same for hide, don't let parent execute
+                $(".show-display-options-button").on('hide.bs.popover', function () {
+                    return false;
+                });
+
+
+
+                //$(".hide-show-column-checkbox").unbind("click");
+                $(".hide-show-column-checkbox").change(function(){
+                    checkbox = $(this);
+                    target = checkbox.data("target");
+                    checked = checkbox.is(":checked");
+                    targetHeader = $("th[data-interaction-index=" + target + "]");
+                    targetIndex = targetHeader.index() + 1;
+                    column = $('.journeyData td:nth-child(' + targetIndex + '),.journeyData th:nth-child(' + targetIndex + ')');
+                    subQuestionToggle = targetHeader.find("div");
+                    if(checked){
+                        column.show();
+                    }else{
+                        column.hide();
+                    }
+                    if(subQuestionToggle.hasClass("icon-show")){
+                        subQuestionToggle.click();
+                    }
+                });
+
+                $(".hide-show-overview").change(function(){
+                    $(".journeyOverview").toggle();
+                });
+                $("#pageSize").change(function(){
+                    $this.pageSize = Number($("#pageSize").val());
+                    if(isNaN($this.pageSize))
+                    {
+                        $this.pageSize = -1;
+                    }
+                    $(".page-button").trigger("click", [true]);
+                    var display_options = JSON.parse($this.info.dashboard.display_options);
+                    display_options.pageSize = $this.pageSize;
+                    $this.info.dashboard.display_options = JSON.stringify(display_options);
+                    $.post("website_code/php/xAPI/update_dashboard_display_properties.php",
+                        {
+                            "id": $this.info.template_id,
+                            "properties" : $this.info.dashboard.display_options
+                        },
+                        function(data) {
+                            }
+
+                    );
+                })
+
+
+
+            } else {
+                //debugger;
+                $(this).parent().find('.popover').toggle();
+            }
+
+
+
+        });
+
+
+
+
     }
 };
+
+xAPIDashboard.prototype.drawPages = function(startingIndex, pageSize, groupedData) {
+    var from = startingIndex;
+    var pageSize = pageSize;
+    var to = Math.min(startingIndex + pageSize, Object.keys(groupedData).length);
+
+    $(".session-row").each(function(row){
+        var rowIndex = $(this).data("index");
+        if(rowIndex < from || rowIndex >= to){
+            $(this).hide();
+        }else{
+            $(this).show();
+        }
+    });
+}
 
 xAPIDashboard.prototype.getLastUserAttempt = function(data) {
     data.statements.sort(function(a, b) {
@@ -267,16 +758,19 @@ xAPIDashboard.prototype.getLastUserAttempt = function(data) {
             return lastStatements;
         }
     }
-    return undefined;
+    lastStatements.statements.reverse();
+    return lastStatements;
 };
 
 xAPIDashboard.prototype.insertCollapse = function(div, userdata, learningObject, rows) {
     numberOfColumns = div.find("th").length;
     rows += "<tr class='collapse' id='collapse-session-" + learningObject + "-" + this.escapeId(userdata['key']) + "'><td colspan='" + numberOfColumns +
         "'><div>";
+    rows += '<div><span><button type="button" class="close-results xerte_button_c_no_width">Close Results</button></span></i></div>';
     rows += "<div class='card card-inverse' data-empty='true'>";
     rows += "</div>";
     rows += "</div></td></tr>";
+
     return rows;
 };
 
@@ -303,7 +797,7 @@ xAPIDashboard.prototype.getExtraUserData = function(div, userdata, objIdx) {
         var learningObjects = this.data.getLearningObjects();
         var url = learningObjects[objIdx].url;
         // Try to find exited
-        statements = this.data.getExitedStatements(userdata['statements'], url);
+        statements = this.data.getExitedStatements(userdata, url);
         if (statements[0] != undefined) {
             statement = statements[0];
         }
@@ -361,7 +855,9 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
     var $this = this;
     var tdclass;
     if (interactionObject.type == "page" || this.data.selectInteractionById(interactions, interactionObject.parent) == undefined) {
-        showHide = "column-show";
+        if (interactionObject.children.length > 0) {
+            showHide = "column-show";
+        }
         tdclass = "x-dashboard-page";
     } else {
         parentId = this.data.selectInteractionById(interactions, interactionObject.parent).interactionObjectIndex;
@@ -373,17 +869,23 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
         colorDiv + "</a></td>";
 
     div.find("tr").last().append(colorDiv);
-    title = interactionObject.name;
+    var title = interactionObject.name;
     if (title == undefined) {
         title = "";
     }
-    div.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex).popover({
+    var max_popover_title = 25;
+    if(title.length > max_popover_title)
+    {
+        title = title.substr(0, max_popover_title - 3) + "...";
+    }
+    sessionDiv = div.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex);
+    sessionDiv.popover({
         content: "<div id='popover-" + learningObjectIndex + "-session-" + $this.escapeId(userdata['key']) + "-interaction-" +
             interactionObjectIndex + "'></div>",
         title: title,
         html: true
     });
-    div.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex)
+    sessionDiv
         .on('inserted.bs.popover', function(e) {
             elem = $("#popover-" + learningObjectIndex + "-session-" + $this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex);
             if (elem.html() == "") {
@@ -397,11 +899,14 @@ xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, in
     var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
     var interactionObject = interactions[interactionObjectIndex];
     var html = XAPI_JOURNEY_POPOVER_STATUS + " " + this.interactionStatus(userdata, interactionObject.url) + "<br>";
+
+    var started = this.data.getFilteredStatements(userdata, "http://adlnet.gov/expapi/verbs/initialized", interactionObject.url);
     var scores = this.data.getAllInteractionScores(userdata, interactionObject.url);
     var durations = this.data.getAllDurations(userdata, interactionObject.url);
     var lastAnswer = this.data.getAnswers(userdata, interactionObject.url);
     var lastStatements = this.getLastUserAttempt(userdata);
-    html += XAPI_JOURNEY_POPOVER_NRTRIES + " " + scores.length + "<br>";
+
+    html += XAPI_JOURNEY_POPOVER_NRTRIES + " " + started.length + "<br>";
     if (scores.length == 1) {
         html += XAPI_JOURNEY_POPOVER_GRADE + " " + Math.round(scores[0] * 10000) / 100 + "%<br>";
 
@@ -414,6 +919,11 @@ xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, in
 
         html += XAPI_JOURNEY_POPOVER_LAST_GRADE + " " + Math.round(last_score * 10000) / 100 + "%<br>"
     }
+    var durationBlocks = [];;
+    if(interactionObject.url.endsWith("/video"))
+    {
+        durationBlocks = this.data.getDurationBlocks(userdata, interactionObject.url.substring(0, interactionObject.url.length - ("/video").length));
+    }
     if (durations.length == 1) {
         html += XAPI_JOURNEY_POPOVER_DURATION + " " + Math.round(durations[0] * 100) / 100 + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
     } else if (durations.length > 1) {
@@ -423,16 +933,31 @@ xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, in
         var last_duration = this.data.getAllDurations(lastStatements, interactionObject.url)[0];
         html += XAPI_JOURNEY_POPOVER_LAST_DURATION + " " + Math.round(last_duration * 100) / 100 + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
     }
-
+    if(durationBlocks.length > 0)
+    {
+        html += "Overview of intervals:<ul>";
+        durationBlocks.forEach(function(block)
+        {
+            html += "<li>" + block.start + XAPI_JOURNEY_POPOVER_DURATION_UNIT + " - " + block.end + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "</li>";
+        });
+        html + "</ul>";
+        //debugger;
+    }
     if (lastAnswer.length > 0) {
         // Format a bit
         var lastanswer = lastAnswer[0];
         if (lastanswer.indexOf('[.]') != false || lastanswer.indexOf('[,]') != false) {
+            if(lastanswer.length > 23)
+            {
+                lastanswer = lastanswer.substr(0, 20) + "...";
+            }
             if (lastanswer.indexOf('[,]') != false) {
                 lastanswer = "<br>&nbsp;    " + lastanswer;
             }
             lastanswer = lastanswer.replace(/\[\.\]/g, " <i class=\"fa fa-long-arrow-right\"></i> ");
             lastanswer = lastanswer.replace(/\[,\]/g, "<br>&nbsp;    ");
+
+
             html += XAPI_JOURNEY_POPOVER_LASTANSWER + " " + lastanswer;
 
         }
@@ -453,34 +978,41 @@ xAPIDashboard.prototype.interactionStatus = function(user, interactionObjectUrl)
     }
 };
 
-xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectIndex, interactionIndex) {
+xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectIndex, interactionIndex, interaction) {
     var learningObjects = this.data.getLearningObjects();
     var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
     var interaction = interactions[interactionIndex];
     var interactionTitle = interaction.name;
+    var colinteractionTitle = interactionTitle;
     var collapseIcon = "";
     var showHide = "hide";
     var parentIndex = "";
     var $this = this;
     var thclass = " ";
+    var max_colinteraction_title_length;
+
     if (interaction.parent == "" || this.data.selectInteractionById(interactions, interaction.parent) == undefined) {
         parentIndex = "-1";
-        showHide = "show";
-        interactionTitle = interactionTitle;
         if (interaction.children.length > 0) {
+            showHide = "show";
             collapseIcon = '<div data-interaction="' + interactionIndex + '" class="icon-header icon-hide">&#9701</div>';
             thclass += "x-dashboard-has-children ";
         }
-
+        max_colinteraction_title_length = 15;
         thclass += "x-dashboard-page";
     } else {
 
         parentIndex = this.data.selectInteractionById(interactions, interaction.parent).interactionObjectIndex;
         thclass += "x-dashboard-interaction";
+        max_colinteraction_title_length = 15;
     }
-    var interactionHeader = '<th data-parent="' + parentIndex + '" class="column-' + showHide + thclass +
-        '"><a href="#" data-toggle="modal" data-target="#model-' +
-        learningObjectIndex + '-' + interactionIndex + '">' + interactionTitle + '</a>' + collapseIcon + '</th>';
+    if(colinteractionTitle.length > max_colinteraction_title_length)
+    {
+        colinteractionTitle = colinteractionTitle.substr(0, max_colinteraction_title_length - 3) + "...";
+    }
+    var interactionHeader = '<th data-interaction-index="' + interaction.interactionObjectIndex + '" data-parent="' + parentIndex + '" class="column-' + showHide + thclass +
+        '" title="' + interaction.name + '"><a href="#" data-toggle="modal" data-target="#model-' +
+        learningObjectIndex + '-' + interactionIndex + '">' + colinteractionTitle + '</a>' + collapseIcon + '</th>';
     $('body').append('<div id="model-' + learningObjectIndex + '-' + interactionIndex + '" class="modal fade" role="dialog" >' +
         '<div class="modal-dialog">' +
         '<div class="modal-content">' +
@@ -489,52 +1021,71 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
         '<h4 class="modal-title">' + interactionTitle + '</h4>' +
         '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
         '</div>' +
-        '<div class="modal-body">' +
-        '<p></p>' +
+        '<div class="modal-body col-md-12">' +
         '</div>' +
         '</div>' +
         '</div>' +
         '</div>');
     div.find("#" + learningObjectIndex + " thead tr").append(interactionHeader);
     $('#model-' + learningObjectIndex + '-' + interactionIndex)
-        .on('show.bs.modal', function(e) {
+        .on('show.bs.modal', function() {
             var contentDiv =
-                $('#model-' + learningObjectIndex + '-' + interactionIndex + ' .modal-body p');
-            if (contentDiv.html() == "") {
-                interactions = $this.data.getInteractions(learningObjects[learningObjectIndex].url);
-                interaction = interactions[interactionIndex];
-                contentDiv.append('<div class="container"></div>');
-                if (interaction.children.length == 0 && interaction.type == "interaction") {
-                    contentDiv.find(".container").append("<div class='panel'></div>");
-                    var interactionDetails = $this.data.selectInteractionById(interactions, interaction.url);
-                    var statements = $this.data.getInteractionStatements(interaction.url);
-                    contentDiv.find(".container div").append('<svg class="graph" id="model-svg-' + learningObjectIndex + '-' + interactionIndex +
-                        '"></svg>');
-                    $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' #model-svg-' +
-                        learningObjectIndex +
-                        '-' + interactionIndex);
-                    var question = $this.data.getQuestion(interactionDetails.url);
+                $('#model-' + learningObjectIndex + '-' + interactionIndex + ' .modal-body');
+            contentDiv.html("");
+            interactions = $this.data.getInteractions(learningObjects[learningObjectIndex].url);
+            interaction = interactions[interactionIndex];
+            contentDiv.append('<div class="journey-container"></div>');
+            if (interaction.children.length == 0 && interaction.type == "interaction") {
+                contentDiv.find(".journey-container").append("<div class='col-6 panel main-information'></div>");
+                var interactionDetails = $this.data.selectInteractionById(interactions, interaction.url);
+                var statements = $this.data.getInteractionStatements(interaction.url).filter(function(s){
+                        g = $this.getGroupFromStatements([s]);
+                        cg = $this.data.currentGroup.group_id;
+                        return cg == undefined || cg == "all-groups" || cg == g;
+                    }
+                );
+                contentDiv.find(".journey-container div").append('<svg class="graph" id="model-svg-' + learningObjectIndex + '-' + interactionIndex +
+                    '"></svg>');
+                $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' #model-svg-' +
+                    learningObjectIndex +
+                    '-' + interactionIndex);
+                var question = $this.data.getQuestion(interactionDetails.url);
+                if (question != undefined) {
+                    var questionDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
+                    $this.displayQuestionInformation(questionDiv, question, learningObjectIndex, interactionIndex);
+                }
+                else
+                {
                     var pausedStatements = $this.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
-                    if (question != undefined) {
-                        var questionDiv = $("<div class='panel'></div>").appendTo(contentDiv.find('.container'));
-                        $this.displayQuestionInformation(questionDiv, question, learningObjectIndex, interactionIndex);
-                    } else if (pausedStatements.length > 0) {
-                        var heatmapDiv = $("<div class='panel'></div>").appendTo(contentDiv.find('.container'));
+                    if (pausedStatements.length > 0) {
+                        var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.container'));
                         $this.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
                     }
-                    contentDiv.find(".container").append('<div class="interaction-info panel"></div>');
-                    $this.displayPageInfo(contentDiv, ".container .interaction-info", interaction);
-                    //getMultipleChoiceQuestion(learningObjects[learningObjectIndex].url, interaction.url);
-                } else {
-                    statements = $this.data.getInteractionStatements(interaction.url);
-
-                    contentDiv.find(".container").append("<svg class='graph'></svg>");
-                    $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' svg');
-                    contentDiv.find(".container").append('<div class="page-info panel"></div>');
-                    $this.displayPageInfo(contentDiv, ".container .page-info", interaction);
-
                 }
+                $this.displayPageInfo(contentDiv, ".journey-container .main-information", interaction);
+                //getMultipleChoiceQuestion(learningObjects[learningObjectIndex].url, interaction.url);
+            } else {
+                statements = $this.data.getInteractionStatements(interaction.url).filter(function(s){
+                        g = $this.getGroupFromStatements([s]);
+                        cg = $this.data.currentGroup.group_id;
+                        return cg == undefined || cg == "all-groups" || cg == g;
+                    }
+                );
+                panelDiv =  $("<div class='panel col-6'></div>").appendTo(contentDiv.find(".journey-container"));
+                panelDiv.append("<svg class='graph'></svg>");
+                $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' svg');
+                panelDiv.append('<div class="page-info panel"></div>');
+                $this.displayPageInfo(contentDiv, ".journey-container .page-info", interaction);
+                childQuestions = interaction.children.map(function(c){
+                    return $this.data.getQuestion(c);
+                });
+                if(childQuestions.filter(function(q) {return q != undefined && q.interactionType == "choice"}).length == childQuestions.length){
+                    var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
+                    $this.displayQuizOverview(heatmapDiv, childQuestions);
+                }
+
             }
+
         });
 };
 
@@ -545,9 +1096,17 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
             []
         ],
         total = 100;
-    var videoLength = Math.max(...pausedStatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/time"]));
+    var videoLength;
+    if(pausedstatements.length == 1)
+    {
+        videoLength = pausedstatements[0].result.extensions["https://w3id.org/xapi/video/extensions/time"];
+
+    }else{
+        videoLength = pausedstatements.map(function(s) { return s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]})
+            .reduce(function(a,b){ return Math.max(a,b)});
+    }
     // Gets all the ranges from the data.
-    var stringRanges = pausedStatements.map(s => s.result.extensions["https://w3id&46;org/xapi/video/extensions/played-segments"]);
+    var stringRanges = pausedstatements.map(function(s) {return s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]});
     var totalViewed = [];
     for (var i = 0; i < total; i++) {
         totalViewed.push(0);
@@ -589,7 +1148,7 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
         yaxis: {
             title: '',
             ticks: '',
-            ticksuffix: pausedStatements[0].object.definition.name["en-US"],
+            ticksuffix: pausedstatements[0].object.definition.name["en-US"],
             y: "-15",
             tickangle: '-90',
             width: 700,
@@ -631,12 +1190,74 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
     });
 };
 
+xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
+{
+    var $this = this;
+    contentDiv.append("<div class='question-overview'><ul></ul></div>");
+    questions.forEach(function(q){
+        answerStatements = $this.data.rawData.filter(function(s){
+                g = $this.getGroupFromStatements([s]);
+                cg = $this.data.currentGroup.group_id;
+                return (cg == undefined || cg == "all-groups" || cg == g) && s.object.id == q.interactionUrl && s.verb.id == "http://adlnet.gov/expapi/verbs/answered";
+            }
+        );
+        answers = answerStatements.map(function(s) {return s.result.response});
+        contentDiv.find(".question-overview ul").append("<li>" + q.name["en-US"] + "</li>");
+        var ol = $("<ol></ol>").appendTo(contentDiv.find(".question-overview ul li:last"));
+        q.choices.forEach(function(c){
+            current = 0;
+            total = 0;
+            answers.forEach(function(a){
+                total++;
+                if(a == c.id){
+                    current++;
+                }
+            });
+            if (q.correctResponsesPattern.indexOf(c.id) != -1) {
+                correct = "<i class=\"fa fa-x-tick\"></i>";
+            } else {
+                correct = "<i class=\"fa fa-x-cross\"></i>";
+            }
+            var rounded = Math.round(current / total * 1000) / 10;
+            if(isNaN(rounded)){
+                rounded = "0";
+
+            }
+            ol.append("<li>" + correct + c.description["en-US"] + " - " + rounded + "%</li>");
+        });
+
+    });
+
+};
+
 xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, interaction) {
-    var statements = this.data.getInteractionStatements(interaction.url);
+    var $this = this;
+    var statements = this.data.getInteractionStatements(interaction.url).filter(function(s){
+            g = $this.getGroupFromStatements([s]);
+            cg = $this.data.currentGroup.group_id;
+            return cg == undefined || cg == "all-groups" || cg == g;
+        }
+    );
     var started = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/initialized");
-    var completed = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/exited");
-    contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRATTEMPTS + " " + started.length + "<br>");
-    contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRCOMPLETIONS + " " + completed.length + "<br>");
+    var completed = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/exited").concat(
+         this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/scored")
+    );
+    var uniqIds = completed.map(function(s) {return s.actor.mbox_sha1sum} ).filter(function(v, i, a) { return a.indexOf(v) === i});
+    started = started.filter(function(v, i, a){
+        return a.map(function(s) {return s.actor}).indexOf(v.actor) === i;
+    });
+    var groupedData = {};
+    for($key in $this.data.groupedData) {
+        $val = $this.data.groupedData[$key];
+        if ($this.data.currentGroup.group_id == "all-groups" || $this.data.currentGroup.group_id == $this.getGroupFromStatements($val.statements)) {
+            groupedData[$key] = $val;
+        }
+    }
+    users = Object.keys(groupedData);
+    contentDiv.find(jqLocation).append("Number of users" + " " + users.length + "<br>");
+    contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRATTEMPTS + " " + started.length + " = " + Math.round(started.length / users.length * 100) + "%<br>");
+    contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRCOMPLETIONS + " " + uniqIds.length + " = " + Math.round(uniqIds.length / users.length * 100) + "%<br>");
+
     var grouped = this.data.groupStatementsOnSession([started, completed]);
     avgTime = this.data.calculateDuration(grouped);
 
@@ -650,12 +1271,18 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
 
 xAPIDashboard.prototype.createPieChartInteraction = function(statements, div_location) {
     var dash = new ADL.XAPIDashboard();
-    statements = this.data.getAllScoreStatements(statements);
+    var $this = this;
+    statements = this.data.getAllScoreStatements(statements).filter(function(s){
+            g = $this.getGroupFromStatements([s]);
+            cg = $this.data.currentGroup.group_id;
+            return cg == undefined || cg == "all-groups" || cg == g;
+        }
+    );
     var newStatements = jQuery.extend(true, [], statements);
     newStatements.forEach(function(x) {
         if (x.result.score.isScaled == undefined || x.result.score.isScaled == false) {
             x.result.score.isScaled = true;
-            x.result.score.scaled *= 10;
+            x.result.score.scaled *= 100;
         }
         return x;
     });
@@ -666,8 +1293,8 @@ xAPIDashboard.prototype.createPieChartInteraction = function(statements, div_loc
         aggregate: ADL.count(),
         range: {
             start: 0.0,
-            end: 10.0,
-            increment: 1
+            end: 100.0,
+            increment: 10
         },
         post: function(data) {
             data.contents.map(function(el) {
@@ -697,7 +1324,11 @@ xAPIDashboard.prototype.displayQuestionInformation = function(contentDiv, questi
         case "fill-in":
             this.displayFillInQuestionInformation(contentDiv, question, learningObjectIndex, interactionIndex);
             break;
+        case "text":  // Special case for open ansers, see also DashboardState.prototype.getQuestion
+            this.displayTextQuestionInformation(contentDiv, question, learningObjectIndex, interactionIndex);
+            break;
         default:
+            debugger;
             console.log("Invalid interaction type");
     }
 };
@@ -708,7 +1339,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
     var interaction = interactions[interactionIndex];
     var learningObjectUrl = learningObjects[learningObjectIndex].url;
     var interactionObjectUrl = interaction.url;
-    contentDiv.append(question.name["en-US"]);
+    //contentDiv.append(question.name["en-US"]);
     var options = "<div>" + XAPI_DASHBOARD_SOURCES + "<ol>";
     question.source.forEach(function(s) {
         options += "<li>" + s.description["en-US"] + "</li>";
@@ -720,7 +1351,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
     });
     options += '</ol>';
     var pairs = question.correctResponsesPattern[0].split("[,]");
-    pairs = pairs.map(x => x.split("[.]").join(" <i class=\"fa fa-long-arrow-right\"></i> "));
+    pairs = pairs.map(function(x) {return x.split("[.]").join(" <i class=\"fa fa-long-arrow-right\"></i> ")});
     options += XAPI_DASHBOARD_CORRECTANSWERS;
     options += "<ul>";
     pairs.forEach(function(p) {
@@ -742,7 +1373,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
         });
     });
     dash.addStatements(pairStatements);
-    options += '<svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div>';
+    options += '<div><svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div></div>';
     contentDiv.append(options);
     var chart = dash.createBarChart({
         container: '#answers-' + learningObjectIndex + '-' + interactionIndex,
@@ -751,7 +1382,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
         customize: function(chart) {
             chart.xAxis.axisLabel(XAPI_DASHBOARD_GRAPH_MATCH_XAXIS);
             chart.yAxis.axisLabel(XAPI_DASHBOARD_GRAPH_PERCOFCLASS);
-            chart.width(500);
+            chart.width(1000);
             chart.height(500);
         },
         process: function(data, event, opts) {
@@ -774,8 +1405,12 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
     var interaction = interactions[interactionIndex];
     var learningObjectUrl = learningObjects[learningObjectIndex].url;
     var interactionObjectUrl = interaction.url;
-    contentDiv.append(XAPI_DASHBOARD_QUESTION + " " + question.name["en-US"]);
+    //contentDiv.append(XAPI_DASHBOARD_QUESTION + " " + question.name["en-US"]);
     var options = "<div>" + XAPI_DASHBOARD_ANSWERS + "<ol>";
+    choices = question.choices;
+    var dash = new ADL.XAPIDashboard();
+    var statements = this.data.getQuestionResponses(interactionObjectUrl);
+    var numberOfAnswers = statements.filter(function(s) {return s.result != undefined && s.result.response != undefined}).length;
     question.choices.forEach(function(option) {
         var correct = "";
         if (question.correctResponsesPattern.indexOf(option.id) != -1) {
@@ -783,22 +1418,56 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
         } else {
             correct = "<i class=\"fa fa-x-cross\"></i>";
         }
-        options += "<li>" + correct + option.description["en-US"] + "</li>";
+        var percentage = Math.round(1000 * statements.filter(function(s) {return s.result != undefined && s.result.response == option.id}).length / numberOfAnswers) / 10;
+
+        if(isNaN(percentage)){
+            percentage = "0";
+        }
+        options += "<li>" + correct + option.description["en-US"] + " - " + percentage + "%</li>";
     });
-    var dash = new ADL.XAPIDashboard();
-    var statements = this.data.getQuestionResponses(interactionObjectUrl);
+
     dash.addStatements(statements);
-    options += '</ol><svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div>';
+    options += '</ol><div><svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div></div>';
     contentDiv.append(options);
+
     var chart = dash.createBarChart({
         container: '#answers-' + learningObjectIndex + '-' + interactionIndex,
         groupBy: 'result.response',
         aggregate: ADL.count(),
+        post: function(data) {
+
+        },
         customize: function(chart) {
             chart.xAxis.axisLabel(XAPI_DASHBOARD_GRAPH_CHOICE_XAXIS);
             chart.yAxis.axisLabel(XAPI_DASHBOARD_GRAPH_CHOICE_YAXIS);
             chart.width(500);
             chart.height(500);
+            chart.color(function(d){
+                if(d.correct)
+                {
+                    return "green";
+                }
+                return "red";
+
+            });
+        },
+        post : function(data)
+        {
+            data.contents.map(function(el) {
+                el.out *= 1 / statements.length * 100;
+            });
+            data.contents.forEach(function(d){
+                origAnswer = d.in;
+                answers = origAnswer.split("[,]");
+                updatedAnswers = [];
+                answers.forEach(function(a)
+                {
+                    updatedAnswers.push(choices.map(function(c) { return c.id} ).indexOf(a) + 1);
+                })
+                d.in = updatedAnswers.join(",");
+                d.correct = question.correctResponsesPattern.indexOf(origAnswer) != -1;
+            });
+
         }
 
     });
@@ -811,7 +1480,7 @@ xAPIDashboard.prototype.displayFillInQuestionInformation = function(contentDiv, 
     var interaction = interactions[interactionIndex];
     var learningObjectUrl = learningObjects[learningObjectIndex].url;
     var interactionObjectUrl = interaction.url;
-    contentDiv.append(question.name["en-US"]);
+    //contentDiv.append(question.name["en-US"]);
     var options = "<div><ul>";
     question.correctResponsesPattern.forEach(function(option) {
         options += "<li>" + option + "</li>";
@@ -819,7 +1488,7 @@ xAPIDashboard.prototype.displayFillInQuestionInformation = function(contentDiv, 
     var dash = new ADL.XAPIDashboard();
     var statements = this.data.getQuestionResponses(interactionObjectUrl);
     dash.addStatements(statements);
-    options += '</ul><svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div>';
+    options += '</ul><div><svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div></div>';
     contentDiv.append(options);
     var chart = dash.createBarChart({
         container: '#answers-' + learningObjectIndex + '-' + interactionIndex,
@@ -836,48 +1505,67 @@ xAPIDashboard.prototype.displayFillInQuestionInformation = function(contentDiv, 
     chart.draw();
 };
 
+xAPIDashboard.prototype.displayTextQuestionInformation = function(contentDiv, question, learningObjectIndex, interactionIndex) {
+    var learningObjects = this.data.getLearningObjects();
+    var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
+    var interaction = interactions[interactionIndex];
+    var learningObjectUrl = learningObjects[learningObjectIndex].url;
+    var interactionObjectUrl = interaction.url;
+    //contentDiv.append(question.name["en-US"]);
+    var statements = this.data.getQuestionResponses(interactionObjectUrl);
+    var answers = "<div class='openanwers'><ul>";
+    statements.forEach(function(statement){
+        if (statement.result.response != undefined && statement.result.response != "") {
+            answers += "<li>" + statement.result.response + "</li>";
+        }
+    });
+    answers += "</ul></div>";
+    contentDiv.append(answers);
+};
+
+
 xAPIDashboard.prototype.getResultPage = function(div, userdata, learningObject, statement) {
     var classIdentifier = "row-pagecontents-" + learningObject + "-" + this.escapeId(userdata['key']);
     if (statement.result != undefined && statement.result.extensions["http://xerte.org.uk/xapi/trackingstate"] != undefined) {
         var trackingState = JSON.parse(statement.result.extensions["http://xerte.org.uk/xapi/trackingstate"]);
-        html = `<div id=` + classIdentifier +
-            `>
-        <div class="pageContents">
+        html = '<div id='  + classIdentifier +
+            '>\n' +
+        '<div class="pageContents">\n' +
 
-    <div class="pdfContent">
-        <h3 class="generalResultsTxt"></h3>
-        <table class="general_summary" rules="rows">
-            <tr>
-                <td class="averageTxt"></td>
-                <td><span class="averageScore"></span></td>
-            </tr>
-            <tr>
-                <td class="completionTxt"></td>
-                <td><span class="completion"></span></td>
-            </tr>
-            <tr>
-                <td class="startTimeTxt"></td>
-                <td><span class="startTime"></span></td>
-            </tr>
-            <tr>
-                <td class="durationTxt1"></td>
-                <td><span class="totalDuration"></span></td>
-            </tr>
-        </table>
-        <div class ="specific">
-        <h3 class="interactivityResultsTxt"></h3>
-        <h3 class="globalResultsTxt"></h3>
-        <table class="questionScores" rules="rows">
-        </table>
-        <br />
-        <h3 class="specificResultsTxt">Specific Results</h3>
-        <div class="fullResults">
+    '<div class="pdfContent">\n' +
+    '    <h3 class="generalResultsTxt"></h3>\n' +
+    '    <table class="general_summary" rules="rows">\n' +
+    '        <tr>\n' +
+    '            <td class="averageTxt"></td>\n' +
+    '            <td><span class="averageScore"></span></td>\n' +
+    '        </tr>\n' +
+    '        <tr>\n' +
+    '            <td class="completionTxt"></td>\n' +
+    '            <td><span class="completion"></span></td>\n' +
+    '        </tr>\n' +
+    '        <tr>\n' +
+    '            <td class="startTimeTxt"></td>\n' +
+    '            <td><span class="startTime"></span></td>\n' +
+    '        </tr>\n' +
+    '        <tr>\n' +
+    '            <td class="durationTxt1"></td>\n' +
+    '            <td><span class="totalDuration"></span></td>\n' +
+    '        </tr>\n' +
+    '    </table>\n' +
+    '    <div class ="specific">\n' +
+    '    <h3 class="interactivityResultsTxt"></h3>\n' +
+    '    <h3 class="globalResultsTxt"></h3>\n' +
+    '    <table class="questionScores" rules="rows">\n' +
+    '    </table>\n' +
+    '    <br />\n' +
+    '    <h3 class="specificResultsTxt">Specific Results</h3>\n' +
+    '    <div class="fullResults">\n' +
 
-        </div>
-        <br />
-    </div>
-    </div>
-</div></div>`;
+    '    </div>\n' +
+    '    <br />\n' +
+    '</div>\n' +
+    '</div>\n' +
+'</div></div>\n';
         div.append(html);
         results.init(classIdentifier, trackingState);
     } else {
@@ -923,22 +1611,41 @@ xAPIDashboard.prototype.drawSelectRow = function(table, obj, begin, end) {
 };
 
 
+xAPIDashboard.prototype.drawNumberOfSessions = function(elmnt, numberOfSessions) {
+    var row = '<div class="col-2-widget col-2"><h5>' + XAPI_DASHBOARD_NUMBER_OF_SESSIONS + '</h5><h2>' + numberOfSessions + '</h2></div>';
+    elmnt.append(row);
+};
+
+xAPIDashboard.prototype.drawNumberOfCompletedSessions = function(elmnt, completedSessions) {
+    var row = '<div class="col-2-widget col-2"><h5>' + XAPI_DASHBOARD_COMPLETED_SESSIONS + '</h5><h2>' + completedSessions + '</h2></div>';
+    elmnt.append(row);
+};
+
+xAPIDashboard.prototype.drawAverageCompletedPages = function(elmnt, averageCompletedPages) {
+    var row = '<div class="col-2-widget col-2"><h5>' + XAPI_DASHBOARD_AVERAGE_COMPLETED_PAGES + '</h5><h2>' + averageCompletedPages + '</h2></div>';
+    elmnt.append(row);
+};
+
 xAPIDashboard.prototype.drawNumberOfInteractions = function(elmnt, numberOfInteractions) {
-    var row = '<div class="col-4-widget col-4"><h3>' + XAPI_DASHBOARD_NUMBER_OF_INTERACTIONS + '</h3><h1>' + numberOfInteractions + '</h1></div>';
+    var row = '<div class="col-2-widget col-2"><h5>' + XAPI_DASHBOARD_NUMBER_OF_INTERACTIONS + '</h5><h2>' + numberOfInteractions + '</h2></div>';
     elmnt.append(row);
 };
 
 xAPIDashboard.prototype.drawNumberOfUsers = function(elmnt, numberOfUsers) {
-    var row = '<div class="col-4-widget col-4"><h3>' + XAPI_DASHBOARD_NUMBER_OF_STUDENTS + '</h3><h1>' + numberOfUsers + '</h1></div>';
+    var row = '<div class="col-2-widget col-2"><h5>' + XAPI_DASHBOARD_NUMBER_OF_STUDENTS + '</h5><h2>' + numberOfUsers + '</h2></div>';
     elmnt.append(row);
 };
 
 xAPIDashboard.prototype.drawAverageScore = function(elmnt, averageGrade) {
-    var row = '<div class="col-4-widget col-4"><h3>' + XAPI_DASHBOARD_AVERAGE_SCORE + '</h3><h1>' + averageGrade + '</h1></div>';
+    var row = '<div class="col-2-widget col-2"><h5>' + XAPI_DASHBOARD_AVERAGE_SCORE + '</h5><h2>' + averageGrade + '</h2></div>';
     elmnt.append(row);
 };
 
-xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = true) {
+xAPIDashboard.prototype.drawActivityChart = function(base, elmnt, begin, end, link) {
+    if (link == undefined)
+    {
+        link = true;
+    }
     var row = "<a id='graph_link_" + this.data.info.template_id + "' href='#'><div id='graph-svg-wrapper-" + this.data.info.template_id +
         "' class='graph-svg-wrapper'><svg></svg></div></a>";
     elmnt.append(row);
@@ -949,11 +1656,32 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
         });
     }
     var dash = new ADL.XAPIDashboard();
-    var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
+    var statements = this.data.rawData.filter(function(s){
+            g = $this.getGroupFromStatements([s]);
+            cg = $this.data.currentGroup.group_id;
+            return cg == undefined || cg == "all-groups" || cg == g;
+        }
+    );
+    var launchedStatements = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/launched");
     dash.addStatements(launchedStatements);
     template_id = this.data.info.template_id;
+    var vals = [];
+    var timeFrame = end.getTime() - begin.getTime();
+    var tickmarkDuration = timeFrame / 8;
+    //round to nearset day
+    var tickMarkNrDays = Math.round(tickmarkDuration / (1000 * 3600 * 24));
+    if (tickMarkNrDays < 1)
+    {
+        tickMarkNrDays = 1;
+    }
+    var tick = begin.getTime();
+    while(tick < end.getTime()) {
+        vals.push(tick);
+        tick += (tickMarkNrDays * 1000 * 3600 * 24);
+    }
+
     var chart = dash.createLineChart({
-        container: '#graph-svg-wrapper-' + this.data.info.template_id + ' svg',
+        container: base + '#graph-svg-wrapper-' + this.data.info.template_id + ' svg',
         groupBy: 'timestamp',
         range: {
             start: begin.toISOString(),
@@ -963,7 +1691,9 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
         aggregate: ADL.count(),
         rangeLabel: 'start',
         customize: function(chart) {
-            chart.width($('#graph-svg-wrapper-' + template_id + ' svg').width() - 10);
+
+            chart.width($(base + '#graph-svg-wrapper-' + template_id + ' svg').width() - 10);
+
             chart.height(300);
             chart.tooltips(false);
             chart.interpolate("monotone");
@@ -983,6 +1713,8 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
                 }
                 return intllabel;
             });
+            chart.xAxis.tickValues(vals);
+            chart.color(['#f86718']);
         },
         post: function(data) {
             data.contents.map(function(el) {
@@ -994,6 +1726,12 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
 };
 
 function close_dashboard() {
+    $this.clear();
+    $("#dp-start").unbind("change");
+    $("#dp-end").unbind("change");
+    $("#dp-unanonymous-view").unbind("change");
+
+
     $(".journeyOverviewActivity").html("");
     $("#dashboard-wrapper").hide();
 };
@@ -1010,6 +1748,12 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
         if ($.datepicker.regional[jquery_language] == undefined) {
             jquery_language = "";
         }
+    }
+
+    $this.data.pageSize = JSON.parse($this.data.info.dashboard.display_options).pageSize;
+    if($this.data.pageSize == undefined)
+    {
+        $this.data.pageSize = 5;
     }
     $.datepicker.setDefaults(
         $.extend({},
@@ -1050,12 +1794,33 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
         $this.regenerate_dashboard();
     });
 
+    $("#group-select").change(function(){
+        var group = $(this).val();
+        $this.data.currentGroup.group_id = group;
+
+        $this.data.pageIndex = 0;
+        $(".page-button").eq(0).trigger("click", [false]);
+        if(group == "all-groups")
+        {
+            $(".session-row").show();
+        }else{
+            $('.session-row:not([data-group="' + group + '"])').hide();
+            $('.session-row[data-group="' + group + '"]').show();
+        }
+
+        $(".journeyOverviewStats").html("");
+        $this.setStatisticsValues(".journeyOverview ", 0);
+
+    });
+
     if (this.data.info.dashboard.enable_nonanonymous == 'true') {
         $(".unanonymous-view").show();
-        this.data.info.dashboard.anonymous = true;
+        this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
         $("#dp-unanonymous-view").change(function(event) {
-            $this.data.info.dashboard.anonymous = !$this.data.info.dashboard.anonymous;
+            $this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
+
             $this.regenerate_dashboard();
+
         });
     }
 
@@ -1077,15 +1842,26 @@ xAPIDashboard.prototype.helperGetDate = function(datetimepicker) {
     return mTime;
 };
 
-xAPIDashboard.prototype.regenerate_dashboard = function()
-{
-    $("#journeyData").html("<img class='loading-gif' src='editor/img/loading16.gif'/>");
-
+xAPIDashboard.prototype.regenerate_dashboard = function() {
+    $("#journeyData").html("<div id=\"loader\"><img id=\"loader_image\" class=\"loading_gif\" src=\"editor/img/loading16.gif\" /><p id=\"loader_text\"></p>");
+    $("#group-select option:not(:first-child)").remove();
+    this.data.currentGroup.group_id = "all-groups";
     var url = site_url + this.data.info.template_id;
     var start = this.helperGetDate('#dp-start');
     var end = this.helperGetDate('#dp-end');
     end = new Date(moment(end).add(1, 'days').toISOString());
     var q = {};
+    q['activities'] = [url];
+    if (this.data.info.lrs.lrsurls != null && this.data.info.lrs.lrsurls != "undefined" && this.data.info.lrs.lrsurls != "")
+    {
+        var $this = this;
+        q['activities'] = q['activities'].concat(this.data.info.lrs.lrsurls.split(","));
+    }
+    if (this.data.info.lrs.site_allowed_urls != null && this.data.info.lrs.site_allowed_urls != "undefined" && this.data.info.lrs.site_allowed_urls != "")
+    {
+        var $this = this;
+        q['activities'] = q['activities'].concat(this.data.info.lrs.site_allowed_urls.split(",").map(function(url) { return url + $this.data.info.template_id})).filter(function(url) {return url != ""});
+    }
     q['activity'] = url;
     q['related_activities'] = true;
     q['since'] = start.toISOString();
@@ -1097,3 +1873,4 @@ xAPIDashboard.prototype.regenerate_dashboard = function()
         $this.createJourneyTableSession($("#journeyData"));
     });
 };
+

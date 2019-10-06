@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -151,9 +151,10 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         {
             $tracking .= "<script>\n";
             if($row["tsugi_xapi_enabled"] == 1) {
-                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . "xapi_proxy.php';\n";
+                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
+                $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
                 if ($row["tsugi_published"] == 1) {
                     _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
                     $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
@@ -167,7 +168,17 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 else
                 {
                     // Only xAPI - force group mode
-                    $tracking .= "   var studentidmode = 3;\n";
+                    if (isset($xerte_toolkits_site->xapi_user))
+                    {
+                        // actor is set
+                        _debug("xAPI User detected: " . print_r($xerte_toolkits_site->xapi_user, true));
+                        $tracking .= "   var username = '" . $xerte_toolkits_site->xapi_user->email . "';\n";
+                        $tracking .= "   var fullusername = '" . $xerte_toolkits_site->xapi_user->displayname . "';\n";
+                        $tracking .= "   var studentidmode = 0;\n";
+                    }
+                    else {
+                        $tracking .= "   var studentidmode = 3;\n";
+                    }
                 }
                 if (isset($xerte_toolkits_site->group))
                 {
@@ -238,7 +249,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         if($tsugi_enabled)
         {
             $tracking .= "<script>\n";
-            if (!$pedit_enabled)
+            if (isset($lti_enabled) && $lti_enabled)
             {
                 // Set lti_enabled variable so that we can send back gradebook results through LTI
                 $tracking .= "  var lti_enabled=true;\n";
@@ -248,9 +259,10 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 $tracking .= "  var lti_enabled=false;\n";
             }
             if($row["tsugi_xapi_enabled"] == 1) {
-                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . "xapi_proxy.php';\n";
+                $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
+                $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
                 if ($row["tsugi_published"] == 1) {
                     _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
                     $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
@@ -264,7 +276,17 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 else
                 {
                     // Only xAPI - force group mode
-                    $tracking .= "   var studentidmode = 3;\n";
+                    if (isset($xerte_toolkits_site->xapi_user))
+                    {
+                        // actor is set
+                        _debug("xAPI User detected: " . print_r($xerte_toolkits_site->xapi_user, true));
+                        $tracking .= "   var username = '" . $xerte_toolkits_site->xapi_user->email . "';\n";
+                        $tracking .= "   var fullusername = '" . $xerte_toolkits_site->xapi_user->displayname . "';\n";
+                        $tracking .= "   var studentidmode = " . $xerte_toolkits_site->xapi_user->studentidmode . ";\n";
+                    }
+                    else {
+                        $tracking .= "   var studentidmode = 3;\n";
+                    }
                 }
                 if (isset($xerte_toolkits_site->group))
                 {
@@ -284,9 +306,9 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         }
 
 		$page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
-		
+
 		$page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $page_content);
-		
+
     }
     if(substr($rlo_object_file, -3) == "php")
     {

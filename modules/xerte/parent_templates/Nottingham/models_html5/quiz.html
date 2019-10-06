@@ -142,7 +142,7 @@
 			this.loadQ();
             // Queue reparsing of MathJax - fails if no network connection
             try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-		}
+		};
 
 		this.loadQ = function() {
 		    // Reset tracking flag
@@ -474,7 +474,7 @@
             var scormScore = Math.ceil(myScore / quiz.questions.length * 100, x_currentPageXML.getAttribute("trackinglabel"));
             XTSetPageScore(x_currentPage, scormScore);
             this.resultsShown = true;
-        }
+        };
 
 		this.loadVideo = function() {
 			var $video = $("#pageVideo"),

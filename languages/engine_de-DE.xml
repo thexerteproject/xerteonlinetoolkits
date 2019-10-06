@@ -1,8 +1,8 @@
 <language name="Deutsch">
 
-  <nextButton label="Vor" description="Nächste Seite Button"/>
+  <nextButton label="Vor" description="Nï¿½chste Seite Button"/>
   
-  <backButton label="Zurück" description="Voherige Seite Button"/>
+  <backButton label="Zurï¿½ck" description="Voherige Seite Button"/>
   
   <tocButton label="Inhalt" description="Inhaltsverzeichnis Button"/>
   
@@ -12,33 +12,33 @@
   
   <homeButton label="Home" description="Home Button. "/>
   
-  <pageHelp name="Seiten Hilfe" description="Seiten Hilfe" toClose="Zum Schließen der Hilfe Leertaste drücken"/>
+  <pageHelp name="Seiten Hilfe" description="Seiten Hilfe" toClose="Zum Schlieï¿½en der Hilfe Leertaste drï¿½cken"/>
   
   <glossaryButton label="Glossar" description="Glossar Button. "/>
   
   <continueButton label="Weiter" description="Weiter Button"/>
   
-  <toc label="Inhaltsverzeichnis" description="Inhaltsverzeichnis. Zur Auswahl der Seite Pfeiltasten benutzen. Leertaste drücken, um zur Seite zu gelangen.">
+  <toc label="Inhaltsverzeichnis" description="Inhaltsverzeichnis. Zur Auswahl der Seite Pfeiltasten benutzen. Leertaste drï¿½cken, um zur Seite zu gelangen.">
 	  <contentsList label="" description=""/>
-	  <closeButton label="" description="Inhaltsverzeichnis schließen Button"/>
+	  <closeButton label="" description="Inhaltsverzeichnis schlieï¿½en Button"/>
 	  <gotoPageButton label="Zur Seite" description="Zur Seite Button"/>
   </toc>
   
-  <glossary label="Glossar" description="Eine Liste von Wörtern und ihren Definitionen.">
-	  <closeButton label="" description="Glossar schließen Button"/>
+  <glossary label="Glossar" description="Eine Liste von Wï¿½rtern und ihren Definitionen.">
+	  <closeButton label="" description="Glossar schlieï¿½en Button"/>
   </glossary>
   
-  <kbLanguage label="Spezielle Symbole" description="Eine Liste von Buttons die spezielle  Symbole hinzufügen">
-	  <closeButton label="" description="Spezielle Symbole Liste schließen Button"/>
+  <kbLanguage label="Spezielle Symbole" description="Eine Liste von Buttons die spezielle  Symbole hinzufï¿½gen">
+	  <closeButton label="" description="Spezielle Symbole Liste schlieï¿½en Button"/>
   </kbLanguage>
   
   <textToSpeech label="Null" description="Text zu Sprache"/>
   
   <errorProject label="Die Projektdaten sind nicht geladen."/>
   
-  <errorPage label="Für diesen Seitentyp steht zur Zeit kein Template zur Verfügung."/>
+  <errorPage label="Fï¿½r diesen Seitentyp steht zur Zeit kein Template zur Verfï¿½gung."/>
   
-  <errorBrowser label="Ihr Browser unterstützt diesen Seitentyp nicht."/>
+  <errorBrowser label="Ihr Browser unterstï¿½tzt diesen Seitentyp nicht."/>
   
   <errorFlash label="Installieren Sie den Flash Player, um diese Inhalte anzusehen." description="Holen Sie sich den Flash Player"/>
   
@@ -49,7 +49,7 @@
   <themes label="--Farbschema--" description="Farbschema Optionen">
     <item>default</item>
     <item>Blau</item>
-    <item>Grün</item>
+    <item>Grï¿½n</item>
     <item>Rot</item>
     <item>Orange</item>
     <item>Violett</item>
@@ -58,28 +58,28 @@
     <item>Hoher Kontrast 2</item>
   </themes>
  
-  <sizes label="--Bildschirmgröße--" description="Bildschirmgröße Optionen">
+  <sizes label="--Bildschirmgrï¿½ï¿½e--" description="Bildschirmgrï¿½ï¿½e Optionen">
 	<item>default</item>
-	<item>Groß</item>
-	<item>Größer</item>
+	<item>Groï¿½</item>
+	<item>Grï¿½ï¿½er</item>
 	<item>Vollbild</item>
-	<item>Fenster füllen</item>
+	<item>Fenster fï¿½llen</item>
   </sizes>
   
   <fonts label="--Text Schriftart--" description="Schriftart Optionen">
 	  <item>default</item>
   </fonts>
   
-  <textSizes label="--Text Größe--" description="Text Größe Optionen">
+  <textSizes label="--Text Grï¿½ï¿½e--" description="Text Grï¿½ï¿½e Optionen">
 	  <item>default</item>
 	  <item>Klein</item>
 	  <item>Medium</item>
-	  <item>Groß</item>
-	  <item>Größer</item>
+	  <item>Groï¿½</item>
+	  <item>Grï¿½ï¿½er</item>
   </textSizes>
   
-  <volumeControl label="Vol:" description="Lautstärke Regelung"/>
-  <volumeControlSlider label="" description="Lautstärke Regler"/>
+  <volumeControl label="Vol:" description="Lautstï¿½rke Regelung"/>
+  <volumeControlSlider label="" description="Lautstï¿½rke Regler"/>
   
   <vocab>
 	  <page>Page</page>
@@ -90,16 +90,16 @@
 	<stopButton label="Audio stoppen" description="Audio stoppen Button"/>
 	<playButton label="Audio abspielen" description="Audio abspielen Button"/>
 	<pauseButton label="Audio pausieren" description="Audio pausieren Button"/>
-	<rwndButton label="Audio zurückspulen" description="Audio zurückspulen Button"/>
+	<rwndButton label="Audio zurï¿½ckspulen" description="Audio zurï¿½ckspulen Button"/>
 	<ffwdButton label="Audio vorspulen" description="Audio vorspulen Button"/>
 	<loader label="Lade: "/>
   </soundController>
   
   <movieController>
-	<stopButton label="Film zurücksetzen" description="Film anhalten Button"/>
+	<stopButton label="Film zurï¿½cksetzen" description="Film anhalten Button"/>
 	<playButton label="Film abspielen" description="Film abspielen Button"/>
 	<pauseButton label="Film pausieren" description="Film pausieren Button"/>
-	<rwndButton label="Film zurückspulen" description="Film zurückspulen Button"/>
+	<rwndButton label="Film zurï¿½ckspulen" description="Film zurï¿½ckspulen Button"/>
 	<ffwdButton label="Film vorspulen" description="Film vorspulen Button"/>
 	<loader label="Lade: "/>
   </movieController>
@@ -114,14 +114,14 @@
   
   <interactions>
 	  <button name="Button"/>
-	  <radioButton selected="Ausgewählt. Pfeiltasten benutzen,  um Optionen auszuwählen."/>
-	  <checkBox selected="Ausgewählt" deselected="nicht ausgewählt"/>
-	  <comboBox name="ComboBox" options="Optionen." selected="Ausgewählt." selectedOptions="Ausgewählt. Zum Auswählen Pfeiltasten benutzen." />
-	  <hotSpot name="HotSpot" toSelect="Hot Spot. Zum Auswählen Leertaste drücken." selected="Hot Spot ausgewählt"/>
-	  <hotObject name="HotObject" toSelect="Zum Auswählen Leertaste drücken." selected="Hot Object ausgewählt"/>
-	  <textEntry name="Text Eingabe Feld" selected="Text Eingabe Feld ausgewählt"/>
-	  <targetArea name="Zielfläche" description="Ablagefläche für" toSelect="Zum Ablegen des gewählten Objekts Leertaste drücken. Press space to drop the selected item."/>
-	  <draggableItem name="Verschiebbares Objekt" selected="Objekt ausgewählt" toSelect="Zum Auswählen Leertaste drücken" deSelected="Kein Objekt ausgewählt." />
+	  <radioButton selected="Ausgewï¿½hlt. Pfeiltasten benutzen,  um Optionen auszuwï¿½hlen."/>
+	  <checkBox selected="Ausgewï¿½hlt" deselected="nicht ausgewï¿½hlt"/>
+	  <comboBox name="ComboBox" options="Optionen." selected="Ausgewï¿½hlt." selectedOptions="Ausgewï¿½hlt. Zum Auswï¿½hlen Pfeiltasten benutzen." />
+	  <hotSpot name="HotSpot" toSelect="Hot Spot. Zum Auswï¿½hlen Leertaste drï¿½cken." selected="Hot Spot ausgewï¿½hlt"/>
+	  <hotObject name="HotObject" toSelect="Zum Auswï¿½hlen Leertaste drï¿½cken." selected="Hot Object ausgewï¿½hlt"/>
+	  <textEntry name="Text Eingabe Feld" selected="Text Eingabe Feld ausgewï¿½hlt"/>
+	  <targetArea name="Zielflï¿½che" description="Ablageflï¿½che fï¿½r" toSelect="Zum Ablegen des gewï¿½hlten Objekts Leertaste drï¿½cken. Press space to drop the selected item."/>
+	  <draggableItem name="Verschiebbares Objekt" selected="Objekt ausgewï¿½hlt" toSelect="Zum Auswï¿½hlen Leertaste drï¿½cken" deSelected="Kein Objekt ausgewï¿½hlt." />
   </interactions>
   
   <fetchResults label="Ergebnisse werden abgerufen..."/>
@@ -134,5 +134,15 @@
 	  <timeUp name="Zeit abgelaufen"/>
 	  <seconds name="Sekunden"/>
   </timer>
+
+    <colourChanger label="Colour Changer" description="Change the colours." tooltip="Change Colours">
+        <closeButton label="" description="Close Colour Changer"/>
+        <selectTxt label="Please select from the options below"/>
+        <adviceTxt label="Need more advice? Visit the &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Toolkits accessibility guide&lt;/a&gt;."/>
+        <off label="Off"/>
+        <noBg label="Remove Background Images"/>
+        <invert label="Invert"/>
+        <blackYellow label="Black on Yellow"/>
+    </colourChanger>
 
 </language>

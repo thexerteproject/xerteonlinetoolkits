@@ -7,6 +7,10 @@ global $xerte_toolkits_site;
 
 $tsugi_installed = false;
 if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+    if ($xerte_toolkits_site->authentication_method == "Moodle") {
+        define('XERTE_MOODLE_AUTHENTICATION', true);
+    }
+    define('COOKIE_SESSION', true);
     require_once($xerte_toolkits_site->tsugi_dir . "config.php");
     require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
     $tsugi_installed = true;
@@ -40,6 +44,7 @@ $lti_def->xapi_endpoint = (isset($_POST["tsugi_xapi_endpoint"]) ? htmlspecialcha
 $lti_def->xapi_username = (isset($_POST["tsugi_xapi_username"]) ? htmlspecialchars($_POST["tsugi_xapi_username"]) : "");
 $lti_def->xapi_password = (isset($_POST["tsugi_xapi_password"]) ? htmlspecialchars($_POST["tsugi_xapi_password"]) : "");
 $lti_def->xapi_student_id_mode = (isset($_POST["tsugi_xapi_student_id_mode"]) ? $_POST["tsugi_xapi_student_id_mode"] : "");
+$lti_def->dashboard_urls = (isset($_POST["dashboard_urls"]) ? $_POST["dashboard_urls"] : "");
 // Force groupmode
 if (!$tsugi_installed)
 {
@@ -138,7 +143,7 @@ if ($tsugi_installed) {
 
     }
 }
-$sql = "UPDATE {$xp}templatedetails SET tsugi_published = ?, tsugi_xapi_enabled = ?, tsugi_xapi_useglobal = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ? WHERE template_id = ?";
+$sql = "UPDATE {$xp}templatedetails SET tsugi_published = ?, tsugi_xapi_enabled = ?, tsugi_xapi_useglobal = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ?, dashboard_allowed_links = ? WHERE template_id = ?";
 db_query($sql,
     array(
         $lti_def->published ? "1" : "0",
@@ -148,6 +153,7 @@ db_query($sql,
         $lti_def->xapi_enabled ? $lti_def->xapi_username : "",
         $lti_def->xapi_enabled ? $lti_def->xapi_password : "",
         $lti_def->xapi_enabled ? $lti_def->xapi_student_id_mode : "0",
+        $lti_def->xapi_enabled ? $lti_def->dashboard_urls : "",
         $template_id
     )
 );

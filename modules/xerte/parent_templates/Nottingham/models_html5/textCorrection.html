@@ -1,0 +1,336 @@
+<script type="text/javascript">
+    /**
+     * Licensed to The Apereo Foundation under one or more contributor license
+     * agreements. See the NOTICE file distributed with this work for
+     * additional information regarding copyright ownership.
+
+     * The Apereo Foundation licenses this file to you under the Apache License,
+     * Version 2.0 (the "License"); you may not use this file except in
+     * compliance with the License. You may obtain a copy of the License at:
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+
+    var textCorrection = new function() {
+            this.pageChanged = function() {
+
+            };
+
+            this.sizeChanged = function() {
+                if (x_browserInfo.mobile === false) {
+                    var $panel = $("#pageContents .panel");
+                    $panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+                }
+
+                if ($("#pageContents .audioHolder").length > 0) {
+                    var audioBarW = 0;
+                    $("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function () {
+                        audioBarW += $(this).outerWidth();
+                    });
+                    if (audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() > 2) {
+                        $x_window.resize();
+                    }
+                }
+
+                var $mainPanel = $("#mainPanel");
+                var padding = $mainPanel.innerWidth() - $mainPanel.width();
+                $("#text").width($mainPanel.width() - padding);
+            };
+
+            this.leavePage = function () {
+                hasExited = textCorrection.hasExited;
+                if(!hasExited){
+                    this.exitTrackTextCorrection();
+                }
+            };
+
+            this.exitTrackTextCorrection = function () {
+                answer = textCorrection.answer;
+                var input =  $(".answer textarea").val();
+
+
+                var checkAnswer = false;
+                if(input === answer){
+                    checkAnswer = true;
+                }
+
+                var result = 0;
+
+                if(checkAnswer){
+                    result = 100;
+                }else{
+                    result = 0;
+                }
+                XTExitInteraction(x_currentPage, 0, result,[], input, []);
+
+
+                XTSetPageScore(x_currentPage, result);
+
+            };
+
+            this.init = function() {
+                var hadExited = false;
+
+                this.weighting = 1.0;
+                if(x_currentPageXML.getAttribute("trackingWeight") != null){
+                    this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+                }
+                XTSetPageType(x_currentPage, "fill in", 1,this.weighting);
+
+
+                var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
+                    $splitScreen = $("#pageContents .splitScreen");
+                var $textHolder = $("#textHolder");
+
+                if (panelWidth == "Full") {
+                    $("#pageContents .panel").appendTo($("#pageContents"));
+                    $splitScreen.remove();
+                } else {
+
+                    $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("introduction")));
+
+                    var textAlign = x_currentPageXML.getAttribute("align");
+                    if (textAlign != "Right") {
+                        if (panelWidth == "Small") {
+                            $splitScreen.addClass("large");
+                        } else if (panelWidth == "Large") {
+                            $splitScreen.addClass("small");
+                        } else {
+                            $splitScreen.addClass("medium");
+                        }
+                    } else {
+                        $textHolder
+                            .removeClass("left")
+                            .addClass("right")
+                            .appendTo($splitScreen);
+                        $("#infoHolder")
+                            .removeClass("right")
+                            .addClass("left");
+                        if (panelWidth == "Small") {
+                            $splitScreen.addClass("medium");
+                        } else if (panelWidth == "Large") {
+                            $splitScreen.addClass("large");
+                        } else {
+                            $splitScreen.addClass("large");
+                        }
+                    }
+                }
+
+                var $attempts = $("#attempts");
+                var amountofTries = x_currentPageXML.getAttribute("amountOfTries");
+                if(amountofTries === null || amountofTries === undefined){
+                    amountofTries = "1";
+                }
+
+
+                var $pageContents = $("#pageContents");
+
+                var $textHolder = $("#textHolder");
+                var $question = $("#infoHolder #question");
+                var question = x_currentPageXML.getAttribute("wrongText");
+                var orginalQuestion = x_currentPageXML.getAttribute("wrongText");
+                orginalQuestion = $("<div>").html(orginalQuestion);
+                $question.html(orginalQuestion);
+
+                var $answer = $("#infoHolder #answer");
+                var answer = x_currentPageXML.getAttribute("answer");
+                answer = $("<div>").html(answer).text().trim();
+
+                textCorrection.answer = answer;
+
+
+                var copyText = false;
+                if (x_currentPageXML.getAttribute("copyText") != undefined)
+                {
+                    copyText = x_currentPageXML.getAttribute("copyText").trim();
+                }
+                var $textArea = $("#text");
+                if( copyText === "true"){
+                    question = $("<div>").html(question).text().trim();
+                    $textArea.val(question)
+                }
+
+                var $correctOrNot = $("#infoHolder #correctOrNot");
+                var correct = "Good job";
+
+                var $FurtherClarification = $("#infoHolder #FurtherClarification");
+                var FurtherClarification = x_currentPageXML.getAttribute("FurtherClarification");
+                var AllowFurtherClarification = x_currentPageXML.getAttribute("showFurtherClarification");
+
+                FurtherClarification = $("<div>").html(FurtherClarification).text().trim();
+
+                var $answer = $("#infoHolder #answer");
+                var disableAnswer =  x_currentPageXML.getAttribute("disableAnswers");
+
+                //Translation
+                var incorrect = x_currentPageXML.getAttribute("textWrong");
+
+                var incompleet = x_currentPageXML.getAttribute("textIncomplete");
+
+                var correct = x_currentPageXML.getAttribute("textRight");
+
+                var checkButtonTxt = x_currentPageXML.getAttribute("checkBtn");
+
+                var resultLabel = x_currentPageXML.getAttribute("resultLabel");
+
+                var FurtherClarificationLabel = x_currentPageXML.getAttribute("FurtherClarificationLabel");
+
+                var answerLabel = x_currentPageXML.getAttribute("answerLabel");
+
+                var attemptLabel = x_currentPageXML.getAttribute("attemptLabel");
+                if( x_currentPageXML.getAttribute("attemptLabel") == null){
+                    attemptLabel = "Attempt";
+                }
+
+                $attempts.html(attemptLabel+ ": "+ amountofTries);
+
+                // pageScore
+                var correctIcon = $("<div>").addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+
+                var incorrectICon = $("<div>").addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+                // if (checkBtnTxt == undefined) {
+                //     checkBtnTxt = "Check";
+                // }
+                var attempt = 1;
+                $("#checkButton")
+                    .button({
+                        label: checkButtonTxt
+                    })
+                    .click(function () {
+
+                        var amountOfTries = x_currentPageXML.getAttribute("amountOfTries");
+                        if(amountOfTries === null || amountOfTries === undefined){
+                            amountOfTries = "1";
+                        }
+
+                        var tries = parseInt(amountOfTries);
+
+                        $correctOrNot.html("");
+
+                        amountofTries -= 1;
+
+                        if(amountofTries > 0) {
+                            $attempts.html(attemptLabel+ ": "+ amountofTries);
+                        }else{
+                            $attempts.html("");
+                        }
+
+                        $(checkButton).button("disable");
+                        XTEnterInteraction(x_currentPage, 0, "text", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("introduction"), ""), "",answer, FurtherClarification);
+
+                        var input = $(".answer textarea").val();
+                        //get value of text area
+                        if(attempt < tries) {
+                            $(checkButton).button("enable");
+
+
+                            textCorrection.input = input;
+
+                            $correctOrNot.append("<h3>"+resultLabel+"</h3>");
+                            if (input === "") {
+                                $correctOrNot.append(incompleet);
+                                $correctOrNot.append(incorrectICon)
+                            }
+
+                            if(input !== "") {
+                                if (input === answer) {
+                                    $correctOrNot.append(correct);
+                                    $correctOrNot.append(correctIcon)
+                                }else{
+                                    $correctOrNot.append(incorrect);
+                                    $correctOrNot.append(incorrectICon)
+                                }
+
+                                if (!hadExited) {
+                                    textCorrection.exitTrackTextCorrection();
+                                    hasExited = true;
+                                }
+                                textCorrection.hasExited = hadExited;
+
+                            }else{
+                                $(checkButton).button("disable");
+                            }
+                        }else{
+                            $(checkButton).button("enable");
+                        }
+
+                        attempt ++;
+
+                        if(input === answer|| attempt > tries){
+                            $(checkButton).button("disable");
+                            $correctOrNot.html("");
+                            $attempts.html("");
+                            $correctOrNot.append("<h3>"+resultLabel+"</h3>");
+                            if (input === "") {
+                                $correctOrNot.append(incompleet);
+                                $correctOrNot.append(incorrectICon)
+                            }
+
+                            if(input !== "") {
+                                if (input === answer) {
+                                    $correctOrNot.append(correct);
+                                    $correctOrNot.append(correctIcon)
+                                } else {
+                                    $correctOrNot.append(incorrect);
+                                    $correctOrNot.append(incorrectICon)
+                                }
+
+                                if (!hadExited) {
+                                    textCorrection.exitTrackTextCorrection();
+                                    hasExited = true;
+                                }
+                            }
+                            if (AllowFurtherClarification === "true") {
+                                $FurtherClarification.append("<h3>" + FurtherClarificationLabel + "</h3>");
+                                $FurtherClarification.append(FurtherClarification);
+                            }
+
+                            if (disableAnswer === "false" ||disableAnswer === null) {
+
+                                $answer.append("<h3>" + answerLabel + "</h3>");
+                                $answer.append(x_currentPageXML.getAttribute("answer"))
+                            }
+
+                        }
+
+                    });
+                this.sizeChanged();
+
+
+                x_pageLoaded();
+            }
+        };
+
+    textCorrection.init();
+
+</script>
+
+
+
+<div id="pageContents">
+    <div class="splitScreen">
+        <div id="textHolder" class="left"></div>
+        <div id="infoHolder" class="right">
+            <div id="mainPanel" class="panel">
+                <div id="question">
+
+                </div>
+                <div id="optionHolder">
+                    <div class="answer"><textarea id="text" rows="4" cols="50" spellcheck="false"></textarea></div>
+                </div>
+                <button id="checkButton"></button>
+                <div id="attempts"></div>
+                <div id="correctOrNot"></div>
+                <div id="FurtherClarification"></div>
+                <div id ="answer"></div>
+            </div>
+        </div>
+    </div>
+</div>

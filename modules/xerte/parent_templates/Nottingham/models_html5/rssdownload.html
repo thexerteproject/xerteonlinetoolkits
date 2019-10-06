@@ -1,0 +1,224 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+	// Built using the feed library at https://rss2json.com/google-feed-api-alternative
+ 
+	var rssdownload = new function() {
+		var $pageContents,
+			$textHolder,
+			$panel,
+			$resultsHolder,
+			rssURL;
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .panel");
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			}
+		};
+		
+		this.init = function() {
+			//debugger;
+			/*
+			$script('https://rss2json.com/gfapi.js', function () {
+				rssdownload.begin();
+			});
+			*/
+			this.begin();
+		};
+
+		this.loadfeed = function () {
+			var rssproxyurl = (typeof x_rssproxyURL != 'undefined') ? x_rssproxyURL : 'rss_proxy.php';
+			var rssproxyurl = rssproxyurl + "?rss=" + encodeURIComponent(rssURL) + "&format=" + "json";
+			$.get(rssproxyurl, function(data, status, xhr) {
+				$("#loadingSpinner").hide();
+				if (status == 'success')
+				{
+					var feed = JSON.parse(data);
+					rssdownload.listFeed(feed);
+				}
+				else {
+					rssdownload.errorLoading(x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + " \"" + rssURL +"\"");
+				}
+			});
+			/*
+			var feed = new google.feeds.Feed(rssURL);
+			feed.load(function(result) {
+				$("#loadingSpinner").hide();
+				if (!result.error) {
+					rssdownload.listFeed(result.feed);
+				}
+				else {
+					rssdownload.errorLoading(x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + " \"" + rssURL +"\"");
+				}
+			});
+			*/
+
+		};
+
+		this.begin = function() {
+			$pageContents = $("#pageContents");
+			$textHolder = $("#textHolder");
+			$panel = $("#pageContents .panel");
+			$resultsHolder = $pageContents.find("#resultsHolder");
+			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
+
+			$("#loadingSpinner").show();
+
+			//google.load("feeds", "1");
+			
+			rssURL = x_currentPageXML.getAttribute("url");
+
+
+			//google.setOnLoadCallback(initialize);
+			
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			if (panelWidth == "Full") {
+				$("#pageContents .right div:first").appendTo($("#pageContents"));
+				$("#pageContents .splitScreen").remove();
+			} else {
+				var align = x_currentPageXML.getAttribute("align") == "Right" ? "Right" : "Left";
+				if (align == "Right") {
+					var $splitScreen = $("#pageContents .splitScreen");
+					
+					$textHolder
+						.removeClass("left")
+						.addClass("right")
+						.appendTo($splitScreen);
+					
+					$("#rssHolder")
+						.removeClass("right")
+						.addClass("left");
+				}
+				
+				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				if (panelWidth == "Small") {
+					align == "Right" ? $("#pageContents .splitScreen").addClass("medium") : $("#pageContents .splitScreen").addClass("large");
+				} else if (panelWidth == "Large") {
+					align == "Right" ? $("#pageContents .splitScreen").addClass("xlarge") : $("#pageContents .splitScreen").addClass("small");
+				} else {
+					align == "Right" ? $("#pageContents .splitScreen").addClass("large") : $("#pageContents .splitScreen").addClass("medium");
+				}
+			}
+
+			this.sizeChanged();
+			x_pageLoaded();
+			this.loadfeed();
+		};
+		
+		this.listFeed = function(feed) {
+				var resultsString = "";
+
+				if (feed.rss.channel.item == 0) {
+					resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>'
+				}
+				else {
+					//get optional properties to show/hide links and info
+					var optdeployment=x_currentPageXML.getAttribute("deployment");
+					var optscorm2004=x_currentPageXML.getAttribute("scorm2004");
+					var optscorm12=x_currentPageXML.getAttribute("scorm12");
+					var optauthor=x_currentPageXML.getAttribute("author");
+					var optlicense=x_currentPageXML.getAttribute("license");
+					var optmoddate=x_currentPageXML.getAttribute("moddate");
+					var optfeedheader=x_currentPageXML.getAttribute("feedheader");
+
+					//hide or show the feed header based on optional property
+					if (optfeedheader !="false" && optfeedheader !=null) {
+							$pageContents.find("#headerHolder").html("<h3>" + feed.rss.channel.description + "</h3>");
+					}
+
+
+
+					$.each(feed.rss.channel.item, function (index, item) {
+						var xertefeed = (typeof item.xertedescription != "undefined");
+						var description = (typeof item.xertedescription != "undefined" ? item.xertedescription : item.description);
+						var templatename = (typeof item.xertetemplatename != "undefined" ? item.xertetemplatename : "");
+						var author = (typeof item.xerteauthor != "undefined" ? item.xerteauthor : (typeof item.author != "undefined" ? item.author : ""));
+						resultsString += '<div><a target="_blank" href="' + item.link + '"><i class="fa fa-globe" aria-hidden="true"></i> View ' + item.title + '</a><br><br>';
+						if (typeof item.exportlink != "undefined" && optdeployment !="false")
+						{
+							resultsString += '<span class="rssDownloadDeployment"><a target="_blank" href="' + item.exportlink + '"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Download Deployment</a></span>';
+						}
+						if (typeof item.scorm2004link != "undefined" && optscorm2004 !="false")
+						{
+							resultsString += '<span class="rssDownloadScorm2004"><a target="_blank" href="' + item.scorm2004link + '"><i class="fa fa-cubes" aria-hidden="true"></i>  Download SCORM 2004 3rdEd</a></span>';
+						}
+						if (typeof item.scorm12link != "undefined" && optscorm12 !="false")
+						{
+							resultsString += '<span class="rssDownloadScorm12"><a target="_blank" href="' + item.scorm12link + '"><i class="fa fa-cube" aria-hidden="true"></i> Download SCORM 1.2</a></span>';
+						}+'</div>'
+						if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.description != "undefined") {
+							// snippet is a bit long so shorten it
+							if (description != "undefined" && description.length > 400) {
+								var cutOff = 400 + description.substr(400).indexOf(' ');
+								resultsString += '<p class="rssDescription">' + description.substring(0, cutOff) + '...</p>';
+							} else {
+								resultsString += '<p class="rssDescription">' + description + '</p>';
+							}
+						}
+						if (optauthor !="false" && optauthor !=null) {
+							resultsString += '<p class="rssAuthor">' + x_getLangInfo(x_languageData.find("rssDLAuthor")[0], "label", "Created by:") + " " + author + '</p>';
+						}
+
+						if (optlicense !="false" && optlicense !=null) {
+							resultsString += '<p class="rssLicense">' + x_getLangInfo(x_languageData.find("rssDLLicense")[0], "label", "License:") + " " + item.license + '</p>';
+						}
+						if (optmoddate !="false" && optmoddate !=null) {
+							var pubDate = item.pubDate.substring(0, 16);
+							resultsString += '<p class="rssModDate">' + x_getLangInfo(x_languageData.find("rssDLModDate")[0], "label", "Last modified:") + " " + pubDate + '</p>';
+						}
+						resultsString += '</div>';
+					});
+				}
+				$resultsHolder
+					.html(resultsString)
+					.children("div:even").addClass("shadedDiv");
+		};
+
+		this.errorLoading = function(msg) {
+			$resultsHolder
+				.html('<div><p>' + msg + '</p></div>');
+		};
+
+	};
+
+	rssdownload.init();
+
+</script>
+
+
+<div id="pageContents">
+	
+	<div class="splitScreen">
+		
+		<div id="textHolder" class="left" tabindex="1"></div>
+		
+		<div id="rssHolder" class="right">
+			<div class="panel">
+				<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
+				<div id="headerHolder"></div>
+				<div id="resultsHolder"></div>
+			</div>
+		</div>
+		
+	</div>
+
+</div>

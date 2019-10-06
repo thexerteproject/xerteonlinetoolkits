@@ -447,7 +447,7 @@ fieldset.noStyle legend {
 	border-collapse:	collapse;
 }
 
-#x_pageDiv table td {
+#x_pageDiv table td, #x_pageDiv table th {
 	padding:		10px;
 	vertical-align:	top;
 }
@@ -617,4 +617,15 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 .pbTxt {
 	font-size: 10px;
 	text-align: center;
+}
+
+/* Specifiaclly for grayscale handling on IE browsers */
+body > svg
+{
+	width: 0px;
+	height: 0px;
+}
+
+textarea {
+	padding: 0.5em;
 }

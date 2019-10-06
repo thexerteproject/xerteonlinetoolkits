@@ -139,7 +139,7 @@ blockquote {
 
 blockquote:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -150,7 +150,7 @@ blockquote p {
 
 blockquote:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -161,7 +161,7 @@ blockquote:after {
 
 .bq1:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -169,7 +169,7 @@ blockquote:after {
 
 .bq1:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -180,7 +180,7 @@ blockquote:after {
 
 .bq2:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -188,7 +188,7 @@ blockquote:after {
 
 .bq2:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -199,7 +199,7 @@ blockquote:after {
 
 .bq3:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -207,7 +207,7 @@ blockquote:after {
 
 .bq3:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -218,7 +218,7 @@ blockquote:after {
 
 .bq4:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -226,7 +226,7 @@ blockquote:after {
 
 .bq4:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -237,7 +237,7 @@ blockquote:after {
 
 .bq5:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -245,7 +245,7 @@ blockquote:after {
 
 .bq5:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -256,7 +256,7 @@ blockquote:after {
 
 .bq6:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -264,7 +264,7 @@ blockquote:after {
 
 .bq6:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;

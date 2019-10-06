@@ -1,0 +1,49 @@
+.answer{
+    width:      100%;
+}
+
+.answer input{
+    width:      90%;
+    margin-bottom: 5px;
+}
+
+#checkButton{
+    margin:     10px;
+    float:      right;
+}
+#pageContents #feedback {
+    clear:		both;
+}
+#pageContents #correctAnswer {
+
+    clear:		both;
+}
+#correctAnswer h3 {
+    border-top: 1px solid #ccc;
+    padding-top: 40px;
+}
+#feedback h3 {
+    border-top: 1px solid #ccc;
+    padding-top: 1em;
+}
+.correctOptions{
+    color: limegreen;
+}
+
+#attempts{
+    margin-top: 10%;
+    padding-bottom: 0;
+}
+
+.titleQuestion{
+    padding-bottom: 30px;
+}
+
+#mainFeedback{
+    padding-top: 30px;
+}
+
+#result{
+    padding-top: 30px;
+}
+

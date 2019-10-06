@@ -1,39 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wizard menus="Interactivity">
+<wizard menus="xAPI">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction="Enter introduction text here"></adaptiveContent>]]></adaptiveContent>
       </newNodes>
     </pageWizard>
     <!-- Adaptive Content =============================================== -->
-    <adaptiveContent menu="Interactivity" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
+    <adaptiveContent menu="xAPI" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icAdaptiveContent" thumb="thumbs/adaptiveContent.jpg" remove="true">
       <name label="Page Title" type="TextInput" wysiwyg="true" />
       <introduction label="Introduction" type="textArea"  height="120"/>
+      <displayMode label="Display Mode" optional="true" type="combobox" options="Unlisted,Listed" data="Unlisted,Listed" defaultValue="Unlisted" />
+      <startDate label="Start date" optional="true" type="dateField" defaultValue="" tooltip="Read records starting from this date" />
+      <endDate label="Stop date" optional="true" type="dateField" defaultValue="" tooltip="Read records ending from this date" />
+     <dashboardMode label="Dashboard mode" optional="true" type="checkbox" defaultValue="false" tooltip="Show data for the whole group" />
+     <listedModeOptions type="group" optional="true" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
+         <sortOrder label="Sort order" optional="true" type="combobox" defaultValue="none" options="Increasing score,Decreasing score,None" data="increasing,decreasing,none" tooltip="Sort the list acoording to this criteria. Only has meaning for 'Listed' display mode" />
+     </listedModeOptions>
+
       <newNodes>
-        <interaction ><![CDATA[<interaction name="Enter title here" introduction="Enter introduction here" xerteurl="" xertelo="" label="" interactionType="score" PersonalAvgLabel = "Avg. of your attempts"
-      PersonalLastLabel = "Your last attempt"
-      AvgLabel = "Avg. of all attempts" scoreText="Your score is {0}" answerText="Your answer is {0}"><interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100"></interactionBlock></interaction>]]>
+        <interaction ><![CDATA[<interaction name="Enter title here" introduction="Enter introduction here" xerteurl="" xertelo="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
+        xAxisLabelBarAnswers = "Answers given"
+        yAxisLabelBarAnswers = "Number of answers"
+        xAxisLabelBarMarks = "Score Range [%]"
+        yAxisLabelBarMarks = "% of Group"
+        xAxisLabelLineAvgMarks = "Score Range [%]"
+        yAxisLabelLineAvgMarks = "% of Group"
+        xAxisLabelLineOwnMarks = "Date"
+        yAxisLabelLineOwnMarks = "Grade [0-10]"
+        personalAvgLabelText = "Avg. of your attempts"
+        personalLabelText = "Your last attempt"
+        avgAllLabelText = "Avg. of all attempts"
+
+        ><interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100"></interactionBlock></interaction>]]>
         </interaction>
       </newNodes>
     </adaptiveContent>
     <interaction menuItem="Source interaction">
-        <name label="Block title" type="textinput" wysiwyg="true" />
+        <name label="Title" type="textinput" wysiwyg="true" />
         <introduction label="Introduction" type="textarea" height="120" wysiwyg="true" />
         <graph type="group" label="Graph" optional="true">
           <graph label="Show graph" type="checkbox" defaultValue="false" optional="true"/>
           <graphType label="Graph type" type="combobox" data="bar_answers,bar_marks,line_own_marks,line_average_marks" options="Bar graph for given answers,Bar graph for received marks,Line graph for own received marks,Line graph for average marks of others" defaultValue="bar_answers" optional="true" />
+          <showExplanation label="Show graph explanation" type="checkbox" optional="true" defaulValue="false" tooltip="Show a box with a legend or other explanation next to the graph" />
+          <graphExplanation label="Graph legend/explanation" type="textArea" height="120" optional="true" defaultValue="" wysiwyg="true" tooltip="The legend or other explanation shown next to the graph"/>
+          <graphExplanationPanelWidth label=" Legend panel width" type="textInput" defaultValue="40%" optional="true" tooltip="The width of the legend or other explanation panel, enter an acceptable width like 40% or 250px"/>
+          <graphNrDataPoints label="Nr of bars/points" type="NumericStepper" min="0" max="100" step="1" defaultValue="10" optional="true" tooltip="The number of bars in a bargraph, or the number of points in a line graph" />
         </graph>
         <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue="" />
         <xertelo label="ID of Xerte learning object" type="xertelo" mandatory="true" defaultValue="" />
         <label label="Tracking Label of source" type="TextInput" wysiwyg="false" />
-        <interactionType label="Interaction type" type="combobox" data="score,answer,opinion" options="Based on end score,Based on specific answer,Based on 2D opinion" />
+        <interactionType label="Interaction type" type="combobox" data="score,answer,opinion,open" options="Based on end score,Based on specific answer,Based on 2D opinion,Open answer" tooltip="Score: use 'Score between' to add one or more interaction blocks; Answer: use 'Result label equals' to add one or more interaction block; Based on 2D opinion: use in combination with class to get a score; Open: Just shows one interaction block with all the given answers, all given interaction blocks will just be ignored."/>
         <opinionClass label="Opinion Class" type="TextInput" wysiwyg="false" optional="true" defaultValue="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interactiontype is based on 2D opinion" />
         <showScore label="Show score/answer" type="CheckBox" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based" />
         <scoreText label="Score text" type="TextInput" wysiwyg="true" language="true" />
         <answerText label="Answer text" type="TextInput" wysiwyg="true" language="true" />
-        <AvgLabel label="Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
-        <PersonalLastLabel label="Personal Graph Label" type="TextInput" wysiwyg="true" language="true" />
-        <PersonalAvgLabel label="Personal Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
+        <!-- <showAvgScore label="Show average score" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the average score of the whole group" /> -->
+        <AvgScoreText label="Average Score Label" type="TextInput" wysiwyg="true" language="true" />
+        <showNrOfParticipants label="Show nr of participants" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the number of participants of this group" />
+        <NrParticipantsText label="Nr of Participants Label" type="TextInput" wysiwyg="true" language="true" />
+        <listedModeOptions type="group" optional="true" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
+            <doNotSort label="Do not sort this item" type="checkbox" defaultValue="false" optional="true" tooltip="Do not sort this item in listed mode, but keep at the location where it is. Use for example to keep a summary block at the top of the list." />
+        </listedModeOptions>
+
+        <xAxisLabelBarAnswers label="X-Axis label of answer bargraph" type="TextInput" language="true" />
+        <yAxisLabelBarAnswers label="Y-Axis label of answer bargraph" type="TextInput" language="true" />
+        <xAxisLabelBarMarks label="X-Axis label of marks bargraph" type="TextInput" language="true" />
+        <yAxisLabelBarMarks label="Y-Axis label of marks bargraph" type="TextInput" language="true" />
+        <xAxisLabelLineAvgMarks label="X-Axis label of average mark linegraph" type="TextInput" language="true" />
+        <yAxisLabelLineAvgMarks label="Y-Axis label of average mark linegraph" type="TextInput" language="true" />
+        <xAxisLabelLineOwnMarks label="X-Axis label of own mark linegraph" type="TextInput" language="true" />
+        <yAxisLabelLineOwnMarks label="Y-Axis label of own mark linegraph" type="TextInput" language="true" />
+
+        <avgAllLabelText label="Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
+        <personalLabelText label="Personal Graph Label" type="TextInput" wysiwyg="true" language="true" />
+        <personalAvgLabelText label="Personal Average Graph Label" type="TextInput" wysiwyg="true" language="true" />
+
+        <opinionOptions type="group" label="'Opinion 2D' extra options" optional="true" tooltip="Extra options that only make sense if the interaction type is 'Opinion 2D'">
+            <colour label="Personal graph" type="colourPicker" defaultValue="0xFF0000" optional="true"/>
+            <colourPersonalAvg label="Personal average graph" type="colourPicker" defaultValue="0x0000FF" optional="true"/>
+            <colourAvg label="Average graph" type="colourPicker" defaultValue="0x00FF00" optional="true"/>
+            <labelFontSize label="Font size of the labels" type="NumericStepper" min="4" max="100" step="1" defaultValue="12" optional="true" />
+        </opinionOptions>
+        <openAnswerOptions type="group" label="'Open answer' extra options" optional="true" tooltip="Extra options that only make sense if the interaction type is 'Open answer'">
+            <showUserID label="Show user id" type="checkbox" defaultValue="false" optional="true" tooltip="Show a user id with each open answer, if that information is available" />
+            <showDate label="Show date" type="checkbox" defaultVale="false" optional="true" tooltip="Show date of entry" />
+            <sortOrder label="Sort order" type="combobox" defaultValue="decreasing" data="increasing,decreasing" options="Oldest first,Newest first" optional="true" tooltip="Sort order of answers" />
+        </openAnswerOptions>
+        <myOpenAnswerText label="My Open Answers text" type="TextInput" wysiwyg="true" language="true" />
+        <allOpenAnswerText label="All Open Answers text" type="TextInput" wysiwyg="true" language="true" />
+        <group type="group" label="Group filtering" optional="true">
+             <groupFromUrl label="Filter on group from URL" type="checkbox" defaultValue="false" optional="true" tooltip="Filter on groupname, where the groupname is extracted from the URL (group=groupname)"/>
+             <groupName label="Filter group name" type="TextInput" defaultValue="" wysiwyg="false" optional="true" tooltip="Filter on groupname, use this groupname, if the group is not specified on the URL (group=groupname)"/>
+        </group>
 
       <newNodes>
           <interactionBlock ><![CDATA[<interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100" ></interactionBlock>]]></interactionBlock>
@@ -42,6 +100,6 @@
     <interactionBlock menuItem="Interaction Block">
           <conScoreBetween label="Score between" type="TextInput" optional="true" defaultValue="0,100" wysiwyg="false" />
           <conScoreAnswer label="Result label equals" type="TextInput" optional="true" defaultValue="label of answer" wysiwyg="false" />
-          <adaptiveContent type="TextArea" wysiwyg="true" height="360" />
+          <adaptiveContent label="Content" type="TextArea" wysiwyg="true" height="360" />
     </interactionBlock>
 </wizard>

@@ -5,15 +5,20 @@
   
 		<name label="Project Title" type="TextInput"/>
 		<theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default" />
-		<themeurl type="CheckBox" label="Disable theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
+		<themeurl type="CheckBox" label="Disable Theme URL" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
 
 		<stylesheet label="Stylesheet" type="Media" optional="true"/>
 		<styles optional="true" type="script" height="200" label="Styles"/>
 		<displayMode type="ComboBox" options="Fixed,Fill screen" data="fixed,fill" label="Display Mode" width="100"/>
 		<language type="LanguageList" label="Language" width="170"/>
 		<authorSupport label="Author Support" type="CheckBox" defaultValue="true" optional="true"/>
-		<logo label="Logo" type="Media" optional="true"/>
-		<logoAlt label="Logo Alt Text" type="TextInput" optional="true"/>
+		<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
+		
+		<logoGroup label="Icon" type="group" optional="true" tooltip="Add an logo or icon to the footer or header bar">
+			<logo label="Image" type="Media" defaultValue="Select an Image" optional="true"/>
+			<logoAlt label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+			<logoPos label="Position" type="ComboBox" options="Header: Left,Header: Right,Footer: Left,Footer:Right" data="headLeft,headRight,footLeft,footRight" defaultValue="headLeft" width="100" optional="true"/>
+		</logoGroup>
 		
 		<newBtnLabel label="New Button" type="TextInput" language="true"/>
 		<viewThisBtn label="Overview Button" type="TextInput" language="true"/>
@@ -48,8 +53,8 @@
 		<firstStep label="First Step ID" type="TextInput"/>
 		<title label="Intro Heading" type="TextInput"/>
 		
-		<print label="Print Overview Option" type="CheckBox" optional="true"/>
-		<email label="Email Overview Option" type="CheckBox" optional="true"/>
+		<print label="Print Overview Button" type="CheckBox" optional="true" tooltip="Add a print button to the overview page"/>
+		<email label="Email Overview Button" type="CheckBox" optional="true" tooltip="Add an email button to the overview page allowing the overview to be emailed to an address entered by the student"/>
 		
 		<newNodes>
 			<section><![CDATA[<section name="Enter Section Name" show="false"/>]]></section>
@@ -63,9 +68,12 @@
 		<name label="Name" type="TextInput"/>
 		<show label="Show Section" type="CheckBox"/>
 		
-		<colour label="Colour" type="ColourPicker" optional="true" defaultValue="0x0099CC"/>
-		<img label="Icon" type="media" optional="true"/>
-		<description label="Description" type="TextArea" height="100" optional="true"/>
+		<description label="Description" type="TextArea" height="100" optional="true" tooltip="Add a description to the section. The section name will become a link to display this text (only applied when 'Show Section' is checked)"/>
+		
+		<sectionAppearance label="Section Bar" type="group" optional="true" tooltip="Control the appearance of the section name bar (only applied when 'Show Section' is checked)">
+			<colour label="Colour" type="ColourPicker" optional="true" defaultValue="0x0099CC"/>
+			<img label="Icon" type="media" optional="true" tooltip="Upload an image or use a Font Awesome code to add an icom to the section name bar"/>
+		</sectionAppearance>
 		
 		<newNodes>
 			<result><![CDATA[<result name="e.g. R1" text="Enter result text here"/>]]></result>
@@ -86,9 +94,16 @@
 		<format label="Question Type" type="ComboBox" options="Radio buttons,Drop down menu" data="radio,menu" defaultValue="radio" width="200"/>
 		
 		<faIcon label="Icon" type="ComboBox" options="Action,Information,Question,Solution" data="cogs,exclamation,question,lightbulb-o" defaultValue="question" width="100" optional="true"/>
-		<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
-		<img label="Media" type="media" defaultValue="Select a File (Image, Audio or Video)" optional="true"/>
-		<imgTip label="Media Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		<helpTxt label="More Information" type="TextArea" height="100" optional="true" tooltip="Allows access to extra information via a button and popup dialog"/>
+		
+		<media label="Media" type="group" optional="true">
+			<img label="File" type="media" defaultValue="Select a File" optional="true"/>
+			<imgTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		</media>
+		
+		<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+		<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
+		
 		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
 	
 		<newNodes>
@@ -100,7 +115,7 @@
 	<option icon="icBullet" remove="true" duplicate="true" menuItem="Option">
 		<name label="Answer Option" type="TextInput"/>
 		<target label="Target ID" type="TextInput"/>
-		<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true"/>
+		<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true" tooltip="Stores text associated with this answer for use in the results. This text will only display on result steps where Compile Stored Results (optional property) is added."/>
 		
 		<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
 		
@@ -118,10 +133,17 @@
 		<value label="Initial value" type="TextInput"/>
 		
 		<faIcon label="Icon" type="ComboBox" options="Action,Information,Question,Solution" data="cogs,exclamation,question,lightbulb-o" defaultValue="question" width="100" optional="true"/>
-		<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
-		<unitPos label="Unit position" type="ComboBox" options="Start,End" data="start,end" defaultValue="end" width="100" optional="true"/>
-		<img label="Media" type="media" defaultValue="Select a File (Image, Audio or Video)" optional="true"/>
-		<imgTip label="Media Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		<helpTxt label="More Information" type="TextArea" height="100" optional="true" tooltip="Allows access to extra information via a button and popup dialog"/>
+		<unitPos label="Unit position" type="ComboBox" options="Start,End" data="start,end" defaultValue="end" width="100" optional="true" tooltip="Should the unit of answer appear before (£10) or after (10%) the number?"/>
+		
+		<media label="Media" type="group" optional="true">
+			<img label="File" type="media" defaultValue="Select a File" optional="true"/>
+			<imgTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		</media>
+		
+		<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+		<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
+		
 		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
 	
 		<newNodes>
@@ -134,7 +156,7 @@
 		<min label="Range minimum" type="TextInput"/>
 		<max label="Range maximum" type="TextInput"/>
 		<target label="Target ID" type="TextInput"/>
-		<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true"/>
+		<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true" tooltip="Stores text associated with this answer for use in the results. This text will only display on result steps where Compile Stored Results (optional property) is added."/>
 		
 		<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
 		
@@ -148,11 +170,18 @@
 		<target label="Target ID" type="TextInput"/>
 		
 		<faIcon label="Icon" type="ComboBox" options="Action,Information,Question,Solution" data="cogs,exclamation,question,lightbulb-o" defaultValue="exclamation" width="100" optional="true"/>
-		<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
-		<lastStep label="Last Step" type="CheckBox" optional="true"/>
-		<collate label="Compile Stored Results" type="CheckBox" optional="true"/>
-		<img label="Media" type="media" defaultValue="Select a File (Image, Audio or Video)" optional="true"/>
-		<imgTip label="Media Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		<helpTxt label="More Information" type="TextArea" height="100" optional="true" tooltip="Allows access to extra information via a button and popup dialog."/>
+		<lastStep label="Overview Button" type="CheckBox" optional="true" tooltip="Add link to overview (normally only available on result steps)"/>
+		<collate label="Compile Stored Results" type="CheckBox" optional="true" tooltip="Use in conjunction with 'Stored Result Text' on question options to display text based on the options chosen"/>
+		
+		<media label="Media" type="group" optional="true">
+			<img label="File" type="media" defaultValue="Select a File" optional="true"/>
+			<imgTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		</media>
+		
+		<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+		<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
+		
 		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
 		
 	</info>
@@ -164,9 +193,15 @@
 		<text label="Text" type="TextArea" height="100"/>
 		
 		<faIcon label="Icon" type="ComboBox" options="Action,Information,Question,Solution" data="cogs,exclamation,question,lightbulb-o" defaultValue="lightbulb-o" width="100" optional="true"/>
-		<collate label="Compile Stored Results" type="CheckBox" optional="true"/>
-		<img label="Media" type="media" defaultValue="Select a File (Image, Audio or Video)" optional="true"/>
-		<imgTip label="Media Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		<collate label="Compile Stored Results" type="CheckBox" optional="true" tooltip="Use in conjunction with 'Stored Result Text' on question options to display text based on the options chosen"/>
+		
+		<media label="Media" type="group" optional="true">
+			<img label="File" type="media" defaultValue="Select a File" optional="true"/>
+			<imgTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		</media>
+		
+		<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+		<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
 		
 	</result>
 	

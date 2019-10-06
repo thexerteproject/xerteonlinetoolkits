@@ -1,0 +1,721 @@
+<script type="text/javascript">
+    /**
+     * Licensed to The Apereo Foundation under one or more contributor license
+     * agreements. See the NOTICE file distributed with this work for
+     * additional information regarding copyright ownership.
+
+     * The Apereo Foundation licenses this file to you under the Apache License,
+     * Version 2.0 (the "License"); you may not use this file except in
+     * compliance with the License. You may obtain a copy of the License at:
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+
+        // pageChanged & sizeChanged functions are needed in every model file
+        // other functions for model should also be in here to avoid conflicts
+    var topXQ = new function () {
+            // function called every time the page is viewed after it has initially loaded
+            this.pageChanged = function () {
+
+            };
+            var amountOfAnswers = x_currentPageXML.getAttribute("numberAnswers");
+            var amountOfGoodAnswers = 0;
+            // function called every time the size of the LO is changed
+            this.sizeChanged = function () {
+                if (x_browserInfo.mobile == false) {
+                    var $panel = $("#pageContents .panel");
+                    $panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+                }
+
+                if ($("#pageContents .audioHolder").length > 0) {
+                    var audioBarW = 0;
+                    $("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function () {
+                        audioBarW += $(this).outerWidth();
+                    });
+                    if (audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() > 2) {
+                        $x_window.resize();
+                    }
+                }
+            };
+
+            this.leavePage = function () {
+                hasExited = topXQ.hasExited;
+                if (!hasExited) {
+                    this.exitTrack();
+                }
+
+            };
+
+            this.exitTrack = function () {
+                answers = topXQ.answers;
+                amountOfInputs = topXQ.amountOfInputes;
+                correctAnswers = topXQ.correctAnwsers;
+                correctOptionsFeedback = topXQ.correctOptionsFeedback;
+                checkAnswers = topXQ.checkAnswers;
+
+
+                var inputs = [];
+                $('.input-answer').each(function () {
+                    inputs.push($(this).val());
+                });
+
+                fillInputs = function(){
+                    inputs = [];
+                    $('.input-answer').each(function () {
+                        inputs.push($(this).val());
+                    });
+                }
+
+                var checkAnswers = [];
+                for (i = 0; i < inputs.length; i++) {
+                    checkAnswers.push({
+                        correct: false,
+                        comment: ""
+
+
+                    });
+                }
+                fillCheckAnswer = function() {
+                    if (x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined) {
+
+                        for (i = 0; i < inputs.length; i++) {
+                            var isCorrect = false;
+                            for (j = 0; j < answers.length; j++) {
+                                for (x = 0; x < answers[j].options.length; x++) {
+
+                                    var givenAnswer = inputs[i];
+                                    var correctAnswer = answers[j].options[x].trim();
+
+                                    if (givenAnswer === correctAnswer) {
+                                        isCorrect = true;
+                                        checkAnswers[i].correct = true;
+                                        answers[j].counter++;
+                                        amountOfGoodAnswers++;
+
+                                        if (answers[j].counter > 1) {
+                                            checkAnswers[i].correct = false;
+                                            checkAnswers[i].comment = "Duplicate";
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!isCorrect) {
+                                checkAnswers[i].comment = "Wrong Answer";
+                            }
+                        }
+                    } else {
+                        for (i = 0; i < inputs.length; i++) {
+                            var isCorrect = false;
+                            for (j = 0; j < answers.length; j++) {
+                                for (x = 0; x < answers[j].options.length; x++) {
+
+                                    var givenAnswer = inputs[i].toLowerCase();
+                                    var correctAnswer = answers[j].options[x].trim().toLowerCase();
+
+                                    if (givenAnswer === correctAnswer) {
+                                        isCorrect = true;
+                                        checkAnswers[i].correct = true;
+                                        answers[j].counter++;
+                                        amountOfGoodAnswers++;
+
+                                        if (answers[j].counter > 1) {
+                                            checkAnswers[i].correct = false;
+                                            checkAnswers[i].comment = "Duplicate";
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!isCorrect) {
+                                checkAnswers[i].comment = "Wrong Answer";
+                            }
+
+                        }
+                    }
+                };
+                fillCheckAnswer();
+
+                checkSingleAnswer = function(i){
+                    if (x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined) {
+
+                            var isCorrect = false;
+                            for (j = 0; j < answers.length; j++) {
+                                for (x = 0; x < answers[j].options.length; x++) {
+
+                                    var givenAnswer = inputs[i];
+                                    var correctAnswer = answers[j].options[x].trim();
+
+                                    if (givenAnswer === correctAnswer) {
+                                        isCorrect = true;
+                                        checkAnswers[i].correct = true;
+                                        answers[j].counter++;
+                                        amountOfGoodAnswers++;
+
+                                        if (answers[j].counter > 1) {
+                                            checkAnswers[i].correct = false;
+                                            checkAnswers[i].comment = "Duplicate";
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!isCorrect) {
+                                checkAnswers[i].comment = "Wrong Answer";
+                            }
+
+                    } else {
+                            var isCorrect = false;
+                            for (j = 0; j < answers.length; j++) {
+                                for (x = 0; x < answers[j].options.length; x++) {
+
+                                    var givenAnswer = inputs[i].toLowerCase();
+                                    var correctAnswer = answers[j].options[x].trim().toLowerCase();
+
+                                    if (givenAnswer === correctAnswer) {
+                                        isCorrect = true;
+                                        checkAnswers[i].correct = true;
+                                        answers[j].counter++;
+                                        amountOfGoodAnswers++;
+
+                                        if (answers[j].counter > 1) {
+                                            checkAnswers[i].correct = false;
+                                            checkAnswers[i].comment = "Duplicate";
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!isCorrect) {
+                                checkAnswers[i].comment = "Wrong Answer";
+                            }
+
+                        }
+
+                };
+
+                topXQ.checkAnswers = checkAnswers;
+                var doneAnswers = [];
+                for (i = 0; i < inputs.length; i++) {
+                    for (k = 0; k < answers.length; k++) {
+
+                        for (j = 0; j < answers[k].options.length; j++) {
+                            if (!doneAnswers.includes(k) && inputs[i] === answers[k].options[j].trim()) {
+                                doneAnswers.push(k);
+                                // answers[k].options[j] = "<span class='correctOptions'> "+answers[k].options[j]+" </span>"
+
+                                $("#topXQ-correctAnswer-" + k).addClass("fa").addClass("fa-fw").addClass("fa-long-arrow-left")
+
+
+                            }
+                        }
+                    }
+                }
+
+                AllAnswersCheckt = function(){
+
+                    var amountOfGood = 0;
+
+                    if (x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined) {
+
+                        for (i = 0; i < inputs.length; i++) {
+                            for (j = 0; j < answers.length; j++) {
+                                for (x = 0; x < answers[j].options.length; x++) {
+
+                                    var givenAnswer = inputs[i];
+                                    var correctAnswer = answers[j].options[x].trim();
+
+                                    if (givenAnswer === correctAnswer) {
+
+                                        answers[j].counter2++;
+                                        amountOfGood++;
+                                        if (answers[j].counter2 > 1) {
+                                            amountOfGood--;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        for (i = 0; i < inputs.length; i++) {
+                            var isCorrect = false;
+                            for (j = 0; j < answers.length; j++) {
+                                for (x = 0; x < answers[j].options.length; x++) {
+
+                                    var givenAnswer = inputs[i].toLowerCase();
+                                    var correctAnswer = answers[j].options[x].trim().toLowerCase();
+
+                                    if (givenAnswer === correctAnswer) {
+
+                                        answers[j].counter2++;
+                                        amountOfGood++;
+                                        if (answers[j].counter2 > 1) {
+                                            amountOfGood--;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    if(amountOfGood === inputs.length){
+                        return true;
+                    }
+                };
+
+                exitPage = function(){
+                    amountOfCorrect = 0;
+                    for (i = 0; i < inputs.length; i++) {
+
+                        var result = {
+                            success: checkAnswers[i].correct,
+                            score: checkAnswers[i].correct ? 100.0 : 0.0
+                        };
+                        XTExitInteraction(x_currentPage, i, result, "", inputs[i], "", x_currentPageXML.getAttribute("trackinglabel"));
+
+
+                        if (checkAnswers[i].correct) {
+                            amountOfCorrect++;
+                        }
+                    }
+
+                    var setScore = 0;
+                    if (amountOfInputs === undefined || amountOfInputs === 0) {
+                        amountOfInputs = 0;
+                    }
+
+                    if (amountOfInputs > 0 && amountOfCorrect > 0) {
+                        setScore = 100 / amountOfInputs * amountOfCorrect;
+                    }
+
+                    XTSetPageScore(x_currentPage, setScore);
+                };
+
+
+
+
+            };
+
+
+            this.init = function () {
+
+                var hasExited = false;
+
+                this.weighting = 1.0;
+                if (x_currentPageXML.getAttribute("trackingWeight") != undefined) {
+                    this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+                }
+                XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
+
+                var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
+                    $splitScreen = $("#pageContents .splitScreen");
+                var $textHolder = $("#textHolder");
+
+                if (panelWidth === "Full") {
+                    $("#pageContents .panel").appendTo($("#pageContents"));
+                    $splitScreen.remove();
+                } else {
+                    $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
+
+                    var textAlign = x_currentPageXML.getAttribute("align");
+                    if (textAlign !== "Right") {
+                        if (panelWidth === "Small") {
+                            $splitScreen.addClass("large");
+                        } else if (panelWidth === "Large") {
+                            $splitScreen.addClass("small");
+                        } else {
+                            $splitScreen.addClass("medium");
+                        }
+                    } else {
+                        $textHolder
+                            .removeClass("left")
+                            .addClass("right")
+                            .appendTo($splitScreen);
+                        $("#infoHolder")
+                            .removeClass("right")
+                            .addClass("left");
+                        if (panelWidth === "Small") {
+                            $splitScreen.addClass("medium");
+                        } else if (panelWidth === "Large") {
+                            $splitScreen.addClass("large");
+                        } else {
+                            $splitScreen.addClass("large");
+                        }
+                    }
+                }
+
+                var attemptLabel = x_currentPageXML.getAttribute("attemptLabel");
+                if( x_currentPageXML.getAttribute("attemptLabel") == null){
+                    attemptLabel = "Attempt";
+                }
+
+                var instruction = x_currentPageXML.getAttribute("instruction");
+                $textHolder.html(instruction);
+
+                var $question = $("#question");
+                var prompt = x_currentPageXML.getAttribute("prompt");
+                $question.html(prompt);
+
+                var $panelWidth = x_currentPageXML.getAttribute("panelWidth");
+                var $optionHolder = $("#OptionHolder");
+
+                var $attempts = $("#attempts");
+                var amountofTries = x_currentPageXML.getAttribute("amountOfTries");
+                $attempts.html(x_currentPageXML.getAttribute("attemptLabel")+ ": "+ amountofTries);
+
+                var elements = [];
+                $(x_currentPageXML).children().each(function (i) {
+                    elements.push(
+                        {
+                            label: this.getAttribute("name"),
+                            answer: this.getAttribute("answer"),
+                            correct: this.getAttribute("correct"),
+                            feedback: this.getAttribute("feedback")
+                        }
+                    );
+                });
+
+                this.optionElements = elements;
+                var j = 0;
+
+                if (amountOfAnswers === "*") {
+                    amountOfAnswers = elements.length;
+                }
+
+                for (i = 0; i < amountOfAnswers; i++) {
+                    $optionHolder.append('<div class="answer"><input class="input-answer" id="input-answer-'+i+'"/><span id="topXQ-result-' + i + '"></span></div>');
+                    j++;
+                }
+                var answers = [];
+                for (i = 0; i < elements.length; i++) {
+                    var answer = elements[i].answer.split(",");
+                    answers.push({
+                        options: answer,
+                        counter: 0,
+                        counter2: 0
+                    });
+                }
+                topXQ.answers = answers;
+                if(x_currentPageXML.getAttribute("caseSensitivity")=="true"||x_currentPageXML.getAttribute("caseSensitivity")==undefined) {
+
+                    var correctAnswers = [];
+                    for (i = 0; i < answers.length; i++) {
+                        for (var j = 0; j < answers[i].options.length; j++) {
+                            if (correctAnswers[i] === undefined) {
+                                correctAnswers.push([]);
+                            }
+                            lowercase = answers[i].options[j];
+                            correctAnswers[i].push(lowercase);
+                        }
+                    }
+                }else{
+                    var correctAnswers = [];
+                    for (i = 0; i < answers.length; i++) {
+                        for (var j = 0; j < answers[i].options.length; j++) {
+                            if (correctAnswers[i] === undefined) {
+                                correctAnswers.push([]);
+                            }
+                            lowercase = answers[i].options[j].toLowerCase();
+                            correctAnswers[i].push(lowercase);
+                        }
+                    }
+                }
+
+
+                topXQ.correctAnwsers = correctAnswers;
+
+                var correctOptionsFeedback = [];
+                for (i = 0; i < elements.length; i++) {
+                    correctOptionsFeedback.push(x_GetTrackingTextFromHTML(elements[i].feedback, ""))
+
+                }
+
+                topXQ.correctOptionsFeedback = correctOptionsFeedback;
+
+                var amountOfInputs = 0;
+                $('.input-answer').each(function () {
+                    amountOfInputs++;
+                });
+
+                topXQ.amountOfInputes = amountOfInputs;
+
+                var checkBtnTxt = x_currentPageXML.getAttribute("checkBtnTxt");
+                if (checkBtnTxt === undefined) {
+                    checkBtnTxt = "Check";
+                }
+                var attempt = 1;
+                $("#checkButton")
+                    .button({
+                        label: checkBtnTxt
+                    })
+                    .click(function () {
+
+
+                        var tries = parseInt(x_currentPageXML.getAttribute("amountOfTries"));
+                        amountofTries -= 1;
+                        if(amountofTries > 0) {
+                            $attempts.html(x_currentPageXML.getAttribute("attemptLabel")+ ": "+ amountofTries);
+                        }else{
+                            $attempts.html("");
+                        }
+                        $(checkButton).button("disable");
+
+
+                            var blankAnswers = [];
+                            for (i = 0; i < x_currentPageXML.getAttribute("numberAnswers"); i++) {
+                                blankAnswers.push("-");
+                            }
+
+                            for (i = 0; i < blankAnswers.length; i++) {
+                                XTEnterInteraction(x_currentPage, i, "fill-in", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), ""), "", blankAnswers[i], correctOptionsFeedback, x_currentPageXML.getAttribute("grouping"));
+                            }
+
+                            if (!hasExited) {
+                                topXQ.exitTrack();
+                                hasExited = true;
+                            }
+                            topXQ.hasExited = hasExited;
+
+
+                            showFeedback = function () {
+
+                                var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+
+
+                                if (feedbackLabel === undefined) {
+                                    feedbackLabel = "Feedback";
+                                }
+
+                                $("#feedback").html("<h3>" + feedbackLabel + "</h3>");
+
+                                var correctAnswersLabel = x_currentPageXML.getAttribute("correctAnswersLabel");
+
+                                if (x_currentPageXML.getAttribute("showAnswers") === "true" || x_currentPageXML.getAttribute("showAnswers") === undefined) {
+                                    $("#correctAnswer h3").html(correctAnswersLabel);
+                                }
+                                if(x_currentPageXML.getAttribute("answers") == "Show everything") {
+                                    for (i = 0; i < elements.length; i++) {
+                                        if (elements[i].feedback !== "") {
+                                            var answer = "";
+                                            for (j = 0; j < elements[i].answer.length; j++)
+                                            {
+                                                if (elements[i].answer[j] != ",") {
+                                                    answer += elements[i].answer[j]
+                                                } else {
+                                                    break;
+                                                }
+                                            }
+
+                                            $("#feedbackAnswers ul").append("<li><div class='answerFeedback'>" + answer + " :" + "</div></li>");
+                                            $("#feedbackAnswers ul li:last").append("<div>" + elements[i].feedback + "</div>");
+                                        }
+
+                                    }
+                                }
+                                if(x_currentPageXML.getAttribute("answers") == "Show only given answers") {
+                                    for (i = 0; i < elements.length; i++) {
+                                        if (elements[i].feedback !== "") {
+                                            var answer = "";
+                                            for (j = 0; j < elements[i].answer.length; j++) {
+                                                if (elements[i].answer[j] != ",") {
+                                                    answer += elements[i].answer[j]
+                                                } else {
+                                                    break;
+                                                }
+                                            }
+
+                                                if (topXQ.checkAnswers[i].correct == true) {
+                                                    $("#feedbackAnswers ul").append("<li><div class='answerFeedback'>" + answer + " :" + "</div></li>");
+                                                    $("#feedbackAnswers ul li:last").append("<div>" + elements[i].feedback + "</div>");
+                                                }
+                                        }
+                                    }
+                                }
+
+                                if (x_currentPageXML.getAttribute("showAnswers") === "true" || x_currentPageXML.getAttribute("showAnswers") === undefined ) {
+                                    if ($('#correctAnswer ul').has("li").length === 0) {
+                                        for (i = 0; i < answers.length; i++) {
+                                            $("#correctAnswer ul").append("<li>" + answers[i].options + "<span id='topXQ-correctAnswer-" + i + "'></span> </li>" /*<span id= 'topXQ-correctAnswer-" + i + "'></span>"*/);
+                                        }
+                                    }
+                                }
+
+                                var passedTxt = x_currentPageXML.getAttribute("passed");
+                                if (passedTxt === undefined) {
+                                    passedTxt = "You passed the question";
+                                }
+
+                                var failedTxt = x_currentPageXML.getAttribute("failed");
+                                if (failedTxt === undefined) {
+                                    failedTxt = "You did not passed the question";
+                                }
+
+                                var average = 0;
+                                if (amountOfAnswers > 0) {
+                                    average = amountOfGoodAnswers / amountOfAnswers;
+                                } else {
+                                    average = 0
+                                }
+                                average *= 100;
+
+
+                                var mainFeedback = x_currentPageXML.getAttribute("feedback");
+                                if (mainFeedback === null) {
+                                    mainFeedback = "";
+                                }
+
+                                    var passedOrFailed = "";
+
+                                var passed = AllAnswersCheckt();
+                                if(passed === true){
+                                    passedOrFailed = passedTxt
+                                }else{
+                                    passedOrFailed = failedTxt
+                                }
+
+                                $("#result").append('<p><span id="finalResult"></span>' + passedOrFailed + '</p>');
+
+                                if(passed=== true){
+
+                                    $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+                                }else{
+                                    $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+
+                                }
+
+
+                                $("#mainFeedback").append(mainFeedback);
+
+
+                            };
+
+                        var wrong = topXQ.checkAnswers.length;
+
+                        if (attempt < tries && wrong > 0) {
+                            $(checkButton).button("enable");
+
+                            for (var i = 0; i < topXQ.checkAnswers.length; i++) {
+                                if (topXQ.checkAnswers[i].correct === false) {
+                                    fillInputs();
+                                    checkSingleAnswer(i);
+                                    if(topXQ.checkAnswers[i].correct === false){
+                                        $("#input-answer-" + i).val("");
+                                    }
+
+                                }
+                                if (topXQ.checkAnswers[i].correct === true) {
+                                    //disable the input field
+                                    $("#topXQ-result-" + i).removeClass("fa").removeClass("fa-fw").removeClass("fa-x-cross");
+                                    $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+                                    wrong --;
+                                }else{
+                                    if (topXQ.checkAnswers[i].correct === true) {
+                                        //disable the input field
+                                        $("#topXQ-result-" + i).removeClass("fa").removeClass("fa-fw").removeClass("fa-x-cross");
+                                        $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+                                        wrong --;
+                                    }else{
+                                        $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+                                    }
+
+                                }
+
+                            }
+                            attempt++;
+
+
+                        } else {
+
+                            $(checkButton).button("disable");
+
+                            for (var i = 0; i < topXQ.checkAnswers.length; i++) {
+                                if(tries == 1 && topXQ.checkAnswers[i].correct === true){
+                                    $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+                                }
+
+                                if (topXQ.checkAnswers[i].correct === false) {
+                                    fillInputs();
+                                    checkSingleAnswer(i);
+                                    if(topXQ.checkAnswers[i].correct === false) {
+                                        if (attempt === tries) {
+                                            $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+                                        }
+                                    }else{
+                                        $("#topXQ-result-" + i).removeClass("fa").removeClass("fa-fw").removeClass("fa-x-cross");
+                                        $("#topXQ-result-" + i).addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+                                    }
+                                }
+                            }
+                            showFeedback();
+                            exitPage();
+                        }
+                        if(wrong === 0){
+                            $(checkButton).button("disable");
+                            showFeedback();
+                            exitPage();
+                        }
+
+
+                        }
+                    );
+
+
+                // call this function in every model once everything is loaded
+                x_pageLoaded();
+            }
+        };
+
+    topXQ.init();
+
+</script>
+
+
+<div id="pageContents">
+    <div class="splitScreen">
+        <div id="textHolder" class="left"></div>
+        <div id="infoHolder" class="right">
+            <div id="mainPanel" class="panel">
+                <fieldset class="noStyle">
+                    <h3 class="titleQuestion">
+                        <legend id="question"></legend>
+                    </h3>
+                    <div id="OptionHolder">
+
+                    </div>
+                    <button id="checkButton"></button>
+                    <div id="attempts"></div>
+                    <!--<div id="feedback" aria-live="polite"></div>-->
+
+                    <!--<div id="feedbackAnswers" aria-live="polite">-->
+                        <!--<ul>-->
+
+                        <!--</ul>-->
+
+                    <!--</div>-->
+                    <div id="correctAnswer" aria-live="polite">
+                        <h3></h3>
+                        <ul>
+
+                        </ul>
+                    </div>
+                    <div id="result" aria-live="polite">
+
+                    </div>
+                    <div id="mainFeedback" aria-live="polite">
+
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+    </div>
+</div>

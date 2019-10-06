@@ -50,7 +50,7 @@ function XApiTrackingState() {
     this.lo_completed = 0;
     this.lo_type = "pages only";
     this.lo_passed = -1.0;
-    this.page_timeout = 5000;
+    this.page_timeout = 0;
     this.templateId = -1;
     this.templateName = "";
     this.debug = false;
@@ -78,6 +78,7 @@ function XApiTrackingState() {
     this.find = find;
     this.findPage = findPage;
     this.findInteraction = findInteraction;
+    this.findAllInteractions = findAllInteractions;
     this.findCreate = findCreate;
     this.enterPage = enterPage;
     this.formatDate = formatDate;
@@ -234,19 +235,20 @@ function XApiTrackingState() {
         return this.getdMaxScore() + "";
     }
 
-    function pageCompleted(sit) {
-        for (i = 0; i < sit.nrinteractions; i++) {
-            var sit2 = this.findInteraction(sit.page_nr, i);
-            if (sit2 == null) {
-                return false;
-            }
+    function pageCompleted(sit)
+    {
+        var sits = this.findAllInteractions(sit.page_nr);
+        if (sits.length != sit.nrinteractions)
+        {
+            return false;
         }
-        if (sit.ia_type == "page" && sit.duration < this.page_timeout) {
+        if (sit.ia_type=="page" && sit.duration < this.page_timeout)
+        {
             return false;
         }
         return true;
     }
-
+    
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions,
         correctanswer, feedback, grouping) {
         this.verifyEnterInteractionParameters(ia_type, ia_name, correctoptions,
@@ -352,6 +354,18 @@ function XApiTrackingState() {
         return null;
     }
 
+    function findAllInteractions(page_nr)
+    {
+        var i=0;
+        tmpinteractions = [];
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr != -1)
+                tmpinteractions.push(i);
+        }
+        return tmpinteractions;
+    }
+
     function findCreate(page_nr, ia_nr, ia_type, ia_name) {
         var tmpid = makeId(page_nr, ia_nr, ia_type, ia_name);
         var i = 0;
@@ -405,7 +419,7 @@ function XApiTrackingState() {
      *
      *  correctoptions and correctanswer depends on the sit_iatype
      *
-     *  1. matching
+     *  1. match
      *      correctoptions: array of objects with source and target strings
      *              [
      *              {
@@ -1145,6 +1159,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             // Construct answers like a:Answerstring
                             var scormAnswerArray = [];
                             var i = 0;
+
                             for (i = 0; i < learnerOptions.length; i++) {
                                 var entry = learnerOptions[i]['answer'].replace(
                                     / /g, "_");
@@ -1154,7 +1169,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
 
                             // Do the same for the answer pattern
                             var scormArray = [];
-                            var scormCorrectArray = []
+                            var scormCorrectArray = [];
                             var i = 0;
                             for (i = 0; i < this.correctOptions.length; i++) {
                                 var entry = {
@@ -1673,6 +1688,18 @@ function XTInitialise(category) {
             }
         );
         */
+
+        // // Check if aggretate is set for the lrsEndpoint, than assume this is learning locker and change normal API accordingly and save aggregate for XTGetStatements
+        // if (lrsEndpoint.indexOf("api/statements/aggregate/") >= 0)
+        // {
+        //     state.aggregate = true;
+        //     state.lrsAggregateEndpoint = lrsEndpont;
+        //     apos = lrsEndpoint.indexOf("api/statements/aggregate");
+        //     lrsEndpoint = lrsEndpoint.substr(0, lrsEndpoint.Length - apos) + 'data/xAPI';
+        // }
+        // else {
+        //     state.aggregate = false;
+        // }
         var conf = {
             "endpoint": lrsEndpoint + '/',
             "user": lrsUsername,
@@ -1756,7 +1783,7 @@ function XTInitialise(category) {
 }
 
 function XTTrackingSystem() {
-    return "";
+    return "xAPI";
 }
 
 function XTLogin(login, passwd) {
@@ -1784,9 +1811,17 @@ function XTLogin(login, passwd) {
     return true;
 }
 
-function XTGetMode() {
+function XTGetMode(extended) {
     if (state.forcetrackingmode === 'true')
-        return "normal";
+    {
+        if (extended != null && (extended == true || extended == 'true'))
+        {
+            return state.mode;
+        }
+        else {
+            return "normal";
+        }
+    }
     else
         return "";
 }
@@ -1864,6 +1899,26 @@ function XTSetOption(option, value) {
             break;
         case "force_tracking_mode":
             state.forcetrackingmode = value;
+            break;
+        case "course":
+            // If overruled by request parameters (or LTI) do not use coursename, else set coursename and course
+            if (state.coursename != "" && value != undefined && value != "")
+            {
+                state.course = {
+                    id: baseUrl() + 'course/' + value
+                };
+                state.coursename = value;
+            }
+            break;
+        case "module":
+            // If overruled by request parameters (or LTI) do not use coursename, else set coursename and course
+            if (state.modulename != "" && value != undefined && value != "")
+            {
+                state.module = {
+                    id: baseUrl() + 'modules/' + value
+                };
+                state.modulename = value;
+            }
             break;
     }
 }
@@ -2606,6 +2661,12 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
 
 function XTGetStatements(q, one, callback) {
     var search = ADL.XAPIWrapper.searchParams();
+    var group = "";
+    if (q['group'] != undefined)
+    {
+        group = q['group'];
+        delete q['group'];
+    }
     $.each(q, function(i, value) {
         search[i] = value;
     });
@@ -2623,7 +2684,14 @@ function XTGetStatements(q, one, callback) {
                 //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
                 //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                 //}
-
+                if (group != ""
+                    && body.statements[x].context.team != undefined
+                    && body.statements[x].context.team.account != undefined
+                    && body.statements[x].context.team.account.name != undefined
+                    && body.statements[x].context.team.account.name != group)
+                {
+                    continue;
+                }
                 statements.push(body.statements[x]);
             }
             //stringObjects.push(lastSubmit);
@@ -2872,13 +2940,13 @@ function XTTerminate() {
         };
         statement.object.definition.name[state.language] = x_params.name;
         SaveStatement(statement, false);
-        if (lti_enabled) {
+        if (typeof lti_enabled !== 'undefined' && lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
-            if (url.indexOf("launch_lti.php") >= 0) {
-                url = url.replace("launch_lti.php", "website_code/php/lti/sendgrade.php");
-            } else if (url.indexOf("launch_lti2.php") >= 0) {
-                url = url.replace("launch_lti2.php", "website_code/php/lti/sendgrade.php");
+            if (url.indexOf("lti_launch.php") >= 0) {
+                url = url.replace("lti_launch.php", "website_code/php/lti/sendgrade.php");
+            } else if (url.indexOf("lti2_launch.php") >= 0) {
+                url = url.replace("lti2_launch.php", "website_code/php/lti/sendgrade.php");
             } else {
                 url = "";
             }
@@ -3173,7 +3241,7 @@ function XTResults(fullcompletion) {
                     correctAnswer = state.interactions[i].correctAnswers;
                     break;
             }
-            if (state.interactions[i].ia_type != "match") {
+            if (state.interactions[i].ia_type != "match" && state.interactions[i].result != undefined) {
                 subinteraction.question = state.interactions[i].ia_name;
                 subinteraction.correct = state.interactions[i].result.success;
                 subinteraction.learnerAnswer = learnerAnswer;

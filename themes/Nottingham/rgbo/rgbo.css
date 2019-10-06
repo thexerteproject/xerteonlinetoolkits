@@ -544,7 +544,7 @@ div#shorturltodisplay a {
 #menuItems .menuItem.current {
   border: 2px solid #0087C6; }
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 600px) {
   #x_footerProgress {
     display: block; }
 
@@ -552,7 +552,10 @@ div#shorturltodisplay a {
     vertical-align: top;
     text-align: center;
     display: inline-block;
-    padding: 12px 5px 0 5px;
+    padding-top: 12px;
+    padding-right: 5px;
+    padding-bottom: 0px;
+    padding-left: 5px;
     margin-right: -5px;
     height: 30px;
     width: auto;
@@ -560,16 +563,43 @@ div#shorturltodisplay a {
     font-size: 12px; }
 
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    font-size: 1.6em;
+    width: 1.2em;
     margin-left: 5px; }
 
   .pbContainer {
-    display: block;
     margin-top: 1.2em; }
 
   .pbTxt {
-    display: block;
+    font-size: 6px;
+    text-align: center; } }
+@media only screen and (max-width: 320px) {
+  #x_footerProgress {
+    display: block; }
+
+  #x_pageNo {
+    vertical-align: top;
+    text-align: center;
+    display: inline-block;
+    padding-top: 12px;
+    padding-right: 5px;
+    padding-bottom: 0px;
+    padding-left: 5px;
+    margin-right: -5px;
+    height: 30px;
+    width: auto;
+    z-index: 100;
+    font-size: 12px; }
+
+  #x_footerBlock button {
+    font-size: 1.3em;
+    width: 1.1em;
+    margin-left: 5px; }
+
+  .pbContainer {
+    margin-top: 1.2em; }
+
+  .pbTxt {
     font-size: 6px;
     text-align: center; } }
 #x_pageHolder {
@@ -756,7 +786,7 @@ blockquote {
 
 blockquote:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -767,7 +797,7 @@ blockquote p {
 
 blockquote:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -778,7 +808,7 @@ blockquote:after {
 
 .bq1:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -786,7 +816,7 @@ blockquote:after {
 
 .bq1:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -797,7 +827,7 @@ blockquote:after {
 
 .bq2:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -805,7 +835,7 @@ blockquote:after {
 
 .bq2:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -816,7 +846,7 @@ blockquote:after {
 
 .bq3:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -824,7 +854,7 @@ blockquote:after {
 
 .bq3:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -835,7 +865,7 @@ blockquote:after {
 
 .bq4:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -843,7 +873,7 @@ blockquote:after {
 
 .bq4:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -854,7 +884,7 @@ blockquote:after {
 
 .bq5:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -862,7 +892,7 @@ blockquote:after {
 
 .bq5:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -873,7 +903,7 @@ blockquote:after {
 
 .bq6:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -881,7 +911,7 @@ blockquote:after {
 
 .bq6:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
