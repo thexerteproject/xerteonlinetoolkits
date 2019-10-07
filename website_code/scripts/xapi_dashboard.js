@@ -232,7 +232,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         var pageOptions = '<div class="row container-fluid"><span class="col col-md-1 align-self-start">' + leftButton + '</span><span id="page-information" class="col-md-1"></span><span class="col-md-9"></span><span class="col col-md-1 align-self-end">' + rightButton + '</span><br></div>';
         // Add table with specific overview.
         div.append('<div class="row journeyTable">' + pageOptions + '<table class="table table-hover table-bordered table-responsive" id="' + learningObjectIndex +
-            '"><thead></thead><tbody></tbody></table></div>');
+            '"><thead></thead><tbody id="journeyTableBody"></tbody></table></div>');
         /*
         if(this.data.pageIndex > 0)
         {
@@ -276,7 +276,8 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             {
                 group = lastStatements.statements[0].context.team.account.name;
             }
-            var row = "<tr data-index='" + userCount + "' class='session-row' id='session-" + learningObjectIndex + "-" + this.escapeId(user) + "' data-group='" + group + "'>";
+            var rowid = "session-" + learningObjectIndex + "-" + this.escapeId(user);
+            var row = "<tr data-index='" + userCount + "' class='session-row' id='" + rowid + "' data-group='" + group + "'>";
             userCount++;
             if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
                 if (data[user]['mode'] == 'username') {
@@ -303,20 +304,21 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 completed = "<i class=\"status fa fa-x-cross\">";
             }
             row += "<td>" + completed + "</td>";
-            div.find("tbody").last().append(row);
+            div.find("#journeyTableBody").append(row);
             for (var interactionIndex in interactions) {
 
                 //insertInteractionData(div, colorDiv, user, learningObjectIndex, interactionObjectIndex)
                 interaction = interactions[interactionIndex];
                 learningObject = learningObjects[learningObjectIndex];
+                var tr = div.find('#' + rowid);
                 if (this.data.hasPassedInteraction(lastStatements, interaction.url)) {
-                    this.insertInteractionData(div, greenDiv, data[user], learningObjectIndex, interactionIndex);
+                    this.insertInteractionData(tr, greenDiv, data[user], learningObjectIndex, interactionIndex);
                 } else if (this.data.hasCompletedInteraction(lastStatements, interaction.url)) {
-                    this.insertInteractionData(div, redDiv, data[user], learningObjectIndex, interactionIndex);
+                    this.insertInteractionData(tr, redDiv, data[user], learningObjectIndex, interactionIndex);
                 } else if (this.data.hasStartedInteraction(lastStatements, interaction.url)) {
-                    this.insertInteractionData(div, orangeDiv, data[user], learningObjectIndex, interactionIndex);
+                    this.insertInteractionData(tr, orangeDiv, data[user], learningObjectIndex, interactionIndex);
                 } else {
-                    this.insertInteractionData(div, greyDiv, data[user], learningObjectIndex, interactionIndex);
+                    this.insertInteractionData(tr, greyDiv, data[user], learningObjectIndex, interactionIndex);
                 }
 
             }
@@ -846,7 +848,7 @@ xAPIDashboard.prototype.userDuration = function(userdata, learningObject) {
     return Math.round(time) + " " + XAPI_DASHBOARD_COMPLETED_UNIT_SECONDS;
 };
 
-xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata, learningObjectIndex, interactionObjectIndex) {
+xAPIDashboard.prototype.insertInteractionData = function(tr, colorDiv, userdata, learningObjectIndex, interactionObjectIndex) {
     var learningObject = this.data.getLearningObjects()[learningObjectIndex];
     var interactionObject = this.data.getInteractions(learningObject.url)[interactionObjectIndex];
     var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
@@ -868,7 +870,7 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
         "' rel='popover' data-placement='left' data-trigger='hover'>" +
         colorDiv + "</a></td>";
 
-    div.find("tr").last().append(colorDiv);
+    tr.append(colorDiv);
     var title = interactionObject.name;
     if (title == undefined) {
         title = "";
@@ -878,7 +880,7 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
     {
         title = title.substr(0, max_popover_title - 3) + "...";
     }
-    sessionDiv = div.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex);
+    sessionDiv = tr.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key']) + "-interaction-" + interactionObjectIndex);
     sessionDiv.popover({
         content: "<div id='popover-" + learningObjectIndex + "-session-" + $this.escapeId(userdata['key']) + "-interaction-" +
             interactionObjectIndex + "'></div>",
@@ -1787,10 +1789,16 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
     $('#dp-end').datepicker("setDate", until);
 
     $("#dp-start").change(function() {
+        $("#dp-start").prop("disabled", true);
+        $("#dp-end").prop("disabled", true);
+        $("#dp-unanonymous-view").prop("disabled", true);
         $this.regenerate_dashboard();
     });
 
     $("#dp-end").change(function() {
+        $("#dp-start").prop("disabled", true);
+        $("#dp-end").prop("disabled", true);
+        $("#dp-unanonymous-view").prop("disabled", true);
         $this.regenerate_dashboard();
     });
 
@@ -1818,6 +1826,9 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
         this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
         $("#dp-unanonymous-view").change(function(event) {
             $this.data.info.dashboard.anonymous = !$("#dp-unanonymous-view").is(":checked");
+            $("#dp-start").prop("disabled", true);
+            $("#dp-end").prop("disabled", true);
+            $("#dp-unanonymous-view").prop("disabled", true);
 
             $this.regenerate_dashboard();
 
@@ -1869,6 +1880,9 @@ xAPIDashboard.prototype.regenerate_dashboard = function() {
 
     var $this = this;
     this.data.getStatements(q, false, function() {
+        $("#dp-start").prop("disabled", false);
+        $("#dp-end").prop("disabled", false);
+        $("#dp-unanonymous-view").prop("disabled", false);
         $("#journeyData").html("");
         $this.createJourneyTableSession($("#journeyData"));
     });
