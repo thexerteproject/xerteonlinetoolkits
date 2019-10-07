@@ -357,7 +357,9 @@ DashboardState.prototype.fetchData = function(q, role, matcharray, matchactor, o
                 else
                 {
                     $(loaderid).html(XAPI_DASHBOARD_DATA_PREPARE_GRAPHS);
-                    orgcallback($this.rawData);
+                    setTimeout(function() {
+                        orgcallback($this.rawData);
+                    }, 0);
                 }
             }
         }
