@@ -7,7 +7,7 @@
 		<themeurl type="CheckBox" label="Disable theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
 		<language type="LanguageList" label="Language" width="170" mandatory="true" defaultValue=""/>
 		
-		<searchGroup type="group" label="Search" optional="true" tooltip="Add the ability to search for relevant sections within a project">
+		<searchGroup type="group" label="Search" optional="true" tooltip="Add the ability to search for relevant sections within a project" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/81-xerteproject-site/media/Bootstrap%20Search%20Documentation.pdf' target='_blank'&gt;Bootstrap Search Guide&lt;/a&gt;&lt;/u&gt; for help setting up and using the search functionality">
 			<!--<search label="Free Text Search" type="CheckBox" defaultValue="false" tooltip="Find relevant sections by searching using a free text box" optional="true"/>-->
 			<!--<searchType label="Search Target" type="ComboBox" data="meta,title,text" options="Metadata,Titles,All Text" defaultValue="meta" tooltip="The data that the free text search is checked against. Metadata can be added to individual sections" optional="true"/>-->
 			<category label="Category Search" type="CheckBox" defaultValue="false" tooltip="Find relevant sections by selecting from a number a categories" optional="true"/>

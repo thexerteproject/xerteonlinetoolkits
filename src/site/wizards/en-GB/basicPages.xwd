@@ -19,6 +19,6 @@
 	</hideShow>
 	
 	<!--<metadata label="Metadata" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of metadata terms used when search is turned on"/>-->
-	<filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Tick the relevant filter terms used in category searches"/>
+	<filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches"/>
 	
 </commonNodes>
