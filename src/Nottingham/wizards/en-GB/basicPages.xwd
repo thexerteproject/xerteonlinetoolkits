@@ -15,9 +15,9 @@
 	
 	<hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
-		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-		<hideUntilDate label="Until (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true"/>
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow>
 	

@@ -1931,7 +1931,7 @@ var EDITOR = (function ($, parent) {
 
     inputChanged = function (id, key, name, value, obj)
     {
-        //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+        console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
         var actvalue = value;
 
         if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
@@ -3650,12 +3650,17 @@ var EDITOR = (function ($, parent) {
 			case 'datefield':
 				var id = 'date_' + form_id_offset;
 				form_id_offset++;
-				if (value.length==0)
-				{
-					value=new Date();
-					setAttributeValue(key, [name], [value.toISOString()]);
+				var format = 0;
+				if (value.length > 0) {
+					if (value.split('-').length == 3) {
+						format = 1;
+						value = value.split('T')[0];
+					}
+				} else if (value.length == 0 && options.allowBlank != "true") {
+					value = new Date().toISOString();
+					setAttributeValue(key, [name], [value]);
 				}
-				value = new Date(value).toDateString();
+				
 				// a datepicker with a browse buttons next to it
 				var td1 = $('<td width="100%">')
 					.append($('<input>')
@@ -3664,13 +3669,14 @@ var EDITOR = (function ($, parent) {
 						.addClass('date')
 						.change({id:id, key:key, name:name}, function(event)
 						{
-							inputChanged(event.data.id, event.data.key, event.data.name, new Date(this.value).toISOString(), this);
+							inputChanged(event.data.id, event.data.key, event.data.name, this.value.length == 0 ? '' : (format == 0 ? this.value : new Date(this.value).toISOString()), this);
 						})
-						.attr('value', value)
+						.attr('value', value.split('T')[0])
 						.datepicker({
 							showOtherMonths: true,
 							selectOtherMonths: true,
-							dateFormat: 'yy-mm-dd'
+							dateFormat: 'yy-mm-dd', // the format used to be dd/mm/yyyy so some of code above is to cope with this
+							minDate: options.preventPrev == "true" ? 0 : null
 						}));
 				
 				var td2 = $('<td>');
