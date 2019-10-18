@@ -198,7 +198,7 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
                          * valid login, so return true
                          */
 
-                        $this->_record = array('firstname' => $entry[0]['givenname'][0], 'surname' => $entry[0]['sn'][0], 'username' => $entry[0][$ldap_filter_attr][0]);
+                        $this->_record = array('firstname' => $entry[0]['givenname'][0], 'surname' => $entry[0]['sn'][0], 'username' => $xot_username);
                         _debug("LDAP record: " . print_r($this->_record, true));
                         return true;
                     }
