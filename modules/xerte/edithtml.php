@@ -377,7 +377,15 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "category_list=" . json_encode($categories) . ";\n";
     echo "grouping_list=" . json_encode($grouping) . ";\n";
     echo "course_list=" . json_encode($course) . ";\n";
-    echo "course_freetext_enabled=" . $xerte_toolkits_site->course_freetext_enabled . ";\n";
+    // Some upgrade.php in teh past prevented the course_freetext_enabled column to be set correctly in the sitedetails table
+    // If not present, set to true
+    if ($xerte_toolkits_site->course_freetext_enabled == undefined)
+    {
+        echo "course_freetext_enabled=true;\n";
+    }
+    else {
+        echo "course_freetext_enabled=" . ($xerte_toolkits_site->course_freetext_enabled == 'true' ? 'true' : 'false') . ";\n";
+    }
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     ?>
 
