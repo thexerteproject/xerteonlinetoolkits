@@ -1065,6 +1065,15 @@ a:hover {
 a:visited {
   color: lightgrey; }
 
+table.glossary tr {
+  background: #000000; }
+
+table.glossary td {
+  background: #000000; }
+
+a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
+  color: #ffffff; }
+
 #x_mainHolder {
   background: #000000;
   border-top-right-radius: 3px;
