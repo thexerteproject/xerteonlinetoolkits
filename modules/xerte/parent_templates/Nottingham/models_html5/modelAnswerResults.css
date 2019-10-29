@@ -18,3 +18,9 @@
 		margin-bottom:	20px;
 	}
 	
+	.pageBlock:not(:first-of-type) {
+		margin-top: 1em;
+		padding-top: 1em;
+		border-top: 1px solid #ccc;
+	}
+	

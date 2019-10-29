@@ -22,12 +22,17 @@
 			<panel><![CDATA[<panel name="Enter Panel Title"/>]]></panel>
 		</newNodes>
 
-	</mediaLesson><mediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
+	</mediaLesson>
+	
+	<mediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
 
 		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
-		<media label="Media" type="media"/>
-		<tip label="Media Description" type="TextInput"/>
-		<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
+		
+		<mediaGroup type="group" label="Media">
+			<media label="File" type="media"/>
+			<tip label="Description" type="TextInput"/>
+			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
+		</mediaGroup>
 
 		<audioImg type="group" label="Image (Audio only)" optional="true">
 			<audioImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
@@ -52,7 +57,9 @@
 			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
 		</newNodes>
 
-	</mediaPanel><panel menuItem="Panel" icon="icApplication" remove="true" max="3">
+	</mediaPanel>
+	
+	<panel menuItem="Panel" icon="icApplication" remove="true" max="3">
 
 		<name label="Panel Title" type="TextInput" wysiwyg="true"/>
 		<overlay label="Overlay Panel" type="CheckBox" defaultValue="false" optional="true" />
@@ -69,15 +76,21 @@
 			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
 		</newNodes>
 
-	</panel><synchCue menuItem="Pause/Jump Point" icon="icPause" remove="true">
+	</panel>
+	
+	<synchCue menuItem="Pause/Jump Point" icon="icPause" remove="true">
 		<synch label="Synch Point" type="TextInput" defaultValue="0"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<disable label="Disable Controls" type="CheckBox" defaultValue="false"/>
 		<visibleStreamTypes label="Visible stream types" type="TextInput" defaultValue="0 1 2 3 4 5" optional="true"/>
 		<destination label="Jump To" type="TextInput" defaultValue="0" optional="true"/>
-	</synchCue><synchEmpty menuItem="Clear Panel" icon="icBullet" remove="true">
+	</synchCue>
+	
+	<synchEmpty menuItem="Clear Panel" icon="icBullet" remove="true">
 		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
-	</synchEmpty><synchSubtitlePlus menuItem="Subtitles" icon="icFolderPage" remove="true" max="1">
+	</synchEmpty>
+	
+	<synchSubtitlePlus menuItem="Subtitles" icon="icFolderPage" remove="true" max="1">
 
 		<info><![CDATA[This is the holder for the media's subtitles.<br/>Select 'New Subtitle' to add and synch each caption.]]></info>
 
@@ -85,7 +98,9 @@
 			<synchSub><![CDATA[<synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/>]]></synchSub>
 		</newNodes>
 
-	</synchSubtitlePlus><synchSub menuItem="Subtitle" icon="icBullet" remove="true">
+	</synchSubtitlePlus>
+	
+	<synchSub menuItem="Subtitle" icon="icBullet" remove="true">
 
 		<name label="Subtitle Text" type="TextArea" height="100"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="bottom" width="100"/>
@@ -95,7 +110,9 @@
 		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 
-	</synchSub><synchTextPlus menuItem="Text Content" icon="icPageWhiteText" remove="true">
+	</synchSub>
+	
+	<synchTextPlus menuItem="Text Content" icon="icPageWhiteText" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<text label="Text" type="TextArea" height="250"/>
@@ -110,7 +127,9 @@
         <offsetTop label="offset top in %" type="TextInput" defaultValue="0" optional="true"/>
         <offsetLeft label="offset left in %" type="TextInput" defaultValue="0" optional="true"/>
 
-	</synchTextPlus><synchSlides menuItem="Slideshow" icon="icFolderImg" remove="true">
+	</synchTextPlus>
+	
+	<synchSlides menuItem="Slideshow" icon="icFolderImg" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 
@@ -127,7 +146,9 @@
 			<synchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchSlide>
 		</newNodes>
 
-	</synchSlides><synchSlide menuItem="Slide" icon="icBullet" remove="true">
+	</synchSlides>
+	
+	<synchSlide menuItem="Slide" icon="icBullet" remove="true">
 
 		<name label="Image Description" type="TextInput"/>
 		<url label="Image" type="media"/>
@@ -141,12 +162,17 @@
 			<captionPosH label="Horizontal Position" type="ComboBox" options="Left,Centre,Right" data="left,centre,right" defaultValue="centre" width="100" optional="true"/>
 		</captionOptions>
 
-	</synchSlide><synchMediaPlus menuItem="Media" icon="icFilm" remove="true">
+	</synchSlide>
+	
+	<synchMediaPlus menuItem="Media" icon="icFilm" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<media label="Media" type="media"/>
-		<tip label="Media Description" type="TextInput"/>
-		<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
+		
+		<mediaGroup type="group" label="Media">
+			<media label="File" type="media"/>
+			<tip label="Description" type="TextInput"/>
+			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
+		</mediaGroup>
 
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
@@ -171,17 +197,19 @@
 			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
 		</newNodes>
 
-	</synchMediaPlus><synchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
+	</synchMediaPlus>
+	
+	<synchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<text label="Question" type="TextArea" height="100"/>
 		<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
 		<overlay label="Overlay Media" type="CheckBox" defaultValue="false"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<disable label="Disable Controls" type="CheckBox"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
@@ -205,7 +233,9 @@
 			<synchMCQOption><![CDATA[<synchMCQOption name="Answer" text="Option text" correct="false"/>]]></synchMCQOption>
 		</newNodes>
 
-	</synchMCQ><synchMCQOption menuItem="Answer" icon="icBullet" remove="true">
+	</synchMCQ>
+	
+	<synchMCQOption menuItem="Answer" icon="icBullet" remove="true">
 
 		<text label="Answer" type="TextArea" wysiwyg="true"/>
 	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
@@ -217,7 +247,9 @@
 		<play label="Play Media" type="CheckBox" defaultValue="false" optional="true"/>
 		<enable label="Enable Controls" type="CheckBox" defaultValue="true" optional="true"/>
 
-	</synchMCQOption><synchWebpage menuItem="Embed Web Page" icon="icPageWorld" remove="true">
+	</synchMCQOption>
+	
+	<synchWebpage menuItem="Embed Web Page" icon="icPageWorld" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<src label="URL" type="TextInput"/>
@@ -230,7 +262,9 @@
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
 
-	</synchWebpage><synchXot menuItem="Embed XOT Project" icon="icPageWhiteCodeRed" remove="true">
+	</synchWebpage>
+	
+	<synchXot menuItem="Embed XOT Project" icon="icPageWhiteCodeRed" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<url label="URL" type="TextInput"/>
@@ -251,14 +285,18 @@
 			<synchXotChange><![CDATA[<synchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></synchXotChange>
 		</newNodes>
 
-	</synchXot><synchXotChange menuItem="XOT Page Change" icon="icBullet" remove="true">
+	</synchXot>
+	
+	<synchXotChange menuItem="XOT Page Change" icon="icBullet" remove="true">
 
 		<page label="Page" type="TextInput" defaultValue="Enter Page Number"/>
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 
-	</synchXotChange><synchGoogleFeed menuItem="RSS Feed" icon="icRSS" remove="true">
+	</synchXotChange>
+	
+	<synchGoogleFeed menuItem="RSS Feed" icon="icRSS" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<url label="RSS Feed URL" type="TextInput"/>
@@ -271,7 +309,9 @@
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
 
-	</synchGoogleFeed><synchGoogleMap menuItem="Google Map" icon="icMap" remove="true">
+	</synchGoogleFeed>
+	
+	<synchGoogleMap menuItem="Google Map" icon="icMap" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<type label="Map Type" type="ComboBox" options="Hybrid,Road,Satellite,Terrain,Street view" data="HYBRID,ROADMAP,SATELLITE,TERRAIN,STREETVIEW" width="100"/>
@@ -299,7 +339,9 @@
 			<synchGoogleMapChange><![CDATA[<synchGoogleMapChange type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" pauseMedia="false"/>]]></synchGoogleMapChange>
 		</newNodes>-->
 
-	</synchGoogleMap><synchGoogleMapChange menuItem="Google Map Location" icon="icBullet" remove="true">
+	</synchGoogleMap>
+	
+	<synchGoogleMapChange menuItem="Google Map Location" icon="icBullet" remove="true">
 
 		<type label="Map Type" type="ComboBox" options="Hybrid,Road map,Satellite,Terrain,Street view" data="HYBRID,ROADMAP,SATELLITE,TERRAIN,STREETVIEW" width="100"/>
 		<zoom label="Zoom" type="TextInput"/>

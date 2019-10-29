@@ -1,5 +1,22 @@
 <?php
 
+
+function CheckLearningLocker($lrs)
+{
+    $apos = strpos($lrs['lrsendpoint'], 'api/statements/aggregate');
+    if ($apos !== false)
+    {
+        $lrs['aggregate'] = true;
+        $lrs['aggregateendpoint'] = $lrs['lrsendpoint'];
+        $lrs['lrsendpoint'] = substr($lrs['lrsendpoint'], 0, $apos) . 'data/xAPI';
+    }
+    else
+    {
+        $lrs['aggregate'] = false;
+    }
+    return $lrs;
+}
+
 function xAPI_html_page_create($id, $template_name, $type, $lo_name, $language) {
 
 global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;

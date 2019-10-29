@@ -37,57 +37,15 @@
  */
 
 require_once(dirname(__FILE__) . "/play.php");
-_load_language_file("/modules/xerte/peer.inc");
 
-function show_peer_template($row, $retouremail)
+function show_peer_template($row)
 {
     global $xerte_toolkits_site;
 
 
     $peer_template = show_template_page($row, "data.xml");
 
-    // Look for the body element and insert description and explanation
-    $body_pos = strpos($peer_template, "<body");
-    $end_body_pos = strpos($peer_template, ">", $body_pos);
-    $peer_page = substr($peer_template, 0, $end_body_pos);
-    $peer_page .= " style=\"#ffffff;\">\n";
-    $peer_page .= "   <div style=\"width:900px; margin:0 auto;\">\n";
-    $peer_page .= "   <div style=\"font-family:verdana,tahoma,arial; font-size:11pt\"><div><h1 style=\"margin-top:1em;\">" . XERTE_PEER_DESCRIPTION . "</h1><p>" . XERTE_PEER_GUIDANCE . "</p></div>\n";
-
-    $peer_page .=  "<div>\n";
-    $peer_page .= "<form name=\"peer\" action=\"javascript:send_review('" . $retouremail . "','" . $row['template_id'] . "')\" method=\"post\" enctype=\"text/plain\"><textarea style=\"width:800px; height:300px;\" name=\"response\">" . XERTE_PEER_TEXTAREA_INSTRUCTIONS . "</textarea><br/><button type=\"submit\" class=\"xerte_button\">" . XERTE_PEER_BUTTON_SEND . "</button></form><a name=\"feedbackform\"><p style=\"color:red;\"  id=\"pv_feedback\"></p></a></div></div>";
-
-    $peer_page .= substr($peer_template, $end_body_pos + 1);
-
-
-    // Look for </body> and insert </div>
-    $peer_page  = str_replace("</body>", "</div></body>", $peer_page);
-
-    // Look for </head> and insert javascript
-    $ajax = "<script type=\"text/javascript\" language=\"Javascript\" src=\"website_code/scripts/peer.js\"></script>\n";
-    $ajax .= "<script type=\"text/javascript\" language=\"Javascript\" src=\"website_code/scripts/ajax_management.js\"></script>\n";
-    $ajax .= "</head>";
-
-    $peer_page  = str_replace("</head>", $ajax, $peer_page);
-
-
-    echo $peer_page;
-
-}
-
-function show_peer_login_form($mesg="")
-{
-    echo "<html>\n";
-    echo "<body style=\"#ffffff;\">\n";
-    echo "   <div style=\"width:900px; margin:0 auto; font-family:verdana,tahoma,arial; font-size:11pt\">\n";
-    echo "   <b>" . XERTE_PEER_DESCRIPTION . "</b><br>" . XERTE_PEER_GUIDANCE . "\n";
-    echo "<p><form method=\"post\" action=\"\">\n";
-    echo "<p>" . XERTE_PEER_PASSWORD . " <input type=\"password\" size=\"20\" maxlength=\"36\" name=\"password\" /> <button type=\"submit\">" . XERTE_PEER_LOGIN_BUTTON . "</button></p>\n";
-    if (strlen($mesg)>0)
-    {
-        echo "<p>" . $mesg . "</p>";
-    }
-    echo "</div></body></html>";
+    echo $peer_template;
 }
 
 ?>

@@ -47,7 +47,7 @@
   
   <errorFlash label="U moet een Flash Player installeren om deze content te zien." description="Installeer de Flash Player"/>
   
-  <authorSupport label="Autheur support staat AAN: tekst in het roon verschijnt niet in het live project."/>
+  <authorSupport label="Autheur support staat AAN: tekst in het rood verschijnt niet in het live project."/>
   
   <hiddenPage label="Deze pagina is verborgen in het live project"/>
   
@@ -149,7 +149,7 @@
   <colourChanger label="Kleur veranderaar" description="Verander de kleuren." tooltip="Verander Kleuren">
 	  <closeButton label="" description="Sluit kleur veranderaar"/>
 	  <selectTxt label="Selecteer ui de onderstaande opties"/>
-	  <adviceTxt label="Meer advies nodig? Ga naar de &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Xerte Toolkits toegankelijkheids gids&lt;/a&gt;."/>
+	  <adviceTxt label="Meer advies nodig? Ga naar de &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Toolkits toegankelijkheids gids&lt;/a&gt;."/>
 	  <off label="Uit"/>
 	  <noBg label="Verwijder achtergrond afbeeldingen"/>
 	  <invert label="Draai om"/>

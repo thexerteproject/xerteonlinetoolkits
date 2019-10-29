@@ -27,20 +27,26 @@ if (is_user_admin()) {
     $database_id = database_connect("templates list connected", "template list failed");
 
 
-    echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_UPDATE_EXPLANATION . "<br /><br /><button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'><i class=\"fa fa-refresh\"></i> " . TEMPLATE_UPDATE . "</button></p>";
+    echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_UPDATE_EXPLANATION . "<br /><br />
+    <button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'><i class=\"fa fa-refresh\"></i> " . TEMPLATE_UPDATE . "</button></p>";
 
     echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_ADD_EXPLANATION .
     "<br><br>" .
     "<form action='website_code/php/management/upload.php' method='post' enctype='multipart/form-data' onsubmit='return template_submit()' id='form-template-upload'>" .
         "<input type='file' value='Search File' name='fileToUpload' id='file-select'>" .
-        "<p><input type='text' name='templateName'>&NonBreakingSpace;Enter the template name<br><br><input type='text' name='templateDescription'>&NonBreakingSpace;Enter the template description<br></p><br><button type='submit' id='upload-button' class='xerte_button'>upload</button>" .
+        "<p>
+            <input class='management_input' type='text' name='templateName'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATENAME . "<br>
+            <input class='management_input' type='text' name='templateDisplayname'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATEDISPLAYNAME . "<br>
+            <input class='management_input' type='text' name='templateDescription'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATEDESCRIPTION . "<br>
+        </p><br>
+        <button type='submit' id='upload-button' class='xerte_button'><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button>" .
     "</form></p>";
 
 
     echo "<p style=\"margin:20px 0 0 5px\">" . TEMPLATE_MANAGE . "</p>";
     $last_template_type = "";
 
-    $query = "select * from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails order by template_framework";
+    $query = "select * from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where access_rights != 'deleted' order by template_framework, parent_template, template_name";
     $query_response = db_query($query);
     foreach ($query_response as $row) {
 
@@ -53,9 +59,12 @@ if (is_user_admin()) {
 
         }
 
-        echo "<div class=\"template\" id=\"" . $row['template_name'] . "\" savevalue=\"" . $row['template_type_id'] . "\"><p>" . $row['template_name'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['template_name'] . "_btn\" onclick=\"javascript:templates_display('" . $row['template_name'] . "')\">" . TEMPLATE_VIEW . "</button></p></div><div class=\"template_details\" id=\"" . $row['template_name'] . "_child\">";
+        echo "<div class=\"template\" id=\"" . $row['template_name'] . "\" savevalue=\"" . $row['template_type_id'] . "\"><p>" . str_replace('_', ' ', $row['template_name']) . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['template_name'] . "_btn\" onclick=\"javascript:templates_display('" . $row['template_name'] . "')\">" . TEMPLATE_VIEW . "</button></p></div><div class=\"template_details\" id=\"" . $row['template_name'] . "_child\">";
         echo "<p>" . TEMPLATE_TYPE . " " . $row['template_framework'] . "</p>";
-
+        if ($row['template_name'] != $row['parent_template'])
+        {
+            echo "<p>" . TEMPLATE_SUB_TYPE . " "  . $row['parent_template'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['template_name'] . "_del_btn\" onclick=\"javascript:templates_delete_sub('" . $row['template_type_id'] . "')\">" . TEMPLATE_SUB_DELETE . "</button></p>";
+        }
         if ($row['template_framework'] == "xerte") {
 
             $template_check = file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $row['template_name'] . "/" . $row['template_name'] . ".rlt");

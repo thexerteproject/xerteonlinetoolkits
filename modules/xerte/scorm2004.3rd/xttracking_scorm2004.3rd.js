@@ -153,7 +153,7 @@ function ScormTrackingState()
     this.duration_previous_attempts = 0;
     this.lo_type = "pages only";
     this.lo_passed = -1.0;
-    this.page_timeout = 5000;
+    this.page_timeout = 0;
     this.lo_completed = "unknown";
     this.finished = false;
     this.interactions = new Array();
@@ -1306,7 +1306,7 @@ function XTLogin(login, passwd)
     return true;
 }
 
-function XTGetMode()
+function XTGetMode(extended)
 {
     if (state.scormmode == "normal")
     {
@@ -1316,10 +1316,16 @@ function XTGetMode()
             if (sit != null)
             {
                 if (state.trackingmode !== 'none') {
-                    if (state.scoremode == 'first')
+                    if (extended != null && (extended == true || extended == 'true'))
+                    {
+                        if (state.scoremode == 'first')
+                            return "normal";
+                        else
+                            return "normal_last";
+                    }
+                    else {
                         return "normal";
-                    else
-                        return "normal_last";
+                    }
                 }
                 else
                 {
@@ -1600,31 +1606,9 @@ function XTTerminate()
         if (!state.finished)
         {
             // End tracking of page
+            var currentpageid = state.currentpageid;
             x_endPageTracking(false, -1);
 
-            // This code is probably obsolete, leave it in to allow for more testing
-            var currentpageid = "";
-            state.finished = true;
-            if (state.currentid)
-            {
-                var sit = state.find(currentid);
-                // there is still an interaction open, close it
-                if (sit != null)
-                {
-                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-                }
-            }
-            if (state.currentpageid)
-            {
-                currentpageid = state.currentpageid;
-                var sit = state.find(currentpageid);
-                // there is still an interaction open, close it
-                if (sit != null)
-                {
-                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-                }
-
-            }
             state.finishTracking(currentpageid);
         }
     }

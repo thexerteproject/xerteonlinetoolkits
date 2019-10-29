@@ -41,7 +41,7 @@ if(is_user_admin()){
     $res = db_query($query, array($_POST['desc'], $_POST['date_uploaded'], $_POST['display'], $_POST['example'], $_POST['access'], $active, $_POST['template_id']));
 
 
-	if($res){
+	if($res !== false){
 		$msg = "Template changes saved by user from " . $_SERVER['REMOTE_ADDR'];
 		receive_message("", "SYSTEM", "MGMT", "Changes saved", $msg);
 

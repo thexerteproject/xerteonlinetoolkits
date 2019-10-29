@@ -251,7 +251,7 @@
 
 <selectTxt label="Будь-ласка, виберіть з наведених нижче варіантів"/>
 
-<adviceTxt label="Потрібна додаткова порада? Відвідайте &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Xerte Toolkits accessibility guide&lt;/a&gt;."/>
+<adviceTxt label="Потрібна додаткова порада? Відвідайте &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Toolkits accessibility guide&lt;/a&gt;."/>
 
 <off label="Off"/>
 

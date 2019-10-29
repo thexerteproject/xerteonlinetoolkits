@@ -74,6 +74,24 @@ function management_alert_stateChanged(){
 	}
 }
 
+// Function management state changed alert
+//
+// Generic ajax handler for this script
+
+function management_delete_sub_stateChanged(){
+
+	if (xmlHttp.readyState==4){
+
+		response = xmlHttp.responseText.trim();
+		if(response!=""){
+
+			alert(response);
+
+		}
+		templates_list();
+	}
+}
+
 function upload_template(){
 	
 }
@@ -489,9 +507,9 @@ function update_site(){
 					 '&welcome_message=' + document.getElementById("welcome_message").value +
 					 '&site_text=' + document.getElementById("site_text").value +
 					 '&tutorial_text=' + document.getElementById("tutorial_text").value +
-					 '&news_text=' + document.getElementById("news_text").value +
-					 '&pod_one=' + document.getElementById("pod_one").value +
-					 '&pod_two=' + document.getElementById("pod_two").value +
+					 '&news_text=' + encodeURIComponent(document.getElementById("news_text").value) +
+					 '&pod_one=' + encodeURIComponent(document.getElementById("pod_one").value) +
+					 '&pod_two=' + encodeURIComponent(document.getElementById("pod_two").value) +
 					 '&copyright=' + encodeURIComponent(document.getElementById("copyright").value) +
 					 '&demonstration_page=' + document.getElementById("demonstration_page").value +
 					 '&form_string=' + document.getElementById("form_string").value +
@@ -1072,6 +1090,21 @@ function templates_display(tag){
 
 	}
 
+}
+
+function templates_delete_sub(id){
+	if (confirm(REMOVE_SUB)) {
+		if (setup_ajax() != false) {
+
+			var url = "template_delete_sub.php";
+
+			xmlHttp.open("post", management_ajax_php_path + url, true);
+			xmlHttp.onreadystatechange = management_delete_sub_stateChanged;
+			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			xmlHttp.send('template_id=' + id);
+		}
+	}
 }
 
 function save_changes(){

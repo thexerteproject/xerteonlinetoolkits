@@ -50,7 +50,7 @@ function XApiTrackingState() {
     this.lo_completed = 0;
     this.lo_type = "pages only";
     this.lo_passed = -1.0;
-    this.page_timeout = 5000;
+    this.page_timeout = 0;
     this.templateId = -1;
     this.templateName = "";
     this.debug = false;
@@ -1145,6 +1145,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             // Construct answers like a:Answerstring
                             var scormAnswerArray = [];
                             var i = 0;
+
                             for (i = 0; i < learnerOptions.length; i++) {
                                 var entry = learnerOptions[i]['answer'].replace(
                                     / /g, "_");
@@ -1154,7 +1155,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
 
                             // Do the same for the answer pattern
                             var scormArray = [];
-                            var scormCorrectArray = []
+                            var scormCorrectArray = [];
                             var i = 0;
                             for (i = 0; i < this.correctOptions.length; i++) {
                                 var entry = {
@@ -1673,6 +1674,18 @@ function XTInitialise(category) {
             }
         );
         */
+
+        // // Check if aggretate is set for the lrsEndpoint, than assume this is learning locker and change normal API accordingly and save aggregate for XTGetStatements
+        // if (lrsEndpoint.indexOf("api/statements/aggregate/") >= 0)
+        // {
+        //     state.aggregate = true;
+        //     state.lrsAggregateEndpoint = lrsEndpont;
+        //     apos = lrsEndpoint.indexOf("api/statements/aggregate");
+        //     lrsEndpoint = lrsEndpoint.substr(0, lrsEndpoint.Length - apos) + 'data/xAPI';
+        // }
+        // else {
+        //     state.aggregate = false;
+        // }
         var conf = {
             "endpoint": lrsEndpoint + '/',
             "user": lrsUsername,
@@ -1756,7 +1769,7 @@ function XTInitialise(category) {
 }
 
 function XTTrackingSystem() {
-    return "";
+    return "xAPI";
 }
 
 function XTLogin(login, passwd) {
@@ -1784,9 +1797,17 @@ function XTLogin(login, passwd) {
     return true;
 }
 
-function XTGetMode() {
+function XTGetMode(extended) {
     if (state.forcetrackingmode === 'true')
-        return "normal";
+    {
+        if (extended != null && (extended == true || extended == 'true'))
+        {
+            return state.mode;
+        }
+        else {
+            return "normal";
+        }
+    }
     else
         return "";
 }
@@ -2905,7 +2926,7 @@ function XTTerminate() {
         };
         statement.object.definition.name[state.language] = x_params.name;
         SaveStatement(statement, false);
-        if (lti_enabled) {
+        if (typeof lti_enabled !== 'undefined' && lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
             if (url.indexOf("lti_launch.php") >= 0) {
@@ -3206,7 +3227,7 @@ function XTResults(fullcompletion) {
                     correctAnswer = state.interactions[i].correctAnswers;
                     break;
             }
-            if (state.interactions[i].ia_type != "match") {
+            if (state.interactions[i].ia_type != "match" && state.interactions[i].result != undefined) {
                 subinteraction.question = state.interactions[i].ia_name;
                 subinteraction.correct = state.interactions[i].result.success;
                 subinteraction.learnerAnswer = learnerAnswer;

@@ -20,7 +20,6 @@
     <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" />
     <feedback label="Feedback" type="textArea"  height="120"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
-    <colour label="Colour" type="colourPicker" defaultValue="0xFF0000" optional="true"/>
 
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
@@ -35,6 +34,7 @@
       <list label="Show questions in list" type="checkbox" optional="true" tooltip="Show more than one question per page" defaultValue="false"/>
       <paging label="Use paging" type="checkbox" optional="true" tooltip="Group question list in pages if using list mode" defaultValue="true" />
       <pagesize label="Max. page size" type="textinput" wysiwyg="false" optional="true" tooltip="Maximum number of questions shown per page if page mode is used." defaultValue="10" />
+      <colour label="Colour" type="colourPicker" defaultValue="0xFF0000" optional="true"/>
     </layout>
 
       <newNodes>

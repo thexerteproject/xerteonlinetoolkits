@@ -19,6 +19,7 @@
  */
 
 require_once(dirname(__FILE__) . "/config.php");
+require_once(dirname(__FILE__) . "/website_code/php/xAPI/xAPI_library.php");
 
 global $tsugi_enabled;
 global $xerte_toolkits_site;
@@ -56,7 +57,7 @@ if(is_numeric($id))
         );
     }
 
-
+    $lrs = CheckLearningLocker($lrs);
     $_SESSION['XAPI_PROXY'] = $lrs;
 
     $xerte_toolkits_site->group = $_REQUEST{'group'};

@@ -56,6 +56,7 @@ function xapiGetStatements(lrs, q, one, callback) {
     );
 }
 */
+
 function xAPIDashboard(info) {
     this.data = new DashboardState(info);
 }
@@ -124,6 +125,80 @@ xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element) {
     chart.draw();
 };
 
+xAPIDashboard.prototype.getGroupFromStatements = function(statements){
+    var cur_group="";
+    var first_statement = statements[0];
+    if(     first_statement != undefined
+        &&  first_statement.context != undefined
+        &&  first_statement.context.team != undefined
+        &&  first_statement.context.team.account != undefined
+    ){
+        cur_group = first_statement.context.team.account.name
+    }
+    return cur_group;
+};
+
+xAPIDashboard.prototype.setStatisticsValues = function(base, learningObjectIndex){
+    var data = this.data.groupStatements();
+    var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
+    var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
+    var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
+    if($('.journeyOverviewActivity').html() == "") {
+        this.drawActivityChart(base, $(base + '.journeyOverviewActivity'), first_launch, last_launch, false);
+    }
+
+    // Add the number of Users.
+    var numberOfUsers = 0;
+    var dashboard=this;
+    for (var user in data) {
+        if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements(data[user].statements)) {
+            numberOfUsers++;
+        }
+    }
+    var totalScore = 0;
+    var scoreCount = 0;
+    for(var i in this.data.groupedData){
+        var curUser = this.data.groupedData[i];
+        var completedStatements = this.data.getStatementsList(curUser.statements.filter(function(rd){
+            return $this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([rd]);
+        }), "http://adlnet.gov/expapi/verbs/completed");
+        if(completedStatements.length > 0)
+        {
+            totalScore += completedStatements[0].result.score.scaled;
+            scoreCount++;
+        }
+    }
+    this.drawNumberOfUsers($(base + '.journeyOverviewStats'), numberOfUsers);
+    var sessions = [];
+    var totalCompletedPages = 0;
+    this.data.rawData.forEach(function(s){
+        if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([s])){
+            sessionId = s.context.extensions["http://xerte.org.uk/sessionId"];
+            if(sessions.indexOf(sessionId) === -1){
+                sessions.push(sessionId);
+            }
+            if(s.verb.id == "http://adlnet.gov/expapi/verbs/exited"){
+                var pages = interactions.filter(i => i.type == "page").map(p => p.url);
+                if(pages.indexOf(s.object.id) >= 0)
+                {
+                    totalCompletedPages++;
+                }
+            }
+        }
+    });
+    // Add the number of launches.
+
+    var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
+    this.drawNumberOfInteractions($(base + '.journeyOverviewStats'), this.data.rawData.filter(function(rd){
+        return $this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([rd]);
+    }).length);
+    this.drawNumberOfSessions($(base + '.journeyOverviewStats'), sessions.length);
+    this.drawNumberOfCompletedSessions($(base + '.journeyOverviewStats'), scoreCount);
+    this.drawAverageCompletedPages($(base + '.journeyOverviewStats'), Math.round(100 * totalCompletedPages / numberOfUsers) / 100);
+
+    // Add the average grade.
+    this.drawAverageScore($(base + '.journeyOverviewStats'), (Math.round((totalScore / scoreCount) * 10 * 10) / 10), first_launch, last_launch);
+};
 
 xAPIDashboard.prototype.createJourneyTableSession = function(div) {
     this.data.rawData = this.data.combineUrls();
@@ -148,61 +223,33 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
         // Add statistics above the table.
         div.append(
-            '<div class="journeyOverview"><div class="journeyOverviewHeader row"><h3>Overview</h3></div><div class="journeyOverviewActivity row"></div><div class="journeyOverviewStats row"></div></div>'
+            '<div class="journeyOverview"><div class="journeyOverviewHeader row"><h3>' + XAPI_DASHBOARD_OVERVIEW + '</h3></div><div class="journeyOverviewActivity row"></div><div class="journeyOverviewStats row"></div></div>'
         );
-        var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
-        var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
-        this.drawActivityChart($('.journeyOverviewActivity'), first_launch, last_launch, false);
+        this.setStatisticsValues(".journeyOverview ", learningObjectIndex);
 
-        // Add the number of Users.
-        var numberOfUsers = 0;
-        for (var user in data) {
-            numberOfUsers++;
-        }
-        var totalScore = 0;
-        var scoreCount = 0;
-        for(var i in this.data.groupedData){
-            var curUser = this.data.groupedData[i];
-            var completedStatements = this.data.getStatementsList(curUser.statements, "http://adlnet.gov/expapi/verbs/completed");
-            if(completedStatements.length > 0)
-            {
-                totalScore += completedStatements[0].result.score.scaled;
-                scoreCount++;
-            }
-        }
-        this.drawNumberOfUsers($('.journeyOverviewStats'), numberOfUsers);
-        var sessions = [];
-        var totalCompletedPages = 0;
-        this.data.rawData.forEach(function(s){
-            sessionId = s.context.extensions["http://xerte.org.uk/sessionId"];
-            if(sessions.indexOf(sessionId) === -1){
-                sessions.push(sessionId);
-            }
-            if(s.verb.id == "http://adlnet.gov/expapi/verbs/exited"){
-                var pages = interactions.filter(function(i) {return i.type == "page"}).map(function(p) {return p.url});
-                if(pages.indexOf(s.object.id) >= 0)
-                {
-                    totalCompletedPages++;
-                }
-            }
-        });
-        // Add the number of launches.
-        var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
-        this.drawNumberOfInteractions($('.journeyOverviewStats'), this.data.rawData.length);
-        this.drawNumberOfSessions($('.journeyOverviewStats'), sessions.length);
-        this.drawNumberOfCompletedSessions($('.journeyOverviewStats'), scoreCount);
-        this.drawAverageCompletedPages($('.journeyOverviewStats'), Math.round(100 * totalCompletedPages / numberOfUsers) / 100);
-
-        // Add the average grade.
-        this.drawAverageScore($('.journeyOverviewStats'), (Math.round((totalScore / scoreCount) * 10 * 10) / 10), first_launch, last_launch);
-        leftButton = "<button class='page-button btn btn-info' id='pageButtonLeft'>Left</button>";
-        rightButton = "<button class='page-button btn btn-info' id='pageButtonRight'>Right</button>";
+        leftButton = "<button class='xerte_button_c_no_width page-button' id='pageButtonLeft'>" + XAPI_DASHBOARD_PAGE_PREV + "</button>";
+        rightButton = "<button class='xerte_button_c_no_width page-button' id='pageButtonRight'>" + XAPI_DASHBOARD_PAGE_NEXT + "</button>";
 
         var pageOptions = '<div class="row container-fluid"><span class="col col-md-1 align-self-start">' + leftButton + '</span><span id="page-information" class="col-md-1"></span><span class="col-md-9"></span><span class="col col-md-1 align-self-end">' + rightButton + '</span><br></div>';
         // Add table with specific overview.
         div.append('<div class="row journeyTable">' + pageOptions + '<table class="table table-hover table-bordered table-responsive" id="' + learningObjectIndex +
             '"><thead></thead><tbody></tbody></table></div>');
-        div.find("#" + learningObjectIndex + " thead").append("<tr><th>Started</th><th>Completed</th></tr>");
+        /*
+        if(this.data.pageIndex > 0)
+        {
+            $("#pageButtonLeft").prop("disabled", false).removeClass("diaabled");
+        }else{
+            $("#pageButtonLeft").prop("disabled", true).addClass("disabled");
+
+        }
+        if((this.data.pageIndex+1) * this.data.pageSize < Object.keys(this.data.groupedData).length - 1)
+        {
+            $("#pageButtonRight").prop("disabled", false).removeClass("diaabled");
+        }else{
+            $("#pageButtonRight").prop("disabled", true).addClass("disabled");
+        }
+        */
+        div.find("#" + learningObjectIndex + " thead").append("<tr><th>" + XAPI_DASHBOARD_STARTED + "</th><th>" +  XAPI_DASHBOARD_COMPLETED + "</th></tr>");
         if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
             div.find("#" + learningObjectIndex + " thead tr").prepend('<th>Users</th>');
         }
@@ -306,9 +353,22 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         var pageState = this;
         $(".page-button").click(function(e, init){
 
+
+            if(init){
+                $this.groupedDataComplete = $this.groupedData;
+            }else{
+                $this.groupedData = $this.groupedDataComplete;
+            }
+            var groupedData = {};
+            for($key in $this.groupedData) {
+                $val = $this.groupedData[$key];
+                if ($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == pageState.getGroupFromStatements($val.statements)) {
+                    groupedData[$key] = $val;
+                }
+            }
             var pageSize = $this.pageSize;
             if(pageSize == -1){
-                pageSize = Object.keys($this.groupedData).length;
+                pageSize = Object.keys(groupedData).length;
             }
 
             if(e.target.id == "pageButtonLeft" && !init)
@@ -316,48 +376,215 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 $this.pageIndex = Math.max($this.pageIndex -= pageSize, 0);
             }else if(e.target.id == "pageButtonRight" && !init)
             {
-                $this.pageIndex = Math.min($this.pageIndex +=pageSize, Object.keys($this.groupedData).length - 1);
-            }else if(Object.keys($this.groupedData).length < pageSize){
+                $this.pageIndex = Math.min($this.pageIndex +=pageSize, Object.keys(groupedData).length - 1);
+            }else if(Object.keys(groupedData).length < pageSize){
                 $this.pageIndex = 0;
             }
 
             if($this.pageIndex > 0)
             {
-                $("#pageButtonLeft").prop("disabled", false);
+                $("#pageButtonLeft").prop("disabled", false).removeClass("disabled");
             }else{
-                $("#pageButtonLeft").prop("disabled", true);
+                $("#pageButtonLeft").prop("disabled", true).addClass("disabled");
+
             }
-            if($this.pageIndex + pageSize < Object.keys($this.groupedData).length - 1)
+            if($this.pageIndex + pageSize < Object.keys(groupedData).length - 1)
             {
-                $("#pageButtonRight").prop("disabled", false);
+                $("#pageButtonRight").prop("disabled", false).removeClass("disabled");
             }else{
-                $("#pageButtonRight").prop("disabled", true);
+                $("#pageButtonRight").prop("disabled", true).addClass("disabled");
             }
-            pageState.drawPages($this.pageIndex, pageSize);
+            pageState.drawPages($this.pageIndex, pageSize, groupedData);
 
-            curPage = Math.ceil($this.pageIndex / pageSize) + 1;
-            maxPage = Math.ceil(Object.keys($this.groupedData).length / pageSize);
+            var curPage = Math.ceil($this.pageIndex / pageSize) + 1;
+            var maxPage = Math.ceil(Object.keys(groupedData).length / pageSize);
 
-            $("#page-information").html("Current page: " + (curPage) + " of " + maxPage);
+            var pageinfo = XAPI_DASHBOARD_PAGE_OF_PAGE;
+            pageinfo = pageinfo.replace("{i}", curPage);
+            pageinfo = pageinfo.replace("{n}", maxPage);
+            $("#page-information").html(pageinfo);
+
+            var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
+            var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
+            $('.journeyOverviewActivity').html("");
+            pageState.drawActivityChart("", $('.journeyOverviewActivity'), first_launch, last_launch, false);
+
 
         });
-        $(".page-button").trigger("click", [true]);
+        $("#pageButtonLeft").trigger("click", [true]);
+
+        /* Setup modal question overview */
+        $("body").append(
+            '<div id="model-question-overview" class="modal fade" role="dialog" >' +
+            '<div class="modal-dialog">' +
+            '<div class="modal-content">' +
+            '<div class="modal-header">' +
+
+            '<h4 class="modal-title">Interaction overview</h4>' +
+            '<a href="#" id="interaction-overview-print">Print</a><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+            '</div>' +
+            '<div class="modal-body col-md-12">' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>')
 
 
-        /*
-        menu = $("<div><ul></ul></div>");
-        interactions.forEach(function(i){
-            if(i.type == "page"){
-                menu.append("<li><input class='hide-show-column-checkbox' type='checkbox' checked data-target='" + i.interactionObjectIndex + "'>" + i.name + "</li>");
+
+        $("#dashboard-print-button").click(function(e){
+            e.preventDefault();
+            var currentUrl = window.location.href;
+            if(currentUrl.endsWith("#")){
+                currentUrl = currentUrl.slice(0, -1);
             }
+            if(!currentUrl.endsWith("/")){
+                currentUrl = currentUrl + "/";
+            }
+            var w = window.open();
+            var htmlHead = $("head").html();
+            var htmlBody = $("#model-question-overview .modal-body").html();
+            $(w.document.body).parent().find("head").html(htmlHead);
+            $(w.document.body).html("<div id='print-overview'>" + htmlBody + "</div>");
+
+            debugger;
+
+            $(w.document.body).parent().find("link").each(function(l){
+                var href = $(this).attr('href');
+                if(href.includes("frontpage.css")){
+                    $(this).remove();
+                }
+                if(!href.startsWith("http://") && !href.startsWith("https://")) {
+                    $(this).attr("href", currentUrl + href);
+                }
+            });
+
         });
-        $(".show-hide-column-button").popover({
-            content : menu.html(),
-            html : true,
-            placement : "bottom"
+
+
+        $(".show-question-overview-button").on('click', function() {
+            var drawOverviewCheckbox = $(".hide-show-overview-interaction-overview");
+            var drawOverview = drawOverviewCheckbox.length == 0 || drawOverviewCheckbox.is(":checked");
+
+            if(drawOverview){
+                $("#model-question-overview .modal-body").html('<div class="journeyOverviewModal"><div class="journeyOverviewHeader row"><h3>' + XAPI_DASHBOARD_OVERVIEW + '</h3></div><div class="journeyOverviewActivityModal row"></div><div class="journeyOverviewStats row"></div></div>');
+            }else{
+                $("#model-question-overview .modal-body").html('');
+            }
+
+
+            $("#model-question-overview").modal();
+            if(drawOverview) {
+                pageState.setStatisticsValues(".journeyOverviewModal ", 0);
+            }
+
+            var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
+            var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
+
+
+            for(var learningObjectIndex = 0; learningObjectIndex < learningObjects.length; learningObjectIndex++) {
+                interactions = pageState.data.getInteractions(learningObjects[learningObjectIndex].url);
+                for(var interactionIndex = 0; interactionIndex < interactions.length; interactionIndex++){
+
+                    var contentDiv = $('#model-question-overview .modal-body');
+                    interaction = interactions[interactionIndex];
+                    jcId = "journey-container-" + learningObjectIndex + "-" + interactionIndex;
+                    if (interaction.children.length == 0 && interaction.type == "interaction") {
+                        contentDiv.append("<h4 class='offset-1'>" + interaction.name + "</h4>")
+                    }else{
+                        contentDiv.append("<h3>" + interaction.name + "</h3>")
+                    }
+                    contentDiv.append('<div class="class-overview-box" id="'+jcId+'"></div>');
+                    contentDiv.append('<hr>');
+
+                    if (interaction.children.length == 0 && interaction.type == "interaction") {
+                        contentDiv.find("#" + jcId).addClass("sub-interaction");
+                        contentDiv.find("#" + jcId).append("<div class='offset-1 col-5 panel main-information'></div>");
+                        var interactionDetails = pageState.data.selectInteractionById(interactions, interaction.url);
+                        var statements = pageState.data.getInteractionStatements(interaction.url).filter(function (s) {
+                                g = pageState.getGroupFromStatements([s]);
+                                cg = pageState.data.currentGroup.group_id;
+                                return cg == undefined || cg == "all-groups" || cg == g;
+                            }
+                        );
+                        contentDiv.find("#" + jcId + " div").append('<svg class="graph" id="model-svg-' + learningObjectIndex + '-' + interactionIndex +
+                            '"></svg>');
+                        pageState.createPieChartInteraction(statements, '#model-question-overview #model-svg-' +
+                            learningObjectIndex +
+                            '-' + interactionIndex);
+                        var question = pageState.data.getQuestion(interactionDetails.url);
+                        var pausedStatements = pageState.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
+                        if (question != undefined) {
+                            var questionDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find("#" + jcId));
+                            pageState.displayQuestionInformation(questionDiv, question, learningObjectIndex, interactionIndex);
+                        } else if (pausedStatements.length > 0) {
+                            var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find("#" + jcId));
+                            pageState.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
+                        }
+                        pageState.displayPageInfo(contentDiv, "#" + jcId + " .main-information", interaction);
+                        //getMultipleChoiceQuestion(learningObjects[learningObjectIndex].url, interaction.url);
+                    } else {
+                        contentDiv.find("#" + jcId).addClass("main-interaction");
+                        statements = pageState.data.getInteractionStatements(interaction.url).filter(function (s) {
+                                g = pageState.getGroupFromStatements([s]);
+                                cg = pageState.data.currentGroup.group_id;
+                                return cg == undefined || cg == "all-groups" || cg == g;
+                            }
+                        );
+                        panelDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find("#" + jcId));
+                        panelDiv.append("<svg class='graph'></svg>");
+                        pageState.createPieChartInteraction(statements, '#' + jcId + " svg"); //#model-question-overview svg:last');
+                        panelDiv.append('<div class="page-info panel"></div>');
+                        pageState.displayPageInfo(contentDiv, "#" + jcId + " .page-info", interaction);
+                        childQuestions = interaction.children.map(function (c) {
+                            return pageState.data.getQuestion(c);
+                        });
+                        if (childQuestions.filter(function (q) {
+                            return q != undefined && q.interactionType == "choice"
+                        }).length == childQuestions.length) {
+                            var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find("#" + jcId));
+                            pageState.displayQuizOverview(heatmapDiv, childQuestions);
+                        }
+                    }
+
+                }
+
+            }
+            if(drawOverview) {
+                pageState.drawActivityChart(".journeyOverviewModal ", $('.journeyOverviewActivityModal'), first_launch, last_launch, false);
+            }
+
+                //debugger;
         });
-        $(".hide-show-column-checkbox");
-*/
+
+        $(".dashboard-print-button").on('click', function(e){
+
+            e.preventDefault();
+            var currentUrl = window.location.href;
+            if(currentUrl.endsWith("#")){
+                currentUrl = currentUrl.slice(0, -1);
+            }
+            if(!currentUrl.endsWith("/")){
+                currentUrl = currentUrl + "/";
+            }
+            var w = window.open();
+            var htmlHead = $("head").html();
+            var htmlBody = $(".jorneyData-container").html();
+            $(w.document.body).parent().find("head").html(htmlHead);
+            $(w.document.body).html("<div id='print-overview'>" + htmlBody + "</div>");
+
+
+            $(w.document.body).parent().find("link").each(function(l){
+                var href = $(this).attr('href');
+                if(href.includes("frontpage.css")){
+                    $(this).remove();
+                }
+                if(!href.startsWith("http://") && !href.startsWith("https://")) {
+                    $(this).attr("href", currentUrl + href);
+                }
+            });
+
+        });
+
 
         $(".show-display-options-button").unbind("click");
         $(".show-display-options-button").popover('dispose');
@@ -382,6 +609,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
                 menu.append("<h5>" + XAPI_DASHBOARD_DISPLAY_OVERVIEW + "</h5>");
                 menu.append("<div><label>" + XAPI_DASHBOARD_DISPLAY_OVERVIEW + "</label><input class='hide-show-overview' type='checkbox' checked></div>");
+                menu.append("<div><label>" + XAPI_DASHBOARD_DISPLAY_INTERACTION_OVERVIEW + "</label><input class='hide-show-overview-interaction-overview' type='checkbox' checked></div>");
                 menu.append("<div><label>" + XAPI_DASHBOARD_PAGE_SIZE + "</label><select id='pageSize'></select></div>");
                 pagesizes = [5, 10, 20, 50, 100, "All"];
                 defaultSize = $this.pageSize;
@@ -448,7 +676,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                     var display_options = JSON.parse($this.info.dashboard.display_options);
                     display_options.pageSize = $this.pageSize;
                     $this.info.dashboard.display_options = JSON.stringify(display_options);
-                    $.post("http://localhost:8080/Integrat-ED/xerteonlinetoolkits/website_code/php/xAPI/update_dashboard_display_properties.php",
+                    $.post("website_code/php/xAPI/update_dashboard_display_properties.php",
                         {
                             "id": $this.info.template_id,
                             "properties" : $this.info.dashboard.display_options
@@ -465,17 +693,22 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 //debugger;
                 $(this).parent().find('.popover').toggle();
             }
+
+
+
         });
+
 
 
 
     }
 };
 
-xAPIDashboard.prototype.drawPages = function(startingIndex, pageSize) {
+xAPIDashboard.prototype.drawPages = function(startingIndex, pageSize, groupedData) {
     var from = startingIndex;
     var pageSize = pageSize;
-    var to = Math.min(startingIndex + pageSize, Object.keys($this.groupedData).length);
+    var to = Math.min(startingIndex + pageSize, Object.keys(groupedData).length);
+
     $(".session-row").each(function(row){
         var rowIndex = $(this).data("index");
         if(rowIndex < from || rowIndex >= to){
@@ -600,7 +833,9 @@ xAPIDashboard.prototype.insertInteractionData = function(div, colorDiv, userdata
     var $this = this;
     var tdclass;
     if (interactionObject.type == "page" || this.data.selectInteractionById(interactions, interactionObject.parent) == undefined) {
-        showHide = "column-show";
+        if (interactionObject.children.length > 0) {
+            showHide = "column-show";
+        }
         tdclass = "x-dashboard-page";
     } else {
         parentId = this.data.selectInteractionById(interactions, interactionObject.parent).interactionObjectIndex;
@@ -735,27 +970,25 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
 
     if (interaction.parent == "" || this.data.selectInteractionById(interactions, interaction.parent) == undefined) {
         parentIndex = "-1";
-        showHide = "show";
-        interactionTitle = interactionTitle;
-
         if (interaction.children.length > 0) {
+            showHide = "show";
             collapseIcon = '<div data-interaction="' + interactionIndex + '" class="icon-header icon-hide">&#9701</div>';
             thclass += "x-dashboard-has-children ";
         }
-        max_interaction_title_length = 25;
+        max_interaction_title_length = 15;
         thclass += "x-dashboard-page";
     } else {
 
         parentIndex = this.data.selectInteractionById(interactions, interaction.parent).interactionObjectIndex;
         thclass += "x-dashboard-interaction";
-        max_interaction_title_length = 35;
+        max_interaction_title_length = 15;
     }
     if(interactionTitle.length > max_interaction_title_length)
     {
         interactionTitle = interactionTitle.substr(0, max_interaction_title_length - 3) + "...";
     }
     var interactionHeader = '<th data-interaction-index="' + interaction.interactionObjectIndex + '" data-parent="' + parentIndex + '" class="column-' + showHide + thclass +
-        '"><a href="#" data-toggle="modal" data-target="#model-' +
+        '" title="' + interaction.name + '"><a href="#" data-toggle="modal" data-target="#model-' +
         learningObjectIndex + '-' + interactionIndex + '">' + interactionTitle + '</a>' + collapseIcon + '</th>';
     $('body').append('<div id="model-' + learningObjectIndex + '-' + interactionIndex + '" class="modal fade" role="dialog" >' +
         '<div class="modal-dialog">' +
@@ -772,50 +1005,60 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
         '</div>');
     div.find("#" + learningObjectIndex + " thead tr").append(interactionHeader);
     $('#model-' + learningObjectIndex + '-' + interactionIndex)
-        .on('show.bs.modal', function(e) {
+        .on('show.bs.modal', function() {
             var contentDiv =
                 $('#model-' + learningObjectIndex + '-' + interactionIndex + ' .modal-body');
-            if (contentDiv.html() == "") {
-                interactions = $this.data.getInteractions(learningObjects[learningObjectIndex].url);
-                interaction = interactions[interactionIndex];
-                contentDiv.append('<div class="journey-container"></div>');
-                if (interaction.children.length == 0 && interaction.type == "interaction") {
-                    contentDiv.find(".journey-container").append("<div class='col-6 panel main-information'></div>");
-                    var interactionDetails = $this.data.selectInteractionById(interactions, interaction.url);
-                    var statements = $this.data.getInteractionStatements(interaction.url);
-                    contentDiv.find(".journey-container div").append('<svg class="graph" id="model-svg-' + learningObjectIndex + '-' + interactionIndex +
-                        '"></svg>');
-                    $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' #model-svg-' +
-                        learningObjectIndex +
-                        '-' + interactionIndex);
-                    var question = $this.data.getQuestion(interactionDetails.url);
-                    var pausedStatements = $this.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
-                    if (question != undefined) {
-                        var questionDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
-                        $this.displayQuestionInformation(questionDiv, question, learningObjectIndex, interactionIndex);
-                    } else if (pausedStatements.length > 0) {
-                        var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.container'));
-                        $this.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
+            contentDiv.html("");
+            interactions = $this.data.getInteractions(learningObjects[learningObjectIndex].url);
+            interaction = interactions[interactionIndex];
+            contentDiv.append('<div class="journey-container"></div>');
+            if (interaction.children.length == 0 && interaction.type == "interaction") {
+                contentDiv.find(".journey-container").append("<div class='col-6 panel main-information'></div>");
+                var interactionDetails = $this.data.selectInteractionById(interactions, interaction.url);
+                var statements = $this.data.getInteractionStatements(interaction.url).filter(function(s){
+                        g = $this.getGroupFromStatements([s]);
+                        cg = $this.data.currentGroup.group_id;
+                        return cg == undefined || cg == "all-groups" || cg == g;
                     }
-                    $this.displayPageInfo(contentDiv, ".journey-container .main-information", interaction);
-                    //getMultipleChoiceQuestion(learningObjects[learningObjectIndex].url, interaction.url);
-                } else {
-                    statements = $this.data.getInteractionStatements(interaction.url);
-                    panelDiv =  $("<div class='panel col-6'></div>").appendTo(contentDiv.find(".journey-container"));
-                    panelDiv.append("<svg class='graph'></svg>");
-                    $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' svg');
-                    panelDiv.append('<div class="page-info panel"></div>');
-                    $this.displayPageInfo(contentDiv, ".journey-container .page-info", interaction);
-                    childQuestions = interaction.children.map(function(c){
-                        return $this.data.getQuestion(c);
-                    });
-                    if(childQuestions.filter(function(q) {return q != undefined && q.interactionType == "choice"}).length == childQuestions.length){
-                        var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
-                        $this.displayQuizOverview(heatmapDiv, childQuestions);
-                    }
-
+                );
+                contentDiv.find(".journey-container div").append('<svg class="graph" id="model-svg-' + learningObjectIndex + '-' + interactionIndex +
+                    '"></svg>');
+                $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' #model-svg-' +
+                    learningObjectIndex +
+                    '-' + interactionIndex);
+                var question = $this.data.getQuestion(interactionDetails.url);
+                var pausedStatements = $this.data.getStatementsList(statements, 'https://w3id.org/xapi/video/verbs/paused');
+                if (question != undefined) {
+                    var questionDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
+                    $this.displayQuestionInformation(questionDiv, question, learningObjectIndex, interactionIndex);
+                } else if (pausedStatements.length > 0) {
+                    var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.container'));
+                    $this.displayHeatmap(heatmapDiv, learningObjectIndex, interactionIndex, pausedStatements);
                 }
+                $this.displayPageInfo(contentDiv, ".journey-container .main-information", interaction);
+                //getMultipleChoiceQuestion(learningObjects[learningObjectIndex].url, interaction.url);
+            } else {
+                statements = $this.data.getInteractionStatements(interaction.url).filter(function(s){
+                        g = $this.getGroupFromStatements([s]);
+                        cg = $this.data.currentGroup.group_id;
+                        return cg == undefined || cg == "all-groups" || cg == g;
+                    }
+                );
+                panelDiv =  $("<div class='panel col-6'></div>").appendTo(contentDiv.find(".journey-container"));
+                panelDiv.append("<svg class='graph'></svg>");
+                $this.createPieChartInteraction(statements, '#model-' + learningObjectIndex + '-' + interactionIndex + ' svg');
+                panelDiv.append('<div class="page-info panel"></div>');
+                $this.displayPageInfo(contentDiv, ".journey-container .page-info", interaction);
+                childQuestions = interaction.children.map(function(c){
+                    return $this.data.getQuestion(c);
+                });
+                if(childQuestions.filter(function(q) {return q != undefined && q.interactionType == "choice"}).length == childQuestions.length){
+                    var heatmapDiv = $("<div class='panel col-6'></div>").appendTo(contentDiv.find('.journey-container'));
+                    $this.displayQuizOverview(heatmapDiv, childQuestions);
+                }
+
             }
+
         });
 };
 
@@ -829,13 +1072,13 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
     var videoLength;
     if(pausedstatements.length == 1)
     {
-        videoLength = pausedstatements[0].result.extensions["https://w3id&46;org/xapi/video/extensions/time"];
+        videoLength = pausedstatements[0].result.extensions["https://w3id.org/xapi/video/extensions/time"];
 
     }else{
-        videoLength = Math.max(...pausedStatements.map(function(s) { return s.result.extensions["https://w3id&46;org/xapi/video/extensions/time"]}));
+        videoLength = Math.max(...pausedstatements.map(function(s) { return s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]}));
     }
     // Gets all the ranges from the data.
-    var stringRanges = pausedstatements.map(function(s) {return s.result.extensions["https://w3id&46;org/xapi/video/extensions/played-segments"]});
+    var stringRanges = pausedstatements.map(function(s) {return s.result.extensions["https://w3id.org/xapi/video/extensions/played-segments"]});
     var totalViewed = [];
     for (var i = 0; i < total; i++) {
         totalViewed.push(0);
@@ -877,7 +1120,7 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
         yaxis: {
             title: '',
             ticks: '',
-            ticksuffix: pausedStatements[0].object.definition.name["en-US"],
+            ticksuffix: pausedstatements[0].object.definition.name["en-US"],
             y: "-15",
             tickangle: '-90',
             width: 700,
@@ -921,10 +1164,15 @@ xAPIDashboard.prototype.displayHeatmap = function(contentDiv, learningObjectInde
 
 xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
 {
-
+    var $this = this;
     contentDiv.append("<div class='question-overview'><ul></ul></div>");
     questions.forEach(function(q){
-        answerStatements = $this.rawData.filter(function(s) { return s.object.id == q.interactionUrl && s.verb.id == "http://adlnet.gov/expapi/verbs/answered"});
+        answerStatements = $this.data.rawData.filter(function(s){
+                g = $this.getGroupFromStatements([s]);
+                cg = $this.data.currentGroup.group_id;
+                return (cg == undefined || cg == "all-groups" || cg == g) && s.object.id == q.interactionUrl && s.verb.id == "http://adlnet.gov/expapi/verbs/answered";
+            }
+        );
         answers = answerStatements.map(function(s) {return s.result.response});
         contentDiv.find(".question-overview ul").append("<li>" + q.name["en-US"] + "</li>");
         var ol = $("<ol></ol>").appendTo(contentDiv.find(".question-overview ul li:last"));
@@ -942,7 +1190,12 @@ xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
             } else {
                 correct = "<i class=\"fa fa-x-cross\"></i>";
             }
-            ol.append("<li>" + correct + c.description["en-US"] + " - " + Math.round(current / total * 1000) / 10 + "%</li>");
+            var rounded = Math.round(current / total * 1000) / 10;
+            if(isNaN(rounded)){
+                rounded = "0";
+
+            }
+            ol.append("<li>" + correct + c.description["en-US"] + " - " + rounded + "%</li>");
         });
 
     });
@@ -950,7 +1203,25 @@ xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
 }
 
 xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, interaction) {
-    var statements = this.data.getInteractionStatements(interaction.url);
+    var dashboard = this;
+    var $this = this;
+    var sessions = [];
+    this.data.rawData.forEach(function(s) {
+        if (dashboard.data.currentGroup.group_id == "all-groups" || dashboard.data.currentGroup.group_id == dashboard.getGroupFromStatements([s])) {
+            sessionId = s.context.extensions["http://xerte.org.uk/sessionId"];
+            if (sessions.indexOf(sessionId) === -1) {
+                sessions.push(sessionId);
+            }
+        }
+    });
+
+
+    var statements = this.data.getInteractionStatements(interaction.url).filter(function(s){
+            g = $this.getGroupFromStatements([s]);
+            cg = $this.data.currentGroup.group_id;
+            return cg == undefined || cg == "all-groups" || cg == g;
+        }
+    );
     var started = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/initialized");
     var completed = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/exited").concat(
          this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/scored")
@@ -959,10 +1230,18 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
     started = started.filter(function(v, i, a){
         return a.map(function(s) {return s.actor}).indexOf(v.actor) === i;
     });
+    var groupedData = {};
+    for($key in $this.data.groupedData) {
+        $val = $this.data.groupedData[$key];
+        if ($this.data.currentGroup.group_id == "all-groups" || $this.data.currentGroup.group_id == $this.getGroupFromStatements($val.statements)) {
+            groupedData[$key] = $val;
+        }
+    }
 
-    users = Object.keys(this.data.groupedData);
+
+    users = Object.keys(groupedData);
     contentDiv.find(jqLocation).append("Number of users" + " " + users.length + "<br>");
-    contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRATTEMPTS + " " + started.length + " = " + Math.round(started.length / users.length * 100) + "%<br>");
+    contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRATTEMPTS + " " + started.length + " = " + Math.round(started.length / sessions.length * 100) + "%<br>");
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRCOMPLETIONS + " " + uniqIds.length + " = " + Math.round(uniqIds.length / users.length * 100) + "%<br>");
 
     var grouped = this.data.groupStatementsOnSession([started, completed]);
@@ -978,7 +1257,13 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
 
 xAPIDashboard.prototype.createPieChartInteraction = function(statements, div_location) {
     var dash = new ADL.XAPIDashboard();
-    statements = this.data.getAllScoreStatements(statements);
+    var $this = this;
+    statements = this.data.getAllScoreStatements(statements).filter(function(s){
+            g = $this.getGroupFromStatements([s]);
+            cg = $this.data.currentGroup.group_id;
+            return cg == undefined || cg == "all-groups" || cg == g;
+        }
+    );
     var newStatements = jQuery.extend(true, [], statements);
     newStatements.forEach(function(x) {
         if (x.result.score.isScaled == undefined || x.result.score.isScaled == false) {
@@ -1108,7 +1393,7 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
     choices = question.choices;
     var dash = new ADL.XAPIDashboard();
     var statements = this.data.getQuestionResponses(interactionObjectUrl);
-    var numberOfAnswers = statements.filter(function(s) {s.result != undefined && s.result.response != undefined}).length;
+    var numberOfAnswers = statements.filter(function(s) {return s.result != undefined && s.result.response != undefined}).length;
     question.choices.forEach(function(option) {
         var correct = "";
         if (question.correctResponsesPattern.indexOf(option.id) != -1) {
@@ -1116,13 +1401,18 @@ xAPIDashboard.prototype.displayMCQQuestionInformation = function(contentDiv, que
         } else {
             correct = "<i class=\"fa fa-x-cross\"></i>";
         }
-        var percentage = Math.round(1000 * statements.filter(function(s) {s.result != undefined && s.result.response == option.id}).length / numberOfAnswers) / 10 + "%";
-        options += "<li>" + correct + option.description["en-US"] + " - " + percentage + "</li>";
+        var percentage = Math.round(1000 * statements.filter(function(s) {return s.result != undefined && s.result.response == option.id}).length / numberOfAnswers) / 10;
+
+        if(isNaN(percentage)){
+            percentage = "0";
+        }
+        options += "<li>" + correct + option.description["en-US"] + " - " + percentage + "%</li>";
     });
 
     dash.addStatements(statements);
     options += '</ol><svg class="graph" id="answers-' + learningObjectIndex + '-' + interactionIndex + '"></svg ></div>';
     contentDiv.append(options);
+
     var chart = dash.createBarChart({
         container: '#answers-' + learningObjectIndex + '-' + interactionIndex,
         groupBy: 'result.response',
@@ -1315,7 +1605,7 @@ xAPIDashboard.prototype.drawAverageScore = function(elmnt, averageGrade) {
     elmnt.append(row);
 };
 
-xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = true) {
+xAPIDashboard.prototype.drawActivityChart = function(base, elmnt, begin, end, link = true) {
     var row = "<a id='graph_link_" + this.data.info.template_id + "' href='#'><div id='graph-svg-wrapper-" + this.data.info.template_id +
         "' class='graph-svg-wrapper'><svg></svg></div></a>";
     elmnt.append(row);
@@ -1326,7 +1616,13 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
         });
     }
     var dash = new ADL.XAPIDashboard();
-    var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
+    var statements = this.data.rawData.filter(function(s){
+            g = $this.getGroupFromStatements([s]);
+            cg = $this.data.currentGroup.group_id;
+            return cg == undefined || cg == "all-groups" || cg == g;
+        }
+    );
+    var launchedStatements = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/launched");
     dash.addStatements(launchedStatements);
     template_id = this.data.info.template_id;
     var vals = [];
@@ -1343,8 +1639,9 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
         vals.push(tick);
         tick += (tickMarkNrDays * 1000 * 3600 * 24);
     }
+
     var chart = dash.createLineChart({
-        container: '#graph-svg-wrapper-' + this.data.info.template_id + ' svg',
+        container: base + '#graph-svg-wrapper-' + this.data.info.template_id + ' svg',
         groupBy: 'timestamp',
         range: {
             start: begin.toISOString(),
@@ -1355,7 +1652,7 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
         rangeLabel: 'start',
         customize: function(chart) {
 
-            chart.width($('#graph-svg-wrapper-' + template_id + ' svg').width() - 10);
+            chart.width($(base + '#graph-svg-wrapper-' + template_id + ' svg').width() - 10);
 
             chart.height(300);
             chart.tooltips(false);
@@ -1377,6 +1674,7 @@ xAPIDashboard.prototype.drawActivityChart = function(elmnt, begin, end, link = t
                 return intllabel;
             });
             chart.xAxis.tickValues(vals);
+            chart.color(['#f86718']);
         },
         post: function(data) {
             data.contents.map(function(el) {
@@ -1458,6 +1756,10 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
 
     $("#group-select").change(function(){
         var group = $(this).val();
+        $this.data.currentGroup.group_id = group;
+
+        $this.data.pageIndex = 0;
+        $(".page-button").eq(0).trigger("click", [false]);
         if(group == "all-groups")
         {
             $(".session-row").show();
@@ -1465,6 +1767,10 @@ xAPIDashboard.prototype.show_dashboard = function(begin, end) {
             $('.session-row:not([data-group="' + group + '"])').hide();
             $('.session-row[data-group="' + group + '"]').show();
         }
+
+        $(".journeyOverviewStats").html("");
+        $this.setStatisticsValues(".journeyOverview ", 0);
+
     });
 
     if (this.data.info.dashboard.enable_nonanonymous == 'true') {
@@ -1497,17 +1803,24 @@ xAPIDashboard.prototype.helperGetDate = function(datetimepicker) {
 };
 
 xAPIDashboard.prototype.regenerate_dashboard = function() {
-    $("#journeyData").html("<img class='loading-gif' src='editor/img/loading16.gif'/>");
+    $("#journeyData").html("<div id=\"loader\"><img id=\"loader_image\" class=\"loading_gif\" src=\"editor/img/loading16.gif\" /><p id=\"loader_text\"></p>");
     $("#group-select option:not(:first-child)").remove();
+    this.data.currentGroup.group_id = "all-groups";
     var url = site_url + this.data.info.template_id;
     var start = this.helperGetDate('#dp-start');
     var end = this.helperGetDate('#dp-end');
     end = new Date(moment(end).add(1, 'days').toISOString());
     var q = {};
-    if (this.data.info.lrs.lrsurls != null && this.data.info.lrs.lrsurls != "undefined" && this.data.info.lrs.lrsurls != ""
-        && this.data.info.lrs.site_allowed_urls != null && this.data.info.lrs.site_allowed_urls != "undefined" && this.data.info.lrs.site_allowed_urls != "")
+    q['activities'] = [url];
+    if (this.data.info.lrs.lrsurls != null && this.data.info.lrs.lrsurls != "undefined" && this.data.info.lrs.lrsurls != "")
     {
-        q['activities'] = [url].concat(this.data.info.lrs.lrsurls.split(",")).concat(this.data.info.lrs.site_allowed_urls.split(",").map(function(url) { return url + this.data.info.template_id})).filter(function(url) {url != ""});
+        var $this = this;
+        q['activities'] = q['activities'].concat(this.data.info.lrs.lrsurls.split(","));
+    }
+    if (this.data.info.lrs.site_allowed_urls != null && this.data.info.lrs.site_allowed_urls != "undefined" && this.data.info.lrs.site_allowed_urls != "")
+    {
+        var $this = this;
+        q['activities'] = q['activities'].concat(this.data.info.lrs.site_allowed_urls.split(",").map(function(url) { return url + $this.data.info.template_id})).filter(function(url) {return url != ""});
     }
     q['activity'] = url;
     q['related_activities'] = true;

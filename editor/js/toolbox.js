@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 // *******************
 // *     Toolbox    *
 // *******************
@@ -798,7 +798,7 @@ var EDITOR = (function ($, parent) {
             grid_p = grid[0].p,
             idname = grid_p.prmNames.id,
             grid_id = grid[0].id,
-            id_in_postdata = grid_id+"_id",
+            id_in_postdata = grid_id + "_id",
             rowid,
             addMode,
             oldValueOfSortColumn;
@@ -813,7 +813,7 @@ var EDITOR = (function ($, parent) {
 				postdata[key] = postdata[key].replace(/\|/g, "&#124;");
 			}
 		});
-
+		
         if (postdata[id_in_postdata])
         {
             rowid = postdata[id_in_postdata];
@@ -831,15 +831,16 @@ var EDITOR = (function ($, parent) {
         {
             addMode = rowid === "_empty";
         }
-
+		
         // postdata has row id property with another name. we fix it:
         if (addMode) {
             // generate new id
             var new_id = grid_p.records + 1;
-            while ($("#"+new_id).length !== 0) {
+            while (grid.find("#" + new_id).length !== 0) {
                 new_id++;
             }
             postdata[idname] = String(new_id);
+			
         } else if (typeof(postdata[idname]) === "undefined") {
             // set id property only if the property not exist
             postdata[idname] = rowid;
@@ -854,13 +855,14 @@ var EDITOR = (function ($, parent) {
         for (var field in data){
             data[field] = stripP(data[field]);
         };
-        jqGrGridData[key][colnr] = data;
-        var xerte = convertjqGridData(jqGrGridData[key]);
+        jqGrGridData[key + '_' + id][colnr] = data;
+		
+        var xerte = convertjqGridData(jqGrGridData[key + '_' + id]);
         setAttributeValue(key, [name], [xerte]);
 
         // prepare postdata for tree grid
         if(grid_p.treeGrid === true) {
-            if(addMode) {
+            if (addMode) {
                 var tr_par_id = grid_p.treeGridModel === 'adjacency' ? grid_p.treeReader.parent_id_field : 'parent_id';
                 postdata[tr_par_id] = grid_p.selrow;
             }
@@ -910,22 +912,33 @@ var EDITOR = (function ($, parent) {
                 grid.trigger("reloadGrid", [{current:true}]);
             },100);
         }
+		
+		checkRowIds(grid);
 
         // !!! the most important step: skip ajax request to the server
         this.processing = true;
         return {};
     },
 
-    delRow = function(id,key,name, rowid){
-        jqGrGridData[key].splice(rowid-1, 1);
-        var xerte = convertjqGridData(jqGrGridData[key]);
+    delRow = function(id, key, name, rowid){
+		var gridId = key + '_' + id;
+        jqGrGridData[gridId].splice(rowid-1, 1);
+		
+		// renumber the data array
+		for (var i=0; i<jqGrGridData[gridId].length; i++) {
+			if (jqGrGridData[gridId][i]['col_0'] != i+1) {
+				jqGrGridData[gridId][i]['col_0'] = String(i+1);
+			}
+		}
+		
+        var xerte = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [xerte]);
     },
 
     addColumn = function(id, key, name, colnr)
     {
-        console.log('Add column');
         // get the default value of the new column
+		var gridId = key + '_' + id;
         var nodeName = lo_data[key].attributes.nodeName;
         var alloptions = wizard_data[nodeName].node_options.all;
         var defvalue = " ";
@@ -940,23 +953,25 @@ var EDITOR = (function ($, parent) {
 
         // Modify data, and rebuild Xerte structure
         // ignore colnr for now
-        $.each(jqGrGridData[key], function(i, row){
+        $.each(jqGrGridData[gridId], function(i, row){
             var col = row.length-1;
             row['col_' + col] = defvalue;
         });
-        var data = convertjqGridData(jqGrGridData[key]);
+		
+        var data = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [data]);
         parent.tree.showNodeData(key);
     },
 
     delColumn = function(id, key, name, colnr)
     {
-        console.log('Del column ' + colnr);
+		var gridId = key + '_' + id;
         // Modify data, and rebuild Xerte structure
-        $.each(jqGrGridData[key], function(i, row){
+        $.each(jqGrGridData[gridId], function(i, row){
             delete row['col_' + (colnr)];
         });
-        var data = convertjqGridData(jqGrGridData[key]);
+		
+        var data = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [data]);
         parent.tree.showNodeData(key);
     },
@@ -981,19 +996,19 @@ var EDITOR = (function ($, parent) {
                 }
             });
         })
+		
         return xerte;
     },
 
     jqGridAfterShowForm = function(id, ids, options)
     {
-        //the field name that needs to be edited with CKEditor is 'col_2' or all columns is options.wysiwyg is true
-        if (options.wysiwyg == 'true')
+		var col_id = this.id;
+		
+        if (options.wysiwyg != 'false' && options.wysiwyg != undefined)
         {
             // destroy editor for all columns
             $('#' + ids[0].id + ' textarea').each(function(){
-                var col_id = this.id;
-                if (CKEDITOR.instances[col_id])
-                {
+                if (CKEDITOR.instances[col_id]) {
                     try {
                         CKEDITOR.instances[col_id].destroy(true);
                     }
@@ -1002,104 +1017,141 @@ var EDITOR = (function ($, parent) {
                     }
                 }
             });
-
         }
         else {
-            if (CKEDITOR.instances.col_2) {
+            if (CKEDITOR.instances[col_id]) {
                 try {
-                    CKEDITOR.instances.col_2.destroy(true);
+                    CKEDITOR.instances[col_id].destroy(true);
                 } catch (e) {
-                    CKEDITOR.remove('col_2');
+                    CKEDITOR.remove(col_id);
                 }
-                //CKEDITOR.instances.col_2 = null;
             }
         }
+		
         var ckoptions = {
-            toolbarGroups : [
-                { name: 'basicstyles', groups: [ 'basicstyles' ] },
-                { name: 'styles' },
-                { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-                { name: 'colors' },
-                { name: 'insert' }],
             filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             uploadUrl : 'editor/uploadImage.php?mode=dragdrop&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             mathJaxClass :  'mathjax',
             mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
-            toolbarStartupExpanded : true,
+            toolbarStartupExpanded : false,
             height : 150,
             resize_enabled: false
         };
-        if (options.wysiwyg == 'true')
-        {
-            // destroy editor for all columns
-            $('#' + ids[0].id + ' textarea').each(function() {
-                var col_id = this.id;
-                $('#'+ col_id).ckeditor(function () {
-                    // JQGrid
-                    // we need to get selected row in case currently we are in Edit Mode
-                    var grid = $('#' + id + '_jqgrid');
-                    var selID = grid.getGridParam('selrow'); // get selected row
-                    // I don't know how to get the current mode is, in Editing or Add new?
-                    // then let's find out if
-                    //navigational buttons are hidden for both of it and selID == null <– Add mode ^0^
-                    if (!($('a#pData').is(':hidden') || $('a#nData').is(':hidden') && selID == null)) { // then it must be edit?
-                        var va = grid.getRowData(selID);
-                        CKEDITOR.instances[col_id].setData(va[col_id]);
-                    }
-                }, ckoptions);
-            });
-        }
-        else {
-            $('#col_2').ckeditor(function () {
-                // JQGrid
-                // we need to get selected row in case currently we are in Edit Mode
-                var grid = $('#' + id + '_jqgrid');
-                var selID = grid.getGridParam('selrow'); // get selected row
-                // I don't know how to get the current mode is, in Editing or Add new?
-                // then let's find out if
-                //navigational buttons are hidden for both of it and selID == null <– Add mode ^0^
-                if (!($('a#pData').is(':hidden') || $('a#nData').is(':hidden') && selID == null)) { // then it must be edit?
-                    var va = grid.getRowData(selID);
-                    CKEDITOR.instances.col_2.setData(va['col_2']);
-                }
-            }, ckoptions);
-        }
-
+		
+		var defaultToolbar = [
+			{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
+			{ name: 'editing',     groups: [ 'spellchecker' ] },
+			{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+			{ name: 'links' },
+			{ name: 'styles' },
+			{ name: 'colors' },
+			{ name: 'insert' }
+		];
+		
+		var fullToolbar = [
+			{ name: 'document',	   groups: [ 'mode' ] },
+			{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
+			{ name: 'editing',     groups: [ 'spellchecker' ] },
+			{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+			{ name: 'links' },
+			{ name: 'styles' },
+			{ name: 'colors' },
+			{ name: 'insert' },
+			{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align' ] }
+		];
+		
+		// wysiwyg option can be true (defaultToolbar), full (fullToolbar) or false (off) - false is default of no wysiwyg property
+		// can set different wysiwyg setting for each field by having list e.g. 'false,full,full' - otherwise all fields will have same setting
+		var wysiwyg = options.wysiwyg != undefined ? options.wysiwyg.split(',') : 'false';
+		
+		$('#' + ids[0].id + ' textarea:visible, #' + ids[0].id + ' input:visible').each(function(i) {
+			var col_id = this.id;
+			
+			if ((wysiwyg.length == 1 && i > 0 && wysiwyg[0] != 'false' && wysiwyg[0] != undefined) || wysiwyg[i] != 'false' && wysiwyg[i] != undefined) {
+				// destroy editor for all columns
+				var myCkOptions = ckoptions;
+				
+				myCkOptions.toolbarGroups = wysiwyg[i] == 'full' || (wysiwyg.length == 1 && i > 0 && wysiwyg[0] == 'full') ? fullToolbar : defaultToolbar;
+				
+				$(this).ckeditor(function () {
+					// JQGrid
+					// we need to get selected row in case currently we are in Edit Mode
+					var grid = $('#' + id + '_jqgrid');
+					var selID = grid.getGridParam('selrow'); // get selected row
+					// I don't know how to get the current mode is, in Editing or Add new?
+					// then let's find out if
+					//navigational buttons are hidden for both of it and selID == null <– Add mode ^0^
+					if (!($('a#pData').is(':hidden') || $('a#nData').is(':hidden') && selID == null)) { // then it must be edit?
+						var va = grid.getRowData(selID);
+						CKEDITOR.instances[col_id].setData(va[col_id]);
+					}
+				}, myCkOptions);
+				
+			} else if ($(this).is('textarea')) {
+				$(this).ckeditor(function () {
+					// JQGrid
+					// we need to get selected row in case currently we are in Edit Mode
+					var grid = $('#' + id + '_jqgrid');
+					var selID = grid.getGridParam('selrow'); // get selected row
+					// I don't know how to get the current mode is, in Editing or Add new?
+					// then let's find out if
+					//navigational buttons are hidden for both of it and selID == null <– Add mode ^0^
+					if (!($('a#pData').is(':hidden') || $('a#nData').is(':hidden') && selID == null)) { // then it must be edit?
+						var va = grid.getRowData(selID);
+						CKEDITOR.instances[col_id].setData(va[col_id]);
+					}
+				}, ckoptions);
+			}
+			
+		});
+		
+		// resize the dialog to make sure they fit on screen once ckeditor has loaded
+		setTimeout(function(){
+			var $dialog = $('#' + ids[0].id).parents('.ui-jqdialog'),
+			$dialogContent = $('#' + ids[0].id);
+			
+			if ($dialog.height() > ($('body').height() * 0.8)) {
+				var diff = $dialog.height() - $dialogContent.height();
+				$dialog.height($('body').height() * 0.8);
+				$dialogContent.height($dialog.height() - diff);
+			}
+		}, 0);
     },
 
     jqGridAfterCloseForm = function (id, selector, options)
     {
-        // Clean up
-        //the field name that needs to be edited with CKEditor is 'col_2' or all columns is options.wysiwyg is true
-        if (options.wysiwyg == 'true')
-        {
-            // destroy editor for all columns
-            $(selector + ' textarea').each(function(){
-                var col_id = this.id;
-                if (CKEDITOR.instances[col_id])
-                {
-                    try {
-                        CKEDITOR.instances[col_id].destroy(true);
-                    }
-                    catch (e) {
-                        CKEDITOR.remove(col_id);
-                    }
-                }
-            });
-
-        }
-        else {
-            if (CKEDITOR.instances.col_2) {
-                try {
-                    CKEDITOR.instances.col_2.destroy(true);
-                } catch (e) {
-                    CKEDITOR.remove('col_2');
-                }
-                //CKEDITOR.instances.col_2 = null;
-            }
-        }
+		var wysiwyg = options.wysiwyg != undefined ? options.wysiwyg.split(',') : 'false';
+		
+		$(selector + ' textarea, ' + selector + ' input').each(function(i) {
+			var col_id = this.id;
+			
+			if ($(this).is('textarea')) {
+				if ((wysiwyg.length == 1 && i > 0 && wysiwyg[0] != 'false' && wysiwyg[0] != undefined) || wysiwyg[i] != 'false' && wysiwyg[i] != undefined) {
+					$(this).ckeditor(function () {
+						if (CKEDITOR.instances[col_id])
+						{
+							try {
+								CKEDITOR.instances[col_id].destroy(true);
+							}
+							catch (e) {
+								CKEDITOR.remove(col_id);
+							}
+						}
+					});
+					
+				} else {
+					$(this).ckeditor(function () {
+						try {
+							CKEDITOR.instances[col_id].destroy(true);
+						} catch (e) {
+							CKEDITOR.remove(col_id);
+						}
+					});
+				}
+			}
+		});
     },
 
     jqGridAfterclickPgButtons = function(id, whichbutton, formid, rowid)
@@ -1370,9 +1422,11 @@ var EDITOR = (function ($, parent) {
         // cf. the source of http://www.ok-soft-gmbh.com/jqGrid/LocalFormEditing.htm as an excellent example
         jqGridsLastSel = {};
         jqGridsColSel = {};
+		
         $.each(datagrids, function(i, options){
-            // Get the data for this grid
-
+			
+			var thisGrid = this;
+			// Get the data for this grid
             var data = lo_data[options.key].attributes[options.name];
             var rows = [];
 
@@ -1387,13 +1441,16 @@ var EDITOR = (function ($, parent) {
                 });
                 rows.push(record);
             });
+			
             var gridoptions = options.options;
-            var id = options.id;
             var key = options.key;
-
-            jqGridsLastSel[key] = -1;
-            jqGridsColSel[key] = -1;
-            jqGrGridData[key] = rows;
+			var id = options.id;
+			var gridId = key + '_' + id; // uses this to store data against now instead of just key so that multiple grids on wizard work correctly
+			
+			jqGridsLastSel[gridId] = -1;
+            jqGridsColSel[gridId] = -1;
+            jqGrGridData[gridId] = rows;
+			
             var name = options.name;
             var nrCols = gridoptions.columns;
             var addCols = false;
@@ -1453,11 +1510,13 @@ var EDITOR = (function ($, parent) {
                 }
             };
             colModel.push(col);
+			
+			var wysiwygOn = false;
 
-            for (var i=1; i<nrCols; i++)
+            for (var i=0; i<nrCols-1; i++)
             {
                 var col = {};
-                col['name'] = 'col_' + i;
+                col['name'] = 'col_' + (i+1);
                 if (addCols)
                 {
                     col['width'] = Math.round(parseInt(gridoptions.width) / nrCols);
@@ -1468,147 +1527,118 @@ var EDITOR = (function ($, parent) {
                 }
                 col['editable'] = (editable[i] !== undefined ? (editable[i] == "1" ? true : false) : true);
                 col['sortable'] = false;
-                // Do something special for second column of glossary
-                if (options.name == 'glossary' && i == 2)
-                {
-                    col['edittype'] = 'textarea';
-                    col['editoptions'] = {rows:"20",cols:"40"};
-                    col['editrules'] = {edithidden:true};
-                }
-                if (gridoptions.wysiwyg == 'true')
-                {
-                    col['edittype'] = 'textarea';
-                    col['editoptions'] = {rows:"6",cols:"40"};
-                    col['editrules'] = {edithidden:true};
-                }
+				
+				if (gridoptions.wysiwyg != undefined) {
+					var wysiwyg = gridoptions.wysiwyg.split(',');
+					if ((wysiwyg.length == 1 && i > 0 && wysiwyg[0] != 'false' && wysiwyg[0] != undefined) || wysiwyg[i] != 'false' && wysiwyg[i] != undefined) {
+						col['edittype'] = 'textarea';
+						col['editoptions'] = {rows:"6",cols:"40"};
+						col['editrules'] = {edithidden:true};
+						wysiwygOn = true;
+					}
+				}
+				
                 colModel.push(col);
             }
-
+			
             var editSettings,
                 addSettings,
                 delSettings;
-            if (options.name == 'glossary' || gridoptions.wysiwyg == 'true')
-            {
-                // other set of options for the glossary
-                // to be able to replace the editor of the descrition with ckEditor
-                if (gridoptions.wysiwyg == 'true')
-                {
-                    var height = 550;
-                    var dataheight = 450;
-                }
-                else {
-                    var height = 410;
-                    var dataheight = 330;
-                }
-                editSettings = {
-                    top: 50,
-                    left: 300,
-                    height:height,
-                    width:700,
-                    resize: true,
-                    dataheight:dataheight,
-                    jqModal:true,
-                    reloadAfterSubmit:false,
-                    closeOnEscape:true,
-                    savekey: [true,13],
-                    closeAfterEdit:true,
-                    onclickSubmit: function(options, postdata){
-                        return onclickJqGridSubmitLocal(id, key, name, options, postdata);
-                    },
-                    afterclickPgButtons: function (whichbutton, formid, rowid)
-                    {
-                        jqGridAfterclickPgButtons(id, whichbutton, formid, rowid);
-                    },
-                    //beforeSubmit: function(data)
-                    //{
-                    //    return jqGridBeforeSubmit(data);
-                    //},
-                    afterShowForm: function(ids){
-                        jqGridAfterShowForm(id, ids, gridoptions);
-                    },
-                    onClose: function (selector) {
-                        jqGridAfterCloseForm(id, selector, gridoptions);
-                    }
-                };
-                addSettings = {
-                    top: 50,
-                    left: 300,
-                    height:height,
-                    width:700,
-                    jqModal:false,
-                    dataheight:dataheight,
-                    jqModal:true,
-                    reloadAfterSubmit:false,
-                    savekey: [true,13],
-                    closeOnEscape:true,
-                    closeAfterAdd:true,
-                    onclickSubmit:function(options, postdata){
-                        return onclickJqGridSubmitLocal(id, key, name, options, postdata);
-                    },
-                    //beforeSubmit: function(data)
-                    //{
-                    //    return jqGridBeforeSubmit(data);
-                    //},
-                    afterShowForm: function(ids) {
-                        jqGridAfterShowForm(id, ids, gridoptions);
-                    },
-                    onClose: function (selector) {
-                        jqGridAfterCloseForm(id, selector, gridoptions);
-                    }
-                }
-            }
-            else
-            {
-                editSettings = {
-                    jqModal:false,
-                    reloadAfterSubmit:false,
-                    closeOnEscape:true,
-                    savekey: [true,13],
-                    closeAfterEdit:true,
-                    onclickSubmit: function(options, postdata){
-						return onclickJqGridSubmitLocal(id, key, name, options, postdata);
-                    }
-                };
-                addSettings = {
-                    jqModal:false,
-                    reloadAfterSubmit:false,
-                    savekey: [true,13],
-                    closeOnEscape:true,
-                    closeAfterAdd:true,
-                    onclickSubmit:function(options, postdata){
-						return onclickJqGridSubmitLocal(id, key, name, options, postdata);
-                    }
-                }
-            }
-            delSettings = {
-                // because I use "local" data I don't want to send the changes to the server
+			
+			editSettings = {
+				top: 50,
+				left: 300,
+				//height: 550,
+				width:700,
+				resize: true,
+				//dataheight: 450,
+				jqModal:true,
+				reloadAfterSubmit:false,
+				closeOnEscape:true,
+				savekey: [true,13],
+				closeAfterEdit:true,
+				onclickSubmit: function(options, postdata){
+					return onclickJqGridSubmitLocal(id, key, name, options, postdata);
+				}
+			};
+			
+			addSettings = {
+				top: 50,
+				left: 300,
+				//height: 550,
+				width:700,
+				//dataheight: 450,
+				jqModal:true,
+				reloadAfterSubmit:false,
+				savekey: [true,13],
+				closeOnEscape:true,
+				closeAfterAdd:true,
+				onclickSubmit:function(options, postdata){
+					return onclickJqGridSubmitLocal(id, key, name, options, postdata);
+				}
+			}
+			
+			delSettings = {
+				// because I use "local" data I don't want to send the changes to the server
                 // so I use "processing:true" setting and delete the row manually in onclickSubmit
+				top: 50,
+				left: 300,
                 onclickSubmit: function(options, rowid) {
-                    var grid_id = $.jgrid.jqID(grid[0].id),
+					var grid_id = $.jgrid.jqID(grid[0].id),
                         grid_p = grid[0].p,
                         newPage = grid[0].p.page;
-
+					
+					// reset the value of processing option which could be modified
+					options.processing = true;
+					
                     // delete the row
                     grid.delRowData(rowid);
-                    $.jgrid.hideModal("#delmod"+grid_id,
-                        {gb:"#gbox_"+grid_id,jqm:options.jqModal,onClose:options.onClose});
-
-                    if (grid_p.lastpage > 1) {// on the multipage grid reload the grid
+					
+					// rename row ids so the next row that's deleted will be treated correctly
+					checkRowIds(grid);
+					
+					$.jgrid.hideModal("#delmod" + grid_id, { gb: "#gbox_"+grid_id, jqm: true, onClose:options.onClose });
+					
+					// on the multipage grid reload the grid
+                    if (grid_p.lastpage > 1) {
                         if (grid_p.reccount === 0 && newPage === grid_p.lastpage) {
-                            // if after deliting there are no rows on the current page
+                            // if after deleting there are no rows on the current page
                             // which is the last page of the grid
                             newPage--; // go to the previous page
                         }
                         // reload grid to make the row from the next page visable.
-                        grid.trigger("reloadGrid", [{page:newPage}]);
+                        grid.trigger("reloadGrid", [{ page: newPage }]);
                     }
-
-                    delRow(id, key, name, rowid);
-                    return true;
+					
+					delRow(id, key, name, rowid);
+					return true;
                 },
                 processing:true
             };
-
+			
+			// one or more of the fields being edited has wysiwyg turned on
+            if (wysiwygOn == true) {
+				editSettings.afterclickPgButtons = function (whichbutton, formid, rowid) {
+					jqGridAfterclickPgButtons(id, whichbutton, formid, rowid);
+				}
+				
+				editSettings.afterShowForm = function(ids) {
+					jqGridAfterShowForm(id, ids, gridoptions);
+				}
+				
+				editSettings.onClose = function (selector) {
+					jqGridAfterCloseForm(id, selector, gridoptions);
+				}
+				
+				addSettings.afterShowForm = function(ids) {
+					jqGridAfterShowForm(id, ids, gridoptions);
+				}
+				
+				addSettings.onClose = function (selector) {
+					jqGridAfterCloseForm(id, selector, gridoptions);
+				}
+            }
+			
             // Setup the grid
             var grid = $('#' + id + '_jqgrid');
 
@@ -1616,7 +1646,6 @@ var EDITOR = (function ($, parent) {
                 datatype: 'local',
                 data: rows,
                 height: "100%",
-               // width: "100%",
 				autowidth: true,
                 colNames: headers,
                 colModel: colModel,
@@ -1625,8 +1654,6 @@ var EDITOR = (function ($, parent) {
                 viewrecords: true,
                 pager: '#' + id + '_nav',
                 editurl: 'editor/js/vendor/jqgrid/jqgrid_dummy.php',
-                //cellsubmit : 'clientArray',
-                //editurl: 'clientArray',
                 rownumbers:true,
                 gridview:true,
                 ondblClickRow: function(rowid, ri, ci) {
@@ -1640,41 +1667,45 @@ var EDITOR = (function ($, parent) {
                     grid.jqGrid('editGridRow', rowid, editSettings);
                 },
                 onSelectRow: function(id, status, event) {
-                    if (id && id !== jqGridsLastSel[key]) {
+                    if (id && id !== jqGridsLastSel[gridId]) {
                         // cancel editing of the previous selected row if it was in editing state.
                         // jqGrid hold intern savedRow array inside of jqGrid object,
                         // so it is safe to call restoreRow method with any id parameter
                         // if jqGrid not in editing state
-                        if (jqGridsLastSel[key] !== -1) {
-                            grid.jqGrid('restoreRow',jqGridsLastSel[key]);
+                        if (jqGridsLastSel[gridId] !== -1) {
+                            grid.jqGrid('restoreRow',jqGridsLastSel[gridId]);
                         }
-                        jqGridsLastSel[key] = id;
+                        jqGridsLastSel[gridId] = id;
                     }
                 },
                 onCellSelect: function(iRow, iCol, content, event) {
-                    console.log("Select cell: " + iRow + ", " + iCol); // iRow is strangely always the data in cell 1??
+					// enable / disable delete column button
                     var delbutton = $('#' + id + '_delcol');
                     delbutton.html("");
                     if (iCol > 0) {
-                        jqGridsColSel[key] = iCol - 1;
+                        jqGridsColSel[gridId] = iCol - 1;
                     	delbutton.append($('<i>').addClass('fa').addClass('fa-trash').addClass('xerte-icon').height(14))
-                        	.append(language.btnDelColumn.$label + ' ' + jqGridsColSel[key]);
+                        	.append(language.btnDelColumn.$label + ' ' + jqGridsColSel[gridId]);
+						
                     	delbutton.switchClass('disabled', 'enabled');
                     	delbutton.prop('disabled', false);
                     }
                     else {
                     	delbutton.append($('<i>').addClass('fa').addClass('fa-trash').addClass('xerte-icon').height(14))
                         	.append(language.btnDelColumn.$label);
+						
                     	delbutton.switchClass('enabled', 'disabled');
                     	delbutton.prop('disabled', true);
                     }
                 }
-
             });
-            grid.jqGrid('navGrid', '#' + id + '_nav', {refresh:false}, editSettings, addSettings, delSettings, {multipleSearch:true,overlay:false});
-            if (addCols)
-            {
+			
+            grid.jqGrid('navGrid', '#' + id + '_nav', {refresh: false}, editSettings, addSettings, delSettings, {multipleSearch:true, overlay:false});
+			
+			// add the buttons to add / delete columns if required
+            if (addCols) {
                 buttons = $('#' + id + '_addcolumns');
+				
                 $([
                     {name: language.btnAddColumn.$label, tooltip: language.btnAddColumn.$tooltip, icon:'fa-plus-circle', disabled: false, id: id + '_addcol', click:addColumn},
                     {name: language.btnDelColumn.$label, tooltip: language.btnDelColumn.$tooltip, icon:'fa-trash', disabled: true, id: id + '_delcol', click:delColumn}
@@ -1686,14 +1717,16 @@ var EDITOR = (function ($, parent) {
                         .addClass("xerte_button")
                         .prop('disabled', value.disabled)
                         .addClass(value.disabled ? 'disabled' : 'enabled')
-                        .click({id:id, key:key, name:name}, function(evt){
+                        .click({ id: id, key: key, name: name }, function(evt){
                             var par = evt.data;
-                            value.click(par.id, par.key, par.name, jqGridsColSel[key]);
+                            value.click(par.id, par.key, par.name, jqGridsColSel[gridId]);
                         })
                         .append($('<i>').addClass('fa').addClass(value.icon).addClass('xerte-icon').height(14))
                         .append(value.name);
+					
                     buttons.append(button);
                 });
+				
                 buttons.append($('<br>'));
             }
 			
@@ -1709,7 +1742,6 @@ var EDITOR = (function ($, parent) {
 				});
 				
 				$(window).on("resizeEnd", function() {
-					console.log("resize end");
 					$("#mainPanel .ui-jqgrid").hide();
 					var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
 					$("#mainPanel .ui-jqgrid").show();
@@ -1718,13 +1750,24 @@ var EDITOR = (function ($, parent) {
 				
 				jqGridSetUp == true;
 			}
-
         });
     },
+	
+	checkRowIds = function (grid) {
+		var rows = grid.find('tr.jqgrow, tr.jqgfirstrow');
+		for (var i=0; i<rows.length; i++) {
+			var row = $(rows[i]);
+			if (!row.hasClass('jqgfirstrow')) {
+				if (Number(row.attr('id')) != i) {
+					row.attr('id', String(i));
+				}
+			}
+		}
+	},
+					
 
     setAttributeValue = function (key, names, values)
     {
-        //console.log([key, names, values]);
         // Get the node name
         if (names[0] == "hidePage") {
             changeNodeStatus(key, "hidden", values[0] == "true");
@@ -2181,126 +2224,126 @@ var EDITOR = (function ($, parent) {
      *
      * Also make sure we only take the text from the name, and not the full HTML
      */
-        getPageList = function()
-        {
-        	
-            var tree = $.jstree.reference("#treeview");
-            var lo_node = tree.get_node("treeroot", false);
-            var pages=[];
-            
-            if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
-            	pages = [
-            						[language.XotLinkRelativePages.firstpage,'[first]'],
-            						[language.XotLinkRelativePages.lastpage,'[last]'],
-            						[language.XotLinkRelativePages.prevpage,'[previous]'],
-            						[language.XotLinkRelativePages.nextpage,'[next]']
-            					];
-							$.each(lo_node.children, function(i, key){
-									var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-									var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-									var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-									var hidden = lo_data[key]['attributes'].hidePage;
-									
-									if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
-									{
-											var page = [];
-											// Also make sure we only take the text from the name, and not the full HTML
-											page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
-											page.push(pageID.found ? pageID.value : linkID.value);
-											pages.push(page);
+	getPageList = function()
+	{
+		
+		var tree = $.jstree.reference("#treeview");
+		var lo_node = tree.get_node("treeroot", false);
+		var pages=[];
+		
+		if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
+			pages = [
+								[language.XotLinkRelativePages.firstpage,'[first]'],
+								[language.XotLinkRelativePages.lastpage,'[last]'],
+								[language.XotLinkRelativePages.prevpage,'[previous]'],
+								[language.XotLinkRelativePages.nextpage,'[next]']
+							];
+						$.each(lo_node.children, function(i, key){
+								var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+								var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+								var hidden = lo_data[key]['attributes'].hidePage;
+								
+								if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+								{
+										var page = [];
+										// Also make sure we only take the text from the name, and not the full HTML
+										page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
+										page.push(pageID.found ? pageID.value : linkID.value);
+										pages.push(page);
 
-											// Now we do the children (if deeplinking is allowed)
-											if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
-												var childNode = tree.get_node(key, false);
-												$.each(childNode.children, function(i, key){
-													var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-													var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-													var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-													if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
-													{
-														var page = [];
-														// Also make sure we only take the text from the name, and not the full HTML
-														page.push(getTextFromHTML("&nbsp;- "+name.value));
-														page.push(pageID.found ? pageID.value : linkID.value);
-														pages.push(page);
-													}
-												});
-											}
-									}
-							});
-						}
-            
-            return pages;
-        },
+										// Now we do the children (if deeplinking is allowed)
+										if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
+											var childNode = tree.get_node(key, false);
+											$.each(childNode.children, function(i, key){
+												var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+												var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+												var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+												if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+												{
+													var page = [];
+													// Also make sure we only take the text from the name, and not the full HTML
+													page.push(getTextFromHTML("&nbsp;- "+name.value));
+													page.push(pageID.found ? pageID.value : linkID.value);
+													pages.push(page);
+												}
+											});
+										}
+								}
+						});
+					}
+		
+		return pages;
+	},
 
     /**
      * function to convert \n chracters to <BR>
      * This is needed because Flash editor was a text editor, not an HTML editor
      * This is replica of the function used in Xenith.js (ref. x_addLineBreaks).
      */
-        addLineBreaks = function(text) {
-			// First test for new editor - Only applicable for Xenith.js
-			//if (x_params && x_params.editorVersion && parseInt("0" + x_params.editorVersion, 10) >= 3)
-			//{
-			//	return text; // Return text unchanged
-			//}
-	
-			// Now try to identify v3beta created LOs
-			if ((text.trim().indexOf("<p") == 0 || text.trim().indexOf("<h") == 0) && (text.trim().lastIndexOf("</p") == text.trim().length-4 || text.trim().lastIndexOf("</h") == text.trim().length-5))
-			{
-				return text; // Return text unchanged
-			}
-	
-			// Now assume it's v2.1 or before
-			if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1)
-			{
-				return text.replace(/(\n|\r|\r\n)/g, "<br />");
-			}
-			else { // ignore any line breaks inside these tags as they don't work correctly with <br>
-				var newText = text;
-				if (newText.indexOf("<math") != -1) { // math tag found
-					var tempText = "",
-						mathNum = 0;
+	addLineBreaks = function(text) {
+		// First test for new editor - Only applicable for Xenith.js
+		//if (x_params && x_params.editorVersion && parseInt("0" + x_params.editorVersion, 10) >= 3)
+		//{
+		//	return text; // Return text unchanged
+		//}
 
-					while (newText.indexOf("<math", mathNum) != -1) {
-						var text1 = newText.substring(mathNum, newText.indexOf("<math", mathNum)),
-							tableNum = 0;
-						while (text1.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) { // check for table tags before/between math tags
-							tempText += text1.substring(tableNum, text1.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
-							tempText += text1.substring(text1.indexOf("<table", tableNum), text1.indexOf("</table>", tableNum) + 8);
-							tableNum = text1.indexOf("</table>", tableNum) + 8;
-						}
-						tempText += text1.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
-						tempText += newText.substring(newText.indexOf("<math", mathNum), newText.indexOf("</math>", mathNum) + 7);
-						mathNum = newText.indexOf("</math>", mathNum) + 7;
-					}
+		// Now try to identify v3beta created LOs
+		if ((text.trim().indexOf("<p") == 0 || text.trim().indexOf("<h") == 0) && (text.trim().lastIndexOf("</p") == text.trim().length-4 || text.trim().lastIndexOf("</h") == text.trim().length-5))
+		{
+			return text; // Return text unchanged
+		}
 
-					var text2 = newText.substring(mathNum),
+		// Now assume it's v2.1 or before
+		if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1)
+		{
+			return text.replace(/(\n|\r|\r\n)/g, "<br />");
+		}
+		else { // ignore any line breaks inside these tags as they don't work correctly with <br>
+			var newText = text;
+			if (newText.indexOf("<math") != -1) { // math tag found
+				var tempText = "",
+					mathNum = 0;
+
+				while (newText.indexOf("<math", mathNum) != -1) {
+					var text1 = newText.substring(mathNum, newText.indexOf("<math", mathNum)),
 						tableNum = 0;
-					while (text2.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) { // check for table tags after math tags
-						tempText += text2.substring(tableNum, text2.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
-						tempText += text2.substring(text2.indexOf("<table", tableNum), text2.indexOf("</table>", tableNum) + 8);
-						tableNum = text2.indexOf("</table>", tableNum) + 8;
+					while (text1.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) { // check for table tags before/between math tags
+						tempText += text1.substring(tableNum, text1.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
+						tempText += text1.substring(text1.indexOf("<table", tableNum), text1.indexOf("</table>", tableNum) + 8);
+						tableNum = text1.indexOf("</table>", tableNum) + 8;
 					}
-					tempText += text2.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
-					newText = tempText;
-
-				} else if (newText.indexOf("<table") != -1) { // no math tags - so just check table tags
-					var tempText = "",
-						tableNum = 0;
-					
-					while (newText.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) {
-						tempText += newText.substring(tableNum, newText.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
-						tempText += newText.substring(newText.indexOf("<table", tableNum), newText.indexOf("</table>", tableNum) + 8);
-						tableNum = newText.indexOf("</table>", tableNum) + 8;
-					}
-					tempText += newText.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
-					newText = tempText;
+					tempText += text1.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
+					tempText += newText.substring(newText.indexOf("<math", mathNum), newText.indexOf("</math>", mathNum) + 7);
+					mathNum = newText.indexOf("</math>", mathNum) + 7;
 				}
 
-				return newText;
+				var text2 = newText.substring(mathNum),
+					tableNum = 0;
+				while (text2.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) { // check for table tags after math tags
+					tempText += text2.substring(tableNum, text2.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
+					tempText += text2.substring(text2.indexOf("<table", tableNum), text2.indexOf("</table>", tableNum) + 8);
+					tableNum = text2.indexOf("</table>", tableNum) + 8;
+				}
+				tempText += text2.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
+				newText = tempText;
+
+			} else if (newText.indexOf("<table") != -1) { // no math tags - so just check table tags
+				var tempText = "",
+					tableNum = 0;
+				
+				while (newText.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) {
+					tempText += newText.substring(tableNum, newText.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
+					tempText += newText.substring(newText.indexOf("<table", tableNum), newText.indexOf("</table>", tableNum) + 8);
+					tableNum = newText.indexOf("</table>", tableNum) + 8;
+				}
+				tempText += newText.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
+				newText = tempText;
 			}
-        },
+
+			return newText;
+		}
+	},
 
     baseUrl = function()
     {
@@ -2318,776 +2361,1129 @@ var EDITOR = (function ($, parent) {
     },
 
     displayDataType = function (value, options, name, key) {
-            var html;                   //console.log(options);
+		var html;
 
-            switch(options.type.toLowerCase())
-            {
-                case 'checkbox':
-                    var id = 'checkbox_' + form_id_offset;
-                    form_id_offset++;
-                    html = $('<input>')
-                        .attr('id', id)
-                        .attr('type',  "checkbox")
-                        .prop('checked', value && value == 'true')
-                        .change({id:id, key:key, name:name}, function(event){
-                            cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
-                        });
-                    break;
-                case 'combobox':
-                    var id = 'select_' + form_id_offset;
-                    form_id_offset++;
-                    var s_options = options.options.split(',');
-                    var s_data = [];
-                    if (options.data)
-                    {
-                        s_data = options.data.split(',');
-                    }
-                    else
-                    {
-                        s_data = s_options;
-                    }
-                    html = $('<select>')
-                        .attr('id', id)
-                        .change({id:id, key:key, name:name}, function(event)
-                        {
-                            selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        });
-					
-					if (value == '') {
-						html.append($('<option>').attr('value', '').prop('selected', true));
+		switch(options.type.toLowerCase())
+		{
+			case 'checkbox':
+				var id = 'checkbox_' + form_id_offset;
+				form_id_offset++;
+				html = $('<input>')
+					.attr('id', id)
+					.attr('type',  "checkbox")
+					.prop('checked', value && value == 'true')
+					.change({id:id, key:key, name:name}, function(event){
+						cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
+					});
+				break;
+			case 'combobox':
+				var id = 'select_' + form_id_offset;
+				form_id_offset++;
+				var s_options = options.options.split(',');
+				var s_data = [];
+				if (options.data)
+				{
+					s_data = options.data.split(',');
+				}
+				else
+				{
+					s_data = s_options;
+				}
+				html = $('<select>')
+					.attr('id', id)
+					.change({id:id, key:key, name:name}, function(event)
+					{
+						selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+					});
+				
+				if (value == '') {
+					html.append($('<option>').attr('value', '').prop('selected', true));
+				}
+				
+				for (var i=0; i<s_options.length; i++) {
+					var option = $('<option>')
+						.attr('value', s_data[i]);
+					if (s_data[i]==value) {
+						option.prop('selected', true);
 					}
-					
-                    for (var i=0; i<s_options.length; i++) {
-                        var option = $('<option>')
-                            .attr('value', s_data[i]);
-                        if (s_data[i]==value) {
-                            option.prop('selected', true);
-						}
-                        option.append(s_options[i]);
-                        html.append(option);
-						if (value == '' && html.find('option:selected').index() > 0) {
-							html.find(option).eq(0).remove();
-						}
-                    }
+					option.append(s_options[i]);
+					html.append(option);
+					if (value == '' && html.find('option:selected').index() > 0) {
+						html.find(option).eq(0).remove();
+					}
+				}
 
-                    break;
-                case 'text':
-                case 'script':
-                case 'html':
-                case 'textarea':
-                    var id = "textarea_" + form_id_offset;
-                    var textvalue = "";
+				break;
+			case 'text':
+			case 'script':
+			case 'html':
+			case 'textarea':
+				var id = "textarea_" + form_id_offset;
+				var textvalue = "";
 
-                    form_id_offset++;
+				form_id_offset++;
 
-					if (value.toLowerCase().indexOf('<textarea') == -1) textvalue = value;
+				if (value.toLowerCase().indexOf('<textarea') == -1) textvalue = value;
 
-                    var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
-                    if (options.height) textarea += "height:" + options.height + "px";
-                    textarea += "\">" + textvalue + "</textarea>";
-                    $textarea = $(textarea);
+				var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
+				if (options.height) textarea += "height:" + options.height + "px";
+				textarea += "\">" + textvalue + "</textarea>";
+				$textarea = $(textarea);
 
-                    if (textvalue.length == 0) $textarea.data('afterckeditor', value);
+				if (textvalue.length == 0) $textarea.data('afterckeditor', value);
 
-                	html = $('<div>')
-                        .attr('style', 'width:100%')
-                        .append($textarea);
+				html = $('<div>')
+					.attr('style', 'width:100%')
+					.append($textarea);
 
-                    textareas_options.push({id: id, key: key, name: name, options: options});
-                    break;
-                case 'numericstepper':
-                    var min = parseInt(options.min);
-                    var max = parseInt(options.max);
-                    var step = parseInt(options.step);
-                    var intvalue = parseInt(value);
-                    if (!Modernizr.inputtypes.number)
-                    {
-                        var id = 'select_' + form_id_offset;
-                        form_id_offset++;
-                        html = $('<select>')
-                            .attr('id', id)
-                            .change({id:id, key:key, name:name}, function(event)
-                            {
-                                selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                            });
-                        for (var i=min; i<max; i += step) {
-                            var option = $('<option>')
-                                .attr('value', i);
-                            if (intvalue==i)
-                                option.prop('selected', true);
-                            option.append(i);
-                            html.append(option);
-                        }
-
-                    }
-                    else
-                    {
-                        var id = 'numericstepper_' + form_id_offset;
-                        form_id_offset++;
-                        html = $('<input>')
-                            .attr('id', id)
-                            .attr('type', 'number')
-                            .attr('min', min)
-                            .attr('max', max)
-                            .attr('step', step)
-                            .attr('value', value)
-                            .change({id:id, key:key, name:name}, function(event)
-                            {
-                                if (this.value <= max &&  this.value >= min) {
-                                    if (this.value == '') {
-                                        this.value = (min + max) / 2; // choose midpoint for NaN
-                                    }
-                                    inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                                }
-                                else { // set to max or min if out of range
-                                    this.value = Math.max(Math.min(this.value, max), min);
-                                }
-                            });
-                    }
-                    break;
-                case 'pagelist':
-                    // Implement differently then in the flash editor
-                    // Leave PageIDs untouched, and prefer to use the PageID over the linkID
-                    var id = 'select_' + form_id_offset;
-                    form_id_offset++;
-                    html = $('<select>')
-                        .attr('id', id)
-                        .change({id:id, key:key, name:name}, function(event)
-                        {
-                            selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        });
-                    // Add empty entry
-                    var option = $('<option>')
-                        .attr('value', "");
-                    if (value=="")
-                        option.prop('selected', true);
-                    option.append("&nbsp;");
-                    html.append(option);
-                    var pages = getPageList();
-                    $.each(pages, function(page)
-                    {
-                        option = $('<option>')
-                            .attr('value', this[1]);
-                        if (value==this[1])
-                            option.prop('selected', true);
-                        option.append(this[0]);
-                        html.append(option);
-                    });
-                    break;
-                case 'colourpicker':
-                    var colorvalue = value;
-                    var id = 'colorpicker_' + form_id_offset;
-                    form_id_offset++;
-                    if (colorvalue.indexOf("0x") == 0)
-                    {
-                        colorvalue = colorvalue.substr(2);
-                    }
-                    if (Modernizr.inputtypes.color && false) // TODO: I can't get this to work! The widget doesn't show the correct colour, turned off for now
-                    {
-                        html = $('<input>')
-                            .attr('id', id)
-                            .attr('type', 'color')
-                            .change({id:id, key:key, name:name}, function(event)
-                            {
-                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                            });
-                    }
-                    else
-                    {
-                        html = $('<input>')
-                            .attr('id', id)
-                            .addClass('color')
-                            .change({id:id, key:key, name:name}, function(event)
-                            {
-                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                            });
-						
-						colorpickers.push({id: id, options: options});
-						
-						if (colorvalue != '') {
-							html.attr('value', colorvalue);
-							colorpickers[colorpickers.length-1].value = colorvalue;
-						}
-                    }
-                    break;
-                case 'languagelist':
-                    var id = 'select_' + form_id_offset;
-                    form_id_offset++;
-                    html = $('<select>')
-                        .attr('id', id)
-                        .change({id:id, key:key, name:name}, function(event)
-                        {
-                            changeLanguage(event.data.id, event.data.key, event.data.name, this.value, this);
-                            //selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        });
-                    for (var i=0; i<installed_languages.length; i++) {
-                        var option = $('<option>')
-                            .attr('value', installed_languages[i].code);
-                        if (installed_languages[i].code==value)
-                            option.prop('selected', true);
-                        option.append(installed_languages[i].name);
-                        html.append(option);
-                    }
-                    break;
-                case 'themelist':
-                    var id = 'select_' + form_id_offset;
-                    var html = $('<div>')
-                        .attr('id', 'theme_div_' + form_id_offset);
-                    var currtheme = 0;
-                    var select = $('<select>')
-                        .attr('id', id)
-                        .change({id:id, key:key, name:name}, function(event)
-                        {
-                            themeChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        });
-                    for (var i=0; i<theme_list.length; i++) {
-                        var option = $('<option>')
-                            .attr('value', i);
-                        if (theme_list[i].name==value) {
-                            option.prop('selected', true);
-                            currtheme = i;
-                        }
-                        option.append(theme_list[i].display_name);
-                        select.append(option);
-                    }
-                    html.append(select);
-                    var preview = $('<img>')
-                        .attr('id', 'theme_preview_' + form_id_offset)
-                        .addClass('theme_preview')
-                        .attr({
-							'src': theme_list[currtheme].preview,
-							'alt': theme_list[currtheme].display_name
-						})
-						.click(function() {
-							previewFile($(this).attr('alt'), $(this).attr('src'), $(this).attr('alt'));
+				textareas_options.push({id: id, key: key, name: name, options: options});
+				break;
+			case 'numericstepper':
+				var min = parseInt(options.min);
+				var max = parseInt(options.max);
+				var step = parseInt(options.step);
+				var intvalue = parseInt(value);
+				if (!Modernizr.inputtypes.number)
+				{
+					var id = 'select_' + form_id_offset;
+					form_id_offset++;
+					html = $('<select>')
+						.attr('id', id)
+						.change({id:id, key:key, name:name}, function(event)
+						{
+							selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
 						});
-						
-                    html.append(preview);
-                    var description = $("<div>" + theme_list[currtheme].description + "</div><div class='theme_url_param'>" + language.ThemeUrlParam + " " + theme_list[currtheme].name + "</div>");
-                    var description_box = $('<div>')
-                        .attr('id', 'theme_description_' + form_id_offset)
-                        .addClass('theme_description')
-                        .append(description);
-                    html.append(description_box);
-                    form_id_offset++;
+					for (var i=min; i<max; i += step) {
+						var option = $('<option>')
+							.attr('value', i);
+						if (intvalue==i)
+							option.prop('selected', true);
+						option.append(i);
+						html.append(option);
+					}
 
-                    break;
-                case 'category':
-                    var id = 'select_' + form_id_offset;
-                    var html = $('<div>')
-                        .attr('id', 'category_div_' + form_id_offset);
-                    var currselected=false;
-                    var select = $('<select>')
-                        .attr('id', id)
-                        .change({id:id, key:key, name:name}, function(event)
-                        {
-                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        });
-                    // Add empty option
-                    var option = $('<option>')
-                        .attr('value', "");
-                    if (value=="") {
-                        option.prop('selected', true);
-                        currselected=true;
-                    }
-                    option.append("");
-                    select.append(option);
-                    for (var i=0; i<category_list.length; i++) {
-                        var option = $('<option>')
-                            .attr('value', category_list[i].category_name);
-                        if (category_list[i].category_name==value) {
-                            option.prop('selected', true);
-                            curreselected = true;
-                        }
-                        option.append(category_list[i].category_name);
-                        select.append(option);
-                    }
-                    if (value != "" && !currselected)
-                    {
-                        //  Add current value as option, even though it is not in the list
-                        var option = $('<option>')
-                            .attr('value', value);
-                        option.prop('selected', true);
-                        option.append(value);
-                        select.append(option);
-                    }
-                    html.append(select);
-                break;
-                case 'grouping':
-                    var id = 'select_' + form_id_offset;
-                    var html = $('<div>')
-                        .attr('id', 'grouping_div_' + form_id_offset);
-                    var currselected = false;
-                    var select = $('<select>')
-                        .attr('id', id)
-                        .change({id:id, key:key, name:name}, function(event)
-                        {
-                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        });
-                    // Add empty option
-                    var option = $('<option>')
-                        .attr('value', "");
-                    if (value=="") {
-                        option.prop('selected', true);
-                        currselected = true;
-                    }
-                    option.append("");
-                    select.append(option);
-                    for (var i=0; i<grouping_list.length; i++) {
-                        var option = $('<option>')
-                            .attr('value', grouping_list[i].grouping_name);
-                        if (grouping_list[i].grouping_name==value) {
-                            option.prop('selected', true);
-                            currselected = true;
-                        }
-                        option.append(grouping_list[i].grouping_name);
-                        select.append(option);
-                    }
-                    if (value != "" && !currselected)
-                    {
-                        //  Add current value as option, even though it is not in the list
-                        var option = $('<option>')
-                            .attr('value', value);
-                        option.prop('selected', true);
-                        option.append('<i class="fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;' + value);
-                        select.append(option);
-                    }
-                    html.append(select);
-                    break;
-                case 'course':
-                    if (course_list.length == 0)
-                    {
-                        // Create a non-wysiwyg textinput
-                        var id = 'textinput_' + form_id_offset;
-                        html = $('<input>')
-                            .attr('type', "text")
-                            .addClass('inputtext')
-                            .attr('id', id)
-                            .keyup({name: name, key: key, options: options}, function()
-                            {
-                                if (name == 'name') {
-                                    // Rename the node
-                                    var tree = $.jstree.reference("#treeview");
-                                    tree.rename_node(tree.get_node(key, false), $(this).val());
-                                }
-                            })
-                            .change({id:id, key:key, name:name}, function(event)
-                            {
-                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                            })
-                            .attr('value', value);
-                    }
-                    else {
-                        var id = 'select_' + form_id_offset;
-                        var html = $('<div>')
-                            .attr('id', 'course_div_' + form_id_offset);
-                        var currselected = false;
-                        var select = $('<select>')
-                            .attr('id', id)
-                            .change({id: id, key: key, name: name, form_id: form_id_offset}, function (event) {
-                                courseChanged(event.data.id, event.data.key, event.data.name, event.data.form_id, this.value, this);
-                            });
-                        // Add empty option
-                        var option = $('<option>')
-                            .attr('value', "");
-                        if (value == "") {
-                            option.prop('selected', true);
-                            currselected = true;
-                        }
-                        option.append("");
-                        select.append(option);
-                        for (var i = 0; i < course_list.length; i++) {
-                            var option = $('<option>')
-                                .attr('value', course_list[i].course_name);
-                            if (course_list[i].course_name == value) {
-                                option.prop('selected', true);
-                                currselected = true;
-                            }
-                            option.append(course_list[i].course_name);
-                            select.append(option);
-                        }
-                        if (course_freetext_enabled)
-                        {
-                            var option = $('<option>')
-                                .attr('value', language.course.FreeText.$label);
-                            option.append(language.course.FreeText.$label);
-                            if (!currselected)
-                            {
-                                option.prop('selected', true);
-                                select.css("width", "50%");
+				}
+				else
+				{
+					var id = 'numericstepper_' + form_id_offset;
+					form_id_offset++;
+					html = $('<input>')
+						.attr('id', id)
+						.attr('type', 'number')
+						.attr('min', min)
+						.attr('max', max)
+						.attr('step', step)
+						.attr('value', value)
+						.change({id:id, key:key, name:name}, function(event)
+						{
+							if (this.value <= max &&  this.value >= min) {
+								if (this.value == '') {
+									this.value = (min + max) / 2; // choose midpoint for NaN
+								}
+								inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+							}
+							else { // set to max or min if out of range
+								this.value = Math.max(Math.min(this.value, max), min);
+							}
+						});
+				}
+				break;
+			case 'pagelist':
+				// Implement differently then in the flash editor
+				// Leave PageIDs untouched, and prefer to use the PageID over the linkID
+				var id = 'select_' + form_id_offset;
+				form_id_offset++;
+				html = $('<select>')
+					.attr('id', id)
+					.change({id:id, key:key, name:name}, function(event)
+					{
+						selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+					});
+				// Add empty entry
+				var option = $('<option>')
+					.attr('value', "");
+				if (value=="")
+					option.prop('selected', true);
+				option.append("&nbsp;");
+				html.append(option);
+				var pages = getPageList();
+				$.each(pages, function(page)
+				{
+					option = $('<option>')
+						.attr('value', this[1]);
+					if (value==this[1])
+						option.prop('selected', true);
+					option.append(this[0]);
+					html.append(option);
+				});
+				break;
+			case 'colourpicker':
+				var colorvalue = value;
+				var id = 'colorpicker_' + form_id_offset;
+				form_id_offset++;
+				if (colorvalue.indexOf("0x") == 0)
+				{
+					colorvalue = colorvalue.substr(2);
+				}
+				if (Modernizr.inputtypes.color && false) // TODO: I can't get this to work! The widget doesn't show the correct colour, turned off for now
+				{
+					html = $('<input>')
+						.attr('id', id)
+						.attr('type', 'color')
+						.change({id:id, key:key, name:name}, function(event)
+						{
+							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+						});
+				}
+				else
+				{
+					html = $('<input>')
+						.attr('id', id)
+						.addClass('color')
+						.change({id:id, key:key, name:name}, function(event)
+						{
+							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+						});
+					
+					colorpickers.push({id: id, options: options});
+					
+					if (colorvalue != '') {
+						html.attr('value', colorvalue);
+						colorpickers[colorpickers.length-1].value = colorvalue;
+					}
+				}
+				break;
+			case 'languagelist':
+				var id = 'select_' + form_id_offset;
+				form_id_offset++;
+				html = $('<select>')
+					.attr('id', id)
+					.change({id:id, key:key, name:name}, function(event)
+					{
+						changeLanguage(event.data.id, event.data.key, event.data.name, this.value, this);
+						//selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+					});
+				for (var i=0; i<installed_languages.length; i++) {
+					var option = $('<option>')
+						.attr('value', installed_languages[i].code);
+					if (installed_languages[i].code==value)
+						option.prop('selected', true);
+					option.append(installed_languages[i].name);
+					html.append(option);
+				}
+				break;
+			case 'themelist':
+				var id = 'select_' + form_id_offset;
+				var html = $('<div>')
+					.attr('id', 'theme_div_' + form_id_offset);
+				var currtheme = 0;
+				var select = $('<select>')
+					.attr('id', id)
+					.change({id:id, key:key, name:name}, function(event)
+					{
+						themeChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+					});
+				for (var i=0; i<theme_list.length; i++) {
+					var option = $('<option>')
+						.attr('value', i);
+					if (theme_list[i].name==value) {
+						option.prop('selected', true);
+						currtheme = i;
+					}
+					option.append(theme_list[i].display_name);
+					select.append(option);
+				}
+				html.append(select);
+				var preview = $('<img>')
+					.attr('id', 'theme_preview_' + form_id_offset)
+					.addClass('theme_preview')
+					.attr({
+						'src': theme_list[currtheme].preview,
+						'alt': theme_list[currtheme].display_name
+					})
+					.click(function() {
+						previewFile($(this).attr('alt'), $(this).attr('src'), $(this).attr('alt'));
+					});
+					
+				html.append(preview);
+				var description = $("<div>" + theme_list[currtheme].description + "</div><div class='theme_url_param'>" + language.ThemeUrlParam + " " + theme_list[currtheme].name + "</div>");
+				var description_box = $('<div>')
+					.attr('id', 'theme_description_' + form_id_offset)
+					.addClass('theme_description')
+					.append(description);
+				html.append(description_box);
+				form_id_offset++;
 
-                            }
-                            select.append(option);
-                            html.append(select);
+				break;
+			case 'category':
+				var id = 'select_' + form_id_offset;
+				var html = $('<div>')
+					.attr('id', 'category_div_' + form_id_offset);
+				var currselected=false;
+				var select = $('<select>')
+					.attr('id', id)
+					.change({id:id, key:key, name:name}, function(event)
+					{
+						inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+					});
+				// Add empty option
+				var option = $('<option>')
+					.attr('value', "");
+				if (value=="") {
+					option.prop('selected', true);
+					currselected=true;
+				}
+				option.append("");
+				select.append(option);
+				for (var i=0; i<category_list.length; i++) {
+					var option = $('<option>')
+						.attr('value', category_list[i].category_name);
+					if (category_list[i].category_name==value) {
+						option.prop('selected', true);
+						curreselected = true;
+					}
+					option.append(category_list[i].category_name);
+					select.append(option);
+				}
+				if (value != "" && !currselected)
+				{
+					//  Add current value as option, even though it is not in the list
+					var option = $('<option>')
+						.attr('value', value);
+					option.prop('selected', true);
+					option.append(value);
+					select.append(option);
+				}
+				html.append(select);
+			break;
+			case 'grouping':
+				var id = 'select_' + form_id_offset;
+				var html = $('<div>')
+					.attr('id', 'grouping_div_' + form_id_offset);
+				var currselected = false;
+				var select = $('<select>')
+					.attr('id', id)
+					.change({id:id, key:key, name:name}, function(event)
+					{
+						inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+					});
+				// Add empty option
+				var option = $('<option>')
+					.attr('value', "");
+				if (value=="") {
+					option.prop('selected', true);
+					currselected = true;
+				}
+				option.append("");
+				select.append(option);
+				for (var i=0; i<grouping_list.length; i++) {
+					var option = $('<option>')
+						.attr('value', grouping_list[i].grouping_name);
+					if (grouping_list[i].grouping_name==value) {
+						option.prop('selected', true);
+						currselected = true;
+					}
+					option.append(grouping_list[i].grouping_name);
+					select.append(option);
+				}
+				if (value != "" && !currselected)
+				{
+					//  Add current value as option, even though it is not in the list
+					var option = $('<option>')
+						.attr('value', value);
+					option.prop('selected', true);
+					option.append('<i class="fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;' + value);
+					select.append(option);
+				}
+				html.append(select);
+				break;
+			case 'course':
+				if (course_list.length == 0)
+				{
+					// Create a non-wysiwyg textinput
+					var id = 'textinput_' + form_id_offset;
+					html = $('<input>')
+						.attr('type', "text")
+						.addClass('inputtext')
+						.attr('id', id)
+						.keyup({name: name, key: key, options: options}, function()
+						{
+							if (name == 'name') {
+								// Rename the node
+								var tree = $.jstree.reference("#treeview");
+								tree.rename_node(tree.get_node(key, false), $(this).val());
+							}
+						})
+						.change({id:id, key:key, name:name}, function(event)
+						{
+							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+						})
+						.attr('value', value);
+				}
+				else {
+					var id = 'select_' + form_id_offset;
+					var html = $('<div>')
+						.attr('id', 'course_div_' + form_id_offset);
+					var currselected = false;
+					var select = $('<select>')
+						.attr('id', id)
+						.change({id: id, key: key, name: name, form_id: form_id_offset}, function (event) {
+							courseChanged(event.data.id, event.data.key, event.data.name, event.data.form_id, this.value, this);
+						});
+					// Add empty option
+					var option = $('<option>')
+						.attr('value', "");
+					if (value == "") {
+						option.prop('selected', true);
+						currselected = true;
+					}
+					option.append("");
+					select.append(option);
+					for (var i = 0; i < course_list.length; i++) {
+						var option = $('<option>')
+							.attr('value', course_list[i].course_name);
+						if (course_list[i].course_name == value) {
+							option.prop('selected', true);
+							currselected = true;
+						}
+						option.append(course_list[i].course_name);
+						select.append(option);
+					}
+					if (course_freetext_enabled)
+					{
+						var option = $('<option>')
+							.attr('value', language.course.FreeText.$label);
+						option.append(language.course.FreeText.$label);
+						if (!currselected)
+						{
+							option.prop('selected', true);
+							select.css("width", "50%");
 
-                            // Add textinput after select
-                            // Create a non-wysiwyg textinput
-                            var id = 'course_freetext_' + form_id_offset;
-                            var textinput = $('<input>')
-                                .attr('type', "text")
-                                .addClass('inputtext')
-                                .addClass('course_freetext')
-                                .attr('id', id)
-                                .keyup({name: name, key: key, options: options}, function()
-                                {
-                                    if (name == 'name') {
-                                        // Rename the node
-                                        var tree = $.jstree.reference("#treeview");
-                                        tree.rename_node(tree.get_node(key, false), $(this).val());
-                                    }
-                                })
-                                .change({id:id, key:key, name:name}, function(event)
-                                {
-                                    inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                                });
-                            if (currselected)
-                            {
-                                // Disabled
-                                textinput.hide();
-                            }
-                            else {
-                                textinput.attr('value', value);
-                            }
-                            html.append(textinput);
-                        }
-                        else
-                        {
-                            if (value != "" && !currselected) {
-                                //  Add current value as option, even though it is not in the list
-                                var option = $('<option>')
-                                    .attr('value', value);
-                                option.prop('selected', true);
-                                option.append(value);
-                                select.append(option);
-                                select.addClass("deprecated");
-                                select.addClass("deprecated_option_selected")
-                            }
-                            html.append(select);
-                            if (value != "" && !currselected) {
-                                html.append('<i class="deprecated fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;');
-                            }
-                        }
+						}
+						select.append(option);
+						html.append(select);
 
-                    }
-                    break;
-                case 'hotspot':
-                    var id = 'hotspot_' + form_id_offset;
-                    form_id_offset++;
+						// Add textinput after select
+						// Create a non-wysiwyg textinput
+						var id = 'course_freetext_' + form_id_offset;
+						var textinput = $('<input>')
+							.attr('type', "text")
+							.addClass('inputtext')
+							.addClass('course_freetext')
+							.attr('id', id)
+							.keyup({name: name, key: key, options: options}, function()
+							{
+								if (name == 'name') {
+									// Rename the node
+									var tree = $.jstree.reference("#treeview");
+									tree.rename_node(tree.get_node(key, false), $(this).val());
+								}
+							})
+							.change({id:id, key:key, name:name}, function(event)
+							{
+								inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+							});
+						if (currselected)
+						{
+							// Disabled
+							textinput.hide();
+						}
+						else {
+							textinput.attr('value', value);
+						}
+						html.append(textinput);
+					}
+					else
+					{
+						if (value != "" && !currselected) {
+							//  Add current value as option, even though it is not in the list
+							var option = $('<option>')
+								.attr('value', value);
+							option.prop('selected', true);
+							option.append(value);
+							select.append(option);
+							select.addClass("deprecated");
+							select.addClass("deprecated_option_selected")
+						}
+						html.append(select);
+						if (value != "" && !currselected) {
+							html.append('<i class="deprecated fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;');
+						}
+					}
 
-                    // this is a special one. the attributes in the node are called x, y, w, h
+				}
+				break;
+			case 'hotspot':
+				var id = 'hotspot_' + form_id_offset;
+				form_id_offset++;
+
                     // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
                     // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
-                    var hsattrs = lo_data[key].attributes;
+				var hsattrs = lo_data[key].attributes;
                     var hsparent = parent.tree.getParent(key);
                     var hspattrs = lo_data[hsparent].attributes;
-                    var div = $('<div>')
-                        .attr('id', 'inner_' + id);
                     if (hspattrs.nodeName.toLowerCase() == "hotspotgroup")
                     {
                         // go one further up
                         hsparent = parent.tree.getParent(hsparent);
                         hspattrs = lo_data[hsparent].attributes;
                     }
-                    
+
                     // Create the container
                     html = $('<div>').attr('id', id);
-                    
+
                     var url = hspattrs.url;
                     // Replace FileLocation + ' with full url
                     url = makeAbsolute(url);
                     // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
                     if (url.substring(0,4) == "http")
                     {
-                        div.addClass('clickableHotspot')
-                        		.append($('<img>')
-                                .attr('id', 'inner_img_' + id)
-                                .attr('src', url)
-                                .load(function(){
-                                    var orgwidth = this.naturalWidth;
-                                    var orgheight = this.naturalHeight;
-                                    var width = this.width;
-                                    var hsleft = parseInt(hsattrs.x),
-                                        hstop = parseInt(hsattrs.y),
-                                        hsbottom = orgheight - hstop - parseInt(hsattrs.h),
-                                        hsright = orgwidth - hsleft - parseInt(hsattrs.w);
-                                    var scale = width / orgwidth;
-                                    
-                                    $(this).css({width: parseInt(scale * orgwidth) + 'px', height: parseInt(scale * orgheight) + 'px'});
+                        var shape = "square";
+                        html.addClass('clickableHotspot');
+                        html.append("<img>");
+                        var cur_key = key;
+                        html.find('img')
+                            .attr('id', 'inner_img_' + id)
+                            .attr("data-key", cur_key)
+                            .attr("src", url)
+                            .load(function(){
 
-                                    hsleft = Math.round(hsleft * scale);
-                                    hstop = Math.round(hstop * scale);
-                                    hsbottom = Math.round(hsbottom * scale);
-                                    hsright = Math.round(hsright * scale);
+                                $(this).css({width: '100%'});
+                            }).click(function(){
+                                edit_img = $("<div></div>")
+                                    //.css("background", "url(" + url + ")")
+                                edit_img.attr('id', 'outer_img_' + id)
+                                edit_img.data("id", id);
+                                edit_img.append('<button id="poly"><i class="fas fa-draw-polygon"></i></button><button id="square"><i class="fas fa-vector-square"></i></button>');
+                                edit_img.append('<div class="overlayWrapper"><img class="overlayImage"><canvas class="overlayCanvas"></canvas><div class="overlayDiv"></div></div>');
+                                edit_img.append('<div class="instructions">'+
+                                    language.HotspotInstructions.header +
+                                    "<ul>" +
+                                        "<li>" + language.HotspotInstructions.add + "</li>" +
+                                        "<li>" + language.HotspotInstructions.edit + "</li>" +
+                                        "<li>" + language.HotspotInstructions.remove + "</li>" +
+                                    "</ul>" +
+                                    language.HotspotInstructions.save
+                                + '</div>');
+                                edit_img.append($('<button>')
+                                    .attr('id', id + '_ok')
+                                    .attr('name', 'ok')
+                                    .attr('type', 'button')
+                                    .addClass('editorbutton')
+                                    .append(language.Alert.oklabel)
+                                )
+                                .append($('<button>')
+                                    .attr('id', id + '_cancel')
+                                    .attr('name', 'cancel')
+                                    .attr('type', 'button')
+                                    .addClass('editorbutton')
+                                    .append(language.Alert.cancellabel)
+                                );
 
-                                    var cssobj = {
-                                        position:  "absolute",
-                                        left: hsleft + "px",
-                                        top:  hstop + "px",
-                                        right: hsright + "px",
-                                        bottom: (hsbottom + 4) + "px",
-                                        background: "#ff0000",
-                                        opacity: "0.4"
-                                    };
 
-                                    var hsdiv = $('<div>')
-                                        .attr('id', 'inner_hs_' + id)
-                                        .css(cssobj);
-                                    div.append(hsdiv);
+                                edit_img.find("img").attr("src", url);
+                                img_width = edit_img.find("img").get(0).naturalWidth;
+                                img_height = edit_img.find("img").get(0).naturalHeight;
+                                ratio = img_height / img_width;
+                                edit_img.find(".overlayWrapper").css("width", parseInt(0.8 * $("body").width()))
+                                        .css("height", parseInt(ratio * $("body").width() + $(".editorbutton").height()));
 
-                                })
-                        );
-						
-						// Ok, now create the content to be shown in the lightbox
-						var editdiv = $('<div>')
-							.attr('id', 'edit_' + id)
-							.addClass('hotspotLightbox');
-						var editimg = $('<img>')
-							.attr('id', 'edit_img_' + id)
-							.addClass('hotspotLightboxImg')
-							.attr('src', url)
-							.load(function()
-							{
-								var orgwidth = this.naturalWidth;
-								var orgheight = this.naturalHeight;
-								var hsx1 = parseInt(hsattrs.x),
-									hsy1 = parseInt(hsattrs.y),
-									hsx2 = hsx1 + parseInt(hsattrs.w),
-									hsy2 = hsy1 + parseInt(hsattrs.h);
+                                $.featherlight(edit_img, {
+                                    afterOpen: function()
+                                    {
+                                        var id = $(this).get(0).target.data("id");
+                                        $('#featherlight-content').unbind('click');
+                                        var okbutton = $('#featherlight-content button[name="ok"]');
+                                        okbutton.click(function(event){
+                                            var key = $("#inner_img_" + id).data("key");
+                                            var current = $.featherlight.current();
+                                            var npoints = [];
+                                            for(pi in points)
+                                            {
+                                                var point = points[pi];
+                                                npoints.push({
+                                                    "x" : point.x,
+                                                    "y" : point.y
+                                                });
+                                            }
+                                            var stringVal = JSON.stringify(npoints);
+                                            img = $('#featherlight-content img');
+                                            setAttributeValue(key, ["points", "w", "h", "mode"], [stringVal, img.width(), img.height(), shape]);
 
-								$('#link_' + id).featherlight({afterClose: function(evt){closeHotSpotSelection(evt, key);}});
-								$('#link_' + id).click({id:id, key:key, name:name, orgwidth:orgwidth, orgheight:orgheight, hsx1:hsx1, hsy1:hsy1, hsx2:hsx2, hsy2:hsy2}, function(event){
-									var par = event.data;
-									showHotSpotSelection(false, par.id, par.key, par.name, par.orgwidth, par.orgheight, par.hsx1, par.hsy1, par.hsx2, par.hsy2);
-								});
+                                            current.close();
+                                            parent.tree.showNodeData(key);
+                                        });
 
-							});
-						editdiv.append(editimg);
+                                        var cancelbutton = $('#featherlight-content button[name="cancel"]');
+                                        cancelbutton.click(function(event){
+                                            var key = $("#inner_img_" + id).data("key");
+                                            var current = $.featherlight.current()
+                                            current.close();
+                                            parent.tree.showNodeData(key);
+                                        });
 
-						editdiv.append($('<div>')
-								.attr('id', id + '_edit_buttons')
-								.append($('<input>')
-									.attr('id', id + '_x')
-									.attr('type', 'hidden')
-							)
-								.append($('<input>')
-									.attr('id', id + '_y')
-									.attr('type', 'hidden')
-							)
-								.append($('<input>')
-									.attr('id', id + '_h')
-									.attr('type', 'hidden')
-							)
-								.append($('<input>')
-									.attr('id', id + '_w')
-									.attr('type', 'hidden')
-							)
-								.append($('<input>')
-									.attr('id', id + '_set')
-									.attr('type', 'hidden')
-									.attr('value', '0')
-							)
-								.append($('<button>')
-									.attr('id', id + '_ok')
-									.attr('name', 'ok')
-									.attr('type', 'button')
-									.addClass('editorbutton')
-									.append(language.Alert.oklabel)
-							)
-								.append($('<button>')
-									.attr('id', id + '_cancel')
-									.attr('name', 'cancel')
-									.attr('type', 'button')
-									.addClass('editorbutton')
-									.append(language.Alert.cancellabel)
-							)
-						);
-						
+                                        var polygonbutton = $('#featherlight-content #poly');
+                                        polygonbutton.click(function (event) {
+                                            shape = "polygon";
+                                            points =[];
+                                            $(".hotspot-handle").remove();
+                                            redraw_points(canvas);
 
-						html.append(editdiv)
-							.append($('<a>')
-								.attr('id', 'link_' + id)
-								.attr('href', '#')
-								.attr('data-featherlight', '#edit_' + id)
-								.attr('title', language.edit.$tooltip)
-								.append(div));
-                    
+
+                                        });
+
+                                        var squarebutton = $('#featherlight-content #square');
+                                        squarebutton.click(function (event) {
+                                            shape = "square";
+                                            var middelX = $("#outer_img_" + id + " img").width()/canvas.width/2;
+                                            var Xoff = middelX/4;
+                                            var middelY =  $("#outer_img_" + id + " img").height()/canvas.height/2;
+                                            var Yoff = middelY/4;
+                                            points =[];
+                                            $(".hotspot-handle").remove();
+                                            points.push({
+                                                "x" : middelX-Xoff,
+                                                "y" : middelY-Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX,
+                                                "y" : middelY-Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX+Xoff,
+                                                "y" : middelY-Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX+Xoff,
+                                                "y" : middelY
+                                            });
+                                            points.push({
+                                                "x" : middelX+Xoff,
+                                                "y" : middelY+Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX,
+                                                "y" : middelY+Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX-Xoff,
+                                                "y" : middelY+Yoff
+                                            });
+                                            points.push({
+                                                "x" : middelX-Xoff,
+                                                "y" : middelY
+                                            });
+                                            for(var i = 0; i < points.length; i++){
+                                                var point = points[i];
+                                                var handle = $(handle_shell);
+                                                point.id = "handle_" + i;
+                                                handle.attr("id", point.id);
+                                                handle.css("left", point.x * canvas.width);
+                                                handle.css("top", point.y * canvas.height);
+                                                $("#outer_img_" + id + " .overlayDiv").append(handle.prop("outerHTML"));
+                                            }
+                                            redraw_points(canvas);
+
+                                        });
+
+                                        var handle_shell = '<div class="hotspot-handle" id=""></div>';
+                                        $("#outer_img_" + id + " canvas")[0].width = $("#outer_img_" + id + " img").width();
+                                        $("#outer_img_" + id + " canvas")[0].height = $("#outer_img_" + id + " img").height();
+                                        points = JSON.parse(hsattrs.points);
+                                        shape = hsattrs.mode;
+                                        var uniq_id = points.length;
+                                        var canvas = $("#outer_img_" + id + " canvas").get(0);
+                                        for(var i = 0; i < points.length; i++){
+                                            var point = points[i];
+                                            var handle = $(handle_shell);
+                                            point.id = "handle_" + i;
+                                            handle.attr("id", point.id);
+                                            handle.css("left", point.x * canvas.width);
+                                            handle.css("top", point.y * canvas.height);
+                                            $("#outer_img_" + id + " .overlayDiv").append(handle.prop("outerHTML"));
+                                        }
+
+                                        redraw_points(canvas);
+
+
+
+
+                                        function getMousePosition(canvas, e){
+                                            var x;
+                                            var y;
+                                            var rect = canvas.getBoundingClientRect();
+                                            if (e.pageX || e.pageY) {
+                                              x = e.pageX;
+                                              y = e.pageY;
+                                            }
+                                            else {
+                                              x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+                                              y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+                                            }
+                                            x -= rect.left;
+                                            y -= rect.top;
+                                            return {
+                                                x: x / canvas.width,
+                                                y: y / canvas.height
+                                            };
+                                        }
+
+                                        function  recalculate_points(canvas) {
+                                            for(var i=1; i< points.length; i+=2){
+                                                if(i == 1 || i == 3){
+                                                    points[i].x = Math.min(points[i-1].x, points[(i+1) % 8].x) - (Math.abs(points[i-1].x) - points[(i+1)%8].x)/2;
+                                                    points[i].y = Math.min(points[i-1].y, points[(i+1)%8].y) - (Math.abs(points[i-1].y) - points[(i+1)%8].y)/2;
+                                                }else{
+                                                    points[i].x = Math.min(points[i-1].x, points[(i+1) % 8].x) + (Math.abs(points[i-1].x) - points[(i+1)%8].x)/2;
+                                                    points[i].y = Math.min(points[i-1].y, points[(i+1)%8].y) + (Math.abs(points[i-1].y) - points[(i+1)%8].y)/2;
+                                                }
+
+                                                $("#handle_" + i).css("top", points[i].y * canvas.height).css("left", points[i].x * canvas.width);
+
+                                            }
+                                        }
+
+                                        function minimal_size(index){
+
+                                            if(index != undefined){
+                                                var smallestSize = 0.030;
+                                                var opposite = (((Number(index)+8+4)%8));
+                                                var minX = points[0].x;
+                                                var maxX = points[2].x;
+                                                var minY = points[0].y;
+                                                var maxY = points[6].y;
+
+
+                                                if(minX+smallestSize > maxX){
+                                                    if(index == 0 || index == 6 || index == 7){
+                                                        points[0].x = points[2].x - smallestSize;
+                                                        points[6].x = points[4].x - smallestSize;
+                                                    }
+                                                    if(index == 2 || index == 3 || index == 4){
+                                                        points[2].x = points[0].x + smallestSize;
+                                                        points[4].x = points[6].x + smallestSize;
+                                                    }
+                                                }
+                                                if(minY+smallestSize > maxY){
+                                                    if(index == 0 || index == 1 || index == 2){
+                                                        points[0].y = points[6].y - smallestSize;
+                                                        points[2].y = points[4].y - smallestSize;
+                                                    }
+                                                    if(index == 4 || index == 5 || index == 6){
+                                                        points[4].y = points[2].y + smallestSize;
+                                                        points[6].y = points[0].y + smallestSize;
+                                                    }
+                                                }
+
+                                                if(Math.abs(points[opposite].x - points[index].x) < smallestSize ){
+                                                    //points[index].x = Math.min(points[opposite].x, points[index].x) + smallestSize;
+                                                }
+                                                else if(points[opposite].y - points[index].y < smallestSize ){
+
+                                                }
+                                            }
+                                        }
+
+                                        function redraw_points(canvas, index)
+                                        {
+                                            if(shape == "square"){
+                                                minimal_size(index);
+                                                recalculate_points(canvas);
+                                            }
+
+                                            var context = canvas.getContext('2d');
+                                            context.beginPath();
+                                            context.lineWidth = 1;
+                                            context.clearRect(0, 0, canvas.width, canvas.height);
+                                            context.setLineDash([5, 5]);
+                                            if(points.length == 0)
+                                            {
+                                                return;
+                                            }
+                                            for(var i = 0; i < points.length + 1; i++)
+                                            {
+                                                point = points[i % points.length];
+                                                if(i == 0)
+                                                {
+                                                    context.moveTo(point.x * canvas.width, point.y * canvas.height);
+                                                }else{
+                                                    context.lineTo(point.x * canvas.width, point.y * canvas.height);
+                                                }
+                                            }
+                                            context.stroke();
+                                            context.fillStyle = "rgba(150, 150, 150, 0.3)"
+                                            context.fill();
+                                            for(var i = 0; i < points.length; i++){
+                                                var point = points[i];
+                                                var handle = $("#handle_" + i);
+                                                handle.css("left", point.x * canvas.width);
+                                                handle.css("top", point.y * canvas.height);
+                                            }
+                                        }
+                                        var last_mousedown = undefined;
+                                        dragging = false;
+                                        current_handle = "";
+                                        $("#outer_img_" + id + " .overlayDiv").contextmenu(function() {
+                                            return false;
+                                        });
+                                        $("#outer_img_" + id + " .overlayImage").contextmenu(function() {
+                                            return false;
+                                        });
+                                            $("#outer_img_" + id + " .overlayDiv").on("mousedown mouseup mousemove", function (e) {
+                                                // right mouse click
+
+                                                if(shape === "polygon") {
+                                                    if (e.which == 3) {
+                                                        if (e.type == "mousedown" && e.target.className == "hotspot-handle") {
+                                                            npoints = [];
+                                                            for (var i = 0; i < points.length; i++) {
+                                                                p = points[i];
+                                                                if (p.id != e.target.id) {
+                                                                    npoints.push(points[i]);
+                                                                }
+                                                            }
+                                                            points = npoints;
+
+                                                            $("#" + e.target.id).remove();
+                                                            var canvas = $("#outer_img_" + id + " canvas").get(0);
+                                                            redraw_points(canvas);
+                                                        }
+                                                        return;
+                                                    }
+                                                    if (e.type == "mousedown" && e.target.className == "hotspot-handle") {
+                                                        last_mousedown = e;
+                                                        dragging = true;
+                                                        current_handle = e.target.id;
+                                                    } else if (
+                                                        !dragging
+                                                        && e.type == "mouseup"
+                                                        && e.target.className != "hotspot-handle"
+                                                        &&
+                                                        (
+                                                            last_mousedown == undefined
+                                                            || e.screenX == last_mousedown.screenX
+                                                            && e.screenY == last_mousedown.screenY
+                                                        )
+                                                    ) {
+                                                        clickHandler(e);
+                                                    } else if (dragging && (e.type == "mouseup" || e.type == "mousemove")) {
+                                                        if (e.type == "mouseup") {
+                                                            dragging = false;
+                                                            last_mousedown = undefined;
+                                                        }
+                                                        if (dragging) {
+                                                            var canvas = $("#outer_img_" + id + " canvas").get(0);
+
+                                                            point = points.filter(p => p.id == current_handle)[0];
+                                                            mouse = getMousePosition(canvas, e);
+                                                            point.x = mouse.x;
+                                                            point.y = mouse.y;
+
+                                                            $("#" + current_handle).css("top", point.y * canvas.height).css("left", point.x * canvas.width);
+                                                            last_mousedown = e;
+                                                            redraw_points(canvas);
+                                                        }
+                                                    }
+                                                }else if(shape === "square"){
+                                                    if (e.type == "mousedown" && e.target.className == "hotspot-handle") {
+                                                        last_mousedown = e;
+                                                        dragging = true;
+                                                        current_handle = e.target.id;
+                                                    }else if (dragging && (e.type == "mouseup" || e.type == "mousemove")) {
+                                                        if (e.type == "mouseup") {
+                                                            dragging = false;
+                                                            last_mousedown = undefined;
+                                                        }
+                                                        if (dragging) {
+                                                            var canvas = $("#outer_img_" + id + " canvas").get(0);
+                                                            var index;
+                                                            for(var i in points){
+                                                                if(points[i].id == current_handle)
+                                                                {
+                                                                    index = i;
+                                                                }
+                                                            }
+                                                            point = points[index];
+                                                            mouse = getMousePosition(canvas, e);
+                                                            point.x = mouse.x;
+                                                            point.y = mouse.y;
+
+
+                                                            var NextCorner = (((Number(index)+8+2)%8));
+                                                            var PreviousCorner = (((Number(index)+8-2)%8));
+
+                                                            //Left top and Right bottom.
+                                                            if(index % 4 == 0) {
+                                                                points[NextCorner].y = point.y;
+                                                                points[PreviousCorner].x = point.x;
+                                                            }
+                                                            //Right top and Left bottom.
+                                                            else if(index % 2 == 0){
+                                                                points[PreviousCorner].y = point.y;
+                                                                points[NextCorner].x = point.x;
+                                                            }
+                                                            //All the middle points
+                                                            else{
+
+                                                                NextCorner = (((Number(index)+8+1)%8));
+                                                                PreviousCorner = (((Number(index)+8-1)%8));
+
+                                                                if(index % 4 == 1){
+                                                                    points[NextCorner].y = point.y;
+                                                                    points[PreviousCorner].y = point.y;
+                                                                }else{
+                                                                    points[NextCorner].x = point.x;
+                                                                    points[PreviousCorner].x = point.x;
+                                                                }
+                                                            }
+
+                                                            last_mousedown = e;
+                                                            redraw_points(canvas, index);
+                                                        }
+
+
+                                                    }
+                                                }
+                                            });
+
+
+                                        function clickHandler(e){
+                                            var canvas = $("#outer_img_" + id + " canvas").get(0);
+                                            center = getMousePosition(canvas, e);
+
+                                            center.id = "handle_" + uniq_id;
+                                            uniq_id ++;
+                                            if(points.length == 0)
+                                            {
+                                                center.previous = "";
+                                            }else{
+                                                center.previous = points[points.length - 1].id;
+                                            }
+                                            var index = 0;
+                                            var pow = function(x){return Math.abs(x) * Math.abs(x);}
+                                            lengths = points.map(function(p){return {
+                                                "index": index++,
+                                                "point": p,
+                                                "len": Math.sqrt(pow(p.x - center.x) + pow(p.y - center.y))
+                                            }}).sort(function(a, b){
+                                                if (a.len < b.len)
+                                                  return -1;
+                                                if (a.len > b.len)
+                                                  return 1;
+                                                return 0;
+                                            });
+                                            if(lengths.length > 2)
+                                            {
+                                                closest = lengths[0];
+                                                neighbors = lengths.filter(l => l.index == (closest.index + 1) % lengths.length || l.index == (closest.index + lengths.length - 1) % lengths.length);
+                                                if (neighbors[0].len > neighbors[1].len)
+                                                {
+                                                    closestNeighbor = neighbors[1]
+                                                }else{
+                                                    closestNeighbor = neighbors[0];
+                                                }
+                                                if(Math.abs(closest.index - closestNeighbor.index) > 1)
+                                                {
+                                                    points.push(center);
+                                                    smallestIndex = points.length - 1;
+                                                }else{
+                                                    smallestIndex = Math.min(closest.index, closestNeighbor.index) + 1;
+                                                    points.splice(smallestIndex, 0, center);
+                                                }
+
+                                                points[smallestIndex].previous = points[(smallestIndex + 1) % points.length].id;
+                                                points[(smallestIndex + points.length - 1) % points.length].previous = center.id;
+                                            }else{
+                                                points.push(center);
+                                            }
+
+                                            var handle = $(handle_shell);
+                                            handle.attr("id", center.id);
+                                            handle.css("left", center.x * canvas.width);
+                                            handle.css("top", center.y * canvas.height);
+                                            $("#outer_img_" + id + " .overlayDiv").append(handle.prop("outerHTML"));
+                                            redraw_points(canvas);
+                                        }
+                                    }
+                                });
+                            });
                     }
                     else
                     {
                         html.append("select image first"); // ** shouldn't this be translated?
                     }
 
-                    break;
-                case 'media':
-                    var id = 'media_' + form_id_offset;
-                    form_id_offset++;
-                    // a textinput with a browse buttons next to the type-in
-                    var td1 = $('<td width="100%">')
-                        .append($('<input>')
-                            .attr('type', "text")
-                            .attr('id', id)
-                            .addClass('media')
-                            .change({id:id, key:key, name:name}, function(event)
-                            {
-                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                            })
-                            .attr('value', value));
-					
-                    var td2 = $('<td>');
-					var btnHolder = $('<div style="width:4.5em"></div>').appendTo(td2);
-                    btnHolder.append($('<button>')
-						.attr('id', 'browse_' + id)
-						.attr('title', language.compMedia.$tooltip)
-						.addClass("xerte_button")
-						.addClass("media_browse")
-						.click({id:id, key:key, name:name}, function(event)
+				break;
+			case 'media':
+				var id = 'media_' + form_id_offset;
+				form_id_offset++;
+				// a textinput with a browse buttons next to the type-in
+				var td1 = $('<td width="100%">')
+					.append($('<input>')
+						.attr('type', "text")
+						.attr('id', id)
+						.addClass('media')
+						.change({id:id, key:key, name:name}, function(event)
 						{
-							browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
+							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
 						})
-						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')))
-					
-					btnHolder.append($('<button>')
-						.attr('id', 'preview_' + id)
-						.attr('title', language.compPreview.$tooltip)
-						.addClass("xerte_button")
-						.click({id:id, key:key, name:name}, function(event)
-						{
-							previewFile(options.label, $(this).closest('tr').find('input')[0].value);
-						})
-						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon')));
-							
-                    html = $('<div>')
-                        .attr('id', 'container_' + id)
-                        .addClass('media_container');
-                    html.append($('<table width="100%">')
-                        .append($('<tr>')
-                            .append(td1)
-                            .append(td2)));
-                    break;
-                case 'datagrid':
-                    var id = 'grid_' + form_id_offset;
-                    form_id_offset++;
-                    html= $('<div>')
-                        .attr('id', id)
-                        .addClass('datagrid')
-                        .append($('<table>')
-                            .attr('id', id + '_jqgrid'))
-                        .append($('<div>')
-                            .attr('id', id + '_nav'))
-                        .append($('<div>')
-                            .attr('id', id + '_addcolumns')
-                            .addClass('jqgridAddColumnsContainer'));
-
-                    datagrids.push({id: id, key: key, name: name, options: options});
-                    break;
-				case 'datefield':
-                    var id = 'date_' + form_id_offset;
-                    form_id_offset++;
-                    if (value.length==0)
-                    {
-                        value=new Date();
-                        setAttributeValue(key, [name], [value.toISOString()]);
-                    }
-                    value = new Date(value).toDateString();
-					// a datepicker with a browse buttons next to it
-                    var td1 = $('<td width="100%">')
-                        .append($('<input>')
-                            .attr('type', "text")
-                            .attr('id', id)
-							.addClass('date')
-                            .change({id:id, key:key, name:name}, function(event)
-							{
-								inputChanged(event.data.id, event.data.key, event.data.name, new Date(this.value).toISOString(), this);
-							})
-							.attr('value', value)
-							.datepicker({
-								showOtherMonths: true,
-								selectOtherMonths: true,
-								dateFormat: 'yy-mm-dd'
-							}));
-					
-                    var td2 = $('<td>');
-					var btnHolder = $('<div style="width:4.5em"></div>').appendTo(td2);
-                    btnHolder.append($('<button>')
-						.attr('id', 'calendar_' + id)
-						.attr('title', language.calendar != undefined ? language.calendar.$tooltip : '')
-						.addClass("xerte_button")
-						.click({id:id, key:key, name:name}, function(event)
-						{
-							td1.datepicker("show");
-						})
-						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-calendar').addClass('xerte-icon')))
-					
-                    html = $('<div>')
-                        .attr('id', 'container_' + id)
-                        .addClass('media_container');
-                    html.append($('<table width="100%">')
-                        .append($('<tr>')
-                            .append(td1)
-                            .append(td2)));
-                    break;
-                case 'drawing': // Not implemented
-                    var id = 'drawing_' + form_id_offset;
-                    form_id_offset++;
-                    html = $('<button>')
-                        .attr('id', id)
-                        .attr('title', language.edit.$tooltip)
-                        .addClass("xerte_button")
-                        .click({id:id, key:key, name:name, value:value}, function(event)
-                        {
-                            editDrawing(event.data.id, event.data.key, event.data.name, event.data.value);
-                        }
-                    )
-                        .append(language.edit.$label);
-                    break;
-                case 'webpage':  //Not used??
-                case 'xerteurl':
-                case 'xertelo':
-                default:
-                    var id = 'textinput_' + form_id_offset;
-                    form_id_offset++;
-                    if (options.wysiwyg && options.wysiwyg!="false")
-                    {
-                        html = $('<div>')
-                            .attr('id', id)
-                            .addClass('inlinewysiwyg')
-                            .attr('contenteditable', 'true')
-							.append('<p>' + value + '</p>');
+						.attr('value', value));
+				
+				var td2 = $('<td>');
+				var btnHolder = $('<div style="width:4.5em"></div>').appendTo(td2);
+				btnHolder.append($('<button>')
+					.attr('id', 'browse_' + id)
+					.attr('title', language.compMedia.$tooltip)
+					.addClass("xerte_button")
+					.addClass("media_browse")
+					.click({id:id, key:key, name:name}, function(event)
+					{
+						browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
+					})
+					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')))
+				
+				btnHolder.append($('<button>')
+					.attr('id', 'preview_' + id)
+					.attr('title', language.compPreview.$tooltip)
+					.addClass("xerte_button")
+					.click({id:id, key:key, name:name}, function(event)
+					{
+						previewFile(options.label, $(this).closest('tr').find('input')[0].value);
+					})
+					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon')));
 						
-                        textinputs_options.push({id: id, key: key, name: name, options: options});
-                    }
-                    else {
-                        if (options.type.toLowerCase() == 'xerteurl' && value.length==0)
-                        {
-                            value=baseUrl();
-                            setAttributeValue(key, [name], [value]);
-                        }
-                        if (options.type.toLowerCase() == 'xertelo' && value.length==0)
-                        {
-                            value=template_id;
-                            setAttributeValue(key, [name], [value]);
-                        }
-                        html = $('<input>')
-                            .attr('type', "text")
-                            .addClass('inputtext')
-                            .attr('id', id)
-                            .keyup({name: name, key: key, options: options}, function()
-                            {
-                            	if (name == 'name') {
-									// Rename the node
-                                	var tree = $.jstree.reference("#treeview");
-                                	tree.rename_node(tree.get_node(key, false), $(this).val());
-                            	}
-                            })
-                            .change({id:id, key:key, name:name}, function(event)
-                            {
-                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                            })
-                            .attr('value', value);
-                    }
-            }
-            return html;
-        };
+				html = $('<div>')
+					.attr('id', 'container_' + id)
+					.addClass('media_container');
+				html.append($('<table width="100%">')
+					.append($('<tr>')
+						.append(td1)
+						.append(td2)));
+				break;
+			case 'datagrid':
+				var id = 'grid_' + form_id_offset;
+				form_id_offset++;
+				html = $('<div>')
+					.attr('id', id)
+					.addClass('datagrid')
+					.append($('<table>')
+						.attr('id', id + '_jqgrid'))
+					.append($('<div>')
+						.attr('id', id + '_nav'))
+					.append($('<div>')
+						.attr('id', id + '_addcolumns')
+						.addClass('jqgridAddColumnsContainer'));
+
+				datagrids.push({id: id, key: key, name: name, options: options});
+				break;
+			case 'datefield':
+				var id = 'date_' + form_id_offset;
+				form_id_offset++;
+				if (value.length==0)
+				{
+					value=new Date();
+					setAttributeValue(key, [name], [value.toISOString()]);
+				}
+				value = new Date(value).toDateString();
+				// a datepicker with a browse buttons next to it
+				var td1 = $('<td width="100%">')
+					.append($('<input>')
+						.attr('type', "text")
+						.attr('id', id)
+						.addClass('date')
+						.change({id:id, key:key, name:name}, function(event)
+						{
+							inputChanged(event.data.id, event.data.key, event.data.name, new Date(this.value).toISOString(), this);
+						})
+						.attr('value', value)
+						.datepicker({
+							showOtherMonths: true,
+							selectOtherMonths: true,
+							dateFormat: 'yy-mm-dd'
+						}));
+				
+				var td2 = $('<td>');
+				var btnHolder = $('<div style="width:4.5em"></div>').appendTo(td2);
+				btnHolder.append($('<button>')
+					.attr('id', 'calendar_' + id)
+					.attr('title', language.calendar != undefined ? language.calendar.$tooltip : '')
+					.addClass("xerte_button")
+					.click({id:id, key:key, name:name}, function(event)
+					{
+						td1.datepicker("show");
+					})
+					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-calendar').addClass('xerte-icon')))
+				
+				html = $('<div>')
+					.attr('id', 'container_' + id)
+					.addClass('media_container');
+				html.append($('<table width="100%">')
+					.append($('<tr>')
+						.append(td1)
+						.append(td2)));
+				break;
+			case 'drawing': // Not implemented
+				var id = 'drawing_' + form_id_offset;
+				form_id_offset++;
+				html = $('<button>')
+					.attr('id', id)
+					.attr('title', language.edit.$tooltip)
+					.addClass("xerte_button")
+					.click({id:id, key:key, name:name, value:value}, function(event)
+					{
+						editDrawing(event.data.id, event.data.key, event.data.name, event.data.value);
+					}
+				)
+					.append(language.edit.$label);
+				break;
+			case 'webpage':  //Not used??
+			case 'xerteurl':
+			case 'xertelo':
+			default:
+				var id = 'textinput_' + form_id_offset;
+				form_id_offset++;
+				if (options.wysiwyg && options.wysiwyg != "false")
+				{
+					html = $('<div>')
+						.attr('id', id)
+						.addClass('inlinewysiwyg')
+						.attr('contenteditable', 'true')
+						.append('<p>' + value + '</p>');
+					
+					textinputs_options.push({id: id, key: key, name: name, options: options});
+				}
+				else {
+					if (options.type.toLowerCase() == 'xerteurl' && value.length==0)
+					{
+						value=baseUrl();
+						setAttributeValue(key, [name], [value]);
+					}
+					if (options.type.toLowerCase() == 'xertelo' && value.length==0)
+					{
+						value=template_id;
+						setAttributeValue(key, [name], [value]);
+					}
+					html = $('<input>')
+						.attr('type', "text")
+						.addClass('inputtext')
+						.attr('id', id)
+						.keyup({name: name, key: key, options: options}, function()
+						{
+							if (name == 'name') {
+								// Rename the node
+								var tree = $.jstree.reference("#treeview");
+								tree.rename_node(tree.get_node(key, false), $(this).val());
+							}
+						})
+						.change({id:id, key:key, name:name}, function(event)
+						{
+							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+						})
+						.attr('value', value);
+				}
+		}
+		return html;
+	};
 
 		
 	CKEDITOR.on('dialogDefinition', function(event) {
