@@ -225,8 +225,9 @@
 					$this.hide();
 					$("#fbTxt").html($("#pageContents").data("feedback"));
 					$("#copyBtn, #copyTxt").show();
-					// Queue reparsing of MathJax - fails if no network connection
-					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+
+					x_pageContentsUpdated();
+
 					modelAnswer.tracked = true;
 					modelAnswer.finishTracking();
 					if (x_currentPageXML.getAttribute("copypasteinfo") != undefined && x_currentPageXML.getAttribute("copypasteinfo") != "") {

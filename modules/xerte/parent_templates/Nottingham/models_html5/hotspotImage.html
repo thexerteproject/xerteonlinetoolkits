@@ -192,6 +192,7 @@
 						.attr("coords", coords_string)
 						.click(function() {
 							$("#infoHolder").html("<hr/><h3>" + _this.getAttribute("name") + "</h3><br/>" + x_addLineBreaks(_this.getAttribute("text")));
+							
 							$(".selected").removeClass("selected");
 							if (x_currentPageXML.getAttribute("highlight") !== "true") {
 								$("area").mapster('deselect');
@@ -213,13 +214,16 @@
 									prevHS.button("enable");
 								}
 							}
+							
 							if (x_currentPageXML.getAttribute("highlight") == "true") {
 
 								setTimeout(function(){
 									$("area").mapster('select');
 								}, 100);
 							}
-							})
+							
+							x_pageContentsUpdated();
+						})
 						.focusin(function() {
 							$(this)
 								.removeClass("transparent")

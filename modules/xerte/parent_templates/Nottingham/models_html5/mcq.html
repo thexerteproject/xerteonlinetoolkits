@@ -222,9 +222,6 @@
 
             $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
 
-            // Queue reparsing of MathJax - fails if no network connection
-            try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
             var result = {
                 success: correct,
                 score: correct ? 100.0 : 0.0
@@ -240,8 +237,8 @@
                     $("#option"+i).attr("disabled", "disabled");
                 }
             }
-            // Queue reparsing of MathJax - fails if no network connection
-            try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+
+            x_pageContentsUpdated();
         }
 
 		this.init = function() {

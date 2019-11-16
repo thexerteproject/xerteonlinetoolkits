@@ -1992,6 +1992,11 @@ function x_changePageStep6() {
 	}
 }
 
+// trigger that page contents have updated
+function x_pageContentsUpdated(){
+	// Queue reparsing of MathJax - fails if no network connection
+    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+}
 
 // function used for hashtag deeplinking
 function x_updateHash() {
