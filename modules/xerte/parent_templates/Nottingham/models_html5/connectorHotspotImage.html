@@ -389,7 +389,10 @@
 							}
 						});
 					if (x_currentPageXML.getAttribute("hs_showTooltip") == undefined || x_currentPageXML.getAttribute("hs_showTooltip") !== "false") {
-						$hotspot.attr("title", this.getAttribute("name"));
+						if (this.getAttribute("alttext") != undefined && x_currentPageXML.getAttribute("alttext") != "")
+							$hotspot.attr("title", this.getAttribute("alttext"));
+						else
+							$hotspot.attr("title", this.getAttribute("name"));
 					}
 
 					$("#hsHolder_map").append($hotspot);
