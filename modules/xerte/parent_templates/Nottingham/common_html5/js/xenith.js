@@ -2549,7 +2549,7 @@ function x_openDialog(type, title, close, position, load, onclose) {
                     else
                     {
                         $x_popupDialog.load(x_templateLocation + "models_html5/" + type + ".html", function () {
-                            x_setDialogSize($x_popupDialog, position)
+                            x_setDialogSize($x_popupDialog, position);
                         });
                     }
 
