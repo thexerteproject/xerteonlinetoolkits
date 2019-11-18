@@ -2601,7 +2601,7 @@ function x_setDialogSize($x_popupDialog, position) {
     }
 
     $x_popupDialog.dialog({
-        "width" :width,
+        //"width" :width,
 		"height" : "auto"
     });
     $x_popupDialog.parent().css({
