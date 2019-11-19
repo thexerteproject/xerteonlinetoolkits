@@ -6,11 +6,11 @@
   </pageWizard>
   
   <!-- BULLETS PAGE========================================== -->
-  <bullets menu="Text" menuItem="Bullets" hint="A page of animated bullet points." label="Page Text" type="text" height="310"  icon="icBullets" thumb="thumbs/bullets.jpg" remove="true">
+  <bullets menu="Text" menuItem="Bullets" hint="A page of animated bullet points." label="Page Text" type="text" height="310"  icon="icBullets" thumb="thumbs/bullets.jpg" remove="true" tooltip="If you want a mix of normal paragraph text (without bullets) and text that does have bullets (including numbered lists and sub lists) then apply the bullets and numbers to selected text using the wysiwyg editor buttons. Note: The option below to add bullets to all paragraphs will then be ignored.">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <delaySecs label="Delay (secs)" type="NumericStepper" min="1" max="10" step="0.25"  width="100" defaultValue="1" />
-    <showBullets label="Add Bullets to Text" options="Yes,No" type="ComboBox" defaultValue="1" data="1,0" width="100" />
+    <showBullets label="Add Bullets to Text" options="Yes,No" type="ComboBox" defaultValue="1" data="1,0" width="100" tooltip="If you wish to automatically add bullets to all paragraphs set this option to yes but do not add bullets via the wysiwyg editor. If you do also add bullets via the wysiwyg editor then this automatic option will be ignored."/>
     <showPanel label="Display Panel" options="Yes,No" type="ComboBox" defaultValue="1" data="1,0" width="100" />
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     
