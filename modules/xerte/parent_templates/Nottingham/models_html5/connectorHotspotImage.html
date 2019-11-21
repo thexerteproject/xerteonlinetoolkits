@@ -389,7 +389,7 @@
 							}
 						});
 					if (x_currentPageXML.getAttribute("hs_showTooltip") == undefined || x_currentPageXML.getAttribute("hs_showTooltip") !== "false") {
-						if (this.getAttribute("alttext") != undefined && x_currentPageXML.getAttribute("alttext") != "")
+						if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
 							$hotspot.attr("title", this.getAttribute("alttext"));
 						else
 							$hotspot.attr("title", this.getAttribute("name"));

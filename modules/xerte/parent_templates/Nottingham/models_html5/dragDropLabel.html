@@ -449,7 +449,7 @@
                             // create target and position it
                             $('<div class="target transparent"></div>')
                                     .appendTo($targetHolder)
-                                    .attr("title", targetTxt1 + " " + (i + 1))
+                                    .attr("title", (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "") ? this.getAttribute("alttext") : targetTxt1 + " " + (i + 1))
                                     .data("text", this.getAttribute("text"))
                                     .css({
                                         "left": xywh[0],
