@@ -336,6 +336,36 @@ function folder_loop($path)
     closedir($d);
 }
 
+function recognise_import($check) {
+	$probably = "decision";
+	$probably_weight = test_unrecognised_import(["name", "displayMode", "newBtnLabel", "backBtn", "fwdBtn", "emailBtn", "printBtn", "viewThisBtn", "closeBtn", "moreInfoString", "lessInfoString", "helpString", "resultString", "overviewString", "posAnswerString", "fromRangeString", "viewAllString", "errorString", "sliderError", "noQ", "noA", "resultEndString", "theme"], $check);
+//echo "Decision=".$probably_weight;echo "<br />";
+
+	$new_weight = test_unrecognised_import(["name", "language", "navigation", "textSize", "theme", "displayMode", "responsive"], $check);
+	if ($new_weight > $probably_weight) {
+		$probably = "Nottingham";
+		$probably_weight = $new_weight;
+	}
+//echo "Xerte=".$new_weight;echo "<br />";
+
+	$new_weight = test_unrecognised_import(["language", "name", "theme"], $check);
+	if ($new_weight > $probably_weight) {
+		$probably = "site";
+	}
+//echo "Bootstrap=".$new_weight;echo "<br />";
+
+	return $probably;
+}
+
+function test_unrecognised_import($test_array, $check) {
+	$count = 0;
+	foreach($test_array as $t) {
+		if ( (string)$check[$t] != "" ) $count++;
+	}
+//echo $count.",".count($test_array);echo "<br />";
+	return ($count / count($test_array)) * 100;// + count($test_array);
+}
+
 /* Check on POST and FILES */
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") {
@@ -577,6 +607,9 @@ if (substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded
             if ($check->getName() === "learningObject") {
                 $folder = (string)$check['targetFolder'];
                 $data_xml_is_a_LO = true;
+				if ($folder == "") {
+					$folder = recognise_import($check);
+				}
             }
         }
         // 2. First look in $template_data_equivalent
@@ -585,6 +618,9 @@ if (substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded
             if ($check && $check->getName() === "learningObject") {
                 $folder = (string)$check['targetFolder'];
                 $version = (string)$check['version'];
+				if ($folder == "") {
+					$folder = recognise_import($check);
+				}
             }
         }
         if ($folder == "" && $template_check_rlt && file_exists($xerte_toolkits_site->import_path . $this_dir . $template_check_rlt)) {
@@ -592,6 +628,9 @@ if (substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded
             if ($check && $check->getName() === "learningObject") {
                 $folder = (string)$check['targetFolder'];
                 $version = (string)$check['version'];
+				if ($folder == "") {
+					$folder = recognise_import($check);
+				}
             }
         }
         if ($folder == "" && $data_xml_is_a_LO) {
