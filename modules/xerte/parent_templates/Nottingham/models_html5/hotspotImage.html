@@ -240,7 +240,7 @@
 								$(this).trigger("click");
 							}
 						});
-					if (x_currentPageXML.getAttribute("hs_showTooltip") == undefined || x_currentPageXML.getAttribute("hs_showTooltip") !== "false") {
+					if (x_currentPageXML.getAttribute("hs_showTooltip") != undefined || x_currentPageXML.getAttribute("hs_showTooltip") !== "false") {
 						if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
 							$hotspot.attr("title", this.getAttribute("alttext"));
 						else
