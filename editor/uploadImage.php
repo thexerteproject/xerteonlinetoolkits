@@ -21,7 +21,8 @@
 require_once(dirname(__FILE__) . "/../config.php");
 _load_language_file("/editor/uploadImage.inc");
 
-function sanitizeName($file, &$response)
+//** Nolonger required if we are renaming pasted images
+/*function sanitizeName($file, &$response)
 {
     $filename = str_replace(' ', '_', $file);
     if ($filename != $file) {
@@ -32,9 +33,10 @@ function sanitizeName($file, &$response)
     }
 
    return $filename;
-}
+}*/
 
-function return_bytes($val) {
+// Nevr used inside this page so commented out
+/*function return_bytes($val) {
     $val = trim($val);
     $last = strtolower($val[strlen($val)-1]);
     switch($last) {
@@ -48,8 +50,9 @@ function return_bytes($val) {
     }
 
     return $val;
-}
+}*/
 
+// Check we have a logged in user
 if (!isset($_SESSION['toolkits_logon_username']) && !is_user_admin())
 {
     _debug("Session is invalid or expired");
@@ -126,11 +129,13 @@ switch($_FILES['upload']['type'])
         exit(-1);
 }
 
-$filename = sanitizeName($_FILES['upload']['name'], $response);
+//$filename = sanitizeName($_FILES['upload']['name'], $response);
+
 // Add path to the $filename
-$paste = "image";
+$paste = "pasted_image";
+
 // Check if pasted filename already exists, if so add a count until we find a name that is available
-if ($filename == $paste . $paste_ext) {
+//if ($filename == $paste . $paste_ext) {
     $final = $paste . $paste_ext;
     $count = 1;
     while (file_exists($_REQUEST['uploadPath'] . "media/" . $final)) {
@@ -138,7 +143,7 @@ if ($filename == $paste . $paste_ext) {
         $count++;
     }
     $filename = $final;
-}
+//}
 
 $response->uploaded = 1;
 $response->url = $_REQUEST['uploadURL'] . "/media/" . $filename;
