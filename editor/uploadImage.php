@@ -126,7 +126,7 @@ switch($_FILES['upload']['type'])
         exit(-1);
 }
 
-$filename = sanitizeName($_FILES['upload']['name']);
+$filename = sanitizeName($_FILES['upload']['name'], $response);
 // Add path to the $filename
 $paste = "image";
 // Check if pasted filename already exists, if so add a count until we find a name that is available
