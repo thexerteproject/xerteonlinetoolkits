@@ -245,11 +245,12 @@
 							$hotspot.attr("title", this.getAttribute("alttext"));
 						else
 							$hotspot.attr("title", this.getAttribute("name"));
+					} else {
+						if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
+							$hotspot.attr("alt", this.getAttribute("alttext"));
+						else
+							$hotspot.attr("alt", this.getAttribute("name"));
 					}
-					if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
-						$hotspot.attr("alt", this.getAttribute("alttext"));
-					else
-						$hotspot.attr("alt", this.getAttribute("name"));
 
 					$("#hsHolder_map").append($hotspot);
                 });
