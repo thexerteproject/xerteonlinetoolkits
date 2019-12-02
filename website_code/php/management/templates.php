@@ -54,7 +54,8 @@ if (is_user_admin()) {
             "<div class='modal-content'>" .
                 "<span class='close'>&times;</span>" .
                 "<div>". NOTTINGHAM_TEMPLATES ."</div>" .
-                "</div></div>";
+                "<div class='template-content'>" .
+                "</div></div></div>";
 
 
     echo "<p style=\"margin:20px 0 0 5px\">" . TEMPLATE_MANAGE . "</p>";

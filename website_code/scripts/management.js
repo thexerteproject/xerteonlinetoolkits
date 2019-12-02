@@ -21,6 +21,8 @@ var function_to_use = null;
 
 var management_ajax_php_path = "website_code/php/management/";
 
+var xwd_url = "http://localhost/xerteonlinetoolkits/modules/xerte/parent_templates/Nottingham/wizards/en-GB/data.xwd";
+
 if(typeof(String.prototype.trim) === "undefined")
 {
     String.prototype.trim = function()
@@ -1142,23 +1144,24 @@ function loadModal() {
     if (modal !== null) {
         btn.onclick = function () {
             modal.style.display = "block";
-            load();
+            load(modal);
         }
     }
 };
 
-function load()
+function load(modal)
 {
-	var x;
 	$.get("website_code/php/management/query_templates.php", {queryData: 'modal'}, function(data){
-		x = data;
+		var x = data;
 
         var span = document.getElementsByClassName("close");
+        var template_content = $(".template-content");
 
         if(span.length !== 0)
         {
             span[0].onclick = function () {
                 modal.style.display = "none";
+                template_content.empty();
             }
         }
 
@@ -1167,7 +1170,30 @@ function load()
             if(event.target == modal)
             {
                 modal.style.display = "none";
+                template_content.empty();
             }
-        }
-	})
+        };
+
+        var templates = JSON.parse(x);
+        for (var i=0; i<templates.length; i++) {
+        	if(templates[i]["template_name"] === "Nottingham") {continue;}
+			else{
+                var paragraph = $("<p></p>");
+                paragraph.append(templates[i]["template_name"]);
+                template_content.append(paragraph, $("<br>"));
+			}
+        };
+
+        $.ajax({
+			type: "GET",
+			url: xwd_url,
+			dataType: "text",
+			success: function(data) {
+				console.log($($.parseXML(data)).find("wizards"));
+			},
+			error: function(data){
+				console.log("error");
+			}
+		});
+	});
 }
