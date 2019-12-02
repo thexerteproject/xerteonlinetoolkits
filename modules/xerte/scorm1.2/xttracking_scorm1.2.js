@@ -154,7 +154,7 @@ function ScormTrackingState()
     this.duration_previous_attempts = 0;
     this.lo_type = "pages only";
     this.lo_passed = -1.0;
-    this.page_timeout = 5000;
+    this.page_timeout = 0;
     this.lo_completed = "unknown";
     this.finished = false;
     this.interactions = new Array();

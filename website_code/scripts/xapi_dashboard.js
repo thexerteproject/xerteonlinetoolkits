@@ -56,6 +56,7 @@ function xapiGetStatements(lrs, q, one, callback) {
     );
 }
 */
+
 function xAPIDashboard(info) {
     this.data = new DashboardState(info);
 }
@@ -457,7 +458,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 }
             });
 
-        });journeyData
+        });
 
 
         $(".show-question-overview-button").on('click', function() {
@@ -1202,7 +1203,19 @@ xAPIDashboard.prototype.displayQuizOverview = function(contentDiv, questions)
 }
 
 xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, interaction) {
+    var dashboard = this;
     var $this = this;
+    var sessions = [];
+    this.data.rawData.forEach(function(s) {
+        if (dashboard.data.currentGroup.group_id == "all-groups" || dashboard.data.currentGroup.group_id == dashboard.getGroupFromStatements([s])) {
+            sessionId = s.context.extensions["http://xerte.org.uk/sessionId"];
+            if (sessions.indexOf(sessionId) === -1) {
+                sessions.push(sessionId);
+            }
+        }
+    });
+
+
     var statements = this.data.getInteractionStatements(interaction.url).filter(function(s){
             g = $this.getGroupFromStatements([s]);
             cg = $this.data.currentGroup.group_id;
@@ -1224,9 +1237,11 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
             groupedData[$key] = $val;
         }
     }
+
+
     users = Object.keys(groupedData);
     contentDiv.find(jqLocation).append("Number of users" + " " + users.length + "<br>");
-    contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRATTEMPTS + " " + started.length + " = " + Math.round(started.length / users.length * 100) + "%<br>");
+    contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRATTEMPTS + " " + started.length + " = " + Math.round(started.length / sessions.length * 100) + "%<br>");
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRCOMPLETIONS + " " + uniqIds.length + " = " + Math.round(uniqIds.length / users.length * 100) + "%<br>");
 
     var grouped = this.data.groupStatementsOnSession([started, completed]);

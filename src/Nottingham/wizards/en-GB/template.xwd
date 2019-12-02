@@ -74,7 +74,7 @@
 	<tracking type="group" label="Tracking" optional="true">
 		<trackingMode optional="true" label="Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first"/>
 		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage when tracking"/>
-        <trackingPageTimeout label="Page timeout for completion" type="NumericStepper" min="1" max="1000" step="1" optional="true" defaultValue="5" tooltip="The number of seconds a page has to be viewed to count as completed"/>
+        <trackingPageTimeout label="Page timeout for completion" type="NumericStepper" min="0" max="1000" step="1" optional="true" defaultValue="0" tooltip="The number of seconds a page has to be viewed to count as completed"/>
         <forceTrackingMode label="Force tracking mode behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracking LO's. This changes the behaviour of some pagetypes, i.e. in Quiz the restart button will be disabled and in drag/drop exercises, the labels will stick, even if the answer is wrong"/>
        	<category label="Tracking Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object, stored in xAPI events, to be used for categorising in xAPI reports"/>
 	</tracking>
@@ -125,7 +125,7 @@
 	  selectAreaTip="Select Area"
 	  resetImageTip="Reset Image"
 	  toggleScreenTip="Toggle Full Screen"
-	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;br/&gt;&lt;br/&gt;For example:&lt;br/&gt;&lt;br/&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;br/&gt;&lt;br/&gt;Where | are adjectives, * are verbs and # are nouns." interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." findTxt2="You have found {i} of {n}" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" mcqDialogClose="Close" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
+	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;br/&gt;&lt;br/&gt;For example:&lt;br/&gt;&lt;br/&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;br/&gt;&lt;br/&gt;Where | are adjectives, * are verbs and # are nouns." interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." findTxt2="You have found {i} of {n}"  feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" mcqDialogClose="Close" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
@@ -158,7 +158,7 @@
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
 	  restartBtnText="Restart" 
-	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="General Results" givenameTxt="Your name" averageTxt="Average" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Interactivity Results" globalResultsTxt="Global Results" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Specific Results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter Full Name" userNamePrompt="Your name: " okButtonTxt="Ok" />]]></results><rss><![CDATA[<rss name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left" panelWidth="Medium"/>]]></rss><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
+	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="General Results" givenameTxt="Your name" averageTxt="Average" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Interactivity Results" globalResultsTxt="Global Results" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Specific Results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter Full Name" userNamePrompt="Your name: " okButtonTxt="Ok" />]]></results><rss><![CDATA[<rss name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left" panelWidth="Medium"/>]]></rss><rssdownload><![CDATA[<rssdownload name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left" panelWidth="Medium"/>]]></rssdownload><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
        imageButtonShow="Show Media" imageButtonHide="Hide Media" imageButtonWidth="100" continueButtonLabel="Continue" continueButtonWidth="100"
 	   scenarioPropsTitle="You can see..." scenarioPropsName="item(s)" inventoryEmpty="Nothing" inventoryTitle="You have with you..." inventoryItemName="item(s)"
 	   actionTitle="Actions you can take..." scoresTitle="Scores"
@@ -2340,6 +2340,12 @@
 	<mcqBtnTxt2 label="MCQ Next Button" type="TextInput" wysiwyg="true" language="true"/>
 	<mcqBtnTxt3 label="MCQ Restart Button" type="TextInput" wysiwyg="true" language="true"/>
 	<mcqDialogClose label="MCQ Close Button" type="TextInput" language="true"/>
+	<feedbackTxt label="Feedback" type="TextInput" wysiwyg="true" language="true"/>
+	<groupTxt label="Group" type="TextInput" wysiwyg="true" language="true"/>
+	<yourAnswerTxt label="Your Answer" type="TextInput" wysiwyg="true" language="true"/>
+	<correctAnswerTxt label="Correct Answer" type="TextInput" wysiwyg="true" language="true"/>
+	<passedQuestionTxt label="You passed the question" type="TextInput" wysiwyg="true" language="true"/>
+	<failedQuestionTxt label="Not all answers are correct" type="TextInput" wysiwyg="true" language="true"/>
 
 	<newNodes>
 		<group><![CDATA[<group name="Enter Name Here" delimiter="The character used to mark up this group in the interactive text, e.g. *" text="Enter Description Here" textColour="0xFFFFFF" bgColour="0xFF0000" />]]></group>
@@ -4084,7 +4090,49 @@
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
-	</variables></rss><scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true" deprecated="This page is currently under development">
+	</variables></rss><rssdownload menuItem="RSS Xerte Download Feed" menu="Misc" hint="Include RSS feeds in your project. RSS feeds allow you to add dynamic content from a variety of sources. You can create your own RSS feeds using the RSS Feed template." icon="icRSS" thumb="thumbs/rss.jpg" remove="true">
+
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="textArea" height="300"/>
+	<align label="Text Align" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+    <url label="Feed URL" type="textInput"/>
+	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>
+	
+	<appearance label="Feed View" options="Title Only,Title &amp; Snippet" type="ComboBox" data="title,snippet" defaultValue="snippet" width="100" optional="true"/>
+
+  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
+		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
+		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
+	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled." common="true"/><navBtns type="group" label="Navigation Buttons" optional="true" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here." common="true">
+		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" common="true">
+		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
+		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+		<hideUntilDate label="Until (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+	</hideShow><pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" deprecated="This property is deprecated" common="true"/><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" common="true"/><styles label="Styles" type="script" height="200" optional="true" common="true"/><tracking type="group" label="Tracking" optional="true" common="true">
+        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use instead of page number as tracking identifier (SCORM and xAPI)"/>
+        <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
+	</tracking><scripts type="group" label="Script" optional="true" common="true">
+		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
+		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
+	</scripts><background type="group" label="Background" optional="true" common="true">
+		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
+		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	</variables></rssdownload><scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true" deprecated="This page is currently under development">
 	<name label="Scenario Name" type="TextInput" wysiwyg="true" width="200"/>
 	<title label="Scenario Title" type="TextInput" wysiwyg="true" width="200"/>
 	<description label="Description" type="textArea" height="120"/>
@@ -5148,7 +5196,7 @@
 	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are private and not available in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
 		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
 		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
-	</variables></title><topXQ menu="Interactivity" menuItem="Top X Question " hint="Poses a question with multiple answers where the student can't see the answers like in a MSQ. The user can give the answers in any order." icon="icTopXQ" thumb="thumbs/topXQ.jpg" remove="true">
+	</variables></title><topXQ menu="Interactivity" menuItem="Answer X of Y" hint="Poses a question with multiple answers where the student can't see the answers like in a MCQ. The user can give the answers in any order." icon="icTopXQ" thumb="thumbs/topXQ.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
     <instruction label="Instruction" type="TextArea" height="100"/>

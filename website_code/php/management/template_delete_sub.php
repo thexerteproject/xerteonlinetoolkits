@@ -19,35 +19,24 @@
  */
 require_once("../../../config.php");
 
-_load_language_file("/website_code/php/management/template_details_management.inc");
+_load_language_file("/website_code/php/management/template_delete_sub.inc");
 
 require("../user_library.php");
 
 if(is_user_admin()){
 
-    $query="update {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails set description=?,
-        date_uploaded=?,
-        display_name=?,
-        display_id=?,
-        access_rights=?,
-        active=? WHERE template_type_id = ? ";
+    $query="update {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails set access_rights=? WHERE template_type_id = ? ";
 
-
-    $active = "0";
-    if($_POST['active']==true){
-		 $active = "1";
-    }
-
-    $res = db_query($query, array($_POST['desc'], $_POST['date_uploaded'], $_POST['display'], $_POST['example'], $_POST['access'], $active, $_POST['template_id']));
+    $res = db_query($query, array('deleted' , $_POST['template_id']));
 
 
 	if($res !== false){
-		$msg = "Template changes saved by user from " . $_SERVER['REMOTE_ADDR'];
-		receive_message("", "SYSTEM", "MGMT", "Changes saved", $msg);
+		$msg = "Template deleted by user from " . $_SERVER['REMOTE_ADDR'];
+		receive_message("", "SYSTEM", "MGMT", "Temaplte deleted", $msg);
 
-		echo TEMPLATE_CHANGE_SUCCESS;
+		echo TEMPLATE_DELETE_SUCCESS;
 	}else{
-		echo TEMPLATE_CHANGE_FAIL . " " . mysql_error();
+		echo TEMPLATE_DELETE_FAIL;
 	}
 			
 }

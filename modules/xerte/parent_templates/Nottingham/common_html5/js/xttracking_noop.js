@@ -63,7 +63,7 @@ function NoopTrackingState()
     this.interactions = new Array();
     this.lo_completed = 0;
     this.lo_passed = -1;
-    this.page_timeout = 5000;
+    this.page_timeout = 0;
     this.forcetrackingmode = false;
     this.debug = false;
 

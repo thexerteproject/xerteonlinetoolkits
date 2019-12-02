@@ -63,7 +63,7 @@ function check_host($hostname, $setting)
      * Can only check against this variable, if I can't find it (say pop ups) no choice but to fail
      */
 
-    if (strlen(hostname) != 0) {
+    if (strlen($hostname) != 0) {
         foreach ($test_string as $item) {
             $item = trim($item);
             _debug("Checking host: " . $hostname . " in " . $item);

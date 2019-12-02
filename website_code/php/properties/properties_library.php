@@ -1007,7 +1007,6 @@ function tsugi_display($id, $lti_def, $mesg = "")
         <label for="tsugi_title"><?php echo PROPERTIES_LIBRARY_TSUGI_NAME; ?></label><input name="tsugi_title" type="text" value="<?php echo $lti_def->title ?>"><br>
         <label for="tsugi_key"><?php echo PROPERTIES_LIBRARY_TSUGI_KEY; ?></label><input name="tsugi_key" type="text" value="<?php echo $lti_def->key ?>"><br>
         <label for="tsugi_secret"><?php echo PROPERTIES_LIBRARY_TSUGI_SECRET; ?></label><input name="tsugi_secret" type="text" value="<?php echo $lti_def->secret ?>"><br>
-        <label for="dashboard_urls"><?php echo PROPERTIES_LIBRARY_TSUGI_DASHBOARD_URLS; ?></label><input name="dashboard_urls" type="text" value="<?php echo $lti_def->dashboard_urls ?>"><br>
         <?php
 
     }
@@ -1024,6 +1023,7 @@ function tsugi_display($id, $lti_def, $mesg = "")
 
         <label for="xChk"><?php echo PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI; ?></label><input id="xChk" type="checkbox" name="tsugi_xapi" <?php echo ($lti_def->xapi_enabled ? "checked" : "");?>><br>
         <div id="xApi">
+            <label for="dashboard_urls"><?php echo PROPERTIES_LIBRARY_TSUGI_DASHBOARD_URLS; ?></label><input name="dashboard_urls" type="text" value="<?php echo $lti_def->dashboard_urls ?>"><br>
             <label for="tsugi_xapi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USEGLOBAL; ?></label><input type="checkbox" onchange="javascript:xapi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_xapi_useglobal" id="tsugi_xapi_useglobal" <?php echo ($lti_def->xapi_useglobal ? "checked" : "");?>><br>
             <label for="tsugi_xapi_endpoint"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_ENDPOINT; ?></label><input type="text" name="tsugi_xapi_endpoint" id="tsugi_xapi_endpoint" <?php echo ($lti_def->xapi_useglobal ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_endpoint . "\""); ?>"><br>
             <label for="tsugi_xapi_username"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USERNAME; ?></label><input type="text" name="tsugi_xapi_username" id="tsugi_xapi_username" <?php echo ($lti_def->xapi_useglobal ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_username . "\""); ?>"><br>

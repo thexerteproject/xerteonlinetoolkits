@@ -582,8 +582,7 @@
                                     passedOrFailed = failedTxt
                                 }
 
-                                $("#result").append(passedOrFailed);
-                                $("#result").prepend('<span id="finalResult"></span>');
+                                $("#result").append('<p><span id="finalResult"></span>' + passedOrFailed + '</p>');
 
                                 if(passed=== true){
 
