@@ -232,10 +232,10 @@
 			
 			// show text on rollover/focus
 			$panelLink
-				.on("mouseover focusin", function(e) {
+				.on("mouseover focusin", function() {
 					$('.overlay').show();
 				})
-				.on("mouseout focusout", function(e) {
+				.on("mouseout focusout", function() {
 					if ($(event.relatedTarget).closest("#panelLink").length == 0) {
 						$('.overlay').hide();
 					}
