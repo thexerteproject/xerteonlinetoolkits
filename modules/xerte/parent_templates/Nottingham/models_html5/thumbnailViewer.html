@@ -232,11 +232,13 @@
 			
 			// show text on rollover/focus
 			$panelLink
-				.on("mouseover focusin", function() {
+				.on("mouseover focusin", function(e) {
 					$('.overlay').show();
 				})
-				.on("mouseout focusout", function() {
-					$('.overlay').hide();
+				.on("mouseout focusout", function(e) {
+					if ($(event.relatedTarget).closest("#panelLink").length == 0) {
+						$('.overlay').hide();
+					}
 				});
 			
 			
@@ -260,6 +262,10 @@
 					if ($img.parent().hasClass("thumbBox")) {
 						$img.css("margin-top", -$img.height() / 2); // centre vertically
 					}
+					
+					$('#panelTxt')
+						.width($img.width())
+						.height($img.height());
 					
 					$this.css({
 						"opacity"	:1,
