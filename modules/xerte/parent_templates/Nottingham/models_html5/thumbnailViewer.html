@@ -197,10 +197,15 @@
 						
 					} else { // no change to image shown - just resize if needed
 						x_scaleImg($panelImg.find("img"), $mainInfoHolder.width() - 40, $x_pageHolder.height() - parseInt($mainInfoHolder.css("margin-top")) - 55, true, false);
-						
-						$panelTxt
-							.width($panelImg.find("img").width())
-							.height($panelImg.find("img").height());
+							
+						// And show panel again
+						$mainTxt.fadeOut(400, function() {
+							$mainInfoHolder.fadeIn(100, function() {
+								$panelTxt
+									.width($panelImg.find("img").width())
+									.height($panelImg.find("img").height());
+							});
+						});
 					}
 				})
 				.focusin(function() {
@@ -224,9 +229,11 @@
 					text: false
 				})
 				.click(function() {
+					event.stopPropagation();
 					$mainInfoHolder.fadeOut(400, function() {
 						$mainTxt.fadeIn();
 					});
+					return false;
 				})
 				.hide();
 			
