@@ -30,7 +30,8 @@ if(is_user_admin()){
         display_name=?,
         display_id=?,
         access_rights=?,
-        active=? WHERE template_type_id = ? ";
+        active=?,
+        template_sub_pages=? WHERE template_type_id = ? ";
 
 
     $active = "0";
@@ -38,7 +39,7 @@ if(is_user_admin()){
 		 $active = "1";
     }
 
-    $res = db_query($query, array($_POST['desc'], $_POST['date_uploaded'], $_POST['display'], $_POST['example'], $_POST['access'], $active, $_POST['template_id']));
+    $res = db_query($query, array($_POST['desc'], $_POST['date_uploaded'], $_POST['display'], $_POST['example'], $_POST['access'], $active, $_POST['template_sub_pages'], $_POST['template_id']));
 
 
 	if($res !== false){

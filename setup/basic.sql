@@ -77,6 +77,7 @@ CREATE TABLE `$originaltemplatesdetails` (
   `display_id` bigint(20) DEFAULT NULL,
   `access_rights` char(255) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
+  `template_sub_pages` text,
   PRIMARY KEY (`template_type_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

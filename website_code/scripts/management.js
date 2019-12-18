@@ -413,6 +413,19 @@ function templates_list(){
 
 function update_template(){
 
+	// Get selected pages of the active_section
+	// 1. First get non-selected boxes
+	var checkboxes_all = $(".sub_page_selection_model_" + active_section);
+	var checkboxes_selected = $(".sub_page_selection_model_" + active_section + ":checked");
+	var sub_pages = "";
+	if (checkboxes_all.length != checkboxes_selected.length)
+	{
+		checkboxes_selected.each(function(index, checkbox){
+			if (sub_pages.length > 0)
+				sub_pages += ",";
+			sub_pages += checkbox.name;
+		});
+	}
 	if(setup_ajax()!=false){
 
 		var url="template_details_management.php";
@@ -427,7 +440,8 @@ function update_template(){
 					 '&date_uploaded=' + document.getElementById(active_section + "_date_uploaded").value +
 					 '&example=' + document.getElementById(active_section + "example").value +
 					 '&access=' + document.getElementById(active_section + "access").value +
-					 '&active=' + document.getElementById(active_section + "active").value);
+					 '&active=' + document.getElementById(active_section + "active").value +
+					 '&template_sub_pages=' + sub_pages);
 
 	}
 
@@ -1165,4 +1179,12 @@ function list_templates_for_user_stateChanged(){
         }
     }
 
+}
+
+function sub_select_change_all(template_type_id)
+{
+	// Toggle all checkboxes based on template_type_id
+	var checked = $("#sub_page_select_all_" + template_type_id).is(":checked");
+	// Toggle all checkboxes with class sub_page_selection_model_<template_type_id>
+	$(".sub_page_selection_model_" + template_type_id).prop("checked", checked);
 }
