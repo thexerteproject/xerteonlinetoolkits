@@ -1069,7 +1069,7 @@
 					mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
 				});
 			}
-		}
+		};
 		
 		// function gets correct synch point - either from absolute value or by converting relative synch points (relative are in format "+5")
 		this.sortRelativeSynchPoints = function(type, thisSynch, relativeTo, defaultEnd) {
@@ -1092,7 +1092,7 @@
 				}
 			}
 			return synch;
-		}
+		};
 		
 		this.sortPopcornNow = function(synchData, targetRef, popcornInstance, $mediaDiv) {
 			var data = new Array(), // array of objects containing details of a synch point event
