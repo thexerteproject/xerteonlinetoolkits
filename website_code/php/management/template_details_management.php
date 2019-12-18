@@ -34,7 +34,7 @@ if(is_user_admin()){
 
 
     $active = "0";
-    if($_POST['active']==true){
+    if($_POST['active'] == "true"){
 		 $active = "1";
     }
 
