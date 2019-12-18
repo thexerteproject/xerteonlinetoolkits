@@ -516,7 +516,32 @@
                 url=data[0].object.id;
                 interaction = $(x_currentPageXML).children()[interactionIndex];
                 if (data.length >= 1 && (retrieveAll || filterOwnStatements(data).length >= 1)) {
-                    handler(data, interaction, url, type, interactionIndex, fullWidth);
+                    if (opinionClass != undefined && opinionClass != "")
+                    {
+                        // Just filter out the items with the following structure
+                        //"object": {
+                        //"definition": {
+                        //    "name": {
+                        //        "en": "VR(class=Docent)"
+                        //     }
+                        //   }
+                        //  }
+                        var statements=[];
+                        for (var i=0; i<data.length; i++)
+                        {
+                            if (data[i].object.definition != undefined
+                                && data[i].object.definition.name != undefined
+                                && data[i].object.definition.name.en != undefined
+                                && data[i].object.definition.name.en.indexOf("(class=") != -1)
+                            {
+                                statements.push(data[i]);
+                            }
+                        }
+                        handler(statements, interaction, url, type, interactionIndex, fullWidth);
+                    }
+                    else {
+                        handler(data, interaction, url, type, interactionIndex, fullWidth);
+                    }
                 }
                 else {
                     div = $(
