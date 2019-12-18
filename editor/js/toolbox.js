@@ -3232,11 +3232,11 @@ var EDITOR = (function ($, parent) {
 							html.append(option);
 						}
 					} else {
-						var optName = wizard_data['learningObject'].node_options.all.find((o) => { return o['name'] === options.target}).value.label;
+						var optName = wizard_data['learningObject'].node_options.all.find(function(o) { return o['name'] === options.target}).value.label;
 						html.append('<span class="error">' + language.categoryList.errorEmpty.replace('{x}', "'" + optName + "'") + "</span>");
 					}
 				} else {
-					var optName = wizard_data['learningObject'].node_options.all.find((o) => { return o['name'] === options.target}).value.label;
+					var optName = wizard_data['learningObject'].node_options.all.find(function(o) { return o['name'] === options.target}).value.label;
 					html.append('<span class="error">' + language.categoryList.error.replace('{x}', "'" + optName + "'") + "</span>");
 				}
 				break;
