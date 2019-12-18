@@ -54,6 +54,10 @@
 
 	define("TEMPLATE_REPLACE", "Upload a new version of this template");
 
+	define("TEMPLATE_SUB_PAGES", "Select the pages that can be used in the 'Simple' mode of the wizard. If all pages are selected (default), than the 'Simple' mode of the editor is disabled.");
+
+	define("TEMPLATE_SUB_PAGES_SELECT_ALL", "Toggle all pages on or off");
+
 	define("TEMPLATE_ADD_EXPLANATION", "<h2>Sub-templates</h2><p>Import an exported learning object as a new sub-template. If the sub-template already exists it will be replaced. The 'Template name' field identifies the sub-template. The 'Template display name' is the name shown to the user.</p><p>Do not use spaces or any other special characters in the template name, as this name is used as a foldername. If you do use special characters or spaces, these will be replaced by  a '_' character.</p>");
 
     define("TEMPLATE_ADD", "Add template");
