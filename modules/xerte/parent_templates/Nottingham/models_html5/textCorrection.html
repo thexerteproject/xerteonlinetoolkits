@@ -248,11 +248,8 @@
                                     $correctOrNot.append(incorrectICon)
                                 }
 
-                                if (!hadExited) {
-                                    textCorrection.exitTrackTextCorrection();
-                                    hasExited = true;
-                                }
-                                textCorrection.hasExited = hadExited;
+                                textCorrection.exitTrackTextCorrection();
+                                textCorrection.hasExited = true;
 
                             }else{
                                 $(checkButton).button("disable");
@@ -282,10 +279,8 @@
                                     $correctOrNot.append(incorrectICon)
                                 }
 
-                                if (!hadExited) {
-                                    textCorrection.exitTrackTextCorrection();
-                                    hasExited = true;
-                                }
+                                textCorrection.exitTrackTextCorrection();
+                                textCorrection.hasExited = true;
                             }
                             if (AllowFurtherClarification === "true") {
                                 $FurtherClarification.append("<h3>" + FurtherClarificationLabel + "</h3>");

@@ -50,12 +50,13 @@
 		};
 
         this.leavePage = function() {
-            if (tracked != true) {
+            if (this.tracked != true) {
                 this.finishTracking();
             }
         };
 
 		this.init = function() {
+			this.tracked = false;
 			// if language attributes aren't in xml will have to use english fall back
 			var instructA = x_currentPageXML.getAttribute("instructHeaderATxt");
 			if (instructA == undefined) {
