@@ -1134,7 +1134,7 @@ div.wizardvalue_inner {
 	color:#a0a0a0;
 }
 
-.deprecatedIcon, .tooltipIcon
+.deprecatedIcon, .advancedIcon, .tooltipIcon
 {
 	margin-right: 5px;
 	color: #ff8c00;

@@ -34,7 +34,7 @@ var EDITOR = (function ($, parent) {
 		workspace,
 
     // Build the "insert page" menu
-    create_insert_page_menu = function () {
+    create_insert_page_menu = function (advanced_toggle) {
         var getMenuItem = function (itemData) {
             var data = {
                 href: '#',
@@ -55,7 +55,7 @@ var EDITOR = (function ($, parent) {
 			if (itemData.submenu != undefined) {
                 var subList = $("<ul>");
                 $.each(itemData.submenu, function () {
-                    if (!this.deprecated) {
+                    if (!this.deprecated && (this.simple_enabled || advanced_toggle)) {
                         subList.append(getMenuItem(this));
                     }
                 });
@@ -87,7 +87,7 @@ var EDITOR = (function ($, parent) {
         });
         
         $.each(menu_data.menu, function () {
-            if (!this.deprecated) {
+            if (!this.deprecated && (this.simple_enabled || advanced_toggle)) {
                 $menu.append(
                     getMenuItem(this)
                 )
@@ -157,31 +157,49 @@ var EDITOR = (function ($, parent) {
                         $menu.find(".insert_buttons").last().append(button);
                 });
             }
-		$.widget("ui.menu", $.ui.menu, {
-			collapseAll: function(e) {
-				if (e.type == "click" && e.target.id != "insert_button") {
-					$("#insert_menu").hide();
-                   	$("#shadow").hide();
-				} else if  (e.type == "keydown" && $(e.target).parent().hasClass("insert_buttons")) {
-					$("#insert_menu").hide();
-               	   	$("#shadow").hide();
-					parent.tree.addNode($(e.target).closest("[item]").attr("item"), $(e.target).attr("value"));
-				}
-                return this._super();
-			},
-			_open: function(submenu) {
-				// make sure the menus fit on screen and scroll when needed
-				this._super(submenu);
-				if (submenu.hasClass("details")) {
-					if ($("body").height() < (submenu.height() + submenu.offset().top + 20)) {
-						submenu.offset({"top": $("body").height() - submenu.height() - 20});
-					}
-				} else {
-					submenu.css("max-height", $("body").height() - submenu.offset().top - 30);
-				}
-			}
-		});
-        $("#insert_menu").append($menu.menu());
+
+        if (typeof insert_menu_object !== 'undefined')
+        {
+            // menu is aleready set once
+            insert_menu_object.menu("destroy");
+            /*
+            $.widget("ui.menu", $.ui.menu, {
+                collapseAll: function(e) {},
+                _open: function(submenu) {}
+            });
+            */
+
+        }
+        else {
+            // Set default once
+            $.widget("ui.menu", $.ui.menu, {
+                collapseAll: function (e) {
+                    if (e.type == "click" && e.target.id != "insert_button") {
+                        $("#insert_menu").hide();
+                        $("#shadow").hide();
+                    } else if (e.type == "keydown" && $(e.target).parent().hasClass("insert_buttons")) {
+                        $("#insert_menu").hide();
+                        $("#shadow").hide();
+                        parent.tree.addNode($(e.target).closest("[item]").attr("item"), $(e.target).attr("value"));
+                    }
+                    return this._super();
+                },
+                _open: function (submenu) {
+                    // make sure the menus fit on screen and scroll when needed
+                    this._super(submenu);
+                    if (submenu.hasClass("details")) {
+                        if ($("body").height() < (submenu.height() + submenu.offset().top + 20)) {
+                            submenu.offset({"top": $("body").height() - submenu.height() - 20});
+                        }
+                    } else {
+                        submenu.css("max-height", $("body").height() - submenu.offset().top - 30);
+                    }
+                }
+            });
+        }
+
+        insert_menu_object = $menu.menu();
+        $("#insert_menu").html(insert_menu_object);
 		$menu.find(".ui-menu-item a").first().attr("tabindex", 2);
     },
     
@@ -234,6 +252,13 @@ var EDITOR = (function ($, parent) {
                 }
                 else {
                     return '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+                }
+            case "advanced":
+                if (enabled) {
+                    return '<i class="advancedIcon iconEnabled fa fa-exclamation-circle " id="' + key + '_advanced" title ="' + language.advancedPage.$tooltip + '"></i>';
+                }
+                else {
+                    return '<i class="advancedIcon iconDisabled fa fa-exclamation-circle " id="' + key + '_advanced" title ="' + language.advancedPage.$tooltip + '"></i>';
                 }
         }
     },
@@ -371,8 +396,9 @@ var EDITOR = (function ($, parent) {
         var deprecatedIcon = getExtraTreeIcon(key, "deprecated", wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecated);
         var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
+        var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
 
-        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
+        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
 
         var this_json = {
             id : key,

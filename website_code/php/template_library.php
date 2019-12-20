@@ -61,7 +61,12 @@ function get_template_pagelist($template_id)
     }
     else {
         $sub_pages_str = $row['template_sub_pages'];
-        $sub_pages = explode(',');
+        if ($sub_pages_str != null && $sub_pages_str != "") {
+            $sub_pages = explode(',', $sub_pages_str);
+        }
+        else{
+            $sub_pages = array();
+        }
         return $sub_pages;
     }
 }

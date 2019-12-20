@@ -115,6 +115,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     }
 
     /**
+     * Get sublist of pages (if any)
+     */
+    $template_sub_pages = get_template_pagelist($row_edit['template_id']);
+    $simple_mode = count($template_sub_pages) != 0;
+
+    /**
      * build an array of available themes for this template
      */
     $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['parent_template'] . "/";
@@ -223,9 +229,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/jqgrid/css/ui.jqgrid.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css?version=<?php echo $version;?>" />
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>">
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
@@ -353,6 +356,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/beautify.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.addons.search.min.js?version=<?php echo $version;?>"></script>
 
+<!-- Load latest font awesome after ckeditor, other wise the latest fontawesome is overruled by the fontawsome plugin of ckeditor -->
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
+
 <script>
     <?php
     echo "previewxmlurl=\"" . $preview_url . "\";\n";
@@ -373,6 +379,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "upload_path=\"" . $xerte_toolkits_site->flash_upload_path . "\";\n";
     echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
+    echo "simple_mode=" . ($simple_mode ? "true" : "false") . ";\n";
+    echo "template_sub_pages=" . json_encode($template_sub_pages) . ";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
     echo "category_list=" . json_encode($categories) . ";\n";
     echo "grouping_list=" . json_encode($grouping) . ";\n";
