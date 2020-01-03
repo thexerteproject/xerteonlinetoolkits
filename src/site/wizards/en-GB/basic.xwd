@@ -62,6 +62,7 @@
             <footerColour type="ColourPicker" optional="true" label="Footer Background Colour"/>
 		</footerGroup>
 		
+		<print type="CheckBox" label="Print Button" defaultValue="true" optional="true" tooltip="Add a print button to the navigation bar. Pages can still be printed via browser controls if button is not added"/>
 		<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
 		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
 		<stylesheet type="Media" optional="true" label="Stylesheet"/>

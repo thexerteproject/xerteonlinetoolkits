@@ -476,6 +476,18 @@ function setup(){
 		
 	});
 	
+	// set up print functionality - all this does is add a print button to the toolbar which triggers browser's print dialog
+	if ($(data).find('learningObject').attr('print') == 'true') {
+		
+		var altTxt = languageData.find("print")[0] != undefined && languageData.find("print")[0].getAttribute('printBtn') != null ? languageData.find("print")[0].getAttribute('printBtn') : "Print page";
+		
+		$('<li id="printIcon"><a href="#" aria-label="' + altTxt + '"><i class="fa fa-print text-white ml-3" aria-hidden="true" title="' + altTxt + '"></i></a></li>')
+			.appendTo('#nav')
+			.click(function() {
+				window.print();
+			});
+	}
+	
 	// set up search functionality
 	if ($(data).find('learningObject').attr('search') == 'true' || $(data).find('learningObject').attr('category') == 'true') {
 		
