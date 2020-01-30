@@ -104,7 +104,7 @@ if(!isset($_GET['username'])){
 
 }else{
     if(!isset($_GET['folder_name'])){
-        $query = "select td.*,ts.*,,ot.template_framework
+        $query = "select td.*,ts.*,ot.template_framework
             FROM {$xerte_toolkits_site->database_table_prefix}templatedetails td, {$xerte_toolkits_site->database_table_prefix}templatesyndication ts, {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails ot
             WHERE $query_modifier='true' AND creator_id=? AND td.template_id = ts.template_id AND td.template_type_id=ot.template_type_id";
         $params[] = $row_create['login_id'];
