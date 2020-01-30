@@ -275,3 +275,13 @@ div#admin_area form textarea{
 .management_input {
 	margin-bottom: 5px;
 }
+
+.sub_page_selection_menuitem {
+	font-weight: bold;
+	font-style: italic;
+	padding-left: 30px;
+}
+
+.sub_page_selection_model {
+	margin-left: 40px;
+}

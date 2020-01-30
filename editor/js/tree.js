@@ -85,50 +85,138 @@ var EDITOR = (function ($, parent) {
             deleteSelectedNodes();
         },
 
+        toggle_advanced = function()
+        {
+            // Do toggle advanced mode
+            advanced_mode = !advanced_mode;
+
+            // redraw buttons and insert menu etc.
+            create_tree_buttons();
+            toolbox.create_insert_page_menu(advanced_mode);
+
+            // Open/close optional property panel
+            if (!advanced_mode) {
+                $("div.ui-layout-center").css("padding-right", "8px");
+                xerte_layout.hide("east");
+
+            }
+            else {
+                $("div.ui-layout-center").css("padding-right", "0px");
+
+                xerte_layout.show("east");
+                if (screen.width >= 1024)
+                {
+                    xerte_layout.open("east");
+                }
+            }
+        },
+
         duplicate_page = function() {
             duplicateSelectedNodes();
         },
 
-        buttons = $('<div />').attr('id', 'top_buttons');
-        if (templateframework == "xerte") {
-            var button_def =
-                [
-                    {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'fa-plus-circle', id:'insert_button', click:insert_page},
-                    {name: language.btnMerge.$label, tooltip: language.btnMerge.$tooltip, imgicon:'editor/img/mergeIcon.svg', id:'merge_button', click:refresh_workspaceMerge},
-                    {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'fa-copy', id:'copy_button', click:duplicate_page},
-                    {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'fa-trash', id:'delete_button', click:delete_page}
-                ];
-        }
-        else
-        {
-            var button_def =
-                [
-                    {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'fa-plus-circle', id:'insert_button', click:insert_page},
-                    {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'fa-copy', id:'copy_button', click:duplicate_page},
-                    {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'fa-trash', id:'delete_button', click:delete_page}
-                ]
-        }
-        $(button_def)
-        .each(function(index, value) {
-                var button = $('<button>')
-                    .attr('id', value.id)
-                    .attr('title', value.tooltip)
-                    .click(value.click)
-                    .attr('tabindex', index == 0 ? index + 1 : index + 5) // leave gap in tab index for insert page menu & its insert buttons (needed for easy keyboard navigation)
-                    .addClass("xerte_button");
-                if (typeof value.icon != 'undefined') {
-                    button.append($('<i>').addClass('fa').addClass(value.icon).addClass("xerte-icon").height(14));
+        create_tree_buttons = function() {
+            var buttons = $('<div />').attr('id', 'top_buttons');
+            if (templateframework == "xerte") {
+                var button_def =
+                    [
+                        {
+                            name: language.btnInsert.$label,
+                            tooltip: language.btnInsert.$tooltip,
+                            icon: 'fa-plus-circle',
+                            id: 'insert_button',
+                            click: insert_page
+                        },
+                        {
+                            name: language.btnMerge.$label,
+                            tooltip: language.btnMerge.$tooltip,
+                            imgicon: 'editor/img/mergeIcon.svg',
+                            id: 'merge_button',
+                            click: refresh_workspaceMerge
+                        },
+                        {
+                            name: language.btnDuplicate.$label,
+                            tooltip: language.btnDuplicate.$tooltip,
+                            icon: 'fa-copy',
+                            id: 'copy_button',
+                            click: duplicate_page
+                        },
+                        {
+                            name: language.btnDelete.$label,
+                            tooltip: language.btnDelete.$tooltip,
+                            icon: 'fa-trash',
+                            id: 'delete_button',
+                            click: delete_page
+                        }
+                    ];
+            } else {
+                var button_def =
+                    [
+                        {
+                            name: language.btnInsert.$label,
+                            tooltip: language.btnInsert.$tooltip,
+                            icon: 'fa-plus-circle',
+                            id: 'insert_button',
+                            click: insert_page
+                        },
+                        {
+                            name: language.btnDuplicate.$label,
+                            tooltip: language.btnDuplicate.$tooltip,
+                            icon: 'fa-copy',
+                            id: 'copy_button',
+                            click: duplicate_page
+                        },
+                        {
+                            name: language.btnDelete.$label,
+                            tooltip: language.btnDelete.$tooltip,
+                            icon: 'fa-trash',
+                            id: 'delete_button',
+                            click: delete_page
+                        }
+                    ]
+            }
+            if (simple_mode) {
+                if (advanced_mode) {
+                    button_def.push({
+                        name: language.btnAdvanced.$label_off,
+                        tooltip: language.btnAdvanced.$tooltip_off,
+                        icon: 'fa-toggle-on',
+                        id: 'advanced_toggle_button',
+                        click: toggle_advanced
+                    });
+                } else {
+                    button_def.push({
+                        name: language.btnAdvanced.$label_on,
+                        tooltip: language.btnAdvanced.$tooltip_on,
+                        icon: 'fa-toggle-off',
+                        id: 'advanced_toggle_button',
+                        click: toggle_advanced
+                    });
                 }
-                if (typeof value.imgicon != 'undefined')
-                {
-                    button.append($('<img>')
-                        .attr('src', value.imgicon)
-                        .height(14));
-                }
-                buttons.append(button);
-        });
-		
-        $('.ui-layout-west .header').append(buttons);
+            }
+            $(button_def)
+                .each(function (index, value) {
+                    var button = $('<button>')
+                        .attr('id', value.id)
+                        .attr('title', value.tooltip)
+                        .click(value.click)
+                        .attr('tabindex', index == 0 ? index + 1 : index + 5) // leave gap in tab index for insert page menu & its insert buttons (needed for easy keyboard navigation)
+                        .addClass("xerte_button");
+                    if (typeof value.icon != 'undefined') {
+                        button.append($('<i>').addClass('fa').addClass(value.icon).addClass("xerte-icon").height(14));
+                    }
+                    if (typeof value.imgicon != 'undefined') {
+                        button.append($('<img>')
+                            .attr('src', value.imgicon)
+                            .height(14));
+                    }
+                    buttons.append(button);
+                });
+
+            $('.ui-layout-west .header').html(buttons);
+        };
+
+        create_tree_buttons();
 
         // If the menu is empty, disable insert
         if (menu_data.menu.length == 1 && menu_data.menu[0].name == "")
@@ -140,7 +228,7 @@ var EDITOR = (function ($, parent) {
         // Page type
         $('.ui-layout-center .header').append($('<div>').attr('id', 'pagetype'));
         // Save buttons
-        buttons = $('<div />').attr('id', 'save_buttons');
+        var buttons = $('<div />').attr('id', 'save_buttons');
         $([
             {name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'fa-play', id:'preview_button', click:preview},
             //{name:language.btnSaveXerte.$label, tooltip: language.btnSaveXerte.$tooltip, icon:'editor/img/publish.png', id:'save_button', click:savepreview},
@@ -410,11 +498,12 @@ var EDITOR = (function ($, parent) {
         var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
         var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true");
         var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');
+        var advancedIcon = toolbox.getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
         // Be carefull. You cannot just find $("#" + current_node.id + "_text").html(), becuase if the node is collapsed this will return undefined!
         // var nodeText = $("#" + current_node.id + "_text").html();
         var nodeText = $("<div>").html(current_node.text).find("#" + current_node.id + "_text").html();
 
-        var treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodeText + '</span>';
+        var treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + nodeText + '</span>';
         // Create the tree node
         var this_json = {
             id : key,
@@ -426,7 +515,7 @@ var EDITOR = (function ($, parent) {
             state: {
                 opened:true
             }
-        }
+        };
 
         // Add the node
         if (validateInsert(parent_id, current_node.type, tree))
@@ -1168,8 +1257,9 @@ var EDITOR = (function ($, parent) {
         // Create node text based on xml, do not use text of original node, as this is not correct
         var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
         var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
+        var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && template_sub_pages.indexOf(nodeName) == -1);
 
-        var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
+        var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
         var this_json = {
             id : lkey,
             text : treeLabel,

@@ -43,9 +43,16 @@
   </hotspotImage>
 
   <!-- HOTSPOT================================== -->
+  <hotspot type="hotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <text label="Text" type="TextArea" height="250" />
+	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true" />
+  </hotspot>
+  
   <flexhotspot type="flexhotSpot" upgradefrom="hotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250" />
+	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true" />
   </flexhotspot>
 
   <!-- HOTSPOTQ================================== -->

@@ -172,6 +172,7 @@ class XerteXMLInspector
             if ($ok === false) {
                 // Could not fix it!
                 _debug("Could not fix up the xml file with $name; consult error logs etc.");
+                return false;
             }
             else {
                 // reload.

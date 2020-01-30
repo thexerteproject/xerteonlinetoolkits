@@ -203,15 +203,34 @@ x_projectDataLoaded = function(xmlData) {
 				hideOnString = '', hideUntilString = '';
 			var getDateInfo = function(dmy, hm) {
 				// some basic checks of whether values are valid & then splits the data into time/day/month/year
-				dmy = dmy.split('/');
-				if (dmy.length != 3) {
-					return false;
+				var tempDmy = dmy.split('/'), // original date format
+					formatType = 0,
+					format = [[0,1,2], [2,1,0]]; // d, m, y
+				
+				if (tempDmy.length == 3) {
+					dmy = tempDmy;
+				} else if (tempDmy.length == 1) {
+					tempDmy = dmy.split('-'); // try the newer date format
+					if (tempDmy.length == 3) {
+						tempDmy.splice(2, 1, tempDmy[2].split('T')[0]);
+						dmy = tempDmy;
+						formatType = 1;
+					} else {
+						dmy = false;
+					}
+					
 				} else {
-					var day = Math.min(Number(dmy[0]), 31),
-						month = Math.min(Number(dmy[1]), 12),
-						year = Math.max(Number(dmy[2]), 2017),
+					dmy = false;
+				}
+				
+				if (dmy == false) {
+					return [false];
+				} else {
+					var day = Math.max(1, Math.min(Number(dmy[format[formatType][0]]), 31)),
+						month = Math.max(1, Math.min(Number(dmy[format[formatType][1]]), 12)),
+						year = Math.max(Number(dmy[format[formatType][2]]), 2017),
 						time = 0; // use midnight if no time is given
-
+					
 					if (hm != undefined && hm.trim() != '') {
 						var hm = hm.split(':');
 						if (hm.length == 2) {
@@ -220,11 +239,10 @@ x_projectDataLoaded = function(xmlData) {
 							time = Number(String(hour) + (minute < 10 ? '0' : '') + String(minute));
 						}
 					}
-
-					return {day:day, month:month, year:year, time:time};
+					return [{day:day, month:month, year:year, time:time}, (formatType == 0 ? day + '/' + month + '/' + year : year + '-' + month + '-' + day)];
 				}
 			}
-
+			
 			var getFullDate = function(info) {
 				var timeZero = '';
 				for (var i=0; i<4-String(info.time).length; i++) {
@@ -235,20 +253,22 @@ x_projectDataLoaded = function(xmlData) {
 
 			// is it hidden from a certain date? if so, have we passed that date/time?
 			if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
-				hideOn = getDateInfo($(this)[0].getAttribute("hideOnDate"), $(this)[0].getAttribute("hideOnTime"));
+				var dateInfo = getDateInfo($(this)[0].getAttribute("hideOnDate"), $(this)[0].getAttribute("hideOnTime"));
+				hideOn = dateInfo[0];
 
 				if (hideOn != false) {
 					if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
 						hidePage = false;
 					}
 
-					hideOnString = '{from}: ' + $(this)[0].getAttribute("hideOnDate") + ' ' + $(this)[0].getAttribute("hideOnTime");
+					hideOnString = '{from}: ' + dateInfo[1] + ' ' + $(this)[0].getAttribute("hideOnTime");
 				}
 			}
 
 			// is it hidden until a certain date? if so, have we passed that date/time?
 			if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
-				hideUntil = getDateInfo($(this)[0].getAttribute("hideUntilDate"), $(this)[0].getAttribute("hideUntilTime"));
+				var dateInfo = getDateInfo($(this)[0].getAttribute("hideUntilDate"), $(this)[0].getAttribute("hideUntilTime"));
+				hideUntil = dateInfo[0];
 
 				if (hideUntil != false) {
 					// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
@@ -267,7 +287,7 @@ x_projectDataLoaded = function(xmlData) {
 						}
 					}
 
-					hideUntilString = '{until}: ' + $(this)[0].getAttribute("hideUntilDate") + ' ' + $(this)[0].getAttribute("hideUntilTime");
+					hideUntilString = '{until}: ' + dateInfo[1] + ' ' + $(this)[0].getAttribute("hideUntilTime");
 				}
 			}
 
@@ -1972,6 +1992,11 @@ function x_changePageStep6() {
 	}
 }
 
+// trigger that page contents have updated
+function x_pageContentsUpdated(){
+	// Queue reparsing of MathJax - fails if no network connection
+    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+}
 
 // function used for hashtag deeplinking
 function x_updateHash() {
@@ -2524,7 +2549,7 @@ function x_openDialog(type, title, close, position, load, onclose) {
                     else
                     {
                         $x_popupDialog.load(x_templateLocation + "models_html5/" + type + ".html", function () {
-                            x_setDialogSize($x_popupDialog, position)
+                            x_setDialogSize($x_popupDialog, position);
                         });
                     }
 
@@ -2576,7 +2601,8 @@ function x_setDialogSize($x_popupDialog, position) {
     }
 
     $x_popupDialog.dialog({
-        "width" :width
+        "width" :width,
+		"height" : "auto"
     });
     $x_popupDialog.parent().css({
         "left"  :left,

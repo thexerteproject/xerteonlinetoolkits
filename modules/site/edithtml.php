@@ -193,8 +193,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/jqgrid/css/ui.jqgrid.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css?version=<?php echo $version;?>" />
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>">
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
@@ -311,6 +309,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="<?php echo $jqgridlangfile; ?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery.jqGrid.min.js?version=<?php echo $version;?>"></script>
 
+<!-- Load latest font awesome after ckeditor, other wise the latest fontawesome is overruled by the fontawsome plugin of ckeditor -->
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
+
 <!-- load exactly the same codemirror scripts as needed by ckeditor -->
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.addons.min.js?version=<?php echo $version;?>"></script>
@@ -339,7 +340,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "upload_path=\"" . $xerte_toolkits_site->flash_upload_path . "\";\n";
     echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
-	echo "theme_list=" . json_encode($ThemeList) . ";\n";
+    echo "simple_mode=false;\n";
+    echo "template_sub_pages=[];\n";
+    echo "theme_list=" . json_encode($ThemeList) . ";\n";
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     ?>
 

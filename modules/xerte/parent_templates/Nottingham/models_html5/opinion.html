@@ -204,12 +204,7 @@
 
 			this.loadQuestions();
 			
-            // Queue reparsing of MathJax - fails if no network connection
-            try
-            {
-            	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-            }
-            catch (e) {}			
+            x_pageContentsUpdated();		
 		};
 
 		this.loadQuestions = function()
@@ -629,13 +624,7 @@
 				opinion.resultShown = true;
 			}
 
-
-            // Queue reparsing of MathJax - fails if no network connection
-            try
-            {
-            	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-            }
-            catch (e) {}
+            x_pageContentsUpdated();
 		};
 		
 		this.trackOpinion = function() {

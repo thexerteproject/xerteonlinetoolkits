@@ -476,6 +476,18 @@ function setup(){
 		
 	});
 	
+	// set up print functionality - all this does is add a print button to the toolbar which triggers browser's print dialog
+	if ($(data).find('learningObject').attr('print') == 'true') {
+		
+		var altTxt = languageData.find("print")[0] != undefined && languageData.find("print")[0].getAttribute('printBtn') != null ? languageData.find("print")[0].getAttribute('printBtn') : "Print page";
+		
+		$('<li id="printIcon"><a href="#" aria-label="' + altTxt + '"><i class="fa fa-print text-white ml-3" aria-hidden="true" title="' + altTxt + '"></i></a></li>')
+			.appendTo('#nav')
+			.click(function() {
+				window.print();
+			});
+	}
+	
 	// set up search functionality
 	if ($(data).find('learningObject').attr('search') == 'true' || $(data).find('learningObject').attr('category') == 'true') {
 		
@@ -2098,13 +2110,32 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 			hideOnString = '', hideUntilString = '';
 		var getDateInfo = function(dmy, hm) {
 			// some basic checks of whether values are valid & then splits the data into time/day/month/year
-			dmy = dmy.split('/');
-			if (dmy.length != 3) {
-				return false;
+			var tempDmy = dmy.split('/'), // original date format
+				formatType = 0,
+				format = [[0,1,2], [2,1,0]]; // d, m, y
+			
+			if (tempDmy.length == 3) {
+				dmy = tempDmy;
+			} else if (tempDmy.length == 1) {
+				tempDmy = dmy.split('-'); // try the newer date format
+				if (tempDmy.length == 3) {
+					tempDmy.splice(2, 1, tempDmy[2].split('T')[0]);
+					dmy = tempDmy;
+					formatType = 1;
+				} else {
+					dmy = false;
+				}
+				
 			} else {
-				var day = Math.min(Number(dmy[0]), 31),
-					month = Math.min(Number(dmy[1]), 12),
-					year = Math.max(Number(dmy[2]), 2017),
+				dmy = false;
+			}
+			
+			if (dmy == false) {
+				return [false];
+			} else {
+				var day = Math.max(1, Math.min(Number(dmy[format[formatType][0]]), 31)),
+					month = Math.max(1, Math.min(Number(dmy[format[formatType][1]]), 12)),
+					year = Math.max(Number(dmy[format[formatType][2]]), 2017),
 					time = 0; // use midnight if no time is given
 				
 				if (hm != undefined && hm.trim() != '') {
@@ -2115,8 +2146,7 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 						time = Number(String(hour) + (minute < 10 ? '0' : '') + String(minute));
 					}
 				}
-				
-				return {day:day, month:month, year:year, time:time};
+				return [{day:day, month:month, year:year, time:time}, (formatType == 0 ? day + '/' + month + '/' + year : year + '-' + month + '-' + day)];
 			}
 		}
 		
@@ -2130,20 +2160,22 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 		
 		// is it hidden from a certain date? if so, have we passed that date/time?
 		if (hideOnDate != undefined && hideOnDate != '') {
-			hideOn = getDateInfo(hideOnDate, hideOnTime);
+			var dateInfo = getDateInfo(hideOnDate, hideOnTime);
+			hideOn = dateInfo[0];
 			
 			if (hideOn != false) {
 				if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
 					hidePage = false;
 				}
 				
-				hideOnString = '{from}: ' + hideOnDate + ' ' + hideOnTime;
+				hideOnString = '{from}: ' + dateInfo[1] + ' ' + hideOnTime;
 			}
 		}
 		
 		// is it hidden until a certain date? if so, have we passed that date/time?
 		if (hideUntilDate != undefined && hideUntilDate != '') {
-			hideUntil = getDateInfo(hideUntilDate, hideUntilTime);
+			var dateInfo = getDateInfo(hideUntilDate, hideUntilTime);
+			hideUntil = dateInfo[0];
 			
 			if (hideUntil != false) {
 				// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
@@ -2162,7 +2194,7 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 					}
 				}
 				
-				hideUntilString = '{until}: ' + hideUntilDate + ' ' + hideUntilTime;
+				hideUntilString = '{until}: ' + dateInfo[1] + ' ' + hideUntilTime;
 			}
 		}
 		

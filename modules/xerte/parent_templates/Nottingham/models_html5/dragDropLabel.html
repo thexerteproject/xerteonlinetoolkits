@@ -27,7 +27,8 @@
                 targetTxt1,
                 targetTxt2,
                 submitBtnTxt,
-                interactivity;
+                interactivity,
+				tooltips = [];
 
         // function called every time the page is viewed after it has initially loaded
         this.pageChanged = function() {
@@ -179,6 +180,7 @@
             $(x_currentPageXML).children()
                     .each(function(i) {
                         tempData.push({name:this.getAttribute("name"), text:this.getAttribute("text"), correct:i});
+						tooltips.push(this.getAttribute("alttext"));
                     });
 
             // randomise order and create labels
@@ -241,7 +243,7 @@
                                 }
                                 var targetInFocus = $("#targetHolder .target.highlight");
                                 if (targetInFocus.length > 0) {
-                                    targetInFocus.attr("title", targetTxt1 + " " + (targetInFocus.index() + 1));
+                                    targetInFocus.attr("title", (tooltips[targetInFocus.index()] != undefined && tooltips[targetInFocus.index()] != "") ? tooltips[targetInFocus.index()] : targetTxt1 + " " + (targetInFocus.index() + 1));
                                 }
 
                                 $("#labelHolder .selected").removeClass("selected");
@@ -313,7 +315,7 @@
                                 }
                                 var targetInFocus = $("#targetHolder .target.highlight");
                                 if (targetInFocus.length > 0) {
-                                    targetInFocus.attr("title", targetTxt1 + " " + (targetInFocus.index() + 1));
+                                    targetInFocus.attr("title", (tooltips[targetInFocus.index()] != undefined && tooltips[targetInFocus.index()] != "") ? tooltips[targetInFocus.index()] : targetTxt1 + " " + (targetInFocus.index() + 1));
                                 }
 
                                 $("#labelHolder .selected").removeClass("selected");
@@ -449,7 +451,7 @@
                             // create target and position it
                             $('<div class="target transparent"></div>')
                                     .appendTo($targetHolder)
-                                    .attr("title", targetTxt1 + " " + (i + 1))
+                                    .attr("title", (tooltips[i] != undefined && tooltips[i] != "") ? tooltips[i] : targetTxt1 + " " + (i + 1))
                                     .data("text", this.getAttribute("text"))
                                     .css({
                                         "left": xywh[0],
@@ -467,7 +469,7 @@
                             // create target and position it
                             $('<div class="target transparent"></div>')
                                     .appendTo($targetHolder)
-                                    .attr("title", targetTxt1 + " " + (i + 1))
+                                    .attr("title", (tooltips[i] != undefined && tooltips[i] != "") ? tooltips[i] : targetTxt1 + " " + (i + 1))
                                     .data("text", this.getAttribute("text"))
                                     .css({
                                         "left": xywh[0],
@@ -509,7 +511,7 @@
                                 .removeClass("transparent");
                         var $pageContents = $("#pageContents");
                         if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-                            $(this).attr("title", targetTxt1 + " " + ($(this).index() + 1) + " - " + targetTxt2);
+                            $(this).attr("title", (tooltips[$(this).index()] != undefined && tooltips[$(this).index()] != "") ? tooltips[$(this).index()] : targetTxt1 + " " + ($(this).index() + 1) + " - " + targetTxt2);
                         }
                     })
                     .focusout(function() {
@@ -517,7 +519,7 @@
                         $(this)
                                 .addClass("transparent")
                                 .removeClass("highlight")
-                                .attr("title", targetTxt1 + " " + ($(this).index() + 1));
+                                .attr("title", (tooltips[$(this).index()] != undefined && tooltips[$(this).index()] != "") ? tooltips[$(this).index()] : targetTxt1 + " " + ($(this).index() + 1));
                     })
                     .keypress(function(e) {
                         var charCode = e.charCode || e.keyCode;
@@ -533,7 +535,7 @@
                                     if ($selectedLabel.data("correct") == $(this).index()) {
                                         dragDropLabel.dropLabel($(this), $selectedLabel); // target, label
                                     } else {
-                                        $(this).attr("title", targetTxt1 + " " + ($(this).index() + 1));
+                                        $(this).attr("title", (tooltips[$(this).index()] != undefined && tooltips[$(this).index()] != "") ? tooltips[$(this).index()] : targetTxt1 + " " + ($(this).index() + 1));
                                         $selectedLabel
                                                 .removeClass("selected")
                                                 .attr("title", labelTxt1);
@@ -603,7 +605,7 @@
                         })
                         .data("target", targetIndex);
                 $thisTarget
-                        .attr("title", targetTxt1 + " " + ($thisTarget.index() + 1))
+                        .attr("title", (tooltips[$thisTarget.index()] != undefined && tooltips[$thisTarget.index()] != "") ? tooltips[$thisTarget.index()] : targetTxt1 + " " + ($thisTarget.index() + 1))
                         .data("infoTxt", $infoHolder.html())
                         .css("cursor", "pointer")
                         .click(function() {
@@ -644,7 +646,7 @@
                         })
                         .data("target", $thisTarget);
                 $thisTarget
-                        .attr("title", targetTxt1 + " " + ($thisTarget.index() + 1))
+                        .attr("title", (tooltips[$thisTarget.index()] != undefined && tooltips[$thisTarget.index()] != "") ? tooltips[$thisTarget.index()] : targetTxt1 + " " + ($thisTarget.index() + 1))
                         .data("infoTxt", $infoHolder.html())
                         .css("cursor", "pointer")
                         .click(function() {
@@ -656,6 +658,8 @@
 
                 $("#pageContents").data("selectedLabel", "");
             }
+			
+			x_pageContentsUpdated();
 
         }
 
@@ -692,7 +696,7 @@
                                             "background" : "transparent"
                                         });
                             });
-                    debugger;
+
                     if($this.data("target") === undefined || $this.data("target") === "")
                     {
                         l_options.push({source: $this.html(), target: " "});
@@ -763,11 +767,7 @@
                 dragDropLabel.checked = true;
             }
 
-            // Queue reparsing of MathJax - fails if no network connection
-            try {
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-            } catch (e) {
-            }
+            x_pageContentsUpdated();
         };
     };
 

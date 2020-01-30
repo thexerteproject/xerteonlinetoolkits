@@ -34,7 +34,7 @@ var EDITOR = (function ($, parent) {
 		workspace,
 
     // Build the "insert page" menu
-    create_insert_page_menu = function () {
+    create_insert_page_menu = function (advanced_toggle) {
         var getMenuItem = function (itemData) {
             var data = {
                 href: '#',
@@ -55,7 +55,7 @@ var EDITOR = (function ($, parent) {
 			if (itemData.submenu != undefined) {
                 var subList = $("<ul>");
                 $.each(itemData.submenu, function () {
-                    if (!this.deprecated) {
+                    if (!this.deprecated && (this.simple_enabled || advanced_toggle)) {
                         subList.append(getMenuItem(this));
                     }
                 });
@@ -87,7 +87,7 @@ var EDITOR = (function ($, parent) {
         });
         
         $.each(menu_data.menu, function () {
-            if (!this.deprecated) {
+            if (!this.deprecated && (this.simple_enabled || advanced_toggle)) {
                 $menu.append(
                     getMenuItem(this)
                 )
@@ -157,31 +157,49 @@ var EDITOR = (function ($, parent) {
                         $menu.find(".insert_buttons").last().append(button);
                 });
             }
-		$.widget("ui.menu", $.ui.menu, {
-			collapseAll: function(e) {
-				if (e.type == "click" && e.target.id != "insert_button") {
-					$("#insert_menu").hide();
-                   	$("#shadow").hide();
-				} else if  (e.type == "keydown" && $(e.target).parent().hasClass("insert_buttons")) {
-					$("#insert_menu").hide();
-               	   	$("#shadow").hide();
-					parent.tree.addNode($(e.target).closest("[item]").attr("item"), $(e.target).attr("value"));
-				}
-                return this._super();
-			},
-			_open: function(submenu) {
-				// make sure the menus fit on screen and scroll when needed
-				this._super(submenu);
-				if (submenu.hasClass("details")) {
-					if ($("body").height() < (submenu.height() + submenu.offset().top + 20)) {
-						submenu.offset({"top": $("body").height() - submenu.height() - 20});
-					}
-				} else {
-					submenu.css("max-height", $("body").height() - submenu.offset().top - 30);
-				}
-			}
-		});
-        $("#insert_menu").append($menu.menu());
+
+        if (typeof insert_menu_object !== 'undefined')
+        {
+            // menu is aleready set once
+            insert_menu_object.menu("destroy");
+            /*
+            $.widget("ui.menu", $.ui.menu, {
+                collapseAll: function(e) {},
+                _open: function(submenu) {}
+            });
+            */
+
+        }
+        else {
+            // Set default once
+            $.widget("ui.menu", $.ui.menu, {
+                collapseAll: function (e) {
+                    if (e.type == "click" && e.target.id != "insert_button") {
+                        $("#insert_menu").hide();
+                        $("#shadow").hide();
+                    } else if (e.type == "keydown" && $(e.target).parent().hasClass("insert_buttons")) {
+                        $("#insert_menu").hide();
+                        $("#shadow").hide();
+                        parent.tree.addNode($(e.target).closest("[item]").attr("item"), $(e.target).attr("value"));
+                    }
+                    return this._super();
+                },
+                _open: function (submenu) {
+                    // make sure the menus fit on screen and scroll when needed
+                    this._super(submenu);
+                    if (submenu.hasClass("details")) {
+                        if ($("body").height() < (submenu.height() + submenu.offset().top + 20)) {
+                            submenu.offset({"top": $("body").height() - submenu.height() - 20});
+                        }
+                    } else {
+                        submenu.css("max-height", $("body").height() - submenu.offset().top - 30);
+                    }
+                }
+            });
+        }
+
+        insert_menu_object = $menu.menu();
+        $("#insert_menu").html(insert_menu_object);
 		$menu.find(".ui-menu-item a").first().attr("tabindex", 2);
     },
     
@@ -234,6 +252,13 @@ var EDITOR = (function ($, parent) {
                 }
                 else {
                     return '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+                }
+            case "advanced":
+                if (enabled) {
+                    return '<i class="advancedIcon iconEnabled fa fa-exclamation-circle " id="' + key + '_advanced" title ="' + language.advancedPage.$tooltip + '"></i>';
+                }
+                else {
+                    return '<i class="advancedIcon iconDisabled fa fa-exclamation-circle " id="' + key + '_advanced" title ="' + language.advancedPage.$tooltip + '"></i>';
                 }
         }
     },
@@ -371,8 +396,9 @@ var EDITOR = (function ($, parent) {
         var deprecatedIcon = getExtraTreeIcon(key, "deprecated", wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecated);
         var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
+        var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
 
-        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
+        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
 
         var this_json = {
             id : key,
@@ -1931,7 +1957,7 @@ var EDITOR = (function ($, parent) {
 
     inputChanged = function (id, key, name, value, obj)
     {
-        //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+        console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
         var actvalue = value;
 
         if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
@@ -3232,11 +3258,11 @@ var EDITOR = (function ($, parent) {
 							html.append(option);
 						}
 					} else {
-						var optName = wizard_data['learningObject'].node_options.all.find((o) => { return o['name'] === options.target}).value.label;
+						var optName = wizard_data['learningObject'].node_options.all.find(function(o) { return o['name'] === options.target}).value.label;
 						html.append('<span class="error">' + language.categoryList.errorEmpty.replace('{x}', "'" + optName + "'") + "</span>");
 					}
 				} else {
-					var optName = wizard_data['learningObject'].node_options.all.find((o) => { return o['name'] === options.target}).value.label;
+					var optName = wizard_data['learningObject'].node_options.all.find(function(o) { return o['name'] === options.target}).value.label;
 					html.append('<span class="error">' + language.categoryList.error.replace('{x}', "'" + optName + "'") + "</span>");
 				}
 				break;
@@ -3650,12 +3676,17 @@ var EDITOR = (function ($, parent) {
 			case 'datefield':
 				var id = 'date_' + form_id_offset;
 				form_id_offset++;
-				if (value.length==0)
-				{
-					value=new Date();
-					setAttributeValue(key, [name], [value.toISOString()]);
+				var format = 0;
+				if (value.length > 0) {
+					if (value.split('-').length == 3) {
+						format = 1;
+						value = value.split('T')[0];
+					}
+				} else if (value.length == 0 && options.allowBlank != "true") {
+					value = new Date().toISOString();
+					setAttributeValue(key, [name], [value]);
 				}
-				value = new Date(value).toDateString();
+				
 				// a datepicker with a browse buttons next to it
 				var td1 = $('<td width="100%">')
 					.append($('<input>')
@@ -3664,13 +3695,14 @@ var EDITOR = (function ($, parent) {
 						.addClass('date')
 						.change({id:id, key:key, name:name}, function(event)
 						{
-							inputChanged(event.data.id, event.data.key, event.data.name, new Date(this.value).toISOString(), this);
+							inputChanged(event.data.id, event.data.key, event.data.name, this.value.length == 0 ? '' : (format == 0 ? this.value : new Date(this.value).toISOString()), this);
 						})
-						.attr('value', value)
+						.attr('value', value.split('T')[0])
 						.datepicker({
 							showOtherMonths: true,
 							selectOtherMonths: true,
-							dateFormat: 'yy-mm-dd'
+							dateFormat: 'yy-mm-dd', // the format used to be dd/mm/yyyy so some of code above is to cope with this
+							minDate: options.preventPrev == "true" ? 0 : null
 						}));
 				
 				var td2 = $('<td>');

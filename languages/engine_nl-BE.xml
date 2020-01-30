@@ -155,7 +155,7 @@
 		<invert label="Draai kleuren om"/>
 		<blackYellow label="Zwart op geel"/>
 	</colourChanger>
-	
+
 	<screenReaderInfo label="Screenreader informatie" newWindow="Deze link opent een nieuw venster" thisWindow="Deze link opent in het huidige venster" dialog="Deze knop opent een dialoog venster" >
 		<tabNav description="Deze pagina bevat tabs waarbij iedere tab andere informatie bevat. Om een tab te selecteren: Klik twee maal Enter (Jaws) of gebruik Shift-Enter (NVDA)."/>
 		<accNav description="Deze pagina bevat accordeon tabs waarbij iedere tab andere informatie bevat. Om een tab te selecteren klik Enter of Spatie."  click="Klik om informatie te bekijken to reveal information"/>

@@ -24,16 +24,16 @@
 		
 		<hideShow type="group" label="Hide/Show Section" optional="true" tooltip="Hide the section completely or hide/show the section between specified dates" info="Hide this section from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
 			<hidePage label="Hide Section" type="CheckBox" defaultValue="false" optional="true"/>
-			<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true"/>
 			<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-			<hideUntilDate label="Until (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true"/>
 			<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 		</hideShow>
 		
 		<links label="Subsection Links" type="ComboBox" width="80" options="None,Horizontal List,Vertical List" data="none,hlist,vlist" defaultValue="hlist" optional="true" tooltip="Add a list of subsection links below the section title. Only subsections where title isn't hidden will be included."/>
 		
 		<!--<metadata label="Metadata" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of metadata terms used when search is turned on"/>-->
-		<filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Tick the relevant filter terms used in category searches"/>
+		<filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches"/>
 
 		<newNodes>
 			<xot><![CDATA[<xot name="Title" showTitle="true" link="Xerte XOT Project URL" header="false" footer="false"/>]]></xot>

@@ -77,6 +77,7 @@ CREATE TABLE `$originaltemplatesdetails` (
   `display_id` bigint(20) DEFAULT NULL,
   `access_rights` char(255) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
+  `template_sub_pages` text,
   PRIMARY KEY (`template_type_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -209,13 +210,14 @@ CREATE TABLE `$templatedetails` (
   `tsugi_xapi_secret` text,
   `tsugi_xapi_student_id_mode` int DEFAULT 0,
   `dashboard_allowed_links` text,
+  `dashboard_display_options` text,
   PRIMARY KEY (`template_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$templaterights` (
   `template_id` bigint(20) NOT NULL,
   `user_id` bigint(20) DEFAULT NULL,
-  `role` text,
+  `role` char(255) DEFAULT NULL,
   `folder` bigint(20) DEFAULT NULL,
   `notes` char(255) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

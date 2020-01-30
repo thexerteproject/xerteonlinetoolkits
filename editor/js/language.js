@@ -203,6 +203,29 @@ var EDITOR = (function ($, parent) {
         });
         //wizard_data.menus = String(wizard_xml[0].attributes["menus"].value).split(',');
 
+        // Now add whether apge should be visible according to simple_mode and templates_sub_pages
+        if (simple_mode) {
+            $(menu_data.menu).each(function (i, menu) {
+                var enabled = false;
+                $(menu.submenu).each(function (j, submenu) {
+                    if (template_sub_pages.indexOf(submenu.item) != -1) {
+                        submenu.simple_enabled = true;
+                        enabled = true;
+                    } else {
+                        submenu.simple_enabled = false;
+                    }
+                });
+                menu.simple_enabled = enabled;
+            });
+        }
+        else {
+            $(menu_data.menu).each(function(i, menu){
+                menu.simple_enabled=true;
+                $(menu.submenu).each(function(j, submenu){
+                    submenu.simple_enabled = true;
+                });
+            });
+        }
     },
 
 
@@ -341,9 +364,15 @@ var EDITOR = (function ($, parent) {
     },
 
     proceed = function () {
+        advanced_mode = false;
         parent.data.wait(1, {});
         parent.layout.setup();
-        toolbox.create_insert_page_menu();
+        if (simple_mode)
+        {
+            $("div.ui-layout-center").css("padding-right", "8px");
+            xerte_layout.hide("east");
+        }
+        toolbox.create_insert_page_menu(false);
         $('#loader').hide();
     },
 

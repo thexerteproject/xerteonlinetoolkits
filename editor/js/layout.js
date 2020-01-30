@@ -43,8 +43,7 @@ var EDITOR = (function ($, parent) {
         if (language.layout.$unpin)
             unpin = language.layout.$unpin;
 
-        var xerte_layout,
-            xerte_editor_layout_settings = {
+        var xerte_editor_layout_settings = {
                 name: "xerte_editor_layout",
 				panes: {
                     size:                   "auto",
@@ -116,7 +115,7 @@ var EDITOR = (function ($, parent) {
                     togglerAlign_closed:    "top",
                     togglerLength_open:     0,
                     slideTrigger_open:      "click",
-                    initClosed:             screen.width >= 1024 ? false : true
+                    initClosed:             (screen.width < 1024)
                     /*
                     fxName:                 "drop",
                     fxSpeed:                "normal",
@@ -156,7 +155,7 @@ var EDITOR = (function ($, parent) {
 		
 		var optionaltitle = language.optionalPropHTML ? language.optionalPropHTML.$label : "Optional Properties";
 		$("#optional_title").html(optionaltitle);
-    }
+    };
 
     /*
      pane name - Always one of: "north", "south", "east" or "west"

@@ -31,6 +31,7 @@
 	<btnAddChild tooltip="add some children"/>
 	<btnDuplicate label="Copy" tooltip="Duplicate"/>
 	<btnDelete label="Delete" tooltip="Delete"/>
+	<btnAdvanced label_on="Toggle to advanced mode" tooltip_on="Toggle advanced mode" label_off="Switch off advanced mode" tooltip_off="Toggle off advanced mode"/>
 	<btnMoveUp tooltip="Move Up"/>
 	<btnMoveDown tooltip="Move Down"/>
 	<btnNext tooltip="Next Item"/>
@@ -48,6 +49,7 @@
 	<calendar tooltip="Select Date"/>
 	<hidePage title="HIDDEN" tooltip="This page is hidden"/>
 	<unmarkForCompletion tooltip="This page is not required for completion"/>
+	<advancedPage title="Advanced" tooltip="This page is not part of this (sub-)template and can only be added in advanced mode."/>
 	<filemenu title="File">
 		<menuNew>New Project...</menuNew>
 		<menuOpen>Open...</menuOpen>

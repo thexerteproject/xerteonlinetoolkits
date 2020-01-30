@@ -8,7 +8,7 @@
 		<themeurl type="CheckBox" label="Disable theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
 		<language type="LanguageList" label="Language" width="170" mandatory="true" defaultValue=""/>
 		
-		<searchGroup type="group" label="Search" optional="true" tooltip="Add the ability to search for relevant sections within a project">
+		<searchGroup type="group" label="Search" optional="true" tooltip="Add the ability to search for relevant sections within a project" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/81-xerteproject-site/media/Bootstrap%20Search%20Documentation.pdf' target='_blank'&gt;Bootstrap Search Guide&lt;/a&gt;&lt;/u&gt; for help setting up and using the search functionality">
 			<!--<search label="Free Text Search" type="CheckBox" defaultValue="false" tooltip="Find relevant sections by searching using a free text box" optional="true"/>-->
 			<!--<searchType label="Search Target" type="ComboBox" data="meta,title,text" options="Metadata,Titles,All Text" defaultValue="meta" tooltip="The data that the free text search is checked against. Metadata can be added to individual sections" optional="true"/>-->
 			<category label="Category Search" type="CheckBox" defaultValue="false" tooltip="Find relevant sections by selecting from a number a categories" optional="true"/>
@@ -63,6 +63,7 @@
             <footerColour type="ColourPicker" optional="true" label="Footer Background Colour"/>
 		</footerGroup>
 		
+		<print type="CheckBox" label="Print Button" defaultValue="true" optional="true" tooltip="Add a print button to the navigation bar. Pages can still be printed via browser controls if button is not added"/>
 		<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
 		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
 		<stylesheet type="Media" optional="true" label="Stylesheet"/>
@@ -91,26 +92,26 @@
 		<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
 	</headerGroup><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
-		<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-		<hideUntilDate label="Until (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true"/>
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-	</hideShow><filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Tick the relevant filter terms used in category searches" common="true"/></page><section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
+	</hideShow><filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches" common="true"/></page><section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
 
 		<name type="TextInput" label="Section Title" wysiwyg="true"/>
 		
 		<hideShow type="group" label="Hide/Show Section" optional="true" tooltip="Hide the section completely or hide/show the section between specified dates" info="Hide this section from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
 			<hidePage label="Hide Section" type="CheckBox" defaultValue="false" optional="true"/>
-			<hideOnDate label="From (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true"/>
 			<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-			<hideUntilDate label="Until (dd/mm/yyyy)" type="DateField" defaultValue="" optional="true"/>
+			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true"/>
 			<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 		</hideShow>
 		
 		<links label="Subsection Links" type="ComboBox" width="80" options="None,Horizontal List,Vertical List" data="none,hlist,vlist" defaultValue="hlist" optional="true" tooltip="Add a list of subsection links below the section title. Only subsections where title isn't hidden will be included."/>
 		
 		<!--<metadata label="Metadata" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of metadata terms used when search is turned on"/>-->
-		<filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Tick the relevant filter terms used in category searches"/>
+		<filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches"/>
 
 		<newNodes>
 			<xot><![CDATA[<xot name="Title" showTitle="true" link="Xerte XOT Project URL" header="false" footer="false"/>]]></xot>
