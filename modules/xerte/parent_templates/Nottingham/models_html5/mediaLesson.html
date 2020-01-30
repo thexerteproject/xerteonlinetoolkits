@@ -1372,7 +1372,7 @@
 				// 3: Presentation
 				// 4: Video 2
 				// 5: Video 3
-				if (this.video._util.type === "Mediasite")
+				if (this.video._util !== undefined && this.video._util.type === "Mediasite")
 					if (synchData.getAttribute("visibleStreamTypes") != undefined)
 						this.setVST(synchData.getAttribute("visibleStreamTypes"));
 
