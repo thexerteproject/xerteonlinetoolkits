@@ -447,7 +447,7 @@ function setup(){
 		authorSupport = true;
 		
 	}
-
+	
 	//add all the pages to the pages menu: this links back to the same page
 	$(data).find('page').each( function(index, value){
 		// work out whether the page is hidden or not - can be simply hidden or hidden between specific dates/times
@@ -473,8 +473,19 @@ function setup(){
 			$link.find('a').append(name);
 			
 		}
-		
 	});
+	
+	// adjust the start page so it only takes into account unhidden pages
+	
+	var validPages = [];
+	
+	for (var i=0; i<$(data).find('page').length; i++) {
+		if ($(data).find('page').eq(i).attr('hidePage') != 'true' || authorSupport == true) {
+			validPages.push(i);
+		}
+	}
+	
+	startPage = validPages.length - 1 >= startPage ? validPages[startPage] : validPages[0];
 	
 	// set up print functionality - all this does is add a print button to the toolbar which triggers browser's print dialog
 	if ($(data).find('learningObject').attr('print') == 'true') {
@@ -1186,17 +1197,61 @@ function x_checkForText(data, type) {
 
 // this is the format of links added through the wysiwyg editor button
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
-	var pages = $(data).find('page');
+	
+	var pages = $(data).find('page'),
+		links = ['[first]', '[last]', '[previous]', '[next]'];
 
-	var links = ['[first]', '[last]', '[previous]', '[next]'];
-	var linkLocations = [0, pages.length-1, Math.max(0,currentPage-1), Math.min(currentPage+1,pages.length-1)];
-
-	// First look for the fixed links
+	// First look for the fixed links (first/last/previous/next) - making sure it's ignoring any hidden pages
 	if ($.inArray(pageInfo.ID, links) > -1) {
-		parseContent(linkLocations[$.inArray(pageInfo.ID, links)]);
+		var tempNum,
+			tempPageIndex;
+		
+		// first unhidden page
+		if ($.inArray(pageInfo.ID, links) == 0) {
+			tempNum = 0;
+			tempPageIndex = tempNum;
+			
+			while (($(data).find('page').eq(tempNum).attr('hidePage') == 'true' && authorSupport == false) && tempNum != $(data).find('page').length) {
+				tempPageIndex = tempNum == $(data).find('page').length - 1 ? 0 : tempNum + 1;
+				tempNum++;
+			}
+		
+		// last unhidden page
+		} else if ($.inArray(pageInfo.ID, links) == 1) {
+			tempNum = pages.length-1;
+			tempPageIndex = tempNum;
+			
+			while (($(data).find('page').eq(tempNum).attr('hidePage') == 'true' && authorSupport == false) && tempNum != -1) {
+				tempPageIndex = tempNum == 0 ? pages.length-1 : tempNum - 1;
+				tempNum--;
+			}
+			
+		// previous unhidden page
+		} else if ($.inArray(pageInfo.ID, links) == 2) {
+			tempNum = Math.max(0, currentPage-1);
+			tempPageIndex = tempNum;
+			
+			while (($(data).find('page').eq(tempNum).attr('hidePage') == 'true' && authorSupport == false) && tempNum != -1) {
+				tempPageIndex = tempNum == 0 ? Math.max(0, currentPage-1) : tempNum - 1;
+				tempNum--;
+			}
+		
+		// next unhidden page
+		} else {
+			tempNum = Math.min(currentPage+1, pages.length-1);
+			tempPageIndex = tempNum;
+			
+			while (($(data).find('page').eq(tempNum).attr('hidePage') == 'true' && authorSupport == false) && tempNum != $(data).find('page').length) {
+				tempPageIndex = tempNum == $(data).find('page').length - 1 ? Math.min(currentPage+1, pages.length-1) : tempNum + 1;
+				tempNum++;
+			}
+		}
+		
+		parseContent(tempPageIndex);
 		goToSection('topnav');
-	}
-	else { // Then look them up by ID
+		
+	} else { // Then look them up by ID
+		
 		for (var i=0; i<pages.length; i++) {
 			if (pages[i].getAttribute("linkID") == pageInfo.ID) {
 				parseContent(i);
@@ -1223,36 +1278,31 @@ function goToSection(pageId) {
 	window.scrollTo(0, top);
 }
 
-function parseContent(pageIndex, checkSection){
-	//clear out existing content
-	$('#mainContent').empty();
-	$('#toc').empty();
+function parseContent(pageIndex, checkSection) {
 	
 	// check if pageIndex exists & is unhidden
 	var pageFound = true;
 	
-	if ($(data).find('page').length > 0) {
-		if (pageIndex > $(data).find('page').length - 1) {
-			pageIndex = 0;
-		}
-		
-	} else {
-		// project contains no pages
-		pageFound = false;
-	}
-	
-	var count = 0;
-	while ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && authorSupport == false && count != $(data).find('page').length) {
-		// page is hidden
-		pageIndex = pageIndex == $(data).find('page').length - 1 ? 0 : pageIndex + 1;
-		count++;
+	if ($(data).find('page').length == 0 || pageIndex > $(data).find('page').length - 1) {
+		// project contains no pages or pageIndex is too high
+		pageIndex = 0;
 	}
 	
 	if ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && authorSupport == false) {
 		pageFound = false;
 	}
 	
-	if (pageFound == true) {
+	// Page doesn't exist or is a hidden & author support is off
+	if (pageFound == false) {
+		console.log("Page not found");
+		
+	// Page exists & can be shown
+	} else if (pageFound == true) {
+			
+		//clear out existing content
+		$('#mainContent').empty();
+		$('#toc').empty();
+		
 		// store current page
 		currentPage = pageIndex;
 	
@@ -1271,19 +1321,19 @@ function parseContent(pageIndex, checkSection){
 		$('#pageSubTitle').html( page.attr('subtitle') + extraTitle);
 		
 		$('#overview').removeClass('hide');// show the header
-        $('#topnav').removeClass('hide');// show the topnavbar
+		$('#topnav').removeClass('hide');// show the topnavbar
 		
 		//create the sections
 		page.find('section').each( function(index, value){
 			
 			// work out whether the section is hidden or not - can be simply hidden or hidden between specific dates/times
-			var hidePage = checkIfHidden($(this).attr('hidePage'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Section');
-			if ($.isArray(hidePage)) {
-				$(this).attr('hidePageInfo', hidePage[1]);
-				hidePage = hidePage[0];
+			var hideSection = checkIfHidden($(this).attr('hidePage'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Section');
+			if ($.isArray(hideSection)) {
+				$(this).attr('hidePageInfo', hideSection[1]);
+				hideSection = hideSection[0];
 			}
 			
-			if (hidePage == false || authorSupport == true) {
+			if (hideSection == false || authorSupport == true) {
 				
 				var sectionIndex = index;	
 				
@@ -1505,9 +1555,6 @@ function parseContent(pageIndex, checkSection){
 		//twttr.widgets.load(); // REMOVED??
 		
 		//FB.XFBML.parse(); // REMOVED??
-		
-	} else {
-		console.log("project contains no (unhidden) pages");
 	}
 	
 	if (checkSection == true && startSection != undefined) {
@@ -2034,9 +2081,9 @@ function findAnchor(name){
 				startHash = window.location.hash;
 				
 				parseContent(pIndex);
-						
+				
 			}
-					
+				
 		});
 	
 	});
