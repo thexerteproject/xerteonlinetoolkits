@@ -25,8 +25,8 @@ class Xerte_Authentication_Saml2 extends Xerte_Authentication_Abstract
     private $_record = array();
 
     private $_saml2config = array(
-        'ssourl' => '<php-saml site>/xertesso.php',
-        'slourl' => '<php-saml-site>/xerteslo.php',
+        'ssourl' => '',
+        'slourl' => '',
     );
 
     public function getUsername() {
@@ -72,6 +72,9 @@ class Xerte_Authentication_Saml2 extends Xerte_Authentication_Abstract
         // This implementation is based on One_Logins Saml2 php implementation
 
         if (!isset($_SESSION['saml2session'])) {
+            if ($this->_saml2config['ssourl'] == "")
+                $this->_saml2config['ssourl'] = $this->xerte_toolkits_site->site_url . "/library/Xerte/Authentication/Saml2/xertesso.php";
+
             $_SESSION['saml2reqid'] = bin2hex(openssl_random_pseudo_bytes(10));
             if (strpos($this->_saml2config['ssourl'], '?') === false)
             {
@@ -101,6 +104,9 @@ class Xerte_Authentication_Saml2 extends Xerte_Authentication_Abstract
             session_destroy();
 
             $_SESSION['saml2reqid'] = bin2hex(openssl_random_pseudo_bytes(10));
+            if ($this->_saml2config['slourl'] == "")
+                $this->_saml2config['slourl'] = $this->xerte_toolkits_site->site_url . "/library/Xerte/Authentication/Saml2/xerteslo.php";
+
             $url = $this->_saml2config['slourl'] . "?site=" . $this->xerte_toolkits_site->site_url . "&returnurl=library/Xerte/Authentication/Saml2/saml2login.php&request=" . $_SESSION['saml2reqid'];
             header("Location: " . $url);
             exit;
