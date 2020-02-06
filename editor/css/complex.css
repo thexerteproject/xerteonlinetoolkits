@@ -1153,6 +1153,10 @@ i.tooltipIcon {
 	margin-right: 5px;
 	color: #ff0000;
 }
+.standaloneIcon {
+	margin-right: 5px;
+	color: #333366;
+}
 .iconEnabled
 {
 	display: inline-block;

@@ -7,7 +7,7 @@
 	</pageWizard>
 
   <!--- PAGE PAGE==================================================== -->
-	<page menu="Website" hint="A new page" icon="icLayoutContent" remove="true" duplicate="true" menuItem="Page">
+	<page menu="Website" hint="A new page" icon="icLayoutContent" remove="true" duplicate="true" menuItem="Page" deepLink="true">
 
 		<name type="TextInput" label="Page Title" wysiwyg="true"/>
 		<subtitle type="TextInput" label="Page Subtitle" wysiwyg="true"/>
