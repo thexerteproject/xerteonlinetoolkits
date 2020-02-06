@@ -84,8 +84,8 @@ var EDITOR = (function ($, parent) {
         delete_page = function() {
             deleteSelectedNodes();
         },
-
-        toggle_advanced = function()
+		
+		toggle_advanced = function()
         {
             // Do toggle advanced mode
             advanced_mode = !advanced_mode;
@@ -115,7 +115,7 @@ var EDITOR = (function ($, parent) {
             duplicateSelectedNodes();
         },
 
-        create_tree_buttons = function() {
+		create_tree_buttons = function() {
             var buttons = $('<div />').attr('id', 'top_buttons');
             if (templateframework == "xerte") {
                 var button_def =
@@ -497,13 +497,14 @@ var EDITOR = (function ($, parent) {
         // Create node text based on xml, do not use text of original node, as this is not correct
         var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
         var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true");
+        var standaloneIcon = toolbox.getExtraTreeIcon(key, "standalone", lo_data[key].attributes.linkPage == "true");
         var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');
-        var advancedIcon = toolbox.getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
-        // Be carefull. You cannot just find $("#" + current_node.id + "_text").html(), becuase if the node is collapsed this will return undefined!
+		var advancedIcon = toolbox.getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
+        // Be careful. You cannot just find $("#" + current_node.id + "_text").html(), because if the node is collapsed this will return undefined!
         // var nodeText = $("#" + current_node.id + "_text").html();
         var nodeText = $("<div>").html(current_node.text).find("#" + current_node.id + "_text").html();
 
-        var treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + nodeText + '</span>';
+        var treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + nodeText + '</span>';
         // Create the tree node
         var this_json = {
             id : key,
@@ -1256,10 +1257,11 @@ var EDITOR = (function ($, parent) {
         // Add icons to the node, all should be switched off
         // Create node text based on xml, do not use text of original node, as this is not correct
         var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
+        var standaloneIcon = toolbox.getExtraTreeIcon(lkey, "standalone", false);
         var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
-        var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && template_sub_pages.indexOf(nodeName) == -1);
+		var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && template_sub_pages.indexOf(nodeName) == -1);
 
-        var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
+        var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
         var this_json = {
             id : lkey,
             text : treeLabel,

@@ -76,6 +76,10 @@ color: #6FD9D9;
 	position: static;
 }
 
+.navbar .nav .backBtn a {
+	cursor: pointer;
+}
+
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
 .bs-docs-sidenav {
   width: 228px;
@@ -491,6 +495,10 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
 }
 
 #searchIcon .fa {
+	padding-right: 0.3em;
+}
+
+.backBtn .fa {
 	padding-right: 0.3em;
 }
 

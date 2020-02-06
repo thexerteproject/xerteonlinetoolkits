@@ -157,8 +157,8 @@ var EDITOR = (function ($, parent) {
                         $menu.find(".insert_buttons").last().append(button);
                 });
             }
-
-        if (typeof insert_menu_object !== 'undefined')
+			
+		if (typeof insert_menu_object !== 'undefined')
         {
             // menu is aleready set once
             insert_menu_object.menu("destroy");
@@ -253,12 +253,19 @@ var EDITOR = (function ($, parent) {
                 else {
                     return '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
                 }
-            case "advanced":
+			case "advanced":
                 if (enabled) {
                     return '<i class="advancedIcon iconEnabled fa fa-exclamation-circle " id="' + key + '_advanced" title ="' + language.advancedPage.$tooltip + '"></i>';
                 }
                 else {
                     return '<i class="advancedIcon iconDisabled fa fa-exclamation-circle " id="' + key + '_advanced" title ="' + language.advancedPage.$tooltip + '"></i>';
+                }
+			case "standalone":
+                if (enabled) {
+                    return '<i class="standaloneIcon iconEnabled fa fa-external-link " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
+                }
+                else {
+                    return '<i class="standaloneIcon iconDisabled fa fa-external-link " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
                 }
         }
     },
@@ -269,6 +276,7 @@ var EDITOR = (function ($, parent) {
 
         var deprecatedState = ($("#"+key+"_deprecated.iconEnabled").length > 0);
         var hiddenState = ($("#"+key+"_hidden.iconEnabled").length > 0);
+		var standaloneState = ($("#"+key+"_standalone.iconEnabled").length > 0);
         var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
         var change = false;
         var tooltip = "";
@@ -280,6 +288,10 @@ var EDITOR = (function ($, parent) {
                 break;
             case "hidden":
                 if (hiddenState != enabled)
+                    change = true;
+                break;
+			case "standalone":
+                if (standaloneState != enabled)
                     change = true;
                 break;
             case "unmark":
@@ -300,6 +312,7 @@ var EDITOR = (function ($, parent) {
             }
             var deprecatedIcon = getExtraTreeIcon(key, "deprecated", (item == "deprecated" ? enabled : deprecatedState), tooltip);
             var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" ? enabled : hiddenState));
+			var standaloneIcon = getExtraTreeIcon(key, "standalone", (item == "standalone" ? enabled : standaloneState));
             var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
             var nodetext;
             if (item == "text")
@@ -309,7 +322,7 @@ var EDITOR = (function ($, parent) {
             else {
                 nodetext = $("#" + key + '_text').text();
             }
-            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
+            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
             tree.rename_node(node, nodetext);
             //tree.set_text(node, nodetext);
             //tree.refresh();
@@ -395,10 +408,11 @@ var EDITOR = (function ($, parent) {
 
         var deprecatedIcon = getExtraTreeIcon(key, "deprecated", wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecated);
         var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
+        var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
-        var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
+		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
 
-        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
+        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
 
         var this_json = {
             id : key,
@@ -750,6 +764,9 @@ var EDITOR = (function ($, parent) {
                 //    hiddenIcon.switchClass('iconEnabled', 'iconDisabled');
                 //}
 			}
+			if (toDelete[i] == "linkPage") {
+			    changeNodeStatus(key, "standalone", false);
+			}
             if (toDelete[i] == "unmarkForCompletion"){
                 changeNodeStatus(key, "unmark", false);
                 //var unmarkIcon = $("#" + key + "_unmark");
@@ -789,6 +806,11 @@ var EDITOR = (function ($, parent) {
     {
 		// Place attribute
 		lo_data[key]['attributes'][name] = defaultvalue;
+		
+		// unlike hidePage, linkPage is initially set to true so tree icon should show immediately
+		if (name == "linkPage") {
+            changeNodeStatus(key, "standalone", defaultvalue == "true");
+        }
 
 		// Enable the optional parameter button
 		$('#insert_opt_' + name)
@@ -1806,6 +1828,10 @@ var EDITOR = (function ($, parent) {
                 }
             }
             */
+        }
+		
+		if (names[0] == "linkPage") {
+            changeNodeStatus(key, "standalone", values[0] == "true");
         }
 
         if (names[0] == "unmarkForCompletion") {

@@ -18,6 +18,19 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow>
 	
+	<linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links">
+		<linkPage label="Remove From Page Menu" type="CheckBox" defaultValue="true" optional="true"/>
+		<newWindow label="Open in New Window" type="CheckBox" defaultValue="false" optional="true" tooltip="Links to this page will open in a new browser window"/>
+		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
+		<navbarHide label="Navigation Bar" type="ComboBox" data="default,back,hidden" options="Default,Back Button Only,Hidden" defaultValue="back" optional="true"/>
+	</linkGroup>
+	
+	<sectionMenu label="Hide Section Menu" type="CheckBox" defaultValue="true" optional="true" tooltip="Hide the table of contents for this page"/>
+	
+	<customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs">
+		<customLinkID label="Page ID" type="TextInput" optional="true"/>
+	</customLinkGroup>
+	
 	<!--<metadata label="Metadata" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of metadata terms used when search is turned on"/>-->
 	<filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches"/>
 	

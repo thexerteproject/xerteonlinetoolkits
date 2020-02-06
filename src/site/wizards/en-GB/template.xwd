@@ -75,7 +75,7 @@
 		<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page></newNodes>
 
 	</learningObject>
-<page menu="Website" hint="A new page" icon="icLayoutContent" remove="true" duplicate="true" menuItem="Page">
+<page menu="Website" hint="A new page" icon="icLayoutContent" remove="true" duplicate="true" menuItem="Page" deepLink="true">
 
 		<name type="TextInput" label="Page Title" wysiwyg="true"/>
 		<subtitle type="TextInput" label="Page Subtitle" wysiwyg="true"/>
@@ -96,7 +96,14 @@
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true"/>
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-	</hideShow><filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches" common="true"/></page><section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
+	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
+		<linkPage label="Remove From Page Menu" type="CheckBox" defaultValue="true" optional="true"/>
+		<newWindow label="Open in New Window" type="CheckBox" defaultValue="false" optional="true" tooltip="Links to this page will open in a new browser window"/>
+		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
+		<navbarHide label="Navigation Bar" type="ComboBox" data="default,back,hidden" options="Default,Back Button Only,Hidden" defaultValue="back" optional="true"/>
+	</linkGroup><sectionMenu label="Hide Section Menu" type="CheckBox" defaultValue="true" optional="true" tooltip="Hide the table of contents for this page" common="true"/><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
+		<customLinkID label="Page ID" type="TextInput" optional="true"/>
+	</customLinkGroup><filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches" common="true"/></page><section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
 
 		<name type="TextInput" label="Section Title" wysiwyg="true"/>
 		
