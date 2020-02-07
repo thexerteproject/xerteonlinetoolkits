@@ -262,10 +262,10 @@ var EDITOR = (function ($, parent) {
                 }
 			case "standalone":
                 if (enabled) {
-                    return '<i class="standaloneIcon iconEnabled fa fa-external-link " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
+                    return '<i class="standaloneIcon iconEnabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
                 }
                 else {
-                    return '<i class="standaloneIcon iconDisabled fa fa-external-link " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
+                    return '<i class="standaloneIcon iconDisabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
                 }
         }
     },
