@@ -201,7 +201,7 @@ function getStartPage(urlHash) {
 			thisPage = thisPage < 0 ? 0 : thisPage;
 			
 		} else {
-			if (pageLink.substring(4).indexOf('section') > -1) {
+			if (pageLink.indexOf('section') > -1) {
 				thisPage = pageLink.substring(0, pageLink.indexOf('section'));
 				thisSection = pageLink.substring(pageLink.indexOf('section') + 7);
 			} else {
