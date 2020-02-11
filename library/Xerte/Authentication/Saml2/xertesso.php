@@ -60,7 +60,12 @@ if (!isset($_SESSION['samlUserdata'])) {
         $xertedata['saml2data'] = $_SESSION['samlUserdata'];
         $xertedata['saml2reqid'] = $_REQUEST['request'];
         $sertedata['site'] = $_REQUEST['site'];
-        $xertedata['organisation'] = $_SESSION['samlUserdata']['urn:oid:1.3.6.1.4.1.25178.1.2.9'];
+        if (isset($_SESSION['samlUserdata']['urn:oid:1.3.6.1.4.1.25178.1.2.9'])) {
+            $xertedata['organisation'] = $_SESSION['samlUserdata']['urn:oid:1.3.6.1.4.1.25178.1.2.9'];
+        }
+        else{
+            $xertedata['organisation'] = "unknown";
+        }
         logToFile("xertedata: " . print_r($xertedata, true));
         logToFile('$_GET    : ' . print_r($_GET, true));
         logToFile('$_POST   : ' . print_r($_POST, true));
