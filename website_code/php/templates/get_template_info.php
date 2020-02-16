@@ -54,7 +54,7 @@ if ($statistics_available->published) {
 if (!$statistics_available->published && $statistics_available->available)
 {
     $info->properties .= $statistics_available->linkinfo;
-    $info->properties .= "<li><a href='" . $statistics_available->url . "'>" . $statistics_available->url . "</a></li>";
+    $info->properties .= "<li><a target=\"_blank\" href='" . $statistics_available->url . "'>" . $statistics_available->url . "</a></li>";
 }
 $info->properties .= $statistics_available->info;
 $info->fetch_statistics = $statistics_available->available;

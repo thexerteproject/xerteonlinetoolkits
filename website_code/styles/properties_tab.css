@@ -246,14 +246,14 @@ div#menu_tabs{
 	border-right:1px #ededed solid;
 }
 
-div#publish label{
+div.publish label{
 	display:inline-block;
 	width:150px;
 	margin-left: 10px;
 	padding: 4px;
 }
 
-div#publish input {
+div.publish input,  div.publish select{
 	margin-left: 10px;
 	padding: 4px;
 
