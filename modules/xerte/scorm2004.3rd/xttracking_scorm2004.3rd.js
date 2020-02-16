@@ -165,7 +165,7 @@ function ScormTrackingState()
     this.findcreate = findcreate;
     this.findPage = findPage;
     this.findInteraction = findInteraction;
-    this.findAllInteraction = findAllInteractions;
+    this.findAllInteractions = findAllInteractions;
     this.countInteractions = countInteractions;
     this.enter = enter;
     this.exit = exit;
