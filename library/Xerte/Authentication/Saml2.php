@@ -90,6 +90,20 @@ class Xerte_Authentication_Saml2 extends Xerte_Authentication_Abstract
         else
         {
             $this->_record = json_decode($_SESSION['saml2session']);
+            // Update logindetails if these are available
+            $q = "select * from  {$this->xerte_toolkits_site->database_table_prefix}logindetails where username=?";
+            // The query will be case insensitive.
+            $res = db_query($q, array($this->_record->username));
+            if ($res !== false && count($res) == 1)
+            {
+                // Update _record to use the known username of Xerte (which might differ in case)
+                $this->_record->username = $res[0]['username'];
+
+                // Update login details to the firstname and lastname of saml
+                $q = "update {$this->xerte_toolkits_site->database_table_prefix}logindetails set firstname=?, surname=?";
+                $res = db_query($q, array($this->_record->firstname, $this->_record->lastname));
+            }
+
             return false;
         }
     }
