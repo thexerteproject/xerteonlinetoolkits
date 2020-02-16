@@ -1892,6 +1892,11 @@ function x_changePageStep6() {
         // calls function in current page model (if it exists) which does anything needed to reset the page (if it needs to be reset)
         if (typeof window[pt].pageChanged === "function") window[pt].pageChanged();
 
+        // calls function in current theme (if it exists)
+        if (typeof customPageChanged == 'function') {
+            customPageChanged(pt);
+        }
+
         // calls function in any customHTML that's been loaded into page
         if ($(".customHTMLHolder").length > 0) {
                 if (typeof customHTML.pageChanged === "function") {
@@ -1925,6 +1930,13 @@ function x_changePageStep6() {
 
     // x_currentPage hasn't been viewed previously - load model file
     } else {
+        // get short page type var
+        var pt = x_pageInfo[x_currentPage].type;
+        if (pt == "text") pt = 'simpleText';
+        // calls function in current theme (if it exists)
+        if (typeof customLoadCss == 'function') {
+            customLoadCss(pt);
+        }
 		function loadModel() {
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 			$("#x_page" + x_currentPage).css("visibility", "hidden");
@@ -2130,6 +2142,13 @@ function x_setUpPage() {
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
 
+    // calls function in current theme (if it exists)
+    var pt = x_pageInfo[x_currentPage].type;
+    if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
+    if (typeof customPageChanged == 'function') {
+        customPageChanged(pt);
+    }
+    
 	// Do deeplinking here so model has appropriate data at hand
 	x_doDeepLink();
 
