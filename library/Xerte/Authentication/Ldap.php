@@ -211,8 +211,8 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
                             $this->_record['username'] = $res[0]['username'];
 
                             // Update login details to the firstname and lastname of saml
-                            $q = "update {$this->xerte_toolkits_site->database_table_prefix}logindetails set firstname=?, surname=?";
-                            $res = db_query($q, array($this->_record['firstname'], $this->_record['surname']));
+                            $q = "update {$this->xerte_toolkits_site->database_table_prefix}logindetails set firstname=?, surname=? where username=?";
+                            $res = db_query($q, array($this->_record['firstname'], $this->_record['surname'], $res[0]['username']));
                         }
                         return true;
                     }
@@ -277,8 +277,8 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
                                 $this->_record['username'] = $res[0]['username'];
 
                                 // Update login details to the firstname and lastname of saml
-                                $q = "update {$this->xerte_toolkits_site->database_table_prefix}logindetails set firstname=?, surname=?";
-                                $res = db_query($q, array($this->_record['firstname'], $this->_record['surname']));
+                                $q = "update {$this->xerte_toolkits_site->database_table_prefix}logindetails set firstname=?, surname=? where username=?";
+                                $res = db_query($q, array($this->_record['firstname'], $this->_record['surname'], $res[0]['username']));
                             }
 
                             return true;
