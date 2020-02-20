@@ -11,8 +11,8 @@
 session_start();
 
 require_once dirname(__FILE__).'/vendor/autoload.php';
-require_once dirname(__FILE__).'/settings.php';
 require_once dirname(__FILE__).'/log.php';
+require_once dirname(__FILE__).'/settings.php';
 
 use OneLogin\Saml2\IdPMetadataParser;
 
