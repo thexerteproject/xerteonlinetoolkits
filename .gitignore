@@ -17,3 +17,6 @@ USER-FILES/
 /build/convert.log
 .buildpath
 *.project
+
+# Ignore Saml2 Settings file
+library/Xerte/Authentication/Saml2/settings.php
