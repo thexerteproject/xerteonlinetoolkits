@@ -62,6 +62,13 @@ function get_template_pagelist($template_id)
     else {
         $sub_pages_str = $row['template_sub_pages'];
         if ($sub_pages_str != null && $sub_pages_str != "") {
+            $simple_lo_page = false;
+            $pos = strpos($sub_pages_str, "simple_lo_page");
+            if ($pos !== false)
+            {
+                $sub_pages_str = substr($sub_pages_str, 15); // Get rid of 'simple_lo_page,'
+                $simple_lo_page = true;
+            }
             $sub_pages = explode(',', $sub_pages_str);
         }
         else{
@@ -70,6 +77,31 @@ function get_template_pagelist($template_id)
         return $sub_pages;
     }
 }
+
+function get_template_simple_lo_page($template_id)
+{
+    global $xerte_toolkits_site;
+
+    $row = db_query_one("SELECT otd.* FROM {$xerte_toolkits_site->database_table_prefix}templatedetails td, {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails otd WHERE td.template_type_id = otd.template_type_id and td.template_id = ?", array($template_id));
+
+    if($row == false) {
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get template type", "Failed to get the template type");
+        return array();
+    }
+    else {
+        $sub_pages_str = $row['template_sub_pages'];
+        if ($sub_pages_str != null && $sub_pages_str != "") {
+            $simple_lo_page = false;
+            $pos = strpos($sub_pages_str, "simple_lo_page");
+            if ($pos !== false)
+            {
+                $simple_lo_page = true;
+            }
+        }
+        return $simple_lo_page;
+    }
+}
+
 
 function get_template_creator_username($template_id){
 
