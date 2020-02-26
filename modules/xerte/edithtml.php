@@ -119,6 +119,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
      */
     $template_sub_pages = get_template_pagelist($row_edit['template_id']);
     $simple_mode = count($template_sub_pages) != 0;
+    $simple_lo_page = get_template_simple_lo_page($row_edit['template_id']);
 
     /**
      * build an array of available themes for this template
@@ -381,6 +382,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
     echo "simple_mode=" . ($simple_mode ? "true" : "false") . ";\n";
     echo "template_sub_pages=" . json_encode($template_sub_pages) . ";\n";
+    echo "simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
     echo "category_list=" . json_encode($categories) . ";\n";
     echo "grouping_list=" . json_encode($grouping) . ";\n";
