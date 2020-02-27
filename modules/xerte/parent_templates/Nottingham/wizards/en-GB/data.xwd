@@ -1231,7 +1231,8 @@
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 	</lightboxGroup></connectorMenu><cMenuListedPage menuItem="Item" remove="true" icon="icBullet">
     <name label="Title" type="TextInput" wysiwyg="true"/>
-    <pageID label="Destination Page" type="pageList" defaultValue=""/>	
+    <pageID label="Destination Page" type="pageList" defaultValue=""/>
+	<btnTxt label="Use Title on Button" type="CheckBox" defaultValue="false" mandatory="true" tooltip="By default the text on the menu button will be the destination page title. Check this box to use the title text from the field above instead."/>
   </cMenuListedPage><customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="Create a hotspot based diagram where regions can be explored using a variety of interactivities." icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true">
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
