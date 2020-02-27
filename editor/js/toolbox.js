@@ -3296,7 +3296,7 @@ var EDITOR = (function ($, parent) {
 				var colorvalue = value;
 				var id = 'colorpicker_' + form_id_offset;
 				form_id_offset++;
-				if (colorvalue.indexOf("0x") == 0)
+				if (colorvalue != null && colorvalue.indexOf("0x") == 0)
 				{
 					colorvalue = colorvalue.substr(2);
 				}
