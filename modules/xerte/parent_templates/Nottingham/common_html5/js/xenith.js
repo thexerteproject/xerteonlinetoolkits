@@ -2202,11 +2202,11 @@ function x_pageLoaded() {
 
         $this.attr(attr_name, x_evalURL(val));
     });
-	
-	x_setUpLightBox();
 
-	// script & style optional properties for each page added after page is otherwise set up
 	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
+		x_setUpLightBox();
+		
+		// script & style optional properties for each page added after page is otherwise set up
 		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
