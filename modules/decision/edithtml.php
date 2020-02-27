@@ -342,6 +342,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
     echo "simple_mode=false;\n";
     echo "template_sub_pages=[];\n";
+    echo "simple_lo_page=false;\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     ?>
