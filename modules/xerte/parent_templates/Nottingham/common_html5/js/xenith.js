@@ -2035,11 +2035,16 @@ function x_setUpLightBox() {
 				
 				// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
 				// captions can be turned on at LO or page level
-				if ((x_params.lightboxCaption == "true" && x_currentPageXML.getAttribute("lightboxCaption") != "false") || x_currentPageXML.getAttribute("lightboxCaption") == "true") {
+				if ((x_params.lightboxCaption != "false" && x_params.lightboxCaption != undefined && x_currentPageXML.getAttribute("lightboxCaption") != "false") || (x_currentPageXML.getAttribute("lightboxCaption") != "false" && x_currentPageXML.getAttribute("lightboxCaption") != undefined)) {
 					this.$instance.find('.caption').remove();
+					var before = x_currentPageXML.getAttribute("lightboxCaption") == "above" || (x_params.lightboxCaption == "above" && x_currentPageXML.getAttribute("lightboxCaption") == undefined) ? true : false;
 					
 					if (caption != undefined && caption != '') {
-						$('<div class="caption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+						if (before == true) {
+							$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+						} else {
+							$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+						}
 					}
 				}
 			}

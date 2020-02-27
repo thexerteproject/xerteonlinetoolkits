@@ -59,7 +59,7 @@
 	
 	<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
-		<lightboxCaption type="CheckBox" label="Caption" defaultValue="false" optional="true" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 	</lightboxGroup>
 	
 </commonNodes>
