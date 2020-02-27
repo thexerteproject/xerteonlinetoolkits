@@ -629,3 +629,7 @@ body > svg
 textarea {
 	padding: 0.5em;
 }
+
+.lightBoxCaption {
+	margin: 5px 0;
+}
