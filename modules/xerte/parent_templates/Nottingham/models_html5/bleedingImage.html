@@ -150,7 +150,7 @@
 				}
 				linkWarning = linkWarning != "" ? '<span id="linkWarning" class="ui-helper-hidden-accessible">' + tooltip + " " + linkWarning + '</span>' : linkWarning;
 				
-				$panel.append('<a href="' + x_currentPageXML.getAttribute("link") + '" target="' + target + '" id="linkImgA"><img src="' + x_templateLocation + 'common_html5/linkicon.png" alt="' + tooltip + '" id="linkImg" />' + linkWarning + '</a>');
+				$panel.append('<a href="' + x_currentPageXML.getAttribute("link") + '" target="' + target + '" id="linkImgA"><img src="' + x_templateLocation + 'common_html5/linkicon.png" alt="' + tooltip + '" id="linkImg" class="noLightbox"/>' + linkWarning + '</a>');
 				
 				if (linkWarning != "") {
 					$("#linkImgA").attr("aria-labelledby", "linkWarning");

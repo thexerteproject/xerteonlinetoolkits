@@ -1892,11 +1892,11 @@ function x_changePageStep6() {
         // calls function in current page model (if it exists) which does anything needed to reset the page (if it needs to be reset)
         if (typeof window[pt].pageChanged === "function") window[pt].pageChanged();
 
-        // calls function in current theme (if it exists)
-        if (typeof customPageChanged == 'function') {
-            customPageChanged(pt);
-        }
-
+		// calls function in current theme (if it exists)
+		if (typeof customPageChanged == 'function') {
+			customPageChanged(pt);
+		}
+		
         // calls function in any customHTML that's been loaded into page
         if ($(".customHTMLHolder").length > 0) {
                 if (typeof customHTML.pageChanged === "function") {
@@ -1930,13 +1930,13 @@ function x_changePageStep6() {
 
     // x_currentPage hasn't been viewed previously - load model file
     } else {
-        // get short page type var
-        var pt = x_pageInfo[x_currentPage].type;
-        if (pt == "text") pt = 'simpleText';
-        // calls function in current theme (if it exists)
-        if (typeof customLoadCss == 'function') {
-            customLoadCss(pt);
-        }
+		// get short page type var
+		var pt = x_pageInfo[x_currentPage].type;
+		if (pt == "text") pt = 'simpleText';
+		// calls function in current theme (if it exists)
+		if (typeof customLoadCss == 'function') {
+			customLoadCss(pt);
+		}
 		function loadModel() {
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 			$("#x_page" + x_currentPage).css("visibility", "hidden");
@@ -2005,9 +2005,51 @@ function x_changePageStep6() {
 }
 
 // trigger that page contents have updated
-function x_pageContentsUpdated(){
+function x_pageContentsUpdated() {
 	// Queue reparsing of MathJax - fails if no network connection
-    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+	
+	// lightbox image links might also need to be added
+	x_setUpLightBox();
+}
+
+// by default images can be clicked to open larger version in lightbox viewer - this can be overridden with optional properties at LO & page level
+function x_setUpLightBox() {
+	
+	if ((x_params.lightbox != "false" || x_currentPageXML.getAttribute("lightbox") == "true") && x_currentPageXML.getAttribute("lightbox") != "false") {
+		
+		// use the x_noLightBox class in page models to force images to not open in lightboxes
+		$("#pageContents img:not('.x_noLightBox'), .x_popupDialog img:not('.x_noLightBox')").each(function( index ) {
+			var $this = $(this);
+			if (!$this.parent().hasClass('lightboxWrapper') && $this.parents('.ui-draggable').length == 0) {
+				var imgPath = $(this).prop('src');
+				$(this).wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
+			}
+		});
+		
+		$.featherlight.prototype.afterContent = function () {
+			var caption = this.$currentTarget.find('img').attr('alt');
+			
+			if (caption != undefined && caption != '') {
+				this.$instance.find('.featherlight-content img').attr('alt', caption);
+				
+				// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
+				// captions can be turned on at LO or page level
+				if ((x_params.lightboxCaption != "false" && x_params.lightboxCaption != undefined && x_currentPageXML.getAttribute("lightboxCaption") != "false") || (x_currentPageXML.getAttribute("lightboxCaption") != "false" && x_currentPageXML.getAttribute("lightboxCaption") != undefined)) {
+					this.$instance.find('.caption').remove();
+					var before = x_currentPageXML.getAttribute("lightboxCaption") == "above" || (x_params.lightboxCaption == "above" && x_currentPageXML.getAttribute("lightboxCaption") == undefined) ? true : false;
+					
+					if (caption != undefined && caption != '') {
+						if (before == true) {
+							$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+						} else {
+							$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 // function used for hashtag deeplinking
@@ -2141,14 +2183,14 @@ function x_setUpPage() {
 // function called from each model when fully loaded to trigger fadeIn
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
-
-    // calls function in current theme (if it exists)
-    var pt = x_pageInfo[x_currentPage].type;
-    if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
-    if (typeof customPageChanged == 'function') {
-        customPageChanged(pt);
-    }
-    
+	
+	// calls function in current theme (if it exists)
+	var pt = x_pageInfo[x_currentPage].type;
+	if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
+	if (typeof customPageChanged == 'function') {
+		customPageChanged(pt);
+	}
+	
 	// Do deeplinking here so model has appropriate data at hand
 	x_doDeepLink();
 
@@ -2161,8 +2203,10 @@ function x_pageLoaded() {
         $this.attr(attr_name, x_evalURL(val));
     });
 
-	// script & style optional properties for each page added after page is otherwise set up
 	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
+		x_setUpLightBox();
+		
+		// script & style optional properties for each page added after page is otherwise set up
 		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
@@ -2258,9 +2302,8 @@ function x_pageLoaded() {
 	doPercentage();
 }
 
-	//detect page loaded change and update progress bar
-
-  function  doPercentage() {
+// detect page loaded change and update progress bar
+function  doPercentage() {
     var menuOffset = x_pageInfo[0].type == 'menu' ? 1 : 0;
     var totalpages = x_pageInfo.length - menuOffset;
     var pagesviewed = $(x_pageInfo).filter(function(){return this.built !== false;}).length - menuOffset;
@@ -2269,7 +2312,7 @@ function x_pageLoaded() {
 
     $(".pbBar").css({"width": progress + "%"});
     $('.pbTxt').html(progress + "% " + pBarText);
-  };
+}
 
 // function adds / reloads narration bar above main controls on interface
 function x_addNarration(funct, arguments) {
@@ -2576,9 +2619,12 @@ function x_openDialog(type, title, close, position, load, onclose) {
                     $x_popupDialog.html(load);
                     x_setDialogSize($x_popupDialog, position);
                 }
-
+				
                 x_dialogInfo[i].built = $x_popupDialog.parent();
             }
+			
+			x_pageContentsUpdated();
+			
             break;
         }
     }

@@ -295,10 +295,13 @@
 					}
 				}
 			});
+			
 			// call this function in every model once everything's loaded
 			if ($("#pageContents").data("setUp") == undefined) {
 				x_pageLoaded();
 				$("#pageContents").data("setUp", true);
+			} else {
+				x_pageContentsUpdated();
 			}
 		};
 
