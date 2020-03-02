@@ -127,6 +127,11 @@ if (strtolower($xml->getName()) == 'rss')
 
 
         $rssparse = new SimpleXmlToObject($xml, null, LIBXML_NOCDATA);
+        _debug("RSS: rss object: " . print_r($rssparse, true));
+        if (!is_array($rssparse->object->rss->channel->item))
+        {
+            $rssparse->object->rss->channel->item = array($rssparse->object->rss->channel->item);
+        }
         $json = json_encode($rssparse->object);
         echo $json;
     }
