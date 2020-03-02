@@ -62,17 +62,17 @@ if(!isset($_GET['username'])){
         <link>{$xerte_toolkits_site->site_url}</link></image>";
 
 
-}else{  
-
-    $temp_array = explode("_",$_GET['username']);
-
-    $query_created_by = "select login_id from {$xerte_toolkits_site->database_table_prefix}logindetails where (firstname=? AND surname = ?)";
-    $rows = db_query($query_created_by, array($temp_array[0], $temp_array[1]));
+}else{
+    // Construct the name as will be done by the software by concatenating first and lastname and replacing space with '_'
+    $query_created_by = "select login_id, firstname, surname from {$xerte_toolkits_site->database_table_prefix}logindetails where replace(concat(firstname, '_', surname), ' ', '_')=?";
+    $params = array($_GET['username']);
+    $rows = db_query($query_created_by, $params);
 
     if(sizeof($rows) == 0) {
         header("HTTP/1.0 404 Not Found");
         exit(0);
     }else{
+        $temp_array = array($rows[0]['firstname'], $rows[0]['surname']);
 
         $folder_string = 'public';
         if(isset($_GET['folder_name'])){
