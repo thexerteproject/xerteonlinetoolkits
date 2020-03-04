@@ -1070,7 +1070,7 @@ function x_continueSetUp1() {
 	$('#x_headerBlock img.x_icon').addClass(icPosition);
 
 	var checkExists = function(type, fallback) {
-	    if (type == 'LO') {
+	    if (type == 'LO' && xot_offline) {
             $('#x_headerBlock img.x_icon').show();
             return;
         }
@@ -1101,7 +1101,7 @@ function x_continueSetUp1() {
 				}
 			}
 		});
-	}
+	};
 
 	var type, fallback;
 	if (x_params.ic != undefined && x_params.ic != '') {
