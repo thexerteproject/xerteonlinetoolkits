@@ -45,7 +45,7 @@ if (is_user_admin()) {
 
     echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_ADD_EXPLANATION .
     "<br><br>" .
-    "<form action='website_code/php/management/upload.php' method='post' enctype='multipart/form-data' onsubmit='return template_submit()' id='form-template-upload'>" .
+    "<form action='javascript:template_submit()' method='post' enctype='multipart/form-data' id='form-template-upload'>" .
         "<input type='file' value='Search File' name='fileToUpload' id='file-select'>" .
         "<p>
             <input class='management_input' type='text' name='templateName'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATENAME . "<br>
