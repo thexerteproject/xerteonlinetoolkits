@@ -1388,25 +1388,25 @@ function create_tutorial(tutorial) {
 
 function template_submit()
 {
-
-    var url = "website_code/php/management/upload.php";
-    var form = document.getElementById("form-template-upload");
-    var formData = new FormData(form);
-    xmlHttp.open("post", url, true);
-    xmlHttp.onreadystatechange = function(e)
-    {
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 400)
-        {
-            alert(xmlHttp.responseText);
-        }
-        else if(xmlHttp.readyState == 4 && xmlHttp.status == 200)
-        {
-            alert(xmlHttp.responseText);
-        }
+    if (setup_ajax() != false) {
+        var url = "website_code/php/management/upload.php";
+        var form = document.getElementById("form-template-upload");
+        var formData = new FormData(form);
+        xmlHttp.open("post", url, true);
+        xmlHttp.onreadystatechange = function (e) {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 400) {
+                $("body").css("cursor", "default");
+                alert(xmlHttp.responseText);
+            } else if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                $("body").css("cursor", "default");
+                alert(xmlHttp.responseText);
+                // Refresh templates list
+                templates_list();
+            }
+        };
+        $("body").css("cursor", "progress");
+        xmlHttp.send(formData);
     }
-    xmlHttp.send(formData);
-
-    return false;
 }
 
 /********** CHECK **************/
