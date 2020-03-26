@@ -375,12 +375,14 @@
 
 						})
 						.focusin(function() {
-							$(this)
-								.addClass("highlight");
-							})
+								$(this)
+									.addClass("highlight");
+								$(this).mapster('highlight');
+						})
 						.focusout(function() {
-							$(this)
-								.removeClass("highlight")
+								$(this)
+									.removeClass("highlight");
+								$("img").mapster('highlight', false);
 							})
 						.keypress(function(e) {
 							var charCode = e.charCode || e.keyCode;
@@ -437,10 +439,10 @@
 							fill: false,
 							fillColor: fillColor.substr(1),
 							fillOpacity: fillOpacity,
-							stroke: false,
+							stroke: true,
 							strokeColor: highlightColour.substr(1),
-							strokeOpacity: strokeOpacity,
-							strokeWidth: strokeWidth
+							strokeOpacity: (strokeOpacity > 0 ? strokeOpacity : 1),
+							strokeWidth: (strokeWidth == 0? 1 : strokeWidth * 2)
 						},
 				render_select:
 						{
