@@ -18,7 +18,7 @@
 		<position label="Position" options="Left,Right,Top" type="ComboBox" data="L,R,T" defaultValue="L" width="100" optional="true"/>
 	</textGroup>
 
-	<open label="Open PDF" type="TextInput" wysiwyg="true" language="true"/>
+	<open label="Open PDF in new tab" type="TextInput" wysiwyg="true" language="true"/>
 
   </pdf>
 

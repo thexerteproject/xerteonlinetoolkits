@@ -119,7 +119,8 @@
 			if (x_browserInfo.iOS == true) {
 				$("#pdfPage").html('<div id="pdfCover" /><object onload="pdf.createCover()" "id="pdfDoc" data="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="' + pdf.calcWidth() + '" height="auto"><param name="src" value="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '"></object>');
 			} else {
-				$("#pdfPage").html('<object id="pdfDoc" data="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="100%" height="' + pdf.calcHeight() + '"><param name="src" value="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '"></object>');
+				this.createLink();
+				$("#pdfPage").prepend('<object id="pdfDoc" data="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="100%" height="' + pdf.calcHeight() + '"><param name="src" value="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '"></object>');
 			}
 		}
 		
@@ -130,8 +131,12 @@
 					width:	$("#pdfPage").width(),
 					height: $("#pdfPage").height()
 				});
-				$("#pdfPage").append('<div id="link"><hr/><a id="pdfLink" href="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" target="_blank">' + (x_currentPageXML.getAttribute("open") == "" || x_currentPageXML.getAttribute("open") == undefined ? "Open PDF" : x_currentPageXML.getAttribute("open")) + '</a></div>');
+				pdf.createLink();
 			}, 1);
+		}
+		
+		this.createLink = function() {
+			$("#pdfPage").append('<div id="link"><hr/><a id="pdfLink" href="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" target="_blank">' + (x_currentPageXML.getAttribute("open") == "" || x_currentPageXML.getAttribute("open") == undefined ? "Open PDF in new tab" : x_currentPageXML.getAttribute("open")) + '</a></div>');
 		}
 		
 		this.calcWidth = function() {
@@ -146,7 +151,7 @@
 			var height;
 			
 			if (x_browserInfo.mobile == false) {
-				height = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("div.panel").css("padding-top")) * 2) - (parseInt($("div.panel").css("border-top-width")) * 2) - 10;
+				height = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("div.panel").css("padding-top")) * 2) - (parseInt($("div.panel").css("border-top-width")) * 2) - $("#link").outerHeight(true) - 20;
 			} else {
 				height = $x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
 			}

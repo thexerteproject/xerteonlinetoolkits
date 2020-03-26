@@ -14,8 +14,8 @@
 	}
 	
 	#pdfLink {
-		font-size:		1.5em;
-		font-weight:	bold;
+		font-size:		1em;
+		/*font-weight:	bold;*/
 	}
 	
 	#pdfPage hr {
