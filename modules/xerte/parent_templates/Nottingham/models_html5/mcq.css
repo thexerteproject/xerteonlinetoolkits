@@ -43,4 +43,8 @@
 		border-top: 1px solid #ccc;
 		padding-top: 1em;
 	}
+	
+	legend#question {
+		width: 100%;
+	}
 
