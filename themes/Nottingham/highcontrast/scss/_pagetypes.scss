@@ -197,6 +197,10 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   color:$whiteorlightest;
   //darken($lightestcolor, 70%)
 }
+.x_dragDropLabel_page #targetHolder .highlight{
+  // background-color: rgba(83, 70, 69, 0.30);
+  background:none;
+}
 //*****categories*****/
 #categoryHolder .category {
   border-radius: $smallroundedcorners;

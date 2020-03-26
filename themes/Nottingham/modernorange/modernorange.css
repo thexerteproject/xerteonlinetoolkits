@@ -170,6 +170,9 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   background: rgba(214, 195, 56, 0.9) !important;
   border-color: #d6c338; }
 
+.x_dragDropLabel_page #targetHolder .highlight {
+  background: none; }
+
 #categoryHolder .category {
   border-radius: 2vmin; }
 
