@@ -109,6 +109,9 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
         this.answerfeedback = jsonObj.answerfeedback;
         this.id = jsonObj.id;
         this.idx = jsonObj.idx;
+        if (typeof jsonObj.pageHistory != "undefined") {
+            x_pageHistory = jsonObj.pageHistory;
+        }
     }
 
     function exit()
@@ -763,6 +766,8 @@ function ScormTrackingState()
             if (completionStatus)
                 setValue('cmi.completion_status', completionStatus);
             state.currentpageid = currentid;
+            x_pageHistory.splice(x_pageHistory.length - 1, 1);
+            state.pageHistory = x_pageHistory;
             var suspend_str = JSON.stringify(this);
             if (completionStatus != "completed") {
                 setValue('cmi.exit', 'suspend');
