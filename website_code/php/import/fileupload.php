@@ -20,6 +20,12 @@
 require_once "../../../config.php";
 require_once "../../../plugins.php";
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
+
 _load_language_file("/website_code/php/import/fileupload.inc");
 
 if(apply_filters('editor_upload_file', $_FILES)){
