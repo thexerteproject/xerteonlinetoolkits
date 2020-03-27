@@ -32,7 +32,7 @@
  * @ref https://sebsauvage.net/wiki/doku.php?id=word_document_generation
  *
  */
-require_once("config.php");
+
 
 class mime10class
 {
@@ -47,89 +47,87 @@ class mime10class
     public function getFile() { return $this->data . '--' . self::boundary . '--'; }
 }
 
-if (isset($_SESSION['toolkits_logon_id'])) {
-    $data = json_decode($_POST['data'], true);
+$data = json_decode($_POST['data'], true);
 
-    $filename = "file";
-    if ($data["filename"]) $filename = $data["filename"];
+$filename = "file";
+if ($data["filename"]) $filename = $data["filename"];
 
 
-    header('Content-type: application/octet-stream');
-    header('Content-Disposition: attachment; filename="' . $filename . '.DOC"');
+header('Content-type: application/octet-stream');
+header('Content-Disposition: attachment; filename="' . $filename . '.DOC"');
 
-    $doc = "";
-    $doc .= "<html>";
-    $doc .= "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
-    $doc .= '<head>';
-    $doc .= '<style>@page Section1 {size:' . $data['size'] . ';mso-page-orientation:' . $data['orientation'] . ';}div.Section1 {page:Section1;}</style>';
-    $doc .= "<style>" . $data['styles'] . "</style>";
-    $doc .= '</head>';
+$doc = "";
+$doc .= "<html>";
+$doc .= "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
+$doc .= '<head>';
+$doc .= '<style>@page Section1 {size:' . $data['size'] . ';mso-page-orientation:' . $data['orientation'] . ';}div.Section1 {page:Section1;}</style>';
+$doc .= "<style>" . $data['styles'] . "</style>";
+$doc .= '</head>';
 
-    $doc .= "<body>";
+$doc .= "<body>";
 
-    $doc .= "<div class=\"Section1\">";
-    $doc .= "<h1>" . $data['documentName'] . "</h1>";
-    $doc .= "<p>" . $data['documentText'] . "</p>";
-    $doc .= "<p>" . $data['documentIntro'] . "</p>";
+$doc .= "<div class=\"Section1\">";
+$doc .= "<h1>" . $data['documentName'] . "</h1>";
+$doc .= "<p>" . $data['documentText'] . "</p>";
+$doc .= "<p>" . $data['documentIntro'] . "</p>";
 
-    foreach ($data['pages'] as $pagekey => $pagevalue) {
-        $doc .= "<h1>" . $pagevalue['pageName'] . "</h1>";
-        $doc .= "<p>" . $pagevalue['pageText'] . "</p>";
-        $doc .= "<div class=\"page\">";
+foreach ($data['pages'] as $pagekey => $pagevalue) {
+    $doc .= "<h1>" . $pagevalue['pageName'] . "</h1>";
+    $doc .= "<p>" . $pagevalue['pageText'] . "</p>";
+    $doc .= "<div class=\"page\">";
 
-        foreach ($pagevalue['sections'] as $sectionkey => $sectionvalue) {
-            if (array_key_exists('sectionName', $sectionvalue)) {
-                $doc .= "<div class=\"section\">";
-                $doc .= "<h2>" . $sectionvalue['sectionName'] . "</h2>";
-                $doc .= "<p>" . $sectionvalue['sectionText'] . "</p>";
-            }
-            foreach ($sectionvalue["items"] as $itemkey => $itemvalue) {
-                $doc .= "<div class=\"item\">";
-                $doc .= "<h3>" . $itemvalue['itemName'] . "</h3>";
-                $doc .= "<p>" . $itemvalue['itemText'] . "</p>";
-                $doc .= "<p class=\"item\"><i>" . $itemvalue['itemValue'] . "</i></p>";
-                $doc .= "</div>";
-            }
-            if (array_key_exists('sectionName', $sectionvalue)) {
-                $doc .= "</div>";
-            }
+    foreach ($pagevalue['sections'] as $sectionkey => $sectionvalue) {
+        if (array_key_exists('sectionName', $sectionvalue)) {
+            $doc .= "<div class=\"section\">";
+            $doc .= "<h2>" . $sectionvalue['sectionName'] . "</h2>";
+            $doc .= "<p>" . $sectionvalue['sectionText'] . "</p>";
         }
-        $doc .= "</div>";
+        foreach ($sectionvalue["items"] as $itemkey => $itemvalue) {
+            $doc .= "<div class=\"item\">";
+            $doc .= "<h3>" . $itemvalue['itemName'] . "</h3>";
+            $doc .= "<p>" . $itemvalue['itemText'] . "</p>";
+            $doc .= "<p class=\"item\"><i>" . $itemvalue['itemValue'] . "</i></p>";
+            $doc .= "</div>";
+        }
+        if (array_key_exists('sectionName', $sectionvalue)) {
+            $doc .= "</div>";
+        }
     }
-
     $doc .= "</div>";
-    $doc .= "</body>";
-    $doc .= "</html>";
-
-    // Replace all images by inline images
-    $worddoc = new mime10class();
-    $ipos = strpos($doc, "<img");
-    while ($ipos !== false) {
-        // Get the value of the src attribute
-        $bpos = strpos($doc, "src=", $ipos);
-        if ($bpos !== false) {
-            // Skip Needle
-            $bpos += 4;
-            // get quote used
-            $quote = $doc[$bpos];
-            $bpos += 1; // skip quote
-            $epos = strpos($doc, $quote, $bpos);
-            if ($epos !== false) {
-                $imgfile = substr($doc, $bpos, $epos - $bpos);
-                $imgdata = file_get_contents($imgfile);
-                $imgparts = pathinfo($imgfile);
-                $new_imgfile = 'images/' . $imgparts['basename'];
-
-                $src = $new_imgfile;
-                // Add image to mime file
-                $worddoc->addFile($new_imgfile, 'image/' . $imgparts['extension'], $imgdata);
-                // Replace old src with new src
-                $doc = substr($doc, 0, $bpos) . $src . substr($doc, $epos);
-            }
-        }
-        $ipos = strpos($doc, "<img", $ipos+1);
-    }
-    $filename_parts = pathinfo($filename);
-    $worddoc->addFile($filename_parts['filename'] . '.htm', 'text/html', $doc);
-    echo $worddoc->getFile();
 }
+
+$doc .= "</div>";
+$doc .= "</body>";
+$doc .= "</html>";
+
+// Replace all images by inline images
+$worddoc = new mime10class();
+$ipos = strpos($doc, "<img");
+while ($ipos !== false) {
+    // Get the value of the src attribute
+    $bpos = strpos($doc, "src=", $ipos);
+    if ($bpos !== false) {
+        // Skip Needle
+        $bpos += 4;
+        // get quote used
+        $quote = $doc[$bpos];
+        $bpos += 1; // skip quote
+        $epos = strpos($doc, $quote, $bpos);
+        if ($epos !== false) {
+            $imgfile = substr($doc, $bpos, $epos - $bpos);
+            $imgdata = file_get_contents($imgfile);
+            $imgparts = pathinfo($imgfile);
+            $new_imgfile = 'images/' . $imgparts['basename'];
+
+            $src = $new_imgfile;
+            // Add image to mime file
+            $worddoc->addFile($new_imgfile, 'image/' . $imgparts['extension'], $imgdata);
+            // Replace old src with new src
+            $doc = substr($doc, 0, $bpos) . $src . substr($doc, $epos);
+        }
+    }
+    $ipos = strpos($doc, "<img", $ipos+1);
+}
+$filename_parts = pathinfo($filename);
+$worddoc->addFile($filename_parts['filename'] . '.htm', 'text/html', $doc);
+echo $worddoc->getFile();
