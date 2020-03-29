@@ -37,6 +37,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
     global $xerte_toolkits_site;
 	global $youtube_api_key;
 	global $pedit_enabled;
+	global $lti_enabled;
 
     _load_language_file("/modules/xerte/preview.inc");
 

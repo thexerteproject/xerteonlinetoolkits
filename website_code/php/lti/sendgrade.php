@@ -27,7 +27,7 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
 
 use \Tsugi\Core\LTIX;
 
-$LAUNCH = LTIX::session_start();
+$LAUNCH = LTIX::requireData();
 
 _debug("Sending grade: LAUNCH=" . print_r($LAUNCH, true));
 _debug("Sending grade: _SERVER=" . print_r($_SERVER, true));
