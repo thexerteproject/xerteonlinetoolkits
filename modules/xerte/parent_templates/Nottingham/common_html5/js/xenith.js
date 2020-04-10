@@ -3092,6 +3092,8 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	var 	variables = [],
 			variableInfo = [],
 			variableErrors = [],
+			dynamicCalcs = [],
+			dynamicID = 1,
 
 
 	// function starts the calculation of variables set by author via the variables optional property
@@ -3563,16 +3565,35 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	
 	replaceVariables = function (tempText, decimalSeparator) {
 
-		// Handle dynamic variable expressions
-		tempText = tempText.replace(/\[\{(.*?)\}(?:\s|&nbsp;)*(?:(?:\,(?:\s|&nbsp;)*?(\d+?)?))?\]/g, function (match, contents, round) {
-			return Math.round(
-				eval(
-					variables.reduce(function(accumulator, variable) {
-						return accumulator.replace(new RegExp('\\[' + variable.name + '\\]', 'g'), x_checkDecimalSeparator(variable.value));
-					}, contents) 
-				) * (round = Math.pow(10, round ? round  : 16))
-			) / round;
-		});
+		// Handle Dynamic page variables
+		/*tempText = tempText.replace(/\[\{\?=(.*?)\}\((.*?)\)\]/g, function (match, new_variable, params) {
+			return new_variable + " = [" + params + "]";
+		});*/
+
+		tempText = tempText.replace(
+			new RegExp('\\[\\{(.*?)\\}(?:\\s|&nbsp;)*(?:(?:\\,(?:\\s|&nbsp;)*?(\\d+?)?))?\\]|<span class="x_var x_dyn_(.*?)">(?:.*?)</span>', 'g'),
+			function (match, contents, round, id) {
+				if (contents) {
+					id = dynamicID++;
+					dynamicCalcs[id] = [contents, round];
+				}
+
+				var result = variables.reduce(function(accumulator, variable) {
+					return accumulator.replace(new RegExp('\\[' + variable.name + '\\]', 'g'), x_checkDecimalSeparator(variable.value));
+				}, dynamicCalcs[id][0]);
+				
+				try {
+					var ev = eval( result );
+					result = Math.round(
+						ev * (round = Math.pow(10, round ? round  : 16))
+					) / round;
+				}
+				catch (e) {}
+				
+				$('.x_dyn_' + id).html(x_checkDecimalSeparator(result));
+				return '<span class="x_var x_dyn_' + id + '">' + result + '</span>';
+			}
+		);
 		
 		for (var k=0; k<variables.length; k++) {
 			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
