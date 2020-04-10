@@ -3565,11 +3565,6 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	
 	replaceVariables = function (tempText, decimalSeparator) {
 
-		// Handle Dynamic page variables
-		/*tempText = tempText.replace(/\[\{\?=(.*?)\}\((.*?)\)\]/g, function (match, new_variable, params) {
-			return new_variable + " = [" + params + "]";
-		});*/
-
 		tempText = tempText.replace(
 			new RegExp('\\[\\{(.*?)\\}(?:\\s|&nbsp;)*(?:(?:\\,(?:\\s|&nbsp;)*?(\\d+?)?))?\\]|<span class="x_var x_dyn_(.*?)">(?:.*?)</span>', 'g'),
 			function (match, contents, round, id) {
