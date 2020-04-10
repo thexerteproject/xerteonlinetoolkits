@@ -3564,7 +3564,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	replaceVariables = function (tempText, decimalSeparator) {
 
 		// Handle dynamic variable expressions
-		tempText = tempText.replace(/\[\{(.*?)\}(?:\s|&nbsp;)*(?:(?:\,(?:\s|&nbsp;)*?(\d+?)?))?\]/g, function (match, contents, round) { console.log(match, contents, round);
+		tempText = tempText.replace(/\[\{(.*?)\}(?:\s|&nbsp;)*(?:(?:\,(?:\s|&nbsp;)*?(\d+?)?))?\]/g, function (match, contents, round) {
 			return Math.round(
 				eval(
 					variables.reduce(function(accumulator, variable) {
