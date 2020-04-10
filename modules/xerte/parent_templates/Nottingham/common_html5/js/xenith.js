@@ -3562,6 +3562,18 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	
 	
 	replaceVariables = function (tempText, decimalSeparator) {
+
+		// Handle dynamic variable expressions
+		tempText = tempText.replace(/\[\{(.*?)\}(?:\s|&nbsp;)*(?:(?:\,{1}(?:\s|&nbsp;)*?(\d+?)?))?\]/g, function (match, contents, round) { console.log(match, contents, round);
+			return Math.round(
+				eval(
+					variables.reduce(function(accumulator, variable) {
+						return accumulator.replace(new RegExp('\\[' + variable.name + '\\]', 'g'), x_checkDecimalSeparator(variable.value));
+					}, contents) 
+				) * (round = round ? Math.pow(10, round ) : 1)
+			) / round;
+		});
+		
 		for (var k=0; k<variables.length; k++) {
 			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
 			var regExp = new RegExp('\\[' + variables[k].name + '\\]|<span class="x_var x_var_' + variables[k].name + '">(.*?)</span>', 'g');
