@@ -3576,6 +3576,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 				var result = variables.reduce(function(accumulator, variable) {
 					return accumulator.replace(new RegExp('\\[' + variable.name + '\\]', 'g'), x_checkDecimalSeparator(variable.value));
 				}, dynamicCalcs[id][0]);
+				round = dynamicCalcs[id][1];
 				
 				try {
 					var ev = eval( result );
