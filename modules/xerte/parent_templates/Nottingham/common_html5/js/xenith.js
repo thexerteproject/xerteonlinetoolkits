@@ -917,7 +917,7 @@ function x_continueSetUp1() {
 					$(this).trigger("mouseleave");
 
 					var $this = $(this),
-						myText = $this.text(),
+						myText = $this.text().trim(),
 						myDefinition, i, len;
 
 					// Rip out the title attribute
@@ -925,7 +925,7 @@ function x_continueSetUp1() {
 					$this.attr('title', '');
 
 					for (i=0, len=x_glossary.length; i<len; i++) {
-						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().toLowerCase()) {
+						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().trim().toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>"
 							if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
 								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
