@@ -46,7 +46,7 @@ var x_languageData  = [],
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
 
 // Patch jQuery to add support for .toggle(function, function...) which was removed in jQuery 1.9
 // Code from http://forum.jquery.com/topic/beginner-function-toggle-deprecated-what-to-use-instead
