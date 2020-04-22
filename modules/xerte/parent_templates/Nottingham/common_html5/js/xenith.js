@@ -1778,7 +1778,7 @@ function x_changePageStep6() {
         }
 		
 		// updates variables as their values might have changed
-		if (x_currentPageXML.getAttribute('varUpdate') != 'false') {
+		if (x_currentPageXML != "menu" && x_currentPageXML.getAttribute('varUpdate') != 'false') {
 			// variables on screen
 			if (XENITH.VARIABLES && XENITH.VARIABLES.exist() && $('.x_var').length > 0) {
 				XENITH.VARIABLES.updateVariable();
