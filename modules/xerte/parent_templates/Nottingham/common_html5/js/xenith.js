@@ -1515,7 +1515,7 @@ function x_charmapLoaded(xml)
 
 function x_dialog(text){
 
-    window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12">' + text + '</p>');
+    window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12px">' + text + '</p>');
 
 }
 
@@ -2636,7 +2636,7 @@ function x_openMediaWindow() {
 
 function x_openInfoWindow(text){
 
-    window.open('','','width=300,height=450,scrollbars=yes').document.write('<p style="font-family:sans-serif; font-size:12">' + text + '</p>');
+    window.open('','','width=300,height=450,scrollbars=yes').document.write('<p style="font-family:sans-serif; font-size:12px">' + text + '</p>');
 
 }
 
@@ -3559,7 +3559,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 
 		pageText += '</table></body></html>';
 
-		window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12">' + pageText + '</p>');
+		window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12px">' + pageText + '</p>');
 	},
 	
 	
