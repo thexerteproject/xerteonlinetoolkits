@@ -46,7 +46,7 @@ var x_languageData  = [],
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
 
 // Patch jQuery to add support for .toggle(function, function...) which was removed in jQuery 1.9
 // Code from http://forum.jquery.com/topic/beginner-function-toggle-deprecated-what-to-use-instead
@@ -917,7 +917,7 @@ function x_continueSetUp1() {
 					$(this).trigger("mouseleave");
 
 					var $this = $(this),
-						myText = $this.text(),
+						myText = $this.text().trim(),
 						myDefinition, i, len;
 
 					// Rip out the title attribute
@@ -925,7 +925,7 @@ function x_continueSetUp1() {
 					$this.attr('title', '');
 
 					for (i=0, len=x_glossary.length; i<len; i++) {
-						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().toLowerCase()) {
+						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().trim().toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>"
 							if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
 								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
