@@ -25,7 +25,6 @@ var x_languageData  = [],
     x_pageInfo      = [],   // holds info about pages (type, built, linkID, pageID, savedData) - use savedData if any input from page needs to be saved for use on other pages or on return to this page
     x_currentPage   = -1,
     x_currentPageXML,
-    x_glossary      = [],
     x_specialChars  = [],
     x_inputFocus    = false,
     x_dialogInfo    = [], // (type, built)
@@ -46,7 +45,7 @@ var x_languageData  = [],
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
 
 // Patch jQuery to add support for .toggle(function, function...) which was removed in jQuery 1.9
 // Code from http://forum.jquery.com/topic/beginner-function-toggle-deprecated-what-to-use-instead
@@ -866,132 +865,7 @@ function x_continueSetUp1() {
 			});
 	}
 
-
-	if (x_params.glossary != undefined) {
-		x_dialogInfo.push({type:'glossary', built:false});
-
-		var i, len, item, word,
-			items = x_params.glossary.split("||");
-
-		for (i=0, len=items.length; i<len; i++) {
-			item = items[i].split("|"),
-			word = {word:item[0], definition:item[1]};
-
-			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
-				x_glossary.push(word);
-			}
-		}
-		if (x_glossary.length > 0) {
-			x_glossary.sort(function(a, b){ // sort by size
-				return a.word.length > b.word.length ? -1 : 1;
-			});
-
-			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
-			$("#x_glossaryBtn")
-				.button({
-					icons: {
-						primary: "x_glossary"
-					},
-					label:	x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
-					text:	false
-				})
-				.attr("aria-label", $("#x_glossaryBtn").attr("title") + " " + x_params.dialogTxt)
-				.click(function() {
-					x_openDialog(
-						"glossary",
-						x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"),
-						x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"),
-						null,
-						null,
-						function () {
-							$("#x_glossaryBtn")
-								.blur()
-								.removeClass("ui-state-focus")
-								.removeClass("ui-state-hover");
-						}
-					);
-				});
-
-			$x_pageDiv
-				.on("mouseenter", ".x_glossary", function(e) {
-					$(this).trigger("mouseleave");
-
-					var $this = $(this),
-						myText = $this.text().trim(),
-						myDefinition, i, len;
-
-					// Rip out the title attribute
-					$this.data('title', $this.attr('title'));
-					$this.attr('title', '');
-
-					for (i=0, len=x_glossary.length; i<len; i++) {
-						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().trim().toLowerCase()) {
-							myDefinition = "<b>" + myText + ":</b><br/>"
-							if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
-								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
-							} else {
-								myDefinition += x_glossary[i].definition;
-							}
-						}
-					}
-
-					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
-
-					// Queue reparsing of MathJax - fails if no network connection
-					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
-					$x_glossaryHover = $("#x_glossaryHover");
-					$x_glossaryHover.css({
-						"left"	:$(this).offset().left + 20,
-						"top"	:$(this).offset().top + 20
-					});
-					$x_glossaryHover.fadeIn("slow");
-					if (x_browserInfo.touchScreen == true) {
-						$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
-					}
-				})
-				.on("mouseleave", ".x_glossary", function(e) {
-					$x_mainHolder.off("click.glossary");
-
-					if ($x_glossaryHover != undefined) {
-						$x_glossaryHover.remove();
-					}
-
-					// Put back the title attribute
-					$this = $(this);
-					$this.attr('title', $this.data('title'));
-				})
-				.on("mousemove", ".x_glossary", function(e) {
-					var leftPos,
-						topPos = e.pageY + 20;
-
-					if (x_browserInfo.mobile == false) {
-						leftPos = e.pageX + 20;
-						if (leftPos + $x_glossaryHover.width() > $x_mainHolder.offset().left + $x_mainHolder.width()) {
-							leftPos = e.pageX - $x_glossaryHover.width() - 20;
-						}
-						if (topPos + $x_glossaryHover.height() > $x_mainHolder.offset().top + $x_mainHolder.height()) {
-							topPos = e.pageY - $x_glossaryHover.height() - 20;
-						}
-					} else {
-						leftPos = ($x_mobileScroll.width() - $x_glossaryHover.width()) / 2;
-						if (topPos + $x_glossaryHover.height() > $x_mobileScroll.height()) {
-							topPos = $(this).offset().top - $x_glossaryHover.height() - 10;
-						}
-					}
-					$x_glossaryHover.css({
-						"left"	:leftPos,
-						"top"	:topPos
-					});
-				})
-				.on("focus", ".x_glossary", function(e) { // called when link is tabbed to
-					$(this).trigger("mouseenter");
-				})
-				.on("focusout", ".x_glossary", function(e) {
-					$(this).trigger("mouseleave");
-				});
-		}
-	}
+	if (x_params.glossary != undefined) XENITH.GLOSSARY.init();
 
 	if (x_params.media != undefined) {
 		x_checkMediaExists(x_evalURL(x_params.media), function(mediaExists) {
@@ -1347,10 +1221,8 @@ function x_continueSetUp1() {
 			numTouches = e.originalEvent.touches.length;
 			mouseDown = [touch.pageX, touch.pageY];
 			*/
-			$x_mainHolder.off("click.glossary");
-			if ($x_glossaryHover != undefined) {
-				$x_glossaryHover.remove();
-			}
+			
+			XENITH.GLOSSARY.touchStartHandler();
 		});
 
 		$x_pageHolder.bind("touchend", function(e) {
@@ -2709,18 +2581,7 @@ function x_insertText(node, exclude, list) {
 		tempText = tempText.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
 	}
 
-    // check text for glossary words - if found replace with a link
-	if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
-        for (var k=0, len=x_glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
-			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
-        }
-        for (var k=0, len=x_glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
-			//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
-			tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
-        }
-    }
+	tempText = XENITH.GLOSSARY.insertText(tempText, exclude);
 
     // check text for LaTeX tags - if found replace with image
     var startIndex = tempText.indexOf('<tex src');
@@ -3716,3 +3577,194 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 
 return parent; })(jQuery, XENITH || {});
 
+
+
+
+// ***** GLOSSARY *****
+var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
+
+    // Declare local variables
+	var 	x_glossary      = [],
+			$x_glossaryHover,
+
+
+	// function starts the calculation of variables set by author via the variables optional property
+	init = function () {
+		x_dialogInfo.push({type:'glossary', built:false});
+
+		var i, len, item, word,
+			items = x_params.glossary.split("||");
+
+		for (i=0, len=items.length; i<len; i++) {
+			item = items[i].split("|"),
+			word = {word:item[0], definition:item[1]};
+
+			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
+				x_glossary.push(word);
+			}
+		}
+		if (x_glossary.length > 0) {
+			x_glossary.sort(function(a, b){ // sort by size
+				return a.word.length > b.word.length ? -1 : 1;
+			});
+
+			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
+			$("#x_glossaryBtn")
+				.button({
+					icons: {
+						primary: "x_glossary"
+					},
+					label:	x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
+					text:	false
+				})
+				.attr("aria-label", $("#x_glossaryBtn").attr("title") + " " + x_params.dialogTxt)
+				.click(function() {
+					x_openDialog(
+						"glossary",
+						x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"),
+						x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"),
+						null,
+						null,
+						function () {
+							$("#x_glossaryBtn")
+								.blur()
+								.removeClass("ui-state-focus")
+								.removeClass("ui-state-hover");
+						}
+					);
+				});
+
+			$x_pageDiv
+				.on("mouseenter", ".x_glossary", function(e) {
+					$(this).trigger("mouseleave");
+
+					var $this = $(this),
+						myText = $this.text().trim(),
+						myDefinition, i, len;
+
+					// Rip out the title attribute
+					$this.data('title', $this.attr('title'));
+					$this.attr('title', '');
+
+					for (i=0, len=x_glossary.length; i<len; i++) {
+						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().trim().toLowerCase()) {
+							myDefinition = "<b>" + myText + ":</b><br/>"
+							if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
+								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
+							} else {
+								myDefinition += x_glossary[i].definition;
+							}
+						}
+					}
+
+					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
+
+					// Queue reparsing of MathJax - fails if no network connection
+					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+
+					$x_glossaryHover = $("#x_glossaryHover");
+					$x_glossaryHover.css({
+						"left"	:$(this).offset().left + 20,
+						"top"	:$(this).offset().top + 20
+					});
+					$x_glossaryHover.fadeIn("slow");
+					if (x_browserInfo.touchScreen == true) {
+						$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
+					}
+				})
+				.on("mouseleave", ".x_glossary", function(e) {
+					$x_mainHolder.off("click.glossary");
+
+					if ($x_glossaryHover != undefined) {
+						$x_glossaryHover.remove();
+					}
+
+					// Put back the title attribute
+					$this = $(this);
+					$this.attr('title', $this.data('title'));
+				})
+				.on("mousemove", ".x_glossary", function(e) {
+					var leftPos,
+						topPos = e.pageY + 20;
+
+					if (x_browserInfo.mobile == false) {
+						leftPos = e.pageX + 20;
+						if (leftPos + $x_glossaryHover.width() > $x_mainHolder.offset().left + $x_mainHolder.width()) {
+							leftPos = e.pageX - $x_glossaryHover.width() - 20;
+						}
+						if (topPos + $x_glossaryHover.height() > $x_mainHolder.offset().top + $x_mainHolder.height()) {
+							topPos = e.pageY - $x_glossaryHover.height() - 20;
+						}
+					} else {
+						leftPos = ($x_mobileScroll.width() - $x_glossaryHover.width()) / 2;
+						if (topPos + $x_glossaryHover.height() > $x_mobileScroll.height()) {
+							topPos = $(this).offset().top - $x_glossaryHover.height() - 10;
+						}
+					}
+					$x_glossaryHover.css({
+						"left"	:leftPos,
+						"top"	:topPos
+					});
+				})
+				.on("focus", ".x_glossary", function(e) { // called when link is tabbed to
+					$(this).trigger("mouseenter");
+				})
+				.on("focusout", ".x_glossary", function(e) {
+					$(this).trigger("mouseleave");
+				});
+		}
+	},
+	
+	// glossary page generation
+	buildPage = function() {
+		var tableData = '<table class="glossary">';
+			
+		var x_glossary_temp = x_glossary.slice(0);
+		x_glossary.sort(function(a, b){ // sort alphabetically
+			return a.word.toLowerCase() < b.word.toLowerCase() ? -1 : 1;
+		});
+
+		for (var i=0; i<x_glossary.length; i++) {
+			tableData += "<tr><td>" + x_glossary[i].word + "</td><td>" + x_glossary[i].definition + "</td></tr>";
+		}
+		
+		tableData += "</table>";
+		$("#glossaryItems").append(tableData);
+		
+		x_pageContentsUpdated();
+		
+		// add class for shaded rows rather than using css selector as doesn't work for IE8 & below
+		$("#glossaryItems .glossary tr:nth-child(even)").addClass("shaded");
+	},
+	
+	insertText = function(tempText, exclude) {
+		// check text for glossary words - if found replace with a link
+		if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
+			for (var k=0, len=x_glossary.length; k<len; k++) {
+				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
+				tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+			}
+			for (var k=0, len=x_glossary.length; k<len; k++) {
+				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
+				//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
+				tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+			}
+		}
+		
+		return tempText;
+	},
+	
+	touchStartHandler = function() {
+		$x_mainHolder.off("click.glossary");
+		if ($x_glossaryHover != undefined) {
+			$x_glossaryHover.remove();
+		}
+	};
+		
+	// make some public methods
+	self.init = init;
+    self.buildPage = buildPage;
+	self.insertText = insertText;
+	self.touchStartHandler = touchStartHandler;
+
+return parent; })(jQuery, XENITH || {});
