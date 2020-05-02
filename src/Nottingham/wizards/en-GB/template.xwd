@@ -306,11 +306,11 @@
   </nestedPage><adaptiveContent menu="xAPI" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icAdaptiveContent" thumb="thumbs/adaptiveContent.jpg" remove="true">
       <name label="Page Title" type="TextInput" wysiwyg="true"/>
       <introduction label="Introduction" type="textArea" height="120"/>
-      <displayMode label="Display Mode" optional="true" type="combobox" options="Unlisted,Listed" data="Unlisted,Listed" defaultValue="Unlisted"/>
+      <displayMode label="Display Mode" conditionTrigger="true" optional="true" type="combobox" options="Unlisted,Listed" data="Unlisted,Listed" defaultValue="Unlisted"/>
       <startDate label="Start date" optional="true" type="dateField" defaultValue="" tooltip="Read records starting from this date"/>
       <endDate label="Stop date" optional="true" type="dateField" defaultValue="" tooltip="Read records ending from this date"/>
      <dashboardMode label="Dashboard mode" optional="true" type="checkbox" defaultValue="false" tooltip="Show data for the whole group"/>
-     <listedModeOptions type="group" optional="true" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
+     <listedModeOptions type="group" condition="displayMode=='Listed'" optional="true" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
          <sortOrder label="Sort order" optional="true" type="combobox" defaultValue="none" options="Increasing score,Decreasing score,None" data="increasing,decreasing,none" tooltip="Sort the list acoording to this criteria. Only has meaning for 'Listed' display mode"/>
      </listedModeOptions>
 
@@ -370,27 +370,31 @@
 	</lightboxGroup></adaptiveContent><interaction menuItem="Source interaction">
         <name label="Title" type="textinput" wysiwyg="true"/>
         <introduction label="Introduction" type="textarea" height="120" wysiwyg="true"/>
-        <graph type="group" label="Graph" optional="true">
+        <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue=""/>
+        <xertelo label="ID of Xerte learning object" type="xertelo" mandatory="true" defaultValue=""/>
+        <label label="Tracking Label of source" type="TextInput" wysiwyg="false"/>
+        <interactionType label="Interaction type" type="combobox" conditionTrigger="true" data="score,answer,opinion,open,grouping" options="Based on end score,Based on specific answer,Based on 2D opinion,Open answer,Based on grouping" tooltip="Score: use 'Score between' to add one or more interaction blocks; Answer: use 'Result label equals' to add one or more interaction block; Based on 2D opinion: use in combination with class to get a score; Open: Just shows one interaction block with all the given answers, all given interaction blocks will just be ignored."/>
+        <opinionClass label="Opinion Class" type="TextInput" condition="interactionType=='opinion'" wysiwyg="false" optional="true" defaultValue="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interactiontype is based on 2D opinion"/>
+        <graph type="group" label="Graph" condition="interactionType!='open'" optional="true">
           <graph label="Show graph" type="checkbox" defaultValue="false" optional="true"/>
-          <graphType label="Graph type" type="combobox" data="bar_answers,bar_marks,line_own_marks,line_average_marks" options="Bar graph for given answers,Bar graph for received marks,Line graph for own received marks,Line graph for average marks of others" defaultValue="bar_answers" optional="true"/>
+          <graphType label="Graph type" type="combobox" condition="interactionType!='opinion'||opinionClass!=null" data="bar_answers,bar_marks,line_own_marks,line_average_marks" options="Bar graph for given answers,Bar graph for received marks,Line graph for own received marks,Line graph for average marks of others" defaultValue="bar_answers" optional="true"/>
+          <colour label="Personal graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" defaultValue="0xFF0000" optional="true"/>
+          <colourPersonalAvg label="Personal average graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" defaultValue="0x0000FF" optional="true"/>
+          <colourAvg label="Average graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" defaultValue="0x00FF00" optional="true"/>
+          <labelFontSize label="Font size of the labels" type="NumericStepper" min="4" max="100" step="1" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" defaultValue="12" optional="true"/>
           <showExplanation label="Show graph explanation" type="checkbox" optional="true" defaulValue="false" tooltip="Show a box with a legend or other explanation next to the graph"/>
           <graphExplanation label="Graph legend/explanation" type="textArea" height="120" optional="true" defaultValue="" wysiwyg="true" tooltip="The legend or other explanation shown next to the graph"/>
           <graphExplanationPanelWidth label=" Legend panel width" type="textInput" defaultValue="40%" optional="true" tooltip="The width of the legend or other explanation panel, enter an acceptable width like 40% or 250px"/>
           <graphNrDataPoints label="Nr of bars/points" type="NumericStepper" min="0" max="100" step="1" defaultValue="10" optional="true" tooltip="The number of bars in a bargraph, or the number of points in a line graph"/>
         </graph>
-        <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue=""/>
-        <xertelo label="ID of Xerte learning object" type="xertelo" mandatory="true" defaultValue=""/>
-        <label label="Tracking Label of source" type="TextInput" wysiwyg="false"/>
-        <interactionType label="Interaction type" type="combobox" data="score,answer,opinion,open" options="Based on end score,Based on specific answer,Based on 2D opinion,Open answer" tooltip="Score: use 'Score between' to add one or more interaction blocks; Answer: use 'Result label equals' to add one or more interaction block; Based on 2D opinion: use in combination with class to get a score; Open: Just shows one interaction block with all the given answers, all given interaction blocks will just be ignored."/>
-        <opinionClass label="Opinion Class" type="TextInput" wysiwyg="false" optional="true" defaultValue="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interactiontype is based on 2D opinion"/>
-        <showScore label="Show score/answer" type="CheckBox" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based"/>
+        <showScore label="Show score/answer" type="CheckBox" condition="interactionType=='score'||interactionType=='answer'||(interactionType=='opinion' &amp;&amp; opinionClass!=null)||interactionType=='grouping'" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based"/>
         <scoreText label="Score text" type="TextInput" wysiwyg="true" language="true"/>
         <answerText label="Answer text" type="TextInput" wysiwyg="true" language="true"/>
         <!-- <showAvgScore label="Show average score" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the average score of the whole group" /> -->
         <AvgScoreText label="Average Score Label" type="TextInput" wysiwyg="true" language="true"/>
         <showNrOfParticipants label="Show nr of participants" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the number of participants of this group"/>
         <NrParticipantsText label="Nr of Participants Label" type="TextInput" wysiwyg="true" language="true"/>
-        <listedModeOptions type="group" optional="true" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
+        <listedModeOptions type="group" optional="true" condition="parent.displayMode=='Listed'" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
             <doNotSort label="Do not sort this item" type="checkbox" defaultValue="false" optional="true" tooltip="Do not sort this item in listed mode, but keep at the location where it is. Use for example to keep a summary block at the top of the list."/>
         </listedModeOptions>
 
@@ -407,13 +411,15 @@
         <personalLabelText label="Personal Graph Label" type="TextInput" wysiwyg="true" language="true"/>
         <personalAvgLabelText label="Personal Average Graph Label" type="TextInput" wysiwyg="true" language="true"/>
 
-        <opinionOptions type="group" label="'Opinion 2D' extra options" optional="true" tooltip="Extra options that only make sense if the interaction type is 'Opinion 2D'">
+        <!--
+        <opinionOptions type="group" label="'Opinion 2D' extra options" condition="interactionType=='opinion'&amp;&amp;opinionClass!=''" optional="true" tooltip="Extra options that only make sense if the interaction type is 'Opinion 2D'">
             <colour label="Personal graph" type="colourPicker" defaultValue="0xFF0000" optional="true"/>
             <colourPersonalAvg label="Personal average graph" type="colourPicker" defaultValue="0x0000FF" optional="true"/>
             <colourAvg label="Average graph" type="colourPicker" defaultValue="0x00FF00" optional="true"/>
-            <labelFontSize label="Font size of the labels" type="NumericStepper" min="4" max="100" step="1" defaultValue="12" optional="true"/>
+            <labelFontSize label="Font size of the labels" type="NumericStepper" min="4" max="100" step="1" defaultValue="12" optional="true" />
         </opinionOptions>
-        <openAnswerOptions type="group" label="'Open answer' extra options" optional="true" tooltip="Extra options that only make sense if the interaction type is 'Open answer'">
+        -->
+        <openAnswerOptions type="group" label="'Open answer' extra options" condition="interactionType=='open'" optional="true" tooltip="Extra options that only make sense if the interaction type is 'Open answer'">
             <showUserID label="Show user id" type="checkbox" defaultValue="false" optional="true" tooltip="Show a user id with each open answer, if that information is available"/>
             <showDate label="Show date" type="checkbox" defaultVale="false" optional="true" tooltip="Show date of entry"/>
             <sortOrder label="Sort order" type="combobox" defaultValue="decreasing" data="increasing,decreasing" options="Oldest first,Newest first" optional="true" tooltip="Sort order of answers"/>
@@ -426,12 +432,13 @@
         </group>
 
       <newNodes>
-          <interactionBlock><![CDATA[<interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100" ></interactionBlock>]]></interactionBlock>
+          <interactionBlock><![CDATA[<interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100" conScoreAnswer="label of answer" conScoreGrouping="" ></interactionBlock>]]></interactionBlock>
         </newNodes>
     </interaction><interactionBlock menuItem="Interaction Block">
-          <conScoreBetween label="Score between" type="TextInput" optional="true" defaultValue="0,100" wysiwyg="false"/>
-          <conScoreAnswer label="Result label equals" type="TextInput" optional="true" defaultValue="label of answer" wysiwyg="false"/>
           <adaptiveContent label="Content" type="TextArea" wysiwyg="true" height="360"/>
+          <conScoreBetween label="Score between" type="TextInput" mandatory="true" defaultValue="0,100" condition="parent.interactionType=='score'||(parent.interactionType=='opinion' &amp;&amp; parent.opinionClass!=null)||parent.interactionType=='grouping'" wysiwyg="false"/>
+          <conScoreAnswer label="Result label equals" type="TextInput" mandatory="true" defaultValue="label of answer" condition="parent.interactionType=='answer'" wysiwyg="false"/>
+          <conScoreGrouping label="Grouping equals" type="Grouping" mandatory="true" defaultValue="" condition="parent.interactionType=='grouping'" tooltip="Choose the grouping to extract the score from. More than one score can be part of the same grouping, and then the average score is used"/>
     </interactionBlock><annotatedDiagram menu="Interactivity" menuItem="Annotated Diagram" hint="An interaction for exploring labelled diagrams." icon="icPageWhiteStar" remove="true" thumb="thumbs/annotatedDiagram.jpg" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
@@ -3967,7 +3974,7 @@
 		<position label="Position" options="Left,Right,Top" type="ComboBox" data="L,R,T" defaultValue="L" width="100" optional="true"/>
 	</textGroup>
 
-	<open label="Open PDF" type="TextInput" wysiwyg="true" language="true"/>
+	<open label="Open PDF in new tab" type="TextInput" wysiwyg="true" language="true"/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>

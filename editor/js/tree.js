@@ -631,15 +631,19 @@ var EDITOR = (function ($, parent) {
      *
      */
 
-    showNodeData = function(key) {
+    showNodeData = function(key, keepScrollPos, scrollToId) {
         setTimeout(function()
         {
-            buildPage(key)
+            var scrollPos = 0;
+            if (keepScrollPos != null && keepScrollPos == true) {
+                scrollPos = $("#content").scrollTop();
+            }
+            buildPage(key, scrollPos, scrollToId);
         }, 350);
     },
 
     // Refresh the page when a new node is selected
-    buildPage = function (key) {
+    buildPage = function (key, scrollPos, scrollToId) {
 		
         // Cleanup all current CKEDITOR instances!
         for(name in CKEDITOR.instances)
@@ -854,47 +858,40 @@ var EDITOR = (function ($, parent) {
                 if (node_options['optional'][i].value.type == "group") {
                     node_options['optional'][i].value.children = node_options['optional'][i].value.children == undefined ? [] : node_options['optional'][i].value.children;
                     optGroups.push(node_options['optional'][i]);
-                    node_options['optional'].splice(i, 1);
-                    i--;
                 }
             }
 
             // ...find all optional properties that belong to them
             if (optGroups.length > 0 && optGroups[0].value.children.length == 0) {
                 for (var i = 0; i < node_options['optional'].length; i++) {
-                    var index = $.map(optGroups, function (obj, index) {
+                    var index = $.map(node_options['optional'], function (obj, index) {
                         if (obj.name == node_options['optional'][i].value.group) {
                             return index;
                         }
                     });
 
                     if (index.length > 0) {
-                        optGroups[index[0]].value.children.push(node_options['optional'][i]);
+                        node_options['optional'][index[0]].value.children.push(node_options['optional'][i]);
                         node_options['optional'].splice(i, 1);
                         i--;
                     }
                 }
 
                 // ignore groups with no children
-                for (var i = 0; i < optGroups.length; i++) {
-                    if (optGroups[i].value.children.length == 0) {
-                        optGroups.splice(i, 1);
+                for (var i = 0; i < node_options['optional'].length; i++) {
+                    if (node_options['optional'][i].value.type == 'group' && node_options['optional'][i].value.children.length == 0) {
+                        node_options['optional'].splice(i, 1);
                         i--;
                     }
                 }
             }
 
-            node_options['optional'] = node_options['optional'].concat(optGroups);
 
-            // Sort into alphabetical order
-            node_options['optional'].sort(function (a, b) {
-                var aN = a.value.label.toLowerCase();
-                var bN = b.value.label.toLowerCase();
-                return (aN < bN) ? -1 : ((aN > bN) ? 1 : 0);
-            });
+            //node_options['optional'] = node_options['optional'].concat(optGroups);
 
+            // Determine whether optionsal properties are used and if theay are visble according to their condition
+            // is optional property (or any children of group) already in project?
             for (var i = 0; i < node_options['optional'].length; i++) {
-                // is optional property (or any children of group) already in project?
                 var found = [];
                 if (node_options['optional'][i].value.type == 'group') {
                     var groupChildren = node_options['optional'][i].value.children;
@@ -903,14 +900,39 @@ var EDITOR = (function ($, parent) {
                         found.push(child_value.found);
                     }
                 }
-
                 attribute_name = node_options['optional'][i].name;
-                attribute_label = node_options['optional'][i].value.label;
                 attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
+                if (attribute_value.found || $.inArray(true, found) > -1) {
+                    node_options['optional'][i].found = true;
+                    node_options['optional'][i].groupitemfound = found;
+                }
+                else
+                {
+                    node_options['optional'][i].found = false;
+                }
+                var visible = true;
+                if (typeof node_options['optional'][i].value.condition != "undefined") {
+                    visible = parent.toolbox.evaluateCondition(node_options['optional'][i].value.condition, key);
+                }
+                node_options['optional'][i].visible = visible;
+            }
+            // Sort into alphabetical order in a different (cloned) object
+            var sorted_options = JSON.parse(JSON.stringify(node_options));
+            sorted_options['optional'].sort(function (a, b) {
+                var aN = a.value.label.toLowerCase();
+                var bN = b.value.label.toLowerCase();
+                return (aN < bN) ? -1 : ((aN > bN) ? 1 : 0);
+            });
 
-                if (!node_options['optional'][i].value.deprecated) {
+            // First add option buttons to option panel sorted
+            for (var i = 0; i < sorted_options['optional'].length; i++) {
+                attribute_name = sorted_options['optional'][i].name;
+                attribute_label = sorted_options['optional'][i].value.label;
+                attribute_value = toolbox.getAttributeValue(attributes, attribute_name, sorted_options, key);
+
+                if (!sorted_options['optional'][i].value.deprecated) {
                     // Create button for right panel
-                    var label = attribute_label + (node_options['optional'][i].value.type == 'group' ? '...' : '');
+                    var label = attribute_label + (sorted_options['optional'][i].value.type == 'group' ? '...' : '');
                     var button = $('<button>')
                         .attr('id', 'insert_opt_' + attribute_name)
                         .addClass('btnInsertOptParam')
@@ -918,37 +940,38 @@ var EDITOR = (function ($, parent) {
                         .click({
                                 key: key,
                                 attribute: attribute_name,
-                                default: (node_options['optional'][i].value.defaultValue ? node_options['optional'][i].value.defaultValue : ""),
-                                children: node_options['optional'][i].value.children
+                                default: (sorted_options['optional'][i].value.defaultValue ? sorted_options['optional'][i].value.defaultValue : ""),
+                                children: sorted_options['optional'][i].value.children
                             },
                             function (event) {
                                 if (event.data.children != undefined) {
                                     // it's a group so add all children too
                                     for (var j = 0; j < event.data.children.length; j++) {
                                         if (!event.data.children[j].value.deprecated) {
-                                            parent.toolbox.insertOptionalProperty(event.data.key, event.data.children[j].name, (event.data.children[j].value.defaultValue ? event.data.children[j].value.defaultValue : ""), j < event.data.children.length - 1 ? false : true);
+                                            var load = (j == event.data.children.length - 1);
+                                            parent.toolbox.insertOptionalProperty(event.data.key, event.data.children[j].name, (event.data.children[j].value.defaultValue ? event.data.children[j].value.defaultValue : ""), load, (load ? "group_" + event.data.attribute : ""));
                                         }
                                     }
                                 } else {
-                                    parent.toolbox.insertOptionalProperty(event.data.key, event.data.attribute, event.data.default);
+                                    parent.toolbox.insertOptionalProperty(event.data.key, event.data.attribute, event.data.default, true, "opt_" +event.data.attribute);
                                 }
                             })
                         .append($('<i>').addClass('fa').addClass('fa-plus-circle').addClass('fa-lg').addClass("xerte-icon").height(14));
-                    if (node_options['optional'][i].value.flashonly) {
+                    if (sorted_options['optional'][i].value.flashonly) {
                         label += flashonlytxt;
                     }
-                    if (node_options['optional'][i].value.tooltip) {
+                    if (sorted_options['optional'][i].value.tooltip) {
                         label += ' ' + tooltipavailable;
-                        button.attr('title', node_options['optional'][i].value.tooltip);
+                        button.attr('title', sorted_options['optional'][i].value.tooltip);
                     }
                     // If group, see if any of the individual items have a tooltip
-                    if (node_options['optional'][i].value.type == 'group') {
+                    if (sorted_options['optional'][i].value.type == 'group') {
                         var tooltip_txt = "";
-                        for (var j = 0; j < node_options['optional'][i].value.children.length; j++) {
-                            if (node_options['optional'][i].value.children[j].value.tooltip) {
+                        for (var j = 0; j < sorted_options['optional'][i].value.children.length; j++) {
+                            if (sorted_options['optional'][i].value.children[j].value.tooltip) {
                                 if (tooltip_txt.length > 0)
                                     tooltip_txt += "\n";
-                                tooltip_txt += node_options['optional'][i].value.children[j].value.label + ": " + node_options['optional'][i].value.children[j].value.tooltip;
+                                tooltip_txt += sorted_options['optional'][i].value.children[j].value.label + ": " + sorted_options['optional'][i].value.children[j].value.tooltip;
                             }
                         }
                         if (tooltip_txt.length > 0) {
@@ -963,48 +986,29 @@ var EDITOR = (function ($, parent) {
                     }
                     button.append(label);
 
-                    if (attribute_value.found || $.inArray(true, found) > -1) {
-                        // Add disabled button to right panel
-                        button.prop('disabled', true)
-                            .addClass('disabled');
 
-                    } else {
-                        // Add enabled button to the right panel
-                        button.prop('disabled', false)
-                            .addClass('enabled');
-                    }
-                    var tablerow = $('<tr>')
-                        .append($('<td>')
-                            .append(button));
+                    if (sorted_options['optional'][i].visible) {
+                        if (sorted_options['optional'][i].found) {
+                            // Add disabled button to right panel
+                            button.prop('disabled', false)
+                                .addClass('enabled')
+                                .hide();
 
-                    if (node_options['optional'][i].value.common) {
-                        table2.append(tablerow);
-                    } else {
-                        table.append(tablerow);
-                    }
-                }
-
-                if (attribute_value.found || $.inArray(true, found) > -1) {
-                    // Add parameter to the wizard
-                    if (node_options['optional'][i].value.type != 'group') {
-                        toolbox.displayParameter('#mainPanel .wizard', node_options['optional'], attribute_name, attribute_value.value, key);
-                    } else {
-                        toolbox.displayGroup('#mainPanel .wizard', node_options['optional'][i].name, node_options['optional'][i].value, key);
-
-                        // group children aren't sorted into alphabetical order - they appear in order taken from xml
-                        var groupChildren = node_options['optional'][i].value.children;
-                        for (var j = 0; j < groupChildren.length; j++) {
-                            var tableOffset = (node_options['optional'][i].value.cols ? j % parseInt(node_options['optional'][i].value.cols, 10) : '');
-                            if (found[j] == true || !groupChildren[j].value.deprecated) {
-                                toolbox.displayParameter(
-                                    '#mainPanel .wizard #groupTable_' + node_options['optional'][i].name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
-                                    groupChildren,
-                                    groupChildren[j].name,
-                                    (found[j] ? toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
-                                    key
-                                );
-                            }
+                        } else {
+                            // Add enabled button to the right panel
+                            button.prop('disabled', false)
+                                .addClass('enabled');
                         }
+                        var tablerow = $('<tr>')
+                            .append($('<td>')
+                                .append(button));
+
+                        if (sorted_options['optional'][i].value.common) {
+                            table2.append(tablerow);
+                        } else {
+                            table.append(tablerow);
+                        }
+
                     }
                 }
             }
@@ -1017,7 +1021,7 @@ var EDITOR = (function ($, parent) {
                 }
                 html.append(table);
             }
-            ;
+
             if (table2.find("tr").length > 0) {
                 var tablerow = $('<tr>');
                 if (templateframework != 'site') {
@@ -1026,11 +1030,49 @@ var EDITOR = (function ($, parent) {
                 table2.prepend(tablerow);
                 html.append(table2);
             }
-            ;
+
 
             if (node_options['optional'].length > 0) {
                 $('#optionalParams').append(html);
             }
+
+            // Add optional property values to main panel in the order they have in the xwd
+            for (var i = 0; i < node_options['optional'].length; i++)
+            {
+                attribute_name = node_options['optional'][i].name;
+                attribute_label = node_options['optional'][i].value.label;
+                attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
+
+                if (node_options['optional'][i].found) {
+                    // Add parameter to the wizard
+                    if (node_options['optional'][i].value.type != 'group') {
+                        if (node_options['optional'][i].visible) {
+                            toolbox.displayParameter('#mainPanel .wizard', node_options['optional'], attribute_name, attribute_value.value, key);
+                        }
+                    } else {
+                        if (node_options['optional'][i].visible) {
+                            toolbox.displayGroup('#mainPanel .wizard', node_options['optional'][i].name, node_options['optional'][i].value, key);
+
+                            // group children aren't sorted into alphabetical order - they appear in order taken from xml
+                            var groupChildren = node_options['optional'][i].value.children;
+                            var found = node_options['optional'][i].groupitemfound;
+                            for (var j = 0; j < groupChildren.length; j++) {
+                                var tableOffset = (node_options['optional'][i].value.cols ? j % parseInt(node_options['optional'][i].value.cols, 10) : '');
+                                if (found[j] == true || !groupChildren[j].value.deprecated) {
+                                    toolbox.displayParameter(
+                                        '#mainPanel .wizard #groupTable_' + node_options['optional'][i].name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
+                                        groupChildren,
+                                        groupChildren[j].name,
+                                        (found[j] ? toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
+                                        key
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
 
             $('#languagePanel').html("<hr><table class=\"wizard\" border=\"0\">");
             // languageOptons
@@ -1210,11 +1252,19 @@ var EDITOR = (function ($, parent) {
 			$("#delete_button").addClass("disabled");
 		}
 
-        // And finally, scroll to the top
-        setTimeout(function(){
-            $('#content').animate({scrollTop: 0});
-        }, 50);
-        toolbox.scrollTop = 0;
+        // And finally, scroll to the scrollPos, or place scrollToId (if defined) into view
+        if (scrollToId === undefined) {
+            setTimeout(function () {
+                $('#content').animate({scrollTop: scrollPos});
+            }, 50);
+        }
+        else {
+            setTimeout( function(){
+                $("#" + scrollToId)[0].scrollIntoView();
+            });
+        }
+
+        toolbox.scrollTop = scrollPos;
 
         // Make sure subpanels are visible
         $("#subPanels").show();
