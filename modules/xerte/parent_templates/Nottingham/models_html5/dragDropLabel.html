@@ -173,7 +173,7 @@
             var style = "<style>div.highlight { background-image: none;}";
             style += " #targetHolder .target.highlight{border: " + borderwidth + " solid " + highlightColour + " !important;}";
             style += " #targetHolder .target.highlight:focus { outline: none;} </style>";
-            $("#targetHolder").prepend(style);
+            $("#pageContents").prepend(style);
         };
 
         this.startTracking = function() {
@@ -399,15 +399,19 @@
             } else {
                 // labels are being reset - make sure targets will still accept them being dropped
                 if (interactivity == "Match") {
-                    $("#targetHolder .target")
-                            .each(function () {
-                                var $this = $(this);
-                                $this.droppable({
-                                    tolerance: "pointer",
-                                    accept: $("#labelHolder .label")
-                                });
-                            })
-                            .off("click");
+                    $("#targetHolder").html("");
+                    dragDropLabel.imgLoaded();
+                    $("#submitBtn").show();
+                    //$("#targetHolder .target")
+                    //        .each(function () {
+                    //            var $this = $(this);
+                    //            $this.droppable("enable");
+                    //            //$this.droppable({
+                    //            //    tolerance: "pointer",
+                    //            //    accept: "*"
+                    //            //});
+                    //        })
+                    //        .off("click");
                 }
                 else
                 {
@@ -678,7 +682,7 @@
 			
 			x_pageContentsUpdated();
 
-        }
+        };
 
         this.showFeedBackandTrackResults = function() {
             var correct = false,
