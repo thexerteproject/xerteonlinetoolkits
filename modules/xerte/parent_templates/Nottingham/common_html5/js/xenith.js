@@ -527,6 +527,7 @@ function x_getLangData(lang) {
     {
         // We have a off-line object with the language definition in a string
         // Convert to an XML object and continue like before
+        langxmlstr = langxmlstr.substr(langxmlstr.indexOf("<"), langxmlstr.lastIndexOf(">") + 1);
         x_languageData = $($.parseXML(langxmlstr)).find("language");
         x_setUp();
     }
