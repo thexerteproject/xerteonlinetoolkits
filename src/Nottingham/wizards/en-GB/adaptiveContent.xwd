@@ -42,7 +42,7 @@
         <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue="" />
         <xertelo label="ID of Xerte learning object" type="xertelo" mandatory="true" defaultValue="" />
         <label label="Tracking Label of source" type="TextInput" condition="interactionType!='grouping'" wysiwyg="false" />
-        <grouping label="Grouping equals" type="Grouping" mandatory="true" defaultValue="" condition=="interactionType=='grouping'" tooltip="Choose the grouping to extract the score from. More than one score can be part of the same grouping, and then the average score is used" />
+        <grouping label="Grouping equals" type="Grouping" mandatory="true" defaultValue="" condition="interactionType=='grouping'" tooltip="Choose the grouping to extract the score from. More than one score can be part of the same grouping, and then the average score is used" />
         <opinionClass label="Opinion Class" type="TextInput" condition="interactionType=='opinion'" wysiwyg="false" optional="true" defaultValue="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interactiontype is based on 2D opinion" />
         <graph type="group" label="Graph" condition="interactionType!='open'" optional="true">
           <graph label="Show graph" type="checkbox" defaultValue="false" optional="true"/>

@@ -370,10 +370,11 @@
 	</lightboxGroup></adaptiveContent><interaction menuItem="Source interaction">
         <name label="Title" type="textinput" wysiwyg="true"/>
         <introduction label="Introduction" type="textarea" height="120" wysiwyg="true"/>
+        <interactionType label="Interaction type" type="combobox" conditionTrigger="true" data="score,answer,opinion,open,grouping" options="Based on end score,Based on specific answer,Based on 2D opinion,Open answer,Based on grouping" tooltip="Score: use 'Score between' to add one or more interaction blocks; Answer: use 'Result label equals' to add one or more interaction block; Based on 2D opinion: use in combination with class to get a score; Open: Just shows one interaction block with all the given answers, all given interaction blocks will just be ignored."/>
         <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue=""/>
         <xertelo label="ID of Xerte learning object" type="xertelo" mandatory="true" defaultValue=""/>
-        <label label="Tracking Label of source" type="TextInput" wysiwyg="false"/>
-        <interactionType label="Interaction type" type="combobox" conditionTrigger="true" data="score,answer,opinion,open,grouping" options="Based on end score,Based on specific answer,Based on 2D opinion,Open answer,Based on grouping" tooltip="Score: use 'Score between' to add one or more interaction blocks; Answer: use 'Result label equals' to add one or more interaction block; Based on 2D opinion: use in combination with class to get a score; Open: Just shows one interaction block with all the given answers, all given interaction blocks will just be ignored."/>
+        <label label="Tracking Label of source" type="TextInput" condition="interactionType!='grouping'" wysiwyg="false"/>
+        <grouping label="Grouping equals" type="Grouping" mandatory="true" defaultValue="" condition="interactionType=='grouping'" tooltip="Choose the grouping to extract the score from. More than one score can be part of the same grouping, and then the average score is used"/>
         <opinionClass label="Opinion Class" type="TextInput" condition="interactionType=='opinion'" wysiwyg="false" optional="true" defaultValue="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interactiontype is based on 2D opinion"/>
         <graph type="group" label="Graph" condition="interactionType!='open'" optional="true">
           <graph label="Show graph" type="checkbox" defaultValue="false" optional="true"/>
@@ -421,7 +422,7 @@
         -->
         <openAnswerOptions type="group" label="'Open answer' extra options" condition="interactionType=='open'" optional="true" tooltip="Extra options that only make sense if the interaction type is 'Open answer'">
             <showUserID label="Show user id" type="checkbox" defaultValue="false" optional="true" tooltip="Show a user id with each open answer, if that information is available"/>
-            <showDate label="Show date" type="checkbox" defaultVale="false" optional="true" tooltip="Show date of entry"/>
+            <showDate label="Show date" type="checkbox" defaultValue="false" optional="true" tooltip="Show date of entry"/>
             <sortOrder label="Sort order" type="combobox" defaultValue="decreasing" data="increasing,decreasing" options="Oldest first,Newest first" optional="true" tooltip="Sort order of answers"/>
         </openAnswerOptions>
         <myOpenAnswerText label="My Open Answers text" type="TextInput" wysiwyg="true" language="true"/>
@@ -438,7 +439,6 @@
           <adaptiveContent label="Content" type="TextArea" wysiwyg="true" height="360"/>
           <conScoreBetween label="Score between" type="TextInput" mandatory="true" defaultValue="0,100" condition="parent.interactionType=='score'||(parent.interactionType=='opinion' &amp;&amp; parent.opinionClass!=null)||parent.interactionType=='grouping'" wysiwyg="false"/>
           <conScoreAnswer label="Result label equals" type="TextInput" mandatory="true" defaultValue="label of answer" condition="parent.interactionType=='answer'" wysiwyg="false"/>
-          <conScoreGrouping label="Grouping equals" type="Grouping" mandatory="true" defaultValue="" condition="parent.interactionType=='grouping'" tooltip="Choose the grouping to extract the score from. More than one score can be part of the same grouping, and then the average score is used"/>
     </interactionBlock><annotatedDiagram menu="Interactivity" menuItem="Annotated Diagram" hint="An interaction for exploring labelled diagrams." icon="icPageWhiteStar" remove="true" thumb="thumbs/annotatedDiagram.jpg" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
