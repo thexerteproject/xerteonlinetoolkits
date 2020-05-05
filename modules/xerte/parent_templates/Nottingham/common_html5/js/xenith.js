@@ -527,6 +527,7 @@ function x_getLangData(lang) {
     {
         // We have a off-line object with the language definition in a string
         // Convert to an XML object and continue like before
+        langxmlstr = langxmlstr.substr(langxmlstr.indexOf("<"), langxmlstr.lastIndexOf(">") + 1);
         x_languageData = $($.parseXML(langxmlstr)).find("language");
         x_setUp();
     }
@@ -2151,18 +2152,22 @@ function x_addCountdownTimer() {
 
     var x_countdownTicker = function () {
         x_countdownTimer--;
+
+		var pageType = x_pageInfo[x_currentPage].type;
+		pageType = (pageType === 'text') ? 'simpleText' : pageType
+
         if (x_countdownTimer > 0) {
             $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
 
          	// If page model wants timer tick to know then pass value
-        	if (typeof window[x_pageInfo[x_currentPage].type].onTimerTick === "function") window[x_pageInfo[x_currentPage].type].onTimerTick(x_countdownTimer);
+        	if (typeof window[ pageType ].onTimerTick === "function") window[ pageType ].onTimerTick(x_countdownTimer);
         }
         else {
             window.clearInterval(x_timer);
             $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[1]);
 
         	// If page model wants to know then pass event
-        	if (typeof window[x_pageInfo[x_currentPage].type].onTimerZero === "function") window[x_pageInfo[x_currentPage].type].onTimerZero();
+        	if (typeof window[ pageType ].onTimerZero === "function") window[ pageType ].onTimerZero();
 
         }
     };

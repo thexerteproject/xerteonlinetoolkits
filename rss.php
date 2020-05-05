@@ -125,7 +125,7 @@ if(!isset($_GET['username'])){
             AND tr.template_id = td.template_id 
             AND ts.template_id = tr.template_id
             AND td.template_type_id=ot.template_type_id 
-            AND rss = 'true'";
+            AND $query_modifier='true'";
         $params[] = $row_folder['folder_id'];
     }
 

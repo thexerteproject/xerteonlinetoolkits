@@ -151,7 +151,70 @@
 			var scale = $img.width() / $img.data("origSize")[0],
 				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;
 			$("#hsHolder").html("<map id=\"hsHolder_map\" name=\"hsHolder_map\"></map>");
-			
+
+			var stroke = true;
+			var highlightColour = "#ffff00";
+			var strokeWidth = 2;
+			var strokeOpacity = 1;
+			var fill = true;
+			var fillColor = "#000000";
+			var fillOpacity = 0.1;
+			if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
+				highlightColour = x_getColour(x_currentPageXML.getAttribute("hicol"));
+			}
+			if (x_currentPageXML.getAttribute("hs_strokeWidth") != undefined && x_currentPageXML.getAttribute("hs_strokeWidth") != "") {
+				strokeWidth = parseInt(x_currentPageXML.getAttribute("hs_strokeWidth"));
+				if (strokeWidth == 0)
+				{
+					stroke = false;
+				}
+			}
+			if (x_currentPageXML.getAttribute("hs_strokeOpacity") != undefined && x_currentPageXML.getAttribute("hs_strokeOpacity") != "") {
+				strokeOpacity = parseFloat(x_currentPageXML.getAttribute("hs_strokeOpacity"));
+			}
+			if (x_currentPageXML.getAttribute("hs_fill") != undefined && x_currentPageXML.getAttribute("hs_fill") != "") {
+				fill = x_currentPageXML.getAttribute("hs_fill") === "true";
+			}
+			if (x_currentPageXML.getAttribute("hs_fillColor") != undefined && x_currentPageXML.getAttribute("hs_fillColor") != "") {
+				fillColor = x_getColour(x_currentPageXML.getAttribute("hs_fillColor"));
+			}
+			if (x_currentPageXML.getAttribute("hs_fillOpacity") != undefined && x_currentPageXML.getAttribute("hs_fillOpacity") != "") {
+				fillOpacity = parseFloat(x_currentPageXML.getAttribute("hs_fillOpacity"));
+			}
+
+			if (selected != undefined) {
+				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
+			}
+			var options = {
+				render_highlight:
+						{
+							fill: false,
+							fillColor: fillColor.substr(1),
+							fillOpacity: fillOpacity,
+							stroke: stroke,
+							strokeColor: highlightColour.substr(1),
+							strokeOpacity: (strokeOpacity > 0 ? strokeOpacity : 1),
+							strokeWidth: strokeWidth
+						},
+				render_select:
+						{
+							fill: fill,
+							fillColor: fillColor.substr(1),
+							fillOpacity: fillOpacity,
+							stroke: stroke,
+							strokeColor: highlightColour.substr(1),
+							strokeOpacity: strokeOpacity,
+							strokeWidth: strokeWidth
+						},
+				scaleMap: true,
+				clickNavigate: true
+			};
+
+			var tabfocusoptions = JSON.parse(JSON.stringify(options));
+			// Make sure focus is ALWAYS visible, even if strokewidth is set to 0
+			tabfocusoptions.render_highlight.stroke = true;
+			tabfocusoptions.render_highlight.strokeWidth = (strokeWidth == 0? 1 : strokeWidth * 2);
+
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var _this = this;
@@ -225,16 +288,18 @@
 							x_pageContentsUpdated();
 						})
 						.focusin(function() {
+								$('img').mapster('set_opotions', tabfocusoptions);
 								$(this)
 									.removeClass("transparent")
 									.addClass("highlight");
-									$(this).mapster('highlight');
+								$(this).mapster('highlight');
 							})
 						.focusout(function() {
+								$('img').mapster('set_options', options);
 								$(this)
 									.removeClass("highlight")
 									.addClass("transparent");
-									$("img").mapster('highlight', false);
+								$("img").mapster('highlight', false);
 
 							})
 						.keypress(function(e) {
@@ -262,63 +327,6 @@
 				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
 			}
 
-			var stroke = true;
-			var highlightColour = "#ffff00";
-			var strokeWidth = 2;
-			var strokeOpacity = 1;
-			var fill = true;
-			var fillColor = "#000000";
-			var fillOpacity = 0.1;
-			if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
-				highlightColour = x_getColour(x_currentPageXML.getAttribute("hicol"));
-			}
-			if (x_currentPageXML.getAttribute("hs_strokeWidth") != undefined && x_currentPageXML.getAttribute("hs_strokeWidth") != "") {
-				strokeWidth = parseInt(x_currentPageXML.getAttribute("hs_strokeWidth"));
-				if (strokeWidth == 0)
-				{
-					stroke = false;
-				}
-			}
-			if (x_currentPageXML.getAttribute("hs_strokeOpacity") != undefined && x_currentPageXML.getAttribute("hs_strokeOpacity") != "") {
-				strokeOpacity = parseFloat(x_currentPageXML.getAttribute("hs_strokeOpacity"));
-			}
-			if (x_currentPageXML.getAttribute("hs_fill") != undefined && x_currentPageXML.getAttribute("hs_fill") != "") {
-				fill = x_currentPageXML.getAttribute("hs_fill") === "true";
-			}
-			if (x_currentPageXML.getAttribute("hs_fillColor") != undefined && x_currentPageXML.getAttribute("hs_fillColor") != "") {
-				fillColor = x_getColour(x_currentPageXML.getAttribute("hs_fillColor"));
-			}
-			if (x_currentPageXML.getAttribute("hs_fillOpacity") != undefined && x_currentPageXML.getAttribute("hs_fillOpacity") != "") {
-				fillOpacity = parseFloat(x_currentPageXML.getAttribute("hs_fillOpacity"));
-			}
-
-			if (selected != undefined) {
-				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
-			}
-			options = {
-				render_highlight:
-						{
-							fill: false,
-							fillColor: fillColor.substr(1),
-							fillOpacity: fillOpacity,
-							stroke: true,
-							strokeColor: highlightColour.substr(1),
-							strokeOpacity: (strokeOpacity > 0 ? strokeOpacity : 1),
-							strokeWidth: (strokeWidth == 0? 1 : strokeWidth * 2)
-						},
-				render_select:
-						{
-							fill: fill,
-							fillColor: fillColor.substr(1),
-							fillOpacity: fillOpacity,
-							stroke: stroke,
-							strokeColor: highlightColour.substr(1),
-							strokeOpacity: strokeOpacity,
-							strokeWidth: strokeWidth
-						},
-				scaleMap: true,
-				clickNavigate: true
-			};
 
 			$('img').mapster(options);
 			if (x_currentPageXML.getAttribute("highlight") == "true") {
