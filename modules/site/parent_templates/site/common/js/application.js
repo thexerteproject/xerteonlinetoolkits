@@ -1759,7 +1759,7 @@ function parseContent(pageID, sectionNum, addHistory) {
 		goToSection(pageTempInfo + 'section' + sectionNum);
 		
 	} else {
-		goToSection('topnav');
+		goToSection('alwaysTop');
 	}
 }
 
