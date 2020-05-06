@@ -2376,43 +2376,56 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 			return Number(String(info.year) + (info.month < 10 ? '0' : '') + String(info.month) + (info.day < 10 ? '0' : '') + String(info.day) + timeZero + String(info.time));
 		}
 		
-		// is it hidden from a certain date? if so, have we passed that date/time?
-		if (hideOnDate != undefined && hideOnDate != '') {
-			var dateInfo = getDateInfo(hideOnDate, hideOnTime);
-			hideOn = dateInfo[0];
-			
-			if (hideOn != false) {
-				if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
-					hidePage = false;
+		// if hide from & to date/times are identical then hide (to prevent issue with a previous release where these were never blank but pages should have been hidden)
+		var skipHideDateCheck = false;
+		if (hideOnDate != undefined && hideOnDate != '' && hideUntilDate != undefined && hideUntilDate != '') {
+			if (hideOnDate == hideUntilDate) {
+				if (hideOnTime == hideUntilTime || hideOnTime == '' || hideUntilTime == '') {
+					skipHideDateCheck = true;
 				}
-				
-				hideOnString = '{from}: ' + dateInfo[1] + ' ' + hideOnTime;
 			}
 		}
 		
-		// is it hidden until a certain date? if so, have we passed that date/time?
-		if (hideUntilDate != undefined && hideUntilDate != '') {
-			var dateInfo = getDateInfo(hideUntilDate, hideUntilTime);
-			hideUntil = dateInfo[0];
-			
-			if (hideUntil != false) {
-				// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
-				var skip = false;
-				if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
-					if (hidePage == false) {
-						hidePage = true;
-					} else {
-						skip = true;
-					}
-				}
+		if (skipHideDateCheck != true) {
+		
+			// is it hidden from a certain date? if so, have we passed that date/time?
+			if (hideOnDate != undefined && hideOnDate != '') {
+				var dateInfo = getDateInfo(hideOnDate, hideOnTime);
+				hideOn = dateInfo[0];
 				
-				if (skip != true && hidePage == true) {
-					if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+				if (hideOn != false) {
+					if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
 						hidePage = false;
 					}
+					
+					hideOnString = '{from}: ' + dateInfo[1] + ' ' + hideOnTime;
 				}
+			}
+			
+			// is it hidden until a certain date? if so, have we passed that date/time?
+			if (hideUntilDate != undefined && hideUntilDate != '') {
+				var dateInfo = getDateInfo(hideUntilDate, hideUntilTime);
+				hideUntil = dateInfo[0];
 				
-				hideUntilString = '{until}: ' + dateInfo[1] + ' ' + hideUntilTime;
+				if (hideUntil != false) {
+					// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
+					var skip = false;
+					if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
+						if (hidePage == false) {
+							hidePage = true;
+						} else {
+							skip = true;
+						}
+					}
+					
+					if (skip != true && hidePage == true) {
+						if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+							hidePage = false;
+						}
+					}
+					
+					hideUntilString = '{until}: ' + dateInfo[1] + ' ' + hideUntilTime;
+				}
 			}
 		}
 		
