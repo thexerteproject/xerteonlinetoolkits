@@ -201,6 +201,7 @@ x_projectDataLoaded = function(xmlData) {
 			// functions to get hide on/until date/times from xml
 			var hideOn, hideUntil,
 				hideOnString = '', hideUntilString = '';
+			
 			var getDateInfo = function(dmy, hm) {
 				// some basic checks of whether values are valid & then splits the data into time/day/month/year
 				var tempDmy = dmy.split('/'), // original date format
@@ -250,44 +251,57 @@ x_projectDataLoaded = function(xmlData) {
 				}
 				return Number(String(info.year) + (info.month < 10 ? '0' : '') + String(info.month) + (info.day < 10 ? '0' : '') + String(info.day) + timeZero + String(info.time));
 			}
-
-			// is it hidden from a certain date? if so, have we passed that date/time?
-			if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
-				var dateInfo = getDateInfo($(this)[0].getAttribute("hideOnDate"), $(this)[0].getAttribute("hideOnTime"));
-				hideOn = dateInfo[0];
-
-				if (hideOn != false) {
-					if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
-						hidePage = false;
+			
+			// if hide from & to date/times are identical then hide (to prevent issue with a previous release where these were never blank but pages should have been hidden)
+			var skipHideDateCheck = false;
+			if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '' && $(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
+				if ($(this)[0].getAttribute("hideOnDate") == $(this)[0].getAttribute("hideUntilDate")) {
+					if ($(this)[0].getAttribute("hideOnTime") == $(this)[0].getAttribute("hideUntilTime") || $(this)[0].getAttribute("hideOnTime") == '' || $(this)[0].getAttribute("hideUntilTime") == '') {
+						skipHideDateCheck = true;
 					}
-
-					hideOnString = '{from}: ' + dateInfo[1] + ' ' + $(this)[0].getAttribute("hideOnTime");
 				}
 			}
+			
+			if (skipHideDateCheck != true) {
 
-			// is it hidden until a certain date? if so, have we passed that date/time?
-			if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
-				var dateInfo = getDateInfo($(this)[0].getAttribute("hideUntilDate"), $(this)[0].getAttribute("hideUntilTime"));
-				hideUntil = dateInfo[0];
+				// is it hidden from a certain date? if so, have we passed that date/time?
+				if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
+					var dateInfo = getDateInfo($(this)[0].getAttribute("hideOnDate"), $(this)[0].getAttribute("hideOnTime"));
+					hideOn = dateInfo[0];
 
-				if (hideUntil != false) {
-					// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
-					var skip = false;
-					if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
-						if (hidePage == false) {
-							hidePage = true;
-						} else {
-							skip = true;
-						}
-					}
-
-					if (skip != true && hidePage == true) {
-						if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+					if (hideOn != false) {
+						if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
 							hidePage = false;
 						}
-					}
 
-					hideUntilString = '{until}: ' + dateInfo[1] + ' ' + $(this)[0].getAttribute("hideUntilTime");
+						hideOnString = '{from}: ' + dateInfo[1] + ' ' + $(this)[0].getAttribute("hideOnTime");
+					}
+				}
+
+				// is it hidden until a certain date? if so, have we passed that date/time?
+				if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
+					var dateInfo = getDateInfo($(this)[0].getAttribute("hideUntilDate"), $(this)[0].getAttribute("hideUntilTime"));
+					hideUntil = dateInfo[0];
+
+					if (hideUntil != false) {
+						// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
+						var skip = false;
+						if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
+							if (hidePage == false) {
+								hidePage = true;
+							} else {
+								skip = true;
+							}
+						}
+
+						if (skip != true && hidePage == true) {
+							if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+								hidePage = false;
+							}
+						}
+
+						hideUntilString = '{until}: ' + dateInfo[1] + ' ' + $(this)[0].getAttribute("hideUntilTime");
+					}
 				}
 			}
 
