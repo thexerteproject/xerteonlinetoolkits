@@ -846,490 +846,490 @@ function x_cssSetUp(param) {
     }
 }
 
+// clunky fix for issue where Firefox triggers css loaded event (which then triggers x_continueSetUp1) everytime the responsive stylesheet is enabled when changing from small view to full screen
+var setUpComplete = false;
 function x_continueSetUp1() {
-	//if (x_params.styles != undefined){
-	//	$x_head.append('<style type="text/css">' +  x_params.styles + '</style>');
-	//}
-
-	if (x_pageInfo[0].type == "menu") {
-		$x_pageNo.hide();
-		if (x_params.navigation == "Menu") {
-			$x_prevBtn.hide();
-			$x_nextBtn.hide();
-			$("#x_pageControls").css("display","block");
-			$x_footerBlock.find(".x_floatRight button:eq(0)").css("border-right", "0px");
+	if (setUpComplete == false) {
+		if (x_pageInfo[0].type == "menu") {
+			$x_pageNo.hide();
+			if (x_params.navigation == "Menu") {
+				$x_prevBtn.hide();
+				$x_nextBtn.hide();
+				$("#x_pageControls").css("display","block");
+				$x_footerBlock.find(".x_floatRight button:eq(0)").css("border-right", "0px");
+			}
+		} else if (x_params.navigation == "Historic") {
+			$x_pageNo.hide();
+		} else {
+			x_dialogInfo.push({type:'menu', built:false});
 		}
-	} else if (x_params.navigation == "Historic") {
-		$x_pageNo.hide();
-	} else {
-		x_dialogInfo.push({type:'menu', built:false});
-	}
 
 
-    var trimmedNfo = $.trim(x_params.nfo);
-    if (x_params.nfo != undefined && trimmedNfo != '') {
-		$x_footerL.prepend('<button id="x_helpBtn"></button>');
-		$("#x_helpBtn")
+		var trimmedNfo = $.trim(x_params.nfo);
+		if (x_params.nfo != undefined && trimmedNfo != '') {
+			$x_footerL.prepend('<button id="x_helpBtn"></button>');
+			$("#x_helpBtn")
+				.button({
+					icons: {
+						primary: "x_help"
+					},
+					label:	x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
+					text:	false
+				})
+				.attr("aria-label", $("#x_helpBtn").attr("title") + " " + x_params.newWindowTxt)
+				.click(function() {
+					window.open(x_evalURL(x_params.nfo), "_blank");
+					$(this)
+						.blur()
+						.removeClass("ui-state-focus")
+						.removeClass("ui-state-hover");
+				});
+		}
+
+		if (x_params.glossary != undefined) XENITH.GLOSSARY.init();
+
+		if (x_params.media != undefined) {
+			x_checkMediaExists(x_evalURL(x_params.media), function(mediaExists) {
+				if (mediaExists) {
+					$x_footerL.prepend('<button id="x_mediaBtn"></button>');
+					$("#x_mediaBtn")
+						.button({
+							icons: {
+								primary: "x_media"
+							},
+							label:	x_getLangInfo(x_languageData.find("mediaButton")[0], "label", "Media"),
+							text:	false
+						})
+						.attr("aria-label", $("#x_mediaBtn").attr("title") + " " + x_params.newWindowTxt)
+						.click(function() {
+							$(this)
+								.blur()
+								.removeClass("ui-state-focus")
+								.removeClass("ui-state-hover");
+
+							x_openMediaWindow();
+						});
+				}
+			});
+		}
+
+		//add optional progress bar
+		if (x_params.progressBar != undefined && x_params.progressBar != "" && x_params.hideFooter != "true") {
+			//add a div for the progress bar
+			$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; width:20%; text-align:center"></div>');
+			//add the progress bar
+			$('#x_footerProgress').append('<div class="pbContainer"><div class="pbPercent pbBar">&nbsp;</div></div><p class="pbTxt"></p>');
+			if (x_params.progressBar =="pBarNoCounter") {
+				//remove page counter if that option selected
+				$("#x_pageNo").remove();
+			}
+		}
+
+		//add show/hide footer tools
+		if (x_params.footerTools != "none" && x_params.hideFooter != "true") {
+			var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
+			var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
+			//add a div for the show/hide chevron
+			$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></button></div>');
+			$('#x_footerChevron').prop('title', hideMsg);
+
+			//chevron to show/hide function
+			$('#x_footerChevron').click(function(){
+				$('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
+						if($(this).is(':visible')){
+							$('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div>');
+							$('#x_footerChevron').prop('title', hideMsg);
+						}else{
+							$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
+							$('#x_footerChevron').prop('title', showMsg);
+						}
+					});
+				return(false);
+			});
+			if (x_params.footerTools =="hideFooterTools") {
+				$('#x_footerBlock .x_floatLeft').hide();
+				$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
+				$('#x_footerChevron').prop('title', showMsg);
+			}
+		}
+
+		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
+		// it's overridden by logo in theme folder
+		// default & theme logos can also be overridden by images uploaded via Icon optional property
+		$('#x_headerBlock img.x_icon').hide();
+		$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
+
+		var icPosition = "x_floatLeft";
+		if (x_params.icPosition != undefined && x_params.icPosition != "") {
+			icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
+		}
+		$('#x_headerBlock img.x_icon').addClass(icPosition);
+
+		var checkExists = function(type, fallback) {
+			if (type == 'LO' && xot_offline) {
+				$('#x_headerBlock img.x_icon').show();
+				return;
+			}
+			$.ajax({
+				url: $('#x_headerBlock img.x_icon').attr('src'),
+				success: function() {
+					$('#x_headerBlock img.x_icon').show();
+					if (x_firstLoad == false) {x_updateCss();};
+
+					// the theme logo is being used - add a class that will allow for the different size windows to display different logos
+					if (type == 'theme') {
+						$('#x_headerBlock img.x_icon').addClass('themeLogo');
+					}
+
+					if (x_params.icTip != undefined && x_params.icTip != "") {
+						$('#x_headerBlock img.x_icon').attr('alt', x_params.icTip);
+					} else {
+						$('#x_headerBlock img.x_icon').attr('aria-hidden', 'true');
+					}
+				},
+				error: function() {
+					if (fallback == 'theme') {
+						$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
+						checkExists('theme', 'default');
+					} else if (fallback == 'default') {
+						$('#x_headerBlock img.x_icon').attr('src', $('#x_headerBlock img.x_icon').data('defaultLogo'));
+						checkExists();
+					}
+				}
+			});
+		};
+
+		var type, fallback;
+		if (x_params.ic != undefined && x_params.ic != '') {
+			$('#x_headerBlock img.x_icon').attr('src', x_evalURL(x_params.ic));
+			type = 'LO';
+			fallback = x_params.theme != undefined && x_params.theme != "default" ? 'theme' : 'default';
+		} else if (x_params.theme != undefined && x_params.theme != "default") {
+			type = 'theme';
+			$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
+		}
+		checkExists(type, fallback);
+
+		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
+		$("#x_headerBlock h1").html(x_params.name);
+
+		// strips code out of page title
+		var div = $("<div>").html(x_params.name);
+		var strippedText = div.text();
+		if (strippedText != "") {
+			document.title = strippedText;
+		}
+
+		var prevIcon = "x_prev";
+		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
+			prevIcon = "x_prev_hist";
+		}
+
+		$x_prevBtn
 			.button({
 				icons: {
-					primary: "x_help"
+					primary: prevIcon
 				},
-				label:	x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
+				label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
 				text:	false
 			})
-			.attr("aria-label", $("#x_helpBtn").attr("title") + " " + x_params.newWindowTxt)
+			.attr("aria-label", $("#x_prevBtn").attr("title"))
 			.click(function() {
-				window.open(x_evalURL(x_params.nfo), "_blank");
+				if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
+					x_changePage(x_currentPage -1);
+				} else {
+					//ensure button is historic style
+					prevIcon = "x_prev_hist";
+						$x_prevBtn
+							.button({
+								icons: {
+								primary: prevIcon
+						},
+				label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+				text:	false
+			})
+					var prevPage = x_pageHistory[x_pageHistory.length-2];
+					x_pageHistory.splice(x_pageHistory.length - 2, 2);
+					//check if history is empty and if so allow normal back navigation and change to normal back button
+					if(prevPage==undefined && x_currentPage > 0 && x_params.navigation == "LinearWithHistoric"){
+						prevIcon = "x_prev";
+						$x_prevBtn
+							.button({
+								icons: {
+								primary: prevIcon
+						},
+				label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+				text:	false
+			})
+					   x_changePage(x_currentPage -1);
+					   }
+					//disable normal back navigation if 1st page
+					if (x_currentPage <=1){
+						$x_prevBtn
+				.button("disable")
+				.removeClass("ui-state-focus")
+				.removeClass("ui-state-hover");
+						}
+					x_changePage(prevPage);
+				}
+				$(this)
+					.removeClass("ui-state-focus")
+					.removeClass("ui-state-hover");
+			});
+
+		$x_nextBtn
+			.button({
+				icons: {
+					primary: "x_next"
+				},
+				label:	x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
+				text:	false
+			})
+			.attr("aria-label", $("#x_nextBtn").attr("title"))
+			.click(function() {
+			if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
+					//when moving forward history is generated so ensure button is historic style
+					prevIcon = "x_prev_hist";
+						$x_prevBtn
+							.button({
+								icons: {
+								primary: prevIcon
+						},
+				label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+				text:	false
+			})
+				}
+				x_changePage(x_currentPage+1);
+				$(this)
+					.removeClass("ui-state-focus")
+					.removeClass("ui-state-hover");
+			});
+
+
+		var	menuIcon = "x_info",
+			menuLabel = x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
+
+		if (x_params.navigation == "Historic") {
+			menuIcon = "x_home";
+			menuLabel = x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
+			$x_menuBtn.addClass("x_home");
+		}
+
+		$x_menuBtn
+			.button({
+				icons: {
+					primary: menuIcon
+				},
+				label:	menuLabel,
+				text:	false
+			})
+			.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
+			.click(function() {
+				if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
+					x_openDialog(
+						"menu",
+						x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
+						x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
+						null,
+						null,
+						function () {
+							$x_menuBtn
+								.blur()
+								.removeClass("ui-state-focus")
+								.removeClass("ui-state-hover");
+						}
+					);
+				} else if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
+					x_navigateToPage(false,{type:'linkID',ID:x_params.homePage});
+				} else {
+					x_changePage(0);
+				}
 				$(this)
 					.blur()
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
-	}
 
-	if (x_params.glossary != undefined) XENITH.GLOSSARY.init();
-
-	if (x_params.media != undefined) {
-		x_checkMediaExists(x_evalURL(x_params.media), function(mediaExists) {
-			if (mediaExists) {
-				$x_footerL.prepend('<button id="x_mediaBtn"></button>');
-				$("#x_mediaBtn")
-					.button({
-						icons: {
-							primary: "x_media"
-						},
-						label:	x_getLangInfo(x_languageData.find("mediaButton")[0], "label", "Media"),
-						text:	false
-					})
-					.attr("aria-label", $("#x_mediaBtn").attr("title") + " " + x_params.newWindowTxt)
-					.click(function() {
-						$(this)
-							.blur()
-							.removeClass("ui-state-focus")
-							.removeClass("ui-state-hover");
-
-						x_openMediaWindow();
-					});
-			}
-		});
-	}
-
-	//add optional progress bar
-    if (x_params.progressBar != undefined && x_params.progressBar != "" && x_params.hideFooter != "true") {
-		//add a div for the progress bar
-		$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; width:20%; text-align:center"></div>');
-		//add the progress bar
-		$('#x_footerProgress').append('<div class="pbContainer"><div class="pbPercent pbBar">&nbsp;</div></div><p class="pbTxt"></p>');
-		if (x_params.progressBar =="pBarNoCounter") {
-			//remove page counter if that option selected
-			$("#x_pageNo").remove();
-		}
-	}
-
-	//add show/hide footer tools
-	if (x_params.footerTools != "none" && x_params.hideFooter != "true") {
-		var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
-		var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
-		//add a div for the show/hide chevron
-		$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></button></div>');
-		$('#x_footerChevron').prop('title', hideMsg);
-
-		//chevron to show/hide function
-		$('#x_footerChevron').click(function(){
-			$('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
-					if($(this).is(':visible')){
-						$('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div>');
-						$('#x_footerChevron').prop('title', hideMsg);
-					}else{
-						$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
-						$('#x_footerChevron').prop('title', showMsg);
-					}
-				});
-			return(false);
-		});
-		if (x_params.footerTools =="hideFooterTools") {
-			$('#x_footerBlock .x_floatLeft').hide();
-			$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
-			$('#x_footerChevron').prop('title', showMsg);
-		}
-	}
-
-	// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
-	// it's overridden by logo in theme folder
-	// default & theme logos can also be overridden by images uploaded via Icon optional property
-	$('#x_headerBlock img.x_icon').hide();
-	$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
-
-	var icPosition = "x_floatLeft";
-	if (x_params.icPosition != undefined && x_params.icPosition != "") {
-		icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
-	}
-	$('#x_headerBlock img.x_icon').addClass(icPosition);
-
-	var checkExists = function(type, fallback) {
-	    if (type == 'LO' && xot_offline) {
-            $('#x_headerBlock img.x_icon').show();
-            return;
-        }
-		$.ajax({
-			url: $('#x_headerBlock img.x_icon').attr('src'),
-			success: function() {
-				$('#x_headerBlock img.x_icon').show();
-				if (x_firstLoad == false) {x_updateCss();};
-
-				// the theme logo is being used - add a class that will allow for the different size windows to display different logos
-				if (type == 'theme') {
-					$('#x_headerBlock img.x_icon').addClass('themeLogo');
-				}
-
-				if (x_params.icTip != undefined && x_params.icTip != "") {
-					$('#x_headerBlock img.x_icon').attr('alt', x_params.icTip);
-				} else {
-					$('#x_headerBlock img.x_icon').attr('aria-hidden', 'true');
-				}
-			},
-			error: function() {
-				if (fallback == 'theme') {
-					$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
-					checkExists('theme', 'default');
-				} else if (fallback == 'default') {
-					$('#x_headerBlock img.x_icon').attr('src', $('#x_headerBlock img.x_icon').data('defaultLogo'));
-					checkExists();
-				}
-			}
-		});
-	};
-
-	var type, fallback;
-	if (x_params.ic != undefined && x_params.ic != '') {
-		$('#x_headerBlock img.x_icon').attr('src', x_evalURL(x_params.ic));
-		type = 'LO';
-		fallback = x_params.theme != undefined && x_params.theme != "default" ? 'theme' : 'default';
-	} else if (x_params.theme != undefined && x_params.theme != "default") {
-		type = 'theme';
-		$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
-	}
-	checkExists(type, fallback);
-
-	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
-	$("#x_headerBlock h1").html(x_params.name);
-
-	// strips code out of page title
-    var div = $("<div>").html(x_params.name);
-    var strippedText = div.text();
-	if (strippedText != "") {
-		document.title = strippedText;
-	}
-
-	var prevIcon = "x_prev";
-	if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
-		prevIcon = "x_prev_hist";
-	}
-
-	$x_prevBtn
-		.button({
-			icons: {
-				primary: prevIcon
-			},
-			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-			text:	false
-		})
-        .attr("aria-label", $("#x_prevBtn").attr("title"))
-		.click(function() {
-			if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
-				x_changePage(x_currentPage -1);
-			} else {
-				//ensure button is historic style
-				prevIcon = "x_prev_hist";
-					$x_prevBtn
-						.button({
-							icons: {
-							primary: prevIcon
-					},
-			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-			text:	false
-		})
-				var prevPage = x_pageHistory[x_pageHistory.length-2];
-				x_pageHistory.splice(x_pageHistory.length - 2, 2);
-				//check if history is empty and if so allow normal back navigation and change to normal back button
-				if(prevPage==undefined && x_currentPage > 0 && x_params.navigation == "LinearWithHistoric"){
-					prevIcon = "x_prev";
-					$x_prevBtn
-						.button({
-							icons: {
-							primary: prevIcon
-					},
-			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-			text:	false
-		})
-				   x_changePage(x_currentPage -1);
-				   }
-				//disable normal back navigation if 1st page
-				if (x_currentPage <=1){
-					$x_prevBtn
-            .button("disable")
-            .removeClass("ui-state-focus")
-            .removeClass("ui-state-hover");
-					}
-				x_changePage(prevPage);
-			}
-			$(this)
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
-		});
-
-	$x_nextBtn
-		.button({
-			icons: {
-				primary: "x_next"
-			},
-			label:	x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
-			text:	false
-		})
-        .attr("aria-label", $("#x_nextBtn").attr("title"))
-		.click(function() {
-		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
-				//when moving forward history is generated so ensure button is historic style
-				prevIcon = "x_prev_hist";
-					$x_prevBtn
-						.button({
-							icons: {
-							primary: prevIcon
-					},
-			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-			text:	false
-		})
-			}
-			x_changePage(x_currentPage+1);
-			$(this)
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
-		});
-
-
-	var	menuIcon = "x_info",
-		menuLabel = x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
-
-	if (x_params.navigation == "Historic") {
-		menuIcon = "x_home";
-		menuLabel = x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
-		$x_menuBtn.addClass("x_home");
-	}
-
-	$x_menuBtn
-		.button({
-			icons: {
-				primary: menuIcon
-			},
-			label:	menuLabel,
-			text:	false
-		})
-		.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
-		.click(function() {
-			if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
+		x_dialogInfo.push({type:'colourChanger', built:false});
+		$x_colourChangerBtn
+			.button({
+				icons: {
+					primary: "x_colourChanger"
+				},
+				label:	x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
+				text:	false
+			})
+			.attr("aria-label", $("#x_colourChangerBtn").attr("title") + " " + x_params.dialogTxt)
+			.click(function() {
 				x_openDialog(
-					"menu",
-					x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
-					x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
+					"colourChanger",
+					x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"),
+					x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"),
 					null,
 					null,
 					function () {
-						$x_menuBtn
+						$x_colourChangerBtn
 							.blur()
 							.removeClass("ui-state-focus")
 							.removeClass("ui-state-hover");
 					}
 				);
-			} else if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
-				x_navigateToPage(false,{type:'linkID',ID:x_params.homePage});
-			} else {
-				x_changePage(0);
-			}
-			$(this)
-				.blur()
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
-		});
-
-	x_dialogInfo.push({type:'colourChanger', built:false});
-	$x_colourChangerBtn
-		.button({
-			icons: {
-				primary: "x_colourChanger"
-			},
-			label:	x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
-			text:	false
-		})
-		.attr("aria-label", $("#x_colourChangerBtn").attr("title") + " " + x_params.dialogTxt)
-		.click(function() {
-			x_openDialog(
-				"colourChanger",
-				x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"),
-				x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"),
-				null,
-				null,
-				function () {
-					$x_colourChangerBtn
-						.blur()
-						.removeClass("ui-state-focus")
-						.removeClass("ui-state-hover");
-				}
-			);
-		});
-
-	if (x_params.kblanguage != undefined) {
-		if (typeof charpadstr != 'undefined')
-		{
-			var xml = $($.parseXML(charpadstr));
-			x_charmapLoaded(xml);
-		}
-		else {
-			$.ajax({
-				type: "GET",
-				url: x_templateLocation + "common_html5/charPad.xml",
-				dataType: "xml",
-				success: function (xml) {
-					x_charmapLoaded(xml);
-				},
-				error: function () {
-					delete x_params["kblanguage"];
-				}
 			});
-		}
-	}
 
-
-	$x_window.resize(function() {
-		if (x_fillWindow == true) {
-			if (this.resizeTo) {
-				clearTimeout(this.resizeTo);
+		if (x_params.kblanguage != undefined) {
+			if (typeof charpadstr != 'undefined')
+			{
+				var xml = $($.parseXML(charpadstr));
+				x_charmapLoaded(xml);
 			}
-			this.resizeTo = setTimeout(function() {
-				$(this).trigger("resizeEnd");
-			}, 200);
+			else {
+				$.ajax({
+					type: "GET",
+					url: x_templateLocation + "common_html5/charPad.xml",
+					dataType: "xml",
+					success: function (xml) {
+						x_charmapLoaded(xml);
+					},
+					error: function () {
+						delete x_params["kblanguage"];
+					}
+				});
+			}
 		}
-	});
-
-	$x_window.on("resizeEnd", function() {
-		if (x_pageLoadPause !== false && $x_body.width() > 0) {
-			var pagePaused = x_pageLoadPause;
-			x_pageLoadPause = false;
-			x_changePage(pagePaused)
-			
-		} else {
-			x_updateCss();
-		}
-	});
 
 
-	// ** swipe to change page on touch screen devices - taken out as caused problems with drag and drop activities - need to be able to disable it for these activities
-	if (x_browserInfo.touchScreen == true) {
-		/*
-		var numTouches = 0;
-		var mouseDown = [0, 0]; // [x, y]
-		var mouseUp = [0, 0];
-		*/
-
-		// Set start orientation
-        if (window.orientation == 0 || window.orientation == 180) {
-            x_browserInfo.orientation = "portrait";
-        } else {
-            x_browserInfo.orientation = "landscape";
-        }
-
-		$x_pageHolder.bind("touchstart", function(e) {
-			/*
-			var touch = e.originalEvent.touches[0];
-			numTouches = e.originalEvent.touches.length;
-			mouseDown = [touch.pageX, touch.pageY];
-			*/
-			
-			XENITH.GLOSSARY.touchStartHandler();
+		$x_window.resize(function() {
+			if (x_fillWindow == true) {
+				if (this.resizeTo) {
+					clearTimeout(this.resizeTo);
+				}
+				this.resizeTo = setTimeout(function() {
+					$(this).trigger("resizeEnd");
+				}, 200);
+			}
 		});
 
-		$x_pageHolder.bind("touchend", function(e) {
+		$x_window.on("resizeEnd", function() {
+			if (x_pageLoadPause !== false && $x_body.width() > 0) {
+				var pagePaused = x_pageLoadPause;
+				x_pageLoadPause = false;
+				x_changePage(pagePaused)
+				
+			} else {
+				x_updateCss();
+			}
+		});
+
+
+		// ** swipe to change page on touch screen devices - taken out as caused problems with drag and drop activities - need to be able to disable it for these activities
+		if (x_browserInfo.touchScreen == true) {
 			/*
-			if (numTouches == 1) { // if >1 then don't use to change page (user may be zooming)
-				var touch = e.originalEvent.changedTouches[0];
-				mouseUp = [touch.pageX, touch.pageY];
-				var dif = [mouseDown[0] - mouseUp[0], mouseDown[1] - mouseUp[1]];
-				// only swipes of min 75px & swipes where xDif > yDif will change page to avoid scrolling up and down triggering page change
-				if (Math.abs(dif[0]) > Math.abs(dif[1])) {
-					if (dif[0] >= 75) {
-						if (x_pageInfo.length > x_currentPage + 1) {
-							x_changePage(x_currentPage+1);
-						}
-					} else if (dif[0] <= -75) {
-						if (x_currentPage != 0) {
-							x_changePage(x_currentPage-1);
+			var numTouches = 0;
+			var mouseDown = [0, 0]; // [x, y]
+			var mouseUp = [0, 0];
+			*/
+
+			// Set start orientation
+			if (window.orientation == 0 || window.orientation == 180) {
+				x_browserInfo.orientation = "portrait";
+			} else {
+				x_browserInfo.orientation = "landscape";
+			}
+
+			$x_pageHolder.bind("touchstart", function(e) {
+				/*
+				var touch = e.originalEvent.touches[0];
+				numTouches = e.originalEvent.touches.length;
+				mouseDown = [touch.pageX, touch.pageY];
+				*/
+				
+				XENITH.GLOSSARY.touchStartHandler();
+			});
+
+			$x_pageHolder.bind("touchend", function(e) {
+				/*
+				if (numTouches == 1) { // if >1 then don't use to change page (user may be zooming)
+					var touch = e.originalEvent.changedTouches[0];
+					mouseUp = [touch.pageX, touch.pageY];
+					var dif = [mouseDown[0] - mouseUp[0], mouseDown[1] - mouseUp[1]];
+					// only swipes of min 75px & swipes where xDif > yDif will change page to avoid scrolling up and down triggering page change
+					if (Math.abs(dif[0]) > Math.abs(dif[1])) {
+						if (dif[0] >= 75) {
+							if (x_pageInfo.length > x_currentPage + 1) {
+								x_changePage(x_currentPage+1);
+							}
+						} else if (dif[0] <= -75) {
+							if (x_currentPage != 0) {
+								x_changePage(x_currentPage-1);
+							}
 						}
 					}
 				}
-			}
-			*/
-		});
+				*/
+			});
 
-		// call x_updateCss function on orientation change (resize event should trigger this but it's inconsistent)
-		$x_window.on("orientationchange", function() {
-			if (x_fillWindow == true) {
-				var newOrientation;
-				if (window.orientation == 0 || window.orientation == 180) {
-					newOrientation = "portrait";
-				} else {
-					newOrientation = "landscape";
+			// call x_updateCss function on orientation change (resize event should trigger this but it's inconsistent)
+			$x_window.on("orientationchange", function() {
+				if (x_fillWindow == true) {
+					var newOrientation;
+					if (window.orientation == 0 || window.orientation == 180) {
+						newOrientation = "portrait";
+					} else {
+						newOrientation = "landscape";
+					}
+					if (newOrientation != x_browserInfo.orientation) {
+						x_browserInfo.orientation = newOrientation;
+						x_updateCss(true);
+					}
 				}
-				if (newOrientation != x_browserInfo.orientation) {
-					x_browserInfo.orientation = newOrientation;
-					x_updateCss(true);
-				}
-			}
-		});
-	}
+			});
+		}
 
-	if (x_params.background != undefined && x_params.background != "") {
+		if (x_params.background != undefined && x_params.background != "") {
 
-		x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
-			if (mediaExists) {
-				var alpha = 30;
-                var lo_objectfit =  (x_params.backgroundFit != undefined && x_params.backgroundFit == "cover" ? "cover" : "fill");
-				if (x_params.backgroundopacity != undefined) {
-					alpha = x_params.backgroundopacity;
-				}
-				if (x_params.backgroundGrey == "true") {
-					// uses a jquery plugin as just css way won't work in all browsers
-					x_insertCSS(x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css", function() {
-						$x_background.append('<img id="x_mainBg" class="grayscale" src="' + x_evalURL(x_params.background) + '"/>');
+			x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
+				if (mediaExists) {
+					var alpha = 30;
+					var lo_objectfit =  (x_params.backgroundFit != undefined && x_params.backgroundFit == "cover" ? "cover" : "fill");
+					if (x_params.backgroundopacity != undefined) {
+						alpha = x_params.backgroundopacity;
+					}
+					if (x_params.backgroundGrey == "true") {
+						// uses a jquery plugin as just css way won't work in all browsers
+						x_insertCSS(x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css", function() {
+							$x_background.append('<img id="x_mainBg" class="grayscale" src="' + x_evalURL(x_params.background) + '"/>');
+							$("#x_mainBg").css({
+								"opacity"	:Number(alpha/100),
+								"object-fit"    : lo_objectfit,
+								"filter"	:"alpha(opacity=" + alpha + ")"
+							});
+							// grey function called on image when unhidden later as it won't work properly otherwise
+						});
+					} else {
+						$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
 						$("#x_mainBg").css({
 							"opacity"	:Number(alpha/100),
-                            "object-fit"    : lo_objectfit,
+							"object-fit"    : lo_objectfit,
 							"filter"	:"alpha(opacity=" + alpha + ")"
 						});
-						// grey function called on image when unhidden later as it won't work properly otherwise
-					});
+					}
+					if (x_params.backgroundDark != undefined && x_params.backgroundDark != "" && x_params.backgroundDark != "0") {
+						$x_background.append('<div id="x_bgDarken" />');
+						$("#x_bgDarken").css({
+							"opacity" :Number(x_params.backgroundDark/100),
+							"filter" :"alpha(opacity=" + x_params.backgroundDark + ")"
+						});
+					}
+
+					x_continueSetUp2();
 				} else {
-					$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
-					$("#x_mainBg").css({
-						"opacity"	:Number(alpha/100),
-                        "object-fit"    : lo_objectfit,
-						"filter"	:"alpha(opacity=" + alpha + ")"
-					});
+					x_continueSetUp2();
 				}
-				if (x_params.backgroundDark != undefined && x_params.backgroundDark != "" && x_params.backgroundDark != "0") {
-					$x_background.append('<div id="x_bgDarken" />');
-					$("#x_bgDarken").css({
-						"opacity" :Number(x_params.backgroundDark/100),
-						"filter" :"alpha(opacity=" + x_params.backgroundDark + ")"
-					});
-				}
+			});
 
-				x_continueSetUp2();
-			} else {
-				x_continueSetUp2();
-			}
-		});
-
-	} else {
-		x_continueSetUp2();
+		} else {
+			x_continueSetUp2();
+		}
 	}
 }
 
@@ -1366,6 +1366,8 @@ function x_continueSetUp2() {
     {
         XTSetOption('module', x_params.module);
     }
+	
+	setUpComplete = true;
 
     x_navigateToPage(true, x_startPage);
 }
