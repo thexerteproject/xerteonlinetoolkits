@@ -3024,7 +3024,12 @@
     <checkBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 	
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
-    <feedback type="TextArea" height="40" label="Feedback" optional="true"/>
+	
+	<feedbackGroup type="group" label="Feedback" optional="true">
+		<feedback type="TextArea" height="40" label="General Feedback" optional="true" tooltip="Feedback shown when an answer is submitted. Can be used in conjunction with tailored feedback for each answer option."/>
+		<markFeedback label="Mark Answer" type="CheckBox" defaultValue="true" tooltip="Mark answer as correct or incorrect in feedback block (at least one answer option must also be set as correct for this to be shown)"/>
+		<feedbackPos label="Feedback Order" options="General &gt; Answer &gt; Correct/Incorrect,General &gt; Correct/Incorrect &gt; Answer,Answer &gt; Correct/Incorrect &gt; General,Answer &gt; General &gt; Correct/Incorrect,Correct/Incorrect &gt; General &gt; Answer,Correct/Incorrect &gt; Answer &gt; General" type="ComboBox" data="GAC,GCA,ACG,AGC,CGA,CAG" defaultValue="GAC" width="120" tooltip="The order the different types of feedback are shown within the feedback block. Default order is General feedback &gt; Answer feedback &gt; Correct/Incorrect feedback"/>
+	</feedbackGroup>
 
     <newNodes>
       <option><![CDATA[<option name="Answer" text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
@@ -3069,7 +3074,7 @@
 	</lightboxGroup></mcq><option menuItem="Answer" icon="icBullet">
     <text label="Answer" type="TextArea" height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
-    <feedback label="Feedback" type="TextArea" height="100"/>
+    <feedback label="Feedback" type="TextArea" height="100" tooltip="Feedback shown when this answer is submitted"/>
     <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
 	<audioFB label="Audio Feedback" defaultValue="Select a Sound File" type="media" optional="true"/>
   </option><mediaLesson menu="Media" menuItem="Media Lesson" hint="Synchronise a variety of types of content to a piece of media." icon="icApplicationTile" thumb="thumbs/mediaLesson.jpg" remove="true">
@@ -4213,8 +4218,7 @@
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 	</lightboxGroup></quiz><question menuItem="Question">
-
-
+  
     <prompt label="Question" type="TextArea" height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>

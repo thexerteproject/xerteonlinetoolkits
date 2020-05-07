@@ -35,6 +35,10 @@
 		clear:		both;
 	}
 	
+	#feedback .feedbackBlock {
+		margin-bottom: 0.5em;
+	}
+	
 	#feedback .audioHolder {
 		margin:	0.5em 0 1em 0;
 	}
