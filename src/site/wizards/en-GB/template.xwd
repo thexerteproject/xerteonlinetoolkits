@@ -92,9 +92,9 @@
 		<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
 	</headerGroup><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
 		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
-		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true"/>
+		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
 		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true"/>
+		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Remove From Page Menu" type="CheckBox" defaultValue="true" optional="true"/>
@@ -109,9 +109,9 @@
 		
 		<hideShow type="group" label="Hide/Show Section" optional="true" tooltip="Hide the section completely or hide/show the section between specified dates" info="Hide this section from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
 			<hidePage label="Hide Section" type="CheckBox" defaultValue="false" optional="true"/>
-			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true"/>
+			<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
 			<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true"/>
+			<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
 			<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 		</hideShow>
 		
