@@ -2609,7 +2609,7 @@ function x_insertText(node, exclude, list) {
 		tempText = tempText.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
 	}
 
-	tempText = XENITH.GLOSSARY.insertText(tempText, exclude);
+	tempText = XENITH.GLOSSARY.insertText(tempText, exclude, list);
 
     // check text for LaTeX tags - if found replace with image
     var startIndex = tempText.indexOf('<tex src');
@@ -3765,7 +3765,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 		$("#glossaryItems .glossary tr:nth-child(even)").addClass("shaded");
 	},
 	
-	insertText = function(tempText, exclude) {
+	insertText = function(tempText, exclude, list) {
 		// check text for glossary words - if found replace with a link
 		if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
 			for (var k=0, len=x_glossary.length; k<len; k++) {
