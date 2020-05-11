@@ -57,7 +57,7 @@ function show_template($row_play)
     $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
     $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
 	$page_content = str_replace("%THEMEPATH%", "themes/" . $row_play['parent_template'] . "/",$page_content);
-    $page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $page_content);
+    $page_content = str_replace("%MATHJAXPATH%", "https://cdn.jsdelivr.net/npm/mathjax@2/", $page_content);
 
     echo $page_content;
 }
