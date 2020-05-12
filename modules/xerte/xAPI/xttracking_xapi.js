@@ -2703,7 +2703,7 @@ function XTGetStatements(q, one, callback) {
             if (res.more && res.more !== "") {
                 ADL.XAPIWrapper.getStatements(null, res.more, getmorestatements);
             } else {
-                callback(statements);
+                callback(statements, search);
             }
         }
     );
