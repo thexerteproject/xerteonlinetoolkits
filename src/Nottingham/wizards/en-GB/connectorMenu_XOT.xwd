@@ -10,11 +10,11 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
 
-	<itemSpacingY label="Vertical Spacing" type="NumericStepper" min="5" max="35" step="1" width="100" defaultValue="5" optional="true"/>	
-	<startPageID label="First Entry" type="pageList" defaultValue="" optional="true"/>
-	<endPageID label="Last Entry" type="pageList" defaultValue="" optional="true"/>
-	<text label="Page Text" type="TextArea"  height="200" defaultValue="Enter text for the page here" optional="true"/>
-	<pageTick label="Tick When Viewed" type="CheckBox" defaultValue="true" optional="true"/>
+	<text label="Page Text" type="TextArea"  height="200" defaultValue="Enter text for the page here" optional="true" tooltip="Add text to the page"/>
+	<startPageID label="First Entry" type="pageList" defaultValue="" optional="true" tooltip="Include menu links from this page onwards"/>
+	<endPageID label="Last Entry" type="pageList" defaultValue="" optional="true" tooltip="Include menu links up to and including this page"/>
+	<pageTick label="Tick When Viewed" type="CheckBox" defaultValue="true" optional="true" tooltip="Links to previously viewed pages will be ticked"/>
+	<itemSpacingY label="Vertical Spacing" type="NumericStepper" min="5" max="35" step="1" width="100" defaultValue="5" optional="true" tooltip="Adjust the space between page links"/>	
 	
 	<itemHeight label="Menu Item Height" type="NumericStepper" min="25" max="35" step="1" width="100" defaultValue="25" optional="true" deprecated="This property is deprecated"/>
 	<itemSpacingX label="Horizontal Spacing" type="NumericStepper" min="10" max="30" step="1" width="100" defaultValue="10" optional="true" deprecated="This property is deprecated"/>
