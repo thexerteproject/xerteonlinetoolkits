@@ -148,7 +148,7 @@
 
 	<colourChanger label="Toegankelijkheid" description="Toegankelijkheid." tooltip="Toegankelijkheid">
 		<closeButton label="" description="Sluit toegankelijkheid"/>
-		<selectTxt label="Selecteer ui de onderstaande opties"/>
+		<selectTxt label="Selecteer uit de onderstaande opties"/>
 		<adviceTxt label="Meer advies nodig? Ga naar de &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=168&apos;&gt;Xerte Toolkits toegankelijkheids gids&lt;/a&gt;."/>
 		<off label="Uit"/>
 		<noBg label="Verwijder achtergrond afbeeldingen"/>
