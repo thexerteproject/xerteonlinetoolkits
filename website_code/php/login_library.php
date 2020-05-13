@@ -55,13 +55,13 @@ function html_headers() {
      <?php
   }
 
-  _include_javascript_file("../website_code/scripts/file_system.js");
-  _include_javascript_file("../website_code/scripts/screen_display.js");
-  _include_javascript_file("../website_code/scripts/ajax_management.js");
-  _include_javascript_file("../website_code/scripts/folders.js");
-  _include_javascript_file("../website_code/scripts/template_management.js");
-  _include_javascript_file("../website_code/scripts/import.js");
-  _include_javascript_file("../website_code/scripts/logout.js");
+  _include_javascript_file("website_code/scripts/file_system.js");
+  _include_javascript_file("website_code/scripts/screen_display.js");
+  _include_javascript_file("website_code/scripts/ajax_management.js");
+  _include_javascript_file("website_code/scripts/folders.js");
+  _include_javascript_file("website_code/scripts/template_management.js");
+  _include_javascript_file("website_code/scripts/import.js");
+  _include_javascript_file("website_code/scripts/logout.js");
 
   print <<<END
   	<style type="text/css">
