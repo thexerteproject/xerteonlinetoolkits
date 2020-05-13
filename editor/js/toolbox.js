@@ -240,11 +240,11 @@ var EDITOR = (function ($, parent) {
             case "unmark":
                 if (enabled)
                 {
-                    return '<i class="unmarkCompletionIcon iconEnabled fa fa-times-circle-o " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
+                    return '<i class="unmarkCompletionIcon iconEnabled far fa-times-circle " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
                 }
                 else
                 {
-                    return '<i class="unmarkCompletionIcon iconDisabled fa fa-times-circle-o " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
+                    return '<i class="unmarkCompletionIcon iconDisabled far fa-times-circle " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
                 }
             case "hidden":
                 if (enabled) {
