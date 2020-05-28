@@ -1918,9 +1918,11 @@ function x_setUpLightBox() {
 		// use the x_noLightBox class in page models to force images to not open in lightboxes
 		$("#pageContents img:not('.x_noLightBox'), .x_popupDialog img:not('.x_noLightBox')").each(function( index ) {
 			var $this = $(this);
-			if (!$this.parent().hasClass('lightboxWrapper') && $this.parents('.ui-draggable').length == 0) {
-				var imgPath = $(this).prop('src');
-				$(this).wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
+			if ($this.closest('a').length == 0) {
+				if (!$this.parent().hasClass('lightboxWrapper') && $this.parents('.ui-draggable').length == 0) {
+					var imgPath = $(this).prop('src');
+					$(this).wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
+				}
 			}
 		});
 		
