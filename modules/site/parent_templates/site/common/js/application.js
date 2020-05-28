@@ -1392,7 +1392,6 @@ function findValidPages() {
 }
 
 function parseContent(pageID, sectionNum, addHistory) {
-	
 	// check if pageIndex exists & can be shown
 	var pageIndex,
 		isID = false;
@@ -1717,6 +1716,8 @@ function parseContent(pageID, sectionNum, addHistory) {
 							}
 						});
 						
+						// lightbox image links might also need to be added
+						setUpLightBox(page, $(this));
 					}
 				});
 				
@@ -2513,5 +2514,55 @@ function setUpVideo(url, iframeRatio, id) {
 		mimeType = 'video/' + mimeType;
 		
 		return ['<div class="vidHolder"><video src="' + vidSrc + '" type="' + mimeType + '" id="player' + id + '" controls="controls" preload="metadata" style="max-width: 100%" width="100%" height="100%"></video></div>', iframeRatio];
+	}
+}
+
+// by default images can be clicked to open larger version in lightbox viewer - this can be overridden with optional properties at LO, page & section level
+function setUpLightBox(thisPageInfo, thisSectionInfo) {
+	if (thisSectionInfo.attr("lightbox") == "true" || (thisSectionInfo.attr("lightbox") != "false" && (thisPageInfo.attr("lightbox") == "true" || (thisPageInfo.attr("lightbox") != "false" && $(data).find('learningObject').attr('lightbox') != "false")))) {
+		
+		// use the x_noLightBox class to force images to not open in lightboxes
+		$("#mainContent img:not('.x_noLightBox')").each(function( index ) {
+			var $this = $(this);
+			if ($this.closest('a').length == 0) {
+				if (!$this.parent().hasClass('lightboxWrapper')) {
+					var imgPath = $(this).prop('src');
+					$(this)
+						.wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">')
+						.data('lightboxCaption', thisSectionInfo.attr("lightboxCaption"));
+				}
+			}
+		});
+		
+		$.featherlight.prototype.afterContent = function(e) {
+			var caption = this.$currentTarget.find('img').attr('alt'),
+				sectionCaption = $(e.target).data('lightboxCaption');
+			
+			if (caption != undefined && caption != '') {
+				this.$instance.find('.featherlight-content img').attr('alt', caption);
+				
+				// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
+				// captions can be turned on at LO, page or section level
+				var captionType = "false";
+				if (sectionCaption != undefined) {
+					captionType = sectionCaption;
+				} else if (thisPageInfo.attr("lightboxCaption") != undefined) {
+					captionType = thisPageInfo.attr("lightboxCaption");
+				} else if ($(data).find('learningObject').attr("lightboxCaption") != undefined) {
+					captionType = $(data).find('learningObject').attr("lightboxCaption");
+				}
+				
+				if (captionType != "false") {
+					this.$instance.find('.caption').remove();
+					var before = captionType == "above" ? true : false;
+					
+					if (before == true) {
+						$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+					} else {
+						$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+					}
+				}
+			}
+		}
 	}
 }

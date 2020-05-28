@@ -70,6 +70,11 @@
 		<script type="script" height="200" optional="true" label="Script" defaultValue="// JavaScript / jQuery"/>
 		<authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
 		
+		<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for the whole project. A lightbox property is also available on each page.">
+			<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
+			<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+		</lightboxGroup>
+		
 		<newNodes>
 		</newNodes>
 
