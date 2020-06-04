@@ -5552,6 +5552,11 @@
 	</align>
 	
     <titleTextColour label="Title Text Colour" type="ColourPicker" defaultValue="0x016A71" optional="true" deprecated="This property is deprecated. You can change the title's colour in the text toolbar."/>
+	
+	<hideTitles type="group" label="Hide Header Titles" optional="true" tooltip="Hide the page and project titles at the top of this page">
+		<hideTitleTxt label="Hide titles" type="Checkbox" defaultValue="true" optional="true"/>
+		<hideIcon label="Hide icon/logo" type="Checkbox" defaultValue="true" optional="true"/>
+	</hideTitles>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>

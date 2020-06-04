@@ -6,3 +6,6 @@
 		margin-left:	-10px;
 	}
 	
+	#x_headerBlock.hideTitleTxt h1, #x_headerBlock.hideTitleTxt h2, #x_headerBlock.hideTitleIcon .x_icon, #x_headerBlock.hideTitleTxt.hideTitleIcon {
+		display: none !important;
+	}

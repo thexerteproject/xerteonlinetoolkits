@@ -37,6 +37,15 @@
 		
 		this.init = function() {
 			var $pageContents = $("#pageContents");
+			
+			if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined && x_currentPageXML.getAttribute("hideTitleTxt") == "true") {
+				$x_headerBlock.addClass('hideTitleTxt');
+			}
+			
+			if (x_currentPageXML.getAttribute("hideIcon") != undefined && x_currentPageXML.getAttribute("hideIcon") == "true") {
+				$x_headerBlock.addClass('hideTitleIcon');
+			}
+			
 			if (x_currentPageXML.childNodes[0] != undefined && x_currentPageXML.childNodes[0].nodeValue != "" && x_currentPageXML.childNodes[0].nodeValue != undefined) {
 				$pageContents.html(x_currentPageXML.childNodes[0].nodeValue);
 			}
