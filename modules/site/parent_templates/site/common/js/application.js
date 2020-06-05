@@ -3125,7 +3125,7 @@ var XBOOTSTRAP = (function ($, parent) { var self = parent.VARIABLES = {};
 				for (var m=0; m<$tempText.find('img').length; m++){
 					var tempImgTag = $tempText.find('img')[m].outerHTML,
 						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-					tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
+					tempImgTag = tempImgTag.replace(regExp2, checkDecimalSeparator(variables[k].value));
 					$($tempText.find('img')[m]).replaceWith(tempImgTag);
 				}
 				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
