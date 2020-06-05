@@ -122,19 +122,10 @@ function loadContent(){
 	
 		type: "GET",
 		url: projectXML,
-		dataType: "xml", 
-		success: function(xml) {
-		
-			if (typeof data == 'string'){
-			
-				//in IE we need to turn the string into xml
-				data = $.parseXML(xml);
-				
-			} else {
-			
-				data = xml;
-				
-			}
+		dataType: "text", 
+		success: function(text) {
+			var newString = makeAbsolute(text);
+			data = $.parseXML(newString);
 			
 			//step one - css	
 			cssSetUp('theme');
@@ -182,6 +173,12 @@ function loadContent(){
 			iframeResize($(this))
 		});
 	});
+}
+
+// Make absolute urls from urls with FileLocation + ' in their strings
+function makeAbsolute(html) {
+    var temp = html.replace(/FileLocation \+ \'([^\']*)\'/g, FileLocation + '$1');
+    return temp;
 }
 
 function getStartPage(urlHash) {
@@ -242,7 +239,7 @@ function cssSetUp(param) {
             break;
         case 'stylesheet':
 			if ( $(data).find('learningObject').attr('stylesheet') != undefined) {
-				insertCSS(eval( $(data).find('learningObject').attr('stylesheet') ), function() { loadLibraries(); });
+				insertCSS($(data).find('learningObject').attr('stylesheet'), function() { loadLibraries(); });
 			} else {
 				loadLibraries();
 			}
@@ -983,7 +980,7 @@ function setup() {
 		
 		var type, fallback;
 		if ($(data).find('learningObject').attr('logoR') != undefined && $(data).find('learningObject').attr('logoR') != '') {
-			$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
+			$('#overview .logoR img').attr('src', $(data).find('learningObject').attr('logoR'));
 			type = 'LO';
 			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
 		} else if ($(data).find('learningObject').attr('logoRHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
@@ -998,7 +995,7 @@ function setup() {
 		
 		var type, fallback;
 		if ($(data).find('learningObject').attr('logoL') != undefined && $(data).find('learningObject').attr('logoL') != '') {
-			$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
+			$('#overview .logoL img').attr('src', $(data).find('learningObject').attr('logoL'));
 			type = 'LO';
 			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
 		} else if ($(data).find('learningObject').attr('logoLHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
@@ -1036,7 +1033,7 @@ function setup() {
 			}
 		}
 		if ($(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != '') {
-			$jumbotron.css('background-image', "url('" + eval($(data).find('learningObject').attr('header')) + "')");
+			$jumbotron.css('background-image', "url('" + $(data).find('learningObject').attr('header') + "')");
 		}
 		if ($(data).find('learningObject').attr('headerPos') != undefined) {
 			$jumbotron.css('background-position', $(data).find('learningObject').attr('headerPos'));
@@ -1144,15 +1141,7 @@ function setup() {
 			$('.footer .container').remove();
 			$('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
 				$("#customFooter").css({"margin-left": "10px"});
-			} 
-			
-			// convert img paths
-			$('#customFooter img').each(function() {
-				if ($(this).attr('src').substring(0, 16) == "FileLocation + '") {
-							$(this).attr('src', eval($(this).attr('src')));
-						}
-					});
-			
+			}
 		}
 		
 		// Change footer background colour
@@ -1594,8 +1583,8 @@ function parseContent(pageID, sectionNum, addHistory) {
 							if (this.nodeName == 'markup'){
 							
 								if ( $(this).attr('url') != undefined ){
-								
-									section.append( $('<div/>').load( eval( $(this).attr('url') ) ));
+									
+									section.append( $('<div/>').load( $(this).attr('url') ));
 								
 								} else {
 								
@@ -1653,11 +1642,11 @@ function parseContent(pageID, sectionNum, addHistory) {
 							}
 							
 							if (this.nodeName == 'image'){
-								section.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+								section.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
 							}
 							
 							if (this.nodeName == 'audio'){
-								section.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+								section.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 							}
 							
 							if (this.nodeName == 'video'){
@@ -1670,7 +1659,7 @@ function parseContent(pageID, sectionNum, addHistory) {
 							}
 							
 							if (this.nodeName == 'pdf'){
-								section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+								section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
 							}
 							
 							if (this.nodeName == 'xot'){
@@ -1713,17 +1702,6 @@ function parseContent(pageID, sectionNum, addHistory) {
 
 						//add the section to the document
 						$('#mainContent').append(section);
-						
-						// Resolve all text box added <img> and <a> src/href tags to proper urls
-						$('#mainContent').find('img,a').each(function() {
-							var $this = $(this),
-								val = $this.attr('src') || $this.attr('href'),
-								attr_name = $this.attr('src') ? 'src' : 'href';
-
-							if (val != undefined && val.substring(0, 16) == "FileLocation + '") {
-								$this.attr(attr_name, eval(val));
-							}
-						});
 						
 						// lightbox image links might also need to be added
 						setUpLightBox(page, $(this));
@@ -1788,7 +1766,7 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 		
 		if (header != 'none') {
 			
-			bgImg = "url('" + eval(header) + "')";
+			bgImg = "url('" + header + "')";
 			
 		}
 		
@@ -1952,11 +1930,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'image'){
-				tab.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				tab.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
 			}
 
 			if (this.nodeName == 'audio'){
-				tab.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				tab.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
@@ -1991,7 +1969,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			
 			if (this.nodeName == 'pdf'){
 				
-				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '#page=1&view=fitH"></object>');
+				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '#page=1&view=fitH"></object>');
 				pdf.push(tab.find('object'));
 				
 			}
@@ -2095,11 +2073,11 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'image'){
-				inner.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				inner.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
 			}
 
 			if (this.nodeName == 'audio'){
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
@@ -2130,7 +2108,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'pdf'){
-				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
 			}
 			
 			if (this.nodeName == 'xot'){
@@ -2205,11 +2183,11 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'image'){
-				pane.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				pane.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
 			}
 
 			if (this.nodeName == 'audio'){
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
@@ -2242,7 +2220,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'pdf'){
-				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
 			}
 			
 			if (this.nodeName == 'xot'){
@@ -2523,8 +2501,6 @@ function setUpVideo(url, iframeRatio, id) {
 			mimeType = "vimeo";
 			iframeRatio = getAspectRatio(iframeRatio);
 			
-		} else {
-			vidSrc = eval(vidSrc);
 		}
 		
 		mimeType = 'video/' + mimeType;
