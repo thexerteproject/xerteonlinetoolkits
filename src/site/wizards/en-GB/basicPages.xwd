@@ -39,4 +39,9 @@
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 	</lightboxGroup>
 	
+	<variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property">
+		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	</variables>
+	
 </commonNodes>

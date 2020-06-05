@@ -76,6 +76,12 @@
 			<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 		</lightboxGroup>
 		
+		<decimalseparator label="Decimal Separator" type="ComboBox" options="Period,Comma" data="period,comma" width="100" defaultValue="period" optional="true"/>
+		
+		<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/156-fay-Nottingham/media/Variables_Documentation.pdf' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for help creating and using variables">
+			<variables optional="true" label="Variable Data" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
+		</varGroup>
+		
 		<newNodes>
 		<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page></newNodes>
 
@@ -111,7 +117,10 @@
 	</customLinkGroup><filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches" common="true"/><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></page><section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
+	</lightboxGroup><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
+		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	</variables></page><section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
 
 		<name type="TextInput" label="Section Title" wysiwyg="true"/>
 		

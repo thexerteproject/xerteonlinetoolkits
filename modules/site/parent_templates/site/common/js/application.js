@@ -19,6 +19,7 @@
  
 $(document).ready(init);
 
+var XBOOTSTRAP = {};
 var data;
 var languageData;
 var startPage = 0;
@@ -358,7 +359,21 @@ function formatColour(col) {
 	return (col.length > 3 && col.substr(0,2) == '0x') ? '#' + col.substr(2) : col;
 }
 
-function setup(){
+function setup() {
+	
+	if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && $(data).find('learningObject').attr('authorSupport') == 'true' ) {
+		authorSupport = true;
+	}
+	
+	if ($(data).find('learningObject').attr('variables') != undefined) {
+		// calculate author set variables
+		XBOOTSTRAP.VARIABLES.init($(data).find('learningObject').attr('variables'));
+		
+		// check xml text for variables - if found replace with variable value
+		if (XBOOTSTRAP.VARIABLES && XBOOTSTRAP.VARIABLES.exist()) {
+			x_checkForText($(data).find('page'), 'variables');
+		}
+	}
 	
 	if ($(data).find('learningObject').attr('glossary') != undefined) {
 		
@@ -474,15 +489,7 @@ function setup(){
 	
 	// if project is being viewed as https then force any iframe src to be https too
 	if (window.location.protocol == "https:") {
-		
 		x_checkForText($(data).find('page'), 'iframe');	
-		
-	}	
-	
-	if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && $(data).find('learningObject').attr('authorSupport') == 'true' ) {
-		
-		authorSupport = true;
-		
 	}
 	
 	// add all the pages to the pages menu: this links back to the same page
@@ -1259,6 +1266,8 @@ function x_checkForText(data, type) {
 						return iframe;
 					}
 					data[i].childNodes[0].data = data[i].childNodes[0].data.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
+				} else if (type == 'variables') {
+					data[i].childNodes[0].data = XBOOTSTRAP.VARIABLES.replaceVariables(data[i].childNodes[0].data);
 				}
 				
 			} else {
@@ -1731,6 +1740,11 @@ function parseContent(pageID, sectionNum, addHistory) {
 
 				// Queue reparsing of MathJax - fails if no network connection
 				try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+				
+				// check text for variables - if found make sure it contains the current var value
+				if (XBOOTSTRAP.VARIABLES && XBOOTSTRAP.VARIABLES.exist()) {
+					XBOOTSTRAP.VARIABLES.updateVariable();
+				}
 
 				//$('body').scrollSpy('refresh'); //seems to cause a bunch of errors with tabs
 				$('#toc a:first').tab('show');
@@ -1749,6 +1763,8 @@ function parseContent(pageID, sectionNum, addHistory) {
 			}
 		}
 	}
+	
+	XBOOTSTRAP.VARIABLES.handleSubmitButton();
 	
 	if (sectionNum != undefined) {
 		
@@ -2566,3 +2582,659 @@ function setUpLightBox(thisPageInfo, thisSectionInfo) {
 		}
 	}
 }
+
+// handle case where comma decimal separator has been requested
+function checkDecimalSeparator(value, forcePeriod) {
+	if (forcePeriod == true) {
+		// force convert to . so any dependant variables can be calculated correctly (can later be converted to , when shown on page)
+		if ($(data).find('learningObject').attr('decimalseparator') !== undefined && $(data).find('learningObject').attr('decimalseparator') === 'comma') {
+			var temp = value.replace(/\,/g, '.');
+			if ($.isNumeric(temp)) {
+				return temp;
+			} else {
+				return value;
+			}
+		} else {
+			return value;
+		}
+		
+	} else {
+		// convert to , as it is to be shown on page
+		if ($.isNumeric(value) && $(data).find('learningObject').attr('decimalseparator') !== undefined && $(data).find('learningObject').attr('decimalseparator') === 'comma') {
+			return String(value).replace('.', ',');
+		} else {
+			return value;
+		}
+	}
+}
+
+// function returns correct phrase from language file or uses fallback if no matches / no language file
+function getLangInfo(node, attribute, fallBack) {
+    var string = fallBack;
+    if (node != undefined && node != null) {
+        if (attribute == false) {
+            string = node.childNodes[0].nodeValue;
+        } else {
+            string = node.getAttribute(attribute);
+        }
+    }
+    return string;
+}
+
+
+
+
+// _____ VARIABLES _____
+
+var XBOOTSTRAP = (function ($, parent) { var self = parent.VARIABLES = {};
+
+    // Declare local variables
+	var	variables = [],
+		variableInfo = [],
+		variableErrors = [],
+		dynamicCalcs = [],
+		dynamicID = 1,
+		varsChanged = false,
+
+	// function starts the calculation of variables set by author via the variables optional property
+	init = function (variableData) {
+		
+		// clears arrays if they have previously been calculated
+		variables.splice(0, variables.length);
+		variableInfo.splice(0, variableInfo.length);
+		variableErrors.splice(0, variableErrors.length);
+
+		var i, j, k, temp, thisVar,
+			toCalc = [];
+		
+		variableInfo = variableData.split("||");
+
+		// get array of data for all uniquely named variables & sort them so empty strings etc. become undefined
+		for (i=0; i<variableInfo.length; i++) {
+			var temp = variableInfo[i].split("|");
+			thisVar = {name:$.trim(temp[0]), data:temp.slice(1), requires:[]}; // data = [fixed value, [random], min, max, step, decimal place, significant figure, trailing zero, [exclude], default]
+			if (thisVar.name != "" && variableInfo.filter(function(a){ return a.name == thisVar.name }).length == 0) {
+				for (j=0; j<thisVar.data.length; j++) {
+					if (j == 1 || j == 8) { // convert data (random/exclude) to array
+						thisVar.data.splice(j, 1, thisVar.data[j].split(","));
+						for (k=0; k<thisVar.data[j].length; k++) {
+							temp = $.trim(thisVar.data[j][k]);
+							if (temp === "") {
+								thisVar.data[j].splice(k, 1);
+								k--;
+							} else {
+								thisVar.data[j].splice(k, 1, temp);
+							}
+						}
+					} else {
+						temp = $.trim(thisVar.data[j]);
+						if (temp === "") {
+							temp = undefined;
+						}
+						thisVar.data.splice(j, 1, temp);
+					}
+				}
+
+				variableInfo.splice(i, 1, thisVar);
+				toCalc.push(i);
+
+			} else {
+				variableInfo.splice(i, 1);
+				i--;
+			}
+		}
+		
+		calcVariables(toCalc);
+	},
+
+	// Check if we have any variables to deal with
+	exist = function () {
+		return variables.length > 0;
+	},
+
+	calcVariables = function (toCalc) {
+		var lastLength, checkDefault,
+			thisVar, i;
+
+		// goes through all variables and attempts to calculate their value
+		// may loop several times if variables require other variable values to be ready before calculating their value
+		// stops when no. var values calculated is no longer increasing - either all done or some vars can't be calculated (circular calculations or referencing non-existant vars)
+		while (toCalc.length > 0 && (toCalc.length != lastLength || checkDefault == true)) {
+			lastLength = toCalc.length;
+
+			for (i=0; i<toCalc.length; i++) {
+				thisVar = calcVar(variableInfo[toCalc[i]], false, checkDefault);
+				if (thisVar.ok == true) {
+					thisVar.requiredBy = [];
+					variables.push(thisVar);
+					toCalc.splice(i,1);
+					i--;
+					if (thisVar.default == true) {
+						checkDefault = false;
+					}
+				} else if (thisVar.ok == false) {
+					variableErrors.push(thisVar);
+					toCalc.splice(i,1);
+					i--;
+				}
+
+				if (i + 1 == toCalc.length && toCalc.length == lastLength) {
+					checkDefault = checkDefault == true ? false : true;
+				}
+			}
+		}
+
+		for (i=0; i<toCalc.length; i++) {
+			thisVar = variableInfo[toCalc[i]];
+			thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "undef", "References an undefined variable");
+			variableErrors.push(thisVar);
+			toCalc.splice(i,1);
+			i--;
+		}
+		
+		if (authorSupport == true && (variables.length > 0 || variableErrors.length > 0)) {
+			$('#overview .titles').prepend('<span class="varMsg">' + '<a onclick="XBOOTSTRAP.VARIABLES.showVariables()" href="javascript:void(0)" class="alertMsg">' + getLangInfo(languageData.find("authorVars")[0], "label", "View variable data") + '</a></span>');
+		}
+	},
+
+	// function calculates the value of any author set variables
+	calcVar = function (thisVar, recalc, checkDefault) {
+		thisVar.ok = undefined;
+
+		// calculate min / max / step values
+		var data = {min:thisVar.data[2], max:thisVar.data[3], step:thisVar.data[4]},
+			exclude = [], index;
+
+		for (var key in data) {
+			if (Object.prototype.hasOwnProperty.call(data, key)) {
+				// check for use of other variables & keep track of which are required
+				if (data[key] != undefined && ((thisVar.data[0] == undefined && thisVar.data[1].length == 0) || key != "step")) {
+					var info = getVarValues(data[key], thisVar.name);
+					data[key] = info[0];
+					if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+
+					thisVar.ok = info[2];
+					if (thisVar.ok != true) { // a variable needed doesn't exist / hasn't been calculated yet
+						break;
+					} else {
+						data[key] = Number(data[key]);
+					}
+				}
+			}
+		}
+
+		// calculate exclude values
+		if ((thisVar.ok == true || thisVar.ok == undefined) && thisVar.data[8].length > 0) {
+			exclude = thisVar.data[8].slice();
+			// check for use of other variables & keep track of which are required
+			for (var i=0; i<exclude.length; i++) {
+				var info = getVarValues(exclude[i], thisVar.name);
+				exclude.splice(i, 1, info[0]);
+				if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+
+				thisVar.ok = info[2];
+				if (info[2] != true) {  // a variable needed doesn't exist / hasn't been calculated yet
+					break;
+
+				} else if (typeof exclude[i] === "string" && exclude[i].indexOf("&&") != -1) {
+					// it's a range e.g. -2<&&<2 or -2<=&&<=2
+					var temp = exclude[i].split("&&").filter(function (a) { return a.indexOf("<") > -1 || a.indexOf(">") > -1; });
+					if (temp.length == 2) {
+						temp.splice(0, 1, temp[0] + "[" + thisVar.name + "]");
+						temp.splice(1, 1, "[" + thisVar.name + "]" + temp[1]);
+						exclude.splice(i, 1, temp);
+					}
+				}
+			}
+		}
+
+		// no missing dependancies so far
+		if (thisVar.ok == true || thisVar.ok == undefined) {
+
+			if (data.min != undefined && data.max != undefined && data.min > data.max) {
+				// fail because min > max
+				thisVar.ok = false;
+				thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "minMax", "min > max") + " (" + data.min + " > " + data.max + ")";
+
+			} else if (thisVar.data[0] != undefined || thisVar.data[1].length > 0) {
+				if (thisVar.data[0] != undefined) {
+					// FIXED VALUE
+					thisVar.type = "fixed";
+					thisVar.value = thisVar.data[0];
+
+					// check for use of other variables & keep track of which are required
+					var info = getVarValues(thisVar.value, thisVar.name);
+					thisVar.value = info[0];
+					if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+					thisVar.ok = info[2];
+
+				} else if (thisVar.data[1].length > 0) {
+					// RANDOM FROM LIST
+					thisVar.type = "random";
+
+					index = Math.floor(Math.random()*thisVar.data[1].length);
+					thisVar.value = thisVar.data[1][index];
+
+					// check for use of other variables & keep track of which are required
+					var info = getVarValues(thisVar.value, thisVar.name);
+					thisVar.value = info[0];
+					if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+					thisVar.ok = info[2];
+
+				}
+
+				if (thisVar.ok == true) {
+					if (data.min != undefined && data.min > thisVar.value) {
+						// fail because value < min
+						if (thisVar.type == "random") {
+							thisVar.ok = "retry";
+						} else {
+							thisVar.ok = false;
+						}
+						thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "valueMin", "value < min") + " (" + thisVar.value + " < " + data.min + ")";
+
+					} else if (data.max != undefined && data.max < thisVar.value) {
+						// fail because value > max
+						if (thisVar.type == "random") {
+							thisVar.ok = "retry";
+						} else {
+							thisVar.ok = false;
+						}
+						thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "valueMax", "value > max") + " (" + thisVar.value + " > " + data.max + ")";
+					}
+				}
+
+			} else if (data.min != undefined || data.max != undefined) { // from max & min
+				// RANDOM BETWEEN MIN & MAX VALUES
+				thisVar.type = "minMax";
+
+				// uses defaults of min=0 & max=100 if only min or max are set
+				if (data.min == undefined) {
+					data.min  = 0;
+				} else if (data.max == undefined) {
+					data.max = 100;
+				}
+
+				// use default of 1 for step
+				if (data.step == undefined) {
+					data.step = 1;
+				}
+
+				var maxDecimal = Math.max(Math.floor(data.min) === data.min ? 0 : data.min.toString().split(".")[1].length || 0, Math.floor(data.step) === data.step ? 0 : data.step.toString().split(".")[1].length || 0);
+				thisVar.value = Math.floor(Math.random()*(((data.max - data.min) / data.step) + 1)) * data.step + data.min;
+				if (thisVar.value > data.max) { thisVar.value = thisVar.value - data.step; } // can be over max if step doesn't take to exact max number - adjust for this
+				thisVar.value = thisVar.value.toFixed(maxDecimal); // forces correct decimal num - should work without this but occasionally it ends up with e.g. 1.1999999999999.... instead of 1.2
+				thisVar.ok = true;
+
+			} else if (thisVar.type == undefined) {
+				thisVar.ok = false;
+				thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "none", "No variable data");
+			}
+		}
+
+		if (thisVar.ok == true && $.isNumeric(Number(thisVar.value))) {
+			// to significant figure
+			if ($.isNumeric(Number(thisVar.data[6]))) {
+				thisVar.value = Number(thisVar.value).toPrecision(Number(thisVar.data[6])).includes('e') ? parseFloat(Number(thisVar.value).toPrecision(Number(thisVar.data[6]))) : Number(thisVar.value).toPrecision(Number(thisVar.data[6]));
+			}
+			// to decimal place
+			if ($.isNumeric(Number(thisVar.data[5]))) {
+				thisVar.value = Number(thisVar.value).toFixed(Number(thisVar.data[5]));
+				if (thisVar.data[7] != "true") {
+					// remove trailing zeros
+					thisVar.value = Number(thisVar.value);
+				}
+			}
+		}
+
+		// check value isn't one that should be excluded
+		if (thisVar.ok == true) {
+			for (var i=0; i<exclude.length; i++) {
+				var clash = false;
+				if (typeof exclude[i] == "number") {
+					if (exclude[i] == thisVar.value) {
+						clash = true;
+					}
+
+				// it's an exclude range
+				} else if (typeof exclude[i] == "object") {
+					for (var j=0; j<exclude[i].length; j++) {
+						exclude[i].splice(j, 1, exclude[i][j].replace("[" + thisVar.name + "]", thisVar.value));
+					}
+					if (eval(exclude[i][0]) && eval(exclude[i][1])) {
+						clash = true;
+					}
+				}
+
+				if (clash == true) {
+					if (thisVar.type == "fixed") {
+						thisVar.ok = false;
+						thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "exclude", "{n} is excluded").replace("{n}", thisVar.value);
+					} else {
+						thisVar.ok = "retry";
+						thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "exclude", "{n} is excluded").replace("{n}", thisVar.value);
+					}
+					break;
+				}
+			}
+
+		} else if (thisVar.ok == false && thisVar.info == undefined) {
+			thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "circular", "Circular variable reference");
+		}
+
+		// only retry random if there's a value that hasn't already failed
+		if (thisVar.ok == "retry" && thisVar.type == "random") {
+			thisVar.data[1].splice(index, 1);
+			if (thisVar.data[1].length == 0) {
+				thisVar.ok = false;
+				thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "none", "All possible values are excluded or fall outside the min & max range");
+			}
+		}
+
+		// retry multiple times to see if we can get a valid value
+		if (thisVar.ok == "retry") {
+			var attempts = 100;
+
+			if (recalc != true) {
+				var counter = 0;
+				do {
+					thisVar = calcVar(thisVar, true);
+					counter++;
+				} while (counter < attempts && thisVar.ok == "retry");
+
+				if (thisVar.ok == "retry") {
+					thisVar.ok = false;
+					thisVar.info = " " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "none2", "{n} attempts have not returned an accepted value").replace("{n}", attempts);
+				} else if (thisVar.ok == true) {
+					thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "attempts", "{n} attempts to calculate a valid value").replace("{n}", (counter + 1));
+				}
+			}
+		}
+
+		// fallback to default
+		if (thisVar.data[9] != undefined && (thisVar.ok == false || checkDefault == true)) {
+			try {
+				var sum = eval(thisVar.data[9]);
+				thisVar.value = sum;
+			} catch (e) {
+				thisVar.value = thisVar.data[9];
+			}
+			thisVar.requiredBy = [];
+			thisVar.default = true;
+			thisVar.ok = true;
+			thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "default", "Fallback to default value");
+		}
+		
+		return thisVar;
+	},
+
+	// function updates a variable update
+	setVariable = function (name, value) {
+		var dependants;
+
+		for (var i=0; i<variables.length; i++) {
+			if (variables[i].name == name) {
+				variables[i].value = checkDecimalSeparator(value, true);
+				dependants = variables[i].requiredBy;
+				break;
+			}
+		}
+		
+		return dependants;
+	},
+
+	// function updates all variables on screen with the current value
+	updateVariable = function () {
+		
+		if (varsChanged == true) {
+			
+			for (var i=0; i<$('.x_var').length; i++) {
+				
+				var $thisVarSpan = $($('.x_var')[i]),
+					classes = $thisVarSpan.attr('class').split(' '),
+					varName;
+				
+				for (var j=0; j<classes.length; j++) {
+					if (classes[j].indexOf('x_var_') == 0) {
+						varName = classes[j].substring(6);
+						break;
+					}
+				}
+				
+				if (varName != '') {
+					for (var j=0; j<variables.length; j++) {
+						if (variables[j].name == varName) {
+							$thisVarSpan.html(checkDecimalSeparator(variables[j].value));
+							break;
+						}
+					}
+				}
+			}
+		}
+	},
+
+	// function gets values of other variables needed for calculation and evals the value when everything's ready
+	getVarValues = function (thisValue, thisName) {
+		var requires = [];
+
+		if (thisValue.indexOf("[" + thisName + "]") != -1) {
+			return [thisValue, requires, false];
+		}
+
+		if (String(thisValue).indexOf("[") != -1) {
+			for (var i=0; i<variables.length; i++) {
+				if (thisValue.indexOf("[" + variables[i].name + "]") != -1) {
+					// keeps track of what other variables reference this so they can be recalculated together if needed
+					if (variables[i].requiredBy.indexOf(thisName) == -1) {
+						variables[i].requiredBy.push(thisName);
+					}
+					requires.push(variables[i].name);
+
+					RegExp.esc = function(str) {
+						return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+					};
+					var regExp = new RegExp(RegExp.esc("[" + variables[i].name + "]"), "g");
+					thisValue = thisValue.replace(regExp, variables[i].value);
+					if (thisValue.indexOf("[") == -1) { break; }
+				}
+			}
+		}
+
+		try {
+			var sum = eval(thisValue);
+			return [sum, requires, true];
+		} catch (e) {
+			if (thisValue.indexOf("[") == -1) {
+				return [thisValue, requires, true]; // string
+			} else {
+				return [thisValue, requires, "variable"];
+			}
+		}
+	},
+
+	// function displays author set variables in popup when in author support mode
+	showVariables = function () {
+		var varHeadings = ["Name", "Fixed Value", "Random", "Min", "Max", "Step", "DP", "SF", "Trailing Zeros", "Exclude", "Default"];
+		var pageText = '<html><body><style>table, tr, td, th { border: 1px solid black; text-align: left; } th { background-color: LightGray; } table { border-collapse: collapse; min-width: 100%; } th, td { padding: 1em; width: ' + (100/(varHeadings.length+1)) + '%; } .alert { color: red; } td:nth-child(1), td:nth-child(2) { font-weight: bold; } </style><table>',
+			cells, temp, infoTxt;
+
+		for (var i=0; i<varHeadings.length; i++) {
+			pageText += '<th>' + getLangInfo(languageData.find("authorVars").find("item")[i], false, varHeadings[i]) + '</th>';
+			if (i == 0) {
+				pageText += '<th>' + getLangInfo(languageData.find("authorVars").find("item")[varHeadings.length], false, "Value") + '</th>';
+			}
+		}
+
+		for (var i=0; i<variables.length; i++) {
+			cells = "";
+			for (var j=0; j<variables[i].data.length; j++) {
+				temp = variables[i].data[j] === undefined ? "" : variables[i].data[j];
+				cells += '<td>' + temp + '</td>';
+			}
+			infoTxt = variables[i].info == undefined ? "" : '<br/><span class="alert">' + variables[i].info + '</span>';
+			pageText += '<tr><td>' + variables[i].name + '</td><td>' + variables[i].value + infoTxt + '</td>' + cells + '</tr>';
+		}
+
+		for (var i=0; i<variableErrors.length; i++) {
+			cells = "";
+			for (var j=0; j<variableErrors[i].data.length; j++) {
+				temp = variableErrors[i].data[j] === undefined ? "" : variableErrors[i].data[j];
+				cells += '<td>' + temp + '</td>';
+			}
+			pageText += '<tr style="background-color: LightGray;"><td>' + variableErrors[i].name + '</td><td>' + variableErrors[i].info + '</td>' + cells + '</tr>';
+		}
+
+		pageText += '</table></body></html>';
+
+		window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12px">' + pageText + '</p>');
+	},
+	
+	replaceVariables = function (tempText) {
+
+		tempText = tempText.replace(
+			new RegExp('\\[\\{(.*?)\\}(?:\\s|&nbsp;)*(?:(?:\\,(?:\\s|&nbsp;)*?(\\d+?)?))?\\]|<span class="x_var x_dyn_(.*?)">(?:.*?)</span>', 'g'),
+			function (match, contents, round, id) {
+				if (contents) {
+					id = dynamicID++;
+					dynamicCalcs[id] = [contents, round];
+				}
+
+				var result = variables.reduce(function(accumulator, variable) {
+					return accumulator.replace(new RegExp('\\[' + variable.name + '\\]', 'g'), checkDecimalSeparator(variable.value));
+				}, dynamicCalcs[id][0]);
+				round = dynamicCalcs[id][1];
+				
+				try {
+					var ev = eval( result );
+					result = Math.round(
+						ev * (round = Math.pow(10, round ? round  : 16))
+					) / round;
+				}
+				catch (e) {}
+				
+				$('.x_dyn_' + id).html(checkDecimalSeparator(result));
+				return '<span class="x_var x_dyn_' + id + '">' + result + '</span>';
+			}
+		);
+		
+		for (var k=0; k<variables.length; k++) {
+			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
+			var regExp = new RegExp('\\[' + variables[k].name + '\\]|<span class="x_var x_var_' + variables[k].name + '">(.*?)</span>', 'g');
+			tempText = tempText.replace(regExp, '<span class="x_var x_var_' + variables[k].name + '">' + checkDecimalSeparator(variables[k].value) + '</span>');
+			
+			// replace with a text input field which the end user can use to set the value of the variable
+			regExp = new RegExp('\\[=' + variables[k].name + '\\]', 'g');
+			tempText = tempText.replace(regExp, '<input type="text" name="' + variables[k].name + '" class="x_varInput">');
+			
+			// this format of the text input field has specified a default value
+			regExp = new RegExp('\\[=' + variables[k].name + ':(.*?)\\]', 'g');
+			
+			var matches = tempText.match(regExp);
+			if (matches != null) {
+				for (var m=0; m<matches.length; m++) {
+					tempText = tempText.replace(matches[m], '<input type="text" name="' + variables[k].name + '" class="x_varInput" placeholder="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '">');
+				}
+			}
+		}
+		
+		// replace with a submit button which will submit all the new variable values entered on the page
+		var submitBtnLabel = getLangInfo(languageData.find("submitBtnLabel")[0], "label", "Submit");
+		var regExp = new RegExp('\\[\\+submit\\]', 'g');
+		tempText = tempText.replace(regExp, '<input type="submit" value="' + submitBtnLabel + '" class="x_varSubmit">');
+		
+		// this format of the submit button has specified a default value
+		regExp = new RegExp('\\[\\+submit:(.*?)\\]', 'g');
+		
+		var matches = tempText.match(regExp);
+		if (matches != null) {
+			for (var m=0; m<matches.length; m++) {
+				tempText = tempText.replace(matches[m], '<input type="submit" value="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '" class="x_varSubmit">');
+			}
+		}
+		
+		return tempText;
+	},
+
+	handleSubmitButton = function () {
+		// is there a submit button & at least one variable input?
+		if ($('.x_varSubmit').length > 0 && $('.x_varInput').length > 0) {
+			$('.x_varSubmit').click(function() {
+				var dependants = [],
+					changed = [],
+					i, j, k;
+				
+				// update the variables changed via text fields
+				for (i=0; i<$('.x_varInput').length; i++) {
+					if ($('.x_varInput')[i].value != '') {
+						changed.push($('.x_varInput')[i].name);
+						var temp = setVariable($('.x_varInput')[i].name, $('.x_varInput')[i].value);
+						if (temp.length > 0) {
+							$.merge(dependants, temp);
+						}
+					}
+				}
+				
+				// as well as updating any variables that have been directly changed there may be dependants of those variables to change too
+				if (dependants.length > 0) {
+					dependants = dependants.filter(function(a){if (!this[a]) {this[a] = 1; return a;}},{});
+					
+					for (i=0; i<dependants.length; i++) {
+						for (j=0; j<variables.length; j++) {
+							if (dependants[i] == variables[j].name) {
+								for (k=0; k<variables[j].requiredBy.length; k++) {
+									if ($.inArray(variables[j].requiredBy[k], dependants) == -1) {
+										dependants.push(variables[j].requiredBy[k]);
+									}
+								}
+							}
+						}
+					}
+					
+					var toCalc = [];
+					for (i=0; i<variableInfo.length; i++) {
+						if ($.inArray(variableInfo[i].name, dependants) > -1) {
+							changed.push(variableInfo[i].name);
+							toCalc.push(i);
+							
+							// clear current variable value
+							for (k=0; k<variables.length; k++) {
+								if (variableInfo[i].name == variables[k].name) {
+									variables.splice(k,1);
+									break;
+								}
+							}
+						}
+					}
+					
+					calcVariables(toCalc);
+				}
+				
+				// should this page be immediately updated to show changes to the variable values?
+				if ($(data).find('page').eq(currentPage).attr('varUpdate') != 'false') {
+					for (i=0; i<variables.length; i++) {
+						for (j=0; j<changed.length; j++) {
+							if (variables[i].name == changed[j]) {
+								$('.x_var_' + variables[i].name).html(checkDecimalSeparator(variables[i].value));
+							}
+						}
+					}
+				}
+				
+				// submit confirmation message
+				if (changed.length > 0) {
+					varsChanged = true;
+					alert($(data).find('page').eq(currentPage).attr('varConfirm') != undefined && $(data).find('page').eq(currentPage).attr('varConfirm') != '' ? $(data).find('page').eq(currentPage).attr('varConfirm') : getLangInfo(languageData.find("submitConfirmMsg")[0], "label", "Your answers have been submitted"));
+				}
+			});
+		}
+	};
+	
+	// make some public methods
+    self.init = init;
+	self.exist = exist;
+	self.handleSubmitButton = handleSubmitButton;
+	self.replaceVariables = replaceVariables;
+	self.showVariables = showVariables;
+	self.updateVariable = updateVariable;
+
+return parent; })(jQuery, XBOOTSTRAP || {});
