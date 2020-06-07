@@ -82,21 +82,21 @@
           };
 
           // Get references to the target dropdown and keep copy of the setup/commit functions
-          var targetDropdown = linkDialogDefinition.contents[1].elements[0].children[0];
-          var targetDropdownSetup = targetDropdown.setup;
-          var targetDropdownCommit = targetDropdown.commit;
+          var linkTargetTypeDropdown = linkDialogDefinition.getContents('target').get("linkTargetType");
+          var linkTargetTypeDropdownSetup = linkTargetTypeDropdown.setup;
+          var linkTargetTypeDropdownCommit = linkTargetTypeDropdown.commit;
 
           // Check if target dropdown should have Lightbox selected and fix
-          targetDropdown.setup = function(data) {
+          linkTargetTypeDropdown.setup = function(data) {
             if (featherlightAttribute) {
               data.target.type = "_lightbox";
             }
-            targetDropdownSetup.apply(this, arguments);
+            linkTargetTypeDropdownSetup.apply(this, arguments);
           };
 
           // Check if link was Lightbox and remove target
-          targetDropdown.commit = function(data) {
-            targetDropdownCommit.apply(this, arguments);
+          linkTargetTypeDropdown.commit = function(data) {
+            linkTargetTypeDropdownCommit.apply(this, arguments);
 
             if (data.target && data.target.type === "_lightbox") {
               delete data.target;
@@ -105,7 +105,7 @@
           };
 
           // Add the Lightbox entry to the link dialog, target tab dropdown
-          targetDropdown.items.push(["Lightbox", "_lightbox"]);
+          linkTargetTypeDropdown.items.push(["Lightbox", "_lightbox"]);
         });
       }
     };
