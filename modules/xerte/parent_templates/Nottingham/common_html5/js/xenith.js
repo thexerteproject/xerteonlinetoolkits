@@ -1918,9 +1918,11 @@ function x_setUpLightBox() {
 		// use the x_noLightBox class in page models to force images to not open in lightboxes
 		$("#pageContents img:not('.x_noLightBox'), .x_popupDialog img:not('.x_noLightBox')").each(function( index ) {
 			var $this = $(this);
-			if (!$this.parent().hasClass('lightboxWrapper') && $this.parents('.ui-draggable').length == 0) {
-				var imgPath = $(this).prop('src');
-				$(this).wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
+			if ($this.closest('a').length == 0) {
+				if (!$this.parent().hasClass('lightboxWrapper') && $this.parents('.ui-draggable').length == 0) {
+					var imgPath = $(this).prop('src');
+					$(this).wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
+				}
 			}
 		});
 		
@@ -3481,6 +3483,19 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 		);
 		
 		for (var k=0; k<variables.length; k++) {
+			// if it's first attempt to replace vars on this page look at vars in image tags first
+			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
+			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
+				var $tempText = $(tempText);
+				for (var m=0; m<$tempText.find('img').length; m++){
+					var tempImgTag = $tempText.find('img')[m].outerHTML,
+						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+					tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
+					$($tempText.find('img')[m]).replaceWith(tempImgTag);
+				}
+				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
+			}
+			
 			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
 			var regExp = new RegExp('\\[' + variables[k].name + '\\]|<span class="x_var x_var_' + variables[k].name + '">(.*?)</span>', 'g');
 			tempText = tempText.replace(regExp, '<span class="x_var x_var_' + variables[k].name + '">' + x_checkDecimalSeparator(variables[k].value) + '</span>');
