@@ -1,7 +1,7 @@
 (function() {
   CKEDITOR.plugins.add('xotlightbox', (function(editor) {
     return {
-      afterInit: function(editor) {
+      init: function(editor) {
         if (!editor.plugins.link) return; // link plugin not installed so nothing to do
 
         CKEDITOR.on('dialogDefinition', function(evt) {
