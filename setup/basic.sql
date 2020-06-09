@@ -1,7 +1,7 @@
 
-CREATE DATABASE IF NOT EXISTS <databasename>;
+CREATE DATABASE IF NOT EXISTS `<databasename>`;
 
-USE <databasename>;
+USE `<databasename>`;
 
 DROP TABLE IF EXISTS `$additional_sharing`;
 DROP TABLE IF EXISTS `$folderdetails`;

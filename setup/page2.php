@@ -53,7 +53,7 @@ if ( !isset($_POST['database_created']) )
         $success = false;
     // create the database
     } else {
-        $query = "create database if not exists " . $_POST['database_name'];
+        $query = "create database if not exists `" . $_POST['database_name'] . "`";
 
         if ( $xot_setup->database->create($connection, $query) )
         {
