@@ -9,16 +9,28 @@
           if (evt.data.name !== 'link') return; // we only want the link plugin dialog definition
 
           var linkDialog = evt.data,
-              linkDialogDefinition = linkDialog.definition,
-              linkDialog_onShow = linkDialogDefinition.onShow,
-              linkDialog_onOk = linkDialogDefinition.onOk,
-              featherlightAttribute = null,
-              hrefAttribute = null,
-              targetAttribute = null;
+            linkDialogDefinition = linkDialog.definition,
+            featherlightAttribute = null,
+            hrefAttribute = null,
+            targetAttribute = null;
 
+          // Get a reference to the linkTargetType updateDropdowns
+          var linkTargetTypeDropdown = linkDialogDefinition.getContents('target').get('linkTargetType');
+
+          // Check if we've added Lightbox option before, if not then add it...
+          if (linkTargetTypeDropdown.items && linkTargetTypeDropdown.items.reduce(function(found, item){
+            return found && item[0] !== 'Lightbox';
+          }, true)) {
+            // Add the Lightbox entry to the link dialog, target tab dropdown
+            linkTargetTypeDropdown.items.push(["Lightbox", "_lightbox"]);
+          }
+
+          // Store reference to the original onShow handler (for calling later) and redefine
+          if (!linkDialogDefinition.onShowOriginal) linkDialogDefinition.onShowOriginal = linkDialogDefinition.onShow;
           linkDialogDefinition.onShow = function() {
-            var element = CKEDITOR.plugins.link.getSelectedLink(editor),
-                selection = editor.getSelection();
+            var editor = this._.editor,
+              element = CKEDITOR.plugins.link.getSelectedLink(editor),
+              selection = editor.getSelection();
 
             // Selects a link if we just right click inside, without selecting first
             if (element && element.hasAttribute('href')) selection.selectElement(element);
@@ -38,11 +50,14 @@
             }
 
             // Return control back to link dialog
-            linkDialog_onShow.apply(this, arguments);
+            linkDialogDefinition.onShowOriginal.apply(this, arguments);
           };
 
+          // Store reference to the original onOk handler (for calling later) and redefine
+          if (!linkDialogDefinition.onOkOriginal) linkDialogDefinition.onOkOriginal = linkDialogDefinition.onOk;
           linkDialogDefinition.onOk = function() {
-            linkDialog_onOk.apply(this, arguments);
+            var editor = this._.editor;
+            linkDialogDefinition.onOkOriginal.apply(this, arguments);
 
             var data = {};
             this.commitContent(data);
@@ -51,8 +66,9 @@
               // Get the link that we are editing
               var element = editor.getSelection().getSelectedElement();
               if (!element) { // ... or a new link has been inserted so we need to get a reference
-                element = CKEDITOR.plugins.link.getSelectedLink( editor );
+                element = CKEDITOR.plugins.link.getSelectedLink(editor);
               }
+
               element.setAttribute('data-featherlight', data.url.protocol + data.url.url);
               element.$.removeAttribute('data-cke-saved-href');
               element.setAttribute('href', "#");
@@ -60,6 +76,7 @@
             }
           };
 
+          // No onCancel handler to store
           linkDialogDefinition.onCancel = function() {
             // Put all the attributes that we've messed with back to what they were
             var element = editor.getSelection().getSelectedElement();
@@ -81,31 +98,26 @@
             }
           };
 
-          // Get references to the target dropdown and keep copy of the setup/commit functions
-          var linkTargetTypeDropdown = linkDialogDefinition.getContents('target').get("linkTargetType");
-          var linkTargetTypeDropdownSetup = linkTargetTypeDropdown.setup;
-          var linkTargetTypeDropdownCommit = linkTargetTypeDropdown.commit;
-
-          // Check if target dropdown should have Lightbox selected and fix
+          // Store reference to the original linkTargetTypeDropdown setup handler (for calling later) and redefine
+          if (!linkTargetTypeDropdown.setupOriginal) linkTargetTypeDropdown.setupOriginal = linkTargetTypeDropdown.setup;
           linkTargetTypeDropdown.setup = function(data) {
-            if (featherlightAttribute) {
+            if (featherlightAttribute) { // Check if target dropdown should have Lightbox selected and fix
               data.target.type = "_lightbox";
             }
-            linkTargetTypeDropdownSetup.apply(this, arguments);
+            linkTargetTypeDropdown.setupOriginal.apply(this, arguments);
           };
 
+          // Store reference to the original linkTargetTypeDropdown commit handler (for calling later) and redefine
+          if (!linkTargetTypeDropdown.commitOriginal) linkTargetTypeDropdown.commitOriginal = linkTargetTypeDropdown.commit;
           // Check if link was Lightbox and remove target
           linkTargetTypeDropdown.commit = function(data) {
-            linkTargetTypeDropdownCommit.apply(this, arguments);
+            linkTargetTypeDropdown.commitOriginal.apply(this, arguments);
 
             if (data.target && data.target.type === "_lightbox") {
               delete data.target;
               data['data-featherlight'] = 'iframe';
             }
           };
-
-          // Add the Lightbox entry to the link dialog, target tab dropdown
-          linkTargetTypeDropdown.items.push(["Lightbox", "_lightbox"]);
         });
       }
     };
