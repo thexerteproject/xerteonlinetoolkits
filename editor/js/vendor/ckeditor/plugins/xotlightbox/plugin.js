@@ -56,15 +56,13 @@
             var editor = this._.editor;
             linkDialogDefinition.onOkOriginal.apply(this, arguments);
 
+            // Only way to retrieve data here is reprocess commit chain
             var data = {};
             this.commitContent(data);
 
             if (data["data-featherlight"]) {
-              // Get the link that we are editing
-              var element = editor.getSelection().getSelectedElement();
-              if (!element) { // ... or a new link has been inserted so we need to get a reference
-                element = CKEDITOR.plugins.link.getSelectedLink(editor);
-              }
+              // Get the link that we are editing... or a new link has been inserted so we need to get a reference
+              var element = editor.getSelection().getSelectedElement() || CKEDITOR.plugins.link.getSelectedLink(editor);
 
               element.setAttribute('data-featherlight', data.url.protocol + data.url.url);
               element.$.removeAttribute('data-cke-saved-href');
@@ -73,10 +71,12 @@
             }
           };
 
-          // No onCancel handler to store
+          // No onCancel handler to store so just define the new handler
           linkDialogDefinition.onCancel = function() {
             // Put all the attributes that we've messed with back to what they were
-            var element = editor.getSelection().getSelectedElement();
+            var editor = this._.editor,
+                element = editor.getSelection().getSelectedElement();
+
             if (element) {
               if (featherlightAttribute)
                 element.setAttribute('data-featherlight', featherlightAttribute);
@@ -99,6 +99,7 @@
           if (!linkTargetTypeDropdown.setupOriginal) linkTargetTypeDropdown.setupOriginal = linkTargetTypeDropdown.setup;
           linkTargetTypeDropdown.setup = function(data) {
             if (featherlightAttribute) { // Check if target dropdown should have Lightbox selected and fix
+              if (!data.target) data.target = {};
               data.target.type = "_lightbox";
             }
             linkTargetTypeDropdown.setupOriginal.apply(this, arguments);
@@ -106,10 +107,10 @@
 
           // Store reference to the original linkTargetTypeDropdown commit handler (for calling later) and redefine
           if (!linkTargetTypeDropdown.commitOriginal) linkTargetTypeDropdown.commitOriginal = linkTargetTypeDropdown.commit;
-          // Check if link was Lightbox and remove target
           linkTargetTypeDropdown.commit = function(data) {
             linkTargetTypeDropdown.commitOriginal.apply(this, arguments);
 
+            // Check if target was Lightbox and remove target attribute
             if (data.target && data.target.type === "_lightbox") {
               delete data.target;
               data['data-featherlight'] = 'iframe';
