@@ -18,12 +18,9 @@
           var linkTargetTypeDropdown = linkDialogDefinition.getContents('target').get('linkTargetType');
 
           // Check if we've added Lightbox option before, if not then add it...
-          if (linkTargetTypeDropdown.items && linkTargetTypeDropdown.items.reduce(function(found, item){
-            return found && item[0] !== 'Lightbox';
-          }, true)) {
-            // Add the Lightbox entry to the link dialog, target tab dropdown
-            linkTargetTypeDropdown.items.push(["Lightbox", "_lightbox"]);
-          }
+          if (linkTargetTypeDropdown.items && !linkTargetTypeDropdown.items.some(function(item){
+            return item[0] === 'Lightbox';
+          })) linkTargetTypeDropdown.items.push(["Lightbox", "_lightbox"]);
 
           // Store reference to the original onShow handler (for calling later) and redefine
           if (!linkDialogDefinition.onShowOriginal) linkDialogDefinition.onShowOriginal = linkDialogDefinition.onShow;
