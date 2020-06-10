@@ -10,9 +10,9 @@
 
           var linkDialog = evt.data,
             linkDialogDefinition = linkDialog.definition,
-            featherlightAttribute = null,
-            hrefAttribute = null,
-            targetAttribute = null;
+            featherlightAttribute,
+            hrefAttribute,
+            targetAttribute;
 
           // Get a reference to the linkTargetType updateDropdowns
           var linkTargetTypeDropdown = linkDialogDefinition.getContents('target').get('linkTargetType');
@@ -32,6 +32,9 @@
             // Selects a link if we just right click inside, without selecting first
             if (element && element.hasAttribute('href')) selection.selectElement(element);
 
+            featherlightAttribute = null;
+            hrefAttribute = null;
+            targetAttribute = null;
             if (element) { //  we have an existing hyperlink, check if it has a data-featherlight and store what we may mess with
               featherlightAttribute = element.getAttribute('data-featherlight');
               hrefAttribute = element.getAttribute('href');
