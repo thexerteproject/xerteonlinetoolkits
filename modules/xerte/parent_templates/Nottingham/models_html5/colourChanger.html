@@ -212,6 +212,16 @@
             $("#theme_css").attr("href", currentThemeURL + ".css");
             $("#theme_js").attr("href", currentThemeURL + ".js");
 
+            if (theme == 'highcontrast' || theme == 'blackonyellow')
+			{
+				$("#special_theme_css").attr("href", currentThemeURL + ".css");
+				$("#special_theme_css").prop("disabled", false);
+			}
+            else
+			{
+				$("#special_theme_css").prop("disabled", true);
+			}
+
            // $(window).trigger('resize');
 		};
 

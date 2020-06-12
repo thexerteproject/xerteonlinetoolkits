@@ -1640,11 +1640,24 @@ function x_endPageTracking(pagechange, x_gotoPage) {
 }
 
 function x_changePageStep5(x_gotoPage) {
-	var prevPage = x_currentPage;
 
-    if (x_params.styles != undefined){
-        $x_head.append('<style type="text/css" id="page_css">' +  x_params.styles + '</style>');
+    if (x_params.styles != undefined) {
+        $x_head.append('<style type="text/css" id="page_css">' + x_params.styles + '</style>');
     }
+    // If special_theme_css does not exist yet, create a disabled special_theme_css
+    if ($('#special_theme_css').length == 0) {
+        x_insertCSS(x_themePath +  'blackonyellow/blackonyellow.css', function () {
+            x_changePageLastStep(x_gotoPage);
+        }, true, "special_theme_css", true);
+    }
+    else
+    {
+        x_changePageLastStep(x_gotoPage);
+    }
+}
+
+function x_changePageLastStep(x_gotoPage) {
+    var prevPage = x_currentPage;
 
     // End page tracking of x_currentPage
     x_endPageTracking(true, x_gotoPage);
@@ -2650,7 +2663,8 @@ function x_setFillWindow(updatePage) {
     }
 
     $x_mainHolder.css({
-        "width"     :"100%",
+        // The right broder is cut off when embedding if setting to 100%
+        "width"     :"99.8%",
         "height"    :"100%"
     });
 
@@ -2697,6 +2711,12 @@ function x_insertCSS(href, func, disable, id, keep) {
                         $(this).prop("disabled", true);
                     } else {
                         $x_mainHolder.addClass("x_responsive");
+                    }
+                }
+                else
+                {
+                    if (disable == true) {
+                        $(this).prop("disabled", true);
                     }
                 }
             }
