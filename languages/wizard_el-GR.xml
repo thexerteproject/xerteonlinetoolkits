@@ -1,191 +1,191 @@
-<language name="English" code="en-GB">
-    <layout closetooltip="Close this pane" opentooltip="Open this pane" resizetooltip="Resize this pane" pin="Pin" unpin="Un-Pin" />
-    <edit label="Edit ..." tooltip="Edit this option" description="Edit button" />
-    <insertDialog label="Insert New {i}" preview="Preview">
-        <insertBefore label="Before" tooltip="Insert before selected page"/>
-        <insertAfter label="After" tooltip="Insert after selected page"/>
-        <insertAtEnd label="At end" tooltip="Insert as last page"/>
-		<insertMerge label="Import pages" tooltip="Import pages after last page"/>
+<language name="Ελληνικά" code="el-GR">
+    <layout closetooltip="Κλείσιμο πλαισίου" opentooltip="Άνοιγμα πλαισίου" resizetooltip="Αλλαγή μεγέθους πλαισίου" pin="Καρφίτσωμα" unpin="Ξεκαρφίτωσμα" />
+    <edit label="Επεξεργασία ..." tooltip="Επεξεργασία της επιλογής" description="Πλήκτρο επεξεργασίας" />
+    <insertDialog label="Εισαγωγή > {i}" preview="Προεπισκόπηση">
+        <insertBefore label="Πριν" tooltip="Εισαγωγή πριν την επιλεγμένη σελίδα"/>
+        <insertAfter label="Μετά" tooltip="Εισαγωγή μετά την επιλεγμένη σελίδα"/>
+        <insertAtEnd label="Στο τέλος" tooltip="Εισαγωγή ως τελευταία σελίδα"/>
+		<insertMerge label="Εισαγωγή σελίδων" tooltip="Εισαγωγή σελίδων μετά την τελευταία σελίδα"/>
     </insertDialog>
-    <btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
-	<btnPublishXot label="Publish" tooltip="Publish Project" description="Publish Button"/>
-	<popupFileUpload title="File Upload" cancelLabel="Cancel"/>
-	<browseImportFile title="Select file to import...">
-		<dialogFilter>All Files|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</dialogFilter>
-		<buttontext>Import</buttontext>
+    <btnSaveXerte label="Αποθήκευση" tooltip="Αποθήκευση έργου" description="Πλήκτρο αποθήκευσης"/>
+	<btnPublishXot label="Δημοσίευση" tooltip="Δημοσίευση έργου" description="Πλήκτρο δημοσίευσης"/>
+	<popupFileUpload title="Φόρτωση αρχείου" cancelLabel="Άκυρο"/>
+	<browseImportFile title="Επιλογή αρχείου για φόρτωση...">
+		<dialogFilter>Όλα τα αρχεία|*.*|JPG|*.jpg|PNG|*.png|Αρχεία SWF|*.swf|Ήχοι|*.mp3|Βίντεο|*.flv</dialogFilter>
+		<buttontext>Εισαγωγή</buttontext>
 	</browseImportFile>
-	<kblanguage title="Character Pad" tooltip="Character Pad" description="Keyboard Layout Languages">
-		<item>French</item>
-		<item>German</item>
-		<item>Italian</item>
-		<item>Polish</item>
-		<item>Portuguese</item>
-		<item>Spanish</item>
+	<kblanguage title="Χαρακτήρες" tooltip="Χαρακτήρες" description="Γλώσσες πληκτρολογίου">
+		<item>Γαλλικά</item>
+		<item>Γερμανικά</item>
+		<item>Ιταλικά</item>
+		<item>Πολωνικά</item>
+		<item>Πορτογαλικά</item>
+		<item>Ισπανικά</item>
 	</kblanguage>
-	<newLink label="New {i}" />
-	<helpLink tooltip="Click for Help"/>
-    <btnAddColumn label="Add Column" tooltip="Add a column to the right of the grid"/>
-    <btnDelColumn label="Delete Column" tooltip="Delete the selected column"/>
-	<btnInsert label="Insert" tooltip="Insert"/>
-	<btnMerge label="Import pages" tooltip="Import pages"/>
-	<btnAddChild tooltip="add some children"/>
-	<btnDuplicate label="Copy" tooltip="Duplicate"/>
-	<btnDelete label="Delete" tooltip="Delete"/>
-	<btnAdvanced label_on="Toggle to advanced mode" tooltip_on="Toggle advanced mode" label_off="Switch off advanced mode" tooltip_off="Toggle off advanced mode"/>
-	<btnMoveUp tooltip="Move Up"/>
-	<btnMoveDown tooltip="Move Down"/>
-	<btnNext tooltip="Next Item"/>
-	<btnPreview label="Play" tooltip="Preview"/>
-	<btnPrev tooltip="Previous Item"/>
-	<icDelete tooltip="Delete" prompt="Delete the item?"/>
-	<addProp label="Add" tooltip="add" />
-	<optionalProp label="Optional Properties:"/>
-	<optionalPropHTML label="Optional Properties" general="General"/>
-	<chkShowLanguage label="Show Language Options" tooltip="If language options are available, show them."/>
-	<chkShowAdvanced label="Show Advanced Options" tooltip="If advanced options are available, show them."/>
-    <chkShowToolbar label="Show Toolbar" tooltip="Show all the toolbars by default."/>
-	<compMedia tooltip="Import Media"/>
-	<compPreview tooltip="Preview" error="Preview unavailable"/>
-	<calendar tooltip="Select Date"/>
-	<hidePage title="HIDDEN" tooltip="This page is hidden"/>
-	<standalonePage tooltip="This is a stand-alone page"/>
-	<unmarkForCompletion tooltip="This page is not required for completion"/>
-	<advancedPage title="Advanced" tooltip="This page is not part of this (sub-)template and can only be added in advanced mode."/>
-	<filemenu title="File">
-		<menuNew>New Project...</menuNew>
-		<menuOpen>Open...</menuOpen>
-		<menuSave>Save</menuSave>
-		<menuExit>Exit</menuExit>
+	<newLink label="Προσθέστε {i}" />
+	<helpLink tooltip="Κλικ για βοήθεια"/>
+    <btnAddColumn label="Προσθήκη στήλης" tooltip="Προσθέστε μια στήλη στα δεξιά του πλέγματος"/>
+    <btnDelColumn label="Διαγραφή στήλης" tooltip="Διαγράψτε την επιλεγμένη στήλη"/>
+	<btnInsert label="Εισαγωγή" tooltip="Εισαγωγή"/>
+	<btnMerge label="Εισαγωγή σελίδων" tooltip="Εισαγωγή σελίδων"/>
+	<btnAddChild tooltip="προσθήκη απόγονων σελίδων"/>
+	<btnDuplicate label="Αντιγραφή" tooltip="Αντιγραφή"/>
+	<btnDelete label="Διαγραφή" tooltip="Διαγραφή"/>
+	<btnAdvanced label_on="Εναλλαγή σε λειτουργία για προχωρημένους" tooltip_on="Αλλάξτε σε λειτουργία για προχωρημένους" label_off="Κλείσιμο λειτουργίας για προχωρημένους" tooltip_off="Κλείστε τη λειτουργία για προχωρημένους"/>
+	<btnMoveUp tooltip="Μετακίνηση επάνω"/>
+	<btnMoveDown tooltip="Μετακίνηση κάτω"/>
+	<btnNext tooltip="Επόμενο αντικείμενο"/>
+	<btnPreview label="Αναπαραγωγή" tooltip="Προεπισκόπηση"/>
+	<btnPrev tooltip="Προηγούμενο αντικείμενο"/>
+	<icDelete tooltip="Διαγραφή" prompt="Διαγράψτε το αντικείμενο?"/>
+	<addProp label="Προσθήκη" tooltip="προσθέστε" />
+	<optionalProp label="Προαιρετικές λειτουργίες:"/>
+	<optionalPropHTML label="Προαιρετικές λειτουργίες" general="Γενικά"/>
+	<chkShowLanguage label="Εμφάνιση επιλογών γλώσσας" tooltip="Εάν υπάρχουν διαθέσιμες επιλογές γλώσσας, να εμφανίζονται."/>
+	<chkShowAdvanced label="Εμφάνιση προχωρημένων επιλογών" tooltip="Εάν υπάρχουν διαθέσιμες προχωρημένες επιλογές, να εμφανίζονται."/>
+    <chkShowToolbar label="Εμφάνιση γραμμής εργαλείων" tooltip="Προβολή όλων των γραμμών εργαλείων ως προεπιλογή."/>
+	<compMedia tooltip="Εισαγωγή μέσου"/>
+	<compPreview tooltip="Προεπισκόπηση" error="Μη διαθέσιμη προεπισκόπηση"/>
+	<calendar tooltip="Επιλογή ημερομηνίας"/>
+	<hidePage title="ΚΡΥΜΜΕΝΗ" tooltip="Αυτή η σελίδα είναι κρυμμένη"/>
+	<standalonePage tooltip="Αυτή είναι μια ανεξάρτητη σελίδα"/>
+	<unmarkForCompletion tooltip="Αυτή η σελίδα δεν είναι απαραίτητη για την ολοκλήρωση"/>
+	<advancedPage title="Προχωρημένη" tooltip="Αυτή η σελίδα δεν είναι μέρος αυτού του υπο-πρότυπου και μπορεί να προστεθεί μόνο στην προχωρημένη λειτουργία."/>
+	<filemenu title="Αρχείο">
+		<menuNew>Νέο έργο...</menuNew>
+		<menuOpen>Άνοιγμα...</menuOpen>
+		<menuSave>Αποθήκευση</menuSave>
+		<menuExit>Έξοδος</menuExit>
 	</filemenu>
-	<menuOpen title="Please select a Project">
-		<dialogText>Select a file</dialogText>
+	<menuOpen title="Παρακαλώ επιλέξτε ένα έργο">
+		<dialogText>Επιλέξτε ένα αρχείο</dialogText>
 		<filterList>*.rlt|*.mxml</filterList>
-		<filterText>Learning Templates|*.rlt|MXML Files|*.mxml</filterText>
+		<filterText>Πρότυπα μάθησης|*.rlt|MXML Files|*.mxml</filterText>
 	</menuOpen>
-	<viewmenu title="View">
-		<menuPreview>Preview</menuPreview>
+	<viewmenu title="Προβολή">
+		<menuPreview>Προεπισκόπηση</menuPreview>
 	</viewmenu>
-	<publishmenu title="Publish">
-		<menuPublish>Publish</menuPublish>
-		<menuPackage>Package</menuPackage>
+	<publishmenu title="Δημοσίευση">
+		<menuPublish>Δημοσίευση</menuPublish>
+		<menuPackage>Πακέτο</menuPackage>
 	</publishmenu>
-	<menuPackage title="Save SCORM 1.2 Package">
-		<dialogText>Select a file</dialogText>
+	<menuPackage title="Αποθήκευση ως πακέτο SCORM 1.2">
+		<dialogText>Επιλέξτε ένα αρχείο</dialogText>
 		<filterList>*.zip</filterList>
-		<filterText>Zip Files|*.zip</filterText>
+		<filterText>Συμπιεσμένα αρχεία|*.zip</filterText>
 	</menuPackage>
-	<helpmenu title="Help">
-		<menuHelp>Help</menuHelp>
+	<helpmenu title="Βοήθεια">
+		<menuHelp>Βοήθεια</menuHelp>
 	</helpmenu>
 	<menuHelp>
-		<prompt>Help file comming soon.</prompt>
+		<prompt>Το αρχείο βοήθειας θα υπάρχει βοήθειας.</prompt>
 	</menuHelp>
 	<importMedia>
 		<filters>
-			<allfiles>All Files (*.*)</allfiles>
-			<images>Images (*.jpg, *.jpeg, *.png)</images>
-			<flash>Flash Files (*.swf)</flash>
-			<sound>Sound Files (*.mp3)</sound>
-			<video>Video Files (*.flv)</video>
+			<allfiles>Όλα τα αρχεία (*.*)</allfiles>
+			<images>Εικόνες (*.jpg, *.jpeg, *.png)</images>
+			<flash>Flash (*.swf)</flash>
+			<sound>Ήχος (*.mp3)</sound>
+			<video>Βίντεο (*.flv)</video>
 		</filters>
-		<title>Select file to import...</title>
-		<filter>All Files|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</filter>
-		<btnimport>Import</btnimport>
-		<btncancel>Cancel</btncancel>
+		<title>Επιλέξτε αρχείο για εισαγωγή...</title>
+		<filter>Όλα τα αρχεία|*.*|JPG|*.jpg|PNG|*.png|Αρχεία SWF|*.swf|Ήχοι|*.mp3|Βίντεο|*.flv</filter>
+		<btnimport>Εισαγωγή</btnimport>
+		<btncancel>Άκυρο</btncancel>
 		<fileexists>
-			<prompt>The file {f} already exists.\r\rOverwrite this file?</prompt>
-			<title>Confirm</title>
+			<prompt>Το αρχείο {f} υπάρχει ήδη.\r\rΝα αντικατασταθεί αυτό το αρχείο;</prompt>
+			<title>Επιβεβαίωση</title>
 		</fileexists>
 	</importMedia>
 	<Alert>
-		<oklabel>Ok</oklabel>
-		<cancellabel>Cancel</cancellabel>
-		<nolabel>No</nolabel>
-		<yeslabel>Yes</yeslabel>
+		<oklabel>Εντάξει</oklabel>
+		<cancellabel>Άκυρο</cancellabel>
+		<nolabel>Όχι</nolabel>
+		<yeslabel>Ναι</yeslabel>
 		<linkhandler>
 			<prompt></prompt>
-			<title>Enter the URL for the link</title>
+			<title>Εισάγετε το URL αυτού του συνδέσμου</title>
 		</linkhandler>
 		<validate>
 			<max>
-				<prompt>You may only add {m} {i}s</prompt>
-				<title>Error</title>
+				<prompt>Μπορείτε να προσθέσετε μόνο {m} {i}s</prompt>
+				<title>Σφάλμα</title>
 			</max>
 			<mixedcontent>
-				<prompt>You cannot mix content here.</prompt>
-				<title>Error</title>
+				<prompt>Δεν μπορείτε να κάνετε μίξη περιεχομένου εδώ.</prompt>
+				<title>Σφάλμα</title>
 			</mixedcontent>
 		</validate>
 		<newproject>
-			<prompt>That folder is not empty. Are you sure you want to use it for the new project?</prompt>
-			<title>Confirm</title>
+			<prompt>Αυτός ο φάκελος δεν είναι άδειος. Θέλετε σίγουρα να τον χρησιμοποιήσετε για το νέο έργο;</prompt>
+			<title>Επιβεβαίωση</title>
 		</newproject>
 		<openproject>
-			<prompt>Do you want to open the new project?</prompt>
-			<title>Confirm</title>
+			<prompt>Θέλετε να ανοίξετε το νέο έργο;</prompt>
+			<title>Επιβεβαίωση</title>
 		</openproject>
 		<initpreview>
-			<prompt>You must select media before you can preview it.</prompt>
-			<title>Info</title>
+			<prompt>Πρέπει να επιλέξετε κάποια μέσα πριν κάνετε προεπισκόπηση.</prompt>
+			<title>Πληροφορίες</title>
 		</initpreview>
 		<duplicateitem>
-			<prompt>You cannot duplicate that item.</prompt>
-			<title>Error</title>
+			<prompt>Δεν μπορείτε να αντιγράψετε αυτό το αντικείμενο.</prompt>
+			<title>Σφάλμα</title>
 		</duplicateitem>
 		<deletenode>
 			<confirm>
-				<prompt>Do you want to delete the item?</prompt>
-				<title>Confirmation</title>
+				<prompt>Θέλετε να διαγράψετε αυτό το αντικείμενο;</prompt>
+				<title>Επιβεβαίωση</title>
 			</confirm>
 			<error>
-				<prompt>You cannot delete this item</prompt>
-				<title>Error</title>
+				<prompt>Δεν μπορείτε να διαγράψετε αυτό το αντικείμενο.</prompt>
+				<title>Σφάλμα</title>
 			</error>
 		</deletenode>
 		<savefile>
-			<prompt>The XML could not be formatted, and changes have not been saved. Check your recent changes.</prompt>
+			<prompt>Το XML δεν μπορεί να μορφοποιηθεί και οι αλλάγες δεν αποθηκεύτηκαν. Ελέγξτε τις πρόσφατες αλλαγές που κάνατε.</prompt>
 		</savefile>
         <exitwizard>
-            <prompt>You are about to leave the editor.</prompt>
+            <prompt>Πρόκειται να εγκαταλείψετε τον συντάκτη.</prompt>
         </exitwizard>
         <upload>
-            <successful>Upload successful</successful>
+            <successful>Επιτυχής φόρτωση</successful>
             <failed>
-                <permissions>Upload failed: Check permissions</permissions>
-                <HTTPError>Upload failed: HTTPError</HTTPError>
-                <IOError>Upload failed: IOError</IOError>
-                <security>Upload failed: Security Error</security>
+                <permissions>Η φόρτωση απέτυχε: Ελέγξτε τα δικαιώματα</permissions>
+                <HTTPError>Η φόρτωση απέτυχε: HTTPError</HTTPError>
+                <IOError>Η φόρτωση απέτυχε: IOError</IOError>
+                <security>Η φόρτωση απέτυχε: Σφάλμα ασφάλειας</security>
             </failed>
         </upload>
 		<changeLanguage>
-			<prompt>Do you want to change all the language options to the default values of language </prompt>
+			<prompt>Θέλετε να αλλάξετε όλες τις επιλογές της γλώσσας στις προεπιλεγμένες τιμές της;</prompt>
 		</changeLanguage>
 
 	</Alert>
 	<XotLinkRelativePages>
-		<firstpage>* first page *</firstpage>
-		<lastpage>* last page *</lastpage>
-		<nextpage>* next page *</nextpage>
-		<prevpage>* previous page*</prevpage>
+		<firstpage>* πρώτη σελίδα *</firstpage>
+		<lastpage>* τελευταία σελίδα *</lastpage>
+		<nextpage>* επόμενη σελίδα *</nextpage>
+		<prevpage>* προηγούμενη σελίδα *</prevpage>
 	</XotLinkRelativePages>
-	<ThemeUrlParam>Theme url parameter:</ThemeUrlParam>
+	<ThemeUrlParam>Παράμετρος url του θέματος εμφάνισης:</ThemeUrlParam>
     <editHotspot>
 		<Buttons>
-			<Rectangle>Rectangle mode</Rectangle>
-			<Polygon>Polygon mode</Polygon>
-			<Reset>Reset</Reset>
+			<Rectangle>Ορθογώνιο</Rectangle>
+			<Polygon>Πολύγωνο</Polygon>
+			<Reset>Επαναφορά</Reset>
 		</Buttons>
 		<Instructions>
-			<header>Hotspot instructions:</header>
-			<rectangle>Draw a rectangle by pressing the left mouse button and dragging.</rectangle>
-			<polygon>Click to add points to the polygon. Click the first (red) point to stop.</polygon>
-			<reset>Press the &#8634; reset button to start over.</reset>
-			<edit>The hotspot can be moved and changed by clicking on it.</edit>
-			<save>To save your selection, click the &#9745; Ok button. If you want to go back without saving, click the &#9746; cancel button.</save>
-			<forceRectangle>Only rectangles can be drawn, flexible hotspots are not available.</forceRectangle>
+			<header>Οδηγίες ενεργού σημείου:</header>
+			<rectangle>Σχεδιάστε ένα ορθογώνιο πατώντας το αριστερό πλήκτρο και σύροντας το ποντίκι επάνω στην εικόνα.</rectangle>
+			<polygon>Κάντε κλικ για να προσθέσετε σημεία στο πολύγωνο. Κάντε κλικ στο πρώτο (κόκκινο) σημείο για να σταματήσει ο σχεδιασμός.</polygon>
+			<reset>Πατήστε το &#8634; πλήκτρο επαναφοράς για να ξεκινήσετε από την αρχή.</reset>
+			<edit>Το ενεργό σημείο μπορείτε να το αλλάξετε και να το μετακινήσετε κάνοντας κλικ επάνω του.</edit>
+			<save>Για να αποθηκεύσετε την επιλογή σας, κάντε κλικ στο &#9745; πλήκτρο 'Εντάξει'. Αν θέλετε να επιστρέψετε πίσω χωρίς αποθήκευση, κάντε κλικ στο &#9746; πλήκτρο 'Άκυρο'.</save>
+			<forceRectangle>Μπορείτε να σχεδιάσετε μόνο ορθογώνια ενεργά σημεία. Άλλες μορφές δεν είναι διαθέσιμες.</forceRectangle>
 		</Instructions>
 		<Error>
-			<selectFile>Select image first!</selectFile>
+			<selectFile>Επιλέξτε μια εικόνα πρώτα!</selectFile>
 		</Error>
     </editHotspot>
 	<grouping deprecated="Deprecated - the red option is no longer allowed by the course list in the management page"></grouping>
@@ -194,7 +194,7 @@
 		<FreeText label="Other"></FreeText>
 	</course>
 	<categoryList>
-		<error>Add {x} to project first</error>
-		<errorEmpty>Add data to {x} first</errorEmpty>
+		<error>Προσθέστε {x} στο έργο πρώτα</error>
+		<errorEmpty>Προσθέστε δεδομένα στο {x} πρώτα</errorEmpty>
 	</categoryList>
 </language>

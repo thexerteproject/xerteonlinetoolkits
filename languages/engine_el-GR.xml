@@ -1,214 +1,214 @@
-<language name="English">
+<language name="Ελληνικά" code="el-GR">
 
-  <noPages label="This project does not contain any pages."/>
+  <noPages label="Αυτό το έργο δεν περιέχει σελίδες."/>
 
-  <nextButton label="Next" description="Next Page Button"/>
+  <nextButton label="Επόμενη" description="Πλήκτρο επόμενης σελίδας"/>
   
-  <backButton label="Back" description="Previous Page Button"/>
+  <backButton label="Προηγούμενη" description="Πλήκτρο προηγούμενης σελίδας"/>
   
-  <tocButton label="Contents" description="Table of Contents Button"/>
+  <tocButton label="Περιεχόμενα" description="Πλήκτρο πίνακα περιεχομένων"/>
   
-  <helpButton label="Help" description="Help Button"/>
+  <helpButton label="Βοήθεια" description="Πλήκτρο βοήθειας"/>
 
-  <mediaButton label="Media" description="Media Button"/>
+  <mediaButton label="Μέσα" description="Πλήκτρο μέσων"/>
   
-  <homeButton label="Home" description="Home Button"/>
+  <homeButton label="Αρχική" description="Πλήκτρο αρχικής σελίδας"/>
   
-  <pageHelp name="Page Help" description="Page Help" toClose="Press Space to close help"/>
+  <pageHelp name="Σελίδας βοήθειας" description="Σελίδας βοήθειας" toClose="Πιέστε το πλήκτρο διαστήματος για να κλείσετε τη βοήθεια"/>
   
-  <glossaryButton label="Glossary" description="Glossary Button"/>
+  <glossaryButton label="Γλωσσάρι" description="Πλήκτρο γλωσσαρίου"/>
   
-  <continueButton label="Continue" description="Continue Button"/>
+  <continueButton label="Συνέχεια" description="Πλήκτρο συνέχειας"/>
   
-  <progressBar label="COMPLETE"/>
+  <progressBar label="ΟΛΟΚΛΗΡΩΣΗ"/>
   
-  <footerTools hide="Hide footer tools" show="Show footer tools"/>
+  <footerTools hide="Απόκρυψη εργαλείων υποσέλιδου" show="Εμφάνιση εργαλείων υποσέλιδου"/>
   
-  <toc label="Table of Contents" description="Table of contents. Use the arrow keys to select a page. Press space to go to that page." htmlDescription="Use the tab key to select a page. Press space to go to that page.">
+  <toc label="Πίνακας περιεχομένων" description="Πίνακας περιεχομένων. Χρησιμοποιήστε τα βελάκια για να επιλέξετε μια σελίδα. Πιέστε διάστημα για να μεταβείτε στη συγκεκριμένη σελίδα." htmlDescription="Χρησιμοπόιήστε το πλήκτρο tab για να επιλέξετε σελίδα  Πιέστε διάστημα για να μεταβείτε στη συγκεκριμένη σελίδα.">
 	  <contentsList label="" description=""/>
 	  <closeButton label="" description="Close Table of Contents"/>
 	  <gotoPageButton label="Go to Page" description="Go to Page Button"/>
   </toc>
   
-  <mediaWindow label="Media Viewer"/>
+  <mediaWindow label="Προβολέας μέσων"/>
   
-  <glossary label="Glossary" description="A list of words and their definitions.">
-	  <closeButton label="" description="Close Glossary"/>
+  <glossary label="Γλωσσάρι" description="Μια λίστα λέξεων και των ορισμών τους.">
+	  <closeButton label="" description="Κλείσιμο γλωσσαρίου"/>
   </glossary>
   
-  <kbLanguage label="Special Characters" description="A list of buttons which add special characters to text areas">
-	  <closeButton label="" description="Close Special Characters"/>
-	  <dialog instruction="Use CAPS and SHIFT" on="ON" off="OFF" caps="Caps"/>
+  <kbLanguage label="Ειδικοί χαρακτήρες" description="Λίστα πλήκτρων που προσθέτουν ειδικούς χαρακτήρες σε περιοχές κειμένων">
+	  <closeButton label="" description="Κλείσιμο ειδικών χαρακτήρων"/>
+	  <dialog instruction="Χρήση πλήκτρων CAPS και SHIFT" on="ΑΝΟΙΧΤΟ" off="ΚΛΕΙΣΤΟ" caps="Caps"/>
   </kbLanguage>
   
-  <textToSpeech label="null" description="Text to Speech"/>
+  <textToSpeech label="null" description="Κείμενο για εκφώνηση"/>
   
-  <errorProject label="The project data has not loaded."/>
+  <errorProject label="Τα δεδομένα του έργου δεν φορτώθηκαν."/>
   
-  <errorPage label="No template is currently available for this page type."/>
+  <errorPage label="Προς το παρόν, δεν υπάρχει διαθέσιμο πρότυπο γι' αυτόν τον τύπο σελίδας."/>
   
-  <errorBrowser label="Your browser does not fully support this page type."/>
+  <errorBrowser label="Ο περιηγητής διαδικτύου δεν υποστηρίζει πλήρως αυτόν τον τύπο σελίδας."/>
   
-  <errorEmbed label="You have embedded an XOT project preview. You must make the project public and embed the public facing URL."/>
+  <errorEmbed label="Έχετε ενσωματώσει μια προεπισκόπηση ενός έργου XOT. Θα πρέπει να κάνετε το έργο διαθέσιμο δημόσια και να ενσωματώσετε το URL που εμφανίζεται δημόσια."/>
   
-  <pageDeprecatedCeased label="This page has been deprecated as the service has ceased."/>
+  <pageDeprecatedCeased label="Αυτή η σελίδα έχει καταργηθεί, καθώς η υπηρεσία έχει σταματήσει."/>
   
-  <errorQuestions noQ="No questions have been added" noA="No answer options have been added" />
+  <errorQuestions noQ="Δεν προστέθηκαν ερωτήσεις" noA="Δεν προστέθηκαν επιλογές απάντησης" />
   
-  <errorFlash label="You need to install the Flash Player to view this content." description="Get the Flash Player"/>
+  <errorFlash label="Θα πρέπει να εγκαταστήσετε το Flash Player για να δείτε αυτό το περιεχόμενο." description="Κατεβάστε το Flash Player"/>
   
-  <authorSupport label="Author Support is ON: text shown in red will not appear in live projects."/>
+  <authorSupport label="Η υποστήριξη δημιουργού είναι ενεργή: το κείμενο με τα κόκκινα γράμματα δεν θα εμφανίζεται κατά την εκτέλεση των έργων."/>
   
-  <hiddenPage label="This page will be hidden in live projects" hidden="This page is currently hidden in live projects" shown="This page is currently shown in live projects" until="Hide until" from="Hide from"/>
+  <hiddenPage label="Αυτή η σελίδα δεν θα εμφανίζεται κατά την εκτέλεση των έργων" hidden="Προς το παρόν, αυτή η σελίδα δεν εμφανίζεται κατά την εκτέλεση των έργων" shown="Προς το παρόν, αυτή η σελίδα εμφανίζεται κατά την εκτέλεση των έργων" until="Απόκρυψη μέχρι" from="Απόκρυψη από"/>
   
-  <hiddenSection label="This section will be hidden in live projects" hidden="This section is currently hidden in live projects" shown="This section is currently shown in live projects" until="Hide until" from="Hide from"/>
+  <hiddenSection label="Αυτό το τμήμα δεν θα εμφανίζεται κατά την εκτέλεση των έργων" hidden="Προς το παρόν, αυτό το τμήμα δεν θα εμφανίζεται κατά την εκτέλεση των έργων" shown="Προς το παρόν, αυτό το τμήμα θα εμφανίζεται κατά την εκτέλεση των έργων" until="Απόκρυψη μέχρι" from="Απόκρυψη μέχρι"/>
   
-  <tick label="Tick"/>
+  <tick label="Σημείο επιλογής"/>
   
-  <cross label="Cross"/>
+  <cross label="Σταυρός"/>
 
-  <themes label="--Colour Schemes--" description="Colour Scheme Options">
-    <item>default</item>
-    <item>blue</item>
-    <item>green</item>
-    <item>red</item>
-    <item>orange</item>
-    <item>purple</item>
-    <item>grey</item>
-    <item>high contrast 1</item>
-    <item>high contrast 2</item>
+  <themes label="--Συνδυασμοί χρωμάτων--" description="Επιλογές συνδυασμού χρωμάτων">
+    <item>Προεπιλεγμένος</item>
+    <item>Μπλε</item>
+    <item>Πράσινο</item>
+    <item>Κόκκινο</item>
+    <item>Πορτοκαλί</item>
+    <item>Μωβ</item>
+    <item>Γκρι</item>
+    <item>Υψηλή αντίθεση 1</item>
+    <item>Υψηλή αντίθεση 2</item>
   </themes>
  
-  <sizes label="--Screen Size--" description="Screen Size Options">
-	<item>Default</item>
-	<item>large</item>
-	<item>larger</item>
-	<item>Full Screen</item>
-	<item>fill window</item>
+  <sizes label="--Μέγεθος οθόνης--" description="Επιλογές μεγέθους οθόνης">
+	<item>Προεπιλεγμένο</item>
+	<item>Μεγάλο</item>
+	<item>Μεγαλύτερο</item>
+	<item>Πλήρης οθόνη</item>
+	<item>Γέμισμα οθόνης</item>
   </sizes>
   
-  <fonts label="--Text Font--" description="Typeface Options">
-	  <item>default</item>
+  <fonts label="--Γραμματοσειρά κειμένου--" description="Επιλογές γραμματοσειράς">
+	  <item>Προεπιλεγμένο</item>
   </fonts>
   
   <textSizes label="--Text Size--" description="Text Size Options">
-	  <item>default</item>
-	  <item>small</item>
-	  <item>medium</item>
-	  <item>large</item>
-	  <item>larger</item>
+	  <item>Προεπιλεγμένο</item>
+	  <item>Μικρό</item>
+	  <item>Μεσαίο</item>
+	  <item>Μεγάλο</item>
+	  <item>Μεγαλύτερο</item>
   </textSizes>
   
-  <volumeControl label="Vol:" description="Volume Control"/>
-  <volumeControlSlider label="" description="Volume Control Slider"/>
+  <volumeControl label="Ένταση:" description="Έλεγχος έντασης"/>
+  <volumeControlSlider label="" description="Οδηγός ελέγχου έντασης"/>
   
   <vocab>
-	  <page>Page</page>
-	  <of>of</of>
+	  <page>Σελίδα</page>
+	  <of>από</of>
   </vocab>
   
   <soundController>
-	<stopButton label="Stop Audio" description="Stop Audio Button"/>
-	<playButton label="Play Audio" description="Play Audio Button"/>
-	<pauseButton label="Pause Audio" description="Pause Audio Button"/>
-	<rwndButton label="Rewind Audio" description="Rewind Audio Button"/>
-	<ffwdButton label="Forward Audio" description="Forward Audio Button"/>
-	<loader label="Loading: "/>
+	<stopButton label="Διακοπή ήχου" description="Πλήκτρο διακοπής ήχου"/>
+	<playButton label="Αναπαραγωγή ήχου" description="Πλήκτρο αναπαραγωγής ήχου"/>
+	<pauseButton label="Παύση" description="Πλήκτρο παύσης ήχου"/>
+	<rwndButton label="Αναζήτηση ήχου πίσω" description="Πλήκτρο αναζήτησης ήχου πίσω"/>
+	<ffwdButton label="Αναζήτηση ήχου μπροστά" description="Πλήκτρο αναζήτησης ήχου μπροστά"/>
+	<loader label="Φόρτωση: "/>
   </soundController>
   
   <movieController>
-	<stopButton label="Reset Movie" description="Stop Movie Button"/>
-	<playButton label="Play Movie" description="Play Movie Button"/>
-	<pauseButton label="Pause Movie" description="Pause Movie Button"/>
-	<rwndButton label="Rewind Movie" description="Rewind Movie Button"/>
-	<ffwdButton label="Forward Movie" description="Forward Movie Button"/>
-	<loader label="Loading: "/>
+	<stopButton label="Επαναφορά ταινίας" description="Πλήκτρο επαναφοράς ταινίας"/>
+	<playButton label="Αναπαραγωγή ταινίας" description="Πλήκτρο αναπαραγωγής ταινίας"/>
+	<pauseButton label="Παύση ταινίας" description="Πλήκτρο παύσης ταινίας"/>
+	<rwndButton label="Αναζήτηση ταινίας πίσω" description="Πλήκτρο αναζήτησης ταινίας πίσω"/>
+	<ffwdButton label="Αναζήτηση ταινίας μπροστά" description="Πλήκτρο αναζήτησης ταινίας μπροστά"/>
+	<loader label="Φόρτωση: "/>
   </movieController>
   
-  <mediaElementControls video="Video" audio="Audio">
-	<stopButton label="Stop" description="Stop Media Button"/>
-	<playPauseButton label="Play/Pause" description="Play/Pause Media Button"/>
-	<muteButton label="Mute Toggle" description="Toggle Mute Button"/>
-	<fullscreenButton label="Fullscreen" description="Fullscreen Movie Button"/>
-	<captionsButton label="Captions/Subtitles" description="Show/Hide Captions Button"/>
+  <mediaElementControls video="Βίντεο" audio="Ήχος">
+	<stopButton label="Διακοπή" description="Πλήκτρο διακοπής μέσου"/>
+	<playPauseButton label="Αναραγωγή/Παύση" description="Πλήκτρο αναπαραγωγής/παύσης μέσου"/>
+	<muteButton label="Εναλλαγή σίγασης" description="Πλήκτρο εναλλαγής σίγασης"/>
+	<fullscreenButton label="Πλήρης οθόνη" description="Πλήκτρο πλήρους οθόνης"/>
+	<captionsButton label="Λεζάντες/Υπότιτλοι" description="Πλήκτρο Εμφάνισης/Απόκρυψης Λεζαντών/Υπότιτλων"/>
   </mediaElementControls>
   
   <interactions>
-	  <button name="Button"/>
-	  <radioButton selected="selected. Use the arrow keys to choose from the options"/>
-	  <checkBox selected="selected" deselected="deselected"/>
-	  <comboBox name="ComboBox" options="Options." selected="selected." selectedOptions="selected. Use the arrow keys to select" />
-	  <hotSpot name="HotSpot" toSelect="Hot Spot. Press Space to select." selected="Hot Spot Selected"/>
-	  <hotObject name="HotObject" toSelect="Press Space to select." selected="Hot Object Selected"/>
-	  <textEntry name="Text Entry Box" selected="Text entry box selected"/>
-	  <targetArea name="Target Area" description="Drop zone for" toSelect="Press space to drop the selected item."/>
-	  <draggableItem name="Draggable Item" selected="Item Selected" toSelect="Press space to select" deSelected="No item selected." />
-	  <moreInfoItem toSelect="Press space to select" selected="Selected" moreInfo="Press space to learn more" />
+	  <button name="Πλήκτρο"/>
+	  <radioButton selected="επιλέχθηκε. Χρησιμοποιήστε τα βελάκια για να κάνετε μια επιλογή"/>
+	  <checkBox selected="επιλέχθηκε" deselected="δεν επιλέχθηκε"/>
+	  <comboBox name="Πλαίσιο συνδυασμών" options="Επιλογές." selected="επιλέχθηκε." selectedOptions="επιλέχθηκε. Χρησιμοποιήστε τα βελάκια για να κάνετε μια επιλογή" />
+	  <hotSpot name="Ενεργό σημείο" toSelect="Ενεργό σημείο. Πιέστε το πλήκτρο διαστήματος για να επιλέξετε." selected="Το ενεργό σημείο επιλέχθηκε"/>
+	  <hotObject name="Ενεργό αντικείμενο" toSelect="Πιέστε το πλήκτρο διαστήματος για να επιλέξετε." selected="Το ενεργό αντικείμενο επιλέχθηκε"/>
+	  <textEntry name="Πλαίσιο εισαγωγής κειμένου" selected="Το πλαίσιο εισαγωγής κειμένου επιλέχθηκε"/>
+	  <targetArea name="Περιοχή στόχου" description="Ζώνη απόθεσης για" toSelect="Πιέστε το πλήκτρο διαστήματος για να αποθέσετε το επιλεγμένο αντικείμενο."/>
+	  <draggableItem name="Μεταφερόμενο αντικείμενο" selected="Το αντικείμενο επιλέχθηκε" toSelect="Πιέστε το πλήκτρο διαστήματος για να επιλέξετ" deSelected="Δεν επιλέχθηκε αντικείμενο." />
+	  <moreInfoItem toSelect="Πιέστε το πλήκτρο διαστήματος για να επιλέξετε" selected="Επιλέχθηκε" moreInfo="Πιέστε το πλήκτρο διαστήματος για να μάθετε περισσότερα" />
   </interactions>
   
-  <fetchResults label="Fetching results..."/>
-  <errorResults label="There was an error loading the results"/>
-  <loadError label="Error loading"/>
-  <noResults label="No results returned"/>
+  <fetchResults label="Λήψη αποτελεσμάτων..."/>
+  <errorResults label="Υπήρξε κάποιο σφάλμα κατά τη φόρτωση των αποτελεσμάτων"/>
+  <loadError label="Σφάλμα φόρτωσης"/>
+  <noResults label="Δεν επιστράφηκαν αποτελέσματα"/>
 
-	<rssDLAuthor label="Created by:"/>
-	<rssDLLicense label="License:"/>
-	<rssDLModDate label="Last modified:"/>
+	<rssDLAuthor label="Δημιουργήθηκε από:"/>
+	<rssDLLicense label="Άδεια:"/>
+	<rssDLModDate label="Τελευταία τροποποίηση:"/>
   
   <timer>
-	  <remaining name="Time remaining"/>
-	  <timeUp name="Time up"/>
-	  <seconds name="seconds"/>
+	  <remaining name="Χρόνος που απομένει"/>
+	  <timeUp name="Τέλος χρόνου"/>
+	  <seconds name="δευτερόλεπτα"/>
   </timer>
 
-  <colourChanger label="Accessibility Options" description="Change the colours." tooltip="Accessibility Options">
-	  <closeButton label="" description="Close Accessibility Options"/>
-	  <selectTxt label="Please select from the options below"/>
-	  <adviceTxt label="Need more advice? Visit the &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Online Toolkits guide to accessibility&lt;/a&gt;."/>
-	  <off label="Default"/>
-	  <noBg label="Remove Background Images"/>
-	  <invert label="Invert"/>
-	  <blackYellow label="Black on Yellow"/>
+  <colourChanger label="Επιλογές προσβασιμότητας" description="Αλλαγή χρωμάτων" tooltip="Επιλογές προσβασιμότητας">
+	  <closeButton label="" description="Κλείσιμο επιλογών προσβασιμότητας"/>
+	  <selectTxt label="Παρακαλώ επιλέξτε από την παρακάτω λίστα"/>
+	  <adviceTxt label="Χρειάζεστε περισσότερες συμβουλές; Επισκεφθείτε &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;οδηγό προσβασιμότητας Xerte Online Toolkits&lt;/a&gt;."/>
+	  <off label="Προεπιλεγμένες"/>
+	  <noBg label="Αφαίρεση εικόνων παρασκηνίου"/>
+	  <invert label="Αντιστροφή"/>
+	  <blackYellow label="Μαύρο σε κίτρινο"/>
   </colourChanger>
   
-  <screenReaderInfo label="Screen Reader Information" newWindow="This link will open in a new window" thisWindow="This link will open in this window" dialog="This button will open a dialog window">
-	  <tabNav description="This page contains a tabbed panel where the selection of a tab changes the information presented. To select a tab: Click Enter twice (Jaws) or click Shift-Enter (NVDA)."/>
-	  <accNav description="This page contains an accordion panel where the selection of a tab changes the information presented. To select a tab click Enter or Space."  click="Click to reveal information"/>
-	  <buttonNav description="This page contains a series of buttons where each one reveals some related information." click="Click to reveal information"/>
-	  <slideshow description="This page contains a slideshow where clicking the next and previous buttons changes the information presented."/>
-	  <audioSlideshow description="This page displays content in synch with an audio files. New content is added to the page as the audio plays."/>
-	  <videoSynch description="This page displays content in synch with a video. New content is added to the page as the video plays."/>
-	  <list description="This page contains a series of links where each one reveals some related information." click="Click to reveal information"/>
-	  <modelAnswerResults selected="Text selected"/>
-	  <mcq description="This page contains a multiple choice question. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
-	  <quiz description="This page contains a series of multiple choice questions. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
+  <screenReaderInfo label="Πληροφορίες αναγνώστη οθόνης" newWindow="Αυτός ο σύνδεσμος θα ανοίξει σε νέο παράθυρο" thisWindow="Αυτός ο σύνδεσμος θα ανοίξει σε αυτό το παράθυρο" dialog="Αυτός το πλήκτρο θα ανοίξει ένα νέο παράθυρο">
+	  <tabNav description="Αυτή η σελίδα περιέχει ένα πλάισιο με καρτέλες, στο οποίο η επιλογή μιας καρτέλας αλλάζει τις πληροφορίες που εμφανίζονται Για να επιλέξετε μια καρτέλα: πιέστε το Enter δύο φορές (Jaws) ή κάντε πιέστε Shift-Enter (NVDA)."/>
+	  <accNav description="Αυτή η σελίδα περιέχει ένα πλάισιο ακκορντεόν, στο οποίο η επιλογή μιας καρτέλας αλλάζει τις πληροφορίες που εμφανίζονται Για να επιλέξετε μια καρτέλα πιέστε το Enter ή το πλήκτρο διαστήματος."  click="Κάντε κλικ για να εμφανίσετε πληροφορίες"/>
+	  <buttonNav description="Αυτή η σελίδα περιέχει μια σειρά πλήκτρων καθένα από τα οποία εμφανίζει μερικές σχετικές πληροφορίες." click="Κάντε κλικ για να εμφανίσετε πληροφορίες"/>
+	  <slideshow description="Αυτή η σελίδα περιέχει μια παρουσίαση διαφανειών όπου με το πάτημα των πλήκτρων 'Προηγούμενο', 'Επόμενο' αλλάζουν οι πληροφορίες που παρουσιάζονται."/>
+	  <audioSlideshow description="Αυτή η σελίδα εμφανίζει περιεχόμενο συγχρονισμένο με ένα ηχητικό αρχείο. Νέο περιεχόμενο προστίθεται στη σελίδα καθώς το αρχείο αναπαράγεται."/>
+	  <videoSynch description="Αυτή η σελίδα εμφανίζει περιεχόμενο συγχρονισμένο με ένα βίντεο. Νέο περιεχόμενο προστίθεται στη σελίδα καθώς το βίντεο αναπαράγεται."/>
+	  <list description="Αυτή η σελίδα περιέχει μια σειρά συνδέσμων, καθένας από τους οποίους εμφανίζει μερικές σχετικές πληροφορίες." click="Κάντε κλικ για να εμφανίσετε πληροφορίες"/>
+	  <modelAnswerResults selected="Επιλεγμένο κείμενο"/>
+	  <mcq description="Αυτή η σελίδα περιέχει μια ερώτηση πολλαπλών επιλογών. Χρησιμοποιήστε το πλήκτρο tab ή τα βελάκια επάνω/κάτω για να εξερευνήσετε πιθανές απαντήσεις και κάντε κλικ στο πλήκτρο διαστήματος για να επιλέξετε την απάντησή σας."/>
+	  <quiz description="Αυτή η σελίδα περιέχει μια ερωτήσεων πολλαπλών επιλογών. Χρησιμοποιήστε το πλήκτρο tab ή τα βελάκια επάνω/κάτω για να εξερευνήσετε πιθανές απαντήσεις και κάντε κλικ στο πλήκτρο διαστήματος για να επιλέξετε την απάντησή σας."/>
   </screenReaderInfo>
   
-  <authorVars label="View variable data">
-	<item>Name</item>
-	<item>Fixed Value</item>
-	<item>Random</item>
-	<item>Min</item>
-	<item>Max</item>
-	<item>Step</item>
+  <authorVars label="Προβολή δεδομένων μεταβλητών">
+	<item>Όνομα</item>
+	<item>Σταθερή</item>
+	<item>Τυχαία</item>
+	<item>Ελάχιστη</item>
+	<item>Μέγιστη</item>
+	<item>Βήμα</item>
 	<item>DP</item>
 	<item>SF</item>
-	<item>Trailing Zeros</item>
-	<item>Exclude</item>
-	<item>Default</item>
-	<item>Value</item>
+	<item>Μηδενικά</item>
+	<item>Αποκλειόμενη</item>
+	<item>Προεπιλεγμένη</item>
+	<item>Τιμή</item>
   </authorVars>
   
   <authorVarsInfo>
-	  <error unable="Unable to calculate" invalid="Invalid value" none="No variable data"/>
-	  <info undef="References an undefined variable" minMax="min > max" valueMin="value &lt; min" valueMax="value > max" exclude="{n} is excluded" circular="Circular variable reference" none="All possible values are excluded or fall outside the min &amp; max range" none2="{n} attempts have not returned an accepted value" attempts="{n} attempts to calculate a valid value" default="Fallback to default value"/>
+	  <error unable="Αδυναμία υπολογισμού" invalid="Μη έγκυρη τιμή" none="Η μεταβλητή δεν έχει δεδομένα"/>
+	  <info undef="Αναφέρει μια απροσδιόριστη μεταβλητή" minMax="ελάχιστο > μέγιστο" valueMin="τιμή &lt; ελάχιστη" valueMax="τιμή > μέγιστη" exclude="{n} έχει αποκλειστεί" circular="Κυκλική αναφορά μεταβλητής" none="Όλες οι πιθανές τιμές έχουν αποκλειστεί ή βρίσκονται εκτός του εύρους μεταξύ της ελάχιστης &amp; μέγιστης τιμής" none2="{n} προσπάθειες δεν έχουν επιστρέψει μια αποδεκτή τιμή" attempts="{n} προσπάθειες για υπολογισμό μια έγκυρης τιμής" default="Επιστροφή στην προεπιλεγμένη τιμή"/>
   </authorVarsInfo>
   
-  <submitBtnLabel label="Submit"/>
-  <submitConfirmMsg label="Your answers have been submitted"/>
-  <closeBtnLabel label="Close"/>
+  <submitBtnLabel label="Υποβολή"/>
+  <submitConfirmMsg label="Οι απαντήσεις σας έχουν υποβληθεί"/>
+  <closeBtnLabel label="Κλείσιμο"/>
   
-  <search title="Search" searchBtn="Search" goBtn="Go" newBtn="New Search" resultTitle="Results" matchTitle1="Matches" matchTitle2="Best matches" matchTitle3="Partial matches" showMatch="Show partial matches" noMatch1="No pages or sections match your selection." noMatch2="No pages or sections completely match your criteria. Partial matches are listed below." />
-  <print printBtn="Print page"/>
+  <search title="Αναζήτηση" searchBtn="Αναζήτηση" goBtn="Μετάβαση" newBtn="Νέα αναζήτηση" resultTitle="Αποτελέσματα" matchTitle1="Ταιριάζουν" matchTitle2="Ταιριάζουν πολύ" matchTitle3="Ταιριάζουν λίγο" showMatch="Εμφάνιση αποτελεσμάτων που ταιριάζουν λίγο" noMatch1="Δεν υπάρχουν σελίδες ή τμήματα που να ταιριάζουν με τις επιλογές σας." noMatch2="Δεν υπάρχουν σελίδες ή τμήματα που να ταιριάζουν απόλυτα με τα κριτήριά σας. Τα αποτελέσματα που ταιριάζουν λίγο βρίσκονται στην παρακάτω λίστα." />
+  <print printBtn="Εκτύπωση σελίδας"/>
 
 </language>
