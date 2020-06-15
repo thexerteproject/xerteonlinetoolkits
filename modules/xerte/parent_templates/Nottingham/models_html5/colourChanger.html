@@ -177,6 +177,7 @@
 					case "0":
 					    colourChanger.switchTheme(x_params.theme);
                         colourChanger.applyFilter($(this).attr('value'));
+                        x_specialTheme = '';
 					 break;
 					case "1":
 					    colourChanger.applyFilter($(this).attr('value'));
@@ -184,10 +185,13 @@
 					case "2":
 					    colourChanger.switchTheme("highcontrast");
                         colourChanger.applyFilter($(this).attr('value'));
+                        x_specialTheme = 'highcontrast';
 					 break;
 					case "3":
                         colourChanger.switchTheme("blackonyellow");
                         colourChanger.applyFilter($(this).attr('value'));
+                        x_specialTheme = 'blackonyellow';
+                        break;
 				 }
 
 				var pageTypesRequiringRefresh = ['chart', 'textDrawing'];

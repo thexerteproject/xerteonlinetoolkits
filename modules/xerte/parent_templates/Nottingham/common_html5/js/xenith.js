@@ -39,6 +39,7 @@ var x_languageData  = [],
     x_timer,        // use as reference to any timers in page models - they are cancelled on page change
 	x_responsive = [], // list of any responsivetext.css files in use
 	x_cssFiles = [],
+    x_specialTheme = '',
 	x_pageLoadPause = false;
 
 // Determine whether offline mode or not
@@ -1586,6 +1587,12 @@ function x_changePageStep2(x_gotoPage) {
 }
 
 function x_changePageStep3(x_gotoPage) {
+    var css = document.getElementById('theme_css');
+    css.load = function()
+    {
+        var i=1;
+    };
+
     if (x_params.theme != undefined && x_params.theme != "default") {
         // adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
         if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
@@ -1642,22 +1649,32 @@ function x_endPageTracking(pagechange, x_gotoPage) {
 function x_changePageStep5(x_gotoPage) {
 
     if (x_params.styles != undefined) {
-        $x_head.append('<style type="text/css" id="page_css">' + x_params.styles + '</style>');
+        if ($('#lo_css').length == 0) {
+            $x_head.append('<style type="text/css" id="lo_css">' + x_params.styles + '</style>');
+        }
     }
     // If special_theme_css does not exist yet, create a disabled special_theme_css
-    if ($('#special_theme_css').length == 0) {
-        x_insertCSS(x_themePath +  'blackonyellow/blackonyellow.css', function () {
-            x_changePageLastStep(x_gotoPage);
-        }, true, "special_theme_css", true);
+    if (x_specialTheme != undefined && x_specialTheme != '') {
+        x_insertCSS(x_themePath + x_specialTheme + '/' + x_specialTheme + '.css', function () {
+            x_changePageStep5a(x_gotoPage);
+        }, false, "special_theme_css", true);
     }
     else
     {
-        x_changePageLastStep(x_gotoPage);
+        x_insertCSS(x_themePath + 'blackonyellow/blackonyellow.css', function () {
+            x_changePageStep5a(x_gotoPage);
+        }, true, "special_theme_css", true);
     }
 }
 
-function x_changePageLastStep(x_gotoPage) {
+function x_changePageStep5a(x_gotoPage) {
     var prevPage = x_currentPage;
+
+    // disable onload of #special_theme_css
+    $('#special_theme_css').bind('load', function()
+    {
+        // Do nothing
+    });
 
     // End page tracking of x_currentPage
     x_endPageTracking(true, x_gotoPage);
