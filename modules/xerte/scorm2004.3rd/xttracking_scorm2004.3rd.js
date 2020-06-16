@@ -596,7 +596,7 @@ function ScormTrackingState()
                         if (sit != null) {
                             //Skip results page completely
                             if (sit.ia_type != "result") {
-                                state.completedPages[i] = state.pageCompleted(page_nr);
+                                state.completedPages[i] = state.pageCompleted(sit);
                             }
                         }
                     }
