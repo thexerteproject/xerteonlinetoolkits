@@ -179,7 +179,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     /**
      * Build Grouping List
      */
-    $sql = "select * from {$xerte_toolkits_site->database_table_prefix}grouping";
+    $sql = "select * from `{$xerte_toolkits_site->database_table_prefix}grouping`";
     $grouping = db_query($sql);
 
     /**
