@@ -237,8 +237,8 @@ function get_email_headers() {
 //
 function _is_writable($path) {
 
-    if (is_dir($path) || $path{strlen($path) - 1} == '/')
-        return _is_writable($path . ($path{strlen($path) - 1} == '/' ? "" : "/") . uniqid(mt_rand()) . '.tmp');
+    if (is_dir($path) || $path[strlen($path) - 1] == '/')
+        return _is_writable($path . ($path[strlen($path) - 1] == '/' ? "" : "/") . uniqid(mt_rand()) . '.tmp');
 
     if (file_exists($path)) {
         if (!($f = @fopen($path, 'r+')))
