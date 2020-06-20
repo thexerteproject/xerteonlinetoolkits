@@ -219,12 +219,17 @@ function get_email_headers() {
     $from = $xerte_toolkits_site->site_email_account;
     $extraheaders = str_replace("*", "\n", $xerte_toolkits_site->headers);
     $headers = "";
-    if (strpos("From:", $extraheaders) === false) {
+	   if (!empty($extraheaders)) {
+        if (strpos("From:", $extraheaders) === false) {
+			         $headers .= "From: " . $from . "\n" . $extraheaders;
+        }
+        if (strpos("Content-Type:", $extraheaders) === false) {
+            $headers .= "Content-Type: text/html; charset=\"UTF-8\"";
+         }
+    } else {
         $headers .= "From: " . $from . "\n" . $extraheaders;
-    }
-    if (strpos("Content-Type:", $extraheaders) === false) {
-        $headers .= "Content-Type: text/html; charset=\"UTF-8\"";
-    }
+			     $headers .= "Content-Type: text/html; charset=\"UTF-8\"";
+	   }
     $headers .= $extraheaders;
     return $headers;
 }
