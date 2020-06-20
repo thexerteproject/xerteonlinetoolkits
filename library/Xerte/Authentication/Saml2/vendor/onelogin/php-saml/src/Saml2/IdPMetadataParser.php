@@ -237,7 +237,11 @@ class IdPMetadataParser
                 unset($settings['idp']['x509certMulti']);
             }
         }
-
+        // unset $metadataInfo['sp']['NameIDFormat'] if it exists in $settings
+        if (isset($settings['sp']['NameIDFormat']) && !empty($settings['sp']['NameIDFormat']) && isset($metadataInfo['sp']['NameIDFormat']))
+        {
+            unset($metadataInfo['sp']['NameIDFormat']);
+        }
         return array_replace_recursive($settings, $metadataInfo);
     }
 }
