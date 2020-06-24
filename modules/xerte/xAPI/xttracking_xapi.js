@@ -982,6 +982,11 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
 
         var statement = {
             actor: actor,
+            context: {
+                extensions: {
+                    "http://xerte.org.uk/learningObjectLevel" : "interactivity"
+                }
+            },
             verb: {
                 id: "http://adlnet.gov/expapi/verbs/initialized",
                 display: {
@@ -1002,13 +1007,12 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
         statement.object.definition.name[state.language] = description;
 
         if (this.grouping != "") {
-            statement.context = {
-                contextActivities: {
-                    grouping: [{
-                        id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
-                        objectType: "Activity"
-                    }]
-                }
+            statement.context.contextActivities =
+            {
+                grouping: [{
+                    id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                    objectType: "Activity"
+                }]
             };
         }
         SaveStatement(statement);
@@ -1044,6 +1048,11 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                     var statement = {
                         timestamp: this.end,
                         actor: actor,
+                        context: {
+                            extensions: {
+                                "http://xerte.org.uk/learningObjectLevel" : "interactivity"
+                            }
+                        },
                         verb: {
                             id: "http://adlnet.gov/expapi/verbs/answered",
                             display: {
@@ -1364,20 +1373,24 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             };
                     }
                     if (this.grouping != "") {
-                        statement.context = {
-                            contextActivities: {
+                        statement.context.contextActivities =
+                            {
                                 grouping: [{
                                     id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
                                     objectType: "Activity"
                                 }]
-                            }
-                        };
+                            };
                     }
                     SaveStatement(statement);
                     if (typeof statement.result.score != 'undefined') {
                         var scoredstatement = {
                             timestamp: new Date(),
                             actor: actor,
+                            context: {
+                                extensions: {
+                                    "http://xerte.org.uk/learningObjectLevel" : "interactivity"
+                                }
+                            },
                             verb: {
                                 id: "http://adlnet.gov/expapi/verbs/scored",
                                 display: {
@@ -1396,14 +1409,12 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             result: statement.result
                         };
                         if (this.grouping != "") {
-                            scoredstatement.context = {
-                                contextActivities: {
+                            scoredstatement.context.contextActivities = {
                                     grouping: [{
                                         id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
                                         objectType: "Activity"
                                     }]
-                                }
-                            };
+                                };
                         }
                         SaveStatement(scoredstatement);
                     }
@@ -1433,7 +1444,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         timestamp: new Date()
                     };
                     if (this.grouping != "") {
-                        statement.context.contextActinities = {
+                        statement.context.contextActivities = {
                             grouping: [{
                                 id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
                                 objectType: "Activity"
@@ -1494,6 +1505,11 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
             if (this.ia_nr >= 0) {
                 statement = {
                     actor: actor,
+                    context: {
+                        extensions: {
+                            "http://xerte.org.uk/learningObjectLevel" : "interactivity"
+                        }
+                    },
                     verb: {
                         id: "http://adlnet.gov/expapi/verbs/exited",
                         display: {
@@ -1516,6 +1532,11 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
             } else {
                 statement = {
                     actor: actor,
+                    context: {
+                        extensions: {
+                            "http://xerte.org.uk/learningObjectLevel" : "page"
+                        }
+                    },
                     verb: {
                         id: "http://adlnet.gov/expapi/verbs/exited",
                         display: {
@@ -1536,14 +1557,12 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                 statement.object.definition.name[state.language] = description;
             }
             if (this.grouping != "") {
-                statement.context = {
-                    contextActivities: {
+                statement.context.contextActivities = {
                         grouping: [{
                             id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
                             objectType: "Activity"
                         }]
-                    }
-                };
+                    };
             }
             SaveStatement(statement);
         }
@@ -1726,6 +1745,11 @@ function XTInitialise(category) {
     if (!surf_mode) {
         var statement = {
             actor: actor,
+            context: {
+                extensions: {
+                    "http://xerte.org.uk/learningObjectLevel" : "lo"
+                }
+            },
             verb: {
                 id: "http://adlnet.gov/expapi/verbs/launched",
                 display: {
@@ -1923,15 +1947,27 @@ function XTSetOption(option, value) {
     }
 }
 
-function XTEnterPage(page_nr, page_name) {
+function XTEnterPage(page_nr, page_name, grouping) {
     var sitp = state.enterPage(page_nr, -1, "page", page_name);
     this.pageStart = new Date();
     var id = sitp.getPageId();
     var description = sitp.getPageDescription();
 
     if (!surf_mode) {
+        if (typeof grouping != "undefined" && grouping != "" && grouping !=
+            null) {
+            this.grouping = grouping;
+        } else {
+            this.grouping = "";
+        }
+
         var statement = {
             actor: actor,
+            context: {
+                extensions: {
+                    "http://xerte.org.uk/learningObjectLevel" : "page"
+                }
+            },
             verb: {
                 id: "http://adlnet.gov/expapi/verbs/initialized",
                 display: {
@@ -1952,6 +1988,14 @@ function XTEnterPage(page_nr, page_name) {
 
         };
         statement.object.definition.name[state.language] = description;
+        if (this.grouping != "") {
+            statement.context.contextActivities = {
+                    grouping: [{
+                        id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                        objectType: "Activity"
+                    }]
+                };
+        }
         SaveStatement(statement);
     }
 }
@@ -2100,6 +2144,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                         }]
                     },
                     "extensions": {
+                        "http://xerte.org.uk/learningObjectLevel" : "video",
                         "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
                     }
                 }
@@ -2142,6 +2187,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                         }]
                     },
                     "extensions": {
+                        "http://xerte.org.uk/learningObjectLevel" : "video",
                         "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                         "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                     }
@@ -2194,6 +2240,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                         }]
                     },
                     "extensions": {
+                        "http://xerte.org.uk/learningObjectLevel" : "video",
                         "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                         "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                     }
@@ -2238,6 +2285,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                         }]
                     },
                     "extensions": {
+                        "http://xerte.org.uk/learningObjectLevel" : "video",
                         "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                         "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                     }
@@ -2297,6 +2345,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                             }]
                         },
                         "extensions": {
+                            "http://xerte.org.uk/learningObjectLevel" : "video",
                             "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                             "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                         }
@@ -2342,6 +2391,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                                 }]
                             },
                             "extensions": {
+                                "http://xerte.org.uk/learningObjectLevel" : "video",
                                 "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                                 "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                             }
@@ -2386,6 +2436,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                             }]
                         },
                         "extensions": {
+                            "http://xerte.org.uk/learningObjectLevel" : "video",
                             "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                             "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                         }
@@ -2409,6 +2460,11 @@ function XTSetPageScore(page_nr, score) {
         var description = sitp.getPageDescription();
         var statement = {
             actor: actor,
+            context: {
+                extensions: {
+                    "http://xerte.org.uk/learningObjectLevel" : "page"
+                }
+            },
             verb: {
                 id: "http://adlnet.gov/expapi/verbs/scored",
                 display: {
@@ -2467,6 +2523,11 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
         if (!surf_mode) {
             var statement = {
                 actor: actor,
+                context: {
+                    extensions: {
+                        "http://xerte.org.uk/learningObjectLevel" : "page"
+                    }
+                },
                 verb: {
                     id: "http://adlnet.gov/expapi/verbs/scored",
                     display: {
@@ -2971,8 +3032,7 @@ function SaveStatement(statement, async) {
     extension = {
         "http://xerte.org.uk/sessionId": state.sessionId,
         "http://xerte.org.uk/learningObjectId": baseUrl() + state.templateId,
-        "http://xerte.org.uk/learningObjectTitle": $("<div>").html(x_params.name).text() + " (" +
-            state.templateId + ")"
+        "http://xerte.org.uk/learningObjectTitle": $("<div>").html(x_params.name).text()
     };
     if (state.coursename != "") {
         extension["http://xerte.org.uk/course"] = state.coursename;
@@ -3000,13 +3060,13 @@ function SaveStatement(statement, async) {
         var parentObj = {
             "definition": {
                 "name": {
-                    "en-US": x_params.name + " (" + state.templateId + ")"
+                    "en-US": x_params.name
                 }
             },
             "id": parentId,
             "objectType": "Activity"
         };
-        parentObj.definition.name[state.language] = x_params.name + " (" + state.templateId + ")";
+        parentObj.definition.name[state.language] = x_params.name;
         statement.context.contextActivities.parent = [parentObj];
     }
     if (state.category != "") {

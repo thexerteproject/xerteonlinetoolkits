@@ -1,0 +1,20 @@
+<wizard menu="Media">
+
+<pageWizard remove="true" duplicate="false">
+    <newNodes>
+    <Timeliner><![CDATA[<Timeliner name="Enter Page Title" media="Timeliner" text="Enter text for the page here"/>]]></Timeliner>
+    </newNodes>
+</pageWizard>
+
+<Timeliner menu="Media" menuItem="Presentable Timeline" icon="icTime" hint="A costomizable timeline build up with seperate sections" thumb="thumbs/timeline">
+<name label="Page Title" type="TextInput" wysiwyg="true"/>
+<text label="Page Text" type="TextArea" height="150"/>
+<newNodes>
+    <timelinedate><![CDATA[<timelinedate name="Enter Item Name" text="Enter description"/>]]></timelinedate>
+    </newNodes>
+</Timeliner>
+
+<timelinedate menuItem="Item" icon="icPageWhite" max="12" remove="true">
+    <name label="Name" type="TextInput" wysiwyg="true"/>
+    <text label="Description" type="TextArea" height="100"/>
+</timelinedate>

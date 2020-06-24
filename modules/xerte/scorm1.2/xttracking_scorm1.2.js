@@ -1500,7 +1500,7 @@ function XTSetOption(option, value)
     }
 }
 
-function XTEnterPage(page_nr, page_name)
+function XTEnterPage(page_nr, page_name, grouping)
 {
     if (state.scormmode == 'normal')
     {

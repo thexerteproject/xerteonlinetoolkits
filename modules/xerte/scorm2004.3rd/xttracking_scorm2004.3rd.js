@@ -1441,7 +1441,7 @@ function XTSetOption(option, value)
     }
 }
 
-function XTEnterPage(page_nr, page_name)
+function XTEnterPage(page_nr, page_name, grouping)
 {
     if (state.scormmode == 'normal')
     {
@@ -1565,7 +1565,7 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
 }
 
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, category)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping)
 {
     if (state.scormmode == 'normal')
     {

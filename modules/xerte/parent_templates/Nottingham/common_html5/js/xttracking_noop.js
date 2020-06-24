@@ -1065,7 +1065,7 @@ function XTSetOption(option, value)
     }
 }
 
-function XTEnterPage(page_nr, page_name)
+function XTEnterPage(page_nr, page_name, grouping)
 {
 	state.enterPage(page_nr, -1, "page", page_name);
 }
