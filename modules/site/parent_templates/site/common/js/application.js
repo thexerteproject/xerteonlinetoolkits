@@ -1449,7 +1449,7 @@ function parseContent(pageID, sectionNum, addHistory) {
 				// make sure correct hash is used in url history
 				if (addHistory != false) {
 					var historyEntry = isID !== false ? pageID : pageHash,
-						historyEntry2 = historyEntry.substring(0,4) == "page" ? Number(historyEntry.substring(4)) : historyEntry;
+						historyEntry2 = historyEntry.substring(0,4) == "page" ? Number(historyEntry.substring(4)) - 1 : historyEntry;
 					
 					if (pageHistory[pageHistory.length-1] != historyEntry2) {
 						pageHistory.push(historyEntry2);
