@@ -1517,6 +1517,14 @@ function parseContent(pageID, sectionNum, addHistory) {
 					if (hideSection == false || authorSupport == true) {
 						
 						var sectionIndex = index;
+
+						//expand mainContent if section menu hidden and expand option is true
+						if (page.attr('sectionMenu') == 'true' && page.attr('expandMain') == 'true') {
+							$('#mainContent').addClass("expandMain");
+
+						}else{
+							$('#mainContent').removeClass("expandMain");
+						}
 						
 						// add section menu unless turned off
 						if ($(this).attr('menu') != 'headings' && $(this).attr('menu') != 'neither' && page.attr('sectionMenu') != 'true') {
@@ -1729,7 +1737,7 @@ function parseContent(pageID, sectionNum, addHistory) {
 				
 				//an event for user defined code to know when loading is done
 				$(document).trigger('contentLoaded');
-				
+
 				//force facebook / twitter objects to initialise
 				//twttr.widgets.load(); // REMOVED??
 				
