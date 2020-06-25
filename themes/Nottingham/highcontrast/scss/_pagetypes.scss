@@ -107,7 +107,7 @@
 }
 //*****navigator*****/
 #pageContents.button button.selected {
-  background-color: $lightestcolor;
+  background-color: $selectedbutton;
 }
 #pageContents.slide #btnHolder button {
   background: darken($lightestcolor, 70%);
@@ -260,6 +260,10 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   font-weight:bold;
 //  background-color:transparentize($whiteorlightest, .8);
 }
+.x_gapFill_page #targetHolder select[disabled]{
+  color: #00ff19;
+  border: #00ff19 dotted 2px;
+}
 //*****hotspot image*****/
 a.hotspot, a.hotspot.selected {
   background: none;
@@ -269,15 +273,19 @@ a.hotspot, a.hotspot.selected {
 }
 //******Interactive lists*******/
 .x_interactiveText_page .highlight{
-  background: $lightestcolor;
+  background: $selectedbutton;
 }
 .x_interactiveText_page .optionGroup.highlight {
   background: lighten($blackordarkest, 20%);
 }
 //******Interactive lists*******/
 .x_list_page .highlight{
-  background: lighten($blackordarkest, 20%);
+  background: $selectedbutton;
   color:$whiteorlightest;
+}
+//******Interactive text*******/
+.x_list_page #pageContents a.listItem:link, #passageHolder a.listItem:link, #passageHolder a.listItem:visited, #passageHolder a.listItem:hover, #passageHolder a.listItem:active {
+  color: $whiteorlightest !important;
 }
 
 //*********matching texts*********/
@@ -332,6 +340,9 @@ a.hotspot, a.hotspot.selected {
   border-bottom: transparent;
   background:lighten($blackordarkest, 10%);
 }
+.x_grid_page table.header.shaded tr:first-child {
+  background: $tableheader;
+}
 //the draggable items
 .x_grid_page #grid ul li{
   background:lighten($blackordarkest, 30%);
@@ -383,7 +394,7 @@ a.hotspot, a.hotspot.selected {
   color:$fontcolorfobrightcolor;
 }
 .x_table_page table.header.shaded tr:first-child {
-  background: $blackordarkest;
+  background: $tableheader;
   color:$whiteorlightest;
 }
 .x_table_page table.header.simple tr:first-child {
