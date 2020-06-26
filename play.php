@@ -222,7 +222,7 @@ if ($tsugi_enabled) {
     /* Tsugi enabled */
     if ($row_play["tsugi_published"] == 1 || $row_play["tsugi_xapi_enabled"] == 1) {
         // Actually published for Tsugi
-        db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+        db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
         show_template($row_play, $tsugi_enabled);
     }
@@ -245,7 +245,7 @@ if ($tsugi_enabled) {
              * Public - Increment the number of users and show the template
              */
 
-            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
             show_template($row_play);
 
@@ -302,7 +302,7 @@ if ($tsugi_enabled) {
 
                 if ($success && empty($errors)) {
                     //successful authentication
-                    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+                    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
 					show_template($row_play);
                 } else {
@@ -320,7 +320,7 @@ if ($tsugi_enabled) {
                              * Update uses and display the template
                              *-/
 
-                            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+                            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
                             require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
@@ -358,7 +358,7 @@ if ($tsugi_enabled) {
                     if (strlen($_SERVER['HTTP_REFERER']) > 0) {
                         $ok = check_host($_SERVER['HTTP_REFERER'], $test_string);
                         if ($ok) {
-                            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+                            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
                             show_template($row_play);
                         } else {
                             dont_show_template('Doesnt Match Referer:' . $_SERVER['HTTP_REFERER']);
@@ -387,7 +387,7 @@ if ($tsugi_enabled) {
                              */
                             if ($row_play['access_to_whom'] == $row_security['security_setting']) {
                                 if (check_security_type($row_security['security_data'])) {
-                                    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+                                    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
                                     show_template($row_play);
                                     $flag = true;
 
