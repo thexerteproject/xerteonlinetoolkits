@@ -1134,7 +1134,7 @@ function XThelperDetermineProgress(videostate)
     return 0.0;
 }
 
-function XTVideo(page_nr, name, block_name, verb, videostate) {
+function XTVideo(page_nr, name, block_name, verb, videostate, grouping) {
     return;
 }
 
