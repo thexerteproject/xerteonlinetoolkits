@@ -113,8 +113,8 @@
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
 		<navbarHide label="Navigation Bar" type="ComboBox" data="default,back,hidden" options="Default,Back Button Only,Hidden" defaultValue="back" optional="true"/>
 	</linkGroup><sectionGroup type="group" label="Section Menu Options" optional="true" tooltip="Hide the table of contents for this page and set whether or not to expand the main contents to the width of the page" common="true">
-    <sectionMenu label="Hide Menu" type="CheckBox" defaultValue="true" optional="true" tooltip="Hide the table of contents for this page"/>
-    <expandMain label="Expand main contents" type="CheckBox" defaultValue="false" optional="true" tooltip="If the table of contents is set to hidden then also expand the main contents to the width of the page"/>
+        <sectionMenu label="Hide Menu" type="CheckBox" defaultValue="false" optional="true" conditionTrigger="true" tooltip="Hide the table of contents for this page"/>
+        <expandMain label="Expand main contents" type="CheckBox" defaultValue="false" optional="true" condition="sectionMenu=='true'" tooltip="If the table of contents is set to hidden then also expand the main contents to the width of the page"/>
     </sectionGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<customLinkID label="Page ID" type="TextInput" optional="true"/>
 	</customLinkGroup><filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches" common="true"/><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">

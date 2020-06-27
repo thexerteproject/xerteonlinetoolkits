@@ -26,8 +26,8 @@
 	</linkGroup>
 	
 	<sectionGroup type="group" label="Section Menu Options" optional="true" tooltip="Hide the table of contents for this page and set whether or not to expand the main contents to the width of the page">
-    <sectionMenu label="Hide Menu" type="CheckBox" defaultValue="true" optional="true" tooltip="Hide the table of contents for this page"/>
-    <expandMain label="Expand main contents" type="CheckBox" defaultValue="false" optional="true" tooltip="If the table of contents is set to hidden then also expand the main contents to the width of the page"/>
+        <sectionMenu label="Hide Menu" type="CheckBox" defaultValue="false" optional="true" conditionTrigger="true" tooltip="Hide the table of contents for this page"/>
+        <expandMain label="Expand main contents" type="CheckBox" defaultValue="false" optional="true" condition="sectionMenu=='true'" tooltip="If the table of contents is set to hidden then also expand the main contents to the width of the page"/>
     </sectionGroup>
 	
 	<customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs">
