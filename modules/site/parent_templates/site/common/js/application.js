@@ -143,13 +143,13 @@ function loadContent(){
 	var pageSectionInfo;
 	
 	if (urlParams.linkID != undefined) { // URL?linkID=XXX
-		pageSectionInfo = getStartPage(urlParams.linkID);
+		pageSectionInfo = getHashInfo(urlParams.linkID);
 		if (pageSectionInfo != false) {
 			startPage = pageSectionInfo[0];
 		}
 	}
 	
-	pageSectionInfo = getStartPage(window.location.hash); // URL#pageXXXsectionXXX
+	pageSectionInfo = getHashInfo(window.location.hash); // URL#pageXXXsectionXXX
 	if (pageSectionInfo != false) {
 		startPage = pageSectionInfo[0];
 		startSection = pageSectionInfo[1];
@@ -179,39 +179,6 @@ function loadContent(){
 function makeAbsolute(html) {
     var temp = html.replace(/FileLocation \+ \'([^\']*)\'/g, FileLocation + '$1');
     return temp;
-}
-
-function getStartPage(urlHash) {
-	// If we have a start page/section then extract it and clear the url
-	if (urlHash.length > 0) {
-		var pageLink = urlHash[0] == '#' ? urlHash.substring(1) : urlHash,
-			thisPage,
-			thisSection;
-		
-		if (pageLink.substring(0,4) == "page") {
-			if (pageLink.substring(4).indexOf('section') > -1) {
-				thisPage = parseInt(pageLink.substring(4,pageLink.indexOf('section')), 10) - 1;
-				thisSection = parseInt(pageLink.substring(pageLink.indexOf('section') + 7), 10);
-			} else {
-				thisPage = parseInt(pageLink.substring(4), 10) - 1;
-			}
-			
-			thisPage = thisPage < 0 ? 0 : thisPage;
-			
-		} else {
-			if (pageLink.indexOf('section') > -1) {
-				thisPage = pageLink.substring(0, pageLink.indexOf('section'));
-				thisSection = pageLink.substring(pageLink.indexOf('section') + 7);
-			} else {
-				thisPage = pageLink;
-			}
-		}
-		
-		return [thisPage, thisSection];
-		
-	} else {
-		return false;
-	}
 }
 
 function cssSetUp(param) {
@@ -334,7 +301,7 @@ function getLangData(lang) {
 			setup();
 			
 			// step four
-			parseContent(startPage, startSection);
+			parseContent({ type: "start", id: startPage }, startSection);
 			
 		},
 		
@@ -345,7 +312,7 @@ function getLangData(lang) {
 			} else { // hasn't found GB language file - set up anyway, will use fallback text in code
 				languageData = $("");
 				setup();
-				parseContent(startPage, startSection);
+				parseContent({ type: "start", id: startPage }, startSection);
 			}
 			
 		}
@@ -510,13 +477,13 @@ function setup() {
 				name.find('[style*="background-color"]').css('background-color', 'transparent');
 			}
 			
-			var $link = $('<li class=""><a href="javascript:parseContent(' + index + ')"></a></li>').appendTo('#nav');
+			var $link = $('<li class=""><a href="javascript:parseContent({ type: \'index\', id: ' + index + ' })"></a></li>').appendTo('#nav');
 			$link.find('a').append(name);
 			
 		}
 	});
 	
-	// if pages have customLinkID then make sure they don't include spaces
+	// if pages have customLinkID then make sure they don't include spaces - convert to underscore
 	$(data).find('page').each( function(index, value){
 		var tempID = $(this).attr('customLinkID');
 		if (tempID != undefined && tempID != "") {
@@ -526,8 +493,13 @@ function setup() {
 		}
 	});
 	
+	// make list of all the normal pages (not hidden or standalone) to display in TOC
 	if (validPages.length == 0) {
-		findValidPages();
+		for (var i=0; i<$(data).find('page').length; i++) {
+			if (($(data).find('page').eq(i).attr('hidePage') != 'true' || authorSupport == true) && $(data).find('page').eq(i).attr('linkPage') != 'true') {
+				validPages.push(i);
+			}
+		}
 	}
 	
 	// add a back button that will be hidden unless used by standalone pages
@@ -539,30 +511,14 @@ function setup() {
 		.click(function() {
 			if (pageHistory.length <= 1) {
 				// if standalone page is the first page visited then back button will take to 1st normal page...
-				parseContent(validPages[0]);
+				parseContent({ type: "index", id: validPages[0] });
 				
 			} else {
 				// ...otherwise go to the last viewed page
 				pageHistory.splice(pageHistory.length - 1, 1);
-				parseContent(pageHistory[pageHistory.length-1]);
+				parseContent({ type: "check", id: pageHistory[pageHistory.length-1] });
 			}
 		});
-	
-	if ($.isNumeric(startPage)) {
-		// adjust the start page so it only takes into account unhidden pages
-		
-		if (validPages.length - 1 >= startPage) {
-			if (startPage != validPages[startPage]) {
-				console.log("Some pages are hidden so page *" + (startPage+1) + "* adjusted to *" + (validPages[startPage]+1) + "*");
-			}
-			startPage = validPages[startPage];
-			
-		} else {
-			console.log("Page *" + (startPage+1) + "* not found");
-			startPage = validPages[0];
-		}
-		
-	}
 	
 	// set up print functionality - all this does is add a print button to the toolbar which triggers browser's print dialog
 	if ($(data).find('learningObject').attr('print') == 'true') {
@@ -1238,7 +1194,7 @@ function x_insertGlossaryText(node) {
 	return tempText;
 }
 
-// check through text nodes for text that needs replacing with something lese (e.g. glossary)
+// check through text nodes for text that needs replacing with something else (e.g. glossary)
 function x_checkForText(data, type) {
 	for (var i=0; i<data.length; i++) {
 		if (data[i].childNodes.length > 0) {
@@ -1266,75 +1222,74 @@ function x_checkForText(data, type) {
 	}
 }
 
-// this is the format of links added through the wysiwyg editor button
+// called from links added through the wysiwyg editor button (& the links created as a result of searches
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 	
 	var pages = $(data).find('page'),
 		links = ['[first]', '[last]', '[previous]', '[next]'];
 
-	// First look for the fixed links (first/last/previous/next) - making sure it's ignoring any hidden pages
+	// First look for the fixed links (first/last/previous/next)
 	if ($.inArray(pageInfo.ID, links) > -1) {
 		var tempNum,
 			tempPageIndex;
 		
-		// first unhidden page
+		// first page
 		if ($.inArray(pageInfo.ID, links) == 0) {
-			tempNum = 0;
-			tempPageIndex = tempNum;
-			
-			while ((($(data).find('page').eq(tempNum).attr('hidePage') == 'true' && authorSupport == false) || $(data).find('page').eq(tempNum).attr('linkPage') == 'true') && tempNum != $(data).find('page').length) {
-				tempPageIndex = tempNum == $(data).find('page').length - 1 ? 0 : tempNum + 1;
-				tempNum++;
-			}
+			tempPageIndex = validPages[0];
 		
-		// last unhidden page
+		// last valid page
 		} else if ($.inArray(pageInfo.ID, links) == 1) {
-			tempNum = pages.length-1;
-			tempPageIndex = tempNum;
+			tempPageIndex = validPages[validPages.length-1];
 			
-			while ((($(data).find('page').eq(tempNum).attr('hidePage') == 'true' && authorSupport == false) || $(data).find('page').eq(tempNum).attr('linkPage') == 'true') && tempNum != -1) {
-				tempPageIndex = tempNum == 0 ? pages.length-1 : tempNum - 1;
-				tempNum--;
-			}
-			
-		// previous unhidden page
+		// previous valid page
 		} else if ($.inArray(pageInfo.ID, links) == 2) {
-			tempNum = Math.max(0, currentPage-1);
-			tempPageIndex = tempNum;
-			
-			while ((($(data).find('page').eq(tempNum).attr('hidePage') == 'true' && authorSupport == false) || $(data).find('page').eq(tempNum).attr('linkPage') == 'true') && tempNum != -1) {
-				tempPageIndex = tempNum == 0 ? Math.max(0, currentPage-1) : tempNum - 1;
-				tempNum--;
+			// if it's a standalone page or the first page in the project then there is no previous page to navigate to
+			var currentIndex = $.inArray(currentPage, validPages);
+			if (currentIndex > 0) {
+				tempPageIndex = validPages[currentIndex-1];
 			}
 		
-		// next unhidden page
+		// next valid page
 		} else {
-			tempNum = Math.min(currentPage+1, pages.length-1);
-			tempPageIndex = tempNum;
-			
-			while ((($(data).find('page').eq(tempNum).attr('hidePage') == 'true' && authorSupport == false) || $(data).find('page').eq(tempNum).attr('linkPage') == 'true') && tempNum != $(data).find('page').length) {
-				tempPageIndex = tempNum == $(data).find('page').length - 1 ? Math.min(currentPage+1, pages.length-1) : tempNum + 1;
-				tempNum++;
+			// if it's a standalone page or the last page in the project then there is no next page to navigate to
+			var currentIndex = $.inArray(currentPage, validPages);
+			if (currentIndex != -1 && currentIndex < validPages.length-1) {
+				tempPageIndex = validPages[currentIndex+1];
 			}
 		}
 		
-		if ($(data).find('page').eq(tempPageIndex).attr('linkPage') != 'true') {
-			parseContent(tempPageIndex);
+		if (tempPageIndex != undefined) {
+			parseContent({ type: "index", id: tempPageIndex });
 		}
 		
-	} else { // Then look them up by ID
+	// Then try to look them up by ID
+	} else {
+		var found = false;
+		
 		for (var i=0; i<pages.length; i++) {
-			var found = false;
-			
+			// link to page
 			if (pages[i].getAttribute("linkID") == pageInfo.ID) {
-				parseContent(i);
+				var destination = pageInfo.ID;
+				if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
+					destination = pages[i].getAttribute("customLinkID");
+				} else if ($.inArray(i, validPages)) {
+					destination = $.inArray(i, validPages);
+				}
+				parseContent({ type: "id", id: destination });
 				break;
 			}
 			
+			// link to section
 			if (pages[i].childNodes.length > 0) {
 				for (var j=0; j<pages[i].childNodes.length; j++) {
 					if (pages[i].childNodes[j].getAttribute && pages[i].childNodes[j].getAttribute("linkID") == pageInfo.ID) {
-						parseContent(i, j+1);
+						var destination = pages[i].getAttribute("linkID");
+						if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
+							destination = pages[i].getAttribute("customLinkID");
+						} else if ($.inArray(i, validPages)) {
+							destination = $.inArray(i, validPages);
+						}
+						parseContent({ type: "id", id: destination }, j+1);
 						found = true;
 						break;
 					}
@@ -1345,88 +1300,75 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 				break;
 			}
 		}
-	}
-}
-
-function goToSection(pageId) {
-	sectionJump = document.getElementById(pageId);
-	if (sectionJump != undefined) {
-		var top = sectionJump.offsetTop;
-		window.scrollTo(0, top);
-	}
-}
-
-// browser back / fwd button will trigger this - manually make page change to match #pageX
-window.onhashchange = function() {
-	
-	var pageSectionInfo = getStartPage(window.location.hash),
-		tempPage,
-		tempSection;
-	
-	if (pageSectionInfo != false) {
-		tempPage = pageSectionInfo[0];
-		tempSection = pageSectionInfo[1];
 		
-		// adjust the page number so it only takes into account unhidden pages
-		if ($.isNumeric(tempPage)) {
-			if (validPages.length - 1 >= tempPage) {
-				tempPage = validPages[tempPage];
-				parseContent(tempPage, tempSection, false);
-			}
-			
-		} else {
-			parseContent(tempPage, tempSection, false);
+		if (found == false) {
+			console.log("Page/section with ID *" + pageInfo.ID + "* not found");
 		}
 	}
 }
 
-// make list of pages that aren't hidden or standalone
-function findValidPages() {
-	for (var i=0; i<$(data).find('page').length; i++) {
-		if (($(data).find('page').eq(i).attr('hidePage') != 'true' || authorSupport == true) && $(data).find('page').eq(i).attr('linkPage') != 'true') {
-			validPages.push(i);
-		}
-	}
-}
-
-function parseContent(pageID, sectionNum, addHistory) {
-	// check if pageIndex exists & can be shown
-	var pageIndex,
-		isID = false;
+// function loads a new page
+function parseContent(pageRef, sectionNum, addHistory) {
+	// pageRefType determines how pageID should be dealt with
+	// can be 'index' (of page in data), 'id' (linkID/customLinkID, 'start' or 'check' (these last two could be index or id so extra checks are needed)
+	var pageRefType = pageRef.type,
+		pageID = pageRef.id,
+		found = false;
 	
-	// pageIndex is an ID - see if it matches either a linkID or a customLinkID
-	if (!$.isNumeric(pageID)) {
+	// check if pageIndex exists & can be shown
+	var pageIndex;
+	
+	// pageID might be an ID - see if it matches either a linkID or a customLinkID
+	if (pageRefType != 'index') {
 		$(data).find('page').each(function(index, value) {
 			var $page = $(this);
-			
 			if (pageID == $page.attr('linkID') || pageID == $page.attr('customLinkID')) {
-				isID = index;
+				// an ID match has been found
+				pageIndex = index;
+				found = true;
+				pageRefType = 'id';
+				
 				return false;
 			}
 		});
-		
-		if (isID === false) {
-			console.log("Page with ID *" + pageID + "* not found");
-			pageIndex = validPages[0];
-			
-		} else {
-			if ($(data).find('page').eq(isID).attr('hidePage') == 'true' && authorSupport == false && pageHistory.length == 0) {
-				console.log("Page with ID *" + pageID + "* is found but is hidden");
-				pageIndex = validPages[0];
-			} else {
-				//console.log("Page with ID *" + pageID + "* is found & is page *" + (isID+1) + "*");
-				pageIndex = isID;
-			}
-		}
-		
-	} else {
-		pageIndex = pageID;
 	}
 	
-	// project contains no pages or pageIndex is too high
-	if ($(data).find('page').length == 0 || pageIndex > $(data).find('page').length - 1) {
-		console.log("Page *" + (pageIndex+1) + "* does not exist");
-		pageIndex = 0;
+	// check if it's a valid page index
+	if (pageRefType != 'id') {
+		pageID = $.isNumeric(pageID) ? Number(pageID) : pageID;
+		
+		if (Number.isInteger(pageID)) {
+			// pageID refers to actual page num of valid pages - need to convert to index of all pages
+			if (pageRefType == 'start' || pageRefType == 'check') {
+				pageID = validPages[pageID];
+			}
+			
+			if ($.inArray(pageID, validPages) > -1) {
+				// this is a valid page (not hidden or standalone - standalone pages are called by their ID)
+				pageIndex = pageID;
+				found = true;
+				pageRefType = 'index';
+				
+			} else {
+				console.log("Page *" + (pageID+1) + "* not found");
+			}
+			
+		} else {
+			console.log("Page with ID *" + pageID + "* not found");
+		}
+		
+	} else if (found == false) {
+		console.log("No valid page with ID or index *" + pageID + "* is found");
+	}
+	
+	// fallback to show 1st page in project
+	if (found == false) {
+		// project contains no pages or pageIndex is too high
+		if (validPages.length == 0) {
+			pageIndex = 0;
+		} else {
+			pageIndex = validPages[0];
+		}
 	}
 	
 	var standAlonePage = $(data).find('page').eq(pageIndex).attr('linkPage') == 'true' ? true : false;
@@ -1435,6 +1377,7 @@ function parseContent(pageID, sectionNum, addHistory) {
 		// Page doesn't exist or is a hidden & author support is off
 		if ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && authorSupport == false) {
 			console.log("Page *" + (pageIndex+1) + "* is hidden");
+			pageIndex = validPages[0];
 			
 		// Page exists & can be shown
 		} else {
@@ -1443,19 +1386,17 @@ function parseContent(pageID, sectionNum, addHistory) {
 			var pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
 			
 			// Load page as normal as it's not opening in a new window
-			if (!standAlonePage || (standAlonePage && $(data).find('page').eq(pageIndex).attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash)) {
-				//console.log("Show page *" + (pageIndex+1) + "*");
+			if (!standAlonePage || (standAlonePage && $(data).find('page').eq(pageIndex).attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash) || pageRefType == 'start') {
 				
 				// make sure correct hash is used in url history
 				if (addHistory != false) {
-					var historyEntry = isID !== false ? pageID : pageHash,
-						historyEntry2 = historyEntry.substring(0,4) == "page" ? Number(historyEntry.substring(4)) : historyEntry;
+					var historyEntry = pageHash.substring(0,4) == "page" ? Number(pageHash.substring(4)) - 1 : pageHash;
 					
-					if (pageHistory[pageHistory.length-1] != historyEntry2) {
-						pageHistory.push(historyEntry2);
+					if (pageHistory[pageHistory.length-1] != historyEntry) {
+						pageHistory.push(historyEntry);
 					}
 					
-					window.history.pushState('window.location.href',"",'#' + historyEntry);
+					window.history.pushState('window.location.href',"",'#' + pageHash);
 				}
 				
 				//clear out existing content
@@ -1761,6 +1702,62 @@ function parseContent(pageID, sectionNum, addHistory) {
 		
 	} else {
 		goToSection('alwaysTop');
+	}
+}
+
+// Get the page / section info from the URL (called on project load & when page changed via browser fwd/back btns)
+function getHashInfo(urlHash) {
+	if (urlHash.length > 0) {
+		var pageLink = urlHash[0] == '#' ? urlHash.substring(1) : urlHash,
+			thisPage,
+			thisSection;
+		
+		if (pageLink.substring(0,4) == "page") {
+			if (pageLink.substring(4).indexOf('section') > -1) {
+				thisPage = parseInt(pageLink.substring(4,pageLink.indexOf('section')), 10) - 1;
+				thisSection = parseInt(pageLink.substring(pageLink.indexOf('section') + 7), 10);
+			} else {
+				thisPage = parseInt(pageLink.substring(4), 10) - 1;
+			}
+			
+			thisPage = thisPage < 0 ? 0 : thisPage;
+			
+		} else {
+			if (pageLink.indexOf('section') > -1) {
+				thisPage = pageLink.substring(0, pageLink.indexOf('section'));
+				thisSection = pageLink.substring(pageLink.indexOf('section') + 7);
+			} else {
+				thisPage = pageLink;
+			}
+		}
+		
+		return [thisPage, thisSection];
+		
+	} else {
+		return false;
+	}
+}
+
+// browser back / fwd button will trigger this - manually make page change to match page hash info
+window.onhashchange = function() {
+	var pageSectionInfo = getHashInfo(window.location.hash),
+		tempPage,
+		tempSection;
+	
+	if (pageSectionInfo != false) {
+		tempPage = pageSectionInfo[0];
+		tempSection = pageSectionInfo[1];
+		
+		parseContent({ type: "check", id: tempPage }, tempSection, false);
+	}
+}
+
+// jump to specified section of current page
+function goToSection(pageId) {
+	sectionJump = document.getElementById(pageId);
+	if (sectionJump != undefined) {
+		var top = sectionJump.offsetTop;
+		window.scrollTo(0, top);
 	}
 }
 

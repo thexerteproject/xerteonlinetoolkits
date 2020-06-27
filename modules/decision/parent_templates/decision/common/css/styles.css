@@ -435,3 +435,7 @@ table td, table th {
 	padding: 10px;
 	vertical-align: top;
 }
+.featherlight iframe {
+	height: 90vh;
+	width: 90vw;
+}

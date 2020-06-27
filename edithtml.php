@@ -86,7 +86,7 @@ if(isset($_SESSION['toolkits_logon_id'])){
 		if(is_user_an_editor($safe_template_id,$_SESSION['toolkits_logon_id'])){
 
 			// Check for multiple editors
-			if(has_template_multiple_editors($safe_template_id)){
+			//if(has_template_multiple_editors($safe_template_id)){
 
 				// Check for lock file. A lock file is created to prevent more than one
 				if(file_exists($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt")){
@@ -110,19 +110,19 @@ if(isset($_SESSION['toolkits_logon_id'])){
                      * Check if lock file creator is current user, if so, continue into the code
                      */
 
-					if($lock_file_creator_username==$_SESSION['toolkits_logon_username']) {
-						if(update_access_time($row_edit)) {
-							// Display the editor
-							require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edithtml.php";
-							output_editor_code($row_edit, $xerte_toolkits_site, "true", true);
-						}
-						else {
-							// show error
-							error_show_template();
-							exit(0);
-						}
-					}
-					else {
+					//if($lock_file_creator_username==$_SESSION['toolkits_logon_username']) {
+					//	if(update_access_time($row_edit)) {
+					//		// Display the editor
+					//		require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edithtml.php";
+					//		output_editor_code($row_edit, $xerte_toolkits_site, "true", true);
+					//	}
+					//	else {
+					//		// show error
+					//		error_show_template();
+					//		exit(0);
+					//	}
+					//}
+					//else {
 						if(isset($_POST['lockfile_clear'])) {
 
 							/*
@@ -158,7 +158,7 @@ if(isset($_SESSION['toolkits_logon_id'])){
 							fclose($file_handle);
 							output_locked_file_code($lock_file_creator);
 						}
-					}
+					//}
 				}
 				else {
 
@@ -178,18 +178,18 @@ if(isset($_SESSION['toolkits_logon_id'])){
 
 				}
 
-			}
-			else {
-				// One editor (but shared) for this project, so continue without creating a lock file
-				if(update_access_time($row_edit)){
-					require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edithtml.php";
-					output_editor_code($row_edit, $xerte_toolkits_site, "true", false);
-				}
-				else {
-					error_show_template();
-					exit(0);
-				}
-			}
+			//}
+			//else {
+			//	// One editor (but shared) for this project, so continue without creating a lock file
+			//	if(update_access_time($row_edit)){
+			//		require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edithtml.php";
+			//		output_editor_code($row_edit, $xerte_toolkits_site, "true", false);
+			//	}
+			//	else {
+			//		error_show_template();
+			//		exit(0);
+			//	}
+			//}
 		}
 		else {
 			// Read-only access!

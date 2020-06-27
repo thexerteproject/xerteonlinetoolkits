@@ -606,7 +606,7 @@ function statistics_prepare($template_id)
             if ($row['tsugi_published'] && $tsugi_installed)
             {
                 $info->published = $row["tsugi_published"];
-                $info->linkinfo = PROJECT_INFO_LTI_PUBLISHED;
+                $info->linkinfo = PROJECT_INFO_LTI_PUBLISHED . "<br>";
                 $info->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
             }
             else
@@ -615,11 +615,8 @@ function statistics_prepare($template_id)
             }
             if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != ""))) {
                 $info->info = $html;
-                if (!$info->published)
-                {
-                    $info->linkinfo = PROJECT_INFO_XAPI_PUBLISHED;
-                    $info->url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
-                }
+                $info->xapi_linkinfo = PROJECT_INFO_XAPI_PUBLISHED;
+                $info->xapi_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
                 $lrsendpoint = array();
                 if ($row['tsugi_xapi_useglobal'])
                 {

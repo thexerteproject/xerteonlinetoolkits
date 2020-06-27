@@ -64,14 +64,15 @@ if(is_user_admin()){
             . "{$prefix}logindetails od "
             . "where tr.user_id = ld.login_id "
             . "and od.login_id = td.creator_id and tr.template_id = td.template_id "
-            . "     or od.username like ? "
+            . "and (od.username like ? "
             . "     or od.firstname like ? "
             . "     or od.surname like ? "
+            . "     or concat(od.firstname, ' ', od.surname) like ? "
             . "     or td.template_id like ? "
             . "     or td.template_name like ?) "
             . " order by od.surname, od.firstname, od.username, td.template_id";
     $wildcard = '%' . $search . '%';
-    $params = array($wildcard, $wildcard, $wildcard, $wildcard, '%' . str_replace(' ', '_', $search) . '%');
+    $params = array($wildcard, $wildcard, $wildcard, $wildcard, $wildcard, '%' . str_replace(' ', '%', $search) . '%');
             
     _debug("Search for templates with search string \"" . $search . "\": " . $query_templates);
 
@@ -99,7 +100,8 @@ if(is_user_admin()){
 
             }
 
-            echo "<div class=\"template\" id=\"" . $row_templates['owner_id'] . "template" . $row_templates['template_id'] . "\"><p>" . $row_templates['template_name'] .  " <button type=\"button\" class=\"xerte_button\" id=\"" . $row_templates['owner_id'] . "template" . $row_templates['template_id'] . "_btn\" onclick=\"javascript:templates_display('" . $row['login_id'] . "template" . $row_templates['template_id'] . "')\">". USERS_MANAGEMENT_TEMPLATE_VIEW . "</button></p></div><div class=\"template_details\" id=\"" . $row_templates['owner_id'] . "template" . $row_templates['template_id']  . "_child\">";
+            echo "<div class=\"template\" id=\"" . $row_templates['owner_id'] . "template" . $row_templates['template_id'] . "\"><p>" . $row_templates['template_id'] . " - " . str_replace('_', ' ', $row_templates['template_name']) .  " <button type=\"button\" class=\"xerte_button\" id=\"" . $row_templates['owner_id'] . "template" . $row_templates['template_id'] . "_btn\" onclick=\"javascript:templates_get_details(" . $row_templates['owner_id'] . ", " . $row_templates['template_id'] . ")\">". USERS_MANAGEMENT_TEMPLATE_VIEW . "</button></p></div><div class=\"template_details\" id=\"" . $row_templates['owner_id'] . "template" . $row_templates['template_id']  . "_child\"></div>";
+            /*
             echo "<table class=\"template_details_table\">";
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_ID . "</td><td>" . $row_templates['template_id']  . "</td></tr>";
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_OWNER . "</td><td>" . $row_templates['owner_firstname'] . " " . $row_templates['owner_surname'] . " (" . $row_templates['owner_username'] . ")</td></tr>";
@@ -122,7 +124,7 @@ if(is_user_admin()){
 
                 if ($row_templates['owner_id'] != $row_users['login_id'])
                 {
-                    echo "<option value=\"" . $row_users['login_id'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+                    echo "<option value=\"" . $row_users['login_id'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
                 }
 
             }
@@ -133,7 +135,7 @@ if(is_user_admin()){
 
             echo "<input type=\"hidden\" value=\"" . $row_templates['owner_id'] . "_" . $row_templates['template_id'] . "\" name=\"template_id\" /><button type=\"submit\" class=\"xerte_button\"><i class=\"fa fa-share\"></i> " . USERS_MANAGEMENT_TEMPLATE_GIVE_BUTTON . "</button></form></div>";
             // Next record
-
+            */
         }
 
     }else{

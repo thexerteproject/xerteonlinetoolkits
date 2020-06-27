@@ -1007,10 +1007,17 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
         statement.object.definition.name[state.language] = description;
 
         if (this.grouping != "") {
+            var definition = {
+                name: {
+                    'en-US': this.grouping,
+                }
+            };
+            definition.name[state.language] = this.grouping;
             statement.context.contextActivities =
             {
                 grouping: [{
                     id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                    definition: definition,
                     objectType: "Activity"
                 }]
             };
@@ -1373,10 +1380,17 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             };
                     }
                     if (this.grouping != "") {
+                        var definition = {
+                            name: {
+                                'en-US': this.grouping
+                            }
+                        };
+                        definition.name[state.language] = this.grouping;
                         statement.context.contextActivities =
                             {
                                 grouping: [{
                                     id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                                    definition: definition,
                                     objectType: "Activity"
                                 }]
                             };
@@ -1409,12 +1423,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             result: statement.result
                         };
                         if (this.grouping != "") {
-                            scoredstatement.context.contextActivities = {
-                                    grouping: [{
-                                        id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
-                                        objectType: "Activity"
-                                    }]
-                                };
+                            scoredstatement.context.contextActivities = statement.context.contextActivities;
                         }
                         SaveStatement(scoredstatement);
                     }
@@ -1444,9 +1453,16 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         timestamp: new Date()
                     };
                     if (this.grouping != "") {
+                        var definition = {
+                            name: {
+                                'en-US': this.grouping,
+                            }
+                        };
+                        definition.name[state.language] = this.grouping;
                         statement.context.contextActivities = {
                             grouping: [{
                                 id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                                definition: definition,
                                 objectType: "Activity"
                             }]
                         };
@@ -1488,9 +1504,16 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             timestamp: new Date()
                         };
                         if (this.grouping != "") {
+                            var definition = {
+                                name: {
+                                    'en-US': this.grouping,
+                                }
+                            };
+                            definition.name[state.language] = this.grouping;
                             statement.context.contextActivities = {
                                 grouping: [{
                                     id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                                    definition: definition,
                                     objectType: "Activity"
                                 }]
                             };
@@ -1557,9 +1580,16 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                 statement.object.definition.name[state.language] = description;
             }
             if (this.grouping != "") {
+                var definition = {
+                    name: {
+                        'en-US': this.grouping,
+                    }
+                };
+                definition.name[state.language] = this.grouping;
                 statement.context.contextActivities = {
                         grouping: [{
                             id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                            definition: definition,
                             objectType: "Activity"
                         }]
                     };
@@ -1956,9 +1986,9 @@ function XTEnterPage(page_nr, page_name, grouping) {
     if (!surf_mode) {
         if (typeof grouping != "undefined" && grouping != "" && grouping !=
             null) {
-            this.grouping = grouping;
+            sitp.grouping = grouping;
         } else {
-            this.grouping = "";
+            sitp.grouping = "";
         }
 
         var statement = {
@@ -1988,10 +2018,17 @@ function XTEnterPage(page_nr, page_name, grouping) {
 
         };
         statement.object.definition.name[state.language] = description;
-        if (this.grouping != "") {
+        if (sitp.grouping != "") {
+            var definition = {
+                name: {
+                    'en-US': sitp.grouping,
+                }
+            };
+            definition.name[state.language] = sitp.grouping;
             statement.context.contextActivities = {
                     grouping: [{
-                        id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                        id: baseUrl() + sitp.grouping.replace(/[\/ ]/g, "_"),
+                        definition: definition,
                         objectType: "Activity"
                     }]
                 };
@@ -2104,12 +2141,33 @@ function XThelperDetermineProgress(videostate) {
     return 0.0;
 }
 
-function XTVideo(page_nr, name, block_name, verb, videostate) {
+function XTVideo(page_nr, name, block_name, verb, videostate, set_grouping) {
     var id = baseUrl() + state.templateId + "/" + page_nr + "/video";
     var pagename = "Page " + page_nr;
     if (name != null && name != "") {
         id = baseUrl() + state.templateId + "/" + name.replace(/[\/ ]/g, "_") + "/video";
         pagename = name;
+    }
+
+    var grouping = "";
+    if (typeof set_grouping != "undefined" && set_grouping != "" && set_grouping !=
+        null) {
+        grouping = set_grouping;
+    }
+    if (grouping != "") {
+        var definition = {
+            name: {
+                'en-US': grouping,
+            }
+        };
+        definition.name[state.language] = grouping;
+        statementgrouping = {
+            grouping: [{
+                id: baseUrl() +grouping.replace(/[\/ ]/g, "_"),
+                definition: definition,
+                objectType: "Activity"
+            }]
+        };
     }
 
     switch (verb) {
@@ -2150,6 +2208,10 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                 }
             };
             statement.object.definition.name[state.language] = pagename;
+            if (grouping != "")
+            {
+                statement.context.contextActivities = statementgrouping;
+            }
             SaveStatement(statement);
             break;
         case "played":
@@ -2194,6 +2256,10 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                 }
             };
             statement.object.definition.name[state.language] = pagename;
+            if (grouping != "")
+            {
+                statement.context.contextActivities = statementgrouping;
+            }
             SaveStatement(statement);
             break;
         case "paused":
@@ -2247,6 +2313,10 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                 }
             };
             statement.object.definition.name[state.language] = pagename;
+            if (grouping != "")
+            {
+                statement.context.contextActivities = statementgrouping;
+            }
             SaveStatement(statement);
             break;
         case "seeked":
@@ -2292,6 +2362,10 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                 }
             };
             statement.object.definition.name[state.language] = pagename;
+            if (grouping != "")
+            {
+                statement.context.contextActivities = statementgrouping;
+            }
             SaveStatement(statement);
             break;
         case "interacted":
@@ -2398,6 +2472,10 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                         }
                     };
                     statement.object.definition.name[state.language] = pagename;
+                    if (grouping != "")
+                    {
+                        statement.context.contextActivities = statementgrouping;
+                    }
                     SaveStatement(statement);
                 }
                 var statement = {
@@ -2443,6 +2521,10 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                     }
                 };
                 statement.object.definition.name[state.language] = pagename;
+            }
+            if (grouping != "")
+            {
+                statement.context.contextActivities = statementgrouping;
             }
             SaveStatement(statement);
             break;
@@ -2494,6 +2576,22 @@ function XTSetPageScore(page_nr, score) {
             timestamp: this.pageEnd
 
         };
+        if (sitp.grouping != "") {
+            var definition = {
+                name: {
+                    'en-US': sitp.grouping,
+                }
+            };
+            definition.name[state.language] = sitp.grouping;
+            statement.context.contextActivities = {
+                grouping: [{
+                    id: baseUrl() + sitp.grouping.replace(/[\/ ]/g, "_"),
+                    definition: definition,
+                    objectType: "Activity"
+                }]
+            };
+        }
+
         SaveStatement(statement);
     }
 }
@@ -2559,6 +2657,22 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
                 },
                 timestamp: endtime
             };
+            if (sitp.grouping != "") {
+                var definition = {
+                    name: {
+                        'en-US': sitp.grouping,
+                    }
+                };
+                definition.name[state.language] = sitp.grouping;
+                statement.context.contextActivities = {
+                    grouping: [{
+                        id: baseUrl() + sitp.grouping.replace(/[\/ ]/g, "_"),
+                        definition: definition,
+                        objectType: "Activity"
+                    }]
+                };
+            }
+
             SaveStatement(statement);
 
             // save score for each class
@@ -2599,6 +2713,21 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
                     },
                     timestamp: endtime
                 };
+                if (sitp.grouping != "") {
+                    var definition = {
+                        name: {
+                            'en-US': sitp.grouping,
+                        }
+                    };
+                    definition.name[state.language] = sitp.grouping;
+                    statement.context.contextActivities = {
+                        grouping: [{
+                            id: baseUrl() + sitp.grouping.replace(/[\/ ]/g, "_"),
+                            definition: definition,
+                            objectType: "Activity"
+                        }]
+                    };
+                }
 
                 SaveStatement(statement);
 

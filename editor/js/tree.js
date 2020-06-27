@@ -405,7 +405,7 @@ var EDITOR = (function ($, parent) {
                 dataType: "json",
                 type: "POST",
                 cache:false,
-                async:async
+                async:true
             })
             .done(function() {
                     $('#loader').hide();

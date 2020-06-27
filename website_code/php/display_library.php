@@ -898,9 +898,17 @@ function output_locked_file_code($lock_file_creator) {
 <body>
 <?php
 
-  echo "<p>" . DISPLAY_EDITED . $lock_file_creator . "</p><p>" . DISPLAY_LOCKFILE_MESSAGE . "</p>";
-
-  echo "<form action=\"\" method=\"POST\"><input type=\"hidden\" value=\"delete_lockfile\" name=\"lockfile_clear\" /><input type=\"submit\" value=\"" . DISPLAY_LOCKFILE_DELETE . "\" /></form>";
+    // get username only
+    $temp = explode(" ", $lock_file_creator);
+    $lock_file_creator_username = $temp[0];
+    if ($lock_file_creator_username == $_SESSION['toolkits_logon_username']) {
+        $user = str_replace($lock_file_creator_username,  DISPLAY_LOCKFILE_YOU . '! ', $lock_file_creator);
+        echo "<p>" . DISPLAY_EDITED . $user . "</p><p>" . DISPLAY_LOCKFILE_YOU_MESSAGE . "</p>";
+    }
+    else {
+        echo "<p>" . DISPLAY_EDITED . $lock_file_creator . "!</p><p>" . DISPLAY_LOCKFILE_MESSAGE . "</p>";
+    }
+    echo "<form action=\"\" method=\"POST\"><input type=\"hidden\" value=\"delete_lockfile\" name=\"lockfile_clear\" /><input type=\"submit\" value=\"" . DISPLAY_LOCKFILE_DELETE . "\" /></form>";
 ?>
 </body>
 </html>

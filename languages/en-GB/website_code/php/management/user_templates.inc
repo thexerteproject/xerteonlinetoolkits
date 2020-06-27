@@ -12,6 +12,26 @@
 
 	define("USERS_MANAGEMENT_TEMPLATE_VIEW", "Show");
 
+	define("USERS_MANAGEMENT_TEMPLATE_SEARCH", "Search");
+
+	define("USERS_MANAGEMENT_TEMPLATE_TRANSFER", "Transfer ownership and delete user");
+
+	define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_EXPLANATION", "<p>Here can you can transfer all non Private templates owned by the selected user to the user selected below. The templates will be placed in a new folder in the workspace of the new user. Sharing settings will not change. The new folder will be called '{user}'.</p><p>If selected and after a successful transfer the original user is removed from all projects that were shared with him/her</p>");
+
+	define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_DELETEUSER", "Remove user's access to other templates.");
+
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_BUTTON", "Do transfer");
+
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_CLOSE_PANEL", "Dismiss");
+
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_FEEDBACKLINE", "Placed template with id {template_id} (\"{template_name}\") in folder \"{folder}\" of user {newuser} and renamed {oldfolder} to {newfolder}");
+
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_FEEDBACK_REMOVEDFROMRIGHTS", "User {user} has been removed from {count} templates.");
+
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_FEEDBACK_REMOVEDFROMLOGINDETAILS", "User {user} has been removed from Xerte.");
+
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_FEEDBACK_USERISNOTREMOVED", "Access of user {user} to other templates is not removed.");
+
 	define("USERS_MANAGEMENT_TEMPLATE_ID", "The template id is");
 
 	define("USERS_MANAGEMENT_TEMPLATE_CREATED", "The date created was"); 

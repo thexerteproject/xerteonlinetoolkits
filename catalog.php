@@ -51,7 +51,7 @@ function require_auth() {
         header('WWW-Authenticate: Basic realm="Access denied"');
         header('WWW-Authenticate: Basic realm="Catalog of ' . $xerte_toolkits_site->site_name . '"');
         header('HTTP/1.0 401 Unauthorized');
-        echo 'You do not have permission to etrieve this information';
+        echo '{"error" : "You do not have permission to retrieve this information"}';
         exit;
     }
     return true;
@@ -119,11 +119,17 @@ if ($full_access && isset($_REQUEST['list']))
         $q .= " and access_to_whom='Public'";
         $params = array();
     }
-    else if (strpos($_REQUEST['list'], 'refer') !== false)
+    else if ($_REQUEST['list'] == 'xAPI')
+    {
+        $q .= ' and tsugi_xapi_enabled=1';
+        $params = array();
+    }
+    else if (strpos($_REQUEST['list'], 'Other') !== false)
     {
         // List all templates with referrer 
         $ref = $_REQUEST['list'];
-        $ref = explode(':', $ref)[1];
+        $refs = explode(':', $ref);
+        $ref = $refs[1];
         $q .= " and access_to_whom like ?";
         $params = array('%' . $ref);
     }
@@ -160,7 +166,43 @@ if ($full_access && isset($_REQUEST['list']))
 }
 else if (isset($_GET['template_id']) && is_numeric($_GET['template_id']) && ($full_access || has_rights_to_this_template($_GET['template_id'], $_SESSION['toolkits_logon_id']))) {
     // Retrieve information about the learning object
-    return get_template_data_as_xmlstring($_GET['template_id']);
+    $q = "select td.template_id, 
+          otd.template_framework, 
+          otd.template_name as template_type, 
+          otd.display_name as type_display_name, 
+          td.template_name,  
+          td.creator_id as owner_userid, 
+          ld.username as owner_username, 
+          td.date_created, 
+          td.date_modified, 
+          td.date_accessed, 
+          td.number_of_uses, 
+          td.access_to_whom, 
+          td.extra_flags 
+          from {$prefix}templatedetails as td, 
+          {$prefix}originaltemplatesdetails otd,
+          {$prefix}logindetails ld 
+          where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id and td.template_id=?";
+    $params = array($_GET['template_id']);
+
+    $templates = db_query($q, $params);
+    $response = new stdClass();
+    $response->site_url = $xerte_toolkits_site->site_url;
+    $response->site_name = $xerte_toolkits_site->site_name;
+    $response->query = $_REQUEST['list'];
+    $response->date = date('c');
+    $tmptemplates = array();
+    for ($i = 0; $i<count($templates); $i++)
+    {
+        $template = new stdClass();
+        $template->db_record = $templates[$i];
+        $template->data_xml = get_template_data_as_xmlstring($templates[$i]['template_id'], $templates[$i]['owner_username'], $templates[$i]['template_type']);
+        $tmptemplates[] = $template;
+    }
+    $response->count = count($tmptemplates);
+    $response->templates = $tmptemplates;
+
+    echo json_encode($response);
 }
 else
 {

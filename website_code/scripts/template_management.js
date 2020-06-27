@@ -221,8 +221,9 @@ function edit_window(admin, edit) {
                             }
                         }
                     }
-
-                    if (!window_open) {
+                    console.log("Window open length: " + window_open.length);
+                    console.log("Window open parent: " + window_open.parent);
+                    if (!window_open || window_open.parent == null) {
 
                         size = node.editor_size.split(",");
 
@@ -416,7 +417,7 @@ function edit_window_close(path) {
 
         var url = "website_code/php/versioncontrol/template_close.php";
 
-        xmlHttp.open("post", url, false);
+        xmlHttp.open("post", url, true);
         xmlHttp.onreadystatechange = file_need_save;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xmlHttp.send('file_path=' + path);
