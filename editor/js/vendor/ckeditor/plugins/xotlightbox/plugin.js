@@ -21,6 +21,7 @@
         FL[attr] = {};
         if (element.getAttribute('data-featherlight-iframe-' + attr)) {
           FL[attr].value = element.getAttribute('data-featherlight-iframe-' + attr);
+          FL[attr].units = 'px';
           FL.size = true;
         }
       });
@@ -55,7 +56,7 @@
           if (dimension.length > 0) {
             obj[pairs[0].trim()] = {
               'value': dimension[1],
-              'units': (dimension[2] || '').trim()
+              'units': (dimension[2].replace(/v[wh]/, '%') || '%').trim()
             };
           }
         }
@@ -142,35 +143,21 @@
                 featherlightAttributes.style = featherlightAttributes.style || [];
                 ['width','height'].map(function(attr) {
                   if (featherlightAttributes[attr].value) {
-                    if (featherlightAttributes[attr].units) { // add to style tag
                       featherlightAttributes.style.push(attr + ':' + featherlightAttributes[attr].value + featherlightAttributes[attr].units);
-                      element.removeAttribute('data-featherlight-iframe-' + attr);
-                    }
-                    else {
-                      element.setAttribute('data-featherlight-iframe-' + attr, featherlightAttributes[attr].value);
-                    }
                   }
-                  else {
-                    element.removeAttribute('data-featherlight-iframe-' + attr);
-                  }
+                  element.removeAttribute('data-featherlight-iframe-' + attr);
                 });
-
-                if (featherlightAttributes.style.length > 0) {
-                  element.setAttribute('data-featherlight-iframe-style', featherlightAttributes.style.join(';'));
-                }
-                else {
-                  element.removeAttribute('data-featherlight-iframe-style');
-                }
               }
               else { // ... otherwise size not needed - we remove all size tags
                 element.removeAttribute('data-featherlight-iframe-width');
                 element.removeAttribute('data-featherlight-iframe-height');
+              }
 
-                // Remove style attribute also but then put it back if we still need it
+              if (featherlightAttributes.style && featherlightAttributes.style.length > 0) {
+                element.setAttribute('data-featherlight-iframe-style', featherlightAttributes.style.join(';'));
+              }
+              else {
                 element.removeAttribute('data-featherlight-iframe-style');
-                if (featherlightAttributes.type === 'iframe' && featherlightAttributes.style && featherlightAttributes.style.length > 0) {
-                  element.setAttribute('data-featherlight-iframe-style', featherlightAttributes.style.join(';'));
-                }
               }
             }
             else { // ... otherwise we've selected a different target - remove all the featherlight attributes from element
@@ -324,10 +311,10 @@
                               id: 'widthUnits',
                               label: '',
                               style: 'margin-top:0px;',
-                              'default': 'vw',
+                              'default': '%',
                               items: [
-                                ['<not set> ', 'notSet'],
-                                ['vw ', 'vw'],
+                                //['<not set> ', 'notSet'],
+                                //['vw ', 'vw'],
                                 ['% ', '%'],
                                 ['px ', 'px']
                               ],
@@ -371,10 +358,10 @@
                               id: 'heightUnits',
                               label: '',
                               style: 'margin-top:0px;',
-                              'default': 'vh',
+                              'default': '%',
                               items: [
-                                ['<not set> ', 'notSet'],
-                                ['vh ', 'vh'],
+                                //['<not set> ', 'notSet'],
+                                //['vh ', 'vh'],
                                 ['% ', '%'],
                                 ['px ', 'px']
                               ],
@@ -407,7 +394,7 @@
                             featherlightAttributes[attr] = {};
                             if (setting.length > 0) {
                               featherlightAttributes[attr].value = setting;
-                              if (units !== 'notSet') featherlightAttributes[attr].units = units;
+                              /*if (units !== 'notSet')*/ featherlightAttributes[attr].units = units.replace('%', 'v'+attr.substring(0,1)).trim();
                             }
                           });
                         }
