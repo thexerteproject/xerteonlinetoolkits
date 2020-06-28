@@ -1,6 +1,6 @@
 (function() {
   // obj to keep track of all featherlight attributes between methods
-  var featherlightAttributes;
+  var featherlightAttributes, lang;
 
   // return FL = {
   //   type: iframe, image - from 'data-featherlight'
@@ -20,7 +20,7 @@
 
       // Get width and height if iframe
       FL.size = false; // assume not used
-      ['width','height'].map(function(attr) {
+      ['width', 'height'].map(function(attr) {
         FL[attr] = {};
         if (element.getAttribute('data-featherlight-iframe-' + attr)) {
           FL[attr].value = element.getAttribute('data-featherlight-iframe-' + attr);
@@ -32,8 +32,8 @@
       // Check for a styles attribute and separate out width,height
       FL.style = [];
       if (element.getAttribute('data-featherlight-iframe-style')) {
-        var styles = separateStyles(['width','height'], element.getAttribute('data-featherlight-iframe-style'));
-        ['width','height'].map(function(attr) {
+        var styles = separateStyles(['width', 'height'], element.getAttribute('data-featherlight-iframe-style'));
+        ['width', 'height'].map(function(attr) {
           if (styles[0][attr]) {
             FL[attr] = styles[0][attr];
             FL.size = true;
@@ -66,10 +66,12 @@
         return obj;
       }, {}),
       style.split(';')
-        .filter(function(i){return i.trim().length>0;}) // remove empty terms ; ;
-        .filter(function(item) { // return terms not in the attrs array: [width, height]
-          return !attrs.includes(item.split(':')[0].trim());
-        })
+      .filter(function(i) {
+        return i.trim().length > 0;
+      }) // remove empty terms
+      .filter(function(item) { // return terms not in the attrs array: [width, height]
+        return !attrs.includes(item.split(':')[0].trim());
+      })
     ];
   }
 
@@ -79,8 +81,8 @@
   }
 
   function setSizeElements(dialog, enable) {
-    ['widthSetting','widthUnits','heightSetting','heightUnits'].map(function(attr) {
-      dialog.getContentElement('target', attr)[ enable ? 'enable' : 'disable' ]();
+    ['widthSetting', 'widthUnits', 'heightSetting', 'heightUnits'].map(function(attr) {
+      dialog.getContentElement('target', attr)[enable ? 'enable' : 'disable']();
     });
   }
 
@@ -90,8 +92,7 @@
     if (widget) {
       if (widget.parts && widget.parts.link) { // Linking Image widget
         element = widget.parts.link;
-      }
-      else if (widget.wrapper && widget.wrapper.getAscendant( 'a' )) { // Linking FontAwesome widget
+      } else if (widget.wrapper && widget.wrapper.getAscendant('a')) { // Linking FontAwesome widget
         element = widget.wrapper.getAscendant('a');
       }
     }
@@ -105,7 +106,11 @@
 
   CKEDITOR.plugins.add('xotlightbox', (function(editor) {
     return {
+      lang: 'en',
       requires: 'dialog,link,numericinput',
+      init: function(editor) {
+        lang = editor.lang.xotlightbox;
+      },
       afterInit: function(editor) {
         if (!editor.plugins.link) return; // link plugin not installed so nothing to do
 
@@ -126,7 +131,7 @@
           if (!linkDialogDefinition.onShowOriginal) linkDialogDefinition.onShowOriginal = linkDialogDefinition.onShow;
           linkDialogDefinition.onShow = function() {
             var editor = this.getParentEditor(),
-                element = getCurrentLink(editor); // Get the link that we are editing...
+              element = getCurrentLink(editor); // Get the link that we are editing...
 
             featherlightAttributes = {};
             if (element) { //  we have an existing hyperlink, get data-featherlight attributes
@@ -148,10 +153,10 @@
             // Run the original link OK metod to insert the link
             linkDialogDefinition.onOkOriginal.apply(this, arguments);
 
-            var element = getCurrentLink(editor);  // Get the link that we are editing...
+            var element = getCurrentLink(editor); // Get the link that we are editing...
             if (element) {
               // Take the first chance we can to remove this
-              if (element.getAttribute('target') === '_lightbox')  element.removeAttribute('target');
+              if (element.getAttribute('target') === '_lightbox') element.removeAttribute('target');
 
               // If type is set then we want to write 'data-featherlight' attributes to the element
               if (featherlightAttributes.type && featherlightAttributes.type.length > 0) {
@@ -161,27 +166,24 @@
                 // now we work through the size logic, but only for iframe
                 if (featherlightAttributes.type === 'iframe' && featherlightAttributes.size) {
                   featherlightAttributes.style = featherlightAttributes.style || [];
-                  ['width','height'].map(function(attr) {
+                  ['width', 'height'].map(function(attr) {
                     if (featherlightAttributes[attr].value) {
-                        featherlightAttributes.style.push(attr + ':' + featherlightAttributes[attr].value + featherlightAttributes[attr].units);
+                      featherlightAttributes.style.push(attr + ':' + featherlightAttributes[attr].value + featherlightAttributes[attr].units);
                     }
                     element.removeAttribute('data-featherlight-iframe-' + attr);
                   });
-                }
-                else { // ... otherwise size not needed - we remove all size tags
+                } else { // ... otherwise size not needed - we remove all size tags
                   element.removeAttribute('data-featherlight-iframe-width');
                   element.removeAttribute('data-featherlight-iframe-height');
                 }
 
                 if (featherlightAttributes.style && featherlightAttributes.style.length > 0) {
                   element.setAttribute('data-featherlight-iframe-style', featherlightAttributes.style.join(';'));
-                }
-                else {
+                } else {
                   element.removeAttribute('data-featherlight-iframe-style');
                 }
-              }
-              else { // ... otherwise we've selected a different target - remove all the featherlight attributes from element
-                ['', '-iframe-width', '-iframe-height', '-iframe-style', '-image-style'].map(function(fragment){
+              } else { // ... otherwise we've selected a different target - remove all the featherlight attributes from element
+                ['', '-iframe-width', '-iframe-height', '-iframe-style', '-image-style'].map(function(fragment) {
                   element.removeAttribute('data-featherlight' + fragment);
                 });
               }
@@ -209,7 +211,7 @@
 
             if (featherlightAttributes.type) { // Check if target dropdown should have Lightbox selected and fix
               if (!data.target) data.target = {};
-              data.target.type = "_lightbox";
+              data.target.type = '_lightbox';
             }
             linkTargetTypeDropdown.setupOriginal.apply(this, arguments);
             linkTargetTypeDropdown.onChange.call(this);
@@ -221,7 +223,7 @@
             linkTargetTypeDropdown.commitOriginal.apply(this, arguments);
 
             // Check if target was Lightbox and remove target attribute
-            if (data.target && data.target.type === "_lightbox") {
+            if (data.target && data.target.type === '_lightbox') {
               delete data.target;
               featherlightAttributes.type = 'iframe';
             }
@@ -239,12 +241,12 @@
 
           // Check if we've added Lightbox option before, if not then add it...
           if (linkTargetTypeDropdown.items && !linkTargetTypeDropdown.items.some(function(item) {
-              return item[0] === 'Lightbox';
+              return item[1] === '_lightbox';
             })) {
-            linkTargetTypeDropdown.items.push(["Lightbox", "_lightbox"]);
+            linkTargetTypeDropdown.items.push([lang.linkTargetTypeDropdownOption, '_lightbox']);
 
             var lightboxTypeOnChange = function() {
-              var display = (this.getValue() === "iframe");
+              var display = (this.getValue() === 'iframe');
               this.getDialog().getContentElement('target', 'iframeSizeSettings').getElement()[display ? 'show' : 'hide']();
             };
 
@@ -252,13 +254,13 @@
             linkDialogTargetTab.elements.push({
               type: 'fieldset',
               id: 'lightboxOptions',
-              label: 'Lightbox Options',
+              label: lang.lightboxOptionsLabel,
               children: [{
                 type: 'hbox',
                 children: [{
                     type: 'select',
                     id: 'lightboxType',
-                    label: 'Type',
+                    label: lang.lightboxTypeLabel,
                     onChange: lightboxTypeOnChange,
                     'default': 'iframe',
                     items: [
@@ -267,14 +269,14 @@
                     ],
                     setup: function(data) {
                       if (featherlightAttributes && featherlightAttributes.type) {
-                        if (['image','iframe'].includes(featherlightAttributes.type.toLowerCase()))
+                        if (['image', 'iframe'].includes(featherlightAttributes.type.toLowerCase()))
                           this.setValue(featherlightAttributes.type.toLowerCase());
                       }
                       lightboxTypeOnChange.call(this);
                     },
                     commit: function(data) {
                       if (data.target && data.target.name === '_lightbox') {
-                        featherlightAttributes.type = ['image','iframe'].includes(this.getValue()) ? this.getValue() : '';
+                        featherlightAttributes.type = ['image', 'iframe'].includes(this.getValue()) ? this.getValue() : '';
                       }
                     }
                   },
@@ -284,15 +286,15 @@
                     label: ' ',
                     onLoad: function() {
                       var dialog = this.getDialog();
-                      var checkbox = document.createElement("input");
-                      checkbox.setAttribute("type", "checkbox");
+                      var checkbox = document.createElement('input');
+                      checkbox.setAttribute('type', 'checkbox');
                       checkbox.onclick = function() {
                         sizeToggle.call(this, dialog);
                       };
 
                       var legend = this.getElement().$.firstElementChild;
                       legend.appendChild(checkbox);
-                      legend.appendChild( document.createTextNode(" Set Size") );
+                      legend.appendChild(document.createTextNode(' ' + lang.sizeSettingsLegendText));
                     },
                     setup: function() {
                       if (!featherlightAttributes.size) featherlightAttributes.size = false;
@@ -300,14 +302,13 @@
                       checkbox.checked = featherlightAttributes.size;
                       setSizeElements(this.getDialog(), featherlightAttributes.size);
                     },
-                    'default': 'notSet',
                     children: [{
                       type: 'vbox',
                       children: [{
                           type: 'hbox',
                           children: [{
                               id: 'widthSetting',
-                              label: 'Width',
+                              label: lang.dimensionWidthNameP,
                               type: 'number',
                               style: 'width: 58px',
                               'default': '90',
@@ -317,8 +318,7 @@
                               setup: function(data) {
                                 if (featherlightAttributes.width && featherlightAttributes.width.value) {
                                   this.setValue(featherlightAttributes.width.value);
-                                }
-                                else {
+                                } else {
                                   if (featherlightAttributes.height && featherlightAttributes.height.value) {
                                     this.setValue('');
                                   }
@@ -337,12 +337,7 @@
                               ],
                               setup: function(data) {
                                 if (featherlightAttributes.width && featherlightAttributes.width.value) {
-                                  this.setValue( featherlightAttributes.width.units ? featherlightAttributes.width.units : 'notSet');
-                                }
-                                else {
-                                  if (featherlightAttributes.height && featherlightAttributes.height.value) {
-                                    this.setValue('notSet');
-                                  }
+                                  this.setValue(featherlightAttributes.width.units);
                                 }
                               }
                             }
@@ -352,7 +347,7 @@
                           type: 'hbox',
                           children: [{
                               id: 'heightSetting',
-                              label: 'Height',
+                              label: lang.dimensionHeightNameP,
                               type: 'number',
                               style: 'width: 58px;',
                               'default': '90',
@@ -362,8 +357,7 @@
                               setup: function(data) {
                                 if (featherlightAttributes.height && featherlightAttributes.height.value) {
                                   this.setValue(featherlightAttributes.height.value);
-                                }
-                                else {
+                                } else {
                                   if (featherlightAttributes.width && featherlightAttributes.width.value) {
                                     this.setValue('');
                                   }
@@ -382,12 +376,7 @@
                               ],
                               setup: function(data) {
                                 if (featherlightAttributes.height && featherlightAttributes.height.value) {
-                                  this.setValue( featherlightAttributes.height.units ? featherlightAttributes.height.units : 'notSet');
-                                }
-                                else {
-                                  if (featherlightAttributes.width && featherlightAttributes.width.value) {
-                                    this.setValue('notSet');
-                                  }
+                                  this.setValue(featherlightAttributes.height.units);
                                 }
                               }
                             }
@@ -397,19 +386,23 @@
                     }],
                     validate: function() {
                       var dialog = this.getDialog(),
-                          message = [];
+                        message = [],
+                        langHelper = function (text, attr) {
+                          return text
+                              .replace('{a}', lang['dimension' + attr + 'NameL'])
+                              .replace('{A}', lang['dimension' + attr + 'NameP']);
+                        };
 
                       if (featherlightAttributes.size === true) {
-                        ['Width','Height'].map(function(attr) {
+                        ['Width', 'Height'].map(function(attr) {
                           var setting = dialog.getContentElement('target', attr.toLowerCase() + 'Setting').getValue(),
-                              units = dialog.getContentElement('target', attr.toLowerCase() + 'Units').getValue();
+                            units = dialog.getContentElement('target', attr.toLowerCase() + 'Units').getValue();
 
-                              if (units === '%' && (setting < 10 || setting > 100)) {
-                                message.push("Valid range for " + attr + " is 10-100%.");
-                              }
-                              else if (units === 'px' && setting < 1) {
-                                message.push(attr + " must be greater than 0px.");
-                              }
+                          if (units === '%' && (setting < 10 || setting > 100)) {
+                            message.push(langHelper(lang.validRangePercentageText, attr));
+                          } else if (units === 'px' && setting < 1) {
+                            message.push(langHelper(lang.validRangePixelText, attr));
+                          }
                         });
                       }
 
@@ -422,16 +415,16 @@
 
                       if (featherlightAttributes.size === true) {
                         if (['iframe'].includes(
-                          dialog.getContentElement('target', 'lightboxType').getValue()
-                        )) {
-                          ['width','height'].map(function(attr) {
+                            dialog.getContentElement('target', 'lightboxType').getValue()
+                          )) {
+                          ['width', 'height'].map(function(attr) {
                             var setting = dialog.getContentElement('target', attr + 'Setting').getValue(),
-                                units = dialog.getContentElement('target', attr + 'Units').getValue();
+                              units = dialog.getContentElement('target', attr + 'Units').getValue();
 
                             featherlightAttributes[attr] = {};
                             if (setting.length > 0) {
                               featherlightAttributes[attr].value = setting;
-                              featherlightAttributes[attr].units = units.replace('%', 'v'+attr.substring(0,1)).trim();
+                              featherlightAttributes[attr].units = units.replace('%', 'v' + attr.substring(0, 1)).trim();
                             }
                           });
                         }
