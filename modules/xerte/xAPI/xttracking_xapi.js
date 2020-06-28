@@ -2052,49 +2052,6 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting) {
 
 }
 
-function XTSetViewed(page_nr, name, score) {
-    if (isNaN(score) || typeof score != "number") {
-        score = 0.0;
-    }
-    this.pageEnd = new Date();
-    var sit = state.findPage(page_nr);
-    if (sit != null) {
-        var id = sit.getPageId();
-        var statement = {
-            actor: actor,
-            verb: {
-                id: "http://id.tincanapi.com/verb/viewed",
-                display: {
-                    "en-US": "viewed"
-                }
-            },
-            result: {
-                "score": {
-                    min: 0.0,
-                    max: 100.0,
-                    raw: score,
-                    scaled: score / 100
-                },
-                "duration": calcDuration(sit.start, this.pageEnd)
-            },
-            object: {
-                objectType: "Activity",
-                id: id,
-                definition: {
-                    name: {
-                        "en": name
-                    }
-                }
-            },
-            timestamp: this.pageEnd
-
-        };
-        statement.object.definition.name[state.language] = name;
-
-        SaveStatement(statement);
-        state.setPageScore(page_nr, score);
-    }
-}
 
 function XThelperConsolidateSegments(videostate) {
     // 1. Sort played segments on start time (first make a copy)
