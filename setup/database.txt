@@ -11,30 +11,30 @@
 /*
 * Database type
 */
-$xerte_toolkits_site->database_type = "DATABASE_TYPE";
+$xerte_toolkits_site->database_type = 'DATABASE_TYPE';
 
 /*
  * Host where database is
  */
-$xerte_toolkits_site->database_host = "DATABASE_HOST";
+$xerte_toolkits_site->database_host = 'DATABASE_HOST';
 
 /*
  * Username for database
  */
-$xerte_toolkits_site->database_username ="DATABASE_USERNAME";
+$xerte_toolkits_site->database_username = 'DATABASE_USERNAME';
 
 /*
  * Password for database
  */
-$xerte_toolkits_site->database_password ="DATABASE_PASSWORD";
+$xerte_toolkits_site->database_password = 'DATABASE_PASSWORD';
 
 /*
  * Database name
  */
-$xerte_toolkits_site->database_name ="DATABASE_NAME";
+$xerte_toolkits_site->database_name = 'DATABASE_NAME';
 
 /*
  * Database table prefix
  */
-$xerte_toolkits_site->database_table_prefix ="DATABASE_PREFIX";
+$xerte_toolkits_site->database_table_prefix = 'DATABASE_PREFIX';
    
