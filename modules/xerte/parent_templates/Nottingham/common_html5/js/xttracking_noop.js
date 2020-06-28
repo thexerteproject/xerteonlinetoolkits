@@ -1090,15 +1090,6 @@ function XTSetPageScoreJSON(page_nr, score)
     state.setPageScore(page_nr, score);
 }
 
-function XTSetViewed(page_nr, name, score)
-{
-    if (isNaN(score) || typeof score != "number")
-    {
-        score = 0.0;
-    }
-    state.setPageScore(page_nr, score);
-}
-
 function XThelperConsolidateSegments(videostate)
 {
     // 1. Sort played segments on start time (first make a copy)
