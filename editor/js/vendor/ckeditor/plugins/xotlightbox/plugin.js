@@ -11,8 +11,15 @@
   function getFeatherlightAttributes(element) {
     var FL = featherlightAttributes || {};
 
-    // Store target if it is present
-    if (element.getAttribute('target')) FL.target = element.getAttribute('target');
+    // Process target if it is present
+    if (element.getAttribute('target')) {
+      FL.target = element.getAttribute('target');
+      if (FL.target === '_lightbox') {
+        FL.type = 'iframe';
+        delete FL.target;
+        element.removeAttribute('target');
+      }
+    }
 
     // Get featherlight type
     if (element.getAttribute('data-featherlight')) {
@@ -89,6 +96,19 @@
   function getCurrentLink(editor) {
     var element, widget = editor.widgets.focused;
 
+    if (!widget) { //let's try a hack to see if we can get a widget
+      var sel = editor.getSelection();
+      if (sel) {
+        var range = sel.getRanges()[0];
+        if (range) {
+          range.select();
+          if (editor.widgets.focused) {
+            widget = editor.widgets.focused;
+          }
+        }
+      }
+    }
+
     if (widget) {
       if (widget.parts && widget.parts.link) { // Linking Image widget
         element = widget.parts.link;
@@ -100,7 +120,6 @@
     if (!element) { // A normal link?
       element = editor.getSelection().getSelectedElement() || CKEDITOR.plugins.link.getSelectedLink(editor);
     }
-
     return element;
   }
 
@@ -191,9 +210,9 @@
           };
 
           // No onCancel handler to store so just define the new handler
-          linkDialogDefinition.onCancel = function() {
+          linkDialogDefinition.onCancel = function() {//debugger;
             // Put any attributes that we've messed with back to what they were
-            var element = this.getParentEditor().getSelection().getSelectedElement();
+            var element = getCurrentLink(this.getParentEditor());
             if (element) {
               if (element.getAttribute('target') === '_lightbox') {
                 element.removeAttribute('target');
