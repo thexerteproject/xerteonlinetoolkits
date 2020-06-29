@@ -22,7 +22,7 @@
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_BUTTON", "Do transfer");
 
-    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_CLOSE_PANEL", "Dismiss");
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_CLOSE_PANEL", "Clear Report");
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_FEEDBACKLINE", "Placed template with id {template_id} (\"{template_name}\") in folder \"{folder}\" of user {newuser} and renamed {oldfolder} to {newfolder}");
 
