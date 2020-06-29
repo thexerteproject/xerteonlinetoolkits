@@ -58,7 +58,7 @@ if(is_user_admin()) {
 
     echo str_replace("{user}", $row['firstname'] .  " "  . $row['surname'], USERS_MANAGEMENT_TEMPLATE_TRANSFER_EXPLANATION);
 
-    echo "<form name=\"doTransfer\" action=\"javascript:do_transfer_user_templates('" . $login_id . "', 'select_new_owner', 'delete_user')\"><select id=\"select_new_owner\">";
+    echo "<form name=\"doTransfer\" action=\"javascript:do_transfer_user_templates('" . $login_id . "', 'select_new_owner', 'transfer_private', 'delete_user')\"><select id=\"select_new_owner\">";
 
     foreach ($logins as $row_users) {
 
@@ -69,6 +69,7 @@ if(is_user_admin()) {
     }
 
     echo "</select><br>";
+    echo "<input type=\"checkbox\" name=\"transfer_private\" id=\"transfer_private\"><label for=\"transfer_private\">" .  USERS_MANAGEMENT_TEMPLATE_TRANSFER_PRIVATE . "</label><br>";
     echo "<input type=\"checkbox\" checked name=\"delete_user\" id=\"delete_user\"><label for=\"delete_user\">" .  USERS_MANAGEMENT_TEMPLATE_TRANSFER_DELETEUSER . "</label><br>";
     echo "<button type=\"submit\" class=\"xerte_button\"><i class=\"fa fa-share\"></i> " . USERS_MANAGEMENT_TEMPLATE_TRANSFER_BUTTON . "</button></form>";
     echo "<div id=\"transfer_result\" style=\"display:none;\"><img src=\"website_code/images/loading16.gif\"></div>";

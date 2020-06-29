@@ -16,9 +16,11 @@
 
 	define("USERS_MANAGEMENT_TEMPLATE_TRANSFER", "Transfer ownership and delete user");
 
-	define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_EXPLANATION", "<p>Here can you can transfer all non Private templates owned by the selected user to the user selected below. The templates will be placed in a new folder in the workspace of the new user. Sharing settings will not change. The new folder will be called '{user}'.</p><p>If selected and after a successful transfer the original user is removed from all projects that were shared with him/her</p>");
+	define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_EXPLANATION", "<p>Here can you can transfer all (non Private) templates owned by the selected user to the user selected below. The templates will be placed in a new folder in the workspace of the new user. Sharing settings will not change. The new folder will be called '{user}'.</p><p>If selected and after a successful transfer the original user is removed from all projects that were shared with him/her. If Private templates are also transferred, the user is removed from the list of users with which templates can be shared. The user will still be able to login again.</p>");
 
-	define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_DELETEUSER", "Remove user's access to other templates.");
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_PRIVATE", "Include Private templates in the transfer.");
+
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_DELETEUSER", "Remove user's access to other templates. Also remove user if Pravate templates are included in the transfer.");
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_BUTTON", "Do transfer");
 
