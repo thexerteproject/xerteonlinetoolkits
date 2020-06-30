@@ -85,7 +85,7 @@ if(file_exists($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] 
 		$users_array[$username] = 1;
 	}
 
-        mail($username . $mail_domain, "File available - \"" . str_replace("_"," ",$row_template_name['template_name']) ."\"", "Hello, <br><br> You've requested to be informed when the file \"" . str_replace("_"," ",$row_template_name['template_name']) . "\" becomes available for editing. The file was made available at " . date("h:i a") . " on " . date("l, jS F") . " <br><br> Please note that multiple requests may have been made, and as such you may not be the only person to have received one of these notifications. As such the file may well be locked by somebody else.<br><br> Please log into the site at <a href=\"" . $xerte_toolkits_site->site_url . "\">" . $xerte_toolkits_site->site_url . "</a>. <br><br> Thank you, <br><br> the Xerte Online toolkits team", get_email_headers());
+        mail($username . $mail_domain, "File available - \"" . str_replace("_"," ",$row_template_name['template_name']) ."\"", "Hello, <br><br> This is to notify you that the Xerte file \"" . str_replace("_"," ",$row_template_name['template_name']) . "\" has become available for editing. The file was made available at " . date("h:i a") . " on " . date("l, jS F") . " <br><br> Please note that multiple attempts to edit the file may have been made, and as such you may not be the only person to have received one of these notifications. For that reason the file may soon become locked again by another user.<br><br> Please log into the site at <a href=\"" . $xerte_toolkits_site->site_url . "\">" . $xerte_toolkits_site->site_url . "</a>. <br><br> Thank you, <br><br> the Xerte Online toolkits team", get_email_headers());
 
     }
 
