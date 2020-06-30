@@ -93,34 +93,82 @@
     });
   }
 
-  function getCurrentLink(editor) {
+  function getCurrentLink(editor, dialog) {
     var element, widget = editor.widgets.focused;
 
     if (!widget) { //let's try a hack to see if we can get a widget
-      var sel = editor.getSelection();
-      if (sel) {
-        var range = sel.getRanges()[0];
-        if (range) {
+      var selection = editor.getSelection();
+      if (selection) {
+        var range = selection.getRanges()[0];
+        // If it's selecting different nodes, adjust to cover only one node (if possible?)
+  			if ( range ) {
           range.select();
+
           if (editor.widgets.focused) {
             widget = editor.widgets.focused;
           }
+          /*else {
+            trimSelection( editor );
+            debugger;
+          }*/
         }
       }
     }
 
     if (widget) {
+      //editor.getSelection().getRanges()[0].select();
       if (widget.parts && widget.parts.link) { // Linking Image widget
         element = widget.parts.link;
+        editor.getSelection().selectElement(element);
       } else if (widget.wrapper && widget.wrapper.getAscendant('a')) { // Linking FontAwesome widget
         element = widget.wrapper.getAscendant('a');
       }
+      if (element) dialog.getContentElement('info', 'linkDisplayText').getElement().hide();
     }
 
     if (!element) { // A normal link?
       element = editor.getSelection().getSelectedElement() || CKEDITOR.plugins.link.getSelectedLink(editor);
     }
     return element;
+  }
+
+  function trimSelection( editor ) {
+    var sel = editor.getSelection(),
+      range = sel && sel.getRanges()[ 0 ],
+      done = false;
+
+    if ( !range || range.collapsed )
+      return;
+
+    if (range.endContainer.type == CKEDITOR.NODE_TEXT) {
+      //Trim left
+      done = false;
+      while ( !done && range.endContainer.getText().substr( range.startOffset , 1 ).charCodeAt(0) === 160 ||
+              range.endContainer.getText().substr( range.startOffset , 1 ).charCodeAt(0) === 32) {
+        range.startOffset += 1;
+        //try {
+          console.log("left", editor.getSelectedHtml().getHtml());debugger;
+          range.select();
+console.log("left", editor.getSelectedHtml().getHtml());debugger;
+        //} catch(e){done=true;}
+      }
+
+      //Trim right
+      done = false;
+      while ( !done && range.endContainer.getText().substr( range.endOffset , 1 ).charCodeAt(0) === 160 ||
+              range.endContainer.getText().substr( range.endOffset , 1 ).charCodeAt(0) === 32) {
+        range.endOffset -= 1;
+        //try {
+          console.log("right", editor.getSelectedHtml().getHtml());debugger;
+          range.select();
+console.log("right", editor.getSelectedHtml().getHtml());debugger;
+        //} catch(e){
+        //  range.endOffset += 1;
+        //  range.select();
+        //  done=true;
+        //}
+      }
+    }
   }
 
   CKEDITOR.plugins.add('xotlightbox', (function(editor) {
@@ -150,7 +198,7 @@
           if (!linkDialogDefinition.onShowOriginal) linkDialogDefinition.onShowOriginal = linkDialogDefinition.onShow;
           linkDialogDefinition.onShow = function() {
             var editor = this.getParentEditor(),
-              element = getCurrentLink(editor); // Get the link that we are editing...
+              element = getCurrentLink(editor, this); // Get the link that we are editing...
 
             featherlightAttributes = {};
             if (element) { //  we have an existing hyperlink, get data-featherlight attributes
@@ -172,7 +220,7 @@
             // Run the original link OK metod to insert the link
             linkDialogDefinition.onOkOriginal.apply(this, arguments);
 
-            var element = getCurrentLink(editor); // Get the link that we are editing...
+            var element = getCurrentLink(editor, this); // Get the link that we are editing...
             if (element) {
               // Take the first chance we can to remove this
               if (element.getAttribute('target') === '_lightbox') element.removeAttribute('target');
@@ -212,7 +260,7 @@
           // No onCancel handler to store so just define the new handler
           linkDialogDefinition.onCancel = function() {//debugger;
             // Put any attributes that we've messed with back to what they were
-            var element = getCurrentLink(this.getParentEditor());
+            var element = getCurrentLink(this.getParentEditor(), this);
             if (element) {
               if (element.getAttribute('target') === '_lightbox') {
                 element.removeAttribute('target');
