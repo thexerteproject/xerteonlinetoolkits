@@ -34,8 +34,185 @@ require_once("../user_library.php");
 require_once("management_library.php");
 
 global $xerte_toolkits_site;
+global $prefix;
 
-$prefix =  $xerte_toolkits_site->database_table_prefix;
+$prefix = $xerte_toolkits_site->database_table_prefix;
+
+function delete_folder_loop($path){
+
+    /**
+     * @global $folder_id_array, $folder_array, $file_array, $dir_path - several arrays and strings
+     */
+
+    global $folder_id_array, $folder_array, $file_array;
+
+    $d = opendir($path);
+
+    array_push($folder_id_array, $d);
+
+    while($f = readdir($d)){
+
+        if(($f!=".")&&($f!="..")){
+
+            $string = $path . DIRECTORY_SEPARATOR . $f;
+
+            if(is_dir($string)){
+
+                array_push($folder_array, $string);
+
+                delete_folder_loop($string);
+
+            }else{
+
+                array_push($file_array, $string);
+
+            }
+        }
+
+    }
+
+    $x = array_pop($folder_id_array);
+
+    closedir($x);
+
+}
+
+$dir_path="";
+$temp_dir_path = "";
+$temp_new_path = "";
+
+$folder_id_array = array();
+$folder_array = array();
+$file_array = array();
+
+function clean_up_files(){
+
+    global $file_array, $folder_array;
+
+    while($file = array_pop($file_array)){
+
+        unlink($file);
+
+    }
+
+    while($folder = array_pop($folder_array)){
+
+        rmdir($folder);
+
+    }
+
+}
+
+
+function delete_template($template)
+{
+
+    global $prefix, $dir_path, $xerte_toolkits_site;
+
+    $path = $xerte_toolkits_site->users_file_area_short . $template['template_id'] . "-" . $template['oldusername'] . "-" . $template['orgtemplate_name'];
+
+    $feedback = USERS_MANAGEMENT_TEMPLATE_TRANSFER_FEEDBACK_DELETED;
+    $feedback = str_replace("{folder}", $path, $feedback);
+    $feedback .= "<br>";
+
+
+    $dir_path = $path;
+
+    /*
+    * find the files to delete
+    */
+
+    delete_folder_loop($dir_path);
+
+    /*
+    * remove the files
+    */
+
+    clean_up_files();
+
+    /*
+    * delete the directory for this template
+    */
+
+    rmdir($path);
+
+    // Remove template from database
+    $query_to_delete_template_attributes = "delete from {$prefix}templatedetails where template_id= ?";
+    $params = array($template['template_id']);
+    db_query($query_to_delete_template_attributes, $params);
+
+    $query_to_delete_template_rights = "delete from {$prefix}templaterights where template_id= ?";
+    $params = array($template['template_id']);
+    db_query($query_to_delete_template_rights, $params);
+
+    $query_to_delete_syndication = "delete from {$prefix}templatesyndication where template_id=?";
+    $params = array($template['template_id']);
+    db_query($query_to_delete_syndication, $params);
+
+    $query_to_delete_xml_and_peer = "delete from {$prefix}additional_sharing where template_id=?";
+    $params = array($template['template_id']);
+    db_query($query_to_delete_xml_and_peer, $params);
+
+    return $feedback;
+}
+
+
+function clear_recyclebin($templates)
+{
+    $feedback = "";
+    for ($i=0; $i<count($templates); $i++)
+    {
+        $feedback .= delete_template($templates[$i]);
+    }
+    return "<p>" . $feedback . "</p>";
+}
+
+function createGetFolderId($folder_structure, $newuserid, $old_folder_id)
+{
+    global $prefix;
+    for ($i=0; $i, count($folder_structure); $i++)
+    {
+        if ($folder_structure[$i]['folder_id'] == $old_folder_id)
+        {
+            if ($folder_structure[$i]['newid'] != -1)
+            {
+                return $folder_structure[$i]['newid'];
+            }
+            else
+            {
+                if ($folder_structure[$i]['folder_parent'] != 0) {
+                    $parent_folder_id = createGetFolderId($folder_structure, $newuserid, $folder_structure[$i]['folder_parent']);
+                }
+                else
+                {
+                    $parent_folder_id = 0;
+                }
+                // Check if folder with parent $parent_folder_id and name $folder_structure[$i]['folder_name'] exists
+                $q = "select * from {$prefix}folderdetails where login_id=? and folder_parent=? and folder_name=?";
+                $params = array($newuserid, $parent_folder_id, $folder_structure[$i]['folder_name']);
+                $folder = db_query_one($q, $params);
+                if ($folder === false)
+                {
+                    return false;
+                }
+                if ($folder != null)
+                {
+                    // Found, re-use
+                    $folder_structure[$i]['newid'] = $folder['folder_id'];
+                    return $folder['folder_id'];
+                }
+                // Not found, create
+                $q = "insert into {$prefix}folderdetails set login_id=?, folder_parent=?, folder_name=?, date_created=?";
+                $params = array($newuserid, $parent_folder_id, $folder_structure[$i]['folder_name'], date('Y-m-d'));
+                $folder_id = db_query($q, $params);
+                $folder_structure[$i]['newid'] = $folder_id;
+                return $folder_id;
+            }
+        }
+    }
+    return false;
+}
+
 
 if(is_user_admin())
 {
@@ -57,21 +234,39 @@ if(is_user_admin())
         $transfer_private = ($_REQUEST['transfer_private'] == 'true' ? true : false);
         $delete_user = ($_REQUEST['delete_user'] == 'true' ? true : false);
 
-        $q = "select td.*, tr.*, otd.template_name as orgtemplate_name from {$prefix}templatedetails td, {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd, {$prefix}logindetails ld 
-                where td.template_id=tr.template_id and tr.role='creator' and td.creator_id=ld.login_id and td.template_type_id=otd.template_type_id and ld.username=?";
+        $q = "select td.*, tr.*, otd.template_name as orgtemplate_name, f.folder_id, f.folder_parent, f.folder_name from {$prefix}templatedetails td, {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd, {$prefix}folderdetails f, {$prefix}logindetails ld 
+                where td.template_id=tr.template_id and tr.role='creator' and tr.folder=f.folder_id and td.creator_id=ld.login_id and td.template_type_id=otd.template_type_id and ld.username=?";
         $templates_to_move = db_query($q, array($olduser));
         if ($templates_to_move !== false) {
+
+            $foldername = $olduser_rec['firstname'] .  " "  . $olduser_rec['surname'];
+            if (isset($_REQUEST['newfoldername']))
+            {
+                $foldername = $_REQUEST['newfoldername'];
+            }
+
+            // Build original folder tree
+            $q = "select * from {$prefix}folderdetails where login_id=? order by folder_id";
+            $params = array($_REQUEST['olduserid']);
+            $folder_structure = db_query($q, $params);
+
+            // At least two folders should exist...
+            for ($i=0; $i < count($folder_structure); $i++)
+            {
+                if ($folder_structure[$i]['folder_name'] == $olduser)
+                {
+                    $folder_structure[$i]['folder_name'] = $foldername;
+                    $new_root_folder_index = $i;
+                }
+                $folder_structure[$i]['newid'] = -1;
+            }
+
             // Get folder parent name of newuser
             $q = "select fd.folder_id, fd.login_id from {$prefix}folderdetails fd, {$prefix}logindetails ld where ld.login_id=fd.login_id and ld.username=? AND folder_name = ?";
             $rootfolder = db_query_one($q, array($newuser, $newuser));
             if ($rootfolder === false)
             {
                 die("Could not find workspace folder of user " . $newuser);
-            }
-            $foldername = $olduser_rec['firstname'] .  " "  . $olduser_rec['surname'];
-            if (isset($_REQUEST['newfoldername']))
-            {
-                $foldername = $_REQUEST['newfoldername'];
             }
             // Check if folder $foldername exists for user 'newuser'
             $q = "select folder_id from {$prefix}folderdetails fd, {$prefix}logindetails ld where ld.login_id=fd.login_id and ld.username=? AND folder_name = ?";
@@ -80,7 +275,7 @@ if(is_user_admin())
             {
                 die("Error checking existence of folder " . $foldername);
             }
-            $folder_id = -1;
+            $new_root_folder_id = -1;
             if ($folder === null)
             {
                 // create folder
@@ -91,17 +286,26 @@ if(is_user_admin())
             }
             else
             {
-                $folderid = $folder['folder_id'];
+                $new_root_folder_id = $folder['folder_id'];
+                $folder_structure[$new_root_folder_index]['newid'] = $new_root_folder_id;
             }
             // Ok, so now we move all the templates to move to user $_GET['newuser'], in folder $folderid
+            $templates_recyclebin = array();
             foreach($templates_to_move as $template)
             {
-                if ($transfer_private || ($template['access_to_whom'] != 'Private' || $template['tsugi_published'] || $template['tsugi_xapi_enabled']))
+                if ($template['folder_name'] == 'recyclebin' && $template['folder_parent'] == 0)
                 {
-                    // If folder doesnéxit yet, create it now
-                    if ($folder_id == -1)
+                    $template['oldusername'] = $olduser;
+                    $templates_recyclebin[] = $template;
+                }
+                // Do only move if template is not in recyclebin or transfer_private is on or not private or tsugi_published or xapi published
+                else if ($transfer_private || $template['access_to_whom'] != 'Private' || $template['tsugi_published'] == "1" || $template['tsugi_xapi_enabled'] == "1")
+                {
+                    // If new root folder doesn't  exist yet, create it now
+                    if ($new_root_folder_id == -1)
                     {
-                        $folderid = db_query($folder_create_query, $folder_create_params);
+                        $new_root_folder_id = db_query($folder_create_query, $folder_create_params);
+                        $folder_structure[$new_root_folder_index]['newid'] = $new_root_folder_id;
                     }
                     // Correct the database
                     // 1. templatedetails
@@ -112,21 +316,23 @@ if(is_user_admin())
                     }
 
                     // 2. templaterights
-                    // 2a. put in correct folder
+                    // 2a. Make sure new folder exists
+                    $folder_id = createGetFolderId($folder_structure, $_REQUEST['newuserid'], $template['folder_id']);
+                    // 2b. put in correct folder
                     $q = "insert {$prefix}templaterights set template_id=?, user_id=?, role='creator', folder=?";
-                    $params = array($template['template_id'], $rootfolder['login_id'], $folderid);
+                    $params = array($template['template_id'], $rootfolder['login_id'], $folder_id);
                     $res = db_query($q, $params);
                     if ($res === false) {
                         die("Error inserting creator rights of user " . $newuser . " in templaterights of template " . $template['template_id']);
                     }
-                    // 2b. Remove from olduser
+                    // 2c. Remove from olduser
                     $q = "delete from {$prefix}templaterights where template_id=? and user_id=? and role = 'creator'";
                     $params = array($template['template_id'], $template['creator_id']);
                     $res = db_query($q, $params);
                     if ($res === false) {
                         die("Error deleting creator rights of user " . $olduser . " in templaterights of template " . $template['template_id']);
                     }
-                    // 2c. Remove any access previously already granted to newuser to prevent different roles of this one user
+                    // 2d. Remove any access previously already granted to newuser to prevent different roles of this one user
                     $q = "delete from {$prefix}templaterights where template_id=? and user_id=? and role != 'creator'";
                     $params = array($template['template_id'], $rootfolder['login_id']);
                     $res = db_query($q, $params);
@@ -173,6 +379,11 @@ if(is_user_admin())
                 echo $feedback;
 
                 if ($transfer_private) {
+                    // Empty recyclebin (and delete templates)
+                    $feedback = clear_recyclebin($templates_recyclebin);
+                    $feedback = str_replace("{user}", $olduser, $feedback);
+                    echo $feedback;
+
                     // Remove user from login details
                     $q = "delete from {$prefix}logindetails where login_id=?";
                     $params = array($_REQUEST['olduserid']);

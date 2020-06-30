@@ -1298,7 +1298,7 @@ function transfer_user_templates_stateChanged(){
 function do_transfer_user_templates(user_id, tag_user_select, tag_transfer_private, tag_delete_user)
 {
 	var new_user = $('#' + tag_user_select).val();
-	var transfer_private = $('#' + tag_transfer_private).prop('chacked');
+	var transfer_private = $('#' + tag_transfer_private).prop('checked');
 	var delete_user = $('#' + tag_delete_user).prop('checked');
 
 	$("#transfer_result").show();
