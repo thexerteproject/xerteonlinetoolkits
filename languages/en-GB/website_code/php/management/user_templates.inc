@@ -14,15 +14,15 @@
 
 	define("USERS_MANAGEMENT_TEMPLATE_SEARCH", "Search");
 
-	define("USERS_MANAGEMENT_TEMPLATE_TRANSFER", "Transfer ownership and delete user");
+	define("USERS_MANAGEMENT_TEMPLATE_TRANSFER", "View transfer ownership options");
 
-	define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_EXPLANATION", "<p>Here can you can transfer all (non Private) templates owned by the selected user to the user selected below. The templates will be placed in a new folder in the workspace of the new user. Sharing settings will not change. The new folder will be called '{user}'.</p><p>If selected and after a successful transfer the original user is removed from all projects that were shared with him/her. If Private templates are also transferred, the user is removed from the list of users with which templates can be shared. The user will still be able to login again.</p>");
+	define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_EXPLANATION", "<p>Here you can transfer all (non Private) projects owned by the selected user to the new owner selected below. The projects will be placed in a new folder in the workspace of the new user. Sharing settings will not change. The new folder will be called '{user}'. This folder will also contain sub-folders if the transferred projects were in sub folders in the original owner's workspace.</p><p>If selected below and after a successful transfer, the original user is removed from all projects that were shared with him/her. If Private templates are also transferred, the user is removed from the list of users with whom templates can be shared and their Xerte account is removed. Note: depending on the the authentication method in use the user may still be able to login again.</p>");
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_PRIVATE", "Include Private templates in the transfer.");
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_DELETEUSER", "Remove user's access to other templates. Also remove user if Pravate templates are included in the transfer.");
 
-    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_BUTTON", "Do transfer");
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_BUTTON", "Do bulk transfer");
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_CLOSE_PANEL", "Clear Report");
 
