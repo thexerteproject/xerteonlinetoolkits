@@ -88,27 +88,23 @@ if(isset($_SESSION['toolkits_logon_id'])){
 			// Check for multiple editors
 			//if(has_template_multiple_editors($safe_template_id)){
 
-				// Check for lock file. A lock file is created to prevent more than one
+				// Check for lock file. A lock file is created to prevent more than one editor editing the same template at the same time
 				if(file_exists($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt")){
 
 					// Lock file exists, so open it up and see who created it
 					$lock_file_data = file_get_contents($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt");
 
-					$temp = explode("*",$lock_file_data);
-
-					if(count($temp)==1){
-						$temp = explode(" ",$lock_file_data);
-					}
+					$temp = explode("*", $lock_file_data);
 
 					$lock_file_creator = $temp[0];
 
 					// get username only
-                    $temp = explode(" ", $temp[0]);
-                    $lock_file_creator_username = $temp[0];
+					$temp = explode(" ", $lock_file_creator);
+					$lock_file_creator_username = $temp[0];
 
-                    /*
-                     * Check if lock file creator is current user, if so, continue into the code
-                     */
+					/*
+					 * Check if lock file creator is current user, if so, continue into the code
+					 */
 
 					//if($lock_file_creator_username==$_SESSION['toolkits_logon_username']) {
 					//	if(update_access_time($row_edit)) {
@@ -126,7 +122,7 @@ if(isset($_SESSION['toolkits_logon_id'])){
 						if(isset($_POST['lockfile_clear'])) {
 
 							/*
-							 * Delete the lockfile
+							 * Modify the lockfile to just the user entry
 							 */
 
 							$file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt", 'w');
@@ -151,12 +147,13 @@ if(isset($_SESSION['toolkits_logon_id'])){
 						}
 						else {
 
-							// Update the lock file. The lock file format is creator id*id that tried to access 1 <space> id that tried to access 2 and so on
-							$new_lock_file = $lock_file_data . $_SESSION['toolkits_logon_username'] . " (" . date("Y-m-d H:i:s") . "), ";
+							// Update the lock file. The lock file format is: creator_id (date/time)*[user_id (date/time),...]
+							// where 'user_id' are users who tried to edit the template when it was already being edited
+							$new_lock_file = $lock_file_data . $_SESSION['toolkits_logon_username'] . " (" . date("Y-m-d H:i:s") . "),";
 							$file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt",'w');
 							fwrite($file_handle, $new_lock_file);
 							fclose($file_handle);
-							output_locked_file_code($lock_file_creator);
+							output_locked_file_code($lock_file_creator_username);
 						}
 					//}
 				}
@@ -193,7 +190,7 @@ if(isset($_SESSION['toolkits_logon_id'])){
 		}
 		else {
 			// Read-only access!
-            die("Access denied, you have no editing rights to this object.");
+			die("Access denied, you have no editing rights to this object.");
 		}
 	}
 	else if(is_user_admin()) {
