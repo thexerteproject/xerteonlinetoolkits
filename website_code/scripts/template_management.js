@@ -481,18 +481,18 @@ function preview_window(admin) {
                 var node = workspace.nodes[ids[i]];
 
                 if (node.xot_type == "file") {
-
+                    var mode = (window.event && window.event.shiftKey ? 'play' : 'preview');
                     size = node.preview_size.split(",");
                     if (size.length != 1) {
 
 
-                        var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id, "height=" + size[1] +
+                        var PreviewWindow = window.open(site_url + url_return(mode, node.xot_id), "previewwindow" + node.id, "height=" + size[1] +
                             ", width=" + size[0] + ", scrollbars=yes,resizable=yes");
 
                     } else {
 
 
-                        var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id,
+                        var PreviewWindow = window.open(site_url + url_return(mode, node.xot_id), "previewwindow" + node.id,
                             "height=768,width=1024,scrollbars=yes,resizable=yes");
 
                     }
@@ -1434,4 +1434,3 @@ function example_alert() {
 
     }
 }
-
