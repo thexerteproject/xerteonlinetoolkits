@@ -20,28 +20,8 @@
 	
 	var glossary = new function() {
 		
-		this.init = function() {
-			var tableData = '<table class="glossary">';
-			
-			var x_glossary_temp = x_glossary.slice(0);
-			x_glossary.sort(function(a, b){ // sort alphabetically
-				return a.word.toLowerCase() < b.word.toLowerCase() ? -1 : 1;
-			});
-
-			for (var i=0; i<x_glossary.length; i++) {
-				tableData += "<tr><td>" + x_glossary[i].word + "</td><td>" + x_glossary[i].definition + "</td></tr>";
-			}
-			
-			tableData += "</table>";
-			$("#glossaryItems").append(tableData);
-			
-			// Queue reparsing of MathJax - fails if no network connection
-			try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-			
-			// add class for shaded rows rather than using css selector as doesn't work for IE8 & below
-			$("#glossaryItems .glossary tr:nth-child(even)").addClass("shaded");
-			
-		}
+		this.init = XENITH.GLOSSARY.buildPage;
+		
 	}
 	
 	glossary.init();

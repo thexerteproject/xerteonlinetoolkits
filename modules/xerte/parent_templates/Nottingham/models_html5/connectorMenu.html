@@ -41,7 +41,8 @@
 				$('#subMenuHolder').before('<div id="pageTxt">' + x_currentPageXML.getAttribute('text') + '</div>');
 			}
 			
-			var menuItems = [];
+			var menuItems = [],
+				pageNames = [];
 			
 			// work out which pages to include in menu item list...
 			
@@ -49,6 +50,7 @@
 			if ($(x_currentPageXML).children().length > 0) {
 				$(x_currentPageXML).children().each(function() {
 					menuItems.push(this.getAttribute("pageID"));
+					pageNames.push(this.getAttribute("btnTxt") == "true" ? this.getAttribute("name") : undefined);
 				});
 				
 			} else {
@@ -76,6 +78,7 @@
 					for (var i=0; i<allIDs.length; i++) {
 						if (i >= start && i <= end && i != x_currentPage && (x_pageInfo[0].type != "menu" || i > 0)) {
 							menuItems.push(allIDs[i]);
+							pageNames.push(undefined);
 						}
 					}
 				
@@ -85,6 +88,7 @@
 					
 						if ((x_pageInfo[0].type != "menu" || i > 0) && i != x_currentPage) {
 							menuItems.push(allIDs[i]);
+							pageNames.push(undefined);
 						}
 					}
 				}
@@ -118,19 +122,19 @@
 				
 				var name;
 				if (i == 0 && menuItems[i] == undefined && x_pageInfo[0].type == 'menu') {
-					name = x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
+					name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
 					menuItems.splice(i, 1, "toc_menu");
 				} else {
 					if (menuItems[i].substring(0,4) == 'page') {
-						name = x_pages[Number(menuItems[i].substring(4))].getAttribute("name");
+						name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_pages[Number(menuItems[i].substring(4))].getAttribute("name");
 						$thisItem.data('pageNo', Number(menuItems[i].substring(4)));
 					} else {
 						var page = x_lookupPage("linkID", menuItems[i]);
 						if ($.isArray(page)) {
-							name = this.getNestedName(page);
+							name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : this.getNestedName(page);
 							$thisItem.data('parent', x_pages[page[0]].getAttribute('linkID'));
 						} else {
-							name = x_pages[page].getAttribute("name");
+							name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_pages[page].getAttribute("name");
 						}
 					}
 				}
@@ -138,6 +142,7 @@
 				$thisItem
 					.data("id", menuItems[i])
 					.html(name);
+				
 				$thisItem.append(' <i class="fa fa-x-tick-circle notvisited" aria-hidden="true"></i>');
 			}
 			
@@ -208,10 +213,10 @@
 	
 </script>
 
-<div id="subMenuHolder">
-	
-	<div id="subMenuItems">
-		<button class="subMenuItem width80"/>
+<div id="pageContents">
+	<div id="subMenuHolder">
+		<div id="subMenuItems">
+			<button class="subMenuItem width80"/>
+		</div>
 	</div>
-
 </div>

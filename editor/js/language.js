@@ -81,6 +81,7 @@ var EDITOR = (function ($, parent) {
             var normal_options = [];
             var opt_options  = [];
             var lang_options = [];
+            var wizard_options = [];
 
             var attributes = {};
             for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
@@ -104,7 +105,7 @@ var EDITOR = (function ($, parent) {
                         "hint"  : attributes.hint,
                         "thumb" : attributes.thumb,
                         "icon"  : attributes.icon
-                    }
+                    };
                     if (attributes.deprecated)
                     {
                         item["deprecated"] = attributes.deprecated;
@@ -180,13 +181,11 @@ var EDITOR = (function ($, parent) {
                 {
                     lang_options.push(option);
                 }
-                else
+                else if (option.name != 'name' || option.value.wysiwyg == undefined || option.value.wysiwyg != "true")
                 {
-                    if (option.name != 'name' || option.value.wysiwyg == undefined || option.value.wysiwyg != "true")
-                    {
-                        normal_options.push(option);
-                    }
+                    normal_options.push(option);
                 }
+
             });
             // Add cdata also to all_options
             if (node_options['cdata_name'])
@@ -204,6 +203,29 @@ var EDITOR = (function ($, parent) {
         });
         //wizard_data.menus = String(wizard_xml[0].attributes["menus"].value).split(',');
 
+        // Now add whether apge should be visible according to simple_mode and templates_sub_pages
+        if (simple_mode) {
+            $(menu_data.menu).each(function (i, menu) {
+                var enabled = false;
+                $(menu.submenu).each(function (j, submenu) {
+                    if (template_sub_pages.indexOf(submenu.item) != -1) {
+                        submenu.simple_enabled = true;
+                        enabled = true;
+                    } else {
+                        submenu.simple_enabled = false;
+                    }
+                });
+                menu.simple_enabled = enabled;
+            });
+        }
+        else {
+            $(menu_data.menu).each(function(i, menu){
+                menu.simple_enabled=true;
+                $(menu.submenu).each(function(j, submenu){
+                    submenu.simple_enabled = true;
+                });
+            });
+        }
     },
 
 
@@ -342,13 +364,32 @@ var EDITOR = (function ($, parent) {
     },
 
     proceed = function () {
+        advanced_mode = false;
         parent.data.wait(1, {});
         parent.layout.setup();
-        toolbox.create_insert_page_menu();
+        if (simple_mode)
+        {
+            $("div.ui-layout-center").css("padding-right", "8px");
+            xerte_layout.hide("east");
+        }
+        toolbox.create_insert_page_menu(false);
         $('#loader').hide();
     },
 
     init = function () {
+        // Set some good default values for missing variables
+        if (typeof simple_mode == "undefined")
+        {
+            simple_mode = false;
+        }
+        if (typeof template_sub_pages == "undefined")
+        {
+            template_sub_pages = [];
+        }
+        if (typeof simple_lo_page == "undefined")
+        {
+            simple_lo_page = false;
+        }
         // Start loading of the xml files
         language_files = (languagecodevariable=='en-GB' ? en_language_files : foreign_language_files);
         $(language_files).each(function() {

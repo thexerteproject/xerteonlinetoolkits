@@ -166,6 +166,12 @@
 				source		:soundFile,
 				pageName	:"transcriptReader"
 			});
+			
+			// move audio player to top of panel if on small screens so you don't have to scroll lots to see it
+			if (x_browserInfo.mobile != false) {
+				$('#pageAudio').insertBefore('#infoHolder');
+			}
+			
 			if ($pageContents.data("loaded") != true) {
 				$pageContents.data("loaded", true);
 				x_pageLoaded(); // call this function in every model once everything's loaded

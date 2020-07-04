@@ -357,7 +357,9 @@ DashboardState.prototype.fetchData = function(q, role, matcharray, matchactor, o
                 else
                 {
                     $(loaderid).html(XAPI_DASHBOARD_DATA_PREPARE_GRAPHS);
-                    orgcallback($this.rawData);
+                    setTimeout(function() {
+                        orgcallback($this.rawData);
+                    }, 0);
                 }
             }
         }
@@ -518,7 +520,7 @@ DashboardState.prototype.groupByAccount = function(data) {
         if (statement.actor.mbox_sha1sum == undefined) {
             return;
         }
-        name = statement.actor.mbox_sha1sum;
+        var name = statement.actor.mbox_sha1sum;
         if (groupedData[name] == undefined) {
             groupedData[name] = [];
         }
@@ -689,7 +691,7 @@ DashboardState.prototype.getLearningObjectsOnExited = function(data) {
 };
 
 
-DashboardState.prototype.getLearningObjects = function(data = undefined) {
+DashboardState.prototype.getLearningObjects = function(data) {
     if (data == undefined && this.learningObjects != undefined) {
         return this.learningObjects;
     }
@@ -731,7 +733,7 @@ DashboardState.prototype.getLearningObjects = function(data = undefined) {
     return learningObjects;
 };
 
-DashboardState.prototype.getAllInteractions = function(data = undefined) {
+DashboardState.prototype.getAllInteractions = function(data) {
     var learningObjects = this.getLearningObjects(data);
     var interactions = [];
     var lIndex = 0;
@@ -1082,17 +1084,27 @@ DashboardState.prototype.selectInteractionById = function(statements, interactio
 
 DashboardState.prototype.getQuestion = function(interactionObjectUrl) {
     var question = undefined;
-    this.rawData.filter(function(statement) {
+    var statements = this.rawData.filter(function(statement) {
             return statement.object.id == interactionObjectUrl &&
                 statement.verb.id == "http://adlnet.gov/expapi/verbs/answered";
-        })
-        .forEach(function(statement) {
-            if (question == undefined || question.interactionType == undefined) {
-                question = statement.object.definition;
-                question.interactionUrl = statement.object.id;
-            }
-
         });
+    for (var i=0; i<statements.length; i++)
+    {
+        var statement = statements[i];
+        if (question == undefined || question.interactionType == undefined) {
+            question = statement.object.definition;
+            // Special case for openanswer
+            if (question != undefined && question.interactionType == undefined && statement.object.definition.description["en-US"].indexOf("Model") >= 0 )
+            {
+                question.interactionType = 'text';
+            }
+            question.interactionUrl = statement.object.id;
+        }
+        else
+        {
+            break;
+        }
+    }
     return question;
 };
 

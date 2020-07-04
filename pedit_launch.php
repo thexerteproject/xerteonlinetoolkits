@@ -81,11 +81,16 @@ if (is_numeric($id))
     else
     {
         $decoded = decrypt($_REQUEST['param']);
+        _debug("Decoded param: " . print_r($decoded, true));
 
         $temp = explode('&', $decoded);
-        $params['actor'] = explode('=', $temp[0])[1];
-        $params['timestamp'] = explode('=', $temp[1])[1];
+        foreach ($temp as $param)
+        {
+            $keyvalue = explode('=', $param);
+            $params[$keyvalue[0]] = $keyvalue[1];
+        }
 
+        _debug("Decoded param array: " . print_r($params, true));
 
         $client = new SoapClient($pedit_config->soapUrl);
 
@@ -93,6 +98,8 @@ if (is_numeric($id))
             'sKey' => $pedit_config->soapKey,
             'iActorID' => $params['actor']
         ));
+
+        _debug("System user by actor is (" . $params['actor'] . "): " . print_r($soapresult, true));
 
         $userxml = $soapresult->GetSystemUserByActorIdResult;
         $user = simplexml_load_string($userxml);

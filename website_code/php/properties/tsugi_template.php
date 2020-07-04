@@ -66,9 +66,9 @@
             $lti_def->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $row['template_id'];
             $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $row['template_id'] . "&group=groupname";
             $lti_def->xapi_useglobal = $row['tsugi_xapi_useglobal'];
-            $lti_def->xapi_endpoint = $xerte_toolkits_site->LRS_Endpoint;
-            $lti_def->xapi_username = $xerte_toolkits_site->LRS_Key;
-            $lti_def->xapi_password = $xerte_toolkits_site->LRS_Secret;
+            $lti_def->xapi_endpoint = "";
+            $lti_def->xapi_username = "";
+            $lti_def->xapi_password = "";
             $lti_def->xapi_student_id_mode = 0; // e-mail address
             if ($tsugi_installed) {
                 if ($lti_def->published == 1) {

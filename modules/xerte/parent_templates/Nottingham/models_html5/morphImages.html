@@ -110,6 +110,7 @@
 					"src":	x_evalURL(x_currentPageXML.getAttribute("url")),
 					"alt":	x_currentPageXML.getAttribute("tip1")
 				})
+				.addClass('x_noLightBox')
 				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 					if (this.complete) {
 						$(this).trigger("load");
@@ -193,6 +194,7 @@
 					"src":	x_evalURL(x_currentPageXML.getAttribute("url2")),
 					"alt":	x_currentPageXML.getAttribute("tip2")
 				})
+				.addClass('x_noLightBox')
 				.on("click", function() {
 					morphImages.zoom();
 				})
@@ -249,16 +251,15 @@
 
 </script>
 
-
-<div id="imgHolder" class="mobileAlign">
-	<div id="imgInnerDiv" class="panel inline x_floatLeft">
-		<div id="imgDiv">
-			<img id="pageImg1" style="visibility: hidden"/>
+<div id="pageContents">
+	<div id="imgHolder" class="mobileAlign">
+		<div id="imgInnerDiv" class="panel inline x_floatLeft">
+			<div id="imgDiv">
+				<img id="pageImg1" style="visibility: hidden"/>
+			</div>
+			<button id="zoomBtn"></button>
 		</div>
-		<button id="zoomBtn"></button>
 	</div>
-</div>
 
-<div id="textHolder">
-
+	<div id="textHolder"></div>
 </div>

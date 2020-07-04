@@ -30,7 +30,6 @@ _load_language_file("/index.inc");
 
 function html_headers() {
   global $xerte_toolkits_site;
-
 ?>
 <!DOCTYPE html>
 <html><head>
@@ -43,26 +42,26 @@ function html_headers() {
 
     -->
 
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>$xerte_toolkits_site->site_title</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>$xerte_toolkits_site->site_title</title>
 
-        <link href="../website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
-        <link href="../website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" />
-    <?php
-    if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
-    {
-        ?>
-        <link href='branding/branding.css' rel='stylesheet' type='text/css'>
-        <?php
-    }
-    ?>
-  _include_javascript_file("../website_code/scripts/file_system.js");
-  _include_javascript_file("../website_code/scripts/screen_display.js");
-  _include_javascript_file("../website_code/scripts/ajax_management.js");
-  _include_javascript_file("../website_code/scripts/folders.js");
-  _include_javascript_file("../website_code/scripts/template_management.js");
-  _include_javascript_file("../website_code/scripts/import.js");
-  _include_javascript_file("../website_code/scripts/logout.js");
+  <link href="../website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+  <link href="../website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" />
+  <?php
+  if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
+  {
+     ?>
+     <link href='branding/branding.css' rel='stylesheet' type='text/css'>
+     <?php
+  }
+
+  _include_javascript_file("website_code/scripts/file_system.js");
+  _include_javascript_file("website_code/scripts/screen_display.js");
+  _include_javascript_file("website_code/scripts/ajax_management.js");
+  _include_javascript_file("website_code/scripts/folders.js");
+  _include_javascript_file("website_code/scripts/template_management.js");
+  _include_javascript_file("website_code/scripts/import.js");
+  _include_javascript_file("website_code/scripts/logout.js");
 
   print <<<END
   	<style type="text/css">
@@ -172,7 +171,7 @@ function login_prompt($messages, $extra_path = '') {
                             </p>
                             <div>
 
-                                <form method="post" enctype="application/x-www-form-urlencoded" ><p><?php echo INDEX_USERNAME; ?> <input type="text" size="20" maxlength="100" name="login" id="login_box"/></p><p><?PHP echo INDEX_PASSWORD; ?><input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><button type="submit" class="xerte_button"  style="float:right"><i class="fa fa-sign-in"></i> <?php echo INDEX_BUTTON_LOGIN; ?></button></p></form>
+                                <form method="post" enctype="application/x-www-form-urlencoded" ><p><?php echo INDEX_USERNAME; ?> <input type="text" size="20" maxlength="100" name="login" id="login_box"/></p><p><?PHP echo INDEX_PASSWORD; ?> <input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><button type="submit" class="xerte_button"  style="float:right"><i class="fa fa-sign-in"></i> <?php echo INDEX_BUTTON_LOGIN; ?></button></p></form>
                                 <script>   document.getElementById("login_box").focus();      </script>
                               <?php
                               if (!empty($messages)) {

@@ -74,18 +74,19 @@ if(is_user_admin()){
 
     $query_templates_response = db_query($query_templates, $params);
 
-    _debug("Query returned " . sizeof($query_templates_response) . "records");
+    _debug("Query returned " . count($query_templates_response) . "records");
 
     echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] . ") </p><br /><br /></div><div class=\"template_details\" style=\"display:block;\" id=\"" . $row['username']  . "_child\">";
 
-    if(sizeof($query_templates_response) > 0){
+    if(count($query_templates_response) > 0){
         // This user has templates, loop over them
         _debug("User " . $row['username'] . " (" . $row['login_id'] . ") has templates");
         foreach($query_templates_response as $row_templates) {
             $debug_rec = print_r($row_templates, true);
-            _debug($debug_rec);
+            //_debug($debug_rec);
 
-            echo "<div class=\"template\" id=\"" . $row['login_id'] . "template" . $row_templates['template_id'] . "\"><p>" . $row_templates['template_name'] .  " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['login_id'] . "template" . $row_templates['template_id'] . "_btn\" onclick=\"javascript:templates_display('" . $row['login_id'] . "template" . $row_templates['template_id'] . "')\">". USERS_MANAGEMENT_TEMPLATE_VIEW . "</button></p></div><div class=\"template_details\" id=\"" . $row['login_id'] . "template" . $row_templates['template_id']  . "_child\">";
+            echo "<div class=\"template\" id=\"" . $row['login_id'] . "template" . $row_templates['template_id'] . "\"><p>" . $row_templates['template_id'] . " - " . str_replace('_', ' ', $row_templates['template_name']) .  " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['login_id'] . "template" . $row_templates['template_id'] . "_btn\" onclick=\"javascript:templates_get_details(" . $row['login_id'] . ", " . $row_templates['template_id'] . ")\">". USERS_MANAGEMENT_TEMPLATE_VIEW . "</button></p></div><div class=\"template_details\" id=\"" . $row['login_id'] . "template" . $row_templates['template_id']  . "_child\"></div>";
+            /*
             echo "<table class=\"template_details_table\">";
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_ID . "</td><td>" . $row_templates['template_id']  . "</td></tr>";
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_OWNER . "</td><td>" . $row_templates['owner_firstname'] . " " . $row_templates['owner_surname'] . " (" . $row_templates['owner_username'] . ")</td></tr>";
@@ -108,7 +109,7 @@ if(is_user_admin()){
 
                 if ($row['login_id'] != $row_users['login_id'])
                 {
-                    echo "<option value=\"" . $row_users['login_id'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+                    echo "<option value=\"" . $row_users['login_id'] . "\">" . $row_users['surname'] . ", " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
                 }
 
             }
@@ -119,12 +120,12 @@ if(is_user_admin()){
 
             echo "<input type=\"hidden\" value=\"" . $row['login_id'] . "_" . $row_templates['template_id'] . "\" name=\"template_id\" /><button type=\"submit\" class=\"xerte_button\"><i class=\"fa fa-share\"></i> " . USERS_MANAGEMENT_TEMPLATE_GIVE_BUTTON . "</button></form></div>";
             // Next record
-
+            */
         }
 
     }else{
         _debug("User " . $row['username'] . " (" . $row['login_id'] . ") has NO templates");
-        echo "<div class=\"template\" id=\"" . $row_templates['template_name'] . "\" savevalue=\"" . $row['template_id'] .  "\"><p>" . USERS_MANAGEMENT_TEMPLATE_NONE . "</p></div>";
+        echo "<div class=\"template\" savevalue=\"" . $row['template_id'] .  "\"><p>" . USERS_MANAGEMENT_TEMPLATE_NONE . "</p></div>";
 
     }
 

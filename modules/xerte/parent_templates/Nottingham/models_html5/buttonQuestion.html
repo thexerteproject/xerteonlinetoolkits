@@ -85,6 +85,7 @@
 				.click(function() {
 					$(this).hide();
 					$("#answer").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+					x_pageContentsUpdated();
 				});
 			
 			this.sizeChanged();

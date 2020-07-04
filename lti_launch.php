@@ -31,6 +31,7 @@ use \Tsugi\Util\Net;
 use \Tsugi\Grades\GradeUtil;
 
 global $tsugi_enabled;
+global $lti_enabled;
 global $xerte_toolkits_site;
 
 if (isset($_GET["template_id"])) {

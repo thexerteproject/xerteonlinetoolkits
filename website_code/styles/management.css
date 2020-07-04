@@ -311,3 +311,21 @@ div#admin_area form textarea{
 	text-decoration: none;
 	cursor: pointer;
 }
+
+.sub_page_selection_menuitem {
+	font-weight: bold;
+	font-style: italic;
+	padding-left: 30px;
+}
+
+.sub_page_selection_model {
+	margin-left: 40px;
+}
+
+form[name='user_templates'] {
+	padding: 10px;
+}
+
+#transferownership {
+	padding:10px;
+}
