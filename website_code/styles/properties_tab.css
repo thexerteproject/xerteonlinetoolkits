@@ -62,7 +62,8 @@ div#data_area{
 	/*RM responsive changes*/
 	width: 98%;
 	height: 87vh;
-	margin-top:30px
+	margin-top:30px;
+	min-width:521px !important;
 }
 
 div#dynamic_area{
