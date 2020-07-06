@@ -52,9 +52,9 @@ $query_for_shared_templates = "select * from {$prefix}templatedetails, {$prefix}
 $params = array($_SESSION['toolkits_logon_id']);
 $query_shared_response = db_query($query_for_shared_templates, $params);
 
-workspace_menu_create(60);
+workspace_menu_create(80);
 
-echo "<div style=\"float:left; width:40%; height:20px;\">" . USAGE_TEMPLATE_STATS . "</div>";
+echo "<div style=\"float:left; width:20%; height:20px;\">" . USAGE_TEMPLATE_STATS . "</div>";
 
 foreach($query_shared_response as $row_template_name) {
 
@@ -68,8 +68,8 @@ foreach($query_shared_response as $row_template_name) {
 	
 	}
 
-    echo "<div style=\"float:left; width:60%;\">" . str_replace("_","",$row_template_name['template_name']). "</div>";
-    echo "<div style=\"float:left; width:40%;\">" . $plays . "</div>";
+    echo "<div style=\"float:left; width:80%;\">" . str_replace("_","",$row_template_name['template_name']). "</div>";
+    echo "<div style=\"float:left; width:20%;\">" . $plays . "</div>";
 
 }
 

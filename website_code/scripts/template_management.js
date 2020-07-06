@@ -586,7 +586,7 @@ function properties_window(admin) {
             return;
 
         if (workspace.nodes[ids[0]].type == "workspace") {
-            var NewWindow = window.open(site_url + url_return("workspaceproperties", null), "workspace", "height=600, width=635");
+            var NewWindow = window.open(site_url + url_return("workspaceproperties", null), "workspace", "height=760, width=1000");
             NewWindow.window_reference = self;
             NewWindow.focus();
         } else {
@@ -594,7 +594,7 @@ function properties_window(admin) {
                 if (workspace.nodes[ids[i]].type != "folder") {
                     if (workspace.nodes[ids[i]].parent != workspace.recyclebin_id) {
                         var NewWindow = window.open(site_url + url_return("properties", workspace.nodes[ids[i]].xot_id), workspace.nodes[ids[i]].xot_id,
-                            "height=600, width=635");
+                            "height=760, width=1000");
                         NewWindow.window_reference = self;
                         NewWindow.focus();
                     } else {
@@ -602,14 +602,14 @@ function properties_window(admin) {
                     }
                 } else {
                     var NewWindow = window.open(site_url + url_return("folderproperties", workspace.nodes[ids[i]].xot_id + "_folder"), workspace.nodes[ids[i]].xot_id +
-                        "_folder", "height=600, width=635");
+                        "_folder", "height=760, width=1000");
                     NewWindow.window_reference = self;
                     NewWindow.focus();
                 }
             }
         }
     } else {
-        var NewWindow = window.open(site_url + url_return("properties", admin), admin, "height=600, width=630");
+        var NewWindow = window.open(site_url + url_return("properties", admin), admin, "height=760, width=1000");
 
         NewWindow.window_reference = self;
         NewWindow.focus();

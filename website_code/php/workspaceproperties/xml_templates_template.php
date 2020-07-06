@@ -53,13 +53,13 @@ $params = array($_SESSION['toolkits_logon_id'], 'xml');
 
 $query_peer_response = db_query($query_for_peer_templates, $params);
 
-workspace_menu_create(60);
+workspace_menu_create(80);
 
-echo "<div style=\"float:left; width:30%; height:20px;\">" . XML_TEMPLATE_NAME . "</div>";
+echo "<div style=\"float:left; width:20%; height:20px;\">" . XML_TEMPLATE_NAME . "</div>";
 
 foreach($query_peer_response as $row) {
 
-    echo "<div style=\"float:left; width:60%;\">" . str_replace("_","",$row['template_name']) . "</div><div style=\"float:left; width:20%;\"> On </div>";
+    echo "<div style=\"float:left; width:80%;\">" . str_replace("_","",$row['template_name']) . "</div><div style=\"float:left; width:20%;\"> On </div>";
 
 }
 

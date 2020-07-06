@@ -16,70 +16,88 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 body{
 	font-family:"Open Sans", sans-serif;;
-	font-size:75%;
+	/*font-size:75%;*/
+	/*RM responsive changes*/
+	font-size:calc(10px + .4vw) !important;
 }
 
 .properties_main{
-	width:590px;
+	/*width:590px;*/
 	margin:10px;
 	padding:10px;
-	background-color:#fff; 
+	background-color:#fff;
 	border-radius:5px;
-	border:#ccc 1px solid; 
+	border:#ccc 1px solid;
+	/*RM responsive changes*/
+	width: 96%;
+	height: 95vh;
+	font-size:calc(10px + .4vw) !important;
 }
 
 .main_area{
-	color:#000; 
+	color:#000;
 	background:#ededed;
 	border-radius:3px;
 	margin:0px;
 	padding:10px;
+	/*RM responsive changes*/
+	width:98%;
+	height:93vh;
+	overflow:scroll;
 }
 
 span#title{
-	font-weight:bold; 
+	font-weight:bold;
 	float:left;
 	color:#000;
 }
 
 div#data_area{
-	float:right; 
-	position:relative; 
-	background-color:#ededed; 
+	float:left;
+	position:relative;
+	background-color:#ededed;
+	/*RM responsive changes*/
+	width: 98%;
+	height: 87vh;
+	margin-top:30px
 }
 
 div#dynamic_area{
 	float:right;
 	background-color:#fff;
-	width:410px; 
-	height:520px;	
+	/*width:410px; */
+	/*height:520px;	*/
 	overflow:scroll;
 	border-top-left-radius:7px;
+	/*RM responsive changes*/
+	width: 70%;/*80vw;*/
+	height: 86vh;
+	overflow-x: hidden;
 }
 
 div#dynamic_area form#rename_form{
-	display:inline; 
-	margin:0px; 
+	display:inline;
+	margin:0px;
 	padding-left:10px;
 }
 
 div#dynamic_area p{
-	width:373px; 	
+	/*width:373px;*/
 	padding:10px 10px;
 	margin:0px;
 }
 
 div#dynamic_area p#button_para{
-	width:373px; 	
+	/*width:373px; 	*/
 	padding:5px 0 0 0;
 	margin:0px;
 }
 
 div#dynamic_area button_p{
-	width:373px; 	
+	/*width:373px; 	*/
 	padding:0px;
 	margin:0px;
 }
@@ -103,6 +121,8 @@ div#dynamic_area a{
 .header{
 	background-color:#4d585e;
 	color:#fff;
+	/*RM responsive changes*/
+	width: 98% !important;
 }
 
 div#dynamic_area form{
@@ -110,7 +130,7 @@ div#dynamic_area form{
 }
 
 .form_image_side{
-	vertical-align:middle; 
+	vertical-align:middle;
 }
 
 .form_image_bottom{
@@ -118,18 +138,20 @@ div#dynamic_area form{
 }
 
 .template_file_area{
-	margin:7px 0 0 7px; 
+	margin:7px 0 0 7px;
 }
 
 .filename{
 	float:left;
-	width:150px; 
+	width:150px;
 	padding:7px;
 	border-bottom:1px solid #ededed;
 	border-right:1px solid #ededed;
 	font-weight:bold;
 	background-color:#0f0;
 	clear:left;
+	/*RM responsive changes*/
+	width:65%;
 }
 
 .filesize{
@@ -139,15 +161,19 @@ div#dynamic_area form{
 	border-bottom:1px solid #ededed;
 	border-right:1px solid #ededed;
 	font-weight:bold;
+	/*RM responsive changes*/
+	width:10%;
 }
 
 .fileinuse{
 	float:left;
-	width:80px; 
-	background-color:#0f0; 
+	width:80px;
+	background-color:#0f0;
 	padding:7px;
 	border-bottom:1px solid #ededed;
 	font-weight:bold;
+	/*RM responsive changes*/
+	width:15%;
 }
 
 .notfound{
@@ -164,11 +190,11 @@ div#dynamic_area form{
 }
 
 .foundtextcolor{
-	color:#336600; 
+	color:#336600;
 }
 
 div#security_list p{
-	width:370px;
+	/*width:370px;*/
 	margin:4px;
 	padding:4px;
 }
@@ -178,15 +204,15 @@ div#security_list p{
 }
 
 .share_top{
-	background-color:#f8f7f2; 
-	float:left; 
+	background-color:#f8f7f2;
+	float:left;
 	position:relative;
 }
 
 .share_border{
-	border-bottom:1px dotted #a8b2b5; 
+	border-bottom:1px dotted #a8b2b5;
 	margin:0px;
-	padding:0px; 
+	padding:0px;
 	width:100%;
 }
 
@@ -197,9 +223,13 @@ div#security_list p{
 /* end of dynamic area */
 
 div#menu_tabs{
-	width:149px; 
-	float:right; 
+	/*width:149px;*/
+	float:right;
 	position:relative;
+	/*RM responsive changes*/
+	width: 20%;
+	min-width: 149px !important;
+	margin-top: 5px;
 }
 
 /*
@@ -209,48 +239,54 @@ div#menu_tabs{
 */
 
 .tab{
-	float:right; 
-	position:relative; 	
+	float:right;
+	position:relative;
 	background-color:#a4b6bf;
 	border-bottom-left-radius:7px;
 	border-top-left-radius:7px;
 	cursor:hand;
 	cursor:pointer;
 	color:#fff;
+	/*RM responsive changes*/
+	width:100% !important;
 }
 
 .tab_selected{
-	float:right; 
-	position:relative; 	
+	float:right;
+	position:relative;
 	background-color:#fff;
 	border-bottom-left-radius:7px;
 	border-top-left-radius:7px;
 	cursor:hand;
 	cursor:pointer;
 	color:#000;
+	/*RM responsive changes*/
+	width:100% !important;
 }
 
 .tab p,.tab_selected p{
-	margin:10px; 
+	margin:10px;
 	font-weight:bold;
-	width:130px;
+	/*width:130px;*/
 }
 
 .tab_spacer{
-	float:right; 
-	position:relative; 
-	width:147px; 
-	height:3px; 
-	background-color:#ededed; 
-	overflow:hidden; 
+	float:right;
+	position:relative;
+	width:147px;
+	height:3px;
+	background-color:#ededed;
+	overflow:hidden;
 	border-right:1px #ededed solid;
+	/*RM responsive changes*/
+	width: 100%;
 }
 
 div.publish label{
 	display:inline-block;
-	width:150px;
+	/*width:150px;*/
 	margin-left: 10px;
-	padding: 4px;
+	padding: 1%;
 }
 
 div.publish input,  div.publish select{
@@ -261,3 +297,36 @@ div.publish input,  div.publish select{
 p#result_message {
 	color:#ff0000;
 }
+
+/*RM responsive changes*/
+ol {
+	margin-right: 1%;
+}
+.xerte_button{
+	margin:1%;
+}
+textarea {
+	width: 95% !important;
+}
+input {
+	font-size:calc(10px + .4vw);
+}
+#share_form input, #rename_form input {
+	width: 60%;
+}
+input[name=password] {
+	width: 45%;
+}
+input[name=sitename] {
+	width: 75%;
+}
+input[name=retouremail], input[name=templatename] {
+	width: 55%;
+}
+#xApi input[type=text] {
+	width: 60%;
+}
+#publish input[type=text] {
+	width: 60%;
+}
+
