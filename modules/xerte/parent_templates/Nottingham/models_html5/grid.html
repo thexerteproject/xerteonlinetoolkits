@@ -499,11 +499,13 @@
 								.addClass("panel");
 
 							$grid.find(".tick").hide();
+              try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
 						},
 						stop:	function() {
 							$(this)
 								.removeClass("panel")
 								.addClass("shadow");
+              try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
 						}
 						})
 
