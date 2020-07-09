@@ -29,6 +29,9 @@
 			$pageContents,
             checked = false;
 		var numOfQuestions = 0, correct = 0;
+    var fixMath = function () {
+      try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+    };
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -169,6 +172,7 @@
                             .on("focusin focusout keypress"); //
                         grid.randomiseLabels();
                     }
+                    fixMath();
                 })
 				.data("state", "check");
 
@@ -499,13 +503,13 @@
 								.addClass("panel");
 
 							$grid.find(".tick").hide();
-              try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+              fixMath();
 						},
 						stop:	function() {
 							$(this)
 								.removeClass("panel")
 								.addClass("shadow");
-              try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+              fixMath();
 						}
 						})
 
@@ -527,6 +531,7 @@
 						} else {
 							$this.addClass("focus");
 						}
+            fixMath();
 						})
 					.on("focusout", function() {
 						var $this = $(this);
@@ -537,6 +542,7 @@
 								$this.html(labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.data("correct")]);
 							}
 						}
+            fixMath();
 						})
 					.on("keypress", function(e) {
 						var charCode = e.charCode || e.keyCode;
@@ -572,6 +578,7 @@
 								$pageContents.data("selectedLabel", $this);
 							}
 						}
+            fixMath();
 					})
 					.disableSelection()
 					.each(function(i) {
