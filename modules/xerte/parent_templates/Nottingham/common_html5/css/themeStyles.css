@@ -259,3 +259,7 @@ and (max-width :500px) {
     height: 16px !important;
     width: 16px !important;
 }
+.featherlight iframe {
+	height: 90vh;
+	width: 90vw;
+}

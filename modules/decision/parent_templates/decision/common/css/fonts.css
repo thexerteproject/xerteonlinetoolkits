@@ -1,0 +1,12 @@
+/*
+See modules/decision/parent_templates/decision/common/fonts/info.txt for instructions on how to add custom fonts
+Note: .ttf files will not work in IE so provide an alternative for best cross-browser compatibility (e.g. .eot)
+*/
+
+/*
+@font-face {
+    font-family: "yourfontname";
+	src: url( ../fonts/font.eot );
+    src: local("realfontname"), url("../fonts/font.ttf") format("truetype");
+}
+*/

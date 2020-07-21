@@ -162,10 +162,14 @@
 									$infoHolder.fadeIn(function() {
 										$(this).html(infoString); // reloaded so aria-live works after fade
 										list.mediaLoad($infoHolder, thisItem, url);
+										
+										x_pageContentsUpdated();
 									});
 								}
 								
 								list.mediaLoad($infoHolder, this, url);
+								
+								x_pageContentsUpdated();
 							}
 						});
 				});

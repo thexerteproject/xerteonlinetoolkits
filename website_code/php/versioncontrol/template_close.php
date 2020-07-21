@@ -37,7 +37,9 @@ _load_language_file("/website_code/php/versioncontrol/template_close.inc");
 
 require('../template_status.php');
 
-$temp_array = explode("-",$_POST['file_path']);
+$users_array = array();
+
+$temp_array = explode("-", $_POST['file_path']);
 
 database_connect("template close success","template close fail");
 
@@ -47,20 +49,17 @@ if(file_exists($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] 
      *  Code to delete the lock file
      */
 
+    $row_template_name = db_query_one("Select template_name from {$xerte_toolkits_site->database_table_prefix}templatedetails WHERE template_id = ?", array($temp_array[0]));
+
     $lock_file_data = file_get_contents($xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "/lockfile.txt");
 
-    $temp = explode("*",$lock_file_data);
+    $temp = explode("*", $lock_file_data);
 
     $lock_file_creator = $temp[0];
 
-    $template_id = explode("-",$_POST['file_path']);
-
-    $row_template_name = db_query_one("Select template_name from {$xerte_toolkits_site->database_table_prefix}templatedetails WHERE template_id = ?", array($template_id[0]));
-
-
     $user_list = $temp[1];
 
-    $users = explode(" ",$user_list);
+    $users = explode(",", $user_list);
 
     /*
      * Email users in the lock file
@@ -74,7 +73,19 @@ if(file_exists($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] 
 
     for($x=0;$x!=count($users)-1;$x++){
 
-        mail($users[$x] . $mail_domain, "File available - \"" . str_replace("_"," ",$row_template_name['template_name']) ."\"", "Hello, <br><br> You've requested to be informed when the file \"" . str_replace("_"," ",$row_template_name['template_name']) . "\" becomes available for editing. The file was made available at " . date("h:i a") . " on " . date("l, jS F") . " <br><br> Please note that multiple requests may have been made, and as such you may not be the only person to have receive one of these notifications. As such the file may well be locked by somebody else.<br><br> Please log into the site at <a href=\"" . $xerte_toolkits_site->site_url . "\">" . $xerte_toolkits_site->site_url . "</a>. <br><br> Thank you, <br><br> the Xerte Online toolkits team", get_email_headers());
+	// get just the username
+	$userdata = explode(" ", $users[$x]);
+	$username = $userdata[0];
+
+	// check if a message has already been sent to this user
+	if (isset($users_array[$username])) {
+		continue;
+	}
+	else {
+		$users_array[$username] = 1;
+	}
+
+        mail($username . $mail_domain, "File available - \"" . str_replace("_"," ",$row_template_name['template_name']) ."\"", "Hello, <br><br> This is to notify you that the Xerte file \"" . str_replace("_"," ",$row_template_name['template_name']) . "\" has become available for editing. The file was made available at " . date("h:i a") . " on " . date("l, jS F") . " <br><br> Please note that multiple attempts to edit the file may have been made, and as such you may not be the only person to have received one of these notifications. For that reason the file may soon become locked again by another user.<br><br> Please log into the site at <a href=\"" . $xerte_toolkits_site->site_url . "\">" . $xerte_toolkits_site->site_url . "</a>. <br><br> Thank you, <br><br> the Xerte Online toolkits team", get_email_headers());
 
     }
 

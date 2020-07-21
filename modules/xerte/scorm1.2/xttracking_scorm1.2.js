@@ -167,6 +167,7 @@ function ScormTrackingState()
     this.findcreate = findcreate;
     this.findPage = findPage;
     this.findInteraction = findInteraction;
+    this.findAllInteractions = findAllInteractions;
     this.countInteractions = countInteractions;
     this.enter = enter;
     this.exit = exit;
@@ -194,13 +195,10 @@ function ScormTrackingState()
 
     function pageCompleted(sit)
     {
-        for (i=0; i<sit.nrinteractions; i++)
+        var sits = this.findAllInteractions(sit.page_nr);
+        if (sits.length != sit.nrinteractions)
         {
-            var sit2 = this.findInteraction(sit.page_nr, i);
-            if (sit2 == null)
-            {
-                return false;
-            }
+            return false;
         }
         if (sit.ia_type=="page" && sit.duration < this.page_timeout)
         {
@@ -208,6 +206,7 @@ function ScormTrackingState()
         }
         return true;
     }
+
 
 
 
@@ -239,6 +238,9 @@ function ScormTrackingState()
                 sit.setVars(jsonSit);
                 this.interactions.push(sit);
             }
+        }
+        if (typeof jsonObj.pageHistory != "undefined") {
+            x_pageHistory = jsonObj.pageHistory;
         }
     }
 
@@ -276,6 +278,7 @@ function ScormTrackingState()
             jsonObj.interactions.push(sit);
         }
          */
+        jsonObj.pageHistory = this.pageHistory;
         return JSON.stringify(jsonObj);
     }
 
@@ -338,6 +341,18 @@ function ScormTrackingState()
                 return this.interactions[i];
         }
         return null;
+    }
+
+    function findAllInteractions(page_nr)
+    {
+        var i=0;
+        tmpinteractions = [];
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr != -1)
+                tmpinteractions.push(i);
+        }
+        return tmpinteractions;
     }
 
     function countInteractions(page_nr)
@@ -794,6 +809,8 @@ function ScormTrackingState()
 
             setValue('cmi.core.lesson_status', lessonStatus);
             state.currentpageid = currentid;
+            x_pageHistory.splice(x_pageHistory.length - 1, 1);
+            state.pageHistory = x_pageHistory;
             var suspend_str = this.getVars();
             if (lessonStatus == 'incomplete') {
                 setValue('cmi.core.exit', 'suspend');
@@ -1483,7 +1500,7 @@ function XTSetOption(option, value)
     }
 }
 
-function XTEnterPage(page_nr, page_name)
+function XTEnterPage(page_nr, page_name, grouping)
 {
     if (state.scormmode == 'normal')
     {
@@ -1534,21 +1551,6 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
     }
 }
 
-function XTSetViewed(page_nr, name, score) {
-    if (isNaN(score) || typeof score != "number")
-    {
-        score = 0.0;
-    }
-    if (state.scormmode == 'normal')
-    {
-        var sit = state.findPage(page_nr);
-        if (sit != null && (state.scoremode != 'first' || sit.count < 1))
-        {
-            sit.score = score;
-        }
-    }
-}
-
 function XThelperConsolidateSegments(videostate)
 {
     // 1. Sort played segments on start time (first make a copy)
@@ -1584,7 +1586,7 @@ function XThelperDetermineProgress(videostate)
     return 0.0;
 }
 
-function XTVideo(page_nr, name, block_name, verb, videostate) {
+function XTVideo(page_nr, name, block_name, verb, videostate, grouping) {
     return;
 }
 

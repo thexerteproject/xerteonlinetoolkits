@@ -217,7 +217,7 @@
 							}
 							
 							// add img and scale it on load
-							$thisThumbMedia.html('<img alt="' + imgTip + '" class="centre" />');
+							$thisThumbMedia.html('<img alt="' + imgTip + '" class="centre x_noLightBox" />');
 							perspectives.loadImage($thisThumb.find("img"), maxImgSize, imgSrc);
 							
 						} else if (this.nodeName == "movie") {
@@ -429,6 +429,8 @@
 								$("#thumbHolder .current").removeClass("current");
 								$this.addClass("current");
 							}
+							
+							x_pageContentsUpdated();
 						}
 						
 						if (x_currentPageXML.getAttribute("thumbPos") == "grid") {

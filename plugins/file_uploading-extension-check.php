@@ -84,7 +84,10 @@ function filter_by_extension_name() {
     return $args[0];
 }
 
-if (Xerte_Validate_FileExtension::canRun() && $xerte_toolkits_site->enable_file_ext_check) {
+// TOR 2020-03-24
+// Force extension check, so DO NOT CHECK $xerte_toolkits_site->enable_file_ext_check
+//if (Xerte_Validate_FileExtension::canRun() && $xerte_toolkits_site->enable_file_ext_check) {
+if (Xerte_Validate_FileExtension::canRun()) {
     Xerte_Validate_FileExtension::$BLACKLIST = $xerte_toolkits_site->file_extensions;
     add_filter('editor_upload_file', 'filter_by_extension_name');
 }

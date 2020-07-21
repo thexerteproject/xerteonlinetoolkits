@@ -27,7 +27,7 @@
 			
 			if ($(x_currentPageXML).children().length > 0) {
 				this.startQ();
-				$("#feedback").html("");
+				$("#feedback").find('.feedbackBlock').html("");
 				$("#optionHolder input:checked").prop("checked", false);
 				$("#checkBtn")
 					.show()
@@ -111,19 +111,18 @@
         this.showFeedBackandTrackScore = function()
         {
             var answerFeedback = "",
+				genFeedback,
                     correct = (x_currentPageXML.getAttribute("type") == "Multiple Answer"),
                     l_options = [],
                     l_answers = [],
                     l_feedbacks = [],
-                    selected = $("#optionHolder input"),
-                    generalFeedback = "";
+                    selected = $("#optionHolder input");
 			
             if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
-				var genFeedback = x_addLineBreaks(x_currentPageXML.getAttribute("feedback"));
+				genFeedback = x_addLineBreaks(x_currentPageXML.getAttribute("feedback"));
 				if (genFeedback != "" && genFeedback.indexOf('<p') == -1) {
 					genFeedback = '<p>' + genFeedback + '</p>';
 				}
-                generalFeedback = '<br/>' + genFeedback;
             }
 
             for (var i=0; i<selected.length; i++) {
@@ -153,7 +152,7 @@
 						tempFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '"></div>';
 					}
 					if (tempFeedback != "") {
-						answerFeedback += (answerFeedback == '' ? '<br/>' : '') + tempFeedback;
+						answerFeedback += tempFeedback;
 					}
 					
 					var answerTxt = "";
@@ -177,7 +176,6 @@
                     l_feedbacks.push(x_GetTrackingTextFromHTML(selectedOption.feedback, ""));
                 }
             }
-            generalFeedback += answerFeedback;
 			
             var singleRight = x_currentPageXML.getAttribute("singleRight") != undefined ? x_currentPageXML.getAttribute("singleRight") : "Your answer is correct",
 				singleWrong = x_currentPageXML.getAttribute("singleWrong") != undefined ? x_currentPageXML.getAttribute("singleWrong") : "Your answer is incorrect",
@@ -186,32 +184,67 @@
 
             var rightWrongTxt = "";
             // add correct feedback depending on if question overall has been answered correctly or not
-            if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
-                if ($("#pageContents").data("judge") == true) { // there is a correct answer for question
-					if (correct == true) {
-                        rightWrongTxt = multiRight != '' ? '<p><br/>' + multiRight + '</p>' : '';
-                    } else {
-						rightWrongTxt = multiWrong != '' ? '<p><br/>' + multiWrong + '</p>' : '';
-                    }
-                }
-            } else {
-                if ($("#pageContents").data("judge") == true) { // there is a correct answer for question
-                    if (correct == true) {
-						rightWrongTxt = singleRight != '' ? '<p><br/>' + singleRight + '</p>' : '';
-                    } else {
-						rightWrongTxt = singleWrong != '' ? '<p><br/>' + singleWrong + '</p>' : '';
-                    }
-                }
-            }
-			if (rightWrongTxt != '') {
-				generalFeedback += rightWrongTxt;
+			if (x_currentPageXML.getAttribute("markFeedback") != 'false') { // new optional property allows for this feedback to be turned off
+				if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
+					if ($("#pageContents").data("judge") == true) { // there is a correct answer for question
+						if (correct == true) {
+							rightWrongTxt = multiRight != '' ? '<p>' + multiRight + '</p>' : '';
+						} else {
+							rightWrongTxt = multiWrong != '' ? '<p>' + multiWrong + '</p>' : '';
+						}
+					}
+				} else {
+					if ($("#pageContents").data("judge") == true) { // there is a correct answer for question
+						if (correct == true) {
+							rightWrongTxt = singleRight != '' ? '<p>' + singleRight + '</p>' : '';
+						} else {
+							rightWrongTxt = singleWrong != '' ? '<p>' + singleWrong + '</p>' : '';
+						}
+					}
+				}
 			}
-            var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+			
+			var feedback = 0,
+				feedbackDiv = ['top', 'middle', 'bottom'],
+				// order feedback is shown - default is: general feedback > answer feedback > correct/incorrect feedback
+				feedbackOrder = x_currentPageXML.getAttribute("feedbackPos") == undefined ? 'GAC' : x_currentPageXML.getAttribute("feedbackPos");
+			
+			feedbackOrder = [...feedbackOrder];
+			
+			if (answerFeedback != undefined && answerFeedback != '') { feedback++; } else { feedbackOrder.splice(feedbackOrder.indexOf('A'), 1); }
+			if (genFeedback != undefined && genFeedback != '') { feedback++; } else { feedbackOrder.splice(feedbackOrder.indexOf('G'), 1); }
+			if (rightWrongTxt != undefined && rightWrongTxt != '') { feedback++; } else { feedbackOrder.splice(feedbackOrder.indexOf('C'), 1); }
+			
+			// show the feedback in the order specified
+			for (var i=0; i<feedbackDiv.length; i++) {
+				if (i<feedback) {
+					var thisFeedback;
+					if (feedbackOrder[i] == 'G') {
+						thisFeedback = genFeedback;
+					} else if (feedbackOrder[i] == 'A') {
+						thisFeedback = answerFeedback;
+					} else {
+						thisFeedback = rightWrongTxt;
+					}
+					
+					$('#' + feedbackDiv[i] + 'Feedback')
+						.html(thisFeedback)
+						.show();
+					
+				} else {
+					$('#' + feedbackDiv[i] + 'Feedback')
+						.html('')
+						.hide();
+				}
+			}
+			
+			var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
             if (feedbackLabel == undefined) {
                 feedbackLabel = "Feedback";
             }
+			$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
+			
             $("#feedback")
-				.html((feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '') + generalFeedback)
 				.find(".audioHolder").each(function() {
 					$(this).mediaPlayer({
 						type	:"audio",
@@ -221,9 +254,6 @@
 				});
 
             $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
-
-            // Queue reparsing of MathJax - fails if no network connection
-            try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 
             var result = {
                 success: correct,
@@ -240,8 +270,8 @@
                     $("#option"+i).attr("disabled", "disabled");
                 }
             }
-            // Queue reparsing of MathJax - fails if no network connection
-            try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+
+            x_pageContentsUpdated();
         }
 
 		this.init = function() {
@@ -343,7 +373,7 @@
 								"id"		:"option" + i
 								})
 							.change(function() {
-								$("#feedback").html("");
+								$("#feedback").find('.feedbackBlock').html("");
 								var $checkBtn = $("#checkBtn"),
 									$selected = $("#optionHolder input:checked");
 								
@@ -424,7 +454,12 @@
 						</div>
 					</div>
 					<button id="checkBtn"></button>
-					<div id="feedback" aria-live="polite"></div>
+					<div id="feedback" aria-live="polite">
+						<div id="feedbackHeader" class="feedbackBlock"></div>
+						<div id="topFeedback" class="feedbackBlock"></div>
+						<div id="middleFeedback" class="feedbackBlock"></div>
+						<div id="bottomFeedback" class="feedbackBlock"></div>
+					</div>
 				</fieldset>
 			</div>
 		</div>

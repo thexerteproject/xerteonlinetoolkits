@@ -26,13 +26,11 @@ ini_set('display_errors', 0);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
 
 use \Tsugi\Core\LTIX;
-use \Tsugi\Core\Settings;
-use \Tsugi\Core\Result;
-use \Tsugi\Util\Net;
-use \Tsugi\Grades\GradeUtil;
 
 $LAUNCH = LTIX::requireData();
 
+_debug("Sending grade: LAUNCH=" . print_r($LAUNCH, true));
+_debug("Sending grade: _SERVER=" . print_r($_SERVER, true));
 if (isset($_POST['grade']))
 {
     $gradetosend = $_POST['grade'];

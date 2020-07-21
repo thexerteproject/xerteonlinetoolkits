@@ -86,6 +86,7 @@ function NoopTrackingState()
     this.exitInteraction = exitInteraction;
     this.findPage = findPage;
     this.findInteraction = findInteraction;
+    this.findAllInteractions = findAllInteractions;
     this.findCreate = findCreate;
     this.enterPage = enterPage;
     this.verifyResult = verifyResult;
@@ -251,13 +252,10 @@ function NoopTrackingState()
 
     function pageCompleted(sit)
     {
-        for (i=0; i<sit.nrinteractions; i++)
+        var sits = this.findAllInteractions(sit.page_nr);
+        if (sits.length != sit.nrinteractions)
         {
-            var sit2 = this.findInteraction(sit.page_nr, i);
-            if (sit2 == null)
-            {
-                return false;
-            }
+            return false;
         }
         if (sit.ia_type=="page" && sit.duration < this.page_timeout)
         {
@@ -390,6 +388,18 @@ function NoopTrackingState()
                 return this.interactions[i];
         }
         return null;
+    }
+
+    function findAllInteractions(page_nr)
+    {
+        var i=0;
+        tmpinteractions = [];
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr != -1)
+                tmpinteractions.push(i);
+        }
+        return tmpinteractions;
     }
 
 
@@ -1055,7 +1065,7 @@ function XTSetOption(option, value)
     }
 }
 
-function XTEnterPage(page_nr, page_name)
+function XTEnterPage(page_nr, page_name, grouping)
 {
 	state.enterPage(page_nr, -1, "page", page_name);
 }
@@ -1077,15 +1087,6 @@ function XTSetPageScore(page_nr, score)
 
 function XTSetPageScoreJSON(page_nr, score)
 {
-    state.setPageScore(page_nr, score);
-}
-
-function XTSetViewed(page_nr, name, score)
-{
-    if (isNaN(score) || typeof score != "number")
-    {
-        score = 0.0;
-    }
     state.setPageScore(page_nr, score);
 }
 
@@ -1124,7 +1125,7 @@ function XThelperDetermineProgress(videostate)
     return 0.0;
 }
 
-function XTVideo(page_nr, name, block_name, verb, videostate) {
+function XTVideo(page_nr, name, block_name, verb, videostate, grouping) {
     return;
 }
 

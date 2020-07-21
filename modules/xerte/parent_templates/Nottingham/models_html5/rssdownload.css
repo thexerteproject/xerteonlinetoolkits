@@ -1,0 +1,75 @@
+/* rssdownload.html */
+
+	#headerHolder {
+		text-align:		center;
+		margin-bottom:	10px;
+	}
+
+	#resultsHolder {
+		width:	100%;
+	}
+
+	#resultsHolder div {
+		width: 100%;
+		padding-top:	1em;
+		padding-bottom:	1em;
+	}
+.rssDownloadDeployment, .rssDownloadScorm2004, .rssDownloadScorm12{
+	line-height:1.8em;
+	margin-right:1.4em;
+	}
+
+	#resultsHolder div p {
+		margin:	0;
+		padding: 0 5px;
+		text-decoration:none;
+		padding-bottom: 1px;
+	}
+#resultsHolder div a {
+	margin:	0;
+	padding: 0 5px;
+	text-decoration:none;
+	padding-bottom: 1px;
+	border-bottom: 1px dotted;
+}
+#resultsHolder div  a:hover, #resultsHolder div  a:focus {
+	margin:	0;
+	padding: 0 5px;
+	text-decoration:none;
+	padding-bottom: 1px;
+	border-bottom: 1px solid;
+}
+	
+	#resultsHolder div img {
+		width: auto !important;
+		height: auto;
+		max-width: 95%;
+	}
+
+	.shadedDiv {
+		background-color: #fdfdff;
+	}
+
+	#loadingSpinner {
+		margin-left: auto ;
+  		margin-right: auto ;
+		width:180px;
+	}
+
+	.spinner {
+		float:left;
+		margin:-8px 20px 0 0;
+	}
+
+	#loadingSpinner p {
+		font-weight:	bold;
+	}
+	
+	#rssHolder .panel {
+		overflow: auto;
+	}
+
+.rssLinks, .rssDescription, .rssAuthor, .rssModDate, .rssLicense, .rssModDate{
+	margin-top:0.3em !important;
+	margin-bottom:0.3em !important;
+}

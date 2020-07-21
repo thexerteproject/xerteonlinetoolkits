@@ -18,8 +18,8 @@
 			<header type="Media" optional="true" label="Image"/>
 			<headerPos type="ComboBox" data="left,center,right" options="Left,Centre,Right" optional="true" label="Image Position" defaultValue="left" width="175"/>
 			<headerRepeat type="ComboBox" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" label="Image Repeat" defaultValue="repeat" width="175"/>
-			<headerColour type="ColourPicker" optional="true" label="Background Colour"/>
-			<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
+			<headerColour type="ColourPicker" optional="true" defaultValue='' label="Background Colour"/>
+			<headerTextColour type="ColourPicker" optional="true" devaultValue='' label="Text Colour"/>
 			<logoR type="Media" optional="true" label="Logo (Right)"/>
 			<logoL type="Media" optional="true" label="Logo (Left)"/>
 			<logoRHide label="Hide Default Logo (Right)" type="Checkbox" defaultValue="false" optional="true"/>

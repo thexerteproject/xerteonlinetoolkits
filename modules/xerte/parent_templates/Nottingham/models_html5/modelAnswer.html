@@ -50,12 +50,13 @@
 		};
 
         this.leavePage = function() {
-            if (tracked != true) {
+            if (this.tracked != true) {
                 this.finishTracking();
             }
         };
 
 		this.init = function() {
+			this.tracked = false;
 			// if language attributes aren't in xml will have to use english fall back
 			var instructA = x_currentPageXML.getAttribute("instructHeaderATxt");
 			if (instructA == undefined) {
@@ -225,8 +226,9 @@
 					$this.hide();
 					$("#fbTxt").html($("#pageContents").data("feedback"));
 					$("#copyBtn, #copyTxt").show();
-					// Queue reparsing of MathJax - fails if no network connection
-					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+
+					x_pageContentsUpdated();
+
 					modelAnswer.tracked = true;
 					modelAnswer.finishTracking();
 					if (x_currentPageXML.getAttribute("copypasteinfo") != undefined && x_currentPageXML.getAttribute("copypasteinfo") != "") {

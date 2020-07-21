@@ -25,6 +25,10 @@ tr.openanswer {
   color: inherit;
 }
 
+#adaptiveContent .openanswer td {
+  vertical-align: top;
+}
+
 .openanswer td.date {
   white-space: nowrap;
 }

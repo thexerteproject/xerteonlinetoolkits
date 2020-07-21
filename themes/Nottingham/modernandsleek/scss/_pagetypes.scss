@@ -197,6 +197,10 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   background:transparentize($lightestcolor, .1 )!important;
   border-color:$lightestcolor;
 }
+.x_dragDropLabel_page #targetHolder .highlight{
+  // background-color: rgba(83, 70, 69, 0.30);
+  background:none;
+}
 //*****categories*****/
 .x_categories_page #dragDropHolder {
   background: $whiteorlightest;

@@ -39,7 +39,8 @@
     <script type="text/javascript" src="%TEMPLATEPATH%common/js/jquery/jquery-ui.min.js%VERSION_PARAM%"></script>
     <script type="text/javascript" src="%TEMPLATEPATH%common/js/jquery/jquery.ui.touch-punch.min.js%VERSION_PARAM%"></script>
 	<script type="text/javascript" src="%TEMPLATEPATH%common/js/mediaPlayer.js%VERSION_PARAM%"></script>
-	<script type="text/javascript" src="%TEMPLATEPATH%common/js/mediaelement/mediaelement-and-player.min.js%VERSION_PARAM%"></script>
+	<script type="text/javascript" src="%TEMPLATEPATH%common/mediaelement/mediaelement-and-player.min.js%VERSION_PARAM%"></script>
+	<script type="text/javascript" src="%TEMPLATEPATH%common/mediaelement/renderers/vimeo.min.js%VERSION_PARAM%"></script>
 	
 	<!-- for lightboxes and lightbox gallery-->
     <script type="text/javascript" src="%TEMPLATEPATH%common/js/featherlight/featherlight.min.js%VERSION_PARAM%"></script>
@@ -49,8 +50,9 @@
 
     <!--styles -->
     <link rel="stylesheet" href="%TEMPLATEPATH%common/css/jquery-ui.min.css%VERSION_PARAM%">
-	<link rel="stylesheet" href="%TEMPLATEPATH%common/js/mediaelement/mediaelementplayer.css%VERSION_PARAM%">
+	<link rel="stylesheet" href="%TEMPLATEPATH%common/mediaelement/mediaelementplayer-legacy.min.css%VERSION_PARAM%" />
     <link rel="stylesheet" href="%TEMPLATEPATH%common/css/styles.css%VERSION_PARAM%">
+	<link rel="stylesheet" href="%TEMPLATEPATH%common/css/fonts.css%VERSION_PARAM%" type="text/css" />
 
     <!--font awesome-->
     <link rel="stylesheet" href="%TEMPLATEPATH%common/font-awesome-4.3.0/css/font-awesome.min.css">
@@ -94,15 +96,15 @@
     <div id="contentHolder">
 
         <div id="stepHolder">
-            <button id="submitBtn" class="floatR"></button>
+            <button id="submitBtn" class="floatL"></button>
         </div>
 
         <div id="introHolder"></div>
 
         <div id="overviewHolder">
             <div id="overviewBtnHolder">
-                <button id="emailBtn" class="floatR"><span class="fa fa-envelope fa-2x"></span><span class="btnLabel"></span></button>
-                <button id="printBtn" class="floatR"><span class="fa fa-print fa-2x"></span><span class="btnLabel"></span></button>
+                <button id="emailBtn" class="floatL"><span class="fa fa-envelope fa-2x"></span><span class="btnLabel"></span></button>
+                <button id="printBtn" class="floatL"><span class="fa fa-print fa-2x"></span><span class="btnLabel"></span></button>
             </div>
         </div>
 

@@ -112,7 +112,7 @@
   color: lightgrey; }
 
 #pageContents.button button.selected {
-  background-color: white; }
+  background-color: #4d4d4d; }
 
 #pageContents.slide #btnHolder button {
   background: #4d4d4d;
@@ -192,6 +192,9 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   border-color: white;
   color: #ffffff; }
 
+.x_dragDropLabel_page #targetHolder .highlight {
+  background: none; }
+
 #categoryHolder .category {
   border-radius: 3px; }
 
@@ -243,6 +246,10 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   color: lightgreen;
   font-weight: bold; }
 
+.x_gapFill_page #targetHolder select[disabled] {
+  color: #00ff19;
+  border: #00ff19 dotted 2px; }
+
 a.hotspot, a.hotspot.selected {
   background: none; }
 
@@ -250,14 +257,17 @@ a.hotspot, a.hotspot.selected {
   padding: 1%; }
 
 .x_interactiveText_page .highlight {
-  background: white; }
+  background: #4d4d4d; }
 
 .x_interactiveText_page .optionGroup.highlight {
   background: #333333; }
 
 .x_list_page .highlight {
-  background: #333333;
+  background: #4d4d4d;
   color: #ffffff; }
+
+.x_list_page #pageContents a.listItem:link, #passageHolder a.listItem:link, #passageHolder a.listItem:visited, #passageHolder a.listItem:hover, #passageHolder a.listItem:active {
+  color: #ffffff !important; }
 
 .x_textMatch_page #dragDropHolder {
   background: #000000;
@@ -305,6 +315,9 @@ a.hotspot, a.hotspot.selected {
   border-bottom: transparent;
   background: #1a1a1a; }
 
+.x_grid_page table.header.shaded tr:first-child {
+  background: #4d4d4d; }
+
 .x_grid_page #grid ul li {
   background: #4d4d4d;
   border-color: transparent;
@@ -348,7 +361,7 @@ a.hotspot, a.hotspot.selected {
   color: #ffffff; }
 
 .x_table_page table.header.shaded tr:first-child {
-  background: #000000;
+  background: #4d4d4d;
   color: #ffffff; }
 
 .x_table_page table.header.simple tr:first-child {
@@ -1064,6 +1077,15 @@ a:hover {
 
 a:visited {
   color: lightgrey; }
+
+table.glossary tr {
+  background: #000000; }
+
+table.glossary td {
+  background: #000000; }
+
+a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
+  color: #ffffff; }
 
 #x_mainHolder {
   background: #000000;

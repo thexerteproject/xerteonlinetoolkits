@@ -250,13 +250,13 @@
         }
         else
         {
-            if (interaction.getAttribute('interactionType') != 'open') {
+            if (interaction.getAttribute('interactionType') !== 'open' && interaction.getAttribute('interactionType') !== 'opinion' && interaction.getAttribute('opinionClass') != undefined ) {
 
-                if (interaction.getAttribute('graph') == 'true') {
+                if (interaction.getAttribute('graph') === 'true') {
                     return (
-                        interaction.getAttribute('graphType') == 'bar_answers' ||
-                        interaction.getAttribute('graphType') == 'bar_marks' ||
-                        interaction.getAttribute('graphType') == 'line_average_marks'
+                        interaction.getAttribute('graphType') === 'bar_answers' ||
+                        interaction.getAttribute('graphType') === 'bar_marks' ||
+                        interaction.getAttribute('graphType') === 'line_average_marks'
                     );
                 }
                 else {
@@ -341,7 +341,7 @@
         var statements = [];
         url = endpoint + '?first=1000&' + search;
         requestJSON(url, function(data) {
-            statements = data.edges.map(s => s.node.statement);
+            statements = data.edges.map(function(s) {return s.node.statement } );
             requestMoreStatement(url, data, statements, interactionIndex, handler);
          });
     }
@@ -349,7 +349,7 @@
     function requestMoreStatement(endpoint, data, statements, interactionIndex, doneHandler) {
         if (data.pageInfo.hasNextPage) {
             requestJSON(endpoint + '&first=1000&after=' + data.pageInfo.endCursor, function(res) {
-                statements = statements.concat(res.edges.map(s => s.node.statement));
+                statements = statements.concat(res.edges.map(function(s) { return s.node.statement }));
                 requestMoreStatement(endpoint, res, statements, interactionIndex, doneHandler);
             });
         }
@@ -428,8 +428,16 @@
         handler
     ) {
 
-
-        var url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
+        var url;
+        var q = {};
+        if (type != "grouping") {
+            url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
+        }
+        else
+        {
+            url = getUrl(xerteurl, xertelo);
+             xertelabel = xertelabel.replace(/ /g, "_");
+        }
 
         var startDate = x_currentPageXML.getAttribute("startDate");
         if (startDate == undefined)
@@ -442,7 +450,7 @@
             endDate = "";
         }
 
-        var q = {};
+
         if (!retrieveAll) {
             /*
             switch(studentidmode) {
@@ -470,6 +478,9 @@
         q['statement.verb.id'] = 'http://adlnet.gov/expapi/verbs/scored';
          */
         q['activity'] = url;
+        if (type == "grouping") {
+            q['related_activities'] = true;
+        }
         q['verb'] = verb;
         if (group != "")
         {
@@ -510,13 +521,70 @@
             }
         );
         */
-        XTGetStatements(q, false, function(data){
-            if (data.length > 0)
-            {
-                url=data[0].object.id;
+        XTGetStatements(q, false, function(data, search){
+            if (data.length > 0) {
+                if (search != undefined && typeof search['activity'] != 'undefined') {
+                    url = search['activity'];
+                } else {
+                    url = data[0].object.id;
+                }
                 interaction = $(x_currentPageXML).children()[interactionIndex];
                 if (data.length >= 1 && (retrieveAll || filterOwnStatements(data).length >= 1)) {
-                    handler(data, interaction, url, type, interactionIndex, fullWidth);
+                    if (opinionClass != undefined && opinionClass != "")
+                    {
+                        // Just filter out the items with the following structure
+                        //"object": {
+                        //"definition": {
+                        //    "name": {
+                        //        "en": "VR(class=Docent)"
+                        //     }
+                        //   }
+                        //  }
+                        var statements=[];
+                        for (var i=0; i<data.length; i++)
+                        {
+                            if (data[i].object.definition != undefined
+                                && data[i].object.definition.name != undefined
+                                && data[i].object.definition.name.en != undefined
+                                && data[i].object.definition.name.en.indexOf("(class=") != -1)
+                            {
+                                statements.push(data[i]);
+                            }
+                        }
+                        handler(statements, interaction, url, type, interactionIndex, fullWidth);
+                    }
+                    else if (type == 'grouping')
+                    {
+                        // Filter out the itmes with the following structure
+                        // Also interactive level should be interactivity
+                        // context: {
+                        //   contextActivities: {
+                        //      grouping: [{
+                        //          id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                        //          objectType: "Activity"
+                        //      }]
+                        // }
+                        var statements=[];
+                        for (var i=0; i<data.length; i++)
+                        {
+                            if (data[i].context != undefined
+                                && data[i].context.extensions != undefined
+                                && data[i].context.extensions['http://xerte.org.uk/learningObjectLevel'] != undefined
+                                && data[i].context.extensions['http://xerte.org.uk/learningObjectLevel'] == 'interactivity'
+                                && data[i].context.contextActivities != undefined
+                                && data[i].context.contextActivities.grouping != undefined
+                                && data[i].context.contextActivities.grouping[0] != undefined
+                                && data[i].context.contextActivities.grouping[0].id != undefined
+                                && data[i].context.contextActivities.grouping[0].id.indexOf(xertelabel) != -1)
+                            {
+                                statements.push(data[i]);
+                            }
+                        }
+                        handler(statements, interaction, url, type, interactionIndex, fullWidth);
+                    }
+                    else {
+                        handler(data, interaction, url, type, interactionIndex, fullWidth);
+                    }
                 }
                 else {
                     div = $(
@@ -535,6 +603,7 @@
         var xerteurl = "";
         var xertelo = "";
         var xertelabel = "";
+        var xertegrouping = "";
         var name = "";
         var interactionType = "";
         var opinionClass = "";
@@ -669,6 +738,7 @@
             xerteurl = interaction.getAttribute('xerteurl');
             xertelo = interaction.getAttribute('xertelo');
             xertelabel = interaction.getAttribute('label');
+            xertegrouping = interaction.getAttribute('grouping');
             name = interaction.getAttribute('name');
             interactionType = interaction.getAttribute('interactionType');
             opinionClass = interaction.getAttribute('opinionClass');
@@ -692,7 +762,13 @@
                 nrParticipantsText = 'The number of participants is {0}';
             }
 
-            url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
+            if (interactionType != 'grouping') {
+                url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
+            }
+            else
+            {
+                url = getUrl(xerteurl, xertelo);
+            }
             var $this = this;
             divUrl = escapeUrl(url, interactionType, interactionIndex);
             name = interaction.getAttribute('name');
@@ -723,7 +799,7 @@
                 "</div><div class='score'></div><div class='message'></div>",
             );
             */
-
+            debugger;
             if (interactionType == "score") {
                 var verb = 'http://adlnet.gov/expapi/verbs/scored';
                 if (interaction.data != null) {
@@ -812,6 +888,31 @@
                         this.drawOpen);
                 }
             }
+            else if (interactionType == "grouping")
+            {
+                debugger;
+                // check open question special options
+                var verb = 'http://adlnet.gov/expapi/verbs/scored';
+                if (interaction.data != null) {
+                    var url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
+                    this.drawGroupedScore(interaction.data, interaction, url, interactionType, interactionIndex, fullWidth);
+                }
+                else {
+                    statements = getStatements(
+                        xerteurl,
+                        xertelo,
+                        xertegrouping,
+                        verb,
+                        opinionClass,
+                        interactionType,
+                        hasToRetrieveAll(interaction),
+                        interactionIndex,
+                        group,
+                        fullWidth,
+                        this.drawGroupedScore);
+                }
+            }
+
 
         };
 
@@ -1375,7 +1476,7 @@
                 obj.graph = JSON.parse(d.result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                 return obj;
             });
-            jsonData = jsonData.filter(x => x != undefined);
+            jsonData = jsonData.filter(function(x) { return x != undefined } );
             div = $('#' + escapeUrl(
                 url,
                 type,
@@ -1439,10 +1540,10 @@
                     }
                     else if (typeof data[i].actor.mbox != 'undefined')
                     {
-                        user = data[i].actor.mbox;
+                        user = data[i].actor.mbox.substr(7);
                     }
                     else if (typeof data[i].actor.mbox_sha1 != 'undefined') {
-                        user = data[i].actor.mbox_sha1;
+                        user = data[i].actor.mbox_sha1.substr(7);
                     }
                     else if (typeof data[i].actor.account != 'undefined' && typeof data[i].actor.account.name != 'undefined' ){
                         user = data[i].actor.account.name;
@@ -1541,6 +1642,78 @@
                 }
             }
             $('#' + escapeUrl(url, type, interactionIndex) + ' .message').html(html);
+        };
+
+        this.drawGroupedScore = function(data, interaction, url, type, interactionIndex, fullWidth) {
+            // reshuffle
+            var groupingStatements = [];
+            var userGrouping = [];
+            for (var i=0; i<data.length; i++)
+            {
+                var user;
+                if (typeof data[i].actor.name != 'undefined')
+                {
+                    user = data[i].actor.name;
+                }
+                else if (typeof data[i].actor.mbox != 'undefined')
+                {
+                    user = data[i].actor.mbox.substr(7);
+                }
+                else if (typeof data[i].actor.mbox_sha1 != 'undefined') {
+                    user = data[i].actor.mbox_sha1.substr(7);
+                }
+                else if (typeof data[i].actor.account != 'undefined' && typeof data[i].actor.account.name != 'undefined' ){
+                    user = data[i].actor.account.name;
+                }
+                else {
+                    user = "unknown";
+                }
+                var session = "unknown";
+                if (typeof data[i].context != 'undefined'
+                    && typeof data[i].context.extensions != 'undefined'
+                    && typeof data[i].context.extensions['http://xerte.org.uk/sessionId'] != 'undefined')
+                {
+                    session = data[i].context.extensions['http://xerte.org.uk/sessionId']
+                }
+                if (typeof userGrouping[user] == 'undefined')
+                {
+                    userGrouping[user] = {
+                        sessions:  []
+                    };
+                }
+                if (typeof userGrouping[user]['sessions'][session] == 'undefined')
+                {
+                    userGrouping[user]['sessions'][session] = [];
+                }
+                userGrouping[user]['sessions'][session].push(i);
+            }
+            // Calculate averages and create groupingStatments, which are pseudo xAPI statements which are a combination of all the grouping statements
+            // Hmm... tric to enumerate array elements
+            var userGroupingKeys = Object.keys(userGrouping);
+            for (var i=0; i<userGroupingKeys.length; i++)
+            {
+                var sessions = userGrouping[userGroupingKeys[i]];
+                var sessionsKeys = Object.keys(sessions['sessions']);
+                for (var j=0; j<sessionsKeys.length; j++)
+                {
+                    var s = sessions['sessions'][sessionsKeys[j]];
+                    // make a full copy of statement
+                    var statement = JSON.parse(JSON.stringify(data[s[0]]));
+                    var sum = statement.result.score.raw;
+                    var duration = moment.duration(statement.result.duration);
+                    for (var k=1; k<s.length; k++)
+                    {
+                        sum += data[s[k]].result.score.raw;
+                        duration.add(moment.duration(data[s[k]].result.duration));
+                    }
+                    statement.result.score.raw = sum / s.length;
+                    statement.result.score.scaled = statement.result.score.raw / 100.0;
+                    statement.result.duration = duration.toISOString();
+                    groupingStatements.push(statement);
+                }
+            }
+            // New statements can be handled by drawScore
+            adaptiveContent.drawScore(groupingStatements, interaction, url, type, interactionIndex, fullWidth);
         };
 
         this.orderInteractions = function(interactions, handler){
@@ -1775,7 +1948,7 @@
 
             });
             x_pageLoaded();
-        }
+        };
 
         this.setUpUnlisted = function()
         {

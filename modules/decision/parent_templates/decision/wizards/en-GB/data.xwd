@@ -12,6 +12,7 @@
 		<displayMode type="ComboBox" options="Fixed,Fill screen" data="fixed,fill" label="Display Mode" width="100"/>
 		<language type="LanguageList" label="Language" width="170"/>
 		<authorSupport label="Author Support" type="CheckBox" defaultValue="true" optional="true"/>
+		<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
 		
 		<logoGroup label="Icon" type="group" optional="true" tooltip="Add an logo or icon to the footer or header bar">
 			<logo label="Image" type="Media" defaultValue="Select an Image" optional="true"/>
@@ -100,6 +101,9 @@
 			<imgTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
 		</media>
 		
+		<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+		<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
+		
 		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
 	
 		<newNodes>
@@ -137,6 +141,9 @@
 			<imgTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
 		</media>
 		
+		<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+		<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
+		
 		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
 	
 		<newNodes>
@@ -172,6 +179,9 @@
 			<imgTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
 		</media>
 		
+		<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+		<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
+		
 		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
 		
 	</info>
@@ -189,6 +199,9 @@
 			<img label="File" type="media" defaultValue="Select a File" optional="true"/>
 			<imgTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
 		</media>
+		
+		<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+		<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />
 		
 	</result>
 	

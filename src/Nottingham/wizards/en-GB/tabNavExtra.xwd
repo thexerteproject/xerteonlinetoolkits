@@ -12,7 +12,7 @@
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox"  data="Small,Medium,Large" defaultValue="Large" width="100" mandatory="true"/>
 
-    <rememberTab label="Stay on Current Tab" type="CheckBox" optional="true"/>
+    <rememberTab label="Stay on Current Tab" type="CheckBox" optional="true" tooltip="Display the currently viewed tab when changing between topics containing tabs of the same name"/>
 	
     <newNodes>
       <topic><![CDATA[<topic name="Enter Topic Name"><nestedTab name="Enter Tab Name"><nestedPage name="Nested Page Name" text="Content for the pane"/></nestedTab></topic>]]></topic>
@@ -46,7 +46,7 @@
     <text label="Text" type="TextArea" height="250" />
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
 	
-	<imgInfo type="group" label="Image" optional="true">
+	<imgInfo type="group" label="Image" optional="true" tooltip="An image to display above the text">
 		<url label="Image" type="media"  optional="true" defaultValue="Select an Image"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
 	</imgInfo>

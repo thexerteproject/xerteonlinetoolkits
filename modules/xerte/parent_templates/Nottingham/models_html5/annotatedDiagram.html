@@ -243,6 +243,7 @@
 								}
 								
 								annotatedDiagram.checkHeight();
+								x_pageContentsUpdated();
 							}
 						})
 					
@@ -295,7 +296,7 @@
 			}
 			
 			$hotspot
-				.attr("title", hsName)
+				.attr("title", (hsXML.getAttribute("alttext") != undefined && hsXML.getAttribute("alttext") != "") ? hsXML.getAttribute("alttext") : hsName)
 				.data("listItem", $listItem)
 				.css({
 					width	:Math.round(hsXML.getAttribute("w") * scale) + "px",

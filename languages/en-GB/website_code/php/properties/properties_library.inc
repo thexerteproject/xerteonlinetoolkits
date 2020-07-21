@@ -69,7 +69,19 @@
 
 	define ("PROJECT_INFO_NRVIEWS", ", number of views is %n");
 
-	// PROJECT TAB
+	define ("PROJECT_INFO_RSS_SYNDICATION" , "RSS: Project is published through rss");
+
+	define ("PROJECT_INFO_RSS_SYNDICATION_RSSENABLED" , "RSS is enabled");
+
+	define ("PROJECT_INFO_RSS_SYNDICATION_EXPORTENABLED" , "Export is enabled");
+
+	define ("PROJECT_INFO_RSS_SYNDICATION_SYNDICATIONENABLED" , "Syndication is enabled");
+
+	define("PROJECT_INFO_LTI_PUBLISHED" , "LTI: The project is published as an LTI 1.1 tool");
+
+	define("PROJECT_INFO_XAPI_PUBLISHED", "xAPI: xAPI is enabled for this project through the following link:");
+
+// PROJECT TAB
 
 	define("PROPERTIES_LIBRARY_PROJECT", "Project");
 
