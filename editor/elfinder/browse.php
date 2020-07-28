@@ -167,7 +167,7 @@ if (isset($_REQUEST['langCode']))
                 },
                 contextmenu : {
                     // navbarfolder menu
-                    navbar : ['open', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'info'],
+                    navbar : ['open', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'mkdir', '|', 'info'],
 
                     // current directory menu
                     //cwd    : ['reload', 'back', '|', 'upload', 'mkdir', 'mkfile', 'paste', '|', 'info'],
