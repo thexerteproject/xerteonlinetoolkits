@@ -72,12 +72,16 @@
                 });
 
                 // also adjust labels
-                $("#labelHolder .ui-draggable-disabled").each(function() {
+                $("#labelHolder .ui-draggable").each(function(i) {
                     var $this = $(this);
-                    $this.css({
-                        "left"		:$this.data("target").position().left + 2 + $panel.position().left,
-                        "top"		:$this.data("target").position().top + 2 + $panel.position().top
-                    });
+                    var $target = $this.data("target");
+                    if (!isNaN($target)) {
+                      $target = $("#targetHolder .target").eq($target);
+                      $this.css({
+                          "left"		:$target.position().left + 2 + $panel.position().left,
+                          "top"		:$target.position().top + 2 + $panel.position().top
+                      });
+                    }
                 });
             }
         };
