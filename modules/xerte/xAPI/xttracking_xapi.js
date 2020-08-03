@@ -2941,7 +2941,7 @@ function XTTerminate() {
                 timestamp: new Date()
             };
             statement.object.definition.name[state.language] = x_params.name;
-            SaveStatement(statement, false);
+            SaveStatement(statement);
             if (state.getSuccessStatus() == "passed") {
                 // Sen passsed
                 var statement = {
@@ -2976,7 +2976,7 @@ function XTTerminate() {
                     timestamp: new Date()
                 };
                 statement.object.definition.name[state.language] = x_params.name;
-                SaveStatement(statement, false);
+                SaveStatement(statement);
             } else {
                 // Send failed
                 var statement = {
@@ -3011,7 +3011,7 @@ function XTTerminate() {
                     timestamp: new Date()
                 };
                 statement.object.definition.name[state.language] = x_params.name;
-                SaveStatement(statement, false);
+                SaveStatement(statement);
             }
             // Save scored
             var statement = {
@@ -3046,7 +3046,7 @@ function XTTerminate() {
                 timestamp: new Date()
             };
             statement.object.definition.name[state.language] = x_params.name;
-            SaveStatement(statement, false);
+            SaveStatement(statement);
 
         }
 
@@ -3086,7 +3086,7 @@ function XTTerminate() {
             timestamp: new Date()
         };
         statement.object.definition.name[state.language] = x_params.name;
-        SaveStatement(statement, false);
+        SaveStatement(statement);
         if (typeof lti_enabled !== 'undefined' && lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
