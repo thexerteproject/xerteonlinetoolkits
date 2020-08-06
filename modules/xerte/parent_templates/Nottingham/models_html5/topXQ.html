@@ -391,8 +391,12 @@
                     amountOfAnswers = elements.length;
                 }
 
+                var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
+                if (answerFieldLabel === undefined | answerFieldLabel === null) {
+                    answerFieldLabel = "Answer";
+                }
                 for (i = 0; i < amountOfAnswers; i++) {
-                    $optionHolder.append('<div class="answer"><input class="input-answer" id="input-answer-'+i+'"/><span id="topXQ-result-' + i + '"></span></div>');
+                    $optionHolder.append('<div class="answer"><input class="input-answer" id="input-answer-'+i+'" aria-label="'+answerFieldLabel+(i+1)+'"/><span id="topXQ-result-' + i + '"></span></div>');
                     j++;
                 }
                 var answers = [];
