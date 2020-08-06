@@ -2,7 +2,8 @@
     <pageWizard remove="true" dublicate="false">
         <newNodes>
             <topXQ><![CDATA[<topXQ name="Enter Page Title" instruction = "Enter Your Instruction" amountOfTries="1" prompt= "Enter Your Question"  align = "Left" panelWidth = "Medium" numberAnswers = "1" feedbackLabel="Feedback" attemptLabel="Attempts" correctAnswersLabel="Correct answers" passed="You passed the question!" failed="Not all answers are correct"
-	  checkBtnTxt="Check" answerFieldLabel="Answer"/>]]></topXQ>
+             answerFieldLabel="Answer {i}"
+	         checkBtnTxt="Check"/>]]></topXQ>
         </newNodes>
     </pageWizard>
 
@@ -29,7 +30,7 @@
     <failed label="Failed" type="TextInput" wysiwyg="false" language="true" />
     <attemptLabel label="Attempt Label" type="TextInput" wysiwyg="false" language="true"/>
     <checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="false" language="true" />
-    <answerFieldLabel label="Answer Field Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true"/>
+    <answerFieldLabel label="Answer Field Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer {i}"/>
 
     <newNodes>
         <optionXQ><![CDATA[<option answer = "Here is an option" name = "Answer" feedback = "Feedback for this option" correct = "false"/>]]></optionXQ>
