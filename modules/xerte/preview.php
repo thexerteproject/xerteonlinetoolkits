@@ -145,6 +145,8 @@ function show_preview_code2($row, $row_username){
     }
     if ($engine == 'flash')
     {
+        $version = getVersion();
+        $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player/rloObject.htm");
 
         $page_content = str_replace("%WIDTH%", $x, $page_content);
@@ -163,9 +165,11 @@ function show_preview_code2($row, $row_username){
     else
     {
         $version = getVersion();
+        $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);
         // $engine is assumed to be javascript if flash is NOT set
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
         $page_content = str_replace("%VERSION%", $version , $page_content);        // $engine is assumed to be html5 if flash is NOT set
+        $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);        // $engine is assumed to be html5 if flash is NOT set
         $page_content = str_replace("%TITLE%", $title , $page_content);
         $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);

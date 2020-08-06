@@ -186,9 +186,11 @@ function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $langua
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
     $version = getVersion();
+    $language_ISO639_1code = substr($language, 0, 2);
 
 	$scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 
+	$scorm_html_page_content = str_replace("%LANGUAGE", $language_ISO639_1code, $scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%VERSION%", $version , $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%VERSION_PARAM%", "" , $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
