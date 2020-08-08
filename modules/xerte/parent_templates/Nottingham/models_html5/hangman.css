@@ -62,4 +62,12 @@
 		outline:none;
 		font-size: 20px;
 	}
+@media screen and (min-width: 767px) {
+
+	.panel button {
+		font-size: 4vmin;
+	}
+
+}
+
 

@@ -139,7 +139,7 @@
 
 				var charCode = e.charCode || e.keyCode;
 				var char = String.fromCharCode(charCode).toLowerCase();
-				debugger
+
 
 				if ($.trim(char) != "") { // ignore non-character key presses e.g. tab
 					if (thisWord.indexOf(char) != -1) { // correct
@@ -193,18 +193,18 @@
 
 			if (x_browserInfo.touchScreen === true) {
 				const div = document.getElementById("alphabet");
+				div.innerHTML = '';
 				const alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 				alphabet.forEach(letter =>{
 					const button = document.createElement('BUTTON');
 					button.setAttribute("id", letter);
-					button.className = 'alphabet'
+					button.className = 'alphabet';
 					button.addEventListener("click", function () {
 						const letterID = button.id;
 						const letter = letterID.toLowerCase();
-						debugger
 						if ($.trim(letter) !== "") { // ignore non-character key presses e.g. tab
 							if (thisWord.indexOf(letter.toUpperCase()) !== -1 || thisWord.indexOf(letter.toLowerCase()) !== -1) { // correct
-								console.log("correct")
+								console.log("correct");
 								var startIndex = thisWord.indexOf(letter);
 								while (startIndex > -1) {
 									$($clue.find(".dash, .space")[startIndex]).html(letter);
