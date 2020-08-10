@@ -43,8 +43,8 @@ CKEDITOR.editorConfig = function( config ) {
         'modules/xerte/parent_templates/Nottingham/common_html5/css/themeStyles.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/css/editorStyles.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-5.6.3/css/font-awesome.min.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-5.6.3/css/v4-shims.min.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/v4-shims.min.css',
 		'modules/xerte/parent_templates/Nottingham/common_html5/css/fonts.css'
     ];
 	
