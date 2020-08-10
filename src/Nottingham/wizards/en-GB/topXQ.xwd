@@ -30,7 +30,7 @@
     <failed label="Failed" type="TextInput" wysiwyg="false" language="true" />
     <attemptLabel label="Attempt Label" type="TextInput" wysiwyg="false" language="true"/>
     <checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="false" language="true" />
-    <answerFieldLabel label="Answer Field Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer"/>
+    <answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that each text field is labelled and spoken as Answer 1, Answer 2 etc."/>
 
     <newNodes>
         <optionXQ><![CDATA[<option answer = "Here is an option" name = "Answer" feedback = "Feedback for this option" correct = "false"/>]]></optionXQ>
