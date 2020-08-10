@@ -392,11 +392,11 @@
 
                 var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
                 if (answerFieldLabel === undefined | answerFieldLabel === null) {
-                    answerFieldLabel = "Answer {i}";
+                    answerFieldLabel = "Answer";
                 }
                 for (i = 0; i < amountOfAnswers; i++) {
-                    answerFieldLabel = answerFieldLabel.replace(/{i}/, (i+1));
-                    $optionHolder.append('<div class="answer"><input class="input-answer" id="input-answer-'+i+'" aria-label="'+answerFieldLabel+'"/><span id="topXQ-result-' + i + '"></span></div>');
+                    var actualFieldLabel = answerFieldLabel + ' ' + (i+1);
+                    $optionHolder.append('<div class="answer"><input class="input-answer" id="input-answer-'+i+'" aria-label="'+actualFieldLabel+'"/><span id="topXQ-result-' + i + '"></span></div>');
                     j++;
                 }
                 var answers = [];
