@@ -369,8 +369,13 @@
                 var $optionHolder = $("#OptionHolder");
 
                 var $attempts = $("#attempts");
+                var attempt = x_currentPageXML.getAttribute("Attempts");
+                if(attempt === null){
+                    attempt = 1;
+                }
+                debugger;
                 var amountofTries = x_currentPageXML.getAttribute("amountOfTries");
-                $attempts.html(x_currentPageXML.getAttribute("attemptLabel")+ ": "+ amountofTries);
+                $attempts.html(x_currentPageXML.getAttribute("attemptLabel")+ ": "+ attempt);
 
                 var elements = [];
                 $(x_currentPageXML).children().each(function (i) {
@@ -461,9 +466,10 @@
 
 
                         var tries = parseInt(x_currentPageXML.getAttribute("amountOfTries"));
-                        amountofTries -= 1;
-                        if(amountofTries > 0) {
-                            $attempts.html(x_currentPageXML.getAttribute("attemptLabel")+ ": "+ amountofTries);
+                        debugger
+                        attempt -= 1;
+                        if(attempt > 0) {
+                            $attempts.html(x_currentPageXML.getAttribute("attemptLabel")+ ": "+ attempt);
                         }else{
                             $attempts.html("");
                         }
