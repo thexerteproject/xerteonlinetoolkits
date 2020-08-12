@@ -249,6 +249,12 @@
 			if (closeBtnTxt == undefined) {
 				closeBtnTxt = "close"
 			}
+
+			var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
+			if (answerFieldLabel === undefined | answerFieldLabel === null) {
+				answerFieldLabel = "Answer";
+			}
+			$("#answerTxt").attr({"aria-label":answerFieldLabel});
 			
 			this.sizeChanged();
 			this.saveData();
@@ -302,7 +308,7 @@
 		<div id="infoHolder" class="right">
 			<div class="panel">
 				<div id="prompt"></div>
-				<textarea id="answerTxt" rows="5"></textarea>
+				<textarea id="answerTxt" aria-label="Response" rows="5"></textarea>
 				<button id="button"></button>
 				<div id="answer">
 					<div id="fbTxt" aria-live="polite"/>
