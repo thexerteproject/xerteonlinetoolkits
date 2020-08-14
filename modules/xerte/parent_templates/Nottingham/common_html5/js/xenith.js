@@ -22,14 +22,17 @@ var XENITH = {};
 var x_languageData  = [],
     x_params        = new Object(), // all attributes of learningObject that aren't undefined
     x_pages,        // xml info about all pages in this LO
-    x_pageInfo      = [],   // holds info about pages (type, built, linkID, pageID, savedData) - use savedData if any input from page needs to be saved for use on other pages or on return to this page
+    x_pageInfo      = [],   // holds info about pages (type, built, linkID, pageID, standalone, savedData) - use savedData if any input from page needs to be saved for use on other pages or on return to this page
+	x_normalPages	= [],	// indexes of pages in x_pages that are normal pages (i.e. not standalone)
+	x_urlParams		= {},
+	x_startPage		= {type : "index", ID : "0"},
     x_currentPage   = -1,
     x_currentPageXML,
     x_specialChars  = [],
     x_inputFocus    = false,
     x_dialogInfo    = [], // (type, built)
     x_browserInfo   = {iOS:false, Android:false, touchScreen:false, mobile:false, orientation:"portrait"}, // holds info about browser/device
-    x_pageHistory   = [], // keeps track of pages visited for historic navigation
+	x_pageHistory   = [], // keeps track of pages visited for historic navigation
     x_firstLoad     = true,
     x_fillWindow    = false,
     x_volume        = 1,
@@ -39,7 +42,7 @@ var x_languageData  = [],
     x_timer,        // use as reference to any timers in page models - they are cancelled on page change
 	x_responsive = [], // list of any responsivetext.css files in use
 	x_cssFiles = [],
-    x_specialTheme = '',
+	x_specialTheme = '',
 	x_pageLoadPause = false;
 
 // Determine whether offline mode or not
@@ -64,40 +67,40 @@ if (!$.fn.toggleClick) {
 $(document).keydown(function(e) {
     switch(e.which) {
         case 33: // PgUp
-            if (x_currentPage > 0 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
+			var pageIndex = $.inArray(x_currentPage, x_normalPages);
+            if (pageIndex > -1 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
                 if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
-					x_changePage(x_currentPage -1);
-                } else {
-                    var prevPage = x_pageHistory[x_pageHistory.length-2];
-                    x_pageHistory.splice(x_pageHistory.length - 2, 2);
-					//check if history is empty and if so allow normal back navigation and change to normal back button
-				if(prevPage==undefined && x_currentPage > 0 && x_params.navigation == "LinearWithHistoric"){
-					prevIcon = "x_prev";
-					$x_prevBtn
-						.button({
-							icons: {
-							primary: prevIcon
-					},
-			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-			text:	false
-		})
-		 x_changePage(x_currentPage -1);
-				   }
-				   //disable normal back navigation if 1st page
-				if (x_currentPage <=1){
-					$x_prevBtn
-            .button("disable")
-            .removeClass("ui-state-focus")
-            .removeClass("ui-state-hover");
+					// linear back
+					if (pageIndex > 0) {
+						x_changePage(x_normalPages[pageIndex -1]);
 					}
-                    x_changePage(prevPage);
+					
+                } else {
+					var prevPage = x_pageHistory[x_pageHistory.length-2];
+                    x_pageHistory.splice(x_pageHistory.length - 2, 2);
+					
+					// check if history is empty and if so allow normal back navigation and change to normal back button
+					if (prevPage == undefined && x_currentPage > 0) {
+						x_changePage(x_normalPages[pageIndex -1]);
+					} else {
+						x_changePage(prevPage);
+					}
                 }
+			} else if (pageIndex == -1) {
+				// historic back (standalone page)
+				if (history.length > 1) {
+					history.go(-1);
+				} else {
+					x_changePage(x_normalPages[0]);
+				}
 			}
             break;
 
         case 34: // PgDn
-			if ($x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
-				x_changePage(x_currentPage + 1);
+			// if it's a standalone page then nothing will happen
+			var pageIndex = $.inArray(x_currentPage, x_normalPages);
+			if (pageIndex != -1 && $x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
+				x_changePage(x_normalPages[pageIndex + 1]);
 			}
             break;
 
@@ -186,8 +189,9 @@ x_projectDataLoaded = function(xmlData) {
 	}
 
     x_pages = xmlData.children();
-	var pageToHide = [];
-	var currActPage = 0;
+	var pageToHide = [],
+		currActPage = 0;
+	
     x_pages.each(function (i) {
 		// work out whether the page is hidden or not - can be simply hidden or hidden between specific dates/times
 		var hidePage = $(this)[0].getAttribute("hidePage") == "true" ? true : false;
@@ -332,16 +336,21 @@ x_projectDataLoaded = function(xmlData) {
 
 		if (hidePage == false || x_params.authorSupport == "true") {
 			var linkID = $(this)[0].getAttribute("linkID"),
-				pageID = $(this)[0].getAttribute("pageID"),
+				pageID = $.trim($(this)[0].getAttribute("pageID")),
 				page = {type: $(this)[0].nodeName, built: false};
+			
 			if (linkID != undefined) {
 				page.linkID = linkID;
 			}
-			if (pageID != undefined && pageID != "Unique ID for this page") { // Need to use this English for backward compatibility
-				page.pageID = pageID;
+			
+			// pageID optional property was deprecated previously but has been brought back
+			// it's now blank when added to editor but need to ignore default text that used to be in field prior to it being deprecated
+			if (pageID != undefined && pageID != "" && pageID != "Unique ID for this page") {
+				// if pages have custom ID then make sure they don't include spaces
+				page.pageID = pageID.split(" ").join("_");
 			}
 
-			//Get child linkIDs for deeplinking
+			// Get child linkIDs for deeplinking
 			page.childIDs = [];
 			var tempArrays = [];
 			var allChildIDs = function($this, array) {
@@ -359,9 +368,17 @@ x_projectDataLoaded = function(xmlData) {
 					}
 				});
 			}
+			
 			allChildIDs($(this), page.childIDs);
+			
+			// is this a standalone page?
+			if ($(this)[0].getAttribute("linkPage") == 'true') {
+				page.standalone = true;
+			}
+			
 			x_pageInfo.push(page);
-            if(($(this)[0].getAttribute("unmarkForCompletion") === "false" || $(this)[0].getAttribute("unmarkForCompletion") == undefined) && this.nodeName !== "results" )
+			
+            if (($(this)[0].getAttribute("unmarkForCompletion") === "false" || $(this)[0].getAttribute("unmarkForCompletion") == undefined) && this.nodeName !== "results" )
             {
                 markedPages.push(currActPage);
                 currActPage++;
@@ -375,15 +392,29 @@ x_projectDataLoaded = function(xmlData) {
 		}
 
     });
-
-	// removes hidden pages from array
-	for (i=0; i<pageToHide.length; i++) {
-		x_pages.splice(pageToHide[i]-i,1);
+	
+	// removes hidden pages from x_pages array
+	var numPages = x_pages.length,
+		offset = 0;
+	
+	for (var i=0; i<numPages; i++) {
+		if (pageToHide.indexOf(i) != -1) {
+			x_pages.splice(i-offset, 1);
+			offset++;
+		}
 	}
-
-    if (x_pages.length < 2) {
+	
+	// make array containing indexes of normal pages (not standalone)
+	for (var i=0; i<x_pageInfo.length; i++) {
+		if (x_pageInfo[i].standalone != true) {
+			x_normalPages.push(i);
+		}
+	}
+	
+    if (x_normalPages.length < 2) {
         // don't show navigation options if there's only one page
         $("#x_footerBlock .x_floatRight").remove();
+		
     } else {
         if (x_params.navigation == undefined) {
             x_params.navigation = "Linear";
@@ -391,6 +422,12 @@ x_projectDataLoaded = function(xmlData) {
         if (x_params.navigation != "Linear" && x_params.navigation != "LinearWithHistoric" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
             x_pages.splice(0, 0, "menu");
             x_pageInfo.splice(0, 0, {type: 'menu', built: false});
+			
+			// adjust normal page indexes to take into account menu page
+			for (var i=0; i<x_normalPages.length; i++) {
+				x_normalPages.splice(i, 1, x_normalPages[i]+1);
+			}
+			x_normalPages.splice(0, 0, 0);
         }
     }
 
@@ -400,13 +437,103 @@ x_projectDataLoaded = function(xmlData) {
             x_fillWindow = false; // overrides fill window for touchscreen devices
         }
     }
-
+	
     // sort any parameters in url - these will override those in xml
-    var tempUrlParams = window.location.search.substr(1, window.location.search.length).split("&");
-    x_urlParams = {};
-    for (i = 0; i < tempUrlParams.length; i++) {
-        x_urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
+    var tempUrlParams = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/),
+		hash;
+	
+	for (var i=0; i<tempUrlParams.length; i++) {
+		var split = tempUrlParams[i].split("=");
+		if (split.length == 2) {
+			x_urlParams[split[0]] = split[1];
+		} else {
+			hash = tempUrlParams[i];
+		}
     }
+		
+	// there are several URL params that can determine the 1st page viewed - check if they are valid pages before setting start page
+	if (x_urlParams.linkID) { // ID auto-generated in xwd e.g. URL/play_123&linkID=PG1593081880325
+		var temp = getDeepLink(x_urlParams.linkID);
+		if (temp.length > 1) {
+			x_deepLink = temp[1];
+		}
+		
+		var validPage = x_lookupPage("linkID", temp[0]);
+		if (validPage !== false) {
+			x_startPage = { type : "index", ID : validPage };
+		}
+		
+		delete x_urlParams.linkID;
+	}
+	
+	if (x_urlParams.pageID) { // ID created by author OR auto-generated in xwd e.g. URL/play_123&pageID=customID OR URL/play_123&pageID=PG1593081880325
+		var temp = getDeepLink(x_urlParams.pageID);
+		if (temp.length > 1) {
+			x_deepLink = temp[1];
+		}
+		
+		var validPage = x_lookupPage("pageID", temp[0]);
+		if (validPage !== false) {
+			x_startPage = { type : "index", ID : validPage };
+		}
+		
+		delete x_urlParams.pageID;
+	}
+	
+	if (x_urlParams.page) { // ID created by author OR numeric page number e.g. URL/play_123&page=customID OR URL/play_123&page=5
+		var temp = getDeepLink(x_urlParams.page);
+		if (temp.length > 1) {
+			x_deepLink = temp[1];
+		}
+		
+		var validPage = x_lookupPage("pageID", temp[0]);
+		if (validPage !== false) {
+			x_startPage = {type : "index", ID : validPage};
+		} else {
+			if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
+				var tempIndex = x_normalPages[Number(temp[0])-1];
+				x_startPage = { type : "index", ID : tempIndex };
+			}
+		}
+		
+		delete x_urlParams.page;
+	}
+	
+	if (x_urlParams.resume) { // Numeric page number e.g. URL/play_123#resume=5 - deprecated but needs to work for existing links
+		var temp = getDeepLink(x_urlParams.resume);
+		if (temp.length > 1) {
+			x_deepLink = temp[1];
+		}
+		
+		if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
+			var tempIndex = x_normalPages[Number(temp[0])-1];
+			x_startPage = { type : "index", ID : tempIndex };
+		}
+		
+		delete x_urlParams.resume;
+	}
+	
+	if (hash != undefined) { // ID created by author OR numeric page number e.g. URL/play_123#customID OR URL/play_123#page5 OR URL/play_123#5
+		var temp = getDeepLink(hash);
+		if (temp.length > 1) {
+			x_deepLink = temp[1];
+		}
+		
+		var info = getHashInfo(temp[0]);
+		if (info != false) {
+			x_startPage = {type : "index", ID : info};
+		}
+	}
+	
+	// tidy up the URL to remove all of the params about start page - hash at end of URL will change according to currently viewed page
+	var shortParams = "";
+	Object.keys(x_urlParams).forEach(function(key, index) {
+		shortParams += index==0 ? '?' : '&';
+		shortParams += key + '=' + x_urlParams[key];
+	});
+	
+	// change URL params without reloading the page
+	window.history.pushState('window.location.href', "", shortParams);
 
 	// url embed parameter uses ideal setup for embedding in iframes - can be overridden with other parameters below
 	if (x_urlParams.embed == 'true') {
@@ -471,7 +598,7 @@ x_projectDataLoaded = function(xmlData) {
         x_params.theme = x_urlParams.theme;
     }
 
-    x_getLangData(x_params.language);
+    x_getLangData(x_params.language); // x_setUp() function called in here after language file loaded
 
     // Setup nr of pages for tracking
     XTSetOption('nrpages', x_pageInfo.length);
@@ -509,6 +636,63 @@ x_projectDataLoaded = function(xmlData) {
     {
         XTSetOption('force_tracking_mode', x_params.forceTrackingMode);
     }
+}
+
+// browser back / fwd button will trigger this - manually make page change to match #pageX
+window.onhashchange = function() {
+	var temp = getDeepLink(window.location.hash);
+	if (temp.length > 1) {
+		x_deepLink = temp[1];
+	}
+	
+	var pageInfo = getHashInfo(temp[0]);
+
+	if (pageInfo !== false) {
+		x_navigateToPage(false, { type: "index", "ID": pageInfo }, false );
+	}
+	
+	// force lightbox to close
+	if (parent.window.$.featherlight.current()) {
+		parent.window.$.featherlight.current().close();
+	}
+}
+
+// Get the page info from the URL (called on project load & when page changed via browser fwd/back btns)
+function getHashInfo(urlHash) {
+	if (urlHash.length > 0) {
+		var pageLink = urlHash[0] == '#' ? urlHash.substring(1) : urlHash,
+			thisPage;
+		
+		if (pageLink.substring(0,4) == "page") { // numeric page number e.g. URL/play_123#page5
+			var tempNum = Number(pageLink.substring(4));
+			if (tempNum < 1 || tempNum > x_normalPages.length) {
+				thisPage = false;
+			} else {
+				thisPage = x_normalPages[tempNum-1];
+			}
+			
+		} else { // ID created by author OR numeric page number e.g. URL/play_123#customID OR URL/play_123#page5 OR URL/play_123#5
+			var validPage = x_lookupPage("pageID", pageLink);
+			if (validPage !== false) {
+				thisPage = validPage;
+				
+			} else if ($.isNumeric(pageLink)) {
+				var tempNum = Number(pageLink);
+				if (tempNum < 1 || tempNum > x_normalPages.length) {
+					thisPage = false;
+				} else {
+					thisPage = x_normalPages[tempNum-1];
+				}
+			} else {
+				thisPage = false;
+			}
+		}
+		
+		return thisPage;
+		
+	} else {
+		return false;
+	}
 }
 
 // Make absolute urls from urls with FileLocation + ' in their strings
@@ -631,10 +815,10 @@ function x_setUp() {
 	x_params.dialogTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") : "";
 	x_params.newWindowTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") : "";
 
-	if (x_pages.length == 0) {
+	if (x_normalPages.length == 0) {
 		$("body").append(x_getLangInfo(x_languageData.find("noPages")[0], "label", "<p>This project does not contain any pages.</p>"));
+		
 	} else {
-
 		$x_head			= $("head");
 		$x_body			= $("body");
 		$x_window		= $(window);
@@ -865,7 +1049,6 @@ function x_continueSetUp1() {
 			x_dialogInfo.push({type:'menu', built:false});
 		}
 
-
 		var trimmedNfo = $.trim(x_params.nfo);
 		if (x_params.nfo != undefined && trimmedNfo != '') {
 			$x_footerL.prepend('<button id="x_helpBtn"></button>');
@@ -947,7 +1130,7 @@ function x_continueSetUp1() {
 					});
 				return(false);
 			});
-			if (x_params.footerTools =="hideFooterTools") {
+			if (x_params.footerTools == "hideFooterTools") {
 				$('#x_footerBlock .x_floatLeft').hide();
 				$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
 				$('#x_footerChevron').prop('title', showMsg);
@@ -1036,43 +1219,34 @@ function x_continueSetUp1() {
 			})
 			.attr("aria-label", $("#x_prevBtn").attr("title"))
 			.click(function() {
-				if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
-					x_changePage(x_currentPage -1);
-				} else {
-					//ensure button is historic style
-					prevIcon = "x_prev_hist";
-						$x_prevBtn
-							.button({
-								icons: {
-								primary: prevIcon
-						},
-				label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-				text:	false
-			})
-					var prevPage = x_pageHistory[x_pageHistory.length-2];
-					x_pageHistory.splice(x_pageHistory.length - 2, 2);
-					//check if history is empty and if so allow normal back navigation and change to normal back button
-					if(prevPage==undefined && x_currentPage > 0 && x_params.navigation == "LinearWithHistoric"){
-						prevIcon = "x_prev";
-						$x_prevBtn
-							.button({
-								icons: {
-								primary: prevIcon
-						},
-				label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-				text:	false
-			})
-					   x_changePage(x_currentPage -1);
-					   }
-					//disable normal back navigation if 1st page
-					if (x_currentPage <=1){
-						$x_prevBtn
-				.button("disable")
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
+				var pageIndex = $.inArray(x_currentPage, x_normalPages);
+				if (pageIndex > -1) {
+					if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
+						// linear back
+						if (pageIndex > 0) {
+							x_changePage(x_normalPages[pageIndex -1]);
 						}
-					x_changePage(prevPage);
+						
+					} else {
+						var prevPage = x_pageHistory[x_pageHistory.length-2];
+						x_pageHistory.splice(x_pageHistory.length - 2, 2);
+						
+						// check if history is empty and if so allow normal back navigation and change to normal back button
+						if (prevPage == undefined && x_currentPage > 0) {
+							x_changePage(x_normalPages[pageIndex -1]);
+						} else {
+							x_changePage(prevPage);
+						}
+					}
+				} else if (pageIndex == -1) {
+					// historic back (standalone page)
+					if (history.length > 1) {
+						history.go(-1);
+					} else {
+						x_changePage(x_normalPages[0]);
+					}
 				}
+				
 				$(this)
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
@@ -1088,19 +1262,25 @@ function x_continueSetUp1() {
 			})
 			.attr("aria-label", $("#x_nextBtn").attr("title"))
 			.click(function() {
-			if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
-					//when moving forward history is generated so ensure button is historic style
-					prevIcon = "x_prev_hist";
-						$x_prevBtn
-							.button({
-								icons: {
-								primary: prevIcon
-						},
-				label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-				text:	false
-			})
+				// if it's a standalone page then nothing will happen
+				var pageIndex = $.inArray(x_currentPage, x_normalPages);
+				if (pageIndex != -1) {
+					if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
+						//when moving forward history is generated so ensure button is historic style
+						prevIcon = "x_prev_hist";
+							$x_prevBtn
+								.button({
+									icons: {
+										primary: prevIcon
+									},
+									label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+									text:	false
+								});
+					}
+					
+					x_changePage(x_normalPages[pageIndex+1]);
 				}
-				x_changePage(x_currentPage+1);
+				
 				$(this)
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
@@ -1141,10 +1321,11 @@ function x_continueSetUp1() {
 						}
 					);
 				} else if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
-					x_navigateToPage(false,{type:'linkID',ID:x_params.homePage});
+					x_navigateToPage(false, {type:'linkID', ID:x_params.homePage});
 				} else {
 					x_changePage(0);
 				}
+				
 				$(this)
 					.blur()
 					.removeClass("ui-state-focus")
@@ -1222,14 +1403,7 @@ function x_continueSetUp1() {
 		});
 
 
-		// ** swipe to change page on touch screen devices - taken out as caused problems with drag and drop activities - need to be able to disable it for these activities
 		if (x_browserInfo.touchScreen == true) {
-			/*
-			var numTouches = 0;
-			var mouseDown = [0, 0]; // [x, y]
-			var mouseUp = [0, 0];
-			*/
-
 			// Set start orientation
 			if (window.orientation == 0 || window.orientation == 180) {
 				x_browserInfo.orientation = "portrait";
@@ -1238,35 +1412,7 @@ function x_continueSetUp1() {
 			}
 
 			$x_pageHolder.bind("touchstart", function(e) {
-				/*
-				var touch = e.originalEvent.touches[0];
-				numTouches = e.originalEvent.touches.length;
-				mouseDown = [touch.pageX, touch.pageY];
-				*/
-				
 				XENITH.GLOSSARY.touchStartHandler();
-			});
-
-			$x_pageHolder.bind("touchend", function(e) {
-				/*
-				if (numTouches == 1) { // if >1 then don't use to change page (user may be zooming)
-					var touch = e.originalEvent.changedTouches[0];
-					mouseUp = [touch.pageX, touch.pageY];
-					var dif = [mouseDown[0] - mouseUp[0], mouseDown[1] - mouseUp[1]];
-					// only swipes of min 75px & swipes where xDif > yDif will change page to avoid scrolling up and down triggering page change
-					if (Math.abs(dif[0]) > Math.abs(dif[1])) {
-						if (dif[0] >= 75) {
-							if (x_pageInfo.length > x_currentPage + 1) {
-								x_changePage(x_currentPage+1);
-							}
-						} else if (dif[0] <= -75) {
-							if (x_currentPage != 0) {
-								x_changePage(x_currentPage-1);
-							}
-						}
-					}
-				}
-				*/
 			});
 
 			// call x_updateCss function on orientation change (resize event should trigger this but it's inconsistent)
@@ -1418,100 +1564,121 @@ function x_dialog(text){
 
 
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
-function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
+function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID}
+	
     var page = XTStartPage();
     if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved by the LO
-        x_changePage(page);
+        x_changePage(page, addHistory);
     }
     else {
-    	// Handle page scope deeplinking
-    	if ((pageInfo.ID).indexOf('|') >= 0) {
-    		x_deepLink = (pageInfo.ID).split('|')[1].trim();
-    		if ($.isNumeric(x_deepLink)) x_deepLink = parseInt(x_deepLink - 1);
-
-    		pageInfo.ID = (pageInfo.ID).split('|')[0].trim();
-    	}
-    	else {
-    		x_deepLink = '';
-    	}
-
-        if (pageInfo.type == "resume" && (parseInt(pageInfo.ID) > 0)  && (parseInt(pageInfo.ID) <= x_pages.length)) {
-            x_changePage(parseInt(pageInfo.ID) - 1);
-
-        }
-        else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
-        	if ((pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
+		
+		// if it's first page then we've already found x_deepLink
+		if (x_firstLoad == false || addHistory == false) {
+			var deepLinkInfo = getDeepLink(pageInfo.ID);
+			pageInfo.ID = deepLinkInfo[0];
+			
+			if (deepLinkInfo.length > 1) {
+				x_deepLink = deepLinkInfo[1];
+			} else {
+				x_deepLink = '';
+			}
+		}
+		
+		if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
+			// relative links added from WYSIWYG xerte page links button
+        	if (String(pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
+				var pageIndex = $.inArray(x_currentPage, x_normalPages);
+				
 				switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
 					case "next":
-						if (x_currentPage < x_pages.length)
-							x_changePage(x_currentPage + 1);
+						// won't change if this is a standalone page
+						if (pageIndex != -1 && pageIndex < x_normalPages.length-1)
+							x_changePage(x_normalPages[pageIndex + 1]);
 						break;
 					case "previous":
-						if (x_currentPage > 0)
-							x_changePage(x_currentPage - 1);
+						if (pageIndex != -1 && pageIndex > 0) {
+							x_changePage(x_normalPages[pageIndex - 1]);
+						} else {
+							// ** it's a standalone page - do historic back
+						}
 						break;
 					case "first":
-						x_changePage(0);
+						if (pageIndex !== 0) {
+							x_changePage(x_normalPages[0]);
+						}
 						break;
 					case "last":
-						x_changePage(x_pages.length-1);
+						if (pageIndex < x_normalPages.length-1) {
+							x_changePage(x_normalPages[x_normalPages.length-1]);
+						}
 						break;
 				}
         	}
         	else {
+				// could be the linkID generated automatically in XML or a custom ID added in editor
 				page = x_lookupPage(pageInfo.type, pageInfo.ID);
+				
+				// id was a deeplink so info about page & deeplink has been returned
 				if ($.isArray(page)) {
 					x_deepLink = page.slice(1, page.length);
-					x_changePage(page[0]);
+					page = page[0];
 				}
-				else if (page != null) {
-					x_changePage(page);
-				}
-				else {
-					x_deepLink = "";
+				
+				if (page !== false) {
+					if (page != x_currentPage) {
+						x_changePage(page, addHistory);
+					}
+				} else {
+					x_deepLink = '';
 					if (force == true) {
-						x_changePage(0);
+						x_changePage(0, addHistory);
 					}
 				}
 			}
         }
-        else {
-            page = parseInt(pageInfo.ID);
+        else if (pageInfo.type == "index") {
+			x_changePage(pageInfo.ID, addHistory);
+			
+        } else {
+			page = parseInt(pageInfo.ID);
             if (page > 0 && page <= x_pages.length) {
-                x_changePage(page-1);
+                x_changePage(page-1, addHistory);
             }
             else {
-            	x_deepLink = "";
+            	x_deepLink = '';
             	if (force == true) {
-                	x_changePage(0);
+                	x_changePage(0, addHistory);
                 }
             }
-        }
+		}
     }
 }
 
 
-// function returns page no. of page with matching linkID / pageID
-function x_lookupPage(pageType, pageID) {
-    for (var i=0, len = x_pageInfo.length; i<len; i++) {
+// function returns page no. of page with matching linkID / pageID & whether it's from array of normal pages or standalone pages
+function x_lookupPage(type, id) {
+	var	pageType,
+		found = x_checkPages(type, id, x_pageInfo);
+	
+	return found;
+}
+
+// checks through the pageArray specified for a page with matching ID
+function x_checkPages(type, id, pageArray) {
+	// check through an array of pages for a matching ID
+    for (var i=0, len = pageArray.length; i<len; i++) {
         if (
-			(pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
-			(pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)
-        ) {
-            return i
-        }
-    }
-
-	// added this to catch any broken links because the HTML editor always creates links of linkID type even when there was a pageID (pageID is now deprecated)
-	for (var i=0, len = x_pageInfo.length; i<len; i++) {
-		if (
-			pageType == "linkID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID
-		) {
-			return i;
+			(type == "linkID" && pageArray[i].linkID && pageArray[i].linkID == id) ||
+			(type == "pageID" && pageArray[i].pageID && pageArray[i].pageID == id) ||
+			// added this to catch any broken links because the HTML editor always creates links of linkID type even when there was a pageID
+			(type == "linkID" && pageArray[i].pageID && pageArray[i].pageID == id) ||
+			(type == "pageID" && pageArray[i].linkID && pageArray[i].linkID == id)
+		){
+            return i;
 		}
-	}
-
-	// Lastly we now need to check children of each page
+    }
+	
+	// Now check the children of each page
 	var tempArray = [];
 	var checkChildIDs = function(ids) {
 		for (var i=0, j=-1; i<ids.length; i++) {
@@ -1525,58 +1692,100 @@ function x_lookupPage(pageType, pageID) {
 				}
 			} else {
 				j++;
-				if (ids[i] == pageID) {
+				if (ids[i] == id) {
 					tempArray.push(j);
 					return true;
 				}
 			}
 		}
-		return null;
+		return false;
 	}
 
-	for (var i=0; i<x_pageInfo.length; i++) {
+	for (var i=0; i<pageArray.length; i++) {
 		tempArray = tempArray.splice();
 		tempArray.push(i);
-		if (x_pageInfo[i].type != 'menu') {
-			var result = checkChildIDs(x_pageInfo[i].childIDs);
-			if (result == true) {
+		if (pageArray[i].type != 'menu') {
+			var result = checkChildIDs(pageArray[i].childIDs);
+			if (result === true) {
 				return tempArray;
 				break;
 			}
 		}
 	}
 
-	return null;
+	return false;
 }
 
 
 // function called on page change to remove old page and load new page model
 // If x_currentPage == -1, than do not try to exit tracking of the page
-function x_changePage(x_gotoPage) {
+function x_changePage(x_gotoPage, addHistory) {
+	x_gotoPage = Number(x_gotoPage);
 	
-	if ($x_body.width() == 0 && $x_body.height() == 0) {
-		// don't load page yet as they probably won't load properly (possibly because it's being loaded in an iframe on non-active tab on a navigator)
-		x_pageLoadPause = x_gotoPage;
-		
-	} else {
-		// Prevent content from behaving weird as we remove css files
-		$("#x_pageDiv").hide();
-
-
-		var modelfile = x_pageInfo[x_gotoPage].type;
-
-		var classList = $x_mainHolder.attr('class') == undefined ? [] : $x_mainHolder.attr('class').split(/\s+/);
-		$.each(classList, function(index, item) {
-			if (item.substring(0,2) == "x_" && item.substr(item.length-5,item.length) == "_page") {
-				$x_mainHolder.removeClass(item);
+	var standAlonePage = x_pageInfo[x_gotoPage].standalone,
+		pageHash = x_pageInfo[x_gotoPage].pageID != undefined && x_pageInfo[x_gotoPage].pageID != '' ? x_pageInfo[x_gotoPage].pageID : (standAlonePage ? x_pageInfo[x_gotoPage].linkID : 'page' + (x_normalPages.indexOf(x_gotoPage)+1));
+	
+	// add the deep link at the end of the URL
+	if (x_deepLink != '') {
+		pageHash += '|' + ($.isNumeric(x_deepLink) ? Number(x_deepLink) + 1 : x_deepLink);
+	}
+	
+	// if this page is already shown in a lightbox then don't try to open another lightbox - load in the existing one
+	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' && parent.window.$.featherlight.current()) {
+		standAlonePage = false;
+		addHistory = false;
+	}
+	
+	// normal page change, or a standalone page being opened in same window
+	if ((x_gotoPage == 0 && x_pageInfo[0].type == "menu") || !standAlonePage || x_pages[x_gotoPage].getAttribute('linkTarget') == 'same' || x_firstLoad) {
+		if ($x_body.width() == 0 && $x_body.height() == 0) {
+			// don't load page yet as it probably won't load properly (possibly because it's being loaded in an iframe on non-active tab on a navigator)
+			x_pageLoadPause = x_gotoPage;
+			
+		} else {
+			// make sure correct hash is used in url history
+			if (addHistory !== false) {
+				window.history.pushState('window.location.href',"",'#' + pageHash);
 			}
-		});
+			
+			// Prevent content from behaving weird as we remove css files
+			$("#x_pageDiv").hide();
 
-		$x_mainHolder.addClass("x_" + modelfile + "_page");
+			var modelfile = x_pageInfo[x_gotoPage].type;
 
-		x_insertCSS(x_templateLocation + "models_html5/" + modelfile + ".css", function () {
-			x_changePageStep2(x_gotoPage);
-		}, false, "page_model_css");
+			var classList = $x_mainHolder.attr('class') == undefined ? [] : $x_mainHolder.attr('class').split(/\s+/);
+			$.each(classList, function(index, item) {
+				if (item.substring(0,2) == "x_" && item.substr(item.length-5,item.length) == "_page") {
+					$x_mainHolder.removeClass(item);
+				}
+			});
+
+			$x_mainHolder.addClass("x_" + modelfile + "_page");
+
+			x_insertCSS(x_templateLocation + "models_html5/" + modelfile + ".css", function () {
+				x_changePageStep2(x_gotoPage);
+			}, false, "page_model_css");
+		}
+	
+	// standalone page opening in new window
+	} else if (x_pages[x_gotoPage].getAttribute('linkTarget') == 'new') {
+		window.open(window.location.href.split('#')[0] + '#' + pageHash);
+		
+		// update progress bar & record that it's been opened in newWindow
+		if (x_pages[x_gotoPage].getAttribute('reqProgress') == 'true') {
+			x_pageInfo[x_gotoPage].builtNewWindow = true;
+			doPercentage();
+		}
+		
+	// standalone page opening in lightbox
+	} else {
+		$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
+		
+		// update progress bar & record that it's been opened in lightbox
+		if (x_pages[x_gotoPage].getAttribute('reqProgress') == 'true') {
+			x_pageInfo[x_gotoPage].builtLightBox = true;
+			doPercentage();
+		}
 	}
 }
 
@@ -1587,7 +1796,7 @@ function x_changePageStep2(x_gotoPage) {
 }
 
 function x_changePageStep3(x_gotoPage) {
-    var css = document.getElementById('theme_css');
+	var css = document.getElementById('theme_css');
     css.load = function()
     {
         var i=1;
@@ -1609,6 +1818,7 @@ function x_changePageStep3(x_gotoPage) {
         x_changePageStep4(x_gotoPage);
     }
 }
+
 function x_changePageStep4(x_gotoPage) {
     if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
         x_insertCSS(x_evalURL(x_params.stylesheet), function () {
@@ -1619,9 +1829,10 @@ function x_changePageStep4(x_gotoPage) {
         x_changePageStep5(x_gotoPage);
     }
 }
+
 function x_endPageTracking(pagechange, x_gotoPage) {
     // End page tracking of x_currentPage
-    if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && (!pagechange || x_currentPage != x_gotoPage))
+    if (x_currentPage != -1 && !x_isMenu() && (!pagechange || x_currentPage != x_gotoPage))
     {
         var pageObj;
 
@@ -1647,7 +1858,7 @@ function x_endPageTracking(pagechange, x_gotoPage) {
 }
 
 function x_changePageStep5(x_gotoPage) {
-
+	
     if (x_params.styles != undefined) {
         if ($('#lo_css').length == 0) {
             $x_head.append('<style type="text/css" id="lo_css">' + x_params.styles + '</style>');
@@ -1706,14 +1917,6 @@ function x_changePageStep5a(x_gotoPage) {
 		$x_helperText.empty();
         $(document).add($x_pageHolder).off(".pageEvent"); // any events in page models added to document or pageHolder should have this namespace so they can be removed on page change - see hangman.html for example
 
-        // stop any swfs on old page before detaching it so that any audio stops playing (problem in IE only)
-        if ($x_pageDiv.find("object").length > 0) {
-            var $obj = $x_pageDiv.find("object"),
-                flashMovie = x_getSWFRef($obj.attr("id"));
-
-            //flashMovie.StopPlay(); // ** fix removed as it causes problems if the LO is resized (changing page stops working - don't know why)
-        }
-
         if (x_pageInfo[prevPage].built != false) {
             $("#x_pageDiv div:lt(" + $x_pageDiv.children().length + ")")
                 .data("size", [$x_mainHolder.width(), $x_mainHolder.height()]) // save current LO size so when page is next loaded we can check if it has changed size and if anything needs updating
@@ -1723,13 +1926,33 @@ function x_changePageStep5a(x_gotoPage) {
             $("#x_pageDiv div:lt(" + $x_pageDiv.children().length + ")").remove();
         }
     }
-
-    if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
+	
+	if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
         x_pageHistory.push(x_currentPage);
     }
+	
+	// if it's astandalone page then it's possible that the header or footer bar are hidden
+	var headerHidden = false, footerHidden = false;
+	if (x_pageInfo[x_currentPage].standalone == true) {
+		if (x_currentPageXML.getAttribute('headerHide') == 'true') {
+			headerHidden = true;
+			$x_headerBlock.hide().height(0);
+		}
+		if (x_currentPageXML.getAttribute('footerHide') == 'true') {
+			footerHidden = true;
+			$x_footerBlock.hide().height(0);
+		}
+	}
+	
+	if (headerHidden == false && x_params.hideHeader != "true") {
+		$x_headerBlock.show().height('auto');
+	}
+	if (footerHidden == false && x_params.hideFooter != "true") {
+		$x_footerBlock.show().height('auto');
+	}
 
     // change page title and add narration / timer before the new page loads so $x_pageHolder margins can be sorted - these often need to be right so page layout is calculated correctly
-    if (x_pageInfo[0].type == "menu" && x_currentPage == 0) {
+    if (x_isMenu()) {
         pageTitle = x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
 		
 		x_changePageStep6();
@@ -1775,18 +1998,20 @@ function x_changePageStep6() {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
 		// Use a clean text version of the page title
         var label = $('<div>').html(pageTitle).text();
-        if (x_currentPageXML != "menu" && x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
-        {
-            label = x_currentPageXML.getAttribute("trackinglabel");
-        }
-        XTEnterPage(x_currentPage, label, x_currentPageXML.getAttribute("grouping"));
+        if (x_currentPageXML != "menu") {
+			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+			{
+				label = x_currentPageXML.getAttribute("trackinglabel");
+			}
+			XTEnterPage(x_currentPage, label, x_currentPageXML.getAttribute("grouping"));
+		}
 
         var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);
         builtPage.hide();
         builtPage.fadeIn();
 
-		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
+		if (!x_isMenu() && x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
 			$("#x_pageScript").remove();
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
@@ -1794,7 +2019,7 @@ function x_changePageStep6() {
 		// show page background & hide main background
 		if ($(".pageBg#pageBg" + x_currentPage).length > 0) {
 			$(".pageBg#pageBg" + x_currentPage).show();
-			if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
+			if (!x_isMenu() && x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
 				$("#x_bgDarken")
 					.css({
 						"opacity" :Number(x_currentPageXML.getAttribute("bgImageDark")/100),
@@ -1868,7 +2093,7 @@ function x_changePageStep6() {
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 			$("#x_page" + x_currentPage).css("visibility", "hidden");
 
-			if (x_currentPage != 0 || x_pageInfo[0].type != "menu") {
+			if (!x_isMenu()) {
 				// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
 				if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
 					x_findText(x_currentPageXML, true, ["glossary"]); // exclude glossary
@@ -1879,11 +2104,11 @@ function x_changePageStep6() {
 
 			// Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
             var label = $('<div>').html(pageTitle).text();
-            if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+            if (!x_isMenu() && x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
             {
                 label = x_currentPageXML.getAttribute("trackinglabel");
             }
-            XTEnterPage(x_currentPage, label, x_currentPageXML.getAttribute("grouping"));
+            XTEnterPage(x_currentPage, label);
 
 			var modelfile = x_pageInfo[x_currentPage].type;
 			if (typeof modelfilestrs[modelfile] != 'undefined')
@@ -1897,7 +2122,7 @@ function x_changePageStep6() {
 		}
 
 		// show page background & hide main background
-		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImage") != undefined && x_currentPageXML.getAttribute("bgImage") != "") {
+		if (!x_isMenu() && x_currentPageXML.getAttribute("bgImage") != undefined && x_currentPageXML.getAttribute("bgImage") != "") {
 			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
 				if (mediaExists) {
 					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
@@ -1922,9 +2147,7 @@ function x_changePageStep6() {
     }
 
     // Queue reparsing of MathJax - fails if no network connection
-    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
-    x_updateHash();
+    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
 
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();
@@ -1942,7 +2165,6 @@ function x_pageContentsUpdated() {
 
 // by default images can be clicked to open larger version in lightbox viewer - this can be overridden with optional properties at LO & page level
 function x_setUpLightBox() {
-	
 	if ((x_params.lightbox != "false" || x_currentPageXML.getAttribute("lightbox") == "true") && x_currentPageXML.getAttribute("lightbox") != "false") {
 		
 		// use the x_noLightBox class in page models to force images to not open in lightboxes
@@ -1957,22 +2179,24 @@ function x_setUpLightBox() {
 		});
 		
 		$.featherlight.prototype.afterContent = function () {
-			var caption = this.$currentTarget.find('img').attr('alt');
-			
-			if (caption != undefined && caption != '') {
-				this.$instance.find('.featherlight-content img').attr('alt', caption);
+			if (this.$currentTarget != undefined) {
+				var caption = this.$currentTarget.find('img').attr('alt');
 				
-				// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
-				// captions can be turned on at LO or page level
-				if ((x_params.lightboxCaption != "false" && x_params.lightboxCaption != undefined && x_currentPageXML.getAttribute("lightboxCaption") != "false") || (x_currentPageXML.getAttribute("lightboxCaption") != "false" && x_currentPageXML.getAttribute("lightboxCaption") != undefined)) {
-					this.$instance.find('.caption').remove();
-					var before = x_currentPageXML.getAttribute("lightboxCaption") == "above" || (x_params.lightboxCaption == "above" && x_currentPageXML.getAttribute("lightboxCaption") == undefined) ? true : false;
+				if (caption != undefined && caption != '') {
+					this.$instance.find('.featherlight-content img').attr('alt', caption);
 					
-					if (caption != undefined && caption != '') {
-						if (before == true) {
-							$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
-						} else {
-							$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+					// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
+					// captions can be turned on at LO or page level
+					if ((x_params.lightboxCaption != "false" && x_params.lightboxCaption != undefined && x_currentPageXML.getAttribute("lightboxCaption") != "false") || (x_currentPageXML.getAttribute("lightboxCaption") != "false" && x_currentPageXML.getAttribute("lightboxCaption") != undefined)) {
+						this.$instance.find('.caption').remove();
+						var before = x_currentPageXML.getAttribute("lightboxCaption") == "above" || (x_params.lightboxCaption == "above" && x_currentPageXML.getAttribute("lightboxCaption") == undefined) ? true : false;
+						
+						if (caption != undefined && caption != '') {
+							if (before == true) {
+								$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+							} else {
+								$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+							}
 						}
 					}
 				}
@@ -1980,28 +2204,6 @@ function x_setUpLightBox() {
 		}
 	}
 }
-
-// function used for hashtag deeplinking
-function x_updateHash() {
-    if (x_params.resume === "true") {
-        window.location.hash = "#resume=" + (x_currentPage+1);
-    } else {
-        if (window.location.href.indexOf('#') > -1) {
-            if ("pushState" in history) {
-                history.pushState("", document.title, window.location.pathname + window.location.search);
-
-            } else {
-                var tempV = document.body.scrollTop;
-                var tempH = document.body.scrollLeft;
-                window.location.hash = "";
-                //window.location.href = window.location.href.split('#')[0];
-                document.body.scrollTop = tempV;
-                document.body.scrollLeft = tempH;
-            }
-        }
-    }
-}
-
 
 // function called on page model load
 function x_loadPage(response, status, xhr) {
@@ -2017,7 +2219,28 @@ function x_loadPage(response, status, xhr) {
 }
 
 
-// function to do deeplink
+// get deep link info
+function getDeepLink(info) {
+	if (String(info).indexOf('|') >= 0) {
+		info = String(info);
+		
+		var temp = info.split('|'),
+			deep;
+		
+		if ($.isNumeric(temp[1].trim())) {
+			deep = parseInt(temp[1].trim() - 1);
+		} else {
+			deep = temp[1].trim();
+		}
+		
+		return [temp[0].trim(), deep];
+	}
+	else {
+		return [info];
+	}
+}
+
+// function calls a function in the page models to do the deeplink
 function x_doDeepLink() {
 	if (x_deepLink !== "") {
 		if (window[x_pageInfo[x_currentPage].type] && (typeof window[x_pageInfo[x_currentPage].type].deepLink === "function")) {
@@ -2033,12 +2256,21 @@ function x_setUpPage() {
     $x_pageDiv.parent().scrollTop(0);
     $("#x_pageDiv div").scrollTop(0);
     $x_mobileScroll.scrollTop(0);
+	
+	var pageIndex = $.inArray(x_currentPage, x_normalPages);
+	
+	if (pageIndex != -1) {
+		$x_pageNo
+			.html((pageIndex+1) + " / " + x_normalPages.length)
+			.attr("title", x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + (pageIndex+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_normalPages.length);
+	} else {
+		// standalone page
+		$x_pageNo
+			.html('')
+			.attr("title", '');
+	}
 
-    $x_pageNo
-        .html((x_currentPage+1) + " / " + x_pageInfo.length)
-        .attr("title", x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + (x_currentPage+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_pageInfo.length);
-
-    if (x_pageInfo[0].type == "menu" && x_currentPage == 0) {
+    if (x_isMenu()) {
         $x_menuBtn
             .button("disable")
             .removeClass("ui-state-focus")
@@ -2046,18 +2278,27 @@ function x_setUpPage() {
     } else {
         $x_menuBtn.button("enable");
     }
-
-
-    if (x_currentPage > 0) {
+	
+    if (pageIndex != 0 || ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && x_pageHistory.length > 1)) {
         $x_prevBtn.button("enable");
-    } else if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric" || (x_params.navigation == "Historic" && x_pageHistory.length <= 1)) {
+		
+		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
+			// should the normal back or historic back button be used?
+			if (x_pageHistory.length > 1) {
+				$x_prevBtn.button({ icons: { primary: 'x_prev_hist' } });
+			} else {
+				$x_prevBtn.button({ icons: { primary: 'x_prev' } });
+			}
+		}
+		
+    } else {
         $x_prevBtn
             .button("disable")
             .removeClass("ui-state-focus")
             .removeClass("ui-state-hover");
     }
 
-    if (x_pageInfo.length > x_currentPage + 1) {
+    if (pageIndex != -1 && pageIndex < x_normalPages.length-1) {
         $x_nextBtn.button("enable");
     } else {
         $x_nextBtn
@@ -2067,7 +2308,7 @@ function x_setUpPage() {
     }
 
 	// navigation buttons can be disabled on a page by page basis
-	if ((x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) && (x_currentPageXML.getAttribute("home") != undefined || x_currentPageXML.getAttribute("back") != undefined || x_currentPageXML.getAttribute("next") != undefined)) {
+	if (!x_isMenu() && (x_currentPageXML.getAttribute("home") != undefined || x_currentPageXML.getAttribute("back") != undefined || x_currentPageXML.getAttribute("next") != undefined)) {
 		if (x_currentPageXML.getAttribute("home") == "false") {
 			$x_menuBtn.button("disable");
 		}
@@ -2078,7 +2319,7 @@ function x_setUpPage() {
 			$x_nextBtn.button("disable");
 		}
 
-	} else if ((x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) && x_currentPageXML.getAttribute("navSetting") != undefined) {
+	} else if (!x_isMenu() && x_currentPageXML.getAttribute("navSetting") != undefined) {
 		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
 		if (x_currentPageXML.getAttribute("navSetting") != "all") {
 			$x_menuBtn.button("disable");
@@ -2090,7 +2331,6 @@ function x_setUpPage() {
 			$x_prevBtn.button("disable");
 		}
     }
-
 
     if (x_firstLoad == true) {
         $x_mainHolder.css("visibility", "visible");
@@ -2132,7 +2372,7 @@ function x_pageLoaded() {
         $this.attr(attr_name, x_evalURL(val));
     });
 
-	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
+	if (!x_isMenu()) {
 		x_setUpLightBox();
 		
 		// script & style optional properties for each page added after page is otherwise set up
@@ -2152,19 +2392,22 @@ function x_pageLoaded() {
         .fadeIn();
 
 	// Trigger featherlight
-    var config = $.featherlight.defaults;
+	var config = $.featherlight.defaults;
     $(config.selector, config.context).featherlight();
 
 	doPercentage();
 }
 
 // detect page loaded change and update progress bar
-function  doPercentage() {
+function doPercentage() {
     var menuOffset = x_pageInfo[0].type == 'menu' ? 1 : 0;
-    var totalpages = x_pageInfo.length - menuOffset;
-    var pagesviewed = $(x_pageInfo).filter(function(){return this.built !== false;}).length - menuOffset;
-    var progress = Math.round((pagesviewed * 100) / totalpages);
-    var pBarText = x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
+	
+	// by default stand-alone pages are excluded from being included in progress - this can be overridden with optional property
+    var totalPages = $(x_pageInfo).filter(function(i){ return this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true'; }).length - menuOffset,
+		pagesViewed = $(x_pageInfo).filter(function(i){ return (this.built !== false && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true')) || this.builtLightBox == true || this.builtNewWindow == true; }).length - menuOffset;
+	
+    var progress = Math.round((pagesViewed * 100) / totalPages),
+		pBarText = x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
 
     $(".pbBar").css({"width": progress + "%"});
     $('.pbTxt').html(progress + "% " + pBarText);
@@ -2389,11 +2632,11 @@ function x_updateCss(updatePage) {
 
 // function isn't called until the narration bar has loaded
 function x_updateCss2(updatePage) {
-    $x_pageHolder.css("margin-bottom", $x_footerBlock.height());
+	$x_pageHolder.css("margin-bottom", $x_footerBlock.height());
     $x_background.css("margin-bottom", $x_footerBlock.height());
 	
     if (x_browserInfo.mobile == false) {
-        $x_pageHolder.css("margin-top", $x_headerBlock.height());
+		$x_pageHolder.css("margin-top", $x_headerBlock.height());
         $x_background.css("margin-top", $x_headerBlock.height());
 		$x_pageHolder.height($x_mainHolder.height() - parseInt($x_pageHolder.css("margin-bottom")) - parseInt($x_pageHolder.css("margin-top"))); // fix for Opera - css in other browsers do this automatically
     }
@@ -2586,8 +2829,10 @@ function x_getLangInfo(node, attribute, fallBack) {
     return string;
 }
 
-
-
+// function returns whether current page is menu page
+function x_isMenu() {
+	return x_currentPage == 0 && x_pageInfo[0].type == "menu";
+}
 
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML, exclude, list) {
@@ -2660,9 +2905,9 @@ function x_insertText(node, exclude, list) {
     var regExp = new RegExp('href="asfunction:_level0\.engine\.rootIcon\.pageLink,([A-Za-z0-9]+)">','ig');
     tempText = tempText.replace(regExp, function (str, p1, offset, s) {
         if (!isNaN(parseFloat(p1)) && isFinite(p1))
-            return 'href="#" onclick="x_navigateToPage(false,{type:\'page\',ID:\'' + p1 + '\'});return false;">';
+            return 'href="#" onclick="x_navigateToPage(false, {type:\'page\',ID:\'' + p1 + '\'}); return false;">';
         else
-            return 'href="#" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\''+ p1 +'\'});return false;">';
+            return 'href="#" onclick="x_navigateToPage(false, {type:\'linkID\',ID:\''+ p1 +'\'}); return false;">';
     });
     node.nodeValue = tempText;
 }
@@ -2681,7 +2926,7 @@ function x_setFillWindow(updatePage) {
 
     $x_mainHolder.css({
         // The right broder is cut off when embedding if setting to 100%
-        "width"     :"99.8%",
+		"width"     :"99.8%",
         "height"    :"100%"
     });
 
@@ -2730,12 +2975,12 @@ function x_insertCSS(href, func, disable, id, keep) {
                         $x_mainHolder.addClass("x_responsive");
                     }
                 }
-                else
-                {
-                    if (disable == true) {
-                        $(this).prop("disabled", true);
-                    }
-                }
+				else
+				{
+					if (disable == true) {
+						$(this).prop("disabled", true);
+					}
+				}
             }
             func();
         };

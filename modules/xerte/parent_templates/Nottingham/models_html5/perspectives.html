@@ -398,7 +398,7 @@
 								var pageLink = "";
 								if (thisData.getAttribute("pageLink") != undefined && thisData.getAttribute("pageLink") != "") {
 									var pageNum = x_lookupPage("linkID", thisData.getAttribute("pageLink"));
-									if (pageNum != null) {
+									if (pageNum != null && pageNum !== false) {
 										var linkTxt;
 										if (thisData.getAttribute("pageLinkTxt") != undefined && thisData.getAttribute("pageLinkTxt") != "") {
 											linkTxt = thisData.getAttribute("pageLinkTxt");

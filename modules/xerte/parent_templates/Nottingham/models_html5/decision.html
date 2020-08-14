@@ -806,7 +806,7 @@
 						label:	x_currentPageXML.getAttribute("destinationBtn") ? x_currentPageXML.getAttribute("destinationBtn") : "Continue"
 					})
 					.click(function() {
-						if (x_lookupPage("linkID", $pageContents.data("currentStepInfo").destination) != null) { // destination found
+						if (x_lookupPage("linkID", $pageContents.data("currentStepInfo").destination) !== false) { // destination found
 							x_navigateToPage(false, {type:"linkID", ID:$pageContents.data("currentStepInfo").destination});
 						}
 					});

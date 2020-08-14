@@ -121,7 +121,7 @@
 							$container.find(".mejs-mediaelement").attr("aria-label", x_mediaText[5].label);
 						}
 						
-						if (opts.autoNavigate == "true" && x_currentPage + 1 != x_pages.length) { // go to next page when media played to end
+						if (opts.autoNavigate == "true" && x_pageInfo[x_currentPage].standalone != true && x_normalPages.indexOf(x_currentPage) + 1 != x_normalPages.length) { // go to next page when media played to end
 							mediaElement.addEventListener("ended", function() {
 								$x_nextBtn.trigger("click");
 							}, false);
@@ -294,7 +294,7 @@
 						post("play");
 					}
 					
-					if (opts.autoNavigate == "true" && x_currentPage + 1 != x_pages.length) { // go to next page when media played to end
+					if (opts.autoNavigate == "true" && x_pageInfo[x_currentPage].standalone != true && x_normalPages.indexOf(x_currentPage) + 1 != x_normalPages.length) { // go to next page when media played to end
 						post("addEventListener", "finish");
 					}
 					
