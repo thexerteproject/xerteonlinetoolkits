@@ -3260,7 +3260,7 @@ function x_isYouTubeVimeo(url) {
 
 // strip html tags and return just text which is appropriate for screen reader
 function x_getAriaText(text) {
-	return text;
+	return $('<p>' + text + '</p>').text();
 }
 
 
