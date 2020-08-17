@@ -2266,16 +2266,16 @@ var EDITOR = (function ($, parent) {
 							];
 						$.each(lo_node.children, function(i, key){
 								var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-								var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+								/*var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);*/
 								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
 								var hidden = lo_data[key]['attributes'].hidePage;
 								
-								if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+								if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
 								{
 										var page = [];
 										// Also make sure we only take the text from the name, and not the full HTML
 										page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
-										page.push(pageID.found ? pageID.value : linkID.value);
+										page.push(/*pageID.found ? pageID.value :*/ linkID.value);
 										pages.push(page);
 
 										// Now we do the children (if deeplinking is allowed)
@@ -2283,14 +2283,14 @@ var EDITOR = (function ($, parent) {
 											var childNode = tree.get_node(key, false);
 											$.each(childNode.children, function(i, key){
 												var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-												var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+												//var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
 												var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-												if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+												if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
 												{
 													var page = [];
 													// Also make sure we only take the text from the name, and not the full HTML
 													page.push(getTextFromHTML("&nbsp;- "+name.value));
-													page.push(pageID.found ? pageID.value : linkID.value);
+													page.push(/*pageID.found ? pageID.value :*/ linkID.value);
 													pages.push(page);
 												}
 											});
