@@ -1605,7 +1605,7 @@
 	<text label="Text" type="TextArea" height="100"/>
 	
 	<collate label="Compile Stored Results" type="CheckBox" optional="true" tooltip="Include Stored Result Text (optional property) from steps in the result."/>
-	<destination label="Go to Page ID" type="TextInput" optional="true" tooltip="Adds a button link to a page of your choice."/>
+	<destination label="Go to Page ID" type="pageList" optional="true" tooltip="Adds a button link to a page of your choice."/>
 	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
 	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
 	
