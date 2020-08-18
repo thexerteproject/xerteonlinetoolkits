@@ -1,0 +1,55 @@
+#crossword {
+    text-align: center;
+}
+
+.crossword {
+    border-collapse: collapse;
+    font-family: "Courier New", Courier, monospace;
+    margin-left: auto;
+    margin-right: auto;
+    clear: both;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.crossword td {
+    border: 1px solid black;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+    padding: 0;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+.crossword .no-border {
+    border: none;
+}
+
+.crossword-input {
+    width: 20;
+    height: 20;
+}
+
+.hide_answer {
+    color: transparent;
+}
+
+.show_answer {
+    color: black;
+}
+
+#clues {
+    margin: auto;
+}
+
+#clues td {
+    vertical-align: top;
+}
