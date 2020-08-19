@@ -57,11 +57,14 @@
 				// use pages between endPageID / startPageID
 				var allIDs = [];
 				$(x_pageInfo).each(function(i) {
-					if (this.linkID == undefined) {
-						// old project pages might bot have linkID - use the page number instead
-						allIDs.push('page' + i);
-					} else {
-						allIDs.push(this.linkID);
+					// exclude standalone pages
+					if (this.standalone != true) {
+						if (this.linkID == undefined) {
+							// old project pages might bot have linkID - use the page number instead
+							allIDs.push('page' + i);
+						} else {
+							allIDs.push(this.linkID);
+						}
 					}
 				});
 				
@@ -107,16 +110,18 @@
 				
 				switch (menuItems[i]) {
 					case "[first]":
-						menuItems.splice(i, 1, x_pageInfo[0].linkID);
+						menuItems.splice(i, 1, x_pageInfo[x_normalPages[0]].linkID);
 						break;
 					case "[last]":
-						menuItems.splice(i, 1, x_pageInfo[x_pageInfo.length-1].linkID);
+						menuItems.splice(i, 1, x_pageInfo[x_normalPages[x_normalPages.length-1]].linkID);
 						break;
 					case "[previous]":
-						menuItems.splice(i, 1, x_pageInfo[x_currentPage != 0 ? x_currentPage-1 : 0].linkID);
+						var tempIndex = x_normalPages.indexOf(x_currentPage);
+						menuItems.splice(i, 1, x_pageInfo[tempIndex > 0 ? x_normalPages[tempIndex-1] : x_normalPages[0]].linkID);
 						break;
 					case "[next]":
-						menuItems.splice(i, 1, x_pageInfo[x_currentPage != x_pageInfo.length-1 ? x_currentPage+1 : x_pageInfo.length-1].linkID);
+						var tempIndex = x_normalPages.indexOf(x_currentPage);
+						menuItems.splice(i, 1, x_pageInfo[tempIndex != x_normalPages.length-1 && tempIndex != -1 ? x_normalPages[tempIndex+1] : x_normalPages[x_normalPages.length-1]].linkID);
 						break;
 				}
 				
@@ -126,8 +131,9 @@
 					menuItems.splice(i, 1, "toc_menu");
 				} else {
 					if (menuItems[i].substring(0,4) == 'page') {
-						name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_pages[Number(menuItems[i].substring(4))].getAttribute("name");
-						$thisItem.data('pageNo', Number(menuItems[i].substring(4)));
+						var tempIndex = x_normalPages[Number(menuItems[i].substring(4))];
+						name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_pages[tempIndex].getAttribute("name");
+						$thisItem.data('pageNo', tempIndex);
 					} else {
 						var page = x_lookupPage("linkID", menuItems[i]);
 						if ($.isArray(page)) {

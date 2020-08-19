@@ -1214,7 +1214,7 @@ function XTTerminate()
                     method: "POST",
                     url: url,
                     data: {
-                        grade: state.getdScaledScore()
+                        grade: state.getScaledScore()
                     }
                 })
                     .done(function (msg) {

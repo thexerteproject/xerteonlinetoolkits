@@ -30,7 +30,8 @@
 			
 			if (x_params.pageTick == undefined || x_params.pageTick == "true") {
 				$("#menuItems .menuItem").each(function(i) {
-					if (x_pageInfo[i+1].built) $(this).find('i').removeClass('notvisited');
+					var tempIndex = x_normalPages[i+1];
+					if (x_pageInfo[tempIndex].built) $(this).find('i').removeClass('notvisited');
 				});
 			}
 		}
@@ -42,7 +43,7 @@
 		
 		this.init = function() {
 			var numOffset = 0;
-			if (x_params.navigation != "Linear" && x_params.navigation != "Historic") { // 1st page is menu page - ignore this when making page list
+			if (x_pageInfo[0].type == "menu") { // 1st page is menu - ignore this when making page list
 				numOffset = 1;
 			}
 			
@@ -50,7 +51,7 @@
 				$menuItem = $menuItems.find(".menuItem:first"),
 				i;
 			
-			for (i=0; i<x_pages.length-numOffset; i++) {
+			for (i=0; i<x_normalPages.length-numOffset; i++) {
 				var $thisItem;
 				if (i != 0) {
 					$thisItem = $menuItem.clone().appendTo($menuItems);
@@ -58,7 +59,7 @@
 					$thisItem = $menuItem;
 				}
 				var pageNum = x_params.tocNumbers == "false" ? "" : (i+1) + ") ";
-				$thisItem.html(pageNum + x_pages[i+numOffset].getAttribute("name"));
+				$thisItem.html(pageNum + x_pages[x_normalPages[i+numOffset]].getAttribute("name"));
 				$thisItem.append(' <i class="fa fa-x-tick-circle notvisited" aria-hidden="true"></i>');
 			}
 			
@@ -68,10 +69,10 @@
 					$this = $(this);
 					$this.removeClass("ui-state-focus");
 					$this.removeClass("ui-state-hover");
-					x_changePage($this.index() + numOffset);
+					x_changePage(x_normalPages[$this.index() + numOffset]);
 				});
 			
-			if (x_params.navigation != "Linear" && x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") { // 1st page is menu page
+			if (x_pageInfo[0].type == "menu") { // 1st page is menu page
 				
 				if (x_params.menuImage != undefined && x_params.menuImage != "") {
 				
@@ -128,7 +129,7 @@
 		// function called from xenith every time menu in popup appears - highlights current page in list and pages visited
 		this.showCurrent = function() {
 			$("#menuItems").find(".current").removeClass("current");
-			var $thisItem = $("#menuItems .menuItem:eq(" + x_currentPage + ")")
+			var $thisItem = $("#menuItems .menuItem:eq(" + x_normalPages.indexOf(x_currentPage) + ")")
 								.addClass("current")
 								.focus();
 			if ($thisItem.position().top != $thisItem.parents("#x_menu").scrollTop()) {
@@ -137,7 +138,8 @@
 
 			if (x_params.pageTick == undefined || x_params.pageTick == "true") {
 				$("#menuItems .menuItem").each(function(i) {
-					if (x_pageInfo[i].built) $(this).find('i').removeClass('notvisited');
+					var tempIndex = x_normalPages[i];
+					if (x_pageInfo[tempIndex].built) $(this).find('i').removeClass('notvisited');
 				});
 			}
 		}

@@ -90,8 +90,8 @@ function get_template_simple_lo_page($template_id)
     }
     else {
         $sub_pages_str = $row['template_sub_pages'];
+        $simple_lo_page = false;
         if ($sub_pages_str != null && $sub_pages_str != "") {
-            $simple_lo_page = false;
             $pos = strpos($sub_pages_str, "simple_lo_page");
             if ($pos !== false)
             {

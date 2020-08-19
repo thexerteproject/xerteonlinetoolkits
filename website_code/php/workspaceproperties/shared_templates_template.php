@@ -52,14 +52,14 @@ $params = array($_SESSION['toolkits_logon_id']);
 
 $query_shared_response = db_query($query_for_shared_templates, $params);
 
-workspace_menu_create(60);
+workspace_menu_create(80);
 
-echo "<div style=\"float:left; width:30%; height:20px;\">" . SHARED_TEMPLATE_CREATOR . "</div>";
+echo "<div style=\"float:left; width:20%; height:20px;\">" . SHARED_TEMPLATE_CREATOR . "</div>";
 
 foreach($query_shared_response as $row_template_name) {
 
-    echo "<div style=\"float:left; width:60%; overflow:hidden;\">" . str_replace("_","",$row_template_name['template_name']) . "</div>";
-    echo "<div style=\"float:left; width:30%; overflow:hidden;\">" . $row_template_name['firstname'] . " " . $row_template_name['surname'] . "</div>";
+    echo "<div style=\"float:left; width:80%; overflow:hidden;\">" . str_replace("_","",$row_template_name['template_name']) . "</div>";
+    echo "<div style=\"float:left; width:20%; overflow:hidden;\">" . $row_template_name['firstname'] . " " . $row_template_name['surname'] . "</div>";
 
 }
 

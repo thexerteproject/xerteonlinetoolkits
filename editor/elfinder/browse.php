@@ -131,7 +131,7 @@ if (isset($_REQUEST['langCode']))
                         // ['home', 'up'],
                         ['home'],
                         //['mkdir', 'mkfile', 'upload'],
-                        ['upload'],
+                        ['mkdir', 'upload'],
                         //['open', 'download', 'getfile'],
                         ['download', 'getfile'],
                         ['info'],
@@ -167,11 +167,11 @@ if (isset($_REQUEST['langCode']))
                 },
                 contextmenu : {
                     // navbarfolder menu
-                    navbar : ['open', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'info'],
+                    navbar : ['open', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'mkdir', '|', 'info'],
 
                     // current directory menu
                     //cwd    : ['reload', 'back', '|', 'upload', 'mkdir', 'mkfile', 'paste', '|', 'info'],
-                    cwd    : ['reload', '|', 'upload', 'paste', '|', 'info'],
+                    cwd    : ['reload', '|', 'upload', 'mkdir', 'paste', '|', 'info'],
 
                     // current directory file menu
                     //files  : [

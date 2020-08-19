@@ -79,8 +79,13 @@
 				exampleTxt = "The example answer was:"
 			}
 			var pageNo = x_currentPage;
-			if (x_pageInfo[0].type != "menu") {
-				pageNo++;
+			if (x_pageInfo[x_currentPage].standalone == true) {
+				// if the page is a standalone page then use the page name instead of page number
+				pageNo = "'" + x_currentPageXML.getAttribute("name") + "'";
+			} else {
+				if (x_pageInfo[0].type != "menu") {
+					pageNo++;
+				}
 			}
 			
 			$("#pageContents").data({
@@ -250,6 +255,12 @@
 				closeBtnTxt = "close"
 			}
 			
+			var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
+			if (answerFieldLabel === undefined | answerFieldLabel === null) {
+				answerFieldLabel = "Answer";
+			}
+			$("#answerTxt").attr({"aria-label":answerFieldLabel});
+			
 			this.sizeChanged();
 			this.saveData();
 			x_pageLoaded();
@@ -302,7 +313,7 @@
 		<div id="infoHolder" class="right">
 			<div class="panel">
 				<div id="prompt"></div>
-				<textarea id="answerTxt" rows="5"></textarea>
+				<textarea id="answerTxt" aria-label="Response" rows="5"></textarea>
 				<button id="button"></button>
 				<div id="answer">
 					<div id="fbTxt" aria-live="polite"/>

@@ -146,7 +146,7 @@
 								$("#feedback").html(devTxt.notSet);
 							}
 							
-						} else if (x_lookupPage("linkID", destinationID) == null) { // destination not found
+						} else if (x_lookupPage("linkID", destinationID) === false && !(destinationID.indexOf('[') > -1 && destinationID.indexOf(']') > -1)) { // destination not found
 							if (x_params.authorSupport == "true") {
 								$("#feedback").html(destinationID + " " + devTxt.notFound);
 							}
