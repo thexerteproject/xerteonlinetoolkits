@@ -1123,9 +1123,11 @@ function x_continueSetUp1() {
 						if($(this).is(':visible')){
 							$('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div>');
 							$('#x_footerChevron').prop('title', hideMsg);
+							$("#x_footerChevron").attr("aria-label", hideMsg);
 						}else{
 							$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
 							$('#x_footerChevron').prop('title', showMsg);
+							$("#x_footerChevron").attr("aria-label", showMsg);
 						}
 					});
 				return(false);
