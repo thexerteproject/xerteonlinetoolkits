@@ -1116,6 +1116,7 @@ function x_continueSetUp1() {
 			//add a div for the show/hide chevron
 			$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></button></div>');
 			$('#x_footerChevron').prop('title', hideMsg);
+			$("#x_footerChevron").attr("aria-label", hideMsg);
 
 			//chevron to show/hide function
 			$('#x_footerChevron').click(function(){
