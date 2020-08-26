@@ -59,3 +59,37 @@
     background-color: #1c1c1c;
   }
 }
+
+//*****speech bubbles******//
+.speech-bubble1, .speech-bubble1 h2, .speech-bubble1 strong, .speech-bubble1 span, .speech-bubble1 p{
+  color:white !important;
+}
+.speech-bubble2, .speech-bubble2 h2, .speech-bubble2 strong, .speech-bubble2 span, .speech-bubble2 p {
+  color:white !important;
+}
+
+.speech-bubble3, .speech-bubble3 h2, .speech-bubble3 strong, .speech-bubble3 span, .speech-bubble3 p {
+  color:white !important;
+}
+
+.speech-bubble4, .speech-bubble4 h2, .speech-bubble4 strong, .speech-bubble4 span, .speech-bubble4 p {
+  color:white !important;
+}
+
+.speech-bubble5, .speech-bubble5 h2, .speech-bubble5 strong, .speech-bubble5 span, .speech-bubble5 p {
+  color:white !important;
+}
+
+.speech-bubble6, .speech-bubble6 h2, .speech-bubble6 strong, .speech-bubble6 span, .speech-bubble6 p {
+  color:white !important;
+}
+
+//***make links in speech bubbles white and underlined by default***//
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble4 a, .speech-bubble5 a, .speech-bubble6 a{
+  color:white !important;
+  text-decoration:underline;
+}
+.speech-bubble1 a{
+  color:white !important;
+  text-decoration:underline;
+}
