@@ -88,6 +88,9 @@
   border: none;
   color: #ffffff; }
 
+.x_nav_page #pageContents.button button.selected {
+  background-color: #000000; }
+
 .front.panel {
   background: #F4F4F6;
   border: #F4F4F6;
@@ -297,7 +300,10 @@ a.hotspot, a.hotspot.selected {
 
 .x_grid_page table.header.simple tr:first-child {
   border-bottom: transparent;
-  background: #3c3c49; }
+  background: #000000; }
+
+.x_grid_page table.header.shaded tr:first-child {
+  background: #000000; }
 
 .x_grid_page #grid ul li {
   background: #6a6a81;
