@@ -21,6 +21,9 @@ div#x_footerBlock {
 	background:	none;
 	padding:	0px;
 }
+#x_footerBlock .ui-button-text{
+	color:#ffffff;
+}
 
 div#footerWrapper {
 	float:		left;
