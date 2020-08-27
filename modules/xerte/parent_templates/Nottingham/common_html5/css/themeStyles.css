@@ -255,6 +255,9 @@ h3 {
 	top:3%;
 	right:1%;
 }
+a:focus .wcagLogo {
+	outline: -webkit-focus-ring-color auto 1px;
+}
 
 @media only screen
 and (max-width :500px) {
