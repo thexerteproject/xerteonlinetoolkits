@@ -1253,6 +1253,10 @@ div.theme_description
 .categoryList input {
 	margin-right: 1em;
 }
+.featherlight iframe {
+	height: 90vh;
+	width: 90vw;
+}
 
 /* start of xertecss.css
 

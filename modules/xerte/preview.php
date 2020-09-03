@@ -71,6 +71,7 @@ function show_preview_code($row)
 
 function show_preview_code2($row, $row_username){
 
+    // TOR 20200826 NOT USED ANYMORE, SEE show_template_page of play.php
 	global $xerte_toolkits_site, $youtube_api_key;
 
     _load_language_file("/modules/xerte/preview.inc");

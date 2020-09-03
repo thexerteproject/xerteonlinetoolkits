@@ -17,7 +17,7 @@ function CheckLearningLocker($lrs)
     return $lrs;
 }
 
-function xAPI_html_page_create($id, $template_name, $type, $lo_name, $language) {
+function xAPI_html_page_create($id, $template_name, $type, $lo_name, $language, $date_modified) {
 
 global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -38,7 +38,8 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
     $xapi_html_page_content = str_replace("%OFFLINESCRIPTS%", "",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $xapi_html_page_content);
-	
+    $xapi_html_page_content = str_replace("%LASTUPDATED%", $date_modified, $xapi_html_page_content);
+
     $endpoint = $xerte_toolkits_site->LRS_Endpoint;
     $secret = $xerte_toolkits_site->LRS_Secret;
     $key = $xerte_toolkits_site->LRS_Key;

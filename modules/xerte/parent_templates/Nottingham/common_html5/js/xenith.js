@@ -1116,6 +1116,7 @@ function x_continueSetUp1() {
 			//add a div for the show/hide chevron
 			$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></button></div>');
 			$('#x_footerChevron').prop('title', hideMsg);
+			$("#x_footerChevron").attr("aria-label", hideMsg);
 
 			//chevron to show/hide function
 			$('#x_footerChevron').click(function(){
@@ -1123,9 +1124,11 @@ function x_continueSetUp1() {
 						if($(this).is(':visible')){
 							$('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div>');
 							$('#x_footerChevron').prop('title', hideMsg);
+							$("#x_footerChevron").attr("aria-label", hideMsg);
 						}else{
 							$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
 							$('#x_footerChevron').prop('title', showMsg);
+							$("#x_footerChevron").attr("aria-label", showMsg);
 						}
 					});
 				return(false);
@@ -1444,7 +1447,7 @@ function x_continueSetUp1() {
 					if (x_params.backgroundGrey == "true") {
 						// uses a jquery plugin as just css way won't work in all browsers
 						x_insertCSS(x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css", function() {
-							$x_background.append('<img id="x_mainBg" class="grayscale" src="' + x_evalURL(x_params.background) + '"/>');
+							$x_background.append('<img id="x_mainBg" class="grayscale" alt="" src="' + x_evalURL(x_params.background) + '"/>');
 							$("#x_mainBg").css({
 								"opacity"	:Number(alpha/100),
 								"object-fit"    : lo_objectfit,
@@ -1453,7 +1456,7 @@ function x_continueSetUp1() {
 							// grey function called on image when unhidden later as it won't work properly otherwise
 						});
 					} else {
-						$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
+						$x_background.append('<img id="x_mainBg" alt="" src="' + x_evalURL(x_params.background) + '"/>');
 						$("#x_mainBg").css({
 							"opacity"	:Number(alpha/100),
 							"object-fit"    : lo_objectfit,
@@ -2504,7 +2507,7 @@ function x_loadPageBg(loadModel) {
 		hConstrain = x_currentPageXML.getAttribute("bgImageHConstrain"),
 		alpha = x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "" ? x_currentPageXML.getAttribute("bgImageAlpha") : 100;
 
-	var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg"/>');
+	var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg" alt=""/>');
     var objectfit =  (x_currentPageXML.getAttribute("backgroundFit") != undefined && x_currentPageXML.getAttribute("backgroundFit") == "cover" ? "cover" : "fill");
 	$pageBg
 		.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))

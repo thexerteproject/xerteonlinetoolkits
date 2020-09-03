@@ -69,7 +69,9 @@
         var templateLocation = "%TEMPLATEPATH%";
 		var themePath = "%THEMEPATH%";
         var projectXML = "%XMLFILE%"; //this is the file to read, not the xml
-		
+        var x_lastUpdated = new Date("%LASTUPDATED%");
+        var localeoptions = { weekday: undefined, year: 'numeric', month: 'short', day: 'numeric' };
+        var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
     </script>
 
     <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>

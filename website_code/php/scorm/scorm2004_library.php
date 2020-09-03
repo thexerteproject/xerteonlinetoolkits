@@ -181,7 +181,7 @@ function scorm2004_html_page_create($id, $name, $type, $rlo_file, $lo_name, $lan
 
 }
 
-function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $language, $need_download_url=false){
+function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $need_download_url=false){
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -202,6 +202,7 @@ function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $langua
     $scorm_html_page_content = str_replace("%OFFLINESCRIPTS%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%LASTUPDATED%", $date_modified, $scorm_html_page_content);
 
     $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_2004.3rd.js?version=" . $version . "\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm2004.3rd.js?version=" . $version . "\"></script>\n";
