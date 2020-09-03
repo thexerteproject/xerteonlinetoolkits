@@ -153,7 +153,7 @@ if(isset($_SESSION['toolkits_logon_id'])){
 							$file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt",'w');
 							fwrite($file_handle, $new_lock_file);
 							fclose($file_handle);
-							output_locked_file_code($lock_file_creator_username);
+							output_locked_file_code($lock_file_creator);
 						}
 					//}
 				}
