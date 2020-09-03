@@ -61,6 +61,13 @@
 			<footerPos type="ComboBox" data="above,below,replace" options="Above Social Icons,Below Social Icons,Replace Social Icons" optional="true" label="Custom Footer Position" defaultValue="above" width="175"/>
             <footerColour type="ColourPicker" optional="true" label="Footer Background Colour"/>
 		</footerGroup>
+
+		<wcagGroup type="group" label="Accessilibity logo and link" optional="true" tooltip="Hide the accessilibity logo and link or change the link.">
+                    <wcagHide label="Hide the Accessibility logo and link" type="Checkbox" conditionTrigger='true' defaultValue="false" optional="true"/>
+        			<wcagAlt label="Accessilibity logo alt text" type="TextInput" defaultValue="WCAG WAI-AA logo" condition="wcagHide=='false'" optional="true"/>
+        			<wcagLinkTitle label="Link tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="wcagHide=='false'" optional="true"/>
+                    <wcagLink type="Media" label="Accessibility statement link" tooltip="Add a url or browse to a file to link to your own accessibility statement. Leave empty to link to the accessibility statement on xerte.org.uk." condition="wcagHide=='false'" optional="true" />
+        		</wcagGroup>
 		
 		<print type="CheckBox" label="Print Button" defaultValue="true" optional="true" tooltip="Add a print button to the navigation bar. Pages can still be printed via browser controls if button is not added"/>
 		<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>

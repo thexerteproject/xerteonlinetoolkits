@@ -1099,6 +1099,20 @@ function setup() {
 				$("#customFooter").css({"margin-left": "10px"});
 			}
 		}
+
+		//populate wcag logo and link and/or hide it
+		if ($(data).find('learningObject').attr('wcagAlt') != undefined){
+			$(".wcagLogo").attr("alt",$(data).find('learningObject').attr('wcagAlt'));
+		}
+		if ($(data).find('learningObject').attr('wcagLinkTitle') != undefined){
+			$(".wcagLink a").attr("title",$(data).find('learningObject').attr('wcagLinkTitle'));
+		}
+		if ($(data).find('learningObject').attr('wcagLink') != undefined && $(data).find('learningObject').attr('wcagLink') != ""){
+			$(".wcagLink a").prop("href",$(data).find('learningObject').attr('wcagLink'));
+		}
+		if ($(data).find('learningObject').attr('wcagHide') != undefined && $(data).find('learningObject').attr('wcagHide') == 'true'){
+			$('.wcagLink').remove();
+		}
 		
 		// Change footer background colour
 		if ($(data).find('learningObject').attr('footerColour') != undefined && $(data).find('learningObject').attr('footerColour') != ''){
