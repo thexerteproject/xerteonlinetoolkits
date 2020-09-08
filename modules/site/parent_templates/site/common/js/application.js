@@ -606,9 +606,10 @@ function setup() {
 				
 				// work out what categories each page / section falls under
 				$(data).find('page').each(function(index, value) {
+					
 					var $page = $(this);
 					
-					if ($page.attr('hidePage') != false) {
+					if ($page.attr('hidePage') != 'true') {
 						if ($page.attr('filter') != undefined && $page.attr('filter') != '') {
 							var catIds = [],
 								categoryInfo = $page.attr('filter').split(',');
@@ -747,7 +748,7 @@ function setup() {
 									results.push( { match: [], sections: [] } );
 								}
 								
-								if ($page.attr('hidePage') != false) {
+								if ($page.attr('hidePage') != 'true') {
 									if ($page.attr('filter') != undefined && $page.attr('filter').split(',').length > 0) {
 										var indexInArray = $.inArray(lookingFor, $page.attr('filter').split(','));
 										
@@ -764,7 +765,7 @@ function setup() {
 											results[pageIndex].sections.push( { match: [] } );
 										}
 										
-										if ($section.attr('hidePage') != false && $section.attr('filter') != undefined && $section.attr('filter').split(',').length > 0) {
+										if ($section.attr('hidePage') != 'true' && $section.attr('filter') != undefined && $section.attr('filter').split(',').length > 0) {
 											var indexInArray = $.inArray(lookingFor, $section.attr('filter').split(','));
 											
 											if (indexInArray > -1) {
@@ -1286,9 +1287,10 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 				var destination = pageInfo.ID;
 				if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
 					destination = pages[i].getAttribute("customLinkID");
-				} else if ($.inArray(i, validPages)) {
+				} else if ($.inArray(i, validPages) != -1) {
 					destination = $.inArray(i, validPages);
 				}
+				found = true;
 				parseContent({ type: "id", id: destination });
 				break;
 			}
@@ -1300,7 +1302,7 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 						var destination = pages[i].getAttribute("linkID");
 						if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
 							destination = pages[i].getAttribute("customLinkID");
-						} else if ($.inArray(i, validPages)) {
+						} else if ($.inArray(i, validPages) != -1) {
 							destination = $.inArray(i, validPages);
 						}
 						parseContent({ type: "id", id: destination }, j+1);
@@ -2546,8 +2548,8 @@ function setUpLightBox(thisPageInfo, thisSectionInfo) {
 		});
 		
 		$.featherlight.prototype.afterContent = function(e) {
-			var caption = this.$currentTarget.find('img').attr('alt'),
-				sectionCaption = $(e.target).data('lightboxCaption');
+			var caption = this.$currentTarget == undefined ? undefined : this.$currentTarget.find('img').attr('alt'),
+				sectionCaption = e == undefined ? undefined : $(e.target).data('lightboxCaption');
 			
 			if (caption != undefined && caption != '') {
 				this.$instance.find('.featherlight-content img').attr('alt', caption);

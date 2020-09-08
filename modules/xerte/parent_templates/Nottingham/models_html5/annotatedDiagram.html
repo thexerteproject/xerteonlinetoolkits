@@ -289,7 +289,7 @@
 		}
 		
 		this.createHotspot = function(hsXML, $parent, $listItem, groupXML) {
-			var $hotspot = $('<a class="hotspot" href="#" />'),
+			var $hotspot = $('<div class="hotspot" tabindex="0"/>'),
 				hsName = hsXML.getAttribute("name");
 			if (groupXML != undefined) { // hs in a group
 				hsName = groupXML.getAttribute("name");
