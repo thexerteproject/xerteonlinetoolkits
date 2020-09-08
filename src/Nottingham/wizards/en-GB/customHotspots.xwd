@@ -19,6 +19,7 @@
 	  score="You scored {i} / {n}" 
 	  onCompletion="You can retake the quiz at any time"   
 	  restart="Restart"  
+	  pinAlt="Draggable pin icon"
 	  >CDATA</customHotspots>]]></customHotspots>
     </newNodes>
   </pageWizard>
@@ -66,6 +67,8 @@
     <afterScore label="you scored n out of m MARKS" type="TextInput" wysiwyg="true" language="true"/>
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true"/>
     <restart label="Restart Button Text" type="TextInput" wysiwyg="true" language="true"/>
+	
+    <pinAlt label="Pin Description" type="TextInput" language="true" tooltip="A description of the draggable pin image used by screenreaders" mandatory="true"/>
 
   </customHotspots>
 
