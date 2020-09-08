@@ -311,8 +311,11 @@ a.hotspot, a.hotspot.selected {
   border-radius: 3px; }
 
 .x_grid_page #grid ul li.header {
-  background: #000000;
+  background: #000000 !important;
   color: #FFFF99 !important; }
+
+.x_grid_page table.header.shaded tr:first-child {
+  background: #000000; }
 
 .x_grid_page table.simple {
   border: transparent; }
