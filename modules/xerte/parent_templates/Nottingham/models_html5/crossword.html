@@ -7,21 +7,7 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var crossword = new function () {
-		showAnswers = function () {
-			var answerChars = document.querySelectorAll(".hide_answer");
-			if (answerChars.length > 0) {
-				answerChars.forEach(element => {
-					element.className = "show_answer";
-				});
-				event.target.innerHTML = "Hide Answer"
-			} else {
-				answerChars = document.querySelectorAll(".show_answer");
-				answerChars.forEach(element => {
-					element.className = "hide_answer";
-				});
-				event.target.innerHTML = "Show Answer"
-			}
-		}
+
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function () {
@@ -40,8 +26,9 @@
 			var hints = [];
 
 			$("#pageContents").append(
-				'<div id="crossword"></div><table id="clues"><thead><tr><th>Across</th><th>Down</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>'
-			);
+				'<div id="crossword"></div><table id="clues"><thead><tr><th>Across</th><th>Down</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
+                '<button id="show_button" onclick=\"showAnswers()\">Show answers</button>'
+            );
 
 			//store all the words and hints
 			$(x_currentPageXML).children().each(function (i) {
@@ -50,8 +37,7 @@
 			});
 
 			// Create crossword object with the words and clues
-			var cw = new Crossword(words, hints);
-
+			var cw = getCrossword(words, hints)
 			// create the crossword grid (try to make it have a 1:1 width to height ratio in 10 tries)
 			var tries = 10;
 			var grid = cw.getSquareGrid(tries);
@@ -78,6 +64,14 @@
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		}
+        var cw = ""
+        function getCrossword(words, hints){
+		    if(cw === ""){
+                cw = new Crossword(words, hints);
+            }
+
+		    return cw;
+        }
 
 		function addLegendToPage(groups) {
 			for (var k in groups) {
@@ -111,11 +105,12 @@
 			this.index = index; // use to map this node to its word or clue
 		}
 
+        var best_grid = null;
 		function Crossword(words_in, clues_in) {
 			var GRID_ROWS = 50;
 			var GRID_COLS = 50;
 			// This is an index of the positions of the char in the crossword (so we know where we can potentially place words)
-			// example {"a" : [{'row' : 10, 'col' : 5}, {'row' : 62, 'col' :17}], {'row' : 54, 'col' : 12}], "b" : [{'row' : 3, 'col' : 13}]} 
+			// example {"a" : [{'row' : 10, 'col' : 5}, {'row' : 62, 'col' :17}], {'row' : 54, 'col' : 12}], "b" : [{'row' : 3, 'col' : 13}]}
 			// where the two item arrays are the row and column of where the letter occurs
 			var char_index = {};
 
@@ -124,20 +119,22 @@
 
 			// returns the crossword grid that has the ratio closest to 1 or null if it can't build one
 			this.getSquareGrid = function (max_tries) {
-				var best_grid = null;
-				var best_ratio = 0;
-				for (var i = 0; i < max_tries; i++) {
-					var a_grid = this.getGrid(1);
-					if (a_grid == null) continue;
-					var ratio = Math.min(a_grid.length, a_grid[0].length) * 1.0 / Math.max(a_grid.length, a_grid[0]
-						.length);
-					if (ratio > best_ratio) {
-						best_grid = a_grid;
-						best_ratio = ratio;
-					}
+				if(best_grid===null){
+                    var best_ratio = 0;
+                    for (var i = 0; i < max_tries; i++) {
+                        var a_grid = this.getGrid(1);
+                        if (a_grid == null) continue;
+                        var ratio = Math.min(a_grid.length, a_grid[0].length) * 1.0 / Math.max(a_grid.length, a_grid[0]
+                            .length);
+                        if (ratio > best_ratio) {
+                            best_grid = a_grid;
+                            best_ratio = ratio;
+                        }
 
-					if (best_ratio == 1) break;
-				}
+                        if (best_ratio == 1) break;
+                    }
+                }
+
 				return best_grid;
 			}
 
@@ -165,7 +162,7 @@
 
 					// start with a group containing all the words (except the first)
 					// as we go, we try to place each word in the group onto the grid
-					// if the word can't go on the grid, we add that word to the next group 
+					// if the word can't go on the grid, we add that word to the next group
 					var groups = [];
 					groups.push(word_elements.slice(1));
 					for (var g = 0; g < groups.length; g++) {
@@ -278,6 +275,7 @@
 
 			// helper for placeWordAt();
 			var addCellToGrid = function (word, index_of_word_in_input_list, index_of_char, r, c, direction) {
+
 				var char = word.charAt(index_of_char);
 				if (grid[r][c] == null) {
 					grid[r][c] = new CrosswordCell(char);
@@ -300,6 +298,7 @@
 			// place the word at the row and col indicated (the first char goes there)
 			// the next chars go to the right (across) or below (down), depending on the direction
 			var placeWordAt = function (word, index_of_word_in_input_list, row, col, direction) {
+
 				if (direction == "across") {
 					for (var c = col, i = 0; c < col + word.length; c++, i++) {
 						addCellToGrid(word, index_of_word_in_input_list, i, row, c, direction);
@@ -450,6 +449,39 @@
 				return best;
 			}
 
+            showAnswers = function () {
+			    var coordinates = [];
+                var letters = [];
+                var coordinate = ""
+                var table = document.getElementById('crossword-table');
+                var grid = cw.getSquareGrid(10);
+			    for(var d = 0; d < grid.length; d++){
+                    for(var c = 0; c < grid[d].length; c++){
+                        if(grid[d][c] !== null){
+                            coordinate = d + "," + c;
+                            coordinates.push(coordinate)
+                            letters.push(grid[d][c].char)
+                        }
+                    }
+                }
+
+			    for(var coor = 0; coor < coordinates.length; coor++){
+                    var inputValue = document.getElementById(coordinates[coor]).value.toLowerCase()
+                    if(letters[coor].toLowerCase() === inputValue){
+
+                        //make border green
+                        document.getElementById(coordinates[coor]).style.backgroundColor= "#24FF00"
+                    }else{
+                        //replace letter
+                        document.getElementById(coordinates[coor]).value =  document.getElementById(coordinates[coor]).value.replace(/[^\d,]/g,'')
+                        document.getElementById(coordinates[coor]).value = letters[coor];
+                    }
+                }
+
+                document.getElementById("show_button").disabled = true;
+            }
+
+
 			var clear = function () {
 				for (var r = 0; r < grid.length; r++) {
 					for (var c = 0; c < grid[r].length; c++) {
@@ -488,33 +520,58 @@
 			toHtml: function (grid, show_answers) {
 				if (grid == null) return;
 				var html = [];
-				html.push("<table class='crossword'>");
+				html.push("<table id='crossword-table'>");
+				html.push("<tbody>")
 				var label = 1;
+                var legend = cw.getLegend(grid)
+				var counterAcross = 0
+                var counterDown = 0;
 				for (var r = 0; r < grid.length; r++) {
 					html.push("<tr>");
 					for (var c = 0; c < grid[r].length; c++) {
 						var cell = grid[r][c];
 						var is_start_of_word = false;
 						if (cell == null) {
-							var char = "&nbsp;";
+							var char = "";
 							var css_class = "no-border";
 						} else {
-							var char =
-								"<input type='text' id='' style='width: 20px; height: 20px;' class='crossword-input'></input>" +
-								cell['char'];
-							var css_class = "hide_answer";
-							var is_start_of_word = (cell['across'] && cell['across']['is_start_of_word']) || (
-								cell['down'] && cell['down']['is_start_of_word']);
+						    var char = ""
+                            var is_start_of_word = (cell['across'] && cell['across']['is_start_of_word']) || (
+                                cell['down'] && cell['down']['is_start_of_word']);
+                            var css_class = "no-border";
+
+                            if(is_start_of_word){
+                                if(cell['down'] !== null && cell['across'] !== null){
+
+                                    if(cell['across']['is_start_of_word']===false){
+                                        var char ="<div id='input__container'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input' placeholder='"+ legend['down'][counterDown].position +"' maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                        counterDown++;
+                                    }else{
+                                        var char ="<div id='input__container'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input' placeholder='"+ legend['across'][counterAcross].position +"'  maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                        counterAcross++;
+                                    }
+                                }else if (cell['down'] !== null) {
+                                    var char ="<div id='input__container'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input' placeholder='"+ legend['down'][counterDown].position +"' maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                    counterDown++;
+                                }else{
+                                    var char ="<div id='input__container'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input' placeholder='"+ legend['across'][counterAcross].position +"' maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                    counterAcross++;
+                                }
+                            }else{
+                                var char ="<div id='input__container'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'  placeholder='' maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+
+                            }
+
 						}
 
 						if (is_start_of_word) {
 							var img_url = CrosswordUtils.PATH_TO_PNGS_OF_NUMBERS + label + ".png";
-							html.push("<td class='" + css_class + "' title='" + r + ", " + c +
-								"' style=\"background-image:url('" + img_url +
+							html.push("<td class='" + css_class + "' " +
+                                "style=\"background-image:url('" + img_url +
 								"'); background-repeat:no-repeat;\">");
 							label++;
 						} else {
-							html.push("<td class='" + css_class + "' title='" + r + ", " + c + "'>");
+							html.push("<td class='" + css_class + "' >");
 						}
 						if (show_answers) {
 							html.push(char);
@@ -524,8 +581,9 @@
 					}
 					html.push("</tr>");
 				}
+				html.push("</tbody>")
 				html.push("</table>");
-				html.push("<button onclick=\"showAnswers()\">Show answers</button>")
+
 				return html.join("\n");
 			}
 		}

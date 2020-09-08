@@ -2,7 +2,7 @@
     text-align: center;
 }
 
-.crossword {
+#crossword-table {
     border-collapse: collapse;
     font-family: "Courier New", Courier, monospace;
     margin-left: auto;
@@ -12,7 +12,7 @@
     margin-bottom: 10px;
 }
 
-.crossword td {
+#crossword-table td {
     border: 1px solid black;
     padding: 0;
     margin: 0;
@@ -29,13 +29,19 @@
     user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 
-.crossword .no-border {
+#crossword-table .no-border {
     border: none;
 }
 
 .crossword-input {
-    width: 20;
-    height: 20;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    font-size: 30px;
+}
+
+.crossword-input[type=text]{
+    text-align: center;
 }
 
 .hide_answer {
@@ -48,8 +54,26 @@
 
 #clues {
     margin: auto;
+    padding: 0;
 }
 
 #clues td {
     vertical-align: top;
+    padding: 0;
+}
+
+#x_pageDiv table td, #x_pageDiv table th{
+    padding: 0;
+}
+
+#show_button{
+    margin:0 auto;
+    display:block;
+}
+
+#crossword-table #input__container__across{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 }
