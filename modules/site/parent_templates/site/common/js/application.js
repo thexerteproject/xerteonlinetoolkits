@@ -606,9 +606,10 @@ function setup() {
 				
 				// work out what categories each page / section falls under
 				$(data).find('page').each(function(index, value) {
+					
 					var $page = $(this);
 					
-					if ($page.attr('hidePage') != false) {
+					if ($page.attr('hidePage') != 'true') {
 						if ($page.attr('filter') != undefined && $page.attr('filter') != '') {
 							var catIds = [],
 								categoryInfo = $page.attr('filter').split(',');
@@ -747,7 +748,7 @@ function setup() {
 									results.push( { match: [], sections: [] } );
 								}
 								
-								if ($page.attr('hidePage') != false) {
+								if ($page.attr('hidePage') != 'true') {
 									if ($page.attr('filter') != undefined && $page.attr('filter').split(',').length > 0) {
 										var indexInArray = $.inArray(lookingFor, $page.attr('filter').split(','));
 										
@@ -764,7 +765,7 @@ function setup() {
 											results[pageIndex].sections.push( { match: [] } );
 										}
 										
-										if ($section.attr('hidePage') != false && $section.attr('filter') != undefined && $section.attr('filter').split(',').length > 0) {
+										if ($section.attr('hidePage') != 'true' && $section.attr('filter') != undefined && $section.attr('filter').split(',').length > 0) {
 											var indexInArray = $.inArray(lookingFor, $section.attr('filter').split(','));
 											
 											if (indexInArray > -1) {
