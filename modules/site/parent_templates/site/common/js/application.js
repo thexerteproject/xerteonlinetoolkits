@@ -1287,9 +1287,10 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 				var destination = pageInfo.ID;
 				if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
 					destination = pages[i].getAttribute("customLinkID");
-				} else if ($.inArray(i, validPages)) {
+				} else if ($.inArray(i, validPages) != -1) {
 					destination = $.inArray(i, validPages);
 				}
+				found = true;
 				parseContent({ type: "id", id: destination });
 				break;
 			}
@@ -1301,7 +1302,7 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 						var destination = pages[i].getAttribute("linkID");
 						if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
 							destination = pages[i].getAttribute("customLinkID");
-						} else if ($.inArray(i, validPages)) {
+						} else if ($.inArray(i, validPages) != -1) {
 							destination = $.inArray(i, validPages);
 						}
 						parseContent({ type: "id", id: destination }, j+1);
