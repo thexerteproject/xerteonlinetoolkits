@@ -25,7 +25,9 @@ x_headerBlock.x_floatLeft{
 	background:		#be0f34;
 	background-image:	none;
 }
-
+#x_footerBlock .ui-button-text{
+	color:#ffffff;
+}
 #x_footerBg {
 	background-image:none;
 	/*background-repeat:	repeat-x;*/

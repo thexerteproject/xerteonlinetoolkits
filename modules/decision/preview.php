@@ -64,6 +64,7 @@ function show_preview_code($row){
     $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
 	$page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
     $page_content = str_replace("%MATHJAXPATH%", "https://cdn.jsdelivr.net/npm/mathjax@2/", $page_content);
+    $page_content = str_replace("%LASTUPDATED%", $row['date_modified'], $page_content);
 
     echo $page_content;
 }

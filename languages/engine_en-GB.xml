@@ -165,6 +165,8 @@
 	  <closeButton label="" description="Close Accessibility Options"/>
 	  <selectTxt label="Please select from the options below"/>
 	  <adviceTxt label="Need more advice? Visit the &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Online Toolkits guide to accessibility&lt;/a&gt;."/>
+	  <wcagTxt label="View the Xerte accessibility statement"/>
+	  <wcagLogo label="WCAG WAI-AA logo and link to Xerte accessibility statement"/>
 	  <off label="Default"/>
 	  <noBg label="Remove Background Images"/>
 	  <invert label="Invert"/>
