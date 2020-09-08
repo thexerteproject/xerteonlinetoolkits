@@ -2547,8 +2547,8 @@ function setUpLightBox(thisPageInfo, thisSectionInfo) {
 		});
 		
 		$.featherlight.prototype.afterContent = function(e) {
-			var caption = this.$currentTarget.find('img').attr('alt'),
-				sectionCaption = $(e.target).data('lightboxCaption');
+			var caption = this.$currentTarget == undefined ? undefined : this.$currentTarget.find('img').attr('alt'),
+				sectionCaption = e == undefined ? undefined : $(e.target).data('lightboxCaption');
 			
 			if (caption != undefined && caption != '') {
 				this.$instance.find('.featherlight-content img').attr('alt', caption);
