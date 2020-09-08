@@ -332,12 +332,12 @@
 							
 							// go to page in LO
 							if (hsType == "pageLink") {
-								if (x_lookupPage("linkID", hsInfo) === false && ['[prev]', '[next]', '[first]', '[last]'].indexOf(hsInfo) < 0) { // destination not found
+								if (x_lookupPage("linkID", hsInfo) === false && ['[previous]', '[next]', '[first]', '[last]'].indexOf(hsInfo) < 0) { // destination not found
 									if (x_params.authorSupport == "true") {
 										$("#feedback").html(hsInfo + " " + $pageContents.data("authorSupport"));
 									}
 								} else { // go to destination page
-									x_navigateToPage(false, {type:"linkID", ID:hsInfo});
+									x_navigateToPage(false, {type:"linkID", ID: hsInfo});
 								}
 							
 							// open dialog popup

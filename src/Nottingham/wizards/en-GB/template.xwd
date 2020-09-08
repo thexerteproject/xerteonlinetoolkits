@@ -1314,7 +1314,7 @@
     <windowWidth label="New Window Width" type="NumericStepper" min="100" max="1030" step="10" defaultValue="550" width="100" optional="true"/>
     <windowHeight label="New Window Height" type="NumericStepper" min="100" max="1030" step="10" defaultValue="400" width="100" optional="true"/>
     <htm label="New Window HTML" type="textArea" height="150" optional="true" tooltip="Display the given HTML in a new window"/>
-    <relNav label="Relative Destination Page" options="First Page,Previous Page,Next Page,Last Page" type="ComboBox" data="first,prev,next,last" defaultValue="next" width="200" optional="true" tooltip="Go to a relative page (i.e. next)"/>
+    <relNav label="Relative Destination Page" options="First Page,Previous Page,Next Page,Last Page" type="ComboBox" data="first,prev,next,last" defaultValue="next" width="200" optional="true" tooltip="Go to a relative page (i.e. next)" deprecated="This property is deprecated. You can now select a relative destination in the Destination Page optional property."/>
     <hotspotPopUp label="Pop-Up HTML" type="TextArea" height="200" optional="true" tooltip="Display the given HTML in a popup window"/>
   </cHotspot><connectorMenu menu="Connectors" menuItem="Menu Connector" hint="Generate a menu of all or a selected range of the pages in a project." icon="icConMenu" thumb="thumbs/connectorMenu.jpg" remove="true">
 
