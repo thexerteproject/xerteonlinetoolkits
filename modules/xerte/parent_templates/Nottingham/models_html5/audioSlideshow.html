@@ -111,7 +111,8 @@
 						infoString = newString + infoString;
 					}
 				}
-				infoString = '<h3>' + this.getAttribute("name") + '</h3>' + infoString;
+				
+				infoString = (this.getAttribute("name").trim() != '' ? '<h3>' + this.getAttribute("name") + '</h3>' : '') + infoString;
 				
 				var $slide = $('<div class="slide"></div>')
 					.html(infoString)
