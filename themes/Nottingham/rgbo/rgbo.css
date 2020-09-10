@@ -102,9 +102,6 @@
   border: #117BAD;
   color: #ffffff; }
 
-.back.panel a {
-  color: #ffffff; }
-
 .x_links_page #linkHolder a {
   color: blue; }
 
@@ -321,7 +318,7 @@ a.hotspot, a.hotspot.selected {
   color: white !important; }
 
 .x_grid_page #grid ul li.static {
-  background: #000000;
+  background: none;
   border-color: transparent; }
 
 /*****timeline matching pairs*****/
@@ -382,6 +379,9 @@ a.hotspot, a.hotspot.selected {
   border-radius: 2vmin;
   background-color: orange;
   margin: .5em; }
+
+.x_youtuberss_page #resultsHolder div a{
+  color: #0000A0; }
 
 .x_youtuberss_page .shadedDiv {
   background-color: #ffc966 !important;

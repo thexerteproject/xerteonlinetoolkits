@@ -417,6 +417,9 @@ a.hotspot, a.hotspot.selected {
   background-color: $lightestcolor;
   margin:.5em;
 }
+.x_youtuberss_page #resultsHolder div a{
+  color: #0000A0;
+}
 .x_youtuberss_page .shadedDiv {
    background-color: lighten($lightestcolor, 20%) !important; //doesn't work without important
    border-radius: $mediumroundedcorners;
