@@ -131,6 +131,13 @@
 
 					$thisQ.find("div")
 						.html(x_addLineBreaks(this.getAttribute("question")));
+						
+					//Add aria-label to answer box
+					var answerFieldLabel = this.getAttribute("answerFieldLabel");
+					if (answerFieldLabel === undefined | answerFieldLabel === null) {
+						answerFieldLabel = "Answer";
+					}
+					$thisQ.find("input").attr({"aria-label" : answerFieldLabel});
 				});
 
 			$("#submitBtn")
