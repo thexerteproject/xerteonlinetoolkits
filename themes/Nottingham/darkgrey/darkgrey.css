@@ -156,3 +156,12 @@ background-image: none;
   color: #000000;
 }
 
+.x_grid_page #grid ul li {
+	color: black !important;
+}
+.x_grid_page li.ui-state-default.static {
+	background: white !important;
+}
+#x_footerBlock .ui-button-text{
+	color:white;
+}
