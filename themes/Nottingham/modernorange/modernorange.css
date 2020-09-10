@@ -253,41 +253,8 @@ a.hotspot, a.hotspot.selected {
 .sliderHolder .labelHolder a p {
   color: #353C3F; }
 
-#gridBorders {
-  border-radius: 1vmin; }
-
-#grid .listHolder.constrainC li {
-  border-radius: 1vmin; }
-
-#grid ul li.header {
-  color: #ffffff;
-  background: #00700c;
-  color: #ffffff !important; }
-
-table.header.shaded tr:first-child {
-  background: #00700c; }
-
-#grid ul li {
-  color: #353C3F;
-  /*background:$brightcolor;*/
-  background: red;
-  border-color: #ffffff; }
-
-.x_grid_page #grid ul li {
-  background: #d6c338;
-  border-color: transparent; }
-
-table tr.shaded {
-  background: #756867;
-  color: #353C3F; }
-
-tr {
-  background: #B45819;
-  color: #ffffff; }
-
-#grid ul li.static {
-  background: none;
-  border-color: transparent; }
+.x_grid_page table.header.shaded tr:first-child {
+  background: unset; }
 
 /*****timeline matching pairs*****/
 #targetHolder .target {
@@ -295,6 +262,9 @@ tr {
 
 .x_timeline_page .label.panel.ui-draggable {
   background: #d6c338; }
+
+.x_grid_page table tr.shaded {
+  background: #E3FFD6; }
 
 #subMenuItems .subMenuItem {
   background: #B45819;
