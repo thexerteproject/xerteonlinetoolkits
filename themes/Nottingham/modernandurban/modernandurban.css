@@ -254,8 +254,17 @@ a.hotspot, a.hotspot.selected {
   background: #2F3131;
   color: #ffffff !important; }
 
-table.header.shaded tr:first-child {
+.x_grid_page table.header.shaded tr:first-child {
   background: #2F3131; }
+
+.x_grid_page table.full td {
+  border: none; }
+
+.x_grid_page table {
+  background: none !important; }
+
+.x_grid_page .ui-state-default.header.static {
+  background: black !important; }
 
 #grid ul li {
   color: #2F3131;
