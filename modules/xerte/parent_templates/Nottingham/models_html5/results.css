@@ -84,3 +84,13 @@
 	padding-bottom: 1em;
 	margin-bottom: 1em;
 }
+.fas.fa-check-circle{
+	color:green;
+	background: white;
+	border-radius: 12px;
+}
+.fas.fa-times-circle{
+	color:red;
+	background: white;
+	border-radius: 12px;
+}
