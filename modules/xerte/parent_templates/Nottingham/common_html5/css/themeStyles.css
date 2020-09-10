@@ -250,6 +250,16 @@ h3 {
 	content: "\f00d"; color: #ff0000;
 }
 
+/*class for hidden screenreader only content*/
+.sr-only {
+	position:absolute;
+	left:-10000px;
+	top:auto;
+	width:1px;
+	height:1px;
+	overflow:hidden;
+}
+
 .wcagLogo{
 	position:absolute;
 	top:3%;
