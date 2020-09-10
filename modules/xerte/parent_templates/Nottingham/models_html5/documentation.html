@@ -377,6 +377,13 @@
 						
 						$textarea = $('<textarea class="' + width + '">')
 							.attr('rows', rows);
+							
+						//Add aria-label to answer box
+						var answerFieldLabel = xml.getAttribute("answerFieldLabel");
+						if (answerFieldLabel === undefined | answerFieldLabel === null) {
+							answerFieldLabel = "Answer";
+						}
+						$textarea.attr({"aria-label" : answerFieldLabel});
 						
 						if (xml.getAttribute('defaultTxt')) $textarea.attr('placeholder', xml.getAttribute('defaultTxt'));
 
