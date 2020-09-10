@@ -268,7 +268,7 @@
                     altnormalrow = !altnormalrow;
 					altfullrow = false;
 					if (x.subinteractions.length > 0 && x.type != 'page') {
-						detailstable.append("<tr><th class='correct'></th><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>"+ correctAnswerTxt +"</th></tr>");
+						detailstable.append("<tr><td class='correct'></td><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>"+ correctAnswerTxt +"</th></tr>");
 						var detailstablecolumns = ["", x_GetTrackingTextFromHTML(x.title, ""), yourAnswerTxt, correctAnswerTxt];
 						var detailstablerows = [];
 						altfullrow = false;
@@ -640,10 +640,6 @@ results.init();
 	<div id="pdfContent">
 		<h3 id="generalResultsTxt"></h3>
 		<table id="general_summary" rules="rows">
-			<tr>
-				<th></th>
-				<th></th>
-			</tr>
 			<tr>
 				<td id="averageTxt"></td>
 				<td><span id="averageScore"></span></td>

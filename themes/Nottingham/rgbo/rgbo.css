@@ -418,7 +418,7 @@ div#shorturltodisplay a {
   background: #117BAD;
   color: #ffffff; }
 
-.x_results_page .details th {
+.x_results_page .details th, .x_results_page .details tr:first-of-type td.correct {
   background: #222222;
   color: #ffffff; }
 

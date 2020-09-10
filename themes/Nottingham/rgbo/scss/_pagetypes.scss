@@ -458,7 +458,7 @@ div#shorturltodisplay a{
   background: $contrastcolor;
   color:$fontcolorforcontrastcolor;
 }
-.x_results_page .details th {
+.x_results_page .details th, .x_results_page .details tr:first-of-type td.correct {
   background: $darkestcolor;
   color: $fontcolorfordarkestcolor;
 }
