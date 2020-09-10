@@ -905,7 +905,9 @@ function setup() {
 		// they can also be overridden by images uploaded via Header Logo optional properties
 		$('#overview div.logoR, #overview div.logoL').hide();
 		$('#overview div.logoR').data('defaultLogo', $('#overview .logoR img').attr('src'));
+		$('#overview .logoR img').attr('alt', '');
 		$('#overview div.logoL').data('defaultLogo', $('#overview .logoL img').attr('src'));
+		$('#overview .logoL img').attr('alt', '');
 		
 		var checkExists = function(logoClass, type, fallback) {
 			$.ajax({
@@ -934,10 +936,11 @@ function setup() {
 				}
 			});
 		}
-		
+
 		var type, fallback;
 		if ($(data).find('learningObject').attr('logoR') != undefined && $(data).find('learningObject').attr('logoR') != '') {
 			$('#overview .logoR img').attr('src', $(data).find('learningObject').attr('logoR'));
+			$('#overview .logoR img').attr('alt', $(data).find('learningObject').attr('logoRAlt'));
 			type = 'LO';
 			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
 		} else if ($(data).find('learningObject').attr('logoRHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
@@ -953,6 +956,7 @@ function setup() {
 		var type, fallback;
 		if ($(data).find('learningObject').attr('logoL') != undefined && $(data).find('learningObject').attr('logoL') != '') {
 			$('#overview .logoL img').attr('src', $(data).find('learningObject').attr('logoL'));
+			$('#overview .logoL img').attr('alt', $(data).find('learningObject').attr('logoLAlt'));
 			type = 'LO';
 			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
 		} else if ($(data).find('learningObject').attr('logoLHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
@@ -1015,6 +1019,9 @@ function setup() {
 	};
 	
     // --------------- Optional Navigation Bar properties --------------------
+
+	//temporary non-language option fix for collapse button aria label
+	$(".btn.btn-navbar").attr("aria-label", "collapse");
     
     if ($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false'){
 	
