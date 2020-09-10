@@ -842,8 +842,8 @@ function access_info($template_id){
         default:
             if (substr($accessStr,0,5) == "Other")
             {
+                $accessTranslation = PROJECT_INFO_OTHER . " ('" . substr($accessStr,5) . "')";
                 $accessStr = "Other";
-                $accessTranslation = PROJECT_INFO_OTHER . " ('" . substr(5) . "')";
                 $nrViews = $row_access["number_of_uses"];
             }
             else
