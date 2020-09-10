@@ -318,7 +318,7 @@ a.hotspot, a.hotspot.selected {
   color: white !important; }
 
 .x_grid_page #grid ul li.static {
-  background: none;
+  background: #000000;
   border-color: transparent; }
 
 /*****timeline matching pairs*****/
