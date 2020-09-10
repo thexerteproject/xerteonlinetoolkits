@@ -296,8 +296,12 @@ a.hotspot, a.hotspot.selected {
 .x_grid_page table.header.shaded tr:first-child {
   background: #000000; }
 
+.x_grid_page .ui-state-default.header.static {
+  background: black !important; }
+
 .x_grid_page table tr {
-  background: #D5D6D2; }
+  background: #D5D6D2;
+  color: red !important; }
 
 .x_grid_page tr.shaded {
   background: #EDEDED; }
