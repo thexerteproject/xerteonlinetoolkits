@@ -219,12 +219,12 @@
 				var completedToken, completedTokenTxt;
 				if(x.completed == "true")
 				{
-					completedToken = '<i class="fa fa-x-tick" title="' + completeTooltip + '"><span class="ui-helper-hidden-accessible">' + completeTooltip + '</span></i>';
+					completedToken = '<i class="fas fa-check-circle" title="' + completeTooltip + '"><span class="ui-helper-hidden-accessible">' + completeTooltip + '</span></i>';
 					completedTokenTxt = "completed";
 				}
 				else if (x.completed == "false")
 				{
-					completedToken = '<i class="fa fa-x-cross" title="' + inCompleteTooltip + '"><span class="ui-helper-hidden-accessible">' + inCompleteTooltip + '</span></i>';
+					completedToken = '<i class="fas fa-times-circle" title="' + inCompleteTooltip + '"><span class="ui-helper-hidden-accessible">' + inCompleteTooltip + '</span></i>';
 					completedTokenTxt = "notcompleted";
 				}
 				else {
@@ -282,7 +282,7 @@
                                 detailstablerows.push(detailstablerow);
                             }
                             else {
-                                detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-x-cross' title='" + inCorrectTooltip + "'><span class='ui-helper-hidden-accessible'>" + inCorrectTooltip + "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
+                                detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fas fa-times-circle' title='" + inCorrectTooltip + "'><span class='ui-helper-hidden-accessible'>" + inCorrectTooltip + "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
                                 var detailstablerow = ["incorrect", x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), x_GetTrackingTextFromHTML(correctAnswer, "")];
                                 detailstablerows.push(detailstablerow);
                             }
