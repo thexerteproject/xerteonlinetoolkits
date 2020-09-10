@@ -1084,6 +1084,11 @@ var EDITOR = (function ($, parent) {
                     toolbox.displayParameter('#languagePanel .wizard', node_options['language'], attribute_name, attribute_value.value, key);
                     nrlanguageoptions++;
                 }
+				else if (node_options['language'][i].value.mandatory)
+				{
+					toolbox.displayParameter('#languagePanel .wizard', node_options['language'], attribute_name, node_options['language'][i].value.defaultValue, key);
+                    nrlanguageoptions++;
+				}
             }
 
             if (nrlanguageoptions > 0) {
