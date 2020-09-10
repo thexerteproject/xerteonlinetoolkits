@@ -102,6 +102,9 @@
   border: #117BAD;
   color: #ffffff; }
 
+.back.panel a {
+  color: #ffffff; }
+
 .x_links_page #linkHolder a {
   color: blue; }
 
