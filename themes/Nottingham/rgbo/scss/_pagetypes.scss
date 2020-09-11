@@ -465,6 +465,30 @@ div#shorturltodisplay a{
 .x_results_page #general_summary th {
   background: #ffffff;//hide otherwise black line at to of summary table
 }
+.fas.fa-check-circle{
+  color:green;
+}
+.fas.fa-times-circle{
+  color:#CD2A2A;
+}
+.fas.fa-circle.blue{
+  color:white;
+  background:black;
+  border-radius: 12px;
+}
+.far.fa-circle.blue{
+  color:white;
+  border-radius: 12px;
+}
+.x_results_page tr.alt .far.fa-circle.blue {
+  color: #ffffff !important;
+  border-radius: 12px;
+}
+
+.x_results_page tr .far.fa-circle.blue {
+  color: #010101 !important;
+  border-radius: 12px;
+}
 //***********************************Media query/responsive changes*************************************/
 //*****change tick/cross size on all pages where used******/
 .tick, img.result{
