@@ -1991,6 +1991,7 @@ function x_changePageStep5a(x_gotoPage) {
 function x_changePageStep6() {
 
     $("#x_headerBlock h2").html(pageTitle);
+	$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
 
     x_updateCss(false);
 

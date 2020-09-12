@@ -1431,7 +1431,7 @@ function parseContent(pageRef, sectionNum, addHistory) {
 				
 				//set the main page title and subtitle
 				$('#pageTitle').html(page.attr('name'));
-				
+				$(document).prop('title', $('<p>' + page.attr('name') +' - ' + $(data).find('learningObject').attr('name') + '</p>').text());
 				if ($(".jumbotron").length > 0) {
 					// header bar can be hidden on standalone pages
 					if (standAlonePage && page.attr('headerHide') == 'true') {
