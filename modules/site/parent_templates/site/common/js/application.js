@@ -19,6 +19,7 @@
  
 $(document).ready(init);
 
+var XBOOTSTRAP = {};
 var data;
 var languageData;
 var startPage = 0;
@@ -121,19 +122,10 @@ function loadContent(){
 	
 		type: "GET",
 		url: projectXML,
-		dataType: "xml", 
-		success: function(xml) {
-		
-			if (typeof data == 'string'){
-			
-				//in IE we need to turn the string into xml
-				data = $.parseXML(xml);
-				
-			} else {
-			
-				data = xml;
-				
-			}
+		dataType: "text", 
+		success: function(text) {
+			var newString = makeAbsolute(text);
+			data = $.parseXML(newString);
 			
 			//step one - css	
 			cssSetUp('theme');
@@ -151,13 +143,13 @@ function loadContent(){
 	var pageSectionInfo;
 	
 	if (urlParams.linkID != undefined) { // URL?linkID=XXX
-		pageSectionInfo = getStartPage(urlParams.linkID);
+		pageSectionInfo = getHashInfo(urlParams.linkID);
 		if (pageSectionInfo != false) {
 			startPage = pageSectionInfo[0];
 		}
 	}
 	
-	pageSectionInfo = getStartPage(window.location.hash); // URL#pageXXXsectionXXX
+	pageSectionInfo = getHashInfo(window.location.hash); // URL#pageXXXsectionXXX
 	if (pageSectionInfo != false) {
 		startPage = pageSectionInfo[0];
 		startSection = pageSectionInfo[1];
@@ -183,37 +175,10 @@ function loadContent(){
 	});
 }
 
-function getStartPage(urlHash) {
-	// If we have a start page/section then extract it and clear the url
-	if (urlHash.length > 0) {
-		var pageLink = urlHash[0] == '#' ? urlHash.substring(1) : urlHash,
-			thisPage,
-			thisSection;
-		
-		if (pageLink.substring(0,4) == "page") {
-			if (pageLink.substring(4).indexOf('section') > -1) {
-				thisPage = parseInt(pageLink.substring(4,pageLink.indexOf('section')), 10) - 1;
-				thisSection = parseInt(pageLink.substring(pageLink.indexOf('section') + 7), 10);
-			} else {
-				thisPage = parseInt(pageLink.substring(4), 10) - 1;
-			}
-			
-			thisPage = thisPage < 0 ? 0 : thisPage;
-			
-		} else {
-			if (pageLink.substring(4).indexOf('section') > -1) {
-				thisPage = pageLink.substring(0, pageLink.indexOf('section'));
-				thisSection = pageLink.substring(pageLink.indexOf('section') + 7);
-			} else {
-				thisPage = pageLink;
-			}
-		}
-		
-		return [thisPage, thisSection];
-		
-	} else {
-		return false;
-	}
+// Make absolute urls from urls with FileLocation + ' in their strings
+function makeAbsolute(html) {
+    var temp = html.replace(/FileLocation \+ \'([^\']*)\'/g, FileLocation + '$1');
+    return temp;
 }
 
 function cssSetUp(param) {
@@ -241,7 +206,7 @@ function cssSetUp(param) {
             break;
         case 'stylesheet':
 			if ( $(data).find('learningObject').attr('stylesheet') != undefined) {
-				insertCSS(eval( $(data).find('learningObject').attr('stylesheet') ), function() { loadLibraries(); });
+				insertCSS($(data).find('learningObject').attr('stylesheet'), function() { loadLibraries(); });
 			} else {
 				loadLibraries();
 			}
@@ -336,8 +301,8 @@ function getLangData(lang) {
 			setup();
 			
 			// step four
-			parseContent(startPage, startSection);
-			
+			parseContent({ type: "start", id: startPage }, startSection);
+
 		},
 		
 		error: function () {
@@ -347,7 +312,7 @@ function getLangData(lang) {
 			} else { // hasn't found GB language file - set up anyway, will use fallback text in code
 				languageData = $("");
 				setup();
-				parseContent(startPage, startSection);
+				parseContent({ type: "start", id: startPage }, startSection);
 			}
 			
 		}
@@ -358,7 +323,21 @@ function formatColour(col) {
 	return (col.length > 3 && col.substr(0,2) == '0x') ? '#' + col.substr(2) : col;
 }
 
-function setup(){
+function setup() {
+	
+	if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && $(data).find('learningObject').attr('authorSupport') == 'true' ) {
+		authorSupport = true;
+	}
+	
+	if ($(data).find('learningObject').attr('variables') != undefined) {
+		// calculate author set variables
+		XBOOTSTRAP.VARIABLES.init($(data).find('learningObject').attr('variables'));
+		
+		// check xml text for variables - if found replace with variable value
+		if (XBOOTSTRAP.VARIABLES && XBOOTSTRAP.VARIABLES.exist()) {
+			x_checkForText($(data).find('page'), 'variables');
+		}
+	}
 	
 	if ($(data).find('learningObject').attr('glossary') != undefined) {
 		
@@ -474,15 +453,7 @@ function setup(){
 	
 	// if project is being viewed as https then force any iframe src to be https too
 	if (window.location.protocol == "https:") {
-		
 		x_checkForText($(data).find('page'), 'iframe');	
-		
-	}	
-	
-	if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && $(data).find('learningObject').attr('authorSupport') == 'true' ) {
-		
-		authorSupport = true;
-		
 	}
 	
 	// add all the pages to the pages menu: this links back to the same page
@@ -506,14 +477,13 @@ function setup(){
 				name.find('[style*="background-color"]').css('background-color', 'transparent');
 			}
 			
-			var $link = $('<li class=""><a href="javascript:parseContent(' + index + ')"></a></li>').appendTo('#nav');
+			var $link = $('<li class=""><a href="javascript:parseContent({ type: \'index\', id: ' + index + ' })"></a></li>').appendTo('#nav');
 			$link.find('a').append(name);
 			
 		}
-		
 	});
 	
-	// if pages have customLinkID then make sure they don't include spaces
+	// if pages have customLinkID then make sure they don't include spaces - convert to underscore
 	$(data).find('page').each( function(index, value){
 		var tempID = $(this).attr('customLinkID');
 		if (tempID != undefined && tempID != "") {
@@ -523,8 +493,13 @@ function setup(){
 		}
 	});
 	
+	// make list of all the normal pages (not hidden or standalone) to display in TOC
 	if (validPages.length == 0) {
-		findValidPages();
+		for (var i=0; i<$(data).find('page').length; i++) {
+			if (($(data).find('page').eq(i).attr('hidePage') != 'true' || authorSupport == true) && $(data).find('page').eq(i).attr('linkPage') != 'true') {
+				validPages.push(i);
+			}
+		}
 	}
 	
 	// add a back button that will be hidden unless used by standalone pages
@@ -536,30 +511,14 @@ function setup(){
 		.click(function() {
 			if (pageHistory.length <= 1) {
 				// if standalone page is the first page visited then back button will take to 1st normal page...
-				parseContent(validPages[0]);
-				
+				parseContent({ type: "index", id: validPages[0] });
+
 			} else {
 				// ...otherwise go to the last viewed page
 				pageHistory.splice(pageHistory.length - 1, 1);
-				parseContent(pageHistory[pageHistory.length-1]);
+				parseContent({ type: "check", id: pageHistory[pageHistory.length-1] });
 			}
 		});
-	
-	if ($.isNumeric(startPage)) {
-		// adjust the start page so it only takes into account unhidden pages
-		
-		if (validPages.length - 1 >= startPage) {
-			if (startPage != validPages[startPage]) {
-				console.log("Some pages are hidden so page *" + (startPage+1) + "* adjusted to *" + (validPages[startPage]+1) + "*");
-			}
-			startPage = validPages[startPage];
-			
-		} else {
-			console.log("Page *" + (startPage+1) + "* not found");
-			startPage = validPages[0];
-		}
-		
-	}
 	
 	// set up print functionality - all this does is add a print button to the toolbar which triggers browser's print dialog
 	if ($(data).find('learningObject').attr('print') == 'true') {
@@ -647,9 +606,10 @@ function setup(){
 				
 				// work out what categories each page / section falls under
 				$(data).find('page').each(function(index, value) {
+					
 					var $page = $(this);
 					
-					if ($page.attr('hidePage') != false) {
+					if ($page.attr('hidePage') != 'true') {
 						if ($page.attr('filter') != undefined && $page.attr('filter') != '') {
 							var catIds = [],
 								categoryInfo = $page.attr('filter').split(',');
@@ -788,7 +748,7 @@ function setup(){
 									results.push( { match: [], sections: [] } );
 								}
 								
-								if ($page.attr('hidePage') != false) {
+								if ($page.attr('hidePage') != 'true') {
 									if ($page.attr('filter') != undefined && $page.attr('filter').split(',').length > 0) {
 										var indexInArray = $.inArray(lookingFor, $page.attr('filter').split(','));
 										
@@ -805,7 +765,7 @@ function setup(){
 											results[pageIndex].sections.push( { match: [] } );
 										}
 										
-										if ($section.attr('hidePage') != false && $section.attr('filter') != undefined && $section.attr('filter').split(',').length > 0) {
+										if ($section.attr('hidePage') != 'true' && $section.attr('filter') != undefined && $section.attr('filter').split(',').length > 0) {
 											var indexInArray = $.inArray(lookingFor, $section.attr('filter').split(','));
 											
 											if (indexInArray > -1) {
@@ -945,7 +905,9 @@ function setup(){
 		// they can also be overridden by images uploaded via Header Logo optional properties
 		$('#overview div.logoR, #overview div.logoL').hide();
 		$('#overview div.logoR').data('defaultLogo', $('#overview .logoR img').attr('src'));
+		$('#overview .logoR img').attr('alt', '');
 		$('#overview div.logoL').data('defaultLogo', $('#overview .logoL img').attr('src'));
+		$('#overview .logoL img').attr('alt', '');
 		
 		var checkExists = function(logoClass, type, fallback) {
 			$.ajax({
@@ -974,10 +936,11 @@ function setup(){
 				}
 			});
 		}
-		
+
 		var type, fallback;
 		if ($(data).find('learningObject').attr('logoR') != undefined && $(data).find('learningObject').attr('logoR') != '') {
-			$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
+			$('#overview .logoR img').attr('src', $(data).find('learningObject').attr('logoR'));
+			$('#overview .logoR img').attr('alt', $(data).find('learningObject').attr('logoRAlt'));
 			type = 'LO';
 			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
 		} else if ($(data).find('learningObject').attr('logoRHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
@@ -992,7 +955,8 @@ function setup(){
 		
 		var type, fallback;
 		if ($(data).find('learningObject').attr('logoL') != undefined && $(data).find('learningObject').attr('logoL') != '') {
-			$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
+			$('#overview .logoL img').attr('src', $(data).find('learningObject').attr('logoL'));
+			$('#overview .logoL img').attr('alt', $(data).find('learningObject').attr('logoLAlt'));
 			type = 'LO';
 			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
 		} else if ($(data).find('learningObject').attr('logoLHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
@@ -1030,7 +994,7 @@ function setup(){
 			}
 		}
 		if ($(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != '') {
-			$jumbotron.css('background-image', "url('" + eval($(data).find('learningObject').attr('header')) + "')");
+			$jumbotron.css('background-image', "url('" + $(data).find('learningObject').attr('header') + "')");
 		}
 		if ($(data).find('learningObject').attr('headerPos') != undefined) {
 			$jumbotron.css('background-position', $(data).find('learningObject').attr('headerPos'));
@@ -1055,6 +1019,9 @@ function setup(){
 	};
 	
     // --------------- Optional Navigation Bar properties --------------------
+
+	//temporary non-language option fix for collapse button aria label
+	$(".btn.btn-navbar").attr("aria-label", "collapse");
     
     if ($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false'){
 	
@@ -1138,15 +1105,21 @@ function setup(){
 			$('.footer .container').remove();
 			$('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
 				$("#customFooter").css({"margin-left": "10px"});
-			} 
-			
-			// convert img paths
-			$('#customFooter img').each(function() {
-				if ($(this).attr('src').substring(0, 16) == "FileLocation + '") {
-							$(this).attr('src', eval($(this).attr('src')));
-						}
-					});
-			
+			}
+		}
+
+		//populate wcag logo and link and/or hide it
+		if ($(data).find('learningObject').attr('wcagAlt') != undefined){
+			$(".wcagLogo").attr("alt",$(data).find('learningObject').attr('wcagAlt'));
+		}
+		if ($(data).find('learningObject').attr('wcagLinkTitle') != undefined){
+			$(".wcagLink a").attr("title",$(data).find('learningObject').attr('wcagLinkTitle'));
+		}
+		if ($(data).find('learningObject').attr('wcagLink') != undefined && $(data).find('learningObject').attr('wcagLink') != ""){
+			$(".wcagLink a").prop("href",$(data).find('learningObject').attr('wcagLink'));
+		}
+		if ($(data).find('learningObject').attr('wcagHide') != undefined && $(data).find('learningObject').attr('wcagHide') == 'true'){
+			$('.wcagLink').remove();
 		}
 		
 		// Change footer background colour
@@ -1243,7 +1216,7 @@ function x_insertGlossaryText(node) {
 	return tempText;
 }
 
-// check through text nodes for text that needs replacing with something lese (e.g. glossary)
+// check through text nodes for text that needs replacing with something else (e.g. glossary)
 function x_checkForText(data, type) {
 	for (var i=0; i<data.length; i++) {
 		if (data[i].childNodes.length > 0) {
@@ -1260,6 +1233,8 @@ function x_checkForText(data, type) {
 						return iframe;
 					}
 					data[i].childNodes[0].data = data[i].childNodes[0].data.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
+				} else if (type == 'variables') {
+					data[i].childNodes[0].data = XBOOTSTRAP.VARIABLES.replaceVariables(data[i].childNodes[0].data);
 				}
 				
 			} else {
@@ -1269,76 +1244,75 @@ function x_checkForText(data, type) {
 	}
 }
 
-// this is the format of links added through the wysiwyg editor button
+// called from links added through the wysiwyg editor button (& the links created as a result of searches
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
-	var pages = $(data).find('page');
+	
+	var pages = $(data).find('page'),
+		links = ['[first]', '[last]', '[previous]', '[next]'];
 
-	var links = ['[first]', '[last]', '[previous]', '[next]'];
-	var linkLocations = [0, pages.length-1, Math.max(0,currentPage-1), Math.min(currentPage+1,pages.length-1)];
-
-	// First look for the fixed links
+	// First look for the fixed links (first/last/previous/next)
 	if ($.inArray(pageInfo.ID, links) > -1) {
 		var tempNum,
 			tempPageIndex;
 		
-		// first unhidden page
+		// first page
 		if ($.inArray(pageInfo.ID, links) == 0) {
-			tempNum = 0;
-			tempPageIndex = tempNum;
-			
-			while ((($(data).find('page').eq(tempNum).attr('hidePage') == 'true' && authorSupport == false) || $(data).find('page').eq(tempNum).attr('linkPage') == 'true') && tempNum != $(data).find('page').length) {
-				tempPageIndex = tempNum == $(data).find('page').length - 1 ? 0 : tempNum + 1;
-				tempNum++;
-			}
+			tempPageIndex = validPages[0];
 		
-		// last unhidden page
+		// last valid page
 		} else if ($.inArray(pageInfo.ID, links) == 1) {
-			tempNum = pages.length-1;
-			tempPageIndex = tempNum;
+			tempPageIndex = validPages[validPages.length-1];
 			
-			while ((($(data).find('page').eq(tempNum).attr('hidePage') == 'true' && authorSupport == false) || $(data).find('page').eq(tempNum).attr('linkPage') == 'true') && tempNum != -1) {
-				tempPageIndex = tempNum == 0 ? pages.length-1 : tempNum - 1;
-				tempNum--;
-			}
-			
-		// previous unhidden page
+		// previous valid page
 		} else if ($.inArray(pageInfo.ID, links) == 2) {
-			tempNum = Math.max(0, currentPage-1);
-			tempPageIndex = tempNum;
-			
-			while ((($(data).find('page').eq(tempNum).attr('hidePage') == 'true' && authorSupport == false) || $(data).find('page').eq(tempNum).attr('linkPage') == 'true') && tempNum != -1) {
-				tempPageIndex = tempNum == 0 ? Math.max(0, currentPage-1) : tempNum - 1;
-				tempNum--;
+			// if it's a standalone page or the first page in the project then there is no previous page to navigate to
+			var currentIndex = $.inArray(currentPage, validPages);
+			if (currentIndex > 0) {
+				tempPageIndex = validPages[currentIndex-1];
 			}
 		
-		// next unhidden page
+		// next valid page
 		} else {
-			tempNum = Math.min(currentPage+1, pages.length-1);
-			tempPageIndex = tempNum;
-			
-			while ((($(data).find('page').eq(tempNum).attr('hidePage') == 'true' && authorSupport == false) || $(data).find('page').eq(tempNum).attr('linkPage') == 'true') && tempNum != $(data).find('page').length) {
-				tempPageIndex = tempNum == $(data).find('page').length - 1 ? Math.min(currentPage+1, pages.length-1) : tempNum + 1;
-				tempNum++;
+			// if it's a standalone page or the last page in the project then there is no next page to navigate to
+			var currentIndex = $.inArray(currentPage, validPages);
+			if (currentIndex != -1 && currentIndex < validPages.length-1) {
+				tempPageIndex = validPages[currentIndex+1];
 			}
 		}
 		
-		if ($(data).find('page').eq(tempPageIndex).attr('linkPage') != 'true') {
-			parseContent(tempPageIndex);
+		if (tempPageIndex != undefined) {
+			parseContent({ type: "index", id: tempPageIndex });
 		}
 		
-	} else { // Then look them up by ID
+	// Then try to look them up by ID
+	} else {
+		var found = false;
+		
 		for (var i=0; i<pages.length; i++) {
-			var found = false;
-			
+			// link to page
 			if (pages[i].getAttribute("linkID") == pageInfo.ID) {
-				parseContent(i);
+				var destination = pageInfo.ID;
+				if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
+					destination = pages[i].getAttribute("customLinkID");
+				} else if ($.inArray(i, validPages) != -1) {
+					destination = $.inArray(i, validPages);
+				}
+				found = true;
+				parseContent({ type: "id", id: destination });
 				break;
 			}
 			
+			// link to section
 			if (pages[i].childNodes.length > 0) {
 				for (var j=0; j<pages[i].childNodes.length; j++) {
 					if (pages[i].childNodes[j].getAttribute && pages[i].childNodes[j].getAttribute("linkID") == pageInfo.ID) {
-						parseContent(i, j+1);
+						var destination = pages[i].getAttribute("linkID");
+						if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
+							destination = pages[i].getAttribute("customLinkID");
+						} else if ($.inArray(i, validPages) != -1) {
+							destination = $.inArray(i, validPages);
+						}
+						parseContent({ type: "id", id: destination }, j+1);
 						found = true;
 						break;
 					}
@@ -1349,90 +1323,79 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 				break;
 			}
 		}
-	}
-}
-
-function goToSection(pageId) {
-	sectionJump = document.getElementById(pageId);
-	if (sectionJump != undefined) {
-		var top = sectionJump.offsetTop;
-		window.scrollTo(0, top);
-	}
-}
-
-// browser back / fwd button will trigger this - manually make page change to match #pageX
-window.onhashchange = function() {
-	
-	var pageSectionInfo = getStartPage(window.location.hash),
-		tempPage,
-		tempSection;
-	
-	if (pageSectionInfo != false) {
-		tempPage = pageSectionInfo[0];
-		tempSection = pageSectionInfo[1];
 		
-		// adjust the page number so it only takes into account unhidden pages
-		if ($.isNumeric(tempPage)) {
-			if (validPages.length - 1 >= tempPage) {
-				tempPage = validPages[tempPage];
-				parseContent(tempPage, tempSection, false);
-			}
-			
-		} else {
-			parseContent(tempPage, tempSection, false);
+		if (found == false) {
+			console.log("Page/section with ID *" + pageInfo.ID + "* not found");
 		}
 	}
 }
 
-// make list of pages that aren't hidden or standalone
-function findValidPages() {
-	for (var i=0; i<$(data).find('page').length; i++) {
-		if (($(data).find('page').eq(i).attr('hidePage') != 'true' || authorSupport == true) && $(data).find('page').eq(i).attr('linkPage') != 'true') {
-			validPages.push(i);
+// function loads a new page
+function parseContent(pageRef, sectionNum, addHistory) {
+	// pageRefType determines how pageID should be dealt with
+	// can be 'index' (of page in data), 'id' (linkID/customLinkID, 'start' or 'check' (these last two could be index or id so extra checks are needed)
+	var pageRefType = pageRef.type,
+		pageID = pageRef.id,
+		found = false;
+	
+	// check if pageIndex exists & can be shown
+	var pageIndex;
+	
+	// pageID might be an ID - see if it matches either a linkID or a customLinkID
+	if (pageRefType != 'index') {
+		$(data).find('page').each(function(index, value) {
+			var $page = $(this);
+			if (pageID == $page.attr('linkID') || pageID == $page.attr('customLinkID')) {
+				// an ID match has been found
+				pageIndex = index;
+				found = true;
+				pageRefType = 'id';
+				
+				return false;
+			}
+		});
+	}
+	
+	// check if it's a valid page index
+	if (pageRefType != 'id') {
+		pageID = $.isNumeric(pageID) ? Number(pageID) : pageID;
+		
+		if (Number.isInteger(pageID)) {
+			// pageID refers to actual page num of valid pages - need to convert to index of all pages
+			if (pageRefType == 'start' || pageRefType == 'check') {
+				pageID = validPages[pageID];
+			}
+			
+			if ($.inArray(pageID, validPages) > -1) {
+				// this is a valid page (not hidden or standalone - standalone pages are called by their ID)
+				pageIndex = pageID;
+				found = true;
+				pageRefType = 'index';
+				
+			} else {
+				console.log("Page *" + (pageID+1) + "* not found");
+			}
+			
+		} else {
+			console.log("Page with ID *" + pageID + "* not found");
+		}
+		
+	} else if (found == false) {
+		console.log("No valid page with ID or index *" + pageID + "* is found");
+	}
+	
+	// fallback to show 1st page in project
+	if (found == false) {
+		// project contains no pages or pageIndex is too high
+		if (validPages.length == 0) {
+			pageIndex = 0;
+		} else {
+			pageIndex = validPages[0];
 		}
 	}
 }
 
 function parseContent(pageID, sectionNum, addHistory) {
-	
-	// check if pageIndex exists & can be shown
-	var pageIndex,
-		isID = false;
-	
-	// pageIndex is an ID - see if it matches either a linkID or a customLinkID
-	if (!$.isNumeric(pageID)) {
-		$(data).find('page').each(function(index, value) {
-			var $page = $(this);
-			
-			if (pageID == $page.attr('linkID') || pageID == $page.attr('customLinkID')) {
-				isID = index;
-				return false;
-			}
-		});
-		
-		if (isID === false) {
-			console.log("Page with ID *" + pageID + "* not found");
-			pageIndex = validPages[0];
-			
-		} else {
-			if ($(data).find('page').eq(isID).attr('hidePage') == 'true' && authorSupport == false && pageHistory.length == 0) {
-				console.log("Page with ID *" + pageID + "* is found but is hidden");
-				pageIndex = validPages[0];
-			} else {
-				//console.log("Page with ID *" + pageID + "* is found & is page *" + (isID+1) + "*");
-				pageIndex = isID;
-			}
-		}
-		
-	} else {
-		pageIndex = pageID;
-	}
-	
-	// project contains no pages or pageIndex is too high
-	if ($(data).find('page').length == 0 || pageIndex > $(data).find('page').length - 1) {
-		console.log("Page *" + (pageIndex+1) + "* does not exist");
-		pageIndex = 0;
-	}
 	
 	var standAlonePage = $(data).find('page').eq(pageIndex).attr('linkPage') == 'true' ? true : false;
 	
@@ -1440,7 +1403,8 @@ function parseContent(pageID, sectionNum, addHistory) {
 		// Page doesn't exist or is a hidden & author support is off
 		if ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && authorSupport == false) {
 			console.log("Page *" + (pageIndex+1) + "* is hidden");
-			
+			pageIndex = validPages[0];
+
 		// Page exists & can be shown
 		} else {
 			
@@ -1448,19 +1412,17 @@ function parseContent(pageID, sectionNum, addHistory) {
 			var pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
 			
 			// Load page as normal as it's not opening in a new window
-			if (!standAlonePage || (standAlonePage && $(data).find('page').eq(pageIndex).attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash)) {
-				//console.log("Show page *" + (pageIndex+1) + "*");
+			if (!standAlonePage || (standAlonePage && $(data).find('page').eq(pageIndex).attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash) || pageRefType == 'start') {
 				
 				// make sure correct hash is used in url history
 				if (addHistory != false) {
-					var historyEntry = isID !== false ? pageID : pageHash,
-						historyEntry2 = historyEntry.substring(0,4) == "page" ? Number(historyEntry.substring(4)) : historyEntry;
+					var historyEntry = pageHash.substring(0,4) == "page" ? Number(pageHash.substring(4)) - 1 : pageHash;
 					
-					if (pageHistory[pageHistory.length-1] != historyEntry2) {
-						pageHistory.push(historyEntry2);
+					if (pageHistory[pageHistory.length-1] != historyEntry) {
+						pageHistory.push(historyEntry);
 					}
 					
-					window.history.pushState('window.location.href',"",'#' + historyEntry);
+					window.history.pushState('window.location.href',"",'#' + pageHash);
 				}
 				
 				//clear out existing content
@@ -1472,7 +1434,7 @@ function parseContent(pageID, sectionNum, addHistory) {
 				
 				//set the main page title and subtitle
 				$('#pageTitle').html(page.attr('name'));
-				
+				$(document).prop('title', $('<p>' + page.attr('name') +' - ' + $(data).find('learningObject').attr('name') + '</p>').text());
 				if ($(".jumbotron").length > 0) {
 					// header bar can be hidden on standalone pages
 					if (standAlonePage && page.attr('headerHide') == 'true') {
@@ -1522,7 +1484,15 @@ function parseContent(pageID, sectionNum, addHistory) {
 					if (hideSection == false || authorSupport == true) {
 						
 						var sectionIndex = index;
-						
+
+						//expand mainContent if section menu hidden and expand option is true
+						if (page.attr('sectionMenu') == 'true' && page.attr('expandMain') == 'true') {
+							$('#mainContent').addClass("expandMain");
+
+						}else{
+							$('#mainContent').removeClass("expandMain");
+						}
+
 						// add section menu unless turned off
 						if ($(this).attr('menu') != 'headings' && $(this).attr('menu') != 'neither' && page.attr('sectionMenu') != 'true') {
 							
@@ -1545,7 +1515,7 @@ function parseContent(pageID, sectionNum, addHistory) {
 						var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '',
 							links = $(this).attr('links') != undefined && $(this).attr('links') != "none" ? '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>' : '',
 							subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h1>' + $(this).attr('name') + '</h1>' : '';
-						
+
 						var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
 						
 						var section = $('<section id="' + pageHash + 'section' + (index+1) + '">' + pageHeader + '</section>');
@@ -1588,8 +1558,8 @@ function parseContent(pageID, sectionNum, addHistory) {
 							if (this.nodeName == 'markup'){
 							
 								if ( $(this).attr('url') != undefined ){
-								
-									section.append( $('<div/>').load( eval( $(this).attr('url') ) ));
+									
+									section.append( $('<div/>').load( $(this).attr('url') ));
 								
 								} else {
 								
@@ -1647,11 +1617,11 @@ function parseContent(pageID, sectionNum, addHistory) {
 							}
 							
 							if (this.nodeName == 'image'){
-								section.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+								section.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
 							}
 							
 							if (this.nodeName == 'audio'){
-								section.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+								section.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 							}
 							
 							if (this.nodeName == 'video'){
@@ -1664,7 +1634,7 @@ function parseContent(pageID, sectionNum, addHistory) {
 							}
 							
 							if (this.nodeName == 'pdf'){
-								section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+								section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
 							}
 							
 							if (this.nodeName == 'xot'){
@@ -1708,17 +1678,8 @@ function parseContent(pageID, sectionNum, addHistory) {
 						//add the section to the document
 						$('#mainContent').append(section);
 						
-						// Resolve all text box added <img> and <a> src/href tags to proper urls
-						$('#mainContent').find('img,a').each(function() {
-							var $this = $(this),
-								val = $this.attr('src') || $this.attr('href'),
-								attr_name = $this.attr('src') ? 'src' : 'href';
-
-							if (val != undefined && val.substring(0, 16) == "FileLocation + '") {
-								$this.attr(attr_name, eval(val));
-							}
-						});
-						
+						// lightbox image links might also need to be added
+						setUpLightBox(page, $(this));
 					}
 				});
 				
@@ -1732,13 +1693,18 @@ function parseContent(pageID, sectionNum, addHistory) {
 
 				// Queue reparsing of MathJax - fails if no network connection
 				try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+				
+				// check text for variables - if found make sure it contains the current var value
+				if (XBOOTSTRAP.VARIABLES && XBOOTSTRAP.VARIABLES.exist()) {
+					XBOOTSTRAP.VARIABLES.updateVariable();
+				}
 
 				//$('body').scrollSpy('refresh'); //seems to cause a bunch of errors with tabs
 				$('#toc a:first').tab('show');
 				
 				//an event for user defined code to know when loading is done
 				$(document).trigger('contentLoaded');
-				
+
 				//force facebook / twitter objects to initialise
 				//twttr.widgets.load(); // REMOVED??
 				
@@ -1750,6 +1716,8 @@ function parseContent(pageID, sectionNum, addHistory) {
 			}
 		}
 	}
+	
+	XBOOTSTRAP.VARIABLES.handleSubmitButton();
 	
 	if (sectionNum != undefined) {
 		
@@ -1763,6 +1731,62 @@ function parseContent(pageID, sectionNum, addHistory) {
 	}
 }
 
+// Get the page / section info from the URL (called on project load & when page changed via browser fwd/back btns)
+function getHashInfo(urlHash) {
+	if (urlHash.length > 0) {
+		var pageLink = urlHash[0] == '#' ? urlHash.substring(1) : urlHash,
+			thisPage,
+			thisSection;
+		
+		if (pageLink.substring(0,4) == "page") {
+			if (pageLink.substring(4).indexOf('section') > -1) {
+				thisPage = parseInt(pageLink.substring(4,pageLink.indexOf('section')), 10) - 1;
+				thisSection = parseInt(pageLink.substring(pageLink.indexOf('section') + 7), 10);
+			} else {
+				thisPage = parseInt(pageLink.substring(4), 10) - 1;
+			}
+			
+			thisPage = thisPage < 0 ? 0 : thisPage;
+			
+		} else {
+			if (pageLink.indexOf('section') > -1) {
+				thisPage = pageLink.substring(0, pageLink.indexOf('section'));
+				thisSection = pageLink.substring(pageLink.indexOf('section') + 7);
+			} else {
+				thisPage = pageLink;
+			}
+		}
+		
+		return [thisPage, thisSection];
+		
+	} else {
+		return false;
+	}
+}
+
+// browser back / fwd button will trigger this - manually make page change to match page hash info
+window.onhashchange = function() {
+	var pageSectionInfo = getHashInfo(window.location.hash),
+		tempPage,
+		tempSection;
+	
+	if (pageSectionInfo != false) {
+		tempPage = pageSectionInfo[0];
+		tempSection = pageSectionInfo[1];
+		
+		parseContent({ type: "check", id: tempPage }, tempSection, false);
+	}
+}
+
+// jump to specified section of current page
+function goToSection(pageId) {
+	sectionJump = document.getElementById(pageId);
+	if (sectionJump != undefined) {
+		var top = sectionJump.offsetTop;
+		window.scrollTo(0, top);
+	}
+}
+
 // LO level header background settings will be overridden by individual page ones (& returned to LO settings if page contains no background properties)
 function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTextColour) {
 	
@@ -1773,7 +1797,7 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 		
 		if (header != 'none') {
 			
-			bgImg = "url('" + eval(header) + "')";
+			bgImg = "url('" + header + "')";
 			
 		}
 		
@@ -1937,11 +1961,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'image'){
-				tab.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				tab.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
 			}
 
 			if (this.nodeName == 'audio'){
-				tab.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				tab.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
@@ -1976,7 +2000,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			
 			if (this.nodeName == 'pdf'){
 				
-				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '#page=1&view=fitH"></object>');
+				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '#page=1&view=fitH"></object>');
 				pdf.push(tab.find('object'));
 				
 			}
@@ -2080,11 +2104,11 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'image'){
-				inner.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				inner.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
 			}
 
 			if (this.nodeName == 'audio'){
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
@@ -2115,7 +2139,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'pdf'){
-				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
 			}
 			
 			if (this.nodeName == 'xot'){
@@ -2190,11 +2214,11 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'image'){
-				pane.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				pane.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
 			}
 
 			if (this.nodeName == 'audio'){
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
@@ -2227,7 +2251,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'pdf'){
-				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
 			}
 			
 			if (this.nodeName == 'xot'){
@@ -2508,8 +2532,6 @@ function setUpVideo(url, iframeRatio, id) {
 			mimeType = "vimeo";
 			iframeRatio = getAspectRatio(iframeRatio);
 			
-		} else {
-			vidSrc = eval(vidSrc);
 		}
 		
 		mimeType = 'video/' + mimeType;
@@ -2517,3 +2539,722 @@ function setUpVideo(url, iframeRatio, id) {
 		return ['<div class="vidHolder"><video src="' + vidSrc + '" type="' + mimeType + '" id="player' + id + '" controls="controls" preload="metadata" style="max-width: 100%" width="100%" height="100%"></video></div>', iframeRatio];
 	}
 }
+
+// by default images can be clicked to open larger version in lightbox viewer - this can be overridden with optional properties at LO, page & section level
+function setUpLightBox(thisPageInfo, thisSectionInfo) {
+	if (thisSectionInfo.attr("lightbox") == "true" || (thisSectionInfo.attr("lightbox") != "false" && (thisPageInfo.attr("lightbox") == "true" || (thisPageInfo.attr("lightbox") != "false" && $(data).find('learningObject').attr('lightbox') != "false")))) {
+		
+		// use the x_noLightBox class to force images to not open in lightboxes
+		$("#mainContent img:not('.x_noLightBox')").each(function( index ) {
+			var $this = $(this);
+			if ($this.closest('a').length == 0) {
+				if (!$this.parent().hasClass('lightboxWrapper')) {
+					var imgPath = $(this).prop('src');
+					$(this)
+						.wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">')
+						.data('lightboxCaption', thisSectionInfo.attr("lightboxCaption"));
+				}
+			}
+		});
+		
+		$.featherlight.prototype.afterContent = function(e) {
+			var caption = this.$currentTarget == undefined ? undefined : this.$currentTarget.find('img').attr('alt'),
+				sectionCaption = e == undefined ? undefined : $(e.target).data('lightboxCaption');
+			
+			if (caption != undefined && caption != '') {
+				this.$instance.find('.featherlight-content img').attr('alt', caption);
+				
+				// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
+				// captions can be turned on at LO, page or section level
+				var captionType = "false";
+				if (sectionCaption != undefined) {
+					captionType = sectionCaption;
+				} else if (thisPageInfo.attr("lightboxCaption") != undefined) {
+					captionType = thisPageInfo.attr("lightboxCaption");
+				} else if ($(data).find('learningObject').attr("lightboxCaption") != undefined) {
+					captionType = $(data).find('learningObject').attr("lightboxCaption");
+				}
+				
+				if (captionType != "false") {
+					this.$instance.find('.caption').remove();
+					var before = captionType == "above" ? true : false;
+					
+					if (before == true) {
+						$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+					} else {
+						$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+					}
+				}
+			}
+		}
+	}
+}
+
+// handle case where comma decimal separator has been requested
+function checkDecimalSeparator(value, forcePeriod) {
+	if (forcePeriod == true) {
+		// force convert to . so any dependant variables can be calculated correctly (can later be converted to , when shown on page)
+		if ($(data).find('learningObject').attr('decimalseparator') !== undefined && $(data).find('learningObject').attr('decimalseparator') === 'comma') {
+			var temp = value.replace(/\,/g, '.');
+			if ($.isNumeric(temp)) {
+				return temp;
+			} else {
+				return value;
+			}
+		} else {
+			return value;
+		}
+		
+	} else {
+		// convert to , as it is to be shown on page
+		if ($.isNumeric(value) && $(data).find('learningObject').attr('decimalseparator') !== undefined && $(data).find('learningObject').attr('decimalseparator') === 'comma') {
+			return String(value).replace('.', ',');
+		} else {
+			return value;
+		}
+	}
+}
+
+// function returns correct phrase from language file or uses fallback if no matches / no language file
+function getLangInfo(node, attribute, fallBack) {
+    var string = fallBack;
+    if (node != undefined && node != null) {
+        if (attribute == false) {
+            string = node.childNodes[0].nodeValue;
+        } else {
+            string = node.getAttribute(attribute);
+        }
+    }
+    return string;
+}
+
+
+
+
+// _____ VARIABLES _____
+
+var XBOOTSTRAP = (function ($, parent) { var self = parent.VARIABLES = {};
+
+    // Declare local variables
+	var	variables = [],
+		variableInfo = [],
+		variableErrors = [],
+		dynamicCalcs = [],
+		dynamicID = 1,
+		varsChanged = false,
+
+	// function starts the calculation of variables set by author via the variables optional property
+	init = function (variableData) {
+		
+		// clears arrays if they have previously been calculated
+		variables.splice(0, variables.length);
+		variableInfo.splice(0, variableInfo.length);
+		variableErrors.splice(0, variableErrors.length);
+
+		var i, j, k, temp, thisVar,
+			toCalc = [];
+		
+		variableInfo = variableData.split("||");
+
+		// get array of data for all uniquely named variables & sort them so empty strings etc. become undefined
+		for (i=0; i<variableInfo.length; i++) {
+			var temp = variableInfo[i].split("|");
+			thisVar = {name:$.trim(temp[0]), data:temp.slice(1), requires:[]}; // data = [fixed value, [random], min, max, step, decimal place, significant figure, trailing zero, [exclude], default]
+			if (thisVar.name != "" && variableInfo.filter(function(a){ return a.name == thisVar.name }).length == 0) {
+				for (j=0; j<thisVar.data.length; j++) {
+					if (j == 1 || j == 8) { // convert data (random/exclude) to array
+						thisVar.data.splice(j, 1, thisVar.data[j].split(","));
+						for (k=0; k<thisVar.data[j].length; k++) {
+							temp = $.trim(thisVar.data[j][k]);
+							if (temp === "") {
+								thisVar.data[j].splice(k, 1);
+								k--;
+							} else {
+								thisVar.data[j].splice(k, 1, temp);
+							}
+						}
+					} else {
+						temp = $.trim(thisVar.data[j]);
+						if (temp === "") {
+							temp = undefined;
+						}
+						thisVar.data.splice(j, 1, temp);
+					}
+				}
+
+				variableInfo.splice(i, 1, thisVar);
+				toCalc.push(i);
+
+			} else {
+				variableInfo.splice(i, 1);
+				i--;
+			}
+		}
+		
+		calcVariables(toCalc);
+	},
+
+	// Check if we have any variables to deal with
+	exist = function () {
+		return variables.length > 0;
+	},
+
+	calcVariables = function (toCalc) {
+		var lastLength, checkDefault,
+			thisVar, i;
+
+		// goes through all variables and attempts to calculate their value
+		// may loop several times if variables require other variable values to be ready before calculating their value
+		// stops when no. var values calculated is no longer increasing - either all done or some vars can't be calculated (circular calculations or referencing non-existant vars)
+		while (toCalc.length > 0 && (toCalc.length != lastLength || checkDefault == true)) {
+			lastLength = toCalc.length;
+
+			for (i=0; i<toCalc.length; i++) {
+				thisVar = calcVar(variableInfo[toCalc[i]], false, checkDefault);
+				if (thisVar.ok == true) {
+					thisVar.requiredBy = [];
+					variables.push(thisVar);
+					toCalc.splice(i,1);
+					i--;
+					if (thisVar.default == true) {
+						checkDefault = false;
+					}
+				} else if (thisVar.ok == false) {
+					variableErrors.push(thisVar);
+					toCalc.splice(i,1);
+					i--;
+				}
+
+				if (i + 1 == toCalc.length && toCalc.length == lastLength) {
+					checkDefault = checkDefault == true ? false : true;
+				}
+			}
+		}
+
+		for (i=0; i<toCalc.length; i++) {
+			thisVar = variableInfo[toCalc[i]];
+			thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "undef", "References an undefined variable");
+			variableErrors.push(thisVar);
+			toCalc.splice(i,1);
+			i--;
+		}
+		
+		if (authorSupport == true && (variables.length > 0 || variableErrors.length > 0)) {
+			$('#overview .titles').prepend('<span class="varMsg">' + '<a onclick="XBOOTSTRAP.VARIABLES.showVariables()" href="javascript:void(0)" class="alertMsg">' + getLangInfo(languageData.find("authorVars")[0], "label", "View variable data") + '</a></span>');
+		}
+	},
+
+	// function calculates the value of any author set variables
+	calcVar = function (thisVar, recalc, checkDefault) {
+		thisVar.ok = undefined;
+
+		// calculate min / max / step values
+		var data = {min:thisVar.data[2], max:thisVar.data[3], step:thisVar.data[4]},
+			exclude = [], index;
+
+		for (var key in data) {
+			if (Object.prototype.hasOwnProperty.call(data, key)) {
+				// check for use of other variables & keep track of which are required
+				if (data[key] != undefined && ((thisVar.data[0] == undefined && thisVar.data[1].length == 0) || key != "step")) {
+					var info = getVarValues(data[key], thisVar.name);
+					data[key] = info[0];
+					if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+
+					thisVar.ok = info[2];
+					if (thisVar.ok != true) { // a variable needed doesn't exist / hasn't been calculated yet
+						break;
+					} else {
+						data[key] = Number(data[key]);
+					}
+				}
+			}
+		}
+
+		// calculate exclude values
+		if ((thisVar.ok == true || thisVar.ok == undefined) && thisVar.data[8].length > 0) {
+			exclude = thisVar.data[8].slice();
+			// check for use of other variables & keep track of which are required
+			for (var i=0; i<exclude.length; i++) {
+				var info = getVarValues(exclude[i], thisVar.name);
+				exclude.splice(i, 1, info[0]);
+				if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+
+				thisVar.ok = info[2];
+				if (info[2] != true) {  // a variable needed doesn't exist / hasn't been calculated yet
+					break;
+
+				} else if (typeof exclude[i] === "string" && exclude[i].indexOf("&&") != -1) {
+					// it's a range e.g. -2<&&<2 or -2<=&&<=2
+					var temp = exclude[i].split("&&").filter(function (a) { return a.indexOf("<") > -1 || a.indexOf(">") > -1; });
+					if (temp.length == 2) {
+						temp.splice(0, 1, temp[0] + "[" + thisVar.name + "]");
+						temp.splice(1, 1, "[" + thisVar.name + "]" + temp[1]);
+						exclude.splice(i, 1, temp);
+					}
+				}
+			}
+		}
+
+		// no missing dependancies so far
+		if (thisVar.ok == true || thisVar.ok == undefined) {
+
+			if (data.min != undefined && data.max != undefined && data.min > data.max) {
+				// fail because min > max
+				thisVar.ok = false;
+				thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "minMax", "min > max") + " (" + data.min + " > " + data.max + ")";
+
+			} else if (thisVar.data[0] != undefined || thisVar.data[1].length > 0) {
+				if (thisVar.data[0] != undefined) {
+					// FIXED VALUE
+					thisVar.type = "fixed";
+					thisVar.value = thisVar.data[0];
+
+					// check for use of other variables & keep track of which are required
+					var info = getVarValues(thisVar.value, thisVar.name);
+					thisVar.value = info[0];
+					if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+					thisVar.ok = info[2];
+
+				} else if (thisVar.data[1].length > 0) {
+					// RANDOM FROM LIST
+					thisVar.type = "random";
+
+					index = Math.floor(Math.random()*thisVar.data[1].length);
+					thisVar.value = thisVar.data[1][index];
+
+					// check for use of other variables & keep track of which are required
+					var info = getVarValues(thisVar.value, thisVar.name);
+					thisVar.value = info[0];
+					if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+					thisVar.ok = info[2];
+
+				}
+
+				if (thisVar.ok == true) {
+					if (data.min != undefined && data.min > thisVar.value) {
+						// fail because value < min
+						if (thisVar.type == "random") {
+							thisVar.ok = "retry";
+						} else {
+							thisVar.ok = false;
+						}
+						thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "valueMin", "value < min") + " (" + thisVar.value + " < " + data.min + ")";
+
+					} else if (data.max != undefined && data.max < thisVar.value) {
+						// fail because value > max
+						if (thisVar.type == "random") {
+							thisVar.ok = "retry";
+						} else {
+							thisVar.ok = false;
+						}
+						thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "valueMax", "value > max") + " (" + thisVar.value + " > " + data.max + ")";
+					}
+				}
+
+			} else if (data.min != undefined || data.max != undefined) { // from max & min
+				// RANDOM BETWEEN MIN & MAX VALUES
+				thisVar.type = "minMax";
+
+				// uses defaults of min=0 & max=100 if only min or max are set
+				if (data.min == undefined) {
+					data.min  = 0;
+				} else if (data.max == undefined) {
+					data.max = 100;
+				}
+
+				// use default of 1 for step
+				if (data.step == undefined) {
+					data.step = 1;
+				}
+
+				var maxDecimal = Math.max(Math.floor(data.min) === data.min ? 0 : data.min.toString().split(".")[1].length || 0, Math.floor(data.step) === data.step ? 0 : data.step.toString().split(".")[1].length || 0);
+				thisVar.value = Math.floor(Math.random()*(((data.max - data.min) / data.step) + 1)) * data.step + data.min;
+				if (thisVar.value > data.max) { thisVar.value = thisVar.value - data.step; } // can be over max if step doesn't take to exact max number - adjust for this
+				thisVar.value = thisVar.value.toFixed(maxDecimal); // forces correct decimal num - should work without this but occasionally it ends up with e.g. 1.1999999999999.... instead of 1.2
+				thisVar.ok = true;
+
+			} else if (thisVar.type == undefined) {
+				thisVar.ok = false;
+				thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "none", "No variable data");
+			}
+		}
+
+		if (thisVar.ok == true && $.isNumeric(Number(thisVar.value))) {
+			// to significant figure
+			if ($.isNumeric(Number(thisVar.data[6]))) {
+				thisVar.value = Number(thisVar.value).toPrecision(Number(thisVar.data[6])).includes('e') ? parseFloat(Number(thisVar.value).toPrecision(Number(thisVar.data[6]))) : Number(thisVar.value).toPrecision(Number(thisVar.data[6]));
+			}
+			// to decimal place
+			if ($.isNumeric(Number(thisVar.data[5]))) {
+				thisVar.value = Number(thisVar.value).toFixed(Number(thisVar.data[5]));
+				if (thisVar.data[7] != "true") {
+					// remove trailing zeros
+					thisVar.value = Number(thisVar.value);
+				}
+			}
+		}
+
+		// check value isn't one that should be excluded
+		if (thisVar.ok == true) {
+			for (var i=0; i<exclude.length; i++) {
+				var clash = false;
+				if (typeof exclude[i] == "number") {
+					if (exclude[i] == thisVar.value) {
+						clash = true;
+					}
+
+				// it's an exclude range
+				} else if (typeof exclude[i] == "object") {
+					for (var j=0; j<exclude[i].length; j++) {
+						exclude[i].splice(j, 1, exclude[i][j].replace("[" + thisVar.name + "]", thisVar.value));
+					}
+					if (eval(exclude[i][0]) && eval(exclude[i][1])) {
+						clash = true;
+					}
+				}
+
+				if (clash == true) {
+					if (thisVar.type == "fixed") {
+						thisVar.ok = false;
+						thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "exclude", "{n} is excluded").replace("{n}", thisVar.value);
+					} else {
+						thisVar.ok = "retry";
+						thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "exclude", "{n} is excluded").replace("{n}", thisVar.value);
+					}
+					break;
+				}
+			}
+
+		} else if (thisVar.ok == false && thisVar.info == undefined) {
+			thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "circular", "Circular variable reference");
+		}
+
+		// only retry random if there's a value that hasn't already failed
+		if (thisVar.ok == "retry" && thisVar.type == "random") {
+			thisVar.data[1].splice(index, 1);
+			if (thisVar.data[1].length == 0) {
+				thisVar.ok = false;
+				thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "none", "All possible values are excluded or fall outside the min & max range");
+			}
+		}
+
+		// retry multiple times to see if we can get a valid value
+		if (thisVar.ok == "retry") {
+			var attempts = 100;
+
+			if (recalc != true) {
+				var counter = 0;
+				do {
+					thisVar = calcVar(thisVar, true);
+					counter++;
+				} while (counter < attempts && thisVar.ok == "retry");
+
+				if (thisVar.ok == "retry") {
+					thisVar.ok = false;
+					thisVar.info = " " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "none2", "{n} attempts have not returned an accepted value").replace("{n}", attempts);
+				} else if (thisVar.ok == true) {
+					thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "attempts", "{n} attempts to calculate a valid value").replace("{n}", (counter + 1));
+				}
+			}
+		}
+
+		// fallback to default
+		if (thisVar.data[9] != undefined && (thisVar.ok == false || checkDefault == true)) {
+			try {
+				var sum = eval(thisVar.data[9]);
+				thisVar.value = sum;
+			} catch (e) {
+				thisVar.value = thisVar.data[9];
+			}
+			thisVar.requiredBy = [];
+			thisVar.default = true;
+			thisVar.ok = true;
+			thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "default", "Fallback to default value");
+		}
+		
+		return thisVar;
+	},
+
+	// function updates a variable update
+	setVariable = function (name, value) {
+		var dependants;
+
+		for (var i=0; i<variables.length; i++) {
+			if (variables[i].name == name) {
+				variables[i].value = checkDecimalSeparator(value, true);
+				dependants = variables[i].requiredBy;
+				break;
+			}
+		}
+		
+		return dependants;
+	},
+
+	// function updates all variables on screen with the current value
+	updateVariable = function () {
+		
+		if (varsChanged == true) {
+			
+			for (var i=0; i<$('.x_var').length; i++) {
+				
+				var $thisVarSpan = $($('.x_var')[i]),
+					classes = $thisVarSpan.attr('class').split(' '),
+					varName;
+				
+				for (var j=0; j<classes.length; j++) {
+					if (classes[j].indexOf('x_var_') == 0) {
+						varName = classes[j].substring(6);
+						break;
+					}
+				}
+				
+				if (varName != '') {
+					for (var j=0; j<variables.length; j++) {
+						if (variables[j].name == varName) {
+							$thisVarSpan.html(checkDecimalSeparator(variables[j].value));
+							break;
+						}
+					}
+				}
+			}
+		}
+	},
+
+	// function gets values of other variables needed for calculation and evals the value when everything's ready
+	getVarValues = function (thisValue, thisName) {
+		var requires = [];
+
+		if (thisValue.indexOf("[" + thisName + "]") != -1) {
+			return [thisValue, requires, false];
+		}
+
+		if (String(thisValue).indexOf("[") != -1) {
+			for (var i=0; i<variables.length; i++) {
+				if (thisValue.indexOf("[" + variables[i].name + "]") != -1) {
+					// keeps track of what other variables reference this so they can be recalculated together if needed
+					if (variables[i].requiredBy.indexOf(thisName) == -1) {
+						variables[i].requiredBy.push(thisName);
+					}
+					requires.push(variables[i].name);
+
+					RegExp.esc = function(str) {
+						return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+					};
+					var regExp = new RegExp(RegExp.esc("[" + variables[i].name + "]"), "g");
+					thisValue = thisValue.replace(regExp, variables[i].value);
+					if (thisValue.indexOf("[") == -1) { break; }
+				}
+			}
+		}
+
+		try {
+			var sum = eval(thisValue);
+			return [sum, requires, true];
+		} catch (e) {
+			if (thisValue.indexOf("[") == -1) {
+				return [thisValue, requires, true]; // string
+			} else {
+				return [thisValue, requires, "variable"];
+			}
+		}
+	},
+
+	// function displays author set variables in popup when in author support mode
+	showVariables = function () {
+		var varHeadings = ["Name", "Fixed Value", "Random", "Min", "Max", "Step", "DP", "SF", "Trailing Zeros", "Exclude", "Default"];
+		var pageText = '<html><body><style>table, tr, td, th { border: 1px solid black; text-align: left; } th { background-color: LightGray; } table { border-collapse: collapse; min-width: 100%; } th, td { padding: 1em; width: ' + (100/(varHeadings.length+1)) + '%; } .alert { color: red; } td:nth-child(1), td:nth-child(2) { font-weight: bold; } </style><table>',
+			cells, temp, infoTxt;
+
+		for (var i=0; i<varHeadings.length; i++) {
+			pageText += '<th>' + getLangInfo(languageData.find("authorVars").find("item")[i], false, varHeadings[i]) + '</th>';
+			if (i == 0) {
+				pageText += '<th>' + getLangInfo(languageData.find("authorVars").find("item")[varHeadings.length], false, "Value") + '</th>';
+			}
+		}
+
+		for (var i=0; i<variables.length; i++) {
+			cells = "";
+			for (var j=0; j<variables[i].data.length; j++) {
+				temp = variables[i].data[j] === undefined ? "" : variables[i].data[j];
+				cells += '<td>' + temp + '</td>';
+			}
+			infoTxt = variables[i].info == undefined ? "" : '<br/><span class="alert">' + variables[i].info + '</span>';
+			pageText += '<tr><td>' + variables[i].name + '</td><td>' + variables[i].value + infoTxt + '</td>' + cells + '</tr>';
+		}
+
+		for (var i=0; i<variableErrors.length; i++) {
+			cells = "";
+			for (var j=0; j<variableErrors[i].data.length; j++) {
+				temp = variableErrors[i].data[j] === undefined ? "" : variableErrors[i].data[j];
+				cells += '<td>' + temp + '</td>';
+			}
+			pageText += '<tr style="background-color: LightGray;"><td>' + variableErrors[i].name + '</td><td>' + variableErrors[i].info + '</td>' + cells + '</tr>';
+		}
+
+		pageText += '</table></body></html>';
+
+		window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12px">' + pageText + '</p>');
+	},
+	
+	replaceVariables = function (tempText) {
+
+		tempText = tempText.replace(
+			new RegExp('\\[\\{(.*?)\\}(?:\\s|&nbsp;)*(?:(?:\\,(?:\\s|&nbsp;)*?(\\d+?)?))?\\]|<span class="x_var x_dyn_(.*?)">(?:.*?)</span>', 'g'),
+			function (match, contents, round, id) {
+				if (contents) {
+					id = dynamicID++;
+					dynamicCalcs[id] = [contents, round];
+				}
+
+				var result = variables.reduce(function(accumulator, variable) {
+					return accumulator.replace(new RegExp('\\[' + variable.name + '\\]', 'g'), checkDecimalSeparator(variable.value));
+				}, dynamicCalcs[id][0]);
+				round = dynamicCalcs[id][1];
+				
+				try {
+					var ev = eval( result );
+					result = Math.round(
+						ev * (round = Math.pow(10, round ? round  : 16))
+					) / round;
+				}
+				catch (e) {}
+				
+				$('.x_dyn_' + id).html(checkDecimalSeparator(result));
+				return '<span class="x_var x_dyn_' + id + '">' + result + '</span>';
+			}
+		);
+		
+		for (var k=0; k<variables.length; k++) {
+			// if it's first attempt to replace vars on this page look at vars in image tags first
+			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
+			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
+				var $tempText = $(tempText);
+				for (var m=0; m<$tempText.find('img').length; m++){
+					var tempImgTag = $tempText.find('img')[m].outerHTML,
+						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+					tempImgTag = tempImgTag.replace(regExp2, checkDecimalSeparator(variables[k].value));
+					$($tempText.find('img')[m]).replaceWith(tempImgTag);
+				}
+				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
+			}
+			
+			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
+			var regExp = new RegExp('\\[' + variables[k].name + '\\]|<span class="x_var x_var_' + variables[k].name + '">(.*?)</span>', 'g');
+			tempText = tempText.replace(regExp, '<span class="x_var x_var_' + variables[k].name + '">' + checkDecimalSeparator(variables[k].value) + '</span>');
+			
+			// replace with a text input field which the end user can use to set the value of the variable
+			regExp = new RegExp('\\[=' + variables[k].name + '\\]', 'g');
+			tempText = tempText.replace(regExp, '<input type="text" name="' + variables[k].name + '" class="x_varInput">');
+			
+			// this format of the text input field has specified a default value
+			regExp = new RegExp('\\[=' + variables[k].name + ':(.*?)\\]', 'g');
+			
+			var matches = tempText.match(regExp);
+			if (matches != null) {
+				for (var m=0; m<matches.length; m++) {
+					tempText = tempText.replace(matches[m], '<input type="text" name="' + variables[k].name + '" class="x_varInput" placeholder="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '">');
+				}
+			}
+		}
+		
+		// replace with a submit button which will submit all the new variable values entered on the page
+		var submitBtnLabel = getLangInfo(languageData.find("submitBtnLabel")[0], "label", "Submit");
+		var regExp = new RegExp('\\[\\+submit\\]', 'g');
+		tempText = tempText.replace(regExp, '<input type="submit" value="' + submitBtnLabel + '" class="x_varSubmit">');
+		
+		// this format of the submit button has specified a default value
+		regExp = new RegExp('\\[\\+submit:(.*?)\\]', 'g');
+		
+		var matches = tempText.match(regExp);
+		if (matches != null) {
+			for (var m=0; m<matches.length; m++) {
+				tempText = tempText.replace(matches[m], '<input type="submit" value="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '" class="x_varSubmit">');
+			}
+		}
+		
+		return tempText;
+	},
+
+	handleSubmitButton = function () {
+		// is there a submit button & at least one variable input?
+		if ($('.x_varSubmit').length > 0 && $('.x_varInput').length > 0) {
+			$('.x_varSubmit').click(function() {
+				var dependants = [],
+					changed = [],
+					i, j, k;
+				
+				// update the variables changed via text fields
+				for (i=0; i<$('.x_varInput').length; i++) {
+					if ($('.x_varInput')[i].value != '') {
+						changed.push($('.x_varInput')[i].name);
+						var temp = setVariable($('.x_varInput')[i].name, $('.x_varInput')[i].value);
+						if (temp.length > 0) {
+							$.merge(dependants, temp);
+						}
+					}
+				}
+				
+				// as well as updating any variables that have been directly changed there may be dependants of those variables to change too
+				if (dependants.length > 0) {
+					dependants = dependants.filter(function(a){if (!this[a]) {this[a] = 1; return a;}},{});
+					
+					for (i=0; i<dependants.length; i++) {
+						for (j=0; j<variables.length; j++) {
+							if (dependants[i] == variables[j].name) {
+								for (k=0; k<variables[j].requiredBy.length; k++) {
+									if ($.inArray(variables[j].requiredBy[k], dependants) == -1) {
+										dependants.push(variables[j].requiredBy[k]);
+									}
+								}
+							}
+						}
+					}
+					
+					var toCalc = [];
+					for (i=0; i<variableInfo.length; i++) {
+						if ($.inArray(variableInfo[i].name, dependants) > -1) {
+							changed.push(variableInfo[i].name);
+							toCalc.push(i);
+							
+							// clear current variable value
+							for (k=0; k<variables.length; k++) {
+								if (variableInfo[i].name == variables[k].name) {
+									variables.splice(k,1);
+									break;
+								}
+							}
+						}
+					}
+					
+					calcVariables(toCalc);
+				}
+				
+				// should this page be immediately updated to show changes to the variable values?
+				if ($(data).find('page').eq(currentPage).attr('varUpdate') != 'false') {
+					for (i=0; i<variables.length; i++) {
+						for (j=0; j<changed.length; j++) {
+							if (variables[i].name == changed[j]) {
+								$('.x_var_' + variables[i].name).html(checkDecimalSeparator(variables[i].value));
+							}
+						}
+					}
+				}
+				
+				// submit confirmation message
+				if (changed.length > 0) {
+					varsChanged = true;
+					alert($(data).find('page').eq(currentPage).attr('varConfirm') != undefined && $(data).find('page').eq(currentPage).attr('varConfirm') != '' ? $(data).find('page').eq(currentPage).attr('varConfirm') : getLangInfo(languageData.find("submitConfirmMsg")[0], "label", "Your answers have been submitted"));
+				}
+			});
+		}
+	};
+	
+	// make some public methods
+    self.init = init;
+	self.exist = exist;
+	self.handleSubmitButton = handleSubmitButton;
+	self.replaceVariables = replaceVariables;
+	self.showVariables = showVariables;
+	self.updateVariable = updateVariable;
+
+return parent; })(jQuery, XBOOTSTRAP || {});

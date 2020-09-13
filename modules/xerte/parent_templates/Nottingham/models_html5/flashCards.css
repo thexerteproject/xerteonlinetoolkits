@@ -160,6 +160,9 @@
 	.emptyDiv {
 		height: 4em;
 	}
+    .flipBtn{
+	z-index: 1;
+    }
 	
 	#cardNoHolder {
 		display: table-row;

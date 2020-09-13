@@ -715,10 +715,12 @@ td.wizardparameter{
     width:20px;
 }
 td.wizardlabel {
-    width: 175px;
+	width: 20%;
+    min-width: 175px;
 }
 .wizardgroup td.wizardlabel {
-    width: 155px;
+	width: 19%;
+    min-width: 155px;
 }
 
 td.wizardvalue {
@@ -1250,6 +1252,10 @@ div.theme_description
 
 .categoryList input {
 	margin-right: 1em;
+}
+.featherlight iframe {
+	height: 90vh;
+	width: 90vw;
 }
 
 /* start of xertecss.css

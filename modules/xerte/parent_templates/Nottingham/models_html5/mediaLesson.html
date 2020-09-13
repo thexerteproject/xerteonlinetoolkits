@@ -314,7 +314,7 @@
 			}
 			var progress = XThelperDetermineProgress(vidFullWatched) * 100.0;
 			this.sendXAPI(vidFullWatched, progress);
-			XTVideo(x_currentPage, trackinglabel, "", "exit", vidFullWatched);
+			XTVideo(x_currentPage, trackinglabel, "", "exit", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
 		};
 		// function called when page first loads
 		/*
@@ -385,7 +385,7 @@
 
             window.correctQuestions = 0;
             XTSetPageType(x_currentPage, 'numeric',numOfQuestions , this.weighting);
-            XTVideo(x_currentPage, trackinglabel, "", "initialized", vidFullWatched);
+            XTVideo(x_currentPage, trackinglabel, "", "initialized", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
             currSegment = {
                 start: 0,
                 end: -1
@@ -730,7 +730,7 @@
                 vidFullWatched.duration = mediaLesson.popcornInstance.duration();
                 vidFullWatched.time = popTime;
                 duration = mediaLesson.popcornInstance.duration();
-                XTVideo(x_currentPage, trackinglabel, name, "played", vidFullWatched);
+                XTVideo(x_currentPage, trackinglabel, name, "played", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
             });
             this.popcornInstance.on( "pause", function() {
                 var popTime = mediaLesson.popcornInstance.currentTime();
@@ -753,7 +753,7 @@
                 var progress = XThelperDetermineProgress(vidFullWatched) * 100.0;
                 mediaLesson.sendXAPI(vidFullWatched, progress);
                 mediaLesson.sendXAPI(block,lookupTable(block));
-                XTVideo(x_currentPage, trackinglabel, name, "paused", vidFullWatched);
+                XTVideo(x_currentPage, trackinglabel, name, "paused", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
 
             });
             this.popcornInstance.on( "seeked", function() {
@@ -769,7 +769,7 @@
                 };
                 vidFullWatched.duration = mediaLesson.popcornInstance.duration();
                 duration = mediaLesson.popcornInstance.duration();
-                XTVideo(x_currentPage, trackinglabel, name, "seeked", vidFullWatched);
+                XTVideo(x_currentPage, trackinglabel, name, "seeked", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
                 mediaLesson.popcornInstance.pause();
                 mediaLesson.popcornInstance.play();
             });
@@ -791,7 +791,7 @@
                     start: popTime,
                     end: -1
                 };
-                XTVideo(x_currentPage, trackinglabel, name, "paused", vidFullWatched);
+                XTVideo(x_currentPage, trackinglabel, name, "paused", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
 
             });
         };
@@ -839,8 +839,8 @@
 
 		this.sendXAPI = function(block, percentageWatched)
         {
-            if (block != null)
-            	XTSetViewed(x_currentPage, block.synchName, percentageWatched)
+            //if (block != null)
+            //	XTSetViewed(x_currentPage, block.synchName, percentageWatched)
         };
 
 		// function calculates the time watched within a video block based on an array (in %).
@@ -1332,6 +1332,7 @@
                     }
 				}
 			}
+			x_pageContentsUpdated();
 		}
 
 		function isDuplicate(testArr, time){

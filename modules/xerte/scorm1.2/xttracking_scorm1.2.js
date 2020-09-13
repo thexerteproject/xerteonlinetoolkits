@@ -1500,7 +1500,7 @@ function XTSetOption(option, value)
     }
 }
 
-function XTEnterPage(page_nr, page_name)
+function XTEnterPage(page_nr, page_name, grouping)
 {
     if (state.scormmode == 'normal')
     {
@@ -1551,21 +1551,6 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
     }
 }
 
-function XTSetViewed(page_nr, name, score) {
-    if (isNaN(score) || typeof score != "number")
-    {
-        score = 0.0;
-    }
-    if (state.scormmode == 'normal')
-    {
-        var sit = state.findPage(page_nr);
-        if (sit != null && (state.scoremode != 'first' || sit.count < 1))
-        {
-            sit.score = score;
-        }
-    }
-}
-
 function XThelperConsolidateSegments(videostate)
 {
     // 1. Sort played segments on start time (first make a copy)
@@ -1601,7 +1586,7 @@ function XThelperDetermineProgress(videostate)
     return 0.0;
 }
 
-function XTVideo(page_nr, name, block_name, verb, videostate) {
+function XTVideo(page_nr, name, block_name, verb, videostate, grouping) {
     return;
 }
 

@@ -47,7 +47,7 @@
 		text-align: center;
 	}
 	.details th {
-		background: darkgray;
+		background: #434343;
 		color: #ffffff;
 	}
 	.td-center{
@@ -83,4 +83,14 @@
 	border-bottom: 1px solid #ccc;
 	padding-bottom: 1em;
 	margin-bottom: 1em;
+}
+.fas.fa-check-circle{
+	color:green;
+	background: white;
+	border-radius: 12px;
+}
+.fas.fa-times-circle{
+	color:#CD2A2A;
+	background: white;
+	border-radius: 12px;
 }

@@ -122,6 +122,7 @@ function db_query($sql, $params = array())
     $connection = database_connect();
 
     _debug("Running : $sql", 1);
+    _debug("   parameters: " . print_r($params, true));
 
     $statement = $connection->prepare($sql);
 

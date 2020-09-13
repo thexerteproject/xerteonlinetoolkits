@@ -90,35 +90,41 @@ function media_folder_loop($folder_name){
 
     $result = "";
 
-    while($f = readdir($folder_name)){
+    $d = opendir($dir_path . $folder_name);
 
-        $full = $dir_path . "/" . $f;
+    while($f = readdir($d)){
+
+        $full = $dir_path . $folder_name . $f;
 
         if(!is_dir($full)){
 
             /**
              * Create the string that the function will return
              */
-            $path = $xerte_toolkits_site->site_url . "USER-FILES/" . $end_of_path . "/media/" . $f;
+            $path = $xerte_toolkits_site->site_url . "USER-FILES/" . $end_of_path . "/media/" . $folder_name . $f;
             $buttonlbl = MEDIA_AND_QUOTA_DOWNLOAD;
 
-            if(in_use($f)){
-                $result = "<div class=\"filename found\" style=\"cursor:hand; cursor:pointer;\" onClick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $f . "')\">" . $f . "</div><div class=\"filesize found\">" . substr((filesize($full)/1000000),0,4) . " MB</div><span class=\"fileinuse found foundtextcolor\">" . MEDIA_AND_QUOTA_USE . " </span>";
+            if(in_use('media/' . $folder_name . $f)){
+                $result = "<div class=\"filename found\" style=\"cursor:hand; cursor:pointer;\" onClick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $folder_name . $f . "')\">" . $folder_name . $f . "</div><div class=\"filesize found\">" . substr((filesize($full)/1000000),0,4) . " MB</div><span class=\"fileinuse found foundtextcolor\">" . MEDIA_AND_QUOTA_USE . " </span>";
 
             }else{
-                $result = "<div class=\"filename notfound\" style=\"cursor:hand; cursor:pointer;\" onClick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $f . "')\">" . $f . "</div><div class=\"filesize notfound\">" . substr((filesize($full)/1000000),0,4) . " MB</div><div class=\"fileinuse notfound notfoundtextcolor\">" . MEDIA_AND_QUOTA_NOT_IN_USE . " <img alt=\"Click to delete\" title=\"" . MEDIA_AND_QUOTA_DELETE . "\"  onclick=\"javascript:delete_file('" . $dir_path . "/" . $f . "')" . "\" \" align=\"absmiddle\" src=\"website_code/images/delete.gif\" /></div>";
+                $result = "<div class=\"filename notfound\" style=\"cursor:hand; cursor:pointer;\" onClick=\"setup_download_link('" . $path . "', '" . $buttonlbl . "', '" . $end_of_path . "/media/" . $folder_name . $f . "')\">" . $folder_name . $f . "</div><div class=\"filesize notfound\">" . substr((filesize($full)/1000000),0,4) . " MB</div><div class=\"fileinuse notfound notfoundtextcolor\">" . MEDIA_AND_QUOTA_NOT_IN_USE . " <img alt=\"Click to delete\" title=\"" . MEDIA_AND_QUOTA_DELETE . "\"  onclick=\"javascript:delete_file('" . $dir_path . $folder_name . $f . "')" . "\" \" align=\"absmiddle\" src=\"website_code/images/delete.gif\" /></div>";
 
                 /**
                  * add the files to the delete array that are not in use  so they can be listed for use in the delete function
                  */
 
-                array_push($delete_string,$f);
+                array_push($delete_string, $folder_name . $f);
 
             }
             $quota += filesize($full);
 
             array_push($result_string,$result);
             $result="";
+        }
+        else if (strlen($f) > 0 && $f[0] != '.')
+        {
+            media_folder_loop($folder_name . $f . '/');
         }
 
     }
@@ -144,7 +150,7 @@ if(is_numeric($_POST['template_id'])) {
          * Set the paths
          */
 
-        $dir_path = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/media";
+        $dir_path = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/media/";
 
         $xmlpath = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/data.xml";
 
@@ -156,9 +162,7 @@ if(is_numeric($_POST['template_id'])) {
 
         }
 
-        $d = opendir($dir_path);
-
-        media_folder_loop($d);
+        media_folder_loop("");
 
 
         echo "<p class=\"header\"><span>" . PROPERTIES_TAB_MEDIA . "</span></p>";

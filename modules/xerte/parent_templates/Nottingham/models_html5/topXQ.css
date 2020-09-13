@@ -14,13 +14,15 @@
 #pageContents #feedback {
     clear:		both;
 }
-#pageContents #correctAnswer {
-
+#pageContents #result {
     clear:		both;
+    padding-top: 1em;
 }
-#correctAnswer h3 {
-    border-top: 1px solid #ccc;
-    padding-top: 40px;
+#pageContents #result.line {
+	border-top: 1px solid #ccc;
+}
+#correctAnswer {
+    padding-top: 1em;
 }
 #feedback h3 {
     border-top: 1px solid #ccc;
@@ -36,14 +38,14 @@
 }
 
 .titleQuestion{
-    padding-bottom: 30px;
+    padding-bottom: 1em;
 }
 
 #mainFeedback{
-    padding-top: 30px;
+    padding-top: 1em;
 }
 
 #result{
-    padding-top: 30px;
+    padding-top: 1em;
 }
 

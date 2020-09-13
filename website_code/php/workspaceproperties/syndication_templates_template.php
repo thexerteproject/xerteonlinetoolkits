@@ -51,13 +51,13 @@ $query_for_rss_templates = "select * from  {$prefix}templatedetails, {$prefix}te
 $params = array($_SESSION['toolkits_logon_id'], "creator", "co-author", "true", "true");
 $query_rss_response = db_query($query_for_rss_templates, $params);
 
-workspace_menu_create(50);
+workspace_menu_create(80);
 
-echo "<div style=\"float:left; width:40%; height:20px;\">" . SYNDICATION_TEMPLATE_TERM . "</div>";
+echo "<div style=\"float:left; width:20%; height:20px;\">" . SYNDICATION_TEMPLATE_TERM . "</div>";
 
 foreach($query_rss_response as $row_template_name) { 
 
-    echo "<div style=\"float:left; width:50%;\">" . str_replace("_","",$row_template_name['template_name']) . "</div><div style=\"float:left; width:40%;\">";
+    echo "<div style=\"float:left; width:80%;\">" . str_replace("_","",$row_template_name['template_name']) . "</div><div style=\"float:left; width:20%;\">";
 
     if($row_template_name['syndication']){
 

@@ -230,7 +230,7 @@
 			}
 			return offset;
 		}
-		
+
 		this.setUpMagnifier = function() {
 			if (x_currentPageXML.getAttribute("magnifier") == "true" && x_browserInfo.touchScreen != true) {
 				$(".magnifier").remove();
@@ -244,9 +244,9 @@
 			}
 		}
 	}
-	
+
 	textGraphics.init();
-	
+$(".magnifiedImg").attr("Alt",x_currentPageXML.getAttribute("tip"));
 </script>
 
 

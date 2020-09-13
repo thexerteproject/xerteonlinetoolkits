@@ -219,11 +219,11 @@ function get_email_headers() {
     $from = $xerte_toolkits_site->site_email_account;
     $extraheaders = str_replace("*", "\n", $xerte_toolkits_site->headers);
     $headers = "";
-    if (strpos("From:", $extraheaders) === false) {
-        $headers .= "From: " . $from . "\n" . $extraheaders;
+    if (strpos($extraheaders, "From:") === false) {
+        $headers .= "From: " . $from . "\n";
     }
-    if (strpos("Content-Type:", $extraheaders) === false) {
-        $headers .= "Content-Type: text/html; charset=\"UTF-8\"";
+    if (strpos($extraheaders, "Content-Type:") === false) {
+        $headers .= "Content-Type: text/html; charset=\"UTF-8\"\n";
     }
     $headers .= $extraheaders;
     return $headers;
@@ -237,8 +237,8 @@ function get_email_headers() {
 //
 function _is_writable($path) {
 
-    if (is_dir($path) || $path{strlen($path) - 1} == '/')
-        return _is_writable($path . ($path{strlen($path) - 1} == '/' ? "" : "/") . uniqid(mt_rand()) . '.tmp');
+    if (is_dir($path) || $path[strlen($path) - 1] == '/')
+        return _is_writable($path . ($path[strlen($path) - 1] == '/' ? "" : "/") . uniqid(mt_rand()) . '.tmp');
 
     if (file_exists($path)) {
         if (!($f = @fopen($path, 'r+')))

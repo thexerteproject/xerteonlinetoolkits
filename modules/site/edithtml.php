@@ -189,7 +189,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" type="text/css" href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/css/complex.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/css/fonts.css?version=<?php echo $version;?>" />
-    <link rel="stylesheet" type="text/css" href="editor/js/vendor/featherlight/featherlight.min.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.min.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/jqgrid/css/ui.jqgrid.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css?version=<?php echo $version;?>" />
@@ -303,11 +303,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/ckeditor/adapters/jquery.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jscolor.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/xml2json.min.js?version=<?php echo $version;?>"></script>
-<script type="text/javascript" src="editor/js/vendor/featherlight/featherlight.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/imgareaselect/jquery.imgareaselect.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery-migrate-1.2.1.js"></script>
 <script type="text/javascript" src="<?php echo $jqgridlangfile; ?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery.jqGrid.min.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/jsep.min.js?version=<?php echo $version;?>"></script>
 
 <!-- Load latest font awesome after ckeditor, other wise the latest fontawesome is overruled by the fontawsome plugin of ckeditor -->
 <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
@@ -340,8 +341,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "upload_path=\"" . $xerte_toolkits_site->flash_upload_path . "\";\n";
     echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
-    echo "simple_mode=false;\n";
-    echo "template_sub_pages=[];\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     ?>

@@ -332,11 +332,14 @@
 						}
 					});
 			}
+			
 			if (thisQ.getAttribute("questionFeedback") != "yes") {
 				$("#checkBtn").hide();
 			} else {
 				$("#checkBtn").show();
 			}
+			
+			x_pageContentsUpdated();
 		}
 		
 		
@@ -347,8 +350,6 @@
 			var	scores = $pageContents.data("scores"),
 				maxScore = 0, // max value to show on bar / line graph
 				i;
-			
-			console.log(scores);
 			
 			if (x_currentPageXML.getAttribute("scoreType") == "relative percent") {
 				// convert scores to percentage of total points scored

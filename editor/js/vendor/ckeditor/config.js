@@ -23,7 +23,7 @@ CKEDITOR.editorConfig = function( config ) {
         { name: 'others' }
     ];
 
-    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,html5audio,rubytext,wrapstyle,link,emoji';
+    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,html5audio,rubytext,wrapstyle,link,emoji,xotlightbox,numericinput';
     // The default plugins included in the basic setup define some buttons that
     // we don't want too have in a basic editor. We remove them here.
     config.removeButtons = 'Cut,Copy,Paste,Save,NewPage,Preview,Print,PageBreak,CreateDiv,Anchor,Smiley';
@@ -35,6 +35,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.toolbarCanCollapse = true;
     config.allowedContent = true;
     config.extraAllowedContent = 'p(*)[*]{*};div(*)[*]{*};li(*)[*]{*};ul(*)[*]{*}';
+    config.fillEmptyBlocks = false;
 
     config.uploadUrl = '',
 
@@ -42,8 +43,8 @@ CKEDITOR.editorConfig = function( config ) {
         'modules/xerte/parent_templates/Nottingham/common_html5/css/themeStyles.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/css/editorStyles.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/v4-shims.min.css',
 		'modules/xerte/parent_templates/Nottingham/common_html5/css/fonts.css'
     ];
 	

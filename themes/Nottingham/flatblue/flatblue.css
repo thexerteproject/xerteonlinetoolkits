@@ -25,6 +25,12 @@ x_headerBlock.x_floatLeft{
 	background:		#164883;
 	background-image:	none;
 }
+#x_footerBlock .ui-button-text{
+	color:#ffffff;
+}
+#x_footerChevron {
+	color: #ffffff;
+}
 
 #x_footerBg {
 	background-image:none;

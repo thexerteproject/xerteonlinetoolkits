@@ -19,7 +19,7 @@
  * limitations under the License.
  */
  -->
-<html xmlns:fb="http://ogp.me/ns/fb#">
+<html lang="%LANGUAGE%" xmlns:fb="http://ogp.me/ns/fb#">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
@@ -53,6 +53,8 @@
 
     <!--font awesome-->
     <link rel="stylesheet" href="%TEMPLATEPATH%common/font-awesome-4.3.0/css/font-awesome.min.css">
+    <link href="%TEMPLATEPATH%common/fontawesome-5.6.3/css/all.min.css%VERSION_PARAM%" rel="stylesheet">
+    <link href="%TEMPLATEPATH%common/fontawesome-5.6.3/css/v4-shims.min.css%VERSION_PARAM%" rel="stylesheet">
 
     <!--support for IE < 6-8 -->
     <script src="%TEMPLATEPATH%common/js/html5shiv.js%VERSION_PARAM%"></script>
@@ -67,7 +69,9 @@
         var templateLocation = "%TEMPLATEPATH%";
 		var themePath = "%THEMEPATH%";
         var projectXML = "%XMLFILE%"; //this is the file to read, not the xml
-		
+        var x_lastUpdated = new Date("%LASTUPDATED%");
+        var localeoptions = { weekday: undefined, year: 'numeric', month: 'short', day: 'numeric' };
+        var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
     </script>
 
     <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
@@ -125,7 +129,7 @@
 <div class="container">
     <div class="row-fluid">
         <!--navigation-->
-        <div class="span3 bs-docs-sidebar" id="contentTable">
+        <div class="span3 bs-docs-sidebar" id="contentTable" role="navigation" aria-label="sections">
 
             <ul class="nav nav-list bs-docs-sidenav affix" id="toc">
                 <!--<li><a href="#section1ID">Section 1</a></li>-->
@@ -133,7 +137,7 @@
         </div>
 
         <!--content-->
-        <div class="span9" id="mainContent">
+        <div class="span9" id="mainContent" role="main">
 
         </div>
     </div>
@@ -146,8 +150,10 @@
 
 				<div class="addthis_sharing_toolbox"></div>
 				<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5" async="async"></script>
-
             </div>
+            <div class="wcagLink">
+                    <a href="https://xot.xerte.org.uk/play.php?template_id=214#home" title="View the Xerte accessibility statement" target="_blank"><img class="wcagLogo" alt="WCAG WAI-AA logo and link to Xerte accessibility statement" height="32" src="%TEMPLATEPATH%common/img/wcag2.1AA-blue-v.png" width="88"> </a>
+                </div>
         </div>
     </div>
 </footer>

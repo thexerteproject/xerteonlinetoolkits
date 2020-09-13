@@ -982,6 +982,11 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
 
         var statement = {
             actor: actor,
+            context: {
+                extensions: {
+                    "http://xerte.org.uk/learningObjectLevel" : "interactivity"
+                }
+            },
             verb: {
                 id: "http://adlnet.gov/expapi/verbs/initialized",
                 display: {
@@ -1002,13 +1007,19 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
         statement.object.definition.name[state.language] = description;
 
         if (this.grouping != "") {
-            statement.context = {
-                contextActivities: {
-                    grouping: [{
-                        id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
-                        objectType: "Activity"
-                    }]
+            var definition = {
+                name: {
+                    'en-US': this.grouping,
                 }
+            };
+            definition.name[state.language] = this.grouping;
+            statement.context.contextActivities =
+            {
+                grouping: [{
+                    id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                    definition: definition,
+                    objectType: "Activity"
+                }]
             };
         }
         SaveStatement(statement);
@@ -1044,6 +1055,11 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                     var statement = {
                         timestamp: this.end,
                         actor: actor,
+                        context: {
+                            extensions: {
+                                "http://xerte.org.uk/learningObjectLevel" : "interactivity"
+                            }
+                        },
                         verb: {
                             id: "http://adlnet.gov/expapi/verbs/answered",
                             display: {
@@ -1364,20 +1380,31 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             };
                     }
                     if (this.grouping != "") {
-                        statement.context = {
-                            contextActivities: {
-                                grouping: [{
-                                    id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
-                                    objectType: "Activity"
-                                }]
+                        var definition = {
+                            name: {
+                                'en-US': this.grouping
                             }
                         };
+                        definition.name[state.language] = this.grouping;
+                        statement.context.contextActivities =
+                            {
+                                grouping: [{
+                                    id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                                    definition: definition,
+                                    objectType: "Activity"
+                                }]
+                            };
                     }
                     SaveStatement(statement);
                     if (typeof statement.result.score != 'undefined') {
                         var scoredstatement = {
                             timestamp: new Date(),
                             actor: actor,
+                            context: {
+                                extensions: {
+                                    "http://xerte.org.uk/learningObjectLevel" : "interactivity"
+                                }
+                            },
                             verb: {
                                 id: "http://adlnet.gov/expapi/verbs/scored",
                                 display: {
@@ -1396,14 +1423,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             result: statement.result
                         };
                         if (this.grouping != "") {
-                            scoredstatement.context = {
-                                contextActivities: {
-                                    grouping: [{
-                                        id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
-                                        objectType: "Activity"
-                                    }]
-                                }
-                            };
+                            scoredstatement.context.contextActivities = statement.context.contextActivities;
                         }
                         SaveStatement(scoredstatement);
                     }
@@ -1433,9 +1453,16 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         timestamp: new Date()
                     };
                     if (this.grouping != "") {
-                        statement.context.contextActinities = {
+                        var definition = {
+                            name: {
+                                'en-US': this.grouping,
+                            }
+                        };
+                        definition.name[state.language] = this.grouping;
+                        statement.context.contextActivities = {
                             grouping: [{
                                 id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                                definition: definition,
                                 objectType: "Activity"
                             }]
                         };
@@ -1477,9 +1504,16 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             timestamp: new Date()
                         };
                         if (this.grouping != "") {
+                            var definition = {
+                                name: {
+                                    'en-US': this.grouping,
+                                }
+                            };
+                            definition.name[state.language] = this.grouping;
                             statement.context.contextActivities = {
                                 grouping: [{
                                     id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                                    definition: definition,
                                     objectType: "Activity"
                                 }]
                             };
@@ -1494,6 +1528,11 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
             if (this.ia_nr >= 0) {
                 statement = {
                     actor: actor,
+                    context: {
+                        extensions: {
+                            "http://xerte.org.uk/learningObjectLevel" : "interactivity"
+                        }
+                    },
                     verb: {
                         id: "http://adlnet.gov/expapi/verbs/exited",
                         display: {
@@ -1516,6 +1555,11 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
             } else {
                 statement = {
                     actor: actor,
+                    context: {
+                        extensions: {
+                            "http://xerte.org.uk/learningObjectLevel" : "page"
+                        }
+                    },
                     verb: {
                         id: "http://adlnet.gov/expapi/verbs/exited",
                         display: {
@@ -1536,14 +1580,19 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                 statement.object.definition.name[state.language] = description;
             }
             if (this.grouping != "") {
-                statement.context = {
-                    contextActivities: {
-                        grouping: [{
-                            id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
-                            objectType: "Activity"
-                        }]
+                var definition = {
+                    name: {
+                        'en-US': this.grouping,
                     }
                 };
+                definition.name[state.language] = this.grouping;
+                statement.context.contextActivities = {
+                        grouping: [{
+                            id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                            definition: definition,
+                            objectType: "Activity"
+                        }]
+                    };
             }
             SaveStatement(statement);
         }
@@ -1726,6 +1775,11 @@ function XTInitialise(category) {
     if (!surf_mode) {
         var statement = {
             actor: actor,
+            context: {
+                extensions: {
+                    "http://xerte.org.uk/learningObjectLevel" : "lo"
+                }
+            },
             verb: {
                 id: "http://adlnet.gov/expapi/verbs/launched",
                 display: {
@@ -1923,15 +1977,27 @@ function XTSetOption(option, value) {
     }
 }
 
-function XTEnterPage(page_nr, page_name) {
+function XTEnterPage(page_nr, page_name, grouping) {
     var sitp = state.enterPage(page_nr, -1, "page", page_name);
     this.pageStart = new Date();
     var id = sitp.getPageId();
     var description = sitp.getPageDescription();
 
     if (!surf_mode) {
+        if (typeof grouping != "undefined" && grouping != "" && grouping !=
+            null) {
+            sitp.grouping = grouping;
+        } else {
+            sitp.grouping = "";
+        }
+
         var statement = {
             actor: actor,
+            context: {
+                extensions: {
+                    "http://xerte.org.uk/learningObjectLevel" : "page"
+                }
+            },
             verb: {
                 id: "http://adlnet.gov/expapi/verbs/initialized",
                 display: {
@@ -1952,6 +2018,21 @@ function XTEnterPage(page_nr, page_name) {
 
         };
         statement.object.definition.name[state.language] = description;
+        if (sitp.grouping != "") {
+            var definition = {
+                name: {
+                    'en-US': sitp.grouping,
+                }
+            };
+            definition.name[state.language] = sitp.grouping;
+            statement.context.contextActivities = {
+                    grouping: [{
+                        id: baseUrl() + sitp.grouping.replace(/[\/ ]/g, "_"),
+                        definition: definition,
+                        objectType: "Activity"
+                    }]
+                };
+        }
         SaveStatement(statement);
     }
 }
@@ -1971,49 +2052,6 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting) {
 
 }
 
-function XTSetViewed(page_nr, name, score) {
-    if (isNaN(score) || typeof score != "number") {
-        score = 0.0;
-    }
-    this.pageEnd = new Date();
-    var sit = state.findPage(page_nr);
-    if (sit != null) {
-        var id = sit.getPageId();
-        var statement = {
-            actor: actor,
-            verb: {
-                id: "http://id.tincanapi.com/verb/viewed",
-                display: {
-                    "en-US": "viewed"
-                }
-            },
-            result: {
-                "score": {
-                    min: 0.0,
-                    max: 100.0,
-                    raw: score,
-                    scaled: score / 100
-                },
-                "duration": calcDuration(sit.start, this.pageEnd)
-            },
-            object: {
-                objectType: "Activity",
-                id: id,
-                definition: {
-                    name: {
-                        "en": name
-                    }
-                }
-            },
-            timestamp: this.pageEnd
-
-        };
-        statement.object.definition.name[state.language] = name;
-
-        SaveStatement(statement);
-        state.setPageScore(page_nr, score);
-    }
-}
 
 function XThelperConsolidateSegments(videostate) {
     // 1. Sort played segments on start time (first make a copy)
@@ -2060,12 +2098,33 @@ function XThelperDetermineProgress(videostate) {
     return 0.0;
 }
 
-function XTVideo(page_nr, name, block_name, verb, videostate) {
+function XTVideo(page_nr, name, block_name, verb, videostate, set_grouping) {
     var id = baseUrl() + state.templateId + "/" + page_nr + "/video";
     var pagename = "Page " + page_nr;
     if (name != null && name != "") {
         id = baseUrl() + state.templateId + "/" + name.replace(/[\/ ]/g, "_") + "/video";
         pagename = name;
+    }
+
+    var grouping = "";
+    if (typeof set_grouping != "undefined" && set_grouping != "" && set_grouping !=
+        null) {
+        grouping = set_grouping;
+    }
+    if (grouping != "") {
+        var definition = {
+            name: {
+                'en-US': grouping,
+            }
+        };
+        definition.name[state.language] = grouping;
+        statementgrouping = {
+            grouping: [{
+                id: baseUrl() +grouping.replace(/[\/ ]/g, "_"),
+                definition: definition,
+                objectType: "Activity"
+            }]
+        };
     }
 
     switch (verb) {
@@ -2100,11 +2159,16 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                         }]
                     },
                     "extensions": {
+                        "http://xerte.org.uk/learningObjectLevel" : "video",
                         "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
                     }
                 }
             };
             statement.object.definition.name[state.language] = pagename;
+            if (grouping != "")
+            {
+                statement.context.contextActivities = statementgrouping;
+            }
             SaveStatement(statement);
             break;
         case "played":
@@ -2142,12 +2206,17 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                         }]
                     },
                     "extensions": {
+                        "http://xerte.org.uk/learningObjectLevel" : "video",
                         "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                         "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                     }
                 }
             };
             statement.object.definition.name[state.language] = pagename;
+            if (grouping != "")
+            {
+                statement.context.contextActivities = statementgrouping;
+            }
             SaveStatement(statement);
             break;
         case "paused":
@@ -2194,12 +2263,17 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                         }]
                     },
                     "extensions": {
+                        "http://xerte.org.uk/learningObjectLevel" : "video",
                         "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                         "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                     }
                 }
             };
             statement.object.definition.name[state.language] = pagename;
+            if (grouping != "")
+            {
+                statement.context.contextActivities = statementgrouping;
+            }
             SaveStatement(statement);
             break;
         case "seeked":
@@ -2238,12 +2312,17 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                         }]
                     },
                     "extensions": {
+                        "http://xerte.org.uk/learningObjectLevel" : "video",
                         "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                         "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                     }
                 }
             };
             statement.object.definition.name[state.language] = pagename;
+            if (grouping != "")
+            {
+                statement.context.contextActivities = statementgrouping;
+            }
             SaveStatement(statement);
             break;
         case "interacted":
@@ -2297,6 +2376,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                             }]
                         },
                         "extensions": {
+                            "http://xerte.org.uk/learningObjectLevel" : "video",
                             "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                             "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                         }
@@ -2342,12 +2422,17 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                                 }]
                             },
                             "extensions": {
+                                "http://xerte.org.uk/learningObjectLevel" : "video",
                                 "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                                 "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                             }
                         }
                     };
                     statement.object.definition.name[state.language] = pagename;
+                    if (grouping != "")
+                    {
+                        statement.context.contextActivities = statementgrouping;
+                    }
                     SaveStatement(statement);
                 }
                 var statement = {
@@ -2386,12 +2471,17 @@ function XTVideo(page_nr, name, block_name, verb, videostate) {
                             }]
                         },
                         "extensions": {
+                            "http://xerte.org.uk/learningObjectLevel" : "video",
                             "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                             "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                         }
                     }
                 };
                 statement.object.definition.name[state.language] = pagename;
+            }
+            if (grouping != "")
+            {
+                statement.context.contextActivities = statementgrouping;
             }
             SaveStatement(statement);
             break;
@@ -2409,6 +2499,11 @@ function XTSetPageScore(page_nr, score) {
         var description = sitp.getPageDescription();
         var statement = {
             actor: actor,
+            context: {
+                extensions: {
+                    "http://xerte.org.uk/learningObjectLevel" : "page"
+                }
+            },
             verb: {
                 id: "http://adlnet.gov/expapi/verbs/scored",
                 display: {
@@ -2438,6 +2533,22 @@ function XTSetPageScore(page_nr, score) {
             timestamp: this.pageEnd
 
         };
+        if (sitp.grouping != "") {
+            var definition = {
+                name: {
+                    'en-US': sitp.grouping,
+                }
+            };
+            definition.name[state.language] = sitp.grouping;
+            statement.context.contextActivities = {
+                grouping: [{
+                    id: baseUrl() + sitp.grouping.replace(/[\/ ]/g, "_"),
+                    definition: definition,
+                    objectType: "Activity"
+                }]
+            };
+        }
+
         SaveStatement(statement);
     }
 }
@@ -2467,6 +2578,11 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
         if (!surf_mode) {
             var statement = {
                 actor: actor,
+                context: {
+                    extensions: {
+                        "http://xerte.org.uk/learningObjectLevel" : "page"
+                    }
+                },
                 verb: {
                     id: "http://adlnet.gov/expapi/verbs/scored",
                     display: {
@@ -2498,6 +2614,22 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
                 },
                 timestamp: endtime
             };
+            if (sitp.grouping != "") {
+                var definition = {
+                    name: {
+                        'en-US': sitp.grouping,
+                    }
+                };
+                definition.name[state.language] = sitp.grouping;
+                statement.context.contextActivities = {
+                    grouping: [{
+                        id: baseUrl() + sitp.grouping.replace(/[\/ ]/g, "_"),
+                        definition: definition,
+                        objectType: "Activity"
+                    }]
+                };
+            }
+
             SaveStatement(statement);
 
             // save score for each class
@@ -2538,6 +2670,21 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
                     },
                     timestamp: endtime
                 };
+                if (sitp.grouping != "") {
+                    var definition = {
+                        name: {
+                            'en-US': sitp.grouping,
+                        }
+                    };
+                    definition.name[state.language] = sitp.grouping;
+                    statement.context.contextActivities = {
+                        grouping: [{
+                            id: baseUrl() + sitp.grouping.replace(/[\/ ]/g, "_"),
+                            definition: definition,
+                            objectType: "Activity"
+                        }]
+                    };
+                }
 
                 SaveStatement(statement);
 
@@ -2703,7 +2850,7 @@ function XTGetStatements(q, one, callback) {
             if (res.more && res.more !== "") {
                 ADL.XAPIWrapper.getStatements(null, res.more, getmorestatements);
             } else {
-                callback(statements);
+                callback(statements, search);
             }
         }
     );
@@ -2794,7 +2941,7 @@ function XTTerminate() {
                 timestamp: new Date()
             };
             statement.object.definition.name[state.language] = x_params.name;
-            SaveStatement(statement, false);
+            SaveStatement(statement);
             if (state.getSuccessStatus() == "passed") {
                 // Sen passsed
                 var statement = {
@@ -2829,7 +2976,7 @@ function XTTerminate() {
                     timestamp: new Date()
                 };
                 statement.object.definition.name[state.language] = x_params.name;
-                SaveStatement(statement, false);
+                SaveStatement(statement);
             } else {
                 // Send failed
                 var statement = {
@@ -2864,7 +3011,7 @@ function XTTerminate() {
                     timestamp: new Date()
                 };
                 statement.object.definition.name[state.language] = x_params.name;
-                SaveStatement(statement, false);
+                SaveStatement(statement);
             }
             // Save scored
             var statement = {
@@ -2899,7 +3046,7 @@ function XTTerminate() {
                 timestamp: new Date()
             };
             statement.object.definition.name[state.language] = x_params.name;
-            SaveStatement(statement, false);
+            SaveStatement(statement);
 
         }
 
@@ -2939,7 +3086,7 @@ function XTTerminate() {
             timestamp: new Date()
         };
         statement.object.definition.name[state.language] = x_params.name;
-        SaveStatement(statement, false);
+        SaveStatement(statement);
         if (typeof lti_enabled !== 'undefined' && lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
@@ -2955,7 +3102,7 @@ function XTTerminate() {
                         method: "POST",
                         url: url,
                         data: {
-                            grade: state.getdScaledScore()
+                            grade: state.getScaledScore()
                         }
                     })
                     .done(function(msg) {
@@ -2971,8 +3118,7 @@ function SaveStatement(statement, async) {
     extension = {
         "http://xerte.org.uk/sessionId": state.sessionId,
         "http://xerte.org.uk/learningObjectId": baseUrl() + state.templateId,
-        "http://xerte.org.uk/learningObjectTitle": $("<div>").html(x_params.name).text() + " (" +
-            state.templateId + ")"
+        "http://xerte.org.uk/learningObjectTitle": $("<div>").html(x_params.name).text()
     };
     if (state.coursename != "") {
         extension["http://xerte.org.uk/course"] = state.coursename;
@@ -3000,13 +3146,13 @@ function SaveStatement(statement, async) {
         var parentObj = {
             "definition": {
                 "name": {
-                    "en-US": x_params.name + " (" + state.templateId + ")"
+                    "en-US": x_params.name
                 }
             },
             "id": parentId,
             "objectType": "Activity"
         };
-        parentObj.definition.name[state.language] = x_params.name + " (" + state.templateId + ")";
+        parentObj.definition.name[state.language] = x_params.name;
         statement.context.contextActivities.parent = [parentObj];
     }
     if (state.category != "") {

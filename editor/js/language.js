@@ -377,6 +377,19 @@ var EDITOR = (function ($, parent) {
     },
 
     init = function () {
+        // Set some good default values for missing variables
+        if (typeof simple_mode == "undefined")
+        {
+            simple_mode = false;
+        }
+        if (typeof template_sub_pages == "undefined")
+        {
+            template_sub_pages = [];
+        }
+        if (typeof simple_lo_page == "undefined")
+        {
+            simple_lo_page = false;
+        }
         // Start loading of the xml files
         language_files = (languagecodevariable=='en-GB' ? en_language_files : foreign_language_files);
         $(language_files).each(function() {

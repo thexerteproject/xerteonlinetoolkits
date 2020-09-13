@@ -285,3 +285,11 @@ div#admin_area form textarea{
 .sub_page_selection_model {
 	margin-left: 40px;
 }
+
+form[name='user_templates'] {
+	padding: 10px;
+}
+
+#transferownership {
+	padding:10px;
+}

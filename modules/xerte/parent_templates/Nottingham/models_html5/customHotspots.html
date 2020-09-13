@@ -505,7 +505,7 @@
 					}
 					
 					// label tabindex leaves space for dropped pins
-					$('<div class="label panel" tabindex="' + ((i*2)+2) + '" title="' + labelTxt1 + '"><img class="pinImg visible" src="' + x_templateLocation + 'common_html5/pin_blue.png"/>' + (i + 1) + ". " + $this.data("label") + '</div>')
+					$('<div class="label panel" tabindex="' + ((i*2)+2) + '" title="' + labelTxt1 + '"><img class="pinImg visible" alt="' + (x_currentPageXML.getAttribute("pinAlt") != undefined ? x_currentPageXML.getAttribute("pinAlt") : 'Draggable pin icon') + '" src="' + x_templateLocation + 'common_html5/pin_blue.png"/>' + (i + 1) + ". " + $this.data("label") + '</div>')
 						.appendTo($labelHolder)
 						.data("correct", correct);
 					
@@ -1526,7 +1526,7 @@
 		<div id="labelHolder"></div>
 		<div id="hsInfo">
 			<h3 id="label"></h3>
-			<div id="info"></div>
+			<div id="info" aria-live="polite"></div>
 		</div>
 	</div>
 	

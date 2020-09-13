@@ -54,6 +54,10 @@
 
 	define("TEMPLATE_REPLACE", "Upload a new version of this template");
 
+	define("TEMPLATE_SUB_PAGES_TITLEONLY", "Only show the title of the Learning Object on the main node in 'Simple' mode of the wizard.");
+
+	define("TEMPLATE_SUB_PAGES_SELECT_TITLEONLY", "Show title only");
+
 	define("TEMPLATE_SUB_PAGES", "Select the pages that can be used in the 'Simple' mode of the wizard. If all pages are selected (default), than the 'Simple' mode of the editor is disabled.");
 
 	define("TEMPLATE_SUB_PAGES_SELECT_ALL", "Toggle all pages on or off");

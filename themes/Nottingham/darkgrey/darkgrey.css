@@ -6,7 +6,9 @@ body {
 	font-family:	Arial, sans-serif;
 	color: #cfcfcf;
 }
-a{color: #cfcfcf;}
+a, a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active{
+	color: #cfcfcf;
+}
 
 #x_mainHolder {
 	border:		1px solid #1c1c1c;
@@ -154,3 +156,12 @@ background-image: none;
   color: #000000;
 }
 
+.x_grid_page #grid ul li {
+	color: black !important;
+}
+.x_grid_page li.ui-state-default.static {
+	background: white !important;
+}
+#x_footerBlock .ui-button-text{
+	color:white;
+}

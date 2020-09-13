@@ -48,16 +48,19 @@ function show_template($row_play)
     _load_language_file("/modules/decision/preview.inc");
 
     $version = getVersion();
+    $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);
 
     // $engine is assumed to be html5 if flash is NOT set
     $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row_play['template_framework'] . "/player_html5/rloObject.htm");
     $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
+    $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
     $page_content = str_replace("%TITLE%", $title, $page_content);
     $page_content = str_replace("%TEMPLATEPATH%", $template_path_string, $page_content);
     $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
     $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
 	$page_content = str_replace("%THEMEPATH%", "themes/" . $row_play['parent_template'] . "/",$page_content);
     $page_content = str_replace("%MATHJAXPATH%", "https://cdn.jsdelivr.net/npm/mathjax@2/", $page_content);
+    $page_content = str_replace("%LASTUPDATED%", $row_play['date_modified'], $page_content);
 
     echo $page_content;
 }

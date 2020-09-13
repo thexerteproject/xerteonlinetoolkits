@@ -386,7 +386,7 @@
                         var numberOfOptions = max + 1;
 
                         //TODO get the name of the label instead of the index as slideroutput (? we already get that)
-                        $rangeHolder.html('<form id="form' + currQuestion + '"> <input id="slider' + currQuestion + '" type="range" min="0" max = "' + max + '" step="1" class="slider"/> </form> ');
+                        $rangeHolder.html('<form id="form' + currQuestion + '"> <input id="slider' + currQuestion + '" aria-label="slider' + currQuestion + '" type="range" min="0" max = "' + max + '" step="1" class="slider"/> </form> ');
 
                         $.each($($thisQ).children(), function(index, value)
                         {

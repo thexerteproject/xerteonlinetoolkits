@@ -221,9 +221,12 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
     else
     {
         $version = getVersion();
+        $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);
+
         // $engine is assumed to be javascript if flash is NOT set
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/$rlo_object_file");
         $page_content = str_replace("%VERSION%", $version , $page_content);
+        $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
         $page_content = str_replace("%TITLE%", $title , $page_content);
         $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
@@ -309,7 +312,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
 		$page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
 
 		$page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $page_content);
-
+        $page_content = str_replace("%LASTUPDATED%", $row['date_modified'], $page_content);
     }
     if(substr($rlo_object_file, -3) == "php")
     {

@@ -1065,7 +1065,7 @@ function XTSetOption(option, value)
     }
 }
 
-function XTEnterPage(page_nr, page_name)
+function XTEnterPage(page_nr, page_name, grouping)
 {
 	state.enterPage(page_nr, -1, "page", page_name);
 }
@@ -1087,15 +1087,6 @@ function XTSetPageScore(page_nr, score)
 
 function XTSetPageScoreJSON(page_nr, score)
 {
-    state.setPageScore(page_nr, score);
-}
-
-function XTSetViewed(page_nr, name, score)
-{
-    if (isNaN(score) || typeof score != "number")
-    {
-        score = 0.0;
-    }
     state.setPageScore(page_nr, score);
 }
 
@@ -1134,7 +1125,7 @@ function XThelperDetermineProgress(videostate)
     return 0.0;
 }
 
-function XTVideo(page_nr, name, block_name, verb, videostate) {
+function XTVideo(page_nr, name, block_name, verb, videostate, grouping) {
     return;
 }
 
@@ -1223,7 +1214,7 @@ function XTTerminate()
                     method: "POST",
                     url: url,
                     data: {
-                        grade: state.getdScaledScore()
+                        grade: state.getScaledScore()
                     }
                 })
                     .done(function (msg) {

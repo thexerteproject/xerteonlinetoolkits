@@ -15,7 +15,7 @@
     <chartType label="Chart Type" options="Line,Bar,Stacked bar,Pie" type="ComboBox" data="line,bar,stacked bar,pie" defaultValue="line" width="120"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="left,right" defaultValue="left" width="100"/>
 	
-	<alt label="Summary" type="TextInput" wysiwyg="true" defaultValue="Enter a Summary of the Chart's Contents for Accessibility" optional="true"/>
+	<alt label="Summary" type="TextInput" wysiwyg="true" defaultValue="Enter a Summary of the Chart's Contents for Accessibility" optional="true" tooltip="A description of the chart that will be read by screenreaders. Add this to improve the accessibility of the page"/>
 	
     <newNodes>
       <series><![CDATA[<series name="Series Name" data="label|data" colour="0xFF0000"/>]]></series>

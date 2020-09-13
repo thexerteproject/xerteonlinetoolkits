@@ -282,41 +282,8 @@ a.hotspot, a.hotspot.selected {
   color: $blackordarkest;
 }
 //*****sortable grid*****/
-#gridBorders {
-  border-radius: $smallroundedcorners;
-}
-#grid .listHolder.constrainC li {
-  border-radius: $smallroundedcorners;
-}
-#grid ul li.header {
-  color: $whiteorlightest ;
-  background:$accent1;
-  color:$whiteorlightest !important;
-}
-table.header.shaded tr:first-child {
-  background: $accent1;
-}
-#grid ul li {
-  color: $mainfontcolour ;
-  /*background:$brightcolor;*/
-  background:red;
-  border-color:$whiteorlightest;
-}
-.x_grid_page #grid ul li{
-  background:$lightestcolor;
-  border-color: transparent;
-}
-table tr.shaded {
-  background: $contrastcolor;
-  color:$blackordarkest;
-}
-tr {
-  background: $brightcolor;
-  color:$whiteorlightest;
-}
-#grid ul li.static {
-  background: none;
-  border-color: transparent;
+.x_grid_page table.header.shaded tr:first-child {
+  background: unset;
 }
 /*****timeline matching pairs*****/
 #targetHolder .target {
@@ -324,6 +291,9 @@ tr {
 }
 .x_timeline_page .label.panel.ui-draggable {
   background: $lightestcolor;
+}
+.x_grid_page table tr.shaded {
+  background: #E3FFD6;
 }
 //***********************************Connectors*************************************/
 //*****menu connector*****/

@@ -221,8 +221,9 @@ function edit_window(admin, edit) {
                             }
                         }
                     }
-
-                    if (!window_open) {
+                    console.log("Window open length: " + window_open.length);
+                    console.log("Window open parent: " + window_open.parent);
+                    if (!window_open || window_open.parent == null) {
 
                         size = node.editor_size.split(",");
 
@@ -416,7 +417,7 @@ function edit_window_close(path) {
 
         var url = "website_code/php/versioncontrol/template_close.php";
 
-        xmlHttp.open("post", url, false);
+        xmlHttp.open("post", url, true);
         xmlHttp.onreadystatechange = file_need_save;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xmlHttp.send('file_path=' + path);
@@ -480,18 +481,18 @@ function preview_window(admin) {
                 var node = workspace.nodes[ids[i]];
 
                 if (node.xot_type == "file") {
-
+                    var mode = (window.event && window.event.shiftKey ? 'play' : 'preview');
                     size = node.preview_size.split(",");
                     if (size.length != 1) {
 
 
-                        var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id, "height=" + size[1] +
+                        var PreviewWindow = window.open(site_url + url_return(mode, node.xot_id), "previewwindow" + node.id, "height=" + size[1] +
                             ", width=" + size[0] + ", scrollbars=yes,resizable=yes");
 
                     } else {
 
 
-                        var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id,
+                        var PreviewWindow = window.open(site_url + url_return(mode, node.xot_id), "previewwindow" + node.id,
                             "height=768,width=1024,scrollbars=yes,resizable=yes");
 
                     }
@@ -585,7 +586,7 @@ function properties_window(admin) {
             return;
 
         if (workspace.nodes[ids[0]].type == "workspace") {
-            var NewWindow = window.open(site_url + url_return("workspaceproperties", null), "workspace", "height=600, width=635");
+            var NewWindow = window.open(site_url + url_return("workspaceproperties", null), "workspace", "height=760, width=1000");
             NewWindow.window_reference = self;
             NewWindow.focus();
         } else {
@@ -593,7 +594,7 @@ function properties_window(admin) {
                 if (workspace.nodes[ids[i]].type != "folder") {
                     if (workspace.nodes[ids[i]].parent != workspace.recyclebin_id) {
                         var NewWindow = window.open(site_url + url_return("properties", workspace.nodes[ids[i]].xot_id), workspace.nodes[ids[i]].xot_id,
-                            "height=600, width=635");
+                            "height=760, width=1000");
                         NewWindow.window_reference = self;
                         NewWindow.focus();
                     } else {
@@ -601,14 +602,14 @@ function properties_window(admin) {
                     }
                 } else {
                     var NewWindow = window.open(site_url + url_return("folderproperties", workspace.nodes[ids[i]].xot_id + "_folder"), workspace.nodes[ids[i]].xot_id +
-                        "_folder", "height=600, width=635");
+                        "_folder", "height=760, width=1000");
                     NewWindow.window_reference = self;
                     NewWindow.focus();
                 }
             }
         }
     } else {
-        var NewWindow = window.open(site_url + url_return("properties", admin), admin, "height=600, width=630");
+        var NewWindow = window.open(site_url + url_return("properties", admin), admin, "height=760, width=1000");
 
         NewWindow.window_reference = self;
         NewWindow.focus();
@@ -1388,25 +1389,25 @@ function create_tutorial(tutorial) {
 
 function template_submit()
 {
-
-    var url = "website_code/php/management/upload.php";
-    var form = document.getElementById("form-template-upload");
-    var formData = new FormData(form);
-    xmlHttp.open("post", url, true);
-    xmlHttp.onreadystatechange = function(e)
-    {
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 400)
-        {
-            alert(xmlHttp.responseText);
-        }
-        else if(xmlHttp.readyState == 4 && xmlHttp.status == 200)
-        {
-            alert(xmlHttp.responseText);
-        }
+    if (setup_ajax() != false) {
+        var url = "website_code/php/management/upload.php";
+        var form = document.getElementById("form-template-upload");
+        var formData = new FormData(form);
+        xmlHttp.open("post", url, true);
+        xmlHttp.onreadystatechange = function (e) {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 400) {
+                $("body").css("cursor", "default");
+                alert(xmlHttp.responseText);
+            } else if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                $("body").css("cursor", "default");
+                alert(xmlHttp.responseText);
+                // Refresh templates list
+                templates_list();
+            }
+        };
+        $("body").css("cursor", "progress");
+        xmlHttp.send(formData);
     }
-    xmlHttp.send(formData);
-
-    return false;
 }
 
 /********** CHECK **************/
@@ -1433,4 +1434,3 @@ function example_alert() {
 
     }
 }
-

@@ -288,7 +288,7 @@
 							x_pageContentsUpdated();
 						})
 						.focusin(function() {
-								$('img').mapster('set_opotions', tabfocusoptions);
+								$('img').mapster('set_options', tabfocusoptions);
 								$(this)
 									.removeClass("transparent")
 									.addClass("highlight");
@@ -402,7 +402,7 @@
 	<div id="panel" class="panel inline">
 		<div id="questionText" class="right"/>
 		<div id="imageHolder">
-			<img id="image" />
+			<img id="image" class="x_noLightBox" />
 			<div id="hsHolder"></div>
 			<div id="btnHolder">
 				<button id="prevHS"></button>
@@ -419,7 +419,7 @@
 	
 	<div id="textContents">
 		<div id="mainText" tabindex="1"></div>
-		<div id="infoHolder" class="hsinfo"></div>
+		<div id="infoHolder" class="hsinfo" aria-live="polite"></div>
 	</div>
 	
 </div>

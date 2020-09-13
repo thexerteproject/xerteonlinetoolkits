@@ -262,10 +262,10 @@ var EDITOR = (function ($, parent) {
                 }
 			case "standalone":
                 if (enabled) {
-                    return '<i class="standaloneIcon iconEnabled fa fa-external-link " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
+                    return '<i class="standaloneIcon iconEnabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
                 }
                 else {
-                    return '<i class="standaloneIcon iconDisabled fa fa-external-link " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
+                    return '<i class="standaloneIcon iconDisabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
                 }
         }
     },
@@ -486,7 +486,54 @@ var EDITOR = (function ($, parent) {
         }
         return {found : true, value: attribute_value};
     },
-	
+
+    evaluateConditionExpression = function(ctree, key) {
+        switch (ctree.type) {
+            case "Literal":
+                return ctree.value;
+            case "LogicalExpression":
+                if (ctree.operator == "&&") {
+                    return evaluateConditionExpression(ctree.left, key) && evaluateConditionExpression(ctree.right, key);
+                } else {
+                    return evaluateConditionExpression(ctree.left, key) || evaluateConditionExpression(ctree.right, key);
+                }
+            case "BinaryExpression":
+                switch (ctree.operator) {
+                    case "==":
+                        return evaluateConditionExpression(ctree.left, key) == evaluateConditionExpression(ctree.right, key);
+                    case "!=":
+                        return evaluateConditionExpression(ctree.left, key) != evaluateConditionExpression(ctree.right, key);
+                    default:
+                        return null;
+                }
+            case "MemberExpression":
+                if (ctree.object.name == 'parent') {
+                    var tree = $.jstree.reference("#treeview");
+                    var parent = tree.get_parent(key);
+                    return evaluateConditionExpression(ctree.property, parent)
+                } else {
+                    return null;
+                }
+                break;
+            case "Identifier":
+                var attrs = lo_data[key]['attributes'];
+                if (typeof attrs[ctree.name] != "undefined") {
+                    return attrs[ctree.name];
+                } else {
+                    return null;
+                }
+            default:
+                // Unexpected node parsed
+                return null;
+        }
+    },
+
+    evaluateCondition = function(condition, key)
+    {
+        var tree = jsep(condition);
+        var result = evaluateConditionExpression(tree, key);
+        return (result == null ? false : result);
+    },
 
     displayParameter = function (id, all_options, name, value, key, nodelabel)
     {
@@ -501,6 +548,14 @@ var EDITOR = (function ($, parent) {
                 .attr('src', 'editor/img/flashonly.png')
                 .attr('title', 'Flash only attribute');
 
+            if (options.condition)
+            {
+                var visible = evaluateCondition(options.condition, key);
+                if (!visible)
+                {
+                    return;
+                }
+            }
             var tr = $('<tr>');
             if (options.deprecated) {
                 var td = $('<td>')
@@ -799,10 +854,10 @@ var EDITOR = (function ($, parent) {
          *       .prop('disabled', false);
          */
 
-        parent.tree.showNodeData(key);
+        parent.tree.showNodeData(key, true);
     },
 
-    insertOptionalProperty = function (key, name, defaultvalue, load)
+    insertOptionalProperty = function (key, name, defaultvalue, load, scrollToId)
     {
 		// Place attribute
 		lo_data[key]['attributes'][name] = defaultvalue;
@@ -814,11 +869,10 @@ var EDITOR = (function ($, parent) {
 
 		// Enable the optional parameter button
 		$('#insert_opt_' + name)
-			.switchClass('enabled', 'disabled')
-			.prop('disabled', true);
+			.prop('visible', true);
 		
 		if (load != false) {
-			parent.tree.showNodeData(key);
+			parent.tree.showNodeData(key, false, scrollToId);
 		}
     },
 
@@ -830,7 +884,7 @@ var EDITOR = (function ($, parent) {
         if (ids.length>0)
         {
             id = ids[0];
-            parent.tree.showNodeData(id);
+            parent.tree.showNodeData(id, true);
         }
     },
 
@@ -1001,7 +1055,7 @@ var EDITOR = (function ($, parent) {
 		
         var data = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [data]);
-        parent.tree.showNodeData(key);
+        parent.tree.showNodeData(key, true);
     },
 
     delColumn = function(id, key, name, colnr)
@@ -1014,7 +1068,7 @@ var EDITOR = (function ($, parent) {
 		
         var data = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [data]);
-        parent.tree.showNodeData(key);
+        parent.tree.showNodeData(key, true);
     },
 
     convertjqGridData = function(data)
@@ -2212,16 +2266,16 @@ var EDITOR = (function ($, parent) {
 							];
 						$.each(lo_node.children, function(i, key){
 								var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-								var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+								/*var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);*/
 								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
 								var hidden = lo_data[key]['attributes'].hidePage;
 								
-								if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+								if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
 								{
 										var page = [];
 										// Also make sure we only take the text from the name, and not the full HTML
 										page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
-										page.push(pageID.found ? pageID.value : linkID.value);
+										page.push(/*pageID.found ? pageID.value :*/ linkID.value);
 										pages.push(page);
 
 										// Now we do the children (if deeplinking is allowed)
@@ -2229,14 +2283,14 @@ var EDITOR = (function ($, parent) {
 											var childNode = tree.get_node(key, false);
 											$.each(childNode.children, function(i, key){
 												var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-												var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+												//var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
 												var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-												if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+												if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
 												{
 													var page = [];
 													// Also make sure we only take the text from the name, and not the full HTML
 													page.push(getTextFromHTML("&nbsp;- "+name.value));
-													page.push(pageID.found ? pageID.value : linkID.value);
+													page.push(/*pageID.found ? pageID.value :*/ linkID.value);
 													pages.push(page);
 												}
 											});
@@ -2649,7 +2703,7 @@ var EDITOR = (function ($, parent) {
             };
 
             // Ok handler
-            var okbutton = $('#featherlight-content button[name="ok"]');
+            var okbutton = $('.featherlight-content button[name="ok"]');
             okbutton.click(function(event){
 
                 var key = $("#inner_img_" + id).data("key");
@@ -2724,7 +2778,7 @@ var EDITOR = (function ($, parent) {
             });
 
             // Cancel handler
-            var cancelbutton = $('#featherlight-content button[name="cancel"]');
+            var cancelbutton = $('.featherlight-content button[name="cancel"]');
             cancelbutton.click(function(event){
                 var key = $("#inner_img_" + id).data("key");
                 var current = $.featherlight.current();
@@ -2733,7 +2787,7 @@ var EDITOR = (function ($, parent) {
             });
 
             // Switch to polygon mode
-            var polygonbutton = $('#featherlight-content #poly_'+id);
+            var polygonbutton = $('.featherlight-content #poly_'+id);
             if (forceRectangle)
             {
                 polygonbutton.prop("disabled", true);
@@ -2758,7 +2812,7 @@ var EDITOR = (function ($, parent) {
                 disableReset();
             };
 
-            var rectanglebutton = $('#featherlight-content #rectangle_'+id);
+            var rectanglebutton = $('.featherlight-content #rectangle_'+id);
             rectanglebutton.click(function (event) {
                 if (shape != "rectangle") {
                     switchToRectangleMode();
@@ -2779,7 +2833,7 @@ var EDITOR = (function ($, parent) {
             };
 
             // Reset handler
-            var resetbutton = $('#featherlight-content #reset_'+id);
+            var resetbutton = $('.featherlight-content #reset_'+id);
             resetbutton.click(function (event){
                 switch (shape)
                 {
@@ -3049,9 +3103,15 @@ var EDITOR = (function ($, parent) {
 
     };
 
+    triggerRedrawPage = function(key)
+    {
+        parent.tree.showNodeData(key, true);
+    };
+
     displayDataType = function (value, options, name, key) {
 		var html;
 
+		var conditionTrigger = (typeof options.conditonTrigger != "undfined" && options.conditionTrigger == "true");
 		switch(options.type.toLowerCase())
 		{
 			case 'checkbox':
@@ -3061,8 +3121,12 @@ var EDITOR = (function ($, parent) {
 					.attr('id', id)
 					.attr('type',  "checkbox")
 					.prop('checked', value && value == 'true')
-					.change({id:id, key:key, name:name}, function(event){
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event){
 						cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
+						if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 					});
 				break;
 			case 'combobox':
@@ -3080,9 +3144,13 @@ var EDITOR = (function ($, parent) {
 				}
 				html = $('<select>')
 					.attr('id', id)
-					.change({id:id, key:key, name:name}, function(event)
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 					{
 						selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 					});
 				
 				if (value == '') {
@@ -3138,9 +3206,13 @@ var EDITOR = (function ($, parent) {
 					form_id_offset++;
 					html = $('<select>')
 						.attr('id', id)
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						});
 					for (var i=min; i<max; i += step) {
 						var option = $('<option>')
@@ -3163,13 +3235,17 @@ var EDITOR = (function ($, parent) {
 						.attr('max', max)
 						.attr('step', step)
 						.attr('value', value)
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							if (this.value <= max &&  this.value >= min) {
 								if (this.value == '') {
 									this.value = (min + max) / 2; // choose midpoint for NaN
 								}
 								inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                                if (event.data.trigger)
+                                {
+                                    triggerRedrawPage(event.data.key);
+                                }
 							}
 							else { // set to max or min if out of range
 								this.value = Math.max(Math.min(this.value, max), min);
@@ -3184,9 +3260,13 @@ var EDITOR = (function ($, parent) {
 				form_id_offset++;
 				html = $('<select>')
 					.attr('id', id)
-					.change({id:id, key:key, name:name}, function(event)
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 					{
 						selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 					});
 				// Add empty entry
 				var option = $('<option>')
@@ -3270,8 +3350,12 @@ var EDITOR = (function ($, parent) {
 										'id': 'cat_' + categories[i].options[j].id
 									})
 									.prop('checked', $.inArray(categories[i].options[j].id, html.data('checked')) > -1 ? true : false)
-									.change({id:id, key:key, name:name}, function(event) {
+									.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event) {
 										catListChanged(event.data.id, event.data.key, event.data.name, html, this);
+                                        if (event.data.trigger)
+                                        {
+                                            triggerRedrawPage(event.data.key);
+                                        }
 									});
 								
 								var label = $('<label for="cat_' + categories[i].options[j].id + '">' + categories[i].options[j].name + '</label>');
@@ -3305,9 +3389,13 @@ var EDITOR = (function ($, parent) {
 					html = $('<input>')
 						.attr('id', id)
 						.attr('type', 'color')
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						});
 				}
 				else
@@ -3315,9 +3403,13 @@ var EDITOR = (function ($, parent) {
 					html = $('<input>')
 						.attr('id', id)
 						.addClass('color')
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						});
 					
 					colorpickers.push({id: id, options: options});
@@ -3333,9 +3425,13 @@ var EDITOR = (function ($, parent) {
 				form_id_offset++;
 				html = $('<select>')
 					.attr('id', id)
-					.change({id:id, key:key, name:name}, function(event)
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 					{
 						changeLanguage(event.data.id, event.data.key, event.data.name, this.value, this);
+                        if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 						//selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
 					});
 				for (var i=0; i<installed_languages.length; i++) {
@@ -3354,9 +3450,13 @@ var EDITOR = (function ($, parent) {
 				var currtheme = 0;
 				var select = $('<select>')
 					.attr('id', id)
-					.change({id:id, key:key, name:name}, function(event)
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 					{
 						themeChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 					});
 				for (var i=0; i<theme_list.length; i++) {
 					var option = $('<option>')
@@ -3397,9 +3497,13 @@ var EDITOR = (function ($, parent) {
 				var currselected=false;
 				var select = $('<select>')
 					.attr('id', id)
-					.change({id:id, key:key, name:name}, function(event)
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 					{
 						inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 					});
 				// Add empty option
 				var option = $('<option>')
@@ -3438,9 +3542,13 @@ var EDITOR = (function ($, parent) {
 				var currselected = false;
 				var select = $('<select>')
 					.attr('id', id)
-					.change({id:id, key:key, name:name}, function(event)
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 					{
 						inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 					});
 				// Add empty option
 				var option = $('<option>')
@@ -3489,9 +3597,13 @@ var EDITOR = (function ($, parent) {
 								tree.rename_node(tree.get_node(key, false), $(this).val());
 							}
 						})
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						})
 						.attr('value', value);
 				}
@@ -3502,8 +3614,12 @@ var EDITOR = (function ($, parent) {
 					var currselected = false;
 					var select = $('<select>')
 						.attr('id', id)
-						.change({id: id, key: key, name: name, form_id: form_id_offset}, function (event) {
+						.change({id: id, key: key, name: name, trigger:conditionTrigger, form_id: form_id_offset}, function (event) {
 							courseChanged(event.data.id, event.data.key, event.data.name, event.data.form_id, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						});
 					// Add empty option
 					var option = $('<option>')
@@ -3554,9 +3670,13 @@ var EDITOR = (function ($, parent) {
 									tree.rename_node(tree.get_node(key, false), $(this).val());
 								}
 							})
-							.change({id:id, key:key, name:name}, function(event)
+							.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 							{
 								inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                                if (event.data.trigger)
+                                {
+                                    triggerRedrawPage(event.data.key);
+                                }
 							});
 						if (currselected)
 						{
@@ -3646,9 +3766,13 @@ var EDITOR = (function ($, parent) {
 						.attr('type', "text")
 						.attr('id', id)
 						.addClass('media')
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						})
 						.attr('value', value));
 				
@@ -3719,9 +3843,13 @@ var EDITOR = (function ($, parent) {
 						.attr('type', "text")
 						.attr('id', id)
 						.addClass('date')
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							inputChanged(event.data.id, event.data.key, event.data.name, this.value.length == 0 ? '' : (format == 0 ? this.value : new Date(this.value).toISOString()), this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						})
 						.attr('value', value.split('T')[0])
 						.datepicker({
@@ -3758,7 +3886,7 @@ var EDITOR = (function ($, parent) {
 					.attr('id', id)
 					.attr('title', language.edit.$tooltip)
 					.addClass("xerte_button")
-					.click({id:id, key:key, name:name, value:value}, function(event)
+					.click({id:id, key:key, name:name, value:value, trigger:conditionTrigger}, function(event)
 					{
 						editDrawing(event.data.id, event.data.key, event.data.name, event.data.value);
 					}
@@ -3804,9 +3932,13 @@ var EDITOR = (function ($, parent) {
 								tree.rename_node(tree.get_node(key, false), $(this).val());
 							}
 						})
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						})
 						.attr('value', value);
 				}
@@ -3834,6 +3966,7 @@ var EDITOR = (function ($, parent) {
     my.create_insert_page_menu = create_insert_page_menu;
     my.getAttributeValue = getAttributeValue;
     my.setAttributeValue = setAttributeValue;
+    my.evaluateCondition = evaluateCondition;
     my.displayParameter = displayParameter;
 	my.displayGroup = displayGroup;
     my.convertTextAreas = convertTextAreas;

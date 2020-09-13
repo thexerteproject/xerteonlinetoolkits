@@ -568,3 +568,28 @@ img.centre {
     margin-left:	auto;
     margin-right:	auto;
 }
+.expandMain{
+    margin-left: 0;
+    width:100% !important;
+}
+.featherlight iframe {
+    height: 90vh;
+    width: 90vw;
+}
+.wcagLink {
+       float: right;
+       position: relative;
+       bottom: 40px;
+}
+@media only screen
+and (max-width :600px) {
+    /*change logo position when viewed portrait on mobile*/
+    .wcagLink{
+        position:inerit;
+        display:inline-block;
+        margin-bottom:10px;
+        margin-top:10px;
+        width:80px;
+        bottom:0px;
+    }
+}

@@ -208,23 +208,23 @@
                 var interactiveToken, interactiveTokenTxt;
 			    if(x.type != 'page')
 				{
-				    interactiveToken = '<i class="fa fa-x-circle blue" title="' + detailsTooltip + '"><span class="ui-helper-hidden-accessible">' + detailsTooltip + '</span></i>';
+				    interactiveToken = '<i class="fas fa-circle blue" title="' + detailsTooltip + '"><span class="ui-helper-hidden-accessible">' + detailsTooltip + '</span></i>';
 				    interactiveTokenTxt = "details";
 				}
 				else
 				{
-				    interactiveToken = '<i class="fa fa-x-circle-o blue" title="' + noDetailsTooltip + '"><span class="ui-helper-hidden-accessible">' + noDetailsTooltip + '</span></i>';
+				    interactiveToken = '<i class="far fa-circle blue" title="' + noDetailsTooltip + '"><span class="ui-helper-hidden-accessible">' + noDetailsTooltip + '</span></i>';
 				    interactiveTokenTxt = "nodetails";
 				}
 				var completedToken, completedTokenTxt;
 				if(x.completed == "true")
 				{
-					completedToken = '<i class="fa fa-x-tick" title="' + completeTooltip + '"><span class="ui-helper-hidden-accessible">' + completeTooltip + '</span></i>';
+					completedToken = '<i class="fas fa-check-circle" title="' + completeTooltip + '"><span class="ui-helper-hidden-accessible">' + completeTooltip + '</span></i>';
 					completedTokenTxt = "completed";
 				}
 				else if (x.completed == "false")
 				{
-					completedToken = '<i class="fa fa-x-cross" title="' + inCompleteTooltip + '"><span class="ui-helper-hidden-accessible">' + inCompleteTooltip + '</span></i>';
+					completedToken = '<i class="fas fa-times-circle" title="' + inCompleteTooltip + '"><span class="ui-helper-hidden-accessible">' + inCompleteTooltip + '</span></i>';
 					completedTokenTxt = "notcompleted";
 				}
 				else {
@@ -268,7 +268,7 @@
                     altnormalrow = !altnormalrow;
 					altfullrow = false;
 					if (x.subinteractions.length > 0 && x.type != 'page') {
-						detailstable.append("<tr><th class='correct'></th><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>"+ correctAnswerTxt +"</th></tr>");
+						detailstable.append("<tr><td class='correct'></td><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>"+ correctAnswerTxt +"</th></tr>");
 						var detailstablecolumns = ["", x_GetTrackingTextFromHTML(x.title, ""), yourAnswerTxt, correctAnswerTxt];
 						var detailstablerows = [];
 						altfullrow = false;
@@ -277,12 +277,12 @@
                             var learnerAnswer = y.learnerAnswer;
                             var correctAnswer = y.correctAnswer;
                             if (learnerAnswer == correctAnswer || y.correct) {
-                                detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-x-tick' title='" + correctTooltip + "'><span class='ui-helper-hidden-accessible'>" + correctTooltip + "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
+                                detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fas fa-check-circle' title='" + correctTooltip + "'><span class='ui-helper-hidden-accessible'>" + correctTooltip + "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
                                 var detailstablerow = ["correct",  x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), x_GetTrackingTextFromHTML(correctAnswer, "")];
                                 detailstablerows.push(detailstablerow);
                             }
                             else {
-                                detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-x-cross' title='" + inCorrectTooltip + "'><span class='ui-helper-hidden-accessible'>" + inCorrectTooltip + "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
+                                detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fas fa-times-circle' title='" + inCorrectTooltip + "'><span class='ui-helper-hidden-accessible'>" + inCorrectTooltip + "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
                                 var detailstablerow = ["incorrect", x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), x_GetTrackingTextFromHTML(correctAnswer, "")];
                                 detailstablerows.push(detailstablerow);
                             }
@@ -295,10 +295,13 @@
 					}
 				}
 			});
+			
 			// call this function in every model once everything's loaded
 			if ($("#pageContents").data("setUp") == undefined) {
 				x_pageLoaded();
 				$("#pageContents").data("setUp", true);
+			} else {
+				x_pageContentsUpdated();
 			}
 		};
 
@@ -637,10 +640,6 @@ results.init();
 	<div id="pdfContent">
 		<h3 id="generalResultsTxt"></h3>
 		<table id="general_summary" rules="rows">
-			<tr>
-				<th></th>
-				<th></th>
-			</tr>
 			<tr>
 				<td id="averageTxt"></td>
 				<td><span id="averageScore"></span></td>

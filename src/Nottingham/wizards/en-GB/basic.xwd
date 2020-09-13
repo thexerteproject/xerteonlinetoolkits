@@ -3,6 +3,8 @@
   <learningObject  icon="icPackage" remove="false" duplicate="false">
 
     <name type="TextInput" wysiwyg="true" label="Learning Object Title"/>
+	<seriesTitle type="TextInput" wysiwyg="true" label="Series Title" optional="true" defaultValue="" />
+
     <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls, Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
     <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals Without Titles, Clean Visuals With Titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true" />
@@ -19,6 +21,11 @@
 	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true"/>
     <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page Title Size"  defaultValue="24" deprecated="This property is deprecated"/>
 	
+	<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for the whole project. A lightbox property is also available on each page.">
+		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
+		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+	</lightboxGroup>
+	
 	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
 	
 	<nfo optional="true" label="Help File" type="media"/>
@@ -29,7 +36,7 @@
 	<styles optional="true" type="script" height="200" label="Styles"/>
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
     <authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
-    <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
+    <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true" deprecatedv="This property is deprecated as the resume functionality is now available automatically"/>
     <themeurl type="CheckBox" label="Disable theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
 	
 	<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/156-fay-Nottingham/media/Variables_Documentation.pdf' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for help creating and using variables">
@@ -59,11 +66,18 @@
 		<mediaHighlightColour optional="true" type="ColourPicker" label="Caption Highlight Colour" defaultValue="0xFFFF00"/>
 	</mediaFile>
 	
-	<icon type="group" label="Icon" optional="true">
+	<icon type="group" label="Icon/Logo" optional="true">
 		<ic optional="true" type="media" label="Image" defaultValue="Select an Image"/>
 		<icTip optional="true" type="TextInput" label="Description" defaultValue="Enter a Description for Accessibility"/>
 		<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" label="Position" defaultValue="left" width="100"/>
 	</icon>
+
+	<wcagGroup type="group" label="Accessilibity logo and link" optional="true" tooltip="Hide the accessilibity logo and link or change the link.">
+                <wcagHide label="Hide the Accessibility logo and link" type="Checkbox" conditionTrigger='true' defaultValue="false" optional="true"/>
+    			<wcagAlt label="Accessilibity logo alt text" type="TextInput" defaultValue="WCAG WAI-AA logo" condition="wcagHide=='false'" optional="true"/>
+    			<wcagLinkTitle label="Link tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="wcagHide=='false'" optional="true"/>
+                <wcagLink type="Media" label="Accessibility statement link" tooltip="Add a url or browse to a file to link to your own accessibility statement. Leave empty to link to the accessibility statement on xerte.org.uk." condition="wcagHide=='false'" optional="true" />
+    		</wcagGroup>
 	
 	<bg type="group" label="Background" optional="true">
 		<background optional="true" type="media" label="Image" defaultValue="Select an Image"/>
@@ -84,6 +98,9 @@
 	<meta type="group" label="Meta data" optional="true">
 	   	<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
 	   	<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
+		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" />
+        <metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue=""/>
+        <metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true"/>
     </meta>
 
     <newNodes>

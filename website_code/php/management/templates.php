@@ -45,7 +45,7 @@ if (is_user_admin()) {
 
     echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_ADD_EXPLANATION .
     "<br><br>" .
-    "<form action='website_code/php/management/upload.php' method='post' enctype='multipart/form-data' onsubmit='return template_submit()' id='form-template-upload'>" .
+    "<form action='javascript:template_submit()' method='post' enctype='multipart/form-data' id='form-template-upload'>" .
         "<input type='file' value='Search File' name='fileToUpload' id='file-select'>" .
         "<p>
             <input class='management_input' type='text' name='templateName'>&NonBreakingSpace;" . TEMPLATE_UPLOAD_TEMPLATENAME . "<br>
@@ -119,7 +119,15 @@ if (is_user_admin()) {
             $subpages = array();
             if ($row['template_sub_pages'] != "")
             {
-                $subpages = explode(",", $row['template_sub_pages']);
+                $template_sub_pages = $row['template_sub_pages'];
+                $simple_lo_page = false;
+                $pos = strpos($template_sub_pages, "simple_lo_page");
+                if ($pos !== false)
+                {
+                    $template_sub_pages = substr($template_sub_pages, 15); // Get rid of 'simple_lo_page,'
+                    $simple_lo_page = true;
+                }
+                $subpages = explode(",", $template_sub_pages);
             }
             if (count($subpages) > 0)
             {
@@ -128,6 +136,9 @@ if (is_user_admin()) {
             else{
                 $allselected = true;
             }
+            echo "<p>" . TEMPLATE_SUB_PAGES_TITLEONLY . "<br><div class='sub_page_selection sub_page_title'>";
+            echo "<input class='sub_page_selection_titleonly' type='checkbox' " . ($simple_lo_page ? "checked" : "") . " id='sub_page_select_titleonly_" . $row['template_type_id'] . "' name='select_titleonly' >" . TEMPLATE_SUB_PAGES_SELECT_TITLEONLY . "</div></p>";
+
             echo "<p>" . TEMPLATE_SUB_PAGES . "<br><div class='sub_page_selection'>";
             echo "<input class='sub_page_selection_all' type='checkbox' " . ($allselected ? "checked" : "") . " id='sub_page_select_all_" . $row['template_type_id'] . "' name='select_all' onchange=\"sub_select_change_all(" . $row['template_type_id'] . ")\">" . TEMPLATE_SUB_PAGES_SELECT_ALL . "<br>";
             $menus = $xwdData->getMenus();

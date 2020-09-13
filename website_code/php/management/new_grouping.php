@@ -24,7 +24,7 @@ require("management_library.php");
 
 if(is_user_admin()){
 
-    $query = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}grouping (grouping_name) values (?)";
+    $query = "INSERT INTO `{$xerte_toolkits_site->database_table_prefix}grouping` (grouping_name) values (?)";
     $res = db_query($query, array($_POST['newgrouping']));
 
     if($res) {

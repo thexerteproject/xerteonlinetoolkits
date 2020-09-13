@@ -66,7 +66,7 @@
 //*****button navigator*****/
 .ui-button {
   border-radius: $smallroundedcorners;
-  background: darken($lightestcolor, 40%);
+  background: darken($lightestcolor, 60%);
   border: none;
   color: #ffffff;
 }
@@ -79,6 +79,9 @@
   background: darken($lightestcolor, 70%);
   border: none;
   color: $whiteorlightest;
+}
+.x_nav_page #pageContents.button button.selected {
+  background-color: $blackordarkest;
 }
 //***Flash cards***/
 .front.panel{
@@ -112,7 +115,7 @@
 //****tabbed navigator****/
 .ui-tabs .ui-tabs-nav li {
   border-radius: $smallroundedcorners;
-  background: darken($lightestcolor, 40%);
+  background: darken($lightestcolor, 50%);
   border:none;
   color:$fontcolorforcontrastcolor;
 }
@@ -303,44 +306,7 @@ a.hotspot, a.hotspot.selected {
 }
 
 //*****sortable grid*****/
-.x_grid_page #gridBorders {
-  border-radius: $smallroundedcorners;
-}
-.x_grid_page #grid .listHolder.constrainC li {
-  border-radius: $smallroundedcorners;
-}
-.x_grid_page #grid ul li.header {
-  color: $whiteorlightest ;
-  background:$accent1;
-  color:$whiteorlightest;
-}
-.x_grid_page table.simple {
-  border: transparent;
-}
-.x_grid_page table.header.simple tr:first-child{
-  border-bottom: transparent;
-  background:darken($lightestcolor, 70%);
-}
-//the draggable items
-.x_grid_page #grid ul li{
-  background:darken($lightestcolor, 50%);
-  border-color: transparent;
-  color:$whiteorlightest !important;
-}
-//even rows of the table
-.x_grid_page table tr.shaded {
-  background: darken($lightestcolor, 40%);
-  color:$blackordarkest !important;
-}
-//odd rows of the table
-.x_grid_page table tr {
-  background: darken($lightestcolor, 30%);
-  color:white !important;
-}
-.x_grid_page #grid ul li.static {
-  background: none;
-  border-color: transparent;
-}
+
 /*****timeline matching pairs*****/
 .x_timeline_page #dragDropHolder {
   background: $whiteorlightest;
@@ -351,7 +317,7 @@ a.hotspot, a.hotspot.selected {
   background-color:$lightestcolor;
 }
 .x_timeline_page .label.panel.ui-draggable {
-  background: darken($lightestcolor, 40%);
+  background: darken($lightestcolor, 50%);
   color: $fontcolorfobrightcolor;
   border-color:darken($lightestcolor, 40%);
 }
