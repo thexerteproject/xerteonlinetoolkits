@@ -1393,9 +1393,6 @@ function parseContent(pageRef, sectionNum, addHistory) {
 			pageIndex = validPages[0];
 		}
 	}
-}
-
-function parseContent(pageID, sectionNum, addHistory) {
 	
 	var standAlonePage = $(data).find('page').eq(pageIndex).attr('linkPage') == 'true' ? true : false;
 	
