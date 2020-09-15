@@ -238,7 +238,7 @@ function iframe_check_initialise(disable_btn) {
 
 /**
  *
- * Function import template pop up (OSBOLETE)
+ * Function import template pop up (OBSOLETE)
  * This function repurposes the folder pop up for the import action
  * @param string id_to_replace = the id of the template we might replace
  * @version 1.0
