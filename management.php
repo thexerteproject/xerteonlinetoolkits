@@ -266,7 +266,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
             <body onload="javascript:site_list()">
 
-                <iframe id="upload_iframe" name="upload_iframe" src="#" style="width:0px;height:0px; display:none;"></iframe>
+                <iframe id="upload_iframe" name="upload_iframe" src="" style="width:0px;height:0px; display:none;"></iframe>
 
                 <!--
 

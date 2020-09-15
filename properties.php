@@ -105,7 +105,7 @@ _load_language_file("/properties.inc");
         
         -->
 
-        <iframe id="upload_iframe" name="upload_iframe" src="#" style="width:0px;height:0px; display:none"></iframe>
+        <iframe id="upload_iframe" name="upload_iframe" src="" style="width:0px;height:0px; display:none"></iframe>
         <iframe id="download_frame" style="display:none"></iframe>
 
         <div class="properties_main">
