@@ -20,7 +20,7 @@
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_PRIVATE", "Include Private templates in the transfer.");
 
-    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_DELETEUSER", "Remove user's access to other templates. Also remove user if Pravate templates are included in the transfer.");
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_DELETEUSER", "Remove user's access to other templates. Also remove the user if private templates are included in the transfer.");
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_BUTTON", "Do bulk transfer");
 
