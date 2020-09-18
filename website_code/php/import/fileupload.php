@@ -20,6 +20,13 @@
 require_once(dirname(__FILE__) . "/../../../config.php");
 require_once(dirname(__FILE__) . "/../../../plugins.php");
 
+/*
+ * Function to convert a size string - e.g '128MB' - to the
+ * actual number of bytes.
+ *
+ * Provided by 'John V' at https://stackoverflow.com/questions/11807115/php-convert-kb-mb-gb-tb-etc-to-bytes
+ */
+
 function convertToBytes(string $from): ?int {
     $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
 
