@@ -205,7 +205,7 @@ function cssSetUp(param) {
 			}
             break;
         case 'stylesheet':
-			if ( $(data).find('learningObject').attr('stylesheet') != undefined) {
+			if ( $(data).find('learningObject').attr('stylesheet') != undefined && $(data).find('learningObject').attr('stylesheet').trim() != '' ) {
 				insertCSS($(data).find('learningObject').attr('stylesheet'), function() { loadLibraries(); });
 			} else {
 				loadLibraries();
