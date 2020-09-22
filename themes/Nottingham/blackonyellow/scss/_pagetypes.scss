@@ -8,6 +8,9 @@
 table.glossary tr {
   background: darken($lightestcolor, 10%);
 }
+table.glossary tr.shaded {
+  background: darken($lightestcolor, 5%);
+}
 //***********************************Media*************************************
 //default highlight if not overriden
 .highlight {
