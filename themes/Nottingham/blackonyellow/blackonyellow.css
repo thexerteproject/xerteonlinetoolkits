@@ -29,6 +29,9 @@
 table.glossary tr {
   background: #ffff66; }
 
+table.glossary tr.shaded {
+  background: #ffff80; }
+
 .highlight {
   background: #FFFF99; }
 
