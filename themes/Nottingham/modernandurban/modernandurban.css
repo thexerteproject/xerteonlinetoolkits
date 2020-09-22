@@ -84,7 +84,8 @@
   color: #2F3131; }
 
 #pageContents.button button.selected {
-  background-color: #F8F1E5; }
+  background-color: #2F3131;
+  color: #ffffff; }
 
 #pageContents.slide #btnHolder button {
   background: #426E86;
@@ -282,7 +283,14 @@ table tr.shaded {
 
 tr {
   background: #F9BA32;
-  color: #ffffff; }
+  color: #2F3131; }
+
+table.glossary tr {
+  background: #F8F1E5; }
+
+table.glossary tr.shaded {
+  background: #dfeaf1;
+  color: #2F3131; }
 
 #grid ul li.static {
   background: none;
