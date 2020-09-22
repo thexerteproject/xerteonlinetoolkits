@@ -15,11 +15,12 @@
     clear:		both;
 }
 #pageContents #correctAnswer {
+
     clear:		both;
 }
 #correctAnswer h3 {
     border-top: 1px solid #ccc;
-    padding-top: 1em;
+    padding-top: 40px;
 }
 #feedback h3 {
     border-top: 1px solid #ccc;
@@ -32,5 +33,17 @@
 #attempts{
     margin-top: 10%;
     padding-bottom: 0;
+}
+
+.titleQuestion{
+    padding-bottom: 30px;
+}
+
+#mainFeedback{
+    padding-top: 30px;
+}
+
+#result{
+    padding-top: 30px;
 }
 

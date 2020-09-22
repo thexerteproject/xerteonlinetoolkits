@@ -19,7 +19,7 @@
  * limitations under the License.
  */
  -->
-<html xmlns:fb="http://ogp.me/ns/fb#">
+<html lang="%LANGUAGE%" xmlns:fb="http://ogp.me/ns/fb#">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
@@ -46,29 +46,35 @@
     <!--styles -->
     <link href="%TEMPLATEPATH%common/css/bootstrap.css%VERSION_PARAM%" rel="stylesheet">
     <link href="%TEMPLATEPATH%common/css/bootstrap-responsive.css%VERSION_PARAM%" rel="stylesheet">
+	<link href="%TEMPLATEPATH%common/css/fonts.css%VERSION_PARAM%" type="text/css" rel="stylesheet" />
 
     <!--custom styles for this template-->
     <link href="%TEMPLATEPATH%common/css/custom.css%VERSION_PARAM%" rel="stylesheet">
 
     <!--font awesome-->
     <link rel="stylesheet" href="%TEMPLATEPATH%common/font-awesome-4.3.0/css/font-awesome.min.css">
+    <link href="%TEMPLATEPATH%common/fontawesome-5.6.3/css/all.min.css%VERSION_PARAM%" rel="stylesheet">
+    <link href="%TEMPLATEPATH%common/fontawesome-5.6.3/css/v4-shims.min.css%VERSION_PARAM%" rel="stylesheet">
 
     <!--support for IE < 6-8 -->
     <script src="%TEMPLATEPATH%common/js/html5shiv.js%VERSION_PARAM%"></script>
 
     <!--media element and initialisation-->
-    <script src="%TEMPLATEPATH%common/mediaelement/mediaelement-and-player.min.js%VERSION_PARAM%"></script>
-    <link rel="stylesheet" href="%TEMPLATEPATH%common/mediaelement/mediaelementplayer.min.css%VERSION_PARAM%" />
+	<script type="text/javascript" src="%TEMPLATEPATH%common/mediaelement/mediaelement-and-player.min.js%VERSION_PARAM%"></script>
+	<script type="text/javascript" src="%TEMPLATEPATH%common/mediaelement/renderers/vimeo.min.js%VERSION_PARAM%"></script>
+	<link rel="stylesheet" href="%TEMPLATEPATH%common/mediaelement/mediaelementplayer-legacy.min.css%VERSION_PARAM%" />
 
     <script type="text/javascript">
         var FileLocation = "%XMLPATH%";
         var templateLocation = "%TEMPLATEPATH%";
 		var themePath = "%THEMEPATH%";
         var projectXML = "%XMLFILE%"; //this is the file to read, not the xml
-		
+        var x_lastUpdated = new Date("%LASTUPDATED%");
+        var localeoptions = { weekday: undefined, year: 'numeric', month: 'short', day: 'numeric' };
+        var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
     </script>
 
-    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
+    <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
 
 </head>
 
@@ -78,7 +84,9 @@
 <div id="fb-root"></div>
 <script src="%TEMPLATEPATH%common/js/initFB.js%VERSION_PARAM%" defer></script>
 
-<div class="navbar navbar-inverse navbar-fixed-top hide" id="topnav">
+<div id="alwaysTop"></div>
+
+<div class="navbar navbar-inverse navbar-fixed-top hide" id="topnav" role="navigation" aria-label="pages">
     <div class="navbar-inner">
 
         <div class="container">
@@ -121,7 +129,7 @@
 <div class="container">
     <div class="row-fluid">
         <!--navigation-->
-        <div class="span3 bs-docs-sidebar" id="contentTable">
+        <div class="span3 bs-docs-sidebar" id="contentTable" role="navigation" aria-label="sections">
 
             <ul class="nav nav-list bs-docs-sidenav affix" id="toc">
                 <!--<li><a href="#section1ID">Section 1</a></li>-->
@@ -129,7 +137,7 @@
         </div>
 
         <!--content-->
-        <div class="span9" id="mainContent">
+        <div class="span9" id="mainContent" role="main">
 
         </div>
     </div>

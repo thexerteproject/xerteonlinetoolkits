@@ -17,8 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-	// Built using the feed library at https://rss2json.com/google-feed-api-alternative
  
 	var rss = new function() {
 		var $pageContents,
@@ -34,13 +32,27 @@
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 			}
 		};
-		
 		this.init = function() {
-			$script('https://rss2json.com/gfapi.js', function () {
-				rss.begin();
-			});
+			this.begin();
 		};
-		
+
+		this.loadfeed = function () {
+			var rssproxyurl = (typeof x_rssproxyURL != 'undefined') ? x_rssproxyURL : 'rss_proxy.php';
+			var rssproxyurl = rssproxyurl + "?rss=" + encodeURIComponent(rssURL) + "&format=" + "json";
+			$.get(rssproxyurl, function(data, status, xhr) {
+				$("#loadingSpinner").hide();
+				if (status == 'success')
+				{
+					var feed = JSON.parse(data);
+					rss.listFeed(feed);
+				}
+				else {
+					rss.errorLoading(x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + " \"" + rssURL +"\"");
+				}
+			});
+
+		};
+
 		this.begin = function() {
 			$pageContents = $("#pageContents");
 			$textHolder = $("#textHolder");
@@ -50,23 +62,9 @@
 
 			$("#loadingSpinner").show();
 
-			google.load("feeds", "1");
+		//	google.load("feeds", "1");
 			
 			rssURL = x_currentPageXML.getAttribute("url");
-
-			function initialize() {
-				var feed = new google.feeds.Feed(rssURL);
-				feed.load(function(result) {
-					$("#loadingSpinner").hide();
-					if (!result.error) {
-						rss.listFeed(result.feed);
-					}
-					else {
-						rss.errorLoading(x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + " \"" + rssURL +"\"");
-					}
-				});
-			}
-			google.setOnLoadCallback(initialize);
 			
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
 			if (panelWidth == "Full") {
@@ -99,31 +97,34 @@
 
 			this.sizeChanged();
 			x_pageLoaded();
+			this.loadfeed();
 		};
 		
 		this.listFeed = function(feed) {
 				var resultsString = "";
 
-				if (feed.entries == 0) {
+				if (feed.rss.channel.item == 0) {
 					resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>'
 				}
 				else {
-					
-					$pageContents.find("#headerHolder").html("<h3>" + feed.description + "</h3>");
+					$.each(feed.rss.channel.item, function (index, item) {
+						var xertefeed = (typeof item.xertedescription != "undefined");
+						var description = (typeof item.xertedescription != "undefined" ? item.xertedescription : item.description);
+						var templatename = (typeof item.xertetemplatename != "undefined" ? item.xertetemplatename : "");
+						var author = (typeof item.xerteauthor != "undefined" ? item.xerteauthor : (typeof item.author != "undefined" ? item.author : ""));
+						resultsString += '<div><a target="_blank" href="' + item.link + '">'+ item.title + '</a><br><br>';
 
-					$.each(feed.entries, function (index, item) {
-						resultsString += '<div><a target="_blank" href="' + item.link + '">' + item.title + '</a>';
-						
-						if (x_currentPageXML.getAttribute("appearance") != 'title') {
+
+						if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.description != "undefined") {
 							// snippet is a bit long so shorten it
-							if (item.contentSnippet.length == item.content.length && item.contentSnippet.length > 400) {
-								var cutOff = 400 + item.contentSnippet.substr(400).indexOf(' ');
-								resultsString += '<p>' + item.contentSnippet.substring(0, cutOff) + '...</p>';
+							if (description != "undefined" && description.length > 400) {
+								var cutOff = 400 + description.substr(400).indexOf(' ');
+								resultsString += '<p class="rssDescription">' + description.substring(0, cutOff) + '...</p>';
 							} else {
-								resultsString += '<p>' + item.contentSnippet + '</p>';
+								resultsString += '<p class="rssDescription">' + description + '</p>';
 							}
 						}
-						
+
 						resultsString += '</div>';
 					});
 				}

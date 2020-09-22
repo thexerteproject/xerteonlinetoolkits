@@ -42,7 +42,8 @@
 			openTagInfo = [],
 			wrongFinds = 0,
 
-			checked = false;
+			checked = false,
+			findAllowSelectionOfAllWords;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -108,7 +109,7 @@
 
 			interactionText = x_addLineBreaks(x_currentPageXML.getAttribute("passage"));
 
-			if (x_currentPageXML.getAttribute("text") != "") {
+			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
 				$("#pageTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			} else {
 				$("#pageTxt").remove();
@@ -159,12 +160,11 @@
 						bgColour = 'red';
 						textDeco = "line-through";
 					}
+
 					groupStyles += ".wrongOn" + i + "  {color:" + x_blackOrWhite(bgColour) + "; background-color:" + bgColour + "; " + "text-decoration: " + textDeco + ";" + "border-radius: 2px; padding-top: 5px}";
 
-					if (x_currentPageXML.getAttribute("highlight") == "true"
-						&& x_currentPageXML.getAttribute("interactivity") != "mcq"
-						&& x_currentPageXML.getAttribute("interactivity") != "find"
-						&& x_currentPageXML.getAttribute("interactivity") != "find2") {
+					if (x_currentPageXML.getAttribute("highlight") == "true") {
+
 						$pageContents.addClass("line");
 						groupStyles += " .group" + i + " {border-bottom: 2px solid " + x_getColour(group.bgColour) + ";} ";
 					}
@@ -232,12 +232,64 @@
 					// if the last delimiter isn't closed then ignore it
 					if (subGroups[subGroups.length-1].close == undefined) {
 						subGroups.pop();
+						count--;
 					}
 				}
 
 				groupInfo[i].numSubGroups = count;
 			}
+			var findUseDistractors = (x_currentPageXML.getAttribute("findUseDistractors") != undefined ? x_currentPageXML.getAttribute("findUseDistractors")==="true" : false);
+			if (findUseDistractors) {
+				var findDistractorDelimiter = (x_currentPageXML.getAttribute("findDistractorDelimiter") != undefined && x_currentPageXML.getAttribute("findDistractorDelimiter").length < 4 ? x_currentPageXML.getAttribute("findDistractorDelimiter") : "");
+				if (findDistractorDelimiter != "") {
+					var group = new Object();
+					group['name'] = '#distractor#';
 
+					group.numSubGroups = 0;
+					var temp = interactionText,
+							index = 0,
+							open = true,
+							count = 0;
+
+					if (temp.indexOf(findDistractorDelimiter) != -1) {
+						while (temp.indexOf(findDistractorDelimiter) != -1) {
+							var tempIndex = temp.indexOf(findDistractorDelimiter);
+							index = index + tempIndex;
+
+							if (!(findDistractorDelimiter == "#" && temp.indexOf("&#") != -1 && temp.indexOf("&#") + 1 == tempIndex)) { // ignore if fits this as it's likely to be a html code not delimiter
+								if (open == true) {
+									var subGroup = new Object({
+										delim: findDistractorDelimiter,
+										open: index,
+										ref: i,
+										overlap: []
+									});
+									subGroups.push(subGroup);
+
+									count++;
+									open = false;
+								} else {
+									subGroups[subGroups.length - 1].close = index;
+									open = true;
+
+								}
+							}
+
+							temp = temp.substring(tempIndex + findDistractorDelimiter.length);
+							index += findDistractorDelimiter.length;
+						}
+
+						// if the last delimiter isn't closed then ignore it
+						if (subGroups[subGroups.length - 1].close == undefined) {
+							subGroups.pop();
+							count--;
+						}
+					}
+
+					group.numSubGroups = count;
+					groupInfo.push(group);
+				}
+			}
 			// sort subgroups by opening tag position
 			subGroups.sort(function(a, b) { return a.open - b.open; });
 
@@ -273,30 +325,38 @@
 
 			if (x_currentPageXML.getAttribute("interactivity") == "find" || x_currentPageXML.getAttribute("interactivity") == "find2"){
 				// Make every regular word a span so that they can be counted as wrong answers
-				var passage = $("#passage").children("p")[0];
-				var passageArray = passage.childNodes;
-				for (var i = 0; i < passageArray.length; i++){
-					if (passageArray[i].nodeName == "#text"){
-						var textArray = passageArray[i].textContent.split(/(\s+)/);
-						var newNodeArray = [];
-						for (var j = 0; j < textArray.length; j++){
-							if ( $.trim( textArray[j] ) != '' ){
-								var newNode = document.createElement('SPAN');
-								newNode.innerHTML = textArray[j];
-								newNode.className += 'wrongWord';
-								newNodeArray.push(newNode);
-							}else{
-								var newNode = document.createTextNode(textArray[j]);
-								newNodeArray.push(newNode);
+				findAllowSelectionOfAllWords = (x_currentPageXML.getAttribute("findAllowSelectionOfAllWords") != undefined ? x_currentPageXML.getAttribute("findAllowSelectionOfAllWords")==="true" : false);
+
+				if (findAllowSelectionOfAllWords) {
+					var passage = $("#passage").children("p");
+					for (var p=0; p<passage.length; p++) {
+						var passageArray = passage[p].childNodes;
+						for (var i = 0; i < passageArray.length; i++) {
+							if (passageArray[i].nodeName == "#text") {
+								var textArray = passageArray[i].textContent.split(/(\s+)/);
+								var newNodeArray = [];
+								for (var j = 0; j < textArray.length; j++) {
+									if ($.trim(textArray[j]) != '') {
+										var newNode = document.createElement('SPAN');
+										newNode.innerHTML = textArray[j];
+										newNode.className += 'wrongWord';
+										newNodeArray.push(newNode);
+									} else {
+										var newNode = document.createTextNode(textArray[j]);
+										newNodeArray.push(newNode);
+									}
+								}
+								for (var k = 0; k < newNodeArray.length; k++) {
+									passage[p].insertBefore(newNodeArray[k], passageArray[i + k])
+								}
+								i += newNodeArray.length;
+								passageArray[i].remove();
 							}
 						}
-						for (var k = 0; k < newNodeArray.length; k++) {
-							passage.insertBefore(newNodeArray[k], passageArray[i+k])
-						}
-						i += newNodeArray.length;
-						passageArray[i].remove();
 					}
 				}
+
+
 				correctOptions = [];
 				correctAnswers = [];
 				var index = 0;
@@ -319,11 +379,12 @@
 								answer: span.text(),
 								result: true
 							}
-						)
-						correctAnswers[groupNumber].push("&#8226 " + span.text() + "<br>");
+						);
+						correctAnswers[groupNumber].push(span.text() + "<br>");
 					}
 					index++;
 				});
+				tabIndex += index;
 
 				if (x_currentPageXML.getAttribute("interactivity") == "find2"){
 					// Track the page
@@ -339,7 +400,7 @@
 				"groupInfo": groupInfo,
 				"subGroups": subGroups
 			});
-
+			//debugger;
 			this.setUpInteraction();
 
 			x_pageLoaded();
@@ -400,10 +461,10 @@
 				$('<button id="showBtn"></button>')
 					.appendTo("#btnHolder")
 					.hide();
-
 				var instructions = x_currentPageXML.getAttribute("exploreTxt") != undefined ? x_currentPageXML.getAttribute("exploreTxt") : "Explore the text. Click on a section to learn more.";
 				$instructions.html('<p>' + instructions + '</p>');
 
+                $("#questionHolder").hide();
 
 				$("#passage").click(function(e) {
 					var $this = $(this);
@@ -517,7 +578,7 @@
 			} else if (intType == "show2") {
 				$instructions.html('<p>' + (x_currentPageXML.getAttribute("showMeTxt") != undefined ? x_currentPageXML.getAttribute("showMeTxt") : "Click the arrow buttons to learn more.") + '</p>');
 				$("#btnHolder")
-					.html('<button id="nextBtn"></button><button id="prevBtn"></button>')
+					.html('<button id="prevBtn"></button><button id="nextBtn"></button>')
 					.insertAfter($("#passage"));
 
 				var btnTxt = [
@@ -531,7 +592,8 @@
 							primary: "fa fa-x-next"
 						},
 						label:	btnTxt[0],
-						text:	false
+						text:	false,
+						disabled:	(groupInfo.length == 0)
 					})
 					.click(function() {
 						var currentGroup = $pageContents.data("currentGroup");
@@ -630,10 +692,13 @@
 
 				//If the type is Find(Mark at End), add a button to let the user finish up
 				if (intType=="find2"){
-					$("<button disabled id = markAtEnd>Check</button>").insertBefore($("#feedback"));
+					$("<div id='buttonHolder'><button disabled id='markAtEnd'>Check</button></div>").insertBefore($("#feedback"));
+					var markAtEndLabel = x_currentPageXML.getAttribute("findCheckTxt") != undefined ? x_currentPageXML.getAttribute("findCheckTxt") : "Check";
+					$("#markAtEnd").button({
+						label:	markAtEndLabel,
+						disabled:	true
+					});
 				}
-
-
 
 				// there's only one group marked up - no need for listItems
 				if (count == 1) {
@@ -749,7 +814,7 @@
 						}
 					});
 
-				$("#markAtEnd").click(function () { interactiveText.endFindInteraction(); $("#markAtEnd").hide();});
+				$("#markAtEnd").click(function () { interactiveText.endFindInteraction(); $("#markAtEnd").button("disable");});
 
 			// --- MCQ ---
 			// quiz asks what is highlighted
@@ -779,6 +844,7 @@
 					phrases[langOptions[i]] = x_currentPageXML.getAttribute(langOptions[i]) != undefined ? x_currentPageXML.getAttribute(langOptions[i]) : defaultText[i];
 				}
 				$pageContents.data("phrases", phrases);
+
 
 				$("#questionHolder").html('<h3 id="qNum" tabindex="' + (tabIndex+1) + '"></h3><div id="qText" tabindex="' + (tabIndex+2) + '"><p>' + phrases.mcqText + '</p></div><div id="optionHolder"></div>');
 
@@ -817,7 +883,9 @@
 							var $moreInfo = $("#more");
 							$moreInfo.remove();
 
-							l_options.push(parseInt($("#optionHolder input:checked").val()) + 1 + "");
+							l_options.push({
+								answer : parseInt($("#optionHolder input:checked").val()) + 1 + ""
+							});
 							l_answer.push(mcqAnswerOptions[$("#optionHolder input:checked").val()]['text']);
 							l_feedback.push($("#marking").text().trim());
 
@@ -844,6 +912,7 @@
 								success: correct,
 								score: correct ? 100.0 : 0.0
 							};
+
 							XTExitInteraction(x_currentPage, mcqCurrentQ, result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
 
 							$(this)
@@ -868,6 +937,7 @@
 
 								$("#qNum").html($pageContents.data("phrases").mcqFeedback);
 
+                                finalFeedbackMcq($pageContents.data("mcqScore"), mcqAnswers.length);
 								$("#feedback").show();
 
 								if (XTGetMode() == "normal")
@@ -887,6 +957,8 @@
 								interactiveText.createQ();
 							}
 						} else if (XTGetMode() != "normal") { // restart
+
+							$("#feedbackTxt").empty();
 							interactiveText.createQuiz();
 						}
 					});
@@ -936,7 +1008,7 @@
 					$pageContents.data("found").push([]);
 					$pageContents.data("wrongFound").push([]);
 				}
-				if (groupInfo[i].numSubGroups > 0) {
+				if (groupInfo[i].numSubGroups > 0 && groupInfo[i].name != "#distractor#") {
 					if (firstLoad == true) {
 						var $groupBtn = $('<a/>');
 						$groupBtn
@@ -981,7 +1053,7 @@
 					arr.splice(arr.indexOf($this.data("index")), 1);
 				}
 				// if the clicked word is a "wrongWord" count it as wrong.
-				else if ($this.hasClass('wrongWord') && !$this.hasClass('group')){
+				else if ($this.hasClass('wrongWord') && !$this.hasClass('group') && findAllowSelectionOfAllWords){
 					markWrong($this, intType, currentGroup);
 				}
 
@@ -1025,10 +1097,11 @@
 					if ($pageContents.data("found")[currentGroup].length == groupInfo[currentGroup].numSubGroups) {
 						// Put a 1 in the complete array on the index of this group
 						$pageContents.data("complete").splice(currentGroup, 1, 1);
-
 						// If there are no more 0's in the "complete array" (aka everything is complete)
 						if ($.inArray(0, $pageContents.data("complete")) == -1) {
-							$("#feedback").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "Well done! You have completed this activity.") + '</p>');
+                            var incorrectFound = $pageContents.data("wrongFound");
+                            finalFeedback(incorrectFound);
+							$("#feedback").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "You have completed this activity.") + '</p>');
 						}
 					}
 				} else if (intType == "find2"){
@@ -1042,11 +1115,10 @@
 					if ($pageContents.data("found")[currentGroup].length + $pageContents.data("wrongFound")[currentGroup].length == groupInfo[currentGroup].numSubGroups) {
 						// Put a 1 in the complete array on the index of this group:
 						$pageContents.data("complete").splice(currentGroup, 1, 1);
-
 						// If there are no more 0's in the "complete array" (aka everything is complete)
 						if ($.inArray(0, $pageContents.data("complete")) == -1) {
-							$("#feedback").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "Well done! You have completed this activity.") + '</p>');
-							$("#markAtEnd").prop("disabled", false);
+							$("#feedback").html('<p>' + (x_currentPageXML.getAttribute("find2Feedback") != undefined ? x_currentPageXML.getAttribute("find2Feedback") : "You have selected the the correct number of items, please click the button to check your answers.") + '</p>');
+							$("#markAtEnd").button("enable");
 						}
 					}
 				}
@@ -1071,13 +1143,17 @@
 			var l_options = [];
 			var l_answers = [];
 			for (var group = 0; group < correctFound.length; group++){
+				if (groupInfo[group].name == "#distractor#")
+				{
+					continue;
+				}
 				l_options[group] = [];
 				l_answers[group] = [];
 
 				var groupName = groupInfo[group].name;
 
 				for (var i = 0; i < correctFound[group].length; i++){
-					var span = $('*[data-index=' + correctFound[group][i]+ ']')
+					var span = $('*[data-index=' + correctFound[group][i]+ ']');
 					l_options[group].push(
 						{
 							id: span.attr("data-index"),
@@ -1085,13 +1161,14 @@
 							result: true
 						}
 					);
-					l_answers[group].push("&#8226 " + span.text() + "<br>");
+					l_answers[group].push(span.text() + "<br>");
 				}
 
 				var percentageCorrect = 0;
 				if (correctOptions[group].length != 0)
 					percentageCorrect = correctFound[group].length / correctOptions[group].length * 100;
-				endScore += correctFound[group].length;
+				// endScore += correctFound[group].length;
+				endScore += (correctFound[group].length == correctOptions[group].length ? 1 : 0);
 
 				for (var i = 0; i < incorrectFound[group].length; i++){
 					var span = $('*[data-index=' + incorrectFound[group][i]+ ']')
@@ -1103,21 +1180,31 @@
 						}
 					l_options[group].push(wrongOption);
 					correctOptions[group].push(wrongOption);
-					l_answers[group].push("&#8226 " + span.text() + "<br>");
+					l_answers[group].push(span.text() + "<br>");
 				}
 
 				var correct = percentageCorrect == 100;
 				var result = {
 								success: correct,
-								score: percentageCorrect
+								//score: percentageCorrect
+								score: (correct ? 100 : 0)
 							};
+
 				XTEnterInteraction(x_currentPage, group, 'multiplechoice', groupName, correctOptions[group], correctAnswers[group], [], x_currentPageXML.getAttribute("grouping"));
 				XTExitInteraction(x_currentPage, group, result, l_options[group], l_answers[group], []);
 			}
-			showAnswers(l_answers, correctAnswers, correctOptions);
+            //finalFeedback(incorrectFound);
+			showAnswers(l_answers, l_options, correctAnswers, correctOptions);
 			var total = 0;
-			for (var i = 0; i < correctAnswers.length; i++)
-				total += correctAnswers[i].length;
+			//for (var i = 0; i < correctAnswers.length; i++)
+			//	total += correctAnswers[i].length;
+			// var score = endScore / total * 100;
+			for (var group = 0; group < correctFound.length; group++) {
+				if (groupInfo[group].name == "#distractor#") {
+					continue;
+				}
+				total++;
+			}
 			var score = endScore / total * 100;
 			XTSetPageScore(x_currentPage, score);
 			interactiveText.checked = true;
@@ -1143,38 +1230,113 @@
 				return ($pageContents.data("found")[currentGroup].length + $pageContents.data("wrongFound")[currentGroup].length >= groupInfo[currentGroup].numSubGroups);
 			}
 		};
+		
 		// Show the answers in the find2 interaction, in feedback and colors wrong and right answers
-		function showAnswers(l_answers, correctAnswers, correctOptions){
+		function showAnswers(l_answers, l_options, correctAnswers, correctOptions){
 			var groupInfo = $pageContents.data("groupInfo");
-			var text = "<h3>Feedback</h3><table> <tr> <th>Group</th><th>Your Answers</th><th>Correct Answers</th></tr>";
+			var feedbackTxt = (x_currentPageXML.getAttribute('feedbackTxt') != undefined ? x_currentPageXML.getAttribute('feedbackTxt') : "Feedback");
+			var groupTxt = (x_currentPageXML.getAttribute('groupTxt') != undefined ? x_currentPageXML.getAttribute('groupTxt') : "Group");
+			var yourAnswerTxt = (x_currentPageXML.getAttribute('yourAnswerTxt') != undefined ? x_currentPageXML.getAttribute('yourAnswerTxt') : "Your Answer");
+			var correctAnswerTxt = (x_currentPageXML.getAttribute('correctAnswerTxt') != undefined ? x_currentPageXML.getAttribute('correctAnswerTxt') : "Correct Answer");
+			var text = "<h3>" + feedbackTxt + "</h3><table> <tr> <th>" + groupTxt + "</th><th>" + yourAnswerTxt + "</th><th>" + correctAnswerTxt + "</th></tr>";
 
 			for (var group = 0; group < correctAnswers.length; group++){
+				if (groupInfo[group].name == "#distractor#")
+				{
+					continue;
+				}
 				text +=("<tr>");
 				text += ("<td>" + groupInfo[group].name + "</td>");
 				text += ("<td>");
+
 				for (var i = 0; i < l_answers[group].length; i++){
-					text += (l_answers[group][i]);
+
+					if (l_options[group][i].result === true) {
+                            text += '<span id="feedbackResult" class="fa fa-fw fa-x-tick"></span>';
+                            text += (l_answers[group][i]);
+					} else {
+                            text += '<span id="finalResult" class="fa fa-fw fa-x-cross"></span>'
+                            text += (l_answers[group][i]);
+					}
 				}
 				text += ("</td>");
 				text +=("<td>");
 				for (var i = 0; i < correctAnswers[group].length; i++){
 					text +=(correctAnswers[group][i]);
 				}
-				text += ("</td>")
+				text += ("</td>");
 				text +=("</tr>");
 			}
 			text +=("</table>");
+
 			$("#feedback").empty().append(text).show();
 
 			for(var group = 0; group < correctOptions.length; group++){
+				if (groupInfo[group].name == "#distractor#")
+				{
+					continue;
+				}
 				for (var i = 0; i < correctOptions[group].length; i++){
 					if (correctOptions[group][i].result)
 						$("*[data-index="+ correctOptions[group][i].id + ']').css({"border-bottom": "2px solid " + x_getColour(groupInfo[group].bgColour)});
-					debugger;
+				}
+			}
+			// Add cross-through style for wrong answers
+			var linethrough = ".wrongWord .wordOn";
+			for(var group = 0; group < correctOptions.length; group++){
+				linethrough += ", .wrongGroup" + group + ".wrongOn" + group;
+			}
+			linethrough += "{ text-decoration:line-through; }";
+			$("#pageContents style").append(linethrough);
+		}
+
+		function finalFeedback(incorrect){
+
+		    var correct = true;
+
+		    for(var i =0; i < incorrect.length; i++){
+		        if(incorrect[i].length !== 0){
+		            correct =false;
 				}
 			}
 
+            if(correct){
+                $("#feedbackTxt").html((x_currentPageXML.getAttribute("passedFindTxt") != undefined ? x_currentPageXML.getAttribute("passedFindTxt") : "All selections are correct"));
+            }else{
+                $("#feedbackTxt").html((x_currentPageXML.getAttribute("failedFindTxt") != undefined ? x_currentPageXML.getAttribute("failedFindTxt") : "You still have incorrect selections"));
+            }
 
+            $("#feedbackTxt").prepend("<span id=finalResult/>")
+
+            if(correct){
+                $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+            }else{
+                $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+            }
+
+			}
+
+        function finalFeedbackMcq(good, total){
+
+		    var correct = true;
+
+		    if(good !== total){
+		        correct = false;
+			}
+
+            if(correct){
+                $("#feedbackTxt").html((x_currentPageXML.getAttribute("passedQuestionTxt") != undefined ? x_currentPageXML.getAttribute("passedQuestionTxt") : "You passed the question"));
+            }else{
+                $("#feedbackTxt").html((x_currentPageXML.getAttribute("failedQuestionTxt") != undefined ? x_currentPageXML.getAttribute("failedQuestionTxt") : "Not all answers are correct"));
+            }
+
+            $("#feedbackTxt").prepend("<span id=finalResult/>");
+
+            if(correct){
+                $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+            }else{
+                $("#finalResult").addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+            }
 		}
 		// only used in mcq interaction - creates new quiz
 		this.createQuiz = function() {
@@ -1269,7 +1431,6 @@
 			x_shuffleArray(options);
 			var numOptions = x_currentPageXML.getAttribute("mcqNumAs") == undefined ? 3 : x_currentPageXML.getAttribute("mcqNumAs") == "*" ? options.length + 1 : isNaN(x_currentPageXML.getAttribute("mcqNumAs")) ? 3 : Number(x_currentPageXML.getAttribute("mcqNumAs"));
 			options = options.length <= numOptions - 1 ? options : options.slice(0, numOptions - 1);
-
 			// options conatins the added answers, add them to correctOptions, correctAnswers and correctDeedback
 			$.each(options, function(i, thisOption){
 				correctOptions.push({
@@ -1284,7 +1445,11 @@
 
 			x_shuffleArray(options);
 
-			XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
+			var answerText = [];
+			answerText.push(correct['text']);
+
+			
+			XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, answerText, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 			var $optionHolder = $("#questionHolder #optionHolder")
 					.html('<div class="optionGroup"><input type="radio" name="option" /><label class="optionTxt"></label></div>')
 					.show();
@@ -1362,13 +1527,16 @@
 
 	<div id="passageHolder" class="panel">
 		<div id="passage"/>
+		<div id="feedbackTxt"/>
 	</div>
 	<div id="pageTxt" tabindex="1"/>
 	<div id="instructions" tabindex="2"/>
 	<div id="groupInfo"/>
 	<div id="btnHolder"/>
 	<div id="questionHolder"/>
+
 	<div id="feedback" aria-live="polite"/>
+
 
 </div>
 

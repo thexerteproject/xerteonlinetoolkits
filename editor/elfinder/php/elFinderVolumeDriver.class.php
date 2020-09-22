@@ -2193,6 +2193,10 @@ abstract class elFinderVolumeDriver {
 				if ($ext && preg_match('~^application/(?:octet-stream|(?:x-)?zip)~', $type)) {
 					if (isset(elFinderVolumeDriver::$mimetypes[$ext])) $type = elFinderVolumeDriver::$mimetypes[$ext];
 				}
+				if ($ext && strpos($type, "text/plain") === 0)
+                {
+                    if (isset(elFinderVolumeDriver::$mimetypes[$ext])) $type = elFinderVolumeDriver::$mimetypes[$ext];
+                }
 			}
 		} elseif ($type == 'mime_content_type') {
 			$type = mime_content_type($path);

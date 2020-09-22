@@ -26,6 +26,10 @@ div.cke_editable_inline * {
 	font-family: inherit;
 }
 
+div.cke_editable_inline i.fa {
+	font-family: FontAwesome;
+}
+
 #insert_subnodes {border-top: 1px solid #ccc!important; margin-top: 20px; padding-top: 20px;}
 
 #insert_subnodes hr {display: none;}
@@ -52,19 +56,24 @@ div.ui-layout-north div.content {background-image: none; background-color: #4D58
     vertical-align: text-bottom;
 }
 
-#poly{
-	height: 50px;
-	width: 50px;
-	padding: 12px 16px;
+.hseditModeButton
+{
+	height: 40px;
+	width: 40px;
+	padding: 2px;
 	cursor: pointer;
-}
-#square{
-	height: 50px;
-	width: 50px;
-	padding: 12px 16px;
-	cursor: pointer;
+	border-radius: 4px;
 }
 
+.hseditModeButton.selected
+{
+	background: #f86718;
+}
+
+.hseditModeButton.firstoption
+{
+	margin-left:20px;
+}
 
 h1 {
 	font-size: 2em;
@@ -628,7 +637,7 @@ div.inputtext {
 
 
 .inlinewysiwyg p{
-    border-radius: 4px;
+   /* border-radius: 4px; */
     padding: 4px 7px;
     margin: 0;
     background: #fff;
@@ -670,7 +679,7 @@ select, input, textarea
 #mainPanel select,  #mainPanel textarea {
     /* background: #ececed; */
     background: #fff;
-    border-radius: 4px;
+   /* border-radius: 4px;*/
     border: 1px solid #cdcdcd;
     width: 100%;
     box-sizing: border-box;
@@ -688,7 +697,7 @@ select, input, textarea
 #mainPanel input
 {
     background: #fff;
-    border-radius: 4px;
+    /*border-radius: 4px;*/
     border: 1px solid #cdcdcd;
     /* width: 100%; */
     box-sizing: border-box;
@@ -706,10 +715,12 @@ td.wizardparameter{
     width:20px;
 }
 td.wizardlabel {
-    width: 175px;
+	width: 20%;
+    min-width: 175px;
 }
 .wizardgroup td.wizardlabel {
-    width: 155px;
+	width: 19%;
+    min-width: 155px;
 }
 
 td.wizardvalue {
@@ -902,6 +913,25 @@ td.flashonly, td.deprecated{
   width:100%;
   height:100%;
   position:relative;
+  margin:auto;
+}
+
+div.hsinstructions
+{
+	font-size:smaller;
+}
+
+div.hotspotEditor {
+	background-color: #f0f0f2;
+}
+
+.hsbutton_holder
+{
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	background-color: #f0f0f2;
+	padding: 5px;
+	border-bottom: 1px solid #e0e0e0;
 }
 .overlayImage {
   width:100%;
@@ -939,6 +969,16 @@ td.flashonly, td.deprecated{
     background-color: rgba(50, 50, 50, 1);
 }
 
+.featherlight .featherlight-content
+{
+	padding:5px 5px 0 !important;
+}
+
+.hotspotEditor
+{
+	padding: 5px;
+}
+
 .instructions{
     width: 94%;
     padding: 3%;
@@ -965,6 +1005,16 @@ button.editorbutton:hover {
     font-size: 1em;
 }
 
+div.hotspotLightbox button.editorbutton {
+	border-radius: 3px;
+    padding: 0.5em;
+	margin: 0 5px 0 0;
+	background: #ccc;
+}
+
+div.hotspotLightbox button.editorbutton:hover {
+    background: #f86718;
+}
 
 .xerte_button_dark {background: transparent; border: 0; color: #333;}
 
@@ -986,6 +1036,11 @@ button:hover {background: #f86718; color: #000000;}
 .xerte_button.disabled .xerte-icon {
     color:#ccc;
 }
+
+button.hseditModeButton:hover {background: transparent; color: graytext;}
+
+button.hseditModeButton:hover:enabled {background: #f86718; color: #000000;}
+
 
 #mainPanel .xerte_button { color: #000; }
 #mainPanel .xerte_button.disabled { color: #ccc; font-size: 1em; }
@@ -1081,7 +1136,7 @@ div.wizardvalue_inner {
 	color:#a0a0a0;
 }
 
-.deprecatedIcon, .tooltipIcon
+.deprecatedIcon, .advancedIcon, .tooltipIcon
 {
 	margin-right: 5px;
 	color: #ff8c00;
@@ -1099,6 +1154,10 @@ i.tooltipIcon {
 .hiddenIcon {
 	margin-right: 5px;
 	color: #ff0000;
+}
+.standaloneIcon {
+	margin-right: 5px;
+	color: #333366;
 }
 .iconEnabled
 {
@@ -1165,6 +1224,38 @@ div.theme_description
 	margin-top: 10px;
 	font-style: italic;
 	font-size:small;
+}
+
+.categoryListHolder {
+	column-count: 2;
+	column-gap: 7px;
+}
+
+.categoryList {
+	display: inline-block;
+	width: 100%;
+	margin-bottom: 5px;
+	border: #ccc 1px dashed;
+}
+
+.categoryList .catTitle {
+	margin: 1em 1em 0em;
+}
+
+.categoryList .catGroup {
+	margin: 0.5em 1em 0;
+}
+
+.categoryList .catGroup:last-child {
+	margin-bottom: 1em;
+}
+
+.categoryList input {
+	margin-right: 1em;
+}
+.featherlight iframe {
+	height: 90vh;
+	width: 90vw;
 }
 
 /* start of xertecss.css

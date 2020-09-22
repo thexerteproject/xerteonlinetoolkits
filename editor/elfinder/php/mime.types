@@ -227,7 +227,7 @@ application/x-palm-database pdb prc
 application/x-par2 PAR2 par2
 application/x-pef-executable
 application/x-perl pl pm al perl
-application/x-php php php3 php4
+application/x-php php php3 php4 php5
 application/x-pkcs12 p12 pfx
 application/x-planner planner mrproject
 application/x-planperfect pln

@@ -34,7 +34,7 @@ $esc6: $accent3;
   color:$whiteorlightest;
 }
 .panel1 a{
-  color:lighten($esc1, 40%);
+  color:white;
 }
 .panel2 {
   @include panel;

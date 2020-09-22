@@ -22,6 +22,7 @@
 
 require_once("../../../config.php");
 require_once("../template_library.php");
+require_once("../xAPI/xAPI_library.php");
 
 
 _load_language_file("/website_code/php/properties/publish.inc");
@@ -561,13 +562,16 @@ function project_info($template_id){
 
 function statistics_prepare($template_id)
 {
+    global $xerte_toolkits_site;
 
+    $tsugi_installed = false;
+    if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+        $tsugi_installed = true;
+    }
     $info = new stdClass();
     $info->available = false;
 
     $html = "<div id='graph_" . $template_id . "' class='statistics'><img src='editor/img/loading16.gif'/></div>";
-
-    global $xerte_toolkits_site;
 
     if ($xerte_toolkits_site->dashboard_enabled != 'false') {
 
@@ -594,22 +598,39 @@ function statistics_prepare($template_id)
             $prefix = $xerte_toolkits_site->database_table_prefix;
 
 
-            $query_for_names = "select td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links, td.dashboard_display_options from {$prefix}templatedetails td where template_id=?";
+            $query_for_names = "select td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links, td.dashboard_display_options from {$prefix}templatedetails td where template_id=?";
 
             $params = array($template_id);
             $row = db_query_one($query_for_names, $params);
-            $row_sitedetails = db_query_one("select dashboard_allowed_links from {$prefix}sitedetails");
-
+            $row_sitedetails = db_query_one("select dashboard_allowed_links, LRS_Endpoint from {$prefix}sitedetails");
+            if ($row['tsugi_published'] && $tsugi_installed)
+            {
+                $info->published = $row["tsugi_published"];
+                $info->linkinfo = PROJECT_INFO_LTI_PUBLISHED . "<br>";
+                $info->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
+            }
+            else
+            {
+                $info->published = false;
+            }
             if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != ""))) {
                 $info->info = $html;
+                $info->xapi_linkinfo = PROJECT_INFO_XAPI_PUBLISHED;
+                $info->xapi_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
+                $lrsendpoint = array();
+                if ($row['tsugi_xapi_useglobal'])
+                {
+                    $lrsendpoint['lrsendpoint'] = $row_sitedetails['LRS_Endpoint'];
+                }
+                else
+                {
+                    $lrsendpoint['lrsendpoint'] = $row['tsugi_xapi_endpoint'];
+                }
+                $lrsendpoint = CheckLearningLocker($lrsendpoint);
                 $lrs = new stdClass();
                 $lrs->lrsendpoint = $xerte_toolkits_site->site_url . "xapi_proxy.php";
-                // Make sure we adapt for protocol (mainly to make debugging easier)
+                $lrs->aggregate = $lrsendpoint['aggregate'];
 
-                if (!isset($_SERVER['HTTPS']) && strpos($xerte_toolkits_site->site_url, ':') == 5)
-                {
-                    $lrs->lrsendpoint = "http" . substr($lrs->lrsendpoint, 5);
-                }
                 $lrs->lrskey = "";
                 $lrs->lrssecret = "";
                 $lrs->lrsurls = $row['dashboard_allowed_links'];
@@ -621,6 +642,7 @@ function statistics_prepare($template_id)
                 $lrs->groupmode = $row['tsugi_xapi_student_id_mode'];
                 $info->lrs = $lrs;
                 $info->available = true;
+
                 $dashboard = new stdClass();
                 $dashboard->enable_nonanonymous = $xerte_toolkits_site->dashboard_nonanonymous;
                 $dashboard->default_period = (int)$xerte_toolkits_site->dashboard_period;
@@ -709,7 +731,7 @@ function sharing_info($template_id)
     global $xerte_toolkits_site;
 
     if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
-        return;
+        return "";
     }
 
     $sql = "SELECT template_id, user_id, firstname, surname, username, role FROM " .
@@ -749,6 +771,45 @@ function sharing_info($template_id)
     $info .=  "</ul>";
 
     return $info;
+}
+
+function rss_syndication($template_id)
+{
+    global $xerte_toolkits_site;
+
+    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+        return "";
+    }
+
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    $sql = "SELECT * FROM {$prefix}templatesyndication WHERE template_id = ?";
+
+    $row = db_query_one($sql, array($template_id));
+
+    $info =  PROJECT_INFO_RSS_SYNDICATION . "<br/>";
+
+    if ($row['rss'] != 'true' && $row['export'] != 'true' && $row['syndication'] != 'true')
+    {
+        return "";
+    }
+    else
+    {
+        if ($row['rss'] == 'true')
+        {
+            $info .= "<li>" . PROJECT_INFO_RSS_SYNDICATION_RSSENABLED . "</li>";
+        }
+        if ($row['export'] == 'true')
+        {
+            $info .= "<li>" . PROJECT_INFO_RSS_SYNDICATION_EXPORTENABLED . "</li>";
+        }
+        if ($row['syndication'] == 'true')
+        {
+            $info .= "<li>" . PROJECT_INFO_RSS_SYNDICATION_SYNDICATIONENABLED . "</li>";
+        }
+
+        return $info;
+    }
+
 }
 
 function access_info($template_id){
@@ -996,11 +1057,11 @@ function tsugi_display($id, $lti_def, $mesg = "")
     <p>
     <label for="tsugi_published"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH; ?></label><input id="pubChk" type="checkbox" name="tsugi_published" <?php echo ($lti_def->published ? "checked" : ""); ?>>
     </p>
-    <div id="publish">
+    <div id="publish" class="publish">
         <label for="tsugi_title"><?php echo PROPERTIES_LIBRARY_TSUGI_NAME; ?></label><input name="tsugi_title" type="text" value="<?php echo $lti_def->title ?>"><br>
         <label for="tsugi_key"><?php echo PROPERTIES_LIBRARY_TSUGI_KEY; ?></label><input name="tsugi_key" type="text" value="<?php echo $lti_def->key ?>"><br>
         <label for="tsugi_secret"><?php echo PROPERTIES_LIBRARY_TSUGI_SECRET; ?></label><input name="tsugi_secret" type="text" value="<?php echo $lti_def->secret ?>"><br>
-        <label for="dashboard_urls"><?php echo PROPERTIES_LIBRARY_TSUGI_DASHBOARD_URLS; ?></label><input name="dashboard_urls" type="text" value="<?php echo $lti_def->dashboard_urls ?>"><br>
+    </div>
         <?php
 
     }
@@ -1010,13 +1071,14 @@ function tsugi_display($id, $lti_def, $mesg = "")
     <p class="header"><span><?php echo PROPERTIES_LIBRARY_TSUGI; ?></span></p>
     <p><?php echo PROPERTIES_LIBRARY_TSUGI_NOTAVAILABLE_DESCRIPTION; ?></p>
 
-    <div id="publish">
+
     <?php
     }
     ?>
 
         <label for="xChk"><?php echo PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI; ?></label><input id="xChk" type="checkbox" name="tsugi_xapi" <?php echo ($lti_def->xapi_enabled ? "checked" : "");?>><br>
         <div id="xApi">
+            <label for="dashboard_urls"><?php echo PROPERTIES_LIBRARY_TSUGI_DASHBOARD_URLS; ?></label><input name="dashboard_urls" type="text" value="<?php echo $lti_def->dashboard_urls ?>"><br>
             <label for="tsugi_xapi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USEGLOBAL; ?></label><input type="checkbox" onchange="javascript:xapi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_xapi_useglobal" id="tsugi_xapi_useglobal" <?php echo ($lti_def->xapi_useglobal ? "checked" : "");?>><br>
             <label for="tsugi_xapi_endpoint"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_ENDPOINT; ?></label><input type="text" name="tsugi_xapi_endpoint" id="tsugi_xapi_endpoint" <?php echo ($lti_def->xapi_useglobal ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_endpoint . "\""); ?>"><br>
             <label for="tsugi_xapi_username"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USERNAME; ?></label><input type="text" name="tsugi_xapi_username" id="tsugi_xapi_username" <?php echo ($lti_def->xapi_useglobal ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_username . "\""); ?>"><br>
@@ -1049,9 +1111,10 @@ function tsugi_display($id, $lti_def, $mesg = "")
                 }
                 ?>
             </select><br>
+            <label for="dashboard_urls"><?php echo PROPERTIES_LIBRARY_TSUGI_DASHBOARD_URLS; ?></label><input name="dashboard_urls" type="text" value="<?php echo $lti_def->dashboard_urls ?>"><br>
+
         </div>
         <input type="button" value="<?php echo PROPERTIES_LIBRARY_TSUGI_UPDATE_BUTTON_LABEL; ?>" class="xerte_button" onclick="javascript:lti_update(<?php echo $id;?>)">
-    </div>
     <?php
     if (strlen($mesg)>0) { ?>
         <p id="result_message"><?php echo $mesg; ?></p>

@@ -160,6 +160,9 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   background: rgba(248, 241, 229, 0.9) !important;
   border-color: #F8F1E5; }
 
+.x_dragDropLabel_page #targetHolder .highlight {
+  background: none; }
+
 #categoryHolder .category {
   border-radius: 2vmin; }
 
@@ -553,17 +556,17 @@ tr.alt td {
   padding: 10px;
   font-style: normal;
   background-color: #F9BA32;
-  color: #ffffff; }
+  color: #2F3131; }
 
 .panel1 a {
-  color: white !important; }
+  color: #2F3131 !important; }
 
 .panel2 {
   border-radius: 1vmin;
   display: table;
   padding: 10px;
   font-style: normal;
-  background-color: #2F9739;
+  background-color: #418545;
   color: #ffffff; }
 
 .panel2 a {
@@ -585,7 +588,7 @@ tr.alt td {
   display: table;
   padding: 10px;
   font-style: normal;
-  background-color: #00A1A3;
+  background-color: #278384;
   color: #ffffff; }
 
 .panel4 a {
@@ -638,7 +641,7 @@ tr.alt td {
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #2F9739; }
+  border-color: #418545; }
 
 .highlight3 {
   font-family: "Varela Round", sans-serif;
@@ -664,7 +667,7 @@ tr.alt td {
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #00A1A3; }
+  border-color: #278384; }
 
 .highlight5 {
   font-family: "Varela Round", sans-serif;
@@ -703,7 +706,7 @@ blockquote {
 
 blockquote:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -714,7 +717,7 @@ blockquote p {
 
 blockquote:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -725,7 +728,7 @@ blockquote:after {
 
 .bq1:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -733,37 +736,37 @@ blockquote:after {
 
 .bq1:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
   color: #F9BA32; }
 
 .bq2 {
-  border-color: #2F9739; }
+  border-color: #418545; }
 
 .bq2:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
-  color: #2F9739; }
+  color: #418545; }
 
 .bq2:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #2F9739; }
+  color: #418545; }
 
 .bq3 {
   border-color: #426E86; }
 
 .bq3:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -771,37 +774,37 @@ blockquote:after {
 
 .bq3:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
   color: #426E86; }
 
 .bq4 {
-  border-color: #00A1A3; }
+  border-color: #278384; }
 
 .bq4:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
-  color: #00A1A3; }
+  color: #278384; }
 
 .bq4:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #00A1A3; }
+  color: #278384; }
 
 .bq5 {
   border-color: #2F3131; }
 
 .bq5:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -809,7 +812,7 @@ blockquote:after {
 
 .bq5:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -820,7 +823,7 @@ blockquote:after {
 
 .bq6:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -828,7 +831,7 @@ blockquote:after {
 
 .bq6:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -836,17 +839,17 @@ blockquote:after {
 
 .speech-bubble1 {
   background: #F9BA32;
-  color: white; }
+  color: #2F3131; }
 
 .speech-bubble1:after {
   border-right-color: #F9BA32; }
 
 .speech-bubble2 {
-  background: #2F9739;
+  background: #418545;
   color: white; }
 
 .speech-bubble2:after {
-  border-left-color: #2F9739; }
+  border-left-color: #418545; }
 
 .speech-bubble3 {
   background: #426E86;
@@ -856,11 +859,11 @@ blockquote:after {
   border-right-color: #426E86; }
 
 .speech-bubble4 {
-  background: #00A1A3;
+  background: #278384;
   color: white; }
 
 .speech-bubble4:after {
-  border-left-color: #00A1A3; }
+  border-left-color: #278384; }
 
 .speech-bubble5 {
   background: #2F3131;
@@ -877,8 +880,12 @@ blockquote:after {
   font-family: "Varela Round", sans-serif;
   border-top-color: #D13759; }
 
-.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble4 a, .speech-bubble5 a, .speech-bubble6 a {
+.speech-bubble2 a, .speech-bubble3 a, .speech-bubble4 a, .speech-bubble5 a, .speech-bubble6 a {
   color: white !important;
+  text-decoration: underline; }
+
+.speech-bubble1 a {
+  color: #2F3131 !important;
   text-decoration: underline; }
 
 tt a, samp a, code a, .marker a {

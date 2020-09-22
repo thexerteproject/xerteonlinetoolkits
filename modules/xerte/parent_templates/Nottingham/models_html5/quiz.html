@@ -140,9 +140,9 @@
             XTSetPageType(x_currentPage, 'numeric', numQs, this.weighting);
 
 			this.loadQ();
-            // Queue reparsing of MathJax - fails if no network connection
-            try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-		}
+			
+			x_pageContentsUpdated();
+		};
 
 		this.loadQ = function() {
 		    // Reset tracking flag
@@ -432,8 +432,8 @@
                     quiz.loadQ();
                 }
             }
-            // Queue reparsing of MathJax - fails if no network connection
-            try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+			
+			x_pageContentsUpdated();
         }
 
         this.showResults = function() {
@@ -474,7 +474,7 @@
             var scormScore = Math.ceil(myScore / quiz.questions.length * 100, x_currentPageXML.getAttribute("trackinglabel"));
             XTSetPageScore(x_currentPage, scormScore);
             this.resultsShown = true;
-        }
+        };
 
 		this.loadVideo = function() {
 			var $video = $("#pageVideo"),
@@ -637,8 +637,8 @@
 					} else {
 						quiz.loadQ();
 					}
-                    // Queue reparsing of MathJax - fails if no network connection
-                    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+
+					x_pageContentsUpdated();
 					});
 
 			$("#restartBtn")

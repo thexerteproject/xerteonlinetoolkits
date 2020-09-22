@@ -63,7 +63,7 @@ function check_host($hostname, $setting)
      * Can only check against this variable, if I can't find it (say pop ups) no choice but to fail
      */
 
-    if (strlen(hostname) != 0) {
+    if (strlen($hostname) != 0) {
         foreach ($test_string as $item) {
             $item = trim($item);
             _debug("Checking host: " . $hostname . " in " . $item);
@@ -182,7 +182,7 @@ $safe_template_id = (int) $_GET['template_id'];
  */
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
-$sql = "SELECT otd.template_name, otd.parent_template, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags, td.template_name as zipname, " .
+$sql = "SELECT otd.template_name, otd.parent_template, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.date_modified, td.extra_flags, td.template_name as zipname, " .
     " td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, tsugi_xapi_student_id_mode, dashboard_allowed_links ".
     " FROM {$prefix}originaltemplatesdetails otd, {$prefix}templaterights tr, {$prefix}templatedetails td, {$prefix}logindetails ld " .
     " WHERE td.template_type_id = otd.template_type_id AND td.creator_id = ld.login_id AND tr.template_id = td.template_id AND tr.template_id= ? AND (role=? OR role=?)";
@@ -222,7 +222,7 @@ if ($tsugi_enabled) {
     /* Tsugi enabled */
     if ($row_play["tsugi_published"] == 1 || $row_play["tsugi_xapi_enabled"] == 1) {
         // Actually published for Tsugi
-        db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+        db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
         show_template($row_play, $tsugi_enabled);
     }
@@ -245,7 +245,7 @@ if ($tsugi_enabled) {
              * Public - Increment the number of users and show the template
              */
 
-            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
             show_template($row_play);
 
@@ -302,7 +302,7 @@ if ($tsugi_enabled) {
 
                 if ($success && empty($errors)) {
                     //successful authentication
-                    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+                    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
 					show_template($row_play);
                 } else {
@@ -320,7 +320,7 @@ if ($tsugi_enabled) {
                              * Update uses and display the template
                              *-/
 
-                            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+                            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
                             require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
@@ -358,7 +358,7 @@ if ($tsugi_enabled) {
                     if (strlen($_SERVER['HTTP_REFERER']) > 0) {
                         $ok = check_host($_SERVER['HTTP_REFERER'], $test_string);
                         if ($ok) {
-                            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+                            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
                             show_template($row_play);
                         } else {
                             dont_show_template('Doesnt Match Referer:' . $_SERVER['HTTP_REFERER']);
@@ -387,7 +387,7 @@ if ($tsugi_enabled) {
                              */
                             if ($row_play['access_to_whom'] == $row_security['security_setting']) {
                                 if (check_security_type($row_security['security_data'])) {
-                                    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+                                    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
                                     show_template($row_play);
                                     $flag = true;
 

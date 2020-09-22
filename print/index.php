@@ -35,8 +35,8 @@ body {
     <form id="form1" name="form1" method="get" action="print.php">
       <p>To see how this works use the example below or paste the full link to your own LO.</p>
       <p>
-        <label>Link to LO:
-          <input name="link" type="text" id="link" value="http://training.mitchellmedia.co.uk/xerte/play.php?template_id=96" size="100" />
+        <label>The template id of the LO, :
+          <input name="template_id" type="text" id="template_id" value="" size="80" />
         </label>
       </p>
       <p>Print LO pages: 

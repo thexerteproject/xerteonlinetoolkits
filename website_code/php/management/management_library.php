@@ -47,7 +47,7 @@
 
         global $xerte_toolkits_site;
 
-        $query="select * from " . $xerte_toolkits_site->database_table_prefix . "grouping order by grouping_name ASC";
+        $query="select * from `" . $xerte_toolkits_site->database_table_prefix . "grouping` order by grouping_name ASC";
 
         echo "<p>" . MANAGEMENT_LIBRARY_ADD_GROUPING . "</p>";
 

@@ -20,6 +20,7 @@
 $tsugi_disable_xerte_session = true;
 require_once(dirname(__FILE__) . "/config.php");
 require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
+require_once(dirname(__FILE__) . "/website_code/php/xAPI/xAPI_library.php");
 
 ini_set('display_errors', 0);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
@@ -30,6 +31,7 @@ use \Tsugi\Util\Net;
 use \Tsugi\Grades\GradeUtil;
 
 global $tsugi_enabled;
+global $lti_enabled;
 global $xerte_toolkits_site;
 
 if (isset($_GET["template_id"])) {
@@ -128,7 +130,7 @@ if(is_numeric($id) || $id == null)
             'lrssecret' => $row['tsugi_xapi_secret'],
         );
     }
-
+    $lrs = CheckLearningLocker($lrs);
 
     $_SESSION['XAPI_PROXY'] = $lrs;
 

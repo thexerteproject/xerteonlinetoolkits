@@ -69,7 +69,19 @@
 
 	define ("PROJECT_INFO_NRVIEWS", ", number of views is %n");
 
-	// PROJECT TAB
+	define ("PROJECT_INFO_RSS_SYNDICATION" , "RSS: Project is published through rss");
+
+	define ("PROJECT_INFO_RSS_SYNDICATION_RSSENABLED" , "RSS is enabled");
+
+	define ("PROJECT_INFO_RSS_SYNDICATION_EXPORTENABLED" , "Export is enabled");
+
+	define ("PROJECT_INFO_RSS_SYNDICATION_SYNDICATIONENABLED" , "Syndication is enabled");
+
+	define("PROJECT_INFO_LTI_PUBLISHED" , "LTI: The project is published as an LTI 1.1 tool");
+
+	define("PROJECT_INFO_XAPI_PUBLISHED", "xAPI: xAPI is enabled for this project through the following link:");
+
+// PROJECT TAB
 
 	define("PROPERTIES_LIBRARY_PROJECT", "Project");
 
@@ -115,7 +127,7 @@
 
 	define("PROPERTIES_LIBRARY_PEER", "Peer review");
 
-	define("PROPERTIES_LIBRARY_PEER_EXPLAINED", "In this section you can set up the peer review for one of your projects. This allows you to send a password protected link to staff, allowing them to access a project, and then giving them the facility to email you feedback");
+	define("PROPERTIES_LIBRARY_PEER_EXPLAINED", "In this section you can set up the peer review for one of your projects. This allows you to send a password protected link to colleagues or learners, allowing them to access a project, and then giving them the facility to email you feedback. <br>Note: please check that this works by sending yourself a test review before sending the peer review link to others.");
 
 	define("PROPERTIES_LIBRARY_PEER_STATUS", "Peer review is");
 

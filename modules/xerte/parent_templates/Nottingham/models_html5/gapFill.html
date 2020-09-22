@@ -170,8 +170,15 @@
 						if (dropDownNoise != undefined) {
 							allAnswers = allAnswers.concat(dropDownNoise);
 						}
-						allAnswers.sort();
-						
+
+						dropDownSort = x_currentPageXML.getAttribute("dropDownSort");
+						if (dropDownSort != undefined && dropDownSort != "" && dropDownSort != "alphabetic") // must be random
+						    allAnswers.sort(
+						        function() { return 0.5 - Math.random(); }
+						    );
+						else
+						    allAnswers.sort();
+
 						for (var j=0; j<allAnswers.length; j++) {
 							while (allAnswers[j] == allAnswers[j+1]) {
 								allAnswers.splice(j+1,1);
@@ -266,8 +273,8 @@
 			else if(x_currentPageXML.getAttribute("interactivity") == "Drag Drop"){
 			    correctAnswers = [];
                 correctOptions = [];
+                name = x_currentPageXML.getAttribute("name");
 				for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
-					name = "interaction number" + " " + interactionNumber;
 					correctAnswer = answerData[interactionNumber][0];
 					correctAnswer = correctAnswer + "-->" + correctAnswer;
 					correctAnswers.push(correctAnswer);
@@ -1006,11 +1013,11 @@
                 $targetHolder.find("input").each(function() {
                     var $this = $(this),
                         currvalue = !casesensitive ? $this.val().trim().toLowerCase() : $this.val().trim();
-                    var feedback = "Incorrect"
+                    var feedback = "Incorrect";
                     var correct = false;
                     var answer = currvalue;
 
-                    if (answerData[$this.data("index")].indexOf(currvalue) != -1) { // correct
+                    if (answerData.length > 0 && answerData[$this.data("index")].indexOf(currvalue) != -1) { // correct
                         $this.attr("readonly", "readonly");
                         $this.attr("correct", "correct");
                         feedback = "Correct";

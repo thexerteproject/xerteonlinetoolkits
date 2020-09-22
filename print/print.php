@@ -1,3 +1,6 @@
+<?php
+require_once("../config.php");
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -30,12 +33,14 @@ body {
 
 <div id="container">
   <div id="mainContent">
-    <h1><?php 
+    <p><?php
 	$hide=$_GET["hide"];
-	$link=$_GET["link"];
+	$template_id=$_GET["template_id"];
 	$from=$_GET["from"];
 	$to=$_GET["to"];
-	
+
+	// Create the link
+    $link = $xerte_toolkits_site->site_url . "play.php?template_id=" . $template_id;
 	#echo $link."<br>";
 while($from <= $to)
   {

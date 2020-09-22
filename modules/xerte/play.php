@@ -37,6 +37,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
     global $xerte_toolkits_site;
 	global $youtube_api_key;
 	global $pedit_enabled;
+	global $lti_enabled;
 
     _load_language_file("/modules/xerte/preview.inc");
 
@@ -168,7 +169,17 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 else
                 {
                     // Only xAPI - force group mode
-                    $tracking .= "   var studentidmode = 3;\n";
+                    if (isset($xerte_toolkits_site->xapi_user))
+                    {
+                        // actor is set
+                        _debug("xAPI User detected: " . print_r($xerte_toolkits_site->xapi_user, true));
+                        $tracking .= "   var username = '" . $xerte_toolkits_site->xapi_user->email . "';\n";
+                        $tracking .= "   var fullusername = '" . $xerte_toolkits_site->xapi_user->displayname . "';\n";
+                        $tracking .= "   var studentidmode = 0;\n";
+                    }
+                    else {
+                        $tracking .= "   var studentidmode = 3;\n";
+                    }
                 }
                 if (isset($xerte_toolkits_site->group))
                 {
@@ -210,9 +221,12 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
     else
     {
         $version = getVersion();
+        $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);
+
         // $engine is assumed to be javascript if flash is NOT set
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/$rlo_object_file");
         $page_content = str_replace("%VERSION%", $version , $page_content);
+        $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
         $page_content = str_replace("%TITLE%", $title , $page_content);
         $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
@@ -224,7 +238,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         // Handle offline variables
         $page_content = str_replace("%OFFLINESCRIPTS%", "", $page_content);
         $page_content = str_replace("%OFFLINEINCLUDES%", "", $page_content);
-        $page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $page_content);
+        $page_content = str_replace("%MATHJAXPATH%", "https://cdn.jsdelivr.net/npm/mathjax@2/", $page_content);
 
         $tracking = "";
         foreach($tracking_js_file as $jsfile)
@@ -266,7 +280,17 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 else
                 {
                     // Only xAPI - force group mode
-                    $tracking .= "   var studentidmode = 3;\n";
+                    if (isset($xerte_toolkits_site->xapi_user))
+                    {
+                        // actor is set
+                        _debug("xAPI User detected: " . print_r($xerte_toolkits_site->xapi_user, true));
+                        $tracking .= "   var username = '" . $xerte_toolkits_site->xapi_user->email . "';\n";
+                        $tracking .= "   var fullusername = '" . $xerte_toolkits_site->xapi_user->displayname . "';\n";
+                        $tracking .= "   var studentidmode = " . $xerte_toolkits_site->xapi_user->studentidmode . ";\n";
+                    }
+                    else {
+                        $tracking .= "   var studentidmode = 3;\n";
+                    }
                 }
                 if (isset($xerte_toolkits_site->group))
                 {
@@ -288,7 +312,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
 		$page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
 
 		$page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $page_content);
-
+        $page_content = str_replace("%LASTUPDATED%", $row['date_modified'], $page_content);
     }
     if(substr($rlo_object_file, -3) == "php")
     {

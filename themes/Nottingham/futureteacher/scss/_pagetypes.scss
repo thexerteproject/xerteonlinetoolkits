@@ -80,6 +80,9 @@
   border: none;
   color: $whiteorlightest;
 }
+.x_nav_page #pageContents.button button.selected {
+  background-color: $blackordarkest;
+}
 //***Flash cards***/
 .front.panel{
   background:$lightestcolor;
@@ -192,6 +195,10 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   border-color:$lightestcolor;
   color:$whiteorlightest;
   //darken($lightestcolor, 70%)
+}
+.x_dragDropLabel_page #targetHolder .highlight{
+ // background-color: rgba(83, 70, 69, 0.30);
+  background:none;
 }
 //*****categories*****/
 #categoryHolder .category {
@@ -316,6 +323,9 @@ a.hotspot, a.hotspot.selected {
 .x_grid_page table.header.simple tr:first-child{
   border-bottom: transparent;
   background:darken($lightestcolor, 70%);
+}
+.x_grid_page table.header.shaded tr:first-child {
+  background: $blackordarkest;
 }
 //the draggable items
 .x_grid_page #grid ul li{

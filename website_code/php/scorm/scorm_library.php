@@ -220,16 +220,18 @@ function scorm_html_page_create($id, $name, $type, $rlo_file, $lo_name, $languag
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($id, $type, $parent_name, $lo_name, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false) {
+function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modified, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
     $version = getVersion();
+    $language_ISO639_1code = substr($language, 0, 2);
 
     $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 	
    
     $buffer = str_replace("%VERSION%", $version, $buffer);
+    $buffer = str_replace("%LNAGUAGE%", $language_ISO639_1code, $buffer);
     $buffer = str_replace("%VERSION_PARAM%", "", $buffer);
     $buffer = str_replace("%TITLE%", $lo_name, $buffer);
     $buffer = str_replace("%TEMPLATEPATH%", "", $buffer);
@@ -254,7 +256,8 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $tsugi=fals
         $buffer = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $buffer);
     }
     $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"common_html5/js/xttracking_noop.js\"></script>", $buffer);
-	
+    $buffer = str_replace("%LASTUPDATED%", $date_modified, $buffer);
+
 	$index = "index.htm";
 
 	
@@ -277,14 +280,16 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $tsugi=fals
  * @version 1.0
  * @author Patrick Lockley
  */
-function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, $need_download_url=false) {
+function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $need_download_url=false) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
     $version = getVersion();
+    $language_ISO639_1code = substr($language, 0, 2);
 
     $scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
     $scorm_html_page_content = str_replace("%VERSION%", $version, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%VERSION_PARAM%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TITLE%", $lo_name, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TEMPLATEPATH%", "", $scorm_html_page_content);
@@ -295,6 +300,7 @@ function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, 
     $scorm_html_page_content = str_replace("%OFFLINESCRIPTS%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%LASTUPDATED%", $date_modified, $scorm_html_page_content);
 
     $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_1.2.js\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm1.2.js\"></script>\n";

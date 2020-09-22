@@ -171,6 +171,7 @@ else
 {
     require_once ("config.php");
 }
+require_once("website_code/php/xAPI/xAPI_library.php");
 
 if (!function_exists('getallheaders')) {
     /**
@@ -256,6 +257,8 @@ if (!isset($_SESSION['XAPI_PROXY']))
                 $lrs['lrskey'] = $row['tsugi_xapi_key'];
                 $lrs['lrssecret'] = $row['tsugi_xapi_secret'];
             }
+            $lrs = CheckLearningLocker($lrs);
+            $_SESSION['XAPI_PROXY'] = $lrs;
         }
         else
         {
@@ -283,7 +286,23 @@ if (!isset($_SESSION['XAPI_PROXY']))
             $pos += 14;
         }
         if ($pos !== false) {
-            $url = $lrs['lrsendpoint'] . substr($_SERVER["REQUEST_URI"], $pos);
+            $proxy_url = substr($_SERVER['REQUEST_URI'], 0, $pos);
+            $api_call = substr($_SERVER["REQUEST_URI"], $pos);
+            $pos = strpos($api_call, '?');
+            if ($pos !== false) {
+                $api_call_path = substr($api_call, 0, $pos+1);
+            }
+            else{
+                $api_call_path = "?";
+            }
+            if ($lrs['aggregate']  && strpos($api_call, "pipeline") !== false)
+            {
+                $url = $lrs['aggregateendpoint'] . $api_call;
+            }
+            else
+            {
+                $url = $lrs['lrsendpoint'] . $api_call;
+            }
             $lrs_key = $lrs['lrskey'];
             $lrs_secret = $lrs['lrssecret'];
         }
@@ -312,6 +331,8 @@ if (!isset($_SESSION['XAPI_PROXY']))
         } else {
             $headers = getallheaders();
             $cHeader = convertToCurl($headers);
+
+            _debug("Headers: " . print_r($headers, true));
 
             $sendHeaders = array();
 
@@ -354,9 +375,12 @@ if (!isset($_SESSION['XAPI_PROXY']))
             curl_setopt($ch, CURLOPT_USERAGENT, isset($_GET['user_agent']) && $_GET['user_agent'] ? $_GET['user_agent'] : $_SERVER['HTTP_USER_AGENT']);
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
             //curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            if (isset($headers['X-Experience-API-Version']))
+            // Create a copy of headers with all lowercase keys
+            $lcheaders = array_change_key_case($headers);
+
+            if (isset($lcheaders['x-experience-api-version']))
             {
-                $sendHeaders[] = 'X-Experience-API-Version: ' . $headers['X-Experience-API-Version'];
+                $sendHeaders[] = 'X-Experience-API-Version: ' . $lcheaders['x-experience-api-version'];
             }
             curl_setopt($ch, CURLOPT_HTTPHEADER, $sendHeaders);
 
@@ -380,6 +404,19 @@ if (!isset($_SESSION['XAPI_PROXY']))
             //_debug("xapi_proxy: info==" . print_r($info, true));
             //_debug("xapi_proxy: header=" . print_r($header, true));
             //_debug("xapi_proxy: contents=" . print_r($contents, true));
+
+            // Rebuild xapi_proxy.php path in "more", if "more" is present
+            $pos = strpos($contents, "\"more\"");
+            if ($pos !== false)
+            {
+                // Find $api_call_path
+                $path_pos = strpos($contents, $api_call_path, $pos);
+                if ($path_pos !== false) {
+                    $first_quote = strpos($contents, "\"", $pos + 6);
+                    // Replace
+                    $contents = substr($contents, 0, $first_quote + 1) . $proxy_url . substr($contents, $path_pos);
+                }
+            }
             curl_close($ch);
         }
     }

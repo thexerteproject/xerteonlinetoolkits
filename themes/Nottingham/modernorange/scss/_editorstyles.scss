@@ -7,7 +7,7 @@
 $esc1: $brightcolor;
 $esc2: $accent1;
 $esc3: $contrastcolor;
-$esc4: darken($accent2, 20%);
+$esc4: #71736D;
 $esc5: $darkestcolor;
 $esc6: $accent3;
 
@@ -43,14 +43,14 @@ $esc6: $accent3;
 }
 @mixin beforeblockquote {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
 }
 @mixin afterblockquote{
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;

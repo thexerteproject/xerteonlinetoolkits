@@ -23,6 +23,9 @@ function DashboardState(info) {
     if(this.pageSize == undefined){
         this.pageSize = 5;
     }
+    this.currentGroup = {
+        group_id: "all-groups"
+    }
 }
 
 DashboardState.prototype.clear = function() {
@@ -36,7 +39,16 @@ DashboardState.prototype.clear = function() {
 };
 
 DashboardState.prototype.getStatements = function(q, one, callback) {
+    if (this.info.lrs.aggregate)
+    {
+        this.getStatementsAggregate(q, one, callback);
+    }
+    else {
+        this.getStatementsxAPI(q, one, callback);
+    }
+};
 
+DashboardState.prototype.getStatementsxAPI = function(q, one, callback) {
     //ADL.XAPIWrapper.log.debug = true;
     ADL.XAPIWrapper.changeConfig(this.conf);
 
@@ -51,6 +63,14 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
         search['limit'] = 1;
     } else {
         search['limit'] = 1000;
+    }
+    var beginDate = moment(q['since']);
+    var endDate = moment(q['until']);
+    var days = moment.duration(endDate.diff(beginDate)).as('days');
+    var nractivities =  1;
+    if (q['activities'] != undefined)
+    {
+        nractivities = q['activities'].length;
     }
     var limit = search['limit'];
     this.clear();
@@ -126,6 +146,225 @@ DashboardState.prototype.getStatements = function(q, one, callback) {
     );
 };
 
+DashboardState.prototype.getStatementsAggregate = function(q, one, callback) {
+    var role = "teacher";
+    var matchLaunched = '{"statement.verb.id" : { "$eq" : "http://adlnet.gov/expapi/verbs/launched" } }';
+    var matchCourse = '';
+    if (typeof q['activities'] != "undefined")
+    {
+
+        if (q['activities'].length == 1)
+        {
+            matchCourse = '{ "statement.object.id" :  { "$regex" :  "^' + q['activities'][0].replace(/\//g, "\\/") + '$" } }';
+        }
+        else
+        {
+            matchCourse = '{ "statement.object.id" :  { "$regex" :  "^(';
+            for (var i=0; i<q['activities'].length; i++)
+            {
+                matchCourse += q['activities'][i];
+                if (i<q['activities'].length - 1)
+                {
+                    matchCourse += '|'
+                }
+            }
+            matchCourse += ')$" } }';
+
+        }
+    }
+    else if (typeof q['activity'] != "undefined")
+    {
+        matchCourse = '{ "statement.object.id" :  { ' + q['activity'] + '}';
+    }
+
+    var matchActor = '';
+    if (typeof q['actor'] != "undefined")
+    {
+        matchActor = '{"statement.actor.mbox" : "mailto:' + q['actor'] + '"}';
+    }
+    var matchDateRange = '';
+    if (typeof q['since'] != "undefined" && typeof q['until'] != "undefined") {
+        matchDateRange = '{"timestamp": { "$gte": { "$dte": "' + q['since'] + '" }, "$lte": { "$dte": "' + q['until'] + '" }}}';
+    }
+    else if (typeof q['since'] != "undefined")
+    {
+        matchDateRange ='{"statement.timestamp": {"$gte": "' + q['since'] + '"}}';
+    }
+    else if (typeof q['until'] != "undefined")
+    {
+        matchDateRange = '{"statement.timestamp": {"$lte": "' + q['until'] + '"}}';
+    }
+
+    var startDate = moment(q['since']);
+    var endDate = moment(q['until']);
+    // Create a week array
+    var periods = [];
+    var currDate = endDate;
+    var beginOfPeriod = moment(currDate).subtract(15, 'days').add(1, 'ms');
+    while (startDate <= beginOfPeriod)
+    {
+        periods.push('{"timestamp": { "$gte": { "$dte": "' + beginOfPeriod.toISOString() + '" }, "$lte": { "$dte": "' + currDate.toISOString() + '" }}}');
+        currDate = moment(currDate).subtract(15, 'days');
+        beginOfPeriod = beginOfPeriod = moment(currDate).subtract(15, 'days').add(1, 'ms');
+    }
+    periods.push('{"timestamp": { "$gte": { "$dte": "' + startDate.toISOString() + '" }, "$lte": { "$dte": "' + currDate.toISOString() + '" }}}');
+
+    // var project = '{"$project": { "statement.actor": 1, "statement.context" : 1, "statement.id" : 1, "statement.object" : 1,  "statement.timestamp" : 1, "statement.stored" : 1, "statement.verb" :  1, "_id": 0 }}';
+    var project = '{"$project": { "statement": 1, "_id": 0 }}';
+    var sort = '{"$sort" : {   "statement.timestamp": -1,   "_id": 1 }}';
+    var auth = btoa(this.info.lrs.lrskey + ":" + this.info.lrs.lrssecret);
+    this.clear();
+    if (typeof q['verb'] != "undefined" && q['verb'] == "http://adlnet.gov/expapi/verbs/launched")
+    {
+        this.fetchData(q, role, [matchCourse, matchLaunched], matchActor, [sort, project], this.info.lrs.lrsendpoint + '?pipeline=', auth, periods, 0, callback, null, "#loader_text", XAPI_DASHBOARD_DATA_PREPARE_RETRIEVAL);
+    }
+    else {
+        this.fetchData(q, role, [matchCourse, matchLaunched], matchActor, [sort, project], this.info.lrs.lrsendpoint + '?pipeline=', auth, periods, 0, callback, this.retrieveDataThroughAggregate, "#loader_text", XAPI_DASHBOARD_DATA_PREPARE_RETRIEVAL);
+    }
+
+};
+
+DashboardState.prototype.retrieveDataThroughAggregate = function(q, dashboard_state, data, callback)
+{
+    var role = "teacher";
+    var startDate = moment(q['since']);
+    var endDate = moment(q['until']);
+
+    var matchCourse = '';
+    var related_activities = false;
+    if (typeof q['related_activities'] != "undefined" && q['related_activities'] == true)
+    {
+        related_activities = true;
+    }
+    if (typeof q['activities'] != "undefined")
+    {
+        var postfix = '$';
+        if (related_activities)
+        {
+            postfix = '(\/|$)'
+        }
+
+        if (q['activities'].length == 1)
+        {
+            matchCourse = '{ "statement.object.id" :  { "$regex" :  "^' + q['activities'][0].replace(/\//g, "\\/") + postfix + '" } }';
+        }
+        else
+        {
+            matchCourse = '{ "statement.object.id" :  { "$regex" :  "^(';
+            for (var i=0; i<q['activities'].length; i++)
+            {
+                matchCourse += q['activities'][i];
+                if (i<q['activities'].length - 1)
+                {
+                    matchCourse += '|'
+                }
+            }
+            matchCourse += ')' + postfix + '" } }';
+
+        }
+    }
+    else if (typeof q['activity'] != "undefined")
+    {
+        if (related_activities)
+        {
+            matchCourse = '{ "statement.object.id" :  { "$regex" :  "^' + q['activities'][0].replace(/\//g, "\\/") + '(\/|$)" } }';
+        }
+        else
+        {
+            matchCourse = '{ "statement.object.id" :  { ' + q['activity'] + '}';
+        }
+    }
+
+    var matchActor = '';
+    if (typeof q['actor'] != "undefined")
+    {
+        matchActor = '{"statement.actor.mbox" : "mailto:' + q['actor'] + '"}';
+    }
+
+    var matchVerb = '';
+    if (typeof q['verb'] != "undefined")
+    {
+        matchVerb = '{"statement.verb.id" : { "$eq" : "http://adlnet.gov/expapi/verbs/launched" } }';
+    }
+    // Create a week array
+    var periods = [];
+    var currindex = 99;
+    var currDate = endDate;
+    var beginOfPeriod;
+    while (currindex < data.length)
+    {
+        beginOfPeriod = moment(data[currindex].timestamp).add(1, 'ms');
+        periods.push('{"timestamp": { "$gte": { "$dte": "' + beginOfPeriod.toISOString() + '" }, "$lte": { "$dte": "' + currDate.toISOString() + '" }}}');
+        currDate = moment(data[currindex].timestamp);
+        currindex += 100;
+    }
+    periods.push('{"timestamp": { "$gte": { "$dte": "' + startDate.toISOString() + '" }, "$lte": { "$dte": "' + currDate.toISOString() + '" }}}');
+    var sort = '{"$sort" : {   "statement.timestamp": -1,   "_id": 1 }}';
+    var project = '{"$project": { "statement": 1, "_id": 0 }}';
+    var auth = btoa(dashboard_state.info.lrs.lrskey + ":" + dashboard_state.info.lrs.lrssecret);
+    dashboard_state.clear();
+    dashboard_state.fetchData(q, role,[matchCourse, matchVerb], matchActor, [sort, project],dashboard_state.info.lrs.lrsendpoint + '?pipeline=', auth, periods, 0, callback, null, "#loader_text", XAPI_DASHBOARD_DATA_RETRIEVE_DATA);
+};
+
+DashboardState.prototype.fetchData = function(q, role, matcharray, matchactor, otherstages, url, auth, periods, currperiod, orgcallback, callback, loaderid, label)
+{
+    var $this = this;
+    var match = '{ "$match": {"$and" : [' + periods[currperiod];
+    for (var i=0; i<matcharray.length; i++) {
+        if (matcharray[i] != '') {
+            match += ', ' + matcharray[i];
+        }
+    }
+    match +=  ']}}';
+
+    var pipeline = '[' +  match;
+    for (var i=0; i<otherstages.length; i++)
+    {
+        pipeline += ', ' + otherstages[i];
+    }
+    pipeline += ']';
+
+    $(loaderid).html(label + ' ' + Math.round(currperiod * 100 / periods.length) + '%');
+
+    $.ajax
+    ({
+        type: "GET",
+        url: url + encodeURIComponent(pipeline),
+        dataType: 'text',
+        headers: {
+            "Authorization": "Basic " + auth
+        },
+        success: function (data) {
+            if (currperiod + 1 < periods.length)
+            {
+                var rawData = JSON.parse(data.replace(/&46;/g, '.'));
+                for (var i=0; i<rawData.length; i++)
+                {
+                    $this.rawData.push(rawData[i].statement);
+                }
+                $this.fetchData(q, role, matcharray, matchactor, otherstages, url, auth, periods, currperiod + 1, orgcallback, callback, loaderid, label);
+            }
+            else
+            {
+                var rawData = JSON.parse(data.replace(/&46;/g, '.'));
+                for (var i=0; i<rawData.length; i++)
+                {
+                    $this.rawData.push(rawData[i].statement);
+                }
+                if (callback != null) {
+                    callback(q, $this, $this.rawData, orgcallback);
+                }
+                else
+                {
+                    $(loaderid).html(XAPI_DASHBOARD_DATA_PREPARE_GRAPHS);
+                    setTimeout(function() {
+                        orgcallback($this.rawData);
+                    }, 0);
+                }
+            }
+        }
+    });
+};
 /*
 DashboardState.prototype.getStatements = function(query, handler) {
     if (state.wrapper == undefined) {
@@ -281,7 +520,7 @@ DashboardState.prototype.groupByAccount = function(data) {
         if (statement.actor.mbox_sha1sum == undefined) {
             return;
         }
-        name = statement.actor.mbox_sha1sum;
+        var name = statement.actor.mbox_sha1sum;
         if (groupedData[name] == undefined) {
             groupedData[name] = [];
         }
@@ -452,7 +691,7 @@ DashboardState.prototype.getLearningObjectsOnExited = function(data) {
 };
 
 
-DashboardState.prototype.getLearningObjects = function(data = undefined) {
+DashboardState.prototype.getLearningObjects = function(data) {
     if (data == undefined && this.learningObjects != undefined) {
         return this.learningObjects;
     }
@@ -494,7 +733,7 @@ DashboardState.prototype.getLearningObjects = function(data = undefined) {
     return learningObjects;
 };
 
-DashboardState.prototype.getAllInteractions = function(data = undefined) {
+DashboardState.prototype.getAllInteractions = function(data) {
     var learningObjects = this.getLearningObjects(data);
     var interactions = [];
     var lIndex = 0;
@@ -845,17 +1084,27 @@ DashboardState.prototype.selectInteractionById = function(statements, interactio
 
 DashboardState.prototype.getQuestion = function(interactionObjectUrl) {
     var question = undefined;
-    this.rawData.filter(function(statement) {
+    var statements = this.rawData.filter(function(statement) {
             return statement.object.id == interactionObjectUrl &&
                 statement.verb.id == "http://adlnet.gov/expapi/verbs/answered";
-        })
-        .forEach(function(statement) {
-            if (question == undefined || question.interactionType == undefined) {
-                question = statement.object.definition;
-                question.interactionUrl = statement.object.id;
-            }
-
         });
+    for (var i=0; i<statements.length; i++)
+    {
+        var statement = statements[i];
+        if (question == undefined || question.interactionType == undefined) {
+            question = statement.object.definition;
+            // Special case for openanswer
+            if (question != undefined && question.interactionType == undefined && statement.object.definition.description["en-US"].indexOf("Model") >= 0 )
+            {
+                question.interactionType = 'text';
+            }
+            question.interactionUrl = statement.object.id;
+        }
+        else
+        {
+            break;
+        }
+    }
     return question;
 };
 

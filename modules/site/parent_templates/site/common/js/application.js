@@ -16,29 +16,88 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
 $(document).ready(init);
 
+var XBOOTSTRAP = {};
 var data;
 var languageData;
 var startPage = 0;
 var startSection;
 var theme = "default";
-var pageLink = "";
 var authorSupport = false;
 var deepLink = "";
-var currentPage = 0;
+var sectionJump;
+var currentPage;
+var pageHistory = [];
 var glossary = [];
 var defaultHeaderCss;
 var urlParams = {};
-
+var categories;
+var validPages = [];
 
 function init(){
 	loadContent();
 };
 
-function initMedia(){
+// called after all content loaded to set up mediaelement.js players
+function initMedia($media){
+	
+	$media.mediaelementplayer({
+		pauseOtherPlayers: true,
+		enableAutosize: true,
+		classPrefix: 'mejs-', // use the class naming format used in old version just in case some themes or projects use the old classes
+		
+		success: function (mediaElement, domObject) {
+			
+			var $mediaElement = $(mediaElement);
+			
+			// iframe scaling to maintain aspect ratio
+			if ($mediaElement.find('video').length > 0 && $mediaElement.find('video').attr('type') != 'video/mp4') {
+				iframeInit($mediaElement);
+				
+				// the vimeo video won't play with the media element controls so remove these so default vimeo controls can be used
+				if ($mediaElement.find('video').attr('type') == 'video/vimeo') {
+					$mediaElement.parents('.mejs-container').find('.mejs-iframe-overlay, .mejs-layers, .mejs-controls').remove();
+				}
+			}
+			
+			// stops mp4 videos being shown larger than original
+			mediaElement.addEventListener("loadedmetadata", function(e) {
+				var $video = $(e.detail.target);
+				$video.add($video.parents('.mejs-container')).css({
+					'max-width': e.detail.target.videoWidth,
+					'max-height': e.detail.target.videoHeight
+				});
+			});
+		},
+		error: function(mediaElement) {
+			console.log('mediaelement problem is detected: ', mediaElement);
+		}
+	});
+}
 
-	$('audio,video').mediaelementplayer();
+// function manually sets height of any media shown in iframes (e.g. youtube/vimeo) to maintain aspect ratios
+function iframeInit($mediaElement) {
+	if ($mediaElement.find('iframe').length > 0) {
+		iframeResize($mediaElement.find('iframe'));
+	} else {
+		// try again if iframe's not ready yet
+		setTimeout(function() {
+			iframeInit($mediaElement);
+		}, 200);
+	}
+}
+
+// resize iframe height to keep aspect ratio
+function iframeResize($iframe) {
+	if ($iframe.parents('.navigator.carousel').length > 0) {
+		$iframe.height(($iframe.parents('.navigator.carousel').width() / Number($iframe.parents('.vidHolder').data('iframeRatio')[0])) * Number($iframe.parents('.vidHolder').data('iframeRatio')[1]));
+		$iframe.parents('.mejs-container').height('auto');
+	} else {
+		$iframe.height(($iframe.width() / Number($iframe.parents('.vidHolder').data('iframeRatio')[0])) * Number($iframe.parents('.vidHolder').data('iframeRatio')[1]));
+		$iframe.parents('.mejs-container').height('auto');
+	}
 }
 
 function initSidebar(){
@@ -63,19 +122,10 @@ function loadContent(){
 	
 		type: "GET",
 		url: projectXML,
-		dataType: "xml", 
-		success: function(xml) {
-		
-			if (typeof data == 'string'){
-			
-				//in IE we need to turn the string into xml
-				data = $.parseXML(xml);
-				
-			} else {
-			
-				data = xml;
-				
-			}
+		dataType: "text", 
+		success: function(text) {
+			var newString = makeAbsolute(text);
+			data = $.parseXML(newString);
 			
 			//step one - css	
 			cssSetUp('theme');
@@ -88,19 +138,47 @@ function loadContent(){
     for (i = 0; i < tempUrlParams.length; i++) {
         urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
     }
+	
+	// does URL specify which page & section to start on?
+	var pageSectionInfo;
+	
+	if (urlParams.linkID != undefined) { // URL?linkID=XXX
+		pageSectionInfo = getHashInfo(urlParams.linkID);
+		if (pageSectionInfo != false) {
+			startPage = pageSectionInfo[0];
+		}
+	}
+	
+	pageSectionInfo = getHashInfo(window.location.hash); // URL#pageXXXsectionXXX
+	if (pageSectionInfo != false) {
+		startPage = pageSectionInfo[0];
+		startSection = pageSectionInfo[1];
+	}
+	
+	// some iframes will need height manually set to keep aspect ratio correct so keep track of window resize
+	$(window).resize(function() {
+		
+		$.featherlight.close();
+		
+		if (this.resizeTo) {
+			clearTimeout(this.resizeTo);
+		}
+		this.resizeTo = setTimeout(function() {
+			$(this).trigger("resizeEnd");
+		}, 200);
+	});
 
-    // If we have a start page/section then extract it and clear the url
-    if (window.location.hash.length > 0) {
-        pageLink = window.location.hash.substring(1);
-		
-        if (pageLink.substring(0,4) == "page") {
-            startPage = parseInt(pageLink.substring(4), 10) - 1;
-		}
-		
-		if (pageLink.indexOf('section') > -1) {
-			startSection = parseInt(pageLink.substring(pageLink.indexOf('section') + 7), 10);
-		}
- 	}
+	$(window).on("resizeEnd", function() {
+		$('.vidHolder iframe').each(function() {
+			iframeResize($(this))
+		});
+	});
+}
+
+// Make absolute urls from urls with FileLocation + ' in their strings
+function makeAbsolute(html) {
+    var temp = html.replace(/FileLocation \+ \'([^\']*)\'/g, FileLocation + '$1');
+    return temp;
 }
 
 function cssSetUp(param) {
@@ -128,7 +206,7 @@ function cssSetUp(param) {
             break;
         case 'stylesheet':
 			if ( $(data).find('learningObject').attr('stylesheet') != undefined) {
-				insertCSS(eval( $(data).find('learningObject').attr('stylesheet') ), function() { loadLibraries(); });
+				insertCSS($(data).find('learningObject').attr('stylesheet'), function() { loadLibraries(); });
 			} else {
 				loadLibraries();
 			}
@@ -223,7 +301,7 @@ function getLangData(lang) {
 			setup();
 			
 			// step four
-			parseContent(startPage, true);
+			parseContent({ type: "start", id: startPage }, startSection);
 			
 		},
 		
@@ -234,7 +312,7 @@ function getLangData(lang) {
 			} else { // hasn't found GB language file - set up anyway, will use fallback text in code
 				languageData = $("");
 				setup();
-				parseContent(startPage, true);
+				parseContent({ type: "start", id: startPage }, startSection);
 			}
 			
 		}
@@ -245,7 +323,21 @@ function formatColour(col) {
 	return (col.length > 3 && col.substr(0,2) == '0x') ? '#' + col.substr(2) : col;
 }
 
-function setup(){
+function setup() {
+	
+	if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && $(data).find('learningObject').attr('authorSupport') == 'true' ) {
+		authorSupport = true;
+	}
+	
+	if ($(data).find('learningObject').attr('variables') != undefined) {
+		// calculate author set variables
+		XBOOTSTRAP.VARIABLES.init($(data).find('learningObject').attr('variables'));
+		
+		// check xml text for variables - if found replace with variable value
+		if (XBOOTSTRAP.VARIABLES && XBOOTSTRAP.VARIABLES.exist()) {
+			x_checkForText($(data).find('page'), 'variables');
+		}
+	}
 	
 	if ($(data).find('learningObject').attr('glossary') != undefined) {
 		
@@ -361,20 +453,11 @@ function setup(){
 	
 	// if project is being viewed as https then force any iframe src to be https too
 	if (window.location.protocol == "https:") {
-		
 		x_checkForText($(data).find('page'), 'iframe');	
-		
-	}	
-	
-	if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && $(data).find('learningObject').attr('authorSupport') == 'true' ) {
-		
-		authorSupport = true;
-		
 	}
-
-	//add all the pages to the pages menu: this links back to the same page
+	
+	// add all the pages to the pages menu: this links back to the same page
 	$(data).find('page').each( function(index, value){
-		
 		// work out whether the page is hidden or not - can be simply hidden or hidden between specific dates/times
 		var hidePage = checkIfHidden($(this).attr('hidePage'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Page');
 		if ($.isArray(hidePage)) {
@@ -383,7 +466,7 @@ function setup(){
 		}
 		$(this).attr('hidePage', hidePage);
 		
-		if (hidePage == false || authorSupport == true) {
+		if ((hidePage == false || authorSupport == true) && $(this).attr('linkPage') != 'true') {
 			var name = $(this).attr('name');
 			
 			// remove size & background color styles from links on nav bar
@@ -394,12 +477,419 @@ function setup(){
 				name.find('[style*="background-color"]').css('background-color', 'transparent');
 			}
 			
-			var $link = $('<li class=""><a href="javascript:parseContent(' + index + ')"></a></li>').appendTo('#nav');
+			var $link = $('<li class=""><a href="javascript:parseContent({ type: \'index\', id: ' + index + ' })"></a></li>').appendTo('#nav');
 			$link.find('a').append(name);
 			
 		}
-		
 	});
+	
+	// if pages have customLinkID then make sure they don't include spaces - convert to underscore
+	$(data).find('page').each( function(index, value){
+		var tempID = $(this).attr('customLinkID');
+		if (tempID != undefined && tempID != "") {
+			tempID = $.trim(tempID);
+			tempID = tempID.split(" ").join("_");
+			$(this).attr('customLinkID', tempID);
+		}
+	});
+	
+	// make list of all the normal pages (not hidden or standalone) to display in TOC
+	if (validPages.length == 0) {
+		for (var i=0; i<$(data).find('page').length; i++) {
+			if (($(data).find('page').eq(i).attr('hidePage') != 'true' || authorSupport == true) && $(data).find('page').eq(i).attr('linkPage') != 'true') {
+				validPages.push(i);
+			}
+		}
+	}
+	
+	// add a back button that will be hidden unless used by standalone pages
+	var $backBtn = $('<li class="backBtn"><a><i class="fa fa-arrow-left text-white ml-3" aria-hidden="true"></i>' + (languageData.find("backButton")[0] != undefined && languageData.find("backButton")[0].getAttribute('label') != null ? languageData.find("backButton")[0].getAttribute('label') : "Back") + '</a></li>');
+	
+	$backBtn
+		.prependTo('#nav')
+		.hide()
+		.click(function() {
+			if (pageHistory.length <= 1) {
+				// if standalone page is the first page visited then back button will take to 1st normal page...
+				parseContent({ type: "index", id: validPages[0] });
+				
+			} else {
+				// ...otherwise go to the last viewed page
+				pageHistory.splice(pageHistory.length - 1, 1);
+				parseContent({ type: "check", id: pageHistory[pageHistory.length-1] });
+			}
+		});
+	
+	// set up print functionality - all this does is add a print button to the toolbar which triggers browser's print dialog
+	if ($(data).find('learningObject').attr('print') == 'true') {
+		
+		var altTxt = languageData.find("print")[0] != undefined && languageData.find("print")[0].getAttribute('printBtn') != null ? languageData.find("print")[0].getAttribute('printBtn') : "Print page";
+		
+		$('<li id="printIcon"><a href="#" aria-label="' + altTxt + '"><i class="fa fa-print text-white ml-3" aria-hidden="true" title="' + altTxt + '"></i></a></li>')
+			.appendTo('#nav')
+			.click(function() {
+				window.print();
+			});
+	}
+	
+	// set up search functionality
+	if ($(data).find('learningObject').attr('search') == 'true' || $(data).find('learningObject').attr('category') == 'true') {
+		
+		var $searchHolder = $('<div id="searchHolder"></div>'),
+			$searchInner = $('<div id="searchInner"></div>');
+		
+		// text search - not working yet
+		/*if ($(data).find('learningObject').attr('search') == 'true') {
+			var freeSearchType = $(data).find('learningObject').attr('searchType') != undefined ? $(data).find('learningObject').attr('searchType') : 'meta';
+			
+			$('<div id="textSearch"><input class="form-control" type="text" placeholder="Search" aria-label="Search"></div>')
+				.appendTo($searchInner);
+		}*/
+		
+		// category search
+		if ($(data).find('learningObject').attr('category') == 'true' && $(data).find('learningObject').attr('categoryInfo') != '') {
+			categories = $(data).find('learningObject').attr('categoryInfo').split('||');
+			for (var i=0; i<categories.length; i++) {
+				var categoryInfo = categories[i].split('|');
+				
+				if (categoryInfo.length == 2) {
+					var title = categoryInfo[0].trim(),
+						opts = categoryInfo[1].split('\n');
+					
+					for (var j=0; j<opts.length; j++) {
+						opts.splice(j, 1, opts[j].trim());
+						
+						if (opts[j].length == 0) {
+							opts.splice(j, 1);
+							j--;
+						} else {
+							var stripTags = $("<div/>").html(opts[j]).text().trim();
+							if (stripTags.length > 0) {
+								var optInfo = stripTags.split('(');
+								if (optInfo.length > 1 && optInfo[1].trim().length > 0) {
+									opts.splice(j, 1, { id: optInfo[0].trim(), name: optInfo[1].trim().slice(0, -1) });
+								} else {
+									opts.splice(j, 1, { id: optInfo[0].replace(/ /g, "_"), name: optInfo[0] });
+								}
+							} else {
+								opts.splice(j, 1);
+								j--;
+							}
+						}
+					}
+					
+					if (title.length > 0 && opts.length > 0) {
+						categories.splice(i, 1, { name: title, options: opts});
+					} else {
+						categories.splice(i, 1);
+						i--;
+					}
+				} else {
+					categories.splice(i, 1);
+					i--;
+				}
+			}
+			
+			// some categories exist - create menu
+			if (categories.length > 0) {
+				var $categorySearch = $('<div id="categorySearch"></div>');
+				
+				for (var i=0; i<categories.length; i++) {
+					var $optGroup = $('<div id="cat' + i + '" class="catBlock"><div class="catContents"><h2 class="catName">' + categories[i].name + ':</h2></div></div>').appendTo($categorySearch);
+					
+					for (var j=0; j<categories[i].options.length; j++) {
+						$optGroup.find('.catContents').append('<div class="inputGroup"><input type="checkbox" name="' + categories[i].name + '" id="cat' + i + '_' + j + '" value="cat' + i + '_' + j + '"><label for="cat' + i + '_' + j + '">' + categories[i].options[j].name + '</label></div>');
+					}
+				}
+				
+				$categorySearch.appendTo($searchInner);
+				
+				// work out what categories each page / section falls under
+				$(data).find('page').each(function(index, value) {
+					var $page = $(this);
+					
+					if ($page.attr('hidePage') != false) {
+						if ($page.attr('filter') != undefined && $page.attr('filter') != '') {
+							var catIds = [],
+								categoryInfo = $page.attr('filter').split(',');
+							
+							for (var i=0; i<categoryInfo.length; i++) {
+								var category = categoryInfo[i].trim(),
+									found = false;
+								
+								for (var j=0; j<categories.length; j++) {
+									for (var k=0; k<categories[j].options.length; k++) {
+										if (category.toLowerCase() == categories[j].options[k].id.toLowerCase()) {
+											catIds.push('cat' + j + '_' + k);
+											found = true;
+											break;
+										}
+									}
+									
+									if (found == true) {
+										break;
+									}
+								}
+							}
+							
+							$page.attr('filter', catIds);
+						}
+						
+						$page.children().each(function(index, value) {
+							var $section = $(this);
+							
+							if ($section.attr('filter') != undefined && $section.attr('filter') != '') {
+								var catIds = [],
+									categoryInfo = $section.attr('filter').split(',');
+								
+								for (var i=0; i<categoryInfo.length; i++) {
+									var category = categoryInfo[i].trim(),
+										found = false;
+									
+									for (var j=0; j<categories.length; j++) {
+										for (var k=0; k<categories[j].options.length; k++) {
+											if (category.toLowerCase() == categories[j].options[k].id.toLowerCase()) {
+												catIds.push('cat' + j + '_' + k);
+												found = true;
+												break;
+											}
+										}
+										
+										if (found == true) {
+											break;
+										}
+									}
+								}
+								
+								$section.attr('filter', catIds);
+							}
+						});
+					}
+				});
+			}
+		}
+		
+		if ($searchInner.children().length > 0) {
+			$searchInner
+				.prepend('<h1 class="searchTitle"></h1><div class="searchIntro"></div>')
+				.find('.searchTitle').html((languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('title') != null ? languageData.find("search")[0].getAttribute('title') : "Search") + ':');
+			
+			if ($(data).find('learningObject').attr('categoryTxt') != '' && $(data).find('learningObject').attr('categoryTxt') != undefined) {
+				$searchInner.find('.searchIntro').html($(data).find('learningObject').attr('categoryTxt'));
+			} else {
+				$searchInner.find('.searchIntro').remove();
+			}
+			
+			$searchHolder
+				.append($searchInner)
+				.append('<div id="searchResults" class=""></div></li></ul>')
+				.find('#searchInner').append('<button id="searchBtn" type="button" class="searchBtn btn btn-primary">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('goBtn') != null ? languageData.find("search")[0].getAttribute('goBtn') : "Go") + '</button>');
+			
+			$('<li id="searchIcon"><a href="#"><i class="fa fa-search text-white ml-3" aria-hidden="true"></i>' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('searchBtn') != null ? languageData.find("search")[0].getAttribute('searchBtn') : "Search") + '</a></li>')
+				.appendTo('#nav')
+				.click(function() {
+					$searchHolder
+						.css({
+							width: $('.container').width() * 0.80,
+							height: $(window).height() * 0.80
+						});
+					
+					$.featherlight($searchHolder, {
+						persist: true,
+						afterClose: function(e) {
+							// if closed because of link to a page section then this stops it jumping back to top of page afterwards
+							if (e == true) {
+								this._previouslyActive = sectionJump;
+							}
+							
+							// clear checkboxes if search wasn't carried out or returned no results
+							if ($searchHolder.find('#noSearchResults').length > 0 || $searchHolder.find('#searchResults .result').length == 0) {
+								
+								$searchHolder.find('#categorySearch input').prop("checked", false);
+								
+								$searchHolder.find('#searchResults')
+									.empty()
+									.hide();
+							}
+						}
+					});
+				});
+			
+			$searchHolder.find('#searchBtn')
+				.button()
+				.click(function() {
+						
+					var $searchLightbox = $('#searchHolder'),
+						results = [], // the pages / sections which match search terms
+						catsUsed = [],
+						numResults = 0;
+					
+					// text search
+					/*if ($searchLightbox.find('#textSearch input').length > 0 && $searchLightbox.find('#textSearch input').val().trim() != '') {
+						//$searchLightbox.find('#textSearch input').val());
+					}*/
+					
+					if ($searchLightbox.find('#categorySearch').length > 0) {
+						
+						$searchLightbox.find('#categorySearch input:checked').each(function() {
+							var lookingFor = $(this).attr('value'),
+								thisCat = lookingFor.substring(3).split('_');
+							
+							if ($.inArray(lookingFor.substring(3).split('_')[0], catsUsed) == -1) {
+								catsUsed.push(lookingFor.substring(3).split('_')[0]);
+							}
+							
+							$(data).find('page').each(function(index, value) {
+								var $page = $(this),
+									pageIndex = index;
+								
+								if (results.length < $(data).find('page').length) {
+									results.push( { match: [], sections: [] } );
+								}
+								
+								if ($page.attr('hidePage') != false) {
+									if ($page.attr('filter') != undefined && $page.attr('filter').split(',').length > 0) {
+										var indexInArray = $.inArray(lookingFor, $page.attr('filter').split(','));
+										
+										if (indexInArray > -1) {
+											results[pageIndex].match.push(lookingFor);
+											numResults++;
+										}
+									}
+									
+									$page.children().each(function(index, value) {
+										var $section = $(this);
+										
+										if (results[pageIndex].sections.length < $page.children().length) {
+											results[pageIndex].sections.push( { match: [] } );
+										}
+										
+										if ($section.attr('hidePage') != false && $section.attr('filter') != undefined && $section.attr('filter').split(',').length > 0) {
+											var indexInArray = $.inArray(lookingFor, $section.attr('filter').split(','));
+											
+											if (indexInArray > -1) {
+												results[pageIndex].sections[index].match.push(lookingFor);
+												numResults++;
+											}
+										}
+									});
+								}
+							});
+						});
+					}
+					
+					var $searchResults = $('#searchResults').empty();
+					
+					if (numResults != 0) {
+						
+						$searchResults
+							.append('<h1 class="searchTitle">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('resultTitle') != null ? languageData.find("search")[0].getAttribute('resultTitle') : "Results") + ':</h1>')
+							.append('<button id="newSearchBtn" type="button" class="searchBtn btn btn-primary">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('newBtn') != null ? languageData.find("search")[0].getAttribute('newBtn') : "New Search") + '</button>');
+						
+						// create the list of results - ordered into list according to those matching the most filter categories
+						function createResultDivs(pageOrSection, index) {
+							var title = $(data).find('page').eq(index[0]).attr('name') + (index.length > 1 ? ': ' + $(data).find('page').eq(index[0]).children().eq(index[1]).attr('name') : ''),
+								faIcon = index.length == 1 ? 'fa-file' : 'fa-tag',
+								catMatches = '',
+								uniqueCats = [];
+							
+							for (var k=0; k<pageOrSection.match.length; k++) {
+								var info = pageOrSection.match[k].substring(3).split('_');
+								catMatches += categories[info[0]].options[info[1]].name + ', ';
+								
+								if ($.inArray(info[0], uniqueCats) == -1) {
+									uniqueCats.push(info[0]);
+								}
+							}
+							catMatches = catMatches.substring(0, catMatches.length - 2);
+							
+							var linkAction;
+							if (index.length == 1) {
+								linkAction = "x_navigateToPage(false, { type:'linkID', ID:'" + $(data).find('page').eq(index[0]).attr('linkID') + "' }); $.featherlight.close(true); return false;";
+							} else {
+								linkAction = "x_navigateToPage(false, { type:'linkID', ID:'" + $(data).find('page').eq(index[0]).children().eq(index[1]).attr('linkID') + "' }); $.featherlight.close(true); return false;";
+							}
+							
+							var matchType = uniqueCats.length == catsUsed.length ? 'fullMatch' : 'partialMatch',
+								$resultDiv = $('<div class="result ' + matchType + '"><a href="#" onclick="' + linkAction + '"><i class="fa ' + faIcon + ' text-white ml-3" aria-hidden="true"></i>' + title + '</a>' + '<div class="matchList"><i>' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('matchTitle1') != null ? languageData.find("search")[0].getAttribute('matchTitle1') : "Matches") + ': ' + catMatches + '</i></div></div>');
+							
+							$resultDiv
+								.data({
+									'match': pageOrSection.match,
+									'numCats': uniqueCats.length
+								});
+							
+							if ($searchResults.find('.result').length > 0) {
+								
+								$searchResults.find('.result').each(function(k) {
+									if (uniqueCats.length > $(this).data('numCats')) {
+										$resultDiv.insertBefore($(this));
+										return false;
+									} else if ($searchResults.find('.result').length - 1 == k) {
+										$searchResults.append($resultDiv);
+									}
+								});
+								
+							} else {
+								$searchResults.append($resultDiv);
+							}
+						}
+						
+						for (var i=0; i<results.length; i++) {
+							if (results[i].match.length > 0) {
+								createResultDivs(results[i], [i]);
+							}
+							
+							for (var j=0; j<results[i].sections.length; j++) {
+								if (results[i].sections[j].match.length > 0) {
+									createResultDivs(results[i].sections[j], [i,j]);
+								}
+							}
+						}
+						
+						// add headings to show which are full/partial matches
+						if ($searchResults.find('.fullMatch').length > 0) {
+							$('<h2 id="fullMatch" class="searchResultInfo">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('matchTitle2') != null ? languageData.find("search")[0].getAttribute('matchTitle2') : "Best matches") + ':</h2>').insertBefore($searchResults.find('.fullMatch').eq(0));
+						}
+						
+						if ($searchResults.find('.partialMatch').length > 0) {
+							var $partialMatch = $('<h2 id="partialMatch" class="searchResultInfo"></h2>').insertBefore($searchResults.find('.partialMatch').eq(0));
+							
+							if ($searchResults.find('#fullMatch').length == 0) {
+								$partialMatch.html((languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('noMatch2') != null ? languageData.find("search")[0].getAttribute('noMatch2') : 'No pages or sections completely match your criteria. Partial matches are listed below') + ':');
+								
+							} else {
+								$searchResults.find('.partialMatch').hide();
+								
+								function showPartialResults() {
+									$searchResults.find('.partialMatch').show();
+								}
+								
+								$partialMatch
+									.html('<a href="#">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('showMatch') != null ? languageData.find("search")[0].getAttribute('showMatch') : "Show partial matches") + '</a>')
+									.find('a').click(function() {
+										$searchResults.find('.partialMatch').show();
+										$partialMatch.html((languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('matchTitle3') != null ? languageData.find("search")[0].getAttribute('matchTitle3') : "Partial matches") + ':');
+									});
+							}
+						}
+						
+						$searchResults.find('#newSearchBtn').click(function() {
+							$('#searchHolder').find('#searchInner').show();
+							$('#searchResults').hide();
+						});
+						
+						$searchLightbox.find('#searchInner').hide();
+						$searchResults.show();
+						
+					} else {
+						$searchResults
+							.append('<p id="noSearchResults">' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('noMatch1') != null ? languageData.find("search")[0].getAttribute('noMatch1') : "No pages or sections match your selection.") + '</p>')
+							.show();
+					}
+				});
+		}
+	}
 	
 	// --------------- Optional Header properties --------------------
 	
@@ -446,7 +936,7 @@ function setup(){
 		
 		var type, fallback;
 		if ($(data).find('learningObject').attr('logoR') != undefined && $(data).find('learningObject').attr('logoR') != '') {
-			$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
+			$('#overview .logoR img').attr('src', $(data).find('learningObject').attr('logoR'));
 			type = 'LO';
 			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
 		} else if ($(data).find('learningObject').attr('logoRHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
@@ -461,7 +951,7 @@ function setup(){
 		
 		var type, fallback;
 		if ($(data).find('learningObject').attr('logoL') != undefined && $(data).find('learningObject').attr('logoL') != '') {
-			$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
+			$('#overview .logoL img').attr('src', $(data).find('learningObject').attr('logoL'));
 			type = 'LO';
 			fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
 		} else if ($(data).find('learningObject').attr('logoLHide') != 'true' && $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
@@ -499,7 +989,7 @@ function setup(){
 			}
 		}
 		if ($(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != '') {
-			$jumbotron.css('background-image', "url('" + eval($(data).find('learningObject').attr('header')) + "')");
+			$jumbotron.css('background-image', "url('" + $(data).find('learningObject').attr('header') + "')");
 		}
 		if ($(data).find('learningObject').attr('headerPos') != undefined) {
 			$jumbotron.css('background-position', $(data).find('learningObject').attr('headerPos'));
@@ -607,15 +1097,7 @@ function setup(){
 			$('.footer .container').remove();
 			$('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
 				$("#customFooter").css({"margin-left": "10px"});
-			} 
-			
-			// convert img paths
-			$('#customFooter img').each(function() {
-				if ($(this).attr('src').substring(0, 16) == "FileLocation + '") {
-							$(this).attr('src', eval($(this).attr('src')));
-						}
-					});
-			
+			}
 		}
 		
 		// Change footer background colour
@@ -712,7 +1194,7 @@ function x_insertGlossaryText(node) {
 	return tempText;
 }
 
-// check through text nodes for text that needs replacing with something lese (e.g. glossary)
+// check through text nodes for text that needs replacing with something else (e.g. glossary)
 function x_checkForText(data, type) {
 	for (var i=0; i<data.length; i++) {
 		if (data[i].childNodes.length > 0) {
@@ -729,6 +1211,8 @@ function x_checkForText(data, type) {
 						return iframe;
 					}
 					data[i].childNodes[0].data = data[i].childNodes[0].data.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
+				} else if (type == 'variables') {
+					data[i].childNodes[0].data = XBOOTSTRAP.VARIABLES.replaceVariables(data[i].childNodes[0].data);
 				}
 				
 			} else {
@@ -738,326 +1222,542 @@ function x_checkForText(data, type) {
 	}
 }
 
-// this is the format of links added through the wysiwyg editor button
+// called from links added through the wysiwyg editor button (& the links created as a result of searches
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
-	var pages = $(data).find('page');
+	
+	var pages = $(data).find('page'),
+		links = ['[first]', '[last]', '[previous]', '[next]'];
 
-	var links = ['[first]', '[last]', '[previous]', '[next]'];
-	var linkLocations = [0, pages.length-1, Math.max(0,currentPage-1), Math.min(currentPage+1,pages.length-1)];
-
-	// First look for the fixed links
+	// First look for the fixed links (first/last/previous/next)
 	if ($.inArray(pageInfo.ID, links) > -1) {
-		parseContent(linkLocations[$.inArray(pageInfo.ID, links)]);
-		goToSection('topnav');
-	}
-	else { // Then look them up by ID
+		var tempNum,
+			tempPageIndex;
+		
+		// first page
+		if ($.inArray(pageInfo.ID, links) == 0) {
+			tempPageIndex = validPages[0];
+		
+		// last valid page
+		} else if ($.inArray(pageInfo.ID, links) == 1) {
+			tempPageIndex = validPages[validPages.length-1];
+			
+		// previous valid page
+		} else if ($.inArray(pageInfo.ID, links) == 2) {
+			// if it's a standalone page or the first page in the project then there is no previous page to navigate to
+			var currentIndex = $.inArray(currentPage, validPages);
+			if (currentIndex > 0) {
+				tempPageIndex = validPages[currentIndex-1];
+			}
+		
+		// next valid page
+		} else {
+			// if it's a standalone page or the last page in the project then there is no next page to navigate to
+			var currentIndex = $.inArray(currentPage, validPages);
+			if (currentIndex != -1 && currentIndex < validPages.length-1) {
+				tempPageIndex = validPages[currentIndex+1];
+			}
+		}
+		
+		if (tempPageIndex != undefined) {
+			parseContent({ type: "index", id: tempPageIndex });
+		}
+		
+	// Then try to look them up by ID
+	} else {
+		var found = false;
+		
 		for (var i=0; i<pages.length; i++) {
+			// link to page
 			if (pages[i].getAttribute("linkID") == pageInfo.ID) {
-				parseContent(i);
-				goToSection('topnav');
+				var destination = pageInfo.ID;
+				if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
+					destination = pages[i].getAttribute("customLinkID");
+				} else if ($.inArray(i, validPages)) {
+					destination = $.inArray(i, validPages);
+				}
+				parseContent({ type: "id", id: destination });
 				break;
 			}
+			
+			// link to section
 			if (pages[i].childNodes.length > 0) {
 				for (var j=0; j<pages[i].childNodes.length; j++) {
 					if (pages[i].childNodes[j].getAttribute && pages[i].childNodes[j].getAttribute("linkID") == pageInfo.ID) {
-						parseContent(i);
-						goToSection('page' + (i+1) + 'section' + (j+1));
+						var destination = pages[i].getAttribute("linkID");
+						if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
+							destination = pages[i].getAttribute("customLinkID");
+						} else if ($.inArray(i, validPages)) {
+							destination = $.inArray(i, validPages);
+						}
+						parseContent({ type: "id", id: destination }, j+1);
+						found = true;
 						break;
 					}
 				}
 			}
-		}
-	}
-}
-
-function goToSection(pageId) {
-	if (document.getElementById(pageId) == null || document.getElementById(pageId) == undefined) return;
-	document.location.hash = '#' + pageId;
-}
-
-function parseContent(pageIndex, checkSection){
-	//clear out existing content
-	$('#mainContent').empty();
-	$('#toc').empty();
-	
-	// check if pageIndex exists & is unhidden
-	var pageFound = true;
-	
-	if ($(data).find('page').length > 0) {
-		if (pageIndex > $(data).find('page').length - 1) {
-			pageIndex = 0;
-		}
-		
-	} else {
-		// project contains no pages
-		pageFound = false;
-	}
-	
-	var count = 0;
-	while ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && authorSupport == false && count != $(data).find('page').length) {
-		// page is hidden
-		pageIndex = pageIndex == $(data).find('page').length - 1 ? 0 : pageIndex + 1;
-		count++;
-	}
-	
-	if ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && authorSupport == false) {
-		pageFound = false;
-	}
-	
-	if (pageFound == true) {
-		// store current page
-		currentPage = pageIndex;
-	
-		//which page is this from the document?
-		var page = $(data).find('page').eq(pageIndex);
-		
-		//set the main page title and subtitle
-		$('#pageTitle').html(page.attr('name'));
-		
-		if ($(".jumbotron").length > 0) {
-			setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'));
-		}
-		
-		var extraTitle = authorSupport == true && page.attr('hidePageInfo') != undefined && page.attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + page.attr('hidePageInfo') + '</span>' : '';
-		
-		$('#pageSubTitle').html( page.attr('subtitle') + extraTitle);
-		
-		$('#overview').removeClass('hide');// show the header
-        $('#topnav').removeClass('hide');// show the topnavbar
-		
-		//create the sections
-		page.find('section').each( function(index, value){
 			
-			// work out whether the section is hidden or not - can be simply hidden or hidden between specific dates/times
-			var hidePage = checkIfHidden($(this).attr('hidePage'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Section');
-			if ($.isArray(hidePage)) {
-				$(this).attr('hidePageInfo', hidePage[1]);
-				hidePage = hidePage[0];
+			if (found == true) {
+				break;
 			}
-			
-			if (hidePage == false || authorSupport == true) {
-				
-				var sectionIndex = index;	
-				
-				if ($(this).attr('menu') != 'headings' && $(this).attr('menu') != 'neither') {
-					//add a TOC entry
-					var tocName = $(this).attr('name');
-				
-					// remove size & background color styles from links on toc
-					if ($('<p>' + tocName + '</p>').children().length > 0) {
-						tocName = $(tocName);
-						tocName.css({ 'font-size': '', 'background-color': 'transparent' });
-						tocName.find('[style*="font-size"]').css('font-size', '');
-						tocName.find('[style*="background-color"]').css('background-color', 'transparent');
-					}
-					
-					var $link = $('<li' + (index==0?' class="active"':'') +'><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '"></a></li>').appendTo('#toc');
-					$link.find('a').append(tocName);
-				}
-				
-				//add the section header
-				var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '',
-					links = $(this).attr('links') != undefined && $(this).attr('links') != "none" ? '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>' : '',
-					subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h1>' + $(this).attr('name') + '</h1>' : '';
-				
-				var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
-				
-				var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '">' + pageHeader + '</section>');
+		}
+		
+		if (found == false) {
+			console.log("Page/section with ID *" + pageInfo.ID + "* not found");
+		}
+	}
+}
 
-				//add the section contents
-				$(this).children().each( function(index, value){
-					
-					if (($(this).attr('name') != '' && $(this).attr('name') != undefined && $(this).attr('showTitle') == 'true') || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
-						
-						if ($(this).attr('showTitle') == 'true') {
-							var subLinkName = $(this).attr('name');
-							
-							// remove size & background color styles from links on toc
-							if ($('<p>' + subLinkName + '</p>').children().length > 0) {
-								subLinkName = $(subLinkName);
-								subLinkName.css({ 'font-size': '', 'background-color': 'transparent' });
-								subLinkName.find('[style*="font-size"]').css('font-size', '');
-								subLinkName.find('[style*="background-color"]').css('background-color', 'transparent');
-							}
-							
-							var $link = $('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#page' + (pageIndex+1) + 'section' + (index+1) + 'content' + index + '"></a> </span>').appendTo(section.find('.sectionSubLinks'));
-							$link.find('a').append(subLinkName);
-							
-						}
-						
-						section.append( '<h2 id="page' + (pageIndex+1) + 'section' + (index+1) + 'content' + index + '">' + $(this).attr('name') + '</h2>');
-					}
-					
-					var itemIndex = index;
-					
-					if (this.nodeName == 'text'){
-						section.append( '<p>' + $(this).text() + '</p>');
-					}
-					
-					if (this.nodeName == 'script'){
-					
-						section.append( '<script>' + $(this).text() + '</script>');
-					}
-					
-					if (this.nodeName == 'markup'){
-					
-						if ( $(this).attr('url') != undefined ){
-						
-							section.append( $('<div/>').load( eval( $(this).attr('url') ) ));
-						
-						} else {
-						
-							section.append( $(this).text() );
-						}
-						
-					}
-					
-					if (this.nodeName == 'link'){
-					
-						var url = $(this).attr('url');
-						var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
-						var options = '';
-						options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
-						options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
-						options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
-						options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
-						options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
-						options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
-						options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
-						options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
-						
-						section.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
-						
-					}
-					
-					if (this.nodeName == 'canvas'){
-					
-						var style;
-						
-						if ( $(this).attr('style') != undefined){
-						
-							style = ' style="' + $(this).attr('style') + '" ';
-						
-						} else {
-						
-							style = '';
-							
-						}
-						
-						var cls;
-						
-						if ( $(this).attr('class') != undefined){
-						
-							cls = ' class="' + $(this).attr('class') + '" ';
-						
-						} else {
-						
-							cls = '';
-							
-						}
-						
-						section.append( '<p><canvas id="' + $(this).attr('id') + '" width="' + $(this).attr('width') + '" height="' + $(this).attr('height') + '"' + style + cls + '/></p>');
-						
-					}
-					
-					if (this.nodeName == 'image'){
-						section.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
-					}
-					
-					if (this.nodeName == 'audio'){
-						section.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
-					}
-					
-					if (this.nodeName == 'video'){
-						section.append('<p><video src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata" style="max-width: 100%" width="100%" height="100%"></video></p>');
-					}
-					
-					if (this.nodeName == 'pdf'){
-						section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
-					}
-					
-					if (this.nodeName == 'xot'){
-						section.append(loadXotContent($(this)));
-					}
-					
-					if (this.nodeName == 'navigator'){
-					
-						if ($(this).attr('type') == 'Tabs'){
-							makeNav( $(this), section, 'tabs', sectionIndex, itemIndex );
-						}
-						
-						if ($(this).attr('type') == 'Accordion'){
-							makeAccordion( $(this), section, sectionIndex, itemIndex );
-						}
-						
-						if ($(this).attr('type') == 'Pills'){
-							makeNav( $(this), section, 'pills', sectionIndex, itemIndex);
-						}
-						
-						if ($(this).attr('type') == 'Carousel'){
-							makeCarousel(  $(this), section, sectionIndex, itemIndex );
-						}
-					}
-
-				});
+// function loads a new page
+function parseContent(pageRef, sectionNum, addHistory) {
+	// pageRefType determines how pageID should be dealt with
+	// can be 'index' (of page in data), 'id' (linkID/customLinkID, 'start' or 'check' (these last two could be index or id so extra checks are needed)
+	var pageRefType = pageRef.type,
+		pageID = pageRef.id,
+		found = false;
+	
+	// check if pageIndex exists & can be shown
+	var pageIndex;
+	
+	// pageID might be an ID - see if it matches either a linkID or a customLinkID
+	if (pageRefType != 'index') {
+		$(data).find('page').each(function(index, value) {
+			var $page = $(this);
+			if (pageID == $page.attr('linkID') || pageID == $page.attr('customLinkID')) {
+				// an ID match has been found
+				pageIndex = index;
+				found = true;
+				pageRefType = 'id';
 				
-				if (section.find('.sectionSubLinks a').length == 0) {
-					
-					section.find('.sectionSubLinks').remove();
-					
-				}
-				
-				//a return to top button
-				if ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') {
-					
-					section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
-					
-				}
-
-				//add the section to the document
-				$('#mainContent').append(section);
-				
-				// Resolve all text box added <img> and <a> src/href tags to proper urls
-				$('#mainContent').find('img,a').each(function() {
-					var $this = $(this),
-						val = $this.attr('src') || $this.attr('href'),
-						attr_name = $this.attr('src') ? 'src' : 'href';
-
-					if (val != undefined && val.substring(0, 16) == "FileLocation + '") {
-						$this.attr(attr_name, eval(val));
-					}
-				});
-				
+				return false;
 			}
 		});
-		
-		//finish initialising the piece now we have the content loaded
-		initMedia();
-		
-		initSidebar();
-
-		// Queue reparsing of MathJax - fails if no network connection
-		try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
-		//$('body').scrollSpy('refresh'); //seems to cause a bunch of errors with tabs
-		$('#toc a:first').tab('show');
-		
-		//an event for user defined code to know when loading is done
-		$(document).trigger('contentLoaded');
-		
-		//force facebook / twitter objects to initialise
-		//twttr.widgets.load(); // REMOVED??
-		
-		//FB.XFBML.parse(); // REMOVED??
-		
-	} else {
-		
-		console.log("project contains no (unhidden) pages");
-		
 	}
 	
-	if (checkSection == true && startSection != undefined) {
-		goToSection('page' + (startPage+1) + 'section' + startSection);
+	// check if it's a valid page index
+	if (pageRefType != 'id') {
+		pageID = $.isNumeric(pageID) ? Number(pageID) : pageID;
+		
+		if (Number.isInteger(pageID)) {
+			// pageID refers to actual page num of valid pages - need to convert to index of all pages
+			if (pageRefType == 'start' || pageRefType == 'check') {
+				pageID = validPages[pageID];
+			}
+			
+			if ($.inArray(pageID, validPages) > -1) {
+				// this is a valid page (not hidden or standalone - standalone pages are called by their ID)
+				pageIndex = pageID;
+				found = true;
+				pageRefType = 'index';
+				
+			} else {
+				console.log("Page *" + (pageID+1) + "* not found");
+			}
+			
+		} else {
+			console.log("Page with ID *" + pageID + "* not found");
+		}
+		
+	} else if (found == false) {
+		console.log("No valid page with ID or index *" + pageID + "* is found");
+	}
+	
+	// fallback to show 1st page in project
+	if (found == false) {
+		// project contains no pages or pageIndex is too high
+		if (validPages.length == 0) {
+			pageIndex = 0;
+		} else {
+			pageIndex = validPages[0];
+		}
+	}
+	
+	var standAlonePage = $(data).find('page').eq(pageIndex).attr('linkPage') == 'true' ? true : false;
+	
+	if (currentPage != pageIndex) {
+		// Page doesn't exist or is a hidden & author support is off
+		if ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && authorSupport == false) {
+			console.log("Page *" + (pageIndex+1) + "* is hidden");
+			pageIndex = validPages[0];
+			
+		// Page exists & can be shown
+		} else {
+			
+			var page = $(data).find('page').eq(pageIndex);
+			var pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
+			
+			// Load page as normal as it's not opening in a new window
+			if (!standAlonePage || (standAlonePage && $(data).find('page').eq(pageIndex).attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash) || pageRefType == 'start') {
+				
+				// make sure correct hash is used in url history
+				if (addHistory != false) {
+					var historyEntry = pageHash.substring(0,4) == "page" ? Number(pageHash.substring(4)) - 1 : pageHash;
+					
+					if (pageHistory[pageHistory.length-1] != historyEntry) {
+						pageHistory.push(historyEntry);
+					}
+					
+					window.history.pushState('window.location.href',"",'#' + pageHash);
+				}
+				
+				//clear out existing content
+				$('#mainContent').empty();
+				$('#toc').empty();
+				
+				// store current page
+				currentPage = pageIndex;
+				
+				//set the main page title and subtitle
+				$('#pageTitle').html(page.attr('name'));
+				
+				if ($(".jumbotron").length > 0) {
+					// header bar can be hidden on standalone pages
+					if (standAlonePage && page.attr('headerHide') == 'true') {
+						$(".jumbotron").hide();
+						
+					} else {
+						setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'));
+						$(".jumbotron").show();
+					}
+				}
+				
+				// nav bar can be hidden on standalone pages
+				if ($(".navbar-inner").length > 0) {
+					if (standAlonePage && page.attr('navbarHide') == 'hidden') {
+						$(".navbar-inner").hide();
+						
+					} else {
+						if (page.attr('navbarHide') == 'back') {
+							$("#nav li:not(.backBtn)").hide();
+							$("#nav .backBtn").show();
+						} else {
+							$("#nav li:not(.backBtn)").show();
+							$("#nav .backBtn").hide();
+						}
+						
+						$(".navbar-inner").show();
+					}
+				}
+				
+				var extraTitle = authorSupport == true && page.attr('hidePageInfo') != undefined && page.attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + page.attr('hidePageInfo') + '</span>' : '';
+				
+				$('#pageSubTitle').html( page.attr('subtitle') + extraTitle);
+				
+				$('#overview').removeClass('hide');// show the header
+				$('#topnav').removeClass('hide');// show the topnavbar
+				
+				//create the sections
+				page.find('section').each( function(index, value){
+					
+					// work out whether the section is hidden or not - can be simply hidden or hidden between specific dates/times
+					var hideSection = checkIfHidden($(this).attr('hidePage'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Section');
+					if ($.isArray(hideSection)) {
+						$(this).attr('hidePageInfo', hideSection[1]);
+						hideSection = hideSection[0];
+					}
+					
+					if (hideSection == false || authorSupport == true) {
+						
+						var sectionIndex = index;
+
+						//expand mainContent if section menu hidden and expand option is true
+						if (page.attr('sectionMenu') == 'true' && page.attr('expandMain') == 'true') {
+							$('#mainContent').addClass("expandMain");
+
+						}else{
+							$('#mainContent').removeClass("expandMain");
+						}
+						
+						// add section menu unless turned off
+						if ($(this).attr('menu') != 'headings' && $(this).attr('menu') != 'neither' && page.attr('sectionMenu') != 'true') {
+							
+							//add a TOC entry
+							var tocName = $(this).attr('name');
+						
+							// remove size & background color styles from links on toc
+							if ($('<p>' + tocName + '</p>').children().length > 0) {
+								tocName = $(tocName);
+								tocName.css({ 'font-size': '', 'background-color': 'transparent' });
+								tocName.find('[style*="font-size"]').css('font-size', '');
+								tocName.find('[style*="background-color"]').css('background-color', 'transparent');
+							}
+							
+							var $link = $('<li' + (index==0?' class="active"':'') +'><a href="#' + pageHash + 'section' + (index+1) + '"></a></li>').appendTo('#toc');
+							$link.find('a').append(tocName);
+						}
+						
+						//add the section header
+						var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '',
+							links = $(this).attr('links') != undefined && $(this).attr('links') != "none" ? '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>' : '',
+							subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h1>' + $(this).attr('name') + '</h1>' : '';
+						
+						var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
+						
+						var section = $('<section id="' + pageHash + 'section' + (index+1) + '">' + pageHeader + '</section>');
+
+						//add the section contents
+						$(this).children().each( function(index, value){
+							
+							if (($(this).attr('name') != '' && $(this).attr('name') != undefined && $(this).attr('showTitle') == 'true') || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
+								
+								if ($(this).attr('showTitle') == 'true') {
+									var subLinkName = $(this).attr('name');
+									
+									// remove size & background color styles from links on toc
+									if ($('<p>' + subLinkName + '</p>').children().length > 0) {
+										subLinkName = $(subLinkName);
+										subLinkName.css({ 'font-size': '', 'background-color': 'transparent' });
+										subLinkName.find('[style*="font-size"]').css('font-size', '');
+										subLinkName.find('[style*="background-color"]').css('background-color', 'transparent');
+									}
+									
+									var $link = $('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#page' + (pageIndex+1) + 'section' + (index+1) + 'content' + index + '"></a> </span>').appendTo(section.find('.sectionSubLinks'));
+									$link.find('a').append(subLinkName);
+									
+								}
+								
+								section.append( '<h2 id="' + pageHash + 'section' + (index+1) + 'content' + index + '">' + $(this).attr('name') + '</h2>');
+							}
+							
+							var itemIndex = index;
+							
+							if (this.nodeName == 'text'){
+								section.append( '<p>' + $(this).text() + '</p>');
+							}
+							
+							if (this.nodeName == 'script'){
+							
+								section.append( '<script>' + $(this).text() + '</script>');
+							}
+							
+							if (this.nodeName == 'markup'){
+							
+								if ( $(this).attr('url') != undefined ){
+									
+									section.append( $('<div/>').load( $(this).attr('url') ));
+								
+								} else {
+								
+									section.append( $(this).text() );
+								}
+								
+							}
+							
+							if (this.nodeName == 'link'){
+							
+								var url = $(this).attr('url');
+								var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
+								var options = '';
+								options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
+								options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
+								options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
+								options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
+								options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
+								options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
+								options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
+								options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
+								
+								section.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
+								
+							}
+							
+							if (this.nodeName == 'canvas'){
+							
+								var style;
+								
+								if ( $(this).attr('style') != undefined){
+								
+									style = ' style="' + $(this).attr('style') + '" ';
+								
+								} else {
+								
+									style = '';
+									
+								}
+								
+								var cls;
+								
+								if ( $(this).attr('class') != undefined){
+								
+									cls = ' class="' + $(this).attr('class') + '" ';
+								
+								} else {
+								
+									cls = '';
+									
+								}
+								
+								section.append( '<p><canvas id="' + $(this).attr('id') + '" width="' + $(this).attr('width') + '" height="' + $(this).attr('height') + '"' + style + cls + '/></p>');
+								
+							}
+							
+							if (this.nodeName == 'image'){
+								section.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+							}
+							
+							if (this.nodeName == 'audio'){
+								section.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+							}
+							
+							if (this.nodeName == 'video'){
+								var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), pageIndex + '_' + sectionIndex + '_' + itemIndex);
+								section.append('<p>' + videoInfo[0] + '</p>');
+								
+								if (videoInfo[1] != undefined) {
+									section.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+								}
+							}
+							
+							if (this.nodeName == 'pdf'){
+								section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
+							}
+							
+							if (this.nodeName == 'xot'){
+								section.append(loadXotContent($(this)));
+							}
+							
+							if (this.nodeName == 'navigator'){
+							
+								if ($(this).attr('type') == 'Tabs'){
+									makeNav( $(this), section, 'tabs', sectionIndex, itemIndex );
+								}
+								
+								if ($(this).attr('type') == 'Accordion'){
+									makeAccordion( $(this), section, sectionIndex, itemIndex );
+								}
+								
+								if ($(this).attr('type') == 'Pills'){
+									makeNav( $(this), section, 'pills', sectionIndex, itemIndex);
+								}
+								
+								if ($(this).attr('type') == 'Carousel'){
+									makeCarousel(  $(this), section, sectionIndex, itemIndex );
+								}
+							}
+
+						});
+						
+						if (section.find('.sectionSubLinks a').length == 0) {
+							
+							section.find('.sectionSubLinks').remove();
+							
+						}
+						
+						//a return to top button
+						if ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') {
+							
+							section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
+							
+						}
+
+						//add the section to the document
+						$('#mainContent').append(section);
+						
+						// lightbox image links might also need to be added
+						setUpLightBox(page, $(this));
+					}
+				});
+				
+				//finish initialising the piece now we have the content loaded
+				initMedia($('audio,video:not(.navigator video)'));
+				$('.vidHolder.iframe').each(function() {
+					iframeInit($(this));
+				});
+				
+				initSidebar();
+
+				// Queue reparsing of MathJax - fails if no network connection
+				try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+				
+				// check text for variables - if found make sure it contains the current var value
+				if (XBOOTSTRAP.VARIABLES && XBOOTSTRAP.VARIABLES.exist()) {
+					XBOOTSTRAP.VARIABLES.updateVariable();
+				}
+
+				//$('body').scrollSpy('refresh'); //seems to cause a bunch of errors with tabs
+				$('#toc a:first').tab('show');
+				
+				//an event for user defined code to know when loading is done
+				$(document).trigger('contentLoaded');
+
+				//force facebook / twitter objects to initialise
+				//twttr.widgets.load(); // REMOVED??
+				
+				//FB.XFBML.parse(); // REMOVED??
+				
+			// Page is a stand alone page opening in a new window
+			} else {
+				window.open(window.location.href.split('#')[0] + '#' + pageHash + (sectionNum != undefined ? 'section' + sectionNum : ''));
+			}
+		}
+	}
+	
+	XBOOTSTRAP.VARIABLES.handleSubmitButton();
+	
+	if (sectionNum != undefined) {
+		
+		var page = $(data).find('page').eq(pageIndex),
+			pageTempInfo = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
+		
+		goToSection(pageTempInfo + 'section' + sectionNum);
+		
+	} else {
+		goToSection('alwaysTop');
+	}
+}
+
+// Get the page / section info from the URL (called on project load & when page changed via browser fwd/back btns)
+function getHashInfo(urlHash) {
+	if (urlHash.length > 0) {
+		var pageLink = urlHash[0] == '#' ? urlHash.substring(1) : urlHash,
+			thisPage,
+			thisSection;
+		
+		if (pageLink.substring(0,4) == "page") {
+			if (pageLink.substring(4).indexOf('section') > -1) {
+				thisPage = parseInt(pageLink.substring(4,pageLink.indexOf('section')), 10) - 1;
+				thisSection = parseInt(pageLink.substring(pageLink.indexOf('section') + 7), 10);
+			} else {
+				thisPage = parseInt(pageLink.substring(4), 10) - 1;
+			}
+			
+			thisPage = thisPage < 0 ? 0 : thisPage;
+			
+		} else {
+			if (pageLink.indexOf('section') > -1) {
+				thisPage = pageLink.substring(0, pageLink.indexOf('section'));
+				thisSection = pageLink.substring(pageLink.indexOf('section') + 7);
+			} else {
+				thisPage = pageLink;
+			}
+		}
+		
+		return [thisPage, thisSection];
+		
+	} else {
+		return false;
+	}
+}
+
+// browser back / fwd button will trigger this - manually make page change to match page hash info
+window.onhashchange = function() {
+	var pageSectionInfo = getHashInfo(window.location.hash),
+		tempPage,
+		tempSection;
+	
+	if (pageSectionInfo != false) {
+		tempPage = pageSectionInfo[0];
+		tempSection = pageSectionInfo[1];
+		
+		parseContent({ type: "check", id: tempPage }, tempSection, false);
+	}
+}
+
+// jump to specified section of current page
+function goToSection(pageId) {
+	sectionJump = document.getElementById(pageId);
+	if (sectionJump != undefined) {
+		var top = sectionJump.offsetTop;
+		window.scrollTo(0, top);
 	}
 }
 
@@ -1071,7 +1771,7 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 		
 		if (header != 'none') {
 			
-			bgImg = "url('" + eval(header) + "')";
+			bgImg = "url('" + header + "')";
 			
 		}
 		
@@ -1179,12 +1879,12 @@ function setHeaderFormat(header, headerPos, headerRepeat, headerColour, headerTe
 }
 
 function makeNav(node,section,type, sectionIndex, itemIndex){
-
+	
 	var sectionIndex = sectionIndex;
 	
 	var itemIndex = itemIndex;
 
-	var tabDiv = $( '<div class="tabbable"/>' );
+	var tabDiv = $( '<div class="navigator tabbable"/>' );
 	
 	if (type == 'tabs'){
 	
@@ -1199,7 +1899,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 	var content = $( '<div class="tab-content"/>' );
 	
-	var iframeKaltura = [],
+	var iframe = [],
 		pdf = [],
 		video = [];
 	
@@ -1220,7 +1920,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 		var i = index;
 		
-		$(this).children().each( function(index, value){
+		$(this).children().each( function(x, value){
 			
 			if ($(this).attr('showTitle') == 'true' || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
 				tab.append('<p><b>' + $(this).attr('name') + '</b></p>');
@@ -1230,21 +1930,28 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 				tab.append( '<p>' + $(this).text() + '</p>');
 				
 				if ($(this).text().indexOf("<iframe") != -1 && $(this).text().indexOf("kaltura_player") != -1) {
-					iframeKaltura.push(i);
+					iframe.push(i);
 				}
 			}
 			
 			if (this.nodeName == 'image'){
-				tab.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				tab.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
 			}
 
 			if (this.nodeName == 'audio'){
-				tab.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				tab.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
-				tab.append('<p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
+				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+				tab.append('<p>' + videoInfo[0] + '</p>');
+				
+				if (videoInfo[1] != undefined) {
+					tab.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				}
+				
 				video.push(tab.find('video'));
+				video.push(tab.find('.vidHolder.iframe'));
 			}
 			
 			if (this.nodeName == 'link'){
@@ -1267,7 +1974,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			
 			if (this.nodeName == 'pdf'){
 				
-				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '#page=1&view=fitH"></object>');
+				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '#page=1&view=fitH"></object>');
 				pdf.push(tab.find('object'));
 				
 			}
@@ -1287,28 +1994,16 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	
 	section.append(tabDiv);
 	
-	setTimeout( function(){
+	setTimeout( function() {
+		
 		var $first = $('#tab' + sectionIndex + '_' + itemIndex + ' a:first');
 		$first
 			.tab("show")
 			.parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']").data("refresh", true);
 		
-		// hacky fix for issue with UoN mediaspace videos embedded on navigators
 		var $iframeTabs = $(),
 			$pdfTabs = $(),
 			$videoTabs = $();
-		
-		for (var i=0; i<iframeKaltura.length; i++) {
-			$iframeTabs = $iframeTabs.add($('a[data-toggle="tab"]:eq(' + iframeKaltura[i] + ')'));
-		}
-		
-		$iframeTabs.on('shown.bs.tab', function (e) {
-			var iframeRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']");
-			if (iframeRefresh.data("refresh") != true) {
-				iframeRefresh[0].src = iframeRefresh[0].src;
-				iframeRefresh.data("refresh", true);
-			}
-		});
 		
 		// fix for issue where firefox doesn't zoom pdfs correctly if not on 1st pane of navigators
 		for (var i=0; i<pdf.length; i++) {
@@ -1326,17 +2021,25 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		});
 		
 		// fix for issue where videos don't load correct height if not on 1st pane of navigators
+		for (var i=0; i<iframe.length; i++) {
+			$iframeTabs = $iframeTabs.add($('a[data-toggle="tab"]:eq(' + iframe[i] + ')'));
+		}
+		
 		for (var i=0; i<video.length; i++) {
 			$videoTabs = $videoTabs.add($(video[i]).parents('.tabbable').find('ul a[data-toggle="tab"]:eq(' + $(video[i]).parents('.tab-pane').index() + ')'));
 		}
 		
 		$videoTabs.on('shown.bs.tab', function (e) {
-			var $videoRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active video");
-			if ($videoRefresh.data('forceLoad') != true) {
-				$videoRefresh
-					.data('forceLoad', true)
-					.load();
-			}
+			var $thisPane = $('#' + $(e.target).attr('href').substring(1));
+			$thisPane.find(".vidHolder iframe").parents('.vidHolder').each(function() {
+				iframeInit($(this));
+			});
+		});
+		
+		initMedia(tabDiv.find(".vidHolder video"));
+		
+		tabDiv.find('.vidHolder.iframe').each(function() {
+			iframeInit($(this));
 		});
 		
 	}, 0);
@@ -1345,7 +2048,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 
 function makeAccordion(node,section, sectionIndex, itemIndex){
 	
-	var accDiv = $( '<div class="accordion" id="acc' + sectionIndex + '_' + itemIndex + '">' );
+	var accDiv = $( '<div class="navigator accordion" id="acc' + sectionIndex + '_' + itemIndex + '">' );
 	
 	node.children().each( function(index, value){
 
@@ -1368,22 +2071,27 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 		
 		var inner = $('<div class="accordion-inner">');
 		
-		$(this).children().each( function(index, value){
+		$(this).children().each( function(i, value){
 						
 			if (this.nodeName == 'text'){
 				inner.append( '<p>' + $(this).text() + '</p>');
 			}
 			
 			if (this.nodeName == 'image'){
-				inner.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				inner.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
 			}
 
 			if (this.nodeName == 'audio'){
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
-				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
+				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p>' + videoInfo[0] + '</p>');
+				
+				if (videoInfo[1] != undefined) {
+					inner.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				}
 			}
 			
 			if (this.nodeName == 'link'){
@@ -1405,7 +2113,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'pdf'){
-				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
 			}
 			
 			if (this.nodeName == 'xot'){
@@ -1422,6 +2130,10 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 	
 	section.append(accDiv);
 	
+	setTimeout( function() {
+		initMedia(accDiv.find('.vidHolder video'));
+	}, 0);
+	
 }
 
 
@@ -1433,7 +2145,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	
 	var itemIndex = itemIndex;
 	
-	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="carousel slide"/>');
+	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="navigator carousel slide"/>');
 	
 	if (node.attr('autoPlay') == 'true') {
 		
@@ -1469,22 +2181,28 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			pane = $('<div class="item">');
 		}
 		
-		$(this).children().each( function(index, value){
+		$(this).children().each( function(i, value){
 						
 			if (this.nodeName == 'text'){
 				pane.append( '<p>' + $(this).text() + '</p>');
 			}
 			
 			if (this.nodeName == 'image'){
-				pane.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+				pane.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
 			}
 
 			if (this.nodeName == 'audio'){
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
-				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" width="100%" height="100%" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="metadata"></video></p>');
+				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p>' + videoInfo[0] + '</p>');
+				
+				if (videoInfo[1] != undefined) {
+					pane.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				}
+				
 				video.push(pane.find('video'));
 			}
 			
@@ -1507,7 +2225,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'pdf'){
-				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
 			}
 			
 			if (this.nodeName == 'xot'){
@@ -1521,9 +2239,7 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	});
 	
 	carDiv.append(indicators);
-	
 	carDiv.append(items);
-	
 	carDiv.append( $('<a class="carousel-control left" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="prev">&lsaquo;</a>') );
 	carDiv.append( $('<a class="carousel-control right" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="next">&rsaquo;</a>') );
 	
@@ -1533,47 +2249,14 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 		
 		// fix for issue where videos don't load correct height if not on 1st pane of carousel
 		carDiv.bind('slide.bs.carousel', function (e) {
-			for (var i=0; i<video.length; i++) {
-				if ($(video[i]).closest('.item').is(e.relatedTarget) && $(video[i]).data('forceLoad') != true) {
-					$(video[i])
-						.data('forceLoad', true)
-						.load();
-				}
-			}
+			$(e.target).find('.vidHolder iframe').each(function() {
+				iframeResize($(this));
+			});
 		});
 		
+		initMedia(carDiv.find('.vidHolder video'));
+		
 	}, 0);
-
-}
-
-function findAnchor(name){
-
-	var anchorID = name;
-	var pIndex;
-	var sIndex;
-	
-	$(data).find('page').each( function(index, value, name){
-	
-		pIndex = index;
-
-		$(this).find('section').each( function(index,value, name){
-
-			if ( $(this).text().indexOf('<a id="' + anchorID) != -1){
-			
-				sIndex = index;
-				
-				window.location.hash = 'page' + (pIndex + 1) + 'section' + (sIndex + 1);
-				
-				startHash = window.location.hash;
-				
-				parseContent(pIndex);
-						
-			}
-					
-		});
-	
-	});
-	
 }
 
 function loadXotContent($this) {
@@ -1643,13 +2326,32 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 			hideOnString = '', hideUntilString = '';
 		var getDateInfo = function(dmy, hm) {
 			// some basic checks of whether values are valid & then splits the data into time/day/month/year
-			dmy = dmy.split('/');
-			if (dmy.length != 3) {
-				return false;
+			var tempDmy = dmy.split('/'), // original date format
+				formatType = 0,
+				format = [[0,1,2], [2,1,0]]; // d, m, y
+			
+			if (tempDmy.length == 3) {
+				dmy = tempDmy;
+			} else if (tempDmy.length == 1) {
+				tempDmy = dmy.split('-'); // try the newer date format
+				if (tempDmy.length == 3) {
+					tempDmy.splice(2, 1, tempDmy[2].split('T')[0]);
+					dmy = tempDmy;
+					formatType = 1;
+				} else {
+					dmy = false;
+				}
+				
 			} else {
-				var day = Math.min(Number(dmy[0]), 31),
-					month = Math.min(Number(dmy[1]), 12),
-					year = Math.max(Number(dmy[2]), 2017),
+				dmy = false;
+			}
+			
+			if (dmy == false) {
+				return [false];
+			} else {
+				var day = Math.max(1, Math.min(Number(dmy[format[formatType][0]]), 31)),
+					month = Math.max(1, Math.min(Number(dmy[format[formatType][1]]), 12)),
+					year = Math.max(Number(dmy[format[formatType][2]]), 2017),
 					time = 0; // use midnight if no time is given
 				
 				if (hm != undefined && hm.trim() != '') {
@@ -1660,8 +2362,7 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 						time = Number(String(hour) + (minute < 10 ? '0' : '') + String(minute));
 					}
 				}
-				
-				return {day:day, month:month, year:year, time:time};
+				return [{day:day, month:month, year:year, time:time}, (formatType == 0 ? day + '/' + month + '/' + year : year + '-' + month + '-' + day)];
 			}
 		}
 		
@@ -1673,41 +2374,63 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 			return Number(String(info.year) + (info.month < 10 ? '0' : '') + String(info.month) + (info.day < 10 ? '0' : '') + String(info.day) + timeZero + String(info.time));
 		}
 		
-		// is it hidden from a certain date? if so, have we passed that date/time?
+		var skipHideDateCheck = false,
+			hideOnInfo,
+			hideUntilInfo;
+		
 		if (hideOnDate != undefined && hideOnDate != '') {
-			hideOn = getDateInfo(hideOnDate, hideOnTime);
-			
-			if (hideOn != false) {
-				if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
-					hidePage = false;
+			hideOnInfo = getDateInfo(hideOnDate, hideOnTime);
+			hideOn = hideOnInfo[0];
+		}
+		
+		if (hideUntilDate != undefined && hideUntilDate != '') {
+			hideUntilInfo = getDateInfo(hideUntilDate, hideUntilTime);
+			hideUntil = hideUntilInfo[0];
+		}
+		
+		// if hide from & to date/times are identical then hide (to prevent issue with a previous release where these were never blank but pages should have been hidden)
+		if (hideOnDate != undefined && hideOnDate != '' && hideUntilDate != undefined && hideUntilDate != '') {
+			if (hideOn.day == hideUntil.day && hideOn.month == hideUntil.month && hideOn.year == hideUntil.year) {
+				if (hideOnTime == hideUntilTime || hideOnTime == '' || hideUntilTime == '') {
+					skipHideDateCheck = true;
 				}
-				
-				hideOnString = '{from}: ' + hideOnDate + ' ' + hideOnTime;
 			}
 		}
 		
-		// is it hidden until a certain date? if so, have we passed that date/time?
-		if (hideUntilDate != undefined && hideUntilDate != '') {
-			hideUntil = getDateInfo(hideUntilDate, hideUntilTime);
-			
-			if (hideUntil != false) {
-				// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
-				var skip = false;
-				if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
-					if (hidePage == false) {
-						hidePage = true;
-					} else {
-						skip = true;
-					}
-				}
-				
-				if (skip != true && hidePage == true) {
-					if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+		if (skipHideDateCheck != true) {
+		
+			// is it hidden from a certain date? if so, have we passed that date/time?
+			if (hideOnDate != undefined && hideOnDate != '') {
+				if (hideOn != false) {
+					if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
 						hidePage = false;
 					}
+					
+					hideOnString = '{from}: ' + hideOnInfo[1] + ' ' + hideOnTime;
 				}
-				
-				hideUntilString = '{until}: ' + hideUntilDate + ' ' + hideUntilTime;
+			}
+			
+			// is it hidden until a certain date? if so, have we passed that date/time?
+			if (hideUntilDate != undefined && hideUntilDate != '') {
+				if (hideUntil != false) {
+					// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
+					var skip = false;
+					if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
+						if (hidePage == false) {
+							hidePage = true;
+						} else {
+							skip = true;
+						}
+					}
+					
+					if (skip != true && hidePage == true) {
+						if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+							hidePage = false;
+						}
+					}
+					
+					hideUntilString = '{until}: ' + hideUntilInfo[1] + ' ' + hideUntilTime;
+				}
 			}
 		}
 		
@@ -1741,3 +2464,771 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 		return false;
 	}
 }
+
+// adds html for videos - whether they are mp4s,youtube,vimeo (all played using mediaelement.js) or iframe embed code
+function setUpVideo(url, iframeRatio, id) {
+	
+	function getAspectRatio(iframeRatio) {
+		var iframeRatio = iframeRatio != "" && iframeRatio != undefined ? iframeRatio : '16:9';
+		iframeRatio = iframeRatio.split(':');
+		
+		// iframe ratio can be one entered in editor or fallback to 16:9
+		if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
+			iframeRatio = [16,9];
+		}
+		
+		return iframeRatio;
+	}
+	
+	// iframe
+	if (url.substr(0,7) == "<iframe") {
+		
+		// remove width & height attributes from iframe
+		var iframe = $(url)
+						.removeAttr('width')
+						.removeAttr('height')
+						.prop('outerHTML');
+		
+		return ['<div class="vidHolder iframe">' + iframe + '</div>', getAspectRatio(iframeRatio)];
+	
+	// mp4 / youtube / vimeo
+	} else {
+		
+		var mimeType = 'mp4',
+			vidSrc = url;
+		
+		// is it from youtube or vimeo?
+		if (vidSrc.indexOf("www.youtube.com") != -1 || vidSrc.indexOf("//youtu") != -1) {
+			mimeType = "youtube";
+			iframeRatio = getAspectRatio(iframeRatio);
+			
+		} else if (vidSrc.indexOf("vimeo.com") != -1) {
+			mimeType = "vimeo";
+			iframeRatio = getAspectRatio(iframeRatio);
+			
+		}
+		
+		mimeType = 'video/' + mimeType;
+		
+		return ['<div class="vidHolder"><video src="' + vidSrc + '" type="' + mimeType + '" id="player' + id + '" controls="controls" preload="metadata" style="max-width: 100%" width="100%" height="100%"></video></div>', iframeRatio];
+	}
+}
+
+// by default images can be clicked to open larger version in lightbox viewer - this can be overridden with optional properties at LO, page & section level
+function setUpLightBox(thisPageInfo, thisSectionInfo) {
+	if (thisSectionInfo.attr("lightbox") == "true" || (thisSectionInfo.attr("lightbox") != "false" && (thisPageInfo.attr("lightbox") == "true" || (thisPageInfo.attr("lightbox") != "false" && $(data).find('learningObject').attr('lightbox') != "false")))) {
+		
+		// use the x_noLightBox class to force images to not open in lightboxes
+		$("#mainContent img:not('.x_noLightBox')").each(function( index ) {
+			var $this = $(this);
+			if ($this.closest('a').length == 0) {
+				if (!$this.parent().hasClass('lightboxWrapper')) {
+					var imgPath = $(this).prop('src');
+					$(this)
+						.wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">')
+						.data('lightboxCaption', thisSectionInfo.attr("lightboxCaption"));
+				}
+			}
+		});
+		
+		$.featherlight.prototype.afterContent = function(e) {
+			var caption = this.$currentTarget.find('img').attr('alt'),
+				sectionCaption = $(e.target).data('lightboxCaption');
+			
+			if (caption != undefined && caption != '') {
+				this.$instance.find('.featherlight-content img').attr('alt', caption);
+				
+				// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
+				// captions can be turned on at LO, page or section level
+				var captionType = "false";
+				if (sectionCaption != undefined) {
+					captionType = sectionCaption;
+				} else if (thisPageInfo.attr("lightboxCaption") != undefined) {
+					captionType = thisPageInfo.attr("lightboxCaption");
+				} else if ($(data).find('learningObject').attr("lightboxCaption") != undefined) {
+					captionType = $(data).find('learningObject').attr("lightboxCaption");
+				}
+				
+				if (captionType != "false") {
+					this.$instance.find('.caption').remove();
+					var before = captionType == "above" ? true : false;
+					
+					if (before == true) {
+						$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+					} else {
+						$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+					}
+				}
+			}
+		}
+	}
+}
+
+// handle case where comma decimal separator has been requested
+function checkDecimalSeparator(value, forcePeriod) {
+	if (forcePeriod == true) {
+		// force convert to . so any dependant variables can be calculated correctly (can later be converted to , when shown on page)
+		if ($(data).find('learningObject').attr('decimalseparator') !== undefined && $(data).find('learningObject').attr('decimalseparator') === 'comma') {
+			var temp = value.replace(/\,/g, '.');
+			if ($.isNumeric(temp)) {
+				return temp;
+			} else {
+				return value;
+			}
+		} else {
+			return value;
+		}
+		
+	} else {
+		// convert to , as it is to be shown on page
+		if ($.isNumeric(value) && $(data).find('learningObject').attr('decimalseparator') !== undefined && $(data).find('learningObject').attr('decimalseparator') === 'comma') {
+			return String(value).replace('.', ',');
+		} else {
+			return value;
+		}
+	}
+}
+
+// function returns correct phrase from language file or uses fallback if no matches / no language file
+function getLangInfo(node, attribute, fallBack) {
+    var string = fallBack;
+    if (node != undefined && node != null) {
+        if (attribute == false) {
+            string = node.childNodes[0].nodeValue;
+        } else {
+            string = node.getAttribute(attribute);
+        }
+    }
+    return string;
+}
+
+
+
+
+// _____ VARIABLES _____
+
+var XBOOTSTRAP = (function ($, parent) { var self = parent.VARIABLES = {};
+
+    // Declare local variables
+	var	variables = [],
+		variableInfo = [],
+		variableErrors = [],
+		dynamicCalcs = [],
+		dynamicID = 1,
+		varsChanged = false,
+
+	// function starts the calculation of variables set by author via the variables optional property
+	init = function (variableData) {
+		
+		// clears arrays if they have previously been calculated
+		variables.splice(0, variables.length);
+		variableInfo.splice(0, variableInfo.length);
+		variableErrors.splice(0, variableErrors.length);
+
+		var i, j, k, temp, thisVar,
+			toCalc = [];
+		
+		variableInfo = variableData.split("||");
+
+		// get array of data for all uniquely named variables & sort them so empty strings etc. become undefined
+		for (i=0; i<variableInfo.length; i++) {
+			var temp = variableInfo[i].split("|");
+			thisVar = {name:$.trim(temp[0]), data:temp.slice(1), requires:[]}; // data = [fixed value, [random], min, max, step, decimal place, significant figure, trailing zero, [exclude], default]
+			if (thisVar.name != "" && variableInfo.filter(function(a){ return a.name == thisVar.name }).length == 0) {
+				for (j=0; j<thisVar.data.length; j++) {
+					if (j == 1 || j == 8) { // convert data (random/exclude) to array
+						thisVar.data.splice(j, 1, thisVar.data[j].split(","));
+						for (k=0; k<thisVar.data[j].length; k++) {
+							temp = $.trim(thisVar.data[j][k]);
+							if (temp === "") {
+								thisVar.data[j].splice(k, 1);
+								k--;
+							} else {
+								thisVar.data[j].splice(k, 1, temp);
+							}
+						}
+					} else {
+						temp = $.trim(thisVar.data[j]);
+						if (temp === "") {
+							temp = undefined;
+						}
+						thisVar.data.splice(j, 1, temp);
+					}
+				}
+
+				variableInfo.splice(i, 1, thisVar);
+				toCalc.push(i);
+
+			} else {
+				variableInfo.splice(i, 1);
+				i--;
+			}
+		}
+		
+		calcVariables(toCalc);
+	},
+
+	// Check if we have any variables to deal with
+	exist = function () {
+		return variables.length > 0;
+	},
+
+	calcVariables = function (toCalc) {
+		var lastLength, checkDefault,
+			thisVar, i;
+
+		// goes through all variables and attempts to calculate their value
+		// may loop several times if variables require other variable values to be ready before calculating their value
+		// stops when no. var values calculated is no longer increasing - either all done or some vars can't be calculated (circular calculations or referencing non-existant vars)
+		while (toCalc.length > 0 && (toCalc.length != lastLength || checkDefault == true)) {
+			lastLength = toCalc.length;
+
+			for (i=0; i<toCalc.length; i++) {
+				thisVar = calcVar(variableInfo[toCalc[i]], false, checkDefault);
+				if (thisVar.ok == true) {
+					thisVar.requiredBy = [];
+					variables.push(thisVar);
+					toCalc.splice(i,1);
+					i--;
+					if (thisVar.default == true) {
+						checkDefault = false;
+					}
+				} else if (thisVar.ok == false) {
+					variableErrors.push(thisVar);
+					toCalc.splice(i,1);
+					i--;
+				}
+
+				if (i + 1 == toCalc.length && toCalc.length == lastLength) {
+					checkDefault = checkDefault == true ? false : true;
+				}
+			}
+		}
+
+		for (i=0; i<toCalc.length; i++) {
+			thisVar = variableInfo[toCalc[i]];
+			thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "undef", "References an undefined variable");
+			variableErrors.push(thisVar);
+			toCalc.splice(i,1);
+			i--;
+		}
+		
+		if (authorSupport == true && (variables.length > 0 || variableErrors.length > 0)) {
+			$('#overview .titles').prepend('<span class="varMsg">' + '<a onclick="XBOOTSTRAP.VARIABLES.showVariables()" href="javascript:void(0)" class="alertMsg">' + getLangInfo(languageData.find("authorVars")[0], "label", "View variable data") + '</a></span>');
+		}
+	},
+
+	// function calculates the value of any author set variables
+	calcVar = function (thisVar, recalc, checkDefault) {
+		thisVar.ok = undefined;
+
+		// calculate min / max / step values
+		var data = {min:thisVar.data[2], max:thisVar.data[3], step:thisVar.data[4]},
+			exclude = [], index;
+
+		for (var key in data) {
+			if (Object.prototype.hasOwnProperty.call(data, key)) {
+				// check for use of other variables & keep track of which are required
+				if (data[key] != undefined && ((thisVar.data[0] == undefined && thisVar.data[1].length == 0) || key != "step")) {
+					var info = getVarValues(data[key], thisVar.name);
+					data[key] = info[0];
+					if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+
+					thisVar.ok = info[2];
+					if (thisVar.ok != true) { // a variable needed doesn't exist / hasn't been calculated yet
+						break;
+					} else {
+						data[key] = Number(data[key]);
+					}
+				}
+			}
+		}
+
+		// calculate exclude values
+		if ((thisVar.ok == true || thisVar.ok == undefined) && thisVar.data[8].length > 0) {
+			exclude = thisVar.data[8].slice();
+			// check for use of other variables & keep track of which are required
+			for (var i=0; i<exclude.length; i++) {
+				var info = getVarValues(exclude[i], thisVar.name);
+				exclude.splice(i, 1, info[0]);
+				if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+
+				thisVar.ok = info[2];
+				if (info[2] != true) {  // a variable needed doesn't exist / hasn't been calculated yet
+					break;
+
+				} else if (typeof exclude[i] === "string" && exclude[i].indexOf("&&") != -1) {
+					// it's a range e.g. -2<&&<2 or -2<=&&<=2
+					var temp = exclude[i].split("&&").filter(function (a) { return a.indexOf("<") > -1 || a.indexOf(">") > -1; });
+					if (temp.length == 2) {
+						temp.splice(0, 1, temp[0] + "[" + thisVar.name + "]");
+						temp.splice(1, 1, "[" + thisVar.name + "]" + temp[1]);
+						exclude.splice(i, 1, temp);
+					}
+				}
+			}
+		}
+
+		// no missing dependancies so far
+		if (thisVar.ok == true || thisVar.ok == undefined) {
+
+			if (data.min != undefined && data.max != undefined && data.min > data.max) {
+				// fail because min > max
+				thisVar.ok = false;
+				thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "minMax", "min > max") + " (" + data.min + " > " + data.max + ")";
+
+			} else if (thisVar.data[0] != undefined || thisVar.data[1].length > 0) {
+				if (thisVar.data[0] != undefined) {
+					// FIXED VALUE
+					thisVar.type = "fixed";
+					thisVar.value = thisVar.data[0];
+
+					// check for use of other variables & keep track of which are required
+					var info = getVarValues(thisVar.value, thisVar.name);
+					thisVar.value = info[0];
+					if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+					thisVar.ok = info[2];
+
+				} else if (thisVar.data[1].length > 0) {
+					// RANDOM FROM LIST
+					thisVar.type = "random";
+
+					index = Math.floor(Math.random()*thisVar.data[1].length);
+					thisVar.value = thisVar.data[1][index];
+
+					// check for use of other variables & keep track of which are required
+					var info = getVarValues(thisVar.value, thisVar.name);
+					thisVar.value = info[0];
+					if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+					thisVar.ok = info[2];
+
+				}
+
+				if (thisVar.ok == true) {
+					if (data.min != undefined && data.min > thisVar.value) {
+						// fail because value < min
+						if (thisVar.type == "random") {
+							thisVar.ok = "retry";
+						} else {
+							thisVar.ok = false;
+						}
+						thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "valueMin", "value < min") + " (" + thisVar.value + " < " + data.min + ")";
+
+					} else if (data.max != undefined && data.max < thisVar.value) {
+						// fail because value > max
+						if (thisVar.type == "random") {
+							thisVar.ok = "retry";
+						} else {
+							thisVar.ok = false;
+						}
+						thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "valueMax", "value > max") + " (" + thisVar.value + " > " + data.max + ")";
+					}
+				}
+
+			} else if (data.min != undefined || data.max != undefined) { // from max & min
+				// RANDOM BETWEEN MIN & MAX VALUES
+				thisVar.type = "minMax";
+
+				// uses defaults of min=0 & max=100 if only min or max are set
+				if (data.min == undefined) {
+					data.min  = 0;
+				} else if (data.max == undefined) {
+					data.max = 100;
+				}
+
+				// use default of 1 for step
+				if (data.step == undefined) {
+					data.step = 1;
+				}
+
+				var maxDecimal = Math.max(Math.floor(data.min) === data.min ? 0 : data.min.toString().split(".")[1].length || 0, Math.floor(data.step) === data.step ? 0 : data.step.toString().split(".")[1].length || 0);
+				thisVar.value = Math.floor(Math.random()*(((data.max - data.min) / data.step) + 1)) * data.step + data.min;
+				if (thisVar.value > data.max) { thisVar.value = thisVar.value - data.step; } // can be over max if step doesn't take to exact max number - adjust for this
+				thisVar.value = thisVar.value.toFixed(maxDecimal); // forces correct decimal num - should work without this but occasionally it ends up with e.g. 1.1999999999999.... instead of 1.2
+				thisVar.ok = true;
+
+			} else if (thisVar.type == undefined) {
+				thisVar.ok = false;
+				thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "none", "No variable data");
+			}
+		}
+
+		if (thisVar.ok == true && $.isNumeric(Number(thisVar.value))) {
+			// to significant figure
+			if ($.isNumeric(Number(thisVar.data[6]))) {
+				thisVar.value = Number(thisVar.value).toPrecision(Number(thisVar.data[6])).includes('e') ? parseFloat(Number(thisVar.value).toPrecision(Number(thisVar.data[6]))) : Number(thisVar.value).toPrecision(Number(thisVar.data[6]));
+			}
+			// to decimal place
+			if ($.isNumeric(Number(thisVar.data[5]))) {
+				thisVar.value = Number(thisVar.value).toFixed(Number(thisVar.data[5]));
+				if (thisVar.data[7] != "true") {
+					// remove trailing zeros
+					thisVar.value = Number(thisVar.value);
+				}
+			}
+		}
+
+		// check value isn't one that should be excluded
+		if (thisVar.ok == true) {
+			for (var i=0; i<exclude.length; i++) {
+				var clash = false;
+				if (typeof exclude[i] == "number") {
+					if (exclude[i] == thisVar.value) {
+						clash = true;
+					}
+
+				// it's an exclude range
+				} else if (typeof exclude[i] == "object") {
+					for (var j=0; j<exclude[i].length; j++) {
+						exclude[i].splice(j, 1, exclude[i][j].replace("[" + thisVar.name + "]", thisVar.value));
+					}
+					if (eval(exclude[i][0]) && eval(exclude[i][1])) {
+						clash = true;
+					}
+				}
+
+				if (clash == true) {
+					if (thisVar.type == "fixed") {
+						thisVar.ok = false;
+						thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "exclude", "{n} is excluded").replace("{n}", thisVar.value);
+					} else {
+						thisVar.ok = "retry";
+						thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "exclude", "{n} is excluded").replace("{n}", thisVar.value);
+					}
+					break;
+				}
+			}
+
+		} else if (thisVar.ok == false && thisVar.info == undefined) {
+			thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "circular", "Circular variable reference");
+		}
+
+		// only retry random if there's a value that hasn't already failed
+		if (thisVar.ok == "retry" && thisVar.type == "random") {
+			thisVar.data[1].splice(index, 1);
+			if (thisVar.data[1].length == 0) {
+				thisVar.ok = false;
+				thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "none", "All possible values are excluded or fall outside the min & max range");
+			}
+		}
+
+		// retry multiple times to see if we can get a valid value
+		if (thisVar.ok == "retry") {
+			var attempts = 100;
+
+			if (recalc != true) {
+				var counter = 0;
+				do {
+					thisVar = calcVar(thisVar, true);
+					counter++;
+				} while (counter < attempts && thisVar.ok == "retry");
+
+				if (thisVar.ok == "retry") {
+					thisVar.ok = false;
+					thisVar.info = " " + getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "none2", "{n} attempts have not returned an accepted value").replace("{n}", attempts);
+				} else if (thisVar.ok == true) {
+					thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "attempts", "{n} attempts to calculate a valid value").replace("{n}", (counter + 1));
+				}
+			}
+		}
+
+		// fallback to default
+		if (thisVar.data[9] != undefined && (thisVar.ok == false || checkDefault == true)) {
+			try {
+				var sum = eval(thisVar.data[9]);
+				thisVar.value = sum;
+			} catch (e) {
+				thisVar.value = thisVar.data[9];
+			}
+			thisVar.requiredBy = [];
+			thisVar.default = true;
+			thisVar.ok = true;
+			thisVar.info = getLangInfo(languageData.find("authorVarsInfo").find("info")[0], "default", "Fallback to default value");
+		}
+		
+		return thisVar;
+	},
+
+	// function updates a variable update
+	setVariable = function (name, value) {
+		var dependants;
+
+		for (var i=0; i<variables.length; i++) {
+			if (variables[i].name == name) {
+				variables[i].value = checkDecimalSeparator(value, true);
+				dependants = variables[i].requiredBy;
+				break;
+			}
+		}
+		
+		return dependants;
+	},
+
+	// function updates all variables on screen with the current value
+	updateVariable = function () {
+		
+		if (varsChanged == true) {
+			
+			for (var i=0; i<$('.x_var').length; i++) {
+				
+				var $thisVarSpan = $($('.x_var')[i]),
+					classes = $thisVarSpan.attr('class').split(' '),
+					varName;
+				
+				for (var j=0; j<classes.length; j++) {
+					if (classes[j].indexOf('x_var_') == 0) {
+						varName = classes[j].substring(6);
+						break;
+					}
+				}
+				
+				if (varName != '') {
+					for (var j=0; j<variables.length; j++) {
+						if (variables[j].name == varName) {
+							$thisVarSpan.html(checkDecimalSeparator(variables[j].value));
+							break;
+						}
+					}
+				}
+			}
+		}
+	},
+
+	// function gets values of other variables needed for calculation and evals the value when everything's ready
+	getVarValues = function (thisValue, thisName) {
+		var requires = [];
+
+		if (thisValue.indexOf("[" + thisName + "]") != -1) {
+			return [thisValue, requires, false];
+		}
+
+		if (String(thisValue).indexOf("[") != -1) {
+			for (var i=0; i<variables.length; i++) {
+				if (thisValue.indexOf("[" + variables[i].name + "]") != -1) {
+					// keeps track of what other variables reference this so they can be recalculated together if needed
+					if (variables[i].requiredBy.indexOf(thisName) == -1) {
+						variables[i].requiredBy.push(thisName);
+					}
+					requires.push(variables[i].name);
+
+					RegExp.esc = function(str) {
+						return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+					};
+					var regExp = new RegExp(RegExp.esc("[" + variables[i].name + "]"), "g");
+					thisValue = thisValue.replace(regExp, variables[i].value);
+					if (thisValue.indexOf("[") == -1) { break; }
+				}
+			}
+		}
+
+		try {
+			var sum = eval(thisValue);
+			return [sum, requires, true];
+		} catch (e) {
+			if (thisValue.indexOf("[") == -1) {
+				return [thisValue, requires, true]; // string
+			} else {
+				return [thisValue, requires, "variable"];
+			}
+		}
+	},
+
+	// function displays author set variables in popup when in author support mode
+	showVariables = function () {
+		var varHeadings = ["Name", "Fixed Value", "Random", "Min", "Max", "Step", "DP", "SF", "Trailing Zeros", "Exclude", "Default"];
+		var pageText = '<html><body><style>table, tr, td, th { border: 1px solid black; text-align: left; } th { background-color: LightGray; } table { border-collapse: collapse; min-width: 100%; } th, td { padding: 1em; width: ' + (100/(varHeadings.length+1)) + '%; } .alert { color: red; } td:nth-child(1), td:nth-child(2) { font-weight: bold; } </style><table>',
+			cells, temp, infoTxt;
+
+		for (var i=0; i<varHeadings.length; i++) {
+			pageText += '<th>' + getLangInfo(languageData.find("authorVars").find("item")[i], false, varHeadings[i]) + '</th>';
+			if (i == 0) {
+				pageText += '<th>' + getLangInfo(languageData.find("authorVars").find("item")[varHeadings.length], false, "Value") + '</th>';
+			}
+		}
+
+		for (var i=0; i<variables.length; i++) {
+			cells = "";
+			for (var j=0; j<variables[i].data.length; j++) {
+				temp = variables[i].data[j] === undefined ? "" : variables[i].data[j];
+				cells += '<td>' + temp + '</td>';
+			}
+			infoTxt = variables[i].info == undefined ? "" : '<br/><span class="alert">' + variables[i].info + '</span>';
+			pageText += '<tr><td>' + variables[i].name + '</td><td>' + variables[i].value + infoTxt + '</td>' + cells + '</tr>';
+		}
+
+		for (var i=0; i<variableErrors.length; i++) {
+			cells = "";
+			for (var j=0; j<variableErrors[i].data.length; j++) {
+				temp = variableErrors[i].data[j] === undefined ? "" : variableErrors[i].data[j];
+				cells += '<td>' + temp + '</td>';
+			}
+			pageText += '<tr style="background-color: LightGray;"><td>' + variableErrors[i].name + '</td><td>' + variableErrors[i].info + '</td>' + cells + '</tr>';
+		}
+
+		pageText += '</table></body></html>';
+
+		window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12px">' + pageText + '</p>');
+	},
+	
+	replaceVariables = function (tempText) {
+
+		tempText = tempText.replace(
+			new RegExp('\\[\\{(.*?)\\}(?:\\s|&nbsp;)*(?:(?:\\,(?:\\s|&nbsp;)*?(\\d+?)?))?\\]|<span class="x_var x_dyn_(.*?)">(?:.*?)</span>', 'g'),
+			function (match, contents, round, id) {
+				if (contents) {
+					id = dynamicID++;
+					dynamicCalcs[id] = [contents, round];
+				}
+
+				var result = variables.reduce(function(accumulator, variable) {
+					return accumulator.replace(new RegExp('\\[' + variable.name + '\\]', 'g'), checkDecimalSeparator(variable.value));
+				}, dynamicCalcs[id][0]);
+				round = dynamicCalcs[id][1];
+				
+				try {
+					var ev = eval( result );
+					result = Math.round(
+						ev * (round = Math.pow(10, round ? round  : 16))
+					) / round;
+				}
+				catch (e) {}
+				
+				$('.x_dyn_' + id).html(checkDecimalSeparator(result));
+				return '<span class="x_var x_dyn_' + id + '">' + result + '</span>';
+			}
+		);
+		
+		for (var k=0; k<variables.length; k++) {
+			// if it's first attempt to replace vars on this page look at vars in image tags first
+			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
+			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
+				var $tempText = $(tempText);
+				for (var m=0; m<$tempText.find('img').length; m++){
+					var tempImgTag = $tempText.find('img')[m].outerHTML,
+						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+					tempImgTag = tempImgTag.replace(regExp2, checkDecimalSeparator(variables[k].value));
+					$($tempText.find('img')[m]).replaceWith(tempImgTag);
+				}
+				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
+			}
+			
+			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
+			var regExp = new RegExp('\\[' + variables[k].name + '\\]|<span class="x_var x_var_' + variables[k].name + '">(.*?)</span>', 'g');
+			tempText = tempText.replace(regExp, '<span class="x_var x_var_' + variables[k].name + '">' + checkDecimalSeparator(variables[k].value) + '</span>');
+			
+			// replace with a text input field which the end user can use to set the value of the variable
+			regExp = new RegExp('\\[=' + variables[k].name + '\\]', 'g');
+			tempText = tempText.replace(regExp, '<input type="text" name="' + variables[k].name + '" class="x_varInput">');
+			
+			// this format of the text input field has specified a default value
+			regExp = new RegExp('\\[=' + variables[k].name + ':(.*?)\\]', 'g');
+			
+			var matches = tempText.match(regExp);
+			if (matches != null) {
+				for (var m=0; m<matches.length; m++) {
+					tempText = tempText.replace(matches[m], '<input type="text" name="' + variables[k].name + '" class="x_varInput" placeholder="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '">');
+				}
+			}
+		}
+		
+		// replace with a submit button which will submit all the new variable values entered on the page
+		var submitBtnLabel = getLangInfo(languageData.find("submitBtnLabel")[0], "label", "Submit");
+		var regExp = new RegExp('\\[\\+submit\\]', 'g');
+		tempText = tempText.replace(regExp, '<input type="submit" value="' + submitBtnLabel + '" class="x_varSubmit">');
+		
+		// this format of the submit button has specified a default value
+		regExp = new RegExp('\\[\\+submit:(.*?)\\]', 'g');
+		
+		var matches = tempText.match(regExp);
+		if (matches != null) {
+			for (var m=0; m<matches.length; m++) {
+				tempText = tempText.replace(matches[m], '<input type="submit" value="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '" class="x_varSubmit">');
+			}
+		}
+		
+		return tempText;
+	},
+
+	handleSubmitButton = function () {
+		// is there a submit button & at least one variable input?
+		if ($('.x_varSubmit').length > 0 && $('.x_varInput').length > 0) {
+			$('.x_varSubmit').click(function() {
+				var dependants = [],
+					changed = [],
+					i, j, k;
+				
+				// update the variables changed via text fields
+				for (i=0; i<$('.x_varInput').length; i++) {
+					if ($('.x_varInput')[i].value != '') {
+						changed.push($('.x_varInput')[i].name);
+						var temp = setVariable($('.x_varInput')[i].name, $('.x_varInput')[i].value);
+						if (temp.length > 0) {
+							$.merge(dependants, temp);
+						}
+					}
+				}
+				
+				// as well as updating any variables that have been directly changed there may be dependants of those variables to change too
+				if (dependants.length > 0) {
+					dependants = dependants.filter(function(a){if (!this[a]) {this[a] = 1; return a;}},{});
+					
+					for (i=0; i<dependants.length; i++) {
+						for (j=0; j<variables.length; j++) {
+							if (dependants[i] == variables[j].name) {
+								for (k=0; k<variables[j].requiredBy.length; k++) {
+									if ($.inArray(variables[j].requiredBy[k], dependants) == -1) {
+										dependants.push(variables[j].requiredBy[k]);
+									}
+								}
+							}
+						}
+					}
+					
+					var toCalc = [];
+					for (i=0; i<variableInfo.length; i++) {
+						if ($.inArray(variableInfo[i].name, dependants) > -1) {
+							changed.push(variableInfo[i].name);
+							toCalc.push(i);
+							
+							// clear current variable value
+							for (k=0; k<variables.length; k++) {
+								if (variableInfo[i].name == variables[k].name) {
+									variables.splice(k,1);
+									break;
+								}
+							}
+						}
+					}
+					
+					calcVariables(toCalc);
+				}
+				
+				// should this page be immediately updated to show changes to the variable values?
+				if ($(data).find('page').eq(currentPage).attr('varUpdate') != 'false') {
+					for (i=0; i<variables.length; i++) {
+						for (j=0; j<changed.length; j++) {
+							if (variables[i].name == changed[j]) {
+								$('.x_var_' + variables[i].name).html(checkDecimalSeparator(variables[i].value));
+							}
+						}
+					}
+				}
+				
+				// submit confirmation message
+				if (changed.length > 0) {
+					varsChanged = true;
+					alert($(data).find('page').eq(currentPage).attr('varConfirm') != undefined && $(data).find('page').eq(currentPage).attr('varConfirm') != '' ? $(data).find('page').eq(currentPage).attr('varConfirm') : getLangInfo(languageData.find("submitConfirmMsg")[0], "label", "Your answers have been submitted"));
+				}
+			});
+		}
+	};
+	
+	// make some public methods
+    self.init = init;
+	self.exist = exist;
+	self.handleSubmitButton = handleSubmitButton;
+	self.replaceVariables = replaceVariables;
+	self.showVariables = showVariables;
+	self.updateVariable = updateVariable;
+
+return parent; })(jQuery, XBOOTSTRAP || {});

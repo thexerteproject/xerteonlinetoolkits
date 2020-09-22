@@ -25,17 +25,21 @@ require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
 ini_set('display_errors', 0);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
 
+_debug("Sending grade: " . print_r($_POST, true));
 use \Tsugi\Core\LTIX;
-use \Tsugi\Core\Settings;
-use \Tsugi\Core\Result;
-use \Tsugi\Util\Net;
-use \Tsugi\Grades\GradeUtil;
 
 $LAUNCH = LTIX::requireData();
 
 if (isset($_POST['grade']))
 {
     $gradetosend = $_POST['grade'];
-    $res = $LAUNCH->result->gradeSend($gradetosend);
-    _debug("Sending grade: " . $gradetosend . ": " . $res);
+    if ($development)
+    {
+        $debugmsgs = array();
+        $res = $LAUNCH->result->gradeSend($gradetosend, false, $debugmsgs);
+        _debug("Sending grade: " . $gradetosend . ": " . $res . "\n Debugmsgs=" . print_r($debugmsgs, true));
+    }
+    else {
+        $res = $LAUNCH->result->gradeSend($gradetosend);
+    }
 }

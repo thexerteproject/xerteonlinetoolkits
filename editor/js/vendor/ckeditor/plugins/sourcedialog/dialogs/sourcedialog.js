@@ -1,6 +1,6 @@
-﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 CKEDITOR.dialog.add( 'sourcedialog', function( editor ) {
@@ -28,7 +28,7 @@ CKEDITOR.dialog.add( 'sourcedialog', function( editor ) {
 			function setData( dialog, newData ) {
 				// [IE8] Focus editor before setting selection to avoid setting data on
 				// locked selection, because in case of inline editor, it won't be
-				// unlocked before editable's HTML is altered. (#11585)
+				// unlocked before editable's HTML is altered. (https://dev.ckeditor.com/ticket/11585)
 				editor.focus();
 				editor.setData( newData, function() {
 					dialog.hide();
@@ -40,7 +40,7 @@ CKEDITOR.dialog.add( 'sourcedialog', function( editor ) {
 				} );
 			}
 
-			return function( event ) {
+			return function() {
 				// Remove CR from input data for reliable comparison with editor data.
 				var newData = this.getValueOf( 'main', 'data' ).replace( /\r/g, '' ),
 					that = this;

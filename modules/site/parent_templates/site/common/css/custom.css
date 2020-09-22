@@ -76,6 +76,10 @@ color: #6FD9D9;
 	position: static;
 }
 
+.navbar .nav .backBtn a {
+	cursor: pointer;
+}
+
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
 .bs-docs-sidenav {
   width: 228px;
@@ -364,4 +368,211 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
 	border-radius: 4px;
 	padding: 3px 5px;
 	color: #fff;
+}
+
+.vidHolder iframe {
+	width: 100%;
+}
+
+.vidHolder .mejs-mediaelement {
+	position: relative;
+}
+
+.navigator.carousel .mejs-container.mejs-video .mejs-overlay-play {
+	z-index: auto;
+}
+
+.navigator.carousel .mejs-container.mejs-video {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* --SEARCH-------------------------------------------------------------- */
+
+#searchHolder .searchBtn {
+	color: #fff;
+	background-color: #0088cc;
+	background-image: none;
+	padding: 8px 12px;
+	border-radius: 5px;
+	border: 0;
+}
+
+#searchHolder .searchBtn:active, #searchHolder .searchBtn:hover, #searchHolder .searchBtn:focus {
+	text-decoration: underline;
+}
+
+#searchHolder .searchTitle {
+	font-size: 1.3em;
+	line-height: normal;
+	margin: 0 0 0.5em 0;
+}
+
+#searchHolder .searchBtn {
+	float: right;
+	margin-bottom: 0.5em;
+}
+
+#textSearch input {
+	margin: 0.5em;
+}
+
+#textSearch, #categorySearch {
+	margin: 0.5em;
+}
+
+#categorySearch {
+	column-count: 2;
+	column-gap: 7px;
+}
+
+#categorySearch .catBlock {
+	display: inline-block;
+	width: 100%;
+	margin-bottom: 5px;
+}
+
+#categorySearch .catContents {
+	min-width: 200px;
+	margin: 0.5em;
+	padding: 0 0.5em 0.5em 0.5em;
+	border: 1px solid #eee;
+}
+
+#categorySearch .catName {
+	margin: 0.5em 0;
+	font-size: 1em;
+	line-height: normal;
+	padding: 0 0.5em;
+}
+
+#categorySearch .inputGroup {
+	cursor: pointer;
+	padding: 0 0.5em;
+}
+
+#categorySearch .inputGroup:hover {
+	background-color: #eee;
+}
+
+#categorySearch label {
+	display: inline-block;
+	margin-left: 1em;
+	width: 85%;
+	vertical-align: top;
+}
+
+#categorySearch input {
+	margin-top: 0;
+}
+
+#searchResults .result {
+	margin: 0.5em 0;
+	padding: 0.5em;
+}
+
+#searchResults .matchList {
+	font-size: 0.8em;
+}
+
+#searchResults .result .fa {
+	padding-right: 0.5em;
+}
+
+#searchResults .searchResultInfo {
+	margin: 0.5em 0;
+	font-size: 1em;
+	line-height: normal;
+}
+
+#searchResults .searchResultInfo:not(:first-of-type)  {
+	border-top: 1px solid black;
+	padding-top: 1em;
+}
+
+#searchResults #noSearchResults {
+	color: darkred;
+}
+
+#searchIcon .fa {
+	padding-right: 0.3em;
+}
+
+.backBtn .fa {
+	padding-right: 0.3em;
+}
+
+table {
+	text-align: left;
+	border-collapse: collapse;
+}
+
+table td, table th {
+	padding: 10px;
+	vertical-align: top;
+}
+
+span.cke_image_nocaption[align="left"],
+span.cke_image_nocaption[style*="float: left"],
+span.cke_image_nocaption[style*="float:left"]{
+    margin: 5px 15px 5px 0px;
+}
+
+div[align="left"] figure,
+div[style*="float: left"] figure,
+div[style*="float:left"] figure
+{
+    margin: 5px 10px 0px 0px;
+}
+
+img[align="left"],
+img[style*="float: left"],
+img[style*="float:left"]
+{
+    margin: 5px 15px 5px 0px;
+}
+
+figure[align="left"],
+figure[style*="float: left"],
+figure[style*="float:left"]
+{
+    margin: 5px 10px 5px 0px;
+}
+
+span.cke_image_nocaption[align="right"],
+span.cke_image_nocaption[style*="float: right"],
+span.cke_image_nocaption[style*="float:right"]{
+    margin: 5px 0px 5px 15px;
+}
+
+div[align="right"] figure,
+div[style*="float: right"] figure,
+div[style*="float:right"] figure{
+    margin: 5px 0px 5px 10px;
+}
+
+img[align="right"],
+img[style*="float: right"],
+img[style*="float:right"]{
+    margin: 5px 0px 5px 15px;
+}
+
+figure[align="right"],
+figure[style*="float: right"],
+figure[style*="float:right"]{
+    margin: 5px 0px 5px 10px;
+}
+
+img.centre {
+    display:		block;
+    margin-left:	auto;
+    margin-right:	auto;
+}
+.expandMain{
+    margin-left: 0;
+    width:100% !important;
+}
+.featherlight iframe {
+    height: 90vh;
+    width: 90vw;
 }

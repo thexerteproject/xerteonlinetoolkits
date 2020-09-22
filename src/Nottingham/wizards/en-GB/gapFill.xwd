@@ -30,7 +30,9 @@
 		<noiseDelimiter label="Distractor" type="textInput" defaultValue=" " optional="true" tooltip="The character used to separate distractors"/>
 		<dropDownDelimiter label="Drop Down Menu Option" type="textInput" defaultValue="/" optional="true" tooltip="The character separating the options that will appear within a drop down menu, e.g. |England/Scotland/Wales|, where the first in the list is the correct answer"/>
 	</delimiters>
-	
+
+	<dropDownSort label="Drop Down Menu Option Sort" options="Alphabetic,Random" type="ComboBox" data="alphabetic,random" defaultValue="alphabetic" width="100" optional="true" />
+
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
     <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>

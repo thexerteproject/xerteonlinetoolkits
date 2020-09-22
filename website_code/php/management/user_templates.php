@@ -33,18 +33,23 @@ if(is_user_admin()){
 
     $logins = db_query($query);
    
-    echo "<form name=\"user_templates\" action=\"javascript:list_templates_for_user('list_user')\"><select id=\"list_user\">";
+    echo "<form name=\"user_templates\" action=\"javascript:list_templates_for_user('list_user')\">";
 
+    echo "<input type=\"textinput\" name=\"searchfilter\" id=\"searchfilter\" /><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:search_user_templates('searchfilter')\">" . USERS_MANAGEMENT_TEMPLATE_SEARCH . "</button><br/>";
+
+    echo "<select id=\"list_user\">";
     foreach($logins as $row_users){
-        echo "<option value=\"" . $row_users['login_id'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+        echo "<option value=\"" . $row_users['login_id'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
     }
 
     echo "</select>";
 
     //}
 
-    echo "<button type=\"submit\" class=\"xerte_button\">" . USERS_MANAGEMENT_TEMPLATE_VIEW . "</button></form></div><div id=\"usertemplatelist\"></div>";
+    echo "<button type=\"submit\" class=\"xerte_button\">" . USERS_MANAGEMENT_TEMPLATE_VIEW . "</button> <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:transfer_user_templates('list_user')\">" . USERS_MANAGEMENT_TEMPLATE_TRANSFER . "</button> </form>";
 
+    echo "<div id=\"transferownership\" style=\"display:none;\"></div>";
+    echo "<div id=\"usertemplatelist\"></div>";
 
 }else{
 

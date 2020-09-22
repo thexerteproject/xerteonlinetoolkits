@@ -93,24 +93,23 @@ function copy_r( $path, $dest )
  */
 
 
-function create_new_template($folder_name_id,$parent_template_name){
+function create_new_template($folder_name_id,$template_name,$parent_template_name){
 
     global $dir_path, $new_path, $temp_dir_path, $temp_new_path, $xerte_toolkits_site;
 
 
-    $row_framework = db_query_one("SELECT template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails WHERE template_name = ?", array($parent_template_name));
+    $row_framework = db_query_one("SELECT template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails WHERE template_name = ?", array($template_name));
 
 
-    // I think this is wrong, currently looking like : /home/david/src/xerteonlinetoolkits/modules//templates/0 should presumably be home/david/src/xerteonlinetoolkits/modules/xerte/templates/Nottingham
-    $dir_path = $xerte_toolkits_site->basic_template_path . $row_framework['template_framework'] . "/templates/" . $parent_template_name;
+    $dir_path = $xerte_toolkits_site->basic_template_path . $row_framework['template_framework'] . "/templates/" . $template_name;
 
     /**
      * Get the id of the folder we are looking to copy into
      */
 
-    _debug("Creating new template : $folder_name_id, $parent_template_name");
-    $new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $parent_template_name;
-    $path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $parent_template_name;
+    _debug("Creating new template : $folder_name_id, $template_name");
+    $new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $template_name;
+    $path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $template_name;
     if(is_dir($path)) {
         _debug("Trying to create new template at location - $path - it's already in use. Aborting");
         die("Template directory already exists; will not overwrite/re-create.");

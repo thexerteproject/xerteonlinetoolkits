@@ -3,6 +3,8 @@
   <learningObject  icon="icPackage" remove="false" duplicate="false">
 
     <name type="TextInput" wysiwyg="true" label="Learning Object Title"/>
+	<seriesTitle type="TextInput" wysiwyg="true" label="Series Title" optional="true" defaultValue="" />
+
     <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls, Linear with historic back button" data="Linear,Historic,Menu,Menu with Page Controls,LinearWithHistoric" label="Navigation" width="170"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
     <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals Without Titles, Clean Visuals With Titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true" />
@@ -19,6 +21,13 @@
 	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true"/>
     <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page Title Size"  defaultValue="24" deprecated="This property is deprecated"/>
 	
+	<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for the whole project. A lightbox property is also available on each page.">
+		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
+		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+	</lightboxGroup>
+	
+	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
+	
 	<nfo optional="true" label="Help File" type="media"/>
     <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" defaultValue="term|definition" wysiwyg="false,true"/>
     <controller optional="true" label="Custom Interface" type="media" flashonly="true"/>
@@ -27,7 +36,7 @@
 	<styles optional="true" type="script" height="200" label="Styles"/>
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
     <authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
-    <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
+    <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true" deprecatedv="This property is deprecated as the resume functionality is now available automatically"/>
     <themeurl type="CheckBox" label="Disable theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
 	
 	<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/156-fay-Nottingham/media/Variables_Documentation.pdf' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for help creating and using variables">
@@ -65,6 +74,7 @@
 	
 	<bg type="group" label="Background" optional="true">
 		<background optional="true" type="media" label="Image" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
 		<backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="30" label="Opacity"/>
 		<backgroundDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<backgroundGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
@@ -73,7 +83,7 @@
 	<tracking type="group" label="Tracking" optional="true">
 		<trackingMode optional="true" label="Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
 		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage when tracking"/>
-        <trackingPageTimeout label="Page timeout for completion" type="NumericStepper" min="1" max="1000" step="1" optional="true" defaultValue="5" tooltip="The number of seconds a page has to be viewed to count as completed" />
+        <trackingPageTimeout label="Page timeout for completion" type="NumericStepper" min="0" max="1000" step="1" optional="true" defaultValue="0" tooltip="The number of seconds a page has to be viewed to count as completed" />
         <forceTrackingMode label="Force tracking mode behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracking LO's. This changes the behaviour of some pagetypes, i.e. in Quiz the restart button will be disabled and in drag/drop exercises, the labels will stick, even if the answer is wrong" />
        	<category label="Tracking Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object, stored in xAPI events, to be used for categorising in xAPI reports"/>
 	</tracking>
@@ -81,6 +91,9 @@
 	<meta type="group" label="Meta data" optional="true">
 	   	<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
 	   	<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
+		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue="" />
+        <metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue=""/>
+        <metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true"/>
     </meta>
 
     <newNodes>

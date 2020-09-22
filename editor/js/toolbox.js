@@ -34,7 +34,7 @@ var EDITOR = (function ($, parent) {
 		workspace,
 
     // Build the "insert page" menu
-    create_insert_page_menu = function () {
+    create_insert_page_menu = function (advanced_toggle) {
         var getMenuItem = function (itemData) {
             var data = {
                 href: '#',
@@ -55,7 +55,7 @@ var EDITOR = (function ($, parent) {
 			if (itemData.submenu != undefined) {
                 var subList = $("<ul>");
                 $.each(itemData.submenu, function () {
-                    if (!this.deprecated) {
+                    if (!this.deprecated && (this.simple_enabled || advanced_toggle)) {
                         subList.append(getMenuItem(this));
                     }
                 });
@@ -87,7 +87,7 @@ var EDITOR = (function ($, parent) {
         });
         
         $.each(menu_data.menu, function () {
-            if (!this.deprecated) {
+            if (!this.deprecated && (this.simple_enabled || advanced_toggle)) {
                 $menu.append(
                     getMenuItem(this)
                 )
@@ -157,31 +157,49 @@ var EDITOR = (function ($, parent) {
                         $menu.find(".insert_buttons").last().append(button);
                 });
             }
-		$.widget("ui.menu", $.ui.menu, {
-			collapseAll: function(e) {
-				if (e.type == "click" && e.target.id != "insert_button") {
-					$("#insert_menu").hide();
-                   	$("#shadow").hide();
-				} else if  (e.type == "keydown" && $(e.target).parent().hasClass("insert_buttons")) {
-					$("#insert_menu").hide();
-               	   	$("#shadow").hide();
-					parent.tree.addNode($(e.target).closest("[item]").attr("item"), $(e.target).attr("value"));
-				}
-                return this._super();
-			},
-			_open: function(submenu) {
-				// make sure the menus fit on screen and scroll when needed
-				this._super(submenu);
-				if (submenu.hasClass("details")) {
-					if ($("body").height() < (submenu.height() + submenu.offset().top + 20)) {
-						submenu.offset({"top": $("body").height() - submenu.height() - 20});
-					}
-				} else {
-					submenu.css("max-height", $("body").height() - submenu.offset().top - 30);
-				}
-			}
-		});
-        $("#insert_menu").append($menu.menu());
+			
+		if (typeof insert_menu_object !== 'undefined')
+        {
+            // menu is aleready set once
+            insert_menu_object.menu("destroy");
+            /*
+            $.widget("ui.menu", $.ui.menu, {
+                collapseAll: function(e) {},
+                _open: function(submenu) {}
+            });
+            */
+
+        }
+        else {
+            // Set default once
+            $.widget("ui.menu", $.ui.menu, {
+                collapseAll: function (e) {
+                    if (e.type == "click" && e.target.id != "insert_button") {
+                        $("#insert_menu").hide();
+                        $("#shadow").hide();
+                    } else if (e.type == "keydown" && $(e.target).parent().hasClass("insert_buttons")) {
+                        $("#insert_menu").hide();
+                        $("#shadow").hide();
+                        parent.tree.addNode($(e.target).closest("[item]").attr("item"), $(e.target).attr("value"));
+                    }
+                    return this._super();
+                },
+                _open: function (submenu) {
+                    // make sure the menus fit on screen and scroll when needed
+                    this._super(submenu);
+                    if (submenu.hasClass("details")) {
+                        if ($("body").height() < (submenu.height() + submenu.offset().top + 20)) {
+                            submenu.offset({"top": $("body").height() - submenu.height() - 20});
+                        }
+                    } else {
+                        submenu.css("max-height", $("body").height() - submenu.offset().top - 30);
+                    }
+                }
+            });
+        }
+
+        insert_menu_object = $menu.menu();
+        $("#insert_menu").html(insert_menu_object);
 		$menu.find(".ui-menu-item a").first().attr("tabindex", 2);
     },
     
@@ -222,11 +240,11 @@ var EDITOR = (function ($, parent) {
             case "unmark":
                 if (enabled)
                 {
-                    return '<i class="unmarkCompletionIcon iconEnabled fa fa-times-circle-o " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
+                    return '<i class="unmarkCompletionIcon iconEnabled far fa-times-circle " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
                 }
                 else
                 {
-                    return '<i class="unmarkCompletionIcon iconDisabled fa fa-times-circle-o " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
+                    return '<i class="unmarkCompletionIcon iconDisabled far fa-times-circle " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
                 }
             case "hidden":
                 if (enabled) {
@@ -234,6 +252,20 @@ var EDITOR = (function ($, parent) {
                 }
                 else {
                     return '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+                }
+			case "advanced":
+                if (enabled) {
+                    return '<i class="advancedIcon iconEnabled fa fa-exclamation-circle " id="' + key + '_advanced" title ="' + language.advancedPage.$tooltip + '"></i>';
+                }
+                else {
+                    return '<i class="advancedIcon iconDisabled fa fa-exclamation-circle " id="' + key + '_advanced" title ="' + language.advancedPage.$tooltip + '"></i>';
+                }
+			case "standalone":
+                if (enabled) {
+                    return '<i class="standaloneIcon iconEnabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
+                }
+                else {
+                    return '<i class="standaloneIcon iconDisabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
                 }
         }
     },
@@ -244,6 +276,7 @@ var EDITOR = (function ($, parent) {
 
         var deprecatedState = ($("#"+key+"_deprecated.iconEnabled").length > 0);
         var hiddenState = ($("#"+key+"_hidden.iconEnabled").length > 0);
+		var standaloneState = ($("#"+key+"_standalone.iconEnabled").length > 0);
         var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
         var change = false;
         var tooltip = "";
@@ -255,6 +288,10 @@ var EDITOR = (function ($, parent) {
                 break;
             case "hidden":
                 if (hiddenState != enabled)
+                    change = true;
+                break;
+			case "standalone":
+                if (standaloneState != enabled)
                     change = true;
                 break;
             case "unmark":
@@ -269,13 +306,13 @@ var EDITOR = (function ($, parent) {
         {
             var tree = $.jstree.reference("#treeview");
             var node = tree.get_node(key, false);
-            console.log(node);
 
             if (deprecatedState) {
                 tooltip = $("#" + key + '_deprecated')[0].attributes['title'];
             }
             var deprecatedIcon = getExtraTreeIcon(key, "deprecated", (item == "deprecated" ? enabled : deprecatedState), tooltip);
             var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" ? enabled : hiddenState));
+			var standaloneIcon = getExtraTreeIcon(key, "standalone", (item == "standalone" ? enabled : standaloneState));
             var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
             var nodetext;
             if (item == "text")
@@ -285,13 +322,12 @@ var EDITOR = (function ($, parent) {
             else {
                 nodetext = $("#" + key + '_text').text();
             }
-            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
+            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
             tree.rename_node(node, nodetext);
             //tree.set_text(node, nodetext);
             //tree.refresh();
             // debugging
             node = tree.get_node(key, false);
-            console.log(node);
         }
     },
 
@@ -372,9 +408,11 @@ var EDITOR = (function ($, parent) {
 
         var deprecatedIcon = getExtraTreeIcon(key, "deprecated", wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecated);
         var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
+        var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
+		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
 
-        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
+        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
 
         var this_json = {
             id : key,
@@ -448,7 +486,54 @@ var EDITOR = (function ($, parent) {
         }
         return {found : true, value: attribute_value};
     },
-	
+
+    evaluateConditionExpression = function(ctree, key) {
+        switch (ctree.type) {
+            case "Literal":
+                return ctree.value;
+            case "LogicalExpression":
+                if (ctree.operator == "&&") {
+                    return evaluateConditionExpression(ctree.left, key) && evaluateConditionExpression(ctree.right, key);
+                } else {
+                    return evaluateConditionExpression(ctree.left, key) || evaluateConditionExpression(ctree.right, key);
+                }
+            case "BinaryExpression":
+                switch (ctree.operator) {
+                    case "==":
+                        return evaluateConditionExpression(ctree.left, key) == evaluateConditionExpression(ctree.right, key);
+                    case "!=":
+                        return evaluateConditionExpression(ctree.left, key) != evaluateConditionExpression(ctree.right, key);
+                    default:
+                        return null;
+                }
+            case "MemberExpression":
+                if (ctree.object.name == 'parent') {
+                    var tree = $.jstree.reference("#treeview");
+                    var parent = tree.get_parent(key);
+                    return evaluateConditionExpression(ctree.property, parent)
+                } else {
+                    return null;
+                }
+                break;
+            case "Identifier":
+                var attrs = lo_data[key]['attributes'];
+                if (typeof attrs[ctree.name] != "undefined") {
+                    return attrs[ctree.name];
+                } else {
+                    return null;
+                }
+            default:
+                // Unexpected node parsed
+                return null;
+        }
+    },
+
+    evaluateCondition = function(condition, key)
+    {
+        var tree = jsep(condition);
+        var result = evaluateConditionExpression(tree, key);
+        return (result == null ? false : result);
+    },
 
     displayParameter = function (id, all_options, name, value, key, nodelabel)
     {
@@ -463,6 +548,14 @@ var EDITOR = (function ($, parent) {
                 .attr('src', 'editor/img/flashonly.png')
                 .attr('title', 'Flash only attribute');
 
+            if (options.condition)
+            {
+                var visible = evaluateCondition(options.condition, key);
+                if (!visible)
+                {
+                    return;
+                }
+            }
             var tr = $('<tr>');
             if (options.deprecated) {
                 var td = $('<td>')
@@ -697,9 +790,6 @@ var EDITOR = (function ($, parent) {
         {
             delete lo_data[key]["attributes"][name];
         };
-
-        console.log(lo_data[key]["attributes"]);
-
     },
 
     removeOptionalProperty = function (name, children) {
@@ -729,6 +819,9 @@ var EDITOR = (function ($, parent) {
                 //    hiddenIcon.switchClass('iconEnabled', 'iconDisabled');
                 //}
 			}
+			if (toDelete[i] == "linkPage") {
+			    changeNodeStatus(key, "standalone", false);
+			}
             if (toDelete[i] == "unmarkForCompletion"){
                 changeNodeStatus(key, "unmark", false);
                 //var unmarkIcon = $("#" + key + "_unmark");
@@ -742,8 +835,6 @@ var EDITOR = (function ($, parent) {
 				delete lo_data[key]["attributes"][toDelete[i]];
 			};
 		}
-		
-		console.log(lo_data[key]["attributes"]);
 		
         /**
          * TOR 20150614
@@ -763,21 +854,25 @@ var EDITOR = (function ($, parent) {
          *       .prop('disabled', false);
          */
 
-        parent.tree.showNodeData(key);
+        parent.tree.showNodeData(key, true);
     },
 
-    insertOptionalProperty = function (key, name, defaultvalue, load)
+    insertOptionalProperty = function (key, name, defaultvalue, load, scrollToId)
     {
 		// Place attribute
 		lo_data[key]['attributes'][name] = defaultvalue;
+		
+		// unlike hidePage, linkPage is initially set to true so tree icon should show immediately
+		if (name == "linkPage") {
+            changeNodeStatus(key, "standalone", defaultvalue == "true");
+        }
 
 		// Enable the optional parameter button
 		$('#insert_opt_' + name)
-			.switchClass('enabled', 'disabled')
-			.prop('disabled', true);
+			.prop('visible', true);
 		
 		if (load != false) {
-			parent.tree.showNodeData(key);
+			parent.tree.showNodeData(key, false, scrollToId);
 		}
     },
 
@@ -789,7 +884,7 @@ var EDITOR = (function ($, parent) {
         if (ids.length>0)
         {
             id = ids[0];
-            parent.tree.showNodeData(id);
+            parent.tree.showNodeData(id, true);
         }
     },
 
@@ -960,7 +1055,7 @@ var EDITOR = (function ($, parent) {
 		
         var data = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [data]);
-        parent.tree.showNodeData(key);
+        parent.tree.showNodeData(key, true);
     },
 
     delColumn = function(id, key, name, colnr)
@@ -973,7 +1068,7 @@ var EDITOR = (function ($, parent) {
 		
         var data = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [data]);
-        parent.tree.showNodeData(key);
+        parent.tree.showNodeData(key, true);
     },
 
     convertjqGridData = function(data)
@@ -1362,15 +1457,14 @@ var EDITOR = (function ($, parent) {
                             }
                         }
                     });
-                    // Fix for known issue in webkit browsers that cahnge contenteditable when an outer div is hidden
+                    // Fix for known issue in webkit browsers that change contenteditable when an outer div is hidden
                     this.on('focus', function () {
                         this.setReadOnly(false);
                     });
                 }, { toolbar:
                     [
                         [ 'Font', 'FontSize', 'TextColor', 'BGColor' ],
-                        [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript'],
-						//[ 'JustifyLeft', 'JustifyCenter', 'JustifyRight' ],
+                        [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript', 'rubytext' ],
                         [ 'Sourcedialog' ],
                         [ 'FontAwesome']
                     ],
@@ -1380,7 +1474,7 @@ var EDITOR = (function ($, parent) {
                     uploadUrl : 'editor/uploadImage.php?mode=dragdrop&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     mathJaxClass :  'mathjax',
                     mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
-                    extraPlugins : 'sourcedialog,image3,fontawesome',
+                    extraPlugins : 'sourcedialog,image3,fontawesome,rubytext',
                     language : language.$code.substr(0,2)
                 });
             }
@@ -1789,6 +1883,10 @@ var EDITOR = (function ($, parent) {
             }
             */
         }
+		
+		if (names[0] == "linkPage") {
+            changeNodeStatus(key, "standalone", values[0] == "true");
+        }
 
         if (names[0] == "unmarkForCompletion") {
             changeNodeStatus(key, "unmark", values[0] == "true");
@@ -1923,11 +2021,23 @@ var EDITOR = (function ($, parent) {
     {
         setAttributeValue(key, [name], [value]);
     },
-
+	
+	catListChanged = function (id, key, name, $parentDiv, obj)
+	{
+		var checked = $parentDiv.data('checked');
+		if ($(obj).prop('checked') == true && $.inArray(obj.id.substring(4), checked) == -1) {
+			checked.push(obj.id.substring(4));
+		} else if ($.inArray(obj.id.substring(4), checked) > -1) {
+			checked.splice($.inArray(obj.id.substring(4), checked), 1);
+		}
+		$parentDiv.data('checked', checked);
+		
+		setAttributeValue(key, [name], [checked.toString()]);
+	},
 
     inputChanged = function (id, key, name, value, obj)
     {
-        //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+        console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
         var actvalue = value;
 
         if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
@@ -2006,90 +2116,6 @@ var EDITOR = (function ($, parent) {
             console.log("    ..to " + actvalue);
         }
         setAttributeValue(key, [name], [actvalue]);
-    },
-
-    hotspotChanged = function(id, key, name, img, selection)
-    {
-        console.log("Hotspot edited: " + name + ", (" + selection.x1 + ", " + selection.y1 + "), (" + selection.x2 + ", " + selection.y2 + ")");
-        var x = selection.x1,
-            y = selection.y1,
-            w = selection.width,
-            h = selection.height;
-        $('#' + id + '_x').val(x);
-        $('#' + id + '_y').val(y);
-        $('#' + id + '_w').val(w);
-        $('#' + id + '_h').val(h);
-        $('#' + id + '_set').val(1);
-    },
-
-    showHotSpotSelection = function(initialised, id, key, name, orgwidth, orgheight, hsx1, hsy1, hsx2, hsy2)
-    {
-        if (initialised)
-        {
-            // All the items exist
-            $('#featherlight-content img').imgAreaSelect({
-                x1: hsx1, y1: hsy1, x2: hsx2, y2: hsy2,
-                handles: true,
-                imageWidth: orgwidth,
-                imageHeight: orgheight,
-
-                parent: '#featherlight-content',
-                persistent: true,
-                onSelectEnd: function (img, selection) {
-                    hotspotChanged(id, key, name, img, selection);
-                }
-            });
-
-            // Only now are we able to bind call-backs to the correct buttons.
-            $('#featherlight-content').unbind('click');
-            var okbutton = $('#featherlight-content button[name="ok"]');
-            okbutton.click({id:id, key:key, name:name}, function(event){
-                var par = event.data;
-                okHotSpotSelection(par.id, par.key, par.name);
-            });
-
-            var cancelbutton = $('#featherlight-content button[name="cancel"]');
-            cancelbutton.click({id:id, key:key, name:name}, function(event){
-                var par = event.data;
-                cancelHotSpotSelection(par.id, par.key, par.name);
-            });
-
-        }
-        else
-        {
-            setTimeout(function(){
-                showHotSpotSelection(true, id, key, name, orgwidth, orgheight, hsx1, hsy1, hsx2, hsy2);
-            }, 100);
-        }
-    },
-
-    okHotSpotSelection = function(id, key, name)
-    {
-        var current = $.featherlight.current()
-        var set = $('#' + id + '_set').val();
-        if (set == 1)
-        {
-            var x = $('#' + id + '_x').val(),
-                y = $('#' + id + '_y').val(),
-                w = $('#' + id + '_w').val() - 1,
-                h = $('#' + id + '_h').val() - 1;
-
-            setAttributeValue(key, ["x", "y", "w", "h"], [x, y, w, h]);
-        }
-        current.close();
-        parent.tree.showNodeData(key);
-    },
-
-    cancelHotSpotSelection = function(id, key, name)
-    {
-        var current = $.featherlight.current()
-        current.close();
-        parent.tree.showNodeData(key);
-    },
-
-    closeHotSpotSelection = function(evt, key)
-    {
-        parent.tree.showNodeData(key);
     },
 
     browseFile = function (id, key, name, value, obj)
@@ -2240,16 +2266,16 @@ var EDITOR = (function ($, parent) {
 							];
 						$.each(lo_node.children, function(i, key){
 								var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-								var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+								/*var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);*/
 								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
 								var hidden = lo_data[key]['attributes'].hidePage;
 								
-								if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+								if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
 								{
 										var page = [];
 										// Also make sure we only take the text from the name, and not the full HTML
 										page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
-										page.push(pageID.found ? pageID.value : linkID.value);
+										page.push(/*pageID.found ? pageID.value :*/ linkID.value);
 										pages.push(page);
 
 										// Now we do the children (if deeplinking is allowed)
@@ -2257,14 +2283,14 @@ var EDITOR = (function ($, parent) {
 											var childNode = tree.get_node(key, false);
 											$.each(childNode.children, function(i, key){
 												var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-												var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+												//var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
 												var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-												if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+												if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
 												{
 													var page = [];
 													// Also make sure we only take the text from the name, and not the full HTML
 													page.push(getTextFromHTML("&nbsp;- "+name.value));
-													page.push(pageID.found ? pageID.value : linkID.value);
+													page.push(/*pageID.found ? pageID.value :*/ linkID.value);
 													pages.push(page);
 												}
 											});
@@ -2360,9 +2386,732 @@ var EDITOR = (function ($, parent) {
         return urlPath;
     },
 
+    drawHotspot = function(html, url, hsattrs, hspattrs, id, forceRectangle){
+        // Draw Hotspot on the wizard page as preview on the thumbnail image
+        // Always treat hotspot as a polygon
+        // Step 0. Find image, set scale and wrap with overlayWrapper
+
+        var img =  html.find('img');
+
+        var natWidth = img[0].naturalWidth;
+        var width = img.width();
+        var scale = width/natWidth;
+        //img.addClass("overlayImage");
+        img.wrap('<div class="overlayWrapper" id="overlayWrapper_' + id + '"></div>');
+        img.hide();
+
+        // Step 1. Create canvas over img
+        var canvasObj = $('<canvas>')
+            .attr('id', 'wizard_hscanvas_' + id);
+        $('#overlayWrapper_' + id).append(canvasObj);
+        var canvas = new fabric.Canvas('wizard_hscanvas_' + id, {selection: false, interaction: false});
+        canvas.setWidth(img.width());
+        canvas.setHeight(img.height());
+        fabric.Image.fromURL(url, function(bgimg){
+            bgimg.scaleToWidth(canvas.width);
+            bgimg.scaleToHeight(canvas.height);
+            canvas.setBackgroundImage(bgimg, canvas.renderAll.bind(canvas),
+                {
+                    stretch: true,
+                });
+        });
+
+        canvas.on('mouse:down', function(){editHotspot(url, hsattrs, hspattrs, id, forceRectangle)});
+        // Step 2. Create polygon in appropriate scale
+        var scaledpoints = [];
+        // Old way of specifying hotspot: x,y,w,h
+        if (forceRectangle || (hsattrs.mode == undefined && hsattrs.x != undefined && hsattrs.y != undefined && hsattrs.w != undefined && hsattrs.h != undefined)) {
+            // create polygon, start with topleft
+            scaledpoints[0] = {x: parseFloat(hsattrs.x), y: parseFloat(hsattrs.y)};
+            scaledpoints[1] = {x: parseFloat(hsattrs.x) + parseFloat(hsattrs.w), y: parseFloat(hsattrs.y)};
+            scaledpoints[2] = {x: parseFloat(hsattrs.x) + parseFloat(hsattrs.w), y: parseFloat(hsattrs.y) + parseFloat(hsattrs.h)};
+            scaledpoints[3] = {x: parseFloat(hsattrs.x), y: parseFloat(hsattrs.y) + parseFloat(hsattrs.h)};
+        }
+        if (scaledpoints.length == 4 || (hsattrs.points != undefined && hsattrs.mode != undefined)) {
+            if (scaledpoints.length != 4) {
+                scaledpoints = JSON.parse(hsattrs['points']);
+            }
+            if (scaledpoints.length > 0) {
+                for (var i in scaledpoints) {
+                    scaledpoints[i].x *= scale;
+                    scaledpoints[i].y *= scale;
+                }
+                var poly = new fabric.Polygon(scaledpoints, {
+                    fill: 'rgba(255,0,0,0.5)',
+                    selectable: false,
+                    objectCaching: false,
+
+                    evented:false
+                });
+                // Step 3. Draw Polygon
+                canvas.add(poly);
+            }
+        }
+    };
+
+    editHotspot = function (url, hsattrs, hspattrs, id, forceRectangle){
+	    var shape = "rectangle";
+	    var scale;
+	    var isDown = false;
+        var activeShape = false;
+        var activeLine = null;
+        var pointArray = null;
+        var lineArray = null;
+        var hs = null;
+
+	    var edit_img = $("<div></div>");
+        //.css("background", "url(" + url + ")")
+        edit_img.attr('id', 'outer_img_' + id)
+            .addClass("hotspotEditor");
+        edit_img.data("id", id);
+        edit_img.append('<div class="hsbutton_holder" id="hsbutton_holder_'+ id + '">' +
+            '<button id="rectangle_' + id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Rectangle + '"><i class="fas fa-2x fa-vector-square"></i></button>' +
+            '<button id="poly_'+ id + '" class="hseditModeButton" title="' + language.editHotspot.Buttons.Polygon + '"><i class="fas fa-2x fa-draw-polygon"></i></button>' +
+            '<button id="reset_'+ id + '" class="hseditModeButton firstoption" title="' + language.editHotspot.Buttons.Reset + '" disabled><i class="fas fa-2x fa-undo-alt"></i></button>' +
+            '<button id="' + id + '_cancel" name="cancel" class="hseditModeButton" title="' + language.Alert.cancellabel + '" style="float:right"><i class="fas fa-2x fa-window-close"></i></button>' +
+            '<button id="' + id + '_ok" name="ok" class="hseditModeButton" title="' + language.Alert.oklabel + '" style="float:right"><i class="fas fa-2x fa-check-square"></i></button>' +
+            '</div>');
+
+            edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');
+        edit_img.append('<div class="hsinstructions" id="instructions_' + id + '"></div>');
+        /*
+        edit_img.append($('<button>')
+            .attr('id', id + '_ok')
+            .attr('name', 'ok')
+            .attr('type', 'button')
+            .attr('title', language.Alert.oklabel)
+            .addClass('hseditModeButton')
+            .append('<i class="far fa-2x fa-check-square"></i>')
+        )
+            .append($('<button>')
+                .attr('id', id + '_cancel')
+                .attr('name', 'cancel')
+                .attr('type', 'button')
+                .attr('title', language.Alert.cancellabel)
+                .addClass('hseditModeButton')
+                .append('<i class="far fa-2x fa-window-close"></i>')
+            );
+
+         */
+        if (!forceRectangle && hsattrs.mode != undefined)
+        {
+            shape = hsattrs.mode;
+        }
+
+        var img;
+        var overlayWidth;
+        var overlayHeight;
+
+        fabric.Image.fromURL(url, function(bgimg) {
+            img = bgimg;
+            var img_width = bgimg.width;
+            var img_height = bgimg.height;
+            if (img_width > img_height) {
+                var ratio = img_height / img_width;
+                overlayWidth = 0.7 * $("body").width();
+                overlayHeight = 0.7 * ratio * $("body").width();
+                edit_img.find("#overlayWrapper_" + id).css("width", overlayWidth + "px")
+                    .css("height", overlayHeight + "px");
+                $.featherlight(edit_img, {
+                    closeOnClick:   'false',       /* Close lightbox on click ('background', 'anywhere', or false) */
+                    closeOnEsc:     true,          /* Close lightbox when pressing esc */
+                    closeIcon:      '',            /* Close icon */
+                    afterOpen: function () {
+                        doEdit();
+                    }
+                });
+            }
+            else {
+                var ratio = img_width / img_height;
+                overlayWidth = 0.7 * ratio * $("body").height();
+                overlayHeight = 0.7 * $("body").height();
+                edit_img.find("#overlayWrapper_" + id).css("width", overlayWidth + "px")
+                    .css("height", overlayHeight + "px");
+                $.featherlight(edit_img, {
+                    closeOnClick:   'false',       /* Close lightbox on click ('background', 'anywhere', or false) */
+                    closeOnEsc:     true,          /* Close lightbox when pressing esc */
+                    closeIcon:      '',            /* Close icon */
+                    afterOpen: function () {
+                        doEdit();
+                    }
+                });
+            }
+
+        });
+
+
+        doEdit = function()
+        {
+            var canvas;
+
+            var origX;
+            var origY;
+
+            var img_size_width = img.width;
+            var img_size_height = img.height;
+            var imgwidth = overlayWidth;
+            var imgheight = overlayHeight;
+            scale = img_size_width / imgwidth;
+            $("#hscanvas_" + id).width(imgwidth);
+            $("#hscanvas_" + id).height(imgheight);
+
+            var canvasoptions = {};
+            if (forceRectangle)
+            {
+                canvasoptions = {
+                    lockRotation: true,
+
+                }
+            }
+            canvas = new fabric.Canvas('hscanvas_' + id);
+            canvas.setWidth(imgwidth);
+            canvas.setHeight(imgheight);
+            img.scaleToWidth(overlayWidth);
+            img.scaleToHeight(overlayHeight);
+            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas),
+                {
+                    stretch: true
+                });
+
+            //$('#featherlight-content').unbind('click');
+
+            var setDrawingModeButtonState = function(shape)
+            {
+                switch(shape)
+                {
+                    case "rectangle":
+                        $("#rectangle_" + id).addClass("selected");
+                        $("#poly_" + id).removeClass("selected");
+                        break;
+                    case "polygon":
+                        $("#poly_" + id).addClass("selected");
+                        $("#rectangle_" + id).removeClass("selected");
+                        break;
+                }
+            };
+
+            var initShape = function()
+            {
+                // initialise Hotspot
+                hs = null;
+
+                switch (shape)
+                {
+                    case "rectangle":
+                        if (!forceRectangle && hsattrs.mode != undefined && hsattrs.shape != undefined) {
+                            var rect = JSON.parse(hsattrs.shape);
+                            hs = new fabric.Rect({
+                                top: rect.top / scale,
+                                left: rect.left / scale,
+                                width: rect.width / scale,
+                                height: rect.height / scale,
+                                angle: rect.angle,
+                                fill: 'rgba(255,0,0,0.5)',
+                                selectable: true,
+                                objectCaching: false,
+                                transparentCorners: true,
+                                cornerColor: 'yellow',
+                                borderColor: 'yellow'
+                            });
+                        }
+                        else if (forceRectangle || (hsattrs.x != undefined && hsattrs.y != undefined && hsattrs.w != undefined && hsattrs.h != undefined)) {
+                            // Old definition of hotspot
+                            hs = new fabric.Rect({
+                                top: parseFloat(hsattrs.y) / scale,
+                                left: parseFloat(hsattrs.x) / scale,
+                                width : parseFloat(hsattrs.w) /scale,
+                                height : parseFloat(hsattrs.h) /scale,
+                                angle: 0,
+                                fill: 'rgba(255,0,0,0.5)',
+                                selectable: true,
+                                objectCaching: false,
+                                transparentCorners: true,
+                                cornerColor: 'yellow',
+                                borderColor: 'yellow',
+                                hasRotatingPoint: !forceRectangle
+                            });
+                        }
+                        setDrawingModeButtonState(shape);
+                        if (hs == null) {
+                            setRectangleHandlers();
+                            disableReset();
+                        }
+                        else {
+                            enableReset();
+                        }
+                        break;
+                    case "polygon":
+                        var scaledpoints = [];
+                        if (hsattrs.points != undefined) {
+                            scaledpoints = JSON.parse(hsattrs.points);
+                            if (scaledpoints.length > 0) {
+                                for (var i in scaledpoints) {
+                                    scaledpoints[i].x /= scale;
+                                    scaledpoints[i].y /= scale;
+                                }
+                                var hs = new fabric.Polygon(scaledpoints, {
+                                    fill: 'rgba(255,0,0,0.5)',
+                                    selectable: true,
+                                    objectCaching: false,
+                                    transparentCorners: true,
+                                    cornerColor: 'yellow',
+                                    borderColor: 'yellow'
+                                });
+                            }
+                        }
+                        setDrawingModeButtonState(shape);
+                        if (hs == null) {
+                            setPolygonHandlers();
+                            disableReset();
+                        }
+                        else {
+                            enableReset();
+                        }
+                        break;
+                }
+                if (hs != null) {
+                    // Step 3. Draw Polygon
+                    canvas.add(hs);
+                    canvas.renderAll();
+                }
+                return hs;
+            };
+
+            var setInstructions=function(edit) {
+                var instructions = language.editHotspot.Instructions.header;
+                instructions += "<ul>";
+                if (edit && !forceRectangle) {
+                    instructions += "<li>" + language.editHotspot.Instructions.edit + "</li>" +
+                    "<li>" + language.editHotspot.Instructions.reset + "</li>";
+
+                } else {
+                    if (forceRectangle) {
+                        instructions += "<li>" + language.editHotspot.Instructions.forceRectangle + "</li>";
+                    }
+                    switch (shape) {
+                        case "rectangle":
+                            instructions += "<li>" + language.editHotspot.Instructions.rectangle + "</li>";
+                            break;
+                        case "polygon":
+                            instructions += "<li>" + language.editHotspot.Instructions.polygon + "</li>";
+                            break;
+                    }
+                }
+                instructions += "<li>" + language.editHotspot.Instructions.save + "</li>"
+                + "</ul>";
+                $("#instructions_" + id).html(instructions);
+            };
+
+            // Ok handler
+            var okbutton = $('#featherlight-content button[name="ok"]');
+            okbutton.click(function(event){
+
+                var key = $("#inner_img_" + id).data("key");
+                var current = $.featherlight.current();
+                var npoints = [];
+                switch (shape) {
+                    case "rectangle":
+                        if (hs != null) {
+                            var hspoints = hs.oCoords;
+                            //Get tl, tr, br, bl
+                            var cornerpoints = ['tl', 'tr', 'br', 'bl'];
+                            for (var pi in cornerpoints) {
+                                var point = hspoints[cornerpoints[pi]];
+                                npoints.push({
+                                    "x": point.x * scale,
+                                    "y": point.y * scale
+                                });
+                            }
+                            var rect = {};
+                            rect.top = hs.top * scale;
+                            rect.left = hs.left * scale;
+                            rect.width = hs.getScaledWidth() * scale;
+                            rect.height = hs.getScaledHeight() * scale;
+                            rect.angle = hs.angle;
+                            var stringPoints = JSON.stringify(npoints);
+                            var stringShape = JSON.stringify(rect);
+
+                            if (forceRectangle) {
+                                setAttributeValue(key, ["x", "y", "w", "h"], [rect.left, rect.top, rect.width, rect.height]);
+                            }
+                            else {
+                                setAttributeValue(key, ["points", "mode", "shape"], [stringPoints, shape, stringShape]);
+                            }
+                        }
+                        else {
+                            setAttributeValue(key, ["points", "mode", "shape"], ['[]', shape, '{}']);
+                        }
+                        break;
+                    case "polygon":
+                        if (hs != null) {
+                            // Transform to correct coordinates based on canvas,
+                            // So calculated resulting point after possible translation and rotation
+                            var matrix = hs.calcTransformMatrix();
+                            var hspoints = hs.get("points")
+                                .map(function (p) {
+                                    return new fabric.Point(
+                                        p.x - hs.pathOffset.x,
+                                        p.y - hs.pathOffset.y);
+                                })
+                                .map(function (p) {
+                                    return fabric.util.transformPoint(p, matrix);
+                                });
+                            for (var pi in hspoints) {
+                                var point = hspoints[pi];
+                                npoints.push({
+                                    "x": point.x * scale,
+                                    "y": point.y * scale
+                                });
+                            }
+                            var stringPoints = JSON.stringify(npoints);
+                            setAttributeValue(key, ["points", "mode", "shape"], [stringPoints, shape, "{}"]);
+                        }
+                        else {
+                            setAttributeValue(key, ["points", "mode", "shape"], ['[]', shape, '{}']);
+                        }
+                        break;
+                }
+
+
+                current.close();
+                parent.tree.showNodeData(key);
+            });
+
+            // Cancel handler
+            var cancelbutton = $('#featherlight-content button[name="cancel"]');
+            cancelbutton.click(function(event){
+                var key = $("#inner_img_" + id).data("key");
+                var current = $.featherlight.current();
+                current.close();
+                parent.tree.showNodeData(key);
+            });
+
+            // Switch to polygon mode
+            var polygonbutton = $('#featherlight-content #poly_'+id);
+            if (forceRectangle)
+            {
+                polygonbutton.prop("disabled", true);
+            }
+            polygonbutton.click(function (event) {
+                if (shape != "polygon") {
+                    switchToPolygonMode();
+                }
+            });
+
+            var switchToPolygonMode = function()
+            {
+                shape = "polygon";
+                setDrawingModeButtonState(shape);
+                pointArray = [];
+                lineArray = [];
+                activeShape = false;
+                canvas.remove(hs);
+                canvas.renderAll();
+                hs = null;
+                setPolygonHandlers();
+                disableReset();
+            };
+
+            var rectanglebutton = $('#featherlight-content #rectangle_'+id);
+            rectanglebutton.click(function (event) {
+                if (shape != "rectangle") {
+                    switchToRectangleMode();
+                }
+
+            });
+
+            var switchToRectangleMode = function()
+            {
+                shape = "rectangle";
+                setDrawingModeButtonState(shape);
+                canvas.set({selection: false});
+                canvas.remove(hs);
+                canvas.renderAll();
+                hs = null;
+                setRectangleHandlers();
+                disableReset();
+            };
+
+            // Reset handler
+            var resetbutton = $('#featherlight-content #reset_'+id);
+            resetbutton.click(function (event){
+                switch (shape)
+                {
+                    case "rectangle":
+                        switchToRectangleMode();
+                        disableReset();
+                        break;
+                    case "polygon":
+                        switchToPolygonMode();
+                        disableReset();
+                        break;
+                }
+            });
+
+            var enableReset = function()
+            {
+                resetbutton.prop("disabled", false);
+                setInstructions(true);
+            };
+
+            var disableReset = function()
+            {
+                resetbutton.prop("disabled", true);
+                setInstructions(false);
+            };
+
+            var setRectangleHandlers = function()
+            {
+                canvas.off('mouse:down');
+                canvas.off('mouse:move');
+                canvas.off('mouse:up');
+                canvas.on('mouse:down', function(opt) {
+                    rectangleMouseDown(opt)
+                });
+                canvas.on('mouse:move', function(opt) {
+                    rectangleMouseMove(opt)
+                });
+                canvas.on('mouse:up', function(opt) {
+                    rectangleMouseUp(opt)
+                });
+            };
+
+            var rectangleMouseDown = function(o){
+                isDown = true;
+                var pointer = canvas.getPointer(o.e);
+                origX = pointer.x;
+                origY = pointer.y;
+                var pointer = canvas.getPointer(o.e);
+                hs = new fabric.Rect({
+                    left: origX,
+                    top: origY,
+                    originX: 'left',
+                    originY: 'top',
+                    width: pointer.x-origX,
+                    height: pointer.y-origY,
+                    angle: 0,
+                    fill: 'rgba(255,0,0,0.5)',
+                    transparentCorners: true,
+                    cornerColor: 'yellow',
+                    borderColor: 'yellow',
+                    selectable: true,
+                    hasRotationPoint: !forceRectangle
+                });
+                canvas.add(hs);
+            };
+
+            var rectangleMouseMove = function(o){
+                if (!isDown) return;
+                var pointer = canvas.getPointer(o.e);
+
+                if(origX>pointer.x){
+                    hs.set({ left: Math.abs(pointer.x) });
+                }
+                if(origY>pointer.y){
+                    hs.set({ top: Math.abs(pointer.y) });
+                }
+
+                hs.set({ width: Math.abs(origX - pointer.x) });
+                hs.set({ height: Math.abs(origY - pointer.y) });
+
+
+                canvas.renderAll();
+            };
+
+            var rectangleMouseUp = function(o){
+                isDown = false;
+                canvas.off('mouse:down');
+                canvas.off('mouse:move');
+                canvas.off('mouse:up');
+                canvas.off('mouse:dblclick');
+                canvas.set({selection: (forceRectangle ? true : false)});
+                canvas.remove(hs);
+                canvas.add(hs);
+                canvas.renderAll();
+                enableReset();
+            };
+
+            var setPolygonHandlers = function()
+            {
+                canvas.off('mouse:down');
+                canvas.off('mouse:move');
+                canvas.off('mouse:up');
+                canvas.off('mouse:dblclick');
+                canvas.on('mouse:down', function(opt) {
+                    polygonMouseDown(opt)
+                });
+                canvas.on('mouse:move', function(opt) {
+                    polygonMouseMove(opt)
+                });
+
+            };
+
+            var polygonMouseDown = function(o){
+                var min = 99;
+                var max = 999999;
+
+                if(o.target && o.target.id == pointArray[0].id){
+                    generatePolygon(pointArray);
+                }
+                else {
+                    // addPoint
+                    var random = Math.floor(Math.random() * (max - min + 1)) + min;
+                    var id = new Date().getTime() + random;
+                    var circle = new fabric.Circle({
+                        radius: 5,
+                        fill: '#ffffff',
+                        stroke: '#333333',
+                        strokeWidth: 0.5,
+                        left: (o.e.layerX/canvas.getZoom()),
+                        top: (o.e.layerY/canvas.getZoom()),
+                        selectable: false,
+                        hasBorders: false,
+                        hasControls: false,
+                        originX:'center',
+                        originY:'center',
+                        id:id,
+                        objectCaching:false
+                    });
+                    if(pointArray.length == 0){
+                        circle.set({
+                            fill:'red'
+                        })
+                    }
+                    var p = [(o.e.layerX/canvas.getZoom()),(o.e.layerY/canvas.getZoom()),(o.e.layerX/canvas.getZoom()),(o.e.layerY/canvas.getZoom())];
+                    var line = new fabric.Line(p, {
+                        strokeWidth: 2,
+                        fill: '#999999',
+                        stroke: '#999999',
+                        class:'line',
+                        originX:'center',
+                        originY:'center',
+                        selectable: false,
+                        hasBorders: false,
+                        hasControls: false,
+                        evented: false,
+                        objectCaching:false
+                    });
+                    if(activeShape){
+                        var pos = canvas.getPointer(o.e);
+                        var points = activeShape.get("points");
+                        points.push({
+                            x: pos.x,
+                            y: pos.y
+                        });
+                        var polygon = new fabric.Polygon(points,{
+                            stroke:'#333333',
+                            strokeWidth:1,
+                            fill: '#cccccc',
+                            opacity: 0.3,
+                            selectable: false,
+                            hasBorders: false,
+                            hasControls: false,
+                            evented: false,
+                            objectCaching:false
+                        });
+                        canvas.remove(activeShape);
+                        canvas.add(polygon);
+                        activeShape = polygon;
+                        canvas.renderAll();
+                    }
+                    else{
+                        var polyPoint = [{x:(o.e.layerX/canvas.getZoom()),y:(o.e.layerY/canvas.getZoom())}];
+                        var polygon = new fabric.Polygon(polyPoint,{
+                            stroke:'#333333',
+                            strokeWidth:1,
+                            fill: '#cccccc',
+                            opacity: 0.3,
+                            selectable: false,
+                            hasBorders: false,
+                            hasControls: false,
+                            evented: false,
+                            objectCaching:false
+                        });
+                        activeShape = polygon;
+                        canvas.add(polygon);
+                    }
+                    activeLine = line;
+
+                    pointArray.push(circle);
+                    lineArray.push(line);
+
+                    canvas.add(line);
+                    canvas.add(circle);
+                    canvas.selection = false;
+                }
+
+            };
+
+            var polygonMouseMove = function(o)
+            {
+                if(activeLine && activeLine.class == "line"){
+                    var pointer = canvas.getPointer(o.e);
+                    activeLine.set({ x2: pointer.x, y2: pointer.y });
+
+                    var points = activeShape.get("points");
+                    points[pointArray.length] = {
+                        x:pointer.x,
+                        y:pointer.y
+                    };
+                    activeShape.set({
+                        points: points
+                    });
+                    canvas.renderAll();
+                }
+                canvas.renderAll();
+            };
+
+            var generatePolygon  = function(pointArray){
+                var points = new Array();
+                $.each(pointArray,function(index,point){
+                    points.push({
+                        x:point.left,
+                        y:point.top
+                    });
+                    canvas.remove(point);
+                });
+                $.each(lineArray,function(index,line){
+                    canvas.remove(line);
+                });
+                canvas.remove(activeShape).remove(activeLine);
+                hs = new fabric.Polygon(points,{
+                    //stroke:'#333333',
+                    //strokeWidth:0.5,
+                    fill: 'rgba(255,0,0,0.5)',
+                    selectable: true,
+                    transparentCorners : true,
+                    cornerColor: 'yellow',
+                    borderColor: 'yellow'
+
+                });
+                canvas.off('mouse:down');
+                canvas.off('mouse:move');
+                canvas.off('mouse:up');
+                canvas.off('mouse:dblclick');
+
+                canvas.add(hs);
+
+                activeLine = null;
+                activeShape = null;
+                canvas.selection = true;
+                enableReset();
+            };
+
+
+            hs = initShape();
+        }
+
+    };
+
+    triggerRedrawPage = function(key)
+    {
+        parent.tree.showNodeData(key, true);
+    };
+
     displayDataType = function (value, options, name, key) {
 		var html;
 
+		var conditionTrigger = (typeof options.conditonTrigger != "undfined" && options.conditionTrigger == "true");
 		switch(options.type.toLowerCase())
 		{
 			case 'checkbox':
@@ -2372,8 +3121,12 @@ var EDITOR = (function ($, parent) {
 					.attr('id', id)
 					.attr('type',  "checkbox")
 					.prop('checked', value && value == 'true')
-					.change({id:id, key:key, name:name}, function(event){
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event){
 						cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
+						if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 					});
 				break;
 			case 'combobox':
@@ -2391,9 +3144,13 @@ var EDITOR = (function ($, parent) {
 				}
 				html = $('<select>')
 					.attr('id', id)
-					.change({id:id, key:key, name:name}, function(event)
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 					{
 						selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 					});
 				
 				if (value == '') {
@@ -2449,9 +3206,13 @@ var EDITOR = (function ($, parent) {
 					form_id_offset++;
 					html = $('<select>')
 						.attr('id', id)
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						});
 					for (var i=min; i<max; i += step) {
 						var option = $('<option>')
@@ -2474,13 +3235,17 @@ var EDITOR = (function ($, parent) {
 						.attr('max', max)
 						.attr('step', step)
 						.attr('value', value)
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							if (this.value <= max &&  this.value >= min) {
 								if (this.value == '') {
 									this.value = (min + max) / 2; // choose midpoint for NaN
 								}
 								inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                                if (event.data.trigger)
+                                {
+                                    triggerRedrawPage(event.data.key);
+                                }
 							}
 							else { // set to max or min if out of range
 								this.value = Math.max(Math.min(this.value, max), min);
@@ -2495,9 +3260,13 @@ var EDITOR = (function ($, parent) {
 				form_id_offset++;
 				html = $('<select>')
 					.attr('id', id)
-					.change({id:id, key:key, name:name}, function(event)
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 					{
 						selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 					});
 				// Add empty entry
 				var option = $('<option>')
@@ -2517,11 +3286,101 @@ var EDITOR = (function ($, parent) {
 					html.append(option);
 				});
 				break;
+			case 'categorylist':
+				var id = 'select_' + form_id_offset;
+				form_id_offset++;
+				html = $('<div id="' + id + '" class="categoryListHolder">').data('checked', value != '' ? value.split(',') : []);
+				
+				if (lo_data.treeroot['attributes'][options.target] != undefined) {
+					// set up all the categories & their checkboxes
+					var categories = lo_data.treeroot['attributes'][options.target].split('||');
+					
+					// work out what categories & options there are
+					for (var i=0; i<categories.length; i++) {
+						var categoryInfo = categories[i].split('|');
+						
+						if (categoryInfo.length == 2) {
+							var catTitle = categoryInfo[0].trim(),
+								catOpts = categoryInfo[1].split('\n');
+							
+							for (var j=0; j<catOpts.length; j++) {
+								catOpts.splice(j, 1, catOpts[j].trim());
+								
+								if (catOpts[j].length == 0) {
+									catOpts.splice(j, 1);
+									j--;
+								} else {
+									var stripTags = $("<div/>").html(catOpts[j]).text().trim();
+									if (stripTags.length > 0) {
+										var optInfo = stripTags.split('(');
+										if (optInfo.length > 1 && optInfo[1].trim().length > 0) {
+											catOpts.splice(j, 1, { id: optInfo[0].trim(), name: optInfo[1].trim().slice(0, -1) });
+										} else {
+											catOpts.splice(j, 1, { id: optInfo[0].replace(/ /g, "_"), name: optInfo[0] });
+										}
+									} else {
+										catOpts.splice(j, 1);
+										j--;
+									}
+								}
+							}
+							
+							if (catTitle.length > 0 && catOpts.length > 0) {
+								categories.splice(i, 1, { name: catTitle, options: catOpts });
+							} else {
+								categories.splice(i, 1);
+								i--;
+							}
+						} else {
+							categories.splice(i, 1);
+							i--;
+						}
+					}
+					
+					// if some categories exist add them to the page
+					if (categories.length > 0) {
+						for (var i=0; i<categories.length; i++) {
+							var option = $('<div class="categoryList"><div class="catTitle">' + categories[i].name + ':</div></div>');
+							
+							for (var j=0; j<categories[i].options.length; j++) {
+								var checkbox = $('<input>')
+									.attr({
+										'type': 'checkbox',
+										'name': 'cat_' + categories[i].options[j].id,
+										'id': 'cat_' + categories[i].options[j].id
+									})
+									.prop('checked', $.inArray(categories[i].options[j].id, html.data('checked')) > -1 ? true : false)
+									.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event) {
+										catListChanged(event.data.id, event.data.key, event.data.name, html, this);
+                                        if (event.data.trigger)
+                                        {
+                                            triggerRedrawPage(event.data.key);
+                                        }
+									});
+								
+								var label = $('<label for="cat_' + categories[i].options[j].id + '">' + categories[i].options[j].name + '</label>');
+								
+								$('<div class="catGroup">')
+									.appendTo(option)
+									.append(checkbox)
+									.append(label);
+							}
+							html.append(option);
+						}
+					} else {
+						var optName = wizard_data['learningObject'].node_options.all.find(function(o) { return o['name'] === options.target}).value.label;
+						html.append('<span class="error">' + language.categoryList.errorEmpty.replace('{x}', "'" + optName + "'") + "</span>");
+					}
+				} else {
+					var optName = wizard_data['learningObject'].node_options.all.find(function(o) { return o['name'] === options.target}).value.label;
+					html.append('<span class="error">' + language.categoryList.error.replace('{x}', "'" + optName + "'") + "</span>");
+				}
+				break;
 			case 'colourpicker':
 				var colorvalue = value;
 				var id = 'colorpicker_' + form_id_offset;
 				form_id_offset++;
-				if (colorvalue.indexOf("0x") == 0)
+				if (colorvalue != null && colorvalue.indexOf("0x") == 0)
 				{
 					colorvalue = colorvalue.substr(2);
 				}
@@ -2530,9 +3389,13 @@ var EDITOR = (function ($, parent) {
 					html = $('<input>')
 						.attr('id', id)
 						.attr('type', 'color')
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						});
 				}
 				else
@@ -2540,9 +3403,13 @@ var EDITOR = (function ($, parent) {
 					html = $('<input>')
 						.attr('id', id)
 						.addClass('color')
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						});
 					
 					colorpickers.push({id: id, options: options});
@@ -2558,9 +3425,13 @@ var EDITOR = (function ($, parent) {
 				form_id_offset++;
 				html = $('<select>')
 					.attr('id', id)
-					.change({id:id, key:key, name:name}, function(event)
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 					{
 						changeLanguage(event.data.id, event.data.key, event.data.name, this.value, this);
+                        if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 						//selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
 					});
 				for (var i=0; i<installed_languages.length; i++) {
@@ -2579,9 +3450,13 @@ var EDITOR = (function ($, parent) {
 				var currtheme = 0;
 				var select = $('<select>')
 					.attr('id', id)
-					.change({id:id, key:key, name:name}, function(event)
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 					{
 						themeChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 					});
 				for (var i=0; i<theme_list.length; i++) {
 					var option = $('<option>')
@@ -2622,9 +3497,13 @@ var EDITOR = (function ($, parent) {
 				var currselected=false;
 				var select = $('<select>')
 					.attr('id', id)
-					.change({id:id, key:key, name:name}, function(event)
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 					{
 						inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 					});
 				// Add empty option
 				var option = $('<option>')
@@ -2663,9 +3542,13 @@ var EDITOR = (function ($, parent) {
 				var currselected = false;
 				var select = $('<select>')
 					.attr('id', id)
-					.change({id:id, key:key, name:name}, function(event)
+					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 					{
 						inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
 					});
 				// Add empty option
 				var option = $('<option>')
@@ -2714,9 +3597,13 @@ var EDITOR = (function ($, parent) {
 								tree.rename_node(tree.get_node(key, false), $(this).val());
 							}
 						})
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						})
 						.attr('value', value);
 				}
@@ -2727,8 +3614,12 @@ var EDITOR = (function ($, parent) {
 					var currselected = false;
 					var select = $('<select>')
 						.attr('id', id)
-						.change({id: id, key: key, name: name, form_id: form_id_offset}, function (event) {
+						.change({id: id, key: key, name: name, trigger:conditionTrigger, form_id: form_id_offset}, function (event) {
 							courseChanged(event.data.id, event.data.key, event.data.name, event.data.form_id, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						});
 					// Add empty option
 					var option = $('<option>')
@@ -2779,9 +3670,13 @@ var EDITOR = (function ($, parent) {
 									tree.rename_node(tree.get_node(key, false), $(this).val());
 								}
 							})
-							.change({id:id, key:key, name:name}, function(event)
+							.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 							{
 								inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                                if (event.data.trigger)
+                                {
+                                    triggerRedrawPage(event.data.key);
+                                }
 							});
 						if (currselected)
 						{
@@ -2814,151 +3709,52 @@ var EDITOR = (function ($, parent) {
 				}
 				break;
 			case 'hotspot':
+            case 'flexhotspot':
 				var id = 'hotspot_' + form_id_offset;
 				form_id_offset++;
 
-				// this is a special one. the attributes in the node are called x, y, w, h
-				// Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
-				// So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
+                // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
+                // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
+                var forceRectangle = (options.type.toLowerCase() === "hotspot");
 				var hsattrs = lo_data[key].attributes;
-				var hsparent = parent.tree.getParent(key);
-				var hspattrs = lo_data[hsparent].attributes;
-				var div = $('<div>')
-					.attr('id', 'inner_' + id);
-				if (hspattrs.nodeName.toLowerCase() == "hotspotgroup")
-				{
-					// go one further up
-					hsparent = parent.tree.getParent(hsparent);
-					hspattrs = lo_data[hsparent].attributes;
-				}
-				
-				// Create the container
-				html = $('<div>').attr('id', id);
-				
-				var url = hspattrs.url;
-				// Replace FileLocation + ' with full url
-				url = makeAbsolute(url);
-				// Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
-				if (url.substring(0,4) == "http")
-				{
-					div.addClass('clickableHotspot')
-							.append($('<img>')
-							.attr('id', 'inner_img_' + id)
-							.attr('src', url)
-							.load(function(){
-								var orgwidth = this.naturalWidth;
-								var orgheight = this.naturalHeight;
-								var width = this.width;
-								var hsleft = parseInt(hsattrs.x),
-									hstop = parseInt(hsattrs.y),
-									hsbottom = orgheight - hstop - parseInt(hsattrs.h),
-									hsright = orgwidth - hsleft - parseInt(hsattrs.w);
-								var scale = width / orgwidth;
-								
-								$(this).css({width: parseInt(scale * orgwidth) + 'px', height: parseInt(scale * orgheight) + 'px'});
+                var hsparent = parent.tree.getParent(key);
+                var hspattrs = lo_data[hsparent].attributes;
+                if (hspattrs.nodeName.toLowerCase() == "hotspotgroup")
+                {
+                    // go one further up
+                    hsparent = parent.tree.getParent(hsparent);
+                    hspattrs = lo_data[hsparent].attributes;
+                }
 
-								hsleft = Math.round(hsleft * scale);
-								hstop = Math.round(hstop * scale);
-								hsbottom = Math.round(hsbottom * scale);
-								hsright = Math.round(hsright * scale);
+                    // Create the container
+                    html = $('<div>').attr('id', id);
 
-								var cssobj = {
-									position:  "absolute",
-									left: hsleft + "px",
-									top:  hstop + "px",
-									right: hsright + "px",
-									bottom: (hsbottom + 4) + "px",
-									background: "#ff0000",
-									opacity: "0.4"
-								};
+                    var url = hspattrs.url;
+                    // Replace FileLocation + ' with full url
+                    url = makeAbsolute(url);
+                    // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
+                    if (url.substring(0,4) == "http")
+                    {
+                        var shape = "square";
+                        html.addClass('clickableHotspot');
+                        html.append("<img>");
+                        var cur_key = key;
+                        html.find('img')
+                            .attr('id', 'inner_img_' + id)
+                            .attr("data-key", cur_key)
+                            .attr("src", url)
+                            .load(function(){
 
-								var hsdiv = $('<div>')
-									.attr('id', 'inner_hs_' + id)
-									.css(cssobj);
-								div.append(hsdiv);
-
-							})
-					);
-					
-					// Ok, now create the content to be shown in the lightbox
-					var editdiv = $('<div>')
-						.attr('id', 'edit_' + id)
-						.addClass('hotspotLightbox');
-					var editimg = $('<img>')
-						.attr('id', 'edit_img_' + id)
-						.addClass('hotspotLightboxImg')
-						.attr('src', url)
-						.load(function()
-						{
-							var orgwidth = this.naturalWidth;
-							var orgheight = this.naturalHeight;
-							var hsx1 = parseInt(hsattrs.x),
-								hsy1 = parseInt(hsattrs.y),
-								hsx2 = hsx1 + parseInt(hsattrs.w),
-								hsy2 = hsy1 + parseInt(hsattrs.h);
-
-							$('#link_' + id).featherlight({afterClose: function(evt){closeHotSpotSelection(evt, key);}});
-							$('#link_' + id).click({id:id, key:key, name:name, orgwidth:orgwidth, orgheight:orgheight, hsx1:hsx1, hsy1:hsy1, hsx2:hsx2, hsy2:hsy2}, function(event){
-								var par = event.data;
-								showHotSpotSelection(false, par.id, par.key, par.name, par.orgwidth, par.orgheight, par.hsx1, par.hsy1, par.hsx2, par.hsy2);
-							});
-
-						});
-					editdiv.append(editimg);
-
-					editdiv.append($('<div>')
-							.attr('id', id + '_edit_buttons')
-							.append($('<input>')
-								.attr('id', id + '_x')
-								.attr('type', 'hidden')
-						)
-							.append($('<input>')
-								.attr('id', id + '_y')
-								.attr('type', 'hidden')
-						)
-							.append($('<input>')
-								.attr('id', id + '_h')
-								.attr('type', 'hidden')
-						)
-							.append($('<input>')
-								.attr('id', id + '_w')
-								.attr('type', 'hidden')
-						)
-							.append($('<input>')
-								.attr('id', id + '_set')
-								.attr('type', 'hidden')
-								.attr('value', '0')
-						)
-							.append($('<button>')
-								.attr('id', id + '_ok')
-								.attr('name', 'ok')
-								.attr('type', 'button')
-								.addClass('editorbutton')
-								.append(language.Alert.oklabel)
-						)
-							.append($('<button>')
-								.attr('id', id + '_cancel')
-								.attr('name', 'cancel')
-								.attr('type', 'button')
-								.addClass('editorbutton')
-								.append(language.Alert.cancellabel)
-						)
-					);
-					
-
-					html.append(editdiv)
-						.append($('<a>')
-							.attr('id', 'link_' + id)
-							.attr('href', '#')
-							.attr('data-featherlight', '#edit_' + id)
-							.attr('title', language.edit.$tooltip)
-							.append(div));
-				
-				}
-				else
-				{
-					html.append("select image first"); // ** shouldn't this be translated?
-				}
+                                $(this).css({width: '100%'});
+                                drawHotspot(html, url, hsattrs, hspattrs, id, forceRectangle);
+                            }).click(function(){
+                                editHotspot(url, hsattrs, hspattrs, id, forceRectangle);
+                            });
+                    }
+                    else
+                    {
+                        html.append("<span class=\"error\">" + language.editHotspot.Error.selectFile + "</span>");
+                    }
 
 				break;
 			case 'media':
@@ -2970,9 +3766,13 @@ var EDITOR = (function ($, parent) {
 						.attr('type', "text")
 						.attr('id', id)
 						.addClass('media')
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						})
 						.attr('value', value));
 				
@@ -3026,27 +3826,37 @@ var EDITOR = (function ($, parent) {
 			case 'datefield':
 				var id = 'date_' + form_id_offset;
 				form_id_offset++;
-				if (value.length==0)
-				{
-					value=new Date();
-					setAttributeValue(key, [name], [value.toISOString()]);
+				var format = 0;
+				if (value.length > 0) {
+					if (value.split('-').length == 3) {
+						format = 1;
+						value = value.split('T')[0];
+					}
+				} else if (value.length == 0 && options.allowBlank != "true") {
+					value = new Date().toISOString();
+					setAttributeValue(key, [name], [value]);
 				}
-				value = new Date(value).toDateString();
+				
 				// a datepicker with a browse buttons next to it
 				var td1 = $('<td width="100%">')
 					.append($('<input>')
 						.attr('type', "text")
 						.attr('id', id)
 						.addClass('date')
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
-							inputChanged(event.data.id, event.data.key, event.data.name, new Date(this.value).toISOString(), this);
+							inputChanged(event.data.id, event.data.key, event.data.name, this.value.length == 0 ? '' : (format == 0 ? this.value : new Date(this.value).toISOString()), this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						})
-						.attr('value', value)
+						.attr('value', value.split('T')[0])
 						.datepicker({
 							showOtherMonths: true,
 							selectOtherMonths: true,
-							dateFormat: 'yy-mm-dd'
+							dateFormat: 'yy-mm-dd', // the format used to be dd/mm/yyyy so some of code above is to cope with this
+							minDate: options.preventPrev == "true" ? 0 : null
 						}));
 				
 				var td2 = $('<td>');
@@ -3076,7 +3886,7 @@ var EDITOR = (function ($, parent) {
 					.attr('id', id)
 					.attr('title', language.edit.$tooltip)
 					.addClass("xerte_button")
-					.click({id:id, key:key, name:name, value:value}, function(event)
+					.click({id:id, key:key, name:name, value:value, trigger:conditionTrigger}, function(event)
 					{
 						editDrawing(event.data.id, event.data.key, event.data.name, event.data.value);
 					}
@@ -3122,9 +3932,13 @@ var EDITOR = (function ($, parent) {
 								tree.rename_node(tree.get_node(key, false), $(this).val());
 							}
 						})
-						.change({id:id, key:key, name:name}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
 							inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            if (event.data.trigger)
+                            {
+                                triggerRedrawPage(event.data.key);
+                            }
 						})
 						.attr('value', value);
 				}
@@ -3152,6 +3966,7 @@ var EDITOR = (function ($, parent) {
     my.create_insert_page_menu = create_insert_page_menu;
     my.getAttributeValue = getAttributeValue;
     my.setAttributeValue = setAttributeValue;
+    my.evaluateCondition = evaluateCondition;
     my.displayParameter = displayParameter;
 	my.displayGroup = displayGroup;
     my.convertTextAreas = convertTextAreas;

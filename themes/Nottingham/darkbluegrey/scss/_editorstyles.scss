@@ -4,10 +4,10 @@
 /*Use SASS and the files in the scss folder name _allvariables.scss to start any customisation*/
 //***define the Editor Style Colors esc[n]***/
 //***define the colors used in the new styles for the styles menu***/
-$esc1: #F07E31;
-$esc2: #2F9739;
-$esc3: #4185C5;
-$esc4: #00A1A3;
+$esc1: #C4551F;
+$esc2: #418545;
+$esc3: #4078C0;
+$esc4: #278384;
 $esc5: #603784;
 $esc6: #D13759;
 
@@ -43,14 +43,14 @@ $esc6: #D13759;
 }
 @mixin beforeblockquote {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
 }
 @mixin afterblockquote{
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;

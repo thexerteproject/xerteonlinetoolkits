@@ -191,6 +191,9 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   background: rgba(237, 237, 237, 0.9) !important;
   border-color: #EDEDED; }
 
+.x_dragDropLabel_page #targetHolder .highlight {
+  background: none; }
+
 .x_categories_page #dragDropHolder {
   background: #ffffff;
   border-radius: 2vmin; }
@@ -601,7 +604,7 @@ div#shorturltodisplay a {
   display: table;
   padding: 10px;
   font-style: normal;
-  background-color: #8a8d82;
+  background-color: #71746A;
   color: #ffffff; }
 
 .panel1 a {
@@ -612,7 +615,7 @@ div#shorturltodisplay a {
   display: table;
   padding: 10px;
   font-style: normal;
-  background-color: #2F9739;
+  background-color: #418545;
   color: #ffffff; }
 
 .panel2 a {
@@ -634,7 +637,7 @@ div#shorturltodisplay a {
   display: table;
   padding: 10px;
   font-style: normal;
-  background-color: #00A1A3;
+  background-color: #278384;
   color: #ffffff; }
 
 .panel4 a {
@@ -674,7 +677,7 @@ div#shorturltodisplay a {
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #8a8d82; }
+  border-color: #71746A; }
 
 .highlight2 {
   font-family: "Libre Franklin", sans-serif;
@@ -687,7 +690,7 @@ div#shorturltodisplay a {
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #2F9739; }
+  border-color: #418545; }
 
 .highlight3 {
   font-family: "Libre Franklin", sans-serif;
@@ -713,7 +716,7 @@ div#shorturltodisplay a {
   border-left: 5px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-color: #00A1A3; }
+  border-color: #278384; }
 
 .highlight5 {
   font-family: "Libre Franklin", sans-serif;
@@ -752,7 +755,7 @@ blockquote {
 
 blockquote:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -763,56 +766,56 @@ blockquote p {
 
 blockquote:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
   color: #ccc; }
 
 .bq1 {
-  border-color: #8a8d82; }
+  border-color: #71746A; }
 
 .bq1:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
-  color: #8a8d82; }
+  color: #71746A; }
 
 .bq1:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #8a8d82; }
+  color: #71746A; }
 
 .bq2 {
-  border-color: #2F9739; }
+  border-color: #418545; }
 
 .bq2:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
-  color: #2F9739; }
+  color: #418545; }
 
 .bq2:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #2F9739; }
+  color: #418545; }
 
 .bq3 {
   border-color: #2f2E33; }
 
 .bq3:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -820,37 +823,37 @@ blockquote:after {
 
 .bq3:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
   color: #2f2E33; }
 
 .bq4 {
-  border-color: #00A1A3; }
+  border-color: #278384; }
 
 .bq4:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
-  color: #00A1A3; }
+  color: #278384; }
 
 .bq4:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-  color: #00A1A3; }
+  color: #278384; }
 
 .bq5 {
   border-color: #3A5199; }
 
 .bq5:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -858,7 +861,7 @@ blockquote:after {
 
 .bq5:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
@@ -869,7 +872,7 @@ blockquote:after {
 
 .bq6:after {
   content: close-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: .1em;
   margin-left: .1em;
   vertical-align: -.6em;
@@ -877,25 +880,25 @@ blockquote:after {
 
 .bq6:before {
   content: open-quote;
-  font-size: 4em;
+  font-size: 4rem;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
   color: #D13759; }
 
 .speech-bubble1 {
-  background: #8a8d82;
+  background: #71746A;
   color: white; }
 
 .speech-bubble1:after {
-  border-right-color: #8a8d82; }
+  border-right-color: #71746A; }
 
 .speech-bubble2 {
-  background: #2F9739;
+  background: #418545;
   color: white; }
 
 .speech-bubble2:after {
-  border-left-color: #2F9739; }
+  border-left-color: #418545; }
 
 .speech-bubble3 {
   background: #2f2E33;
@@ -905,11 +908,11 @@ blockquote:after {
   border-right-color: #2f2E33; }
 
 .speech-bubble4 {
-  background: #00A1A3;
+  background: #278384;
   color: white; }
 
 .speech-bubble4:after {
-  border-left-color: #00A1A3; }
+  border-left-color: #278384; }
 
 .speech-bubble5 {
   background: #3A5199;

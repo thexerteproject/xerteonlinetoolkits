@@ -12,11 +12,14 @@
     <url label="PDF File" type="media"/>
     
     <pdfWidth label="PDF Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full" defaultValue="full" width="100" optional="true"/>
-    <text label="Page Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
+	
+	<textGroup type="group" label="Page Text" optional="true">
+		<text label="Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
+		<position label="Position" options="Left,Right,Top" type="ComboBox" data="L,R,T" defaultValue="L" width="100" optional="true"/>
+	</textGroup>
 
-	<open label="Open PDF" type="TextInput" wysiwyg="true" language="true"/>
+	<open label="Open PDF in new tab" type="TextInput" wysiwyg="true" language="true"/>
 
   </pdf>
-
 
 </wizard>
