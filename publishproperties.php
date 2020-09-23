@@ -75,7 +75,7 @@ Hidden Iframe to allow for ajax file uploads
 
 -->
 
-<iframe id="upload_iframe" name="upload_iframe" src="#" style="width:0px;height:0px; display:none"></iframe>
+<iframe id="upload_iframe" name="upload_iframe" src="" style="width:0px;height:0px; display:none"></iframe>
 
 <div class="properties_main">
     <div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;">
@@ -156,7 +156,7 @@ Hidden Iframe to allow for ajax file uploads
                             </div>					
                             <!-- 
 
-                                Last spacer given sufficient heigbt to fill the rest of the border for the right hand panel	
+                                Last spacer given sufficient height to fill the rest of the border for the right hand panel	
 
                             -->
                             <div class="tab_spacer" style="height:315px;">							

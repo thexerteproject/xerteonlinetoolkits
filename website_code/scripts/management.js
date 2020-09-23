@@ -975,7 +975,7 @@ function iframe_language_check(){
 /**
  *
  * Function iframe upload check initialise
- * This function starts checking the iframe for the response text every 5 seconds (used by the media quota import page).
+ * This function starts checking the iframe for the response text every 500 milliseconds (used by the media quota import page).
  * @version 1.0
  * @author Patrick Lockley
  */
