@@ -344,6 +344,13 @@
         personalAvgLabelText = "Avg. of your attempts"
         personalLabelText = "Your last attempt"
         avgAllLabelText = "Avg. of all attempts"
+        SummaryText = "Summary"
+        NrQuestionsText = "Total number of questions {0}"
+        NrCorrectQuestionsText = "Total correct {0}"
+        SpecificationText = "Specification"
+        AdviceText = "Advice"
+        CorrectText = "Correct"
+        IncorrectText = "incorrect"
 
         ><interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100"></interactionBlock></interaction>]]>
         </interaction>
@@ -395,7 +402,7 @@
 	</lightboxGroup></adaptiveContent><interaction menuItem="Source interaction">
         <name label="Title" type="textinput" wysiwyg="true"/>
         <introduction label="Introduction" type="textarea" height="120" wysiwyg="true"/>
-        <interactionType label="Interaction type" type="combobox" conditionTrigger="true" data="score,answer,opinion,open,grouping" options="Based on end score,Based on specific answer,Based on 2D opinion,Open answer,Based on grouping" tooltip="Score: use 'Score between' to add one or more interaction blocks; Answer: use 'Result label equals' to add one or more interaction block; Based on 2D opinion: use in combination with class to get a score; Open: Just shows one interaction block with all the given answers, all given interaction blocks will just be ignored."/>
+        <interactionType label="Interaction type" type="combobox" conditionTrigger="true" data="score,answer,opinion,open,grouping,groupings" options="Based on end score,Based on specific answer,Based on 2D opinion,Open answer,Based on grouping,Based on all groupings" tooltip="Score: use 'Score between' to add one or more interaction blocks; Answer: use 'Result label equals' to add one or more interaction block; Based on 2D opinion: use in combination with class to get a score; Open: Just shows one interaction block with all the given answers, all given interaction blocks will just be ignored."/>
         <xerteurl label="URL of Xerte source installation" type="xerteurl" mandatory="true" defaultValue=""/>
         <xertelo label="ID of Xerte learning object" type="xertelo" mandatory="true" defaultValue=""/>
         <label label="Tracking Label of source" type="TextInput" condition="interactionType!='grouping'" wysiwyg="false"/>
@@ -403,7 +410,7 @@
         <opinionClass label="Opinion Class" type="TextInput" condition="interactionType=='opinion'" wysiwyg="false" optional="true" defaultValue="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interactiontype is based on 2D opinion"/>
         <graph type="group" label="Graph" condition="interactionType!='open'" optional="true">
           <graph label="Show graph" type="checkbox" defaultValue="false" optional="true"/>
-          <graphType label="Graph type" type="combobox" condition="interactionType!='opinion'||opinionClass!=null" data="bar_answers,bar_marks,line_own_marks,line_average_marks" options="Bar graph for given answers,Bar graph for received marks,Line graph for own received marks,Line graph for average marks of others" defaultValue="bar_answers" optional="true"/>
+          <graphType label="Graph type" type="combobox" condition="interactionType!='opinion'||opinionClass!=null" data="bar_answers,bar_marks,bar_comb_marks,pie_marks,line_own_marks,line_average_marks" options="Bar graph for given answers,Bar graph for received marks,Bar graph for combined received marks,Pie chart for received marks,Line graph for own received marks,Line graph for average marks of others" defaultValue="bar_answers" optional="true"/>
           <colour label="Personal graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" defaultValue="0xFF0000" optional="true"/>
           <colourPersonalAvg label="Personal average graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" defaultValue="0x0000FF" optional="true"/>
           <colourAvg label="Average graph" type="colourPicker" condition="interactionType=='opinion'&amp;&amp;opinionClass==null" defaultValue="0x00FF00" optional="true"/>
@@ -413,13 +420,23 @@
           <graphExplanationPanelWidth label=" Legend panel width" type="textInput" defaultValue="40%" optional="true" tooltip="The width of the legend or other explanation panel, enter an acceptable width like 40% or 250px"/>
           <graphNrDataPoints label="Nr of bars/points" type="NumericStepper" min="0" max="100" step="1" defaultValue="10" optional="true" tooltip="The number of bars in a bargraph, or the number of points in a line graph"/>
         </graph>
-        <showScore label="Show score/answer" type="CheckBox" condition="interactionType=='score'||interactionType=='answer'||(interactionType=='opinion' &amp;&amp; opinionClass!=null)||interactionType=='grouping'" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based"/>
+        <showScore label="Show score/answer" type="CheckBox" condition="interactionType=='score'||interactionType=='answer'||(interactionType=='opinion' &amp;&amp; opinionClass!=null)||interactionType=='grouping'||interactionType=='groupings'" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based"/>
         <scoreText label="Score text" type="TextInput" wysiwyg="true" language="true"/>
         <answerText label="Answer text" type="TextInput" wysiwyg="true" language="true"/>
         <!-- <showAvgScore label="Show average score" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the average score of the whole group" /> -->
+        <SummaryText label="Summary Title" type="TextInput" wysiwyg="true" language="true"/>
         <AvgScoreText label="Average Score Label" type="TextInput" wysiwyg="true" language="true"/>
         <showNrOfParticipants label="Show nr of participants" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the number of participants of this group"/>
         <NrParticipantsText label="Nr of Participants Label" type="TextInput" wysiwyg="true" language="true"/>
+        <showNrOfQuestions label="Show nr of questions" condition="interactionType=='grouping'" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the number of questions of this group"/>
+        <NrQuestionsText label="Nr of Questions Label" type="TextInput" wysiwyg="true" language="true"/>
+        <showNrOfCorrectQuestions label="Show nr of correct questions" condition="interactionType=='grouping'" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the number of correct questions of this group"/>
+        <NrCorrectQuestionsText label="Nr of Correct Questions Label" type="TextInput" wysiwyg="true" language="true"/>
+        <showSpecification label="Show specification" condition="interactionType=='grouping'" type="CheckBox" optional="true" defaultValue="false" tooltip="Show question specification"/>
+        <SpecificationText label="Question Specification Title" type="TextInput" wysiwyg="true" language="true"/>
+        <AdviceText label="Advice Title" type="TextInput" wysiwyg="true" language="true"/>
+        <CorrectText label="Correct answer label" type="TextInput" wysiwyg="true" language="true"/>
+        <IncorrectText label="Incorrect answer label" type="TextInput" wysiwyg="true" language="true"/>
         <listedModeOptions type="group" optional="true" condition="parent.displayMode=='Listed'" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
             <doNotSort label="Do not sort this item" type="checkbox" defaultValue="false" optional="true" tooltip="Do not sort this item in listed mode, but keep at the location where it is. Use for example to keep a summary block at the top of the list."/>
         </listedModeOptions>
