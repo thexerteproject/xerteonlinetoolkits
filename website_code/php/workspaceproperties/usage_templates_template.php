@@ -68,7 +68,7 @@ foreach($query_shared_response as $row_template_name) {
 	
 	}
 
-    echo "<div style=\"float:left; width:80%;\">" . str_replace("_","",$row_template_name['template_name']). "</div>";
+    echo "<div style=\"float:left; width:78%; margin-right: 2%; overflow: hidden;\">" . str_replace("_","",$row_template_name['template_name']). "</div>";
     echo "<div style=\"float:left; width:20%;\">" . $plays . "</div>";
 
 }
