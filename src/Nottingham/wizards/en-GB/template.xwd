@@ -351,6 +351,7 @@
         AdviceText = "Advice"
         CorrectText = "Correct"
         IncorrectText = "incorrect"
+        PassingGrade = "75"
 
         ><interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100"></interactionBlock></interaction>]]>
         </interaction>
@@ -437,6 +438,7 @@
         <AdviceText label="Advice Title" type="TextInput" wysiwyg="true" language="true"/>
         <CorrectText label="Correct answer label" type="TextInput" wysiwyg="true" language="true"/>
         <IncorrectText label="Incorrect answer label" type="TextInput" wysiwyg="true" language="true"/>
+        <PassingGrade label="Passing Percentage" type="TextInput" wysiwyg="true" language="true"/>
         <listedModeOptions type="group" optional="true" condition="parent.displayMode=='Listed'" label="Options for 'Listed' display mode" tooltip="Extra options that only sense if the display mode is 'Listed'">
             <doNotSort label="Do not sort this item" type="checkbox" defaultValue="false" optional="true" tooltip="Do not sort this item in listed mode, but keep at the location where it is. Use for example to keep a summary block at the top of the list."/>
         </listedModeOptions>

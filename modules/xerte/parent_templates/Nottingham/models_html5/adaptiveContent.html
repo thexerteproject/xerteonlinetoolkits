@@ -1221,14 +1221,17 @@
                     chart.draw();
                 }
                 else if (interaction.getAttribute('graphType') == 'bar_comb_marks') {
-                    debugger;
+                    let passingGrade = interaction.getAttribute('PassingGrade');
+                    if (passingGrade == null) {
+                        passingGrade = '100';
+                    }
                     let ldData = [];
                     let ldLabels = [];
                     let ldPassing = [];
                     statements.forEach(x => {
                         ldData.push(x.result.score.raw)
                         ldLabels.push(x.context.contextActivities.grouping[0].definition.name['en-US'])
-                        ldPassing.push(75);
+                        ldPassing.push(Number(passingGrade));
                     });
                     let ctx = escapeUrl(url, type, interactionIndex) + '-graph';
                     let options = {
