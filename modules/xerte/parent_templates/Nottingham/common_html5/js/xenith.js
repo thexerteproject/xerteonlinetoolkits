@@ -4082,7 +4082,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			for (var k=0, len=x_glossary.length; k<len; k++) {
 				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
 				//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
-				tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+				tempText = tempText.replace(regExp, '$1<span class="x_glossary" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '" tabindex="0" role="tooltip" aria-label="$3">$3</span>$4');
 			}
 		}
 		

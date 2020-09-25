@@ -256,14 +256,14 @@ button.ui-button-icon-only {
 
 /* GLOSSARY */
 
-a.x_glossary {
+span.x_glossary {
 	font-weight:		bold;
 	text-decoration:	none;
 	color:				#010101;
 	border-bottom:		1px dotted;
 }
 
-a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
+span.x_glossary:link, span.x_glossary:visited, span.x_glossary:hover, span.x_glossary:active {
 	color:	#010101;
 }
 
