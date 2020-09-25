@@ -211,9 +211,10 @@
 		{
             $("#checkBtn").button("disable");
             this.radioButtonQuestions = [];
-		    if (this.listMode)
+		    if (this.listMode || this.listMode == 'all')
 			{
-			    if (this.pageMode)
+			
+			    if (this.pageMode || (this.pageMode == undefined && this.listMode == true))
 				{
                     $("#qNo").html(this.questionNumberText.replace("{i}", (this.currentQuestion + 1) + " - " + (Math.min(this.currentQuestion + this.pageSize, opinion.questions.length))).replace("{n}", this.questions.length));
                     $("#qHolder").html("");
@@ -286,7 +287,7 @@
 				
 				if (url != undefined && url != "") {
 					var newString = "";
-					newString += '<img src="' + x_evalURL(url) + '" class="opinionImg"';
+					newString += '<img class="qImg" src="' + x_evalURL(url) + '" class="opinionImg"';
 					
 					if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "")
 					{
@@ -386,7 +387,7 @@
                         var numberOfOptions = max + 1;
 
                         //TODO get the name of the label instead of the index as slideroutput (? we already get that)
-                        $rangeHolder.html('<form id="form' + currQuestion + '"> <input id="slider' + currQuestion + '" aria-label="slider' + currQuestion + '" type="range" min="0" max = "' + max + '" step="1" class="slider"/> </form> ');
+						$rangeHolder.html('<form id="form' + currQuestion + '"> <input id="slider' + currQuestion + '" aria-label="slider' + currQuestion + '" type="range" min="0" max = "' + max + '" step="1" class="slider"/> </form> ');
 
                         $.each($($thisQ).children(), function(index, value)
                         {
@@ -403,10 +404,9 @@
                                 $thisOptionTxt = $optionTxt;
                             }
 
-
                             $thisOptionTxt
                                 .attr("for", "option" + index)
-                                .html(x_addLineBreaks(value.getAttribute("text")));
+                                .html($(value.getAttribute("text")).length < 1 ? '<p>' + x_addLineBreaks(value.getAttribute("text")) + '</p>' : x_addLineBreaks(value.getAttribute("text")));
 
                             $thisOptionTxt[0].onclick = function()
                             {
@@ -540,9 +540,9 @@
 		this.trackQuestions = function()
 		{
 		    var currQuestion = this.currentQuestion;
-            if (this.listMode)
+            if (this.listMode || this.listMode == 'all')
             {
-                if (this.pageMode)
+                if (this.pageMode || (this.pageMode == undefined && this.listMode == true))
                 {
                     for (i=currQuestion; i<Math.min(currQuestion+ this.pageSize, opinion.questions.length); i++)
                     {
@@ -638,7 +638,7 @@
             var $pageContents = $("#pageContents");
             $("#qNo").html($pageContents.data("onCompletionText"));
             
-            var feedbackText = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
+            var feedbackText = x_currentPageXML.getAttribute("feedback") != '' ? "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>" : '';
 
             var myScore = 0;
             
@@ -649,13 +649,18 @@
             
             myScore = Math.round(10 * myScore / Object.keys(answeredValues).length) / 10;
 
-            if (opinion.showfeedback) {
-
+            if (opinion.showfeedback && feedbackText != '') {
                 $("#feedback").html(feedbackText);
-            }
+            } else {
+				$("#feedback").remove();
+			}
             $("#questionAudio").empty();
 
-			$("#diagram").show();
+			if (x_currentPageXML.getAttribute("diagram") !== "true"){
+				$("#diagram").show();
+			} else {
+				$('#diagram').hide();
+			}
             $("#qHolder").hide();
             $("#checkBtn").hide();
             //$("#qTxt").html("");
@@ -770,7 +775,8 @@
 					legend: {
 						labels: {
 							fontSize: textSize
-						}
+						},
+						display: x_currentPageXML.getAttribute("key") == 'false' ? false : true,
 					},
 					responsive: true,
 					maintainAspectRatio: false
@@ -801,7 +807,7 @@
 
             if (x_currentPageXML.getAttribute("list") != undefined)
 			{
-			    this.listMode = x_currentPageXML.getAttribute("list") === "true";
+			    this.listMode = x_currentPageXML.getAttribute("list") === "true" ? true : x_currentPageXML.getAttribute("list") === "all" ? "all" : false;
 			}
 
             if (x_currentPageXML.getAttribute("paging") != undefined)
