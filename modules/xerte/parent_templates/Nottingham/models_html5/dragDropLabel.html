@@ -20,8 +20,10 @@
 
     // pageChanged & sizeChanged functions are needed in every model file
     // other functions for model should also be in here to avoid conflicts
-    var dragDropLabel = new function() {
-        var labelTxt1,
+    x_pageInfo[x_currentPage].model = new function() {
+        var checked,
+				complete,
+				labelTxt1,
                 labelTxt2,
                 labelTxt3,
                 targetTxt1,
@@ -31,24 +33,23 @@
 				tooltips = [];
 
         // function called every time the page is viewed after it has initially loaded
-        this.pageChanged = function() {
+        function pageChanged() {
             var resize = $("#labelHolder .label").length == $("#labelHolder .label.ui-draggable-disabled").length && x_currentPageXML.getAttribute("labelPos") != "text" ? true : false;
-            this.createLabels();
+            createLabels();
             if (resize) {
-                this.sizeChanged();
+                sizeChanged();
             }
             submitBtnTxt = x_currentPageXML.getAttribute("submitText") != undefined && x_currentPageXML.getAttribute("submitText") != "" ? x_currentPageXML.getAttribute("submitText") : "Submit";
-
         };
 
         // function called every time the size of the LO is changed
-        this.sizeChanged = function(firstLoad) {
+        function sizeChanged(firstLoad) {
             $x_pageHolder.scrollTop(0);
             var $panel = $("#mainPanel");
 
             if (firstLoad == true) {
                 firstLoad = false;
-                this.createLabels();
+                createLabels();
             } else {
                 // resize image to max that will fit space
                 var $image = $("#image"),
@@ -77,7 +78,7 @@
                 // In that case it's easier to rip up the targets and redraw
                 if (resetTargets) {
                   $("#targetHolder").empty();
-                  this.drawTargets();
+                  drawTargets();
                 }
 
                 // also adjust labels
@@ -95,15 +96,15 @@
             }
         };
 
-        this.leavePage = function() {
+        function leavePage() {
             if ($(x_currentPageXML).children().length > 0) {
-                if (!this.checked) {
-                    this.showFeedBackandTrackResults();
+                if (!checked) {
+                    showFeedBackandTrackResults();
                 }
             }
         };
 
-        this.init = function() {
+        function init() {
             // store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
             labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item");
             labelTxt2 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected");
@@ -161,19 +162,19 @@
 
                             $("#pageContents hr:eq(1)").remove();
                             $("#pageContents").data("selectedLabel", "");
-                            dragDropLabel.showFeedBackandTrackResults();
+                            showFeedBackandTrackResults();
                             if (XTGetMode() == "normal") {
                                 $("#submitBtn").hide();
                                 $("#targetHolder .target").droppable("disable");
                             }
                         });
-                this.startTracking();
+                startTracking();
             }
             else
             {
                 $("#submitBtn").hide();
             }
-            this.sizeChanged(true);
+            sizeChanged(true);
             // Setup css for highlighting focus
             var borderwidth="1px";
             if (x_currentPageXML.getAttribute("showHighlight") != "false") {
@@ -189,13 +190,13 @@
             $("#pageContents").prepend(style);
         };
 
-        this.startTracking = function() {
+        function startTracking() {
             var numHotspots = $(x_currentPageXML).children().length,
                     weighting = (x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
             XTSetPageType(x_currentPage, 'numeric', 1, weighting);
         };
 
-        this.createLabels = function() {
+        function createLabels() {
             var	$labelHolder = $("#labelHolder"),
                     tempData = [];
 
@@ -224,7 +225,7 @@
                         if (interactivity == "Match") {
                             correctOptions.push({source: tempData[labelNum].name, target: tempData[labelNum].name});
                             correctAnswer.push(tempData[labelNum].name + " --> " + tempData[labelNum].name);
-                            dragDropLabel.checked = false;
+                            checked = false;
                         }
                         tempData.splice(labelNum, 1);
                     });
@@ -398,14 +399,14 @@
                 // image can load now as we know what its max dimensions are
                 $("#image")
                         .one("load", function() {
-                            dragDropLabel.imgLoaded();
+                            imgLoaded();
                         })
                         .attr({
                             "src"	:x_evalURL(x_currentPageXML.getAttribute("url")),
                             "alt"	:x_currentPageXML.getAttribute("tip")
                         })
                         .each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-                            if (this.complete) {
+                            if (complete) {
                                 $(this).trigger("load");
                             }
                         });
@@ -413,7 +414,7 @@
                 // labels are being reset - make sure targets will still accept them being dropped
                 if (interactivity == "Match") {
                     $("#targetHolder").html("");
-                    dragDropLabel.imgLoaded();
+                    imgLoaded();
                     $("#submitBtn").show();
                     //$("#targetHolder .target")
                     //        .each(function () {
@@ -441,7 +442,7 @@
             }
         };
 
-        this.imgLoaded = function() {
+        function imgLoaded() {
             // labels have been created and image loaded - can now resize image to fit space and create targets on it
             var $image = $("#image"),
                     labelHolderH = x_currentPageXML.getAttribute("labelPos") != "text" ? $("#labelHolder").height() : 0,
@@ -450,12 +451,12 @@
             x_scaleImg($image, $x_pageHolder.width() * imgSize, $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("#mainPanel").css("padding-top")) * 2) - labelHolderH - 10, true, true);
             $("#labelHolder").width($image.width());
 
-            this.drawTargets();
+            drawTargets();
 
             x_pageLoaded();
         };
 
-        this.drawTargets = function() {
+        function drawTargets() {
           $targetHolder = $("#targetHolder");
           var $image = $("#image");
           var scale = $image.width() / $image.data("origSize")[0];
@@ -523,7 +524,7 @@
                           .droppable({
                               tolerance: "pointer",
                               drop:	function(event, ui) {
-                                  dragDropLabel.dropLabel($(this), ui.draggable); // target, label
+                                  dropLabel($(this), ui.draggable); // target, label
                                   ui.draggable.data("success", true);
                               }
                           })
@@ -554,12 +555,12 @@
                                   var $selectedLabel = $pageContents.data("selectedLabel");
                                   if ($selectedLabel != undefined && $selectedLabel != "") {
                                       if (interactivity == "Match") {
-                                          dragDropLabel.dropLabel($(this), $selectedLabel); // target, label
+                                          dropLabel($(this), $selectedLabel); // target, label
                                       }
                                       else {
                                           // only accept drops for correct answers
                                           if ($selectedLabel.data("correct") == $(this).index()) {
-                                              dragDropLabel.dropLabel($(this), $selectedLabel); // target, label
+                                              dropLabel($(this), $selectedLabel); // target, label
                                           } else {
                                               $(this).attr("title", (tooltips[$(this).index()] != undefined && tooltips[$(this).index()] != "") ? tooltips[$(this).index()] : targetTxt1 + " " + ($(this).index() + 1));
                                               $selectedLabel
@@ -586,7 +587,7 @@
         };
 
         // function called when label dropped on target - by mouse or keyboard
-        this.dropLabel = function($thisTarget, $thisLabel) {
+        function dropLabel($thisTarget, $thisLabel) {
             $x_pageHolder.scrollTop(0);
             var $infoHolder = $("#infoHolder");
             if (interactivity == "Match") {
@@ -687,7 +688,7 @@
 
         };
 
-        this.showFeedBackandTrackResults = function() {
+        function showFeedBackandTrackResults() {
             var correct = false,
                     numCorrect = 0,
                     l_options = [],
@@ -788,14 +789,23 @@
                         $("#submitBtn").hide();
                     }
                 }
-                dragDropLabel.checked = true;
+                checked = true;
             }
 
             x_pageContentsUpdated();
         };
-    };
+		
+        init();
 
-    dragDropLabel.init();
+        return {
+          //'init' : init,
+          'pageChanged' : pageChanged,
+          'sizeChanged' : sizeChanged,
+          'leavePage' : leavePage,
+          'onTimerTick' : function (tick) { console.log(tick + ' seconds...'); },
+          'onTimerZero' : function () { console.log('BOOOOMMMM!'); }
+        };
+    };
 
 </script>
 
