@@ -1837,17 +1837,21 @@ function x_endPageTracking(pagechange, x_gotoPage) {
     // End page tracking of x_currentPage
     if (x_currentPage != -1 && !x_isMenu() && (!pagechange || x_currentPage != x_gotoPage))
     {
-        var pageObj;
-
-        if (x_pageInfo[x_currentPage].type == "text") {
-            pageObj = simpleText;
-        } else {
-            pageObj = eval(x_pageInfo[x_currentPage].type);
-        }
-        if (typeof pageObj.leavePage === 'function')
-        {
-            pageObj.leavePage();
-        }
+		if (x_pageInfo[x_currentPage].model && typeof x_pageInfo[x_currentPage].model.leavePage === 'function') {
+			x_pageInfo[x_currentPage].model.leavePage();
+		}
+		else {
+			var pageObj;
+			if (x_pageInfo[x_currentPage].type == "text") {
+				pageObj = simpleText;
+			} else {
+				pageObj = eval(x_pageInfo[x_currentPage].type);
+			}
+			if (typeof pageObj.leavePage === 'function')
+			{
+				pageObj.leavePage();
+			}
+		}
         // calls function in any customHTML that's been loaded into page
         if ($(".customHTMLHolder").length > 0)
         {
@@ -2046,7 +2050,14 @@ function x_changePageStep6() {
         if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
 
         // calls function in current page model (if it exists) which does anything needed to reset the page (if it needs to be reset)
-        if (typeof window[pt].pageChanged === "function") window[pt].pageChanged();
+		if (x_pageInfo[x_currentPage].model && typeof x_pageInfo[x_currentPage].model.pageChanged === "function") {
+			x_pageInfo[x_currentPage].model.pageChanged();
+		}
+		else {
+			if (typeof window[pt].pageChanged === "function") {
+				window[pt].pageChanged();
+			}
+		}
 
 		// calls function in current theme (if it exists)
 		if (typeof customPageChanged == 'function') {
@@ -2074,7 +2085,14 @@ function x_changePageStep6() {
         // checks if size has changed since last load - if it has, call function in current page model which does anything needed to adjust for the change
         var prevSize = builtPage.data("size");
         if (prevSize[0] != $x_mainHolder.width() || prevSize[1] != $x_mainHolder.height()) {
-			if (typeof window[pt].sizeChanged === "function") window[pt].sizeChanged();
+			if (x_pageInfo[x_currentPage].model && typeof x_pageInfo[x_currentPage].model.sizeChanged === 'function') {
+				x_pageInfo[x_currentPage].model.sizeChanged();
+			}
+			else {
+				if (typeof window[pt].sizeChanged === "function") {
+					window[pt].sizeChanged();
+				}
+			}
 
             // calls function in any customHTML that's been loaded into page
             if ($(".customHTMLHolder").length > 0) {
@@ -2247,9 +2265,15 @@ function getDeepLink(info) {
 // function calls a function in the page models to do the deeplink
 function x_doDeepLink() {
 	if (x_deepLink !== "") {
-		if (window[x_pageInfo[x_currentPage].type] && (typeof window[x_pageInfo[x_currentPage].type].deepLink === "function")) {
-			window[x_pageInfo[x_currentPage].type].deepLink(decodeURIComponent(x_deepLink));
+		if (x_pageInfo[x_currentPage].model && typeof x_pageInfo[x_currentPage].model.deepLink === "function") {
+			x_pageInfo[x_currentPage].model.deepLink();
 			x_deepLink = "";
+		}
+		else {
+			if (window[x_pageInfo[x_currentPage].type] && (typeof window[x_pageInfo[x_currentPage].type].deepLink === "function")) {
+				window[x_pageInfo[x_currentPage].type].deepLink(decodeURIComponent(x_deepLink));
+				x_deepLink = "";
+			}
 		}
 	}
 }
@@ -2462,15 +2486,28 @@ function x_addCountdownTimer() {
             $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
 
          	// If page model wants timer tick to know then pass value
-        	if (typeof window[ pageType ].onTimerTick === "function") window[ pageType ].onTimerTick(x_countdownTimer);
+			if (x_pageInfo[x_currentPage].model && typeof x_pageInfo[x_currentPage].model.onTimerTick === "function") {
+				x_pageInfo[x_currentPage].model.onTimerTick(x_countdownTimer);
+			}
+			else {
+				if (window[ pageType ] && typeof window[ pageType ].onTimerTick === "function") {
+					window[ pageType ].onTimerTick(x_countdownTimer);
+				}
+			}
         }
         else {
             window.clearInterval(x_timer);
             $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[1]);
 
         	// If page model wants to know then pass event
-        	if (typeof window[ pageType ].onTimerZero === "function") window[ pageType ].onTimerZero();
-
+			if (x_pageInfo[x_currentPage].model && typeof x_pageInfo[x_currentPage].model.onTimerZero === "function") {
+				x_pageInfo[x_currentPage].model.onTimerZero();
+			}
+			else {
+				if (window[ pageType ] && typeof window[ pageType ].onTimerZero === "function") {
+					window[ pageType ].onTimerZero();
+				}
+			}
         }
     };
 
