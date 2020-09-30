@@ -24,6 +24,7 @@ var data;
 var languageData;
 var startPage = 0;
 var startSection;
+var startContent;
 var theme = "default";
 var authorSupport = false;
 var deepLink = "";
@@ -149,10 +150,11 @@ function loadContent(){
 		}
 	}
 	
-	pageSectionInfo = getHashInfo(window.location.hash); // URL#pageXXXsectionXXX
+	pageSectionInfo = getHashInfo(window.location.hash); // URL#pageXXXsectionXXXcontentXXX
 	if (pageSectionInfo != false) {
 		startPage = pageSectionInfo[0];
 		startSection = pageSectionInfo[1];
+		startContent = pageSectionInfo[2];
 	}
 	
 	// some iframes will need height manually set to keep aspect ratio correct so keep track of window resize
@@ -301,8 +303,8 @@ function getLangData(lang) {
 			setup();
 			
 			// step four
-			parseContent({ type: "start", id: startPage }, startSection);
-
+			parseContent({ type: "start", id: startPage }, startSection, startContent);
+			
 		},
 		
 		error: function () {
@@ -312,7 +314,7 @@ function getLangData(lang) {
 			} else { // hasn't found GB language file - set up anyway, will use fallback text in code
 				languageData = $("");
 				setup();
-				parseContent({ type: "start", id: startPage }, startSection);
+				parseContent({ type: "start", id: startPage }, startSection, startContent);
 			}
 			
 		}
@@ -1331,7 +1333,7 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 }
 
 // function loads a new page
-function parseContent(pageRef, sectionNum, addHistory) {
+function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	// pageRefType determines how pageID should be dealt with
 	// can be 'index' (of page in data), 'id' (linkID/customLinkID, 'start' or 'check' (these last two could be index or id so extra checks are needed)
 	var pageRefType = pageRef.type,
@@ -1518,7 +1520,7 @@ function parseContent(pageRef, sectionNum, addHistory) {
 						var section = $('<section id="' + pageHash + 'section' + (index+1) + '">' + pageHeader + '</section>');
 
 						//add the section contents
-						$(this).children().each( function(index, value){
+						$(this).children().each( function(itemIndex, value){
 							
 							if (($(this).attr('name') != '' && $(this).attr('name') != undefined && $(this).attr('showTitle') == 'true') || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
 								
@@ -1533,15 +1535,13 @@ function parseContent(pageRef, sectionNum, addHistory) {
 										subLinkName.find('[style*="background-color"]').css('background-color', 'transparent');
 									}
 									
-									var $link = $('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#page' + (pageIndex+1) + 'section' + (index+1) + 'content' + index + '"></a> </span>').appendTo(section.find('.sectionSubLinks'));
+									var $link = $('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#page' + (pageIndex+1) + 'section' + (index+1) + 'content' + (itemIndex+1) + '"></a> </span>').appendTo(section.find('.sectionSubLinks'));
 									$link.find('a').append(subLinkName);
 									
 								}
 								
-								section.append( '<h2 id="' + pageHash + 'section' + (index+1) + 'content' + index + '">' + $(this).attr('name') + '</h2>');
+								section.append( '<h2 id="' + pageHash + 'section' + (index+1) + 'content' + (itemIndex+1) + '">' + $(this).attr('name') + '</h2>');
 							}
-							
-							var itemIndex = index;
 							
 							if (this.nodeName == 'text'){
 								section.append( '<p>' + $(this).text() + '</p>');
@@ -1721,7 +1721,9 @@ function parseContent(pageRef, sectionNum, addHistory) {
 		var page = $(data).find('page').eq(pageIndex),
 			pageTempInfo = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
 		
-		goToSection(pageTempInfo + 'section' + sectionNum);
+		var contentInfo = contentNum != undefined ? 'content' + contentNum : '';
+		
+		goToSection(pageTempInfo + 'section' + sectionNum + contentInfo);
 		
 	} else {
 		goToSection('alwaysTop');
@@ -1733,28 +1735,50 @@ function getHashInfo(urlHash) {
 	if (urlHash.length > 0) {
 		var pageLink = urlHash[0] == '#' ? urlHash.substring(1) : urlHash,
 			thisPage,
-			thisSection;
+			thisSection,
+			thisContent;
+		
+		var tempStartIndex = [];
 		
 		if (pageLink.substring(0,4) == "page") {
-			if (pageLink.substring(4).indexOf('section') > -1) {
-				thisPage = parseInt(pageLink.substring(4,pageLink.indexOf('section')), 10) - 1;
-				thisSection = parseInt(pageLink.substring(pageLink.indexOf('section') + 7), 10);
+			tempStartIndex.push(4);
+			
+			if (pageLink.substring(tempStartIndex[0]).indexOf('section') > -1) {
+				tempStartIndex.push(pageLink.indexOf('section'));
+				thisPage = parseInt(pageLink.substring(tempStartIndex[0], tempStartIndex[1]), 10) - 1;
+				
+				if (pageLink.substring(tempStartIndex[1] + 7).indexOf('content') > -1) {
+					tempStartIndex.push(pageLink.indexOf('content'));
+					thisSection = parseInt(pageLink.substring(tempStartIndex[1] + 7, tempStartIndex[2]), 10);
+					thisContent = parseInt(pageLink.substring(tempStartIndex[2] + 7), 10);
+				} else {
+					thisSection = parseInt(pageLink.substring(tempStartIndex[1] + 7), 10);
+				}
 			} else {
-				thisPage = parseInt(pageLink.substring(4), 10) - 1;
+				thisPage = parseInt(pageLink.substring(tempStartIndex[0]), 10) - 1;
 			}
 			
 			thisPage = thisPage < 0 ? 0 : thisPage;
 			
 		} else {
 			if (pageLink.indexOf('section') > -1) {
-				thisPage = pageLink.substring(0, pageLink.indexOf('section'));
-				thisSection = pageLink.substring(pageLink.indexOf('section') + 7);
+				tempStartIndex.push(0);
+				tempStartIndex.push(pageLink.indexOf('section'));
+				thisPage = pageLink.substring(tempStartIndex[0], tempStartIndex[1]);
+				
+				if (pageLink.substring(tempStartIndex[1] + 7).indexOf('content') > -1) {
+					tempStartIndex.push(pageLink.indexOf('content'));
+					thisSection = parseInt(pageLink.substring(tempStartIndex[1] + 7, tempStartIndex[2]), 10);
+					thisContent = parseInt(pageLink.substring(tempStartIndex[2] + 7), 10);
+				} else {
+					thisSection = parseInt(pageLink.substring(tempStartIndex[1] + 7), 10);
+				}
 			} else {
 				thisPage = pageLink;
 			}
 		}
 		
-		return [thisPage, thisSection];
+		return [thisPage, thisSection, thisContent];
 		
 	} else {
 		return false;
@@ -1765,13 +1789,15 @@ function getHashInfo(urlHash) {
 window.onhashchange = function() {
 	var pageSectionInfo = getHashInfo(window.location.hash),
 		tempPage,
-		tempSection;
+		tempSection,
+		tempContent;
 	
 	if (pageSectionInfo != false) {
 		tempPage = pageSectionInfo[0];
 		tempSection = pageSectionInfo[1];
+		tempContent = pageSectionInfo[2];
 		
-		parseContent({ type: "check", id: tempPage }, tempSection, false);
+		parseContent({ type: "check", id: tempPage }, tempSection, tempContent, false);
 	}
 }
 
