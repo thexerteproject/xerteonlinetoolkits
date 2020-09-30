@@ -20,4 +20,5 @@
 
 	define("FOLDERPROPERTIES_TAB_RSS", "Folder RSS feed");
 
+	define("FOLDERPROPERTIES_TAB_SHARED",  "Shared settings");
 ?>
