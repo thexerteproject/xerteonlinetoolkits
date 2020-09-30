@@ -3923,8 +3923,12 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			$x_glossaryHover,
 
 
-	// function starts the calculation of variables set by author via the variables optional property
 	init = function () {
+		
+		$x_glossaryHover = $('<div id="x_glossaryHover" class="x_tooltip" role="tooltip"></div>')
+			.appendTo($x_mainHolder)
+			.hide();
+		
 		x_dialogInfo.push({type:'glossary', built:false});
 
 		var i, len, item, word,
@@ -3977,10 +3981,6 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 						myText = $this.text().trim(),
 						myDefinition, i, len;
 
-					// Rip out the title attribute
-					$this.data('title', $this.attr('title'));
-					$this.attr('title', '');
-
 					for (i=0, len=x_glossary.length; i<len; i++) {
 						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().trim().toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>"
@@ -3991,32 +3991,27 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 							}
 						}
 					}
-
-					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
-
-					// Queue reparsing of MathJax - fails if no network connection
-					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
-					$x_glossaryHover = $("#x_glossaryHover");
-					$x_glossaryHover.css({
+					
+					$x_glossaryHover
+						.html(myDefinition)
+						.css({
 						"left"	:$(this).offset().left + 20,
 						"top"	:$(this).offset().top + 20
 					});
+					
+					// Queue reparsing of MathJax - fails if no network connection
+					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+					
 					$x_glossaryHover.fadeIn("slow");
+					
 					if (x_browserInfo.touchScreen == true) {
 						$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
 					}
 				})
 				.on("mouseleave", ".x_glossary", function(e) {
 					$x_mainHolder.off("click.glossary");
-
-					if ($x_glossaryHover != undefined) {
-						$x_glossaryHover.remove();
-					}
-
-					// Put back the title attribute
-					$this = $(this);
-					$this.attr('title', $this.data('title'));
+					
+					$x_glossaryHover.hide();
 				})
 				.on("mousemove", ".x_glossary", function(e) {
 					var leftPos,
@@ -4082,7 +4077,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			for (var k=0, len=x_glossary.length; k<len; k++) {
 				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
 				//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
-				tempText = tempText.replace(regExp, '$1<span class="x_glossary" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '" tabindex="0" role="tooltip" aria-label="$3">$3</span>$4');
+				tempText = tempText.replace(regExp, '$1<span class="x_glossary" aria-describedby="x_glossaryHover" tabindex="0" role="link">$3</span>$4');
 			}
 		}
 		
@@ -4092,7 +4087,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 	touchStartHandler = function() {
 		$x_mainHolder.off("click.glossary");
 		if ($x_glossaryHover != undefined) {
-			$x_glossaryHover.remove();
+			$x_glossaryHover.hide();
 		}
 	};
 		
