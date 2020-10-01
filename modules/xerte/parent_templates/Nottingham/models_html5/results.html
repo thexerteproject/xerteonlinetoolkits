@@ -49,7 +49,7 @@
             okButtonTxt,
             numLoaded = 0,
 			xtresults,
-        	normalcolumns,
+        	normalcolumns = [],
         	username,
         	normalrows = [],
         	detailstablescolumns = [],
@@ -268,7 +268,7 @@
                     altnormalrow = !altnormalrow;
 					altfullrow = false;
 					if (x.subinteractions.length > 0 && x.type != 'page') {
-						detailstable.append("<tr><td class='correct'></td><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>"+ correctAnswerTxt +"</th></tr>");
+						detailstable.append("<tr><td class='correct th'></td><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>"+ correctAnswerTxt +"</th></tr>");
 						var detailstablecolumns = ["", x_GetTrackingTextFromHTML(x.title, ""), yourAnswerTxt, correctAnswerTxt];
 						var detailstablerows = [];
 						altfullrow = false;
@@ -355,7 +355,7 @@
         }
 
         this.pdfDownload = function(skip) {
-            if (skip!==true && x_currentPageXML.getAttribute("givename"))
+            if (skip!==true && x_currentPageXML.getAttribute("givename") == 'true')
             {
                 $("#dialog-form").dialog( "open" );
                 return;
@@ -369,7 +369,6 @@
             var nacomplete = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAAAAAB5Gfe6AAACXUlEQVR42u3cP2+OURgG8DsdGhExGIhJOjQx1sQuzAYdJGwk/QQ2m8FGIsG7SDB4J4PBYrF1YBCDhZCWN/4kjaoORZ2HvmharQ/QXr/rG1y/nJznGc59VxeeAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwBYE+PL8wZ0b17Zvrt+89/hD+x/A3NW9lZCRc882A5g/UzkZf7IB4G5lZfLrOoAfpyst+z6uAVg+WnnZMbsK0E5UYnbN/QW4VJkZX/4N8KJSc34I0A7GAtTbFYDp3P41uQJwJBig5rv6nNy/+l09igY43tWFaIBqdSwbYLH2ZwO8r9FsgJkKzysAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2zyva082wKAmsgE+1VQ2wPfqR/cf68Ifyl3sqkXfgi+76nrB/Q+0XwBLI7kAD4dDU7dj+x9qQ4B2OBXg3Z+5wYXdmf3vr47ODiLfzF9ZMzw9CDwDvXXj8wtp98Do9D/7A9qtqK/hqcWNKzSWejH/hGffbL5Epc30pya2t8LOsZOXn36zRgcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABbLj8BUGokzEYTmjMAAAAASUVORK5CYII=";
 
             var loTitle = x_params.name;
-
             var source = $('#pdfContent').clone();
 
             //source.find("#general_summary").prepend("<tr><th>ABC</th><th>DEF</th></tr>");
@@ -379,25 +378,11 @@
                 left: 20,
                 width: 170
             };
-            /*
-            pdf.fromHTML(
-                source.html(), // HTML string or DOM elem ref.
-                margins.left, // x coord
-                margins.top, { // y coord
-                    'width': margins.width// max width of content on PDF
-                },
-
-                function (dispose) {
-                    name = x_params.name + "_" + XTResults().start;
-                    pdf.save(name.replace(/ /g, "_"));
-
-                }, margins
-            );
-            */
+            
             var vertpos = 20;
             pdf.setFontSize(14);
 
-            if (x_currentPageXML.getAttribute("givename"))
+            if (x_currentPageXML.getAttribute("givename") == 'true')
 			{
                 pdf.text(username, 10, vertpos);
                 vertpos += 7;
@@ -406,11 +391,12 @@
             vertpos += 0.2;
             pdf.lines([[190,0]], 10, vertpos);
             vertpos += 3;
-            //pdf.setFontSize(11);
+            
             var general_table = $("#general_summary");
             if (general_table != null) {
                 var elem = document.getElementById("general_summary");
                 var res = pdf.autoTableHtmlToJson(elem);
+				res.data.splice(0,0,res.columns);
                 pdf.autoTable(res.columns, res.data, {
                     showHeader: false,
                     startY: vertpos,
@@ -419,200 +405,213 @@
                     styles: {overflow: 'linebreak', columnWidth: 'wrap'}
 				});
                 vertpos = pdf.autoTable.previous.finalY + 10;
-
             }
+			
             if (xtresults.mode == 'normal-results')
 			{
-                pdf.text(interactivityResultsTxt, 10, vertpos);
-                vertpos += 5;
-                pdf.setFontSize(12);
-                pdf.text(globalResultsTxt, 10, vertpos);
-                vertpos += 5;
-                var images = [];
-                var imgIndex = 0;
-                pdf.autoTable(normalcolumns, normalrows, {
-                    startY: vertpos,
-                    margin: {horizontal: 10},
-                    bodyStyles: {valign: 'top'},
-                    styles: {overflow: 'linebreak', columnWidth: 'wrap'},
-                    headerStyles: { fillColor: [50, 50, 50] },
-					columnStyles:{
-                        0: {halign: 'left', columnWidth : 100},
-                        1: {halign: 'right', columnWidth : 22.5},
-                        2: {halign: 'right', columnWidth : 22.5},
-                        3: {halign: 'right', columnWidth : 22.5},
-                        4: {halign: 'right', columnWidth : 22.5}
-					},
-                    drawCell: function(cell, opts) {
-                        if (opts.column.dataKey === 4) {
-                            var img;
-                            if (cell.raw === "completed")
-                            {
-                                img = checkmark;
-                            }
-                            else if (cell.raw == "notcompleted")
-                            {
-                                img = cross;
-                            }
-                            else
-                            {
-                                img = nacomplete;
-                            }
-                            cell.text = '';
-                            images.push({
-                                url: img,
-                                x: cell.textPos.x - 11,
-                                y: cell.textPos.y,
-                                used: false
-                            });
-                            imgIndex++;
-                        }
-                    },
-                    addPageContent: function() {
-                        for (var i = 0; i < images.length; i++) {
-                            if (!images[i].used) {
-                                pdf.addImage(images[i].url, 'png', images[i].x, images[i].y + 0.4, 2.4, 2.4);
-                                images[i].used = true;
-                            }
-                        }
-                    }
+				if (normalcolumns.length > 0 || normalrows.length > 0) {
+					pdf.text(interactivityResultsTxt, 10, vertpos);
+					vertpos += 5;
+					pdf.setFontSize(12);
+					
+					var images = [];
+					var imgIndex = 0;
+					
+					pdf.autoTable(normalcolumns, normalrows, {
+						startY: vertpos,
+						margin: {horizontal: 10},
+						bodyStyles: {valign: 'top'},
+						styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+						headerStyles: { fillColor: [50, 50, 50] },
+						columnStyles:{
+							0: {halign: 'left', columnWidth : 100},
+							1: {halign: 'right', columnWidth : 22.5},
+							2: {halign: 'right', columnWidth : 22.5},
+							3: {halign: 'right', columnWidth : 22.5},
+							4: {halign: 'right', columnWidth : 22.5}
+						},
+						drawCell: function(cell, opts) {
 
-
-
-                });
+							if (opts.column.dataKey === 4) {
+								var img;
+								if (cell.raw === "completed")
+								{
+									img = checkmark;
+								}
+								else if (cell.raw == "notcompleted")
+								{
+									img = cross;
+								}
+								else
+								{
+									img = nacomplete;
+								}
+								cell.text = '';
+								images.push({
+									url: img,
+									x: cell.textPos.x - 11,
+									y: cell.textPos.y,
+									used: false
+								});
+								imgIndex++;
+							}
+						},
+						addPageContent: function() {
+							for (var i = 0; i < images.length; i++) {
+								if (!images[i].used) {
+									pdf.addImage(images[i].url, 'png', images[i].x, images[i].y + 0.4, 2.4, 2.4);
+									images[i].used = true;
+								}
+							}
+						}
+					});
+				}
                 vertpos = pdf.autoTable.previous.finalY + 5;
 			}
 
             if (xtresults.mode == 'full-results')
             {
                 var i;
-                pdf.text(interactivityResultsTxt, 10, vertpos);
-                vertpos += 7;
+				if (normalcolumns.length > 0 || normalrows.length > 0 || detailstablescolumns.length > 0) {
+					pdf.text(interactivityResultsTxt, 10, vertpos);
+					vertpos += 7;
+				}
+				
                 pdf.setFontSize(12);
-                pdf.text(globalResultsTxt, 10, vertpos);
-                vertpos += 7;
-                var images = [];
-                var imgIndex = 0;
-                pdf.autoTable(normalcolumns, normalrows, {
-                    startY: vertpos,
-                    margin: {horizontal: 10},
-                    bodyStyles: {valign: 'top'},
-                    styles: {overflow: 'linebreak', columnWidth: 'wrap'},
-                    headerStyles: { fillColor: [50, 50, 50] },
-                    columnStyles:{
-                        0: {halign: 'left', columnWidth : 77.5},
-                        1: {halign: 'right', columnWidth : 22.5},
-                        2: {halign: 'right', columnWidth : 22.5},
-                        3: {halign: 'right', columnWidth : 22.5},
-                        4: {halign: 'right', columnWidth : 22.5},
-						5: {halign: 'right', columnWidth : 22.5}
-                    },
-                    drawCell: function(cell, opts) {
-                        if (opts.column.dataKey === 4) {
-                            var img;
-                            if (cell.raw === "completed")
-							{
-							    img = checkmark;
+				
+				if (normalcolumns.length > 0 || normalrows.length > 0) {
+					pdf.text(globalResultsTxt, 10, vertpos);
+					vertpos += 7;
+					var images = [];
+					var imgIndex = 0;
+					
+					console.log([normalcolumns, normalrows]);
+					pdf.autoTable(normalcolumns, normalrows, {
+						startY: vertpos,
+						margin: {horizontal: 10},
+						bodyStyles: {valign: 'top'},
+						styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+						headerStyles: { fillColor: [50, 50, 50] },
+						columnStyles:{
+							0: {halign: 'left', columnWidth : 77.5},
+							1: {halign: 'right', columnWidth : 22.5},
+							2: {halign: 'right', columnWidth : 22.5},
+							3: {halign: 'right', columnWidth : 22.5},
+							4: {halign: 'right', columnWidth : 22.5},
+							5: {halign: 'right', columnWidth : 22.5}
+						},
+						drawCell: function(cell, opts) {
+							if (opts.column.dataKey === 4) {
+								var img;
+								if (cell.raw === "completed")
+								{
+									img = checkmark;
+								}
+								else if (cell.raw == "notcompleted")
+								{
+									img = cross;
+								}
+								else
+								{
+									img = nacomplete;
+								}
+								cell.text = '';
+								images.push({
+									url: img,
+									x: cell.textPos.x-11,
+									y: cell.textPos.y,
+									used: false
+								});
+								imgIndex++;
 							}
-							else if (cell.raw == "notcompleted")
-							{
-							    img = cross;
+							if (opts.column.dataKey === 5) {
+								var img;
+								if (cell.raw === "details")
+								{
+									img = details;
+								}
+								else
+								{
+									img = nodetails;
+								}
+								cell.text = '';
+								images.push({
+									url: img,
+									x: cell.textPos.x - 13.5,
+									y: cell.textPos.y,
+									used: false
+								});
+								imgIndex++;
 							}
-							else
-							{
-							    img = nacomplete;
+						},
+						addPageContent: function() {
+							for (var i = 0; i < images.length; i++) {
+								if (!images[i].used) {
+									pdf.addImage(images[i].url, 'png', images[i].x, images[i].y + 0.4, 2.4, 2.4);
+									images[i].used = true;
+								}
 							}
-							cell.text = '';
-                            images.push({
-                                url: img,
-                                x: cell.textPos.x-11,
-                                y: cell.textPos.y,
-								used: false
-                            });
-                            imgIndex++;
-                        }
-                        if (opts.column.dataKey === 5) {
-                            var img;
-                            if (cell.raw === "details")
-                            {
-                                img = details;
-                            }
-                            else
-                            {
-                                img = nodetails;
-                            }
-                            cell.text = '';
-                            images.push({
-                                url: img,
-                                x: cell.textPos.x - 13.5,
-                                y: cell.textPos.y,
-                                used: false
-                            });
-                            imgIndex++;
-                        }
-                    },
-                    addPageContent: function() {
-                        for (var i = 0; i < images.length; i++) {
-                            if (!images[i].used) {
-                                pdf.addImage(images[i].url, 'png', images[i].x, images[i].y + 0.4, 2.4, 2.4);
-                                images[i].used = true;
-                            }
-                        }
+						}
+
+					});
+				}
+				
+				if (detailstablescolumns.length > 0) {
+					vertpos = pdf.autoTable.previous.finalY + 10;
+					pdf.text(specificResultsTxt, 10, vertpos);
+					vertpos+=7;
+					
+					for (i=0; i<detailstablescolumns.length; i++)
+					{
+						var images = [];
+						var imgIndex = 0;
+						pdf.autoTable(detailstablescolumns[i], detailstablesrows[i], {
+							startY: vertpos,
+							margin: {horizontal: 10},
+							bodyStyles: {valign: 'top'},
+							styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+							headerStyles: { fillColor: [128, 128, 128] },
+							columnStyles: {
+								0: {columnWidth: 10},
+								1: {columnWidth: 60},
+								2: {columnWidth: 60},
+								3: {columnWidth: 60}
+							},
+							drawCell: function(cell, opts) {
+								if (opts.column.dataKey === 0) {
+									var img;
+									if (cell.raw === "correct")
+									{
+										img = checkmark;
+									}
+									else
+									{
+										img = cross;
+									}
+									cell.text = '';
+									images.push({
+										url: img,
+										x: 12,
+										y: cell.textPos.y,
+										used: false
+									});
+									imgIndex++;
+								}
+							},
+							addPageContent: function() {
+								for (var i = 0; i < images.length; i++) {
+									if (!images[i].used) {
+										pdf.addImage(images[i].url, 'png', images[i].x, images[i].y + 0.4, 2.4, 2.4);
+										images[i].used = true;
+									}
+								}
+							}
+
+						});
+						
+						vertpos = pdf.autoTable.previous.finalY;
 					}
-
-                });
-                vertpos = pdf.autoTable.previous.finalY + 10;
-                pdf.text(specificResultsTxt, 10, vertpos);
-                vertpos+=7;
-                for (i=0; i<detailstablescolumns.length; i++)
-                {
-                    var images = [];
-                    var imgIndex = 0;
-                    pdf.autoTable(detailstablescolumns[i], detailstablesrows[i], {
-                        startY: vertpos,
-                        margin: {horizontal: 10},
-                        bodyStyles: {valign: 'top'},
-                        styles: {overflow: 'linebreak', columnWidth: 'wrap'},
-                        headerStyles: { fillColor: [128, 128, 128] },
-                        columnStyles: {
-                            0: {columnWidth: 10},
-                            1: {columnWidth: 60},
-                            2: {columnWidth: 60},
-                            3: {columnWidth: 60}
-                        },
-                        drawCell: function(cell, opts) {
-                            if (opts.column.dataKey === 0) {
-                                var img;
-                                if (cell.raw === "correct")
-                                {
-                                    img = checkmark;
-                                }
-                                else
-                                {
-                                    img = cross;
-                                }
-                                cell.text = '';
-                                images.push({
-                                    url: img,
-                                    x: 12,
-                                    y: cell.textPos.y,
-                                    used: false
-                                });
-                                imgIndex++;
-                            }
-                        },
-                        addPageContent: function() {
-                            for (var i = 0; i < images.length; i++) {
-                                if (!images[i].used) {
-                                    pdf.addImage(images[i].url, 'png', images[i].x, images[i].y + 0.4, 2.4, 2.4);
-                                    images[i].used = true;
-                                }
-                            }
-                        }
-
-                    });
-                    vertpos = pdf.autoTable.previous.finalY;
-                }
+				}
             }
             var name = x_params.name + "_" + XTResults().start + ".pdf";
             pdf.save(name.replace(/ /g, "_"));
@@ -663,7 +662,7 @@ results.init();
 		<table id="questionScores" rules="rows">
 		</table>
 		<br />
-		<h3 id="specificResultsTxt">Specific Results</h3>
+		<h3 id="specificResultsTxt"></h3>
 		<div id="fullResults">
 
 		</div>
