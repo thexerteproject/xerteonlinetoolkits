@@ -616,7 +616,16 @@
                             }
                             groupingStatements = groupingStatements.concat(handler(statementsGroup));
                         }
-                        adaptiveContent.drawScore(groupingStatements.reverse(), interaction, url, type, interactionIndex, fullWidth);
+                        let uniqueStatements = [];
+                        let visitedGroups = [];
+                        for (let groupingStatement in groupingStatements) {
+                            let group = groupingStatements[groupingStatement].context.contextActivities.grouping[0].definition.name["en-US"];
+                            if (!visitedGroups.includes(group)) {
+                                uniqueStatements.push(groupingStatements[groupingStatement]);
+                                visitedGroups.push(group);
+                            }
+                        }
+                        adaptiveContent.drawScore(uniqueStatements.reverse(), interaction, url, type, interactionIndex, fullWidth);
                     }
                     else {
                         handler(data, interaction, url, type, interactionIndex, fullWidth);
@@ -1072,8 +1081,8 @@
                     for (statement in statements) {
                         score = statements[statement].result.score.raw;
                         if (interaction.getAttribute("showScore") == "true") {
-                            var txt = scoreLabelText;
-                            txt = txt.replace(/\{0\}/, Math.round(score*10)/10);
+                            var txt = statements[statement].context.contextActivities.grouping[0].definition.name["en-US"];
+                            txt = `${txt}: ${Math.round(score*10)/10}`;
                             $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<li>' + txt + '%</li>');
                         }
                     }
@@ -1235,6 +1244,10 @@
                     });
                     let ctx = escapeUrl(url, type, interactionIndex) + '-graph';
                     let options = {
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: false
+                        },
                         scales: {
                             yAxes: [{
                                 ticks: {
@@ -1291,6 +1304,9 @@
                         }
                     }
                     let ctx = escapeUrl(url, type, interactionIndex) + '-graph';
+                    let options = {
+                        maintainAspectRatio: false,
+                    };
                     data = {
                       labels: [correctLabel, incorrectLabel],
                       datasets: [{
@@ -1310,6 +1326,7 @@
                     chart = new Chart(ctx, {
                         type: 'pie',
                         data: data,
+                        options: options,
                     });
                 }
                 else if (interaction.getAttribute("graphType") == "line_average_marks") {
