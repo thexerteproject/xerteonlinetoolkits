@@ -878,14 +878,19 @@ var EDITOR = (function ($, parent) {
 
     showToolBar = function(show){
         defaultToolBar = show;
-        var tree = $.jstree.reference("#treeview");
+        /*var tree = $.jstree.reference("#treeview");
         var ids = tree.get_selected();
         var id;
         if (ids.length>0)
         {
             id = ids[0];
             parent.tree.showNodeData(id, true);
-        }
+        }*/
+        $(".cke_toolbox_collapser").each(function(){
+          var min = $(this).hasClass("cke_toolbox_collapser_min");
+          if (show && min || !show && !min)
+            $(this).click();
+        });
     },
 
     onclickJqGridSubmitLocal = function(id, key, name, options, postdata) {
