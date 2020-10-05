@@ -430,10 +430,12 @@ optional: feedback page synch play enable
 						$target.prepend("<hr/>");
 					}
 				}
-				if(options.overlayPan == true)
+			
+				if(options.overlayPan == "true")
 				{
                 	if(options.optional == "true") 
 					{
+						debugger;
 						var $openPng = x_templateLocation + "common_html5/plus.png";
 						var $showHolder  = $('<div id="showHolder" />').appendTo($target);
 						$showBtn = $('<image class="showButton" type="image" src="' + $openPng + '" >').appendTo($showHolder);
@@ -445,21 +447,22 @@ optional: feedback page synch play enable
                                 $target.parent().addClass("qWindow");
 								$showHolder.hide();
 								$optHolder.show();
-								$checkBtn.show();
-								$checkBtn.button("disable");
+								//$checkBtn.show();
+								//$checkBtn.button("disable");
 								$target.prepend($optionText);
 							 });
 
 					}
 					else {
 						$optHolder.show();
-						$checkBtn.show();
-						$checkBtn.button("disable");
+						//$checkBtn.show();
+						//$checkBtn.button("disable");
 					}
 				}
 			},
 			
 			start: function(event, options) {
+				debugger;
 				// fire on options.start
 				var correctOptions = [];
 				var correctAnswers = [];
@@ -495,7 +498,7 @@ optional: feedback page synch play enable
 						.find("button").remove();
 					if ($showBtn) {
 						$optHolder.hide();
-						$checkBtn.hide();
+						//$checkBtn.hide();
 					}
 
 					else {
@@ -517,9 +520,11 @@ optional: feedback page synch play enable
 					if (options.optional == "false")
 						$target.parent().addClass("qWindow");
                     //if (isNumeric(options.offsetTop) && isNumeric(options.offsetLeft))
-					$target.parent().css({
+					$target.parent().css(
+					{
 						"top": options.offsetTop + "%",
-                        "left": options.offsetLeft + "%"});
+						"left": options.offsetLeft + "%"
+					});
 				}
 				$target.parent().show();
 				$target.show();

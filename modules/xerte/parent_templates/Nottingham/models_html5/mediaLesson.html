@@ -1137,18 +1137,18 @@
                                 // there's no start or end synch on subtitle holder - store previous sibling's start for relative synching to be done against
                                 start = 0;
                             }
-                            var opt = this.attributes.optional == undefined ||this.attributes.optional.value == "false" ? "false" : "true";
-
+							var opt = this.attributes.optional == undefined ||this.attributes.optional.value == "false" ? "false" : "true";
+							
                             data.push({
                                 type:			this.nodeName,
                                 start:			start,
                                 end:			end,
                                 target:			targetRef + "_" + j,
-								overlayPanel:	this.overlay,
+								overlayPanel:	this.getAttribute("overlay"),
 								optional:		opt,
                                 allInfo:		this
-                            });
-					
+							});
+						
 					if ($(this).children().length > 0) {
 						if (this.nodeName == "synchMediaPlus") {
 							// store child data of media content as they aren't synced to the mainMedia
