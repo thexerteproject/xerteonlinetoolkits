@@ -1111,6 +1111,7 @@ function setup() {
 		}
 
 		//populate wcag logo and link and/or hide it
+		$(".wcagLink").removeClass("hidden");
 		if ($(data).find('learningObject').attr('wcagAlt') != undefined){
 			$(".wcagLogo").attr("alt",$(data).find('learningObject').attr('wcagAlt'));
 		}
