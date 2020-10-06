@@ -591,5 +591,6 @@ and (max-width :600px) {
         margin-top:10px;
         width:80px;
         bottom:0px;
+        float:unset;
     }
 }

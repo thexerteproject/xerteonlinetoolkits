@@ -1104,9 +1104,13 @@ function setup() {
 			} 
 			
 			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'replace'){
+				var wcagDefault=$(".wcagLink").html();
 			$('.footer .container').remove();
 			$('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
 				$("#customFooter").css({"margin-left": "10px"});
+				$('#customFooter').append('<div class="wcagLink">'+wcagDefault+'</div>');
+				$(".wcagLink").css({"margin-right": "10px", "margin-top":"10px"});
+
 			}
 		}
 
