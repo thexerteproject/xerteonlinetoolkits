@@ -52,6 +52,7 @@ var EDITOR = (function ($, parent) {
         var now = new Date().getTime();
         $.ajax({
             type: "GET",
+			data: { template: templateframework },
             url: url + "&t=" + now,
             dataType: "html",
             success: function (data) {
@@ -126,7 +127,7 @@ var EDITOR = (function ($, parent) {
 
 		create_tree_buttons = function() {
             var buttons = $('<div />').attr('id', 'top_buttons');
-            if (templateframework == "xerte") {
+			if (templateframework == "xerte" || templateframework == "site") {
                 var button_def =
                     [
                         {
