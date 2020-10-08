@@ -322,6 +322,7 @@ var EDITOR = (function ($, parent) {
                 urlparam = '&linkID='+id;
             }
         }
+        var new_tab = clickevent.ctrlKey;
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
                 data: {
@@ -345,7 +346,13 @@ var EDITOR = (function ($, parent) {
             //alert( "success" );
             // We would also launch the preview window from here
             $('#loader').hide();
-            window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes, scrollbars=1" );
+            if (new_tab)
+            {
+                window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "_blank");
+            }
+            else {
+                window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes, scrollbars=1");
+            }
         })
         .fail(function() {
             $('#loader').hide();
