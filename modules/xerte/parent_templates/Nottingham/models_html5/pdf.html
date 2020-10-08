@@ -25,13 +25,13 @@
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			pdf.setUp();
+			
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			if (x_browserInfo.iOS == true) {
-				this.setUp();
+				$("#pdfDoc").width(pdf.calcWidth());
 			} else {	
 				$("#pdfDoc").height(pdf.calcHeight());
 			}
