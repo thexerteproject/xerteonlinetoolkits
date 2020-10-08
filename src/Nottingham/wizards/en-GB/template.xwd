@@ -260,7 +260,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></QRcode><accNav deprecated="This page type is deprecated but will continue to work in this project. The Multi-Navigator page can be used to create new accordion navigators." menu="Navigators" menuItem="Accordion Navigator" hint="A group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" remove="true" deepLink="true">
+	</lightboxGroup></QRcode><accNav deprecated="This page type is deprecated but will continue to work in this project. The Multi-Navigator page can be used to create new accordion navigators." deprecatedLevel="low" menu="Navigators" menuItem="Accordion Navigator" hint="A group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
@@ -745,7 +745,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></bullets><buttonNav deprecated="This page type is deprecated but will continue to work in this project. The Multi-Navigator page can be used to create new button navigators." menu="Navigators" menuItem="Button Navigator" hint="A series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg" deepLink="true">
+	</lightboxGroup></bullets><buttonNav deprecated="This page type is deprecated but will continue to work in this project. The Multi-Navigator page can be used to create new button navigators." deprecatedLevel="low" menu="Navigators" menuItem="Button Navigator" hint="A series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
@@ -1163,7 +1163,7 @@
     <name label="Series Name" type="TextInput" wysiwyg="true"/>
     <data label="Chart Data" headers="X,Y" newRow="label,data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1"/>
     <colour label="Colour" type="colourPicker" defaultValue="0xFF0000"/>
-  </series><columnPage deprecated="This page type is deprecated but will continue to work in this project. The Multi-Navigator page can be used to create new column pages." menu="Navigators" menuItem="Column Page" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
+  </series><columnPage menu="Text" menuItem="Columns" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
 	
@@ -4107,7 +4107,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></morphImages><nav menu="Navigators" menuItem="Multi-Navigator / Columns" hint="Present related text and graphical content on a series of columns or sub-pages. Layout options include accordion, button, tabs and slideshow." icon="icPages" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
+	</lightboxGroup></morphImages><nav menu="Navigators" menuItem="Multi-Navigator" hint="Present related text and graphical content on a series of sub-pages. Layout options include accordion, button, columns, slideshow and tabs." icon="icPages" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
 	
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -5241,7 +5241,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></showGraph><slideshow deprecated="This page type is deprecated but will continue to work in this project. The Multi-Navigator page can be used to create new slideshow navigators." menu="Navigators" menuItem="Slideshow" hint="A sequence of pages of related text and graphical content navigated with two arrow controls." icon="icPages" thumb="thumbs/slideNav.jpg" sortChildren="true" remove="true" deepLink="true">
+	</lightboxGroup></showGraph><slideshow deprecated="This page type is deprecated but will continue to work in this project. The Multi-Navigator page can be used to create new slideshow navigators." deprecatedLevel="low" menu="Navigators" menuItem="Slideshow" hint="A sequence of pages of related text and graphical content navigated with two arrow controls." icon="icPages" thumb="thumbs/slideNav.jpg" sortChildren="true" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
@@ -5407,7 +5407,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></summary><tabNav deprecated="This page type is deprecated but will continue to work in this project. The Multi-Navigator page can be used to create new tabbed navigators." menu="Navigators" menuItem="Tabbed Navigator" hint="A series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
+	</lightboxGroup></summary><tabNav deprecated="This page type is deprecated but will continue to work in this project. The Multi-Navigator page can be used to create new tabbed navigators." deprecatedLevel="low" menu="Navigators" menuItem="Tabbed Navigator" hint="A series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>

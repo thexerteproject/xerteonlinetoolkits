@@ -512,7 +512,7 @@ var EDITOR = (function ($, parent) {
         }
 
         // Create node text based on xml, do not use text of original node, as this is not correct
-        var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
+        var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", [wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecatedLevel], wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
         var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true");
         var standaloneIcon = toolbox.getExtraTreeIcon(key, "standalone", lo_data[key].attributes.linkPage == "true");
         var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');
@@ -1548,6 +1548,10 @@ var EDITOR = (function ($, parent) {
             if ($("#"+key+"_deprecated.iconEnabled").length > 0)
             {
                 $("#"+key).addClass("deprecatedNode");
+				if ($("#"+key+"_deprecated.deprecatedLevel_low.iconEnabled").length > 0)
+				{
+					$("#"+key).addClass("deprecatedLevel_low");
+				}
             }
             if ($("#"+key+"_hidden.iconEnabled").length > 0)
             {

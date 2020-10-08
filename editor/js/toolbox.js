@@ -231,11 +231,15 @@ var EDITOR = (function ($, parent) {
     {
         switch (icon) {
             case "deprecated":
-                if (enabled) {
-                    return '<i class="deprecatedIcon iconEnabled fa fa-exclamation-triangle " id="' + key + '_deprecated" title ="' + tooltip + '"></i>';
+				// if deprecatedLevel is low the appearance is slightly different
+				var isDeprecated = enabled[0],
+					deprecatedLevel = enabled[1];
+				
+                if (isDeprecated) {
+                    return '<i class="deprecatedIcon iconEnabled fa ' + (deprecatedLevel == 'low' ? 'fa-info-circle' : 'fa-exclamation-triangle') + ' ' + (deprecatedLevel == 'low' ? 'deprecatedLevel_low' : '') + '" id="' + key + '_deprecated" title ="' + tooltip + '"></i>';
                 }
                 else {
-                    return '<i class="deprecatedIcon iconDisabled fa fa-exclamation-triangle " id="' + key + '_deprecated"></i>';
+                    return '<i class="deprecatedIcon iconDisabled fa ' + (deprecatedLevel == 'low' ? 'fa-info-circle' : 'fa-exclamation-triangle') + ' ' + (deprecatedLevel == 'low' ? 'deprecatedLevel_low' : '') + '" id="' + key + '_deprecated"></i>';
                 }
             case "unmark":
                 if (enabled)
@@ -273,13 +277,13 @@ var EDITOR = (function ($, parent) {
     changeNodeStatus = function(key, item, enabled, newtext)
     {
         // Get icon states
-
         var deprecatedState = ($("#"+key+"_deprecated.iconEnabled").length > 0);
         var hiddenState = ($("#"+key+"_hidden.iconEnabled").length > 0);
 		var standaloneState = ($("#"+key+"_standalone.iconEnabled").length > 0);
         var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
         var change = false;
         var tooltip = "";
+		var level;
         switch(item)
         {
             case "deprecated":
@@ -309,8 +313,9 @@ var EDITOR = (function ($, parent) {
 
             if (deprecatedState) {
                 tooltip = $("#" + key + '_deprecated')[0].attributes['title'];
+				level = $("#" + key + '_deprecated').hasClass('deprecatedLevel_low') ? 'low' : undefined;
             }
-            var deprecatedIcon = getExtraTreeIcon(key, "deprecated", (item == "deprecated" ? enabled : deprecatedState), tooltip);
+            var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [item == "deprecated" ? enabled : deprecatedState, level], tooltip);
             var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" ? enabled : hiddenState));
 			var standaloneIcon = getExtraTreeIcon(key, "standalone", (item == "standalone" ? enabled : standaloneState));
             var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
@@ -406,7 +411,7 @@ var EDITOR = (function ($, parent) {
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
         }
 
-        var deprecatedIcon = getExtraTreeIcon(key, "deprecated", wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecated);
+        var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecatedLevel], wizard_data[xmlData[0].nodeName].menu_options.deprecated);
         var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
         var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');

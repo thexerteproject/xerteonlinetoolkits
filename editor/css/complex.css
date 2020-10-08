@@ -1186,6 +1186,10 @@ li.deprecatedNode >a {
 	background: rgba(248, 103, 24, 0.33);
 }
 
+li.deprecatedNode.deprecatedLevel_low >a {
+	background: none;
+}
+
 img.theme_preview
 {
 	float: left;
