@@ -2157,6 +2157,11 @@ function x_changePageStep6() {
 		x_doDeepLink();
 	}
 }
+//skip to main contents link but this code needs checking
+// and language string needs to be added to replace default English text
+$('[href^="#"][href!="#"]').click(function() {
+	$($(this).attr('href')).attr('tabIndex', -1).focus();
+});
 
 // trigger that page contents have updated
 function x_pageContentsUpdated() {
