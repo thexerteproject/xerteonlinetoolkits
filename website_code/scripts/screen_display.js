@@ -394,7 +394,11 @@ function button_check(){
                     if (e.shiftKey) {
                         edit_window(false, "edit");
                     }
-                    else {
+                    else if (e.ctrlKey) {
+                        edit_window(false, "edithtml", "_blank");
+                    }
+                    else
+                    {
                         edit_window(false, "edithtml");
                     }
                 };
