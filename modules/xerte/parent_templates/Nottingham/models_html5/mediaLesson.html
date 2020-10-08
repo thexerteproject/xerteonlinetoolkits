@@ -87,7 +87,7 @@
 		
 		this.resizePanels = function() {
 		    // make sure no scroll bars are on screen during panel sizing
-            $x_pageHolder.css("overflow", "hidden");
+			$x_pageHolder.css("overflow", "hidden");
 			var numTileH = $("#panelHolder .panel.tileH").length,
 				numTileV = $("#panelHolder .panel.tileV").length;
 			
@@ -112,7 +112,7 @@
 			$panelHolder.find(".panel.halfH")
 				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
 			
-			$x_pageHolder.css("overflow", "auto");
+			$x_pageHolder.css("overflow", "hidden");
 			
 			this.resizeMedia();
 		};
@@ -1138,6 +1138,10 @@
                                 start = 0;
                             }
 							var opt = this.attributes.optional == undefined ||this.attributes.optional.value == "false" ? "false" : "true";
+							debugger;
+							if(this.nodeName == "synchMCQ") { 
+								this.setAttribute("overlay", "true");
+							}
 							
                             data.push({
                                 type:			this.nodeName,

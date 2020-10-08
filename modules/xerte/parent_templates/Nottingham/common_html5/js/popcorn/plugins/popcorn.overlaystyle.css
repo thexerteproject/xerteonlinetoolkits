@@ -25,7 +25,7 @@
 
 
 /* OPTIONAL ELEMENT BUTTON */
-.showButton {
+.showButton { 
     position: absolute;
     width: 48px;
     height: 48px;
@@ -54,6 +54,8 @@
 
 #showHolder {
     cursor: pointer;
+    z-index: 10000;
+    display: inline-block;
 }
 
 /* QUESTION MENUS 

@@ -429,10 +429,13 @@ optional: feedback page synch play enable
 					} else {
 						$target.prepend("<hr/>");
 					}
-				}
+				}debugger;
 			
 				if(options.overlayPan == "true")
 				{
+					$target.parent().hide();
+					$target.hide();
+					
                 	if(options.optional == "true") 
 					{
 						debugger;
@@ -447,8 +450,8 @@ optional: feedback page synch play enable
                                 $target.parent().addClass("qWindow");
 								$showHolder.hide();
 								$optHolder.show();
-								//$checkBtn.show();
-								//$checkBtn.button("disable");
+								$checkBtn.show();
+								$checkBtn.button("disable");
 								$target.prepend($optionText);
 							 });
 
@@ -462,12 +465,12 @@ optional: feedback page synch play enable
 			},
 			
 			start: function(event, options) {
-				debugger;
 				// fire on options.start
 				var correctOptions = [];
 				var correctAnswers = [];
 				var correctFeedback = [];
 				var ia_nr = Number(options.tracking_nr);
+				
 				$(options.childNodes).each(function(i, v){
 					correctOptions.push(
 						{
@@ -502,7 +505,10 @@ optional: feedback page synch play enable
 					}
 
 					else {
-						$target.prepend(options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text));
+						formattedQuestionText = options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
+						if (!$target.html().includes(formattedQuestionText)) {
+							$target.prepend(formattedQuestionText);
+						}
                         if ($checkBtn) {
                             $checkBtn
                                 .show()
@@ -531,6 +537,7 @@ optional: feedback page synch play enable
 			},
 			
 			end: function(event, options) {
+				
 				// fire on options.end
 				mediaLesson.enableControls(this.media, true);
                 if (options.overlayPan) {

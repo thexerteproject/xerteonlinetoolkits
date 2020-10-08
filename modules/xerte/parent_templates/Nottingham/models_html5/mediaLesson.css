@@ -23,7 +23,7 @@
 		text-align: left;
 		border-radius: 5px;
 		z-index: 4;
-
+		background-color: #e6e6e6;
 	}
 
 	#panelHolder .overlayGray {

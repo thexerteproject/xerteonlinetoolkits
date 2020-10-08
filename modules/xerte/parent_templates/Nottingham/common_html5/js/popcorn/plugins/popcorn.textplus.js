@@ -44,6 +44,10 @@ optional: end position* line
 						txt = "<hr/>" + txt;
 					}
 				}
+				if(options.overlayPan == "true"){
+					$target.parent().hide()
+					$target.hide();
+				}
 				
 				$target = $("#" + options.target).hide();
                 if(options.optional === "true")
@@ -74,6 +78,7 @@ optional: end position* line
 					}
                 	$target.parent().css({"top": options.offsetTop, "left": options.offsetLeft}).show();
 				$target.show();
+				$target.parent().show();
 			},
 			
 			end: function(event, options) {
@@ -83,6 +88,7 @@ optional: end position* line
 					$target.parent().css({"top": 0, "left": 0}).hide();
 					$target.parent().removeClass("qWindow");
 				}
+				$target.parent().hide()
 				$target.hide();
 			}
 		};
