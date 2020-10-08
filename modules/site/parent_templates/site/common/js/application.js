@@ -341,6 +341,11 @@ function setup() {
 		}
 	}
 	
+	if ($(data).find('learningObject').attr('globalVars') == 'true') {
+		// check xml text for global variables - if found replace with variable value
+		x_checkForText($(data).find('page'), 'globalVars');
+	}
+	
 	if ($(data).find('learningObject').attr('glossary') != undefined) {
 		
 		// get list of glossary words & definitions
@@ -1242,6 +1247,8 @@ function x_checkForText(data, type) {
 					data[i].childNodes[0].data = data[i].childNodes[0].data.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
 				} else if (type == 'variables') {
 					data[i].childNodes[0].data = XBOOTSTRAP.VARIABLES.replaceVariables(data[i].childNodes[0].data);
+				} else if (type == 'globalVars') {
+					data[i].childNodes[0].data = XBOOTSTRAP.GLOBALVARS.replaceGlobalVars(data[i].childNodes[0].data);
 				}
 				
 			} else {
@@ -3284,5 +3291,31 @@ var XBOOTSTRAP = (function ($, parent) { var self = parent.VARIABLES = {};
 	self.replaceVariables = replaceVariables;
 	self.showVariables = showVariables;
 	self.updateVariable = updateVariable;
+
+return parent; })(jQuery, XBOOTSTRAP || {});
+
+
+// _____ GLOBAL VARIABLES _____
+// allows surfacing of any global variables
+
+var XBOOTSTRAP = (function ($, parent) { var self = parent.GLOBALVARS = {};
+	
+	var	replaceGlobalVars = function (tempText) {
+		var regExp = new RegExp('\\{(.*?)\\}', 'g');
+		
+		var matches = tempText.match(regExp);
+		if (matches != null) {
+			for (var m=0; m<matches.length; m++) {
+				try {
+					tempText = tempText.replace(matches[m], '<span class="x_globalVar">' + eval(matches[m]) + '</span>');
+				} catch (e){}
+			}
+		}
+		
+		return tempText;
+	};
+	
+	// make some public methods
+	self.replaceGlobalVars = replaceGlobalVars;
 
 return parent; })(jQuery, XBOOTSTRAP || {});

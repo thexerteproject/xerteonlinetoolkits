@@ -847,7 +847,7 @@ function x_setUp() {
 		if (x_params.variables != undefined) {
 			XENITH.VARIABLES.init(x_params.variables);
 		}
-
+		
 		x_dialogInfo.push({type:'msg', built:false});
 
 		// hides header/footer if set in url
@@ -2878,6 +2878,11 @@ function x_insertText(node, exclude, list) {
 	if (XENITH.VARIABLES && XENITH.VARIABLES.exist() && (exclude == undefined || (exclude == false && list.indexOf("variables") > -1) || (exclude == true && list.indexOf("variables") == -1))) {
 		tempText = XENITH.VARIABLES.replaceVariables(tempText, x_params.decimalseparator);
 	}
+	
+	// check text for global variables - if found replace with variable value
+	if (x_params.globalVars == 'true' && (exclude == undefined || (exclude == false && list.indexOf("globalVars") > -1) || (exclude == true && list.indexOf("globalVars") == -1))) {
+		tempText = XENITH.GLOBALVARS.replaceGlobalVars(tempText);
+	}
 
 	// if project is being viewed as https then force iframe src to be https too
 	if (window.location.protocol == "https:" && (exclude == undefined || (exclude == false && list.indexOf("iframe") > -1) || (exclude == true && list.indexOf("iframe") == -1))) {
@@ -4076,7 +4081,6 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			}
 			for (var k=0, len=x_glossary.length; k<len; k++) {
 				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
-				//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
 				tempText = tempText.replace(regExp, '$1<span class="x_glossary" aria-describedby="x_glossaryHover" tabindex="0" role="link">$3</span>$4');
 			}
 		}
@@ -4096,5 +4100,32 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
     self.buildPage = buildPage;
 	self.insertText = insertText;
 	self.touchStartHandler = touchStartHandler;
+
+return parent; })(jQuery, XENITH || {});
+
+
+
+// _____ GLOBAL VARIABLES _____
+// allows surfacing of any global variables
+
+var XENITH = (function ($, parent) { var self = parent.GLOBALVARS = {};
+	
+	var	replaceGlobalVars = function (tempText) {
+		var regExp = new RegExp('\\{(.*?)\\}', 'g');
+		
+		var matches = tempText.match(regExp);
+		if (matches != null) {
+			for (var m=0; m<matches.length; m++) {
+				try {
+					tempText = tempText.replace(matches[m], '<span class="x_globalVar">' + eval(matches[m]) + '</span>');
+				} catch (e){}
+			}
+		}
+		
+		return tempText;
+	};
+	
+	// make some public methods
+	self.replaceGlobalVars = replaceGlobalVars;
 
 return parent; })(jQuery, XENITH || {});
