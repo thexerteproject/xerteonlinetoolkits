@@ -93,7 +93,8 @@ if(is_numeric($_POST['user_id'])&&is_numeric($_POST['folder_id'])){
             $query_to_insert_share = "INSERT INTO {$prefix}templaterights (template_id, user_id, role, folder) VALUES (?,?,?,?)";
             $params = array($template_id['template_id'], $user_id, $new_role, $row_query_root['folder_id']);
 
-            if (!db_query($query_to_insert_share, $params)) {
+            $queryresult = db_query($query_to_insert_share, $params);
+            if ($queryresult === false) { //check with === because an insert function will return a '0' even if the query was successful
                 $failed = true;
                 echo '<p>' . SHARING_THIS_FEEDBACK_FAIL . "</p>";
                 break;
@@ -103,7 +104,8 @@ if(is_numeric($_POST['user_id'])&&is_numeric($_POST['folder_id'])){
             $query_to_update_role = "UPDATE {$prefix}templaterights SET role = ? WHERE template_id=? and user_id=?";
             $params = array($new_role, $template_id['template_id'], $user_id);
 
-            if (!db_query($query_to_update_role, $params)) {
+            $queryresult = db_query($query_to_update_role, $params);
+            if ($queryresult === false) {
                 $failed = true;
                 echo '<p>' . SHARING_THIS_FEEDBACK_FAIL . "</p>";
                 break;
