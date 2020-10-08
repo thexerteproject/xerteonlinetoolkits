@@ -211,7 +211,7 @@ DashboardState.prototype.getStatementsAggregate = function(q, one, callback) {
 
     // var project = '{"$project": { "statement.actor": 1, "statement.context" : 1, "statement.id" : 1, "statement.object" : 1,  "statement.timestamp" : 1, "statement.stored" : 1, "statement.verb" :  1, "_id": 0 }}';
     var project = '{"$project": { "statement": 1, "_id": 0 }}';
-    var sort = '{"$sort" : {   "statement.timestamp": -1,   "_id": 1 }}';
+    var sort = '{"$sort" : {   "timestamp": -1,   "_id": 1 }}';
     var auth = btoa(this.info.lrs.lrskey + ":" + this.info.lrs.lrssecret);
     this.clear();
     if (typeof q['verb'] != "undefined" && q['verb'] == "http://adlnet.gov/expapi/verbs/launched")

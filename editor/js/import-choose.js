@@ -177,7 +177,7 @@ function showPageData(xot_id, data) {
 						html += "<label><input class=\"allCheck\" type=\"checkbox\" id=\"select-all\"  onClick=\"CheckAll()\"/> Select/Deselect All</label>";
 					}
 					$.each(data.pages, function(x){
-							html += "<label><input class=\"pageCheckbox checkAll\" type=\"checkbox\" id=\"page_"+this.index+"\"'>" + '<img class=\"merge_page_icon\" src="modules/xerte/icons/'+this.icon+'.png">' + atob(this.name) + "</label>";
+							html += "<label><input class=\"pageCheckbox checkAll\" type=\"checkbox\" id=\"page_"+this.index+"\"'>" + '<img class=\"merge_page_icon\" src="modules/'+x_mergeTemplate+'/icons/'+this.icon+'.png">' + atob(this.name) + "</label>";
 					});
 					$("#merge").show();
 				}

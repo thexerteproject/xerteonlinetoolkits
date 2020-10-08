@@ -52,6 +52,7 @@ var EDITOR = (function ($, parent) {
         var now = new Date().getTime();
         $.ajax({
             type: "GET",
+			data: { template: templateframework },
             url: url + "&t=" + now,
             dataType: "html",
             success: function (data) {
@@ -126,7 +127,7 @@ var EDITOR = (function ($, parent) {
 
 		create_tree_buttons = function() {
             var buttons = $('<div />').attr('id', 'top_buttons');
-            if (templateframework == "xerte") {
+			if (templateframework == "xerte" || templateframework == "site") {
                 var button_def =
                     [
                         {
@@ -321,6 +322,7 @@ var EDITOR = (function ($, parent) {
                 urlparam = '&linkID='+id;
             }
         }
+        var new_tab = clickevent.ctrlKey;
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
                 data: {
@@ -344,7 +346,13 @@ var EDITOR = (function ($, parent) {
             //alert( "success" );
             // We would also launch the preview window from here
             $('#loader').hide();
-            window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes, scrollbars=1" );
+            if (new_tab)
+            {
+                window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "_blank");
+            }
+            else {
+                window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes, scrollbars=1");
+            }
         })
         .fail(function() {
             $('#loader').hide();
