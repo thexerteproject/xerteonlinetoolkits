@@ -1,4 +1,4 @@
-<wizard menus="Navigators">
+<wizard menus="Text">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage>

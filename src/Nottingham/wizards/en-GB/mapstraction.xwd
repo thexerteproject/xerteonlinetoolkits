@@ -1,4 +1,4 @@
-<wizard menus="Misc">
+<wizard menus="Miscellaneous">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction>
@@ -6,7 +6,7 @@
   </pageWizard>
   
   <!-- MAPSTRACTION=============================== -->
-  <mapstraction icon="icMap2" menu="Misc" menuItem="Mapstraction Map" remove="true" thumb="thumbs/googleMap.jpg" hint="Use maps with the mapstraction API." deprecated="This page is no longer supported">
+  <mapstraction icon="icMap2" menu="Miscellaneous" menuItem="Mapstraction Map" remove="true" thumb="thumbs/googleMap.jpg" hint="Use maps with the mapstraction API." deprecated="This page is no longer supported">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <provider type="ComboBox" label="Map Type" options="Google,Yahoo,Openlayers,Microsoft" width="100"/>
