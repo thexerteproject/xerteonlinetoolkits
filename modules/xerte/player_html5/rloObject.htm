@@ -126,9 +126,17 @@
         var x_TemplateId = "%TEMPLATEID%";
         var x_youtube_api_key = "%YOUTUBEAPIKEY%";
 		var x_Version = "%VERSION%";
-		var x_lastUpdated = new Date("%LASTUPDATED%");
 		var localeoptions = { weekday: undefined, year: 'numeric', month: 'short', day: 'numeric' };
-		var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
+        var x_lastUpdated = new Date("%LASTUPDATED%");
+        var x_dateCreated = new Date("%DATECREATED%");
+        var x_numPlays = String("%NUMPLAYS%");
+        var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
+        var x_dateCreatedLocale = x_dateCreated.toLocaleDateString("%LANGUAGE%", localeoptions);
+		
+		// simple names of vars
+		var lastUpdated = x_lastUpdatedLocale,
+			dateCreated = x_dateCreatedLocale,
+			numViews = x_numPlays;
     </script>
 </body>
 </html>

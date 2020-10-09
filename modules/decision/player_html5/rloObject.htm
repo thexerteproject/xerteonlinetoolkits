@@ -67,9 +67,17 @@
         var x_templateLocation = "%TEMPLATEPATH%";
 		var themePath = "%THEMEPATH%";
         var projectXML = "%XMLFILE%"; //this is the file to read, not the xml
+		var localeoptions = { weekday: undefined, year: 'numeric', month: 'short', day: 'numeric' };
         var x_lastUpdated = new Date("%LASTUPDATED%");
-        var localeoptions = { weekday: undefined, year: 'numeric', month: 'short', day: 'numeric' };
+        var x_dateCreated = new Date("%DATECREATED%");
+        var x_numPlays = String("%NUMPLAYS%");
         var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
+        var x_dateCreatedLocale = x_dateCreated.toLocaleDateString("%LANGUAGE%", localeoptions);
+		
+		// simple names of vars
+		var lastUpdated = x_lastUpdatedLocale,
+			dateCreated = x_dateCreatedLocale,
+			numViews = x_numPlays;
     </script>
 
 </head>
