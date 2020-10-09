@@ -76,10 +76,11 @@
         var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
         var x_dateCreatedLocale = x_dateCreated.toLocaleDateString("%LANGUAGE%", localeoptions);
 		
-		// simple names of vars
-		var lastUpdated = x_lastUpdatedLocale,
-			dateCreated = x_dateCreatedLocale,
-			numViews = x_numPlays;
+		var globalVars = {
+			lastUpdated: x_lastUpdatedLocale,
+			dateCreated: x_dateCreatedLocale,
+			numViews: x_numPlays
+		};
     </script>
 
     <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
