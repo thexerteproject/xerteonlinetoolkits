@@ -1260,7 +1260,6 @@ function x_checkForText(data, type) {
 
 // called from links added through the wysiwyg editor button (& the links created as a result of searches
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
-
 	var pages = $(data).find('page'),
 		links = ['[first]', '[last]', '[previous]', '[next]'];
 
@@ -1307,12 +1306,10 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 			if (pages[i].getAttribute("linkID") == pageInfo.ID) {
 				var destination = pageInfo.ID;
 				if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
+					// page has customID so use this instead of auto-generated linkID
 					destination = pages[i].getAttribute("customLinkID");
-          parseContent({ type: "id", id: destination });
-				} else if ($.inArray(i, validPages) != -1) {
-					destination = $.inArray(i, validPages);
-          parseContent({ type: "index", id: destination });
 				}
+				parseContent({ type: "id", id: destination });
 				found = true;
 				break;
 			}
@@ -1323,9 +1320,8 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 					if (pages[i].childNodes[j].getAttribute && pages[i].childNodes[j].getAttribute("linkID") == pageInfo.ID) {
 						var destination = pages[i].getAttribute("linkID");
 						if (pages[i].getAttribute("customLinkID") != undefined && pages[i].getAttribute("customLinkID") != "") {
+							// page has customID so use this instead of auto-generated linkID
 							destination = pages[i].getAttribute("customLinkID");
-						} else if ($.inArray(i, validPages) != -1) {
-							destination = $.inArray(i, validPages);
 						}
 						parseContent({ type: "id", id: destination }, j+1);
 						found = true;
@@ -1534,7 +1530,6 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 						//add the section contents
 						$(this).children().each( function(itemIndex, value){
-
 							if (($(this).attr('name') != '' && $(this).attr('name') != undefined && $(this).attr('showTitle') == 'true') || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
 
 								if ($(this).attr('showTitle') == 'true') {
@@ -1547,8 +1542,9 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 										subLinkName.find('[style*="font-size"]').css('font-size', '');
 										subLinkName.find('[style*="background-color"]').css('background-color', 'transparent');
 									}
-
-									var $link = $('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#page' + (pageIndex+1) + 'section' + (index+1) + 'content' + (itemIndex+1) + '"></a> </span>').appendTo(section.find('.sectionSubLinks'));
+									
+									var tempLink = validPages.indexOf(pageIndex) != -1 ? 'page' + (validPages.indexOf(pageIndex)+1) : (page.attr("customLinkID") != "" && page.attr("customLinkID") != undefined ? page.attr("customLinkID") : page.attr('linkID'));
+									var $link = $('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#' + tempLink + 'section' + (index+1) + 'content' + (itemIndex+1) + '"></a> </span>').appendTo(section.find('.sectionSubLinks'));
 									$link.find('a').append(subLinkName);
 
 								}
