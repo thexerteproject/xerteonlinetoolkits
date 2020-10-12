@@ -1,4 +1,4 @@
-<wizard menus="Navigators">
+<wizard menus="Text">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage>
@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- COLUMN PAGE============================== -->
-  <columnPage deprecated="This page type is deprecated but will continue to work in this project. The Multi-Navigator page can be used to create new column pages." menu="Navigators" menuItem="Column Page" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
+  <columnPage menu="Text" menuItem="Columns" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
 	
