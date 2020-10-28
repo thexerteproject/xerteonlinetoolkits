@@ -38,9 +38,11 @@ optional: feedback page synch play enable
 	Popcorn.plugin("mcq", function(options) {
 
 		// define plugin wide variables / functions here
-		var $target, $optHolder, $checkBtn, $feedbackDiv, $continueBtn, media, selected, judge, autoEnable, questions, $showBtn, $showLbl;
+		var $target, $optHolder, $checkBtn, $feedbackDiv, $continueBtn, media, selected, judge, autoEnable, $showBtn, $showLbl;
 		
+		// Score tracking Manager
 		var finishTracking = function(options) {
+			// Check the exercise and all individual questions
             var allValid = true;
             var ia_nr = Number(options.tracking_nr);
             var numOfQuestions = Number(options.total_questions);
@@ -57,7 +59,9 @@ optional: feedback page synch play enable
                 if (!curValid && options.childNodes[i].getAttribute("correct") == "true") {
                     allValid = false;
                 }
-            }
+			}
+			
+			// Xerte Tracking setup
             var l_options = [];
             var l_answers = [];
             var l_feedback = [];
@@ -83,7 +87,8 @@ optional: feedback page synch play enable
                     }
                 }
                 scormScore = Math.ceil(score / numOfQuestions * 100);
-            }
+			}
+			//Push results
 			var result =
 				{
 					success: allValid,
@@ -94,6 +99,7 @@ optional: feedback page synch play enable
             mediaLesson.enableControls(media.media, true);
         }
 		
+		// Feedback Manager
 		var answerSelected = function() {
 			// put together feedback string;
 			var feedbackTxt = "",
@@ -192,8 +198,7 @@ optional: feedback page synch play enable
 			}
 		}
 		
-		
-		
+		// Media Action Manger (seek, pause, change LO)
 		var doAction = function(index) {
 			if (options.childNodes[index].getAttribute("page") != undefined && options.childNodes[index].getAttribute("page") != "") {
 				// change LO page
@@ -226,31 +231,9 @@ optional: feedback page synch play enable
 				judge = false;
 				autoEnable = true;
 				var tempEnable = false;
-
-				// is it to appear over media? DEPRECATED
-				if (options.overlay == "true" && (this.video != undefined || $(this.audio).closest(".mediaHolder").find(".audioImg").length > 0)) {
-					var $parent;
-					if (this.video != undefined) {
-						$parent = $(this.media).parent();
-					} else {
-						$parent = $(this.media).closest(".mediaHolder").find(".audioImgHolder");
-					}
-					
-					// move mcqHolder to overlay media
-					$("#" + options.target)
-						.appendTo($parent)
-						.removeClass("contentBlock")
-						.addClass("overlay");
-					
-					$target = $('<div class="holder"/>').appendTo($("#" + options.target));
-				} else {
-					$target = $("#" + options.target);
-				}
+				$target = $("#" + options.target);
 				var $optionText = options.name !== "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
-				$target
-				//	.append(options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text))
-					.hide();
-
+				$target.hide();
 
 				$optHolder = $('<div class="optionHolder"/>').appendTo($target);
 
@@ -423,43 +406,39 @@ optional: feedback page synch play enable
 					$target.append('<div class="bottom"/>');
 				}
 				
+
 				if (options.line == "true") {
 					if (options.position == "top") {
 						$target.append("<hr/>");
 					} else {
 						$target.prepend("<hr/>");
 					}
-				}debugger;
+				}
 			
 				if(options.overlayPan == "true")
 				{
 					$target.parent().hide();
 					$target.hide();
 					
-                	if(options.optional == "true") 
-					{
-						debugger;
+                	if(options.optional == "true") {
 						var $openPng = x_templateLocation + "common_html5/plus.png";
 						var $showHolder  = $('<div id="showHolder" />').appendTo($target);
-						$showBtn = $('<image class="showButton" type="image" src="' + $openPng + '" >').appendTo($showHolder);
+						$showBtn = $('<image class="showButton x_noLightBox" type="image" src="' + $openPng + '" >').appendTo($showHolder);
 						$showLbl = $("<div class='showLabel'>" + options.name + "</div>").appendTo($showHolder);
 						$showHolder
 							.click(function () {
+								$target.parent().css({"padding": 5});
                                 $("#overlay").show();
                                 mediaLesson.popcornInstance.media.pause();
                                 $target.parent().addClass("qWindow");
 								$showHolder.hide();
 								$optHolder.show();
-								$checkBtn.show();
-								$checkBtn.button("disable");
 								$target.prepend($optionText);
-							 });
+							});
 
-					}
-					else {
+					} else {
 						$optHolder.show();
-						//$checkBtn.show();
-						//$checkBtn.button("disable");
+						$target.parent().css({"padding": 5});
 					}
 				}
 			},
@@ -501,10 +480,8 @@ optional: feedback page synch play enable
 						.find("button").remove();
 					if ($showBtn) {
 						$optHolder.hide();
-						//$checkBtn.hide();
-					}
-
-					else {
+						$checkBtn.hide();
+					} else {
 						formattedQuestionText = options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
 						if (!$target.html().includes(formattedQuestionText)) {
 							$target.prepend(formattedQuestionText);
@@ -525,14 +502,12 @@ optional: feedback page synch play enable
 				if (options.overlayPan) {
 					if (options.optional == "false")
 						$target.parent().addClass("qWindow");
-                    //if (isNumeric(options.offsetTop) && isNumeric(options.offsetLeft))
 					$target.parent().css(
 					{
 						"top": options.offsetTop + "%",
-						"left": options.offsetLeft + "%"
-					});
+						"left": options.offsetLeft + "%",
+					}).show();
 				}
-				$target.parent().show();
 				$target.show();
 			},
 			
@@ -545,16 +520,12 @@ optional: feedback page synch play enable
                 	$target.parent().css( //The overlay panel
                 	{
 						"top": 0,
-						"left": 0
-                	}
-				).hide();
-                }
+						"left": 0,
+						"padding": 0
+                	}).hide();
+				}
 				$target.hide();
 			},
-
-			testEvent: function(event,options){
-			}
-		};
-		
+		};		
 	});
 })(Popcorn);

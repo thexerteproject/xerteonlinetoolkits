@@ -22,8 +22,8 @@
 	// other functions for model should also be in here to avoid conflicts
 	var mediaLesson = new function() {
 		var	$panelHolder,
-			plugins = ["textplus", "subtitleplus", "xot", "mediaplus", "mcq", "slides", "sortholder"], // list of popcorn plugins to load
-			css = ["subtitleplus", "mcq", "slides"], // list of popcorn plugin css to load
+			plugins = ["textplus", "subtitleplus", "xot", "mediaplus", "mcq", "overlaygeneric" ,"slides", "sortholder"], // list of popcorn plugins to load
+			css = ["subtitleplus", "mcq", "overlaygeneric", "slides"], // list of popcorn plugin css to load
 			numLoaded = 0,
 			duration = 0,
             blocks = new Array (),
@@ -86,6 +86,8 @@
 		};
 		
 		this.resizePanels = function() {
+			var zoomLevel = window.devicePixelRatio;
+			var zoomCorrection = -1/zoomLevel;
 		    // make sure no scroll bars are on screen during panel sizing
 			$x_pageHolder.css("overflow", "hidden");
 			var numTileH = $("#panelHolder .panel.tileH").length,
@@ -98,7 +100,7 @@
 			var marginR = parseInt($panelHolder.find(".panel.tileH").css("margin-right")) == 0 ? 15 : parseFloat($panelHolder.find(".panel.tileH").css("margin-right"));
 			
 			$panelHolder.find(".panel.tileH")
-				.width(Math.floor(($x_pageHolder.width() - (parseFloat($x_pageDiv.css("padding-left")) * 2) - (parseFloat($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * (numTileH-1))) / numTileH) - 2);
+				.width(Math.floor(($x_pageHolder.width() - (parseFloat($x_pageDiv.css("padding-left")) * 2) - (parseFloat($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * (numTileH-1))) / numTileH) - 2 + zoomCorrection);
 			
 			$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2);
 			
@@ -241,10 +243,10 @@
 			{
 			    ratio = parseFloat($(x_currentPageXML).children("mediaPanel").attr("aspectRatio"));
 			}
-			var ww = $holder.width(),// - parseInt($holder.css("padding-left")) * 2,
+			var ww = $holder.width(),
 				wh = Math.floor(ww / ratio),
-				hh = $holder.height() - $holder.find(".panelTitle").outerHeight(),  // - parseInt($holder.css("padding-top")) * 2,
-				hw = 1000; //This has to be changed.  Math.floor(hh * ratio);
+				hh = $holder.height() - $holder.find(".panelTitle").outerHeight(true),
+				hw = Math.floor(hh * ratio);
 
 			if (ww < hw)
 			{
@@ -407,9 +409,7 @@
 					if (jQuery.inArray(plugins[numLoaded - 1], css) != -1) {
 						x_insertCSS(x_templateLocation + "common_html5/js/popcorn/" + fileToLoad + ".css");
 					}
-                    x_insertCSS(x_templateLocation + "common_html5/js/popcorn/" + "plugins/popcorn.overlaystyle" + ".css");
 				}
-				
 				$.getScript(x_templateLocation + "common_html5/js/popcorn/" + fileToLoad + ".js")
 					.done(function(script, textStatus) {
                         numLoaded++;
@@ -547,9 +547,16 @@
 				if (panelData[i].getAttribute("name") != "") {
                     title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
                 }
-				if (panelData[i].getAttribute("overlay"))
+				if (panelData[i].getAttribute("overlay") == "true")
 				{
-				    //panelData[i].hide();
+					$(panelData[i].children).each(function(j){
+						if (this.nodeName == "synchSlides")	{
+							$(this.children).each(function(k){
+								this.setAttribute("overlayPan", "true");
+							});
+						}
+						this.setAttribute("overlayPan", "true");
+					});
 				}
 				else{
                     $('<div class="panel">' + title + '</div>')
@@ -1125,7 +1132,8 @@
             if($(synchData).context.getAttribute("overlay"))
                 $(synchData).each(function() {
                     this.overlay = true;
-                });
+				});
+
 			$(synchData).each(function(j) {
                         // ignore the media synchCues as they will be set up separately
                         if (this.nodeName != "synchCue") {
@@ -1137,19 +1145,13 @@
                                 // there's no start or end synch on subtitle holder - store previous sibling's start for relative synching to be done against
                                 start = 0;
                             }
-							var opt = this.attributes.optional == undefined ||this.attributes.optional.value == "false" ? "false" : "true";
-							debugger;
-							if(this.nodeName == "synchMCQ") { 
-								this.setAttribute("overlay", "true");
-							}
 							
                             data.push({
                                 type:			this.nodeName,
                                 start:			start,
                                 end:			end,
                                 target:			targetRef + "_" + j,
-								overlayPanel:	this.getAttribute("overlay"),
-								optional:		opt,
+								optional:		this.getAttribute("optional"),
                                 allInfo:		this
 							});
 						
@@ -1163,6 +1165,7 @@
 								syncChildren = true,
 								prevStartII = prevStart;
 							
+							this.setAttribute("child", false);
 							$parent.children().each(function(k) {
 								// if child nodes have a synch point then include their details too - with ref. to the parent as this will create the holder for the child
 								// e.g. for subtitles the parent creates a holder and 1st caption - the children then have their own synch points and load in the same holder
@@ -1183,6 +1186,7 @@
 										start:		start,
 										end:		end,
 										target:		targetRef + "_" + j, // ref. to parent synch point to make sure it loads in correct place
+										optional:   $(this).parent()[0].optional,
 										allInfo:	this
 									});
 								}
@@ -1257,13 +1261,18 @@
 					mediaLesson.setUpPopcornCue(popcornInstance, synchData[j]);
 				}
 			}
-			
 			// add all other synch events
 			for (var j=0; j<data.length; j++) {
 				// each synch event
 				var thisContent = data[j],
 					pluginName = thisContent.type.split("synch")[1].toLowerCase();
 				
+				if (thisContent.type == "synchSlides") {
+					$.each(thisContent.allInfo.children, function(c){
+						c.optional = thisContent.optional;
+						//c.setAttribute("optional", thisContent.optional);
+					})
+				}
 				if (thisContent.type != "synchEmpty") {
 					var pluginAttributes = {
 						start	:thisContent.start,
@@ -1275,7 +1284,7 @@
 
 					// add other info to pluginAttributes
 					$.each(thisContent.allInfo.attributes, function(i, attrib) {
-						// ignore attributes that aren't needed or are dealt with here rather than in individual plugins
+						// ignore attributes that aren't need ed or are dealt with here rather than in individual plugins
 						if (attrib.name != "synchStart" && attrib.name != "synchEnd" && attrib.name != "clearPanel" && attrib.name != "pauseMedia" && attrib.name != "linkID") {
 							pluginAttributes[attrib.name] = attrib.value;
 						}

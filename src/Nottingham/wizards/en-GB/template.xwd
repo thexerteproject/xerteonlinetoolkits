@@ -3629,7 +3629,7 @@
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
+		<optional label="Optional question" type="CheckBox" defaultValue="false" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
@@ -3713,14 +3713,13 @@
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
+		<optional label="Optional question" type="CheckBox" defaultValue="false" optional="true"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
 		<offsetTop label="offset top in %" type="TextInput" defaultValue="0" optional="true"/>
         <offsetLeft label="offset left in %" type="TextInput" defaultValue="0" optional="true"/>
 
 		<feedback type="TextArea" height="40" label="Feedback" optional="true"/>
-
 
 		<feedbackLabel label="Feedback Label" type="textInput" wysiwyg="true" divider="true" language="true"/>
 		<singleRight label="Single Answer Correct" type="TextInput" wysiwyg="true" language="true"/>

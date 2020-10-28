@@ -44,51 +44,55 @@ optional: end position* line
 						txt = "<hr/>" + txt;
 					}
 				}
+
+				$target = $("#" + options.target).hide();
 				if(options.overlayPan == "true"){
 					$target.parent().hide()
 					$target.hide();
+					if(options.optional === "true") {
+	                    var $openPng = x_templateLocation + "common_html5/plus.png";
+						var $showHolder  = $('<div id="showHolder" />').appendTo($target);
+						$showBtn = $('<image class="showButton x_noLightBox" type="image" src="' + $openPng + '" >').appendTo($showHolder);
+						$showLbl = $("<div class='showLabel'>" + options.name + "</div>").appendTo($showHolder);
+						$showHolder
+                    	    .click(function () {
+                        	    $showHolder.hide();
+								$target.prepend(txt);
+								$target.parent().addClass("qWindow");
+								$target.parent().css({"padding": 5});
+                        	});
+               		} else {
+						$target.parent().css({"padding": 5});
+						$target.prepend(txt);
+					}
 				}
-				
-				$target = $("#" + options.target).hide();
-                if(options.optional === "true")
-                {
-                    var $openPng = x_templateLocation + "common_html5/plus.png";
-					var $showHolder  = $('<div id="showHolder" />').appendTo($target);
-					$showBtn = $('<image class="showButton" type="image" src="' + $openPng + '" >').appendTo($showHolder);
-					$showLbl = $("<div class='showLabel'>" + options.name + "</div>").appendTo($showHolder);
-					$showHolder
-                        .click(function () {
-                            $showHolder.hide();
-							$target.prepend(txt);
-							$target.parent().addClass("qWindow");
-                        });
-                }
-                else {
-                    $target.prepend(txt);
-                }
 			},
 			
 			start: function(event, options) {
 				// fire on options.start
-				
-				if (options.overlayPan)
+				if (options.overlayPan) {
 					if (options.optional === "false")
 					{
 						$target.parent().addClass("qWindow");
 					}
-                	$target.parent().css({"top": options.offsetTop, "left": options.offsetLeft}).show();
+					$target.parent().css({
+						"top": options.offsetTop + "%",
+						"left": options.offsetLeft + "%",
+					}).show();
+				}
 				$target.show();
-				$target.parent().show();
 			},
 			
 			end: function(event, options) {
 				// fire on options.end
-                if (options.overlayPan)
-				{
-					$target.parent().css({"top": 0, "left": 0}).hide();
+                if (options.overlayPan) {
 					$target.parent().removeClass("qWindow");
+					$target.parent().css({
+						"top": 0,
+						"left": 0,
+						"padding": 0
+					}).hide();
 				}
-				$target.parent().hide()
 				$target.hide();
 			}
 		};
