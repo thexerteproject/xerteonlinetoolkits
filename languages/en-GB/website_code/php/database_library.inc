@@ -13,4 +13,3 @@
 
 	define("DATABASE_LIBRARY_FAIL", "Sorry, the system cannot connect to the database at present. The mysql error is ");
 
-?>

@@ -34,4 +34,3 @@
 
 	define("SHARING_FAIL","You have no rights to this project");
 
-?>

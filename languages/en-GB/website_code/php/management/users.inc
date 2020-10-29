@@ -24,5 +24,3 @@
     define("USERS_MANAGE_AUTH", "Authorized users");
 
     define("USERS_MANAGE_ACTIVE", "Active users with Learning Objects");
-	
-?>

@@ -11,4 +11,3 @@ define("AUTH_DB_DELUSER_INVALIDUSERNAME", "Invalid user name.");
 define("AUTH_DB_DELUSER_FAILED", "Deletion has failed..");
 define("AUTH_DB_DELUSER_SUCCEEDED", "User is successfully deleted.");
 
-?>

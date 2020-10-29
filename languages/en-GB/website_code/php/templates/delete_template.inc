@@ -16,4 +16,3 @@
 	define("DELETE_TEMPLATE_SYNDICATED", "Sorry you cannot delete a syndicated project. To delete this project, first turn off syndication in the project's properties.");
 	
 
-?>

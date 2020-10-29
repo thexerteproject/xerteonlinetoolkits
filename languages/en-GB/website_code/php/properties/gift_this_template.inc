@@ -20,4 +20,3 @@
 			
 	define("GIFT_RESPONSE_NAMES","Names will appear here");
 
-?>

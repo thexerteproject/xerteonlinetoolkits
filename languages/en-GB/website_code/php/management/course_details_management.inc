@@ -15,4 +15,4 @@
 
 	define("MANAGEMENT_COURSE_CHANGES_FAIL", "Course changes failed");
 
-?>
+

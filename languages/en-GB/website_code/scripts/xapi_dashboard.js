@@ -47,6 +47,7 @@ var XAPI_DASHBOARD_DISPLAY_COLUMNS = "Show/hide columns";
 var XAPI_DASHBOARD_DISPLAY_OVERVIEW = "Display overview";
 var XAPI_DASHBOARD_DISPLAY_INTERACTION_OVERVIEW = "Display overview in interaction overview"
 var XAPI_DASHBOARD_PAGE_SIZE = "Page size";
+var XAPI_DASHBOARD_PAGE_SIZE_ALL = "All";
 var XAPI_DASHBOARD_PAGE_PREV = "Previous";
 var XAPI_DASHBOARD_PAGE_NEXT = "Next";
 var XAPI_DASHBOARD_PAGE_OF_PAGE = "Page {i} of {n}";

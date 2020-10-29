@@ -14,4 +14,3 @@
 	
 	define("NAME_SELECT_DETAILS_FAIL","No one found with those details ");
 
-?>

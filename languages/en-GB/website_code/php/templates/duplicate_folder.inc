@@ -14,4 +14,3 @@
 	define("DUPLICATE_FOLDER_NOT_CREATOR", "Only project creators or co-authors can duplicate all projects in a folder. Make sure you have those rights on all the projects within the chosen folder");
 
 
-?>
