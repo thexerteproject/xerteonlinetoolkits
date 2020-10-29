@@ -15,4 +15,3 @@
 	
 	define("PEER_REVIEW_STATUS", "On");
 		
-?>

@@ -16,5 +16,4 @@
 	
 	define("EXPORT_NOT_AVAILABLE","Sorry, no export function available for this template");
 
-?>
 

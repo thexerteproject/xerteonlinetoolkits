@@ -45,4 +45,3 @@
 	
 	define("PUBLISH_FAIL","Sorry you do not have rights to this project");
 	
-?>

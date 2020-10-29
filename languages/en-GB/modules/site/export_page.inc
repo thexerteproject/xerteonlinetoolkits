@@ -26,5 +26,5 @@
 
 	define("XERTE_EXPORT_SCORM_2004_LINK","Get SCORM 2004 3rd Ed package");
 
-?>
+
 

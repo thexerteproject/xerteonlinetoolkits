@@ -14,4 +14,3 @@
 	
 	define("SHARING_THIS_FEEDBACK_FAIL","Sharing failed ");
 
-?>

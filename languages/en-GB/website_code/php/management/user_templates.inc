@@ -63,4 +63,3 @@
     define("USERS_MANAGEMENT_TEMPLATE_OWNER", "Owner");
 
     define("USERS_MANAGEMENT_TEMPLATE_ROLE", "Role");
-?>

@@ -17,4 +17,3 @@
 			
 	define("SYNDICATION_TEMPLATE_OFF", "Off");
 		
-?>

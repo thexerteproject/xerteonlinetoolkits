@@ -36,5 +36,3 @@
 
     define("IMPORT_CHECKS_FAILED", "Checks on the imported files have failed");
 
-
-?>

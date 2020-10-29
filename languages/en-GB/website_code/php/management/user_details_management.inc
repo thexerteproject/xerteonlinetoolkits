@@ -16,4 +16,3 @@
 	define("USERS_UPDATE_FAIL", "User update failed");
 	
 
-?>
