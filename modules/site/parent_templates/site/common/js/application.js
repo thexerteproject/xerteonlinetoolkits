@@ -1808,6 +1808,26 @@ window.onhashchange = function() {
 
 		parseContent({ type: "check", id: tempPage }, tempSection, tempContent, false);
 	}
+
+    var listID = Number(location.href.substr(location.href.length-1,1));
+    setTimeout("updateMenu("+listID+")", 100);  //-- run 100 ms later to avoid the confliction with the original codes
+}
+
+function updateMenu(listID) {
+	if (!$.isNumeric(listID)) {
+		listID = 1;
+	}
+	
+    var navUL = document.getElementById("toc");
+    navLists = navUL.getElementsByTagName('li');
+	
+    for (i=0; i<navLists.length; i++) {
+        if (i == listID-1) {
+            navLists[i].className = "active";
+        } else {
+            navLists[i].className = "";
+        }
+    }
 }
 
 // jump to specified section of current page
