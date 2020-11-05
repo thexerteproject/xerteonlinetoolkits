@@ -2845,7 +2845,7 @@ function x_isMenu() {
 
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML, exclude, list) {
-    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt"],
+    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt", "side1", "side2"],
         i, j, len;
 	if (pageXML.nodeName == "mcqStepOption") { attrToCheck.push("name"); } // don't include name normally as it's generally only used in titles
 
