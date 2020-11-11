@@ -2703,7 +2703,7 @@ var EDITOR = (function ($, parent) {
             };
 
             // Ok handler
-            var okbutton = $('#featherlight-content button[name="ok"]');
+            var okbutton = $('.hotspotEditor  button[name="ok"]');
             okbutton.click(function(event){
 
                 var key = $("#inner_img_" + id).data("key");
@@ -2778,7 +2778,7 @@ var EDITOR = (function ($, parent) {
             });
 
             // Cancel handler
-            var cancelbutton = $('#featherlight-content button[name="cancel"]');
+            var cancelbutton = $('.hotspotEditor button[name="cancel"]');
             cancelbutton.click(function(event){
                 var key = $("#inner_img_" + id).data("key");
                 var current = $.featherlight.current();
@@ -2787,7 +2787,7 @@ var EDITOR = (function ($, parent) {
             });
 
             // Switch to polygon mode
-            var polygonbutton = $('#featherlight-content #poly_'+id);
+            var polygonbutton = $('.hotspotEditor  #poly_'+id);
             if (forceRectangle)
             {
                 polygonbutton.prop("disabled", true);
@@ -2812,7 +2812,7 @@ var EDITOR = (function ($, parent) {
                 disableReset();
             };
 
-            var rectanglebutton = $('#featherlight-content #rectangle_'+id);
+            var rectanglebutton = $('.hotspotEditor #rectangle_'+id);
             rectanglebutton.click(function (event) {
                 if (shape != "rectangle") {
                     switchToRectangleMode();
@@ -2833,7 +2833,7 @@ var EDITOR = (function ($, parent) {
             };
 
             // Reset handler
-            var resetbutton = $('#featherlight-content #reset_'+id);
+            var resetbutton = $('.hotspotEditor  #reset_'+id);
             resetbutton.click(function (event){
                 switch (shape)
                 {
