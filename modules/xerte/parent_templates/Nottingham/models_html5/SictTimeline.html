@@ -1,15 +1,15 @@
 <link title="timeline-styles" rel="stylesheet" href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
 
 <script type="text/javascript">
-	
+
 	// NEW PAGE MODELS SHOULD BE BASED ON THIS TEMPLATE
 	// ------------------------------------------------
 	// change lines 10 and 28 below so that "pageName" matches the unique name of the page in the xwd
 	// save this file to models_html5 as pageName.html
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
-	var SictTimeline = new function() {		
+	var SictTimeline = new function() {
 		        this.loadJS = function () {
 			$.getScript(x_templateLocation + 'common_html5/js/timeline.js')
 				.done(function (script, textStatus) {
@@ -42,6 +42,7 @@
 							}
 						}).get()
 					};
+					debugger
 					console.log(make_the_json);
 					var timeline_json = make_the_json; // replace make_the_json() with the JSON object you created
 					// two arguments: the id of the Timeline container (no '#')
@@ -55,24 +56,23 @@
 		}
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			
+
 		}
-		
+
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+
 		}
-		
+
 		this.init = function() {
-		        	debugger;
 			this.loadJS();
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		}
 	}
-	
+
 	SictTimeline.init();
-	
+
 </script>
 
 
@@ -82,5 +82,5 @@
 
 
 <div id="pageContents">
-	<div id='timeline-embed' style="width: 100%; height: 600px"></div>
+	<div id='timeline-embed' style="width: 100%; height: 500px"></div>
 </div>

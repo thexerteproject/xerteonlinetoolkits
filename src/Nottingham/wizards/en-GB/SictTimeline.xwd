@@ -20,14 +20,17 @@
     <SictTimeline menu="Media" menuItem="Presentable Timeline" icon="icTime" hint="A customizable timeline built up with seperate sections" thumb="thumbs/timeline.jpg" removed="true">
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <text label="Page Text" type="TextArea" height="150"/>
-        <image type="group" label="Image">
+        <image type="group" label="Image" optional="true">
           <url label="File" type="media"/>
           <tip label="Description" type="TextInput"/>
         </image>
         <newNodes>
         <!--  <timelinedate><![CDATA[<timelinedate name="" text="" date="Choose Date"/>]]></timelinedate> -->
+          <timeLineText><![CDATA[<timeLineText name="Enter Page Title" text="" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
           <timelineimage><![CDATA[<timelineimage name="Enter Page Title" text="" align="Left" url="Select an Image" tip="" date="Choose Date"/>]]></timelineimage>
-          <timelinevideo><![CDATA[<timelinevideo name="Enter Page Title" url="Select a Video" text="" pause="True" erase="True" date="Choose Date"/>]]></timelinevideo>   
+          <timelinevideo><![CDATA[<timelinevideo name="Enter Page Title" url="Select a Video" text="" pause="True" erase="True" date="Choose Date"/>]]></timelinevideo>
+          <timeLineAudio><![CDATA[<timeLineAudio name="Enter Page Title" url="Select a Audio" text="" pause="True" erase="True" date="Choose Date"/>]]></timeLineAudio>
+
         </newNodes>
     </SictTimeline>
 
@@ -36,6 +39,12 @@
       <name label="Name" type="TextInput" wysiwyg="true"/>
       <text label="Description" type="TextArea" height="100"/>
     </timelinedate> -->
+
+    <timeLineText menuItem="Text item" icon="icPageWhite" remove="true">
+      <date label="Datum" type="dateField" defaultValue=""/>
+      <name label="Name" type="TextInput" wysiwyg="true"/>
+      <text label="Description" type="TextArea" height="150"/>
+    </timeLineText>
 
     <timelineimage menuItem="Image item" icon="icPageWhite" max="12" remove="true">
       <date label="Datum" type="dateField" defaultValue="" />
@@ -52,4 +61,10 @@
       <name label="Page Title" type="TextInput" wysiwyg="true"/>
       <url label="Video" type="Media"/>
     </timelinevideo>
+
+    <timeLineAudio menuItem="Audio item" icon="icPageWhite" max="12" remove="true">
+          <date label="Datum" type="dateField" defaultValue=""/>
+          <name label="Page Title" type="TextInput" wysiwyg="true"/>
+          <url label="Audio" type="Media"/>
+    </timeLineAudio>
 </wizard>
