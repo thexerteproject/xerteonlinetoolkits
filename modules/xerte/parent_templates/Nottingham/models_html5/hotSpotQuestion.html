@@ -33,6 +33,7 @@
 		var hotSpotScore = 0;
 		var AmountOfWrongScore = 0;
 		var highlightsArray= []
+		var allHighlightsArray= [];
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$img = $("#image");
@@ -54,12 +55,11 @@
 		};
 
 		this.init = function() {
-			// XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
+			XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
 		    x_currentPageXML.childNodes.forEach(function () {
 				hits.push(false);
 				counter.push(0);
             });
-
 			$img = $("#image");
 
 
@@ -94,9 +94,14 @@
 			$("#checkButton").button({
 				label: "Check"
 			}).click(function (){
+
 				$("#checkButton").button("disable")
 				$("area").off('click')
-				highlightsArray.forEach((highlight) =>{
+				var name;
+				highlightsArray.forEach((highlight, index) =>{
+
+					name = "Hotspot" + " " + highlight.getAttribute("name");
+					XTEnterInteraction(x_currentPage, index, "fill-in", name, [], "-", x_currentPageXML.getAttribute("generalFeedback"), x_currentPageXML.getAttribute("grouping"));
 
 					if(highlight.getAttribute("truth") === "true"){
 						hotSpotScore++;
@@ -106,7 +111,6 @@
 				})
 				if(highlightsArray.length > 0){
 					highlightsArray.forEach((highlight) =>{
-						debugger
 						if(highlight.getAttribute("text") !== null){
 							$("#infoHolder").html("<hr/><h3> je hebt " + hotSpotScore + " antwoorden goed en " + AmountOfWrongScore + " antwoorden fout </h3><br/>");
 							$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
@@ -119,6 +123,31 @@
 					$("#infoHolder").html("<hr/><h3>Je hebt geen antwoorden ingevuld</h3><br/>");
 				}
 
+				var amountOfCorrectOptions = 0;
+				allHighlightsArray.forEach((highlight)=>{
+					if(highlight.getAttribute("truth") === "true"){
+						amountOfCorrectOptions++;
+					}
+				})
+
+            	var setScore = (hotSpotScore/highlightsArray.length)*100
+				highlightsArray.forEach((highlight, index)=> {
+					var result;
+					if(highlight.getAttribute("truth")==="true"){
+						result = {
+							success: true,
+							score: 100.0
+						}
+					}else{
+						result = {
+							correct: false,
+							score: 0
+						}
+					}
+
+					XTExitInteraction(x_currentPage, index, result, "", highlight.getAttribute("name"), "", x_currentPageXML.getAttribute("trackinglabel"));
+				})
+				XTSetPageScore(x_currentPage, setScore);
 			});
 		};
 
@@ -148,7 +177,7 @@
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var _this = this;
-
+					allHighlightsArray.push(_this)
 					// var $hotspot = $('<a class="hotspot transparent" href="#" tabindex="' + (i+2) + '" />');
 					var $hotspot = $('<area class="hotspot" shape="poly" href="#" tabindex="' + (i+2) + '" />');
 
@@ -185,7 +214,6 @@
 						.attr("coords", coords_string)
 						.click(function() {
 
-							debugger
 							var $this = $(this);
 							if($this[0].className === "hotspot highlight"){
 								$this.addClass("selected");
