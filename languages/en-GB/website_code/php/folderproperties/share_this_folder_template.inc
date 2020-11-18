@@ -10,7 +10,7 @@
 	 * @package
 	 */
 
-	define("SHARING_THIS_FEEDBACK_SUCCESS","Folder successfully shared with ");
+	define("SHARING_THIS_FEEDBACK_SUCCESS","Folder content successfully shared with ");
 	
 	define("SHARING_THIS_FEEDBACK_FAIL","Sharing failed ");
 

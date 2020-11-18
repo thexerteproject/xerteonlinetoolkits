@@ -53,7 +53,6 @@ if(is_numeric($_POST['user_id'])&&is_numeric($_POST['folder_id'])){
 
     /**
      * find all templates within this folder
-     * TODO: recursive folders
      */
 
     $current_folder = ['folder_id'=> $folder_id];
@@ -61,7 +60,7 @@ if(is_numeric($_POST['user_id'])&&is_numeric($_POST['folder_id'])){
     $max = 1;
     $all_content = array();
     //collect all content and folders from , "recursively"
-    //This is a breadth first search using dynamic programming:
+    //This is just a simple breadth first search:
     for($i = 0; $i < $max; $i++){
         $current_folder = $all_folders[$i];
 

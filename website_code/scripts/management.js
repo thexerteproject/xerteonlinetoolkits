@@ -1413,3 +1413,176 @@ function sub_select_change_all(template_type_id)
 	$(".sub_page_selection_model_" + template_type_id).prop("checked", checked);
 }
 
+
+// Function user_groups list
+// Create/delete groups, add/remove users to/from groups
+function user_groups_list(){
+	function_to_use="user_groups";
+
+	if(setup_ajax()!=false){
+
+		var url="user_groups.php";
+
+		management_ajax_send_prepare(url)
+
+		xmlHttp.send('no_id=1');
+
+	}
+}
+
+function list_group_members(tag, id=-1){
+
+	var group = document.getElementById(tag).value;
+	if (id != -1){
+		group = id;
+	}
+
+	if(setup_ajax()!=false){
+		if (group != ""){
+			var url="get_group_members.php";
+
+			xmlHttp.open("post","website_code/php/management/" + url,true);
+			xmlHttp.onreadystatechange=list_group_members_stateChanged;
+			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			xmlHttp.send('group_id=' + group);
+		}
+
+	}else{
+
+		alert(USER_LIST_FAIL);
+
+	}
+
+}
+
+
+function list_group_members_stateChanged(){
+
+	if (xmlHttp.readyState==4){
+
+		if(xmlHttp.responseText!=""){
+
+			document.getElementById('memberlist').innerHTML = xmlHttp.responseText;
+
+		}else{
+
+			alert("ERROR " + xmlHttp.responseText);
+
+		}
+	}
+
+}
+
+function add_member(login_id, group_id){
+
+	var group = document.getElementById(group_id).value;
+	var login = document.getElementById(login_id).value;
+
+	if(setup_ajax()!=false && group != ""){
+
+		var url="add_member.php";
+
+		xmlHttp.open("post","website_code/php/management/" + url,true);
+		xmlHttp.onreadystatechange= function () {
+			list_group_members(group_id);
+		};
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		xmlHttp.send('login_id='+ login +'&group_id=' + group);
+
+	}else{
+
+		alert(ADD_MEMBER_FAIL);
+
+	}
+}
+
+
+function delete_member(login_id, group_id){
+
+	var group = document.getElementById(group_id).value;
+
+	if(setup_ajax()!=false && group != ""){
+		var url="delete_member.php";
+
+		xmlHttp.open("post","website_code/php/management/" + url,true);
+		xmlHttp.onreadystatechange= function () {
+			list_group_members(group_id);
+		};
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		xmlHttp.send('login_id='+ login_id +'&group_id=' + group);
+
+	}else{
+
+		alert(DELETE_MEMBER_FAIL);
+
+	}
+}
+
+
+
+function add_new_group( newgroup ){
+	var group_name = document.getElementById(newgroup).value
+
+	if (setup_ajax() != false && group_name != "") {
+
+		if (confirm(CREATE_GROUP + " (" + group_name + ")")) {
+			var url = "create_group.php";
+
+			xmlHttp.open("post", "website_code/php/management/" + url, true);
+			xmlHttp.onreadystatechange = add_new_group_stateChanged;
+			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			xmlHttp.send('group_name=' + group_name);
+		}
+
+	} else {
+
+		alert(GROUP_CREATE_FAIL);
+
+	}
+}
+
+function add_new_group_stateChanged(){
+
+    if (xmlHttp.readyState==4){
+
+        if(xmlHttp.responseText!=""){
+
+            $("#group").html(xmlHttp.responseText).show();
+            $("#newgroup").val('');
+			list_group_members('group', $("#group").val());
+
+        }else{
+
+            alert(GROUP_EXISTS);
+
+        }
+    }
+}
+
+
+function delete_group( group_tag ){
+	var group_id = document.getElementById(group_tag).value
+
+	if (setup_ajax() != false && group_id != "") {
+
+		if (confirm(DELETE_GROUP)) {
+			var url = "delete_group.php";
+
+			xmlHttp.open("post", "website_code/php/management/" + url, true);
+			xmlHttp.onreadystatechange = user_groups_list;
+			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			xmlHttp.send('group_id=' + group_id);
+		}
+
+	} else {
+
+		alert(GROUP_DELETE_FAIL);
+		user_groups_list();
+
+	}
+}
