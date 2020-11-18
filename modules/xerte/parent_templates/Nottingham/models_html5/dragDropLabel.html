@@ -458,7 +458,7 @@
         this.drawTargets = function() {
           $targetHolder = $("#targetHolder");
           var $image = $("#image");
-          var scale = $image.width() / $image.data("origSize")[0];
+          var scale = $image.width() / $image.prop("naturalWidth");
 
           // create targets
           $(x_currentPageXML).children()
@@ -474,11 +474,11 @@
                           xywh.splice(3, 1, xywh[3] + xywh[1]);
                           xywh.splice(1, 1, 0);
                       }
-                      if (xywh[0] + xywh[2] > $image.data("origSize")[0]) {
-                          xywh.splice(2, 1, $image.data("origSize")[0] - xywh[0]);
+                      if (xywh[0] + xywh[2] > $image.prop("naturalWidth")) {
+                          xywh.splice(2, 1, $image.prop("naturalWidth") - xywh[0]);
                       }
-                      if (xywh[1] + xywh[3] > $image.data("origSize")[1]) {
-                          xywh.splice(3, 1, $image.data("origSize")[1] - xywh[1]);
+                      if (xywh[1] + xywh[3] > $image.naturalHeight) {
+                          xywh.splice(3, 1, $image.naturalHeight - xywh[1]);
                       }
 
                       // now adjust for resized image
