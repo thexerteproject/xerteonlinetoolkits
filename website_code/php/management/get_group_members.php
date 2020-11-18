@@ -46,9 +46,11 @@ function get_group_members($group_id){
     $group = db_query_one("SELECT * FROM " . $xerte_toolkits_site->database_table_prefix . "user_groups WHERE group_id=?", array($group_id));
     echo "<h2>" . USER_GROUPS_MANAGEMENT_GROUP_MEMBERS . $group['group_name'] . ".</h2>";
 
+    $membercount = count($query_response);
     if (empty($query_response)){
         echo "<p>" . USER_GROUPS_MANAGEMENT_NO_MEMBERS . "</p>";
     }else{
+        echo "<p>" . USER_GROUPS_MANAGEMENT_MEMBERS_COUNT . $membercount . ($membercount > 1 ? USER_GROUPS_MANAGEMENT_MEMBERS : USER_GROUPS_MANAGEMENT_MEMBER) . "</p>";
         foreach($query_response as $row) {
 
             echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</button><button style=\"float:right;\" type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:delete_member('" . $row['login_id'] . "', 'group')\">" . USER_GROUPS_MANAGEMENT_REMOVE_MEMBER . "</button></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";

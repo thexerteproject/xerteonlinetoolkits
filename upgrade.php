@@ -1024,7 +1024,7 @@ function upgrade_25()
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
     );
 
-    $message = "Creating user_groups table - ok ? " . ($ok ? 'true' : 'false');
+    $message = "Creating user_groups table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
 
     $table = table_by_key('user_group_members');
     $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
@@ -1035,7 +1035,19 @@ function upgrade_25()
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
     );
 
-    $message .= "<br>Creating user_group_members - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $message .= "Creating user_group_members - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('template_group_rights');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `group_id` bigint(20) NOT NULL,
+        `template_id` bigint(20) NOT NULL,
+        `role` char(255) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message .= "Creating template_group_rights - ok ? " . ($ok ? 'true' : 'false') . "<br>";
 
     return $message;
 
