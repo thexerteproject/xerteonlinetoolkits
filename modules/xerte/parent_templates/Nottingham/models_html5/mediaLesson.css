@@ -11,6 +11,37 @@
 	.popcornMedia.youTube {
 		position:	relative;
 	}
+
+	/* TRACKBAR */
+	#trackBarHolder {
+		display: block;
+		height: 80px;
+		width: auto;
+		background: #222222;
+	}
+
+	#trackBarRail {
+		background: #CCCCCC;
+		margin-left: 10px;
+		margin-right: 10px;
+		height: 10px;
+		display: block;
+	}
+
+	#trackBarSlider {
+		width: 28px;
+		height: 28px;
+		background: rebeccapurple;
+		position: relative;
+	}
+
+	.trackBarEventMarker {
+		background: #eeeeee;
+		width: 2px;
+		height: 20px;
+		position: relative;
+		display: inline-block;
+	}
 	
 	/* PANEL LAYOUT */
 	#panelHolder .overlay {

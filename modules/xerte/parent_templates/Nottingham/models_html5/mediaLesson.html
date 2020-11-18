@@ -678,7 +678,40 @@
 					);
 			}
 
-			//Append the overlay panel to the main media panel.
+			// _____ BUILD TRACKBAR HOLDER ____
+
+			// Build structure and add it to the media panel.
+			var $trackBarHolder = $('<div id="trackBarHolder"></div>')
+				.appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex)[0]);
+			var $trackBarRail = $('<div id="trackBarRail"></div>')
+				.appendTo($trackBarHolder);
+			var $trackBarSlider = $('<div id="trackBarSlider"></div>')
+				.appendTo($trackBarRail);
+
+			// Make the style conform to the xerte styles.
+			var seekTo, seekFlag;
+			$trackBarSlider.on('mousedown', function(e){
+				var dr = $(this).addClass("drag").css("cursor","pointer");
+				width = dr.outerWidth();
+				xpos = dr.offset().left + width - e.pageX;
+				$(document.body).on('mousemove', function(e){
+					var ileft = e.pageX + xpos - width;
+					if(dr.hasClass("drag")){
+						dr.offset({left: ileft});
+					}
+				}).on('mouseup', function(e){
+					seekTo = 0;
+					offset = $trackBarSlider.offset().left - $trackBarRail.offset().left;
+					railWidth = $trackBarRail.width();
+					dur = mediaLesson.popcornInstance.duration();
+					seekTo = dur * (offset / railWidth);
+					mediaLesson.popcornInstance.currentTime(seekTo);
+					dr.removeClass("drag");
+				});
+			});
+			
+
+			//Append the overlay panel to the main media.
 			for(i = 0; i < panelData.length; i++) {
 			    if(panelData[i].getAttribute("overlay")) {
                     $('<div class="overlay" id="mydiv"></div>')
@@ -1267,6 +1300,14 @@
 				var thisContent = data[j],
 					pluginName = thisContent.type.split("synch")[1].toLowerCase();
 				
+				// ____ ADD SYNCH EVENT ON SLIDER ____
+				var $eventMarker =  $('<div id=marker_' + j + ' class="trackBarEventMarker"></div>')
+					.appendTo($('#trackBarRail'));
+				frac = thisContent.start / $mediaDiv.data("duration");
+				eventOffset = frac * $('#trackBarRail').width();
+				$eventMarker.css("left", eventOffset);
+				debugger;
+
 				if (thisContent.type == "synchSlides") {
 					$.each(thisContent.allInfo.children, function(c){
 						c.optional = thisContent.optional;
