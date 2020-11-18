@@ -60,7 +60,7 @@ if(is_numeric($_POST['user_id'])&&is_numeric($_POST['folder_id'])){
     $max = 1;
     $all_content = array();
     //collect all content and folders from , "recursively"
-    //This is a breadth first search:
+    //This is just a simple breadth first search:
     for($i = 0; $i < $max; $i++){
         $current_folder = $all_folders[$i];
 

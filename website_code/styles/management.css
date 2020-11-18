@@ -322,9 +322,10 @@ div#admin_area form textarea{
 	margin-left: 40px;
 }
 
-form[name='user_templates'] {
+form[name='user_templates'], form[name='user_groups'], form[name='all_users'] {
 	padding: 10px;
 }
+
 
 #transferownership {
 	padding:10px;
