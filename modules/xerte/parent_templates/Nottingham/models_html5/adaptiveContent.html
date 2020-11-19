@@ -960,7 +960,6 @@
             }
             else if (interactionType == "grouping")
             {
-                debugger;
                 // check open question special options
                 var verb = 'http://adlnet.gov/expapi/verbs/scored';
                 if (interaction.data != null) {
@@ -1009,7 +1008,6 @@
         };
 
         this.drawScore = function(data, interaction, url, type, interactionIndex, fullWidth) {
-            debugger;
             let scoreLabelText = interaction.getAttribute('scoreText');
             if (scoreLabelText == null) {
                 scoreLabelText = 'Your score is {0}';
@@ -1061,7 +1059,22 @@
                 }
 
                 if (statements[0].result.extensions !== undefined) {
-                    let correctQuestionScores = statements[0].result.extensions['http://xerte.org.uk/result/grouping/scores'];
+                    let correctQuestionScores;
+                    if (adaptiveContent.dashboardMode == 'true') {
+                        correctQuestionScores = {};
+                        for (let statement in statements) {
+                            let res = statements[statement].result.extensions['http://xerte.org.uk/result/grouping/scores'];
+                            for (let singleRes in res) {
+                                if (!(res[singleRes][0][0] in correctQuestionScores)) {
+                                    correctQuestionScores[res[singleRes][0][0]] = [res[singleRes][1]];
+                                } else {
+                                    correctQuestionScores[res[singleRes][0][0]].push(res[singleRes][1]);
+                                }
+                            }
+                        }
+                    } else {
+                        correctQuestionScores = statements[0].result.extensions['http://xerte.org.uk/result/grouping/scores'];
+                    }
                     if (correctQuestionScores !== undefined) {
                         if (interaction.getAttribute('showNrOfCorrectQuestions') == 'true') {
                             let numCorrectQuestions = 0;
@@ -1075,9 +1088,17 @@
                             $(`#${escapeUrl(url, type, interactionIndex)} .score .stats`).append(`<li>${txt}</li>`);
                         }
                         if (interaction.getAttribute('showSpecification') == 'true') {
-                            for (let i = 0; i < correctQuestionScores.length; i++) {
-                                txt = `${correctQuestionScores[i][0]}: ${(correctQuestionScores[i][1] === 100) ? CorrectText : IncorrectText}`;
-                                $(`#${escapeUrl(url, type, interactionIndex)} .specification .question-list`).append(`<li>${txt}</li>`);
+                            if (adaptiveContent.dashboardMode == 'true') {
+                                const average = list => list.reduce((prev, curr) => prev + curr) / list.length;
+                                for (let questionScore in correctQuestionScores) {
+                                    txt = `${questionScore}: ${average(correctQuestionScores[questionScore]).toFixed(1)}`;
+                                    $(`#${escapeUrl(url, type, interactionIndex)} .specification .question-list`).append(`<li>${txt}%</li>`);
+                                }
+                            } else {
+                                for (let i = 0; i < correctQuestionScores.length; i++) {
+                                    txt = `${correctQuestionScores[i][0]}: ${(correctQuestionScores[i][1] === 100) ? CorrectText : IncorrectText}`;
+                                    $(`#${escapeUrl(url, type, interactionIndex)} .specification .question-list`).append(`<li>${txt}</li>`);
+                                }
                             }
                         }
                     }
@@ -1098,7 +1119,6 @@
                     const average = list => list.reduce((prev, curr) => prev + curr) / list.length;
                     for (group in visitedGroups) {
                         score = average(visitedGroups[group]);
-                        debugger;
                         if (interaction.getAttribute("showScore") == "true") {
                             var txt = group;
                             txt = `${txt}: ${Math.round(score*10)/10}`;
@@ -1969,7 +1989,6 @@
         };
 
         this.drawGroupedScore = function(data, interaction, url, type, interactionIndex, fullWidth) {
-            debugger;
             // reshuffle
             var groupingStatements = [];
             var userGrouping = [];
@@ -2028,7 +2047,6 @@
                     var statement = JSON.parse(JSON.stringify(data[s[0]]));
                     var sum = statement.result.score.raw;
                     var duration = moment.duration(statement.result.duration);
-                    debugger;
                     if (statement.result.extensions === undefined) {
                         statement.result.extensions = {};
                     }
@@ -2217,7 +2235,6 @@
             }
             Promise.all(promises, function(){
             }).then(function(){
-                //debugger;
                 var sortorder = "none";
                 // find elements that should not be sorted
                 var donotsort = [];
@@ -2308,7 +2325,6 @@
             this.totalresolved = interactions.length;
             $("#loader_text").html(this.resolved + '/' + this.totalresolved);
             this.orderInteractions(interactions, function(oInteractions){
-                //debugger;
                 $("#loader").hide();
                 $('#introductionText').html(x_currentPageXML.getAttribute('introduction'));
 
@@ -2354,7 +2370,6 @@
                 $("#listPanel ul li").click(function(){
                     $("li.select-interaction[data-interaction-index=\"" + adaptiveContent.selected+'\"]').removeClass("selected");
                     adaptiveContent.selected  = $(this).data("interaction-index");
-                    //debugger;
                     $("#infoPanel").html("");
                     $("li.select-interaction[data-interaction-index=\"" + adaptiveContent.selected + '\"]').addClass("selected");
                     $this.drawBlock("#infoPanel", oInteractions[adaptiveContent.selected], adaptiveContent.selected, false);
