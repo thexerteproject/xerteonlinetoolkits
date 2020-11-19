@@ -66,8 +66,8 @@
                     var $this = $(this);
                     if ($this.width() == 0 || $this.height() == 0) resetTargets = true;
                     $this.css({
-                        "left"		:$this.position().left * scale,
-                        "top"		:$this.position().top * scale,
+                        "left"		:parseFloat($this.css('left'), 10) * scale,
+                        "top"		:parseFloat($this.css('top'), 10) * scale,
                         "width"		:$this.width() * scale,
                         "height"	:$this.height() * scale
                     });
@@ -477,8 +477,8 @@
                       if (xywh[0] + xywh[2] > $image.prop("naturalWidth")) {
                           xywh.splice(2, 1, $image.prop("naturalWidth") - xywh[0]);
                       }
-                      if (xywh[1] + xywh[3] > $image.naturalHeight) {
-                          xywh.splice(3, 1, $image.naturalHeight - xywh[1]);
+                      if (xywh[1] + xywh[3] > $image.prop("naturalHeight")) {
+                          xywh.splice(3, 1, $image.prop("naturalHeight") - xywh[1]);
                       }
 
                       // now adjust for resized image
