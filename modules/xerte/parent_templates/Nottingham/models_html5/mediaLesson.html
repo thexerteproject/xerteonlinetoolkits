@@ -86,6 +86,14 @@
 		};
 		
 		this.resizePanels = function() {
+			
+			// Fix Event markers on trackbar track bar. First save old positions. Then (below) fix new positions [1/2]
+			var oldTrackBarWidth = $('#trackBarRail').width();
+			var markerOffsets = [];
+			$('.trackBarEventMarker').each(function(i,e){
+				markerOffsets[i] = e.offsetLeft;
+			});
+
 			var zoomLevel = window.devicePixelRatio;
 			var zoomCorrection = -1/zoomLevel;
 		    // make sure no scroll bars are on screen during panel sizing
@@ -115,6 +123,12 @@
 				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
 			
 			$x_pageHolder.css("overflow", "hidden");
+
+			// Fix Event markers on trackbar track bar. New Positions [2/2]
+			var widthRatio = $('#trackBarRail').width()/oldTrackBarWidth;
+			$('.trackBarEventMarker').each(function(i,e){
+				e.style.left = (markerOffsets[i] * widthRatio) + "px";
+			});
 			
 			this.resizeMedia();
 		};
@@ -687,25 +701,45 @@
 				.appendTo($trackBarHolder);
 			var $trackBarSlider = $('<div id="trackBarSlider"></div>')
 				.appendTo($trackBarRail);
+			var $trackBarTime = $('<div id="trackBarTime">00:00/00:00</div>')
+				.appendTo($trackBarHolder);
 
-			// Make the style conform to the xerte styles.
+			// Handle interactivity of slider
 			var seekTo, seekFlag;
+			$trackBarSlider.on('hover', function(){
+				$(this).css("cursor","pointer");
+			});
 			$trackBarSlider.on('mousedown', function(e){
+				mediaLesson.popcornInstance.pause();
 				var dr = $(this).addClass("drag").css("cursor","pointer");
 				width = dr.outerWidth();
 				xpos = dr.offset().left + width - e.pageX;
+				minx = $trackBarRail.offset().left;
+				maxx = $trackBarRail.width();
+				dur = mediaLesson.popcornInstance.duration();
+				
+				durstr = "" + new Date(dur * 1000).toISOString().substr(11, 8)
 				$(document.body).on('mousemove', function(e){
 					var ileft = e.pageX + xpos - width;
+					newTime = dur * (($trackBarSlider.offset().left - $trackBarRail.offset().left) / $trackBarRail.width());
+					if (ileft < minx) {
+						ileft = minx;
+					}
+					else if (ileft > maxx) {
+						ileft = maxx;
+					}
 					if(dr.hasClass("drag")){
 						dr.offset({left: ileft});
+						$trackBarTime.text((new Date(newTime * 1000).toISOString().substr(11, 8) + "/" + durstr));
 					}
 				}).on('mouseup', function(e){
 					seekTo = 0;
 					offset = $trackBarSlider.offset().left - $trackBarRail.offset().left;
 					railWidth = $trackBarRail.width();
 					dur = mediaLesson.popcornInstance.duration();
-					seekTo = dur * (offset / railWidth);
+					seekTo = dur * (offset / railWidth); // new time
 					mediaLesson.popcornInstance.currentTime(seekTo);
+					mediaLesson.popcornInstance.pause();
 					dr.removeClass("drag");
 				});
 			});
@@ -767,13 +801,29 @@
             this.popcornInstance.on( "timeupdate", function() {
                 var popTime = mediaLesson.popcornInstance.currentTime();
                 //console.log("Timeupdate: " + popTime + " prevTime=" + prevTime + ", seeking=" + mediaLesson.popcornInstance.seeking());
-                var block = mediaLesson.getBlock(lastTime);
+				var block = mediaLesson.getBlock(lastTime);
                 if (lastTime != popTime && popTime > 0) {
                     prevTime = lastTime;
                     lastTime = popTime;
                     mediaLesson.updateTable(vidFullWatched, lastTime);
                     mediaLesson.updateTable(block, lastTime);
-                }
+				}
+				
+				//Slider should follow video
+				$slider = $('#trackBarSlider');
+				$rail = $('#trackBarRail');
+				$trackBarTime = $('#trackBarTime');
+				$trackBarTime.text(convertTime(popTime) + "/" + convertTime(mediaLesson.popcornInstance.duration()));
+				offset = $slider.offset().left - $rail.offset().left;
+				railWidth = $rail.width();
+				frac = popTime / mediaLesson.popcornInstance.duration();
+				sliderOffset = frac * $('#trackBarRail').width();
+				$slider.css("left", sliderOffset);
+
+				function convertTime(seconds){
+					return new Date(seconds * 1000).toISOString().substr(11, 8);
+				}
+
 
             });
             this.popcornInstance.on( "play", function() {
@@ -1306,7 +1356,6 @@
 				frac = thisContent.start / $mediaDiv.data("duration");
 				eventOffset = frac * $('#trackBarRail').width();
 				$eventMarker.css("left", eventOffset);
-				debugger;
 
 				if (thisContent.type == "synchSlides") {
 					$.each(thisContent.allInfo.children, function(c){

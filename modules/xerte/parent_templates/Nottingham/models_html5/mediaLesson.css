@@ -42,6 +42,12 @@
 		position: relative;
 		display: inline-block;
 	}
+
+	#trackBarTime {
+		color: #eeeeee;
+		float: right;
+		display: block;
+	}
 	
 	/* PANEL LAYOUT */
 	#panelHolder .overlay {
