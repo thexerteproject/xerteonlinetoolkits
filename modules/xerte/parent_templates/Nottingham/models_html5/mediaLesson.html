@@ -29,7 +29,8 @@
             blocks = new Array (),
 		    vidFullWatched,
             currSegment,
-            trackinglabel = "",
+			trackinglabel = "",
+			toResize = false,
             prevTime = -1,
             lastTime = -1;
 
@@ -86,14 +87,6 @@
 		};
 		
 		this.resizePanels = function() {
-			
-			// Fix Event markers on trackbar track bar. First save old positions. Then (below) fix new positions [1/2]
-			var oldTrackBarWidth = $('#trackBarRail').width();
-			var markerOffsets = [];
-			$('.trackBarEventMarker').each(function(i,e){
-				markerOffsets[i] = e.offsetLeft;
-			});
-
 			var zoomLevel = window.devicePixelRatio;
 			var zoomCorrection = -1/zoomLevel;
 		    // make sure no scroll bars are on screen during panel sizing
@@ -123,12 +116,6 @@
 				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
 			
 			$x_pageHolder.css("overflow", "hidden");
-
-			// Fix Event markers on trackbar track bar. New Positions [2/2]
-			var widthRatio = $('#trackBarRail').width()/oldTrackBarWidth;
-			$('.trackBarEventMarker').each(function(i,e){
-				e.style.left = (markerOffsets[i] * widthRatio) + "px";
-			});
 			
 			this.resizeMedia();
 		};
@@ -197,6 +184,15 @@
 					$x_window.resize();
 				}
 			});
+
+			// Fix Event markers on trackbar track bar. Fix track bar width
+			if (toResize == true){
+				_mainMedia = $('#trackBarHolder').parent().children()[1];
+				$('#trackBarHolder').css("width", _mainMedia.offsetWidth);
+				$(".trackBarEventMarker").each(function(i,e){
+					e.style.left = e.getAttribute("synchFrac") * $('#trackBarRail').width() + "px";
+				});
+			}
 			
 			$panelHolder.find(".panel .fullH").each(function() {
 				mediaLesson.resizeContent($(this));
@@ -259,7 +255,7 @@
 			}
 			var ww = $holder.width(),
 				wh = Math.floor(ww / ratio),
-				hh = $holder.height() - $holder.find(".panelTitle").outerHeight(true),
+				hh = $holder.height() - $holder.find(".panelTitle").outerHeight(true) - $holder.find("#trackBarHolder").outerHeight(true),
 				hw = Math.floor(hh * ratio);
 
 			if (ww < hw)
@@ -704,40 +700,43 @@
 			var $trackBarTime = $('<div id="trackBarTime">00:00/00:00</div>')
 				.appendTo($trackBarHolder);
 
-			// Handle interactivity of slider
-			var seekTo, seekFlag;
-			$trackBarSlider.on('hover', function(){
-				$(this).css("cursor","pointer");
-			});
-			$trackBarSlider.on('mousedown', function(e){
+			// Fit the structure to the panel by hijacking the main media margins.
+			toResize = true;
+			this.resizeMedia();
+			//_mainMedia = $trackBarHolder.parent().children()[1]
+			//$trackBarHolder.css("width", _mainMedia.offsetWidth);
+
+			// Handle interactivity of slider.
+			var duration = 0;
+			$trackBarSlider.on('hover', function(e){
+					$(this).css("cursor","pointer");
+			}).on('mousedown', function(e){
+				duration = mediaLesson.popcornInstance.duration();
 				mediaLesson.popcornInstance.pause();
 				var dr = $(this).addClass("drag").css("cursor","pointer");
-				width = dr.outerWidth();
-				xpos = dr.offset().left + width - e.pageX;
+				xpos = dr.offset().left + dr.outerWidth() - e.pageX;
+				
 				minx = $trackBarRail.offset().left;
 				maxx = $trackBarRail.width();
-				dur = mediaLesson.popcornInstance.duration();
 				
-				durstr = "" + new Date(dur * 1000).toISOString().substr(11, 8)
+				//convert video duration (s) to HH:MM:SS
+				durString = "" + new Date(duration * 1000).toISOString().substr(11, 8) 
+
 				$(document.body).on('mousemove', function(e){
-					var ileft = e.pageX + xpos - width;
-					newTime = dur * (($trackBarSlider.offset().left - $trackBarRail.offset().left) / $trackBarRail.width());
-					if (ileft < minx) {
-						ileft = minx;
-					}
-					else if (ileft > maxx) {
-						ileft = maxx;
-					}
+					var ileft = e.pageX + xpos - dr.outerWidth();
+					newTime = duration * ((dr.offset().left - minx) / $trackBarRail.width());
+					//clamp the slider to the trackbar rail.
+					ileft = ileft <= minx ? minx : ileft >= maxx ? maxx : ileft;
+
 					if(dr.hasClass("drag")){
 						dr.offset({left: ileft});
-						$trackBarTime.text((new Date(newTime * 1000).toISOString().substr(11, 8) + "/" + durstr));
+						$trackBarTime.text((new Date(newTime * 1000).toISOString().substr(11, 8) + "/" + durString));
 					}
 				}).on('mouseup', function(e){
 					seekTo = 0;
 					offset = $trackBarSlider.offset().left - $trackBarRail.offset().left;
 					railWidth = $trackBarRail.width();
-					dur = mediaLesson.popcornInstance.duration();
-					seekTo = dur * (offset / railWidth); // new time
+					seekTo = duration * (offset / railWidth); // new time
 					mediaLesson.popcornInstance.currentTime(seekTo);
 					mediaLesson.popcornInstance.pause();
 					dr.removeClass("drag");
@@ -745,7 +744,7 @@
 			});
 			
 
-			//Append the overlay panel to the main media.
+			//Append the OVERLAY PANEL to the main media.
 			for(i = 0; i < panelData.length; i++) {
 			    if(panelData[i].getAttribute("overlay")) {
                     $('<div class="overlay" id="mydiv"></div>')
@@ -1353,7 +1352,8 @@
 				// ____ ADD SYNCH EVENT ON SLIDER ____
 				var $eventMarker =  $('<div id=marker_' + j + ' class="trackBarEventMarker"></div>')
 					.appendTo($('#trackBarRail'));
-				frac = thisContent.start / $mediaDiv.data("duration");
+				frac = thisContent.start / mediaLesson.popcornInstance.duration();
+				$eventMarker.attr("synchFrac", frac);
 				eventOffset = frac * $('#trackBarRail').width();
 				$eventMarker.css("left", eventOffset);
 
