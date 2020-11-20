@@ -15,7 +15,7 @@
 	/* TRACKBAR */
 	#trackBarHolder {
 		display: block;
-		height: 56px;
+		height: 48px;
 		width: auto;
 		margin: auto;
 		background: #222222;
@@ -25,25 +25,21 @@
 		background: #CCCCCC;
 		margin-left: 10px;
 		margin-right: 10px;
-		height: 10px;
+		height: 8px;
 		display: block;
 	}
 
 	#trackBarSlider {
-		width: 28px;
-		height: 28px;
+		width: 16px;
+		height: 16px;
 		background: #663399;
 		position: relative;
-	}
-
-	.drag {
-		background: #8833bb;
 	}
 
 	.trackBarEventMarker {
 		background: #eeeeee;
 		width: 2px;
-		height: 20px;
+		height: 16px;
 		position: relative;
 		display: inline-block;
 	}

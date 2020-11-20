@@ -188,10 +188,12 @@
 			// Fix Event markers on trackbar track bar. Fix track bar width
 			if (toResize == true){
 				_mainMedia = $('#trackBarHolder').parent().children()[1];
-				$('#trackBarHolder').css("width", _mainMedia.offsetWidth);
-				$(".trackBarEventMarker").each(function(i,e){
-					e.style.left = e.getAttribute("synchFrac") * $('#trackBarRail').width() + "px";
-				});
+				if (_mainMedia != undefined){
+					$('#trackBarHolder').css("width", _mainMedia.offsetWidth);
+					$(".trackBarEventMarker").each(function(i,e){
+						e.style.left = e.getAttribute("synchFrac") * $('#trackBarRail').width() + "px";
+					});
+				}
 			}
 			
 			$panelHolder.find(".panel .fullH").each(function() {
@@ -709,7 +711,7 @@
 			// Handle interactivity of slider.
 			var duration = 0;
 			$trackBarSlider.on('hover', function(e){
-					$(this).css("cursor","pointer");
+				$(this).css("cursor","pointer");
 			}).on('mousedown', function(e){
 				duration = mediaLesson.popcornInstance.duration();
 				mediaLesson.popcornInstance.pause();
@@ -717,7 +719,7 @@
 				xpos = dr.offset().left + dr.outerWidth() - e.pageX;
 				
 				minx = $trackBarRail.offset().left;
-				maxx = $trackBarRail.width();
+				maxx = $trackBarRail.width() + $trackBarRail.offset().left - dr.outerWidth();
 				
 				//convert video duration (s) to HH:MM:SS
 				durString = "" + new Date(duration * 1000).toISOString().substr(11, 8) 
@@ -741,6 +743,15 @@
 					mediaLesson.popcornInstance.pause();
 					dr.removeClass("drag");
 				});
+			});
+			$trackBarRail.on('mousedown', function(e){
+				duration = mediaLesson.popcornInstance.duration();
+				railWidth = $trackBarRail.width();
+				x = e.offsetX
+				$trackBarSlider.offset({left: e.pageX});
+				seekTo = duration * (x / railWidth); // new time
+				mediaLesson.popcornInstance.currentTime(seekTo);
+				mediaLesson.popcornInstance.pause();
 			});
 			
 
@@ -884,7 +895,7 @@
                 duration = mediaLesson.popcornInstance.duration();
                 XTVideo(x_currentPage, trackinglabel, name, "seeked", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
                 mediaLesson.popcornInstance.pause();
-                mediaLesson.popcornInstance.play();
+                //mediaLesson.popcornInstance.play();
             });
             this.popcornInstance.on("ended", function() {
                 var popTime = mediaLesson.popcornInstance.duration();

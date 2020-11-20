@@ -78,7 +78,8 @@ optional: end position* line
 					var point = JSON.parse(options.points)[0];
 					$target.parent().css({
 						"top": point.y + "%",
-						"left": point.x + "%"
+						"left": point.x + "%",
+						"padding": 0
 					}).show();
 				}
 				$target.show();
