@@ -502,10 +502,10 @@ optional: feedback page synch play enable
 				if (options.overlayPan) {
 					if (options.optional == "false")
 						$target.parent().addClass("qWindow");
-					$target.parent().css(
-					{
-						"top": options.offsetTop + "%",
-						"left": options.offsetLeft + "%",
+					var point = JSON.parse(options.points)[0];
+					$target.parent().css({
+						"top": point.y + "%",
+						"left": point.x + "%"
 					}).show();
 				}
 				$target.show();

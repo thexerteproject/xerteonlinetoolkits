@@ -124,8 +124,7 @@
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-        <offsetTop label="offset top in %" type="TextInput" defaultValue="0" optional="true"/>
-        <offsetLeft label="offset left in %" type="TextInput" defaultValue="0" optional="true"/>
+		<HotSpot label="Choose location" type="locpicker" optional="false"/>
 
 	</synchTextPlus>
 	
@@ -140,6 +139,7 @@
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
+		<HotSpot label="Choose location" type="locpicker" optional="false"/>
 
 		<newNodes>
 			<synchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchSlide>
@@ -212,8 +212,8 @@
 		<optional label="Optional question" type="CheckBox" defaultValue="false" optional="true"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-		<offsetTop label="offset top in %" type="TextInput" defaultValue="0" optional="true"/>
-        <offsetLeft label="offset left in %" type="TextInput" defaultValue="0" optional="true"/>
+
+		<HotSpot label="Choose location" type="locpicker" optional="false"/>
 
 		<feedback type="TextArea" height="40" label="Feedback" optional="true"/>
 

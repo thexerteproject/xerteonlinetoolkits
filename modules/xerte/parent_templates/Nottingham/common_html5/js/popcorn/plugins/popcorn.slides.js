@@ -137,9 +137,10 @@ optional: caption captionPosV captionPosH
 					else {
 						$target.parent().css({"padding": 0});
 					}
+					var point = JSON.parse(options.points)[0];
 					$target.parent().css({
-						"top": options.offsetTop + "%",
-						"left": options.offsetLeft + "%"
+						"top": point.y + "%",
+						"left": point.x + "%"
 					}).show();
 					
 					if (options.child == "false") {
