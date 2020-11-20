@@ -231,3 +231,109 @@ function rename_folder(folder_id,form_tag){
 	}
 
 }
+
+
+/**
+ *
+ * Function sharing status folder
+ * This function handles the display of the current sharing status
+ * modified for use with folders
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function sharing_status_folder_template(){
+
+	if(setup_ajax()!=false){
+
+		var url="sharing_status_folder_template.php";
+
+		folders_ajax_send_prepare(url);
+
+		xmlHttp.send('folder_id=' + window.name);
+
+	}
+}
+
+/**
+ *
+ * Function name select template
+ * This function handles the selecting of a name
+ * modified for use with folders
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function name_select_folder_template(){
+
+	if(setup_ajax()!=false){
+
+		search_string = document.getElementById('share_form').childNodes[0].value;
+
+		if(search_string==""){
+			document.getElementById('area2').innerHTML="<p>" + NAMES_APPEAR + "</p>";
+		}
+
+		if(is_ok_user(search_string)){
+
+			var url="name_select_folder_template.php";
+
+			xmlHttp.open("post","website_code/php/folderproperties/" + url,true);
+			xmlHttp.onreadystatechange=name_share_stateChanged;
+			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			xmlHttp.send('search_string=' + search_string + '&folder_id=' + window.name);
+
+		}else{
+
+			document.getElementById('area2').innerHTML="<p>" + SEARCH_FAIL + "</p>";
+
+		}
+
+	}
+
+}
+
+
+function share_stateChanged(){
+
+	if (xmlHttp.readyState==4){
+
+		if(xmlHttp.responseText!=""){
+
+			document.getElementById('area3').innerHTML = xmlHttp.responseText;
+
+		}
+	}
+}
+
+/**
+ *
+ * Function share this folder
+ * This function handles the sharing of a folder
+ * @param string folder = id of the folder
+ * @param string user - the user to give it to
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function share_this_folder(folder, user){
+
+	if(setup_ajax()!=false){
+		var url="share_this_folder_template.php";
+
+		var role = document.querySelector('input[name="role"]:checked').value;
+
+		xmlHttp.open("post","website_code/php/folderproperties/" + url,true);
+		xmlHttp.onreadystatechange=share_stateChanged;
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		xmlHttp.send('folder_id=' + folder + '&user_id=' + user + '&role=' + role);
+
+	}
+
+}
+
+//   	xmlHttp.open("post",properties_ajax_php_path + url,true);
+// 	xmlHttp.onreadystatechange=properties_stateChanged;
+// 	xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

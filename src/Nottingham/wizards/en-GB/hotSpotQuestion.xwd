@@ -1,0 +1,53 @@
+<wizard menus="Interactivity">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="hotSpotQuestion" generalFeedback="Algemene feedback" text="Pagina met fotos waar je om moet kliken en score bijkomt" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
+  	  nextTxt="Next"
+	  priorTxt="Previous"
+	  />]]></hotSpotQuestion>
+    </newNodes>
+  </pageWizard>
+
+  <!-- HOTSPOT IMAGE INTERACTION============================= -->
+  <hotSpotQuestion menu="Interactivity" menuItem="Hotspot Question" hint="Een test hotspot van Summa" icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
+
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" height="250"/>
+	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+
+	<image type="group" label="Image">
+		<url label="File" type="media"/>
+		<tip label="Description" type="TextInput"/>
+	</image>
+
+    <highlight label="Show Highlight" type="CheckBox" defaultValue="false"/>
+    <hsAppearance type="group" label="Hotspot highlight appearance" optional="true" tooltip="Set colours of hotspots">
+        <hicol label="Stroke colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the edges of the hotspot"/>
+        <hs_strokeOpacity label="Stroke opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of the edges of the hotspot"/>
+        <hs_strokeWidth label="Stroke width" type="TextInput" optional="true" defaultValue="2" tooltip="Width of the edges of the hotspot" />
+        <hs_fill label="Fill hotspot" type="CheckBox" optional="true" defaultValue="true" tooltip="Fill the hotspot" />
+        <hs_fillColor label="Fill colour" type="ColourPicker" optional="true" defaultValue="0x000000" tooltip="The fill colour of the hotspot"/>
+        <hs_fillOpacity label="Fill opacity" type="TextInput" optional="true" defaultValue="0.1" tooltip="The opacity (a decimal number between 0 and 1) of fill colour of the hotspot"/>
+        <hs_showTooltip label="Show tooltip" type="CheckBox" optional="true" defaultValue="true" tooltip="Show tooltip on hover, the label is used as tooltip"/>
+	</hsAppearance>
+    <attempts label="Amount of attempts" type="TextInput" defaultValue="1"></attempts>
+    <generalFeedback label="General Feedback" type="TextArea" wysiwyg="true" DefaultValue="true"/>
+
+    <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
+
+    <newNodes>
+	  <QHotSpot><![CDATA[<QHotSpot name="Hotspot" Feedback="Feedback for the hotspot" x="0" y="0" w="100" h="100" truth="false"/>]]></QHotSpot>
+    </newNodes>
+
+  </hotSpotQuestion>
+
+  <!-- HOTSPOT================================== -->
+  <QHotSpot type="flexhotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <text label="Feedback" type="TextArea" height="250" />
+    <truth label="Hotspot Truth" options="True,False" type="ComboBox" data="true,false" defaultValue="true" width="100"/>
+	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true" />
+  </QHotSpot>
+
+</wizard>

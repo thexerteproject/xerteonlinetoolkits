@@ -8,7 +8,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 // *******************
 // *     Toolbox    *
 // *******************
@@ -41,16 +41,16 @@ var EDITOR = (function ($, parent) {
                 html: itemData.name,
                 class: itemData.name
             };
-            
+
             if (itemData.icon != undefined) {
                 data.icon = itemData.icon;
 				data.html = '<img class="icon" src="' + moduleurlvariable + 'icons/' + itemData.icon + '.png"/>' + data.html;
             }
-			
+
             var item = $("<li>")
 				.append($("<a>", data))
 				.attr("item", itemData.item);
-			
+
 			// it's a category
 			if (itemData.submenu != undefined) {
                 var subList = $("<ul>");
@@ -60,32 +60,32 @@ var EDITOR = (function ($, parent) {
                     }
                 });
                 item.append(subList);
-				
+
 			// it's a page type
             } else if (itemData.item != undefined) {
 				var hint = itemData.hint != undefined ? '<p>' + itemData.hint + '</p>' : "";
 				hint = itemData.thumb != undefined ? '<div>' + language.insertDialog.$preview + ':</div><img class="preview_thumb" alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + hint : hint;
 				hint = hint != "" ? '<hr/>' + hint : hint;
-				
+
 				var $insertInfo = $('<ul class="details"><li><a href="#"><div class="insert_buttons"/>' + hint + '</a></li></ul>'),
 					label = language.insertDialog.$label + ":",
 					pos = label.indexOf('{i}');
-				
+
 				label = pos >= 0 ? label.substr(0, pos) + itemData.name + label.substr(pos + 3) : label;
-				
+
 				$insertInfo.find(".insert_buttons").append('<div>' + label + '</div>');
-				
+
 				$insertInfo.appendTo(item);
 			}
-			
+
             return item;
         };
-		
+
 		// create 1st level of menu and call getMenuItem to add every item and submenu to it
         var $menu = $("<ul>", {
             id: 'menu'
         });
-        
+
         $.each(menu_data.menu, function () {
             if (!this.deprecated && (this.simple_enabled || advanced_toggle)) {
                 $menu.append(
@@ -93,7 +93,7 @@ var EDITOR = (function ($, parent) {
                 )
             };
         });
-		
+
 		// create insert buttons above the page hints / thumbs
             $([
 
@@ -157,7 +157,7 @@ var EDITOR = (function ($, parent) {
                         $menu.find(".insert_buttons").last().append(button);
                 });
             }
-			
+
 		if (typeof insert_menu_object !== 'undefined')
         {
             // menu is aleready set once
@@ -202,7 +202,7 @@ var EDITOR = (function ($, parent) {
         $("#insert_menu").html(insert_menu_object);
 		$menu.find(".ui-menu-item a").first().attr("tabindex", 2);
     },
-    
+
     //Loads the data into the import screen
 	insert_import = function() {
 		parent.tree.refresh_workspaceMerge()
@@ -385,7 +385,7 @@ var EDITOR = (function ($, parent) {
         if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4)  // cdata-section
         {
             lo_data[key]['data'] = makeAbsolute(xmlData[0].firstChild.data);
-			
+
 			if (!alreadyUpgraded)
 			{
 				lo_data[key]['data'] = addLineBreaks(lo_data[key]['data']);
@@ -541,7 +541,7 @@ var EDITOR = (function ($, parent) {
         var label = (nodelabel ? nodelabel : options.label);
         var deprecated = false,
 			groupChild = $(id).parents('.wizardgroup').length > 0 ? true : false;
-		
+
         if (options != null)
         {
             var flashonly = $('<img>')
@@ -568,7 +568,7 @@ var EDITOR = (function ($, parent) {
 						.attr('title', options.deprecated)
                         .height(14)
                         .addClass("deprecated deprecatedIcon"));
-				
+
                 if (options.optional == 'true' && groupChild == false) {
                     var opt = $('<i>').attr('id', 'optbtn_' + name)
                         .addClass('fa')
@@ -630,20 +630,20 @@ var EDITOR = (function ($, parent) {
                 tdlabel.addClass("wizarddeprecated")
             }
             tdlabel.append(label);
-			
+
 			if (options.tooltip) {
 				$('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
 					.attr('title', options.tooltip)
 					.appendTo(tdlabel);
 			}
-			
+
             tr.append(tdlabel)
                 .append($('<td>')
                     .addClass("wizardvalue")
                     .append($('<div>')
                         .addClass("wizardvalue_inner")
                         .append(displayDataType(value, options, name, key))));
-			
+
             $(id).append(tr);
             if (options.optional == 'true' && groupChild == false) {
                 $("#optbtn_"+ name).on("click", function () {
@@ -653,24 +653,24 @@ var EDITOR = (function ($, parent) {
             }
         }
     },
-	
-	
+
+
 	displayGroup = function (id, name, options, key)
     {
 		var tr = $('<tr><td colspan="3"/></tr>');
 		var group = $('<fieldset class="wizardgroup"></fieldset>').appendTo(tr.find('td'));
 		var legend = $('<legend></legend>').appendTo(group);
-		
+
 		if (options.deprecated) {
 			group.addClass("wizarddeprecated");
-			
+
 			legend
 				.append($('<img>')
 				.attr('id', 'deprbtn_' + name)
 				.attr('src', 'editor/img/deprecated.png')
 				.attr('title', options.deprecated)
 				.addClass("deprecated"));
-			
+
 			if (options.optional == 'true') {
 				legend.prepend($('<i>')
 					.attr('id', 'optbtn_' + name)
@@ -680,16 +680,16 @@ var EDITOR = (function ($, parent) {
 					.height(14)
 					.addClass("optional"));
 			}
-			
+
 			legend.append('<span class="legend_label">' + options.label + '</span>');
-			
+
 			tr.attr('id', 'group_' + name)
 				.addClass("wizardattribute")
 				.addClass("wizarddeprecated")
-			
+
 		} else if (options.optional == 'true') {
 			group.addClass("wizardoptional")
-			
+
 			legend
 				.append($('<i>')
 				.attr('id', 'optbtn_' + name)
@@ -698,56 +698,56 @@ var EDITOR = (function ($, parent) {
 				.addClass("xerte-icon")
 				.height(14)
 				.addClass("optional"));
-			
+
 			group.find('legend').append('<span class="legend_label">' + options.label + '</span>');
-			
+
 			tr.attr('id', 'group_' + name)
 				.addClass("wizardattribute")
-			
+
 		} else {
 			group.addClass("wizardparameter");
-			
+
 			group.find('legend').append('<span class="legend_label">' + options.label + '</span>');
-			
+
 			tr.attr('id', 'group_' + name)
 				.addClass("wizardattribute");
 		}
-		
+
 		if (options.tooltip) {
 			$('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
 				.attr('title', options.tooltip)
 				.appendTo(legend.find('.legend_label'));
 		}
-		
+
 		$('<i class="minMaxIcon fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
-		
+
 		legend.find('.legend_label').click(function() {
 			var $icon = $(this).find('i.minMaxIcon');
 			var $fieldset = $(this).parents('fieldset');
-			
+
 			if ($fieldset.find('.table_holder').is(':visible')) {
 				$fieldset.find('.table_holder').slideUp(400, function() {
 					$icon
 						.removeClass('fa-caret-up')
 						.addClass('fa-caret-down');
-					
+
 					$fieldset.addClass('collapsed');
 				});
-				
+
 			} else {
 				$fieldset.find('.table_holder').slideDown(400);
-				
+
 				$icon
 					.removeClass('fa-caret-down')
 					.addClass('fa-caret-up');
-				
+
 				$fieldset.removeClass('collapsed');
 			}
 		});
-		
+
 		var info = "";
 		if (options.info) info = '<div class="group_info">' + options.info + '</div>';
-		
+
 		group.append('<div class="table_holder">' + info + '</div>');
 		group.find('.table_holder').append(
 			$('<table width="100%" class="column_table"><tr></table>')
@@ -764,9 +764,9 @@ var EDITOR = (function ($, parent) {
 					.append(group_table)
 			);
 		}
-		
+
 		$(id).append(tr);
-		
+
 		if (options.optional == 'true') {
 			$("#optbtn_" + name).on("click", function () {
 				removeOptionalProperty(name, options.children);
@@ -796,9 +796,9 @@ var EDITOR = (function ($, parent) {
         if (!confirm('Are you sure?')) {
             return;
         }
-		
+
 		var toDelete = [];
-		
+
 		// if it's a group being deleted then remove all of its children
 		if (children) {
 			for (var i=0; i<children.length; i++) {
@@ -807,10 +807,10 @@ var EDITOR = (function ($, parent) {
 		} else {
 			toDelete.push(name);
 		}
-		
+
         // Find the property in the data store
         var key = parent.tree.getSelectedNodeKeys();
-		
+
 		for (var i=0; i<toDelete.length; i++) {
 			if (toDelete[i] == "hidePage") {
 			    changeNodeStatus(key, "hidden", false);
@@ -835,7 +835,7 @@ var EDITOR = (function ($, parent) {
 				delete lo_data[key]["attributes"][toDelete[i]];
 			};
 		}
-		
+
         /**
          * TOR 20150614
          *
@@ -861,7 +861,7 @@ var EDITOR = (function ($, parent) {
     {
 		// Place attribute
 		lo_data[key]['attributes'][name] = defaultvalue;
-		
+
 		// unlike hidePage, linkPage is initially set to true so tree icon should show immediately
 		if (name == "linkPage") {
             changeNodeStatus(key, "standalone", defaultvalue == "true");
@@ -870,7 +870,7 @@ var EDITOR = (function ($, parent) {
 		// Enable the optional parameter button
 		$('#insert_opt_' + name)
 			.prop('visible', true);
-		
+
 		if (load != false) {
 			parent.tree.showNodeData(key, false, scrollToId);
 		}
@@ -897,7 +897,7 @@ var EDITOR = (function ($, parent) {
             rowid,
             addMode,
             oldValueOfSortColumn;
-		
+
 		// replaces contents in empty cells with " " to avoid them being interpreted as end of row
 		$.each(postdata, function(key, element, i) {
 			if (key.indexOf("col_") == 0 && element == "") {
@@ -908,7 +908,7 @@ var EDITOR = (function ($, parent) {
 				postdata[key] = postdata[key].replace(/\|/g, "&#124;");
 			}
 		});
-		
+
         if (postdata[id_in_postdata])
         {
             rowid = postdata[id_in_postdata];
@@ -926,7 +926,7 @@ var EDITOR = (function ($, parent) {
         {
             addMode = rowid === "_empty";
         }
-		
+
         // postdata has row id property with another name. we fix it:
         if (addMode) {
             // generate new id
@@ -935,7 +935,7 @@ var EDITOR = (function ($, parent) {
                 new_id++;
             }
             postdata[idname] = String(new_id);
-			
+
         } else if (typeof(postdata[idname]) === "undefined") {
             // set id property only if the property not exist
             postdata[idname] = rowid;
@@ -951,7 +951,7 @@ var EDITOR = (function ($, parent) {
             data[field] = stripP(data[field]);
         };
         jqGrGridData[key + '_' + id][colnr] = data;
-		
+
         var xerte = convertjqGridData(jqGrGridData[key + '_' + id]);
         setAttributeValue(key, [name], [xerte]);
 
@@ -1007,7 +1007,7 @@ var EDITOR = (function ($, parent) {
                 grid.trigger("reloadGrid", [{current:true}]);
             },100);
         }
-		
+
 		checkRowIds(grid);
 
         // !!! the most important step: skip ajax request to the server
@@ -1018,14 +1018,14 @@ var EDITOR = (function ($, parent) {
     delRow = function(id, key, name, rowid){
 		var gridId = key + '_' + id;
         jqGrGridData[gridId].splice(rowid-1, 1);
-		
+
 		// renumber the data array
 		for (var i=0; i<jqGrGridData[gridId].length; i++) {
 			if (jqGrGridData[gridId][i]['col_0'] != i+1) {
 				jqGrGridData[gridId][i]['col_0'] = String(i+1);
 			}
 		}
-		
+
         var xerte = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [xerte]);
     },
@@ -1052,7 +1052,7 @@ var EDITOR = (function ($, parent) {
             var col = row.length-1;
             row['col_' + col] = defvalue;
         });
-		
+
         var data = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [data]);
         parent.tree.showNodeData(key, true);
@@ -1065,7 +1065,7 @@ var EDITOR = (function ($, parent) {
         $.each(jqGrGridData[gridId], function(i, row){
             delete row['col_' + (colnr)];
         });
-		
+
         var data = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [data]);
         parent.tree.showNodeData(key, true);
@@ -1091,14 +1091,14 @@ var EDITOR = (function ($, parent) {
                 }
             });
         })
-		
+
         return xerte;
     },
 
     jqGridAfterShowForm = function(id, ids, options)
     {
 		var col_id = this.id;
-		
+
         if (options.wysiwyg != 'false' && options.wysiwyg != undefined)
         {
             // destroy editor for all columns
@@ -1122,7 +1122,7 @@ var EDITOR = (function ($, parent) {
                 }
             }
         }
-		
+
         var ckoptions = {
             filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
@@ -1134,7 +1134,7 @@ var EDITOR = (function ($, parent) {
             height : 150,
             resize_enabled: false
         };
-		
+
 		var defaultToolbar = [
 			{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
 			{ name: 'editing',     groups: [ 'spellchecker' ] },
@@ -1144,7 +1144,7 @@ var EDITOR = (function ($, parent) {
 			{ name: 'colors' },
 			{ name: 'insert' }
 		];
-		
+
 		var fullToolbar = [
 			{ name: 'document',	   groups: [ 'mode' ] },
 			{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
@@ -1156,20 +1156,20 @@ var EDITOR = (function ($, parent) {
 			{ name: 'insert' },
 			{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align' ] }
 		];
-		
+
 		// wysiwyg option can be true (defaultToolbar), full (fullToolbar) or false (off) - false is default of no wysiwyg property
 		// can set different wysiwyg setting for each field by having list e.g. 'false,full,full' - otherwise all fields will have same setting
 		var wysiwyg = options.wysiwyg != undefined ? options.wysiwyg.split(',') : 'false';
-		
+
 		$('#' + ids[0].id + ' textarea:visible, #' + ids[0].id + ' input:visible').each(function(i) {
 			var col_id = this.id;
-			
+
 			if ((wysiwyg.length == 1 && i > 0 && wysiwyg[0] != 'false' && wysiwyg[0] != undefined) || wysiwyg[i] != 'false' && wysiwyg[i] != undefined) {
 				// destroy editor for all columns
 				var myCkOptions = ckoptions;
-				
+
 				myCkOptions.toolbarGroups = wysiwyg[i] == 'full' || (wysiwyg.length == 1 && i > 0 && wysiwyg[0] == 'full') ? fullToolbar : defaultToolbar;
-				
+
 				$(this).ckeditor(function () {
 					// JQGrid
 					// we need to get selected row in case currently we are in Edit Mode
@@ -1183,7 +1183,7 @@ var EDITOR = (function ($, parent) {
 						CKEDITOR.instances[col_id].setData(va[col_id]);
 					}
 				}, myCkOptions);
-				
+
 			} else if ($(this).is('textarea')) {
 				$(this).ckeditor(function () {
 					// JQGrid
@@ -1199,14 +1199,14 @@ var EDITOR = (function ($, parent) {
 					}
 				}, ckoptions);
 			}
-			
+
 		});
-		
+
 		// resize the dialog to make sure they fit on screen once ckeditor has loaded
 		setTimeout(function(){
 			var $dialog = $('#' + ids[0].id).parents('.ui-jqdialog'),
 			$dialogContent = $('#' + ids[0].id);
-			
+
 			if ($dialog.height() > ($('body').height() * 0.8)) {
 				var diff = $dialog.height() - $dialogContent.height();
 				$dialog.height($('body').height() * 0.8);
@@ -1218,10 +1218,10 @@ var EDITOR = (function ($, parent) {
     jqGridAfterCloseForm = function (id, selector, options)
     {
 		var wysiwyg = options.wysiwyg != undefined ? options.wysiwyg.split(',') : 'false';
-		
+
 		$(selector + ' textarea, ' + selector + ' input').each(function(i) {
 			var col_id = this.id;
-			
+
 			if ($(this).is('textarea')) {
 				if ((wysiwyg.length == 1 && i > 0 && wysiwyg[0] != 'false' && wysiwyg[0] != undefined) || wysiwyg[i] != 'false' && wysiwyg[i] != undefined) {
 					$(this).ckeditor(function () {
@@ -1235,7 +1235,7 @@ var EDITOR = (function ($, parent) {
 							}
 						}
 					});
-					
+
 				} else {
 					$(this).ckeditor(function () {
 						try {
@@ -1363,7 +1363,7 @@ var EDITOR = (function ($, parent) {
 										this.on('fileUploadResponse', function(e) {
 											/*self.on('NO-EVENT-WORKS-HERE', function(e) {
 												e.removeListener();
-												inputChanged(options.id, options.key, options.name, self.getData(), self);	
+												inputChanged(options.id, options.key, options.name, self.getData(), self);
 											});*/
 											setTimeout(function () {
 														self.fire('change');
@@ -1417,7 +1417,7 @@ var EDITOR = (function ($, parent) {
             return val;
         }
     },
-    
+
     convertTextInputs = function () {
         $.each(textinputs_options, function (i, options) {
             if (options) {
@@ -1502,7 +1502,7 @@ var EDITOR = (function ($, parent) {
     {
         $.each(colorpickers, function (i, options){
 			var myPicker = new jscolor.color(document.getElementById(options.id), {'required':false});
-			
+
 			if (options.value != undefined) {
 				myPicker.fromString(Array(7-options.value.length).join('0') + options.value);
 			}
@@ -1516,9 +1516,9 @@ var EDITOR = (function ($, parent) {
         // cf. the source of http://www.ok-soft-gmbh.com/jqGrid/LocalFormEditing.htm as an excellent example
         jqGridsLastSel = {};
         jqGridsColSel = {};
-		
+
         $.each(datagrids, function(i, options){
-			
+
 			var thisGrid = this;
 			// Get the data for this grid
             var data = lo_data[options.key].attributes[options.name];
@@ -1535,16 +1535,16 @@ var EDITOR = (function ($, parent) {
                 });
                 rows.push(record);
             });
-			
+
             var gridoptions = options.options;
             var key = options.key;
 			var id = options.id;
 			var gridId = key + '_' + id; // uses this to store data against now instead of just key so that multiple grids on wizard work correctly
-			
+
 			jqGridsLastSel[gridId] = -1;
             jqGridsColSel[gridId] = -1;
             jqGrGridData[gridId] = rows;
-			
+
             var name = options.name;
             var nrCols = gridoptions.columns;
             var addCols = false;
@@ -1604,7 +1604,7 @@ var EDITOR = (function ($, parent) {
                 }
             };
             colModel.push(col);
-			
+
 			var wysiwygOn = false;
 
             for (var i=0; i<nrCols-1; i++)
@@ -1621,7 +1621,7 @@ var EDITOR = (function ($, parent) {
                 }
                 col['editable'] = (editable[i] !== undefined ? (editable[i] == "1" ? true : false) : true);
                 col['sortable'] = false;
-				
+
 				if (gridoptions.wysiwyg != undefined) {
 					var wysiwyg = gridoptions.wysiwyg.split(',');
 					if ((wysiwyg.length == 1 && i > 0 && wysiwyg[0] != 'false' && wysiwyg[0] != undefined) || wysiwyg[i] != 'false' && wysiwyg[i] != undefined) {
@@ -1631,14 +1631,14 @@ var EDITOR = (function ($, parent) {
 						wysiwygOn = true;
 					}
 				}
-				
+
                 colModel.push(col);
             }
-			
+
             var editSettings,
                 addSettings,
                 delSettings;
-			
+
 			editSettings = {
 				top: 50,
 				left: 300,
@@ -1655,7 +1655,7 @@ var EDITOR = (function ($, parent) {
 					return onclickJqGridSubmitLocal(id, key, name, options, postdata);
 				}
 			};
-			
+
 			addSettings = {
 				top: 50,
 				left: 300,
@@ -1671,7 +1671,7 @@ var EDITOR = (function ($, parent) {
 					return onclickJqGridSubmitLocal(id, key, name, options, postdata);
 				}
 			}
-			
+
 			delSettings = {
 				// because I use "local" data I don't want to send the changes to the server
                 // so I use "processing:true" setting and delete the row manually in onclickSubmit
@@ -1681,18 +1681,18 @@ var EDITOR = (function ($, parent) {
 					var grid_id = $.jgrid.jqID(grid[0].id),
                         grid_p = grid[0].p,
                         newPage = grid[0].p.page;
-					
+
 					// reset the value of processing option which could be modified
 					options.processing = true;
-					
+
                     // delete the row
                     grid.delRowData(rowid);
-					
+
 					// rename row ids so the next row that's deleted will be treated correctly
 					checkRowIds(grid);
-					
+
 					$.jgrid.hideModal("#delmod" + grid_id, { gb: "#gbox_"+grid_id, jqm: true, onClose:options.onClose });
-					
+
 					// on the multipage grid reload the grid
                     if (grid_p.lastpage > 1) {
                         if (grid_p.reccount === 0 && newPage === grid_p.lastpage) {
@@ -1703,36 +1703,36 @@ var EDITOR = (function ($, parent) {
                         // reload grid to make the row from the next page visable.
                         grid.trigger("reloadGrid", [{ page: newPage }]);
                     }
-					
+
 					delRow(id, key, name, rowid);
 					return true;
                 },
                 processing:true
             };
-			
+
 			// one or more of the fields being edited has wysiwyg turned on
             if (wysiwygOn == true) {
 				editSettings.afterclickPgButtons = function (whichbutton, formid, rowid) {
 					jqGridAfterclickPgButtons(id, whichbutton, formid, rowid);
 				}
-				
+
 				editSettings.afterShowForm = function(ids) {
 					jqGridAfterShowForm(id, ids, gridoptions);
 				}
-				
+
 				editSettings.onClose = function (selector) {
 					jqGridAfterCloseForm(id, selector, gridoptions);
 				}
-				
+
 				addSettings.afterShowForm = function(ids) {
 					jqGridAfterShowForm(id, ids, gridoptions);
 				}
-				
+
 				addSettings.onClose = function (selector) {
 					jqGridAfterCloseForm(id, selector, gridoptions);
 				}
             }
-			
+
             // Setup the grid
             var grid = $('#' + id + '_jqgrid');
 
@@ -1780,26 +1780,26 @@ var EDITOR = (function ($, parent) {
                         jqGridsColSel[gridId] = iCol - 1;
                     	delbutton.append($('<i>').addClass('fa').addClass('fa-trash').addClass('xerte-icon').height(14))
                         	.append(language.btnDelColumn.$label + ' ' + jqGridsColSel[gridId]);
-						
+
                     	delbutton.switchClass('disabled', 'enabled');
                     	delbutton.prop('disabled', false);
                     }
                     else {
                     	delbutton.append($('<i>').addClass('fa').addClass('fa-trash').addClass('xerte-icon').height(14))
                         	.append(language.btnDelColumn.$label);
-						
+
                     	delbutton.switchClass('enabled', 'disabled');
                     	delbutton.prop('disabled', true);
                     }
                 }
             });
-			
+
             grid.jqGrid('navGrid', '#' + id + '_nav', {refresh: false}, editSettings, addSettings, delSettings, {multipleSearch:true, overlay:false});
-			
+
 			// add the buttons to add / delete columns if required
             if (addCols) {
                 buttons = $('#' + id + '_addcolumns');
-				
+
                 $([
                     {name: language.btnAddColumn.$label, tooltip: language.btnAddColumn.$tooltip, icon:'fa-plus-circle', disabled: false, id: id + '_addcol', click:addColumn},
                     {name: language.btnDelColumn.$label, tooltip: language.btnDelColumn.$tooltip, icon:'fa-trash', disabled: true, id: id + '_delcol', click:delColumn}
@@ -1817,13 +1817,13 @@ var EDITOR = (function ($, parent) {
                         })
                         .append($('<i>').addClass('fa').addClass(value.icon).addClass('xerte-icon').height(14))
                         .append(value.name);
-					
+
                     buttons.append(button);
                 });
-				
+
                 buttons.append($('<br>'));
             }
-			
+
 			// can't get jqGrid to be automatically responsive so listens to window resize to manually resize the grids
 			if (jqGridSetUp != true) {
 				$(window).resize(function() {
@@ -1834,19 +1834,19 @@ var EDITOR = (function ($, parent) {
 						$(this).trigger("resizeEnd");
 					}, 200)
 				});
-				
+
 				$(window).on("resizeEnd", function() {
 					$("#mainPanel .ui-jqgrid").hide();
 					var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
 					$("#mainPanel .ui-jqgrid").show();
 					$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
 				});
-				
+
 				jqGridSetUp == true;
 			}
         });
     },
-	
+
 	checkRowIds = function (grid) {
 		var rows = grid.find('tr.jqgrow, tr.jqgfirstrow');
 		for (var i=0; i<rows.length; i++) {
@@ -1858,7 +1858,7 @@ var EDITOR = (function ($, parent) {
 			}
 		}
 	},
-					
+
 
     setAttributeValue = function (key, names, values)
     {
@@ -1883,7 +1883,7 @@ var EDITOR = (function ($, parent) {
             }
             */
         }
-		
+
 		if (names[0] == "linkPage") {
             changeNodeStatus(key, "standalone", values[0] == "true");
         }
@@ -2021,7 +2021,7 @@ var EDITOR = (function ($, parent) {
     {
         setAttributeValue(key, [name], [value]);
     },
-	
+
 	catListChanged = function (id, key, name, $parentDiv, obj)
 	{
 		var checked = $parentDiv.data('checked');
@@ -2031,7 +2031,7 @@ var EDITOR = (function ($, parent) {
 			checked.splice($.inArray(obj.id.substring(4), checked), 1);
 		}
 		$parentDiv.data('checked', checked);
-		
+
 		setAttributeValue(key, [name], [checked.toString()]);
 	},
 
@@ -2136,12 +2136,12 @@ var EDITOR = (function ($, parent) {
         };
         window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable, 'Browse file', "height=600, width=800");
     },
-	
+
 	previewFile = function(alt, src, title)
 	{
 		// ** currently only previews images - need to allow other file types too
 		src = src.indexOf("FileLocation + '") == 0 ? rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1) : src;
-		
+
 		var $previewImg = $('<img class="previewFile"/>')
 				.on("error", function() {
 						$('.featherlight .previewFile')
@@ -2152,14 +2152,14 @@ var EDITOR = (function ($, parent) {
 					"src": src,
 					"alt": alt
 				})
-		
+
 		var $preview = $('<div/>')
 				.append($previewImg);
-		
+
 		if (title != undefined && title != '') {
 			$preview.prepend('<div class="preview_title">' + title + '</div>');
 		}
-		
+
 		$.featherlight($preview);
 	},
 
@@ -2252,11 +2252,11 @@ var EDITOR = (function ($, parent) {
      */
 	getPageList = function()
 	{
-		
+
 		var tree = $.jstree.reference("#treeview");
 		var lo_node = tree.get_node("treeroot", false);
 		var pages=[];
-		
+
 		if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
 			pages = [
 								[language.XotLinkRelativePages.firstpage,'[first]'],
@@ -2269,7 +2269,7 @@ var EDITOR = (function ($, parent) {
 								/*var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);*/
 								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
 								var hidden = lo_data[key]['attributes'].hidePage;
-								
+
 								if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
 								{
 										var page = [];
@@ -2298,7 +2298,7 @@ var EDITOR = (function ($, parent) {
 								}
 						});
 					}
-		
+
 		return pages;
 	},
 
@@ -2357,7 +2357,7 @@ var EDITOR = (function ($, parent) {
 			} else if (newText.indexOf("<table") != -1) { // no math tags - so just check table tags
 				var tempText = "",
 					tableNum = 0;
-				
+
 				while (newText.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) {
 					tempText += newText.substring(tableNum, newText.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
 					tempText += newText.substring(newText.indexOf("<table", tableNum), newText.indexOf("</table>", tableNum) + 8);
@@ -2702,8 +2702,9 @@ var EDITOR = (function ($, parent) {
                 $("#instructions_" + id).html(instructions);
             };
 
+
             // Ok handler
-            var okbutton = $('#featherlight-content button[name="ok"]');
+            var okbutton = $('.hotspotEditor  button[name="ok"]');
             okbutton.click(function(event){
 
                 var key = $("#inner_img_" + id).data("key");
@@ -2777,8 +2778,14 @@ var EDITOR = (function ($, parent) {
                 parent.tree.showNodeData(key);
             });
 
+            // Add handler
+            var addbutton = $('.hotspotEditor  button[name="add"]');
+            addbutton.click(function (event){
+                current.close();
+            });
+
             // Cancel handler
-            var cancelbutton = $('#featherlight-content button[name="cancel"]');
+            var cancelbutton = $('.hotspotEditor button[name="cancel"]');
             cancelbutton.click(function(event){
                 var key = $("#inner_img_" + id).data("key");
                 var current = $.featherlight.current();
@@ -2787,7 +2794,7 @@ var EDITOR = (function ($, parent) {
             });
 
             // Switch to polygon mode
-            var polygonbutton = $('#featherlight-content #poly_'+id);
+            var polygonbutton = $('.hotspotEditor  #poly_'+id);
             if (forceRectangle)
             {
                 polygonbutton.prop("disabled", true);
@@ -2812,7 +2819,7 @@ var EDITOR = (function ($, parent) {
                 disableReset();
             };
 
-            var rectanglebutton = $('#featherlight-content #rectangle_'+id);
+            var rectanglebutton = $('.hotspotEditor #rectangle_'+id);
             rectanglebutton.click(function (event) {
                 if (shape != "rectangle") {
                     switchToRectangleMode();
@@ -2833,7 +2840,7 @@ var EDITOR = (function ($, parent) {
             };
 
             // Reset handler
-            var resetbutton = $('#featherlight-content #reset_'+id);
+            var resetbutton = $('.hotspotEditor  #reset_'+id);
             resetbutton.click(function (event){
                 switch (shape)
                 {
@@ -3152,11 +3159,11 @@ var EDITOR = (function ($, parent) {
                             triggerRedrawPage(event.data.key);
                         }
 					});
-				
+
 				if (value == '') {
 					html.append($('<option>').attr('value', '').prop('selected', true));
 				}
-				
+
 				for (var i=0; i<s_options.length; i++) {
 					var option = $('<option>')
 						.attr('value', s_data[i]);
@@ -3290,22 +3297,22 @@ var EDITOR = (function ($, parent) {
 				var id = 'select_' + form_id_offset;
 				form_id_offset++;
 				html = $('<div id="' + id + '" class="categoryListHolder">').data('checked', value != '' ? value.split(',') : []);
-				
+
 				if (lo_data.treeroot['attributes'][options.target] != undefined) {
 					// set up all the categories & their checkboxes
 					var categories = lo_data.treeroot['attributes'][options.target].split('||');
-					
+
 					// work out what categories & options there are
 					for (var i=0; i<categories.length; i++) {
 						var categoryInfo = categories[i].split('|');
-						
+
 						if (categoryInfo.length == 2) {
 							var catTitle = categoryInfo[0].trim(),
 								catOpts = categoryInfo[1].split('\n');
-							
+
 							for (var j=0; j<catOpts.length; j++) {
 								catOpts.splice(j, 1, catOpts[j].trim());
-								
+
 								if (catOpts[j].length == 0) {
 									catOpts.splice(j, 1);
 									j--;
@@ -3324,7 +3331,7 @@ var EDITOR = (function ($, parent) {
 									}
 								}
 							}
-							
+
 							if (catTitle.length > 0 && catOpts.length > 0) {
 								categories.splice(i, 1, { name: catTitle, options: catOpts });
 							} else {
@@ -3336,12 +3343,12 @@ var EDITOR = (function ($, parent) {
 							i--;
 						}
 					}
-					
+
 					// if some categories exist add them to the page
 					if (categories.length > 0) {
 						for (var i=0; i<categories.length; i++) {
 							var option = $('<div class="categoryList"><div class="catTitle">' + categories[i].name + ':</div></div>');
-							
+
 							for (var j=0; j<categories[i].options.length; j++) {
 								var checkbox = $('<input>')
 									.attr({
@@ -3357,9 +3364,9 @@ var EDITOR = (function ($, parent) {
                                             triggerRedrawPage(event.data.key);
                                         }
 									});
-								
+
 								var label = $('<label for="cat_' + categories[i].options[j].id + '">' + categories[i].options[j].name + '</label>');
-								
+
 								$('<div class="catGroup">')
 									.appendTo(option)
 									.append(checkbox)
@@ -3411,9 +3418,9 @@ var EDITOR = (function ($, parent) {
                                 triggerRedrawPage(event.data.key);
                             }
 						});
-					
+
 					colorpickers.push({id: id, options: options});
-					
+
 					if (colorvalue != '') {
 						html.attr('value', colorvalue);
 						colorpickers[colorpickers.length-1].value = colorvalue;
@@ -3479,7 +3486,7 @@ var EDITOR = (function ($, parent) {
 					.click(function() {
 						previewFile($(this).attr('alt'), $(this).attr('src'), $(this).attr('alt'));
 					});
-					
+
 				html.append(preview);
 				var description = $("<div>" + theme_list[currtheme].description + "</div><div class='theme_url_param'>" + language.ThemeUrlParam + " " + theme_list[currtheme].name + "</div>");
 				var description_box = $('<div>')
@@ -3775,7 +3782,7 @@ var EDITOR = (function ($, parent) {
                             }
 						})
 						.attr('value', value));
-				
+
 				var td2 = $('<td>');
 				var btnHolder = $('<div style="width:4.5em"></div>').appendTo(td2);
 				btnHolder.append($('<button>')
@@ -3788,7 +3795,7 @@ var EDITOR = (function ($, parent) {
 						browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')))
-				
+
 				btnHolder.append($('<button>')
 					.attr('id', 'preview_' + id)
 					.attr('title', language.compPreview.$tooltip)
@@ -3798,7 +3805,7 @@ var EDITOR = (function ($, parent) {
 						previewFile(options.label, $(this).closest('tr').find('input')[0].value);
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon')));
-						
+
 				html = $('<div>')
 					.attr('id', 'container_' + id)
 					.addClass('media_container');
@@ -3836,7 +3843,7 @@ var EDITOR = (function ($, parent) {
 					value = new Date().toISOString();
 					setAttributeValue(key, [name], [value]);
 				}
-				
+
 				// a datepicker with a browse buttons next to it
 				var td1 = $('<td width="100%">')
 					.append($('<input>')
@@ -3858,7 +3865,7 @@ var EDITOR = (function ($, parent) {
 							dateFormat: 'yy-mm-dd', // the format used to be dd/mm/yyyy so some of code above is to cope with this
 							minDate: options.preventPrev == "true" ? 0 : null
 						}));
-				
+
 				var td2 = $('<td>');
 				var btnHolder = $('<div style="width:4.5em"></div>').appendTo(td2);
 				btnHolder.append($('<button>')
@@ -3870,7 +3877,7 @@ var EDITOR = (function ($, parent) {
 						td1.datepicker("show");
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-calendar').addClass('xerte-icon')))
-				
+
 				html = $('<div>')
 					.attr('id', 'container_' + id)
 					.addClass('media_container');
@@ -3906,7 +3913,7 @@ var EDITOR = (function ($, parent) {
 						.addClass('inlinewysiwyg')
 						.attr('contenteditable', 'true')
 						.append('<p>' + value + '</p>');
-					
+
 					textinputs_options.push({id: id, key: key, name: name, options: options});
 				}
 				else {
@@ -3946,7 +3953,7 @@ var EDITOR = (function ($, parent) {
 		return html;
 	};
 
-		
+
 	CKEDITOR.on('dialogDefinition', function(event) {
 		try {
 			var dialogName = event.data.name;
@@ -3958,7 +3965,7 @@ var EDITOR = (function ($, parent) {
 			}
 		} catch(e) {};
 	});
-	
+
     // Add the functions that need to be public
     my.getExtraTreeIcon = getExtraTreeIcon;
     my.changeNodeStatus = changeNodeStatus;
