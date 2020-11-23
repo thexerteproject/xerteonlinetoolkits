@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -54,18 +54,18 @@
                     });
             }
         };
-		
+
 		this.sizeChanged = function()
 		{
 			var $panel = $("#pageContents .qPanel");
-			
+
 			if (x_browserInfo.mobile == false)
 			{
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 			}
-			
+
 			var resized = false;
-			
+
 			var questionAudio = $(".questionAudio");
 
 			$.each(questionAudio, function(key, qA) {
@@ -87,7 +87,7 @@
                 }
 			});
 
-			
+
 			var audioHolder = $("#pageContents .audioHolder");
 
 			if (audioHolder.length > 0)
@@ -98,7 +98,7 @@
 					$("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function() {
 						audioBarW += $(this).outerWidth();
 					});
-					
+
 					if (audioBarW - audioHolder.parents("#mainPanel").width() < -2 || audioBarW - audioHolder.parents("#mainPanel").width() > 2)
 					{
 						resized = true;
@@ -126,7 +126,7 @@
 			}
 			$(".qTxt").width($panel.width());
 		};
-		
+
 		this.loadAudio = function(currQuestion, soundFile)
 		{
 			if (soundFile != undefined && soundFile != "")
@@ -138,20 +138,20 @@
 				});
 			}
 		};
-		
+
 		this.startQuestions = function()
 		{
 
 			// If the language attricute is not defined in the xml, fall back to English.
 			this.questionNumberText = x_currentPageXML.getAttribute("quesCount");
-			
+
 			if (this.questionNumberText == undefined)
 			{
 				this.questionNumberText = "Question {i} of {n}";
 			}
-			
+
             this.showfeedback = false;
-            
+
             if (x_currentPageXML.getAttribute("showfeedback") != undefined)
             {
                 this.showfeedback = x_currentPageXML.getAttribute("showfeedback") == "true";
@@ -161,7 +161,7 @@
             $("#qHolder").show();
 			$("#checkBtn").show();
 			$("#checkBtn").button("disable");
-			
+
 			this.currentQuestion = 0;
 			this.questions = []; // array of questions to use (index)
 			this.myProgress = []; // array of whether each question was answered correctly
@@ -175,12 +175,12 @@
 			if (x_currentPageXML.getAttribute("order") == "random")
 			{
 				var questionNumbers = [];
-				
+
 				for (var i = 0; i < numberOfQuestions; i++)
 				{
 					questionNumbers.push(i);
 				}
-				
+
 				for (var i = 0; i < numberOfQuestions; i++)
 				{
 					var questionNumber = Math.floor(Math.random() * questionNumbers.length);
@@ -197,14 +197,14 @@
 					this.myProgress.push("");
 				}
 			}
-			
+
 			this.weighting =  x_currentPageXML.getAttribute("trackingWeight") != undefined ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
 
             XTSetPageType(x_currentPage, 'numeric', numberOfQuestions, this.weighting);
 
 			this.loadQuestions();
-			
-            x_pageContentsUpdated();		
+
+            x_pageContentsUpdated();
 		};
 
 		this.loadQuestions = function()
@@ -213,7 +213,7 @@
             this.radioButtonQuestions = [];
 		    if (this.listMode || this.listMode == 'all')
 			{
-			
+
 			    if (this.pageMode || (this.pageMode == undefined && this.listMode == true))
 				{
                     $("#qNo").html(this.questionNumberText.replace("{i}", (this.currentQuestion + 1) + " - " + (Math.min(this.currentQuestion + this.pageSize, opinion.questions.length))).replace("{n}", this.questions.length));
@@ -274,7 +274,7 @@
 				var $thisQ = $(x_currentPageXML).children().children()[this.questions[currQuestion]];
 
 				var infoString = $thisQ.getAttribute("prompt");
-				
+
 				if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
 					opinion.loadAudio(currQuestion, $thisQ.getAttribute("sound"));
 				}
@@ -282,26 +282,26 @@
 				{
 					$("#questionAudio" + currQuestion).empty();
 				}
-				
+
 				var url = $thisQ.getAttribute("image");
-				
+
 				if (url != undefined && url != "") {
 					var newString = "";
 					newString += '<img class="qImg" src="' + x_evalURL(url) + '" class="opinionImg"';
-					
+
 					if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "")
 					{
 						newString += 'alt="' + $thisQ.getAttribute("tip") + '"';
 					}
-					
+
 					newString += ' />';
 					infoString = newString + infoString;
 				}
-				
+
 				$("#qTxt" + currQuestion).html(x_addLineBreaks(infoString));
 
 				$("#feedback").html("");
-				
+
 				if ($($thisQ).children().length == 0)
 				{
 					$("#sliderHolder" + currQuestion).html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
@@ -512,7 +512,7 @@
 				}
 			}
 		};
-		
+
 		this.pageChanged = function()
 		{
 			if ($(x_currentPageXML).children().length > 0)
@@ -520,7 +520,7 @@
 				this.startQuestions();
 			}
 		};
-		
+
 		this.leavePage = function()
 		{
 			if ($(x_currentPageXML).children().length > 0)
@@ -529,7 +529,7 @@
 				{
 					this.trackQuestions();
 				}
-				
+
 				if (!this.resultShown)
 				{
 					this.trackOpinion();
@@ -590,14 +590,14 @@
            	}
 
         	currentQuestionValue = calcPercentage(selected, options.length);
-        	
+
         	if (currentQ.getAttribute("scale") == "true")
        		{
-       			currentQuestionValue = 100 - currentQuestionValue;           		
+       			currentQuestionValue = 100 - currentQuestionValue;
        		}
-			
+
             l_answer = Math.round(currentQuestionValue * 10.0) / 10.0;
-            
+
             var currentQuestionString = currQuestion + "";
             answeredValues[currentQuestionString] = currentQuestionValue;
 
@@ -613,7 +613,7 @@
             };
 			XTExitInteraction(x_currentPage, opinion.questions[currQuestion], result, l_options, l_answer, null, x_currentPageXML.getAttribute("trackinglabel"));
             opinion.myProgress.splice(currQuestion, 1, correct);
-            
+
 			// Continue to next question
 			opinion.currentQuestion++;
 
@@ -626,7 +626,7 @@
 
             x_pageContentsUpdated();
 		};
-		
+
 		this.trackOpinion = function() {
             // Last question answered - show results
             JSONGraph = opinion.createGraphObject();
@@ -637,16 +637,16 @@
 
             var $pageContents = $("#pageContents");
             $("#qNo").html($pageContents.data("onCompletionText"));
-            
+
             var feedbackText = x_currentPageXML.getAttribute("feedback") != '' ? "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>" : '';
 
             var myScore = 0;
-            
+
             for (var key in answeredValues)
             {
             	myScore += answeredValues[key];
             }
-            
+
             myScore = Math.round(10 * myScore / Object.keys(answeredValues).length) / 10;
 
             if (opinion.showfeedback && feedbackText != '') {
@@ -668,11 +668,11 @@
             XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph), x_currentPageXML.getAttribute("trackinglabel"));
             opinion.checked = true;
 		};
-		
+
 		function calcPercentage(index, count)
 		{
 			var value;
-		 	
+
 			if (index == 0)
        		{
         		value = 0;
@@ -685,7 +685,7 @@
        		{
        			value = index / (count - 1) * 100;
        		}
-			
+
 			return value;
 		}
 
@@ -730,8 +730,9 @@
 
 		this.createDiagram = function(graphObject)
 		{
-			var classNames = graphObject.classnames;
-			var classTitles = graphObject.classtitles;
+      var htmlToChar = function(h){return $("<div>").html(h).text();};
+			var classNames = graphObject.classnames.map(function(a){return htmlToChar(a);});
+			var classTitles = graphObject.classtitles.map(function(a){return htmlToChar(a);});
 			var classValues = graphObject.classvalues;
 
 			function hexToRgb(hex, opa) {
@@ -755,7 +756,7 @@
                 data: {
                     labels: classTitles,
                     datasets: [{
-						label: x_currentPageXML.getAttribute("name"),
+						label: htmlToChar(x_currentPageXML.getAttribute("name")),
                         data: classValues,
 						backgroundColor: bgColour,
 						borderColor: lnColour
@@ -824,7 +825,7 @@
             var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
 				$splitScreen = $("#pageContents .splitScreen"),
 				$textHolder = $("#textHolder");
-			
+
 			if (panelWidth == "Full")
 			{
 				$("#infoHolder .panel").appendTo($("#pageContents"));
@@ -834,7 +835,7 @@
 			{
 				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
 				var textAlign = x_currentPageXML.getAttribute("align");
-				
+
 				if (textAlign != "right")
 				{
 					if (panelWidth == "Small")
@@ -873,20 +874,20 @@
 					}
 				}
 			}
-			
+
 			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "")
 			{
 				var tip = x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "" ?
 						'alt="' + x_currentPageXML.getAttribute("tip") + '"' : "";
 				$textHolder.append('<img class="opinionImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + tip +'>');
 			}
-			
+
 			var submitBtnText = x_currentPageXML.getAttribute("submitBtnText");
 			if (submitBtnText == undefined)
 			{
 				submitBtnText = "Submit";
 			}
-			
+
 			var onCompletionText = x_currentPageXML.getAttribute("onCompletion");
 			if (onCompletionText == undefined)
 			{
@@ -896,7 +897,7 @@
             $("#pageContents").data({
 				"onCompletionText"	:onCompletionText,
 			});
-            
+
             // submit button
             $("#checkBtn")
 			.button({
@@ -908,7 +909,7 @@
 
 			this.startQuestions();
 			this.sizeChanged();
-			x_pageLoaded();			
+			x_pageLoaded();
 		}
 	};
 
@@ -922,28 +923,28 @@
 		<div id="textHolder" class="left"></div>
 
 		<div id="infoHolder" class="right">
-		
+
 			<div id="mainPanel" class="panel qPanel">
-			
+
 				<h3 id="qNo" aria-live="polite"></h3>
-								
+
 				<fieldset class="noStyle">
-				
+
 					<div id="wrapper">
 						<div id="qHolder"></div>
 						<div id="buttonHolder">
 							<button id="checkBtn"></button>
 						</div>
 					</div>
-					
+
 					<div id="feedback" aria-live="polite"></div>
 					<canvas id="diagram" aria-live="polite"></canvas>
 
-					
+
 				</fieldset>
-				
+
 			</div>
-			
+
 		</div>
 
 	</div>
