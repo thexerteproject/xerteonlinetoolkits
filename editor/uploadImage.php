@@ -21,6 +21,8 @@
 require_once(dirname(__FILE__) . "/../config.php");
 _load_language_file("/editor/uploadImage.inc");
 
+require (dirname(__FILE__) . "/../" . $xerte_toolkits_site->php_library_path . "user_library.php");
+
 function sanitizeName($file, &$response)
 {
     $filename = str_replace(' ', '_', $file);
