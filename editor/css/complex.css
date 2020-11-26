@@ -506,7 +506,7 @@ span.button-close-east			{ background: url(../img/chevron-right_444444_15.png) n
 
 /* INSERT MENU STYLES */
 .ui-menu {
-    /*width: 250px;*/
+    width: 250px;
 }
 
 #insert-info {
@@ -526,14 +526,10 @@ span.button-close-east			{ background: url(../img/chevron-right_444444_15.png) n
     position: absolute;
 }
 
-#menu .ui-icon {
-	margin-left: 1em;
-}
-
 #insert_menu {
 	position: absolute;
     z-index: 5;
-    width: auto;
+    width: 150px;
 }
 
 #insert_menu #menu, #insert_menu #menu > li > ul > li  {
@@ -554,10 +550,6 @@ span.button-close-east			{ background: url(../img/chevron-right_444444_15.png) n
 
 }
 
-#insert_menu #menu .ui-menu {
-	position: fixed !important;
-}
-
 #insert_menu .ui-menu .ui-menu-item {
 	display: block;
 }
@@ -569,7 +561,6 @@ span.button-close-east			{ background: url(../img/chevron-right_444444_15.png) n
 
 #insert_menu .ui-menu.details {
 	padding:	5px;
-	width: 250px;
 	position:	fixed !important;
 }
 
