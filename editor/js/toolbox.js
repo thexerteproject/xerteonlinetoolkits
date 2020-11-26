@@ -473,6 +473,10 @@ var EDITOR = (function ($, parent) {
             attribute_value = attributes[name];
             attr_found = true;
         }
+        if (name == "HotSpot")
+        {
+            return {found : true, value: "ERROR"};
+        }
         if (!attr_found)
         {
             if (options.cdata && options.cdata_name == name)
@@ -3731,7 +3735,6 @@ var EDITOR = (function ($, parent) {
             case 'flexhotspot':
 				var id = 'hotspot_' + form_id_offset;
 				form_id_offset++;
-
                 // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
                 // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
                 var forceRectangle = (options.type.toLowerCase() === "hotspot");
@@ -3754,12 +3757,20 @@ var EDITOR = (function ($, parent) {
                 if (url != undefined) {
                     url = makeAbsolute(url);
                 }
-                else {
+
+                // Create a white canvas to use in lieu of an image for location selector.
+                else if (lp === true) {
+                    // Flexbox doesn't mean anything in this context. Best just ignore it.
+                    forceRectangle = true;
+
                     var whiteImage = document.createElement("CANVAS");
+                    var ctx = whiteImage.getContext("2d");
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.fillRect(0, 0, whiteImage.width, whiteImage.height);
                     url = whiteImage.toDataURL();
                 }
                 // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
-                if (url.substring(0,4) == "http" || lp == true)
+                if (url.substring(0,4) == "http" || lp === true)
                 {                    
                     var shape = "square";
                     html.addClass('clickableHotspot');
