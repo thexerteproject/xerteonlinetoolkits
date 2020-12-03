@@ -1362,7 +1362,8 @@
 				// ____ ADD SYNCH EVENT ON SLIDER ____
 				var $eventMarker =  $('<div id=marker_' + j + ' class="trackBarEventMarker"></div>')
 					.appendTo($('#trackBarRail'));
-				frac = thisContent.start / mediaLesson.popcornInstance.duration();
+				var duration = isNaN(popcornInstance.duration()) ? $mediaDiv.data("duration") : popcornInstance.duration();
+				frac = thisContent.start / duration
 				// Do not add this event to the timeline if it doesn't occur during the duration of the video.
 				if (frac < 0 || frac > 1) {
 					$eventMarker.remove();
