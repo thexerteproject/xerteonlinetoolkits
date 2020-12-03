@@ -2476,7 +2476,7 @@ var EDITOR = (function ($, parent) {
             '<button id="' + id + '_ok" name="ok" class="hseditModeButton" title="' + language.Alert.oklabel + '" style="float:right"><i class="fas fa-2x fa-check-square"></i></button>' +
             '</div>');
 
-            edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');
+        edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');
         edit_img.append('<div class="hsinstructions" id="instructions_' + id + '"></div>');
         /*
         edit_img.append($('<button>')
@@ -3737,7 +3737,7 @@ var EDITOR = (function ($, parent) {
 				form_id_offset++;
                 // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
                 // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
-                var forceRectangle = (options.type.toLowerCase() === "hotspot");
+                var forceRectangle = !(options.type.toLowerCase() === "flexhotspot");
                 var lp = (options.type.toLowerCase() === "locpicker");
 				var hsattrs = lo_data[key].attributes;
                 var hsparent = parent.tree.getParent(key);
@@ -3760,14 +3760,15 @@ var EDITOR = (function ($, parent) {
 
                 // Create a white canvas to use in lieu of an image for location selector.
                 else if (lp === true) {
-                    // Flexbox doesn't mean anything in this context. Best just ignore it.
-                    forceRectangle = true;
-
                     var whiteImage = document.createElement("CANVAS");
                     var ctx = whiteImage.getContext("2d");
                     ctx.fillStyle = "#FFFFFF";
                     ctx.fillRect(0, 0, whiteImage.width, whiteImage.height);
                     url = whiteImage.toDataURL();
+                    // Set a default value if using locpicker, so plugins can be rendered.
+                    if (hsattrs.x == undefined || hsattrs.y == undefined){
+                        setAttributeValue(key, ["x", "y", "w", "h"], [0, 0, 0, 0]);
+                    }
                 }
                 // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
                 if (url.substring(0,4) == "http" || lp === true)

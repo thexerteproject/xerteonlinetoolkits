@@ -71,16 +71,17 @@ optional: end position* line
 			start: function(event, options) {
 				// fire on options.start
 				if (options.overlayPan) {
-					if (options.optional === "false")
+					if (options.optional == undefined || options.optional === "false")
 					{
 						$target.parent().addClass("qWindow");
 					}
-					var point = JSON.parse(options.points)[0];
 					$target.parent().css({
-						"top": point.y + "%",
-						"left": point.x + "%",
+						"max-width": options.w + "%",
+						"top": options.y + "%",
+						"left": options.x + "%",
 						"padding": 0
 					}).show();
+					debugger;
 				}
 				$target.show();
 			},

@@ -129,16 +129,17 @@
 			$(".popcornMedia video").each(function(i) {
 				var	$this = $(this),
 					$popcornMedia = $this.closest(".popcornMedia");
+				var holderHeight = toResize ? $('#trackBarHolder').height() : 0;
 				
-				var tempW = $popcornMedia.data("max-width"), tempH = $popcornMedia.data("max-height");
+				var tempW = $popcornMedia.data("max-width"), tempH = $popcornMedia.data("max-height") - holderHeight;
 				if (tempW > $popcornMedia.closest(".panel").width()) {
 					var scale = $popcornMedia.closest(".panel").width() / tempW;
 					tempW = $popcornMedia.closest(".panel").width();
 					tempH = Math.floor(tempH * scale);
 				}
-				if (tempH > $popcornMedia.closest(".panel").height()) {
-					var scale = $popcornMedia.closest(".panel").height() / tempH;
-					tempH = $popcornMedia.closest(".panel").height();
+				if (tempH > $popcornMedia.closest(".panel").height() - holderHeight) {
+					var scale = ($popcornMedia.closest(".panel").height() - holderHeight) / tempH;
+					tempH = $popcornMedia.closest(".panel").height() - holderHeight;
 					tempW = Math.floor(tempW * scale);
 				}
 				
@@ -155,18 +156,20 @@
 					$popcornMedia.next().width($popcornMedia.width());
 				}
 			});
-			
-			$(".popcornMedia.youTube").each(function(i) {
-				mediaLesson.resizeYouTube($(this));
+		    $(".popcornMedia.youTube").each(function(i) {
+		    	mediaLesson.resizeYouTube($(this));
 			});
 			
 			$(".popcornMedia.vimeo").each(function(i) {
                 mediaLesson.resizeVimeo($(this));
             });
 
-            $(".popcornMedia.vimeo").each(function(i) {
+            $(".popcornMedia.midiasite").each(function(i) {
                 mediaLesson.resizeMediasite($(this));
-            });
+			});
+			//$(".popcornMedia").each(function(i) {
+			//	mediaLesson.resizeYouTube($(this));
+			//});
 			
 			$(".audioImg").each(function() {
 				var $this = $(this);
@@ -191,7 +194,11 @@
 				if (_mainMedia != undefined){
 					$('#trackBarHolder').css("width", _mainMedia.offsetWidth);
 					$(".trackBarEventMarker").each(function(i,e){
-						e.style.left = e.getAttribute("synchFrac") * $('#trackBarRail').width() + "px";
+						eventOffset = e.getAttribute("synchFrac") * $('#trackBarRail').width()
+						e.style.left = (eventOffset - 0.5 * e.width())  + "px";
+						if (e.getAttribute("optional") != "true") {
+							$('#trackBarEventMarkerMandatory_' + i).style.left = eventOffset - 0.25 * $('#trackBarEventMarkerMandatory_' + i).width();
+						}
 					});
 				}
 			}
@@ -300,12 +307,7 @@
 		};
 
 		this.resizeMediasite = function($mediasite) {
-		  var parent = $mediasite[0].parentElement;
-
-		  var parentt = $(" .panel tileH fullH ");
-
-		  //$mediasite[0].style.height = "90%"//parent.style.height;
-		  //$mediasite[0].style.width = "100%";
+		  this.resizeYouTube($mediasite)
 		};
 
 		this.leavePage = function () {
@@ -553,14 +555,15 @@
 				$("#contentCover").hide();
 			}
 			
-			// create all panels
+			// create all panels, including the overlay panel
 			for (var i=0; i<panelData.length; i++) {
 				var title = "";
+				// give the panel a name
 				if (panelData[i].getAttribute("name") != "") {
                     title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
-                }
-				if (panelData[i].getAttribute("overlay") == "true")
-				{
+				}
+				// mark the overlay panel and all its relevant children as such
+				if (panelData[i].nodeName == "overlayPanel") {
 					$(panelData[i].children).each(function(j){
 						if (this.nodeName == "synchSlides")	{
 							$(this.children).each(function(k){
@@ -570,6 +573,7 @@
 						this.setAttribute("overlayPan", "true");
 					});
 				}
+				// name and id all other panels
 				else{
                     $('<div class="panel">' + title + '</div>')
                         .appendTo($panelHolder)
@@ -692,7 +696,7 @@
 
 			// _____ BUILD TRACKBAR HOLDER ____
 
-			// Build structure and add it to the media panel.
+			// Build trackbar structure hierarchy and add it to the media panel.
 			var $trackBarHolder = $('<div id="trackBarHolder"></div>')
 				.appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex)[0]);
 			var $trackBarRail = $('<div id="trackBarRail"></div>')
@@ -705,16 +709,13 @@
 			// Fit the structure to the panel by hijacking the main media margins.
 			toResize = true;
 			this.resizeMedia();
-			//_mainMedia = $trackBarHolder.parent().children()[1]
-			//$trackBarHolder.css("width", _mainMedia.offsetWidth);
 
 			// Handle interactivity of slider.
 			var duration = 0;
-			$trackBarSlider.on('hover', function(e){
-				$(this).css("cursor","pointer");
-			}).on('mousedown', function(e){
-				duration = mediaLesson.popcornInstance.duration();
-				mediaLesson.popcornInstance.pause();
+			var mp = mediaLesson.popcornInstance;
+			
+			$trackBarSlider.on('mousedown', function(e){
+				mp.pause();
 				var dr = $(this).addClass("drag").css("cursor","pointer");
 				xpos = dr.offset().left + dr.outerWidth() - e.pageX;
 				
@@ -722,12 +723,11 @@
 				maxx = $trackBarRail.width() + $trackBarRail.offset().left - dr.outerWidth();
 				
 				//convert video duration (s) to HH:MM:SS
-				durString = "" + new Date(duration * 1000).toISOString().substr(11, 8) 
+				durString = "" + new Date(mp.duration() * 1000).toISOString().substr(11, 8) 
 
 				$(document.body).on('mousemove', function(e){
 					var ileft = e.pageX + xpos - dr.outerWidth();
-					newTime = duration * ((dr.offset().left - minx) / $trackBarRail.width());
-					//clamp the slider to the trackbar rail.
+					newTime = mp.duration() * ((dr.offset().left - minx) / ($trackBarRail.width() - dr.outerWidth()));
 					ileft = ileft <= minx ? minx : ileft >= maxx ? maxx : ileft;
 
 					if(dr.hasClass("drag")){
@@ -735,29 +735,25 @@
 						$trackBarTime.text((new Date(newTime * 1000).toISOString().substr(11, 8) + "/" + durString));
 					}
 				}).on('mouseup', function(e){
-					seekTo = 0;
 					offset = $trackBarSlider.offset().left - $trackBarRail.offset().left;
-					railWidth = $trackBarRail.width();
-					seekTo = duration * (offset / railWidth); // new time
-					mediaLesson.popcornInstance.currentTime(seekTo);
-					mediaLesson.popcornInstance.pause();
+					mp.currentTime(mp.duration() * ((dr.offset().left - minx) / ($trackBarRail.width() - dr.outerWidth())));
+					//mp.currentTime(mp.duration() * (offset / $trackBarRail.width()));
+					mp.pause();
 					dr.removeClass("drag");
 				});
 			});
-			$trackBarRail.on('mousedown', function(e){
-				duration = mediaLesson.popcornInstance.duration();
-				railWidth = $trackBarRail.width();
-				x = e.offsetX
+			$trackBarRail.on('hover', function(e){
+				$(this).css("cursor","pointer")
+			}).on('mousedown', function(e){
 				$trackBarSlider.offset({left: e.pageX});
-				seekTo = duration * (x / railWidth); // new time
-				mediaLesson.popcornInstance.currentTime(seekTo);
-				mediaLesson.popcornInstance.pause();
+				mp.currentTime(mp.duration() * (e.offsetX / $trackBarRail.width()));
+				mp.pause();
 			});
 			
 
 			//Append the OVERLAY PANEL to the main media.
 			for(i = 0; i < panelData.length; i++) {
-			    if(panelData[i].getAttribute("overlay")) {
+			    if(panelData[i].nodeName == "overlayPanel") {
                     $('<div class="overlay" id="mydiv"></div>')
                         .appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex)[0].children[1])
                         .attr("id", mediaLesson.panelbaseid + i)
@@ -819,19 +815,18 @@
                     mediaLesson.updateTable(block, lastTime);
 				}
 				
-				//Slider should follow video
+				//Update time and Slider location on trackbar timeline
+				$('#trackBarTime').text(convertTime(popTime) + "/" + convertTime(mediaLesson.popcornInstance.duration()));
 				$slider = $('#trackBarSlider');
-				$rail = $('#trackBarRail');
-				$trackBarTime = $('#trackBarTime');
-				$trackBarTime.text(convertTime(popTime) + "/" + convertTime(mediaLesson.popcornInstance.duration()));
-				offset = $slider.offset().left - $rail.offset().left;
-				railWidth = $rail.width();
 				frac = popTime / mediaLesson.popcornInstance.duration();
-				sliderOffset = frac * $('#trackBarRail').width();
+				sliderOffset = frac * ($('#trackBarRail').width() - $slider.width());
 				$slider.css("left", sliderOffset);
 
 				function convertTime(seconds){
-					return new Date(seconds * 1000).toISOString().substr(11, 8);
+					if ($.isNumeric(seconds)) {
+						return new Date(seconds * 1000).toISOString().substr(11, 8);
+					}
+					return "00:00"
 				}
 
 
@@ -1364,10 +1359,21 @@
 				var $eventMarker =  $('<div id=marker_' + j + ' class="trackBarEventMarker"></div>')
 					.appendTo($('#trackBarRail'));
 				frac = thisContent.start / mediaLesson.popcornInstance.duration();
-				$eventMarker.attr("synchFrac", frac);
-				eventOffset = frac * $('#trackBarRail').width();
-				$eventMarker.css("left", eventOffset);
+				// Do not add this event to the timeline if it doesn't occur during the duration of the video.
+				if (frac < 0 || frac > 1) {
+					$eventMarker.remove();
+				}
+				else {
+					$eventMarker.attr("synchFrac", frac);
+					eventOffset = frac * $('#trackBarRail').width();
+					$eventMarker.css("left", eventOffset);// - ($eventMarker.width() * 0.5));
+					if (thisContent.optional == "false") {
+						$eventMarkerMandatory = $('<div id=marker_mandatory_' + j + ' class="trackBarEventMarkerMandatory"></div>')
+						.appendTo($('#trackBarRail'));
+						$eventMarkerMandatory.css("left", eventOffset - $eventMarkerMandatory.width() * 0.25);
 
+					}
+				}
 				if (thisContent.type == "synchSlides") {
 					$.each(thisContent.allInfo.children, function(c){
 						c.optional = thisContent.optional;
