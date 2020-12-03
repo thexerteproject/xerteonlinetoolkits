@@ -138,8 +138,8 @@ optional: caption captionPosV captionPosH
 						$target.parent().css({"padding": 0});
 					}
 					$target.parent().css({
-						"top": options.y + "%",
-						"left": options.x + "%"
+						"top": options._y + "%",
+						"left": options._x + "%"
 					}).show();
 					
 					if (options.child == "false") {

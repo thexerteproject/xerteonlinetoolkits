@@ -503,8 +503,8 @@ optional: feedback page synch play enable
 					if (options.optional == "false")
 						$target.parent().addClass("qWindow");
 					$target.parent().css({
-						"top": options.y + "%",
-						"left": options.x + "%"
+						"top": options._y + "%",
+						"left": options._x + "%"
 					}).show();
 				}
 				$target.show();

@@ -76,9 +76,9 @@ optional: end position* line
 						$target.parent().addClass("qWindow");
 					}
 					$target.parent().css({
-						"max-width": options.w + "%",
-						"top": options.y + "%",
-						"left": options.x + "%",
+						"max-width": options._w + "%",
+						"top": options._y + "%",
+						"left": options._x + "%",
 						"padding": 0
 					}).show();
 					debugger;

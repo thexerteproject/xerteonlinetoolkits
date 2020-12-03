@@ -2710,45 +2710,44 @@ var EDITOR = (function ($, parent) {
             // Ok handler
             var okbutton = $('.hotspotEditor  button[name="ok"]');
             okbutton.click(function(event){
-
                 var key = $("#inner_img_" + id).data("key");
                 var current = $.featherlight.current();
                 var npoints = [];
                 switch (shape) {
                     case "rectangle":
                         if (hs != null) {
-                            if (lp === true){
-                                canvasWidth = $('.overlayCanvas').width()
-                                canvasHeight = $('.overlayCanvas').height()
-                            }
                             var hspoints = hs.oCoords;
                             //Get tl, tr, br, bl
                             var cornerpoints = ['tl', 'tr', 'br', 'bl'];
                             for (var pi in cornerpoints) {
-                                var point = hspoints[cornerpoints[pi]];
-                                if (lp === true) {
-                                    npoints.push({
-                                        "x": point.x / canvasWidth * 100,
-                                        "y": point.y / canvasHeight * 100
-                                    });
-                                } else {
-                                    npoints.push({
-                                        "x": point.x * scale,
-                                        "y": point.y * scale
-                                    });
-                                }
+                            var point = hspoints[cornerpoints[pi]];
+                                npoints.push({
+                                    "x": point.x * scale,
+                                    "y": point.y * scale
+                                });
                             }
-                            var rect = {};
+                            var rect = {}, _rect = {};
+                            canvasWidth = $('.overlayCanvas').width()
+                            canvasHeight = $('.overlayCanvas').height()
+                            _rect.top = (hs.top / canvasHeight) * 100;
+                            _rect.left = (hs.left / canvasWidth) * 100;
+                            _rect.width = (hs.getScaledWidth() / canvasWidth) * 100;
+                            _rect.height = (hs.getScaledHeight() / canvasHeight) * 100;
+                            _rect.angle = hs.angle;
+
                             rect.top = hs.top * scale;
                             rect.left = hs.left * scale;
                             rect.width = hs.getScaledWidth() * scale;
                             rect.height = hs.getScaledHeight() * scale;
-                            rect.angle = hs.angle;
+                            rect.angle = hs.angle; 
                             var stringPoints = JSON.stringify(npoints);
                             var stringShape = JSON.stringify(rect);
 
                             if (forceRectangle) {
                                 setAttributeValue(key, ["x", "y", "w", "h"], [rect.left, rect.top, rect.width, rect.height]);
+                                if (lp) {
+                                    setAttributeValue(key, ["_x", "_y", "_w", "_h"], [_rect.left, _rect.top, _rect.width, _rect.height]);
+                                }
                             }
                             else {
                                 setAttributeValue(key, ["points", "mode", "shape"], [stringPoints, shape, stringShape]);
@@ -3782,7 +3781,6 @@ var EDITOR = (function ($, parent) {
                         .attr("data-key", cur_key)
                         .attr("src", url)
                         .load(function(){
-
                             $(this).css({width: '100%'});
                             drawHotspot(html, url, hsattrs, hspattrs, id, forceRectangle, lp);
                         }).click(function(){
