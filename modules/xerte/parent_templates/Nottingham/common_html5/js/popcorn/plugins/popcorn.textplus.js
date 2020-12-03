@@ -81,7 +81,6 @@ optional: end position* line
 						"left": options._x + "%",
 						"padding": 0
 					}).show();
-					debugger;
 				}
 				$target.show();
 			},

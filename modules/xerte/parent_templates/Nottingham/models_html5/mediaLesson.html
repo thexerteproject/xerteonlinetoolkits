@@ -188,16 +188,20 @@
 				}
 			});
 
-			// Fix Event markers on trackbar track bar. Fix track bar width
+			// 1) Resize trackbar holder. 2) Move slider. 3) Move all markers
 			if (toResize == true){
 				_mainMedia = $('#trackBarHolder').parent().children()[1];
 				if (_mainMedia != undefined){
 					$('#trackBarHolder').css("width", _mainMedia.offsetWidth);
+					frac = mediaLesson.popcornInstance.currentTime() / mediaLesson.popcornInstance.duration();
+					sliderOffset = frac * ($('#trackBarRail').width() - $('#trackBarSlider').width());
+					$('#trackBarSlider').css("left", sliderOffset);
+
 					$(".trackBarEventMarker").each(function(i,e){
 						eventOffset = e.getAttribute("synchFrac") * $('#trackBarRail').width()
-						e.style.left = (eventOffset - 0.5 * e.width())  + "px";
-						if (e.getAttribute("optional") != "true") {
-							$('#trackBarEventMarkerMandatory_' + i).style.left = eventOffset - 0.25 * $('#trackBarEventMarkerMandatory_' + i).width();
+						e.style.left = eventOffset + "px";
+						if ($('#marker_mandatory_' + i).length == 1) {
+							$('#marker_mandatory_' + i).css("left", eventOffset - 0.25 * $('.trackBarEventMarkerMandatory').width());
 						}
 					});
 				}
