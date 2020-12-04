@@ -147,6 +147,10 @@ h3 {
 .ui-button.ui-state-focus .ui-icon.x_prev_hist {	background-position: -44px 0px; }
 .ui-button.ui-state-active .ui-icon.x_prev_hist {	background-position: -88px 0px; }
 
+.ui-button .ui-icon.x_saveSession {					background-image: url("../save_session.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_saveSession {	background-position: -44px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_saveSession {	background-position: -44px 0px; }
+.ui-button.ui-state-active .ui-icon.x_saveSession {	background-position: -88px 0px; }
 
 /* only used on flashCards page at the moment but could be used elsewhere too to better style buttons that only have font awesome icon on (no text) */
 .circleBtn.ui-button .ui-button-text, .circleBtn.ui-button .ui-button-icon-primary, .circleBtn.ui-button .ui-button-icon-secondary {

@@ -169,6 +169,19 @@ a:-webkit-any-link {
 .ui-button.ui-state-active .ui-icon.x_colourChanger {
   background-position: -84px 0px; }
 
+.ui-button .ui-icon.x_saveSession {
+  background-image: url("save_session.svg");
+  background-position: 0px 0px; }
+
+.ui-button.ui-state-hover .ui-icon.x_colourChanger {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-focus .ui-icon.x_colourChanger {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-active .ui-icon.x_colourChanger {
+  background-position: -84px 0px; }
+
 .ui-dialog .ui-widget-header {
   border: 1px solid #3D8EDF;
   /*background: #010101 url(ui-bg_highlight-soft_75_2d2a2a_1x100.svg) 50% 50% repeat-x;*/

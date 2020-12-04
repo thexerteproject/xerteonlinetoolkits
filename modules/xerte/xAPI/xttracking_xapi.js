@@ -57,8 +57,12 @@ function XApiTrackingState() {
     this.sessionId = "";
     this.category = "";
     this.language = "en";
+    this.resume = false;
 
     this.initialise = initialise;
+    this.setVars = setVars;
+    this.doResume = doResume;
+    this.canResume = canResume;
     this.getCompletionStatus = getCompletionStatus;
     this.getCompletionPercentage = getCompletionPercentage;
     this.getSuccessStatus = getSuccessStatus;
@@ -85,9 +89,127 @@ function XApiTrackingState() {
     this.verifyResult = verifyResult;
     this.verifyEnterInteractionParameters = verifyEnterInteractionParameters;
     this.verifyExitInteractionParameters = verifyExitInteractionParameters;
+    this.getStatements = getStatements;
 
     function initialise() {
+    }
 
+    function setVars(jsonStr, restoreXerteState)
+    {
+        var restore = true;
+        if (restoreXerteState != undefined)
+        {
+            restore = restoreXerteState;
+        }
+        if (jsonStr.length > 0)
+        {
+            var jsonObj = JSON.parse(jsonStr);
+            // Do NOT touch scormmode, don't touch start and don't touch finished
+            this.currentid = jsonObj.currentid;
+            this.currentpageid = jsonObj.currentpageid;
+            this.trackingmode = jsonObj.trackingmode;
+            this.forcetrackingmode = jsonObj.forcetrackingmode;
+            this.scoremode = jsonObj.scoremode;
+            this.nrpages = jsonObj.nrpages;
+            this.toCompletePages = jsonObj.toCompletePages;
+            this.completedPages = jsonObj.completedPages;
+//            this.start = new Date(jsonObj.start);
+            this.lo_completed = jsonObj.lo_completed;
+            this.lo_type = jsonObj.lo_type;
+            this.lo_passed = jsonObj.lo_passed;
+            this.page_timeout = jsonObj.page_timeout;
+            this.templateId = jsonObj.templateId;
+            this.templateName = jsonObj.templateName;
+            this.debug = jsonObj.debug;
+            // this.sessionId = "";
+            this.category = jsonObj.category;
+            // this.language = "en";
+            // this.resume = false;
+            // this.finished = jsonObj.finished;
+            this.interactions = new Array();
+            var i=0;
+            for (i=0; i<jsonObj.interactions.length; i++)
+            {
+                var jsonSit = jsonObj.interactions[i];
+                var sit = new XApiInteractionTracking(jsonSit.page_nr, jsonSit.ia_nr, jsonSit.ia_type, jsonSit.ia_name);
+                sit.setVars(jsonSit, restoreXerteState);
+                this.interactions.push(sit);
+            }
+            if (restore) {
+                if (typeof jsonObj.pageHistory != "undefined") {
+                    x_pageHistory = jsonObj.pageHistory;
+                }
+                if (typeof jsonObj.pagesViewed != "undefined") {
+                    x_restorePagesViewed(jsonObj.pagesViewed);
+                }
+            }
+        }
+    }
+
+    function canResume()
+    {
+        if (actor.objectType === 'Agent') {
+            // Try to fetch previous exit statement
+            var q = {};
+            q['agent'] = JSON.stringify(actor);
+            q['verb'] = ADL.verbs.exited.id;
+            q['activity'] = baseUrl() + state.templateId;
+            var suspend_str = "";
+            var result = this.getStatements(q, true);
+            if (result.length > 0
+                && result[0].result != undefined
+                && result[0].result.extensions != undefined
+                && result[0].result.extensions["http://xerte.org.uk/xapi/trackingstate"] != undefined) {
+                var suspend_str = result[0].result.extensions["http://xerte.org.uk/xapi/trackingstate"];
+            }
+            if (suspend_str.length > 0) {
+                var tmp = new XApiTrackingState();
+                tmp.setVars(suspend_str, false);
+                if (tmp.getCompletionStatus() != 'completed') {
+                    return {canResume: true, date: result[0].timestamp}
+                }
+                else
+                {
+                    return {canResume: false, date: ""}
+                }
+            }
+            else
+            {
+                return {canResume: false, date: ""}
+            }
+        }
+        else
+        {
+            return {canResume: false, date: ""}
+        }
+    }
+
+    function doResume()
+    {
+        if (this.resume) {
+            if (actor.objectType === 'Agent') {
+                // Try to fetch previous exit statement
+                var q = {};
+                q['agent'] = JSON.stringify(actor);
+                q['verb'] = ADL.verbs.exited.id;
+                q['activity'] = baseUrl() + state.templateId;
+                var suspend_str = "";
+                var result = this.getStatements(q, true);
+                if (result.length > 0
+                    && result[0].result != undefined
+                    && result[0].result.extensions != undefined
+                    && result[0].result.extensions["http://xerte.org.uk/xapi/trackingstate"] != undefined) {
+                    var suspend_str = result[0].result.extensions["http://xerte.org.uk/xapi/trackingstate"];
+                }
+                if (suspend_str.length > 0) {
+                    var tmp = new XApiTrackingState();
+                    tmp.setVars(suspend_str, false);
+                    if (tmp.getCompletionStatus() != 'completed') {
+                        this.setVars(suspend_str);
+                    }
+                }
+            }
+        }
     }
 
     function formatDate(d) {
@@ -253,11 +375,9 @@ function XApiTrackingState() {
         correctanswer, feedback, grouping) {
         this.verifyEnterInteractionParameters(ia_type, ia_name, correctoptions,
             correctanswer, feedback);
-        interaction = new XApiInteractionTracking(page_nr, ia_nr, ia_type,
-            ia_name);
-        interaction.enterInteraction(correctanswer, correctoptions, grouping);
-        this.interactions.push(interaction);
-        this.currentid = interaction.id;
+        var sit = this.findCreate(page_nr, ia_nr, ia_type, ia_name);
+        sit.enterInteraction(correctanswer, correctoptions, grouping);
+        this.currentid = sit.id;
     }
 
     function exitInteraction(page_nr, ia_nr, result, learneroptions,
@@ -890,12 +1010,43 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
     this.learnerOptions = [];
 
     this.exit = exit;
+    this.setVars = setVars;
     this.enterInteraction = enterInteraction;
     this.exitInteraction = exitInteraction;
     this.getPageId = getPageId;
     this.getPageDescription = getPageDescription;
     this.getxApiId = getxApiId;
     this.getxApiDescription = getxApiDescription;
+
+    function setVars(jsonObj, restoreXerteState)
+    {
+        var restore = true;
+        if (restoreXerteState != undefined)
+        {
+            restore = restoreXerteState;
+        }
+        this.page_nr = jsonObj.page_nr;
+        this.ia_nr = jsonObj.ia_nr;
+        this.ia_type = jsonObj.ia_type;
+        this.ia_name = jsonObj.ia_name;
+        this.start = new Date(jsonObj.start);
+        this.end = new Date(jsonObj.end);
+        this.count = jsonObj.count;
+        this.duration = jsonObj.duration;
+        this.nrinteractions = jsonObj.nrinteractions;
+        this.weighting = jsonObj.weighting;
+        this.score = jsonObj.score;
+        this.correctOptions = jsonObj.correctOptions;
+        this.correctAnswers = jsonObj.correctAnswers;
+        this.learnerOptions = jsonObj.learnerOptions;
+        this.learnerAnswers = jsonObj.learnerAnswers;
+        this.id = jsonObj.id;
+        if (restore) {
+            if (typeof jsonObj.pageHistory != "undefined") {
+                x_pageHistory = jsonObj.pageHistory;
+            }
+        }
+    }
 
     function getPageId() {
         if (this.ia_nr < 0) {
@@ -1600,6 +1751,72 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
     this.grouping = "";
 }
 
+function getStatements(q, one, callback)
+{
+    var search = ADL.XAPIWrapper.searchParams();
+    var group = "";
+    if (q['group'] != undefined)
+    {
+        group = q['group'];
+        delete q['group'];
+    }
+    $.each(q, function(i, value) {
+        search[i] = value;
+    });
+    if (one) {
+        search['limit'] = 1;
+    } else {
+        search['limit'] = 1000;
+    }
+    var statements = [];
+    if (callback == null)
+    {
+        var tmp=ADL.XAPIWrapper.getStatements(search);
+        for (x = 0; x < tmp.statements.length; x++) {
+            if (group != ""
+                && tmp.statements[x].context.team != undefined
+                && tmp.statements[x].context.team.account != undefined
+                && tmp.statements[x].context.team.account.name != undefined
+                && tmp.statements[x].context.team.account.name != group) {
+                continue;
+            }
+            statements.push(tmp.statements[x]);
+        }
+        return statements;
+    }
+    else {
+        ADL.XAPIWrapper.getStatements(search, null,
+            function getmorestatements(err, res, body) {
+                var lastSubmit = null;
+
+                for (x = 0; x < body.statements.length; x++) {
+                    //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
+                    //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
+                    //}
+                    if (group != ""
+                        && body.statements[x].context.team != undefined
+                        && body.statements[x].context.team.account != undefined
+                        && body.statements[x].context.team.account.name != undefined
+                        && body.statements[x].context.team.account.name != group) {
+                        continue;
+                    }
+                    statements.push(body.statements[x]);
+                }
+                //stringObjects.push(lastSubmit);
+                if (err !== null) {
+                    console.log("Failed to query statements: " + err);
+                    // TODO: do something with error, didn't get statements
+                    return;
+                }
+                if (res.more && res.more !== "") {
+                    ADL.XAPIWrapper.getStatements(null, res.more, getmorestatements);
+                } else {
+                    callback(statements, search);
+                }
+            }
+        );
+    }
+}
 
 var state = new XApiTrackingState();
 // enable debug for now
@@ -1762,6 +1979,8 @@ function XTInitialise(category) {
         //alert("Failed LRS setup. Error: " + ex);
         state.mode = "none";
     }
+
+
     //TinCan.enableDebug();
     //    }
     if (surf_course != undefined && surf_recipe != undefined) {
@@ -1881,7 +2100,24 @@ function XTGetMode(extended) {
 }
 
 function XTStartPage() {
-    return -1;
+    if (state.mode == 'normal')
+    {
+        state.doResume();
+        if (state.resume)
+        {
+            var currentid = state.currentpageid;
+            state.currentpageid = "";
+            var sit = state.find(currentid);
+            if (sit != null)
+                return sit.page_nr;
+            else
+                return -1;
+        }
+        else
+        {
+            return -1;
+        }
+    }
 }
 
 function XTGetUserName() {
@@ -1973,6 +2209,9 @@ function XTSetOption(option, value) {
                 };
                 state.modulename = value;
             }
+            break;
+        case "resume":
+            state.resume = value;
             break;
     }
 }
@@ -2807,54 +3046,13 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id,
 }
 
 function XTGetStatements(q, one, callback) {
-    var search = ADL.XAPIWrapper.searchParams();
-    var group = "";
-    if (q['group'] != undefined)
-    {
-        group = q['group'];
-        delete q['group'];
-    }
-    $.each(q, function(i, value) {
-        search[i] = value;
-    });
-    if (one) {
-        search['limit'] = 1;
-    } else {
-        search['limit'] = 1000;
-    }
-    var statements = [];
-    ADL.XAPIWrapper.getStatements(search, null,
-        function getmorestatements(err, res, body) {
-            var lastSubmit = null;
-
-            for (x = 0; x < body.statements.length; x++) {
-                //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
-                //    lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
-                //}
-                if (group != ""
-                    && body.statements[x].context.team != undefined
-                    && body.statements[x].context.team.account != undefined
-                    && body.statements[x].context.team.account.name != undefined
-                    && body.statements[x].context.team.account.name != group)
-                {
-                    continue;
-                }
-                statements.push(body.statements[x]);
-            }
-            //stringObjects.push(lastSubmit);
-            if (err !== null) {
-                console.log("Failed to query statements: " + err);
-                // TODO: do something with error, didn't get statements
-                return;
-            }
-            if (res.more && res.more !== "") {
-                ADL.XAPIWrapper.getStatements(null, res.more, getmorestatements);
-            } else {
-                callback(statements, search);
-            }
-        }
-    );
+    state.getStatements(q, one, callback);
 }
+
+function XTCanResume() {
+    return state.canResume();
+}
+
 
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name) {
     return "";
@@ -2875,35 +3073,13 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 function XTTerminate() {
     if (!state.finished && state.initialised) {
         // End tracking of page
+        currentpageid = state.currentpageid;
         x_endPageTracking(false, -1);
-
-        // This code is probably obsolete, leave it in to allow for more testing
-        var currentpageid = "";
         state.finished = true;
-        if (state.currentid) {
-            var sit = state.find(state.currentid);
-            // there is still an interaction open, close it
-            if (sit != null) {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, {
-                        success: false,
-                        score: 0
-                    }, "", 0, "",
-                    false);
-            }
-        }
-        if (state.currentpageid) {
-            currentpageid = state.currentpageid;
-            var sit = state.find(state.currentpageid);
-            // there is still an interaction open, close it
-            if (sit != null) {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, {
-                        success: false,
-                        score: 0
-                    }, "", 0, "",
-                    false);
-            }
-
-        }
+        state.currentpageid = currentpageid;
+        x_pageHistory.splice(x_pageHistory.length - 1, 1);
+        state.pageHistory = x_pageHistory;
+        state.pagesViewed = x_pagesViewed();
 
         // Save completed when a learning object is completed
         if (state.getCompletionStatus() == "completed") {

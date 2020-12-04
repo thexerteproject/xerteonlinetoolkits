@@ -182,12 +182,12 @@ button.ui-button-icon-only {
 	 float:		none;
  }
 
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home {
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home, .ui-icon.x_saveSession {
 	height:					40px;
 	background-position:	center;
 }
 
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home {
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home, .ui-icon.x_saveSession {
 	width:	41px;
 }
 

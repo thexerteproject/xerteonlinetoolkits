@@ -40,6 +40,7 @@
 #x_glossaryBtn:after { content: "\f02d"; }
 #x_helpBtn:after { content: "\f128"; }
 #x_menuBtn:after { content: "\f0c9"; }
+#x_saveSessionBtn:after {content: "\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; }
 
 // #x_footerBlock button { color: lighten($blackordarkest, 50%); }
 #x_footerBlock button { color: darken($lightestcolor, 40%); }

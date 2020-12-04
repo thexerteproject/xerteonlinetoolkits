@@ -49,7 +49,7 @@ var x_languageData  = [],
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
 
 // Patch jQuery to add support for .toggle(function, function...) which was removed in jQuery 1.9
 // Code from http://forum.jquery.com/topic/beginner-function-toggle-deprecated-what-to-use-instead
@@ -165,6 +165,24 @@ $(document).ready(function() {
     }
 
 });
+
+x_pagesViewed = function()
+{
+	var viewed = [];
+	x_pageInfo.forEach(function(item, index){
+		if (item.viewed) {
+			viewed.push(index);
+		}
+	});
+	return viewed;
+}
+
+x_restorePagesViewed = function(viewed)
+{
+	viewed.forEach(function(item){
+		x_pageInfo[item].viewed = true;
+	});
+}
 
 // To be able to check on orientation, and also detect the difference between a mobile and tablet
 // See https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
@@ -337,7 +355,7 @@ x_projectDataLoaded = function(xmlData) {
 		if (hidePage == false || x_params.authorSupport == "true") {
 			var linkID = $(this)[0].getAttribute("linkID"),
 				pageID = $.trim($(this)[0].getAttribute("pageID")),
-				page = {type: $(this)[0].nodeName, built: false};
+				page = {type: $(this)[0].nodeName, built: false, viewed: false};
 			
 			if (linkID != undefined) {
 				page.linkID = linkID;
@@ -421,7 +439,7 @@ x_projectDataLoaded = function(xmlData) {
         }
         if (x_params.navigation != "Linear" && x_params.navigation != "LinearWithHistoric" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
             x_pages.splice(0, 0, "menu");
-            x_pageInfo.splice(0, 0, {type: 'menu', built: false});
+            x_pageInfo.splice(0, 0, {type: 'menu', built: false, viewed:false});
 			
 			// adjust normal page indexes to take into account menu page
 			for (var i=0; i<x_normalPages.length; i++) {
@@ -636,6 +654,7 @@ x_projectDataLoaded = function(xmlData) {
     {
         XTSetOption('force_tracking_mode', x_params.forceTrackingMode);
     }
+
 }
 
 // browser back / fwd button will trigger this - manually make page change to match #pageX
@@ -830,6 +849,7 @@ function x_setUp() {
 		$x_footerBlock	= $("#x_footerBlock");
 		$x_footerL		= $("#x_footerBlock .x_floatLeft");
 		$x_menuBtn		= $("#x_menuBtn");
+		$x_saveSessionBtn = $("#x_saveSessionBtn");
 		$x_colourChangerBtn	= $("#x_colourChangerBtn");
 		$x_prevBtn		= $("#x_prevBtn");
 		$x_pageNo		= $("#x_pageNo");
@@ -997,17 +1017,29 @@ function x_cssSetUp(param) {
             }
             break;
         case "colourChanger":
-            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("theme")});
+            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("saveSession")});
             break;
         case "colourChanger2":
             if (x_params.theme != undefined && x_params.theme != "default") {
-                x_insertCSS(x_themePath + x_params.theme + "/css/colourChanger.css", function () {x_cssSetUp("theme")});
+                x_insertCSS(x_themePath + x_params.theme + "/css/colourChanger.css", function () {x_cssSetUp("saveSession")});
             }
             else
             {
-                x_cssSetUp("theme");
+                x_cssSetUp("saveSession");
             }
             break;
+		case "saveSession":
+			x_insertCSS(x_templateLocation + "models_html5/saveSession.css", function() {x_cssSetUp("theme")});
+			break;
+		case "saveSession2":
+			if (x_params.theme != undefined && x_params.theme != "default") {
+				x_insertCSS(x_themePath + x_params.theme + "/css/saveSession.css", function () {x_cssSetUp("theme")});
+			}
+			else
+			{
+				x_cssSetUp("theme");
+			}
+			break;
         case "theme":
             if (!xot_offline) {
                 $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
@@ -1361,6 +1393,37 @@ function x_continueSetUp1() {
 				);
 			});
 
+		if (x_params["hideSaveSession"] !== "true" && (XTGetMode().indexOf("normal") >= 0 || XTTrackingSystem() === "xAPI")) {
+			x_dialogInfo.push({type:'saveSession', built:false});
+			$x_saveSessionBtn
+				.button({
+					icons: {
+						primary: "x_saveSession"
+					},
+					label: x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session"),
+					text: false
+				})
+				.attr("aria-label", $("#x_saveSessionBtn").attr("title") + " " + x_params.dialogTxt)
+				.click(function () {
+					x_openDialog(
+						"saveSession",
+						x_getLangInfo(x_languageData.find("saveSession")[0], "label", "Save Session"),
+						x_getLangInfo(x_languageData.find("saveSession").find("closeButton")[0], "description", "Close Save Session"),
+						null,
+						null,
+						function () {
+							$x_saveSessionBtn
+								.blur()
+								.removeClass("ui-state-focus")
+								.removeClass("ui-state-hover");
+						}
+					);
+				});
+		}
+		else
+		{
+			$x_saveSessionBtn.hide();
+		}
 		if (x_params.kblanguage != undefined) {
 			if (typeof charpadstr != 'undefined')
 			{
@@ -1485,9 +1548,21 @@ function x_continueSetUp1() {
 
 function x_continueSetUp2() {
 	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
-	var mediaElementText = [{name:"stopButton", label:"Stop", description:"Stop Media Button"},{name:"playPauseButton", label:"Play/Pause", description:"Play/Pause Media Button"},{name:"muteButton", label:"Mute Toggle", description:"Toggle Mute Button"},{name:"fullscreenButton", label:"Fullscreen", description:"Fullscreen Movie Button"},{name:"captionsButton", label:"Captions/Subtitles", description:"Show/Hide Captions Button"}];
+	var mediaElementText = [{
+		name: "stopButton",
+		label: "Stop",
+		description: "Stop Media Button"
+	}, {name: "playPauseButton", label: "Play/Pause", description: "Play/Pause Media Button"}, {
+		name: "muteButton",
+		label: "Mute Toggle",
+		description: "Toggle Mute Button"
+	}, {name: "fullscreenButton", label: "Fullscreen", description: "Fullscreen Movie Button"}, {
+		name: "captionsButton",
+		label: "Captions/Subtitles",
+		description: "Show/Hide Captions Button"
+	}];
 
-	for (var i=0, len=mediaElementText.length; i<len; i++) {
+	for (var i = 0, len = mediaElementText.length; i < len; i++) {
 		x_mediaText.push({
 			label: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]),
 			description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
@@ -1500,26 +1575,66 @@ function x_continueSetUp2() {
 
 	// script optional property added after all interface set up & before any pages load
 	if (x_params.script != undefined && x_params.script != "") {
-		$x_head.append('<script>' +  x_params.script + '</script>');
+		$x_head.append('<script>' + x_params.script + '</script>');
 	}
 
 	// Setup beforeunload
-    window.onbeforeunload = XTTerminate;
+	window.onbeforeunload = XTTerminate;
 
-    XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
-	// Set course and module options AFTER XTInitialise
-    if (x_params.course != undefined && x_params.course != "")
-    {
-        XTSetOption('course', x_params.course);
-    }
-    if (x_params.module != undefined && x_params.module != "")
-    {
-        XTSetOption('module', x_params.module);
-    }
-	
-	setUpComplete = true;
+	XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
+	// Set course, module and resume options AFTER XTInitialise
+	if (x_params.course != undefined && x_params.course != "") {
+		XTSetOption('course', x_params.course);
+	}
+	if (x_params.module != undefined && x_params.module != "") {
+		XTSetOption('module', x_params.module);
+	}
+	if (XTTrackingSystem() === 'xAPI') {
+		var callStartPage = false;
+		if (x_params.restartOptions != undefined) {
+			switch (x_params.restartOptions) {
+				case 'ask':
+					var canResume = XTCanResume();
+					if (canResume.canResume) {
+						x_dialogInfo.push({type: 'resumeSession', built: false});
+						x_openDialog(
+							"resumeSession",
+							x_getLangInfo(x_languageData.find("resumeSession")[0], "label", "Resume Session"),
+							x_getLangInfo(x_languageData.find("resumeSession").find("closeButton")[0], "description", "Close Resume Session Dialog"),
+							null,
+							null,
+							function () {
+								setUpComplete = true;
 
-    x_navigateToPage(true, x_startPage);
+								x_navigateToPage(true, x_startPage);
+							}
+						);
+					} else {
+						XTSetOption('resume', false);
+					}
+					break;
+				case 'restart':
+					XTSetOption('resume', true);
+					callStartPage = true;
+					break;
+				case 'do_not_restart':
+					XTSetOption('resume', false);
+					callStartPage = true;
+					break;
+			}
+		} else {
+			XTSetOption('resume', true);
+			callStartPage = true;
+		}
+		if (callStartPage)
+		{
+			setUpComplete = true;
+			x_navigateToPage(true, x_startPage);
+		}
+	} else {
+		setUpComplete = true;
+		x_navigateToPage(true, x_startPage);
+	}
 }
 
 // function checks whether a media file exists
@@ -2327,7 +2442,9 @@ function x_setUpPage() {
 		if (x_currentPageXML.getAttribute("next") == "false") {
 			$x_nextBtn.button("disable");
 		}
-
+		if (x_currentPageXML.getAttribute("save") == "false") {
+			$x_saveSessionBtn.button("disable");
+		}
 	} else if (!x_isMenu() && x_currentPageXML.getAttribute("navSetting") != undefined) {
 		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
 		if (x_currentPageXML.getAttribute("navSetting") != "all") {
@@ -2361,6 +2478,7 @@ function x_setUpPage() {
 // function called from each model when fully loaded to trigger fadeIn
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
+    x_pageInfo[x_currentPage].viewed = true;
 	
 	// calls function in current theme (if it exists)
 	var pt = x_pageInfo[x_currentPage].type;
@@ -2413,7 +2531,7 @@ function doPercentage() {
 	
 	// by default stand-alone pages are excluded from being included in progress - this can be overridden with optional property
     var totalPages = $(x_pageInfo).filter(function(i){ return this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true'; }).length - menuOffset,
-		pagesViewed = $(x_pageInfo).filter(function(i){ return (this.built !== false && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true')) || this.builtLightBox == true || this.builtNewWindow == true; }).length - menuOffset;
+		pagesViewed = $(x_pageInfo).filter(function(i){ return (this.viewed !== false && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true')) || this.builtLightBox == true || this.builtNewWindow == true; }).length - menuOffset;
 	
     var progress = Math.round((pagesViewed * 100) / totalPages),
 		pBarText = x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");

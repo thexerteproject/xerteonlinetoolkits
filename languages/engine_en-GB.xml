@@ -172,7 +172,7 @@
 	  <invert label="Invert, High contrast theme, no background images"/>
 	  <blackYellow label="Black on Yellow theme, no background images"/>
   </colourChanger>
-  
+
   <screenReaderInfo label="Screen Reader Information" newWindow="This link will open in a new window" thisWindow="This link will open in this window" dialog="This button will open a dialog window">
 	  <tabNav description="This page contains a tabbed panel where the selection of a tab changes the information presented. To select a tab: Click Enter twice (Jaws) or click Shift-Enter (NVDA)."/>
 	  <accNav description="This page contains an accordion panel where the selection of a tab changes the information presented. To select a tab click Enter or Space."  click="Click to reveal information"/>
@@ -185,7 +185,27 @@
 	  <mcq description="This page contains a multiple choice question. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
 	  <quiz description="This page contains a series of multiple choice questions. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
   </screenReaderInfo>
-  
+
+  <saveSession label="Save Session" description="Save session and stop tracking" tooltip="Save Session">
+  	  <closeButton label="" description="Close Save Session"/>
+	  <trackingCloseTxt label="&lt;p&gt;Do you want to stop with this session and continue? If so, please press the button below to save this session.&lt;/p&gt;"/>
+	  <closeTxt label="&lt;p&gt;Your session has been saved. You can now close the browser window or browser tab of this LO.&lt;/p&gt;"/>
+	  <btnLabelTxt label="Save this session"/>
+
+
+  </saveSession>
+
+  <resumeSession label="Resume Session" description="Resume stored session" tooltip="Resume last stored session">
+	  <closeButton label="" description="Close Resume Session Dialog"/>
+	  <resumeTxt label="&lt;p&gt;Welcome back. Do you want to resume the session of {date} {time}? Choose 'Yes' to resume the session. Choose 'No' to start a new session.&lt;/p&gt;"/>
+	  <noBtnLbl label="No" />
+	  <yesBtnLbl label="Yes" />
+	  <cancelBtnLbl label="Cancel" />
+	  <closeTxtNo label="&lt;p&gt;Close this window to start a new session.&lt;/p&gt;"/>
+	  <closeTxtYes label="&lt;p&gt;Close this window to resume the session.&lt;/p&gt;"/>
+	  <cancelTxtYes label="&lt;p&gt;You can now close the browser window or browser tab.&lt;/p&gt;"/>
+  </resumeSession>
+
   <authorVars label="View variable data">
 	<item>Name</item>
 	<item>Fixed Value</item>
