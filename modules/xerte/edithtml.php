@@ -45,6 +45,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     _load_language_file("/modules/xerte/edit.inc");
 
+    _debug("Loading editor page");
+
     $row_username = db_query_one("select username from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?" , array($row_edit['user_id']));
 
     if(empty($row_username)) {
@@ -208,7 +210,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     /**
      * set up the onunload function used in version control
      */
-
+    _debug("Starting editor page");
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $_SESSION['toolkits_language'];?>">
@@ -327,13 +329,15 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <div id="insert_menu" class="hide"></div>
 
 <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<!--script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
 <?php if (preg_match('~MSIE|Internet Explorer~i', $_SERVER['HTTP_USER_AGENT']) || (strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/7.0; rv:11.0') !== false)) { ?>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <?php }else{ ?>
-<script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
+<script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script -->
 <?php } ?>
+<script src="editor/js/vendor/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js?version=<?php echo $version;?>"></script>
@@ -391,7 +395,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "course_list=" . json_encode($course) . ";\n";
     // Some upgrade.php in teh past prevented the course_freetext_enabled column to be set correctly in the sitedetails table
     // If not present, set to true
-    if ($xerte_toolkits_site->course_freetext_enabled == undefined)
+    if ($xerte_toolkits_site->course_freetext_enabled == "undefined")
     {
         echo "course_freetext_enabled=true;\n";
     }
@@ -417,6 +421,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     }
 
+
 </script>
 <script type="text/javascript" src="editor/js/data.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/application.js?version=<?php echo $version;?>"></script>
@@ -429,5 +434,5 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 <?php
 }
-?>
+_debug("Sent editor page");
 
