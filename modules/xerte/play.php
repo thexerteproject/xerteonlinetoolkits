@@ -267,7 +267,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
-                if ($row["tsugi_published"] == 1) {
+                if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
                     _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
                     $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
                     $tracking .= "   var fullusername = '" . $xerte_toolkits_site->lti_user->displayname . "';\n";
