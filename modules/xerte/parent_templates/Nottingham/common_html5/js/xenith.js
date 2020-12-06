@@ -1938,6 +1938,15 @@ function x_changePageStep3(x_gotoPage) {
 }
 
 function x_changePageStep4(x_gotoPage) {
+	// Check if saveSession button is styled
+	if (typeof x_varSaveSessionBtnIsStyled == "undefined") {
+		x_varSaveSessionBtnIsStyled = x_saveSessionBtnIsStyled();
+		if (!x_varSaveSessionBtnIsStyled) {
+			if ($('#savesessionbtn_css').length == 0) {
+				$x_head.append('<style type="text/css" id="savesessionbtn_css">#x_saveSessionBtn:after {content: "\\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; font-size: 1.9em; } .ui-button .ui-icon.x_saveSession { background-image: none; } #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button { padding: 0; } #x_saveSessionBtn span { display: none; }</style>');
+			}
+		}
+	}
     if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
         x_insertCSS(x_evalURL(x_params.stylesheet), function () {
             x_changePageStep5(x_gotoPage);
@@ -3393,6 +3402,22 @@ function x_isYouTubeVimeo(url) {
 // strip html tags and return just text which is appropriate for screen reader
 function x_getAriaText(text) {
 	return $('<p>' + text + '</p>').text();
+}
+
+// Script to check whther saveSession button is styled in theme
+function x_saveSessionBtnIsStyled() {
+	if (x_params.theme != undefined && x_params.theme == "default")
+		return true;
+	var files = $.map(document.styleSheets, function(s) {
+		return s.href && s.href.indexOf('/themes/Nottingham/')>0 ? s : null;
+	});
+
+	var isStyled = files.reduce(function(a,r){
+		return [].slice.call(r.rules).reduce(function(a,r){
+			return (r.cssText && r.cssText.indexOf('x_saveSessionBtn')>0) || a;
+		}, false) || a;
+	}, false);
+	return isStyled;
 }
 
 
