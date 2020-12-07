@@ -1943,7 +1943,7 @@ function x_changePageStep4(x_gotoPage) {
 		x_varSaveSessionBtnIsStyled = x_saveSessionBtnIsStyled();
 		if (!x_varSaveSessionBtnIsStyled) {
 			if ($('#savesessionbtn_css').length == 0) {
-				$x_head.append('<style type="text/css" id="savesessionbtn_css">#x_saveSessionBtn:after {content: "\\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; } #x_saveSessionBtn { font-size: 1.9em; }  .ui-button .ui-icon.x_saveSession { background-image: none; } #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button { padding: 0; } #x_saveSessionBtn span { display: none; }</style>');
+				$x_head.append('<style type="text/css" id="savesessionbtn_css">#x_saveSessionBtn:after {content: "\\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; } #x_saveSessionBtn { font-size: 1.9em; width:1.1em; }  .ui-button .ui-icon.x_saveSession { background-image: none; } #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button { padding: 0; } #x_saveSessionBtn span { display: none; }</style>');
 			}
 		}
 	}
