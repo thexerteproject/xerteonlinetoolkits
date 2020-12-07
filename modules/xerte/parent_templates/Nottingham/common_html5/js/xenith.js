@@ -3414,7 +3414,7 @@ function x_saveSessionBtnIsStyled() {
 
 	var isStyled = files.reduce(function(a,r){
 		return [].slice.call(r.rules).reduce(function(a,r){
-			return (r.cssText && r.cssText.indexOf('x_saveSessionBtn')>0) || a;
+			return (r.cssText && r.cssText.indexOf('x_saveSession')>0) || a;
 		}, false) || a;
 	}, false);
 	return isStyled;
