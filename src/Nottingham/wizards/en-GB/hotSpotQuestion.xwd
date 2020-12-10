@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="hotSpotQuestion" generalFeedback="Algemene feedback" text="Pagina met fotos waar je om moet kliken en score bijkomt" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
+      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="hotSpotQuestion"  panelWidth = "Medium" generalFeedback="Algemene feedback" text="Pagina met fotos waar je om moet kliken en score bijkomt" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
   	  nextTxt="Next"
 	  priorTxt="Previous"
 	  />]]></hotSpotQuestion>
@@ -9,11 +9,12 @@
   </pageWizard>
 
   <!-- HOTSPOT IMAGE INTERACTION============================= -->
-  <hotSpotQuestion menu="Interactivity" menuItem="Hotspot Question" hint="Een test hotspot van Summa" icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
+  <hotSpotQuestion menu="Interactivity" menuItem="Hotspot Question" hint="Een test hotspot van Summa" icon="icHotspot"  thumb="thumbs/hotspotImage.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
 
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
