@@ -148,6 +148,10 @@
 						"max-width"	:tempW,
 						"max-height":tempH
 					});
+
+				$popcornMedia.children().each(function(i, e){
+					$(this).css("max-height", $(this).parent().css("max-height"));
+				});
 				
 				if ($this.width() != $popcornMedia.width() && triggerResize == true) {
 					triggerResize = false;
@@ -168,9 +172,6 @@
             $(".popcornMedia.midiasite").each(function(i) {
                 mediaLesson.resizeMediasite($(this));
 			});
-			//$(".popcornMedia").each(function(i) {
-			//	mediaLesson.resizeYouTube($(this));
-			//});
 			
 			$(".audioImg").each(function() {
 				var $this = $(this);
@@ -193,6 +194,9 @@
 			if (toResize == true){
 				if ($(".mainMedia") != undefined){
 					$('#trackBarHolder').css("width", $(".mainMedia").width());
+					UIWidth = 2 * parseFloat(($('.trackBarButton').outerWidth(true) + $('.trackBarTime').width() + 2 * parseFloat($('#trackBarRail').css("margin-left"))));
+					newWidth = $('#trackBarHolder').width() - UIWidth;
+					$('#trackBarRail').css("width", newWidth);
 					frac = mediaLesson.popcornInstance.currentTime() / mediaLesson.popcornInstance.duration();
 					sliderOffset = frac * ($('#trackBarRail').width() - $('#trackBarSlider').width());
 					$('#trackBarSlider').css("left", sliderOffset);
@@ -711,13 +715,13 @@
 				.appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex)[0]);
 			var $playButton = $('<div id="playButton" class="trackBarButton fa fa-fw fa-x-pause"/>')
 				.appendTo($trackBarHolder);2
-			var $trackBarTime = $('<div id="trackBarCurrentTime" class="trackBarTime">00:00</div>')
+			var $trackBarTime = $('<div id="trackBarCurrentTime" class="trackBarTime">00:00:00</div>')
 				.appendTo($trackBarHolder);
 			var $trackBarRail = $('<div id="trackBarRail"></div>')
 				.appendTo($trackBarHolder);
 			var $trackBarSlider = $('<div id="trackBarSlider"></div>')
 				.appendTo($trackBarRail);
-			var $trackBarDuration = $('<div id="trackBarDuration" class="trackBarTime">00:00</div>')
+			var $trackBarDuration = $('<div id="trackBarDuration" class="trackBarTime">00:00:00</div>')
 				.appendTo($trackBarHolder);
 			var $muteButton = $('<div id="muteButton" class="trackBarButton fa fa-fw fa-x-mute"/>')
 				.appendTo($trackBarHolder);
@@ -1028,7 +1032,6 @@
 					var urlsep = (mediaData.media.indexOf("?") < 0 ? "?" : "&");
 					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .youTube", mediaData.media + urlsep + "controls=2&playsinline=1"); // force controls to appear, and force online play on iPhone
 					$youTube.data("popcornInstance", popcornInstance);
-					
 					if (mediaData.autoplay == "true") {
 						popcornInstance.play();
 					}
@@ -1037,16 +1040,11 @@
 					var $vimeo = $holder.find(".popcornMedia").addClass("vimeo");
                     $vimeo.attr("aspect", mediaData.aspect);
 					mediaLesson.resizeVimeo($vimeo);
-					
 					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .vimeo", mediaData.media);
-
 					$vimeo.data("popcornInstance", popcornInstance);
-
-
 					if (mediaData.autoplay == "true") {
 						popcornInstance.play();
 					}
-					
 				} else if (mediaData.media.indexOf("mediamission.nl") != -1) {
                     var $mediasite = $holder.find(".popcornMedia").addClass("mediasite");
 
@@ -1055,13 +1053,9 @@
 
                     popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .mediasite", mediaData.media);
                     $mediasite.data("popcornInstance", popcornInstance);
-
-
-
                     if (mediaData.autoplay == "true") {
                         popcornInstance.play();
                     }
-
                 } else {
 					$myVideo
 						.attr("title", mediaData.tip)
@@ -1074,9 +1068,8 @@
 							autoPlay	:mediaData.autoplay,
 							pageName	:"mediaLesson"
 						});
-					
+	
 					popcornInstance = Popcorn("#" +$holder.attr("id") + " video");
-					
 					if (mainMedia == true) {
 						$("#" + $holder.attr("id") + " video").attr('id', 'mainVideo');
 					} else {
