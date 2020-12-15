@@ -747,7 +747,7 @@ function sharing_info($template_id)
 
     $info =  PROJECT_INFO_SHARED . ": ";
 
-    if(sizeof($query_sharing_rows)==1){
+    if(sizeof($query_sharing_rows)==1 && empty($query_group_sharing_rows)){
         $info .= PROJECT_INFO_NOTSHARED . "<br/>";
         return $info;
     }
