@@ -740,6 +740,11 @@ function sharing_info($template_id)
 
     $query_sharing_rows = db_query($sql, array($template_id));
 
+    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}template_group_rights, " .
+        "{$xerte_toolkits_site->database_table_prefix}user_groups WHERE template_id = ? AND template_group_rights.group_id = user_groups.group_id";
+
+    $query_group_sharing_rows = db_query($sql, array($template_id));
+
     $info =  PROJECT_INFO_SHARED . ": ";
 
     if(sizeof($query_sharing_rows)==1){
@@ -768,6 +773,27 @@ function sharing_info($template_id)
 
         $info .=  ")</span></li>";
     }
+    foreach($query_group_sharing_rows as $row) {
+        $info .=  "<li><span>" . $row['group_name'] . "  -  (";
+        switch($row['role'])
+        {
+            case "creator":
+                $info .=  SHARING_CREATOR;
+                break;
+            case "co-author":
+                $info .=  SHARING_COAUTHOR;
+                break;
+            case "editor":
+                $info .=  SHARING_EDITOR;
+                break;
+            case "read-only":
+                $info .=  SHARING_READONLY;
+                break;
+        }
+
+        $info .=  ")</span></li>";
+    }
+
     $info .=  "</ul>";
 
     return $info;
