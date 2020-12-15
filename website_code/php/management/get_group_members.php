@@ -31,6 +31,11 @@ require_once("../user_library.php");
 require("../url_library.php");
 require_once("management_library.php");
 
+/*
+ * TODO:
+ * get_templates_sorted.php enzo
+ */
+
 function get_group_members($group_id){
 
     if (is_null($group_id) or $group_id=="") {
@@ -50,7 +55,11 @@ function get_group_members($group_id){
     if (empty($query_response)){
         echo "<p>" . USER_GROUPS_MANAGEMENT_NO_MEMBERS . "</p>";
     }else{
-        echo "<p>" . USER_GROUPS_MANAGEMENT_MEMBERS_COUNT . $membercount . ($membercount > 1 ? USER_GROUPS_MANAGEMENT_MEMBERS : USER_GROUPS_MANAGEMENT_MEMBER) . "</p>";
+        if ($membercount == 1){
+            echo "<p>" . USER_GROUPS_MANAGEMENT_ONE_MEMBER . "</p>";
+        }else{
+            echo "<p>" . str_replace("{&}", $membercount, USER_GROUPS_MANAGEMENT_MEMBERS_COUNT) . "</p>";
+        }
         foreach($query_response as $row) {
 
             echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</button><button style=\"float:right;\" type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:delete_member('" . $row['login_id'] . "', 'group')\">" . USER_GROUPS_MANAGEMENT_REMOVE_MEMBER . "</button></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";

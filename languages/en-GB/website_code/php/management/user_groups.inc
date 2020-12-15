@@ -28,11 +28,9 @@
 
 	define("USER_GROUPS_MANAGEMENT_NO_MEMBERS", "This group currently has no members.");
 
-	define("USER_GROUPS_MANAGEMENT_MEMBERS_COUNT", "This group currently has ");
+    define("USER_GROUPS_MANAGEMENT_ONE_MEMBER", "This group currently has 1 member.");
 
-	define("USER_GROUPS_MANAGEMENT_MEMBERS", " members.");
-
-    define("USER_GROUPS_MANAGEMENT_MEMBER", " member.");
+    define("USER_GROUPS_MANAGEMENT_MEMBERS_COUNT", "This group currently has {&} members.");
 
     define("USER_GROUPS_MANAGEMENT_GROUP_EXISTS", "This group name is already in use.");
 

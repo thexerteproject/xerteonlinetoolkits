@@ -668,6 +668,9 @@ function getIcon(nodetype)
         case "folder":
             icon = "website_code/images/Icon_Folder.gif";
             break;
+        case "group":
+            icon = "website_code/images/Icon_Shared.gif";
+            break;
         default:
             icon = "website_code/images/Icon_Page_" + nodetype + ".gif";
     }
@@ -712,6 +715,11 @@ function init_workspace()
     var folder_children = ["folder"];
     folder_children = folder_children.concat(workspace.templates);
     node_types["folder"] = create_node_type("folder", folder_children);
+
+    //group
+    var group_children = ["folder"];
+    group_children = group_children.concat(workspace.templates);
+    node_types["group"] = create_node_type("group", folder_children);
 
     $.each(workspace.templates, function () {
         node_types[this] = create_node_type(this, [""]);
@@ -850,6 +858,9 @@ function showInformationAndSetStatus(node)
 			case "folder":
 				$("#project_information").html("Folder " + node.text);
 				break;
+            case "group":
+                $("#project_information").html(node.text);
+                break;
 			case "workspace":
 			case "recyclebin":
 				$("#project_information").html("");
