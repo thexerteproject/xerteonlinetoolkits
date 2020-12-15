@@ -31,11 +31,6 @@ require_once("../user_library.php");
 require("../url_library.php");
 require_once("management_library.php");
 
-/*
- * TODO:
- * get_templates_sorted.php enzo
- */
-
 function get_group_members($group_id){
 
     if (is_null($group_id) or $group_id=="") {
