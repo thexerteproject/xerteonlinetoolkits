@@ -561,7 +561,7 @@ function get_files_in_this_group($group_id, $tree_id, $sort_type, $copy_only) {
         $item->xot_id = $row['template_id'];
         $item->parent = $tree_id;
         $item->text = $row['project_name'];
-        $item->type = strtolower($row['parent_template']);
+        $item->type = strtolower($row['parent_template']) . "_group";
         $item->xot_type = "file";
         $item->editor_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size;
         $item->preview_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size;
@@ -735,12 +735,15 @@ function get_users_projects($sort_type, $copy_only=false)
     $query_for_blank_templates = "select * from {$prefix}originaltemplatesdetails where template_name=parent_template order by date_uploaded DESC";
 
     $templates = array();
+    $grouptemplates = array();
     $rows = db_query($query_for_blank_templates, array());
     foreach($rows as $row)
     {
         $templates[] = strtolower($row['parent_template']);
+        $grouptemplates[] = strtolower($row['parent_template']) . "_group";
     }
     $workspace->templates = $templates;
+    $workspace->grouptemplates = $grouptemplates;
 
     return json_encode($workspace);
 }
