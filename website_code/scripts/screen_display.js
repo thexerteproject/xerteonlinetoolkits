@@ -313,6 +313,7 @@ function button_check(){
      var deletebtn = document.getElementById("delete");
      var duplicatebtn = document.getElementById("duplicate");
      var publishbtn = document.getElementById("publish");
+     var newfolderbtn = document.getElementById("newfolder");
 
      var tree = $.jstree.reference("#workspace"),
          ids = tree.get_selected();
@@ -347,6 +348,10 @@ function button_check(){
     deletebtn.className = "xerte_workspace_button disabled";
     deletebtn.onclick="";
 
+    newfolderbtn.disabled="disabled";
+    newfolderbtn.className = "xerte_workspace_button disabled";
+    newfolderbtn.onclick="";
+
     if(ids.length==1) {
         switch (workspace.nodes[ids[0]].type) {
             case "workspace":
@@ -355,12 +360,22 @@ function button_check(){
                 propertiesbtn.onclick = function () {
                     properties_window()
                 };
+                newfolderbtn.removeAttribute("disabled");
+                newfolderbtn.className = "xerte_workspace_button";
+                newfolderbtn.onclick = function () {
+                    make_new_folder()
+                };
                 break;
             case "recyclebin":
                 deletebtn.removeAttribute("disabled");
                 deletebtn.className = "xerte_workspace_button";
                 deletebtn.onclick = function () {
                     remove_this()
+                };
+                newfolderbtn.removeAttribute("disabled");
+                newfolderbtn.className = "xerte_workspace_button";
+                newfolderbtn.onclick = function () {
+                    make_new_folder()
                 };
                 break;
             case "folder":
@@ -380,6 +395,13 @@ function button_check(){
                 duplicatebtn.onclick = function () {
                     duplicate_folder()
                 };
+                newfolderbtn.removeAttribute("disabled");
+                newfolderbtn.className = "xerte_workspace_button";
+                newfolderbtn.onclick = function () {
+                    make_new_folder()
+                };
+                break;
+            case "group":
                 break;
             default:
                 propertiesbtn.removeAttribute("disabled");
@@ -421,6 +443,12 @@ function button_check(){
                 publishbtn.className = "xerte_workspace_button";
                 publishbtn.onclick = function () {
                     publish_this()
+                };
+
+                newfolderbtn.removeAttribute("disabled");
+                newfolderbtn.className = "xerte_workspace_button";
+                newfolderbtn.onclick = function () {
+                    make_new_folder()
                 };
         }
     }
@@ -699,7 +727,7 @@ function init_workspace()
     // build Types structure for the types plugin
     var node_types = {};
     // root
-    node_types["#"] = create_node_type(null, ["workspace", "recyclebin"]); // Make sure that only the Workspace and recyclebin can be at root level
+    node_types["#"] = create_node_type(null, ["workspace", "recyclebin", "group"]); // Make sure that only the Workspace, recyclebin and groups can be at root level
 
     // workspace
     var workspace_children = ["folder"];
@@ -717,9 +745,8 @@ function init_workspace()
     node_types["folder"] = create_node_type("folder", folder_children);
 
     //group
-    var group_children = ["folder"];
-    group_children = group_children.concat(workspace.templates);
-    node_types["group"] = create_node_type("group", folder_children);
+    var group_children = [];//workspace.templates;
+    node_types["group"] = create_node_type("group", group_children);
 
     $.each(workspace.templates, function () {
         node_types[this] = create_node_type(this, [""]);
