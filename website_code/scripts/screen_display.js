@@ -685,7 +685,11 @@ function dynamicResize()
 
 function getIcon(nodetype)
 {
-    switch(nodetype)
+    var nodetypetemp = nodetype;
+    if (nodetype){
+        nodetypetemp = nodetype.replace("_group", "");
+    }
+    switch(nodetypetemp)
     {
         case "workspace":
             icon = "website_code/images/folder_workspace.gif";
@@ -700,7 +704,7 @@ function getIcon(nodetype)
             icon = "website_code/images/Icon_Shared.gif";
             break;
         default:
-            icon = "website_code/images/Icon_Page_" + nodetype + ".gif";
+            icon = "website_code/images/Icon_Page_" + nodetypetemp + ".gif";
     }
     return icon;
 }
@@ -745,10 +749,14 @@ function init_workspace()
     node_types["folder"] = create_node_type("folder", folder_children);
 
     //group
-    var group_children = [];//workspace.templates;
+    var group_children = workspace.grouptemplates;
     node_types["group"] = create_node_type("group", group_children);
 
     $.each(workspace.templates, function () {
+        node_types[this] = create_node_type(this, [""]);
+    });
+
+    $.each(workspace.grouptemplates, function () {
         node_types[this] = create_node_type(this, [""]);
     });
 
@@ -780,6 +788,13 @@ function init_workspace()
                 "fuzzy": false
             },
             "dnd": {
+                "is_draggable" : function(node) {
+                    console.log('is_draggable called: ', node[0]);
+                    if (node[0].type.includes("_group")) {
+                        return false;
+                    }
+                    return true;
+                },
                 "settings": {
                     "threshold": /Android|AppleWebKit|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 50 : 5
                 }
@@ -856,6 +871,7 @@ function init_workspace()
                 case "folder":
                 case "workspace":
                 case "recyclebin":
+                case "group":
                     break;
                 default:
 
