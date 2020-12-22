@@ -1611,6 +1611,7 @@ function x_continueSetUp2() {
 						);
 					} else {
 						XTSetOption('resume', false);
+						callStartPage = true;
 					}
 					break;
 				case 'restart':
