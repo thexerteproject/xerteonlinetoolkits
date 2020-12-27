@@ -38,6 +38,7 @@ Version 1.0
 <link href="website_code/styles/properties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/folderproperties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+<link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
 
 <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
