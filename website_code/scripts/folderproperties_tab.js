@@ -317,7 +317,7 @@ function share_stateChanged(){
  * @author Patrick Lockley
  */
 
-function share_this_folder(folder, user){
+function share_this_folder(folder, id, group=false){
 
 	if(setup_ajax()!=false){
 		var url="share_this_folder_template.php";
@@ -328,7 +328,7 @@ function share_this_folder(folder, user){
 		xmlHttp.onreadystatechange=share_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		xmlHttp.send('folder_id=' + folder + '&user_id=' + user + '&role=' + role);
+		xmlHttp.send('folder_id=' + folder + '&id=' + id + '&role=' + role + '&group=' + group);
 
 	}
 

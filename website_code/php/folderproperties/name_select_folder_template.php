@@ -47,15 +47,23 @@ if(is_numeric($parameters[0])&&is_string($parameters[1])){
 
     if(strlen($search)!=0){
 
+        $query_for_groups = "SELECT group_id, group_name from {$prefix}user_groups WHERE group_name like ? ORDER BY group_name ASC";
+        $query_groups_response = db_query($query_for_groups, array("%$search%"));
+
         $query_for_names = "select login_id, firstname, surname, username from {$prefix}logindetails WHERE "
         . "((firstname like ?) or (surname like ?) or (username like ?)) AND login_id NOT IN ( "
         . "SELECT login_id from {$prefix}folderdetails where folder_id = ? ) ORDER BY firstname ASC";
 
-        $params = array("$search%", "$search%", "$search%", $tutorial_id);
+        $params = array("$search%", "$search%", "$search%", $tutorial_id); //shouldn't we search on %$search% ? e.g.: searching for "Willem" will give you "Jan-Willem" too then
                 
         $query_names_response = db_query($query_for_names, $params); 
 
-        if(sizeof($query_names_response)!=0){			
+        if(sizeof($query_names_response)!=0 OR sizeof($query_groups_response)!=0){
+            foreach($query_groups_response as $row){
+
+                echo "<p>" . $row['group_name'] .  " - <button type=\"button\" class=\"xerte_button\" onclick=\"share_this_folder('" . $tutorial_id . "', '" . $row['group_id'] . "', group=true)\"><i class=\"fas fa-users\"></i>&nbsp;" . NAME_SELECT_CLICK_GROUP . "</button></p>";
+
+            }
 
             foreach($query_names_response as $row){
 

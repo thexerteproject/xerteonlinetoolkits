@@ -31,25 +31,19 @@ _load_language_file("/website_code/php/folderproperties/share_this_folder_templa
 
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
-if(is_numeric($_POST['user_id'])&&is_numeric($_POST['folder_id'])){
 
-    $user_id = $_POST['user_id'];
+if(is_numeric($_POST['id'])&&is_numeric($_POST['folder_id'])){
+
+    $id = $_POST['id'];
 
     $folder_id = $_POST['folder_id'];
 
     $new_role = $_POST['role'];
 
+    $groupbool = $_POST['group'] == "true";
+
+
     $database_id=database_connect("Share this folder database connect success","Share this folder database connect success");
-
-    /**
-     * find the user you are sharing with's root folder to add these templates to
-     */
-
-    $query_to_find_out_root_folder = "select folder_id from {$prefix}folderdetails where login_id = ? and folder_parent=? and folder_name!=?";
-    $params = array($user_id, '0', 'recyclebin');
-
-    $row_query_root = db_query_one($query_to_find_out_root_folder, $params);
-
 
     /**
      * find all templates within this folder
@@ -80,46 +74,90 @@ if(is_numeric($_POST['user_id'])&&is_numeric($_POST['folder_id'])){
 
 
     $failed = False;
-    // for each template id found before, insert or update a db entry for the user_id with the right role
-    foreach($all_content as $template_id) {
+    if (!$groupbool) {
+        /**
+         * find the user you are sharing with's root folder to add these templates to
+         */
+        $query_to_find_out_root_folder = "select folder_id from {$prefix}folderdetails where login_id = ? and folder_parent=? and folder_name!=?";
+        $params = array($id, '0', 'recyclebin');
 
-        //Check to see if this template isn't already shared with this user:
-        $query_to_check_role = "SELECT role FROM {$prefix}templaterights WHERE template_id=? and user_id=?";
-        $params = array($template_id['template_id'], $user_id);
-        $current_role = db_query_one($query_to_check_role, $params);
+        $row_query_root = db_query_one($query_to_find_out_root_folder, $params);
+    }else {
+        // find the group you're sharing this folder with (sanity check):
+        $group_query = "SELECT * FROM user_groups WHERE group_id = ?";
+        $group = db_query_one($group_query, array($id));
+        if (!$group) {
+            echo '<p>' . SHARING_THIS_FEEDBACK_FAIL . "</p>";
+            $failed = true;
+        }
+    }
 
-        if (is_null($current_role)) { // If there is no result in current role that means that this user doesn't have access to this template yet
-            $query_to_insert_share = "INSERT INTO {$prefix}templaterights (template_id, user_id, role, folder) VALUES (?,?,?,?)";
-            $params = array($template_id['template_id'], $user_id, $new_role, $row_query_root['folder_id']);
+    if (!$failed){
+        // for each template id found before, insert or update a db entry for the id with the right role
+        foreach($all_content as $template_id) {
 
-            $queryresult = db_query($query_to_insert_share, $params);
-            if ($queryresult === false) { //check with === because an insert function will return a '0' even if the query was successful
-                $failed = true;
-                echo '<p>' . SHARING_THIS_FEEDBACK_FAIL . "</p>";
-                break;
-            }
+            //Check to see if this template isn't already shared with this user:
+            $query_to_check_role = "";
+            if(!$groupbool)
+                $query_to_check_role = "SELECT role FROM {$prefix}templaterights WHERE template_id=? and user_id=?";
+            else
+                $query_to_check_role = "SELECT role FROM {$prefix}template_group_rights WHERE template_id=? and group_id=?";
+            $params = array($template_id['template_id'], $id);
+            $current_role = db_query_one($query_to_check_role, $params);
 
-        } else if ($current_role['role'] != $new_role) { // if the result of current role is not the same role we only need to update this db entry
-            $query_to_update_role = "UPDATE {$prefix}templaterights SET role = ? WHERE template_id=? and user_id=?";
-            $params = array($new_role, $template_id['template_id'], $user_id);
+            if (is_null($current_role)) { // If there is no result in current role that means that this user/group doesn't have access to this template yet
+                $query_to_insert_share="";
+                $params = [];
+                if(!$groupbool){
+                    $query_to_insert_share = "INSERT INTO {$prefix}templaterights (template_id, user_id, role, folder) VALUES (?,?,?,?)";
+                    $params = array($template_id['template_id'], $id, $new_role, $row_query_root['folder_id']);
+                }
+                else{
+                    $query_to_insert_share = "INSERT INTO {$prefix}template_group_rights (template_id, group_id, role) VALUES (?,?,?)";
+                    $params = array($template_id['template_id'], $id, $new_role);
+                }
 
-            $queryresult = db_query($query_to_update_role, $params);
-            if ($queryresult === false) {
-                $failed = true;
-                echo '<p>' . SHARING_THIS_FEEDBACK_FAIL . "</p>";
-                break;
-            }
-        } // if the same role is chosen/some garbage role is somehow selected, nothing should happen to the database for this iteration.
+                $queryresult = db_query($query_to_insert_share, $params);
+                if ($queryresult === false) { //check with === because an insert function will return a '0' even if the query was successful
+                    $failed = true;
+                    echo '<p>' . SHARING_THIS_FEEDBACK_FAIL . "</p>";
+                    break;
+                }
+
+            } else if ($current_role['role'] != $new_role) { // if the result of current role is not the same role we only need to update this db entry
+                $query_to_update_role = "";
+                if(!$groupbool)
+                    $query_to_update_role = "UPDATE {$prefix}templaterights SET role = ? WHERE template_id=? and user_id=?";
+                else
+                    $query_to_update_role = "UPDATE {$prefix}template_group_rights SET role = ? WHERE template_id=? and group_id=?";
+                $params = array($new_role, $template_id['template_id'], $id);
+
+                $queryresult = db_query($query_to_update_role, $params);
+                if ($queryresult === false) {
+                    $failed = true;
+                    echo '<p>' . SHARING_THIS_FEEDBACK_FAIL . "</p>";
+                    break;
+                }
+            } // if the same role is chosen/some garbage role is somehow selected, nothing should happen to the database for this iteration.
+        }
     }
     if (!$failed){
-        $query_for_name = "select firstname, surname, username from {$prefix}logindetails WHERE login_id=?";
-        $params = array($user_id);
-
-        $row = db_query_one($query_for_name, $params);
-
-        echo "<p>" . str_replace("{&}", count($all_content),SHARING_THIS_FEEDBACK_SUCCESS) .
-            $row['firstname'] . " " . $row['surname'] . " (". $row['username'] . ").</p>";
+        $query_for_name = "";
+        if(!$groupbool){
+            $query_for_name = "select firstname, surname, username from {$prefix}logindetails WHERE login_id=?";
+            $params = array($id);
+            $row = db_query_one($query_for_name, $params);
+            echo "<p>" . str_replace("{&}", count($all_content),SHARING_THIS_FEEDBACK_SUCCESS) .
+                $row['firstname'] . " " . $row['surname'] . " (". $row['username'] . ").</p>";
+        }else{
+            echo "<p>" . str_replace("{&}", count($all_content),SHARING_THIS_FEEDBACK_SUCCESS) .
+                $group['group_name'] . ".</p>";
+        }
     }
+
+
+
+
 
 
 //        if(db_query($query_to_insert_share, $params)){
