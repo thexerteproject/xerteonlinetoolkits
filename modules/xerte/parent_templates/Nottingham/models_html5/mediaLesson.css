@@ -15,7 +15,7 @@
 	/* TRACKBAR */
 	#trackBarHolder {
 		display: block;
-		height: 5em;
+		height: 3em;
 		width: auto;
 		margin: auto;
 		background: #F0F6FD;
@@ -26,8 +26,8 @@
 		background: #D5E4FD;
 		margin-left: 1em;
 		margin-right: 1em;
-		top: 2em;
-		height: 1em;
+		top: 1.2em;
+		height: 0.6em;
 		width: 80%;
 		display: inline-block;
 		position: relative;
@@ -35,9 +35,9 @@
 	}
 
 	#trackBarSlider {
-		width: 2em;
-		height: 2em;
-		top: -0.5em;
+		width: 1.2em;
+		height: 1.2em;
+		top: -0.3em;
 		border-radius: 50%;
 		background: #1967D2;
 		position: relative;
@@ -47,8 +47,8 @@
 
 	.trackBarButton {
 		display: inline-block;
-		height: 3em;
-		width: 3em;
+		height: 1.8em;
+		width: 1.8em;
 		top: 1em;
 		margin-left: 1em;
 		margin-right: 1em;
@@ -58,10 +58,9 @@
 	}
 
 	.trackBarEventMarker {
-		width: 1em;
-		height: 1em;
+		width: 0.6em;
+		height: 0.6em;
 		background: #77A6E8;
-
 		border-radius: 50%;
 		position: absolute;
 		display: inline-block;
@@ -69,10 +68,10 @@
 	}
 
 	.trackBarEventMarkerMandatory {
-		width: 2em;
-		height: 2em;
+		width: 1.2em;
+		height: 1.2em;
 		background: #D5E4FD;
-		top: -0.5em;
+		top: -0.3em;
 		
 		border-radius: 50%;
 		position: absolute;

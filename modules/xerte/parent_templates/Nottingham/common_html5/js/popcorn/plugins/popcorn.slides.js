@@ -43,46 +43,21 @@ optional: caption captionPosV captionPosH
 				// is this the slideshow holder? if so, just build holder div - no slides to add to it yet
 				if (options.child == "false") {
 					var txt = "";
-					
-					// is it to appear over media?
-					// if (options.overlay == "true" && (this.video != undefined || $(this.audio).closest(".mediaHolder").find(".audioImg").length > 0)) {
-					// 	$target = $("#" + options.target);
-						
-					// 	txt += '<div class="slideHolder"></div>';
-						
-					// 	var $parent;
-					// 	if (this.video != undefined) {
-					// 		$parent = $(this.media).parent();
-					// 	} else {
-					// 		$parent = $(this.media).closest(".mediaHolder").find(".audioImgHolder");
-					// 	}
-						
-					// 	// move slidesHolder to overlay media
-					// 	$("#" + options.target)
-					// 		.appendTo($parent)
-					// 		.removeClass("contentBlock")
-					// 		.addClass("overlay");
-						
-					// 	$target = $("#" + options.target);
-						
-					// } else {
 					$target = $("#" + options.target);
-						
 					txt += options.name != "" ? '<h4>' + options.name + '</h4>' : "";
-					//txt += '<div class="slideHolder"></div>';
 					
+					// Add divider if necessary
 					if (options.line == "true") {
-						if (options.position == "top") {
-							txt = txt + "<hr/>";
-						} else {
-							txt = "<hr/>" + txt;
-						}
+						txt = options.position == "top" ? txt + "<hr/>" : "<hr/>" + txt;
 					}
 
 					$slideHolder = $('<div class="slideHolder"></div>').appendTo($target).hide();
+					
+					// Handle the holder having the appear over the video.
 					if(options.overlayPan == "true"){
 						$target.parent().hide()
 						$target.hide();
+						// Handle optional slides
 						if(options.optional === "true") {
 							var $openPng = x_templateLocation + "common_html5/plus.png";
 							var $showHolder  = $('<div id="showHolder" />').appendTo($target);
@@ -99,16 +74,21 @@ optional: caption captionPosV captionPosH
 							$target.prepend(txt);
 						}
 					}
-					else{
+					else {
 						$target.html(txt).hide();
 					}
 
 				} else {
+					// For the children of the slide holder
 					$target = $("#" + options.target + " .slideHolder");
 					var pos = options.captionPosV != undefined ? " v" + options.captionPosV : " vbottom";
 					pos += options.captionPosH != undefined ? " h" + options.captionPosH : " hcentre";
 					
-					var caption = options.caption != "" && options.caption != undefined ? '<div class="caption' + pos + '"><div class="inner">' + options.caption + '</div></div>' : "";
+					if (options.caption != "" && options.caption != undefined) {
+						var caption = '<div class="caption' + pos + '"><div class="inner">' + options.caption + '</div></div>';
+					} else {
+						var caption = "";
+					}
 					
 					$slide = $('<div class="slide"><img src="' + options.url + '" alt="' + options.name + '" />' + caption + '</div>');
 					$slide.appendTo($target);
@@ -121,7 +101,7 @@ optional: caption captionPosV captionPosH
 						});
 					
 					eval(x_currentPageXML.nodeName).resizeContent($slide.find("img"));
-					
+					$slide.css("max-height", "");
 					$slide.hide();
 				}
 			},
@@ -129,7 +109,7 @@ optional: caption captionPosV captionPosH
 			start: function(event, options) {
 				console.log(options)
 				// fire on options.start		
-				if (options.overlayPan) {
+				if (options.overlayPan == "true") {
 					if (options.optional === "false")
 					{
 						$target.parent().addClass("qWindow");
@@ -139,7 +119,8 @@ optional: caption captionPosV captionPosH
 					}
 					$target.parent().css({
 						"top": options._y + "%",
-						"left": options._x + "%"
+						"left": options._x + "%",
+						"max-width": options._w + "%"
 					}).show();
 					
 					if (options.child == "false") {
@@ -149,13 +130,16 @@ optional: caption captionPosV captionPosH
 						if ($slide.closest(".mediaHolder").length != 0 && $slide.closest(".mediaHolder").width() != $slide.width()) {
 							if ($slide.closest(".audioImgHolder").find(".audioImg")[0].complete == false) {
 								$slide.closest(".audioImgHolder").find(".audioImg").load(function() {
-									eval(x_currentPageXML.nodeName).resizeContent($slide.find("img"));
+									//eval(x_currentPageXML.nodeName).resizeContent($slide.find("img"));
+									resizeImage($slide);
 								});
 							} else {
-								eval(x_currentPageXML.nodeName).resizeContent($slide.find("img"));
+								//eval(x_currentPageXML.nodeName).resizeContent($slide.find("img"));
+								resizeImage($slide);
 							}
 						}
-						eval(x_currentPageXML.nodeName).resizeContent($slide.find("img"));
+						//eval(x_currentPageXML.nodeName).resizeContent($slide.find("img"));
+						resizeImage($slide);
 						$slide.show();
 						$slide.parent().show();
 					}
@@ -175,6 +159,24 @@ optional: caption captionPosV captionPosH
 						}
 					}
 				}
+				resizeImage = function(slide){
+					debugger;
+					var img = slide.find("img")[0];
+					var ratio = img.width / img.height;
+					var ww = options._w * 0.01 * $("mainMedia").width();
+					var hh = $("mainMedia").height() - (options._y * 0.01 * $("mainMedia").height);
+					var wh = Math.floor(ww / ratio);
+					var hw = Math.floor(hh * ratio);
+
+					if (ww < hw) {
+						slide.width(ww);
+						slide.height(wh);
+					}
+					else {
+						slide.width(hw);
+						slide.height(hh);
+					}
+				}				
 			},
 			
 			end: function(event, options) {
