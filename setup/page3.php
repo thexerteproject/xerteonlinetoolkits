@@ -43,7 +43,7 @@ echo "<p>The site text is (number 2 on the diagram)<textarea name=\"site_text\">
 
 echo "<p>The news text is (number 5 on the diagram)<textarea name=\"news_text\"><p class=\"news_title\">Other resources</p><p class=\"news_story\"><a href=\"\">Site 1</a></p><p class=\"news_story\"><a href=\"\">Site 2</a></p><p class=\"news_story\"><a href=\"\">Site 3</a></p></textarea></p>";
 
-echo "<p>The copyright message (number 6 on the diagram) is <textarea name=\"copyright\">Copyright Apereo Foundation 2015</textarea></p>";
+echo "<p>The copyright message (number 6 on the diagram) is <textarea name=\"copyright\">Copyright Apereo Foundation 2021</textarea></p>";
 
 echo "<p>The demonstration page (linked to from number 7 on the diagram) URL is <textarea name=\"demonstration_page\">modules/xerte/training/toolkits.htm</textarea></p>";
 
@@ -51,9 +51,11 @@ echo "<p>The form string is (The code to handle the HTML format for the login bo
 
 echo "<br><br><h3 style=\"clear:left\">Site formatting settings - Customising the logged in page</h3>";
 
-echo "<p>The content of pod one is (The first pod underneath the file area on the logged in page)<textarea name=\"pod_one\"><p class=\"news_title\">Resources</p><p class=\"demo\"><a href=\"http://www.xerte.org.uk\">Community Resources</a><br />The Xerte user community website.</p><p class=\"demo\"><a href=\"http://www.nottingham.ac.uk/toolkits/play_560\">Learning Object Demo</a><br />A comprehensive demo of all the page templates.</p></textarea></p>";
+echo "<p>The content of pod one is (The first pod underneath the file area on the logged in page)<textarea name=\"pod_one\"><p class=\"news_title\">How to use Xerte</p><p class=\"demo\"><a data-featherlight=\"iframe\" href=\"modules/xerte/training/toolkits.htm\" target=\"_blank\">Demo >></a><br />A very short demo showing a simple project being built and viewed.<br /><br /><a data-featherlight=\"iframe\" href=\"https://xot.xerte.org.uk/play.php?template_id=150#page1\" target=\"_blank\">Getting started >></a></p></textarea></p>";
 
 echo "<p>The content of pod two is (The second pod underneath the file area on the logged in page)<textarea name=\"pod_two\"><p class=\"news_title\">Want to share some thoughts?</p><p class=\"general\">If you have any questions, requests for help, ideas for new projects or problems to report, then please get in touch.</p><p class=\"general\">Please use our <a href=\"feedback/\" style=\"color:#000\">Feedback Form</a></p></textarea></p>";
+
+echo "<p>The news text is (number 5 on the diagram)<textarea name=\"news_text\"><p class=\"news_title\">Other resources</p><p class=\"news_story\"><a data-featherlight=\"iframe\" href=\"https://xot.xerte.org.uk\" target=\"_blank\">Xerte Community</a></p><p class=\"news_story\"><a data-featherlight=\"iframe\" href=\"https://xot.xerte.org.uk/play.php?template_id=116#xertepagetypes\" target=\"_blank\">XOT Page Types example</a></p><p class=\"news_story\"><a data-featherlight=\"iframe\" href=\"https://xot.xerte.org.uk/play.php?template_id=137\" target=\"_blank\">Website/Bootstrap example</a></p></textarea></p>";
 
 echo "<br><br><h3 style=\"clear:left\">Server settings - some technical aspects for the site</h3>";
 
