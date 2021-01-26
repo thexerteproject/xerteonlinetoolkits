@@ -835,11 +835,11 @@
 			for(i = 0; i < panelData.length; i++) {
 			    if(panelData[i].nodeName == "overlayPanel") {
                     $('<div class="overlay" id="mydiv"></div>')
-                        .appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex)[0].children[1])
+						.appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex).children(".mainMedia"))
                         .attr("id", mediaLesson.panelbaseid + i)
 						.hide();
                     $('<div class="overlayGray"></div>')
-                        .appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex)[0].children[1])
+						.appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex).children(".mainMedia"))
                         .attr("id", "overlay")
 						.hide();
                     break;
@@ -1613,6 +1613,7 @@
 					} else {
 						$(media).parent().parent().find(".mejs-controls").children("div").show();
 					}
+					$("#trackBarHolder").show();
 				}
 			} else {
 				// disable
@@ -1625,6 +1626,7 @@
 					} else {
 						$(media).parent().parent().find(".mejs-controls").children("div").hide();
 					}
+					$("#trackBarHolder").hide();
 				}
 			}
 		}
