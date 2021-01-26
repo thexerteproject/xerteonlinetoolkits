@@ -33,6 +33,7 @@
 			toResize = false,
 			prevTime = -1,
 			isPlaying = false;
+			isMuted = false;
             lastTime = -1;
 
 		
@@ -582,6 +583,7 @@
 						if (this.nodeName == "synchSlides")	{
 							$(this.children).each(function(k){
 								this.setAttribute("overlayPan", "true");
+
 							});
 						}
 						this.setAttribute("overlayPan", "true");
@@ -781,13 +783,55 @@
 			$muteButton.on('click', function(e){
 				if($(this).hasClass('fa-x-mute')) {
 					mp.mute();
+					isMuted = true;
 					$(this).removeClass('fa-x-mute').addClass('fa-x-unmute');
 				}
 				else {
 					mp.unmute();
+					isMuted = false;
 					$(this).removeClass('fa-x-unmute').addClass('fa-x-mute');
 				}
 			});
+
+			
+			keyPressHandler = function(e)
+			{
+				time = mp.currentTime();
+				switch(e.key){
+					case "m":
+						if (isMuted) {
+							mp.unmute();
+							isMuted = false;
+							$muteButton.removeClass('fa-x-unmute').addClass('fa-x-mute');
+						}
+						else {
+							mp.mute();
+							isMuted = true;
+							$muteButton.removeClass('fa-x-mute').addClass('fa-x-unmute');
+						}
+						break;
+					case "k":
+					case " ":
+						if(isPlaying) {
+							mp.pause();
+						}
+						else {
+							mp.play();
+						}	
+						break;
+					case "l":
+						mp.currentTime(time + 10);
+						break;
+					case "j":
+						mp.currentTime(time - 10);	
+						break;
+				}
+
+			}
+
+			document.addEventListener("keypress", keyPressHandler);
+			
+
 			
 			//Append the OVERLAY PANEL to the main media.
 			for(i = 0; i < panelData.length; i++) {
@@ -1383,9 +1427,12 @@
 					}
 				}
 				if (thisContent.type == "synchSlides") {
-					$.each(thisContent.allInfo.children, function(c){
-						c.optional = thisContent.optional;
-					})
+					$.each(thisContent.allInfo.children, function(i, e){
+						e.optional = thisContent.optional;
+						e.setAttribute("_w", parseFloat(thisContent.allInfo.attributes._w.value));
+						e.setAttribute("_x", parseFloat(thisContent.allInfo.attributes._x.value));
+						e.setAttribute("_y", parseFloat(thisContent.allInfo.attributes._y.value));
+					});
 				}
 				if (thisContent.type != "synchEmpty") {
 					var pluginAttributes = {

@@ -159,14 +159,15 @@ optional: caption captionPosV captionPosH
 						}
 					}
 				}
+
 				resizeImage = function(slide){
-					debugger;
 					var img = slide.find("img")[0];
 					var ratio = img.width / img.height;
-					var ww = options._w * 0.01 * $("mainMedia").width();
-					var hh = $("mainMedia").height() - (options._y * 0.01 * $("mainMedia").height);
+					var ww = options._w * 0.01 * $(".mainMedia").width();
+					var hh = $(".mainMedia").height() - (options._y * 0.01 * $(".mainMedia").height());
 					var wh = Math.floor(ww / ratio);
 					var hw = Math.floor(hh * ratio);
+					img.style.cssText = "max-height: 10000; height: 95%; width: 95%;"
 
 					if (ww < hw) {
 						slide.width(ww);
