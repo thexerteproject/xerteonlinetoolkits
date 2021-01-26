@@ -794,8 +794,10 @@
 
 			keyPressHandler = function(e)
 			{
-				time = mp.currentTime();
-				switch(e.key){
+				if (mp.media.player.controlsEnabled == true)
+				{
+					time = mp.currentTime();
+					switch(e.key){
 					case "m":
 						if (isMuted) {
 							mp.unmute();
@@ -1605,6 +1607,7 @@
 			if (enable == true) {
 				// enable
 				if (media.player) {
+					media.player.controls = true;
 					media.player.controlsEnabled = true;
 					media.player.options.clickToPlayPause = true;
 					if (media.nodeName == "VIDEO") {
