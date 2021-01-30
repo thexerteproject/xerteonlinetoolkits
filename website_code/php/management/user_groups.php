@@ -26,14 +26,6 @@ require("../user_library.php");
 require("management_library.php");
 require("get_group_members.php");
 
-/***
- * TODO:
- * group aanmaken DONE
- * checken of al lid is van groep DONE
- * remove van groep DONE
- * groep verwijderen DONE
- *
- */
 
 if(is_user_admin()){
 
@@ -69,14 +61,16 @@ if(is_user_admin()){
 
     echo "<span>";
     echo "<form name=\"all_users\" action=\"javascript:add_member('list_user', 'group')\">";
-    echo "<label for=\"list_users\">" . USER_GROUPS_MANAGEMENT_ALL_USERS. "</label><br>";
+    echo "<label for=\"list_user\">" . USER_GROUPS_MANAGEMENT_ALL_USERS. "</label><br>";
 
-    echo "<select id=\"list_user\">";
+    echo "<select id=\"list_user\" multiple placeholder='". USER_GROUPS_MANAGEMENT_SELECT . "'>";
     foreach($logins as $row_users){
-        echo "<option value=\"" . $row_users['login_id'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
+        echo "<option value=\"" . $row_users["login_id"] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
     }
+
     echo "</select>";
-    echo "<button type=\"submit\" class=\"xerte_button\">" . USER_GROUPS_MANAGEMENT_ADD_MEMBER . "</button>";
+    echo "<button type=\"submit\" style=\"display:inline;\" class=\"xerte_button\">" . USER_GROUPS_MANAGEMENT_ADD_MEMBER . "</button>";
+
     /*
     foreach($query_response as $row) {
 
@@ -99,7 +93,6 @@ if(is_user_admin()){
     get_group_members($firstgroup);
     echo "</div>";
     echo "</span>";
-
 
 
 

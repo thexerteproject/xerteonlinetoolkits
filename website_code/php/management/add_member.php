@@ -31,7 +31,7 @@ require_once("../user_library.php");
 require("../url_library.php");
 require_once("management_library.php");
 
-/*
+
 //returns an insert query to add a list of login_ids to a group
 function add_members_to_group($login_ids, $group_id){
 
@@ -43,22 +43,29 @@ function add_members_to_group($login_ids, $group_id){
     return "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "user_group_members (login_id, group_id) VALUES " . implode(', ', $entries);
 
 }
-*/
+
 
 if(is_user_admin()){
 
-    $login_id = $_POST['login_id'];
+    $login_ids = $_POST['login_id'];
     $group_id = $_POST['group_id'];
 
     $database_id = database_connect("member list connected","member list failed");
 
-    $params = array($login_id, $group_id);
-    $query = "SELECT * FROM " . $xerte_toolkits_site->database_table_prefix . "user_group_members WHERE login_id=? AND group_id=?";
-    $exists = db_query_one($query, $params);
-    if (is_null($exists)){ //check if user isn't already member of this group
-        $query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "user_group_members (login_id, group_id) VALUES (?,?)";
-        db_query($query, $params);
+    $params = array( $group_id);
+    $query = "SELECT * FROM " . $xerte_toolkits_site->database_table_prefix . "user_group_members WHERE group_id=? AND login_id in (" . $login_ids . ")";
+    $exists = db_query($query, $params);
+
+    $existing_arr = [];
+    foreach($exists as $row){
+        array_push($existing_arr, $row['login_id']);
     }
+
+    $logins_arr = array_diff(explode(',',$login_ids), $existing_arr);  //select only users who aren't in this group yet
+
+    $query = add_members_to_group($logins_arr, $group_id);
+    //$query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "user_group_members (login_id, group_id) VALUES (?,?)";
+    db_query($query, $params);
 
 }else{
 

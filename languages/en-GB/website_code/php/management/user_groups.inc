@@ -20,9 +20,11 @@
 
 	define("USER_GROUPS_MANAGEMENT_ALL_USERS", "All active users with Learning Objects");
 
+    define("USER_GROUPS_MANAGEMENT_SELECT", "Select user(s).");
+
 	define("USER_GROUPS_MANAGEMENT_GROUP_MEMBERS", "All members of ");
 
-	define("USER_GROUPS_MANAGEMENT_ADD_MEMBER", "Add user to selected group");
+	define("USER_GROUPS_MANAGEMENT_ADD_MEMBER", "Add user(s) to selected group");
 
 	define("USER_GROUPS_MANAGEMENT_REMOVE_MEMBER", "Remove user from group");
 

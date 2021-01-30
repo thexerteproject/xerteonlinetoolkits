@@ -206,6 +206,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 <link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" />
                 <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
                 <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
+                <link rel="stylesheet" type="text/css" href="website_code/styles/selectize.css">
                 <?php
                 if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
                 {
@@ -252,6 +253,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 _include_javascript_file("website_code/scripts/import.js");
                 _include_javascript_file("website_code/scripts/template_management.js");
                 _include_javascript_file("website_code/scripts/logout.js");
+                echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . "website_code/scripts/selectize.js\"></script>";
 
                 if ($authmech->canManageUser($jsscript))
                 {

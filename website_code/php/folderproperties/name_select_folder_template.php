@@ -54,7 +54,7 @@ if(is_numeric($parameters[0])&&is_string($parameters[1])){
         . "((firstname like ?) or (surname like ?) or (username like ?)) AND login_id NOT IN ( "
         . "SELECT login_id from {$prefix}folderdetails where folder_id = ? ) ORDER BY firstname ASC";
 
-        $params = array("$search%", "$search%", "$search%", $tutorial_id); //shouldn't we search on %$search% ? e.g.: searching for "Willem" will give you "Jan-Willem" too then
+        $params = array("%$search%", "%$search%", "%$search%", $tutorial_id);
                 
         $query_names_response = db_query($query_for_names, $params); 
 
