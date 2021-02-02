@@ -1,0 +1,5 @@
+{
+    "require": {
+        "onelogin/php-saml": "^3.4"
+    }
+}

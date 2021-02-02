@@ -999,4 +999,19 @@ function upgrade_23()
     return "Creating dashboard_display_options field in templatedetails already present - ok ? ". "<br>";
 }
 
+function upgrade_24()
+{
+    if (!_db_field_exists('originaltemplatesdetails', 'template_sub_pages')) {
+        $error1 = _db_add_field('originaltemplatesdetails', 'template_sub_pages', 'text', '{}', 'active');
+        $error1_returned = true;
+        if($error1 === false)
+        {
+            $error1_returned = false;
+        }
+        return "Creating template_sub_pages field in originaltemplatesdetails - ok ? "  . ($error1_returned ? 'true' : 'false') . "<br>";
+    }
+    return "Creating template_sub_pages field in originaltemplatesdetails already present - ok ? ". "<br>";
+}
+
+
 ?>

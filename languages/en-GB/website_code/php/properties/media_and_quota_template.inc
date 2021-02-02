@@ -32,7 +32,7 @@
 
 	define("MEDIA_AND_QUOTA_LINK", "Click on a file name and a link will appear below");
 	
-	define("MEDIA_AND_QUOTA_PUBLISH", "In use / Not in use refer to whether the file is used in the published version, not the working version");
+	define("MEDIA_AND_QUOTA_PUBLISH", "In use / Not in use refers to whether the file is directly linked/displayed in your project. If you are using code libraries and/or indirectly linked files then those files may still be in use/required but will be labelled below as not in use. Keep this in mind when deleting.");
 	
 	define("MEDIA_AND_QUOTA_FAIL", "Sorry you do not have rights to this project");
 

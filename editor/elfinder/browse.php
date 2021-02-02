@@ -22,6 +22,39 @@
  * Created by Tom Reijnders
  */
 
+require_once "../../config.php";
+
+if(empty($_SESSION['toolkits_logon_id'])) {
+    die("Please login");
+}
+
+// if there are GET paramters, put them in session and restart
+if (isset($_GET['uploadDir']) && isset($_GET['uploadURL']))
+{
+    $_SESSION['uploadDir'] = $_REQUEST['uploadDir'];
+    $_SESSION['uploadURL'] = $_REQUEST['uploadURL'];
+
+    $params = "?";
+    foreach($_GET as $key => $param)
+    {
+        if ($key != "uploadDir" && $key != "uploadURL")
+        {
+            if (strlen($params) > 1)
+            {
+                $params .= "&";
+            }
+            $params .= $key . "=" . $param;
+        }
+    }
+
+    header("Location: " . $_SERVER["SCRIPT_NAME"] . $params);
+}
+
+if (strpos($_SESSION['uploadDir'], 'USER-FILES') === false || strpos($_SESSION['uploadURL'], 'USER-FILES') === false)
+{
+    die("Invalid upload location");
+}
+
 $mode = 'standalone';
 if (isset($_REQUEST['mode']) && $_REQUEST['mode']=='cke') {
     $mode = 'cke';
@@ -88,7 +121,7 @@ if (isset($_REQUEST['langCode']))
             ?>
 
             $('#elfinder').elfinder({
-                url : 'php/connector.php?uploadDir=<?php echo $_REQUEST['uploadDir'];?>&uploadURL=<?php echo $_REQUEST['uploadURL'];?>',       // connector URL (REQUIRED)
+                url : 'php/connector.php?uploadDir=<?php echo $_SESSION['uploadDir'];?>&uploadURL=<?php echo $_SESSION['uploadURL'];?>',       // connector URL (REQUIRED)
                 lang: '<?php echo $lang;?>',     // language (OPTIONAL)
                 uiOptions : {
                     // toolbar configuration
@@ -98,7 +131,7 @@ if (isset($_REQUEST['langCode']))
                         // ['home', 'up'],
                         ['home'],
                         //['mkdir', 'mkfile', 'upload'],
-                        ['upload'],
+                        ['mkdir', 'upload'],
                         //['open', 'download', 'getfile'],
                         ['download', 'getfile'],
                         ['info'],
@@ -134,11 +167,11 @@ if (isset($_REQUEST['langCode']))
                 },
                 contextmenu : {
                     // navbarfolder menu
-                    navbar : ['open', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'info'],
+                    navbar : ['open', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'mkdir', '|', 'info'],
 
                     // current directory menu
                     //cwd    : ['reload', 'back', '|', 'upload', 'mkdir', 'mkfile', 'paste', '|', 'info'],
-                    cwd    : ['reload', '|', 'upload', 'paste', '|', 'info'],
+                    cwd    : ['reload', '|', 'upload', 'mkdir', 'paste', '|', 'info'],
 
                     // current directory file menu
                     //files  : [

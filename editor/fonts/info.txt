@@ -1,0 +1,5 @@
+To add fonts to ckeditor & make them available in projects:
+
+1. Add fonts files here (e.g. ttf/eot files)
+2. Add references to these files using '@font-face' in fonts.css
+3. Make them available in ckeditor by editing 'config.font_names' in editor/js/vendor/ckeditor/config.js

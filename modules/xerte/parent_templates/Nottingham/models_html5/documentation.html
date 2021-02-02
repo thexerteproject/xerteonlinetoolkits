@@ -426,6 +426,9 @@
 						break;
 					case 'media':
 						if (xml.getAttribute('url') != undefined && xml.getAttribute('url') != '') {
+							if (exclude != 'doc') {
+								docData.pages[page].sections[section].items[item].itemText = '<img class="itemImg" src="' + xml.getAttribute('url') + '">';
+							}
 							$element = $('<img class="itemImg">')
 								.attr('src', xml.getAttribute('url'));
 						}
@@ -703,7 +706,7 @@
 			tableString += '</table>';
 			
 			return $('<div class="table">' + tableString + '</div>');
-		}
+		};
 		
 		this.formatTableForDownload = function($table, notAnsweredText) {
 			var $tempTable = $('<div>').append($table.find('table').clone());
@@ -716,7 +719,7 @@
 			$tempTable.find('table').attr('border', '1');
 			
 			return '<span style="font-style:">' + $tempTable.html() + '</span>';
-		}
+		};
 		
 		this.download = function () {
 			if (documentation.checkRequired(currentPage)) {

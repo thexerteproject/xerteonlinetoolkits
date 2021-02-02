@@ -90,10 +90,10 @@ $opts = array(
 			'path'          => $rootpath . "/media",         // path to files (REQUIRED)
 			'URL'           => $rooturl . "/media", // URL to files (REQUIRED)
 			'accessControl' => 'access',             // disable and hide dot starting files (OPTIONAL)
-            'tmbPath'       => $rootpath . "/media//.tmb",
+            'tmbPath'       => $rootpath . "/media/.tmb",
             'tmbURL'        => $rooturl . "/media/.tmb",
             'tmbCrop'       => false,
-            'uploadDeny' => array('text/x-php'),
+            'uploadDeny' => array('text/x-php','application/x-php'),
             'attributes' => array(
                 array( // hide readmes
                     'pattern' => '/\.(txt|html|php|php5|php*|py|pl|sh|xml)$/i',

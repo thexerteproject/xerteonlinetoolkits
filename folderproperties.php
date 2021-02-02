@@ -38,6 +38,7 @@ Version 1.0
 <link href="website_code/styles/properties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/folderproperties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+<link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
 
 <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
@@ -115,14 +116,25 @@ Start the page and once loaded set the default option
 														<?PHP echo "<i class=\"fa fa-rss\"></i>&nbsp;".FOLDERPROPERTIES_TAB_RSS; ?>
 												</p>									
 										</div>
-										<div class="tab_spacer">							
+
+										<div class="tab_spacer">
 										</div>
-										<!-- 
+                                        <div id="tab4-1" class="tab_right_pad" style="height:38px;">
+                                        </div>
+                                        <!-- Copied and modified from properties.php -->
+                                        <div id="tab4" class="tab"  style="width:146px; height:38px;">
+                                                <p onclick="javascript:tab_highlight('4'); sharing_status_folder_template()">
+                                                    <?PHP echo "<i class=\"fa fa-share\"></i>&nbsp;".FOLDERPROPERTIES_TAB_SHARED; ?>
+                                                </p>
+                                        </div>
+
+                                        <div class="tab_spacer">
+                                        </div>
+                                        <!--
 
 												Last spacer given sufficient heigbt to fill the rest of the border for the right hand panel
 
 										-->
-
 										<div class="tab_spacer" style="height:357px;">							
 										</div>
 								</div>						

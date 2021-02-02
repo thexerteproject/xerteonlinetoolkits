@@ -25,6 +25,10 @@ tr.openanswer {
   color: inherit;
 }
 
+#adaptiveContent .openanswer td {
+  vertical-align: top;
+}
+
 .openanswer td.date {
   white-space: nowrap;
 }
@@ -89,7 +93,20 @@ li.select-interaction.selected {
   height: 100%;
 }
 
-.graph-container fieldset.noStyle
-{
+.summary {
+  width: 45%;
+  float: left;
+}
+
+.summary-container {
+  display: flex;
+}
+
+.graph-container {
+  width: 45%;
+  float: right;
+}
+
+.graph-container fieldset.noStyle {
   width: 100%;
 }

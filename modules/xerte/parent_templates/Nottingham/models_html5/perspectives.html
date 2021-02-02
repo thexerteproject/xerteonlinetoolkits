@@ -217,7 +217,7 @@
 							}
 							
 							// add img and scale it on load
-							$thisThumbMedia.html('<img alt="' + imgTip + '" class="centre" />');
+							$thisThumbMedia.html('<img alt="' + imgTip + '" class="centre x_noLightBox" />');
 							perspectives.loadImage($thisThumb.find("img"), maxImgSize, imgSrc);
 							
 						} else if (this.nodeName == "movie") {
@@ -398,7 +398,8 @@
 								var pageLink = "";
 								if (thisData.getAttribute("pageLink") != undefined && thisData.getAttribute("pageLink") != "") {
 									var pageNum = x_lookupPage("linkID", thisData.getAttribute("pageLink"));
-									if (pageNum != null) {
+									if (['[prev]', '[next]', '[first]', '[last]'].indexOf(thisData.getAttribute("pageLink")) > -1) pageNum = thisData.getAttribute("pageLink");
+									if (pageNum != null && pageNum !== false) {
 										var linkTxt;
 										if (thisData.getAttribute("pageLinkTxt") != undefined && thisData.getAttribute("pageLinkTxt") != "") {
 											linkTxt = thisData.getAttribute("pageLinkTxt");
@@ -429,6 +430,8 @@
 								$("#thumbHolder .current").removeClass("current");
 								$this.addClass("current");
 							}
+							
+							x_pageContentsUpdated();
 						}
 						
 						if (x_currentPageXML.getAttribute("thumbPos") == "grid") {

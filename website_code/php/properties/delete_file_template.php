@@ -29,10 +29,9 @@
  */
 
 include "../error_library.php";
+include "../../../config.php";
 
 /** XXX/ TODO SECURITY HOLE - NEED TO CHECK $_POST['file'] IS VALID */
-
-session_start();
 
 if(!isset($_SESSION['toolkits_logon_username'])) {
     die("Sorry; you can't delete this without being logged in.");

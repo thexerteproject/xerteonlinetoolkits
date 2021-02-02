@@ -18,21 +18,21 @@
  */
 
 // all elements, variables and functions for interface are called "x_id" - do not make new id's prefixed with "x_" in page models
+var XENITH = {};
 var x_languageData  = [],
     x_params        = new Object(), // all attributes of learningObject that aren't undefined
     x_pages,        // xml info about all pages in this LO
-    x_pageInfo      = [],   // holds info about pages (type, built, linkID, pageID, savedData) - use savedData if any input from page needs to be saved for use on other pages or on return to this page
+    x_pageInfo      = [],   // holds info about pages (type, built, linkID, pageID, standalone, savedData) - use savedData if any input from page needs to be saved for use on other pages or on return to this page
+	x_normalPages	= [],	// indexes of pages in x_pages that are normal pages (i.e. not standalone)
+	x_urlParams		= {},
+	x_startPage		= {type : "index", ID : "0"},
     x_currentPage   = -1,
     x_currentPageXML,
-    x_glossary      = [],
-	x_variables		= [],
-	x_variableInfo  = [],
-	x_variableErrors= [],
     x_specialChars  = [],
     x_inputFocus    = false,
     x_dialogInfo    = [], // (type, built)
     x_browserInfo   = {iOS:false, Android:false, touchScreen:false, mobile:false, orientation:"portrait"}, // holds info about browser/device
-    x_pageHistory   = [], // keeps track of pages visited for historic navigation
+	x_pageHistory   = [], // keeps track of pages visited for historic navigation
     x_firstLoad     = true,
     x_fillWindow    = false,
     x_volume        = 1,
@@ -41,13 +41,15 @@ var x_languageData  = [],
     x_deepLink		= "",
     x_timer,        // use as reference to any timers in page models - they are cancelled on page change
 	x_responsive = [], // list of any responsivetext.css files in use
-	x_cssFiles = [];
+	x_cssFiles = [],
+	x_specialTheme = '',
+	x_pageLoadPause = false;
 
 // Determine whether offline mode or not
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
 
 // Patch jQuery to add support for .toggle(function, function...) which was removed in jQuery 1.9
 // Code from http://forum.jquery.com/topic/beginner-function-toggle-deprecated-what-to-use-instead
@@ -65,40 +67,40 @@ if (!$.fn.toggleClick) {
 $(document).keydown(function(e) {
     switch(e.which) {
         case 33: // PgUp
-            if (x_currentPage > 0 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
+			var pageIndex = $.inArray(x_currentPage, x_normalPages);
+            if (pageIndex > -1 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
                 if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
-					x_changePage(x_currentPage -1);
-                } else {
-                    var prevPage = x_pageHistory[x_pageHistory.length-2];
-                    x_pageHistory.splice(x_pageHistory.length - 2, 2);
-					//check if history is empty and if so allow normal back navigation and change to normal back button
-				if(prevPage==undefined && x_currentPage > 0 && x_params.navigation == "LinearWithHistoric"){
-					prevIcon = "x_prev";
-					$x_prevBtn
-						.button({
-							icons: {
-							primary: prevIcon
-					},
-			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-			text:	false
-		})
-		 x_changePage(x_currentPage -1);
-				   }
-				   //disable normal back navigation if 1st page
-				if (x_currentPage <=1){
-					$x_prevBtn
-            .button("disable")
-            .removeClass("ui-state-focus")
-            .removeClass("ui-state-hover");
+					// linear back
+					if (pageIndex > 0) {
+						x_changePage(x_normalPages[pageIndex -1]);
 					}
-                    x_changePage(prevPage);
+					
+                } else {
+					var prevPage = x_pageHistory[x_pageHistory.length-2];
+                    x_pageHistory.splice(x_pageHistory.length - 2, 2);
+					
+					// check if history is empty and if so allow normal back navigation and change to normal back button
+					if (prevPage == undefined && x_currentPage > 0) {
+						x_changePage(x_normalPages[pageIndex -1]);
+					} else {
+						x_changePage(prevPage);
+					}
                 }
+			} else if (pageIndex == -1) {
+				// historic back (standalone page)
+				if (history.length > 1) {
+					history.go(-1);
+				} else {
+					x_changePage(x_normalPages[0]);
+				}
 			}
             break;
 
         case 34: // PgDn
-			if ($x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
-				x_changePage(x_currentPage + 1);
+			// if it's a standalone page then nothing will happen
+			var pageIndex = $.inArray(x_currentPage, x_normalPages);
+			if (pageIndex != -1 && $x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
+				x_changePage(x_normalPages[pageIndex + 1]);
 			}
             break;
 
@@ -187,8 +189,9 @@ x_projectDataLoaded = function(xmlData) {
 	}
 
     x_pages = xmlData.children();
-	var pageToHide = [];
-	var currActPage = 0;
+	var pageToHide = [],
+		currActPage = 0;
+	
     x_pages.each(function (i) {
 		// work out whether the page is hidden or not - can be simply hidden or hidden between specific dates/times
 		var hidePage = $(this)[0].getAttribute("hidePage") == "true" ? true : false;
@@ -200,17 +203,37 @@ x_projectDataLoaded = function(xmlData) {
 			// functions to get hide on/until date/times from xml
 			var hideOn, hideUntil,
 				hideOnString = '', hideUntilString = '';
+			
 			var getDateInfo = function(dmy, hm) {
 				// some basic checks of whether values are valid & then splits the data into time/day/month/year
-				dmy = dmy.split('/');
-				if (dmy.length != 3) {
-					return false;
+				var tempDmy = dmy.split('/'), // original date format
+					formatType = 0,
+					format = [[0,1,2], [2,1,0]]; // d, m, y
+				
+				if (tempDmy.length == 3) {
+					dmy = tempDmy;
+				} else if (tempDmy.length == 1) {
+					tempDmy = dmy.split('-'); // try the newer date format
+					if (tempDmy.length == 3) {
+						tempDmy.splice(2, 1, tempDmy[2].split('T')[0]);
+						dmy = tempDmy;
+						formatType = 1;
+					} else {
+						dmy = false;
+					}
+					
 				} else {
-					var day = Math.min(Number(dmy[0]), 31),
-						month = Math.min(Number(dmy[1]), 12),
-						year = Math.max(Number(dmy[2]), 2017),
+					dmy = false;
+				}
+				
+				if (dmy == false) {
+					return [false];
+				} else {
+					var day = Math.max(1, Math.min(Number(dmy[format[formatType][0]]), 31)),
+						month = Math.max(1, Math.min(Number(dmy[format[formatType][1]]), 12)),
+						year = Math.max(Number(dmy[format[formatType][2]]), 2017),
 						time = 0; // use midnight if no time is given
-
+					
 					if (hm != undefined && hm.trim() != '') {
 						var hm = hm.split(':');
 						if (hm.length == 2) {
@@ -219,11 +242,10 @@ x_projectDataLoaded = function(xmlData) {
 							time = Number(String(hour) + (minute < 10 ? '0' : '') + String(minute));
 						}
 					}
-
-					return {day:day, month:month, year:year, time:time};
+					return [{day:day, month:month, year:year, time:time}, (formatType == 0 ? day + '/' + month + '/' + year : year + '-' + month + '-' + day)];
 				}
 			}
-
+			
 			var getFullDate = function(info) {
 				var timeZero = '';
 				for (var i=0; i<4-String(info.time).length; i++) {
@@ -231,42 +253,64 @@ x_projectDataLoaded = function(xmlData) {
 				}
 				return Number(String(info.year) + (info.month < 10 ? '0' : '') + String(info.month) + (info.day < 10 ? '0' : '') + String(info.day) + timeZero + String(info.time));
 			}
-
-			// is it hidden from a certain date? if so, have we passed that date/time?
+			
+			var skipHideDateCheck = false,
+				hideOnInfo,
+				hideUntilInfo;
+			
 			if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
-				hideOn = getDateInfo($(this)[0].getAttribute("hideOnDate"), $(this)[0].getAttribute("hideOnTime"));
-
-				if (hideOn != false) {
-					if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
-						hidePage = false;
+				hideOnInfo = getDateInfo($(this)[0].getAttribute("hideOnDate"), $(this)[0].getAttribute("hideOnTime"));
+				hideOn = hideOnInfo[0];
+			}
+			
+			if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
+				hideUntilInfo = getDateInfo($(this)[0].getAttribute("hideUntilDate"), $(this)[0].getAttribute("hideUntilTime"));
+				hideUntil = hideUntilInfo[0];
+			}
+			
+			// if hide from & to date/times are identical then hide (to prevent issue with a previous release where these were never blank but pages should have been hidden)
+			if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '' && $(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
+				if (hideOn.day == hideUntil.day && hideOn.month == hideUntil.month && hideOn.year == hideUntil.year) {
+					if ($(this)[0].getAttribute("hideOnTime") == $(this)[0].getAttribute("hideUntilTime") || $(this)[0].getAttribute("hideOnTime") == '' || $(this)[0].getAttribute("hideUntilTime") == '') {
+						skipHideDateCheck = true;
 					}
-
-					hideOnString = '{from}: ' + $(this)[0].getAttribute("hideOnDate") + ' ' + $(this)[0].getAttribute("hideOnTime");
 				}
 			}
+			
+			if (skipHideDateCheck != true) {
+				// is it hidden from a certain date? if so, have we passed that date/time?
+				if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
 
-			// is it hidden until a certain date? if so, have we passed that date/time?
-			if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
-				hideUntil = getDateInfo($(this)[0].getAttribute("hideUntilDate"), $(this)[0].getAttribute("hideUntilTime"));
-
-				if (hideUntil != false) {
-					// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
-					var skip = false;
-					if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
-						if (hidePage == false) {
-							hidePage = true;
-						} else {
-							skip = true;
-						}
-					}
-
-					if (skip != true && hidePage == true) {
-						if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+					if (hideOn != false) {
+						if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
 							hidePage = false;
 						}
-					}
 
-					hideUntilString = '{until}: ' + $(this)[0].getAttribute("hideUntilDate") + ' ' + $(this)[0].getAttribute("hideUntilTime");
+						hideOnString = '{from}: ' + hideOnInfo[1] + ' ' + $(this)[0].getAttribute("hideOnTime");
+					}
+				}
+
+				// is it hidden until a certain date? if so, have we passed that date/time?
+				if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
+					if (hideUntil != false) {
+						// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
+						var skip = false;
+						if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
+							if (hidePage == false) {
+								hidePage = true;
+							} else {
+								skip = true;
+							}
+						}
+
+						if (skip != true && hidePage == true) {
+							if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+								hidePage = false;
+							}
+						}
+
+						hideUntilString = '{until}: ' + hideUntilInfo[1] + ' ' + $(this)[0].getAttribute("hideUntilTime");
+					}
 				}
 			}
 
@@ -292,16 +336,21 @@ x_projectDataLoaded = function(xmlData) {
 
 		if (hidePage == false || x_params.authorSupport == "true") {
 			var linkID = $(this)[0].getAttribute("linkID"),
-				pageID = $(this)[0].getAttribute("pageID"),
+				pageID = $.trim($(this)[0].getAttribute("pageID")),
 				page = {type: $(this)[0].nodeName, built: false};
+			
 			if (linkID != undefined) {
 				page.linkID = linkID;
 			}
-			if (pageID != undefined && pageID != "Unique ID for this page") { // Need to use this English for backward compatibility
-				page.pageID = pageID;
+			
+			// pageID optional property was deprecated previously but has been brought back
+			// it's now blank when added to editor but need to ignore default text that used to be in field prior to it being deprecated
+			if (pageID != undefined && pageID != "" && pageID != "Unique ID for this page") {
+				// if pages have custom ID then make sure they don't include spaces
+				page.pageID = pageID.split(" ").join("_");
 			}
 
-			//Get child linkIDs for deeplinking
+			// Get child linkIDs for deeplinking
 			page.childIDs = [];
 			var tempArrays = [];
 			var allChildIDs = function($this, array) {
@@ -319,9 +368,17 @@ x_projectDataLoaded = function(xmlData) {
 					}
 				});
 			}
+			
 			allChildIDs($(this), page.childIDs);
+			
+			// is this a standalone page?
+			if ($(this)[0].getAttribute("linkPage") == 'true') {
+				page.standalone = true;
+			}
+			
 			x_pageInfo.push(page);
-            if(($(this)[0].getAttribute("unmarkForCompletion") === "false" || $(this)[0].getAttribute("unmarkForCompletion") == undefined) && this.nodeName !== "results" )
+			
+            if (($(this)[0].getAttribute("unmarkForCompletion") === "false" || $(this)[0].getAttribute("unmarkForCompletion") == undefined) && this.nodeName !== "results" )
             {
                 markedPages.push(currActPage);
                 currActPage++;
@@ -335,15 +392,29 @@ x_projectDataLoaded = function(xmlData) {
 		}
 
     });
-
-	// removes hidden pages from array
-	for (i=0; i<pageToHide.length; i++) {
-		x_pages.splice(pageToHide[i]-i,1);
+	
+	// removes hidden pages from x_pages array
+	var numPages = x_pages.length,
+		offset = 0;
+	
+	for (var i=0; i<numPages; i++) {
+		if (pageToHide.indexOf(i) != -1) {
+			x_pages.splice(i-offset, 1);
+			offset++;
+		}
 	}
-
-    if (x_pages.length < 2) {
+	
+	// make array containing indexes of normal pages (not standalone)
+	for (var i=0; i<x_pageInfo.length; i++) {
+		if (x_pageInfo[i].standalone != true) {
+			x_normalPages.push(i);
+		}
+	}
+	
+    if (x_normalPages.length < 2) {
         // don't show navigation options if there's only one page
         $("#x_footerBlock .x_floatRight").remove();
+		
     } else {
         if (x_params.navigation == undefined) {
             x_params.navigation = "Linear";
@@ -351,6 +422,12 @@ x_projectDataLoaded = function(xmlData) {
         if (x_params.navigation != "Linear" && x_params.navigation != "LinearWithHistoric" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
             x_pages.splice(0, 0, "menu");
             x_pageInfo.splice(0, 0, {type: 'menu', built: false});
+			
+			// adjust normal page indexes to take into account menu page
+			for (var i=0; i<x_normalPages.length; i++) {
+				x_normalPages.splice(i, 1, x_normalPages[i]+1);
+			}
+			x_normalPages.splice(0, 0, 0);
         }
     }
 
@@ -360,13 +437,103 @@ x_projectDataLoaded = function(xmlData) {
             x_fillWindow = false; // overrides fill window for touchscreen devices
         }
     }
-
+	
     // sort any parameters in url - these will override those in xml
-    var tempUrlParams = window.location.search.substr(1, window.location.search.length).split("&");
-    x_urlParams = {};
-    for (i = 0; i < tempUrlParams.length; i++) {
-        x_urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
+    var tempUrlParams = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/),
+		hash;
+	
+	for (var i=0; i<tempUrlParams.length; i++) {
+		var split = tempUrlParams[i].split("=");
+		if (split.length == 2) {
+			x_urlParams[split[0]] = split[1];
+		} else {
+			hash = tempUrlParams[i];
+		}
     }
+		
+	// there are several URL params that can determine the 1st page viewed - check if they are valid pages before setting start page
+	if (x_urlParams.linkID) { // ID auto-generated in xwd e.g. URL/play_123&linkID=PG1593081880325
+		var temp = getDeepLink(x_urlParams.linkID);
+		if (temp.length > 1) {
+			x_deepLink = temp[1];
+		}
+		
+		var validPage = x_lookupPage("linkID", temp[0]);
+		if (validPage !== false) {
+			x_startPage = { type : "index", ID : validPage };
+		}
+		
+		delete x_urlParams.linkID;
+	}
+	
+	if (x_urlParams.pageID) { // ID created by author OR auto-generated in xwd e.g. URL/play_123&pageID=customID OR URL/play_123&pageID=PG1593081880325
+		var temp = getDeepLink(x_urlParams.pageID);
+		if (temp.length > 1) {
+			x_deepLink = temp[1];
+		}
+		
+		var validPage = x_lookupPage("pageID", temp[0]);
+		if (validPage !== false) {
+			x_startPage = { type : "index", ID : validPage };
+		}
+		
+		delete x_urlParams.pageID;
+	}
+	
+	if (x_urlParams.page) { // ID created by author OR numeric page number e.g. URL/play_123&page=customID OR URL/play_123&page=5
+		var temp = getDeepLink(x_urlParams.page);
+		if (temp.length > 1) {
+			x_deepLink = temp[1];
+		}
+		
+		var validPage = x_lookupPage("pageID", temp[0]);
+		if (validPage !== false) {
+			x_startPage = {type : "index", ID : validPage};
+		} else {
+			if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
+				var tempIndex = x_normalPages[Number(temp[0])-1];
+				x_startPage = { type : "index", ID : tempIndex };
+			}
+		}
+		
+		delete x_urlParams.page;
+	}
+	
+	if (x_urlParams.resume) { // Numeric page number e.g. URL/play_123#resume=5 - deprecated but needs to work for existing links
+		var temp = getDeepLink(x_urlParams.resume);
+		if (temp.length > 1) {
+			x_deepLink = temp[1];
+		}
+		
+		if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
+			var tempIndex = x_normalPages[Number(temp[0])-1];
+			x_startPage = { type : "index", ID : tempIndex };
+		}
+		
+		delete x_urlParams.resume;
+	}
+	
+	if (hash != undefined) { // ID created by author OR numeric page number e.g. URL/play_123#customID OR URL/play_123#page5 OR URL/play_123#5
+		var temp = getDeepLink(hash);
+		if (temp.length > 1) {
+			x_deepLink = temp[1];
+		}
+		
+		var info = getHashInfo(temp[0]);
+		if (info != false) {
+			x_startPage = {type : "index", ID : info};
+		}
+	}
+	
+	// tidy up the URL to remove all of the params about start page - hash at end of URL will change according to currently viewed page
+	var shortParams = "";
+	Object.keys(x_urlParams).forEach(function(key, index) {
+		shortParams += index==0 ? '?' : '&';
+		shortParams += key + '=' + x_urlParams[key];
+	});
+	
+	// change URL params without reloading the page
+	window.history.pushState('window.location.href', "", shortParams);
 
 	// url embed parameter uses ideal setup for embedding in iframes - can be overridden with other parameters below
 	if (x_urlParams.embed == 'true') {
@@ -431,7 +598,7 @@ x_projectDataLoaded = function(xmlData) {
         x_params.theme = x_urlParams.theme;
     }
 
-    x_getLangData(x_params.language);
+    x_getLangData(x_params.language); // x_setUp() function called in here after language file loaded
 
     // Setup nr of pages for tracking
     XTSetOption('nrpages', x_pageInfo.length);
@@ -469,6 +636,63 @@ x_projectDataLoaded = function(xmlData) {
     {
         XTSetOption('force_tracking_mode', x_params.forceTrackingMode);
     }
+}
+
+// browser back / fwd button will trigger this - manually make page change to match #pageX
+window.onhashchange = function() {
+	var temp = getDeepLink(window.location.hash);
+	if (temp.length > 1) {
+		x_deepLink = temp[1];
+	}
+	
+	var pageInfo = getHashInfo(temp[0]);
+
+	if (pageInfo !== false) {
+		x_navigateToPage(false, { type: "index", "ID": pageInfo }, false );
+	}
+	
+	// force lightbox to close
+	if (parent.window.$.featherlight.current()) {
+		parent.window.$.featherlight.current().close();
+	}
+}
+
+// Get the page info from the URL (called on project load & when page changed via browser fwd/back btns)
+function getHashInfo(urlHash) {
+	if (urlHash.length > 0) {
+		var pageLink = urlHash[0] == '#' ? urlHash.substring(1) : urlHash,
+			thisPage;
+		
+		if (pageLink.substring(0,4) == "page") { // numeric page number e.g. URL/play_123#page5
+			var tempNum = Number(pageLink.substring(4));
+			if (tempNum < 1 || tempNum > x_normalPages.length) {
+				thisPage = false;
+			} else {
+				thisPage = x_normalPages[tempNum-1];
+			}
+			
+		} else { // ID created by author OR numeric page number e.g. URL/play_123#customID OR URL/play_123#page5 OR URL/play_123#5
+			var validPage = x_lookupPage("pageID", pageLink);
+			if (validPage !== false) {
+				thisPage = validPage;
+				
+			} else if ($.isNumeric(pageLink)) {
+				var tempNum = Number(pageLink);
+				if (tempNum < 1 || tempNum > x_normalPages.length) {
+					thisPage = false;
+				} else {
+					thisPage = x_normalPages[tempNum-1];
+				}
+			} else {
+				thisPage = false;
+			}
+		}
+		
+		return thisPage;
+		
+	} else {
+		return false;
+	}
 }
 
 // Make absolute urls from urls with FileLocation + ' in their strings
@@ -509,6 +733,7 @@ function x_getLangData(lang) {
     {
         // We have a off-line object with the language definition in a string
         // Convert to an XML object and continue like before
+        langxmlstr = langxmlstr.substr(langxmlstr.indexOf("<"), langxmlstr.lastIndexOf(">") + 1);
         x_languageData = $($.parseXML(langxmlstr)).find("language");
         x_setUp();
     }
@@ -590,10 +815,10 @@ function x_setUp() {
 	x_params.dialogTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") : "";
 	x_params.newWindowTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") : "";
 
-	if (x_pages.length == 0) {
+	if (x_normalPages.length == 0) {
 		$("body").append(x_getLangInfo(x_languageData.find("noPages")[0], "label", "<p>This project does not contain any pages.</p>"));
+		
 	} else {
-
 		$x_head			= $("head");
 		$x_body			= $("body");
 		$x_window		= $(window);
@@ -619,7 +844,10 @@ function x_setUp() {
 		}
 
 		// calculate author set variables
-		x_newVariables();
+		if (x_params.variables != undefined) {
+			XENITH.VARIABLES.init(x_params.variables);
+		}
+
 		x_dialogInfo.push({type:'msg', built:false});
 
 		// hides header/footer if set in url
@@ -803,607 +1031,455 @@ function x_cssSetUp(param) {
     }
 }
 
+// clunky fix for issue where Firefox triggers css loaded event (which then triggers x_continueSetUp1) everytime the responsive stylesheet is enabled when changing from small view to full screen
+var setUpComplete = false;
 function x_continueSetUp1() {
-	//if (x_params.styles != undefined){
-	//	$x_head.append('<style type="text/css">' +  x_params.styles + '</style>');
-	//}
-
-	if (x_pageInfo[0].type == "menu") {
-		$x_pageNo.hide();
-		if (x_params.navigation == "Menu") {
-			$x_prevBtn.hide();
-			$x_nextBtn.hide();
-			$("#x_pageControls").css("display","block");
-			$x_footerBlock.find(".x_floatRight button:eq(0)").css("border-right", "0px");
+	if (setUpComplete == false) {
+		if (x_pageInfo[0].type == "menu") {
+			$x_pageNo.hide();
+			if (x_params.navigation == "Menu") {
+				$x_prevBtn.hide();
+				$x_nextBtn.hide();
+				$("#x_pageControls").css("display","block");
+				$x_footerBlock.find(".x_floatRight button:eq(0)").css("border-right", "0px");
+			}
+		} else if (x_params.navigation == "Historic") {
+			$x_pageNo.hide();
+		} else {
+			x_dialogInfo.push({type:'menu', built:false});
 		}
-	} else if (x_params.navigation == "Historic") {
-		$x_pageNo.hide();
-	} else {
-		x_dialogInfo.push({type:'menu', built:false});
-	}
 
+		var trimmedNfo = $.trim(x_params.nfo);
+		if (x_params.nfo != undefined && trimmedNfo != '') {
+			$x_footerL.prepend('<button id="x_helpBtn"></button>');
+			$("#x_helpBtn")
+				.button({
+					icons: {
+						primary: "x_help"
+					},
+					label:	x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
+					text:	false
+				})
+				.attr("aria-label", $("#x_helpBtn").attr("title") + " " + x_params.newWindowTxt)
+				.click(function() {
+					window.open(x_evalURL(x_params.nfo), "_blank");
+					$(this)
+						.blur()
+						.removeClass("ui-state-focus")
+						.removeClass("ui-state-hover");
+				});
+		}
 
-    var trimmedNfo = $.trim(x_params.nfo);
-    if (x_params.nfo != undefined && trimmedNfo != '') {
-		$x_footerL.prepend('<button id="x_helpBtn"></button>');
-		$("#x_helpBtn")
+		if (x_params.glossary != undefined) XENITH.GLOSSARY.init();
+
+		if (x_params.media != undefined) {
+			x_checkMediaExists(x_evalURL(x_params.media), function(mediaExists) {
+				if (mediaExists) {
+					$x_footerL.prepend('<button id="x_mediaBtn"></button>');
+					$("#x_mediaBtn")
+						.button({
+							icons: {
+								primary: "x_media"
+							},
+							label:	x_getLangInfo(x_languageData.find("mediaButton")[0], "label", "Media"),
+							text:	false
+						})
+						.attr("aria-label", $("#x_mediaBtn").attr("title") + " " + x_params.newWindowTxt)
+						.click(function() {
+							$(this)
+								.blur()
+								.removeClass("ui-state-focus")
+								.removeClass("ui-state-hover");
+
+							x_openMediaWindow();
+						});
+				}
+			});
+		}
+
+		//add optional progress bar
+		if (x_params.progressBar != undefined && x_params.progressBar != "" && x_params.hideFooter != "true") {
+			//add a div for the progress bar
+			$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; width:20%; text-align:center"></div>');
+			//add the progress bar
+			$('#x_footerProgress').append('<div class="pbContainer"><div class="pbPercent pbBar">&nbsp;</div></div><p class="pbTxt"></p>');
+			if (x_params.progressBar =="pBarNoCounter") {
+				//remove page counter if that option selected
+				$("#x_pageNo").remove();
+			}
+		}
+
+		//add show/hide footer tools
+		if (x_params.footerTools != "none" && x_params.hideFooter != "true") {
+			var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
+			var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
+			//add a div for the show/hide chevron
+			$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></button></div>');
+			$('#x_footerChevron').prop('title', hideMsg);
+			$("#x_footerChevron").attr("aria-label", hideMsg);
+
+			//chevron to show/hide function
+			$('#x_footerChevron').click(function(){
+				$('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
+						if($(this).is(':visible')){
+							$('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div>');
+							$('#x_footerChevron').prop('title', hideMsg);
+							$("#x_footerChevron").attr("aria-label", hideMsg);
+						}else{
+							$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
+							$('#x_footerChevron').prop('title', showMsg);
+							$("#x_footerChevron").attr("aria-label", showMsg);
+						}
+					});
+				return(false);
+			});
+			if (x_params.footerTools == "hideFooterTools") {
+				$('#x_footerBlock .x_floatLeft').hide();
+				$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
+				$('#x_footerChevron').prop('title', showMsg);
+			}
+		}
+
+		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
+		// it's overridden by logo in theme folder
+		// default & theme logos can also be overridden by images uploaded via Icon optional property
+		$('#x_headerBlock img.x_icon').hide();
+		$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
+
+		var icPosition = "x_floatLeft";
+		if (x_params.icPosition != undefined && x_params.icPosition != "") {
+			icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
+		}
+		$('#x_headerBlock img.x_icon').addClass(icPosition);
+
+		var checkExists = function(type, fallback) {
+			if (type == 'LO' && xot_offline) {
+				$('#x_headerBlock img.x_icon').show();
+				return;
+			}
+			$.ajax({
+				url: $('#x_headerBlock img.x_icon').attr('src'),
+				success: function() {
+					$('#x_headerBlock img.x_icon').show();
+					if (x_firstLoad == false) {x_updateCss();};
+
+					// the theme logo is being used - add a class that will allow for the different size windows to display different logos
+					if (type == 'theme') {
+						$('#x_headerBlock img.x_icon').addClass('themeLogo');
+					}
+
+					if (x_params.icTip != undefined && x_params.icTip != "") {
+						$('#x_headerBlock img.x_icon').attr('alt', x_params.icTip);
+					} else {
+						$('#x_headerBlock img.x_icon').attr('aria-hidden', 'true');
+					}
+				},
+				error: function() {
+					if (fallback == 'theme') {
+						$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
+						checkExists('theme', 'default');
+					} else if (fallback == 'default') {
+						$('#x_headerBlock img.x_icon').attr('src', $('#x_headerBlock img.x_icon').data('defaultLogo'));
+						checkExists();
+					}
+				}
+			});
+		};
+
+		var type, fallback;
+		if (x_params.ic != undefined && x_params.ic != '') {
+			$('#x_headerBlock img.x_icon').attr('src', x_evalURL(x_params.ic));
+			type = 'LO';
+			fallback = x_params.theme != undefined && x_params.theme != "default" ? 'theme' : 'default';
+		} else if (x_params.theme != undefined && x_params.theme != "default") {
+			type = 'theme';
+			$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
+		}
+		checkExists(type, fallback);
+
+		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
+		$("#x_headerBlock h1").html(x_params.name);
+
+		// strips code out of page title
+		var div = $("<div>").html(x_params.name);
+		var strippedText = div.text();
+		if (strippedText != "") {
+			document.title = strippedText;
+		}
+
+		var prevIcon = "x_prev";
+		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
+			prevIcon = "x_prev_hist";
+		}
+
+		$x_prevBtn
 			.button({
 				icons: {
-					primary: "x_help"
+					primary: prevIcon
 				},
-				label:	x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
+				label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
 				text:	false
 			})
-			.attr("aria-label", $("#x_helpBtn").attr("title") + " " + x_params.newWindowTxt)
+			.attr("aria-label", $("#x_prevBtn").attr("title"))
 			.click(function() {
-				window.open(x_evalURL(x_params.nfo), "_blank");
+				var pageIndex = $.inArray(x_currentPage, x_normalPages);
+				if (pageIndex > -1) {
+					if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
+						// linear back
+						if (pageIndex > 0) {
+							x_changePage(x_normalPages[pageIndex -1]);
+						}
+						
+					} else {
+						var prevPage = x_pageHistory[x_pageHistory.length-2];
+						x_pageHistory.splice(x_pageHistory.length - 2, 2);
+						
+						// check if history is empty and if so allow normal back navigation and change to normal back button
+						if (prevPage == undefined && x_currentPage > 0) {
+							x_changePage(x_normalPages[pageIndex -1]);
+						} else {
+							x_changePage(prevPage);
+						}
+					}
+				} else if (pageIndex == -1) {
+					// historic back (standalone page)
+					if (history.length > 1) {
+						history.go(-1);
+					} else {
+						x_changePage(x_normalPages[0]);
+					}
+				}
+				
 				$(this)
-					.blur()
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
-	}
 
-
-	if (x_params.glossary != undefined) {
-		x_dialogInfo.push({type:'glossary', built:false});
-
-		var i, len, item, word,
-			items = x_params.glossary.split("||");
-
-		for (i=0, len=items.length; i<len; i++) {
-			item = items[i].split("|"),
-			word = {word:item[0], definition:item[1]};
-
-			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
-				x_glossary.push(word);
-			}
-		}
-		if (x_glossary.length > 0) {
-			x_glossary.sort(function(a, b){ // sort by size
-				return a.word.length > b.word.length ? -1 : 1;
+		$x_nextBtn
+			.button({
+				icons: {
+					primary: "x_next"
+				},
+				label:	x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
+				text:	false
+			})
+			.attr("aria-label", $("#x_nextBtn").attr("title"))
+			.click(function() {
+				// if it's a standalone page then nothing will happen
+				var pageIndex = $.inArray(x_currentPage, x_normalPages);
+				if (pageIndex != -1) {
+					if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
+						//when moving forward history is generated so ensure button is historic style
+						prevIcon = "x_prev_hist";
+							$x_prevBtn
+								.button({
+									icons: {
+										primary: prevIcon
+									},
+									label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+									text:	false
+								});
+					}
+					
+					x_changePage(x_normalPages[pageIndex+1]);
+				}
+				
+				$(this)
+					.removeClass("ui-state-focus")
+					.removeClass("ui-state-hover");
 			});
 
-			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
-			$("#x_glossaryBtn")
-				.button({
-					icons: {
-						primary: "x_glossary"
-					},
-					label:	x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
-					text:	false
-				})
-				.attr("aria-label", $("#x_glossaryBtn").attr("title") + " " + x_params.dialogTxt)
-				.click(function() {
+
+		var	menuIcon = "x_info",
+			menuLabel = x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
+
+		if (x_params.navigation == "Historic") {
+			menuIcon = "x_home";
+			menuLabel = x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
+			$x_menuBtn.addClass("x_home");
+		}
+
+		$x_menuBtn
+			.button({
+				icons: {
+					primary: menuIcon
+				},
+				label:	menuLabel,
+				text:	false
+			})
+			.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
+			.click(function() {
+				if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
 					x_openDialog(
-						"glossary",
-						x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"),
-						x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"),
+						"menu",
+						x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
+						x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
 						null,
 						null,
 						function () {
-							$("#x_glossaryBtn")
+							$x_menuBtn
 								.blur()
 								.removeClass("ui-state-focus")
 								.removeClass("ui-state-hover");
 						}
 					);
-				});
-
-			$x_pageDiv
-				.on("mouseenter", ".x_glossary", function(e) {
-					$(this).trigger("mouseleave");
-
-					var $this = $(this),
-						myText = $this.text(),
-						myDefinition, i, len;
-
-					// Rip out the title attribute
-					$this.data('title', $this.attr('title'));
-					$this.attr('title', '');
-
-					for (i=0, len=x_glossary.length; i<len; i++) {
-						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().toLowerCase()) {
-							myDefinition = "<b>" + myText + ":</b><br/>"
-							if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
-								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
-							} else {
-								myDefinition += x_glossary[i].definition;
-							}
-						}
-					}
-
-					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
-
-					// Queue reparsing of MathJax - fails if no network connection
-					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
-					$x_glossaryHover = $("#x_glossaryHover");
-					$x_glossaryHover.css({
-						"left"	:$(this).offset().left + 20,
-						"top"	:$(this).offset().top + 20
-					});
-					$x_glossaryHover.fadeIn("slow");
-					if (x_browserInfo.touchScreen == true) {
-						$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
-					}
-				})
-				.on("mouseleave", ".x_glossary", function(e) {
-					$x_mainHolder.off("click.glossary");
-
-					if ($x_glossaryHover != undefined) {
-						$x_glossaryHover.remove();
-					}
-
-					// Put back the title attribute
-					$this = $(this);
-					$this.attr('title', $this.data('title'));
-				})
-				.on("mousemove", ".x_glossary", function(e) {
-					var leftPos,
-						topPos = e.pageY + 20;
-
-					if (x_browserInfo.mobile == false) {
-						leftPos = e.pageX + 20;
-						if (leftPos + $x_glossaryHover.width() > $x_mainHolder.offset().left + $x_mainHolder.width()) {
-							leftPos = e.pageX - $x_glossaryHover.width() - 20;
-						}
-						if (topPos + $x_glossaryHover.height() > $x_mainHolder.offset().top + $x_mainHolder.height()) {
-							topPos = e.pageY - $x_glossaryHover.height() - 20;
-						}
-					} else {
-						leftPos = ($x_mobileScroll.width() - $x_glossaryHover.width()) / 2;
-						if (topPos + $x_glossaryHover.height() > $x_mobileScroll.height()) {
-							topPos = $(this).offset().top - $x_glossaryHover.height() - 10;
-						}
-					}
-					$x_glossaryHover.css({
-						"left"	:leftPos,
-						"top"	:topPos
-					});
-				})
-				.on("focus", ".x_glossary", function(e) { // called when link is tabbed to
-					$(this).trigger("mouseenter");
-				})
-				.on("focusout", ".x_glossary", function(e) {
-					$(this).trigger("mouseleave");
-				});
-		}
-	}
-
-	if (x_params.media != undefined) {
-		x_checkMediaExists(x_evalURL(x_params.media), function(mediaExists) {
-			if (mediaExists) {
-				$x_footerL.prepend('<button id="x_mediaBtn"></button>');
-				$("#x_mediaBtn")
-					.button({
-						icons: {
-							primary: "x_media"
-						},
-						label:	x_getLangInfo(x_languageData.find("mediaButton")[0], "label", "Media"),
-						text:	false
-					})
-					.attr("aria-label", $("#x_mediaBtn").attr("title") + " " + x_params.newWindowTxt)
-					.click(function() {
-						$(this)
-							.blur()
-							.removeClass("ui-state-focus")
-							.removeClass("ui-state-hover");
-
-						x_openMediaWindow();
-					});
-			}
-		});
-	}
-
-	//add optional progress bar
-    if (x_params.progressBar != undefined && x_params.progressBar != "" && x_params.hideFooter != "true") {
-		//add a div for the progress bar
-		$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; width:20%; text-align:center"></div>');
-		//add the progress bar
-		$('#x_footerProgress').append('<div class="pbContainer"><div class="pbPercent pbBar">&nbsp;</div></div><p class="pbTxt"></p>');
-		if (x_params.progressBar =="pBarNoCounter") {
-			//remove page counter if that option selected
-			$("#x_pageNo").remove();
-		}
-	}
-
-	//add show/hide footer tools
-	if (x_params.footerTools != "none" && x_params.hideFooter != "true") {
-		var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
-		var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
-		//add a div for the show/hide chevron
-		$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><button id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></button></div>');
-		$('#x_footerChevron').prop('title', hideMsg);
-
-		//chevron to show/hide function
-		$('#x_footerChevron').click(function(){
-			$('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
-					if($(this).is(':visible')){
-						$('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div>');
-						$('#x_footerChevron').prop('title', hideMsg);
-					}else{
-						$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
-						$('#x_footerChevron').prop('title', showMsg);
-					}
-				});
-			return(false);
-		});
-		if (x_params.footerTools =="hideFooterTools") {
-			$('#x_footerBlock .x_floatLeft').hide();
-			$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
-			$('#x_footerChevron').prop('title', showMsg);
-		}
-	}
-
-	// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
-	// it's overridden by logo in theme folder
-	// default & theme logos can also be overridden by images uploaded via Icon optional property
-	$('#x_headerBlock img.x_icon').hide();
-	$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
-
-	var icPosition = "x_floatLeft";
-	if (x_params.icPosition != undefined && x_params.icPosition != "") {
-		icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
-	}
-	$('#x_headerBlock img.x_icon').addClass(icPosition);
-
-	var checkExists = function(type, fallback) {
-	    if (type == 'LO') {
-            $('#x_headerBlock img.x_icon').show();
-            return;
-        }
-		$.ajax({
-			url: $('#x_headerBlock img.x_icon').attr('src'),
-			success: function() {
-				$('#x_headerBlock img.x_icon').show();
-				if (x_firstLoad == false) {x_updateCss();};
-
-				// the theme logo is being used - add a class that will allow for the different size windows to display different logos
-				if (type == 'theme') {
-					$('#x_headerBlock img.x_icon').addClass('themeLogo');
-				}
-
-				if (x_params.icTip != undefined && x_params.icTip != "") {
-					$('#x_headerBlock img.x_icon').attr('alt', x_params.icTip);
+				} else if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
+					x_navigateToPage(false, {type:'linkID', ID:x_params.homePage});
 				} else {
-					$('#x_headerBlock img.x_icon').attr('aria-hidden', 'true');
+					x_changePage(0);
 				}
-			},
-			error: function() {
-				if (fallback == 'theme') {
-					$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
-					checkExists('theme', 'default');
-				} else if (fallback == 'default') {
-					$('#x_headerBlock img.x_icon').attr('src', $('#x_headerBlock img.x_icon').data('defaultLogo'));
-					checkExists();
-				}
-			}
-		});
-	}
+				
+				$(this)
+					.blur()
+					.removeClass("ui-state-focus")
+					.removeClass("ui-state-hover");
+			});
 
-	var type, fallback;
-	if (x_params.ic != undefined && x_params.ic != '') {
-		$('#x_headerBlock img.x_icon').attr('src', x_evalURL(x_params.ic));
-		type = 'LO';
-		fallback = x_params.theme != undefined && x_params.theme != "default" ? 'theme' : 'default';
-	} else if (x_params.theme != undefined && x_params.theme != "default") {
-		type = 'theme';
-		$('#x_headerBlock img.x_icon').attr('src', x_themePath + x_params.theme + "/logo.png");
-	}
-	checkExists(type, fallback);
-
-	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
-	$("#x_headerBlock h1").html(x_params.name);
-
-	// strips code out of page title
-    var div = $("<div>").html(x_params.name);
-    var strippedText = div.text();
-	if (strippedText != "") {
-		document.title = strippedText;
-	}
-
-	var prevIcon = "x_prev";
-	if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
-		prevIcon = "x_prev_hist";
-	}
-
-	$x_prevBtn
-		.button({
-			icons: {
-				primary: prevIcon
-			},
-			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-			text:	false
-		})
-        .attr("aria-label", $("#x_prevBtn").attr("title"))
-		.click(function() {
-			if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
-				x_changePage(x_currentPage -1);
-			} else {
-				//ensure button is historic style
-				prevIcon = "x_prev_hist";
-					$x_prevBtn
-						.button({
-							icons: {
-							primary: prevIcon
-					},
-			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-			text:	false
-		})
-				var prevPage = x_pageHistory[x_pageHistory.length-2];
-				x_pageHistory.splice(x_pageHistory.length - 2, 2);
-				//check if history is empty and if so allow normal back navigation and change to normal back button
-				if(prevPage==undefined && x_currentPage > 0 && x_params.navigation == "LinearWithHistoric"){
-					prevIcon = "x_prev";
-					$x_prevBtn
-						.button({
-							icons: {
-							primary: prevIcon
-					},
-			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-			text:	false
-		})
-				   x_changePage(x_currentPage -1);
-				   }
-				//disable normal back navigation if 1st page
-				if (x_currentPage <=1){
-					$x_prevBtn
-            .button("disable")
-            .removeClass("ui-state-focus")
-            .removeClass("ui-state-hover");
-					}
-				x_changePage(prevPage);
-			}
-			$(this)
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
-		});
-
-	$x_nextBtn
-		.button({
-			icons: {
-				primary: "x_next"
-			},
-			label:	x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
-			text:	false
-		})
-        .attr("aria-label", $("#x_nextBtn").attr("title"))
-		.click(function() {
-		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
-				//when moving forward history is generated so ensure button is historic style
-				prevIcon = "x_prev_hist";
-					$x_prevBtn
-						.button({
-							icons: {
-							primary: prevIcon
-					},
-			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-			text:	false
-		})
-			}
-			x_changePage(x_currentPage+1);
-			$(this)
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
-		});
-
-
-	var	menuIcon = "x_info",
-		menuLabel = x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
-
-	if (x_params.navigation == "Historic") {
-		menuIcon = "x_home";
-		menuLabel = x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
-		$x_menuBtn.addClass("x_home");
-	}
-
-	$x_menuBtn
-		.button({
-			icons: {
-				primary: menuIcon
-			},
-			label:	menuLabel,
-			text:	false
-		})
-		.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
-		.click(function() {
-			if (x_params.navigation == "Linear" || x_params.navigation == "LinearWithHistoric" || x_params.navigation == undefined) {
+		x_dialogInfo.push({type:'colourChanger', built:false});
+		$x_colourChangerBtn
+			.button({
+				icons: {
+					primary: "x_colourChanger"
+				},
+				label:	x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
+				text:	false
+			})
+			.attr("aria-label", $("#x_colourChangerBtn").attr("title") + " " + x_params.dialogTxt)
+			.click(function() {
 				x_openDialog(
-					"menu",
-					x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"),
-					x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"),
+					"colourChanger",
+					x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"),
+					x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"),
 					null,
 					null,
 					function () {
-						$x_menuBtn
+						$x_colourChangerBtn
 							.blur()
 							.removeClass("ui-state-focus")
 							.removeClass("ui-state-hover");
 					}
 				);
-			} else if (x_params.navigation == "Historic" && x_params.homePage != undefined && x_params.homePage != "") {
-				x_navigateToPage(false,{type:'linkID',ID:x_params.homePage});
-			} else {
-				x_changePage(0);
+			});
+
+		if (x_params.kblanguage != undefined) {
+			if (typeof charpadstr != 'undefined')
+			{
+				var xml = $($.parseXML(charpadstr));
+				x_charmapLoaded(xml);
 			}
-			$(this)
-				.blur()
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
-		});
-
-	x_dialogInfo.push({type:'colourChanger', built:false});
-	$x_colourChangerBtn
-		.button({
-			icons: {
-				primary: "x_colourChanger"
-			},
-			label:	x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
-			text:	false
-		})
-		.attr("aria-label", $("#x_colourChangerBtn").attr("title") + " " + x_params.dialogTxt)
-		.click(function() {
-			x_openDialog(
-				"colourChanger",
-				x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"),
-				x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"),
-				null,
-				null,
-				function () {
-					$x_colourChangerBtn
-						.blur()
-						.removeClass("ui-state-focus")
-						.removeClass("ui-state-hover");
-				}
-			);
-		});
-
-	if (x_params.kblanguage != undefined) {
-		if (typeof charpadstr != 'undefined')
-		{
-			var xml = $($.parseXML(charpadstr));
-			x_charmapLoaded(xml);
+			else {
+				$.ajax({
+					type: "GET",
+					url: x_templateLocation + "common_html5/charPad.xml",
+					dataType: "xml",
+					success: function (xml) {
+						x_charmapLoaded(xml);
+					},
+					error: function () {
+						delete x_params["kblanguage"];
+					}
+				});
+			}
 		}
-		else {
-			$.ajax({
-				type: "GET",
-				url: x_templateLocation + "common_html5/charPad.xml",
-				dataType: "xml",
-				success: function (xml) {
-					x_charmapLoaded(xml);
-				},
-				error: function () {
-					delete x_params["kblanguage"];
+
+
+		$x_window.resize(function() {
+			if (x_fillWindow == true) {
+				if (this.resizeTo) {
+					clearTimeout(this.resizeTo);
+				}
+				this.resizeTo = setTimeout(function() {
+					$(this).trigger("resizeEnd");
+				}, 200);
+			}
+		});
+
+		$x_window.on("resizeEnd", function() {
+			if (x_pageLoadPause !== false && $x_body.width() > 0) {
+				var pagePaused = x_pageLoadPause;
+				x_pageLoadPause = false;
+				x_changePage(pagePaused)
+				
+			} else {
+				x_updateCss();
+			}
+		});
+
+
+		if (x_browserInfo.touchScreen == true) {
+			// Set start orientation
+			if (window.orientation == 0 || window.orientation == 180) {
+				x_browserInfo.orientation = "portrait";
+			} else {
+				x_browserInfo.orientation = "landscape";
+			}
+
+			$x_pageHolder.bind("touchstart", function(e) {
+				XENITH.GLOSSARY.touchStartHandler();
+			});
+
+			// call x_updateCss function on orientation change (resize event should trigger this but it's inconsistent)
+			$x_window.on("orientationchange", function() {
+				if (x_fillWindow == true) {
+					var newOrientation;
+					if (window.orientation == 0 || window.orientation == 180) {
+						newOrientation = "portrait";
+					} else {
+						newOrientation = "landscape";
+					}
+					if (newOrientation != x_browserInfo.orientation) {
+						x_browserInfo.orientation = newOrientation;
+						x_updateCss(true);
+					}
 				}
 			});
 		}
-	}
 
+		if (x_params.background != undefined && x_params.background != "") {
 
-	$x_window.resize(function() {
-		if (x_fillWindow == true) {
-			if (this.resizeTo) {
-				clearTimeout(this.resizeTo);
-			}
-			this.resizeTo = setTimeout(function() {
-				$(this).trigger("resizeEnd");
-			}, 200);
-		}
-	});
-
-	$x_window.on("resizeEnd", function() {
-		x_updateCss();
-	});
-
-
-	// ** swipe to change page on touch screen devices - taken out as caused problems with drag and drop activities - need to be able to disable it for these activities
-	if (x_browserInfo.touchScreen == true) {
-		/*
-		var numTouches = 0;
-		var mouseDown = [0, 0]; // [x, y]
-		var mouseUp = [0, 0];
-		*/
-
-		// Set start orientation
-        if (window.orientation == 0 || window.orientation == 180) {
-            x_browserInfo.orientation = "portrait";
-        } else {
-            x_browserInfo.orientation = "landscape";
-        }
-
-		$x_pageHolder.bind("touchstart", function(e) {
-			/*
-			var touch = e.originalEvent.touches[0];
-			numTouches = e.originalEvent.touches.length;
-			mouseDown = [touch.pageX, touch.pageY];
-			*/
-			$x_mainHolder.off("click.glossary");
-			if ($x_glossaryHover != undefined) {
-				$x_glossaryHover.remove();
-			}
-		});
-
-		$x_pageHolder.bind("touchend", function(e) {
-			/*
-			if (numTouches == 1) { // if >1 then don't use to change page (user may be zooming)
-				var touch = e.originalEvent.changedTouches[0];
-				mouseUp = [touch.pageX, touch.pageY];
-				var dif = [mouseDown[0] - mouseUp[0], mouseDown[1] - mouseUp[1]];
-				// only swipes of min 75px & swipes where xDif > yDif will change page to avoid scrolling up and down triggering page change
-				if (Math.abs(dif[0]) > Math.abs(dif[1])) {
-					if (dif[0] >= 75) {
-						if (x_pageInfo.length > x_currentPage + 1) {
-							x_changePage(x_currentPage+1);
-						}
-					} else if (dif[0] <= -75) {
-						if (x_currentPage != 0) {
-							x_changePage(x_currentPage-1);
-						}
+			x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
+				if (mediaExists) {
+					var alpha = 30;
+					var lo_objectfit =  (x_params.backgroundFit != undefined && x_params.backgroundFit == "cover" ? "cover" : "fill");
+					if (x_params.backgroundopacity != undefined) {
+						alpha = x_params.backgroundopacity;
 					}
-				}
-			}
-			*/
-		});
-
-		// call x_updateCss function on orientation change (resize event should trigger this but it's inconsistent)
-		$x_window.on("orientationchange", function() {
-			if (x_fillWindow == true) {
-				var newOrientation;
-				if (window.orientation == 0 || window.orientation == 180) {
-					newOrientation = "portrait";
-				} else {
-					newOrientation = "landscape";
-				}
-				if (newOrientation != x_browserInfo.orientation) {
-					x_browserInfo.orientation = newOrientation;
-					x_updateCss(true);
-				}
-			}
-		});
-	}
-
-	if (x_params.background != undefined && x_params.background != "") {
-
-		x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
-			if (mediaExists) {
-				var alpha = 30;
-				if (x_params.backgroundopacity != undefined) {
-					alpha = x_params.backgroundopacity;
-				}
-				if (x_params.backgroundGrey == "true") {
-					// uses a jquery plugin as just css way won't work in all browsers
-					x_insertCSS(x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css", function() {
-						$x_background.append('<img id="x_mainBg" class="grayscale" src="' + x_evalURL(x_params.background) + '"/>');
+					if (x_params.backgroundGrey == "true") {
+						// uses a jquery plugin as just css way won't work in all browsers
+						x_insertCSS(x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css", function() {
+							$x_background.append('<img id="x_mainBg" class="grayscale" alt="" src="' + x_evalURL(x_params.background) + '"/>');
+							$("#x_mainBg").css({
+								"opacity"	:Number(alpha/100),
+								"object-fit"    : lo_objectfit,
+								"filter"	:"alpha(opacity=" + alpha + ")"
+							});
+							// grey function called on image when unhidden later as it won't work properly otherwise
+						});
+					} else {
+						$x_background.append('<img id="x_mainBg" alt="" src="' + x_evalURL(x_params.background) + '"/>');
 						$("#x_mainBg").css({
 							"opacity"	:Number(alpha/100),
+							"object-fit"    : lo_objectfit,
 							"filter"	:"alpha(opacity=" + alpha + ")"
 						});
-						// grey function called on image when unhidden later as it won't work properly otherwise
-					});
+					}
+					if (x_params.backgroundDark != undefined && x_params.backgroundDark != "" && x_params.backgroundDark != "0") {
+						$x_background.append('<div id="x_bgDarken" />');
+						$("#x_bgDarken").css({
+							"opacity" :Number(x_params.backgroundDark/100),
+							"filter" :"alpha(opacity=" + x_params.backgroundDark + ")"
+						});
+					}
+
+					x_continueSetUp2();
 				} else {
-					$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
-					$("#x_mainBg").css({
-						"opacity"	:Number(alpha/100),
-						"filter"	:"alpha(opacity=" + alpha + ")"
-					});
+					x_continueSetUp2();
 				}
-				if (x_params.backgroundDark != undefined && x_params.backgroundDark != "" && x_params.backgroundDark != "0") {
-					$x_background.append('<div id="x_bgDarken" />');
-					$("#x_bgDarken").css({
-						"opacity" :Number(x_params.backgroundDark/100),
-						"filter" :"alpha(opacity=" + x_params.backgroundDark + ")"
-					});
-				}
+			});
 
-				x_continueSetUp2();
-			} else {
-				x_continueSetUp2();
-			}
-		});
-
-	} else {
-		x_continueSetUp2();
+		} else {
+			x_continueSetUp2();
+		}
 	}
 }
 
@@ -1440,6 +1516,8 @@ function x_continueSetUp2() {
     {
         XTSetOption('module', x_params.module);
     }
+	
+	setUpComplete = true;
 
     x_navigateToPage(true, x_startPage);
 }
@@ -1483,106 +1561,127 @@ function x_charmapLoaded(xml)
 
 function x_dialog(text){
 
-    window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12">' + text + '</p>');
+    window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12px">' + text + '</p>');
 
 }
 
 
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
-function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
+function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID}
+	
     var page = XTStartPage();
     if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved by the LO
-        x_changePage(page);
+        x_changePage(page, addHistory);
     }
     else {
-    	// Handle page scope deeplinking
-    	if ((pageInfo.ID).indexOf('|') >= 0) {
-    		x_deepLink = (pageInfo.ID).split('|')[1].trim();
-    		if ($.isNumeric(x_deepLink)) x_deepLink = parseInt(x_deepLink - 1);
-
-    		pageInfo.ID = (pageInfo.ID).split('|')[0].trim();
-    	}
-    	else {
-    		x_deepLink = '';
-    	}
-
-        if (pageInfo.type == "resume" && (parseInt(pageInfo.ID) > 0)  && (parseInt(pageInfo.ID) <= x_pages.length)) {
-            x_changePage(parseInt(pageInfo.ID) - 1);
-
-        }
-        else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
-        	if ((pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
+		
+		// if it's first page then we've already found x_deepLink
+		if (x_firstLoad == false || addHistory == false) {
+			var deepLinkInfo = getDeepLink(pageInfo.ID);
+			pageInfo.ID = deepLinkInfo[0];
+			
+			if (deepLinkInfo.length > 1) {
+				x_deepLink = deepLinkInfo[1];
+			} else {
+				x_deepLink = '';
+			}
+		}
+		
+		if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
+			// relative links added from WYSIWYG xerte page links button
+        	if (String(pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
+				var pageIndex = $.inArray(x_currentPage, x_normalPages);
+				
 				switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
 					case "next":
-						if (x_currentPage < x_pages.length)
-							x_changePage(x_currentPage + 1);
+						// won't change if this is a standalone page
+						if (pageIndex != -1 && pageIndex < x_normalPages.length-1)
+							x_changePage(x_normalPages[pageIndex + 1]);
 						break;
 					case "previous":
-						if (x_currentPage > 0)
-							x_changePage(x_currentPage - 1);
+						if (pageIndex != -1 && pageIndex > 0) {
+							x_changePage(x_normalPages[pageIndex - 1]);
+						} else {
+							// ** it's a standalone page - do historic back
+						}
 						break;
 					case "first":
-						x_changePage(0);
+						if (pageIndex !== 0) {
+							x_changePage(x_normalPages[0]);
+						}
 						break;
 					case "last":
-						x_changePage(x_pages.length-1);
+						if (pageIndex < x_normalPages.length-1) {
+							x_changePage(x_normalPages[x_normalPages.length-1]);
+						}
 						break;
 				}
         	}
         	else {
+				// could be the linkID generated automatically in XML or a custom ID added in editor
 				page = x_lookupPage(pageInfo.type, pageInfo.ID);
+				
+				// id was a deeplink so info about page & deeplink has been returned
 				if ($.isArray(page)) {
 					x_deepLink = page.slice(1, page.length);
-					x_changePage(page[0]);
+					page = page[0];
 				}
-				else if (page != null) {
-					x_changePage(page);
-				}
-				else {
-					x_deepLink = "";
+				
+				if (page !== false) {
+					if (page != x_currentPage) {
+						x_changePage(page, addHistory);
+					}
+				} else {
+					x_deepLink = '';
 					if (force == true) {
-						x_changePage(0);
+						x_changePage(0, addHistory);
 					}
 				}
 			}
         }
-        else {
-            page = parseInt(pageInfo.ID);
+        else if (pageInfo.type == "index") {
+			x_changePage(pageInfo.ID, addHistory);
+			
+        } else {
+			page = parseInt(pageInfo.ID);
             if (page > 0 && page <= x_pages.length) {
-                x_changePage(page-1);
+                x_changePage(page-1, addHistory);
             }
             else {
-            	x_deepLink = "";
+            	x_deepLink = '';
             	if (force == true) {
-                	x_changePage(0);
+                	x_changePage(0, addHistory);
                 }
             }
-        }
+		}
     }
 }
 
 
-// function returns page no. of page with matching linkID / pageID
-function x_lookupPage(pageType, pageID) {
-    for (var i=0, len = x_pageInfo.length; i<len; i++) {
+// function returns page no. of page with matching linkID / pageID & whether it's from array of normal pages or standalone pages
+function x_lookupPage(type, id) {
+	var	pageType,
+		found = x_checkPages(type, id, x_pageInfo);
+	
+	return found;
+}
+
+// checks through the pageArray specified for a page with matching ID
+function x_checkPages(type, id, pageArray) {
+	// check through an array of pages for a matching ID
+    for (var i=0, len = pageArray.length; i<len; i++) {
         if (
-			(pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
-			(pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)
-        ) {
-            return i
-        }
-    }
-
-	// added this to catch any broken links because the HTML editor always creates links of linkID type even when there was a pageID (pageID is now deprecated)
-	for (var i=0, len = x_pageInfo.length; i<len; i++) {
-		if (
-			pageType == "linkID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID
-		) {
-			return i;
+			(type == "linkID" && pageArray[i].linkID && pageArray[i].linkID == id) ||
+			(type == "pageID" && pageArray[i].pageID && pageArray[i].pageID == id) ||
+			// added this to catch any broken links because the HTML editor always creates links of linkID type even when there was a pageID
+			(type == "linkID" && pageArray[i].pageID && pageArray[i].pageID == id) ||
+			(type == "pageID" && pageArray[i].linkID && pageArray[i].linkID == id)
+		){
+            return i;
 		}
-	}
-
-	// Lastly we now need to check children of each page
+    }
+	
+	// Now check the children of each page
 	var tempArray = [];
 	var checkChildIDs = function(ids) {
 		for (var i=0, j=-1; i<ids.length; i++) {
@@ -1596,52 +1695,101 @@ function x_lookupPage(pageType, pageID) {
 				}
 			} else {
 				j++;
-				if (ids[i] == pageID) {
+				if (ids[i] == id) {
 					tempArray.push(j);
 					return true;
 				}
 			}
 		}
-		return null;
+		return false;
 	}
 
-	for (var i=0; i<x_pageInfo.length; i++) {
+	for (var i=0; i<pageArray.length; i++) {
 		tempArray = tempArray.splice();
 		tempArray.push(i);
-		if (x_pageInfo[i].type != 'menu') {
-			var result = checkChildIDs(x_pageInfo[i].childIDs);
-			if (result == true) {
+		if (pageArray[i].type != 'menu') {
+			var result = checkChildIDs(pageArray[i].childIDs);
+			if (result === true) {
 				return tempArray;
 				break;
 			}
 		}
 	}
 
-	return null;
+	return false;
 }
 
 
 // function called on page change to remove old page and load new page model
 // If x_currentPage == -1, than do not try to exit tracking of the page
-function x_changePage(x_gotoPage) {
-	// Prevent content from behaving weird as we remove css files
-    $("#x_pageDiv").hide();
+function x_changePage(x_gotoPage, addHistory) {
+	x_gotoPage = Number(x_gotoPage);
+	
+	var standAlonePage = x_pageInfo[x_gotoPage].standalone,
+		pageHash = x_pageInfo[x_gotoPage].pageID != undefined && x_pageInfo[x_gotoPage].pageID != '' ? x_pageInfo[x_gotoPage].pageID : (standAlonePage ? x_pageInfo[x_gotoPage].linkID : 'page' + (x_normalPages.indexOf(x_gotoPage)+1));
+	
+	// add the deep link at the end of the URL
+	if (x_deepLink != '') {
+		pageHash += '|' + ($.isNumeric(x_deepLink) ? Number(x_deepLink) + 1 : x_deepLink);
+	}
+	
+	// if this page is already shown in a lightbox then don't try to open another lightbox - load in the existing one
+	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' && parent.window.$.featherlight.current()) {
+		standAlonePage = false;
+		addHistory = false;
+	}
+	
+	// normal page change, or a standalone page being opened in same window
+	if ((x_gotoPage == 0 && x_pageInfo[0].type == "menu") || !standAlonePage || x_pages[x_gotoPage].getAttribute('linkTarget') == 'same' || x_firstLoad) {
+		if ($x_body.width() == 0 && $x_body.height() == 0) {
+			// don't load page yet as it probably won't load properly (possibly because it's being loaded in an iframe on non-active tab on a navigator)
+			x_pageLoadPause = x_gotoPage;
+			
+		} else {
+			// make sure correct hash is used in url history
+			if (addHistory !== false) {
+				window.history.pushState('window.location.href',"",'#' + pageHash);
+			}
+			
+			// Prevent content from behaving weird as we remove css files
+			$("#x_pageDiv").hide();
 
+			var modelfile = x_pageInfo[x_gotoPage].type;
 
-    var modelfile = x_pageInfo[x_gotoPage].type;
+			var classList = $x_mainHolder.attr('class') == undefined ? [] : $x_mainHolder.attr('class').split(/\s+/);
+			$.each(classList, function(index, item) {
+				if (item.substring(0,2) == "x_" && item.substr(item.length-5,item.length) == "_page") {
+					$x_mainHolder.removeClass(item);
+				}
+			});
 
-	var classList = $x_mainHolder.attr('class') == undefined ? [] : $x_mainHolder.attr('class').split(/\s+/);
-	$.each(classList, function(index, item) {
-		if (item.substring(0,2) == "x_" && item.substr(item.length-5,item.length) == "_page") {
-			$x_mainHolder.removeClass(item);
+			$x_mainHolder.addClass("x_" + modelfile + "_page");
+
+			x_insertCSS(x_templateLocation + "models_html5/" + modelfile + ".css", function () {
+				x_changePageStep2(x_gotoPage);
+			}, false, "page_model_css");
 		}
-	});
-
-	$x_mainHolder.addClass("x_" + modelfile + "_page");
-
-	x_insertCSS(x_templateLocation + "models_html5/" + modelfile + ".css", function () {
-		x_changePageStep2(x_gotoPage);
-	}, false, "page_model_css");
+	
+	// standalone page opening in new window
+	} else if (x_pages[x_gotoPage].getAttribute('linkTarget') == 'new') {
+		window.open(window.location.href.split('#')[0] + '#' + pageHash);
+		
+		// update progress bar & record that it's been opened in newWindow
+		if (x_pages[x_gotoPage].getAttribute('reqProgress') == 'true') {
+			x_pageInfo[x_gotoPage].builtNewWindow = true;
+			doPercentage();
+		}
+		
+	// standalone page opening in lightbox
+	} else {
+		$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
+		
+		// update progress bar & record that it's been opened in lightbox
+		if (x_pages[x_gotoPage].getAttribute('reqProgress') == 'true') {
+			x_pageInfo[x_gotoPage].builtLightBox = true;
+			doPercentage();
+		}
+	}
 }
 
 function x_changePageStep2(x_gotoPage) {
@@ -1651,6 +1799,12 @@ function x_changePageStep2(x_gotoPage) {
 }
 
 function x_changePageStep3(x_gotoPage) {
+	var css = document.getElementById('theme_css');
+    css.load = function()
+    {
+        var i=1;
+    };
+
     if (x_params.theme != undefined && x_params.theme != "default") {
         // adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
         if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
@@ -1667,6 +1821,7 @@ function x_changePageStep3(x_gotoPage) {
         x_changePageStep4(x_gotoPage);
     }
 }
+
 function x_changePageStep4(x_gotoPage) {
     if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
         x_insertCSS(x_evalURL(x_params.stylesheet), function () {
@@ -1677,9 +1832,10 @@ function x_changePageStep4(x_gotoPage) {
         x_changePageStep5(x_gotoPage);
     }
 }
+
 function x_endPageTracking(pagechange, x_gotoPage) {
     // End page tracking of x_currentPage
-    if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && (!pagechange || x_currentPage != x_gotoPage))
+    if (x_currentPage != -1 && !x_isMenu() && (!pagechange || x_currentPage != x_gotoPage))
     {
         var pageObj;
 
@@ -1705,11 +1861,34 @@ function x_endPageTracking(pagechange, x_gotoPage) {
 }
 
 function x_changePageStep5(x_gotoPage) {
-	var prevPage = x_currentPage;
-
-    if (x_params.styles != undefined){
-        $x_head.append('<style type="text/css" id="page_css">' +  x_params.styles + '</style>');
+	
+    if (x_params.styles != undefined) {
+        if ($('#lo_css').length == 0) {
+            $x_head.append('<style type="text/css" id="lo_css">' + x_params.styles + '</style>');
+        }
     }
+    // If special_theme_css does not exist yet, create a disabled special_theme_css
+    if (x_specialTheme != undefined && x_specialTheme != '') {
+        x_insertCSS(x_themePath + x_specialTheme + '/' + x_specialTheme + '.css', function () {
+            x_changePageStep5a(x_gotoPage);
+        }, false, "special_theme_css", true);
+    }
+    else
+    {
+        x_insertCSS(x_themePath + 'blackonyellow/blackonyellow.css', function () {
+            x_changePageStep5a(x_gotoPage);
+        }, true, "special_theme_css", true);
+    }
+}
+
+function x_changePageStep5a(x_gotoPage) {
+    var prevPage = x_currentPage;
+
+    // disable onload of #special_theme_css
+    $('#special_theme_css').bind('load', function()
+    {
+        // Do nothing
+    });
 
     // End page tracking of x_currentPage
     x_endPageTracking(true, x_gotoPage);
@@ -1741,14 +1920,6 @@ function x_changePageStep5(x_gotoPage) {
 		$x_helperText.empty();
         $(document).add($x_pageHolder).off(".pageEvent"); // any events in page models added to document or pageHolder should have this namespace so they can be removed on page change - see hangman.html for example
 
-        // stop any swfs on old page before detaching it so that any audio stops playing (problem in IE only)
-        if ($x_pageDiv.find("object").length > 0) {
-            var $obj = $x_pageDiv.find("object"),
-                flashMovie = x_getSWFRef($obj.attr("id"));
-
-            //flashMovie.StopPlay(); // ** fix removed as it causes problems if the LO is resized (changing page stops working - don't know why)
-        }
-
         if (x_pageInfo[prevPage].built != false) {
             $("#x_pageDiv div:lt(" + $x_pageDiv.children().length + ")")
                 .data("size", [$x_mainHolder.width(), $x_mainHolder.height()]) // save current LO size so when page is next loaded we can check if it has changed size and if anything needs updating
@@ -1758,13 +1929,33 @@ function x_changePageStep5(x_gotoPage) {
             $("#x_pageDiv div:lt(" + $x_pageDiv.children().length + ")").remove();
         }
     }
-
-    if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
+	
+	if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
         x_pageHistory.push(x_currentPage);
     }
+	
+	// if it's astandalone page then it's possible that the header or footer bar are hidden
+	var headerHidden = false, footerHidden = false;
+	if (x_pageInfo[x_currentPage].standalone == true) {
+		if (x_currentPageXML.getAttribute('headerHide') == 'true') {
+			headerHidden = true;
+			$x_headerBlock.hide().height(0);
+		}
+		if (x_currentPageXML.getAttribute('footerHide') == 'true') {
+			footerHidden = true;
+			$x_footerBlock.hide().height(0);
+		}
+	}
+	
+	if (headerHidden == false && x_params.hideHeader != "true") {
+		$x_headerBlock.show().height('auto');
+	}
+	if (footerHidden == false && x_params.hideFooter != "true") {
+		$x_footerBlock.show().height('auto');
+	}
 
     // change page title and add narration / timer before the new page loads so $x_pageHolder margins can be sorted - these often need to be right so page layout is calculated correctly
-    if (x_pageInfo[0].type == "menu" && x_currentPage == 0) {
+    if (x_isMenu()) {
         pageTitle = x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
 		
 		x_changePageStep6();
@@ -1810,18 +2001,20 @@ function x_changePageStep6() {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
 		// Use a clean text version of the page title
         var label = $('<div>').html(pageTitle).text();
-        if (x_currentPageXML != "menu" && x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
-        {
-            label = x_currentPageXML.getAttribute("trackinglabel");
-        }
-        XTEnterPage(x_currentPage, label);
+        if (x_currentPageXML != "menu") {
+			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+			{
+				label = x_currentPageXML.getAttribute("trackinglabel");
+			}
+			XTEnterPage(x_currentPage, label, x_currentPageXML.getAttribute("grouping"));
+		}
 
         var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);
         builtPage.hide();
         builtPage.fadeIn();
 
-		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
+		if (!x_isMenu() && x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
 			$("#x_pageScript").remove();
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
@@ -1829,7 +2022,7 @@ function x_changePageStep6() {
 		// show page background & hide main background
 		if ($(".pageBg#pageBg" + x_currentPage).length > 0) {
 			$(".pageBg#pageBg" + x_currentPage).show();
-			if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
+			if (!x_isMenu() && x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
 				$("#x_bgDarken")
 					.css({
 						"opacity" :Number(x_currentPageXML.getAttribute("bgImageDark")/100),
@@ -1854,6 +2047,11 @@ function x_changePageStep6() {
         // calls function in current page model (if it exists) which does anything needed to reset the page (if it needs to be reset)
         if (typeof window[pt].pageChanged === "function") window[pt].pageChanged();
 
+		// calls function in current theme (if it exists)
+		if (typeof customPageChanged == 'function') {
+			customPageChanged(pt);
+		}
+		
         // calls function in any customHTML that's been loaded into page
         if ($(".customHTMLHolder").length > 0) {
                 if (typeof customHTML.pageChanged === "function") {
@@ -1862,10 +2060,10 @@ function x_changePageStep6() {
         }
 		
 		// updates variables as their values might have changed
-		if (x_currentPageXML.getAttribute('varUpdate') != 'false') {
+		if (x_currentPageXML != "menu" && x_currentPageXML.getAttribute('varUpdate') != 'false') {
 			// variables on screen
-			if (x_variables.length > 0 && $('.x_var').length > 0) {
-				x_updateVariable();
+			if (XENITH.VARIABLES && XENITH.VARIABLES.exist() && $('.x_var').length > 0) {
+				XENITH.VARIABLES.updateVariable();
 			}
 			
 			// updates xml for page otherwise text that isn't on screen yet won't be updated
@@ -1887,11 +2085,18 @@ function x_changePageStep6() {
 
     // x_currentPage hasn't been viewed previously - load model file
     } else {
+		// get short page type var
+		var pt = x_pageInfo[x_currentPage].type;
+		if (pt == "text") pt = 'simpleText';
+		// calls function in current theme (if it exists)
+		if (typeof customLoadCss == 'function') {
+			customLoadCss(pt);
+		}
 		function loadModel() {
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 			$("#x_page" + x_currentPage).css("visibility", "hidden");
 
-			if (x_currentPage != 0 || x_pageInfo[0].type != "menu") {
+			if (!x_isMenu()) {
 				// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
 				if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
 					x_findText(x_currentPageXML, true, ["glossary"]); // exclude glossary
@@ -1902,7 +2107,7 @@ function x_changePageStep6() {
 
 			// Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
             var label = $('<div>').html(pageTitle).text();
-            if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+            if (!x_isMenu() && x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
             {
                 label = x_currentPageXML.getAttribute("trackinglabel");
             }
@@ -1920,7 +2125,7 @@ function x_changePageStep6() {
 		}
 
 		// show page background & hide main background
-		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("bgImage") != undefined && x_currentPageXML.getAttribute("bgImage") != "") {
+		if (!x_isMenu() && x_currentPageXML.getAttribute("bgImage") != undefined && x_currentPageXML.getAttribute("bgImage") != "") {
 			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
 				if (mediaExists) {
 					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
@@ -1945,37 +2150,63 @@ function x_changePageStep6() {
     }
 
     // Queue reparsing of MathJax - fails if no network connection
-    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
-    x_updateHash();
+    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
 
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();
 	}
 }
 
-
-// function used for hashtag deeplinking
-function x_updateHash() {
-    if (x_params.resume === "true") {
-        window.location.hash = "#resume=" + (x_currentPage+1);
-    } else {
-        if (window.location.href.indexOf('#') > -1) {
-            if ("pushState" in history) {
-                history.pushState("", document.title, window.location.pathname + window.location.search);
-
-            } else {
-                var tempV = document.body.scrollTop;
-                var tempH = document.body.scrollLeft;
-                window.location.hash = "";
-                //window.location.href = window.location.href.split('#')[0];
-                document.body.scrollTop = tempV;
-                document.body.scrollLeft = tempH;
-            }
-        }
-    }
+// trigger that page contents have updated
+function x_pageContentsUpdated() {
+	// Queue reparsing of MathJax - fails if no network connection
+    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+	
+	// lightbox image links might also need to be added
+	x_setUpLightBox();
 }
 
+// by default images can be clicked to open larger version in lightbox viewer - this can be overridden with optional properties at LO & page level
+function x_setUpLightBox() {
+	if ((x_params.lightbox != "false" || x_currentPageXML.getAttribute("lightbox") == "true") && x_currentPageXML.getAttribute("lightbox") != "false") {
+		
+		// use the x_noLightBox class in page models to force images to not open in lightboxes
+		$("#pageContents img:not('.x_noLightBox'), .x_popupDialog img:not('.x_noLightBox')").each(function( index ) {
+			var $this = $(this);
+			if ($this.closest('a').length == 0) {
+				if (!$this.parent().hasClass('lightboxWrapper') && $this.parents('.ui-draggable').length == 0) {
+					var imgPath = $(this).prop('src');
+					$(this).wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
+				}
+			}
+		});
+		
+		$.featherlight.prototype.afterContent = function () {
+			if (this.$currentTarget != undefined) {
+				var caption = this.$currentTarget.find('img').attr('alt');
+				
+				if (caption != undefined && caption != '') {
+					this.$instance.find('.featherlight-content img').attr('alt', caption);
+					
+					// by default no caption is shown in the lightbox because many people still leave the alt text fields with default 'Enter description for accessibility here' text
+					// captions can be turned on at LO or page level
+					if ((x_params.lightboxCaption != "false" && x_params.lightboxCaption != undefined && x_currentPageXML.getAttribute("lightboxCaption") != "false") || (x_currentPageXML.getAttribute("lightboxCaption") != "false" && x_currentPageXML.getAttribute("lightboxCaption") != undefined)) {
+						this.$instance.find('.caption').remove();
+						var before = x_currentPageXML.getAttribute("lightboxCaption") == "above" || (x_params.lightboxCaption == "above" && x_currentPageXML.getAttribute("lightboxCaption") == undefined) ? true : false;
+						
+						if (caption != undefined && caption != '') {
+							if (before == true) {
+								$('<div class="lightBoxCaption">').text(caption).prependTo(this.$instance.find('.featherlight-content'));
+							} else {
+								$('<div class="lightBoxCaption">').text(caption).appendTo(this.$instance.find('.featherlight-content'));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 // function called on page model load
 function x_loadPage(response, status, xhr) {
@@ -1991,7 +2222,28 @@ function x_loadPage(response, status, xhr) {
 }
 
 
-// function to do deeplink
+// get deep link info
+function getDeepLink(info) {
+	if (String(info).indexOf('|') >= 0) {
+		info = String(info);
+		
+		var temp = info.split('|'),
+			deep;
+		
+		if ($.isNumeric(temp[1].trim())) {
+			deep = parseInt(temp[1].trim() - 1);
+		} else {
+			deep = temp[1].trim();
+		}
+		
+		return [temp[0].trim(), deep];
+	}
+	else {
+		return [info];
+	}
+}
+
+// function calls a function in the page models to do the deeplink
 function x_doDeepLink() {
 	if (x_deepLink !== "") {
 		if (window[x_pageInfo[x_currentPage].type] && (typeof window[x_pageInfo[x_currentPage].type].deepLink === "function")) {
@@ -2007,12 +2259,21 @@ function x_setUpPage() {
     $x_pageDiv.parent().scrollTop(0);
     $("#x_pageDiv div").scrollTop(0);
     $x_mobileScroll.scrollTop(0);
+	
+	var pageIndex = $.inArray(x_currentPage, x_normalPages);
+	
+	if (pageIndex != -1) {
+		$x_pageNo
+			.html((pageIndex+1) + " / " + x_normalPages.length)
+			.attr("title", x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + (pageIndex+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_normalPages.length);
+	} else {
+		// standalone page
+		$x_pageNo
+			.html('')
+			.attr("title", '');
+	}
 
-    $x_pageNo
-        .html((x_currentPage+1) + " / " + x_pageInfo.length)
-        .attr("title", x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + (x_currentPage+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_pageInfo.length);
-
-    if (x_pageInfo[0].type == "menu" && x_currentPage == 0) {
+    if (x_isMenu()) {
         $x_menuBtn
             .button("disable")
             .removeClass("ui-state-focus")
@@ -2020,18 +2281,27 @@ function x_setUpPage() {
     } else {
         $x_menuBtn.button("enable");
     }
-
-
-    if (x_currentPage > 0) {
+	
+    if (pageIndex != 0 || ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && x_pageHistory.length > 1)) {
         $x_prevBtn.button("enable");
-    } else if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric" || (x_params.navigation == "Historic" && x_pageHistory.length <= 1)) {
+		
+		if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
+			// should the normal back or historic back button be used?
+			if (x_pageHistory.length > 1) {
+				$x_prevBtn.button({ icons: { primary: 'x_prev_hist' } });
+			} else {
+				$x_prevBtn.button({ icons: { primary: 'x_prev' } });
+			}
+		}
+		
+    } else {
         $x_prevBtn
             .button("disable")
             .removeClass("ui-state-focus")
             .removeClass("ui-state-hover");
     }
 
-    if (x_pageInfo.length > x_currentPage + 1) {
+    if (pageIndex != -1 && pageIndex < x_normalPages.length-1) {
         $x_nextBtn.button("enable");
     } else {
         $x_nextBtn
@@ -2041,7 +2311,7 @@ function x_setUpPage() {
     }
 
 	// navigation buttons can be disabled on a page by page basis
-	if ((x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) && (x_currentPageXML.getAttribute("home") != undefined || x_currentPageXML.getAttribute("back") != undefined || x_currentPageXML.getAttribute("next") != undefined)) {
+	if (!x_isMenu() && (x_currentPageXML.getAttribute("home") != undefined || x_currentPageXML.getAttribute("back") != undefined || x_currentPageXML.getAttribute("next") != undefined)) {
 		if (x_currentPageXML.getAttribute("home") == "false") {
 			$x_menuBtn.button("disable");
 		}
@@ -2052,7 +2322,7 @@ function x_setUpPage() {
 			$x_nextBtn.button("disable");
 		}
 
-	} else if ((x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) && x_currentPageXML.getAttribute("navSetting") != undefined) {
+	} else if (!x_isMenu() && x_currentPageXML.getAttribute("navSetting") != undefined) {
 		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
 		if (x_currentPageXML.getAttribute("navSetting") != "all") {
 			$x_menuBtn.button("disable");
@@ -2064,7 +2334,6 @@ function x_setUpPage() {
 			$x_prevBtn.button("disable");
 		}
     }
-
 
     if (x_firstLoad == true) {
         $x_mainHolder.css("visibility", "visible");
@@ -2086,7 +2355,14 @@ function x_setUpPage() {
 // function called from each model when fully loaded to trigger fadeIn
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
-
+	
+	// calls function in current theme (if it exists)
+	var pt = x_pageInfo[x_currentPage].type;
+	if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
+	if (typeof customPageChanged == 'function') {
+		customPageChanged(pt);
+	}
+	
 	// Do deeplinking here so model has appropriate data at hand
 	x_doDeepLink();
 
@@ -2099,8 +2375,10 @@ function x_pageLoaded() {
         $this.attr(attr_name, x_evalURL(val));
     });
 
-	// script & style optional properties for each page added after page is otherwise set up
-	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
+	if (!x_isMenu()) {
+		x_setUpLightBox();
+		
+		// script & style optional properties for each page added after page is otherwise set up
 		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
@@ -2108,81 +2386,8 @@ function x_pageLoaded() {
 			$("#x_page" + x_currentPage).append('<style type="text/css">' +  x_currentPageXML.getAttribute("styles") + '</style>');
 		}
 	}
-	
-	// is there a submit button & at least one variable input?
-	if ($('.x_varSubmit').length > 0 && $('.x_varInput').length > 0) {
-		$('.x_varSubmit').click(function() {
-			var dependants = [],
-				changed = [],
-				i, j, k;
-			
-			// update the variables changed via text fields
-			for (i=0; i<$('.x_varInput').length; i++) {
-				if ($('.x_varInput')[i].value != '') {
-					changed.push($('.x_varInput')[i].name);
-					var temp = x_setVariable($('.x_varInput')[i].name, $('.x_varInput')[i].value);
-					if (temp.length > 0) {
-						$.merge(dependants, temp);
-					}
-				}
-			}
-			
-			// as well as updating any variables that have been directly changed there may be dependants of those variables to change too
-			if (dependants.length > 0) {
-				dependants = dependants.filter(function(a){if (!this[a]) {this[a] = 1; return a;}},{});
-				
-				for (i=0; i<dependants.length; i++) {
-					for (j=0; j<x_variables.length; j++) {
-						if (dependants[i] == x_variables[j].name) {
-							for (k=0; k<x_variables[j].requiredBy.length; k++) {
-								if ($.inArray(x_variables[j].requiredBy[k], dependants) == -1) {
-									dependants.push(x_variables[j].requiredBy[k]);
-								}
-							}
-						}
-					}
-				}
-				
-				var toCalc = [];
-				for (i=0; i<x_variableInfo.length; i++) {
-					if ($.inArray(x_variableInfo[i].name, dependants) > -1) {
-						changed.push(x_variableInfo[i].name);
-						toCalc.push(i);
-						
-						// clear current variable value
-						for (k=0; k<x_variables.length; k++) {
-							if (x_variableInfo[i].name == x_variables[k].name) {
-								x_variables.splice(k,1);
-								break;
-							}
-						}
-					}
-				}
-				
-				x_calcVariables(toCalc);
-			}
-			
-			// should this page be immediately updated to show changes to the variable values?
-			if (x_currentPageXML.getAttribute('varUpdate') != 'false') {
-				for (i=0; i<x_variables.length; i++) {
-					for (j=0; j<changed.length; j++) {
-						if (x_variables[i].name == changed[j]) {
-							$('.x_var_' + x_variables[i].name).html(x_checkDecimalSeparator(x_variables[i].value));
-							
-							// updates xml for page otherwise text that isn't on screen yet won't be updated
-							x_findText(x_currentPageXML, false, ['variables']);
-						}
-					}
-				}
-			}
-			
-			// submit confirmation message
-			if (changed.length > 0) {
-				var submitConfirmMsg = x_currentPageXML.getAttribute('varConfirm') != undefined && x_currentPageXML.getAttribute('varConfirm') != '' ? x_currentPageXML.getAttribute('varConfirm') : x_getLangInfo(x_languageData.find("submitConfirmMsg")[0], "label", "Your answers have been submitted");
-				x_openDialog("msg", '', x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"), null, submitConfirmMsg);
-			}
-		});
-	}
+
+	XENITH.VARIABLES.handleSubmitButton();
 
     $("#x_page" + x_currentPage)
         .hide()
@@ -2190,24 +2395,26 @@ function x_pageLoaded() {
         .fadeIn();
 
 	// Trigger featherlight
-    var config = $.featherlight.defaults;
+	var config = $.featherlight.defaults;
     $(config.selector, config.context).featherlight();
 
 	doPercentage();
 }
 
-	//detect page loaded change and update progress bar
-
-  function  doPercentage() {
+// detect page loaded change and update progress bar
+function doPercentage() {
     var menuOffset = x_pageInfo[0].type == 'menu' ? 1 : 0;
-    var totalpages = x_pageInfo.length - menuOffset;
-    var pagesviewed = $(x_pageInfo).filter(function(){return this.built !== false;}).length - menuOffset;
-    var progress = Math.round((pagesviewed * 100) / totalpages);
-    var pBarText = x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
+	
+	// by default stand-alone pages are excluded from being included in progress - this can be overridden with optional property
+    var totalPages = $(x_pageInfo).filter(function(i){ return this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true'; }).length - menuOffset,
+		pagesViewed = $(x_pageInfo).filter(function(i){ return (this.built !== false && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true')) || this.builtLightBox == true || this.builtNewWindow == true; }).length - menuOffset;
+	
+    var progress = Math.round((pagesViewed * 100) / totalPages),
+		pBarText = x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
 
     $(".pbBar").css({"width": progress + "%"});
     $('.pbTxt').html(progress + "% " + pBarText);
-  };
+}
 
 // function adds / reloads narration bar above main controls on interface
 function x_addNarration(funct, arguments) {
@@ -2246,18 +2453,22 @@ function x_addCountdownTimer() {
 
     var x_countdownTicker = function () {
         x_countdownTimer--;
+
+		var pageType = x_pageInfo[x_currentPage].type;
+		pageType = (pageType === 'text') ? 'simpleText' : pageType
+
         if (x_countdownTimer > 0) {
             $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
 
          	// If page model wants timer tick to know then pass value
-        	if (typeof window[x_pageInfo[x_currentPage].type].onTimerTick === "function") window[x_pageInfo[x_currentPage].type].onTimerTick(x_countdownTimer);
+        	if (typeof window[ pageType ].onTimerTick === "function") window[ pageType ].onTimerTick(x_countdownTimer);
         }
         else {
             window.clearInterval(x_timer);
             $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[1]);
 
         	// If page model wants to know then pass event
-        	if (typeof window[x_pageInfo[x_currentPage].type].onTimerZero === "function") window[x_pageInfo[x_currentPage].type].onTimerZero();
+        	if (typeof window[ pageType ].onTimerZero === "function") window[ pageType ].onTimerZero();
 
         }
     };
@@ -2296,13 +2507,15 @@ function x_loadPageBg(loadModel) {
 		hConstrain = x_currentPageXML.getAttribute("bgImageHConstrain"),
 		alpha = x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "" ? x_currentPageXML.getAttribute("bgImageAlpha") : 100;
 
-	var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg"/>');
+	var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg" alt=""/>');
+    var objectfit =  (x_currentPageXML.getAttribute("backgroundFit") != undefined && x_currentPageXML.getAttribute("backgroundFit") == "cover" ? "cover" : "fill");
 	$pageBg
 		.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))
 		.css({
 			"opacity"		:Number(alpha/100),
 			"filter"		:"alpha(opacity=" + alpha + ")",
-			"visibility"	:"hidden"
+			"visibility"	:"hidden",
+            "object-fit"    : objectfit
 		})
 		.addClass(x_currentPageXML.getAttribute("bgImageGrey") == "true" ? "grayscale" :"")
 		.one("load", function() {
@@ -2364,7 +2577,7 @@ function x_loadPageBg(loadModel) {
 		});
 
 	$x_background.prepend($pageBg);
-
+    
 	if (x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
 		var $bgDarken = $("#x_bgDarken").length > 0 ? $("#x_bgDarken") : $('<div id="x_bgDarken" />').appendTo($x_background);
 
@@ -2422,11 +2635,11 @@ function x_updateCss(updatePage) {
 
 // function isn't called until the narration bar has loaded
 function x_updateCss2(updatePage) {
-    $x_pageHolder.css("margin-bottom", $x_footerBlock.height());
+	$x_pageHolder.css("margin-bottom", $x_footerBlock.height());
     $x_background.css("margin-bottom", $x_footerBlock.height());
 	
     if (x_browserInfo.mobile == false) {
-        $x_pageHolder.css("margin-top", $x_headerBlock.height());
+		$x_pageHolder.css("margin-top", $x_headerBlock.height());
         $x_background.css("margin-top", $x_headerBlock.height());
 		$x_pageHolder.height($x_mainHolder.height() - parseInt($x_pageHolder.css("margin-bottom")) - parseInt($x_pageHolder.css("margin-top"))); // fix for Opera - css in other browsers do this automatically
     }
@@ -2504,7 +2717,7 @@ function x_openDialog(type, title, close, position, load, onclose) {
                     else
                     {
                         $x_popupDialog.load(x_templateLocation + "models_html5/" + type + ".html", function () {
-                            x_setDialogSize($x_popupDialog, position)
+                            x_setDialogSize($x_popupDialog, position);
                         });
                     }
 
@@ -2512,9 +2725,12 @@ function x_openDialog(type, title, close, position, load, onclose) {
                     $x_popupDialog.html(load);
                     x_setDialogSize($x_popupDialog, position);
                 }
-
+				
                 x_dialogInfo[i].built = $x_popupDialog.parent();
             }
+			
+			x_pageContentsUpdated();
+			
             break;
         }
     }
@@ -2556,7 +2772,8 @@ function x_setDialogSize($x_popupDialog, position) {
     }
 
     $x_popupDialog.dialog({
-        "width" :width
+        "width" :width,
+		"height" : "auto"
     });
     $x_popupDialog.parent().css({
         "left"  :left,
@@ -2597,7 +2814,7 @@ function x_openMediaWindow() {
 
 function x_openInfoWindow(text){
 
-    window.open('','','width=300,height=450,scrollbars=yes').document.write('<p style="font-family:sans-serif; font-size:12">' + text + '</p>');
+    window.open('','','width=300,height=450,scrollbars=yes').document.write('<p style="font-family:sans-serif; font-size:12px">' + text + '</p>');
 
 }
 
@@ -2615,467 +2832,9 @@ function x_getLangInfo(node, attribute, fallBack) {
     return string;
 }
 
-
-// function starts the calculation of variables set by author via the variables optional property
-function x_newVariables() {
-	// clears arrays if they have previously been calculated
-	x_variables.splice(0, x_variables.length);
-	x_variableInfo.splice(0, x_variableInfo.length);
-	x_variableErrors.splice(0, x_variableErrors.length);
-
-	if (x_params.variables != undefined) {
-		var i, j, k, temp, thisVar,
-			toCalc = [];
-		
-		x_variableInfo = x_params.variables.split("||");
-
-		// get array of data for all uniquely named variables & sort them so empty strings etc. become undefined
-		for (i=0; i<x_variableInfo.length; i++) {
-			var temp = x_variableInfo[i].split("|");
-			thisVar = {name:$.trim(temp[0]), data:temp.slice(1), requires:[]}; // data = [fixed value, [random], min, max, step, decimal place, significant figure, trailing zero, [exclude], default]
-			if (thisVar.name != "" && x_variableInfo.filter(function(a){ return a.name == thisVar.name }).length == 0) {
-				for (j=0; j<thisVar.data.length; j++) {
-					if (j == 1 || j == 8) { // convert data (random/exclude) to array
-						thisVar.data.splice(j, 1, thisVar.data[j].split(","));
-						for (k=0; k<thisVar.data[j].length; k++) {
-							temp = $.trim(thisVar.data[j][k]);
-							if (temp === "") {
-								thisVar.data[j].splice(k, 1);
-								k--;
-							} else {
-								thisVar.data[j].splice(k, 1, temp);
-							}
-						}
-					} else {
-						temp = $.trim(thisVar.data[j]);
-						if (temp === "") {
-							temp = undefined;
-						}
-						thisVar.data.splice(j, 1, temp);
-					}
-				}
-
-				x_variableInfo.splice(i, 1, thisVar);
-				toCalc.push(i);
-
-			} else {
-				x_variableInfo.splice(i, 1);
-				i--;
-			}
-		}
-		
-		x_calcVariables(toCalc);
-	}
-}
-
-function x_calcVariables(toCalc) {
-	var lastLength, checkDefault,
-		thisVar, i;
-
-	// goes through all variables and attempts to calculate their value
-	// may loop several times if variables require other variable values to be ready before calculating their value
-	// stops when no. var values calculated is no longer increasing - either all done or some vars can't be calculated (circular calculations or referencing non-existant vars)
-	while (toCalc.length > 0 && (toCalc.length != lastLength || checkDefault == true)) {
-		lastLength = toCalc.length;
-
-		for (i=0; i<toCalc.length; i++) {
-			thisVar = x_calcVar(x_variableInfo[toCalc[i]], false, checkDefault);
-			if (thisVar.ok == true) {
-				thisVar.requiredBy = [];
-				x_variables.push(thisVar);
-				toCalc.splice(i,1);
-				i--;
-				if (thisVar.default == true) {
-					checkDefault = false;
-				}
-			} else if (thisVar.ok == false) {
-				x_variableErrors.push(thisVar);
-				toCalc.splice(i,1);
-				i--;
-			}
-
-			if (i + 1 == toCalc.length && toCalc.length == lastLength) {
-				checkDefault = checkDefault == true ? false : true;
-			}
-		}
-	}
-
-	for (i=0; i<toCalc.length; i++) {
-		thisVar = x_variableInfo[toCalc[i]];
-		thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "undef", "References an undefined variable");
-		x_variableErrors.push(thisVar);
-		toCalc.splice(i,1);
-		i--;
-	}
-
-	if ($("#x_authorSupportMsg").length > 0 && (x_variables.length > 0 || x_variableErrors.length > 0)) {
-		$('.x_varMsg').remove();
-		$("#x_authorSupportMsg p").append('<span class="x_varMsg"></br>' + '<a onclick="x_showVariables()" href="javascript:void(0)" style="color:red">' + x_getLangInfo(x_languageData.find("authorVars")[0], "label", "View variable data") + '</a></span>');
-	}
-}
-
-
-// function calculates the value of any author set variables
-function x_calcVar(thisVar, recalc, checkDefault) {
-	thisVar.ok = undefined;
-
-	// calculate min / max / step values
-	var data = {min:thisVar.data[2], max:thisVar.data[3], step:thisVar.data[4]},
-		exclude = [], index;
-
-	for (var key in data) {
-		if (Object.prototype.hasOwnProperty.call(data, key)) {
-			// check for use of other variables & keep track of which are required
-			if (data[key] != undefined && ((thisVar.data[0] == undefined && thisVar.data[1].length == 0) || key != "step")) {
-				var info = x_getVarValues(data[key], thisVar.name);
-				data[key] = info[0];
-				if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
-
-				thisVar.ok = info[2];
-				if (thisVar.ok != true) { // a variable needed doesn't exist / hasn't been calculated yet
-					break;
-				} else {
-					data[key] = Number(data[key]);
-				}
-			}
-		}
-	}
-
-	// calculate exclude values
-	if ((thisVar.ok == true || thisVar.ok == undefined) && thisVar.data[8].length > 0) {
-		exclude = thisVar.data[8].slice();
-		// check for use of other variables & keep track of which are required
-		for (var i=0; i<exclude.length; i++) {
-			var info = x_getVarValues(exclude[i], thisVar.name);
-			exclude.splice(i, 1, info[0]);
-			if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
-
-			thisVar.ok = info[2];
-			if (info[2] != true) {  // a variable needed doesn't exist / hasn't been calculated yet
-				break;
-
-			} else if (typeof exclude[i] === "string" && exclude[i].indexOf("&&") != -1) {
-				// it's a range e.g. -2<&&<2 or -2<=&&<=2
-				var temp = exclude[i].split("&&").filter(function (a) { return a.indexOf("<") > -1 || a.indexOf(">") > -1; });
-				if (temp.length == 2) {
-					temp.splice(0, 1, temp[0] + "[" + thisVar.name + "]");
-					temp.splice(1, 1, "[" + thisVar.name + "]" + temp[1]);
-					exclude.splice(i, 1, temp);
-				}
-			}
-		}
-	}
-
-	// no missing dependancies so far
-	if (thisVar.ok == true || thisVar.ok == undefined) {
-
-		if (data.min != undefined && data.max != undefined && data.min > data.max) {
-			// fail because min > max
-			thisVar.ok = false;
-			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "minMax", "min > max") + " (" + data.min + " > " + data.max + ")";
-
-		} else if (thisVar.data[0] != undefined || thisVar.data[1].length > 0) {
-			if (thisVar.data[0] != undefined) {
-				// FIXED VALUE
-				thisVar.type = "fixed";
-				thisVar.value = thisVar.data[0];
-
-				// check for use of other variables & keep track of which are required
-				var info = x_getVarValues(thisVar.value, thisVar.name);
-				thisVar.value = info[0];
-				if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
-				thisVar.ok = info[2];
-
-			} else if (thisVar.data[1].length > 0) {
-				// RANDOM FROM LIST
-				thisVar.type = "random";
-
-				index = Math.floor(Math.random()*thisVar.data[1].length);
-				thisVar.value = thisVar.data[1][index];
-
-				// check for use of other variables & keep track of which are required
-				var info = x_getVarValues(thisVar.value, thisVar.name);
-				thisVar.value = info[0];
-				if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
-				thisVar.ok = info[2];
-
-			}
-
-			if (thisVar.ok == true) {
-				if (data.min != undefined && data.min > thisVar.value) {
-					// fail because value < min
-					if (thisVar.type == "random") {
-						thisVar.ok = "retry";
-					} else {
-						thisVar.ok = false;
-					}
-					thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "valueMin", "value < min") + " (" + thisVar.value + " < " + data.min + ")";
-
-				} else if (data.max != undefined && data.max < thisVar.value) {
-					// fail because value > max
-					if (thisVar.type == "random") {
-						thisVar.ok = "retry";
-					} else {
-						thisVar.ok = false;
-					}
-					thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "valueMax", "value > max") + " (" + thisVar.value + " > " + data.max + ")";
-				}
-			}
-
-		} else if (data.min != undefined || data.max != undefined) { // from max & min
-			// RANDOM BETWEEN MIN & MAX VALUES
-			thisVar.type = "minMax";
-
-			// uses defaults of min=0 & max=100 if only min or max are set
-			if (data.min == undefined) {
-				data.min  = 0;
-			} else if (data.max == undefined) {
-				data.max = 100;
-			}
-
-			// use default of 1 for step
-			if (data.step == undefined) {
-				data.step = 1;
-			}
-
-			var maxDecimal = Math.max(Math.floor(data.min) === data.min ? 0 : data.min.toString().split(".")[1].length || 0, Math.floor(data.step) === data.step ? 0 : data.step.toString().split(".")[1].length || 0);
-			thisVar.value = Math.floor(Math.random()*(((data.max - data.min) / data.step) + 1)) * data.step + data.min;
-			if (thisVar.value > data.max) { thisVar.value = thisVar.value - data.step; } // can be over max if step doesn't take to exact max number - adjust for this
-			thisVar.value = thisVar.value.toFixed(maxDecimal); // forces correct decimal num - should work without this but occasionally it ends up with e.g. 1.1999999999999.... instead of 1.2
-			thisVar.ok = true;
-
-		} else if (thisVar.type == undefined) {
-			thisVar.ok = false;
-			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "none", "No variable data");
-		}
-	}
-
-	if (thisVar.ok == true && $.isNumeric(Number(thisVar.value))) {
-		// to significant figure
-		if ($.isNumeric(Number(thisVar.data[6]))) {
-			thisVar.value = Number(thisVar.value).toPrecision(Number(thisVar.data[6])).includes('e') ? parseFloat(Number(thisVar.value).toPrecision(Number(thisVar.data[6]))) : Number(thisVar.value).toPrecision(Number(thisVar.data[6]));
-		}
-		// to decimal place
-		if ($.isNumeric(Number(thisVar.data[5]))) {
-			thisVar.value = Number(thisVar.value).toFixed(Number(thisVar.data[5]));
-			if (thisVar.data[7] != "true") {
-				// remove trailing zeros
-				thisVar.value = Number(thisVar.value);
-			}
-		}
-	}
-
-	// check value isn't one that should be excluded
-	if (thisVar.ok == true) {
-		for (var i=0; i<exclude.length; i++) {
-			var clash = false;
-			if (typeof exclude[i] == "number") {
-				if (exclude[i] == thisVar.value) {
-					clash = true;
-				}
-
-			// it's an exclude range
-			} else if (typeof exclude[i] == "object") {
-				for (var j=0; j<exclude[i].length; j++) {
-					exclude[i].splice(j, 1, exclude[i][j].replace("[" + thisVar.name + "]", thisVar.value));
-				}
-				if (eval(exclude[i][0]) && eval(exclude[i][1])) {
-					clash = true;
-				}
-			}
-
-			if (clash == true) {
-				if (thisVar.type == "fixed") {
-					thisVar.ok = false;
-					thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "exclude", "{n} is excluded").replace("{n}", thisVar.value);
-				} else {
-					thisVar.ok = "retry";
-					thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "exclude", "{n} is excluded").replace("{n}", thisVar.value);
-				}
-				break;
-			}
-		}
-
-	} else if (thisVar.ok == false && thisVar.info == undefined) {
-		thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "circular", "Circular variable reference");
-	}
-
-	// only retry random if there's a value that hasn't already failed
-	if (thisVar.ok == "retry" && thisVar.type == "random") {
-		thisVar.data[1].splice(index, 1);
-		if (thisVar.data[1].length == 0) {
-			thisVar.ok = false;
-			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "none", "All possible values are excluded or fall outside the min & max range");
-		}
-	}
-
-	// retry multiple times to see if we can get a valid value
-	if (thisVar.ok == "retry") {
-		var attempts = 100;
-
-		if (recalc != true) {
-			var counter = 0;
-			do {
-				thisVar = x_calcVar(thisVar, true);
-				counter++;
-			} while (counter < attempts && thisVar.ok == "retry");
-
-			if (thisVar.ok == "retry") {
-				thisVar.ok = false;
-				thisVar.info = " " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "none2", "{n} attempts have not returned an accepted value").replace("{n}", attempts);
-			} else if (thisVar.ok == true) {
-				thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "attempts", "{n} attempts to calculate a valid value").replace("{n}", (counter + 1));
-			}
-		}
-	}
-
-	// fallback to default
-	if (thisVar.data[9] != undefined && (thisVar.ok == false || checkDefault == true)) {
-		try {
-			var sum = eval(thisVar.data[9]);
-			thisVar.value = sum;
-		} catch (e) {
-			thisVar.value = thisVar.data[9];
-		}
-		thisVar.requiredBy = [];
-		thisVar.default = true;
-		thisVar.ok = true;
-		thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "default", "Fallback to default value");
-	}
-	
-	return thisVar;
-}
-
-function x_getVariable(name)
-{
-    for (var i=0; i<x_variables.length; i++)
-    {
-        if (x_variables[i].name == name)
-            return x_variables[i].value;
-    }
-    return null;
-}
-
-// function updates a variable update
-function x_setVariable(name, value) {
-	
-	var dependants;
-	
-    for (var i=0; i<x_variables.length; i++) {
-        if (x_variables[i].name == name) {
-            x_variables[i].value = x_checkDecimalSeparator(value, true);
-			dependants = x_variables[i].requiredBy;
-            break;
-        }
-    }
-	
-	return dependants;
-}
-
-// function updates all variables on screen with the current value
-function x_updateVariable() {
-	
-	for (var i=0; i<$('.x_var').length; i++) {
-		
-		var $thisVarSpan = $($('.x_var')[i]),
-			classes = $thisVarSpan.attr('class').split(' '),
-			varName;
-		
-		for (var j=0; j<classes.length; j++) {
-			
-			if (classes[j].indexOf('x_var_') == 0) {
-				varName = classes[j].substring(6);
-				break;
-			}
-		}
-		
-		if (varName != '') {
-			for (var j=0; j<x_variables.length; j++) {
-				
-				if (x_variables[j].name == varName) {
-					$thisVarSpan.html(x_checkDecimalSeparator(x_variables[j].value));
-					break;
-				}
-			}
-		}
-	}
-}
-
-// function gets values of other variables needed for calculation and evals the value when everything's ready
-function x_getVarValues(thisValue, thisName) {
-	var requires = [];
-
-	if (thisValue.indexOf("[" + thisName + "]") != -1) {
-		return [thisValue, requires, false];
-	}
-
-	if (String(thisValue).indexOf("[") != -1) {
-		for (var i=0; i<x_variables.length; i++) {
-			if (thisValue.indexOf("[" + x_variables[i].name + "]") != -1) {
-				// keeps track of what other variables reference this so they can be recalculated together if needed
-				if (x_variables[i].requiredBy.indexOf(thisName) == -1) {
-					x_variables[i].requiredBy.push(thisName);
-				}
-				requires.push(x_variables[i].name);
-
-				RegExp.esc = function(str) {
-					return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
-				};
-				var regExp = new RegExp(RegExp.esc("[" + x_variables[i].name + "]"), "g");
-				thisValue = thisValue.replace(regExp, x_variables[i].value);
-				if (thisValue.indexOf("[") == -1) { break; }
-			}
-		}
-	}
-
-	try {
-		var sum = eval(thisValue);
-		return [sum, requires, true];
-	} catch (e) {
-		if (thisValue.indexOf("[") == -1) {
-			return [thisValue, requires, true]; // string
-		} else {
-			return [thisValue, requires, "variable"];
-		}
-	}
-}
-
-
-// function displays author set variables in popup when in author support mode
-function x_showVariables() {
-	var varHeadings = ["Name", "Fixed Value", "Random", "Min", "Max", "Step", "DP", "SF", "Trailing Zeros", "Exclude", "Default"];
-	var pageText = '<html><body><style>table, tr, td, th { border: 1px solid black; text-align: left; } th { background-color: LightGray; } table { border-collapse: collapse; min-width: 100%; } th, td { padding: 1em; width: ' + (100/(varHeadings.length+1)) + '%; } .alert { color: red; } td:nth-child(1), td:nth-child(2) { font-weight: bold; } </style><table>',
-		cells, temp, infoTxt;
-
-	for (var i=0; i<varHeadings.length; i++) {
-		pageText += '<th>' + x_getLangInfo(x_languageData.find("authorVars").find("item")[i], false, varHeadings[i]) + '</th>';
-		if (i == 0) {
-			pageText += '<th>' + x_getLangInfo(x_languageData.find("authorVars").find("item")[varHeadings.length], false, "Value") + '</th>';
-		}
-	}
-
-	for (var i=0; i<x_variables.length; i++) {
-		cells = "";
-		for (var j=0; j<x_variables[i].data.length; j++) {
-			temp = x_variables[i].data[j] === undefined ? "" : x_variables[i].data[j];
-			cells += '<td>' + temp + '</td>';
-		}
-		infoTxt = x_variables[i].info == undefined ? "" : '<br/><span class="alert">' + x_variables[i].info + '</span>';
-		pageText += '<tr><td>' + x_variables[i].name + '</td><td>' + x_variables[i].value + infoTxt + '</td>' + cells + '</tr>';
-	}
-
-	for (var i=0; i<x_variableErrors.length; i++) {
-		cells = "";
-		for (var j=0; j<x_variableErrors[i].data.length; j++) {
-			temp = x_variableErrors[i].data[j] === undefined ? "" : x_variableErrors[i].data[j];
-			cells += '<td>' + temp + '</td>';
-		}
-		pageText += '<tr style="background-color: LightGray;"><td>' + x_variableErrors[i].name + '</td><td>' + x_variableErrors[i].info + '</td>' + cells + '</tr>';
-	}
-
-	pageText += '</table></body></html>';
-
-	window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12">' + pageText + '</p>');
+// function returns whether current page is menu page
+function x_isMenu() {
+	return x_currentPage == 0 && x_pageInfo[0].type == "menu";
 }
 
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
@@ -3114,41 +2873,9 @@ function x_insertText(node, exclude, list) {
 	list = list == undefined ? [] : list;
 	
 	// check text for variables - if found replace with variable value
-	if (x_variables.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("variables") > -1) || (exclude == true && list.indexOf("variables") == -1))) {
-		for (var k=0; k<x_variables.length; k++) {
-			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
-			var regExp = new RegExp('\\[' + x_variables[k].name + '\\]|<span class="x_var x_var_' + x_variables[k].name + '">(.*?)</span>', 'g');
-			tempText = tempText.replace(regExp, '<span class="x_var x_var_' + x_variables[k].name + '">' + x_checkDecimalSeparator(x_variables[k].value) + '</span>');
-			
-			// replace with a text input field which the end user can use to set the value of the variable
-			regExp = new RegExp('\\[=' + x_variables[k].name + '\\]', 'g');
-			tempText = tempText.replace(regExp, '<input type="text" name="' + x_variables[k].name + '" class="x_varInput">');
-			
-			// this format of the text input field has specified a default value
-			regExp = new RegExp('\\[=' + x_variables[k].name + ':(.*?)\\]', 'g');
-			
-			var matches = tempText.match(regExp);
-			if (matches != null) {
-				for (var m=0; m<matches.length; m++) {
-					tempText = tempText.replace(matches[m], '<input type="text" name="' + x_variables[k].name + '" class="x_varInput" placeholder="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '">');
-				}
-			}
-		}
-		
-		// replace with a submit button which will submit all the new variable values entered on the page
-		var submitBtnLabel = x_getLangInfo(x_languageData.find("submitBtnLabel")[0], "label", "Submit");
-		var regExp = new RegExp('\\[\\+submit\\]', 'g');
-		tempText = tempText.replace(regExp, '<input type="submit" value="' + submitBtnLabel + '" class="x_varSubmit">');
-		
-		// this format of the submit button has specified a default value
-		regExp = new RegExp('\\[\\+submit:(.*?)\\]', 'g');
-		
-		var matches = tempText.match(regExp);
-		if (matches != null) {
-			for (var m=0; m<matches.length; m++) {
-				tempText = tempText.replace(matches[m], '<input type="submit" value="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '" class="x_varSubmit">');
-			}
-		}
+	// also handle case where comma decimal separator has been requested
+	if (XENITH.VARIABLES && XENITH.VARIABLES.exist() && (exclude == undefined || (exclude == false && list.indexOf("variables") > -1) || (exclude == true && list.indexOf("variables") == -1))) {
+		tempText = XENITH.VARIABLES.replaceVariables(tempText, x_params.decimalseparator);
 	}
 
 	// if project is being viewed as https then force iframe src to be https too
@@ -3162,18 +2889,7 @@ function x_insertText(node, exclude, list) {
 		tempText = tempText.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
 	}
 
-    // check text for glossary words - if found replace with a link
-	if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
-        for (var k=0, len=x_glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
-			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
-        }
-        for (var k=0, len=x_glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
-			//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
-			tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
-        }
-    }
+	tempText = XENITH.GLOSSARY.insertText(tempText, exclude, list);
 
     // check text for LaTeX tags - if found replace with image
     var startIndex = tempText.indexOf('<tex src');
@@ -3192,9 +2908,9 @@ function x_insertText(node, exclude, list) {
     var regExp = new RegExp('href="asfunction:_level0\.engine\.rootIcon\.pageLink,([A-Za-z0-9]+)">','ig');
     tempText = tempText.replace(regExp, function (str, p1, offset, s) {
         if (!isNaN(parseFloat(p1)) && isFinite(p1))
-            return 'href="#" onclick="x_navigateToPage(false,{type:\'page\',ID:\'' + p1 + '\'});return false;">';
+            return 'href="#" onclick="x_navigateToPage(false, {type:\'page\',ID:\'' + p1 + '\'}); return false;">';
         else
-            return 'href="#" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\''+ p1 +'\'});return false;">';
+            return 'href="#" onclick="x_navigateToPage(false, {type:\'linkID\',ID:\''+ p1 +'\'}); return false;">';
     });
     node.nodeValue = tempText;
 }
@@ -3212,7 +2928,8 @@ function x_setFillWindow(updatePage) {
     }
 
     $x_mainHolder.css({
-        "width"     :"100%",
+        // The right broder is cut off when embedding if setting to 100%
+		"width"     :"99.8%",
         "height"    :"100%"
     });
 
@@ -3261,6 +2978,12 @@ function x_insertCSS(href, func, disable, id, keep) {
                         $x_mainHolder.addClass("x_responsive");
                     }
                 }
+				else
+				{
+					if (disable == true) {
+						$(this).prop("disabled", true);
+					}
+				}
             }
             func();
         };
@@ -3536,3 +3259,846 @@ function x_isYouTubeVimeo(url) {
 		return false;
 	}
 }
+
+
+// strip html tags and return just text which is appropriate for screen reader
+function x_getAriaText(text) {
+	return $('<p>' + text + '</p>').text();
+}
+
+
+// ***** VARIABLES *****
+var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
+
+    // Declare local variables
+	var 	variables = [],
+			variableInfo = [],
+			variableErrors = [],
+			dynamicCalcs = [],
+			dynamicID = 1,
+
+
+	// function starts the calculation of variables set by author via the variables optional property
+	init = function (variableData) {
+
+		// clears arrays if they have previously been calculated
+		variables.splice(0, variables.length);
+		variableInfo.splice(0, variableInfo.length);
+		variableErrors.splice(0, variableErrors.length);
+
+		var i, j, k, temp, thisVar,
+			toCalc = [];
+		
+		variableInfo = variableData.split("||");
+
+		// get array of data for all uniquely named variables & sort them so empty strings etc. become undefined
+		for (i=0; i<variableInfo.length; i++) {
+			var temp = variableInfo[i].split("|");
+			thisVar = {name:$.trim(temp[0]), data:temp.slice(1), requires:[]}; // data = [fixed value, [random], min, max, step, decimal place, significant figure, trailing zero, [exclude], default]
+			if (thisVar.name != "" && variableInfo.filter(function(a){ return a.name == thisVar.name }).length == 0) {
+				for (j=0; j<thisVar.data.length; j++) {
+					if (j == 1 || j == 8) { // convert data (random/exclude) to array
+						thisVar.data.splice(j, 1, thisVar.data[j].split(","));
+						for (k=0; k<thisVar.data[j].length; k++) {
+							temp = $.trim(thisVar.data[j][k]);
+							if (temp === "") {
+								thisVar.data[j].splice(k, 1);
+								k--;
+							} else {
+								thisVar.data[j].splice(k, 1, temp);
+							}
+						}
+					} else {
+						temp = $.trim(thisVar.data[j]);
+						if (temp === "") {
+							temp = undefined;
+						}
+						thisVar.data.splice(j, 1, temp);
+					}
+				}
+
+				variableInfo.splice(i, 1, thisVar);
+				toCalc.push(i);
+
+			} else {
+				variableInfo.splice(i, 1);
+				i--;
+			}
+		}
+		
+		calcVariables(toCalc);
+	},
+
+
+	// Check if we have any variables to deal with
+	exist = function () {
+		return variables.length > 0;
+	},
+
+
+	calcVariables = function (toCalc) {
+		var lastLength, checkDefault,
+			thisVar, i;
+
+		// goes through all variables and attempts to calculate their value
+		// may loop several times if variables require other variable values to be ready before calculating their value
+		// stops when no. var values calculated is no longer increasing - either all done or some vars can't be calculated (circular calculations or referencing non-existant vars)
+		while (toCalc.length > 0 && (toCalc.length != lastLength || checkDefault == true)) {
+			lastLength = toCalc.length;
+
+			for (i=0; i<toCalc.length; i++) {
+				thisVar = calcVar(variableInfo[toCalc[i]], false, checkDefault);
+				if (thisVar.ok == true) {
+					thisVar.requiredBy = [];
+					variables.push(thisVar);
+					toCalc.splice(i,1);
+					i--;
+					if (thisVar.default == true) {
+						checkDefault = false;
+					}
+				} else if (thisVar.ok == false) {
+					variableErrors.push(thisVar);
+					toCalc.splice(i,1);
+					i--;
+				}
+
+				if (i + 1 == toCalc.length && toCalc.length == lastLength) {
+					checkDefault = checkDefault == true ? false : true;
+				}
+			}
+		}
+
+		for (i=0; i<toCalc.length; i++) {
+			thisVar = variableInfo[toCalc[i]];
+			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "undef", "References an undefined variable");
+			variableErrors.push(thisVar);
+			toCalc.splice(i,1);
+			i--;
+		}
+
+		if ($("#x_authorSupportMsg").length > 0 && (variables.length > 0 || variableErrors.length > 0)) {
+			$('.x_varMsg').remove();
+			$("#x_authorSupportMsg p").append('<span class="x_varMsg"></br>' + '<a onclick="XENITH.VARIABLES.showVariables()" href="javascript:void(0)" style="color:red">' + x_getLangInfo(x_languageData.find("authorVars")[0], "label", "View variable data") + '</a></span>');
+		}
+	},
+
+
+	// function calculates the value of any author set variables
+	calcVar = function (thisVar, recalc, checkDefault) {
+		thisVar.ok = undefined;
+
+		// calculate min / max / step values
+		var data = {min:thisVar.data[2], max:thisVar.data[3], step:thisVar.data[4]},
+			exclude = [], index;
+
+		for (var key in data) {
+			if (Object.prototype.hasOwnProperty.call(data, key)) {
+				// check for use of other variables & keep track of which are required
+				if (data[key] != undefined && ((thisVar.data[0] == undefined && thisVar.data[1].length == 0) || key != "step")) {
+					var info = getVarValues(data[key], thisVar.name);
+					data[key] = info[0];
+					if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+
+					thisVar.ok = info[2];
+					if (thisVar.ok != true) { // a variable needed doesn't exist / hasn't been calculated yet
+						break;
+					} else {
+						data[key] = Number(data[key]);
+					}
+				}
+			}
+		}
+
+		// calculate exclude values
+		if ((thisVar.ok == true || thisVar.ok == undefined) && thisVar.data[8].length > 0) {
+			exclude = thisVar.data[8].slice();
+			// check for use of other variables & keep track of which are required
+			for (var i=0; i<exclude.length; i++) {
+				var info = getVarValues(exclude[i], thisVar.name);
+				exclude.splice(i, 1, info[0]);
+				if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+
+				thisVar.ok = info[2];
+				if (info[2] != true) {  // a variable needed doesn't exist / hasn't been calculated yet
+					break;
+
+				} else if (typeof exclude[i] === "string" && exclude[i].indexOf("&&") != -1) {
+					// it's a range e.g. -2<&&<2 or -2<=&&<=2
+					var temp = exclude[i].split("&&").filter(function (a) { return a.indexOf("<") > -1 || a.indexOf(">") > -1; });
+					if (temp.length == 2) {
+						temp.splice(0, 1, temp[0] + "[" + thisVar.name + "]");
+						temp.splice(1, 1, "[" + thisVar.name + "]" + temp[1]);
+						exclude.splice(i, 1, temp);
+					}
+				}
+			}
+		}
+
+		// no missing dependancies so far
+		if (thisVar.ok == true || thisVar.ok == undefined) {
+
+			if (data.min != undefined && data.max != undefined && data.min > data.max) {
+				// fail because min > max
+				thisVar.ok = false;
+				thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "minMax", "min > max") + " (" + data.min + " > " + data.max + ")";
+
+			} else if (thisVar.data[0] != undefined || thisVar.data[1].length > 0) {
+				if (thisVar.data[0] != undefined) {
+					// FIXED VALUE
+					thisVar.type = "fixed";
+					thisVar.value = thisVar.data[0];
+
+					// check for use of other variables & keep track of which are required
+					var info = getVarValues(thisVar.value, thisVar.name);
+					thisVar.value = info[0];
+					if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+					thisVar.ok = info[2];
+
+				} else if (thisVar.data[1].length > 0) {
+					// RANDOM FROM LIST
+					thisVar.type = "random";
+
+					index = Math.floor(Math.random()*thisVar.data[1].length);
+					thisVar.value = thisVar.data[1][index];
+
+					// check for use of other variables & keep track of which are required
+					var info = getVarValues(thisVar.value, thisVar.name);
+					thisVar.value = info[0];
+					if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+					thisVar.ok = info[2];
+
+				}
+
+				if (thisVar.ok == true) {
+					if (data.min != undefined && data.min > thisVar.value) {
+						// fail because value < min
+						if (thisVar.type == "random") {
+							thisVar.ok = "retry";
+						} else {
+							thisVar.ok = false;
+						}
+						thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "valueMin", "value < min") + " (" + thisVar.value + " < " + data.min + ")";
+
+					} else if (data.max != undefined && data.max < thisVar.value) {
+						// fail because value > max
+						if (thisVar.type == "random") {
+							thisVar.ok = "retry";
+						} else {
+							thisVar.ok = false;
+						}
+						thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "valueMax", "value > max") + " (" + thisVar.value + " > " + data.max + ")";
+					}
+				}
+
+			} else if (data.min != undefined || data.max != undefined) { // from max & min
+				// RANDOM BETWEEN MIN & MAX VALUES
+				thisVar.type = "minMax";
+
+				// uses defaults of min=0 & max=100 if only min or max are set
+				if (data.min == undefined) {
+					data.min  = 0;
+				} else if (data.max == undefined) {
+					data.max = 100;
+				}
+
+				// use default of 1 for step
+				if (data.step == undefined) {
+					data.step = 1;
+				}
+
+				var maxDecimal = Math.max(Math.floor(data.min) === data.min ? 0 : data.min.toString().split(".")[1].length || 0, Math.floor(data.step) === data.step ? 0 : data.step.toString().split(".")[1].length || 0);
+				thisVar.value = Math.floor(Math.random()*(((data.max - data.min) / data.step) + 1)) * data.step + data.min;
+				if (thisVar.value > data.max) { thisVar.value = thisVar.value - data.step; } // can be over max if step doesn't take to exact max number - adjust for this
+				thisVar.value = thisVar.value.toFixed(maxDecimal); // forces correct decimal num - should work without this but occasionally it ends up with e.g. 1.1999999999999.... instead of 1.2
+				thisVar.ok = true;
+
+			} else if (thisVar.type == undefined) {
+				thisVar.ok = false;
+				thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "none", "No variable data");
+			}
+		}
+
+		if (thisVar.ok == true && $.isNumeric(Number(thisVar.value))) {
+			// to significant figure
+			if ($.isNumeric(Number(thisVar.data[6]))) {
+				thisVar.value = Number(thisVar.value).toPrecision(Number(thisVar.data[6])).includes('e') ? parseFloat(Number(thisVar.value).toPrecision(Number(thisVar.data[6]))) : Number(thisVar.value).toPrecision(Number(thisVar.data[6]));
+			}
+			// to decimal place
+			if ($.isNumeric(Number(thisVar.data[5]))) {
+				thisVar.value = Number(thisVar.value).toFixed(Number(thisVar.data[5]));
+				if (thisVar.data[7] != "true") {
+					// remove trailing zeros
+					thisVar.value = Number(thisVar.value);
+				}
+			}
+		}
+
+		// check value isn't one that should be excluded
+		if (thisVar.ok == true) {
+			for (var i=0; i<exclude.length; i++) {
+				var clash = false;
+				if (typeof exclude[i] == "number") {
+					if (exclude[i] == thisVar.value) {
+						clash = true;
+					}
+
+				// it's an exclude range
+				} else if (typeof exclude[i] == "object") {
+					for (var j=0; j<exclude[i].length; j++) {
+						exclude[i].splice(j, 1, exclude[i][j].replace("[" + thisVar.name + "]", thisVar.value));
+					}
+					if (eval(exclude[i][0]) && eval(exclude[i][1])) {
+						clash = true;
+					}
+				}
+
+				if (clash == true) {
+					if (thisVar.type == "fixed") {
+						thisVar.ok = false;
+						thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "exclude", "{n} is excluded").replace("{n}", thisVar.value);
+					} else {
+						thisVar.ok = "retry";
+						thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "exclude", "{n} is excluded").replace("{n}", thisVar.value);
+					}
+					break;
+				}
+			}
+
+		} else if (thisVar.ok == false && thisVar.info == undefined) {
+			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "circular", "Circular variable reference");
+		}
+
+		// only retry random if there's a value that hasn't already failed
+		if (thisVar.ok == "retry" && thisVar.type == "random") {
+			thisVar.data[1].splice(index, 1);
+			if (thisVar.data[1].length == 0) {
+				thisVar.ok = false;
+				thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "none", "All possible values are excluded or fall outside the min & max range");
+			}
+		}
+
+		// retry multiple times to see if we can get a valid value
+		if (thisVar.ok == "retry") {
+			var attempts = 100;
+
+			if (recalc != true) {
+				var counter = 0;
+				do {
+					thisVar = calcVar(thisVar, true);
+					counter++;
+				} while (counter < attempts && thisVar.ok == "retry");
+
+				if (thisVar.ok == "retry") {
+					thisVar.ok = false;
+					thisVar.info = " " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "none2", "{n} attempts have not returned an accepted value").replace("{n}", attempts);
+				} else if (thisVar.ok == true) {
+					thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "attempts", "{n} attempts to calculate a valid value").replace("{n}", (counter + 1));
+				}
+			}
+		}
+
+		// fallback to default
+		if (thisVar.data[9] != undefined && (thisVar.ok == false || checkDefault == true)) {
+			try {
+				var sum = eval(thisVar.data[9]);
+				thisVar.value = sum;
+			} catch (e) {
+				thisVar.value = thisVar.data[9];
+			}
+			thisVar.requiredBy = [];
+			thisVar.default = true;
+			thisVar.ok = true;
+			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "default", "Fallback to default value");
+		}
+		
+		return thisVar;
+	},
+
+	 getVariable = function(name) {
+		for (var i=0; i<variables.length; i++)
+		{
+			if (variables[i].name == name)
+				return variables[i].value;
+		}
+		return null;
+	},
+
+	// function updates a variable update
+	setVariable = function (name, value) {
+		var dependants;
+
+		for (var i=0; i<variables.length; i++) {
+			if (variables[i].name == name) {
+				variables[i].value = x_checkDecimalSeparator(value, true);
+				dependants = variables[i].requiredBy;
+				break;
+			}
+		}
+		
+		return dependants;
+	},
+
+	// function updates all variables on screen with the current value
+	updateVariable = function () {
+		
+		for (var i=0; i<$('.x_var').length; i++) {
+			
+			var $thisVarSpan = $($('.x_var')[i]),
+				classes = $thisVarSpan.attr('class').split(' '),
+				varName;
+			
+			for (var j=0; j<classes.length; j++) {
+				
+				if (classes[j].indexOf('x_var_') == 0) {
+					varName = classes[j].substring(6);
+					break;
+				}
+			}
+			
+			if (varName != '') {
+				for (var j=0; j<variables.length; j++) {
+					
+					if (variables[j].name == varName) {
+						$thisVarSpan.html(x_checkDecimalSeparator(variables[j].value));
+						break;
+					}
+				}
+			}
+		}
+	},
+
+	// function gets values of other variables needed for calculation and evals the value when everything's ready
+	getVarValues = function (thisValue, thisName) {
+		var requires = [];
+
+		if (thisValue.indexOf("[" + thisName + "]") != -1) {
+			return [thisValue, requires, false];
+		}
+
+		if (String(thisValue).indexOf("[") != -1) {
+			for (var i=0; i<variables.length; i++) {
+				if (thisValue.indexOf("[" + variables[i].name + "]") != -1) {
+					// keeps track of what other variables reference this so they can be recalculated together if needed
+					if (variables[i].requiredBy.indexOf(thisName) == -1) {
+						variables[i].requiredBy.push(thisName);
+					}
+					requires.push(variables[i].name);
+
+					RegExp.esc = function(str) {
+						return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+					};
+					var regExp = new RegExp(RegExp.esc("[" + variables[i].name + "]"), "g");
+					thisValue = thisValue.replace(regExp, variables[i].value);
+					if (thisValue.indexOf("[") == -1) { break; }
+				}
+			}
+		}
+
+		try {
+			var sum = eval(thisValue);
+			return [sum, requires, true];
+		} catch (e) {
+			if (thisValue.indexOf("[") == -1) {
+				return [thisValue, requires, true]; // string
+			} else {
+				return [thisValue, requires, "variable"];
+			}
+		}
+	},
+
+
+	// function displays author set variables in popup when in author support mode
+	showVariables = function () {
+		var varHeadings = ["Name", "Fixed Value", "Random", "Min", "Max", "Step", "DP", "SF", "Trailing Zeros", "Exclude", "Default"];
+		var pageText = '<html><body><style>table, tr, td, th { border: 1px solid black; text-align: left; } th { background-color: LightGray; } table { border-collapse: collapse; min-width: 100%; } th, td { padding: 1em; width: ' + (100/(varHeadings.length+1)) + '%; } .alert { color: red; } td:nth-child(1), td:nth-child(2) { font-weight: bold; } </style><table>',
+			cells, temp, infoTxt;
+
+		for (var i=0; i<varHeadings.length; i++) {
+			pageText += '<th>' + x_getLangInfo(x_languageData.find("authorVars").find("item")[i], false, varHeadings[i]) + '</th>';
+			if (i == 0) {
+				pageText += '<th>' + x_getLangInfo(x_languageData.find("authorVars").find("item")[varHeadings.length], false, "Value") + '</th>';
+			}
+		}
+
+		for (var i=0; i<variables.length; i++) {
+			cells = "";
+			for (var j=0; j<variables[i].data.length; j++) {
+				temp = variables[i].data[j] === undefined ? "" : variables[i].data[j];
+				cells += '<td>' + temp + '</td>';
+			}
+			infoTxt = variables[i].info == undefined ? "" : '<br/><span class="alert">' + variables[i].info + '</span>';
+			pageText += '<tr><td>' + variables[i].name + '</td><td>' + variables[i].value + infoTxt + '</td>' + cells + '</tr>';
+		}
+
+		for (var i=0; i<variableErrors.length; i++) {
+			cells = "";
+			for (var j=0; j<variableErrors[i].data.length; j++) {
+				temp = variableErrors[i].data[j] === undefined ? "" : variableErrors[i].data[j];
+				cells += '<td>' + temp + '</td>';
+			}
+			pageText += '<tr style="background-color: LightGray;"><td>' + variableErrors[i].name + '</td><td>' + variableErrors[i].info + '</td>' + cells + '</tr>';
+		}
+
+		pageText += '</table></body></html>';
+
+		window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12px">' + pageText + '</p>');
+	},
+	
+	
+	replaceVariables = function (tempText, decimalSeparator) {
+
+		tempText = tempText.replace(
+			new RegExp('\\[\\{(.*?)\\}(?:\\s|&nbsp;)*(?:(?:\\,(?:\\s|&nbsp;)*?(\\d+?)?))?\\]|<span class="x_var x_dyn_(.*?)">(?:.*?)</span>', 'g'),
+			function (match, contents, round, id) {
+				if (contents) {
+					id = dynamicID++;
+					dynamicCalcs[id] = [contents, round];
+				}
+
+				var result = variables.reduce(function(accumulator, variable) {
+					return accumulator.replace(new RegExp('\\[' + variable.name + '\\]', 'g'), x_checkDecimalSeparator(variable.value));
+				}, dynamicCalcs[id][0]);
+				round = dynamicCalcs[id][1];
+				
+				try {
+					var ev = eval( result );
+					result = Math.round(
+						ev * (round = Math.pow(10, round ? round  : 16))
+					) / round;
+				}
+				catch (e) {}
+				
+				$('.x_dyn_' + id).html(x_checkDecimalSeparator(result));
+				return '<span class="x_var x_dyn_' + id + '">' + result + '</span>';
+			}
+		);
+		
+		for (var k=0; k<variables.length; k++) {
+			// if it's first attempt to replace vars on this page look at vars in image tags first
+			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
+			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
+				var $tempText = $(tempText);
+				for (var m=0; m<$tempText.find('img').length; m++){
+					var tempImgTag = $tempText.find('img')[m].outerHTML,
+						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+					tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
+					$($tempText.find('img')[m]).replaceWith(tempImgTag);
+				}
+				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
+			}
+			
+			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
+			var regExp = new RegExp('\\[' + variables[k].name + '\\]|<span class="x_var x_var_' + variables[k].name + '">(.*?)</span>', 'g');
+			tempText = tempText.replace(regExp, '<span class="x_var x_var_' + variables[k].name + '">' + x_checkDecimalSeparator(variables[k].value) + '</span>');
+			
+			// replace with a text input field which the end user can use to set the value of the variable
+			regExp = new RegExp('\\[=' + variables[k].name + '\\]', 'g');
+			tempText = tempText.replace(regExp, '<input type="text" name="' + variables[k].name + '" class="x_varInput">');
+			
+			// this format of the text input field has specified a default value
+			regExp = new RegExp('\\[=' + variables[k].name + ':(.*?)\\]', 'g');
+			
+			var matches = tempText.match(regExp);
+			if (matches != null) {
+				for (var m=0; m<matches.length; m++) {
+					tempText = tempText.replace(matches[m], '<input type="text" name="' + variables[k].name + '" class="x_varInput" placeholder="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '">');
+				}
+			}
+		}
+		
+		// replace with a submit button which will submit all the new variable values entered on the page
+		var submitBtnLabel = x_getLangInfo(x_languageData.find("submitBtnLabel")[0], "label", "Submit");
+		var regExp = new RegExp('\\[\\+submit\\]', 'g');
+		tempText = tempText.replace(regExp, '<input type="submit" value="' + submitBtnLabel + '" class="x_varSubmit">');
+		
+		// this format of the submit button has specified a default value
+		regExp = new RegExp('\\[\\+submit:(.*?)\\]', 'g');
+		
+		var matches = tempText.match(regExp);
+		if (matches != null) {
+			for (var m=0; m<matches.length; m++) {
+				tempText = tempText.replace(matches[m], '<input type="submit" value="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '" class="x_varSubmit">');
+			}
+		}
+		
+		return tempText;
+	},
+
+	handleSubmitButton = function () {
+		// is there a submit button & at least one variable input?
+		if ($('.x_varSubmit').length > 0 && $('.x_varInput').length > 0) {
+			$('.x_varSubmit').click(function() {
+				var dependants = [],
+					changed = [],
+					i, j, k;
+				
+				// update the variables changed via text fields
+				for (i=0; i<$('.x_varInput').length; i++) {
+					if ($('.x_varInput')[i].value != '') {
+						changed.push($('.x_varInput')[i].name);
+						var temp = setVariable($('.x_varInput')[i].name, $('.x_varInput')[i].value);
+						if (temp.length > 0) {
+							$.merge(dependants, temp);
+						}
+					}
+				}
+				
+				// as well as updating any variables that have been directly changed there may be dependants of those variables to change too
+				if (dependants.length > 0) {
+					dependants = dependants.filter(function(a){if (!this[a]) {this[a] = 1; return a;}},{});
+					
+					for (i=0; i<dependants.length; i++) {
+						for (j=0; j<variables.length; j++) {
+							if (dependants[i] == variables[j].name) {
+								for (k=0; k<variables[j].requiredBy.length; k++) {
+									if ($.inArray(variables[j].requiredBy[k], dependants) == -1) {
+										dependants.push(variables[j].requiredBy[k]);
+									}
+								}
+							}
+						}
+					}
+					
+					var toCalc = [];
+					for (i=0; i<variableInfo.length; i++) {
+						if ($.inArray(variableInfo[i].name, dependants) > -1) {
+							changed.push(variableInfo[i].name);
+							toCalc.push(i);
+							
+							// clear current variable value
+							for (k=0; k<variables.length; k++) {
+								if (variableInfo[i].name == variables[k].name) {
+									variables.splice(k,1);
+									break;
+								}
+							}
+						}
+					}
+					
+					calcVariables(toCalc);
+				}
+				
+				// should this page be immediately updated to show changes to the variable values?
+				if (x_currentPageXML.getAttribute('varUpdate') != 'false') {
+					for (i=0; i<variables.length; i++) {
+						for (j=0; j<changed.length; j++) {
+							if (variables[i].name == changed[j]) {
+								$('.x_var_' + variables[i].name).html(x_checkDecimalSeparator(variables[i].value));
+								
+								// updates xml for page otherwise text that isn't on screen yet won't be updated
+								x_findText(x_currentPageXML, false, ['variables']);
+							}
+						}
+					}
+				}
+				
+				// submit confirmation message
+				if (changed.length > 0) {
+					var submitConfirmMsg = x_currentPageXML.getAttribute('varConfirm') != undefined && x_currentPageXML.getAttribute('varConfirm') != '' ? x_currentPageXML.getAttribute('varConfirm') : x_getLangInfo(x_languageData.find("submitConfirmMsg")[0], "label", "Your answers have been submitted");
+					x_openDialog("msg", '', x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"), null, submitConfirmMsg);
+				}
+			});
+		}
+	};
+	
+	// make some public methods
+    self.init = init;
+	self.exist = exist;
+	self.handleSubmitButton = handleSubmitButton;
+	self.replaceVariables = replaceVariables;
+	self.showVariables = showVariables;
+	self.updateVariable = updateVariable;
+
+return parent; })(jQuery, XENITH || {});
+
+
+
+
+// ***** GLOSSARY *****
+var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
+
+    // Declare local variables
+	var 	x_glossary      = [],
+			$x_glossaryHover,
+
+
+	// function starts the calculation of variables set by author via the variables optional property
+	init = function () {
+		x_dialogInfo.push({type:'glossary', built:false});
+
+		var i, len, item, word,
+			items = x_params.glossary.split("||");
+
+		for (i=0, len=items.length; i<len; i++) {
+			item = items[i].split("|"),
+			word = {word:item[0], definition:item[1]};
+
+			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
+				x_glossary.push(word);
+			}
+		}
+		if (x_glossary.length > 0) {
+			x_glossary.sort(function(a, b){ // sort by size
+				return a.word.length > b.word.length ? -1 : 1;
+			});
+
+			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
+			$("#x_glossaryBtn")
+				.button({
+					icons: {
+						primary: "x_glossary"
+					},
+					label:	x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
+					text:	false
+				})
+				.attr("aria-label", $("#x_glossaryBtn").attr("title") + " " + x_params.dialogTxt)
+				.click(function() {
+					x_openDialog(
+						"glossary",
+						x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"),
+						x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"),
+						null,
+						null,
+						function () {
+							$("#x_glossaryBtn")
+								.blur()
+								.removeClass("ui-state-focus")
+								.removeClass("ui-state-hover");
+						}
+					);
+				});
+
+			$x_pageDiv
+				.on("mouseenter", ".x_glossary", function(e) {
+					$(this).trigger("mouseleave");
+
+					var $this = $(this),
+						myText = $this.text().trim(),
+						myDefinition, i, len;
+
+					// Rip out the title attribute
+					$this.data('title', $this.attr('title'));
+					$this.attr('title', '');
+
+					for (i=0, len=x_glossary.length; i<len; i++) {
+						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().trim().toLowerCase()) {
+							myDefinition = "<b>" + myText + ":</b><br/>"
+							if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
+								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
+							} else {
+								myDefinition += x_glossary[i].definition;
+							}
+						}
+					}
+
+					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
+
+					// Queue reparsing of MathJax - fails if no network connection
+					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+
+					$x_glossaryHover = $("#x_glossaryHover");
+					$x_glossaryHover.css({
+						"left"	:$(this).offset().left + 20,
+						"top"	:$(this).offset().top + 20
+					});
+					$x_glossaryHover.fadeIn("slow");
+					if (x_browserInfo.touchScreen == true) {
+						$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
+					}
+				})
+				.on("mouseleave", ".x_glossary", function(e) {
+					$x_mainHolder.off("click.glossary");
+
+					if ($x_glossaryHover != undefined) {
+						$x_glossaryHover.remove();
+					}
+
+					// Put back the title attribute
+					$this = $(this);
+					$this.attr('title', $this.data('title'));
+				})
+				.on("mousemove", ".x_glossary", function(e) {
+					var leftPos,
+						topPos = e.pageY + 20;
+
+					if (x_browserInfo.mobile == false) {
+						leftPos = e.pageX + 20;
+						if (leftPos + $x_glossaryHover.width() > $x_mainHolder.offset().left + $x_mainHolder.width()) {
+							leftPos = e.pageX - $x_glossaryHover.width() - 20;
+						}
+						if (topPos + $x_glossaryHover.height() > $x_mainHolder.offset().top + $x_mainHolder.height()) {
+							topPos = e.pageY - $x_glossaryHover.height() - 20;
+						}
+					} else {
+						leftPos = ($x_mobileScroll.width() - $x_glossaryHover.width()) / 2;
+						if (topPos + $x_glossaryHover.height() > $x_mobileScroll.height()) {
+							topPos = $(this).offset().top - $x_glossaryHover.height() - 10;
+						}
+					}
+					$x_glossaryHover.css({
+						"left"	:leftPos,
+						"top"	:topPos
+					});
+				})
+				.on("focus", ".x_glossary", function(e) { // called when link is tabbed to
+					$(this).trigger("mouseenter");
+				})
+				.on("focusout", ".x_glossary", function(e) {
+					$(this).trigger("mouseleave");
+				});
+		}
+	},
+	
+	// glossary page generation
+	buildPage = function() {
+		var tableData = '<table class="glossary">';
+			
+		var x_glossary_temp = x_glossary.slice(0);
+		x_glossary.sort(function(a, b){ // sort alphabetically
+			return a.word.toLowerCase() < b.word.toLowerCase() ? -1 : 1;
+		});
+
+		for (var i=0; i<x_glossary.length; i++) {
+			tableData += "<tr><td>" + x_glossary[i].word + "</td><td>" + x_glossary[i].definition + "</td></tr>";
+		}
+		
+		tableData += "</table>";
+		$("#glossaryItems").append(tableData);
+		
+		x_pageContentsUpdated();
+		
+		// add class for shaded rows rather than using css selector as doesn't work for IE8 & below
+		$("#glossaryItems .glossary tr:nth-child(even)").addClass("shaded");
+	},
+	
+	insertText = function(tempText, exclude, list) {
+		// check text for glossary words - if found replace with a link
+		if (x_glossary.length > 0 && (exclude == undefined || (exclude == false && list.indexOf("glossary") > -1) || (exclude == true && list.indexOf("glossary") == -1))) {
+			for (var k=0, len=x_glossary.length; k<len; k++) {
+				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
+				tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+			}
+			for (var k=0, len=x_glossary.length; k<len; k++) {
+				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
+				//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
+				tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+			}
+		}
+		
+		return tempText;
+	},
+	
+	touchStartHandler = function() {
+		$x_mainHolder.off("click.glossary");
+		if ($x_glossaryHover != undefined) {
+			$x_glossaryHover.remove();
+		}
+	};
+		
+	// make some public methods
+	self.init = init;
+    self.buildPage = buildPage;
+	self.insertText = insertText;
+	self.touchStartHandler = touchStartHandler;
+
+return parent; })(jQuery, XENITH || {});

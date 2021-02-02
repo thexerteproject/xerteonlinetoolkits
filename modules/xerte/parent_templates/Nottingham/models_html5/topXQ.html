@@ -307,7 +307,6 @@
 
 
             this.init = function () {
-
                 var hasExited = false;
 
                 this.weighting = 1.0;
@@ -370,6 +369,9 @@
 
                 var $attempts = $("#attempts");
                 var amountofTries = x_currentPageXML.getAttribute("amountOfTries");
+                if(amountofTries=== null){
+                    amountofTries =1;
+                }
                 $attempts.html(x_currentPageXML.getAttribute("attemptLabel")+ ": "+ amountofTries);
 
                 var elements = [];
@@ -391,8 +393,13 @@
                     amountOfAnswers = elements.length;
                 }
 
+                var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
+                if (answerFieldLabel === undefined | answerFieldLabel === null) {
+                    answerFieldLabel = "Answer";
+                }
                 for (i = 0; i < amountOfAnswers; i++) {
-                    $optionHolder.append('<div class="answer"><input class="input-answer" id="input-answer-'+i+'"/><span id="topXQ-result-' + i + '"></span></div>');
+                    var actualFieldLabel = answerFieldLabel + ' ' + (i+1);
+                    $optionHolder.append('<div class="answer"><input class="input-answer" id="input-answer-'+i+'" aria-label="'+actualFieldLabel+'"/><span id="topXQ-result-' + i + '"></span></div>');
                     j++;
                 }
                 var answers = [];

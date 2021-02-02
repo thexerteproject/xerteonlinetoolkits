@@ -98,7 +98,7 @@
 					$thisItem
 						.attr({
 							"href": "#item" + i + "_" + x_pageInfo[x_currentPage].linkID,
-							"aria-label": this.getAttribute("name") + instruction
+							"aria-label": x_getAriaText(this.getAttribute("name") + instruction)
 							})
 						.html(this.getAttribute("name"))
 						.data({
@@ -162,10 +162,14 @@
 									$infoHolder.fadeIn(function() {
 										$(this).html(infoString); // reloaded so aria-live works after fade
 										list.mediaLoad($infoHolder, thisItem, url);
+										
+										x_pageContentsUpdated();
 									});
 								}
 								
 								list.mediaLoad($infoHolder, this, url);
+								
+								x_pageContentsUpdated();
 							}
 						});
 				});

@@ -83,10 +83,10 @@ $esc6: $accent3;
 .panel4 {
   @include panel;
   background-color:$esc4;
-  color:$whiteorlightest;
+  color:$blackordarkest;
 }
 .panel4 a{
-  color:white !important;
+  color:black !important;
 }
 .panel5 {
   @include panel;
@@ -125,6 +125,7 @@ $esc6: $accent3;
 .highlight4 {
   @include highlight;
   //color: $esc4;
+  color: $blackordarkest;
   border-color: $esc4;
 }
 .highlight5 {
@@ -249,7 +250,7 @@ blockquote:after {
 }
 .speech-bubble4 {
   background: $esc4;
-  color:white;
+  color:black;
 }
 
 .speech-bubble4:after {
@@ -272,8 +273,13 @@ blockquote:after {
 }
 
 //***make links in speech bubbles white and underlined by default***//
-.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble4 a, .speech-bubble5 a, .speech-bubble6 a{
+.speech-bubble1 a, .speech-bubble2 a, .speech-bubble3 a, .speech-bubble5 a, .speech-bubble6 a{
   color:white !important;
+  text-decoration:underline;
+}
+//***make links in speech bubbles white and underlined by default***//
+.speech-bubble4 a{
+  color:black !important;
   text-decoration:underline;
 }
 

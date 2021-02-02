@@ -36,7 +36,7 @@
 		}
 		
 		this.isgdJSON = function (response) {
-			if (response.shorturl && response.shorturl != '') {  console.log(response.shorturl);
+			if (response.shorturl && response.shorturl != '') {
 				link = "<a target='_blank' href=" + response.shorturl + ">" + response.shorturl + "</a>";
 				$("#shorturltodisplay").html(link);
 			}
@@ -82,17 +82,17 @@
 			// Create the QRcode
 			var qrcode = new QRCode(document.getElementById("qrcode"), size);
 			qrcode.makeCode(x_currentPageXML.getAttribute("url"));
-			QRcode.loadAudio(true);
-
+			
 			$('#qrcode img')
-				.attr({
-					"alt":	x_currentPageXML.getAttribute("tip")
-				});
+				.attr({ "alt":	x_currentPageXML.getAttribute("tip") })
+				.addClass('x_noLightBox');
+			
 			$('#qrcode')
 				.attr({
 					"title":	x_currentPageXML.getAttribute("tip")
 				});
-
+			
+			QRcode.loadAudio(true);
 		}
 		
 		this.loadAudio = function(firstLoad) {

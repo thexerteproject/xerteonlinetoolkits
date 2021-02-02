@@ -310,6 +310,7 @@
 			}
 
 			// draw legend
+      var maxWidth = 50;
 			for (var i=0; i<allSeries[0].data.length; i++) {
 				canvas.fillStyle = colours[i];
 				canvas.fillRect(-50, 10 + i * 20, 12, 12); // xywh
@@ -317,6 +318,7 @@
 				canvas.textBaseline = "top";
 				canvas.fillStyle = txtColour;
 				canvas.fillText(allSeries[0].data[i].x, -30, 10 + i * 20);
+        maxWidth = Math.max(maxWidth, canvas.measureText(allSeries[0].data[i].x).width);
 			}
 
 			// draw chart
@@ -327,10 +329,10 @@
 
 			var	theta,
 				exTheta = 0,
-				diameter = Math.min(availW - 70, availH - 20);
+				diameter = Math.min(availW - 70 - maxWidth, availH - 20);
 			for (var i=0; i<allSeries[0].data.length; i++) { // draw each segment
 				theta = Number(allSeries[0].data[i].y) / total * 360;
-				this.drawWedge(canvas, diameter / 2, diameter / 2 + 10, diameter / 2, theta, exTheta, colours[i]);
+				this.drawWedge(canvas, diameter / 2 + maxWidth, diameter / 2 + 10, diameter / 2, theta, exTheta, colours[i]);
 				exTheta += theta;
 			}
 		}

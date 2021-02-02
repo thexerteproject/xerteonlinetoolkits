@@ -23,7 +23,7 @@
 <!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
 <!--[if lt IE 9]><html class="no-js lt-ie9"><![endif]-->
 <!--[if IE 9]><html class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<!--[if (gt IE 9)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="%LANGUAGE%"><!--<![endif]-->
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8">
@@ -43,12 +43,14 @@
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/smoothness/jquery-ui-1.8.18.custom.css%VERSION_PARAM%" type="text/css" />
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/themeStyles.css%VERSION_PARAM%" type="text/css" />
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/mainStyles.css%VERSION_PARAM%" type="text/css" />
+	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/fonts.css%VERSION_PARAM%" type="text/css" />
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/mediaelement/mediaelementplayer.min.css%VERSION_PARAM%" />
     <link rel="stylesheet" href="%TEMPLATEPATH%common_html5/js/xapidashboard/lib/nv.d3.css%VERSION_PARAM%" />
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/js/featherlight/featherlight.min.css%VERSION_PARAM%" />
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/js/featherlight/featherlight.gallery.min.css%VERSION_PARAM%" />
 	<link href="%TEMPLATEPATH%common_html5/font-awesome/css/font-awesome.min.css%VERSION_PARAM%" rel="stylesheet">
-    <link href="%TEMPLATEPATH%common_html5/font-awesome-4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="%TEMPLATEPATH%common_html5/fontawesome-5.6.3/css/all.min.css%VERSION_PARAM%" rel="stylesheet">
+	<link href="%TEMPLATEPATH%common_html5/fontawesome-5.6.3/css/v4-shims.min.css%VERSION_PARAM%" rel="stylesheet">
     %OFFLINESCRIPTS%
 
 </head>
@@ -59,7 +61,7 @@
 
 		<div id="x_mobileScroll">
 			<div id="x_headerBlock" role="banner">
-				<img class="x_icon" src="%TEMPLATEPATH%common_html5/logo.png"/>
+				<img class="x_icon" src="%TEMPLATEPATH%common_html5/logo.png" alt=""/>
 				<div>
 					<h1> </h1>
 					<h2 aria-live="assertive"> </h2>
@@ -101,7 +103,8 @@
 
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/jquery.ui.touch-punch.min.js%VERSION_PARAM%"></script>			<!-- allows jQuery components to work on touchscreen devices -->
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/imageLens.js%VERSION_PARAM%"></script>							<!-- for creating magnifiers on images -->
-	<script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/gray-gh-pages/js/jquery.gray.min.js%VERSION_PARAM%"></script>	<!-- for greyscale on images -->
+	<script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/gray-gh-pages/js/jquery.gray.min.js%VERSION_PARAM%"></script>	    <!-- for greyscale on images -->
+	<script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/jquery.imagemapster.js%VERSION_PARAM%"></script>
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/mediaelement/mediaelement-and-player.js%VERSION_PARAM%"></script>
 	<!-- for lightboxes and lightbox gallery-->
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/featherlight/featherlight.min.js%VERSION_PARAM%"></script>
@@ -116,41 +119,16 @@
     <script type="text/javascript" async src="%MATHJAXPATH%MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
 
     <script type="text/javascript">
-        function getUrlVars() {
-            var vars = [], hash;
-            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/);
-            for(var i = 0; i < hashes.length; i++)
-            {
-                hash = hashes[i].split('=');
-                vars.push(hash[0]);
-                vars[hash[0]] = hash[1];
-            }
-            return vars;
-        }
         var FileLocation = "%XMLPATH%";
         var x_templateLocation = "%TEMPLATEPATH%";
         var x_projectXML = "%XMLFILE%";
         var x_themePath = "%THEMEPATH%";
         var x_TemplateId = "%TEMPLATEID%";
-        var x_startPage = {type : "page", ID : "1"};
-		if (getUrlVars()['resume'])
-        {
-            x_startPage = {type : "resume", ID : getUrlVars()['resume']};
-        }
-        else if (getUrlVars()['linkID'])
-        {
-            x_startPage = {type : "linkID", ID : getUrlVars()['linkID']};
-        }
-        else if (getUrlVars()['pageID'])
-        {
-            x_startPage = {type : "pageID", ID : getUrlVars()['pageID']};
-        }
-        else if (getUrlVars()['page'])
-        {
-            x_startPage = {type : "page", ID : getUrlVars()['page']};
-        }
         var x_youtube_api_key = "%YOUTUBEAPIKEY%";
 		var x_Version = "%VERSION%";
+		var x_lastUpdated = new Date("%LASTUPDATED%");
+		var localeoptions = { weekday: undefined, year: 'numeric', month: 'short', day: 'numeric' };
+		var x_lastUpdatedLocale = x_lastUpdated.toLocaleDateString("%LANGUAGE%", localeoptions);
     </script>
 </body>
 </html>

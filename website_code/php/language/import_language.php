@@ -44,17 +44,22 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
     if(!_is_writable($xerte_toolkits_site->import_path)) {
         _debug("{$xerte_toolkits_site->import_path} needs to be writeable. Cannot perform import");
-        echo IMPORT_LANGUAGE_FAILED . $lang_dir . $xerte_toolkits_site->import_path . IMPORT_LANGUAGE_WRITABLE;
+        echo IMPORT_LANGUAGE_FAILED . $xerte_toolkits_site->import_path . IMPORT_LANGUAGE_WRITABLE;
         exit(0);
     }
     if(!_is_writable($xerte_toolkits_site->root_file_path . "languages/")) {
         _debug("{$xerte_toolkits_site->root_file_path}  languages/ needs to be writeable. Cannot perform import");
-        echo IMPORT_LANGUAGE_FAILED . $lang_dir . $xerte_toolkits_site->root_file_path . "languages/" . IMPORT_LANGUAGE_WRITABLE;
+        echo IMPORT_LANGUAGE_FAILED . $xerte_toolkits_site->root_file_path . "languages/" . IMPORT_LANGUAGE_WRITABLE;
         exit(0);
     }
     if(!_is_writable($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/")) {
         _debug("{$xerte_toolkits_site->root_file_path}  modules/xerte/parent_templates/Nottingham/wizards/ needs to be writeable. Cannot perform import");
-        echo IMPORT_LANGUAGE_FAILED . $lang_dir . $xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . IMPORT_LANGUAGE_WRITABLE;
+        echo IMPORT_LANGUAGE_FAILED . $xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . IMPORT_LANGUAGE_WRITABLE;
+        exit(0);
+    }
+    if(!_is_writable($xerte_toolkits_site->root_file_path . "modules/site/parent_templates/site/wizards/")) {
+        _debug("{$xerte_toolkits_site->root_file_path}  modules/site/parent_templates/site/wizards/ needs to be writeable. Cannot perform import");
+        echo IMPORT_LANGUAGE_FAILED . $xerte_toolkits_site->root_file_path . "modules/site/parent_templates/site/wizards/" . IMPORT_LANGUAGE_WRITABLE;
         exit(0);
     }
 
@@ -84,6 +89,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
          * Look for the folders in the zip and move files accordingly
          */
         $nottingham_language_found = false;
+        $site_language_found = false;
         $xot_language_found = false;
 
         foreach($zip->compressedList as $x){
@@ -105,11 +111,24 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
             }
 
-            if((strpos($y,"wizards/")!==false)){
+            if((strpos($y,"Nottingham/")===0)){
 
                 $string = $zip->unzip($y, false, 0777);
 
-                $temp_array = array($y,$string,"wizards");
+                $temp_array = array(substr($y, 11),$string,"Nottingham");
+
+                array_push($file_data,$temp_array);
+                if ($lang_dir == null)
+                {
+                    $lang_dir = substr($y, 11, 5);
+                }
+                $nottingham_language_found = true;
+            }
+            elseif((strpos($y,"wizards/")!==false)){
+
+                $string = $zip->unzip($y, false, 0777);
+
+                $temp_array = array(substr($y,8),$string,"wizards");
 
                 array_push($file_data,$temp_array);
                 if ($lang_dir == null)
@@ -117,6 +136,19 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
                     $lang_dir = substr($y, 8, 5);
                 }
                 $nottingham_language_found = true;
+            }
+            if((strpos($y,"site/")===0)){
+
+                $string = $zip->unzip($y, false, 0777);
+
+                $temp_array = array(substr($y,5),$string,"site");
+
+                array_push($file_data,$temp_array);
+                if ($lang_dir == null)
+                {
+                    $lang_dir = substr($y, 5, 5);
+                }
+                $site_language_found = true;
             }
         }
         /*
@@ -133,6 +165,10 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
             mkdir($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $lang_dir, 0755, true);
         }
 
+        if ($site_language_found && !file_exists($xerte_toolkits_site->root_file_path . "modules/site/parent_templates/site/wizards/" . $lang_dir))
+        {
+            mkdir($xerte_toolkits_site->root_file_path . "modules/site/parent_templates/site/wizards/" . $lang_dir, 0755, true);
+        }
         /*
          * Put the files into the right folders
          */
@@ -164,9 +200,25 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
                 chmod($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0],0777);
 
+            }else if($file_to_create[2]=="Nottingham"){
+
+                $fp = fopen($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $file_to_create[0],"w");
+
+                fwrite($fp,$file_to_create[1]);
+
+                fclose($fp);
+
             }else if($file_to_create[2]=="wizards"){
 
-                $fp = fopen($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/" . $file_to_create[0],"w");
+                $fp = fopen($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $file_to_create[0],"w");
+
+                fwrite($fp,$file_to_create[1]);
+
+                fclose($fp);
+
+            }else if($file_to_create[2]=="site"){
+
+                $fp = fopen($xerte_toolkits_site->root_file_path . "modules/site/parent_templates/site/wizards/" . $file_to_create[0],"w");
 
                 fwrite($fp,$file_to_create[1]);
 

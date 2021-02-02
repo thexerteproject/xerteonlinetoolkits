@@ -54,13 +54,13 @@ $query_for_rss_templates = "select * from {$prefix}templatedetails, {$prefix}tem
 $params = array($_SESSION['toolkits_logon_id'], 'creator', 'co-author', 'true', 'true');
 $query_rss_response = db_query($query_for_rss_templates, $params);
 
-workspace_menu_create(50);
+workspace_menu_create(70);
 
-echo "<div style=\"float:left; position:relative; width:15%; height:20px;\">" . RSS_WORKSPACE_RSS . "</div><div style=\"float:left; position:relative; width:15%; height:20px;\">" . RSS_WORKSPACE_EXPORT . "</div>";
+echo "<div style=\"float:left; position:relative; width:15%; height:20px;\">" . RSS_WORKSPACE_RSS . "</div><div style=\"float:left; position:relative; width:10%; height:20px;\">" . RSS_WORKSPACE_EXPORT . "</div>";
 
 foreach($query_rss_response as $row_template_name) {
 
-    echo "<div style=\"float:left; position:relative; width:50%;\">" . str_replace("_","",$row_template_name['template_name']) . "</div><div style=\"float:left; position:relative; width:15%;\">";
+    echo "<div style=\"float:left; position:relative; width:70%;\">" . str_replace("_","",$row_template_name['template_name']) . "</div><div style=\"float:left; position:relative; width:15%;\">";
 
     if($row_template_name['rss']){
 
@@ -72,7 +72,7 @@ foreach($query_rss_response as $row_template_name) {
 
     }
 
-    echo "</div><div style=\"float:left; position:relative; width:15%;\">";
+    echo "</div><div style=\"float:left; position:relative; width:10%;\">";
     if($row_template_name['export']){
 
         echo " " . RSS_WORKSPACE_ON . " ";

@@ -332,6 +332,8 @@ if (!isset($_SESSION['XAPI_PROXY']))
             $headers = getallheaders();
             $cHeader = convertToCurl($headers);
 
+            _debug("Headers: " . print_r($headers, true));
+
             $sendHeaders = array();
 
             $ch = curl_init($url);
@@ -373,9 +375,12 @@ if (!isset($_SESSION['XAPI_PROXY']))
             curl_setopt($ch, CURLOPT_USERAGENT, isset($_GET['user_agent']) && $_GET['user_agent'] ? $_GET['user_agent'] : $_SERVER['HTTP_USER_AGENT']);
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
             //curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            if (isset($headers['X-Experience-API-Version']))
+            // Create a copy of headers with all lowercase keys
+            $lcheaders = array_change_key_case($headers);
+
+            if (isset($lcheaders['x-experience-api-version']))
             {
-                $sendHeaders[] = 'X-Experience-API-Version: ' . $headers['X-Experience-API-Version'];
+                $sendHeaders[] = 'X-Experience-API-Version: ' . $lcheaders['x-experience-api-version'];
             }
             curl_setopt($ch, CURLOPT_HTTPHEADER, $sendHeaders);
 

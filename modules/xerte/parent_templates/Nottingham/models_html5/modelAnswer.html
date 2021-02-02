@@ -50,12 +50,13 @@
 		};
 
         this.leavePage = function() {
-            if (tracked != true) {
+            if (this.tracked != true) {
                 this.finishTracking();
             }
         };
 
 		this.init = function() {
+			this.tracked = false;
 			// if language attributes aren't in xml will have to use english fall back
 			var instructA = x_currentPageXML.getAttribute("instructHeaderATxt");
 			if (instructA == undefined) {
@@ -78,8 +79,13 @@
 				exampleTxt = "The example answer was:"
 			}
 			var pageNo = x_currentPage;
-			if (x_pageInfo[0].type != "menu") {
-				pageNo++;
+			if (x_pageInfo[x_currentPage].standalone == true) {
+				// if the page is a standalone page then use the page name instead of page number
+				pageNo = "'" + x_currentPageXML.getAttribute("name") + "'";
+			} else {
+				if (x_pageInfo[0].type != "menu") {
+					pageNo++;
+				}
 			}
 			
 			$("#pageContents").data({
@@ -225,8 +231,9 @@
 					$this.hide();
 					$("#fbTxt").html($("#pageContents").data("feedback"));
 					$("#copyBtn, #copyTxt").show();
-					// Queue reparsing of MathJax - fails if no network connection
-					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+
+					x_pageContentsUpdated();
+
 					modelAnswer.tracked = true;
 					modelAnswer.finishTracking();
 					if (x_currentPageXML.getAttribute("copypasteinfo") != undefined && x_currentPageXML.getAttribute("copypasteinfo") != "") {
@@ -247,6 +254,12 @@
 			if (closeBtnTxt == undefined) {
 				closeBtnTxt = "close"
 			}
+			
+			var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
+			if (answerFieldLabel === undefined | answerFieldLabel === null) {
+				answerFieldLabel = "Answer";
+			}
+			$("#answerTxt").attr({"aria-label":answerFieldLabel});
 			
 			this.sizeChanged();
 			this.saveData();
@@ -300,7 +313,7 @@
 		<div id="infoHolder" class="right">
 			<div class="panel">
 				<div id="prompt"></div>
-				<textarea id="answerTxt" rows="5"></textarea>
+				<textarea id="answerTxt" aria-label="Response" rows="5"></textarea>
 				<button id="button"></button>
 				<div id="answer">
 					<div id="fbTxt" aria-live="polite"/>

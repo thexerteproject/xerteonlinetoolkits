@@ -150,6 +150,10 @@
   <errorResults label="There was an error loading the results"/>
   <loadError label="Error loading"/>
   <noResults label="No results returned"/>
+
+	<rssDLAuthor label="Created by:"/>
+	<rssDLLicense label="License:"/>
+	<rssDLModDate label="Last modified:"/>
   
   <timer>
 	  <remaining name="Time remaining"/>
@@ -161,7 +165,9 @@
 	  <closeButton label="" description="Close Accessibility Options"/>
 	  <selectTxt label="Please select from the options below"/>
 	  <adviceTxt label="Need more advice? Visit the &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Online Toolkits guide to accessibility&lt;/a&gt;."/>
-	  <off label="Off"/>
+	  <wcagTxt label="View the Xerte accessibility statement"/>
+	  <wcagLogo label="WCAG WAI-AA logo and link to Xerte accessibility statement"/>
+	  <off label="Default"/>
 	  <noBg label="Remove Background Images"/>
 	  <invert label="Invert"/>
 	  <blackYellow label="Black on Yellow"/>
@@ -203,6 +209,8 @@
   <submitBtnLabel label="Submit"/>
   <submitConfirmMsg label="Your answers have been submitted"/>
   <closeBtnLabel label="Close"/>
-
+  
+  <search title="Search" searchBtn="Search" goBtn="Go" newBtn="New Search" resultTitle="Results" matchTitle1="Matches" matchTitle2="Best matches" matchTitle3="Partial matches" showMatch="Show partial matches" noMatch1="No pages or sections match your selection." noMatch2="No pages or sections completely match your criteria. Partial matches are listed below." />
+  <print printBtn="Print page"/>
 
 </language>

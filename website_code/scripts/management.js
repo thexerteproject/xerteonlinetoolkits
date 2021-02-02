@@ -21,6 +21,8 @@ var function_to_use = null;
 
 var management_ajax_php_path = "website_code/php/management/";
 
+var xwd_url = "http://localhost/xerteonlinetoolkits/modules/xerte/parent_templates/Nottingham/wizards/en-GB/data.xwd";
+
 if(typeof(String.prototype.trim) === "undefined")
 {
     String.prototype.trim = function()
@@ -52,7 +54,7 @@ function management_stateChanged(){
 		if(xmlHttp.responseText!=""){
 
 			document.getElementById('admin_area').innerHTML = xmlHttp.responseText;
-
+			loadModal();
 		}
 	}
 }
@@ -317,7 +319,7 @@ function user_templates_list(){
 
 		var url="user_templates.php";
 
-		management_ajax_send_prepare(url)
+		management_ajax_send_prepare(url);
 
 		xmlHttp.send('no_id=1');
 
@@ -413,6 +415,25 @@ function templates_list(){
 
 function update_template(){
 
+	// Get selected pages of the active_section
+	// 1. First get non-selected boxes
+	var simple_lo_page_cb = $("#sub_page_select_titleonly_" + active_section + ":checked");
+	var simple_lo_page = (simple_lo_page_cb.length > 0);
+	var checkboxes_all = $(".sub_page_selection_model_" + active_section);
+	var checkboxes_selected = $(".sub_page_selection_model_" + active_section + ":checked");
+	var sub_pages = "";
+	if (checkboxes_all.length != checkboxes_selected.length)
+	{
+		checkboxes_selected.each(function(index, checkbox){
+			if (sub_pages.length > 0)
+				sub_pages += ",";
+			sub_pages += checkbox.name;
+		});
+		if (sub_pages.length > 0)
+		{
+			sub_pages = "simple_lo_page," + sub_pages;
+		}
+	}
 	if(setup_ajax()!=false){
 
 		var url="template_details_management.php";
@@ -427,7 +448,8 @@ function update_template(){
 					 '&date_uploaded=' + document.getElementById(active_section + "_date_uploaded").value +
 					 '&example=' + document.getElementById(active_section + "example").value +
 					 '&access=' + document.getElementById(active_section + "access").value +
-					 '&active=' + document.getElementById(active_section + "active").value);
+					 '&active=' + document.getElementById(active_section + "active").value +
+					 '&template_sub_pages=' + sub_pages);
 
 	}
 
@@ -1066,17 +1088,47 @@ function change_owner_stateChanged(){
 
 			alert("ERROR " + xmlHttp.responseText);
 
-		}
+			}
 	}
 
+}
+
+function templates_get_details(user_id, template_id)
+{
+	var tag = user_id + "template" + template_id;
+	var child_tag = tag + "_child";
+	var button_tag = tag + "_btn";
+	if(document.getElementById(child_tag).style.display=="block"){
+		// details are displayed at the moment, hide
+		document.getElementById(child_tag).style.display="none";
+		document.getElementById(button_tag).innerHTML = MANAGEMENT_SHOW;
+	}
+	else
+	{
+		var url="get_user_template_details.php";
+		//retrieve details and show
+		$.ajax({
+			method: 'GET',
+			url: management_ajax_php_path + url,
+			data: {
+				'user_id': user_id,
+				'template_id': template_id,
+			}
+		})
+		.done(function (data) {
+			$('#' + child_tag).html(data);
+			document.getElementById(child_tag).style.display="block";
+			document.getElementById(button_tag).innerHTML = MANAGEMENT_HIDE;
+		});
+	}
 }
 
 var active_section = null;
 
 function templates_display(tag){
 
-	child_tag = tag + "_child";
-    button_tag = tag + "_btn";
+	var child_tag = tag + "_child";
+    var button_tag = tag + "_btn";
 	active_section = document.getElementById(tag).getAttribute("savevalue");
 
 	if(document.getElementById(child_tag).style.display=="block"){
@@ -1091,6 +1143,8 @@ function templates_display(tag){
 	}
 
 }
+
+
 
 function templates_delete_sub(id){
 	if (confirm(REMOVE_SUB)) {
@@ -1130,7 +1184,7 @@ function save_changes(){
 
 function list_templates_for_user(tag){
 
-    user = document.getElementById(tag).value;
+    var user = document.getElementById(tag).value;
 
     if(setup_ajax()!=false){
 
@@ -1166,3 +1220,196 @@ function list_templates_for_user_stateChanged(){
     }
 
 }
+
+function loadModal() {
+
+    var modal = document.getElementById("nottingham_modal");
+    var btn = document.getElementById("nottingham_btn");
+
+    if (modal !== null) {
+        btn.onclick = function () {
+            modal.style.display = "block";
+            load(modal);
+        }
+    }
+};
+
+function load(modal)
+{
+	$.get("website_code/php/management/query_templates.php", {queryData: 'modal'}, function(data){
+		var x = data;
+
+        var span = document.getElementsByClassName("close");
+        var template_content = $(".template-content");
+
+        if(span.length !== 0)
+        {
+            span[0].onclick = function () {
+                modal.style.display = "none";
+                template_content.empty();
+            }
+        }
+
+        window.onclick = function(event)
+        {
+            if(event.target == modal)
+            {
+                modal.style.display = "none";
+                template_content.empty();
+            }
+        };
+
+        var templates = JSON.parse(x);
+        for (var i=0; i<templates.length; i++) {
+        	if(templates[i]["template_name"] === "Nottingham") {continue;}
+			else{
+                var paragraph = $("<p></p>");
+                paragraph.append(templates[i]["template_name"]);
+                template_content.append(paragraph, $("<br>"));
+			}
+        };
+
+        $.ajax({
+			type: "GET",
+			url: xwd_url,
+			dataType: "text",
+			success: function(data) {
+				console.log($($.parseXML(data)).find("wizards"));
+			},
+			error: function(data){
+				console.log("error");
+			}
+		});
+	});
+}
+
+function search_user_templates(tag){
+
+	var search = document.getElementById(tag).value;
+	if(setup_ajax()!=false){
+
+		var url="search_user_templates.php";
+
+		xmlHttp.open("post","website_code/php/management/" + url,true);
+		xmlHttp.onreadystatechange=search_user_templates_stateChanged;
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		xmlHttp.send('search=' + search);
+
+	}else{
+
+		alert(USERTEMPLATES_FAIL_RETRIEVE);
+
+	}
+
+}
+
+function search_user_templates_stateChanged(){
+
+	if (xmlHttp.readyState==4){
+
+		if(xmlHttp.responseText!=""){
+
+			document.getElementById('usertemplatelist').innerHTML = xmlHttp.responseText;
+
+		}else{
+
+			alert("ERROR " + xmlHttp.responseText);
+
+		}
+	}
+
+}
+
+function transfer_user_templates(tag){
+
+	var user = $('#' + tag).val();
+	if(setup_ajax()!=false){
+
+		var url="transfer_user_templates.php";
+
+		xmlHttp.open("post","website_code/php/management/" + url,true);
+		xmlHttp.onreadystatechange=transfer_user_templates_stateChanged;
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		xmlHttp.send('user_id=' + user);
+
+	}else{
+
+		alert(USERTEMPLATES_FAIL_RETRIEVE);
+
+	}
+
+}
+
+function transfer_user_templates_stateChanged(){
+
+	if (xmlHttp.readyState==4){
+
+		if(xmlHttp.responseText!=""){
+
+			$('#transferownership').html(xmlHttp.responseText).show();
+
+		}else{
+
+			alert("ERROR " + xmlHttp.responseText);
+
+		}
+	}
+
+}
+
+function do_transfer_user_templates(user_id, tag_user_select, tag_transfer_private, tag_delete_user)
+{
+	var new_user = $('#' + tag_user_select).val();
+	var transfer_private = $('#' + tag_transfer_private).prop('checked');
+	var delete_user = $('#' + tag_delete_user).prop('checked');
+
+	$("#transfer_result").show();
+
+	if(setup_ajax()!=false){
+
+		var url="do_transfer_user_templates.php";
+
+		xmlHttp.open("post","website_code/php/management/" + url,true);
+		xmlHttp.onreadystatechange=do_transfer_user_templates_stateChanged;
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		xmlHttp.send('olduserid=' + user_id + "&newuserid=" + new_user + "&transfer_private=" + transfer_private + "&delete_user=" + delete_user);
+
+	}else{
+
+		alert(USERTEMPLATES_FAIL_RETRIEVE);
+
+	}
+}
+
+function do_transfer_user_templates_stateChanged(){
+
+	if (xmlHttp.readyState==4){
+
+		if(xmlHttp.responseText!=""){
+
+			$('#transferownership').html(xmlHttp.responseText).show();
+
+		}else{
+
+			alert("ERROR " + xmlHttp.responseText);
+		}
+	}
+}
+
+function transfer_user_templates_closepanel()
+{
+	$("#transferownership").html("");
+	user_templates_list();
+}
+
+function sub_select_change_all(template_type_id)
+{
+	// Toggle all checkboxes based on template_type_id
+	var checked = $("#sub_page_select_all_" + template_type_id).is(":checked");
+	// Toggle all checkboxes with class sub_page_selection_model_<template_type_id>
+	$(".sub_page_selection_model_" + template_type_id).prop("checked", checked);
+}
+

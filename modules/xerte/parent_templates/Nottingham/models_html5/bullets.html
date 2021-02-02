@@ -25,9 +25,11 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$(".bullet").hide();
+
 			if (x_currentPageXML.getAttribute("delaySecs") == "0" || x_currentPageXML.getAttribute("delaySecs") == undefined ) {
 				$(".bullet").fadeIn();
-			} else {
+			}
+			else {
 				$(".bullet:eq(0)").show();
 				bullets.timer();
 			}
@@ -70,40 +72,54 @@
 				startTag = '<p class="bullet">',
 				endTag = "</p>";
 
-            if (text.indexOf("<p>") >= 0)
-            {
-                // Assume enclosed in <p></P>
-                // First get rid of <p>
-                var textwithout = text.replace(/<p>/g, "");
-                // Then split on </p>
-                bulletArray = textwithout.split("</p>");
+            if (text.indexOf("</ol>") >= 0 || text.indexOf("</ul>") >= 0) { // created by new editor and containing 1 or multiple lists
+                // We are not going to mess with this too much, just add 'bullet' class to all <li> tags and to any <p> blocks that don't contain bullets
+				$("#holder").hide().append(text);
+
+				$("#holder").find("li, p").addClass("bullet");
+
+				$("#holder").show();
             }
-            else
-            {
-                bulletArray = text.split("<br />")
-            }
-			if (x_currentPageXML.getAttribute("showBullets") != 0) {
-				contentsStr += "<ul>";
-				startTag = '<li class="bullet">';
-				endTag = "</li>";
-			}
-			for (var i=0; i<bulletArray.length; i++) {
-				if (bulletArray[i] != "" && $.trim(bulletArray[i]) != "") {
-					contentsStr += startTag + bulletArray[i] + endTag;
+            else {
+				if (text.indexOf("<p>") >= 0) {
+					// Assume enclosed in <p></P>
+					// First get rid of <p>
+					var textwithout = text.replace(/<p>/g, "");
+					// Then split on </p>
+					bulletArray = textwithout.split("</p>");
 				}
+				else {
+					bulletArray = text.split("<br />")
+				}
+
+				if (x_currentPageXML.getAttribute("showBullets") != 0) {
+					contentsStr += "<ul>";
+					startTag = '<li class="bullet">';
+					endTag = "</li>";
+				}
+
+				for (var i=0; i<bulletArray.length; i++) {
+					if (bulletArray[i] != "" && $.trim(bulletArray[i]) != "") {
+						contentsStr += startTag + bulletArray[i] + endTag;
+					}
+				}
+
+				if (x_currentPageXML.getAttribute("showBullets") != 0) {
+					contentsStr += "</ul>";
+				}
+
+				$("#holder").append(contentsStr);
 			}
-			if (x_currentPageXML.getAttribute("showBullets") != 0) {
-				contentsStr += "</ul>";
-			}
-			$("#holder").append(contentsStr);
 			
 			if (x_currentPageXML.getAttribute("showPanel") != 0) {
 				$pageContents.height($pageContents.height()); // force height otherwise panel shrinks when bullets are hidden
 			}
+
 			$(".bullet").hide();
 			if (x_currentPageXML.getAttribute("delaySecs") == "0" || x_currentPageXML.getAttribute("delaySecs") == undefined) {
 				$(".bullet").fadeIn();
-			} else {
+			}
+			else {
 				$(".bullet:eq(0)").show();
 				bullets.timer();
 			}
@@ -113,9 +129,9 @@
 		}
 		
 		this.timer = function() {
-			var currentBullet = 0;
+			var currentBullet = 1;
 			clearInterval(x_timer); // cancels timers from other bullets pages that might still be running
-			currentBullet++;
+
 			x_timer =  setInterval(function() {
 				$(".bullet:eq(" + currentBullet + ")").fadeIn();
 				currentBullet++;

@@ -8,6 +8,7 @@
 include ('../xmlInspector.php');
 
 require_once("../../../config.php");
+require_once("../user_library.php");
 
 //error_reporting(E_ALL);
 //ini_set('display_errors', 1);
@@ -16,6 +17,12 @@ _load_language_file("/website_code/php/management/upload.inc");
 
 global $xerte_toolkits_site;
 $prefix = $xerte_toolkits_site->database_table_prefix;
+
+if (!is_user_admin())
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
 
 if($_FILES['fileToUpload']['error'] == 4)
 {
