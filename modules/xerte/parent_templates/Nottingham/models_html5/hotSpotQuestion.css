@@ -2,13 +2,20 @@
 
 	#panel.right {
 		float:	right;
-		margin:	0 0 20px 20px;
+		margin:	0 0 0 20px;
 	}
 
 	#panel.left {
 		float:	left;
 		margin:	0 20px 20px 0;
 	}
+
+	#panel{
+		width: 100%;
+	}
+	/*.splitScreen .right {*/
+	/*	margin-left: 0!important;*/
+	/*}*/
 
 	#imageHolder {
 		position:	relative;
@@ -43,6 +50,25 @@
 
 	#disableClick{
 		pointer-events: none;
+	}
+
+	.mapster_el .x_noLightBox{
+		width: 100% !important;
+	}
+	.mapster_el{
+		width: 100% !important;
+	}
+	.x_noLightBox{
+		width: 100% !important;
+	}
+
+	#infoHolder{
+		padding-top: 0!important;
+	}
+
+	.feedbackIcon{
+		position: absolute;
+		z-index: 1;
 	}
 
 	/*#btnHolder {*/

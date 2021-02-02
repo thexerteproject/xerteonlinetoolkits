@@ -1,4 +1,4 @@
-#crossword {
+ #crossword {
     text-align: center;
 }
 
@@ -77,3 +77,25 @@
     justify-content: center;
     padding: 0;
 }
+
+ .placeholder
+ {
+     position: relative;
+ }
+
+ .placeholder > div
+ {
+     position: relative;
+     z-index: 1;
+ }
+
+ .placeholder::after
+ {
+     position: absolute;
+     left: 4px;
+     top: 3px;
+     content: attr(data-placeholder);
+     pointer-events: none;
+     opacity: 0.5;
+     z-index: 1;
+ }

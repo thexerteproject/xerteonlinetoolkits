@@ -19,6 +19,107 @@
 
         }
 
+        this.move = function (){
+            var active = 0;
+            rePosition();
+
+            $(document).keydown(function(e) {
+
+                var inp = String.fromCharCode(e.keyCode);
+                if (!(/[a-zA-Z0-9-_ ]/.test(inp) || e.keyCode == 96)){
+                    reCalculate(e);
+                    rePosition();
+                    // if key is an arrow key, don't type the user input.
+                    // if it is any other key (a, b, c, etc)
+                    // edit the text
+                    if (e.keyCode > 36 && e.keyCode < 41) {
+                        return false;
+                    }
+                }
+            });
+
+            $('td').click(function() {
+                d
+                active = $(this).closest('table tbody').find('td').index(this);
+                rePosition();
+            });
+
+            function reCalculate(e) {
+
+                var rows = $('#crossword-table tbody tr').length;
+                var columns = $('#crossword-table tbody tr:eq(0) td').length;
+                var temp;
+
+                if (e.keyCode == 37) {
+                    temp = active;
+                    while (temp > 0) {
+                        temp = temp - 1;
+
+                        if ($('#crossword-table tbody tr td').eq(temp).find('input').length != 0) {
+                            active = temp;
+                            break;
+                        }
+                    }
+                }
+                if (e.keyCode == 38) {
+                    temp = active;
+                    while (temp - columns >= 0) {
+                        temp = temp - columns;
+
+                        if ($('#crossword-table tbody tr td').eq(temp).find('input').length != 0) {
+                            active = temp;
+                            break;
+                        }
+                    }
+                }
+                if (e.keyCode == 39) {
+                    temp = active;
+                    while (temp < (columns * rows) - 1) {
+                        temp = temp + 1;
+
+                        if ($('#crossword-table tbody tr td').eq(temp).find('input').length != 0) {
+                            active = temp;
+                            break;
+                        }
+                    }
+                }
+                if (e.keyCode == 40) {
+                    temp = active;
+                    while (temp + columns <= (rows * columns) - 1) {
+                        temp = temp + columns;
+
+                        if ($('#crossword-table tbody tr td').eq(temp).find('input').length != 0) {
+                            active = temp;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            function rePosition() {
+                $('.active').removeClass('active');
+                $('#crossword-table tbody tr td').eq(active).addClass('active');
+                $('#crossword-table tbody tr td').find('input').removeClass('textClass');
+                $('#crossword-table tbody tr td').eq(active).find('input').addClass('textClass');
+                $('#crossword-table tbody tr td').eq(active).find('input').select();
+                var input = $('#crossword-table tbody tr td').eq(active).find('input').focus();
+                scrollInView();
+            }
+
+            function scrollInView() {
+                var target = $('#crossword-table tbody tr td:eq(' + active + ')');
+                if (target.length) {
+                    var top = target.offset().top;
+
+                    $('html,body').stop().animate({
+                        scrollTop: top - 100
+                    }, 400);
+                    return false;
+                }
+            }
+
+        }
+
 		this.init = function () {
 			// array with words
 			var words = [];
@@ -52,6 +153,8 @@
 				alert("Shoot! A grid could not be created with these words:\n" + str.join("\n"));
 				return;
 			}
+
+
 
 			// turn the crossword grid into HTML
 			var show_answers = true;
@@ -544,21 +647,21 @@
                                 if(cell['down'] !== null && cell['across'] !== null){
 
                                     if(cell['across']['is_start_of_word']===false){
-                                        var char ="<div id='input__container'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input' placeholder='"+ legend['down'][counterDown].position +"' maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                        var char ="<div id='input__container' class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'  maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
                                         counterDown++;
                                     }else{
-                                        var char ="<div id='input__container'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input' placeholder='"+ legend['across'][counterAcross].position +"'  maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                        var char ="<div id='input__container' class='placeholder' data-placeholder='"+ legend['across'][counterAcross].position +"'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'   maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
                                         counterAcross++;
                                     }
                                 }else if (cell['down'] !== null) {
-                                    var char ="<div id='input__container'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input' placeholder='"+ legend['down'][counterDown].position +"' maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                    var char ="<div id='input__container' class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'  maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
                                     counterDown++;
                                 }else{
-                                    var char ="<div id='input__container'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input' placeholder='"+ legend['across'][counterAcross].position +"' maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                    var char ="<div id='input__container' class='placeholder' data-placeholder='"+ legend['across'][counterAcross].position +"' maxlength='1'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input' maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
                                     counterAcross++;
                                 }
                             }else{
-                                var char ="<div id='input__container'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'  placeholder='' maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                var char ="<div id='input__container' class='placeholder' ><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'  placeholder='' maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
 
                             }
 
@@ -585,11 +688,14 @@
 				html.push("</table>");
 
 				return html.join("\n");
+
 			}
 		}
+
 	}
 
 	crossword.init();
+	crossword.move();
 </script>
 
 

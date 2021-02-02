@@ -53,7 +53,6 @@ if(is_numeric($_POST['user_id'])&&is_numeric($_POST['folder_id'])){
 
     /**
      * find all templates within this folder
-     * TODO: recursive folders
      */
 
     $current_folder = ['folder_id'=> $folder_id];
@@ -61,7 +60,7 @@ if(is_numeric($_POST['user_id'])&&is_numeric($_POST['folder_id'])){
     $max = 1;
     $all_content = array();
     //collect all content and folders from , "recursively"
-    //This is a breadth first search using dynamic programming:
+    //This is a breadth first search:
     for($i = 0; $i < $max; $i++){
         $current_folder = $all_folders[$i];
 
@@ -113,12 +112,13 @@ if(is_numeric($_POST['user_id'])&&is_numeric($_POST['folder_id'])){
         } // if the same role is chosen/some garbage role is somehow selected, nothing should happen to the database for this iteration.
     }
     if (!$failed){
-        $query_for_name = "select firstname, surname from {$prefix}logindetails WHERE login_id=?";
+        $query_for_name = "select firstname, surname, username from {$prefix}logindetails WHERE login_id=?";
         $params = array($user_id);
 
         $row = db_query_one($query_for_name, $params);
 
-        echo "<p>" . SHARING_THIS_FEEDBACK_SUCCESS  . " " . $row['firstname'] . " " . $row['surname'] . ".</p>";
+        echo "<p>" . str_replace("{&}", count($all_content),SHARING_THIS_FEEDBACK_SUCCESS) .
+            $row['firstname'] . " " . $row['surname'] . " (". $row['username'] . ").</p>";
     }
 
 

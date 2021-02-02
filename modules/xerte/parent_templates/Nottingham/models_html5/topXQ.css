@@ -47,3 +47,6 @@
     padding-top: 30px;
 }
 
+#textHolder{
+    overflow-wrap: break-word !important;
+}

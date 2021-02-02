@@ -45,17 +45,78 @@
 		};
 
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function() {
-			$img.css({
-				"opacity"	:0,
-				"filter"	:'alpha(opacity=0)'
-			});
-			this.resizeImg(false);
+		// this.sizeChanged = function() {
+		// 	$img.css({
+		// 		"opacity"	:0,
+		// 		"filter"	:'alpha(opacity=0)'
+		// 	});
+		// 	this.resizeImg(false);
+		//
+		// };
+			this.sizeChanged = function () {
+				if (x_browserInfo.mobile == false) {
+					var $panel = $("#pageContents .panel");
+					$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				}
 
-		};
+				if ($("#pageContents .audioHolder").length > 0) {
+					var audioBarW = 0;
+					$("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function () {
+						audioBarW += $(this).outerWidth();
+					});
+					if (audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() > 2) {
+						$x_window.resize();
+					}
+				}
+				this.resizeImg(false);
+			};
 
 		this.init = function() {
 			XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
+
+
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
+					$splitScreen = $("#pageContents .splitScreen");
+			var $textHolder = $("#textHolder");
+
+			if (panelWidth === "Full") {
+				$("#pageContents .panel").appendTo($("#pageContents"));
+				$splitScreen.remove();
+			} else {
+				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+				var textAlign = x_currentPageXML.getAttribute("align");
+				if (textAlign !== "Right") {
+					if (panelWidth === "Small") {
+						$splitScreen.addClass("large");
+					} else if (panelWidth === "Large") {
+						$splitScreen.addClass("small");
+					} else {
+						$splitScreen.addClass("medium");
+					}
+				} else {
+					$textHolder
+							.removeClass("left")
+							.addClass("right")
+							.appendTo($splitScreen);
+					$("#infoHolder")
+							.removeClass("right")
+							.addClass("left");
+					if (panelWidth === "Small") {
+						$splitScreen.addClass("medium");
+					} else if (panelWidth === "Large") {
+						$splitScreen.addClass("large");
+					} else {
+						$splitScreen.addClass("large");
+					}
+				}
+			}
+
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .panel");
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			}
+
 		    x_currentPageXML.childNodes.forEach(function () {
 				hits.push(false);
 				counter.push(0);
@@ -68,7 +129,7 @@
 			} else {
 				$("#panel").addClass("right");
 			}
-			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
 			$img
 				.css({
 						"opacity"	:0,
@@ -98,29 +159,41 @@
 				$("#checkButton").button("disable")
 				$("area").off('click')
 				var name;
+				debugger;
+				var div = $(document.createElement('div')).addClass("feedbackIcon").append("<i class=\"fas fa-check\"></i>");
 				highlightsArray.forEach((highlight, index) =>{
-
 					name = "Hotspot" + " " + highlight.getAttribute("name");
+
+					var points = JSON.parse(highlight.getAttribute("points"))
+					var x = (points[0]["x"]+points[1]["x"])/2
+					var y = (points[0]["y"]+points[2]["y"])/2
+
 					XTEnterInteraction(x_currentPage, index, "fill-in", name, [], "-", x_currentPageXML.getAttribute("generalFeedback"), x_currentPageXML.getAttribute("grouping"));
 
 					if(highlight.getAttribute("truth") === "true"){
 						hotSpotScore++;
+						div.top = y
+						div.left = x
+						$("#imageHolder").append(div)
 					}else{
 						AmountOfWrongScore++;
+						div.top = y
+						div.left = x
+						$("#imageHolder").append(div)
 					}
 				})
 				if(highlightsArray.length > 0){
 					highlightsArray.forEach((highlight) =>{
 						if(highlight.getAttribute("text") !== null){
-							$("#infoHolder").html("<hr/><h3> je hebt " + hotSpotScore + " antwoorden goed en " + AmountOfWrongScore + " antwoorden fout </h3><br/>");
+							$("#score").html("<hr/><h3> je hebt " + hotSpotScore + " antwoorden goed en " + AmountOfWrongScore + " antwoorden fout </h3><br/>");
 							$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
 						}else{
-							$("#infoHolder").html("<hr/><h3> je hebt " + hotSpotScore + " antwoorden goed en " + AmountOfWrongScore + " antwoorden fout</h3>");
+							$("#score").html("<hr/><h3> je hebt " + hotSpotScore + " antwoorden goed en " + AmountOfWrongScore + " antwoorden fout</h3>");
 							$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
 						}
 					})
 				}else{
-					$("#infoHolder").html("<hr/><h3>Je hebt geen antwoorden ingevuld</h3><br/>");
+					$("#score").html("<hr/><h3>Je hebt geen antwoorden ingevuld</h3><br/>");
 				}
 
 				var amountOfCorrectOptions = 0;
@@ -152,9 +225,21 @@
 		};
 
 		this.resizeImg = function(firstLoad) {
-			var imgMaxW = Math.round($x_pageHolder.width() * (400.0/800.0)),
-				imgMaxH = Math.round($x_pageHolder.height() * (550.0/600.0) - 100);
-
+			var imgMaxW, imgMaxH;
+			if (x_currentPageXML.getAttribute("textWidth") == "none") {
+				imgMaxW = Math.round($x_pageHolder.width() - 30);
+				imgMaxH = Math.round($x_pageHolder.height() - 30);
+				$('#panel').css('margin', '0px');
+			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
+				imgMaxW = Math.round($x_pageHolder.width() * 0.8 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 50);
+			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
+				imgMaxW = Math.round($x_pageHolder.width() * 0.3 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 50);
+			} else {
+				imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 50);
+			}
 			$img.mapster('unbind');
 
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
@@ -404,7 +489,10 @@
 
 
 <div id="pageContents">
-
+<div class="splitScreen">
+	<div id="textHolder" class="left"></div>
+	<div id="infoHolder" class="right">
+		<fieldset class="noStyle">
 	<div id="panel" class="panel inline">
 		<div id="questionText" class="right">
 		<div id="imageHolder">
@@ -426,12 +514,16 @@
 		</div>
 
 	</div>
+
 	<div id="textContents">
-		<div id="mainText" tabindex="1"></div>
+
 		<button id="checkButton"></button>
-		<div id="infoHolder" class="hsinfo"></div>
+		<div id="score" class="hsinfo"></div>
 		<div id="generalFeedback"></div>
 
 	</div>
 	</div>
+		</fieldset>
+	</div>
+</div>
 </div>

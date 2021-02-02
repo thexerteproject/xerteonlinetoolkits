@@ -300,8 +300,8 @@ function share_stateChanged(){
 	if (xmlHttp.readyState==4){
 
 		if(xmlHttp.responseText!=""){
-
 			document.getElementById('area3').innerHTML = xmlHttp.responseText;
+			alert( document.getElementById('area3').textContent);
 
 		}
 	}
