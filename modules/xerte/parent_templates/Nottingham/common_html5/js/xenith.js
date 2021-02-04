@@ -88,7 +88,7 @@ $(document).keydown(function(e) {
                 }
 			} else if (pageIndex == -1) {
 				// historic back (standalone page)
-				if (history.length > 1) {
+				if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
 					history.go(-1);
 				} else {
 					x_changePage(x_normalPages[0]);
@@ -468,8 +468,10 @@ x_projectDataLoaded = function(xmlData) {
 			hash = tempUrlParams[i];
 		}
     }
-		
+	
 	// there are several URL params that can determine the 1st page viewed - check if they are valid pages before setting start page
+	var customStartPage = false;
+	
 	if (x_urlParams.linkID) { // ID auto-generated in xwd e.g. URL/play_123&linkID=PG1593081880325
 		var temp = getDeepLink(x_urlParams.linkID);
 		if (temp.length > 1) {
@@ -479,6 +481,7 @@ x_projectDataLoaded = function(xmlData) {
 		var validPage = x_lookupPage("linkID", temp[0]);
 		if (validPage !== false) {
 			x_startPage = { type : "index", ID : validPage };
+			customStartPage = true;
 		}
 		
 		delete x_urlParams.linkID;
@@ -493,6 +496,7 @@ x_projectDataLoaded = function(xmlData) {
 		var validPage = x_lookupPage("pageID", temp[0]);
 		if (validPage !== false) {
 			x_startPage = { type : "index", ID : validPage };
+			customStartPage = true;
 		}
 		
 		delete x_urlParams.pageID;
@@ -507,10 +511,13 @@ x_projectDataLoaded = function(xmlData) {
 		var validPage = x_lookupPage("pageID", temp[0]);
 		if (validPage !== false) {
 			x_startPage = {type : "index", ID : validPage};
+			customStartPage = true;
+			
 		} else {
 			if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
 				var tempIndex = x_normalPages[Number(temp[0])-1];
 				x_startPage = { type : "index", ID : tempIndex };
+				customStartPage = true;
 			}
 		}
 		
@@ -526,6 +533,7 @@ x_projectDataLoaded = function(xmlData) {
 		if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
 			var tempIndex = x_normalPages[Number(temp[0])-1];
 			x_startPage = { type : "index", ID : tempIndex };
+			customStartPage = true;
 		}
 		
 		delete x_urlParams.resume;
@@ -540,7 +548,13 @@ x_projectDataLoaded = function(xmlData) {
 		var info = getHashInfo(temp[0]);
 		if (info != false) {
 			x_startPage = {type : "index", ID : info};
+			customStartPage = true;
 		}
+	}
+	
+	// any params in URL which can change the start page can be disabled from working by adding optional property
+	if (x_params.forcePage1 == 'true' && customStartPage == true && (x_pageInfo[x_startPage.ID].standalone == undefined || x_pageInfo[x_startPage.ID].standalone == false)) {
+		x_startPage = {type : "index", ID : "0"};
 	}
 	
 	// tidy up the URL to remove all of the params about start page - hash at end of URL will change according to currently viewed page
@@ -659,15 +673,18 @@ x_projectDataLoaded = function(xmlData) {
 
 // browser back / fwd button will trigger this - manually make page change to match #pageX
 window.onhashchange = function() {
-	var temp = getDeepLink(window.location.hash);
-	if (temp.length > 1) {
-		x_deepLink = temp[1];
-	}
-	
-	var pageInfo = getHashInfo(temp[0]);
 
-	if (pageInfo !== false) {
-		x_navigateToPage(false, { type: "index", "ID": pageInfo }, false );
+	if (x_params.forcePage1 == undefined || x_params.forcePage1 != 'true') {
+		var temp = getDeepLink(window.location.hash);
+		if (temp.length > 1) {
+			x_deepLink = temp[1];
+		}
+		
+		var pageInfo = getHashInfo(temp[0]);
+
+		if (pageInfo !== false) {
+			x_navigateToPage(false, { type: "index", "ID": pageInfo }, false );
+		}
 	}
 	
 	// force lightbox to close
@@ -1275,7 +1292,7 @@ function x_continueSetUp1() {
 					}
 				} else if (pageIndex == -1) {
 					// historic back (standalone page)
-					if (history.length > 1) {
+					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
 						history.go(-1);
 					} else {
 						x_changePage(x_normalPages[0]);
@@ -1684,7 +1701,6 @@ function x_dialog(text){
 
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID}
-	
     var page = XTStartPage();
     if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved by the LO
         x_changePage(page, addHistory);
@@ -1852,6 +1868,10 @@ function x_changePage(x_gotoPage, addHistory) {
 	// if this page is already shown in a lightbox then don't try to open another lightbox - load in the existing one
 	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' && parent.window.$.featherlight.current()) {
 		standAlonePage = false;
+		addHistory = false;
+	}
+	
+	if (x_params.forcePage1 == 'true') {
 		addHistory = false;
 	}
 	
@@ -2059,7 +2079,7 @@ function x_changePageStep5a(x_gotoPage) {
         x_pageHistory.push(x_currentPage);
     }
 	
-	// if it's astandalone page then it's possible that the header or footer bar are hidden
+	// if it's a standalone page then it's possible that the header or footer bar are hidden
 	var headerHidden = false, footerHidden = false;
 	if (x_pageInfo[x_currentPage].standalone == true) {
 		if (x_currentPageXML.getAttribute('headerHide') == 'true') {
