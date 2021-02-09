@@ -2280,8 +2280,21 @@ function x_changePageStep6() {
 
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();
+	}x_focusPageContents();
+}
+
+function x_focusPageContents(){
+	//focus pageContents after page load and page change
+		$('#pageContents').attr('tabIndex', 0).focus();
+		//#pageContents:focus is set to none in default theme
+		//uncomment the line below to see the focus outline
+		//or use a theme where this isn't hidden
+		//$('#pageContents:focus').css('outline','solid');
+	if(x_pageInfo[x_currentPage].type=="adaptiveContent"){
+		$('#adaptiveContentMain').attr('tabIndex', 0).focus();
 	}
 }
+
 //skip to main contents link but this code needs checking
 // and language string needs to be added to replace default English text
 $('[href^="#"][href!="#"]').click(function() {
@@ -2533,6 +2546,7 @@ function x_pageLoaded() {
     $(config.selector, config.context).featherlight();
 
 	doPercentage();
+	x_focusPageContents();
 }
 
 // detect page loaded change and update progress bar
