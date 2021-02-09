@@ -349,7 +349,7 @@
 						.attr("aria-label", this.getAttribute("name") + (i != 0 ? " " + $pageContents.data("clickTxt") : ""));
 					
 				} else if (x_currentPageXML.getAttribute("type") == "Tab") {
-					$("#navChildTitle" + i).parent('.navChildTitle').attr("aria-hidden", "true");
+					$("#navChildTitle" + i).parent('.navChildTitle').attr("aria-hidden", "false");
 					
 				} else if (x_currentPageXML.getAttribute("type") == "Button") {
 					$("#navChildTitle" + i)
