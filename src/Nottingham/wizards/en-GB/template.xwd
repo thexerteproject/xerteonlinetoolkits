@@ -38,7 +38,8 @@
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
     <authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
     <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true" deprecatedv="This property is deprecated as the resume functionality is now available automatically"/>
-    <themeurl type="CheckBox" label="Disable theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
+    <themeurl type="CheckBox" label="Disable Theme url" defaultValue="false" optional="true" tooltip="By default the theme can now be changed with a url parameter e.g. &amp;theme=default which is useful for a variety of reasons. However as an author you can use this optional property, if you wish, to tick and disable this feature. The 'theme url parameter' to use when changing a theme by this method is shown in each theme's description and is often shorter and not the same as the display name of the theme."/>
+	<forcePage1 type="CheckBox" label="Force First Page" defaultValue="true" optional="true" tooltip="Force projects to open on first page even if the URL contains specific page information. Useful when creating projects, such as escape rooms, where you don't want users to be able to jump ahead."/>
 	
 	<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/156-fay-Nottingham/media/Variables_Documentation.pdf' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for help creating and using variables">
 		<variables optional="true" label="Variable Data" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
@@ -235,9 +236,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -291,9 +292,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -387,9 +388,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -538,9 +539,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -607,9 +608,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -689,9 +690,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -745,9 +746,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -802,9 +803,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -859,9 +860,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -915,9 +916,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -982,9 +983,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -1036,9 +1037,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -1097,9 +1098,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -1166,9 +1167,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -1226,9 +1227,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -1255,33 +1256,34 @@
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 	</lightboxGroup></columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions. When selected, each region will take you to another page in the project or present further information." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
+  
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
-    <textWidth label="Min Text Width" options="No Text,Small,Medium,Large" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+	<highlight label="Highlight Hotspots" type="CheckBox" defaultValue="false"/>
 	
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
+		<textWidth label="Size" options="Full,Large,Medium,Small" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200"/>
 		<tip label="Description" type="TextInput"/>
 	</image>
 	
     <hidePanel label="Hide Panel" type="CheckBox" defaultValue="false" deprecated="This property is deprecated"/>
 
-    <highlight label="Highlight Hotspots" type="CheckBox" defaultValue="false"/>
-    <hsAppearance type="group" label="Hotspot highlight appearance" optional="true" tooltip="Set colours of hotspots">
-        <hicol label="Stroke colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the edges of the hotspot"/>
-        <hs_strokeOpacity label="Stroke opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of the edges of the hotspot"/>
-        <hs_strokeWidth label="Stroke width" type="TextInput" optional="true" defaultValue="1" tooltip="Width of the edges of the hotspot"/>
-        <hs_fill label="Fill hotspot" type="CheckBox" optional="true" defaultValue="false" tooltip="Fill the hotspot"/>
-        <hs_fillColor label="Fill colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The fill colour of the hotspot"/>
-        <hs_fillOpacity label="Fill opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of fill colour of the hotspot"/>
-        <hs_showTooltip label="Show tooltip" type="CheckBox" optional="true" defaultValue="true" tooltip="Show tooltip on hover, the label is used as tooltip"/>
+    <hsAppearance type="group" label="Hotspot Highlight Appearance" optional="true" tooltip="Set colours of hotspots">
+        <hicol label="Stroke Colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the edges of the hotspot"/>
+        <hs_strokeOpacity label="Stroke Opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of the edges of the hotspot"/>
+        <hs_strokeWidth label="Stroke Width" type="TextInput" optional="true" defaultValue="1" tooltip="Width of the edges of the hotspot"/>
+        <hs_fill label="Fill Hotspot" type="CheckBox" optional="true" defaultValue="false" tooltip="Fill the hotspot"/>
+        <hs_fillColor label="Fill Colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The fill colour of the hotspot"/>
+        <hs_fillOpacity label="Fill Opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of fill colour of the hotspot"/>
+        <hs_showTooltip label="Show Tooltip" type="CheckBox" optional="true" defaultValue="true" tooltip="Show tooltip on hover, the label is used as tooltip"/>
 	</hsAppearance>
 
     <continueBtnTxt label="Close Button Label" type="TextInput" wysiwyg="true" language="true"/>
     <continueBtnWidth label="Close Button Width" type="NumericStepper" min="80" max="150" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>		
 
-	<popUp type="group" label="Pop Up Alignment" optional="true" tooltip="Control the position of the pop up window that appears in certain circumstances">
+	<popUp type="group" label="Dialog Position" optional="true" tooltip="Control the position of the pop up window that appears when hotspot clicked">
 		<popUpVAlign label="Vertical" options="Top,Middle,Bottom" type="ComboBox" width="120" data="top,middle,bottom" defaultValue="middle" optional="true"/>
 		<popUpHAlign label="Horizontal" options="Left,Centre,Right" type="ComboBox" width="120" data="left,center,right" defaultValue="center" optional="true"/>
 	</popUp>
@@ -1290,7 +1292,7 @@
     <info><![CDATA[<b>For full details on how to use the Hotspot Image Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/HotspotImageConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
-      <cHotspot><![CDATA[<cHotspot name="Tooltip Hotspot" destination="Enter Destination Page ID" exitNav="all" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></cHotspot>
+      <cHotspot><![CDATA[<cHotspot name="Tooltip Hotspot" showTitle="true" windowType="dialog" destination="Enter Destination Page ID" exitNav="all" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></cHotspot>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -1310,9 +1312,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -1339,22 +1341,56 @@
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 	</lightboxGroup></connectorHotspotImage><cHotspot menuItem="Hotspot" label="Edit Hotspot" type="flexhotSpot" icon="icLayers" remove="true">
-    <name label="Tooltip Hotspot" type="TextInput" wysiwyg="false"/>
-    <destination label="Destination Page" type="pageList" defaultValue="" optional="true" tooltip="Go to a page with this object"/>
+  
+	<name label="Title" type="TextInput" wysiwyg="false"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
-    <hotspotSound label="Sound" type="media" optional="true"/>
-	<hotspotMovie label="Video" type="media" optional="true"/>
-    <startFrame label="Video Start Time" type="textInput" defaultValue="0" optional="true"/>
-    <endFrame label="Video End Time" type="textInput" defaultValue="0" optional="true"/>
-    <movieSize label="Video Size (w,h)" type="textInput" defaultValue="320,240" optional="true"/>
-    <tip label="Video Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>	
-    <reset label="Video Reset at End" type="Checkbox" defaultValue="false" optional="true" deprecated="This property is no longer required"/>	
-	<windowURL label="New Window URL" type="TextInput" optional="true" tooltip="Open the given URL in a new window"/>
-    <windowWidth label="New Window Width" type="NumericStepper" min="100" max="1030" step="10" defaultValue="550" width="100" optional="true"/>
-    <windowHeight label="New Window Height" type="NumericStepper" min="100" max="1030" step="10" defaultValue="400" width="100" optional="true"/>
-    <htm label="New Window HTML" type="textArea" height="150" optional="true" tooltip="Display the given HTML in a new window"/>
-    <relNav label="Relative Destination Page" options="First Page,Previous Page,Next Page,Last Page" type="ComboBox" data="first,prev,next,last" defaultValue="next" width="200" optional="true" tooltip="Go to a relative page (i.e. next)" deprecated="This property is deprecated. You can now select a relative destination in the Destination Page optional property."/>
-    <hotspotPopUp label="Pop-Up HTML" type="TextArea" height="200" optional="true" tooltip="Display the given HTML in a popup window"/>
+	<showTitle label="Show Title" type="CheckBox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotMovie!=null||hotspotPopUp!=null||(htm!=null&amp;&amp;htm!='')||iframe!=null" defaultValue="false" mandatory="true" tooltip="Include title when content is displayed in a dialog box"/>
+	<!--<windowType label="Display In" options="Dialog,Lightbox" type="ComboBox" data="dialog,lightbox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotMovie!=null||hotspotPopUp!=null||iframe!=null" defaultValue="dialog" mandatory="true" width="200"/>-->
+	<windowType label="Display In" options="Dialog,Lightbox" type="ComboBox" data="dialog,lightbox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotPopUp!=null||iframe!=null" defaultValue="dialog" mandatory="true" width="200"/>
+	
+	<video type="group" label="Video" optional="true" tooltip="Show a video player when hotspot clicked">
+		<hotspotMovie label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select a Video"/>
+		<tip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	</video>
+	
+	<videoTiming type="group" label="Video Start &amp; End Times" condition="hotspotMovie!=null" optional="true" tooltip="Play from &amp; stop at the times entered (in seconds). By default the whole video will play">
+		<startFrame label="Start Time" type="textInput" defaultValue="" optional="true"/>
+		<endFrame label="End Time" type="textInput" defaultValue="" optional="true"/>
+	</videoTiming>
+	
+	<movieSize label="Video Size" type="TextInput" condition="hotspotMovie!=null" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
+	<!--<iframeRatio label="Video iframe Aspect Ratio" type="TextInput" condition="hotspotMovie!=null" defaultValue="16:9" tooltip="Aspect ratio for videos from external sites (e.g. YouTube)" optional="true" />-->
+    <reset label="Video Reset at End" type="Checkbox" defaultValue="false" optional="true" deprecated="This property is deprecated. Videos now reset on completion by default."/>
+	
+	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
+		<hotspotSound label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select an MP3 File"/>
+		<playerType label="Type" options="Audio Player,Auto-Play" type="ComboBox" conditionTrigger="true" data="player,auto" defaultValue="player" width="200" optional="true"/>
+	</sound>
+	
+	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
+		<imageFile label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select an Image"/>
+		<imageTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
+	</imgGroup>
+	
+	<soundTiming type="group" label="Sound Start &amp; End Times" condition="hotspotSound!=null" optional="true" tooltip="Play from &amp; stop at the times entered (in seconds). By default the whole audio will play">
+		<soundStart label="Start Time" type="textInput" defaultValue="" optional="true"/>
+		<soundEnd label="End Time" type="textInput" defaultValue="" optional="true"/>
+	</soundTiming>
+	
+	<hotspotPopUp label="Text" type="TextArea" conditionTrigger="true" height="200" optional="true" tooltip="Show text/HTML when hotspot clicked"/>
+	<iframe label="iframe" type="TextInput" conditionTrigger="true" height="200" optional="true" tooltip="Show URL in an iframe when hotspot clicked"/>
+	
+	<window type="group" label="New Window" optional="true" tooltip="Open a website (or custom HTML) in a new browser window when hotspot clicked">
+		<windowURL label="URL" type="TextInput" optional="true" tooltip="URL to open in the new window (HTML field must be blank when using this option)"/>
+		<htm label="HTML" type="TextArea" conditionTrigger="true" height="150" optional="true" tooltip="HTML content to open in the new window"/>
+		<windowWidth label="Width" type="NumericStepper" min="100" max="1030" step="10" defaultValue="550" width="100" optional="true"/>
+		<windowHeight label="Height" type="NumericStepper" min="100" max="1030" step="10" defaultValue="400" width="100" optional="true"/>
+	</window>
+	
+	<destinationURL label="External Destination Page" type="TextInput" optional="true" tooltip="Open an external website when hotspot clicked. The browser will navigate away from this project"/>
+	<destination label="Destination Page" type="pageList" defaultValue="" optional="true" tooltip="Go to another page in this project when hotspot clicked"/>
+	<relNav label="Relative Destination Page" options="First Page,Previous Page,Next Page,Last Page" type="ComboBox" data="first,prev,next,last" defaultValue="next" width="200" optional="true" tooltip="Go to a relative page (i.e. next)" deprecated="This property is deprecated. You can now select a relative destination in the Destination Page optional property."/>
+	
   </cHotspot><connectorMenu menu="Connectors" menuItem="Menu Connector" hint="Generate a menu of all or a selected range of the pages in a project." icon="icConMenu" thumb="thumbs/connectorMenu.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
@@ -1395,9 +1431,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -1489,9 +1525,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -1568,9 +1604,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -1690,9 +1726,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -1754,9 +1790,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -1834,9 +1870,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -1907,9 +1943,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -2098,9 +2134,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -2154,9 +2190,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -2224,9 +2260,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -2291,9 +2327,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -2349,9 +2385,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -2434,9 +2470,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -2486,9 +2522,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -2560,9 +2596,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -2615,9 +2651,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -2691,9 +2727,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -2753,9 +2789,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -2815,9 +2851,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -2918,9 +2954,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -3002,9 +3038,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -3075,9 +3111,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -3152,9 +3188,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -3213,9 +3249,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -3272,9 +3308,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -3338,9 +3374,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -3397,9 +3433,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -3476,9 +3512,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -3543,9 +3579,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -3888,9 +3924,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -3949,6 +3985,8 @@
 	<copypasteinfo2 label="Copy and Paste Info" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the example answer and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
     <label label="Button Label" defaultValue="deprecated - for backward compatibility only" type="TextInput" wysiwyg="true" optional="true" deprecated="This property is no longer required"/>
 	
+	<required label="Answer Required Before Feedback" type="CheckBox" optional="true" defaultValue="true"/>
+	
 	<imgInfo type="group" label="Image" optional="true">
 		<image label="Image" type="media" optional="true" defaultValue="Select an Image"/>	
 		<tooltip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
@@ -3971,9 +4009,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -4025,9 +4063,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -4084,9 +4122,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -4150,9 +4188,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -4217,9 +4255,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -4295,9 +4333,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -4378,9 +4416,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -4475,9 +4513,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -4534,9 +4572,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -4609,9 +4647,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -4752,9 +4790,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -4820,9 +4858,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -4903,9 +4941,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -4958,9 +4996,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5023,9 +5061,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5108,9 +5146,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5297,9 +5335,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5354,9 +5392,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5407,9 +5445,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5466,9 +5504,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5524,9 +5562,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5581,9 +5619,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5650,9 +5688,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5723,9 +5761,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5795,9 +5833,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5847,9 +5885,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5911,9 +5949,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -5981,9 +6019,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -6045,9 +6083,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -6112,9 +6150,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -6171,9 +6209,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -6252,9 +6290,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -6326,9 +6364,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -6398,9 +6436,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -6459,9 +6497,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -6524,9 +6562,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -6589,9 +6627,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -6656,9 +6694,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -6709,9 +6747,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -6765,9 +6803,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
@@ -6820,9 +6858,9 @@
 		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
