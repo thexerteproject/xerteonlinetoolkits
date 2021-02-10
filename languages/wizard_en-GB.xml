@@ -188,6 +188,38 @@
 			<selectFile>Select image first!</selectFile>
 		</Error>
     </editHotspot>
+	<edit360Hotspot>
+		<Buttons>
+			<Icon>Change hotspot icon</Icon>
+			<Orientation>Hotspot icon orientation</Orientation>
+			<Size>Hotspot icon size</Size>
+			<Colour>Hotspot icon colour</Colour>
+			<Reset>Reset</Reset>
+		</Buttons>
+		<Instructions>
+			<header>Instructions:</header>
+			<line1>Position a hotspot by clicking on the image.</line1>
+			<line2>Click and drag to rotate the image.</line2>
+			<line3>Change the .</line3>
+			<reset>Press the &#8634; reset button to start over.</reset>
+			<save>To save your selection, click the &#9745; Ok button. If you want to go back without saving, click the &#9746; cancel button.</save>
+			<iconLine1>Select the icon used on this hotspot.</iconLine1>
+			<colourLine1>Select the two colours used on this hotspot.</colourLine1>
+			<orientationLine1>Use the arrow buttons to rotate the hotspot.</orientationLine1>
+			<sizeLine1>Select the size of the hotspot.</sizeLine1>
+		</Instructions>
+		<Error>
+			<selectFile>Select image first!</selectFile>
+		</Error>
+    </edit360Hotspot>
+	<fontawesome>
+		<preview>Icon preview</preview>
+		<select>Select Icon</select>
+		<search>Search Icon</search>
+		<showAll>Show All</showAll>
+		<cancel>Cancel</cancel>
+		<noResult>No results found</noResult>
+	</fontawesome>
 	<grouping deprecated="Deprecated - the red option is no longer allowed by the course list in the management page"></grouping>
 	<category deprecated="Deprecated - the red option is no longer allowed by the course list in the management page"></category>
 	<course deprecated="Deprecated - the red option is no longer allowed by the course list in the management page">

@@ -232,6 +232,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/jqgrid/css/ui.jqgrid.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css?version=<?php echo $version;?>" />
+	<link rel="stylesheet" type="text/css" href="editor/js/vendor/pannellum/pannellum.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" type="text/css" href="editor/js/vendor/iconpicker/iconpicker-1.5.0.css?version=<?php echo $version;?>" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
@@ -353,6 +355,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="<?php echo $jqgridlangfile; ?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery.jqGrid.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jsep.min.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/pannellum/pannellum.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/iconpicker/iconpicker-1.5.0.js?version=<?php echo $version;?>"></script>
 
 <!-- load exactly the same codemirror scripts as needed by ckeditor -->
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.min.js?version=<?php echo $version;?>"></script>

@@ -721,6 +721,7 @@ var EDITOR = (function ($, parent) {
         textareas_options = [];
         textinputs_options = [];
         colorpickers = [];
+		iconpickers = [];
         datagrids = [];
 
         form_fields = [];
@@ -1252,6 +1253,7 @@ var EDITOR = (function ($, parent) {
         toolbox.convertTextAreas();
         toolbox.convertTextInputs();
         toolbox.convertColorPickers();
+		toolbox.convertIconPickers();
         toolbox.convertDataGrids();
 		
 		// make buttons appear disabled when the node can't be duplicated / deleted

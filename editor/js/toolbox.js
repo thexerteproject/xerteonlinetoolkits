@@ -266,10 +266,10 @@ var EDITOR = (function ($, parent) {
                 }
 			case "standalone":
                 if (enabled) {
-                    return '<i class="standaloneIcon iconEnabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
+                    return '<i class="standaloneIcon iconEnabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>';
                 }
                 else {
-                    return '<i class="standaloneIcon iconDisabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
+                    return '<i class="standaloneIcon iconDisabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>';
                 }
         }
     },
@@ -1518,6 +1518,25 @@ var EDITOR = (function ($, parent) {
 			}
         });
     },
+	
+	convertIconPickers = function ()
+    {
+        $.each(iconpickers, function (i, options){
+			IconPicker.Init({
+				jsonUrl: 'editor/js/vendor/iconpicker/' + options.iconList + '.json',
+				searchPlaceholder: language.fontawesome.search,
+				showAllButton: language.fontawesome.showAll,
+				cancelButton: language.fontawesome.cancel,
+				noResultsFound: language.fontawesome.noResult,
+				borderRadius: '0px'
+			});
+			
+			IconPicker.Run('#' + options.id, function(e){
+				// manually trigger input change after new icon selected - even though input changes it doesn't get triggered without this as element is hidden & not in focus
+				$('#' + options.id).data('input').change();
+			});
+        });
+    },
 
     convertDataGrids = function ()
     {
@@ -2047,7 +2066,7 @@ var EDITOR = (function ($, parent) {
 
     inputChanged = function (id, key, name, value, obj)
     {
-        console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+        //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
         var actvalue = value;
 
         if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
@@ -2484,25 +2503,7 @@ var EDITOR = (function ($, parent) {
 
             edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');
         edit_img.append('<div class="hsinstructions" id="instructions_' + id + '"></div>');
-        /*
-        edit_img.append($('<button>')
-            .attr('id', id + '_ok')
-            .attr('name', 'ok')
-            .attr('type', 'button')
-            .attr('title', language.Alert.oklabel)
-            .addClass('hseditModeButton')
-            .append('<i class="far fa-2x fa-check-square"></i>')
-        )
-            .append($('<button>')
-                .attr('id', id + '_cancel')
-                .attr('name', 'cancel')
-                .attr('type', 'button')
-                .attr('title', language.Alert.cancellabel)
-                .addClass('hseditModeButton')
-                .append('<i class="far fa-2x fa-window-close"></i>')
-            );
-
-         */
+        
         if (!forceRectangle && hsattrs.mode != undefined)
         {
             shape = hsattrs.mode;
@@ -3111,6 +3112,240 @@ var EDITOR = (function ($, parent) {
             hs = initShape();
         }
 
+    };
+	
+	draw360Hotspot = function(html, url, hsattrs, id) {
+        // Add Hotspot on the wizard page as preview on the thumbnail image
+		
+        // find image, set scale and wrap with overlayWrapper
+        var img =  html.find('img'),
+			width = img.width(),
+			height = img.height();
+		
+        img.wrap('<div class="overlayWrapper" id="overlayWrapper_' + id + '"></div>');
+        img.hide();
+
+        // create canvas over img
+        var canvasObj = $('<canvas>')
+            .attr('id', 'wizard_hscanvas_' + id);
+		
+        $('#overlayWrapper_' + id).append(canvasObj);
+		
+        var canvas = new fabric.Canvas('wizard_hscanvas_' + id, { selection: false, interaction: false });
+        canvas.setWidth(width);
+        canvas.setHeight(height);
+		
+        fabric.Image.fromURL(url, function (bgimg) {
+            bgimg.scaleToWidth(width);
+            bgimg.scaleToHeight(height);
+            canvas.setBackgroundImage(bgimg, canvas.renderAll.bind(canvas), { stretch: true });
+        });
+
+        // open editor when thumbnail is clicked
+		canvas.on('mouse:down', function() { edit360Hotspot(url, hsattrs, id) });
+		
+        // draw target
+		var xy = {};
+        if (hsattrs.p != '' && hsattrs.y != '') {
+			// convert from pitch & yaw to image coordinates
+			xy.x = Math.floor((hsattrs.y / 360 + 0.5) * width);
+			xy.y = Math.floor((0.5 - hsattrs.p / 180) * height);
+			
+			canvas.add(new fabric.Circle({radius: 5,
+				fill: 'rgba(255,0,0,0.5)',
+				left: xy.x,
+				top: xy.y,
+				originX: 'center', 
+				originY: 'center',
+				selectable: false,
+				objectCaching: false,
+				evented:false
+			}));
+			
+			for (var j=0; j<2; j++) {
+				var x0 = j == 0 ? xy.x - 0.5 : xy.x - 3.5,
+					y0 = j == 0 ? xy.y - 3.5 : xy.y - 0.5,
+					x1 = j == 0 ? xy.x - 0.5 : xy.x + 3.5,
+					y1 = j == 0 ? xy.y + 3.5 : xy.y - 0.5;
+				
+				canvas.add(new fabric.Line([x0, y0, x1, y1], {
+					stroke: 'white',
+					strokeWidth: 1,
+					selectable: false,
+					evented: false
+				}));
+			}
+        }
+    };
+
+    edit360Hotspot = function (url, hsattrs, id) {
+		// set up contents of lightbox (buttons, panorama & instructions)
+	    var $editImg = $("<div></div>")
+			.attr('id', 'outer_img_' + id)
+			.addClass('hotspotEditor');
+		
+		var btns = ['reset', 'ok', 'cancel'],
+			btnLang = [language.edit360Hotspot.Buttons.Reset, language.Alert.oklabel, language.Alert.cancellabel],
+			btnIcon = ['fa-undo-alt', 'fa-check-square', 'fa-window-close'];
+		
+        $editImg
+			.data("id", id)
+			.append('<div class="hsbutton_holder" id="hsbutton_holder_' + id + '" style="float: right;">');
+		
+		var $hsBtnHolder = $editImg.find('.hsbutton_holder');
+		
+		for (var i=0; i<btns.length; i++) {
+			$('<button id="' + btns[i] + '_' + id + '" class="hseditModeButton" title="' + btnLang[i] + '"><i class="fas fa-2x ' + btnIcon[i] + '"></i></button>').appendTo($hsBtnHolder);
+		}
+		
+		$editImg
+			//.append('<div id="hs360Hover" class="hover"><div>')
+			.append('<div id="panoramaHolder"><div id="panorama_' + id + '"></div><div class="hsinstructions" id="instructions_' + id + '"></div></div>');
+		
+		var instructions = language.edit360Hotspot.Instructions.header +
+				'<ul id="defaultInstructions">' +
+				'<li>' + language.edit360Hotspot.Instructions.line1 + '</li>' +
+				'<li>' + language.edit360Hotspot.Instructions.line2 + '</li>' +
+				'<li>' + language.edit360Hotspot.Instructions.reset + '</li>' +
+				'<li>' + language.edit360Hotspot.Instructions.save + '</li>' +
+				'</ul>';
+		
+		$editImg.find('#instructions_' + id).html(instructions);
+		
+		var currentHsDetails = {};
+		
+		// get the info about the icon appearance
+		if (hsattrs.icon == '' || hsattrs.icon == undefined) { currentHsDetails.icon = 'fa-info'; } else { currentHsDetails.icon = hsattrs.icon; }
+		if (hsattrs.colour1 == '' || hsattrs.colour1 == undefined) { currentHsDetails.colour1 = 'black'; } else { currentHsDetails.colour1 = hsattrs.colour1; }
+		if (hsattrs.colour2 == '' || hsattrs.colour2 == undefined) { currentHsDetails.colour2 = 'white'; } else { currentHsDetails.colour2 = hsattrs.colour2; }
+		if (hsattrs.orientation == '' || hsattrs.orientation == undefined) { currentHsDetails.orientation = '0'; } else { currentHsDetails.orientation = hsattrs.orientation; }
+		if (hsattrs.size == '' || hsattrs.size == undefined) { currentHsDetails.size = '12'; } else { currentHsDetails.size = hsattrs.size; }
+		
+		// correct the format of the colour codes (start with # rather than 0x)
+		currentHsDetails.colour1 = currentHsDetails.colour1.indexOf('0x') === 0 ? currentHsDetails.colour1.replace("0x", "#") : currentHsDetails.colour1;
+		currentHsDetails.colour2 = currentHsDetails.colour2.indexOf('0x') === 0 ? currentHsDetails.colour2.replace("0x", "#") : currentHsDetails.colour2;
+		
+		var panorama;
+		
+		// open lightbox
+		$.featherlight($editImg, {
+			closeOnClick: 'false',
+			closeOnEsc: true,
+			closeIcon: '',
+			afterOpen: function () {
+				
+				// scale panorama
+				var dimensions = [0.7 * $('body').width(), 0.7 * $('body').height() - $('#hsbutton_holder').height() - $('.hsinstructions').height()];
+				
+				$('#panorama_' + id).add('.hover')
+					.width(dimensions[0])
+					.height(dimensions[1]);
+				
+				$('#outer_img_' + id).width(dimensions[0]);
+				
+				// set up panorama
+				panorama = pannellum.viewer('panorama_' + id, {
+					'type': 'equirectangular',
+					'panorama': url,
+					'autoLoad': true,
+					'showFullscreenCtrl': false,
+					'pitch': Number(hsattrs.p), // turn to look at existing hotspot (if there is one)
+					'yaw': Number(hsattrs.y)
+				});
+				
+				// add hotspot (if there is one!)
+				if (hsattrs.p != '' && hsattrs.y != '') {
+					panorama.on('load', function(event) {
+						create360Hotspot(Number(hsattrs.p), Number(hsattrs.y));
+					});
+				}
+				
+				// move hotspot on mouse up (attempt to disregard dragging by looking at position of mouse down & making sure it was quite close)
+				var downPos = [];
+				
+				panorama.on('mousedown', function(event) {
+					downPos = panorama.mouseEventToCoords(event);
+				});
+				
+				panorama.on('mouseup', function(event) {
+					var coords = panorama.mouseEventToCoords(event);
+					
+					if (Math.abs(downPos[0]-coords[0]) < 0.01 && Math.abs(downPos[1]-coords[1]) < 0.01) {
+						create360Hotspot(coords[0], coords[1]);
+					}
+				});
+				
+				// remove existing hotspot & draw a new one
+				function create360Hotspot(pitch, yaw) {
+					panorama.removeHotSpot('currentHs');
+					
+					currentHsDetails.pitch = pitch;
+					currentHsDetails.yaw = yaw;
+					
+					panorama.addHotSpot({
+						'id': 'currentHs',
+						'pitch': pitch,
+						'yaw': yaw,
+						'cssClass': 'hotspot360Icon'
+					});
+					
+					// appearance of hotspots
+					$('.hotspot360Icon').append('<span class="icon360Holder"><span class="icon360"></span></span>');
+					
+					$('div.hotspot360Icon').css({
+						height: (Number(currentHsDetails.size)*2+2) + 'px',
+						width: (Number(currentHsDetails.size)*2+2) + 'px',
+						background: currentHsDetails.colour1,
+						'border-color': currentHsDetails.colour2,
+						'border-width': (Number(currentHsDetails.size)/4) + 'px'
+					});
+					
+					$('div.hotspot360Icon .icon360').css({
+						transform: 'rotate(' + currentHsDetails.orientation + 'deg)'
+					});
+					
+					$('div.hotspot360Icon').hover(
+						function() {
+							$(this).css('box-shadow', '0px 0px ' + (Number(currentHsDetails.size)/2) + 'px ' + currentHsDetails.colour2);
+						},
+						function() {
+							$(this).css('box-shadow', 'none');
+						});
+					
+					$('div.hotspot360Icon span.icon360')
+						.css({
+							'font-size': Number(currentHsDetails.size) + 'px',
+							color: currentHsDetails.colour2
+						})
+						.addClass(currentHsDetails.icon);
+				}
+			}
+		});
+		
+		// set up buttons
+		var key = $('#inner_img_' + id).data('key');
+		
+		// reset button - clear hotspot & all the customised icon info
+		$('.featherlight-content button#reset_' + id).click(function(event) {
+			panorama.removeHotSpot('currentHs');
+			currentHsDetails.pitch = '';
+			currentHsDetails.yaw = '';
+		});
+		
+		// OK button - save hotspot info & close lightbox
+		$('.featherlight-content button#ok_' + id).click(function(event) {
+			var current = $.featherlight.current();
+			setAttributeValue(key, ['p', 'y', 'icon'], [currentHsDetails.pitch, currentHsDetails.yaw, currentHsDetails.icon]);
+			current.close();
+			parent.tree.showNodeData(key);
+		});
+		
+		// cancel button - close lightbox without saving hotspot info
+		$('.featherlight-content button#cancel_' + id).click(function(event) {
+			var current = $.featherlight.current();
+			current.close();
+			parent.tree.showNodeData(key);
+		});
     };
 
     triggerRedrawPage = function(key)
@@ -3775,6 +4010,48 @@ var EDITOR = (function ($, parent) {
                     }
 
 				break;
+				
+			case 'hotspot360':
+				var id = 'hotspot360_' + form_id_offset;
+				form_id_offset++;
+
+                // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
+                // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
+				var hsattrs = lo_data[key].attributes;
+                var hsparent = parent.tree.getParent(key);
+                var hspattrs = lo_data[hsparent].attributes;
+
+				// Create the container
+				html = $('<div>').attr('id', id);
+
+				var url = hspattrs.file;
+				// Replace FileLocation + ' with full url
+				url = makeAbsolute(url);
+				// Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
+				if (url.substring(0,4) == "http")
+				{
+					var shape = "square";
+					html.addClass('clickableHotspot');
+					html.append("<img>");
+					var cur_key = key;
+					html.find('img')
+						.attr('id', 'inner_img_' + id)
+						.attr("data-key", cur_key)
+						.attr("src", url)
+						.load(function(){
+							$(this).css({width: '100%'});
+							draw360Hotspot(html, url, hsattrs, id);
+						}).click(function(){
+							edit360Hotspot(url, hsattrs, id);
+						});
+				}
+				else
+				{
+					html.append("<span class=\"error\">" + language.edit360Hotspot.Error.selectFile + "</span>");
+				}
+
+				break;
+				
 			case 'media':
 				var id = 'media_' + form_id_offset;
 				form_id_offset++;
@@ -3911,6 +4188,52 @@ var EDITOR = (function ($, parent) {
 				)
 					.append(language.edit.$label);
 				break;
+			
+			case 'fontawesome':
+				var id = 'icon_' + form_id_offset;
+				form_id_offset++;
+				html = $('<div>').attr('id', id);
+				
+				var $input = $('<input id="' + id + '_hiddenInput" class="icon_hiddenInput" type="text" value="' + value + '">')
+					.appendTo(html)
+					.data({
+						'id': id,
+						'key': key,
+						'name': name
+					})
+					.change(function() {
+						var $this = $(this);
+						
+						// if an icon hasn't already been chosen swap the 'select icon' button for the icon preview
+						if ($('#' + $this.data('id') + '_btn').find('i').length == 0) {
+							$('#' + $this.data('id') + '_btn').html('<i id="' + id + '_preview" class="fas fa-fw fa-lg ' + this.value + '" title="' + language.fontawesome.preview + ': ' + this.value + '"></i>');
+						} else {
+							$('#' + $this.data('id') + '_btn').find('i').attr('title', language.fontawesome.preview + ': ' + this.value);
+						}
+						
+						inputChanged($this.data('id'), $this.data('key'), $this.data('name'), this.value);
+					});
+				
+				$('<button id="' + id + '_btn" class="xerte_button icon_browse" data-iconpicker-input="input#' + id + '_hiddenInput" data-iconpicker-preview="i#' + id + '_preview"></button>')
+					.data('input', $input)
+					.html(value != undefined && value != '' ? '<i id="' + id + '_preview" class="' + value + '" title="' + language.fontawesome.preview + ': ' + value + '"></i>' : language.fontawesome.preview)
+					.appendTo(html)
+					.click(
+						// manually set height/position of icon picker after it's been created
+						function() {setTimeout(function() {
+							var totalH = $('body').height() * 0.9;
+							var availH = totalH - (parseInt($('.ip-icons-content').css('padding-top')) * 2) - $('.ip-icons-search').outerHeight(true) - $('.ip-icons-footer').outerHeight(true);
+							
+							$('.ip-icons-area').css('max-height', availH + 'px');
+							$('#IconPickerModal')
+								.css('top', $('body').height() * 0.05);
+						}, 10);
+					});
+				
+				iconpickers.push({id: id + '_btn', iconList: options.iconList});
+				
+				break;
+			
 			case 'webpage':  //Not used??
 			case 'xerteurl':
 			case 'xertelo':
@@ -3990,6 +4313,7 @@ var EDITOR = (function ($, parent) {
     my.convertTextAreas = convertTextAreas;
     my.convertTextInputs = convertTextInputs;
     my.convertColorPickers = convertColorPickers;
+	my.convertIconPickers = convertIconPickers;
     my.convertDataGrids = convertDataGrids;
     my.showToolBar = showToolBar;
     my.getIcon = getIcon;
