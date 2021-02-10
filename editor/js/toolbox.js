@@ -3215,11 +3215,11 @@ var EDITOR = (function ($, parent) {
 		var currentHsDetails = {};
 		
 		// get the info about the icon appearance
-		if (hsattrs.icon == '' || hsattrs.icon == undefined) { currentHsDetails.icon = 'fa-info'; } else { currentHsDetails.icon = hsattrs.icon; }
+		if (hsattrs.icon == '' || hsattrs.icon == undefined) { currentHsDetails.icon = 'fas fa-info'; } else { currentHsDetails.icon = hsattrs.icon; }
 		if (hsattrs.colour1 == '' || hsattrs.colour1 == undefined) { currentHsDetails.colour1 = 'black'; } else { currentHsDetails.colour1 = hsattrs.colour1; }
 		if (hsattrs.colour2 == '' || hsattrs.colour2 == undefined) { currentHsDetails.colour2 = 'white'; } else { currentHsDetails.colour2 = hsattrs.colour2; }
 		if (hsattrs.orientation == '' || hsattrs.orientation == undefined) { currentHsDetails.orientation = '0'; } else { currentHsDetails.orientation = hsattrs.orientation; }
-		if (hsattrs.size == '' || hsattrs.size == undefined) { currentHsDetails.size = '12'; } else { currentHsDetails.size = hsattrs.size; }
+		if (hsattrs.size == '' || hsattrs.size == undefined) { currentHsDetails.size = '16'; } else { currentHsDetails.size = hsattrs.size; }
 		
 		// correct the format of the colour codes (start with # rather than 0x)
 		currentHsDetails.colour1 = currentHsDetails.colour1.indexOf('0x') === 0 ? currentHsDetails.colour1.replace("0x", "#") : currentHsDetails.colour1;
@@ -4216,7 +4216,7 @@ var EDITOR = (function ($, parent) {
 				
 				$('<button id="' + id + '_btn" class="xerte_button icon_browse" data-iconpicker-input="input#' + id + '_hiddenInput" data-iconpicker-preview="i#' + id + '_preview"></button>')
 					.data('input', $input)
-					.html(value != undefined && value != '' ? '<i id="' + id + '_preview" class="' + value + '" title="' + language.fontawesome.preview + ': ' + value + '"></i>' : language.fontawesome.preview)
+					.html(value != undefined && value != '' ? '<i id="' + id + '_preview" class="fa-fw ' + value + '" title="' + language.fontawesome.preview + ': ' + value + '"></i>' : language.fontawesome.preview)
 					.appendTo(html)
 					.click(
 						// manually set height/position of icon picker after it's been created
