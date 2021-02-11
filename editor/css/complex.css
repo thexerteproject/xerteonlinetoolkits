@@ -1311,6 +1311,15 @@ div.hotspot360Icon span.icon360Holder {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+	display: table;
+}
+
+div.hotspot360Icon span.icon360Holder .icon360 {
+	display: table-cell;
+}
+
+#panoramaHolder .pnlm-dragfix {
+	cursor: default;
 }
 
 /* start of xertecss.css

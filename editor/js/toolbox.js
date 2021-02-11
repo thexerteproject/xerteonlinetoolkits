@@ -3281,6 +3281,7 @@ var EDITOR = (function ($, parent) {
 					
 					currentHsDetails.pitch = pitch;
 					currentHsDetails.yaw = yaw;
+					var borderWidth = Number(currentHsDetails.size)/4;
 					
 					panorama.addHotSpot({
 						'id': 'currentHs',
@@ -3289,35 +3290,30 @@ var EDITOR = (function ($, parent) {
 						'cssClass': 'hotspot360Icon'
 					});
 					
-					// appearance of hotspots
-					$('.hotspot360Icon').append('<span class="icon360Holder"><span class="icon360"></span></span>');
-					
-					$('div.hotspot360Icon').css({
-						height: (Number(currentHsDetails.size)*2+2) + 'px',
-						width: (Number(currentHsDetails.size)*2+2) + 'px',
-						background: currentHsDetails.colour1,
-						'border-color': currentHsDetails.colour2,
-						'border-width': (Number(currentHsDetails.size)/4) + 'px'
-					});
-					
-					$('div.hotspot360Icon .icon360').css({
-						transform: 'rotate(' + currentHsDetails.orientation + 'deg)'
-					});
-					
-					$('div.hotspot360Icon').hover(
-						function() {
-							$(this).css('box-shadow', '0px 0px ' + (Number(currentHsDetails.size)/2) + 'px ' + currentHsDetails.colour2);
-						},
-						function() {
-							$(this).css('box-shadow', 'none');
-						});
-					
-					$('div.hotspot360Icon span.icon360')
+					// hotspot styles
+					$('.hotspot360Icon')
+						.append('<span class="icon360Holder"><span class="icon360"></span></span>')
 						.css({
-							'font-size': Number(currentHsDetails.size) + 'px',
-							color: currentHsDetails.colour2
+							height: (Number(currentHsDetails.size)*2+2) + 'px',
+							width: (Number(currentHsDetails.size)*2+2) + 'px',
+							background: currentHsDetails.colour1,
+							'border-color': currentHsDetails.colour2,
+							'border-width': borderWidth + 'px'
 						})
-						.addClass(currentHsDetails.icon);
+						.hover(
+							function() {
+								$(this).css('box-shadow', '0px 0px ' + (Number(currentHsDetails.size)/2) + 'px ' + currentHsDetails.colour2);
+							},
+							function() {
+								$(this).css('box-shadow', 'none');
+							})
+						.find('.icon360')
+							.css({
+								transform: 'rotate(' + currentHsDetails.orientation + 'deg)',
+								'font-size': Number(currentHsDetails.size) + 'px',
+								color: currentHsDetails.colour2
+							})
+							.addClass(currentHsDetails.icon);
 				}
 			}
 		});
