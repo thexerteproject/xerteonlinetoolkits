@@ -797,34 +797,36 @@
 				if (mp.media.player.controlsEnabled == true)
 				{
 					time = mp.currentTime();
-					switch(e.key){
-					case "m":
-						if (isMuted) {
-							mp.unmute();
-							isMuted = false;
-							$muteButton.removeClass('fa-x-unmute').addClass('fa-x-mute');
+					switch(e.key)
+					{
+						case "m":
+							if (isMuted) {
+								mp.unmute();
+								isMuted = false;
+								$muteButton.removeClass('fa-x-unmute').addClass('fa-x-mute');
+							}
+							else {
+								mp.mute();
+								isMuted = true;
+								$muteButton.removeClass('fa-x-mute').addClass('fa-x-unmute');
+							}
+							break;
+						case "k":
+						case " ":
+							if(isPlaying) {
+								mp.pause();
+							}
+							else {
+								mp.play();
+							}	
+							break;
+						case "l":
+							mp.currentTime(time + 10);
+							break;
+						case "j":
+							mp.currentTime(time - 10);	
+							break;
 						}
-						else {
-							mp.mute();
-							isMuted = true;
-							$muteButton.removeClass('fa-x-mute').addClass('fa-x-unmute');
-						}
-						break;
-					case "k":
-					case " ":
-						if(isPlaying) {
-							mp.pause();
-						}
-						else {
-							mp.play();
-						}	
-						break;
-					case "l":
-						mp.currentTime(time + 10);
-						break;
-					case "j":
-						mp.currentTime(time - 10);	
-						break;
 				}
 
 			}
