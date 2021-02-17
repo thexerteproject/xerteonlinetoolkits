@@ -3966,7 +3966,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 			// if it's first attempt to replace vars on this page look at vars in image tags first
 			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
 			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
-				var $tempText = $(tempText);
+				var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
 				for (var m=0; m<$tempText.find('img').length; m++){
 					var tempImgTag = $tempText.find('img')[m].outerHTML,
 						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
