@@ -3354,7 +3354,7 @@ var EDITOR = (function ($, parent) {
 		// OK button - save hotspot info & close lightbox
 		$('.featherlight-content button#ok_' + id).click(function(event) {
 			var current = $.featherlight.current();
-			setAttributeValue(key, ['p', 'y', 'icon'], [currentHsDetails.pitch, currentHsDetails.yaw, currentHsDetails.icon]);
+			setAttributeValue(key, ['p', 'y'], [currentHsDetails.pitch, currentHsDetails.yaw]);
 			current.close();
 			parent.tree.showNodeData(key);
 		});
