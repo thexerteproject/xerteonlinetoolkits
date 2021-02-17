@@ -2274,59 +2274,82 @@ var EDITOR = (function ($, parent) {
      * getPagelist in an array. the array has contains arrays of length 2, the first element is the name (or label
      * the second element is the value
      *
-     * This is the format that ckEditor dialog expects for se;ect lists
+     * This is the format that ckEditor dialog expects for select lists
      * We use the same format in the displayDataType for the pagelist type.
      *
      * Also make sure we only take the text from the name, and not the full HTML
      */
-	getPageList = function()
+	getPageList = function(thisKey, thisTarget)
 	{
 		
 		var tree = $.jstree.reference("#treeview");
-		var lo_node = tree.get_node("treeroot", false);
 		var pages=[];
 		
-		if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
+		// list of everything at same level or everything at parent's level
+		if (thisTarget != undefined) {
+			
+			var level = Number(thisTarget); // 0 finds nodes at this level, 1 finds nodes at parent level, 2 finds nodes at parent's parent level....
+			var lo_node = tree.get_node(tree.get_node(thisKey, false).parents[level], false);
+			
+			$.each(lo_node.children, function(i, key){
+					var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+					var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+					
+					if (linkID.found && linkID.value != "") {
+						var page = [];
+						// Also make sure we only take the text from the name, and not the full HTML
+						page.push(getTextFromHTML(name.value));
+						page.push(linkID.value);
+						pages.push(page);
+					}
+			});
+			
+		// list of all pages & their children (if deep linking allowed)
+		} else if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
 			pages = [
-								[language.XotLinkRelativePages.firstpage,'[first]'],
-								[language.XotLinkRelativePages.lastpage,'[last]'],
-								[language.XotLinkRelativePages.prevpage,'[previous]'],
-								[language.XotLinkRelativePages.nextpage,'[next]']
-							];
-						$.each(lo_node.children, function(i, key){
+						[language.XotLinkRelativePages.firstpage,'[first]'],
+						[language.XotLinkRelativePages.lastpage,'[last]'],
+						[language.XotLinkRelativePages.prevpage,'[previous]'],
+						[language.XotLinkRelativePages.nextpage,'[next]']
+					];
+			
+			var lo_node = tree.get_node("treeroot", false);
+			
+			$.each(lo_node.children, function(i, key){
+					var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+					/*var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);*/
+					var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+					var hidden = lo_data[key]['attributes'].hidePage;
+					
+					if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
+					{
+						
+						var page = [];
+						// Also make sure we only take the text from the name, and not the full HTML
+						page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
+						page.push(/*pageID.found ? pageID.value :*/ linkID.value);
+						pages.push(page);
+
+						// Now we do the children (if deeplinking is allowed)
+						if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
+							var childNode = tree.get_node(key, false);
+							$.each(childNode.children, function(i, key){
 								var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-								/*var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);*/
+								//var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
 								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-								var hidden = lo_data[key]['attributes'].hidePage;
-								
 								if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
 								{
-										var page = [];
-										// Also make sure we only take the text from the name, and not the full HTML
-										page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
-										page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-										pages.push(page);
-
-										// Now we do the children (if deeplinking is allowed)
-										if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
-											var childNode = tree.get_node(key, false);
-											$.each(childNode.children, function(i, key){
-												var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-												//var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-												var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-												if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
-												{
-													var page = [];
-													// Also make sure we only take the text from the name, and not the full HTML
-													page.push(getTextFromHTML("&nbsp;- "+name.value));
-													page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-													pages.push(page);
-												}
-											});
-										}
+									var page = [];
+									// Also make sure we only take the text from the name, and not the full HTML
+									page.push(getTextFromHTML("&nbsp;- "+name.value));
+									page.push(/*pageID.found ? pageID.value :*/ linkID.value);
+									pages.push(page);
 								}
-						});
+							});
+						}
 					}
+			});
+		}
 		
 		return pages;
 	},
@@ -3503,7 +3526,7 @@ var EDITOR = (function ($, parent) {
 				}
 				break;
 			case 'pagelist':
-				// Implement differently then in the flash editor
+				// Implement differently than in the flash editor
 				// Leave PageIDs untouched, and prefer to use the PageID over the linkID
 				var id = 'select_' + form_id_offset;
 				form_id_offset++;
@@ -3524,7 +3547,14 @@ var EDITOR = (function ($, parent) {
 					option.prop('selected', true);
 				option.append("&nbsp;");
 				html.append(option);
-				var pages = getPageList();
+				// by default the drop down will list all pages (& relevant nested pages) - can also be set to target everything at this level or at this item's parent level
+				var pages;
+				if (options.listTarget != undefined) {
+					pages = getPageList(key, options.listTarget);
+				} else {
+					pages = getPageList();
+				}
+				
 				$.each(pages, function(page)
 				{
 					option = $('<option>')
