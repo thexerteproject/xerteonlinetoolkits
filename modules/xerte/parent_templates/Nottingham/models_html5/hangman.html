@@ -228,8 +228,8 @@
 						const letter = letterID.toLowerCase();
 						if ($.trim(letter) !== "") { // ignore non-character key presses e.g. tab
 							if (thisWord.indexOf(letter.toUpperCase()) !== -1 || thisWord.indexOf(letter.toLowerCase()) !== -1 || specialCharacters === true) { // correct
-								console.log("correct");
 								var startIndex = thisWord.indexOf(letter);
+
 								while (startIndex > -1) {
 									$($clue.find(".dash, .space")[startIndex]).html(letter);
 									startIndex = thisWord.indexOf(letter, startIndex + 1);

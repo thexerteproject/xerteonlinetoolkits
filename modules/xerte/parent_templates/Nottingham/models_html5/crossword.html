@@ -8,7 +8,10 @@
 	// other functions for model should also be in here to avoid conflicts
 	var crossword = new function () {
 
-
+        var startPositionArray = []
+        var tab = 0;
+        var active = 0;
+        var nextPosition;
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function () {
 
@@ -20,9 +23,8 @@
         }
 
         this.move = function (){
-            var active = 0;
-            rePosition();
 
+            rePosition();
             $(document).keydown(function(e) {
 
                 var inp = String.fromCharCode(e.keyCode);
@@ -32,16 +34,98 @@
                     // if key is an arrow key, don't type the user input.
                     // if it is any other key (a, b, c, etc)
                     // edit the text
-                    if (e.keyCode > 36 && e.keyCode < 41) {
+
+                    if (e.keyCode > 36 && e.keyCode < 41 || e.keyCode === 9) {
                         return false;
                     }
                 }
             });
 
             $('td').click(function() {
-                d
+
                 active = $(this).closest('table tbody').find('td').index(this);
+                if($('#crossword-table tbody tr td').eq(active).find('input')[0] !== undefined) {
                 rePosition();
+                removeHighlight();
+
+                var rows = $('#crossword-table tbody tr').length;
+                var columns = $('#crossword-table tbody tr:eq(0) td').length;
+
+
+                var wholeNumber = Math.floor(active/columns)
+                var remainder = active%columns
+
+
+                    for (var i = 0; i < startPositionArray.length; i++) {
+                        if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
+                            if (startPositionArray[i][2] === "across") {
+                                for (var j = 0; j < columns; j++) {
+                                    if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined) {
+                                        $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
+                                        nextPosition = startPositionArray[i][2]
+                                    } else {
+                                        return
+                                    }
+                                }
+
+                            } else {
+                                for (var j = 0; j < rows; j++) {
+                                    var temp = j * columns
+                                    if ($('#crossword-table tbody tr td').eq(active + temp).find('input')[0] !== undefined) {
+                                        $('#crossword-table tbody tr td').eq(active + temp).addClass('highlighted')
+                                        nextPosition = startPositionArray[i][2]
+                                    } else {
+                                        return;
+                                    }
+                                }
+                            }
+                            return
+                        }
+                    }
+                    for (var i = 0; i < startPositionArray.length; i++) {
+                        if (startPositionArray[i][0] == wholeNumber) {
+                            for (var j = 0; j < columns; j++) {
+                                var temp = startPositionArray[i][0] * columns
+                                temp += startPositionArray[i][1]
+                                if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined) {
+                                    $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
+                                    nextPosition = startPositionArray[i][2]
+                                } else {
+                                    return;
+                                }
+                            }
+
+                            return
+                        }
+                    }
+                    for (var i = 0; i < startPositionArray.length; i++) {
+                        if (startPositionArray[i][1] == remainder) {
+                            var alignH
+                            var alignV
+                            if(startPositionArray[i][2]=="across"){
+                                alignH = columns
+                                alignV= rows
+                            }else{
+                                alignH = columns
+                                alignV = rows
+                            }
+                            for (var j = 0; j < alignV; j++) {
+                                var temp = startPositionArray[i][0] * alignH
+                                temp += startPositionArray[i][1]
+
+                                var add = j * alignH
+                                if ($('#crossword-table tbody tr td').eq(temp + add).find('input')[0] !== undefined) {
+                                    $('#crossword-table tbody tr td').eq(temp + add).addClass('highlighted')
+                                    nextPosition = startPositionArray[i][2]
+                                } else {
+                                    return;
+                                }
+                            }
+                            return
+                        }
+                    }
+                }
+
             });
 
             function reCalculate(e) {
@@ -50,14 +134,38 @@
                 var columns = $('#crossword-table tbody tr:eq(0) td').length;
                 var temp;
 
+                var tabColumns;
+                var tabRow;
+                var total;
+
+
+
                 if (e.keyCode == 37) {
                     temp = active;
                     while (temp > 0) {
                         temp = temp - 1;
-
+                        removeHighlight();
                         if ($('#crossword-table tbody tr td').eq(temp).find('input').length != 0) {
                             active = temp;
-                            break;
+                            var wholeNumber = Math.floor(active / columns)
+                            var remainder = active % columns
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][0] == wholeNumber) {
+
+                                    addHighlight(active, i, rows, columns,"arrow")
+
+                                    return
+                                }
+                            }
+
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][1] == remainder) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
                         }
                     }
                 }
@@ -65,10 +173,28 @@
                     temp = active;
                     while (temp - columns >= 0) {
                         temp = temp - columns;
-
+                        removeHighlight();
                         if ($('#crossword-table tbody tr td').eq(temp).find('input').length != 0) {
                             active = temp;
-                            break;
+                            var wholeNumber = Math.floor(active / columns)
+                            var remainder = active % columns
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][0] == wholeNumber) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
+
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][1] == remainder) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
                         }
                     }
                 }
@@ -76,10 +202,28 @@
                     temp = active;
                     while (temp < (columns * rows) - 1) {
                         temp = temp + 1;
-
+                        removeHighlight();
                         if ($('#crossword-table tbody tr td').eq(temp).find('input').length != 0) {
                             active = temp;
-                            break;
+                            var wholeNumber = Math.floor(active / columns)
+                            var remainder = active % columns
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][0] == wholeNumber) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
+
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][1] == remainder) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
                         }
                     }
                 }
@@ -87,13 +231,137 @@
                     temp = active;
                     while (temp + columns <= (rows * columns) - 1) {
                         temp = temp + columns;
-
+                        removeHighlight();
                         if ($('#crossword-table tbody tr td').eq(temp).find('input').length != 0) {
                             active = temp;
-                            break;
+                            var wholeNumber = Math.floor(active / columns)
+                            var remainder = active % columns
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][0] == wholeNumber) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
+
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][1] == remainder) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
                         }
                     }
                 }
+
+                if(e.keyCode == 9){
+
+                    temp = active
+                    var wholeNumber = Math.floor(temp/columns)
+                    var remainder = active%columns
+                    var searching = true
+                    removeHighlight();
+                    while(searching) {
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
+                                tab = i + 1
+                                if(tab >= startPositionArray.length){
+                                   tab = 0
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+
+                                addHighlight(active, i, rows,columns, "tab")
+
+                                searching = false
+                                return
+                            }
+                        }
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber) {
+                                tab = i + 1
+                                if(tab >= startPositionArray.length) {
+                                 tab = 0
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+                                addHighlight(active, i, rows,columns, "tab")
+
+                                searching = false
+                                return
+                            }
+                        }
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][1] == remainder) {
+                                tab = i + 1
+                                if(tab >= startPositionArray.length) {
+                                    tab = 0
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+
+                                addHighlight(active, i, rows,columns, "tab")
+
+                                searching = false
+                                return
+                            }
+                        }
+                    }
+                }
+            }
+
+            next = function (e){
+
+                var columns = $('#crossword-table tbody tr:eq(0) td').length;
+
+                var wholeNumber = Math.floor(active/columns)
+                var remainder = active%columns
+
+                if(e > 36 && e < 41 || e === 9){
+                    for(var i = 0; i < startPositionArray.length; i++){
+                        if(startPositionArray[i][0] == wholeNumber){
+                            nextPosition = startPositionArray[i][2]
+
+                        }
+                    }
+                    for (var i = 0; i < startPositionArray.length; i++) {
+                        if (startPositionArray[i][1] == remainder) {
+                            nextPosition = startPositionArray[i][2]
+                        }
+                    }
+                }else if(e > 64 && e < 91){
+
+                    if(nextPosition === "across"){
+                        active++
+                        relocateFocus(active)
+                        return;
+                    }else{
+                        active+=columns
+                        relocateFocus(active)
+                        return;
+                    }
+                }else if(e === 8){
+                    if(nextPosition === "across"){
+                        active--
+                        relocateFocus(active)
+                        return;
+                    }else{
+                        active-=columns
+                        relocateFocus(active)
+                        return;
+                    }
+                }
+
+
             }
 
             function rePosition() {
@@ -104,6 +372,150 @@
                 $('#crossword-table tbody tr td').eq(active).find('input').select();
                 var input = $('#crossword-table tbody tr td').eq(active).find('input').focus();
                 scrollInView();
+            }
+
+            function relocateFocus(active){
+                $('.active').removeClass('active');
+                $('#crossword-table tbody tr td').eq(active).addClass('active');
+                $('#crossword-table tbody tr td').find('input').removeClass('textClass');
+                $('#crossword-table tbody tr td').eq(active).find('input').addClass('textClass');
+                $('#crossword-table tbody tr td').eq(active).find('input').select();
+                var input = $('#crossword-table tbody tr td').eq(active).find('input').focus();
+            }
+
+            removeHighlight = function (){
+                var rows = $('#crossword-table tbody tr').length;
+                var columns = $('#crossword-table tbody tr:eq(0) td').length;
+                var total = rows*columns
+                for(var i = 0; i < total; i++){
+                    $('#crossword-table tbody tr td').eq(i).removeClass('highlighted')
+                }
+
+            }
+
+            addHighlightHint = function (id){
+
+                removeHighlight();
+                var rows = $('#crossword-table tbody tr').length;
+                var columns = $('#crossword-table tbody tr:eq(0) td').length;
+                id = parseInt(id)-1
+                var num1 = startPositionArray[id][0]*columns
+                num1+= startPositionArray[id][1]
+                relocateFocus(num1)
+                if (startPositionArray[id][2] === "across") {
+                    for (var j = 0; j < columns; j++) {
+                        var temp = startPositionArray[id][0] * columns
+                        temp+= startPositionArray[id][1]
+                        if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined) {
+                            $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
+                        } else {
+                            return
+                        }
+
+                    }
+
+                } else {
+                    for (var j = 0; j < columns; j++) {
+                        var temp = startPositionArray[id][0] * columns
+                        temp+= startPositionArray[id][1]
+
+                        var add = j * columns
+                        if ($('#crossword-table tbody tr td').eq(temp + add).find('input')[0] !== undefined) {
+                            $('#crossword-table tbody tr td').eq(temp + add).addClass('highlighted')
+                        } else {
+                            return;
+                        }
+                    }
+                }
+            }
+
+
+
+            addHighlight = function (active, position, rows, columns, type){
+
+                if(type === "tab") {
+                    if (startPositionArray[position + 1] !== undefined) {
+                        if (startPositionArray[position + 1][2] === "across") {
+                            for (var j = 0; j < columns; j++) {
+                                if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined) {
+                                    $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
+                                } else {
+                                    return
+                                }
+
+                            }
+
+                        } else {
+                            for (var j = 0; j < rows; j++) {
+                                var temp = j * columns
+                                if ($('#crossword-table tbody tr td').eq(active + temp).find('input')[0] !== undefined) {
+                                    $('#crossword-table tbody tr td').eq(active + temp).addClass('highlighted')
+                                } else {
+                                    return;
+                                }
+                            }
+                        }
+                    } else {
+                        if (startPositionArray[0][2] === "across") {
+                            for (var j = 0; j < columns; j++) {
+                                if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined) {
+                                    $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
+                                } else {
+                                    return
+                                }
+                            }
+
+                        } else {
+                            for (var j = 0; j < rows; j++) {
+                                var temp = j * columns
+                                if ($('#crossword-table tbody tr td').eq(active + temp).find('input')[0] !== undefined) {
+                                    $('#crossword-table tbody tr td').eq(active + temp).addClass('highlighted')
+                                } else {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }else if(type === "arrow"){
+
+                    if (startPositionArray[position] !== undefined) {
+                        if (startPositionArray[position][2] === "across") {
+                            for (var j = 0; j < columns; j++) {
+                                var temp = startPositionArray[position][0] * columns
+                                temp+= startPositionArray[position][1]
+                                if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined) {
+                                    $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
+                                } else {
+                                    return
+                                }
+
+                            }
+
+                        } else {
+
+                            var alignH
+                            var alignV
+                            if(startPositionArray[position][2]=="across"){
+                                alignH = columns
+                                alignV= rows
+                            }else{
+                                alignH = columns
+                                alignV = rows
+                            }
+                            for (var j = 0; j < alignV; j++) {
+                                var temp = startPositionArray[position][0] * alignH
+                                temp+= startPositionArray[position][1]
+
+                                var add = j * alignH
+                                if ($('#crossword-table tbody tr td').eq(temp + add).find('input')[0] !== undefined) {
+                                    $('#crossword-table tbody tr td').eq(temp + add).addClass('highlighted')
+                                } else {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             function scrollInView() {
@@ -126,10 +538,29 @@
 			//array with hints
 			var hints = [];
 
-			$("#pageContents").append(
-				'<div id="crossword"></div><table id="clues"><thead><tr><th>Across</th><th>Down</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
-                '<button id="show_button" onclick=\"showAnswers()\">Show answers</button>'
-            );
+			var position = x_currentPageXML.getAttribute("align")
+            if (x_browserInfo.touchScreen === false) {
+                if (position == "Right") {
+                    $("#pageContents").append(
+                        '<div id="pageContents-innerContainer"><div id="crossword"></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"showAnswers()\">Show answers</button></div></div></div>'
+                    );
+                } else if (position == "Left") {
+                    $("#pageContents").append(
+                        '<div id="pageContents-innerContainer"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"showAnswers()\">Show answers</button></div></div><div id="crossword"></div></div>'
+                    );
+                } else if (position == "Bottom") {
+                    $("#pageContents").append(
+                        '<div id="crossword"></div><table id="clues"><thead><tr><th>Across</th><th>Down</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
+                        '<button id="show_button" onclick=\"showAnswers()\">Show answers</button>'
+                    );
+                }
+            }else{
+                $("#pageContents").append(
+                    '<div id="crossword"></div><table id="clues"><thead><tr><th>Across</th><th>Down</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
+                    '<button id="show_button" onclick=\"showAnswers()\">Show answers</button>'
+                );
+            }
+
 
 			//store all the words and hints
 			$(x_currentPageXML).children().each(function (i) {
@@ -167,6 +598,9 @@
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		}
+
+
+
         var cw = ""
         function getCrossword(words, hints){
 		    if(cw === ""){
@@ -176,16 +610,17 @@
 		    return cw;
         }
 
-		function addLegendToPage(groups) {
-			for (var k in groups) {
-				var html = [];
-				for (var i = 0; i < groups[k].length; i++) {
-					html.push("<li><strong>" + groups[k][i]['position'] + ".</strong> " + groups[k][i]['clue'] +
-						"</li>");
-				}
-				document.getElementById(k).innerHTML = html.join("\n");
-			}
-		}
+        function addLegendToPage(groups) {
+            for (var k in groups) {
+                var html = [];
+                for (var i = 0; i < groups[k].length; i++) {
+                    html.push("<li class='li-clue' id='"+ groups[k][i]['position']+ "' onclick=\"hintClick(this)\"'><strong>" + groups[k][i]['position'] + ".</strong> " + groups[k][i]['clue'] +
+                        "</li>");
+                }
+                document.getElementById(k).innerHTML = html.join("\n");
+            }
+        }
+
 
 		// Each cell on the crossword grid is null or one of these
 		function CrosswordCell(letter) {
@@ -314,6 +749,7 @@
 				};
 				var position = 1;
 				for (var r = 0; r < grid.length; r++) {
+
 					for (var c = 0; c < grid[r].length; c++) {
 						var cell = grid[r][c];
 						var increment_position = false;
@@ -553,6 +989,7 @@
 			}
 
             showAnswers = function () {
+			    removeHighlight();
 			    var coordinates = [];
                 var letters = [];
                 var coordinate = ""
@@ -583,6 +1020,11 @@
 
                 document.getElementById("show_button").disabled = true;
             }
+
+            hintClick = function (hint){
+                addHighlightHint(hint.id)
+            }
+
 
 
 			var clear = function () {
@@ -617,6 +1059,18 @@
 			});
 		}
 
+        $(document).on('input', e => {
+
+            var keyCode = e.originalEvent.data.charCodeAt(0);
+            if(keyCode > 96 && keyCode < 155){
+                keyCode^=32
+            }
+            next(keyCode)
+
+        })
+
+
+
 		var CrosswordUtils = {
 			PATH_TO_PNGS_OF_NUMBERS: "/modules/xerte/parent_templates/Nottingham/common_html5/numbers/",
 
@@ -644,24 +1098,28 @@
                             var css_class = "no-border";
 
                             if(is_start_of_word){
-                                if(cell['down'] !== null && cell['across'] !== null){
 
+                                if(cell['down'] !== null && cell['across'] !== null){
                                     if(cell['across']['is_start_of_word']===false){
-                                        var char ="<div id='input__container' class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'  maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                        var char ="<div id='"+legend['down'][counterDown].position+"' class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input  type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'  maxlength='1' id='" + r + "," + c + "' /></div>"
+                                        startPositionArray.push([r,c,"down"])
                                         counterDown++;
                                     }else{
-                                        var char ="<div id='input__container' class='placeholder' data-placeholder='"+ legend['across'][counterAcross].position +"'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'   maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                        var char ="<div id='"+legend['across'][counterAcross].position+"'  class='placeholder' data-placeholder='"+ legend['across'][counterAcross].position +"'><input  type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'   maxlength='1' id='" + r + "," + c + "' /></div>"
+                                        startPositionArray.push([r,c,"across"])
                                         counterAcross++;
                                     }
                                 }else if (cell['down'] !== null) {
-                                    var char ="<div id='input__container' class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'  maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                    var char ="<div id='"+legend['down'][counterDown].position+"'  class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'  maxlength='1' id='" + r + "," + c + "' /></div>"
+                                    startPositionArray.push([r,c,"down"])
                                     counterDown++;
                                 }else{
-                                    var char ="<div id='input__container' class='placeholder' data-placeholder='"+ legend['across'][counterAcross].position +"' maxlength='1'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input' maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                    var char ="<div id='"+legend['across'][counterAcross].position+"' ' class='placeholder' data-placeholder='"+ legend['across'][counterAcross].position +"' maxlength='1'><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input' maxlength='1' id='" + r + "," + c + "' /></div>"
+                                    startPositionArray.push([r,c,"across"])
                                     counterAcross++;
                                 }
                             }else{
-                                var char ="<div id='input__container' class='placeholder' ><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'  placeholder='' maxlength='1' id='" + r + "," + c + "' name='" + grid[r][c].char + "' /></div>"
+                                var char ="<div id='input__container' class='placeholder' ><input type='text' style='width: 35px; height: 35px;' autocomplete='off' class='crossword-input'  placeholder='' maxlength='1' id='" + r + "," + c + "' /></div>"
 
                             }
 
@@ -686,6 +1144,7 @@
 				}
 				html.push("</tbody>")
 				html.push("</table>");
+
 
 				return html.join("\n");
 
