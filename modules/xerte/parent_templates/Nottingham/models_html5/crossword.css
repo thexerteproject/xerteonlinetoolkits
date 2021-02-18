@@ -40,9 +40,9 @@
     font-size: 30px;
 }
 
-.crossword-input[type=text]{
-    text-align: center;
-}
+/*.crossword-input[type=text]{*/
+/*    text-align: center;*/
+/*}*/
 
 .hide_answer {
     color: transparent;
@@ -60,6 +60,20 @@
 #clues td {
     vertical-align: top;
     padding: 0;
+}
+
+.table-hint{
+    list-style-type:none ;
+
+}
+
+#across{
+    padding-left: 0;
+    padding-right:20px ;
+}
+
+#down{
+    padding-left: 0;
 }
 
 #x_pageDiv table td, #x_pageDiv table th{
@@ -98,4 +112,31 @@
      pointer-events: none;
      opacity: 0.5;
      z-index: 1;
+ }
+
+ .highlighted .crossword-input[type=text]{
+     background-color: yellow;
+ }
+
+ #pageContents-innerContainer{
+     display: flex ;
+ }
+
+ #clues-container{
+     width: 20%;
+
+ }
+
+ #crossword{
+     flex: 1;
+ }
+
+ #showButton{
+     padding-top: 20px;
+     justify-content: flex-start;
+     width: 103px;
+ }
+
+ .li-clue{
+     cursor: pointer;
  }
