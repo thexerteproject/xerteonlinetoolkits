@@ -6132,6 +6132,7 @@
     <movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
     <transcript label="Transcript" type="textArea" height="150" optional="true"/>
 	<iframeRatio label="iframe Aspect Ratio" type="TextInput" defaultValue="16:9" tooltip="Aspect ratio of iframes when used instead of uploaded videos" optional="true"/>
+	<iframeMax label="iframe Max Size" type="TextInput" defaultValue="0.6" tooltip="The maximum width of the iframe in relation to the width of the whole page. Enter a number between 0.1 and 1" optional="true"/>
 
   <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>

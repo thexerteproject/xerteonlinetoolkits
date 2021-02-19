@@ -32,8 +32,17 @@
 		this.sizeChanged = function() {
 			var $pageVideo = $("#pageVideo");
 			if ($pageVideo.hasClass('iframe')) {
-				// scale the iframe so it stays the right aspect ratio
-				var maxW = x_browserInfo.mobile == true ? 1 : 0.6,
+				// scale the iframe so it stays the right aspect ratio & doesn't exceed the max size (60% of width by default but can be changed with opt property
+				var iframeMax = x_currentPageXML.getAttribute("iframeMax");
+				if ($.isNumeric(x_currentPageXML.getAttribute("iframeMax"))) {
+					iframeMax = Number(x_currentPageXML.getAttribute("iframeMax"));
+					iframeMax = Math.max(iframeMax, 0.1);
+					iframeMax = Math.min(iframeMax, 1);
+				} else {
+					iframeMax = 0.6;
+				}
+				
+				var maxW = x_browserInfo.mobile == true ? 1 : iframeMax,
 					maxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height()) - ($('.x_floatRight').outerHeight() - $('.x_floatRight').height());
 				
 				var width = $x_pageDiv.width() * maxW;
