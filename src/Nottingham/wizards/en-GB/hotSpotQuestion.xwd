@@ -10,7 +10,7 @@
   </pageWizard>
 
   <!-- HOTSPOT IMAGE INTERACTION============================= -->
-  <hotSpotQuestion menu="Interactivity" menuItem="Hotspot Question" hint="Mark a certain area of an image. When creating the question, you can specify what area of the picture acts as the answer and customize its size." icon="hotspotQuestion"  thumb="thumbs/hotspotQuestion.jpg" remove="true">
+  <hotSpotQuestion menu="Interactivity" menuItem="Hotspot Question" hint="Mark a certain area of an image. When creating the question, you can specify what area of the picture acts as the answer and customize its size." icon="icHotspotQuestion"  thumb="thumbs/hotspotQuestion.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="250"/>
