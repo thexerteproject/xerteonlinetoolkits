@@ -1975,7 +1975,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		var tabs = $( '<ul class="nav nav-pills" id="tab' + sectionIndex + '_' + itemIndex + '"/>' );
 	}
 
-	var content = $( '<div class="tab-content"/>' );
+	var content = $( '<div class="tab-content" tabindex="0"/>' );
 
 	var iframe = [],
 		pdf = [],
@@ -1986,13 +1986,13 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 
 			tabs.append( $('<li class="active"><a href="#tab' + sectionIndex + '_' + itemIndex + '_' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>') );
 
-			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane active"/>')
+			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane active" tabindex="0"/>')
 
 		} else {
 
 			tabs.append( $('<li><a href="#tab' + sectionIndex + '_' + itemIndex + '_' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>') );
 
-			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane"/>')
+			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane" tabindex="0"/>')
 
 		}
 
@@ -2147,7 +2147,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 		}
 
 
-		var inner = $('<div class="accordion-inner">');
+		var inner = $('<div class="accordion-inner" tabindex="0">');
 
 		$(this).children().each( function(i, value){
 
