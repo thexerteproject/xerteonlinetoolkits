@@ -3221,9 +3221,7 @@ var EDITOR = (function ($, parent) {
 			$('<button id="' + btns[i] + '_' + id + '" class="hseditModeButton" title="' + btnLang[i] + '"><i class="fas fa-2x ' + btnIcon[i] + '"></i></button>').appendTo($hsBtnHolder);
 		}
 		
-		$editImg
-			//.append('<div id="hs360Hover" class="hover"><div>')
-			.append('<div id="panoramaHolder"><div id="panorama_' + id + '"></div><div class="hsinstructions" id="instructions_' + id + '"></div></div>');
+		$editImg.append('<div id="panoramaHolder"><div id="panorama_' + id + '"></div><div class="hsinstructions" id="instructions_' + id + '"></div></div>');
 		
 		var instructions = language.edit360Hotspot.Instructions.header +
 				'<ul id="defaultInstructions">' +
@@ -3272,6 +3270,7 @@ var EDITOR = (function ($, parent) {
 					'panorama': url,
 					'autoLoad': true,
 					'showFullscreenCtrl': false,
+					'compass': false,
 					'pitch': Number(hsattrs.p), // turn to look at existing hotspot (if there is one)
 					'yaw': Number(hsattrs.y)
 				});
@@ -3360,6 +3359,118 @@ var EDITOR = (function ($, parent) {
 		});
 		
 		// cancel button - close lightbox without saving hotspot info
+		$('.featherlight-content button#cancel_' + id).click(function(event) {
+			var current = $.featherlight.current();
+			current.close();
+			parent.tree.showNodeData(key);
+		});
+    };
+	
+	edit360View = function (url, hsattrs, id, name) {
+		// set up contents of lightbox (buttons, panorama & instructions)
+	    var $editImg = $("<div></div>")
+			.attr('id', 'outer_img_' + id)
+			.addClass('hotspotEditor');
+		
+		var btns = ['reset', 'ok', 'cancel'],
+			btnLang = [language.edit360View.Buttons.Reset, language.Alert.oklabel, language.Alert.cancellabel],
+			btnIcon = ['fa-undo-alt', 'fa-check-square', 'fa-window-close'];
+		
+        $editImg
+			.data("id", id)
+			.append('<div class="hsbutton_holder" id="hsbutton_holder_' + id + '" style="float: right;">');
+		
+		var $hsBtnHolder = $editImg.find('.hsbutton_holder');
+		
+		for (var i=0; i<btns.length; i++) {
+			$('<button id="' + btns[i] + '_' + id + '" class="hseditModeButton" title="' + btnLang[i] + '"><i class="fas fa-2x ' + btnIcon[i] + '"></i></button>').appendTo($hsBtnHolder);
+		}
+		
+		$editImg.append('<div id="panoramaHolder"><div id="panorama_' + id + '"></div><div class="hsinstructions" id="instructions_' + id + '"></div></div>');
+		
+		var instructions = language.edit360View.Instructions.header +
+				'<ul id="defaultInstructions">' +
+				'<li>' + language.edit360View.Instructions.line1 + '</li>' +
+				'<li>' + language.edit360View.Instructions.reset + '</li>' +
+				'<li>' + language.edit360View.Instructions.save + '</li>' +
+				'</ul>';
+		
+		$editImg.find('#instructions_' + id).html(instructions);
+		
+		var panorama;
+		
+		// open lightbox
+		$.featherlight($editImg, {
+			closeOnClick: 'false',
+			closeOnEsc: true,
+			closeIcon: '',
+			afterOpen: function () {
+				
+				// scale panorama
+				var dimensions = [0.7 * $('body').width(), 0.7 * $('body').height() - $('#hsbutton_holder').height() - $('.hsinstructions').height()];
+				
+				$('#panorama_' + id)
+					.width(dimensions[0])
+					.height(dimensions[1]);
+				
+				$('#outer_img_' + id).width(dimensions[0]);
+				
+				// get the info about the current position
+				var initPitch = 0,
+					initYaw = 0;
+				if (hsattrs[name] != '' && hsattrs[name].split('|').length == 2) {
+					var info = hsattrs[name].split('|');
+					initPitch = $.isNumeric(info[0]) ? Number(info[0]) : initPitch;
+					initYaw = $.isNumeric(info[1]) ? Number(info[1]) : initYaw;
+				}
+				
+				// set up panorama
+				panorama = pannellum.viewer('panorama_' + id, {
+					'type': 'equirectangular',
+					'panorama': url,
+					'autoLoad': true,
+					'compass': false,
+					'showFullscreenCtrl': false,
+					'pitch': initPitch,
+					'yaw': initYaw
+				});
+				
+				// focus point on mouse up (attempt to disregard dragging by looking at position of mouse down & making sure it was quite close)
+				var downPos = [];
+				
+				panorama.on('mousedown', function(event) {
+					downPos = panorama.mouseEventToCoords(event);
+				});
+				
+				panorama.on('mouseup', function(event) {
+					var coords = panorama.mouseEventToCoords(event);
+					
+					if (Math.abs(downPos[0]-coords[0]) < 0.01 && Math.abs(downPos[1]-coords[1]) < 0.01) {
+						panorama.setPitch(coords[0]).setYaw(coords[1]);
+					}
+				});
+			}
+		});
+		
+		// set up buttons
+		var key = $('#' + id + '_btn').data('key');
+		
+		// reset button - return to default view
+		$('.featherlight-content button#reset_' + id).click(function(event) {
+			panorama
+				.setPitch(0)
+				.setYaw(0);
+		});
+		
+		// OK button - save view info & close lightbox
+		$('.featherlight-content button#ok_' + id).click(function(event) {
+			var current = $.featherlight.current();
+			setAttributeValue(key, [name], [panorama.getPitch() + '|' + panorama.getYaw()]); // view is saved to one attribute in format 'pitch|yaw'
+			current.close();
+			parent.tree.showNodeData(key);
+		});
+		
+		// cancel button - close lightbox without saving view info
 		$('.featherlight-content button#cancel_' + id).click(function(event) {
 			var current = $.featherlight.current();
 			current.close();
@@ -4056,7 +4167,6 @@ var EDITOR = (function ($, parent) {
 				// Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
 				if (url.substring(0,4) == "http")
 				{
-					var shape = "square";
 					html.addClass('clickableHotspot');
 					html.append("<img>");
 					var cur_key = key;
@@ -4074,6 +4184,61 @@ var EDITOR = (function ($, parent) {
 				else
 				{
 					html.append("<span class=\"error\">" + language.edit360Hotspot.Error.selectFile + "</span>");
+				}
+
+				break;
+			
+			case 'view360':
+				var id = 'view360_' + form_id_offset;
+				form_id_offset++;
+				
+				var hsattrs = lo_data[key].attributes;
+                var hsparent = parent.tree.getParent(key);
+                var hspattrs = lo_data[hsparent].attributes;
+				
+				// what image are we going to set view for? defaults to <file> unless file attr is set
+				// e.g. file='parent' looks at this parent's <file>, file='scene' looks at <scene>, file='parent.scene' looks at this parent's <scene>
+				var url = options.file == undefined ? hsattrs.file : (options.file == 'parent' ? hspattrs.file : false);
+				if (url === false) {
+					var info = options.file.split('.');
+					if (info > 1 && info[0] == 'parent') {
+						url = hspattrs[info[1]];
+					} else {
+						url = hsattrs[info[0]];
+					}
+				}
+				
+				// we might only have the linkID of the file we need - try to find the real file
+				if (url.substring(0,12) != "FileLocation") {
+					$.each(lo_data, function(key, value) {
+						if (this.attributes.linkID == url) {
+							url = this.attributes.file;
+							return false;
+						}
+						
+					});
+					
+				}
+				
+				// Replace FileLocation + ' with full url
+				url = makeAbsolute(url);
+				
+				// Create the container
+				html = $('<div>').attr('id', id);
+
+				if (url.substring(0,4) == "http")
+				{
+					$('<button id="' + id + '_btn" class="xerte_button icon_browse"></button>')
+						.html(language.edit360View.Buttons.Edit)
+						.attr("data-key", key)
+						.appendTo(html)
+						.click(function(){
+							edit360View(url, hsattrs, id, name);
+						});
+				}
+				else
+				{
+					html.append("<span class=\"error\">" + language.edit360View.Error.selectFile + "</span>");
 				}
 
 				break;

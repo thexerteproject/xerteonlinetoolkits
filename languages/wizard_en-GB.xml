@@ -203,6 +203,21 @@
 			<selectFile>Select image first!</selectFile>
 		</Error>
     </edit360Hotspot>
+	<edit360View>
+		<Buttons>
+			<Edit>Click to select view</Edit>
+			<Reset>Reset</Reset>
+		</Buttons>
+		<Instructions>
+			<header>Instructions:</header>
+			<line1>Click the image to focus on a point or click and drag to rotate the image.</line1>
+			<reset>Press the &#8634; reset button to start over.</reset>
+			<save>To save the view, click the &#9745; Ok button. If you want to go back without saving, click the &#9746; cancel button.</save>
+		</Instructions>
+		<Error>
+			<selectFile>Select image first!</selectFile>
+		</Error>
+    </edit360View>
 	<fontawesome>
 		<preview>Icon preview</preview>
 		<select>Select Icon</select>
