@@ -2288,20 +2288,44 @@ var EDITOR = (function ($, parent) {
 		// list of everything at same level or everything at parent's level
 		if (thisTarget != undefined) {
 			
-			var level = Number(thisTarget); // 0 finds nodes at this level, 1 finds nodes at parent level, 2 finds nodes at parent's parent level....
+			// 0 finds nodes at this level, 1 finds nodes at parent level, 2 finds nodes at parent's parent level....
+			// * makes it include all the children too
+			var children = false;
+			if (thisTarget.indexOf('*') != -1) {
+				children = true;
+				thisTarget = thisTarget.replace('*','');
+			}
+			
+			var level = Number(thisTarget);
 			var lo_node = tree.get_node(tree.get_node(thisKey, false).parents[level], false);
 			
 			$.each(lo_node.children, function(i, key){
-					var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-					var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+				var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+				var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+				
+				if (linkID.found && linkID.value != "") {
+					var page = [];
+					// Also make sure we only take the text from the name, and not the full HTML
+					page.push(getTextFromHTML(name.value));
+					page.push(linkID.value);
+					pages.push(page);
 					
-					if (linkID.found && linkID.value != "") {
-						var page = [];
-						// Also make sure we only take the text from the name, and not the full HTML
-						page.push(getTextFromHTML(name.value));
-						page.push(linkID.value);
-						pages.push(page);
+					// Now we do the children
+					if (children == true) {
+						var childNode = tree.get_node(key, false);
+						$.each(childNode.children, function(i, key){
+							var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+							var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+							if (linkID.found && linkID.value != "") {
+								var page = [];
+								// Also make sure we only take the text from the name, and not the full HTML
+								page.push(getTextFromHTML("&nbsp;- "+name.value));
+								page.push(linkID.value);
+								pages.push(page);
+							}
+						});
 					}
+				}
 			});
 			
 		// list of all pages & their children (if deep linking allowed)
@@ -3418,7 +3442,7 @@ var EDITOR = (function ($, parent) {
 				// get the info about the current position
 				var initPitch = 0,
 					initYaw = 0;
-				if (hsattrs[name] != '' && hsattrs[name].split('|').length == 2) {
+				if (hsattrs[name] != undefined && hsattrs[name].split('|').length == 2) {
 					var info = hsattrs[name].split('|');
 					initPitch = $.isNumeric(info[0]) ? Number(info[0]) : initPitch;
 					initYaw = $.isNumeric(info[1]) ? Number(info[1]) : initYaw;

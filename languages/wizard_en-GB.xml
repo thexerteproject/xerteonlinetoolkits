@@ -215,7 +215,7 @@
 			<save>To save the view, click the &#9745; Ok button. If you want to go back without saving, click the &#9746; cancel button.</save>
 		</Instructions>
 		<Error>
-			<selectFile>Select image first!</selectFile>
+			<selectFile>Select scene first!</selectFile>
 		</Error>
     </edit360View>
 	<fontawesome>
