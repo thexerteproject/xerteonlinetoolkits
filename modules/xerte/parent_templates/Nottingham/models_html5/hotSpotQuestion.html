@@ -188,8 +188,11 @@
 					}
 				})
 
-
+				debugger
 				var scoreTxt = x_currentPageXML.getAttribute("scoreTxt")
+				if(scoreTxt==""){
+					scoreTxt = "You have /r answers right and /w wrong"
+				}
 
 				var scoreTemp = scoreTxt.replace("/r", hotSpotScore)
 
