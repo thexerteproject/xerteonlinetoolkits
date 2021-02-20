@@ -13,7 +13,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
-	<size label="Image Size" options="Full,Large,Medium,Small" type="ComboBox"  data="full,large,medium,small" width="200"/>
+	<size label="Image Size" options="Small,Medium,Large,Full" type="ComboBox"  data="small,medium,large,full" width="200"/>
 	<position label="Image Position" options="Left,Right" type="ComboBox" data="left,right" defaultValue="Right" width="100"/>
 	
 	<lockIcon label="Locked Hotspot Icon" type="FontAwesome" iconList="full" defaultValue="fas fa-lock" optional="true" tooltip="The icon used on locked hotspots"/>

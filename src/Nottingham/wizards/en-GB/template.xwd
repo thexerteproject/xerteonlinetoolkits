@@ -1267,7 +1267,7 @@
 	
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
-		<textWidth label="Size" options="Full,Large,Medium,Small" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200"/>
+		<textWidth label="Size" options="Small,Medium,Large,Full" type="ComboBox" data="max,wide,narrow,none" defaultValue="narrow" width="200"/>
 		<tip label="Description" type="TextInput"/>
 	</image>
 	
@@ -1465,6 +1465,7 @@
 	</lightboxGroup></connectorMenu><cMenuListedPage menuItem="Item" remove="true" icon="icBullet">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <pageID label="Destination Page" type="pageList" defaultValue=""/>
+    <checkIfVisited label="Check if Visited Page" type="pageList" defaultValue="" optional="true"/>
 	<btnTxt label="Use Title on Button" type="CheckBox" defaultValue="false" mandatory="true" tooltip="By default the text on the menu button will be the destination page title. Check this box to use the title text from the field above instead."/>
   </cMenuListedPage><customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="Create a hotspot based diagram where regions can be explored using a variety of interactivities." icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true" deprecated="This page is now deprecated as Flash (used by the diagram editor) will be unavailable after 2020. Existing pages will continue to work after this date but will not be editable. Try the Hotspot Image, Annotated Diagram, Drag &amp; Drop Labelling and Hotspot Image Connector pages for similar functionality.">
     <name label="Name" type="TextInput" wysiwyg="true"/>
@@ -3553,7 +3554,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
-	<size label="Image Size" options="Full,Large,Medium,Small" type="ComboBox" data="full,large,medium,small" width="200"/>
+	<size label="Image Size" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full" width="200"/>
 	<position label="Image Position" options="Left,Right" type="ComboBox" data="left,right" defaultValue="Right" width="100"/>
 	
 	<lockIcon label="Locked Hotspot Icon" type="FontAwesome" iconList="full" defaultValue="fas fa-lock" optional="true" tooltip="The icon used on locked hotspots"/>

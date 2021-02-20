@@ -34,6 +34,7 @@
   <cMenuListedPage menuItem="Item" remove="true" icon="icBullet" >
     <name label="Title" type="TextInput" wysiwyg="true" />
     <pageID label="Destination Page" type="pageList" defaultValue=""/>
+    <checkIfVisited  label="Check if Visited Page" type="pageList" defaultValue="" optional="true" />
 	<btnTxt label="Use Title on Button" type="CheckBox" defaultValue="false" mandatory="true" tooltip="By default the text on the menu button will be the destination page title. Check this box to use the title text from the field above instead."/>
   </cMenuListedPage>
 
