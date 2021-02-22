@@ -13,7 +13,12 @@ _load_language_file("/library/Xerte/Authentication/Db/changepassword.inc");
 
 require(dirname(__FILE__) . "/../../../../website_code/php/user_library.php");
 
-if(is_user_admin()){
+//check to see if user is admin, or that the username provided in POST is the same as in the session
+$supposed_user = $_POST['username'];
+$real_user = $_SESSION['toolkits_logon_username'];
+$personal = $_POST['personal'];
+
+if(is_user_admin() || $supposed_user == $real_user){
 
     global $authmech, $xerte_toolkits_site;
 
@@ -54,7 +59,11 @@ if(is_user_admin()){
     {
         $finalmesg = "<p><font color = \"green\">" . AUTH_DB_CHANGEPASSWORD_SUCCEEDED . "</font></p>";
     }
-    $authmech->getUserList(true, $finalmesg);
+    if (!$personal){
+        $authmech->getUserList(true, $finalmesg);
+    }else{
+        echo $finalmesg;
+    }
 }
 
 ?>

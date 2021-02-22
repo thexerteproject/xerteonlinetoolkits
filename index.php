@@ -145,6 +145,7 @@ $version = getVersion();
     <script type="text/javascript" src="website_code/scripts/moment.js?version=<?php echo $version;?>"></script>
     <script type="text/javascript" src="website_code/scripts/jquery-ui-i18n.min.js?version=<?php echo $version;?>"></script>
     <script type="text/javascript" src="website_code/scripts/result.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="website_code/scripts/user_settings.js?version=<?php echo $version;?>"></script>
 
     <?php
     _include_javascript_file("website_code/scripts/xapi_dashboard_data.js?version=" . $version);
@@ -288,7 +289,16 @@ Folder popup is the div that appears when creating a new folder
 
            <div class="userbar">
                 <?PHP //echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " " .;
-                echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname']; ?>
+                echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname'] ?>
+               <div class="settingsDropdown">
+                    <?PHP echo '<button onclick="settingsDropdown()" title=" ' . INDEX_SETTINGS_BUTTON . ' " class="fa fa-cog xerte_button settingsButton"></button>'?>
+                    <div id="settings" class="settings-content">
+                        <?PHP echo  '<button class="xerte_button" onclick="changepasswordPopup()">' . INDEX_CHANGE_PASSWORD . '</button> '?>
+                        <button class="xerte_button">Placeholder</button>
+                        <button class="xerte_button">Placeholder</button>
+                        <button class="xerte_button">Placeholder</button>
+                    </div>
+               </div>
                <div style="display: inline-block"><?php display_language_selectionform("general"); ?></div>
                <?PHP if($xerte_toolkits_site->authentication_method != "Guest") {
                ?><button title="<?PHP echo INDEX_BUTTON_LOGOUT; ?>" type="button" class="xerte_button_c_no_width"
