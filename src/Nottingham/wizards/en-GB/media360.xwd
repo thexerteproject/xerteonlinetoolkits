@@ -1,15 +1,16 @@
 <wizard menus="Media">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <media360><![CDATA[<media360 name="Enter Page Title" text="Enter text for the page here" size="medium" 
+      <media360><![CDATA[<media360 name="Enter Page Title" text="Enter text for the page here" size="large" 
 	  zoomInTxt="Zoom in" zoomOutTxt="Zoom out" fullScreenTxt="Full screen toggle" 
 	  pageError="Destination page not found"
+	  lockLabel="Password:" lockSubmit="Submit" lockPswdWrong="Incorrect password"
 	  />]]></media360>
     </newNodes>
   </pageWizard>
 
-  <!-- 360 IMAGE VIEWER============================= -->
-  <media360 menu="Media" menuItem="360&#176; Image Viewer" hint="An interaction allowing you to mark up a 360&#176; image with hotspots. Can be used to create tours of linked images." icon="ic360" thumb="thumbs/image360.jpg" remove="true">
+  <!-- 360 IMAGE============================= -->
+  <media360 menu="Media" menuItem="360&#176; Image" hint="An interaction allowing you to mark up a 360&#176; image with hotspots. Can be used to create tours of linked images." icon="ic360" thumb="thumbs/image360.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -18,9 +19,12 @@
 	
 	<lockIcon label="Locked Hotspot Icon" type="FontAwesome" iconList="full" defaultValue="fas fa-lock" optional="true" tooltip="The icon used on locked hotspots"/>
 	
-	<zoomInTxt label="Zoom In" type="TextInput" wysiwyg="true" language="true" defaultValue="Zoom in"/>
-	<zoomOutTxt label="Zoom Out" type="TextInput" wysiwyg="true" language="true" defaultValue="Zoom out"/>
-	<fullScreenTxt label="Full Screen" type="TextInput" wysiwyg="true" language="true" defaultValue="Full screen toggle"/>
+	<zoomInTxt label="Zoom In" type="TextInput" wysiwyg="true" language="true"/>
+	<zoomOutTxt label="Zoom Out" type="TextInput" wysiwyg="true" language="true"/>
+	<fullScreenTxt label="Full Screen" type="TextInput" wysiwyg="true" language="true"/>
+	<lockLabel label="Password Label" type="TextInput" wysiwyg="true" language="true"/>
+	<lockSubmit label="Password Submit" type="TextInput" wysiwyg="true" language="true"/>
+	<lockPswdWrong label="Wrong Password" type="TextInput" wysiwyg="true" language="true"/>
 	
     <newNodes>
 	  <file360><![CDATA[<file360 name="Enter Scene Title" file="Select an Image" tip="Enter a Description for Accessibility" title="false"/>]]></file360>
@@ -53,7 +57,7 @@
 	</autoRotate>
 	
 	<newNodes>
-	  <hotspot360><![CDATA[<hotspot360 name="Enter Hotspot Title" tooltip="false" scene="" p="" y=""/>]]></hotspot360>
+	  <hotspot360><![CDATA[<hotspot360 name="Enter Hotspot Title" tooltip="true" p="" y=""/>]]></hotspot360>
     </newNodes>
   
   </file360>
@@ -63,7 +67,7 @@
   <hotspot360 type="hotspot360" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
 	
-	<tooltip label="Show Title as Tooltip" type="CheckBox" defaultValue="false" mandatory="true"/>
+	<tooltip label="Show Title as Tooltip" type="CheckBox"/>
 	
 	<hsAppearance type="group" label="Hotspot Appearance" optional="true">
 		<icon label="Icon" type="FontAwesome" iconList="full" defaultValue="fas fa-info" optional="true"/>
@@ -77,6 +81,8 @@
 		<scene label="Scene" type="pageList" conditionTrigger="true" listTarget="1" defaultValue="" optional="true"/>
 		<scenePos label="Initial View" type="view360" condition="scene!=null" file="scene" defaultValue="" optional="true" tooltip="The new scene's initial orientation"/>
 	</destinationScene>
+	
+	<position label="Rotate to View" type="view360" file="parent" defaultValue="" optional="true" tooltip="Rotate to this view when hotspot clicked"/>
 	
 	<hotspotPopUp label="Text" type="TextArea" height="200" optional="true" tooltip="Show text/HTML when hotspot clicked"/>
 	
@@ -120,11 +126,15 @@
 		<hover label="Show on Hover" type="CheckBox" defaultValue="false" optional="true"/>
 	</hideHs>
 	
-	<lockHs type="group" label="Lock Hotspot" optional="true" tooltip="Lock the hotspot until another scene or hotspot has been viewed">
+	<lockHs type="group" label="Lock Hotspot" optional="true" tooltip="Lock the hotspot until another scene or hotspot has been viewed or password has been entered">
 		<lock label="Lock" type="CheckBox" conditionTrigger="true" defaultValue="true" optional="true"/>
 		<lockHide label="Hide" conditionTrigger="true" condition="lock=='true'" type="CheckBox" defaultValue="false" optional="true" tooltip="Only show hotspot when unlocked"/>
 		<lockTip label="Show Tooltip" condition="lock=='true'&amp;&amp;lockHide!='true'" type="CheckBox" defaultValue="false" optional="true" tooltip="Show title as tooltip when locked"/>
-		<unlock label="Unlock After" condition="lock=='true'" type="pageList" listTarget="1*" defaultValue="" optional="true"/>
+		<unlockOn label="Unlock After" conditionTrigger="true" condition="lock=='true'" options="Viewing Scene or Hotspot,Entering Password" type="ComboBox" defaultValue="" data="view,password" width="200" optional="true"/>
+		<unlock label="Scene/Hotspot" condition="lock=='true'&amp;&amp;unlockOn=='view'" type="pageList" listTarget="1*" defaultValue="" optional="true" tooltip="Unlock after scene has been viewed or hotspot clicked. Select scene or hotspot from the list"/>
+		<unlockPswd label="Password" condition="lock=='true'&amp;&amp;unlockOn=='password'" type="TextInput" defaultValue="" optional="true" tooltip="Unlock after this password has been entered. Users must click hotspot to open password input field"/>
+		<unlockCase label="Case Sensitive" condition="lock=='true'&amp;&amp;unlockOn=='password'" type="CheckBox" defaultValue="true" optional="true"/>
+		<unlockPswdTxt label="Instructions" condition="lock=='true'&amp;&amp;unlockOn=='password'" type="TextArea" height="100" defaultValue="" optional="true" tooltip="Text to accompany the password input field"/>
 	</lockHs>
 	
   </hotspot360>

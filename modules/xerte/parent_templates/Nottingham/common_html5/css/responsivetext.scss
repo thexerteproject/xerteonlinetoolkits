@@ -123,6 +123,11 @@ h5 {
 .labelTxt p{
     font-size:$pagecontentsmedium;
 }
+
+.featherlight input, .featherlight label {
+	font-size: $pagecontentslarge;
+}
+
 #resultsHolder div img {
     width: $resultsHolderwidth !important;
     padding-right: 8px;

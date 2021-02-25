@@ -85,6 +85,20 @@
 		margin: 0 50%;
 	}
 	
+	.pswdBlock {
+		margin: .8em 0.3em 0.3em;
+	}
+	
+	.pswdBlock input {
+		margin-left: 0.1em;
+	}
+	
+	#errorTxt {
+		font-size: 1em;
+		font-weight: normal;
+		min-height: 1.8em;
+	}
+	
 	.pnlm-container:focus {
 		outline: 1px dotted #212121 !important;
 		outline: 5px auto -webkit-focus-ring-color !important;
