@@ -24,16 +24,13 @@
 		- check on various browsers / devices
 		- screenreaders?
 		- fix video sizing
-		- fix tooltip width, position (when screen resized), zindex & make sure they're removed when lightbox closed/not in focus
-		- should tooltip adjust size on screen size? min / max?
-		- tooltips can appear off screen - fix
-		- sizing of panorama when changing screen size - overlaps header a bit
-		- lightbox fills screen when LO is set to to fixed screen (do other lightboxes do this?)
-		- change hotspot appearance options so mandatory not optional
+		- should icon adjust size on screen size? min / max?
+		- sizing of panorama when changing screen size - overlaps header a bit - can't recreate this
+		- change hotspot appearance options so mandatory & not optional?
 		- when initial view set make this the hs editor default view
-		- wireframe off
 		- tab to hotspots offscreen issues
 		- toggle hs for on/off autoplay sound
+		- submit button styling
 		
 	Extra features to add:
 		- optional property to create scene menu (& hide scenes)
@@ -250,7 +247,7 @@
 								tip: this.getAttribute('tooltip'),
 								pitch: this.getAttribute('p'),
 								yaw: this.getAttribute('y'),
-								size: Number(this.getAttribute('size') != undefined ? this.getAttribute('size') : '16'),
+								size: Number(this.getAttribute('size') != undefined ? this.getAttribute('size') : '14'),
 								icon: this.getAttribute('icon') != undefined ? this.getAttribute('icon') : 'fas fa-info',
 								orientation: this.getAttribute('orientation') != undefined ? this.getAttribute('orientation') : '0',
 								hide: this.getAttribute('hide') != undefined ? this.getAttribute('hide') : 'false',
@@ -473,10 +470,50 @@
 				.hover(
 					function() {
 						var $this = $(this);
-						$this.css('box-shadow', '0px 0px ' + ($this.data('size')/2) + 'px ' + $this.data('colour2'));
+						$this.css({
+							'box-shadow': '0px 0px ' + ($this.data('size')/2) + 'px ' + $this.data('colour2'),
+							'z-index': 1000
+						});
+						
+						var thisBorderWidth = parseInt($this.css('border-width'));
+						
+						if ($this.hasClass('tooltip')) {
+							var $tooltip = $this.find('.tip');
+							
+							$tooltip.find('.tipArrow')
+								.removeClass('arrowUp')
+								.addClass('arrowDown');
+							
+							// set the width first so margins can be calculated afterwarda
+							$tooltip.css('max-width', ($panorama.width() * (x_browserInfo.mobile == false ? 0.25 : 0.8)) + 'px');
+							
+							$tooltip
+								.css({
+									'margin-left': -($tooltip[0].scrollWidth - this.offsetWidth + thisBorderWidth) / 2 + 'px',
+									'margin-top': -($tooltip[0].scrollHeight + thisBorderWidth) + 6 + 'px'
+								})
+								.find('.tipArrow')
+									.removeClass('arrowUp')
+									.addClass('arrowDown');
+							
+							// move tooltip below hs is it's off top of screen
+							if ($tooltip.offset().top < $panorama.offset().top) {
+								
+								$tooltip.find('.tipArrow')
+									.removeClass('arrowDown')
+									.addClass('arrowUp');	
+								
+								$tooltip.css({
+									'margin-top': $this.height() + thisBorderWidth + 12 + 'px'
+								});
+							}
+						}
 					},
 					function() {
-						$(this).css('box-shadow', 'none');
+						$(this).css({
+							'box-shadow': 'none',
+							'z-index': 1
+						});
 					})
 				.focusin(function() {
 					var $this = $(this);
@@ -504,7 +541,8 @@
 						$(this).click();
 						
 					// prevent default shift to zoom as this confuses the shift-tab to move focus around hotspots
-					} else if (e.keyCode == 16) {
+					// also prevent move by arrow keys when focused on hs as this sometimes starts an unstoppable spin
+					} else if (e.keyCode == 16 || (e.keyCode >= 37 && e.keyCode <= 40)) {
 						e.stopPropagation();
 					}
 				})
@@ -525,15 +563,7 @@
 			if (args.tip == 'true' && args.name != '' && args.name != undefined) {
 				$hotspotDiv.addClass('tooltip');
 				
-				var $tooltip = $('<span class="tip">' + args.name + '</span>')
-						.appendTo($hotspotDiv);
-				
-				$tooltip
-						.width($tooltip[0].scrollWidth - 20 + 'px')
-						.css({
-							'margin-left': -($tooltip[0].scrollWidth - hotspotDiv.offsetWidth + borderWidth) / 2 + 'px',
-							'margin-top': -($tooltip[0].scrollHeight + borderWidth) - 12 + 'px'
-						});
+				$('<span class="tip"><span class="tipArrow arrowDown"></span>' + args.name + '</span>').appendTo($hotspotDiv);
 			}
 			
 			// hide hotspot (will still be clickable)
@@ -551,7 +581,7 @@
 				}
 				
 				// hide tooltip on locked hotspots
-				if (args.lockInfo.lockTip != 'true') {
+				if (args.lockInfo.tip != 'true') {
 					$hotspotDiv.addClass('disableTip');
 				}
 				
@@ -569,7 +599,7 @@
 					});
 				}
 				
-				var $audioHolder = $('#audioHolder').length == 0 ? $('<div id="audioHolder"></div>').appendTo($('#panoramaHolder')) : $('#audioHolder');
+				var $audioHolder = $('#audioHolder').length == 0 ? $('<div id="audioHolder"></div>').appendTo($panoramaHolder) : $('#audioHolder');
 				var $hsAudio = $('<div class="hsAudio"></div>').appendTo($audioHolder).data('hs', $hotspotDiv);
 				
 				$hsAudio.mediaPlayer({

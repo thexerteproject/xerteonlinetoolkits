@@ -277,7 +277,7 @@
     font-size: 7.5vmin !important;
   }
 
-  #x_glossaryHover {
+  #x_glossaryHover, .splitScreen .tip {
     font-size: 2vmin;
   }
 }

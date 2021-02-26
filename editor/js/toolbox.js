@@ -3264,7 +3264,7 @@ var EDITOR = (function ($, parent) {
 		if (hsattrs.colour1 == '' || hsattrs.colour1 == undefined) { currentHsDetails.colour1 = 'black'; } else { currentHsDetails.colour1 = hsattrs.colour1; }
 		if (hsattrs.colour2 == '' || hsattrs.colour2 == undefined) { currentHsDetails.colour2 = 'white'; } else { currentHsDetails.colour2 = hsattrs.colour2; }
 		if (hsattrs.orientation == '' || hsattrs.orientation == undefined) { currentHsDetails.orientation = '0'; } else { currentHsDetails.orientation = hsattrs.orientation; }
-		if (hsattrs.size == '' || hsattrs.size == undefined) { currentHsDetails.size = '16'; } else { currentHsDetails.size = hsattrs.size; }
+		if (hsattrs.size == '' || hsattrs.size == undefined) { currentHsDetails.size = '14'; } else { currentHsDetails.size = hsattrs.size; }
 		
 		// correct the format of the colour codes (start with # rather than 0x)
 		currentHsDetails.colour1 = currentHsDetails.colour1.indexOf('0x') === 0 ? currentHsDetails.colour1.replace("0x", "#") : currentHsDetails.colour1;
