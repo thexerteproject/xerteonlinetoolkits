@@ -139,16 +139,18 @@
 				var	$this = $(this),
 					$popcornMedia = $this.closest(".popcornMedia");
 				var holderHeight = toResize ? $('#trackBarHolder').height() : 0;
+				var titleHeight = $(".panelTitle").outerHeight(true);
 				
-				var tempW = $popcornMedia.data("max-width"), tempH = $popcornMedia.data("max-height") - holderHeight;
+				var tempW = $popcornMedia.data("max-width");
+				var tempH = $popcornMedia.data("max-height") - titleHeight - holderHeight;
 				if (tempW > $popcornMedia.closest(".panel").width()) {
 					var scale = $popcornMedia.closest(".panel").width() / tempW;
 					tempW = $popcornMedia.closest(".panel").width();
 					tempH = Math.floor(tempH * scale);
 				}
-				if (tempH > $popcornMedia.closest(".panel").height() - holderHeight) {
-					var scale = ($popcornMedia.closest(".panel").height() - holderHeight) / tempH;
-					tempH = $popcornMedia.closest(".panel").height() - holderHeight;
+				if (tempH > $popcornMedia.closest(".panel").height() - titleHeight - holderHeight) {
+					var scale = ($popcornMedia.closest(".panel").height() - titleHeight - holderHeight) / tempH;
+					tempH = $popcornMedia.closest(".panel").height() - titleHeight - holderHeight;
 					tempW = Math.floor(tempW * scale);
 				}
 				
