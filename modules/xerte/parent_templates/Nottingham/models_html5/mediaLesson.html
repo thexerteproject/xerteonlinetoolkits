@@ -111,9 +111,16 @@
 				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - parseFloat($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseFloat($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2)
 				.css('width', '');
 
+			var infoHolderHeight = 0;
+			if (x_currentPageXML.getAttribute("intro") != "" && x_currentPageXML.getAttribute("intro") != undefined) {
+				var infoHolderHeight = $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2
+			}
+
 			$panelHolder.find(".panel.fullH")
-				.height($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - 5);
-			
+				.height($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - 
+					(parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.fullH").css("padding-top")) * 2 
+					+ infoHolderHeight) - 5);
+
 			$panelHolder.find(".panel.halfH")
 				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
 			
