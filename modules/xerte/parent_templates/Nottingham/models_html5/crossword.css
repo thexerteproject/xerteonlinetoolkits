@@ -5,8 +5,8 @@
 #crossword-table {
     border-collapse: collapse;
     font-family: "Courier New", Courier, monospace;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 0;
+    margin-right: 30px;
     clear: both;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -81,8 +81,10 @@
 }
 
 #show_button{
-    margin:0 auto;
+    margin-left: 0;
     display:block;
+    width: 70%;
+    height: 40%;
 }
 
 #crossword-table #input__container__across{
@@ -112,6 +114,7 @@
      pointer-events: none;
      opacity: 0.5;
      z-index: 1;
+     font-size: 15px;
  }
 
  .highlighted .crossword-input[type=text]{
@@ -129,14 +132,31 @@
 
  #crossword{
      flex: 1;
+     margin-right: 50px;
  }
 
  #showButton{
      padding-top: 20px;
      justify-content: flex-start;
-     width: 103px;
+     height: 10%;
+
  }
 
  .li-clue{
      cursor: pointer;
+     list-style-type: circle;
+     display: flex;
+     flex-direction: row;
+ }
+
+ .li-clue p{
+     padding: 0;
+ }
+
+ .crossword-input{
+     text-align: center;
+ }
+
+ .hint-number{
+     margin-right: 5%;
  }
