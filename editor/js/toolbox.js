@@ -2618,25 +2618,28 @@ var EDITOR = (function ($, parent) {
                                 borderColor: 'yellow'
                             });
                         }
+                        // Old definition of hotspot
                         else if (forceRectangle || (hsattrs.x != undefined && hsattrs.y != undefined && hsattrs.w != undefined && hsattrs.h != undefined)) {
-                            // Old definition of hotspot
-                            hs = new fabric.Rect({
-                                top: parseFloat(hsattrs.y) / scale,
-                                left: parseFloat(hsattrs.x) / scale,
-                                width : parseFloat(hsattrs.w) /scale,
-                                height : parseFloat(hsattrs.h) /scale,
-                                angle: 0,
-                                fill: 'rgba(255,0,0,0.5)',
-                                selectable: true,
-                                objectCaching: false,
-                                transparentCorners: true,
-                                cornerColor: 'yellow',
-                                borderColor: 'yellow',
-                                hasRotatingPoint: !forceRectangle
-                            });
+                            // Don't draw the optional empty value
+                            if (hsattrs.x > 0 || hsattrs.y > 0 || hsattrs.w > 0 || hsattrs.h > 0) {
+                                hs = new fabric.Rect({
+                                    top: parseFloat(hsattrs.y) / scale,
+                                    left: parseFloat(hsattrs.x) / scale,
+                                    width : parseFloat(hsattrs.w) /scale,
+                                    height : parseFloat(hsattrs.h) /scale,
+                                    angle: 0,
+                                    fill: 'rgba(255,0,0,0.5)',
+                                    selectable: true,
+                                    objectCaching: false,
+                                    transparentCorners: true,
+                                    cornerColor: 'yellow',
+                                    borderColor: 'yellow',
+                                    hasRotatingPoint: !forceRectangle
+                                });
+                            }
                         }
                         setDrawingModeButtonState(shape);
-                        if (hs == null) {
+                        if (hs == null || (hsattrs.x == 0 && hsattrs.y == 0 && hsattrs.w == 0 && hsattrs.h == 0)) {
                             setRectangleHandlers();
                             disableReset();
                         }
