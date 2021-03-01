@@ -78,8 +78,7 @@ optional: end position* line
 					$target.parent().css({
 						"max-width": options._w + "%",
 						"top": options._y + "%",
-						"left": options._x + "%",
-						"padding": 0
+						"left": options._x + "%"
 					}).show();
 				}
 				$target.show();

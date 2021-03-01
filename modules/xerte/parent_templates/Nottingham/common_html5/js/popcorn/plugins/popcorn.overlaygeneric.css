@@ -63,6 +63,7 @@
     INP add an Active class which handles this?*/
 .qWindow {
     width: 60%;
-    background-color: #FEFEFE
+    margin: 5px;
+    background-color: #FE00FE
 }
 
