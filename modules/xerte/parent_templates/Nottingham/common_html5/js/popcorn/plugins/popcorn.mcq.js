@@ -500,8 +500,13 @@ optional: feedback page synch play enable
 					}
 				}
 				if (options.overlayPan) {
-					if (options.optional == "false")
+					if (options.optional == "false" || options.optional == undefined)
 						$target.parent().addClass("qWindow");
+					else {
+						$target.parent().css({
+							"padding": 0	
+						});
+					}
 					$target.parent().css({
 						"max-width": options._w + "%",
 						"width" : options._w + "%",

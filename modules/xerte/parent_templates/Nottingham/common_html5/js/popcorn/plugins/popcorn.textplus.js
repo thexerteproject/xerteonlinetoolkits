@@ -75,6 +75,11 @@ optional: end position* line
 					{
 						$target.parent().addClass("qWindow");
 					}
+					else {
+						$target.parent().css({
+							"padding": 0
+						})
+					}
 					$target.parent().css({
 						"max-width": options._w + "%",
 						"top": options._y + "%",
