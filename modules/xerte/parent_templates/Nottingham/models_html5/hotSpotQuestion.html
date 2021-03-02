@@ -22,14 +22,16 @@
 	// other functions for model should also be in here to avoid conflicts
 	var hotSpotQuestion = new function() {
 		var	$img;
-		var amountOfAttempts = x_currentPageXML.getAttribute("attempts");
-		var attempts = parseInt(amountOfAttempts, 10);
+		var amountOfAttempts = parseInt(x_currentPageXML.getAttribute("attempts"));
+		//var attempts = parseInt(amountOfAttempts, 10);
 		var counter = [];
 		var hits = [];
 		var pointsUpdated = [];
 		var canvas;
 		var gotHint = false;
 		var pointArray;
+		var amountOfCorrectOptions = 0;
+		var attempts = 0
 		var hotSpotScore = 0;
 		var AmountOfWrongScore = 0;
 		var highlightsArray= []
@@ -42,6 +44,7 @@
 			$("#infoHolder").html("");
 			// $("#nextHS").button("enable");
 			// $("#prevHS").button("disable");
+			this.resizeImg(false);
 		};
 
 		// function called every time the size of the LO is changed
@@ -55,6 +58,7 @@
 		// };
 			this.sizeChanged = function () {
 				if (x_browserInfo.mobile == false) {
+					debugger
 					var $panel = $("#pageContents .panel");
 					$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 				}
@@ -137,10 +141,11 @@
 				$("#panel").addClass("right");
 			}
 
+
 			$img
 				.css({
 						"opacity"	:0,
-						"filter"	:'alpha(opacity=0)'
+						"filter"	:'alpha(opacity=0)',
 				})
 				.one("load", function() {
 					hotSpotQuestion.resizeImg(true);
@@ -159,88 +164,120 @@
 					}
 				});
 
+
+
 			$("#checkButton").button({
 				label: "Check"
 			}).click(function (){
 
-				$("#checkButton").button("disable")
-				$("area").off('click')
-				var name;
-				// var div = $(document.createElement('div')).addClass("feedbackIcon").append("<i class=\"fas fa-check\"></i>");
-				highlightsArray.forEach((highlight, index) =>{
-					name = "Hotspot" + " " + highlight.getAttribute("name");
-
-					var points = JSON.parse(highlight.getAttribute("points"))
-					var x = (points[0]["x"]+points[1]["x"])/2
-					var y = (points[0]["y"]+points[2]["y"])/2
-					XTEnterInteraction(x_currentPage, index, "fill-in", name, [], "-", x_currentPageXML.getAttribute("generalFeedback"), x_currentPageXML.getAttribute("grouping"));
-
-					if(highlight.getAttribute("truth") === "true"){
-						hotSpotScore++;
-						// div.top = y
-						// div.left = x
-						// $("#imageHolder").append(div)
-					}else{
-						AmountOfWrongScore++;
-						// div.top = y
-						// div.left = x
-						// $("#imageHolder").append(div)
-					}
-				})
-
-				debugger
-				var scoreTxt = x_currentPageXML.getAttribute("scoreTxt")
-				if(scoreTxt==""){
-					scoreTxt = "You have /r answers right and /w wrong"
-				}
-
-				var scoreTemp = scoreTxt.replace("/r", hotSpotScore)
-
-				var scoreLabel = scoreTemp.replace("/w", AmountOfWrongScore)
-
-
-				if(highlightsArray.length > 0){
-					highlightsArray.forEach((highlight) =>{
-						if(highlight.getAttribute("text") !== null){
-							var h3 = $('<h3>').append(scoreLabel)
-							$("#score").html(h3);
-							$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
-						}else{
-							var h3 = $('<h3>').append(scoreLabel)
-							$("#score").html(h3);
-							$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
-						}
-					})
-				}else{
-					$("#score").html("<hr/><h3>Je hebt geen antwoorden ingevuld</h3><br/>");
-				}
-
-				var amountOfCorrectOptions = 0;
+				amountOfCorrectOptions = 0
 				allHighlightsArray.forEach((highlight)=>{
 					if(highlight.getAttribute("truth") === "true"){
 						amountOfCorrectOptions++;
 					}
 				})
-
-            	var setScore = (hotSpotScore/highlightsArray.length)*100
-				highlightsArray.forEach((highlight, index)=> {
-					var result;
-					if(highlight.getAttribute("truth")==="true"){
-						result = {
-							success: true,
-							score: 100.0
-						}
+				debugger
+				var amountOfCorrect = 0;
+				var amountOfWrong = 0;
+				highlightsArray.forEach((highlight)=>{
+					if(highlight.getAttribute("truth") === "true"){
+						amountOfCorrect++;
 					}else{
-						result = {
-							correct: false,
-							score: 0
-						}
+						amountOfWrong++
 					}
-
-					XTExitInteraction(x_currentPage, index, result, "", highlight.getAttribute("name"), "", x_currentPageXML.getAttribute("trackinglabel"));
 				})
 
-				XTSetPageScore(x_currentPage, setScore);
+				attempts++
+				if(attempts >= amountOfAttempts || amountOfCorrect === amountOfCorrectOptions && amountOfWrong === 0){
+
+					var allNames = "";
+					highlightsArray.forEach((highlight, index) => {
+						allNames = allNames + "Hotspot" + " " + highlight.getAttribute("name");
+						if (index !== highlightsArray.length){
+							allNames = allNames + ", "
+						}
+					})
+
+					var name;
+					highlightsArray.forEach((highlight, index) =>{
+						name = "Hotspot" + " " + highlight.getAttribute("name");
+
+						var points = JSON.parse(highlight.getAttribute("points"))
+						var x = (points[0]["x"]+points[1]["x"])/2
+						var y = (points[0]["y"]+points[2]["y"])/2
+						XTEnterInteraction(x_currentPage, index, "fill-in", name, [], allNames, x_currentPageXML.getAttribute("generalFeedback"), x_currentPageXML.getAttribute("grouping"));
+
+						if(highlight.getAttribute("truth") === "true"){
+							hotSpotScore++;
+						}else{
+							AmountOfWrongScore++;
+						}
+					})
+
+					var scoreTxt = x_currentPageXML.getAttribute("scoreTxt")
+					if(scoreTxt==""){
+						scoreTxt = "You have /r answers right and /w wrong"
+					}
+
+					var scoreTemp = scoreTxt.replace("/r", hotSpotScore)
+
+					var scoreLabel = scoreTemp.replace("/w", AmountOfWrongScore)
+
+
+					if(highlightsArray.length > 0){
+						highlightsArray.forEach((highlight) =>{
+							$("#checkButton").button("disable")
+							$("area").off('click')
+							if(highlight.getAttribute("text") !== null){
+								var h3 = $('<h3>').append(scoreLabel)
+								$("#score").html(h3);
+								$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
+							}else{
+								var h3 = $('<h3>').append(scoreLabel)
+								$("#score").html(h3);
+								$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
+							}
+						})
+					}else{
+						var warning = x_currentPageXML.getAttribute("warning")
+						if(warning === null || warning===undefined){
+							warning = "You have not selected anything"
+						}
+						var h3 = $('<h3>').append(warning)
+						$("#score").html(h3);
+					}
+
+
+
+					var setScore = (hotSpotScore/highlightsArray.length)*100
+					highlightsArray.forEach((highlight, index)=> {
+						var result;
+						if(highlight.getAttribute("truth")==="true"){
+							result = {
+								success: true,
+								score: 100.0
+							}
+						}else{
+							result = {
+								correct: false,
+								score: 0
+							}
+						}
+
+						XTExitInteraction(x_currentPage, index, result, "", highlight.getAttribute("name"), "", x_currentPageXML.getAttribute("trackinglabel"));
+					})
+
+					XTSetPageScore(x_currentPage, setScore);
+
+				}else{
+					var again = x_currentPageXML.getAttribute("again")
+					if(again === null || again===undefined){
+						again = "Try again"
+					}
+					var h3 = $('<h3>').append(again)
+					$("#score").html(h3);
+				}
+
 			});
 		};
 
@@ -266,14 +303,22 @@
 
 			$img.css({
 				"opacity"	:1,
-				"filter"	:'alpha(opacity=100)'
+				"filter"	:'alpha(opacity=100)',
+				"max-height" : imgMaxH-50
 			});
+			debugger
+
+			if($img.width() > $img.height()){
+				$('.x_noLightBox').css("width", "100%")
+			}else{
+				$('.mapster_wrap_1').css("margin", "auto")
+			}
 
 			this.createHS();
 		};
 
 		this.createHS = function() {
-
+			debugger
 			// create hotspots - taking scale of image into account
 			var scale = $img.width() / $img.data("origSize")[0],
 				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;
@@ -324,14 +369,15 @@
 								$this.addClass("selected");
 								highlightsArray.push(_this)
 							}else{
+								debugger
 								$this.removeClass("selected")
-								highlightsArray.pop(_this)
+								const index = highlightsArray.indexOf(_this);
+								if (index > -1) {
+									highlightsArray.splice(index, 1);
+								}
+
 							}
 
-							// $(".selected").removeClass("selected");
-							// if (x_currentPageXML.getAttribute("highlight") !== "true") {
-							// 	$("area").mapster('deselect'6);
-							// }
 
 
 							if (x_currentPageXML.getAttribute("highlight") == "true") {
@@ -375,6 +421,7 @@
                 });
 
 			if (selected != undefined) {
+				debugger
 				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
 			}
 
@@ -445,18 +492,20 @@
 				}, 100);
 			}
 			else {
+				debugger
 				$("#pageContents .hotspot.selected").mapster("select");
 			}
 		};
 
 
 		this.selectHs = function(type) {
-
+			debugger
 			var currentSelection = $("#pageContents .selected"),
 				i = currentSelection.index();
 
 			currentSelection.removeClass("selected");
 			if (x_currentPageXML.getAttribute("highlight") !== "true") {
+				debugger
 				$("area").mapster('deselect');
 			}
 
@@ -484,21 +533,6 @@
 				$img.mapster('set', true, i);
 			}
 
-			//}
-
-            //var $question = $("#questionText");
-            //var question = x_currentPageXML.childNodes[i].getAttribute("question");
-            //question = $("<div>").html(question).text().trim();
-            //$question.html(question);
-
-            //$("#hint").html("");
-			//$("#feedback").html("");
-            //if(x_currentPageXML.childNodes[i].getAttribute("hint") === null || x_currentPageXML.childNodes[i].getAttribute("hint") === ""){
-            //    gotHint = false
-			//}else{
-            //    gotHint = true;
-			//}
-
 		};
 
 	};
@@ -522,8 +556,6 @@
 			<img id="image" class="x_noLightBox" />
 			<div id="hsHolder"></div>
 			<div id="btnHolder">
-<!--				<button id="prevHS"></button>-->
-<!--				<button id="nextHS"></button>-->
 			</div>
 
 

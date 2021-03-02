@@ -1,10 +1,10 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title"  panelWidth = "Medium" generalFeedback="Algemene feedback" text="Enter Instructions" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
-  	  nextTxt="Next"
-	  priorTxt="Previous"
-	  scoreTxt="You have /r answers right and /w wrong"
+      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title"  panelWidth = "Medium" generalFeedback="Enter a feedback" text="Enter Instructions" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
+  	  warning="You have not selected anything"
+	  scoreTxt="You have /r answer(s) right and /w wrong"
+	  again="Try again"
 	  />]]></hotSpotQuestion>
     </newNodes>
   </pageWizard>
@@ -37,8 +37,9 @@
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
 
     <scoreTxt label="Score Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/r (right) and /w (wrong) are where the score are placed "/>
-    <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
+    <warning label="Warning Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+    <again label="Try again Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+
 
     <newNodes>
 	  <QHotSpot><![CDATA[<QHotSpot name="Hotspot" Feedback="Feedback for the hotspot" x="0" y="0" w="100" h="100" truth="false"/>]]></QHotSpot>

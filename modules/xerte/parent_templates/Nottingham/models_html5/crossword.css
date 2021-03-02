@@ -112,9 +112,10 @@
      top: 3px;
      content: attr(data-placeholder);
      pointer-events: none;
-     opacity: 0.5;
+     opacity: 1;
      z-index: 1;
      font-size: 15px;
+     font-weight: bold;
  }
 
  .highlighted .crossword-input[type=text]{
@@ -159,4 +160,8 @@
 
  .hint-number{
      margin-right: 5%;
+ }
+
+ #clues-across{
+     margin-top: 20px;
  }
