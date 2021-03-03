@@ -180,7 +180,8 @@
 					'compass': this.getAttribute('compass') == 'true' ? true : false,
 					'autoRotate': this.getAttribute('rotate') == 'true' ? Number( (this.getAttribute('direction') == 'right' ? '-' : '') + this.getAttribute('speed') ) : 0,
 					'autoRotateInactivityDelay': this.getAttribute('continueRotate') != undefined && this.getAttribute('continueRotate') != '0' ? Number(this.getAttribute('continueRotate')) * 1000 : undefined,
-					'overlayBg': this.getAttribute('tooltipBg'),
+					'tooltipBg': this.getAttribute('tooltipBg'),
+					'titleBg': this.getAttribute('titleBg'),
 					'hotSpots': []
 				};
 				
@@ -924,13 +925,31 @@
 			$('.overlayBgStyles').remove();
 			
 			// add any styles specific to this scene
-			if (scenes[e].overlayBg != undefined) {
-				var bg = x_getColour(scenes[e].overlayBg),
-					txt = x_blackOrWhite(bg),
-					rgb = media360.hexToRgb(bg),
-					rgbTxt = 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.7)';
+			if ((scenes[e].tooltipBg != undefined && scenes[e].tooltipBg != '') || (scenes[e].titleBg != undefined && scenes[e].titleBg != '')) {
 				
-				$("#pageContents").append('<style class="overlayBgStyles">.pnlm-panorama-info { background-color: ' + rgbTxt + '; color: ' + txt + '; } div.hotspot360Icon.tooltip .tip { background-color: ' + rgbTxt + '; color: ' + txt + '; background-opacity: 0.7; } div.hotspot360Icon.tooltip .tip .tipArrow { border-color: ' + rgbTxt + ' transparent transparent transparent; } div.hotspot360Icon.tooltip .tip .tipArrow.arrowUp { border-color: transparent transparent ' + rgbTxt + ' transparent; }</style>');
+				var styleTag = '<style class="overlayBgStyles">'
+				
+				if (scenes[e].tooltipBg != undefined && scenes[e].tooltipBg != '') {
+					var bg = x_getColour(scenes[e].tooltipBg),
+						txt = x_blackOrWhite(bg),
+						rgb = media360.hexToRgb(bg),
+						rgbTxt = 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.7)';
+					
+					styleTag = styleTag + 'div.hotspot360Icon.tooltip .tip { background-color: ' + rgbTxt + '; color: ' + txt + '; background-opacity: 0.7; } div.hotspot360Icon.tooltip .tip .tipArrow { border-color: ' + rgbTxt + ' transparent transparent transparent; } div.hotspot360Icon.tooltip .tip .tipArrow.arrowUp { border-color: transparent transparent ' + rgbTxt + ' transparent; }';
+				}
+				
+				if (scenes[e].titleBg != undefined && scenes[e].titleBg != '') {
+					var bg = x_getColour(scenes[e].titleBg),
+						txt = x_blackOrWhite(bg),
+						rgb = media360.hexToRgb(bg),
+						rgbTxt = 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.7)';
+					
+					styleTag = styleTag + '.pnlm-panorama-info { background-color: ' + rgbTxt + '; color: ' + txt + '; }';
+				}
+				
+				styleTag += '</style>';
+				
+				$("#pageContents").append(styleTag);
 			}
 		}
 		
