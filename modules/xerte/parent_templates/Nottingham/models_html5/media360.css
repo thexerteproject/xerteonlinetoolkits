@@ -70,7 +70,7 @@
 		outline: none;
 	}
 
-	div.hotspot360Icon.tooltip .tip .tipArrow, div.hotspot360Icon.tooltip .tip .tipArrow {
+	div.hotspot360Icon.tooltip .tip .tipArrow {
 		content: '';
 		position: absolute;
 		width: 0;
@@ -83,7 +83,7 @@
 		margin: 0 50%;
 	}
 	
-	div.hotspot360Icon.tooltip .tip .tipArrow.arrowUp, div.hotspot360Icon.tooltip .tip .tipArrow.arrowUp {
+	div.hotspot360Icon.tooltip .tip .tipArrow.arrowUp {
 		border-color: transparent transparent rgba(0,0,0,0.7) transparent;
 		top: -20px;
 	}

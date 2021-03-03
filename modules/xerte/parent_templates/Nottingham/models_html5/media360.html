@@ -22,18 +22,14 @@
 		
 		- check on various browsers / devices
 		- screenreaders?
-		- change hotspot appearance options so mandatory & not optional?
-		- when initial view set make this the hs editor default view
-		
+		- *change hotspot appearance options so mandatory & not optional?
+		- *when initial view set make this the hs editor default view
 		- should icon adjust size on screen size? min / max?
-		- sizing of panorama when changing screen size - overlaps header a bit - can't recreate this
 		- tab to hotspots offscreen issues
 		
-	Extra features to add:
-		- tooltip background colour
-		- lightbox opacity background
-		
 		- cube map
+		- sizing of panorama when changing screen size - overlaps header a bit - can't recreate this
+		- lightbox opacity background - should this be dealt with in xenith as it's relevant to lots of other places
 	*/
 	
 	// pageChanged & sizeChanged functions are needed in every model file
@@ -184,6 +180,7 @@
 					'compass': this.getAttribute('compass') == 'true' ? true : false,
 					'autoRotate': this.getAttribute('rotate') == 'true' ? Number( (this.getAttribute('direction') == 'right' ? '-' : '') + this.getAttribute('speed') ) : 0,
 					'autoRotateInactivityDelay': this.getAttribute('continueRotate') != undefined && this.getAttribute('continueRotate') != '0' ? Number(this.getAttribute('continueRotate')) * 1000 : undefined,
+					'overlayBg': this.getAttribute('tooltipBg'),
 					'hotSpots': []
 				};
 				
@@ -398,9 +395,10 @@
 					'scenes': scenes
 				})
 				.on('load', function() {
-					
 					// first scene loaded - make controls more accessible
 					if (currentScene == undefined) {
+						
+						media360.applySceneStyles(thisPannellum.getScene());
 						
 						var btnInfo = ['zoomIn', 'zoomOut', 'fullScreen'];
 						
@@ -512,6 +510,9 @@
 							media360.unlockHs(i);
 						}
 					}
+				})
+				.on('scenechange', function(e) {
+					media360.applySceneStyles(e);
 				});
 			}
 			
@@ -917,7 +918,31 @@
 				$('.featherlight-content').removeClass('max hidden');
 			}
 		}
-	};
+		
+		this.applySceneStyles = function(e) {
+			// remove all styles specific to a scene
+			$('.overlayBgStyles').remove();
+			
+			// add any styles specific to this scene
+			if (scenes[e].overlayBg != undefined) {
+				var bg = x_getColour(scenes[e].overlayBg),
+					txt = x_blackOrWhite(bg),
+					rgb = media360.hexToRgb(bg),
+					rgbTxt = 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.7)';
+				
+				$("#pageContents").append('<style class="overlayBgStyles">.pnlm-panorama-info { background-color: ' + rgbTxt + '; color: ' + txt + '; } div.hotspot360Icon.tooltip .tip { background-color: ' + rgbTxt + '; color: ' + txt + '; background-opacity: 0.7; } div.hotspot360Icon.tooltip .tip .tipArrow { border-color: ' + rgbTxt + ' transparent transparent transparent; } div.hotspot360Icon.tooltip .tip .tipArrow.arrowUp { border-color: transparent transparent ' + rgbTxt + ' transparent; }</style>');
+			}
+		}
+		
+		this.hexToRgb = function(hex) {
+			var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+			return result ? {
+				r: parseInt(result[1], 16),
+				g: parseInt(result[2], 16),
+				b: parseInt(result[3], 16)
+			} : null;
+		}
+	}
 	
 	media360.init();
 	

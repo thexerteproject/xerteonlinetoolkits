@@ -60,6 +60,8 @@
 	
 	<hidePage label="Hide Scene" type="CheckBox" defaultValue="true" optional="true" tooltip="Remove this scene from the scene menu. When hidden, this scene can still be accessed via hotspots in other scenes."/>
 	
+	<tooltipBg label="Overlay Colour" type="ColourPicker" defaultValue="0x000000" optional="true" tooltip="Change the default colour used for tooltip and title background"/>
+	
 	<newNodes>
 	  <hotspot360><![CDATA[<hotspot360 name="Enter Hotspot Title" tooltip="true" p="" y=""/>]]></hotspot360>
     </newNodes>
