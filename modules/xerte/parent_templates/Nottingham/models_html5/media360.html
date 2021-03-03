@@ -20,22 +20,19 @@
 	
 	/* ** WIP - STILL TO DO **
 		
-		- upload screenshot for insert menu
 		- check on various browsers / devices
 		- screenreaders?
-		- fix video sizing
-		- should icon adjust size on screen size? min / max?
-		- sizing of panorama when changing screen size - overlaps header a bit - can't recreate this
 		- change hotspot appearance options so mandatory & not optional?
 		- when initial view set make this the hs editor default view
+		
+		- should icon adjust size on screen size? min / max?
+		- sizing of panorama when changing screen size - overlaps header a bit - can't recreate this
 		- tab to hotspots offscreen issues
-		- toggle hs for on/off autoplay sound
-		- submit button styling
 		
 	Extra features to add:
-		- optional property to create scene menu (& hide scenes)
 		- tooltip background colour
 		- lightbox opacity background
+		
 		- cube map
 	*/
 	
@@ -48,7 +45,8 @@
 			thisPannellum,
 			scenes,
 			lockedHs,
-			currentScene;
+			currentScene,
+			videoResize = true;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -72,16 +70,29 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			var $panel = $("#pageContents .panel");
 			
-			if (x_browserInfo.mobile == false) {
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			// if this has been triggered from window.resize() called manually for video sizing then skip all this
+			if (videoResize == true) {
+				
+				if (parent.window.$.featherlight.current()) {
+					parent.window.$.featherlight.current().close();
+				}
+				
+				var $panel = $("#pageContents .panel");
+				
+				if (x_browserInfo.mobile == false) {
+					$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				} else {
+					$panel.height($x_mobileScroll.height() - $x_footerBlock.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				}
+				
+				if (thisPannellum != undefined) {
+					thisPannellum.resize();
+				}
+				
 			} else {
-				$panel.height($x_mobileScroll.height() - $x_footerBlock.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
-			
-			if (thisPannellum != undefined) {
-				thisPannellum.resize();
+				videoResize = true;
+				$('.featherlight-content').removeClass('max hidden');
 			}
 		};
 		
@@ -178,6 +189,12 @@
 				
 				if (this.getAttribute('title') == 'true' && this.getAttribute('name') != '') {
 					scene.title = this.getAttribute('name');
+				}
+				
+				if (x_currentPageXML.getAttribute('sceneMenu') == 'true') {
+					if (this.getAttribute('hidePage') != 'true') {
+						scene.menuTitle = this.getAttribute('name');
+					}
 				}
 				
 				// set initial view of scene
@@ -404,6 +421,75 @@
 								})
 								.attr('aria-label', x_currentPageXML.getAttribute(btnInfo[e] + 'Txt'));
 						});
+						
+						// set up menu of links to scenes
+						if (x_currentPageXML.getAttribute('sceneMenu') == 'true') {
+							
+							// create a scene menu containing links to open each unhidden scene
+							var $sceneMenu = $('<div id="sceneLinkHolder"></div>');
+							
+							for(var key in scenes) {
+								if (scenes[key].menuTitle != undefined) {
+									var $thisSceneLink = $('<button class="sceneLink">' + scenes[key].menuTitle + '</button>');
+									
+									$thisSceneLink
+										.attr('id', key + 'Link')
+										.data('sceneId', key)
+										.appendTo($sceneMenu)
+										.click(function() {
+											$sceneMenu.hide();
+											thisPannellum.loadScene($(this).data('sceneId'));
+										})
+										.keydown(function(e){
+											// trigger click when focused & enter key pressed
+											if (e.keyCode == 13) {
+												$(this).click();
+												
+											} else if (e.keyCode == 16) {
+												// prevent default shift to zoom as this confuses the shift-tab to move focus around controls
+												e.stopPropagation();
+											}
+										});
+								}
+							}
+							
+							$sceneMenu.hide();
+							
+							// clone the full screen menu & use as menu btn
+							var $menuBtn = $('.pannellumBtn.fullScreen').clone();
+							
+							$menuBtn
+								.removeClass('fullScreen')
+								.addClass('sceneMenu')
+								.insertAfter('.pnlm-panorama-info')
+								.append($sceneMenu)
+								.hover(
+									function(e) {
+										$('.sceneLink.current').removeClass('current');
+										$('#' + currentScene + 'Link').addClass('current');
+										
+										$sceneMenu.show();
+									},
+									function() {
+										$sceneMenu.hide();
+									})
+								.focusin(function() {
+									$(this).mouseenter();
+								})
+								.focusout(function(e) {
+									if ($(this).has(e.relatedTarget).length == 0) {
+										$(this).mouseleave();
+									}
+								})
+								.keydown(function(e){
+									if (e.keyCode == 16) {
+										// prevent default shift to zoom as this confuses the shift-tab to move focus around controls
+										e.stopPropagation();
+									}
+								});
+							
+							$('.pnlm-panorama-info').addClass('indent');
+						}
 					}
 					
 					currentScene = thisPannellum.getScene();
@@ -475,14 +561,19 @@
 							'z-index': 1000
 						});
 						
+						$('.hotspot360Icon').find('.tip').not($this.find('.tip')).mouseleave();
+						
 						var thisBorderWidth = parseInt($this.css('border-width'));
 						
-						if ($this.hasClass('tooltip')) {
+						if ($this.hasClass('tooltip') && !$this.hasClass('disableTip')) {
+							
 							var $tooltip = $this.find('.tip');
 							
-							$tooltip.find('.tipArrow')
-								.removeClass('arrowUp')
-								.addClass('arrowDown');
+							$tooltip
+								.show()
+								.find('.tipArrow')
+									.removeClass('arrowUp')
+									.addClass('arrowDown');
 							
 							// set the width first so margins can be calculated afterwarda
 							$tooltip.css('max-width', ($panorama.width() * (x_browserInfo.mobile == false ? 0.25 : 0.8)) + 'px');
@@ -510,10 +601,12 @@
 						}
 					},
 					function() {
-						$(this).css({
-							'box-shadow': 'none',
-							'z-index': 1
-						});
+						$(this)
+							.css({
+								'box-shadow': 'none',
+								'z-index': 1
+							})
+							.find('.tip').hide();
 					})
 				.focusin(function() {
 					var $this = $(this);
@@ -563,7 +656,9 @@
 			if (args.tip == 'true' && args.name != '' && args.name != undefined) {
 				$hotspotDiv.addClass('tooltip');
 				
-				$('<span class="tip"><span class="tipArrow arrowDown"></span>' + args.name + '</span>').appendTo($hotspotDiv);
+				$('<span class="tip"><span class="tipArrow arrowDown"></span>' + args.name + '</span>')
+					.appendTo($hotspotDiv)
+					.hide();
 			}
 			
 			// hide hotspot (will still be clickable)
@@ -657,13 +752,19 @@
 						} else if (args.video != undefined) {
 							var $pageVideo = $('<div id="pageVideo"></div>');
 							
-							$.featherlight($pageVideo, {});
+							$.featherlight($pageVideo);
+							
+							if (args.video.indexOf("www.youtube.com") != -1 || args.video.indexOf("//youtu") != -1) {
+								$('.featherlight-content').addClass('max youTube');
+							}
 							
 							$('#pageVideo')
 								.attr('title', args.tip)
 								.mediaPlayer({
 									type: 'video',
 									source: args.video,
+									width: '100%',
+									height: '100%',
 									startEndFrame: [Number(args.start), Number(args.end)]
 								});
 							
@@ -685,8 +786,15 @@
 						
 					} else if (args.type == 'sound') {
 						// auto-play an audio file
-						$hs.data('audioPlayer').setCurrentTime(Number(args.start));
-						$hs.data('audioPlayer').play();
+						var audioPlayer = $hs.data('audioPlayer');
+						
+						// hs click toggles play / pause
+						if ($(audioPlayer).data('playing')) {
+							audioPlayer.pause();
+						} else {
+							audioPlayer.setCurrentTime(Number(args.start));
+							audioPlayer.play();
+						}
 						
 					} else if (args.type == 'url') {
 						// open url in this window
@@ -717,7 +825,7 @@
 				
 				var $pswdHtml = $('<div class="featherlightContent">' + pswdTxt + '<div class="pswdBlock"><label for="password">' + label + '</label><input id="password"><input id="pswdSubmit" type="submit" value="' + submit + '"></div><p id="errorTxt" class="alert"></p></div>');
 				
-				$pswdHtml.find('#pswdSubmit').click(function() {
+				$pswdHtml.find('#pswdSubmit').button().click(function() {
 					
 					var pswdEntered = caseSensitive == 'false' ? $('#password').val().toLowerCase() : $('#password').val();
 					if (pswdEntered == pswd) {
@@ -755,6 +863,18 @@
 			if ($mediaElement.parents('.hsAudio').length > 0) {
 				// audio that plays immediately when hotspot clicked
 				$mediaElement.parents('.hsAudio').data('hs').data('audioPlayer', mediaElement);
+				
+				$mediaElement.data('playing', false);
+				
+				mediaElement.addEventListener('playing', function() {
+					$mediaElement.data('playing', true);
+				});
+				mediaElement.addEventListener('pause', function() {
+					$mediaElement.data('playing', false);
+				});
+				mediaElement.addEventListener('ended', function() {
+					$mediaElement.data('playing', false);
+				});
 			}
 		}		
 		
@@ -763,6 +883,39 @@
 			$('#audioHolder .hsAudio').each(function() {
 				$(this).data('hs').data('audioPlayer').pause();
 			});
+		}
+		
+		this.mediaMetadata = function($video, wh) {
+			
+			$video.data({
+				width: wh[0],
+				height: wh[1]
+			});
+			
+			$video.closest(".mejs-video").css({
+				"maxWidth": wh[0] + 'px',
+				"maxHeight": wh[1] + 'px'
+			});
+			
+			$('.featherlight-content').addClass('max hidden');
+			
+			var availSpace = [$('.featherlight-content').width()- 20, $('.featherlight-content').height() - 20],
+				$videoDiv = $('#pageVideo').find('.mejs-video');
+			
+			// resize if the media is the wrong size for its holder
+			// this is done by manually triggering the window resize event (mediaelement.js listens to this event)
+			if ($videoDiv.width() > availSpace[0] || $videoDiv.height() < availSpace[1]) {
+				videoResize = false;
+				$x_window.resize();
+				
+				if (x_fillWindow == false) {
+					videoResize = true;
+					$('.featherlight-content').removeClass('max hidden');
+				}
+				
+			} else {
+				$('.featherlight-content').removeClass('max hidden');
+			}
 		}
 	};
 	

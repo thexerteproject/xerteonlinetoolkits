@@ -1869,6 +1869,9 @@ function x_changePage(x_gotoPage, addHistory) {
 	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' && parent.window.$.featherlight.current()) {
 		standAlonePage = false;
 		addHistory = false;
+	} else if (parent.window.$.featherlight.current()) {
+		// force lightbox to close
+		parent.window.$.featherlight.current().close();
 	}
 	
 	if (x_params.forcePage1 == 'true') {
@@ -3935,7 +3938,6 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	
 	
 	replaceVariables = function (tempText, decimalSeparator) {
-
 		tempText = tempText.replace(
 			new RegExp('\\[\\{(.*?)\\}(?:\\s|&nbsp;)*(?:(?:\\,(?:\\s|&nbsp;)*?(\\d+?)?))?\\]|<span class="x_var x_dyn_(.*?)">(?:.*?)</span>', 'g'),
 			function (match, contents, round, id) {

@@ -2302,11 +2302,12 @@ var EDITOR = (function ($, parent) {
 			$.each(lo_node.children, function(i, key){
 				var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
 				var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+				var hidden = lo_data[key]['attributes'].hidePage;
 				
 				if (linkID.found && linkID.value != "") {
 					var page = [];
 					// Also make sure we only take the text from the name, and not the full HTML
-					page.push(getTextFromHTML(name.value));
+					page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
 					page.push(linkID.value);
 					pages.push(page);
 					
@@ -2316,10 +2317,12 @@ var EDITOR = (function ($, parent) {
 						$.each(childNode.children, function(i, key){
 							var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
 							var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+							var hidden = lo_data[key]['attributes'].hidePage;
+							
 							if (linkID.found && linkID.value != "") {
 								var page = [];
 								// Also make sure we only take the text from the name, and not the full HTML
-								page.push(getTextFromHTML("&nbsp;- "+name.value));
+								page.push("&nbsp;- " + (hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
 								page.push(linkID.value);
 								pages.push(page);
 							}

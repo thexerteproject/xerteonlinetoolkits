@@ -3558,6 +3558,8 @@
 	<size label="Image Size" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full" width="200"/>
 	<position label="Image Position" options="Left,Right" type="ComboBox" data="left,right" defaultValue="Right" width="100"/>
 	
+	<sceneMenu label="Scene Menu" type="CheckBox" defaultValue="true" optional="true" tooltip="Show list of links to each scene at the top of the image viewer. Exclude scenes from this list by adding the 'Hide Scene' optional property."/>
+	
 	<lockIcon label="Locked Hotspot Icon" type="FontAwesome" iconList="full" defaultValue="fas fa-lock" optional="true" tooltip="The icon used on locked hotspots"/>
 	
 	<zoomInTxt label="Zoom In" type="TextInput" wysiwyg="true" language="true"/>
@@ -3638,6 +3640,8 @@
 		<continueRotate label="Inactivity Delay" type="NumericStepper" min="0" max="20" step="1" defaultValue="0" optional="true" tooltip="By default, rotation will stop after user interaction with image. Specify a time (in seconds) of inactivity after which rotation will continue"/>
 	</autoRotate>
 	
+	<hidePage label="Hide Scene" type="CheckBox" defaultValue="true" optional="true" tooltip="Remove this scene from the scene menu. When hidden, this scene can still be accessed via hotspots in other scenes."/>
+	
 	<newNodes>
 	  <hotspot360><![CDATA[<hotspot360 name="Enter Hotspot Title" tooltip="true" p="" y=""/>]]></hotspot360>
     </newNodes>
@@ -3688,8 +3692,6 @@
 		<startFrame label="Start Time" type="textInput" defaultValue="" optional="true"/>
 		<endFrame label="End Time" type="textInput" defaultValue="" optional="true"/>
 	</videoTiming>
-	
-	<!--<movieSize label="Video Size" type="TextInput" condition="hotspotMovie!=null" defaultValue="320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>-->
 	
 	<destination label="Move to Page" type="pageList" defaultValue="" optional="true" tooltip="Go to another page in this project when hotspot clicked. Select the page from the list"/>
 	
