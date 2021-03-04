@@ -18,21 +18,6 @@
  * limitations under the License.
  */
 	
-	/* ** WIP - STILL TO DO **
-		
-		Browser specific issues:
-		- tooltips are often too narrow (Edge & IE)
-		- title bar text isn't vertical middle in bar (Edge, Firefox & IE)
-		- hotspots aren't in HTML in correct order (Firefox)
-		- broken scene menu (IE)
-		
-		- *change hotspot appearance options so mandatory & not optional?
-		
-		- cube map
-		- sizing of panorama when changing screen size - overlaps header a bit - can't recreate this
-		- lightbox opacity background - should this be dealt with in xenith as it's relevant to lots of other places
-	*/
-	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var media360 = new function() {
@@ -171,6 +156,11 @@
 				}
 			}
 			
+			// get the default hotspot colours & size to use - these might be override by opt property added to hotspot
+			this.colour1 = x_currentPageXML.getAttribute('colour1') != undefined && x_currentPageXML.getAttribute('colour1') != '' && x_currentPageXML.getAttribute('colour1') != '0x' ? x_currentPageXML.getAttribute('colour1') : '0x000000';
+			this.colour2 = x_currentPageXML.getAttribute('colour2') != undefined && x_currentPageXML.getAttribute('colour2') != '' && x_currentPageXML.getAttribute('colour2') != '0x' ? x_currentPageXML.getAttribute('colour2') : '0xFFFFFF';
+			this.size = x_currentPageXML.getAttribute('hsSize') != undefined && x_currentPageXML.getAttribute('hsSize') != '' ? x_currentPageXML.getAttribute('hsSize') : '14';
+			
 			var firstScene;
 			scenes = {};
 			lockedHs = [];
@@ -226,8 +216,8 @@
 					if (this.getAttribute('p') != '' && this.getAttribute('p') != undefined) {
 						
 						// correct the format of the colour codes (start with # rather than 0x)
-						var colour1 = this.getAttribute('colour1') != undefined ? this.getAttribute('colour1') : '0x000000';
-						var colour2 = this.getAttribute('colour2') != undefined ? this.getAttribute('colour2') : '0xFFFFFF';
+						var colour1 = this.getAttribute('colour1') != undefined && this.getAttribute('colour1') != '' && this.getAttribute('colour1') != '0x' ? this.getAttribute('colour1') : media360.colour1;
+						var colour2 = this.getAttribute('colour2') != undefined && this.getAttribute('colour2') != '' && this.getAttribute('colour2') != '0x' ? this.getAttribute('colour2') : media360.colour2;
 						colour1 = colour1.indexOf('0x') === 0 ? colour1.replace("0x", "#") : colour1;
 						colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
 						
@@ -262,12 +252,13 @@
 							'clickHandlerFunc': media360.hsClicked,
 							'createTooltipFunc': media360.hsCreated,
 							'createTooltipArgs': {
+								index: i,
 								name: this.getAttribute('name'),
 								id: this.getAttribute('linkID'),
 								tip: this.getAttribute('tooltip'),
 								pitch: this.getAttribute('p'),
 								yaw: this.getAttribute('y'),
-								size: Number(this.getAttribute('size') != undefined ? this.getAttribute('size') : '14'),
+								size: Number(this.getAttribute('size') != undefined && this.getAttribute('size') != '' ? this.getAttribute('size') : media360.size),
 								icon: this.getAttribute('icon') != undefined ? this.getAttribute('icon') : 'fas fa-info',
 								orientation: this.getAttribute('orientation') != undefined ? this.getAttribute('orientation') : '0',
 								hide: this.getAttribute('hide') != undefined ? this.getAttribute('hide') : 'false',
@@ -477,6 +468,7 @@
 									})
 								.focusin(function() {
 									$(this).mouseenter();
+									media360.fixView();
 								})
 								.focusout(function(e) {
 									if ($(this).has(e.relatedTarget).length == 0) {
@@ -501,8 +493,26 @@
 						'aria-label': scenes[currentScene].tip
 					});
 					
+					// for some reason in FF hotSpot array becomes jumbled after pannellum viewer is set up
+					// this results in hotspots not being adding in correct order which can affect tabbing
+					// manually check they are in correct order in array & on screen
+					scenes[currentScene].hotSpots.sort(function(a, b) {
+						if (a.createTooltipArgs.index > b.createTooltipArgs.index) {
+							return 1;
+						}
+						if (a.createTooltipArgs.index < b.createTooltipArgs.index) {
+							return -1;
+						}
+						return 0;
+					});
+					
+					for (var i=scenes[currentScene].hotSpots.length-1; i>-1; i--) {
+						var $thisHs = $('#' + scenes[currentScene].hotSpots[i].createTooltipArgs.id);
+						$thisHs.insertAfter($('.pnlm-render-container canvas'));
+					}
+					
+					// does this scene unlock a hotspot when visited? If so, unlock it
 					for (var i=0; i<lockedHs.length; i++) {
-						// does this scene unlock a hotspot when visited? If so, unlock it
 						if (lockedHs[i].locked == true && lockedHs[i].unlock == currentScene) {
 							lockedHs[i].locked = false;
 						}
@@ -514,6 +524,8 @@
 							media360.unlockHs(i);
 						}
 					}
+					
+					media360.fixView();
 				})
 				.on('scenechange', function(e) {
 					media360.applySceneStyles(e);

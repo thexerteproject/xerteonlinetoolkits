@@ -159,7 +159,7 @@
 	  />]]></inventory><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" />]]></links><list><![CDATA[<list name="Enter Page Title" text="Enter text for the page here" panelWidth="Large"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a Description for Accessibility" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" type="Single Answer" align="Left" panelWidth="Medium"
 	  feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
-	  checkBtnTxt="Check" />]]></mcq><media360><![CDATA[<media360 name="Enter Page Title" text="Enter text for the page here" size="large" 
+	  checkBtnTxt="Check" />]]></mcq><media360><![CDATA[<media360 name="Enter Page Title" text="Enter text for the page here" size="large" position="right"
 	  zoomInTxt="Zoom in" zoomOutTxt="Zoom out" fullScreenTxt="Full screen toggle" 
 	  pageError="Destination page not found"
 	  lockLabel="Password:" lockSubmit="Submit" lockPswdWrong="Incorrect password"
@@ -3556,11 +3556,17 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
 	<size label="Image Size" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full" width="200"/>
-	<position label="Image Position" options="Left,Right" type="ComboBox" data="left,right" defaultValue="Right" width="100"/>
+	<position label="Image Position" options="Left,Right" type="ComboBox" data="left,right" defaultValue="right" width="100"/>
 	
 	<sceneMenu label="Scene Menu" type="CheckBox" defaultValue="true" optional="true" tooltip="Show list of links to each scene at the top of the image viewer. Exclude scenes from this list by adding the 'Hide Scene' optional property."/>
 	
 	<lockIcon label="Locked Hotspot Icon" type="FontAwesome" iconList="full" defaultValue="fas fa-lock" optional="true" tooltip="The icon used on locked hotspots"/>
+	
+	<hsAppearance type="group" label="Hotspot Appearance" optional="true" tooltip="Customise the appearance of hotspots throughout this page. Customisation of individual hotspots can also be done by adding the Hotspot Appearance optional property directly to hotspots.">
+		<colour1 label="Main Colour" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+		<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+		<hsSize label="Size" type="NumericStepper" min="5" max="25" step="1" defaultValue="14" optional="true"/>
+	</hsAppearance>
 	
 	<zoomInTxt label="Zoom In" type="TextInput" wysiwyg="true" language="true"/>
 	<zoomOutTxt label="Zoom Out" type="TextInput" wysiwyg="true" language="true"/>
@@ -3648,7 +3654,7 @@
 	</overlayColours>
 	
 	<newNodes>
-	  <hotspot360><![CDATA[<hotspot360 name="Enter Hotspot Title" tooltip="true" p="" y=""/>]]></hotspot360>
+	  <hotspot360><![CDATA[<hotspot360 name="Enter Hotspot Title" tooltip="true" icon="fas fa-info" orientation="0" p="" y=""/>]]></hotspot360>
     </newNodes>
   
   </file360><hotspot360 type="hotspot360" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
@@ -3656,12 +3662,13 @@
 	
 	<tooltip label="Show Title as Tooltip" type="CheckBox"/>
 	
-	<hsAppearance type="group" label="Hotspot Appearance" optional="true">
-		<icon label="Icon" type="FontAwesome" iconList="full" defaultValue="fas fa-info" optional="true"/>
-		<colour1 label="Main Colour" type="ColourPicker" defaultValue="0x000000" optional="true"/>
-		<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-		<orientation label="Orientation" type="NumericStepper" min="-359" max="359" step="1" defaultValue="0" optional="true"/>
-		<size label="Size" type="NumericStepper" min="5" max="25" step="1" defaultValue="14" optional="true"/>
+	<icon label="Icon" type="FontAwesome" iconList="full" defaultValue="fas fa-info" mandatory="true"/>
+	<orientation label="Orientation" type="NumericStepper" min="-359" max="359" step="1" defaultValue="0" mandatory="true"/>
+	
+	<hsAppearance type="group" label="Hotspot Appearance" optional="true" tooltip="Customise the appearance of this hotspot. Any customisation set here will override customisation at page level.">
+		<colour1 label="Main Colour" type="ColourPicker" defaultValue="" optional="true"/>
+		<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="" optional="true"/>
+		<size label="Size" type="NumericStepper" min="5" max="25" step="1" defaultValue="" optional="true"/>
 	</hsAppearance>
 	
 	<destinationScene type="group" label="Move to Scene" optional="true" tooltip="Load another scene from this page when hotspot clicked. Select the scene from the list">

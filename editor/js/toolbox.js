@@ -3164,7 +3164,7 @@ var EDITOR = (function ($, parent) {
 
     };
 	
-	draw360Hotspot = function(html, url, hsattrs, id) {
+	draw360Hotspot = function(html, url, hsattrs, id, hspgattrs) {
         // Add Hotspot on the wizard page as preview on the thumbnail image
 		
         // find image, set scale and wrap with overlayWrapper
@@ -3192,7 +3192,7 @@ var EDITOR = (function ($, parent) {
         });
 
         // open editor when thumbnail is clicked
-		canvas.on('mouse:down', function() { edit360Hotspot(url, hsattrs, id) });
+		canvas.on('mouse:down', function() { edit360Hotspot(url, hsattrs, id, hspgattrs) });
 		
         // draw target
 		var xy = {};
@@ -3228,7 +3228,7 @@ var EDITOR = (function ($, parent) {
         }
     };
 
-    edit360Hotspot = function (url, hsattrs, id) {
+    edit360Hotspot = function (url, hsattrs, id, hspgattrs) {
 		// set up contents of lightbox (buttons, panorama & instructions)
 	    var $editImg = $("<div></div>")
 			.attr('id', 'outer_img_' + id)
@@ -3264,10 +3264,38 @@ var EDITOR = (function ($, parent) {
 		
 		// get the info about the icon appearance
 		if (hsattrs.icon == '' || hsattrs.icon == undefined) { currentHsDetails.icon = 'fas fa-info'; } else { currentHsDetails.icon = hsattrs.icon; }
-		if (hsattrs.colour1 == '' || hsattrs.colour1 == undefined) { currentHsDetails.colour1 = 'black'; } else { currentHsDetails.colour1 = hsattrs.colour1; }
-		if (hsattrs.colour2 == '' || hsattrs.colour2 == undefined) { currentHsDetails.colour2 = 'white'; } else { currentHsDetails.colour2 = hsattrs.colour2; }
 		if (hsattrs.orientation == '' || hsattrs.orientation == undefined) { currentHsDetails.orientation = '0'; } else { currentHsDetails.orientation = hsattrs.orientation; }
-		if (hsattrs.size == '' || hsattrs.size == undefined) { currentHsDetails.size = '14'; } else { currentHsDetails.size = hsattrs.size; }
+		
+		// colours & size can be set at page or hs level
+		if (hsattrs.colour1 == '' || hsattrs.colour1 == undefined || hsattrs.colour1 == '0x') {
+			if (hspgattrs.colour1 == '' || hspgattrs.colour1 == undefined || hspgattrs.colour1 == '0x') {
+				currentHsDetails.colour1 = 'black';
+			} else {
+				currentHsDetails.colour1 = hspgattrs.colour1;
+			}
+		} else {
+			currentHsDetails.colour1 = hsattrs.colour1;
+		}
+		
+		if (hsattrs.colour2 == '' || hsattrs.colour2 == undefined || hsattrs.colour2 == '0x') {
+			if (hspgattrs.colour2 == '' || hspgattrs.colour2 == undefined || hspgattrs.colour2 == '0x') {
+				currentHsDetails.colour2 = 'white';
+			} else {
+				currentHsDetails.colour2 = hspgattrs.colour2;
+			}
+		} else {
+			currentHsDetails.colour2 = hsattrs.colour2;
+		}
+		
+		if (hsattrs.size == '' || hsattrs.size == undefined) {
+			if (hspgattrs.hsSize == '' || hspgattrs.hsSize == undefined) {
+				currentHsDetails.size = '14';
+			} else {
+				currentHsDetails.size = hspgattrs.hsSize;
+			}
+		} else {
+			currentHsDetails.size = hsattrs.size;
+		}
 		
 		// correct the format of the colour codes (start with # rather than 0x)
 		currentHsDetails.colour1 = currentHsDetails.colour1.indexOf('0x') === 0 ? currentHsDetails.colour1.replace("0x", "#") : currentHsDetails.colour1;
@@ -4184,7 +4212,9 @@ var EDITOR = (function ($, parent) {
 				var hsattrs = lo_data[key].attributes;
                 var hsparent = parent.tree.getParent(key);
                 var hspattrs = lo_data[hsparent].attributes;
-
+				var hspage = parent.tree.getParent(hsparent);
+				var hspgattrs = lo_data[hspage].attributes;
+				
 				// Create the container
 				html = $('<div>').attr('id', id);
 
@@ -4203,9 +4233,9 @@ var EDITOR = (function ($, parent) {
 						.attr("src", url)
 						.load(function(){
 							$(this).css({width: '100%'});
-							draw360Hotspot(html, url, hsattrs, id);
+							draw360Hotspot(html, url, hsattrs, id, hspgattrs);
 						}).click(function(){
-							edit360Hotspot(url, hsattrs, id);
+							edit360Hotspot(url, hsattrs, id, hspgattrs);
 						});
 				}
 				else
