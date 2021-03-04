@@ -20,12 +20,13 @@
 	
 	/* ** WIP - STILL TO DO **
 		
-		- check on various browsers / devices
-		- screenreaders?
+		Browser specific issues:
+		- tooltips are often too narrow (Edge & IE)
+		- title bar text isn't vertical middle in bar (Edge, Firefox & IE)
+		- hotspots aren't in HTML in correct order (Firefox)
+		- broken scene menu (IE)
+		
 		- *change hotspot appearance options so mandatory & not optional?
-		- *when initial view set make this the hs editor default view
-		- should icon adjust size on screen size? min / max?
-		- tab to hotspots offscreen issues
 		
 		- cube map
 		- sizing of panorama when changing screen size - overlaps header a bit - can't recreate this
@@ -53,6 +54,10 @@
 			scenes = $pageContents.data('scenes');
 			lockedHs = $pageContents.data('lockedHs');
 			currentScene = $pageContents.data('currentScene');
+			
+			// sometimes when returning to the page the panorama isn't shown correctly or hotspots aren't in correct place
+			this.fixView();
+			thisPannellum.setPitch(thisPannellum.getPitch()-1); // moving slightly ensures hotspots re in correct places
 		};
 		
 		this.leavePage = function() {
@@ -399,8 +404,6 @@
 					// first scene loaded - make controls more accessible
 					if (currentScene == undefined) {
 						
-						media360.applySceneStyles(thisPannellum.getScene());
-						
 						var btnInfo = ['zoomIn', 'zoomOut', 'fullScreen'];
 						
 						$('.pnlm-control:not(.pnlm-compass)').each(function(e) {
@@ -515,6 +518,8 @@
 				.on('scenechange', function(e) {
 					media360.applySceneStyles(e);
 				});
+				
+				media360.applySceneStyles(thisPannellum.getScene());
 			}
 			
 			this.sizeChanged();
@@ -565,7 +570,7 @@
 						
 						$('.hotspot360Icon').find('.tip').not($this.find('.tip')).mouseleave();
 						
-						var thisBorderWidth = parseInt($this.css('border-width'));
+						var thisBorderWidth = parseInt($this.css('border-top-width'));
 						
 						if ($this.hasClass('tooltip') && !$this.hasClass('disableTip')) {
 							
@@ -620,6 +625,7 @@
 						if (code == 9) {
 							thisPannellum.setPitch(Number($this.data('pitch')));
 							thisPannellum.setYaw(Number($this.data('yaw')));
+							media360.fixView(); // sometimes panorama goes off screen so this forces it back
 						}
 						
 						window.removeEventListener('keyup', tabCheck);
@@ -633,7 +639,10 @@
 				.keydown(function(e){
 					// trigger click when focused & enter key pressed
 					if (e.which === 13) {
-						$(this).click();
+						$(this)
+							.data('tab', true)
+							.click()
+							.data('tab', false);
 						
 					// prevent default shift to zoom as this confuses the shift-tab to move focus around hotspots
 					// also prevent move by arrow keys when focused on hs as this sometimes starts an unstoppable spin
@@ -778,8 +787,8 @@
 						// turn to new view in this scene
 						if (args.position != undefined && args.position.split('|').length == 2) {
 							var info = args.position.split('|');
-							if ($.isNumeric(info[0])) { thisPannellum.setPitch(Number(info[0])); }
-							if ($.isNumeric(info[1])) { thisPannellum.setYaw(Number(info[1])); }
+							var animateSpeed = $hs.data('tab') == true ? false : 1000; // for some reason this won't work with animation on if tabbed to & press enter - so turn animation off
+							thisPannellum.lookAt( Number(info[0]),  Number(info[1]), undefined, animateSpeed);
 						}
 						
 					} else if (args.type == 'xotPage') {
@@ -960,6 +969,15 @@
 				g: parseInt(result[2], 16),
 				b: parseInt(result[3], 16)
 			} : null;
+		}
+		
+		this.fixView = function() {
+			if ($('.pnlm-ui.pnlm-grab').offset() != undefined && ($('.pnlm-ui.pnlm-grab').offset().left != $panorama.offset().left || $('.pnlm-ui.pnlm-grab').offset().top != $panorama.offset().top)) {
+				$('.pnlm-ui.pnlm-grab').offset({ left: $panorama.offset().left, top: $panorama.offset().top });
+			}
+			if ($('.pnlm-render-container').offset() != undefined && ($('.pnlm-render-container').offset().left != $panorama.offset().left || $('.pnlm-render-container').offset().top != $panorama.offset().top)) {
+				$('.pnlm-render-container').offset({ left: $panorama.offset().left, top: $panorama.offset().top });
+			}
 		}
 	}
 	

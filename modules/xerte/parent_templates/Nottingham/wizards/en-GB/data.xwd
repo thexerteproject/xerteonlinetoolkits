@@ -3643,7 +3643,7 @@
 	<hidePage label="Hide Scene" type="CheckBox" defaultValue="true" optional="true" tooltip="Remove this scene from the scene menu. When hidden, this scene can still be accessed via hotspots in other scenes."/>
 	
 	<overlayColours type="group" label="Overlay Colours" optional="true" tooltip="Change the default colour used for tooltip and title backgrounds">
-		<tooltipBg label="Tooltip" type="ColourPicker" defaultValue="" optional="true"/>
+		<tooltipBg label="Tooltips" type="ColourPicker" defaultValue="" optional="true"/>
 		<titleBg label="Title Bar" type="ColourPicker" defaultValue="" optional="true"/>
 	</overlayColours>
 	

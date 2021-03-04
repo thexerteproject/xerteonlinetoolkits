@@ -178,7 +178,7 @@
 		min-height: 36px;
 	}
 	
-	.pnlm-panorama-info .pnlm-title-box {
+	.pnlm-panorama-info.indent .pnlm-title-box {
 		margin: auto;
 		position: absolute;
 		top: 0;
