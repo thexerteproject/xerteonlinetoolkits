@@ -150,7 +150,7 @@
 			window.timeline = new TL.Timeline('timeline-embed', timeline_json, additionalOptions);
 
 			setTimeout(function (){
-				debugger
+
 				$('.tl-slidenav-next').click(function (){
 
 					counter++
@@ -265,7 +265,7 @@
 				}
 
 			}
-			debugger
+
 
 			var margT = $('.tl-media-item ').outerWidth(true) - $('.tl-media-item ').outerWidth();
 			$('.tl-caption').css("marginLeft", margT/2)
@@ -341,7 +341,7 @@
 		};
 
 		function getCountrycode (countryName) {
-			debugger
+
 			if (isoCountries.hasOwnProperty(countryName)) {
 				return isoCountries[countryName];
 			} else {

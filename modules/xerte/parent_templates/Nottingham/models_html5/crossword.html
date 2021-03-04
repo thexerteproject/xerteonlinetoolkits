@@ -41,7 +41,7 @@
             });
 
             $('td').click(function() {
-                debugger
+
                 active = $(this).closest('table tbody').find('td').index(this);
                 if($('#crossword-table tbody tr td').eq(active).find('input')[0] !== undefined) {
                 rePosition();
@@ -81,7 +81,7 @@
                             return
                         }
                     }
-                    debugger
+
                     if($('#crossword-table tbody tr td').eq(active-1).find('input')[0] && $('#crossword-table tbody tr td').eq(active+1).find('input')[0]){
                         for (var i = 0; i < startPositionArray.length; i++) {
                             if (startPositionArray[i][0] == wholeNumber) {
@@ -397,7 +397,7 @@
             }
 
             addHighlightHint = function (id, direction){
-                debugger
+
                 removeHighlight();
                 var rows = $('#crossword-table tbody tr').length;
                 var columns = $('#crossword-table tbody tr:eq(0) td').length;
@@ -541,7 +541,7 @@
 
 		this.init = function () {
 			// array with words
-            debugger
+
 			var words = [];
 			//array with hints
 			var hints = [];
@@ -1150,7 +1150,7 @@
 
                                 if(cell['down'] !== null && cell['across'] !== null){
                                     if(cell['across']['is_start_of_word']===true && cell['down']['is_start_of_word']===true){
-                                        debugger
+
                                         var char ="<div id='"+legend['down'][counterDown].position+ "' class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input  type='text' autocomplete='off' class='crossword-input'  maxlength='1' id='" + r + "," + c + "' /></div>"
                                         startPositionArray.push([r,c,"down, across"])
                                         counterDown++;

@@ -58,7 +58,7 @@
 		// };
 			this.sizeChanged = function () {
 				if (x_browserInfo.mobile == false) {
-					debugger
+
 					var $panel = $("#pageContents .panel");
 					$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 				}
@@ -176,7 +176,7 @@
 						amountOfCorrectOptions++;
 					}
 				})
-				debugger
+
 				var amountOfCorrect = 0;
 				var amountOfWrong = 0;
 				highlightsArray.forEach((highlight)=>{
@@ -306,7 +306,7 @@
 				"filter"	:'alpha(opacity=100)',
 				"max-height" : imgMaxH-50
 			});
-			debugger
+
 
 			if($img.width() > $img.height()){
 				$('.x_noLightBox').css("width", "100%")
@@ -318,7 +318,7 @@
 		};
 
 		this.createHS = function() {
-			debugger
+
 			// create hotspots - taking scale of image into account
 			var scale = $img.width() / $img.data("origSize")[0],
 				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;
@@ -369,7 +369,7 @@
 								$this.addClass("selected");
 								highlightsArray.push(_this)
 							}else{
-								debugger
+
 								$this.removeClass("selected")
 								const index = highlightsArray.indexOf(_this);
 								if (index > -1) {
@@ -421,7 +421,7 @@
                 });
 
 			if (selected != undefined) {
-				debugger
+
 				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
 			}
 
@@ -492,20 +492,20 @@
 				}, 100);
 			}
 			else {
-				debugger
+
 				$("#pageContents .hotspot.selected").mapster("select");
 			}
 		};
 
 
 		this.selectHs = function(type) {
-			debugger
+
 			var currentSelection = $("#pageContents .selected"),
 				i = currentSelection.index();
 
 			currentSelection.removeClass("selected");
 			if (x_currentPageXML.getAttribute("highlight") !== "true") {
-				debugger
+
 				$("area").mapster('deselect');
 			}
 
