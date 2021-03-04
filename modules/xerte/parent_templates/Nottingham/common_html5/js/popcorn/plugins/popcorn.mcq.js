@@ -427,7 +427,7 @@ optional: feedback page synch play enable
 						$showLbl = $("<div class='showLabel'>" + options.name + "</div>").appendTo($showHolder);
 						$showHolder
 							.click(function () {
-								$target.parent().css({"padding": 5});
+								$target.parent().css({"padding": 5, "width": options._w + "%"});
                                 $("#overlay").show();
                                 mediaLesson.popcornInstance.media.pause();
                                 $target.parent().addClass("qWindow");
@@ -500,8 +500,10 @@ optional: feedback page synch play enable
 					}
 				}
 				if (options.overlayPan) {
-					if (options.optional == "false" || options.optional == undefined)
+					if (options.optional == "false" || options.optional == undefined) {
 						$target.parent().addClass("qWindow");
+						$target.parent().css({"width" : options._w + "%"});
+					}
 					else {
 						$target.parent().css({
 							"padding": 0	
@@ -509,7 +511,6 @@ optional: feedback page synch play enable
 					}
 					$target.parent().css({
 						"max-width": options._w + "%",
-						"width" : options._w + "%",
 						"top": options._y + "%",
 						"left": options._x + "%"
 					}).show();
