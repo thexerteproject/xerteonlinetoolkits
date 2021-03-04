@@ -15,7 +15,7 @@
 }
 .tl-menubar{
     position: fixed !important;
-    top: 10% !important;
+
 }
 
 .tl-slide-content{
@@ -55,6 +55,10 @@
     color: #808080 !important;
 }
 
+.lightboxWrapper{
+    background-color: red!important;
+    z-index: 1!important;
+}
 
 /*.tl-slide-content-container{*/
 /*    display: block!important;*/
@@ -80,6 +84,12 @@
     max-width: 100% !important;
 }
 
+.tl-media-audio:focus { outline: none; }
+
+/*.tl-caption{*/
+/*    float: left !important;*/
+/*    margin-left: 2% !important;*/
+/*}*/
 /*.tl-slidenav-next{*/
 /*    top: 0!important; */
 /*}*/

@@ -13,17 +13,23 @@
 
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="" url="Select an Image" tip=""/>]]></SictTimeline>
+      <SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" language="English" text="" error="There is no image" />]]></SictTimeline>
     </newNodes>
   </pageWizard>
 
     <SictTimeline menu="Media" menuItem="Timeline media" icon="icTimeline" hint="A customizable timeline built up with seperate sections" thumb="thumbs/sictTimeline.jpg" removed="true">
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <text label="Page Text" type="TextArea" height="150"/>
+        <language label="Language" options="Afrikaans,Arabic,Armenian,Basque,Belarusian,Bulgarian,Catalan,Chinese,Croatian/Hrvatski,Czech,Danish,Dutch,English,Esperanto,Estonian,Faroese,Farsi,Finnish,French,Frisian,Galician,Georgian,German,Greek,Hebrew,Hindi,
+        Hungarian,Icelandic,Indonesian,Irish,Italian,Japanese,Korean,Latvian,Lithuanian,Luxembourgish,Malay,Nepali,Norwegian,Polish,Portuguese,Portuguese (Brazilian),Romanian,Romansh,Russian,Serbian - Cyrillic, Serbian - Latin,Sinhalese,Slovak,Slovenian,Spanish,Swedish,
+        Tagalog,Tamil,Taiwanese,Telugu,Thai,Turkish,Ukrainian" type="ComboBox" data="Afrikaans,Arabic,Armenian,Basque,Belarusian,Bulgarian,Catalan,Chinese,Croatian/Hrvatski,Czech,Danish,Dutch,English,Esperanto,Estonian,Faroese,Farsi,Finnish,French,Frisian,Galician,Georgian,German,Greek,Hebrew,Hindi,
+        Hungarian,Icelandic,Indonesian,Irish,Italian,Japanese,Korean,Latvian,Lithuanian,Luxembourgish,Malay,Nepali,Norwegian,Polish,Portuguese,Portuguese (Brazilian),Romanian,Romansh,Russian,Serbian - Cyrillic, Serbian - Latin,Sinhalese,Slovak,Slovenian,Spanish,Swedish,
+        Tagalog,Tamil,Taiwanese,Telugu,Thai,Turkish,Ukrainian" defaultValue="English" width="100"/>
         <image type="group" label="Image" optional="true">
           <url label="File" type="media"/>
           <tip label="Description" type="TextInput"/>
         </image>
+        <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
         <newNodes>
         <!--  <timelinedate><![CDATA[<timelinedate name="" text="" date="Choose Date"/>]]></timelinedate> -->
           <timeLineText><![CDATA[<timeLineText name="Enter Page Title" text="" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
@@ -43,7 +49,8 @@
 
     <timeLineText menuItem="Text item" icon="icPageWhite" remove="true">
       <date label="Datum" type="dateField" defaultValue=""/>
-      <time label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+      <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+
       <name label="Name" type="TextInput" wysiwyg="true"/>
       <text label="Description" type="TextArea" height="150"/>
         <TimeLineEndDate type="group" label="End Date" optional="true">
@@ -54,7 +61,7 @@
 
     <timelineimage menuItem="Image item" icon="icPageWhite" max="12" remove="true">
       <date label="Datum" type="dateField" defaultValue="" />
-      <time label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+      <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
       <name label="Name" type="TextInput" wysiwyg="true"/>
       <text label="Description" type="TextArea" height="150"/>
       <image type="group" label="Image">
@@ -69,7 +76,7 @@
 
     <timelinevideo menuItem="Video item" icon="icPageWhite" max="12" remove="true">
       <date label="Datum" type="dateField" defaultValue=""/>
-      <time label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+      <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
       <name label="Page Title" type="TextInput" wysiwyg="true"/>
       <url label="Video" type="Media"/>
       <TimeLineEndDate type="group" label="End Date" optional="true">
@@ -80,7 +87,7 @@
 
     <timeLineAudio menuItem="Audio item" icon="icPageWhite" max="12" remove="true">
           <date label="Datum" type="dateField" defaultValue=""/>
-          <time label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+          <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
           <name label="Page Title" type="TextInput" wysiwyg="true"/>
           <url label="Audio" type="Media"/>
           <TimeLineEndDate type="group" label="End Date" optional="true">

@@ -11,6 +11,8 @@
 	// other functions for model should also be in here to avoid conflicts
 	var SictTimeline = new function() {
 
+		var counter = -1;
+		var img = []
 		this.loadJS = function () {
 
 			$('<link/>', {
@@ -33,6 +35,7 @@
 						.fail(function( jqxhr, settings, exception ) {
 							console.log('Failed to load chart scripts');
 						});
+
 			}else{
 				this.setup();
 
@@ -56,6 +59,29 @@
 					var startDate = element.getAttribute("date");
 					var endDate = element.getAttribute("endDate");
 
+
+
+
+					if(startDate === "Choose Date" || startDate === null || startDate === undefined){
+						var now     = new Date();
+						var year    = now.getFullYear();
+						var month   = now.getMonth()+1;
+						var day     = now.getDate();
+
+						if(month.toString().length === 1) {
+							month = '0'+month;
+						}
+						if(day.toString().length === 1) {
+							day = '0'+day;
+						}
+						var dateTime = year+'/'+month+'/'+day;
+						startDate = dateTime
+					}
+
+					// if(endDate === "Choose Date" || endDate === null || endDate === undefined){
+					// 	endDate = startDate
+					// }
+
 					var startTime = element.getAttribute("time");
 					var endTime = element.getAttribute("endTime")
 
@@ -72,16 +98,15 @@
 						endDate = startDate
 					}
 
-
 					return {
 						media: {
 							url: element.getAttribute("url"),
 							caption: element.getAttribute("tip"),
 						},
 						start_date: {
-							month: element.getAttribute("date").substring(5, 7),
-							day: element.getAttribute("date").substring(8, 10),
-							year: element.getAttribute("date").substring(0, 4),
+							month: startDate.substring(5, 7),
+							day: startDate.substring(8, 10),
+							year: startDate.substring(0, 4),
 							hour: startTime.substring(0, 2),
 							minute: startTime.substring(3,5)
 						},
@@ -99,29 +124,72 @@
 					}
 				}).get()
 			};
-			console.log(make_the_json);
 			var timeline_json = make_the_json; // replace make_the_json() with the JSON object you created
 			// two arguments: the id of the Timeline container (no '#')
 			// and the JSON object or an instance of TL.TimelineConfig created from
 			// a suitable JSON object
-			window.timeline = new TL.Timeline('timeline-embed', timeline_json);
+			// var languages = ["af","ar","hy","eu","be","bg","ca","zh-cn","hr","cz","da","nl","en","en-24hr","eo","et","fo","fa","fi","fr","fy","gl","ka","de","el"
+			// 	,"he","hi","hu","is","id","ga","it","ja","ko","lv","lt","lb","ms","ne","no","pl","pt","pt-br","ro","rm","ru","sr-cy","sr","si","sk","sl","es","sv"
+			// 	,"tl","ta","zh-tw","te","th","tr","uk"]
+			var language =  x_currentPageXML.getAttribute("language")
+			// var listitem = ""
+			// for(var i= 0; i < languages; i++){
+			// 	if(i === language){
+			// 		listitem = i
+			// 	}
+			// }
+			if(language === null || language === ""){
+				language = "English"
+			}
+			var lan = getCountrycode(language)
+			var additionalOptions = {
+				font:null,
+				language:lan
+			}
+
+			window.timeline = new TL.Timeline('timeline-embed', timeline_json, additionalOptions);
+
 			setTimeout(function (){
+				debugger
+				$('.tl-slidenav-next').click(function (){
+
+					counter++
+					var imgPath = img[counter].src
+					if(imgPath !== ""){
+						$('.tl-media-content').wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
+					}else{
+						$('.tl-media-content').unwrap();
+					}
+				})
+
+				$('.tl-slidenav-previous').click(function (){
+
+					counter--
+					var imgPath = img[counter].src
+					if(imgPath !== ""){
+						$('.tl-media-content').wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
+					}else{
+						$('.tl-media-content').unwrap();
+					}
+				})
 				SictTimeline.resizeImg();
 
-			}, 1500);
+			}, 3000);
+
 		}
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+
 			setTimeout(function (){
 				SictTimeline.resizeImg();
-
-			}, 1500);
+			}, 100);
 		}
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-				SictTimeline.resizeImg();
+
+			SictTimeline.resizeImg();
 
 		}
 
@@ -130,8 +198,13 @@
 		this.init = function() {
 			numLoaded = 0;
 			this.loadJS();
+			setTimeout(function (){
 
-			// $("#")
+				var str = x_currentPageXML.getAttribute("error")
+				$('.tl-message-content').html(str)
+
+			}, 100);
+
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 
@@ -148,11 +221,11 @@
 			var normal;
 			var small;
 			var arrow;
-			var img = document.getElementsByClassName("tl-media-item")
+			img = document.getElementsByClassName("tl-media-item")
 
 			big = imgMaxH*0.7
 			normal = imgMaxH*0.6
-			small = imgMaxH*0.5
+			small = imgMaxH*0.4
 			arrow = small*0.5
 			big = big.toString()
 			normal = normal.toString()
@@ -193,12 +266,89 @@
 
 			}
 			debugger
-			console.log(imgMaxH)
-			console.log(big)
-			console.log(normal)
-			console.log(small)
 
+			var margT = $('.tl-media-item ').outerWidth(true) - $('.tl-media-item ').outerWidth();
+			$('.tl-caption').css("marginLeft", margT/2)
+			$('.tl-caption').css("width", margT/2)
+
+			var heightTimeLine = $('.tl-timenav').height()
+			heightTimeLine= heightTimeLine/3
+			var top = imgMaxH-heightTimeLine
+			$('.tl-menubar').css("top", top)
 		};
+
+		var isoCountries = {
+
+			'Afrikaans' : 'af',
+			'Afrikaans' : 'ar',
+			'Armenian' : 'hy',
+			'Basque' : 'eu',
+			'Belarusian' : 'be',
+			'Bulgarian' : 'bg',
+			'Catalan' : 'ca',
+			'Chinese' : 'zh-cn',
+			'Croatian/Hrvatski' : 'hr',
+			'Czech' : 'cz',
+			'Danish' : 'da',
+			'Dutch' : 'nl',
+			'English' : 'en',
+			'Esperanto' : 'eo',
+			'Estonian' : 'et',
+			'Faroese' : 'fo',
+			'Farsi' : 'fa',
+			'Finnish' : 'fi',
+			'French' : 'fr',
+			'Frisian' : 'fy',
+			'Galician' : 'gl',
+			'Georgian' : 'ka',
+			'German' : 'de',
+			'Greek' : 'el',
+			'Hebrew' : 'he',
+			'Hindi' : 'hi',
+			'Hungarian' : 'hu',
+			'Icelandic' : 'is',
+			'Indonesian' : 'id',
+			'Irish' : 'ga',
+			'Italian' : 'it',
+			'Japanese' : 'ja',
+			'Korean' : 'ko',
+			'Latvian' : 'lv',
+			'Lithuanian' : 'lt',
+			'Luxembourgish' : 'lb',
+			'Malay' : 'ms',
+			'Nepali' : 'ne',
+			'Norwegian' : 'no',
+			'Polish' : 'pl',
+			'Portuguese' : 'pt',
+			'Portuguese (Brazilian)' : 'pt-br',
+			'Romanian' : 'ro',
+			'Romansh' : 'rm',
+			'Russian' : 'ru',
+			'Serbian - Cyrillic' : 'sr-cy',
+			'Serbian - Latin' : 'sr',
+			'Sinhalese' : 'si',
+			'Slovak' : 'sk',
+			'Slovenian' : 'sl',
+			'Spanish' : 'es',
+			'Swedish' : 'sv',
+			'Tagalog' : 'tl',
+			'Tamil' : 'ta',
+			'Taiwanese' : 'zh-tw',
+			'Telugu' : 'te',
+			'Thai' : 'th',
+			'Turkish' : 'tr',
+			'Ukrainian' : 'uk'
+		};
+
+		function getCountrycode (countryName) {
+			debugger
+			if (isoCountries.hasOwnProperty(countryName)) {
+				return isoCountries[countryName];
+			} else {
+				return countryName;
+			}
+		}
+
 	}
 
 
