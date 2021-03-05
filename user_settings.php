@@ -93,14 +93,14 @@ _load_language_file("/user_settings.inc");
                 <div id="data_area">
 
                     <div id="dynamic_area">
-                        <form>
+                        <form id="passform">
                             <?php echo '<label for="oldpass">' . USER_SETTINGS_PASSWORD_OLD . '</label><br>'?>
-                            <input type='password' id="oldpass "required><br>
+                            <input type='password' id="oldpass"><br>
                             <?php echo '<label for="newpass">' . USER_SETTINGS_PASSWORD_NEW . '</label><br>'?>
-                            <input type='password' id="newpass" required><br>
+                            <input type='password' id="newpass" ><br>
                             <?php echo '<label for="newpassrepeat">' . USER_SETTINGS_PASSWORD_NEW_REPEAT . '</label><br>'?>
-                            <input type='password' id="newpassrepeat" required><br>
-                            <?php echo "<button class='xerte_button' onclick='changePassword(\"". $_SESSION['toolkits_logon_username'] ."\")'>" . USER_SETTINGS_PASSWORD_SUBMIT . "</button>"?>
+                            <input type='password' id="newpassrepeat" ><br>
+                            <?php echo "<button type='button' class='xerte_button' onclick='changePassword(\"". $_SESSION['toolkits_logon_username'] ."\")'>" . USER_SETTINGS_PASSWORD_SUBMIT . "</button>"?>
                         </form>
                         <div id="result"></div>
                     </div>

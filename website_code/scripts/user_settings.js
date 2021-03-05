@@ -62,38 +62,32 @@ function changepasswordPopup() {
     }
 }
 
-var xmlHttp = new XMLHttpRequest();
+function ajax_send(url, mesg, success){
 
-function authdb_ajax_send_prepare(url){
+    $.ajax({
+        type: "POST",
+        url: "library/Xerte/Authentication/Db/" + url,
+        data: mesg,
+        success: success
+    })
 
-    xmlHttp.open("post","library/Xerte/Authentication/Db/" + url,true);
-    xmlHttp.onreadystatechange=authdb_stateChanged;
-    xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-}
-function authdb_stateChanged(){
-
-    if (xmlHttp.readyState==4){
-        document.getElementById('result').innerHTML = xmlHttp.responseText;
-    }
 }
 
 function changePassword(username){
-    //TODO: first check if old password is correct:
-    //this whole option should only be possible on Db
-
-    var url="changepassword.php";
-
-    authdb_ajax_send_prepare(url);
-
+    var oldpass = $("#oldpass").val();
     var passwd1 = $("#newpass").val();
     var passwd2 = $("#newpassrepeat").val();
     if (passwd1 == passwd2) {
-        var encodedpasswd = encodeURIComponent(passwd1);
-        var message = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(passwd1) + '&personal=' + true;
-        xmlHttp.send('username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(passwd1) + '&personal=' + true);
+
+        var url = "changepassword.php";
+        var mesg = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(passwd1) + '&oldpass=' + encodeURIComponent(oldpass);
+
+        ajax_send("changepassword.php", mesg, function(response) {$("#result").html(response)})
+
     }else{
-        document.getElementById('result').innerHTML = "<p>" + PASS_FAILED + "</p><p><font color = \"red\"><ul><li>" + NOT_SAME_PASS + "</li></ul></font></p>";
+        $('#result').html("<p>" + PASS_FAILED + "</p><p><font color = \"red\"><ul><li>" + NOT_SAME_PASS + "</li></ul></font></p>");
     }
+
+    $("#passform").find("input[type=password], textarea").val('');
 }
 
