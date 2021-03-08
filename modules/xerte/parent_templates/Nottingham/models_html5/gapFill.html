@@ -26,7 +26,7 @@
 			labelTxt3,
 			targetTxt1,
 			targetTxt2,
-			tabIndex = 1,
+			tabIndex = 0,
 			answerData,
             allDropDownAnswers,
 			delimiter,
@@ -149,11 +149,11 @@
 
             allDropDownAnswers = [];
             for (var i=0; i<passageArray.length; i++) {
-				tabIndex++;
 				if (markedWord == false) {
-					gapFillStr += '<span tabindex="' + tabIndex + '">' + passageArray[i] + '</span>';
+					gapFillStr += '<span>' + passageArray[i] + '</span>';
 					markedWord = true;
 				} else {
+					tabIndex++;
 					decodedAnswer = $("<textarea/>").html(passageArray[i]).text();
 					if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
 						gapFillStr += '<span id="gap' + (i-1)/2 + '" class="target highlight" tabindex="' + tabIndex + '">' + decodedAnswer + '</span>';
@@ -370,7 +370,6 @@
 				$feedbackTxt.hide();
 			});
 			
-			$feedbackTxt.attr("tabindex", tabIndex+1);
 		}
 		
 		this.setUpFillBlank = function() {
@@ -542,7 +541,6 @@
 				});
 			}
 			
-			$feedbackTxt.attr("tabindex", tabIndex+1);
 		}
 		
 		this.setUpDragDrop = function() {
@@ -714,7 +712,6 @@
 				});
 			}
 			
-			$feedbackTxt.attr("tabindex", tabIndex+1);
 		}
 		
 		// function called when label dropped on target - by mouse or keyboard
@@ -1238,7 +1235,7 @@
 	<div class="splitScreen">
 		
 		<div id="textHolder" class="left">
-			<div id="mainText" tabindex="1"></div>
+			<div id="mainText"></div>
 		</div>
 		
 		<div id="dragDropHolder" class="right">
