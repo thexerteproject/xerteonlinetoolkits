@@ -56,6 +56,9 @@
 		color: #1967D2;
 		z-index: 2;
 	}
+	.trackBarButton:focus {
+		outline: 0px;
+	}
 
 	.trackBarEventMarker {
 		width: 0.6em;

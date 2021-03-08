@@ -30,6 +30,10 @@
 	border-radius: 5px;
 }
 
+.mcqHolder {
+	margin-left: 10px;
+}
+
 .mcqHolder.overlay button, .mcqHolder.overlay input, .mcqHolder.overlay select {
 	pointer-events: all;
 }
