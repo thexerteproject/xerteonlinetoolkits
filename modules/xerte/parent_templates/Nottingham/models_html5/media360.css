@@ -56,7 +56,6 @@
 	}
 	
 	div.hotspot360Icon.tooltip .tip {
-		visibility: hidden;
 		position: absolute;
 		border-radius: 3px;
 		background-color:rgba(0,0,0,0.7);
@@ -67,12 +66,11 @@
 		width: max-content;
 	}
 
-	div.hotspot360Icon.tooltip:not(.disableTip):hover .tip, div.hotspot360Icon.tooltip:not(.disableTip):focus .tip {
-		visibility: visible;
+	div.hotspot360Icon.tooltip .tip {
 		outline: none;
 	}
 
-	div.hotspot360Icon.tooltip:not(.disableTip) .tip .tipArrow, div.hotspot360Icon.tooltip:not(.disableTip) .tip .tipArrow {
+	div.hotspot360Icon.tooltip .tip .tipArrow {
 		content: '';
 		position: absolute;
 		width: 0;
@@ -85,7 +83,7 @@
 		margin: 0 50%;
 	}
 	
-	div.hotspot360Icon.tooltip:not(.disableTip) .tip .tipArrow.arrowUp, div.hotspot360Icon.tooltip:not(.disableTip) .tip .tipArrow.arrowUp {
+	div.hotspot360Icon.tooltip .tip .tipArrow.arrowUp {
 		border-color: transparent transparent rgba(0,0,0,0.7) transparent;
 		top: -20px;
 	}
@@ -96,6 +94,10 @@
 	
 	.pswdBlock input {
 		margin-left: 0.1em;
+	}
+	
+	#pswdSubmit {
+		margin-left: 1em;
 	}
 	
 	#errorTxt {
@@ -113,6 +115,12 @@
 		outline: 5px auto -webkit-focus-ring-color !important;
 	}
 	
+	.pnlm-controls-container {
+		bottom: 0;
+		top: auto !important;
+		width: 26px;
+	}
+	
 	button.pannellumBtn {
 		width: 100%;
 		padding: 0;
@@ -122,6 +130,11 @@
 		position: absolute;
 		left: 0;
 		height: 50%;
+		outline: none;
+	}
+	
+	button.pannellumBtn:hover .pnlm-sprite, button.pannellumBtn:focus .pnlm-sprite {
+		background-color: #eee;
 	}
 	
 	button.pannellumBtn .pnlm-control {
@@ -142,15 +155,99 @@
 		top: 26px;
 	}
 	
-	button.pannellumBtn.fullScreen {
+	button.pannellumBtn.fullScreen, button.pannellumBtn.sceneMenu {
 		height: 26px;
 		margin-top: 4px;
+		position: relative;
 	}
 	
-	button.pannellumBtn.fullScreen .pnlm-control {
+	button.pannellumBtn.sceneMenu .pnlm-sprite {
+		background-position: 0 0;
+		background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='27' height='27'><path d='M6,8 20,8' stroke='%23000' stroke-width='2'/><path d='M6,13 20,13' stroke='%23000' stroke-width='2'/><path d='M6,18 20,18' stroke='%23000' stroke-width='2'/></svg>");
+	}
+	
+	button.pannellumBtn.sceneMenu {
+		margin-top: 0;
+		left: 4px;
+		top: 4px;
+		z-index: 3;
+	}
+	
+	.pnlm-panorama-info.indent {
+		padding-left: 36px;
+		min-height: 36px;
+	}
+	
+	.pnlm-panorama-info.indent .pnlm-title-box {
+		margin: auto;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+	}
+	
+	#sceneLinkHolder {
+		position: absolute;
+		background: rgba(105,105,105,0.5);
+	}
+	
+	button.pannellumBtn.sceneMenu .sceneLink {
+		display: block;
+		width: 100%;
+		text-align: left;
+		background-color: rgba(205,205,205,0.7);
+		border: none;
+		box-sizing: border-box;
+		padding: 4px 6px;
+		cursor: pointer;
+		outline: none;
+	}
+	
+	button.pannellumBtn.sceneMenu .sceneLink:not(:last-of-type) {
+		border-bottom: 1px solid rgba(245,245,245,0.7);
+	}
+	
+	button.pannellumBtn.sceneMenu .sceneLink.current {
+		background-color: rgba(105,105,105,0.7);
+		color: white;
+	}
+	
+	button.pannellumBtn.sceneMenu .sceneLink:hover, button.pannellumBtn.sceneMenu .sceneLink:focus {
+		background-color: rgba(245,245,245,0.7);
+	}
+	
+	button.pannellumBtn.sceneMenu .sceneLink.current:hover, button.pannellumBtn.sceneMenu .sceneLink.current:focus {
+		background-color: rgba(145,145,145,0.7);
+	}
+	
+	button.pannellumBtn.fullScreen .pnlm-control, button.pannellumBtn.sceneMenu .pnlm-control {
 		margin-top: 0px;
+	}
+	
+	.pnlm-panorama-info {
+		display: inline;
+		width: 100%;
+		top: 0px;
+		bottom: auto !important;
 	}
 	
 	#audioHolder {
 		display: none;
 	}
+	
+	.featherlight-content.max {
+		width: 90vw;
+		height: 90vh;
+	}
+	
+	.featherlight-content.hidden {
+		opacity: 0;
+	}
+	
+	.featherlight-content.youTube .mejs-layers, .featherlight-content.youTube .mejs-controls {
+		display: none;
+	}
+	
+	.featherlight .featherlight-content.max.youTube iframe {
+		width: 100%;
+	}
+	

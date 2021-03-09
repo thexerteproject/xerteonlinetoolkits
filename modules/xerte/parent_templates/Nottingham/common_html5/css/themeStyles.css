@@ -296,8 +296,12 @@ and (max-width :500px) {
     width: 16px !important;
 }
 .featherlight iframe {
-	height: 90vh;
-	width: 90vw;
+	height: 85vh;
+	width: 85vw;
+}
+
+.featherlight-content {
+	max-width: 95vw;
 }
 
 .skip-link {
