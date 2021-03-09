@@ -168,7 +168,7 @@
 	  audienceHeader="Target Audience" audience="Describe the target audience"
 	  prereqHeader="Pre-requisites" prereq="State any pre-requisite knowledge or experience"
 	  howtoHeader="How to use this resource" howto="Describe how the user can best use the resource"/>]]></orient><pdf><![CDATA[<pdf name="Enter Page Title" url="Select a PDF File" open="Open PDF"/>]]></pdf><perspectives><![CDATA[<perspectives name="Enter Page Title" backBtnTip="Scroll Back" nextBtnTip="Scroll Forward" videoTip="Video Clip" soundTip="Sound Clip" backGrid="Back" playTip="Play All"/>]]></perspectives><quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"  
-	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
+	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" generalFeedbackLabel="General Feedback"
 	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
 	  onCompletion="You have completed the exercise" score="You scored {i} / {n}" 
@@ -3440,6 +3440,9 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100"/>
+	<hicol label="Button colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the button"/>
+	<hicolback label="Background Button colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the button"/>
+
 
     <newNodes>
       <listItem><![CDATA[<listItem name="Enter Item Title Here" text="Enter text for the list item here"/>]]></listItem>
@@ -4868,6 +4871,7 @@
 	
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true"/>
+    <generalFeedbackLabel label="General Feedback Label" type="TextInput" wysiwyg="true" language="true"/>
     <singleRight label="Single Answer Correct" type="TextInput" wysiwyg="true" language="true"/>
 	<singleWrong label="Single Answer Wrong" type="TextInput" wysiwyg="true" language="true"/>
     <multiRight label="Multi Answer Correct" type="TextInput" wysiwyg="true" language="true"/>
@@ -4947,6 +4951,7 @@
     <prompt label="Question" type="TextArea" height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
+	<generalFeedback label="Feedback" type="TextArea" height="100" tooltip="Feedback shown when this answer is submitted" optional="true"/>
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
 	
 	<imgInfo type="group" label="Image" optional="true">

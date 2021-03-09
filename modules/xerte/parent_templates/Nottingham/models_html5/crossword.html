@@ -26,6 +26,7 @@
 
             rePosition();
             $(document).keydown(function(e) {
+                debugger
                 var inp = String.fromCharCode(e.keyCode);
                 if (!(/[a-zA-Z0-9-_ ]/.test(inp) || e.keyCode == 96)){
                     reCalculate(e);
@@ -142,7 +143,7 @@
                 var total;
 
 
-
+                debugger
                 if (e.keyCode == 37) {
                     temp = active;
                     while (temp > 0) {
@@ -323,7 +324,7 @@
             }
 
             next = function (e){
-
+                debugger
                 var columns = $('#crossword-table tbody tr:eq(0) td').length;
 
                 var wholeNumber = Math.floor(active/columns)
@@ -353,6 +354,7 @@
                         return;
                     }
                 }else if(e === 8){
+                    debugger
                     if(nextPosition === "across"){
                         active--
                         relocateFocus(active)
@@ -1108,7 +1110,7 @@
 		}
 
         $(document).on('input', e => {
-
+            debugger
             var keyCode = e.originalEvent.data.charCodeAt(0);
             if(keyCode > 96 && keyCode < 155){
                 keyCode^=32

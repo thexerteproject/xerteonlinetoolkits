@@ -588,8 +588,10 @@
                                 }else{
                                     passedOrFailed = failedTxt
                                 }
+                                if(x_currentPageXML.getAttribute('passed') !== ""){
+                                    $("#result").append('<p><span id="finalResult"></span>' + passedOrFailed + '</p>');
+                                }
 
-                                $("#result").append('<p><span id="finalResult"></span>' + passedOrFailed + '</p>');
 
                                 if(passed=== true){
 

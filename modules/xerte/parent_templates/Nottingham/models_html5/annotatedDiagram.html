@@ -28,7 +28,8 @@
 			$img,
 			$canvas,
 			$pageContents,
-			padding;
+			padding,
+			firstLoad;
 		
 		// Called from xenith if tab level deeplinking is available
 		this.deepLink = function(item) {
@@ -44,12 +45,13 @@
 		}
 
 		this.pageChanged = function() {
-			this.imgLoaded()
+			this.resizeImg(firstLoad)
 		}
 
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+
 			this.checkHeight();
 			
 			var $canvas = $("#canvas");
@@ -78,12 +80,13 @@
 				$("#imageHolder").css("margin-left", imgIndent);
 				$("#hsHolder").css("margin-left", imgIndent + padding);
 			}
-			this.resizeImg(false);
+			this.resizeImg(firstLoad);
+			firstLoad=false;
 		}
 
 
 			this.resizeImg = function(firstLoad) {
-			debugger
+			if(firstLoad === false){
 				var imgMaxW, imgMaxH;
 
 				imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
@@ -97,9 +100,11 @@
 					"opacity"	:1,
 					"filter"	:'alpha(opacity=100)'
 				});
-				debugger
+
 				$("#hsHolder").children().remove()
-				this.imgLoaded()
+				//this.imgLoaded()
+			}
+
 
 			};
 		
@@ -109,6 +114,7 @@
 			$canvas = $("#canvas");
 			$hsHolder = $("#hsHolder");
 			$textContents = $("#textContents");
+			firstLoad = true;
 			
 			if (x_currentPageXML.getAttribute("align") != "Top") {
 				$imageHolder.css("right", $x_pageDiv.css("padding-right"));
@@ -167,6 +173,7 @@
 				
 				$imageHolder.append('<div id="pageSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div>');
 				$img = $("#pageSWF");
+
 				$img.data("origSize", size);
 				
 				this.imgLoaded();
@@ -179,6 +186,7 @@
 		}
 		
 		this.imgLoaded = function() {
+
 			var	imgW,
 				imgH = $img.height();
 			
@@ -204,8 +212,8 @@
 			$hsHolder
 				.width($imageHolder.width())
 				.height($imageHolder.height());
-
 				scale = imgW / $img.data("origSize")[0];
+
 
 
 			
@@ -227,7 +235,7 @@
 				}
 			}
 			$pageContents.data("shape", shape);
-			
+
 			var $listItem = $(".listItem:first"),
 				$listHolder = $("#listHolder");
 			$(x_currentPageXML).children()
@@ -238,7 +246,7 @@
 					} else {
 						$thisItem = $listItem;
 					}
-					
+
 					$thisItem
 						.attr("href", "#item" + i)
 						.html(this.getAttribute("name"))
@@ -251,7 +259,7 @@
 							if ($this != $(".listItem.highlight")) {
 								$(".listItem.highlight").removeClass("highlight");
 								$this.addClass("highlight");
-								
+
 								var shape = $("#pageContents").data("shape");
 								$("#infoHolder").html(/*"<h3>" + $this.data("name") + "</h3><br/>" + */x_addLineBreaks($this.data("text")));
 								if (shape != "None" && shape != "Arrow") {
@@ -264,7 +272,6 @@
 									context.clearRect($canvas.position().left, $canvas.position().top, $canvas.attr("width"), $canvas.attr("height"));
 									var $hs = $($("#hsHolder").children()[$this.index()]);
 									if ($hs.hasClass("hsGroup")) {
-										debugger
 										$hs.children()
 											.each(function(){
 												annotatedDiagram.drawLine(context, $(this), $this, shape);
@@ -273,12 +280,12 @@
 										annotatedDiagram.drawLine(context, $hs, $this, shape);
 									}
 								}
-								
+
 								annotatedDiagram.checkHeight();
 								x_pageContentsUpdated();
 							}
 						})
-					
+
 					if (this.tagName == "hotspotGroup") {
 						var groupXML = this,
 							$hsGroup = $('<div class="hsGroup"></div>');
@@ -288,7 +295,6 @@
 								var $hs = annotatedDiagram.createHotspot(this, $hsGroup, $thisItem, groupXML);
 							});
 					} else {
-						debugger
 						annotatedDiagram.createHotspot(this, $hsHolder, $thisItem);
 					}
 				});
@@ -322,7 +328,6 @@
 		}
 		
 		this.createHotspot = function(hsXML, $parent, $listItem, groupXML) {
-			debugger
 			var $hotspot = $('<a class="hotspot" href="#" />'),
 				hsName = hsXML.getAttribute("name");
 			if (groupXML != undefined) { // hs in a group
