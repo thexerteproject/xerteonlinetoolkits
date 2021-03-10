@@ -19,7 +19,7 @@
 	
 	<sceneMenu label="Scene Menu" type="CheckBox" defaultValue="true" optional="true" tooltip="Show list of links to each scene at the top of the image viewer. Exclude scenes from this list by adding the 'Hide Scene' optional property."/>
 	
-	<lockIcon label="Locked Hotspot Icon" type="FontAwesome" iconList="full" defaultValue="fas fa-lock" optional="true" tooltip="The icon used on locked hotspots"/>
+	<lockIcon label="Locked Hotspot Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-lock" optional="true" tooltip="The icon used on locked hotspots"/>
 	
 	<hsAppearance type="group" label="Hotspot Appearance" optional="true" tooltip="Customise the appearance of hotspots throughout this page. Customisation of individual hotspots can also be done by adding the Hotspot Appearance optional property directly to hotspots.">
 		<colour1 label="Main Colour" type="ColourPicker" defaultValue="0x000000" optional="true"/>
@@ -84,7 +84,7 @@
 	
 	<tooltip label="Show Title as Tooltip" type="CheckBox"/>
 	
-	<icon label="Icon" type="FontAwesome" iconList="full" defaultValue="fas fa-info" mandatory="true"/>
+	<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" mandatory="true"/>
 	<orientation label="Orientation" type="NumericStepper" min="-359" max="359" step="1" defaultValue="0" mandatory="true"/>
 	
 	<hsAppearance type="group" label="Hotspot Appearance" optional="true" tooltip="Customise the appearance of this hotspot. Any customisation set here will override customisation at page level.">
