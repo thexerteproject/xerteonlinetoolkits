@@ -124,6 +124,8 @@
 									var $pageContents = $("#pageContents"),
 										$currentTab = $thisHolder.find(".tabHeader a:contains(" + $pageContents.data("currentTab") + ")");
 									
+									$currentTab.trigger("click");
+									
 									if ($currentTab.length != 0) {
 										var $currentPaneHolder = $thisHolder.find(".paneHolder:eq(" + $currentTab.parent().index() + ")"),
 											$currentPane = $currentPaneHolder.find(".paneList a:contains(" + $pageContents.data("currentPane") + ")");
@@ -135,7 +137,7 @@
 											$currentPaneHolder.find(".paneList a:eq(0)").trigger("click");
 										}
 										
-										$currentTab.trigger("click").parent().focus();
+										$currentTab.parent().focus();
 										
 									} else {
 										// no tab match so go to 1st tab in topic
@@ -310,17 +312,18 @@
 			var firstLoad = true;
 			if (x_currentPageXML.getAttribute("rememberTab") == "true") {
 				$("#pageContents .infoHolder").tabs({
-					show: function(event, ui) {
+					activate: function(event, ui) {
 						if (firstLoad != true) {
 							var $pageContents = $("#pageContents"),
 								$panel = $(ui.panel);
 							
 							$(".customHTMLHolder").detach();
-							$pageContents.data("currentTab", $panel.parent().find(".tabList .tabHeader:eq(" + ui.index + ") a").html());
+							$pageContents.data("currentTab", ui.newTab.find("a").html());
+							
 							if ($pageContents.data("currentTopic") != $panel.parents(".infoHolder").index()) {
 								$pageContents.data("currentTopic", $panel.parents(".infoHolder").index());
 							} else {
-								$pageContents.data("currentPane", $panel.parent().find(".paneHolder:eq(" + ui.index + ") .paneList a:first").html());
+								$pageContents.data("currentPane", ui.newPanel.find(".paneList a:first").html());
 								if ($panel.find(".paneInfo").length > 1) {
 									$panel.find(".paneList a:eq(0)").trigger("click");
 								}
