@@ -109,6 +109,7 @@
 						.html(this.getAttribute("name"))
 						.click(function() {
 							$this = $(this);
+							
 							if ($this != $("#pageContents .topic.highlight")) {
 								$(".customHTMLHolder").detach();
 								$("#pageContents .topic.highlight").removeClass("highlight");
@@ -124,8 +125,6 @@
 										$currentTab = $thisHolder.find(".tabHeader a:contains(" + $pageContents.data("currentTab") + ")");
 									
 									if ($currentTab.length != 0) {
-										$currentTab.trigger("click");
-										
 										var $currentPaneHolder = $thisHolder.find(".paneHolder:eq(" + $currentTab.parent().index() + ")"),
 											$currentPane = $currentPaneHolder.find(".paneList a:contains(" + $pageContents.data("currentPane") + ")");
 											
@@ -135,14 +134,17 @@
 											// no match so go to 1st nested page on tab
 											$currentPaneHolder.find(".paneList a:eq(0)").trigger("click");
 										}
+										
+										$currentTab.trigger("click").parent().focus();
+										
 									} else {
 										// no tab match so go to 1st tab in topic
-										$thisHolder.find(".tabHeader:eq(0) a").trigger("click");
+										$thisHolder.find(".tabHeader:eq(0) a").trigger("click").parent().focus();
 									}
 								} else {
 									// 1st tab and 1st nested page in highlighted topic
-									$thisHolder.find(".tabHeader:eq(0) a").trigger("click");
-									$thisHolder.find(".paneHolder:eq(0) .paneList a:eq(0)").trigger("click");
+									$thisHolder.find(".tabHeader:eq(0) a").trigger("click").parent().focus();
+									//$thisHolder.find(".paneHolder:eq(0) .paneList a:eq(0)").trigger("click");
 								}
 								
 								tabNavExtra.scaleImages();
@@ -211,7 +213,7 @@
 													$this.parent().find("a.selected").removeClass("selected");
 													$("#pageContents .paneInfo:visible").hide();
 													$this.addClass("selected");
-													$this.parents(".paneHolder").find(".paneInfo:eq(" + $this.index() + ")").show();
+													$this.parents(".paneHolder").find(".paneInfo:eq(" + $this.index() + ")").show().focus();
 													$("#pageContents").data("currentPane", $this.html());
 													
 													tabNavExtra.scaleImages();
@@ -292,6 +294,10 @@
 							$link.addClass("selected");
 						});
 				});
+			
+			$(".paneInfo").on('focus', function() {
+				$(this).parent('.paneHolder').scrollTop(0);
+			});
 			
 			$(".paneList.delete").remove();
 			
@@ -414,7 +420,7 @@
 	<div class="splitScreen">
 		
 		<div id="topicHolder" class="left">
-			<a class="topic"></a>
+			<a class="topic" role="button"></a>
 		</div>
 		
 		<div class="right">
@@ -427,7 +433,7 @@
 					</ul>
 					<div class="paneHolder">
 						<div class="paneList">
-							<a href="#"></a>
+							<a href="#" role="button"></a>
 						</div>
 						<div class="paneInfo" tabindex="0"></div>
 					</div>
