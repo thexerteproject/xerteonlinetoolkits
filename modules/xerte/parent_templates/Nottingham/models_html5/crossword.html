@@ -1110,8 +1110,15 @@
 		}
 
         $(document).on('input', e => {
-            debugger
-            var keyCode = e.originalEvent.data.charCodeAt(0);
+            debugger;
+            var keyCode;
+            if (e.originalEvent.data == null && e.originalEvent.inputType == 'deleteContentBackward')
+            {
+                keyCode = 8;
+            }
+            else {
+                keyCode = e.originalEvent.data.charCodeAt(0);
+            }
             if(keyCode > 96 && keyCode < 155){
                 keyCode^=32
             }
