@@ -31,17 +31,30 @@
 		var gotHint = false;
 		var pointArray;
 		var amountOfCorrectOptions = 0;
-		var attempts = 0
+		var attempts = 0;
 		var hotSpotScore = 0;
 		var AmountOfWrongScore = 0;
-		var highlightsArray= []
+		var highlightsArray= [];
 		var allHighlightsArray= [];
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$img = $("#image");
 
 			$(".selected").removeClass("selected");
-			$("#infoHolder").html("");
+			$("#score").html("");
+			$("#generalFeedback").html("");
+			$("#checkButton").button("enable");
+			this.counter = [];
+			this.hits = [];
+			this.gotHint = false;
+			this.ntOfCorrectOptions = 0;
+			this.attempts = 0;
+			this.hotSpotScore = 0;
+			this.AmountOfWrongScore = 0;
+			this.highlightsArray= [];
+			this.allHighlightsArray= [];
+			this.init();
+			// $("#infoHolder").html("");
 			// $("#nextHS").button("enable");
 			// $("#prevHS").button("disable");
 			this.resizeImg(false);
