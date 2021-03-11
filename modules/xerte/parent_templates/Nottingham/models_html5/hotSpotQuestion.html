@@ -38,6 +38,7 @@
 		var allHighlightsArray= [];
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+			debugger
 			$img = $("#image");
 
 			$(".selected").removeClass("selected");
@@ -182,7 +183,7 @@
 			$("#checkButton").button({
 				label: "Check"
 			}).click(function (){
-
+				debugger
 				amountOfCorrectOptions = 0
 				allHighlightsArray.forEach((highlight)=>{
 					if(highlight.getAttribute("truth") === "true"){
@@ -283,18 +284,30 @@
 					XTSetPageScore(x_currentPage, setScore);
 
 				}else{
-					var again = x_currentPageXML.getAttribute("again")
-					if(again === null || again===undefined){
-						again = "Try again"
+					if(amountOfCorrect > 0 || amountOfWrong > 0){
+						var again = x_currentPageXML.getAttribute("again")
+						if(again === null || again===undefined){
+							again = "Try again"
+						}
+						var h3 = $('<h3>').append(again)
+						$("#score").html(h3);
+					}else{
+						var warning = x_currentPageXML.getAttribute("warning")
+						if(warning === null || warning===undefined){
+							warning = "You have not selected anything"
+						}
+						var h3 = $('<h3>').append(warning)
+						$("#score").html(h3);
+						attempts--;
 					}
-					var h3 = $('<h3>').append(again)
-					$("#score").html(h3);
+
 				}
 
 			});
 		};
 
 		this.resizeImg = function(firstLoad) {
+			debugger
 			var imgMaxW, imgMaxH;
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				imgMaxW = Math.round($x_pageHolder.width() - 30);
@@ -331,7 +344,6 @@
 		};
 
 		this.createHS = function() {
-
 			// create hotspots - taking scale of image into account
 			var scale = $img.width() / $img.data("origSize")[0],
 				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;

@@ -26,7 +26,6 @@
 
             rePosition();
             $(document).keydown(function(e) {
-                debugger
                 var inp = String.fromCharCode(e.keyCode);
                 if (!(/[a-zA-Z0-9-_ ]/.test(inp) || e.keyCode == 96)){
                     reCalculate(e);
@@ -55,13 +54,15 @@
                 var wholeNumber = Math.floor(active/columns)
                 var remainder = active%columns
 
-
                     for (var i = 0; i < startPositionArray.length; i++) {
                         if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
                             if (startPositionArray[i][2] === "across") {
+                                var counter = startPositionArray[i][1]
                                 for (var j = 0; j < columns; j++) {
-                                    if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined) {
+                                    if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined && counter !== columns) {
+
                                         $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
+                                        counter++
                                         nextPosition = startPositionArray[i][2]
                                     } else {
                                         return
@@ -86,12 +87,14 @@
                     if($('#crossword-table tbody tr td').eq(active-1).find('input')[0] && $('#crossword-table tbody tr td').eq(active+1).find('input')[0]){
                         for (var i = 0; i < startPositionArray.length; i++) {
                             if (startPositionArray[i][0] == wholeNumber) {
+                                var counter = startPositionArray[i][1]
                                 for (var j = 0; j < columns; j++) {
                                     var temp = startPositionArray[i][0] * columns
                                     temp += startPositionArray[i][1]
-                                    if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined) {
+                                    if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counter !== columns) {
                                         $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
                                         nextPosition = startPositionArray[i][2]
+                                        counter++
                                     } else {
                                         return;
                                     }
@@ -143,7 +146,7 @@
                 var total;
 
 
-                debugger
+
                 if (e.keyCode == 37) {
                     temp = active;
                     while (temp > 0) {
@@ -324,7 +327,7 @@
             }
 
             next = function (e){
-                debugger
+
                 var columns = $('#crossword-table tbody tr:eq(0) td').length;
 
                 var wholeNumber = Math.floor(active/columns)
@@ -354,7 +357,7 @@
                         return;
                     }
                 }else if(e === 8){
-                    debugger
+
                     if(nextPosition === "across"){
                         active--
                         relocateFocus(active)
@@ -411,12 +414,14 @@
                 }
                 num1+= startPositionArray[id][1]
                 relocateFocus(num1)
+                var counter = startPositionArray[id][1]
                 if (dir === "across") {
                     for (var j = 0; j < columns; j++) {
                         var temp = startPositionArray[id][0] * columns
                         temp+= startPositionArray[id][1]
-                        if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined) {
+                        if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counter !== columns) {
                             $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
+                            counter++
                         } else {
                             return
                         }
@@ -441,13 +446,15 @@
 
 
             addHighlight = function (active, position, rows, columns, type){
-
+                debugger
                 if(type === "tab") {
                     if (startPositionArray[position + 1] !== undefined) {
                         if (startPositionArray[position + 1][2] === "across") {
+                            var counter = startPositionArray[position+1][1];
                             for (var j = 0; j < columns; j++) {
-                                if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined) {
+                                if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined && counter!== columns) {
                                     $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
+                                    counter++
                                 } else {
                                     return
                                 }
@@ -466,9 +473,11 @@
                         }
                     } else {
                         if (startPositionArray[0][2] === "across") {
+                            var counter = startPositionArray[position+1][1];
                             for (var j = 0; j < columns; j++) {
-                                if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined) {
+                                if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined && counter!== columns) {
                                     $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
+                                    counter++
                                 } else {
                                     return
                                 }
@@ -489,11 +498,13 @@
 
                     if (startPositionArray[position] !== undefined) {
                         if (startPositionArray[position][2] === "across") {
+                            var counterArrow = startPositionArray[position][1];
                             for (var j = 0; j < columns; j++) {
                                 var temp = startPositionArray[position][0] * columns
                                 temp+= startPositionArray[position][1]
-                                if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined) {
+                                if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counterArrow !== columns) {
                                     $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
+                                    counterArrow++
                                 } else {
                                     return
                                 }
@@ -631,16 +642,19 @@
             $(".crossword-input").css("width", amountOfpixels)
             $(".crossword-input").css("height", amountOfpixels)
 
+            debugger
             if(imgMaxW < 430){
-                $("#show_button").css("font-size", "60%")
-            }else  if(imgMaxW > 650){
-                $("#show_button").css("font-size", "125%")
-            }else{
+                $("#show_button").css("font-size", "80%")
+            }else  if(imgMaxW > 650 && imgMaxW < 1200){
+                $("#show_button").css("font-size", "150%")
+            }else if(imgMaxW > 1200){
+                $("#show_button").css("font-size", "200%")
+            } else{
                 $("#show_button").css("font-size", "100%")
             }
 
             if(imgMaxW < 200){
-                $(".crossword-input").css("font-size", "80%")
+                $(".crossword-input").css("font-size", "100%")
             }else  if(imgMaxW > 450){
                 $(".crossword-input").css("font-size", "200%")
             }else{
@@ -1110,7 +1124,6 @@
 		}
 
         $(document).on('input', e => {
-            debugger
             var keyCode = e.originalEvent.data.charCodeAt(0);
             if(keyCode > 96 && keyCode < 155){
                 keyCode^=32

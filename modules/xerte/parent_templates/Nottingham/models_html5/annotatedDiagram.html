@@ -98,11 +98,12 @@
 
 				$img.css({
 					"opacity"	:1,
-					"filter"	:'alpha(opacity=100)'
+					"filter"	:'alpha(opacity=100)',
+					"width"		: imgMaxW
 				});
 
 				$("#hsHolder").children().remove()
-				//this.imgLoaded()
+				this.imgLoaded()
 			}
 
 
@@ -162,6 +163,7 @@
 					});
 				
 			} else {
+				debugger
 				// have had to add this in I found one old project where a swf was used instead of an image on this page
 				var size = [300,300];
 				if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
@@ -238,9 +240,15 @@
 
 			var $listItem = $(".listItem:first"),
 				$listHolder = $("#listHolder");
+
+			if($listHolder.children().length>1){
+				$listHolder.empty()
+				$listItem.appendTo($listHolder)
+			}
 			$(x_currentPageXML).children()
 				.each(function(i){
 					var $thisItem;
+
 					if (i != 0) {
 						$thisItem = $listItem.clone().appendTo($listHolder);
 					} else {
@@ -310,7 +318,7 @@
 			$hotspot.addClass("transparent");
 			
 			this.checkHeight();
-			
+
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		}
