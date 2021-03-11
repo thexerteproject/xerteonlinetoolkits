@@ -86,7 +86,7 @@
 
 	}
 	#score{
-		margin-top: 5%;
+		margin-top: 30px
 	}
 	.mapster_wrap_0{
 		margin: auto !important;
@@ -94,6 +94,12 @@
 
 	#checkButton{
 		float: right;
+	}
+
+	#score h3{
+		border-top: 1px solid #ccc;
+		padding-top: 1.5em;
+
 	}
 	/*#btnHolder {*/
 	/*	margin-top: 0.5em;*/

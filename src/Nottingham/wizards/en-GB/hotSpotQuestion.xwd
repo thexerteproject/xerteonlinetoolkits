@@ -4,7 +4,7 @@
       <hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title"  panelWidth = "Medium" generalFeedback="Enter a feedback" text="Enter Instructions" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
   	  warning="You have not selected anything"
 	  scoreTxt="You have /r answer(s) right and /w wrong"
-	  again="Try again"
+	  again="Try again, you have /a attempt(s) left"
 	  />]]></hotSpotQuestion>
     </newNodes>
   </pageWizard>
@@ -38,7 +38,7 @@
 
     <scoreTxt label="Score Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/r (right) and /w (wrong) are where the score are placed "/>
     <warning label="Warning Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-    <again label="Try again Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+    <again label="Try again Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/a is where the attempts will be placed "/>
 
 
     <newNodes>

@@ -52,7 +52,7 @@
       <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 
       <name label="Name" type="TextInput" wysiwyg="true"/>
-      <text label="Description" type="TextArea" height="150"/>
+      <text label="Page Text" type="TextArea" height="150"/>
         <TimeLineEndDate type="group" label="End Date" optional="true">
       		      <endDate label="Datum" type="dateField" defaultValue="" optional="true"/>
                   <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
@@ -63,7 +63,7 @@
       <date label="Datum" type="dateField" defaultValue="" />
       <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
       <name label="Name" type="TextInput" wysiwyg="true"/>
-      <text label="Description" type="TextArea" height="150"/>
+      <text label="Page Text" type="TextArea" height="150"/>
       <image type="group" label="Image">
         <url label="File" type="media"/>
         <tip label="Description" type="TextInput"/>

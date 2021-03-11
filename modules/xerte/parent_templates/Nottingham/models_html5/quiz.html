@@ -153,7 +153,7 @@
 				$("#optionHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noQ", "No questions have been added") + '</span>');
 				
 			} else {
-				debugger
+
 				var $thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
 
 				$("#qNo").html(this.qNoTxt.replace("{i}", this.currentQ + 1).replace("{n}", this.questions.length));
@@ -318,7 +318,7 @@
 
             var generalFeedback = "";
             var correctCounter = 0;
-            debugger
+
             var thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
 			questionFeedbackText = thisQ.getAttribute('generalFeedback')
             var currentQuestionsChildren = $($(x_currentPageXML).children()[this.questions[this.currentQ]]).children();
@@ -416,7 +416,7 @@
 							width	:"100%"
 						});
 					});
-                debugger
+
                 if(questionFeedbackText !== null){
                 	if(questionFeedbackText !== ""){
 						var questionFeedback = "<h3>" + $("#pageContents").data("generalFeedbackLabel") + "</h3>" + questionFeedbackText

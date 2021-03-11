@@ -165,3 +165,8 @@
  #clues-across{
      margin-top: 20px;
  }
+ #attempt h3{
+     border-top: 1px solid #ccc;
+     padding-top: 1.5em;
+
+ }
