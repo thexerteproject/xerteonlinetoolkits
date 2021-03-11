@@ -642,7 +642,6 @@
             $(".crossword-input").css("width", amountOfpixels)
             $(".crossword-input").css("height", amountOfpixels)
 
-            debugger
             if(imgMaxW < 430){
                 $("#show_button").css("font-size", "80%")
             }else  if(imgMaxW > 650 && imgMaxW < 1200){
@@ -1124,7 +1123,15 @@
 		}
 
         $(document).on('input', e => {
-            var keyCode = e.originalEvent.data.charCodeAt(0);
+            debugger;
+            var keyCode;
+            if (e.originalEvent.data == null && e.originalEvent.inputType == 'deleteContentBackward')
+            {
+                keyCode = 8;
+            }
+            else {
+                keyCode = e.originalEvent.data.charCodeAt(0);
+            }
             if(keyCode > 96 && keyCode < 155){
                 keyCode^=32
             }
