@@ -1098,6 +1098,8 @@
 					mediaLesson.resizeVimeo($vimeo);
 					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .vimeo", mediaData.media);
 					$vimeo.data("popcornInstance", popcornInstance);
+					popcornInstance.play();
+					popcornInstance.pause();
 					if (mediaData.autoplay == "true") {
 						popcornInstance.play();
 					}
