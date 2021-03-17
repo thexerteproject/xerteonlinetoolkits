@@ -204,14 +204,20 @@
 				attempts++
 				if(attempts >= amountOfAttempts || amountOfCorrect === amountOfCorrectOptions && amountOfWrong === 0){
 
+					debugger
 					var allNames = "";
 					var truthNames = ""
 					highlightsArray.forEach((highlight, index) => {
-						debugger
+
 						allNames = allNames + "Hotspot" + " " + highlight.getAttribute("name");
 						if (index !== highlightsArray.length){
 							allNames = allNames + ", "
 						}
+
+					})
+
+					allHighlightsArray.forEach((highlight, index)=>{
+						debugger
 						if(highlight.getAttribute('truth') === "true"){
 							truthNames = truthNames + "Hotspot" + " " + highlight.getAttribute("name");
 							if (index !== highlightsArray.length){
