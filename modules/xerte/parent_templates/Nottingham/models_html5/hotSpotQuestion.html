@@ -50,10 +50,12 @@
 			this.gotHint = false;
 			this.ntOfCorrectOptions = 0;
 			this.attempts = 0;
-			this.hotSpotScore = 0;
-			this.AmountOfWrongScore = 0;
+			hotSpotScore = 0;
+			AmountOfWrongScore = 0;
 			this.highlightsArray= [];
 			this.allHighlightsArray= [];
+			this.amountOfCorrect = 0;
+			this.amountOfWrong = 0;
 			this.resizeImg(false);
 		};
 
@@ -200,7 +202,6 @@
 				attempts++
 				if(attempts >= amountOfAttempts || amountOfCorrect === amountOfCorrectOptions && amountOfWrong === 0){
 
-					debugger
 					var allNames = "";
 					var truthNames = ""
 					highlightsArray.forEach((highlight, index) => {
@@ -213,7 +214,6 @@
 					})
 
 					allHighlightsArray.forEach((highlight, index)=>{
-						debugger
 						if(highlight.getAttribute('truth') === "true"){
 							truthNames = truthNames + "Hotspot" + " " + highlight.getAttribute("name");
 							if (index !== highlightsArray.length){
@@ -229,7 +229,6 @@
 						var points = JSON.parse(highlight.getAttribute("points"))
 						var x = (points[0]["x"]+points[1]["x"])/2
 						var y = (points[0]["y"]+points[2]["y"])/2
-						debugger
 						XTEnterInteraction(x_currentPage, index, "fill-in", name, [], truthNames, x_currentPageXML.getAttribute("generalFeedback"), x_currentPageXML.getAttribute("grouping"));
 
 						if(highlight.getAttribute("truth") === "true"){
@@ -238,7 +237,7 @@
 							AmountOfWrongScore++;
 						}
 					})
-
+					debugger
 					var scoreTxt = x_currentPageXML.getAttribute("scoreTxt")
 					if(scoreTxt==""){
 						scoreTxt = "You have /r answers right and /w wrong"
