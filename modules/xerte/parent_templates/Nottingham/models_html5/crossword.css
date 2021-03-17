@@ -1,6 +1,4 @@
- #crossword {
-    text-align: center;
-}
+
 
 #crossword-table {
     border-collapse: collapse;
@@ -84,7 +82,7 @@
     margin-left: 0;
     display:block;
     width: 80%;
-    height: 45%;
+    height: 65%;
 }
 
 #crossword-table #input__container__across{
@@ -127,20 +125,24 @@
  }
 
  #clues-container{
-     width: 30%;
+     width: 100%;
 
  }
 
  #crossword{
      flex: 1;
-     margin-right: 50px;
+     margin-right: 20px;
+     text-align: center;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+
  }
 
  #showButton{
      padding-top: 20px;
      justify-content: flex-start;
      height: 10%;
-
  }
 
  .li-clue{
@@ -168,5 +170,6 @@
  #attempt h3{
      border-top: 1px solid #ccc;
      padding-top: 1.5em;
+     text-align: center;
 
  }

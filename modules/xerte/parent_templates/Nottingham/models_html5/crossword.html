@@ -77,7 +77,6 @@
                                 for (var j = 0; j < rows; j++) {
                                     var temp = j * columns
                                     if ($('#crossword-table tbody tr td').eq(active + temp).find('input')[0] !== undefined) {
-                                        debugger
                                         $('#crossword-table tbody tr td').eq(active + temp).addClass('highlighted')
                                         nextPosition = startPositionArray[i][2]
                                     } else {
@@ -331,12 +330,22 @@
                 }
             }
 
-            next = function (e){
-
+            next = function (e, x, y){
+                debugger
                 var columns = $('#crossword-table tbody tr:eq(0) td').length;
+
+                var tabColumns = x * columns
+                var tabRow =y
+                var total = tabColumns + tabRow
+                active = total
 
                 var wholeNumber = Math.floor(active/columns)
                 var remainder = active%columns
+
+                // if(x !== null || x !== undefined && y !== null || y !== undefined ){
+                //     wholeNumber = x;
+                //     remainder = y
+                // }
 
                 if(e > 36 && e < 41 || e === 9){
                     for(var i = 0; i < startPositionArray.length; i++){
@@ -408,12 +417,18 @@
 
             addHighlightHint = function (id, direction){
                 removeHighlight();
-
+                debugger
                 var rows = $('#crossword-table tbody tr').length;
                 var columns = $('#crossword-table tbody tr:eq(0) td').length;
                 id = parseInt(id)-1
                 var num1 = startPositionArray[id][0]*columns
                 var dir = startPositionArray[id][2]
+
+                var tabColumns = startPositionArray[id][0] * columns
+                var tabRow = startPositionArray[id][1]
+                var total = tabColumns + tabRow
+                active = total
+
                 if(dir === "down, across"){
                     dir = direction
                 }
@@ -427,6 +442,7 @@
                         if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counter !== columns) {
                             $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
                             counter++
+                            nextPosition = dir
                         } else {
                             return
                         }
@@ -441,6 +457,7 @@
                         var add = j * columns
                         if ($('#crossword-table tbody tr td').eq(temp + add).find('input')[0] !== undefined) {
                             $('#crossword-table tbody tr td').eq(temp + add).addClass('highlighted')
+                            nextPosition = dir
                         } else {
                             return;
                         }
@@ -565,7 +582,7 @@
 			var hints = [];
 
 			var position = x_currentPageXML.getAttribute("align")
-            if(position === null || position === undefined){
+            if(position === null || position === undefined  || position===""){
                 position = "Right"
             }
             if (x_browserInfo.touchScreen === false) {
@@ -575,18 +592,18 @@
                     );
                 } else if (position == "Left") {
                     $("#pageContents").append(
-                        '<div id="pageContents-innerContainer"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"showAnswers()\">Show answers</button></div></div><div id="crossword"></div></div>'
+                        '<div id="pageContents-innerContainer"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">Show answers</button></div></div><div id="crossword"></div></div>'
                     );
                 } else if (position == "Bottom") {
                     $("#pageContents").append(
                         '<div id="crossword"></div><table id="clues"><thead><tr><th>Across</th><th>Down</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
-                        '<button id="show_button" onclick=\"showAnswers()\">Show answers</button>'
+                        '<div id="showButton"><button id="show_button" onclick=\"Check()\">Show answers</button></div><div id="attempt"></div>'
                     );
                 }
             }else{
                 $("#pageContents").append(
                     '<div id="crossword"></div><table id="clues"><thead><tr><th>Across</th><th>Down</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
-                    '<button id="show_button" onclick=\"showAnswers()\">Show answers</button>'
+                    '<button id="show_button" onclick=\"Check()\">Show answers</button><div id="attempt"></div>'
                 );
             }
 
@@ -635,6 +652,11 @@
             imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
             imgMaxH = Math.round($x_pageHolder.height() - 50);
 
+            if(imgMaxW > imgMaxH){
+                var percentage = imgMaxW/imgMaxH
+                imgMaxW = imgMaxW/percentage
+            }
+
             //var width = $("#crossword").width()
             var rowcount = $('#crossword-table tbody tr ').length;
             var amountOfCells = $('#crossword-table tbody tr td').length;
@@ -651,10 +673,30 @@
                 $("#show_button").css("font-size", "80%")
             }else  if(imgMaxW > 650 && imgMaxW < 1200){
                 $("#show_button").css("font-size", "150%")
+                $("#show_button").css("width", "50%")
+                $("#crossword").css("margin-right", "50px")
+                $("#clues-container").css("width", "30%")
             }else if(imgMaxW > 1200){
                 $("#show_button").css("font-size", "200%")
+                $("#show_button").css("width", "50%")
+
+                $("#crossword").css("margin-right", "50px")
+                $("#clues-container").css("width", "30%")
+
             } else{
                 $("#show_button").css("font-size", "100%")
+
+            }
+
+            var position = x_currentPageXML.getAttribute("align")
+
+            if(position === "Bottom"){
+                $("#crossword").css("margin-bottom", "10px")
+                $("#show_button").css("width", "20%")
+                $("#show_button").css("margin-left", "auto")
+                $("#show_button").css("margin-right", "auto")
+                $("#showButton").css("margin-bottom", "20px")
+
             }
 
             if(imgMaxW < 200){
@@ -1059,18 +1101,19 @@
 			var attempts = x_currentPageXML.getAttribute("attempts")
             attempts = parseInt(attempts)
 			Check = function (){
-
+debugger
 			    if(attempts === 1){
 			        showAnswers()
+                    $("#attempt").html("");
                 }else{
-			        checkAttempt()
+			        debugger
+			         checkAttempt()
                     attempts--
                     var again = x_currentPageXML.getAttribute("again")
                     if(again === null || again===undefined){
                         again = "Try again, you have /a attempt(s) left"
                     }
                     var again = again.replace("/a", attempts)
-
                     var h3 = $('<h3>').append(again)
                     $("#attempt").html(h3);
                 }
@@ -1179,8 +1222,11 @@
 		}
 
         $(document).on('input', e => {
-
+            debugger
             var keyCode;
+            var x;
+            var y;
+
             if (e.originalEvent.data == null && e.originalEvent.inputType == 'deleteContentBackward')
             {
                 keyCode = 8;
@@ -1190,8 +1236,13 @@
             }
             if(keyCode > 96 && keyCode < 155){
                 keyCode^=32
+                var id = e.target.id
+                var coorList = id.split(',')
+                x = parseInt(coorList[0])
+                y = parseInt(coorList[1])
+
             }
-            next(keyCode)
+            next(keyCode, x, y)
 
         })
 

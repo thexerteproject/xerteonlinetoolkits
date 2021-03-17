@@ -12,7 +12,7 @@
     <attempts label="Amount of attempts" type="TextInput" defaultValue="1"></attempts>
     <again label="Try again Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/a is where the attempts will be placed "/>
     <!-- <hicol label="Input colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the background of the image"/>-->
-    <align label = "Align Hint" options = "Left,Bottom,Right" type = "ComboBox" data = "Left,Bottom,Right" width = "100" optional="true"/>
+    <align label = "Clues Positions" options = "Left,Bottom,Right" type = "ComboBox" defaultValue="Right" data = "Left,Bottom,Right" width = "100" optional="true"/>
      <!-- <text label="Instructions" type="TextArea" height="100"/> -->
     <!-- <words label="Words" type="script" height="100"/> -->
       <newNodes>
