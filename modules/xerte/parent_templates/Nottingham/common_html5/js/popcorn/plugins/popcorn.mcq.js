@@ -427,8 +427,9 @@ optional: feedback page synch play enable
 						$showLbl = $("<div class='showLabel'>" + options.name + "</div>").appendTo($showHolder);
 						$showHolder
 							.click(function () {
-								$target.parent().css({"padding": 5, "width": options._w + "%"});
+								$target.parent().css({"padding": 5, "width": options._w + "%", height: "auto"});
                                 $("#overlay").show();
+								$showLbl = true;
                                 mediaLesson.popcornInstance.media.pause();
                                 $target.parent().addClass("qWindow");
 								$showHolder.hide();
@@ -449,7 +450,6 @@ optional: feedback page synch play enable
 				var correctAnswers = [];
 				var correctFeedback = [];
 				var ia_nr = Number(options.tracking_nr);
-				
 				$(options.childNodes).each(function(i, v){
 					correctOptions.push(
 						{
@@ -500,13 +500,20 @@ optional: feedback page synch play enable
 					}
 				}
 				if (options.overlayPan) {
-					if (options.optional == "false" || options.optional == undefined) {
+					if ($showLbl == true) {
+						$target.parent().css({"margin-right" : "5px"});
+					}
+
+					if ($showLbl == true || options.optional == "false" || options.optional == undefined) {
 						$target.parent().addClass("qWindow");
 						$target.parent().css({"width" : options._w + "%"});
+						$optHolder.show();
+						$checkBtn.show();
 					}
 					else {
 						$target.parent().css({
-							"padding": 0	
+							"padding": 0,	
+							"height": 0
 						});
 					}
 					$target.parent().css({
@@ -528,7 +535,8 @@ optional: feedback page synch play enable
                 	{
 						"top": 0,
 						"left": 0,
-						"padding": 0
+						"padding": 0,
+						"margin-right" : 0
                 	}).hide();
 				}
 				$target.hide();
