@@ -33,7 +33,7 @@
     z-index: 6; /*always have this higher than the label's */
     vertical-align: middle;
     border-radius: 25px;
-    background-color: #00aaaa
+    background-color: #BBBBBB
 }
 .showLabel {
     position: absolute;
