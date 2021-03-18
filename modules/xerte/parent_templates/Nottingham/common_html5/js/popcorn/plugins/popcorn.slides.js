@@ -59,7 +59,7 @@ optional: caption captionPosV captionPosH
 						$target.hide();
 						// Handle optional slides
 						if(options.optional === "true") {
-							var $openPng = x_templateLocation + "common_html5/plus.png";
+							var $openPng = x_templateLocation + "common_html5/qmark.png";
 							var $showHolder  = $('<div id="showHolder" />').appendTo($target);
 							$showBtn = $('<image class="showButton x_noLightBox" type="image" src="' + $openPng + '" >').appendTo($showHolder);
 							$showLbl = $("<div class='showLabel'>" + options.name + "</div>").appendTo($showHolder);
