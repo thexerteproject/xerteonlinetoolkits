@@ -123,7 +123,7 @@ while ($ipos !== false) {
         if ($epos !== false) {
             $imgfile = substr($doc, $bpos, $epos - $bpos);
             $imgparts = pathinfo($imgfile);
-            if (strlen($imgparts["extension"]) > 0) {
+            if (strlen($imgparts["extension"]) > 0 && strpos($imgfile, "../") === false) {
                 // Check file location
                 if (strpos($imgfile, "USER-FILES/") === 0) {
                     if ($validator->isValid($imgfile)) {
@@ -138,7 +138,7 @@ while ($ipos !== false) {
                 }
             }
             else{
-                // Prohibit extensionless files
+                // Prohibit extensionless files and prohibit ../ in paths
                 $imgdata = "";
             }
 
