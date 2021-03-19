@@ -225,15 +225,20 @@
 			pageMarginRight = parseInt( pageMarginRight.slice(0,  pageMarginRight.length - 2));
 			var pageMarginLeft = $x_mainHolder.css("marginLeft")
 			pageMarginLeft = parseInt( pageMarginLeft.slice(0,  pageMarginLeft.length - 2));
+			var header = $x_headerBlock.height()
+			var footer = $x_footerBlock.height()
 
 			var totalPageWidth = pageWidth + pageMarginLeft + pageMarginRight
 
-			if( pageMarginRight !== 0 && pageMarginLeft !==0){
+			if( pageMarginRight !== 0 && pageMarginLeft !==0 && footer !== 0){
 				var footerHeight = $x_footerBlock.height();
 				var footerMarginHeight = $('#x_footerBlock').css('marginBottom')
 				footerMarginHeight = parseInt( footerMarginHeight.slice(0,  footerMarginHeight.length - 2));
 
 				footerHeight+= footerMarginHeight
+				if(header === 0){
+					footerHeight+= 96
+				}
 
 				var top = pageHeight -  footerHeight
 				$(".tl-timenav").css("top", top)
