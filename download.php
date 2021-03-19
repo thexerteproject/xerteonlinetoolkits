@@ -33,6 +33,13 @@
  *
  */
 
+require_once("config.php");
+
+if (Xerte_Validate_FileExtension::canRun()) {
+    Xerte_Validate_FileExtension::$BLACKLIST = $xerte_toolkits_site->file_extensions;
+}
+
+$validator = new Xerte_Validate_FileExtension();
 
 class mime10class
 {
@@ -115,7 +122,14 @@ while ($ipos !== false) {
         $epos = strpos($doc, $quote, $bpos);
         if ($epos !== false) {
             $imgfile = substr($doc, $bpos, $epos - $bpos);
-            $imgdata = file_get_contents($imgfile);
+            // Check file extensions
+
+            if($validator->isValid($imgfile)) {
+                $imgdata = file_get_contents($imgfile);
+            }
+            else {
+                $imgdata = "";
+            }
             $imgparts = pathinfo($imgfile);
             $new_imgfile = 'images/' . $imgparts['basename'];
 
