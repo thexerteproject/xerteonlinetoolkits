@@ -39,6 +39,11 @@ if (!isset($_SESSION['toolkits_logon_id'])){
 $rootpath = $_REQUEST['uploadDir'];
 $rooturl = $_REQUEST['uploadURL'];
 
+if (strpos($rootpath, 'USER-FILES') === false || strpos($rooturl, 'USER-FILES') === false)
+{
+    die("Invalid upload location");
+}
+
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderConnector.class.php';
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinder.class.php';
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeDriver.class.php';
