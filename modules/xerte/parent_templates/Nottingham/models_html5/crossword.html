@@ -12,6 +12,7 @@
         var tab = 0;
         var active = 0;
         var nextPosition;
+        var is_keyboard = false
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function () {
             this.resize()
@@ -41,6 +42,10 @@
             });
 
             $('td').click(function() {
+
+                if(x_browserInfo.mobile === true){
+                    is_keyboard = true
+                }
 
                 active = $(this).closest('table tbody').find('td').index(this);
                 if($('#crossword-table tbody tr td').eq(active).find('input')[0] !== undefined) {
@@ -342,10 +347,6 @@
                 var wholeNumber = Math.floor(active/columns)
                 var remainder = active%columns
 
-                // if(x !== null || x !== undefined && y !== null || y !== undefined ){
-                //     wholeNumber = x;
-                //     remainder = y
-                // }
 
                 if(e > 36 && e < 41 || e === 9){
                     for(var i = 0; i < startPositionArray.length; i++){
@@ -647,66 +648,78 @@
 
         this.resize = function (){
 
-            var imgMaxW, imgMaxH;
-
-            imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
-            imgMaxH = Math.round($x_pageHolder.height() - 50);
-
-            if(imgMaxW > imgMaxH){
-                var percentage = imgMaxW/imgMaxH
-                imgMaxW = imgMaxW/percentage
-            }
-
-            //var width = $("#crossword").width()
-            var rowcount = $('#crossword-table tbody tr ').length;
-            var amountOfCells = $('#crossword-table tbody tr td').length;
-            var amountofColums = amountOfCells/rowcount
-            var amountOfpixels = imgMaxW/amountofColums
-
-            //amountOfpixels = amountOfpixels-20
-            amountOfpixels = amountOfpixels.toString()
-
-            $(".crossword-input").css("width", amountOfpixels)
-            $(".crossword-input").css("height", amountOfpixels)
-
-            if(imgMaxW < 430){
-                $("#show_button").css("font-size", "80%")
-            }else  if(imgMaxW > 650 && imgMaxW < 1200){
-                $("#show_button").css("font-size", "150%")
-                $("#show_button").css("width", "50%")
-                $("#crossword").css("margin-right", "50px")
-                $("#clues-container").css("width", "30%")
-            }else if(imgMaxW > 1200){
-                $("#show_button").css("font-size", "200%")
-                $("#show_button").css("width", "50%")
-
-                $("#crossword").css("margin-right", "50px")
-                $("#clues-container").css("width", "30%")
-
-            } else{
-                $("#show_button").css("font-size", "100%")
-
-            }
-
-            var position = x_currentPageXML.getAttribute("align")
-
-            if(position === "Bottom"){
-                $("#crossword").css("margin-bottom", "10px")
-                $("#show_button").css("width", "20%")
-                $("#show_button").css("margin-left", "auto")
-                $("#show_button").css("margin-right", "auto")
-                $("#showButton").css("margin-bottom", "20px")
-
-            }
-
-            if(imgMaxW < 200){
-                $(".crossword-input").css("font-size", "80%")
-            }else  if(imgMaxW > 450){
-                $(".crossword-input").css("font-size", "200%")
+            if(x_browserInfo.mobile === true){
+                //if(!is_keyboard){
+                $(".crossword-input").css("width", "25px")
+                $(".crossword-input").css("height", "25px")
+                $("#crossword").css("margin", "auto")
+                $("#crossword-table").css("margin", "0")
+                $(".crossword-input").css("font-size", "100%")
+                //}
             }else{
-                $(".crossword-input").css("font-size", "125%")
+                var imgMaxW, imgMaxH;
+
+                imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
+                imgMaxH = Math.round($x_pageHolder.height() - 50);
+
+                if(imgMaxW > imgMaxH){
+                    var percentage = imgMaxW/imgMaxH
+                    imgMaxW = imgMaxW/percentage
+                }
+
+                //var width = $("#crossword").width()
+                var rowcount = $('#crossword-table tbody tr ').length;
+                var amountOfCells = $('#crossword-table tbody tr td').length;
+                var amountofColums = amountOfCells/rowcount
+                var amountOfpixels = imgMaxW/amountofColums
+
+                //amountOfpixels = amountOfpixels-20
+                amountOfpixels = amountOfpixels.toString()
+
+                $(".crossword-input").css("width", amountOfpixels)
+                $(".crossword-input").css("height", amountOfpixels)
+
+                if(imgMaxW < 430){
+                    $("#show_button").css("font-size", "80%")
+                }else  if(imgMaxW > 650 && imgMaxW < 1200){
+                    $("#show_button").css("font-size", "150%")
+                    $("#show_button").css("width", "50%")
+                    $("#crossword").css("margin-right", "50px")
+                    $("#clues-container").css("width", "30%")
+                }else if(imgMaxW > 1200){
+                    $("#show_button").css("font-size", "200%")
+                    $("#show_button").css("width", "50%")
+
+                    $("#crossword").css("margin-right", "50px")
+                    $("#clues-container").css("width", "30%")
+
+                } else{
+                    $("#show_button").css("font-size", "100%")
+
+                }
+
+                var position = x_currentPageXML.getAttribute("align")
+
+                if(position === "Bottom"){
+                    $("#crossword").css("margin-bottom", "10px")
+                    $("#show_button").css("width", "20%")
+                    $("#show_button").css("margin-left", "auto")
+                    $("#show_button").css("margin-right", "auto")
+                    $("#showButton").css("margin-bottom", "20px")
+
+                }
+
+                if(imgMaxW < 200){
+                    $(".crossword-input").css("font-size", "80%")
+                }else  if(imgMaxW > 450){
+                    $(".crossword-input").css("font-size", "200%")
+                }else{
+                    $(".crossword-input").css("font-size", "125%")
+                }
             }
         }
+
+
 
 
 
@@ -1101,12 +1114,10 @@
 			var attempts = x_currentPageXML.getAttribute("attempts")
             attempts = parseInt(attempts)
 			Check = function (){
-debugger
 			    if(attempts === 1){
 			        showAnswers()
                     $("#attempt").html("");
                 }else{
-			        debugger
 			         checkAttempt()
                     attempts--
                     var again = x_currentPageXML.getAttribute("again")
@@ -1241,6 +1252,11 @@ debugger
                 x = parseInt(coorList[0])
                 y = parseInt(coorList[1])
 
+            }else if(keyCode > 64 && keyCode < 91){
+                var id = e.target.id
+                var coorList = id.split(',')
+                x = parseInt(coorList[0])
+                y = parseInt(coorList[1])
             }
             next(keyCode, x, y)
 

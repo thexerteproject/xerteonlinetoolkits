@@ -169,7 +169,16 @@
 			if (x_currentPageXML.getAttribute("itemSpacingY") != undefined) {
 				$("#subMenuItems .subMenuItem").css("margin-bottom", Number(x_currentPageXML.getAttribute("itemSpacingY")));
 			}
-			
+
+			var buttonWidth = x_currentPageXML.getAttribute("buttonWidth")
+			if(buttonWidth === undefined || buttonWidth === null){
+				buttonWidth = "100%"
+			}
+			if(buttonWidth.slice(-1)!=="%"){
+				buttonWidth+="%"
+			}
+			$("#subMenuItems").css("width", buttonWidth)
+
 			this.checkVisited();
 			
 			x_pageLoaded();
