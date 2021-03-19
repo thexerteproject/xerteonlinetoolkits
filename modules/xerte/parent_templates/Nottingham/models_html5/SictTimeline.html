@@ -221,7 +221,14 @@
 
 			var pageHeight = $x_pageHolder.height()
 			var pageWidth = $x_pageHolder.width()
-			if( pageWidth >= 1360){
+			var pageMarginRight = $x_mainHolder.css("marginRight")
+			pageMarginRight = parseInt( pageMarginRight.slice(0,  pageMarginRight.length - 2));
+			var pageMarginLeft = $x_mainHolder.css("marginLeft")
+			pageMarginLeft = parseInt( pageMarginLeft.slice(0,  pageMarginLeft.length - 2));
+
+			var totalPageWidth = pageWidth + pageMarginLeft + pageMarginRight
+
+			if( pageMarginRight !== 0 && pageMarginLeft !==0){
 				var footerHeight = $x_footerBlock.height();
 				var footerMarginHeight = $('#x_footerBlock').css('marginBottom')
 				footerMarginHeight = parseInt( footerMarginHeight.slice(0,  footerMarginHeight.length - 2));
