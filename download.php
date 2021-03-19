@@ -122,15 +122,26 @@ while ($ipos !== false) {
         $epos = strpos($doc, $quote, $bpos);
         if ($epos !== false) {
             $imgfile = substr($doc, $bpos, $epos - $bpos);
-            // Check file extensions
-
-            if($validator->isValid($imgfile)) {
-                $imgdata = file_get_contents($imgfile);
+            $imgparts = pathinfo($imgfile);
+            if (strlen($imgparts["extension"]) > 0) {
+                // Check file location
+                if (strpos($imgfile, "USER-FILES/") === 0) {
+                    if ($validator->isValid($imgfile)) {
+                        $imgdata = file_get_contents($imgfile);
+                    } else {
+                        $imgdata = "";
+                    }
+                } else if (strpos($imgfile, "http") === 0) {
+                    $imgdata = file_get_contents($imgfile);
+                } else {
+                    $imgdata = "";
+                }
             }
-            else {
+            else{
+                // Prohibit extensionless files
                 $imgdata = "";
             }
-            $imgparts = pathinfo($imgfile);
+
             $new_imgfile = 'images/' . $imgparts['basename'];
 
             $src = $new_imgfile;
