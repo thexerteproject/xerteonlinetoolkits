@@ -79,6 +79,8 @@ if (strpos($_FILES['Filedata']['name'], '../') !== false)
     $pass = false;
 if (strpos($_FILES['Filedata']['name'], '...') !== false)
     $pass = false;
+if (strpos($_GET['path'], 'USER-FILES') === false)
+    $pass = false;
 
 if ($pass === false) {
     receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "CRITICAL", "Invalid filename: " . $_FILES['Filedata']['name'], "Invalid filename: " . $_FILES['Filedata']['name']);

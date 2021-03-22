@@ -71,6 +71,17 @@ if (!isset($_FILES['upload']))
     exit(-1);
 }
 
+// Check upload path, should contain USER-FILES
+if (strpos($_REQUEST['uploadURL'], 'USER-FILES') === false)
+{
+    // Invalid folder, reject!
+    $response->uploaded = 0;
+    $response->error = IMAGEUPOLOAD_NOT_UPLOADED;
+
+    echo json_encode($response);
+    exit(-1);
+}
+
 if (isset($_FILES['upload']['error']) && $_FILES['upload']['error'] != 0)
 {
     switch($_FILES['upload']['error']) {
