@@ -1098,8 +1098,8 @@
 					mediaLesson.resizeVimeo($vimeo);
 					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .vimeo", mediaData.media);
 					$vimeo.data("popcornInstance", popcornInstance);
-					popcornInstance.play();
-					popcornInstance.pause();
+					//popcornInstance.play();
+					//popcornInstance.pause();
 					if (mediaData.autoplay == "true") {
 						popcornInstance.play();
 					}
@@ -1422,22 +1422,27 @@
 					pluginName = thisContent.type.split("synch")[1].toLowerCase();
 				
 				// ____ ADD SYNCH EVENT ON SLIDER ____
-				var $eventMarker =  $('<div id=marker_' + j + ' class="trackBarEventMarker ui-icon-play"></div>')
-					.appendTo($('#trackBarRail'));
-				var duration = isNaN(popcornInstance.duration()) ? $mediaDiv.data("duration") : popcornInstance.duration();
-				frac = thisContent.start / duration
-				// Do not add this event to the timeline if it doesn't occur during the duration of the video.
-				if (frac < 0 || frac > 1) {
-					$eventMarker.remove();
-				}
-				else {
-					$eventMarker.attr("synchFrac", frac);
-					eventOffset = frac * $('#trackBarRail').width();
-					$eventMarker.css("left", eventOffset);
-					if (thisContent.optional == "false") {
-						$eventMarkerMandatory = $('<div id=marker_mandatory_' + j + ' class="trackBarEventMarkerMandatory"></div>')
+				// Clear Content should not be counted as an event.
+				debugger;
+				if (thisContent.type != "synchEmpty")
+				{
+					var $eventMarker =  $('<div id=marker_' + j + ' class="trackBarEventMarker ui-icon-play"></div>')
 						.appendTo($('#trackBarRail'));
-						$eventMarkerMandatory.css("left", eventOffset - $eventMarkerMandatory.width() * 0.25);
+					var duration = isNaN(popcornInstance.duration()) ? $mediaDiv.data("duration") : popcornInstance.duration();
+					frac = thisContent.start / duration
+					// Do not add this event to the timeline if it doesn't occur during the duration of the video.
+					if (frac < 0 || frac > 1) {
+						$eventMarker.remove();
+					}
+					else {
+						$eventMarker.attr("synchFrac", frac);
+						eventOffset = frac * $('#trackBarRail').width();
+						$eventMarker.css("left", eventOffset);
+						if (thisContent.optional == "false") {
+							$eventMarkerMandatory = $('<div id=marker_mandatory_' + j + ' class="trackBarEventMarkerMandatory"></div>')
+							.appendTo($('#trackBarRail'));
+							$eventMarkerMandatory.css("left", eventOffset - $eventMarkerMandatory.width() * 0.25);
+						}
 					}
 				}
 				if (thisContent.type == "synchSlides") {
