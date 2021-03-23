@@ -2455,6 +2455,8 @@ A jQuery plugin to enhance image maps.
                     });
                 
                 image.attr('src', src);
+		image.attr('aria-hidden', 'true');
+		image.attr('alt', 'imagemapster map');
             } else {
 
                 // use attr because we want the actual source, not the resolved path the browser will return directly calling image.src

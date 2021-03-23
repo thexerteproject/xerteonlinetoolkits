@@ -200,7 +200,7 @@
 				if (x_params.pageTick == undefined || x_params.pageTick == "true") {
 					var allBuiltPages = [], allBuiltPageNums = [];
 					for (var i=0; i<x_pageInfo.length; i++) {
-						if (x_pageInfo[i].built) {
+						if (x_pageInfo[i].viewed) {
 							allBuiltPages.push(x_pageInfo[i].linkID);
 							allBuiltPageNums.push(i);
 						}

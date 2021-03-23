@@ -17,13 +17,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require_once "../../../config.php";
-require_once "../../../plugins.php";
+require_once(dirname(__FILE__) . "/../../../config.php");
+require_once(dirname(__FILE__) . "/../../../plugins.php");
+
+/*
+ * Function to convert a size string - e.g '128MB' - to the
+ * actual number of bytes.
+ *
+ * Provided by 'John V' at https://stackoverflow.com/questions/11807115/php-convert-kb-mb-gb-tb-etc-to-bytes
+ */
+
+function convertToBytes(string $from): ?int {
+    $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+
+    $number = substr($from, 0, -2);
+
+    $suffix = strtoupper(substr($from,-2));
+
+    //B or no suffix
+
+    if(is_numeric(substr($suffix, 0, 1))) {
+        return preg_replace('/[^\d]/', '', $from);
+    }
+
+    $exponent = array_flip($units)[$suffix] ?? null;
+
+    if($exponent === null) {
+        return null;
+    }
+
+    return $number * (1024 ** $exponent);
+}
+
 
 if (!isset($_SESSION['toolkits_logon_username']))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
+}
+if (strpos($_POST['mediapath'], 'USER-FILES') === false)
+{
+    // Invalid upload path
+    _debug("Invalid or illegal mediapath");
+    die("Invalid or illegal mediapath");
 }
 
 _load_language_file("/website_code/php/import/fileupload.inc");
@@ -78,6 +114,9 @@ if(apply_filters('editor_upload_file', $_FILES)){
         $err_string = implode("\n", $last_file_check_error);
 
         echo $err_string . "****";
+    }
+    elseif (isset($_SERVER['CONTENT_LENGTH']) && (int) $_SERVER['CONTENT_LENGTH'] > convertToBytes(ini_get('upload_max_filesize'))) {
+        echo "File is too large. Maximum size allowed is: " . ini_get('upload_max_filesize') . "B****";
     }
     else {
         echo FILE_UPLOAD_MIME_FAIL . " - " . $_FILES['filenameuploaded']['type'] . "****";

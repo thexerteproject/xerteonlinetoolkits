@@ -49,7 +49,7 @@ var x_languageData  = [],
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
 
 // Patch jQuery to add support for .toggle(function, function...) which was removed in jQuery 1.9
 // Code from http://forum.jquery.com/topic/beginner-function-toggle-deprecated-what-to-use-instead
@@ -88,7 +88,7 @@ $(document).keydown(function(e) {
                 }
 			} else if (pageIndex == -1) {
 				// historic back (standalone page)
-				if (history.length > 1) {
+				if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
 					history.go(-1);
 				} else {
 					x_changePage(x_normalPages[0]);
@@ -165,6 +165,24 @@ $(document).ready(function() {
     }
 
 });
+
+x_pagesViewed = function()
+{
+	var viewed = [];
+	x_pageInfo.forEach(function(item, index){
+		if (item.viewed) {
+			viewed.push(index);
+		}
+	});
+	return viewed;
+}
+
+x_restorePagesViewed = function(viewed)
+{
+	viewed.forEach(function(item){
+		x_pageInfo[item].viewed = true;
+	});
+}
 
 // To be able to check on orientation, and also detect the difference between a mobile and tablet
 // See https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
@@ -337,7 +355,7 @@ x_projectDataLoaded = function(xmlData) {
 		if (hidePage == false || x_params.authorSupport == "true") {
 			var linkID = $(this)[0].getAttribute("linkID"),
 				pageID = $.trim($(this)[0].getAttribute("pageID")),
-				page = {type: $(this)[0].nodeName, built: false};
+				page = {type: $(this)[0].nodeName, built: false, viewed: false};
 			
 			if (linkID != undefined) {
 				page.linkID = linkID;
@@ -421,7 +439,7 @@ x_projectDataLoaded = function(xmlData) {
         }
         if (x_params.navigation != "Linear" && x_params.navigation != "LinearWithHistoric" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
             x_pages.splice(0, 0, "menu");
-            x_pageInfo.splice(0, 0, {type: 'menu', built: false});
+            x_pageInfo.splice(0, 0, {type: 'menu', built: false, viewed:false});
 			
 			// adjust normal page indexes to take into account menu page
 			for (var i=0; i<x_normalPages.length; i++) {
@@ -450,8 +468,10 @@ x_projectDataLoaded = function(xmlData) {
 			hash = tempUrlParams[i];
 		}
     }
-		
+	
 	// there are several URL params that can determine the 1st page viewed - check if they are valid pages before setting start page
+	var customStartPage = false;
+	
 	if (x_urlParams.linkID) { // ID auto-generated in xwd e.g. URL/play_123&linkID=PG1593081880325
 		var temp = getDeepLink(x_urlParams.linkID);
 		if (temp.length > 1) {
@@ -461,6 +481,7 @@ x_projectDataLoaded = function(xmlData) {
 		var validPage = x_lookupPage("linkID", temp[0]);
 		if (validPage !== false) {
 			x_startPage = { type : "index", ID : validPage };
+			customStartPage = true;
 		}
 		
 		delete x_urlParams.linkID;
@@ -475,6 +496,7 @@ x_projectDataLoaded = function(xmlData) {
 		var validPage = x_lookupPage("pageID", temp[0]);
 		if (validPage !== false) {
 			x_startPage = { type : "index", ID : validPage };
+			customStartPage = true;
 		}
 		
 		delete x_urlParams.pageID;
@@ -489,10 +511,13 @@ x_projectDataLoaded = function(xmlData) {
 		var validPage = x_lookupPage("pageID", temp[0]);
 		if (validPage !== false) {
 			x_startPage = {type : "index", ID : validPage};
+			customStartPage = true;
+			
 		} else {
 			if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
 				var tempIndex = x_normalPages[Number(temp[0])-1];
 				x_startPage = { type : "index", ID : tempIndex };
+				customStartPage = true;
 			}
 		}
 		
@@ -508,6 +533,7 @@ x_projectDataLoaded = function(xmlData) {
 		if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
 			var tempIndex = x_normalPages[Number(temp[0])-1];
 			x_startPage = { type : "index", ID : tempIndex };
+			customStartPage = true;
 		}
 		
 		delete x_urlParams.resume;
@@ -522,7 +548,13 @@ x_projectDataLoaded = function(xmlData) {
 		var info = getHashInfo(temp[0]);
 		if (info != false) {
 			x_startPage = {type : "index", ID : info};
+			customStartPage = true;
 		}
+	}
+	
+	// any params in URL which can change the start page can be disabled from working by adding optional property
+	if (x_params.forcePage1 == 'true' && customStartPage == true && (x_pageInfo[x_startPage.ID].standalone == undefined || x_pageInfo[x_startPage.ID].standalone == false)) {
+		x_startPage = {type : "index", ID : "0"};
 	}
 	
 	// tidy up the URL to remove all of the params about start page - hash at end of URL will change according to currently viewed page
@@ -636,19 +668,23 @@ x_projectDataLoaded = function(xmlData) {
     {
         XTSetOption('force_tracking_mode', x_params.forceTrackingMode);
     }
+
 }
 
 // browser back / fwd button will trigger this - manually make page change to match #pageX
 window.onhashchange = function() {
-	var temp = getDeepLink(window.location.hash);
-	if (temp.length > 1) {
-		x_deepLink = temp[1];
-	}
-	
-	var pageInfo = getHashInfo(temp[0]);
 
-	if (pageInfo !== false) {
-		x_navigateToPage(false, { type: "index", "ID": pageInfo }, false );
+	if (x_params.forcePage1 == undefined || x_params.forcePage1 != 'true') {
+		var temp = getDeepLink(window.location.hash);
+		if (temp.length > 1) {
+			x_deepLink = temp[1];
+		}
+		
+		var pageInfo = getHashInfo(temp[0]);
+
+		if (pageInfo !== false) {
+			x_navigateToPage(false, { type: "index", "ID": pageInfo }, false );
+		}
 	}
 	
 	// force lightbox to close
@@ -830,6 +866,7 @@ function x_setUp() {
 		$x_footerBlock	= $("#x_footerBlock");
 		$x_footerL		= $("#x_footerBlock .x_floatLeft");
 		$x_menuBtn		= $("#x_menuBtn");
+		$x_saveSessionBtn = $("#x_saveSessionBtn");
 		$x_colourChangerBtn	= $("#x_colourChangerBtn");
 		$x_prevBtn		= $("#x_prevBtn");
 		$x_pageNo		= $("#x_pageNo");
@@ -847,7 +884,7 @@ function x_setUp() {
 		if (x_params.variables != undefined) {
 			XENITH.VARIABLES.init(x_params.variables);
 		}
-
+		
 		x_dialogInfo.push({type:'msg', built:false});
 
 		// hides header/footer if set in url
@@ -997,17 +1034,29 @@ function x_cssSetUp(param) {
             }
             break;
         case "colourChanger":
-            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("theme")});
+            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("saveSession")});
             break;
         case "colourChanger2":
             if (x_params.theme != undefined && x_params.theme != "default") {
-                x_insertCSS(x_themePath + x_params.theme + "/css/colourChanger.css", function () {x_cssSetUp("theme")});
+                x_insertCSS(x_themePath + x_params.theme + "/css/colourChanger.css", function () {x_cssSetUp("saveSession")});
             }
             else
             {
-                x_cssSetUp("theme");
+                x_cssSetUp("saveSession");
             }
             break;
+		case "saveSession":
+			x_insertCSS(x_templateLocation + "models_html5/saveSession.css", function() {x_cssSetUp("theme")});
+			break;
+		case "saveSession2":
+			if (x_params.theme != undefined && x_params.theme != "default") {
+				x_insertCSS(x_themePath + x_params.theme + "/css/saveSession.css", function () {x_cssSetUp("theme")});
+			}
+			else
+			{
+				x_cssSetUp("theme");
+			}
+			break;
         case "theme":
             if (!xot_offline) {
                 $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
@@ -1243,7 +1292,7 @@ function x_continueSetUp1() {
 					}
 				} else if (pageIndex == -1) {
 					// historic back (standalone page)
-					if (history.length > 1) {
+					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
 						history.go(-1);
 					} else {
 						x_changePage(x_normalPages[0]);
@@ -1361,6 +1410,37 @@ function x_continueSetUp1() {
 				);
 			});
 
+		if (x_params["hideSaveSession"] !== "true" && (XTGetMode().indexOf("normal") >= 0 || XTTrackingSystem() === "xAPI")) {
+			x_dialogInfo.push({type:'saveSession', built:false});
+			$x_saveSessionBtn
+				.button({
+					icons: {
+						primary: "x_saveSession"
+					},
+					label: x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session"),
+					text: false
+				})
+				.attr("aria-label", $("#x_saveSessionBtn").attr("title") + " " + x_params.dialogTxt)
+				.click(function () {
+					x_openDialog(
+						"saveSession",
+						x_getLangInfo(x_languageData.find("saveSession")[0], "label", "Save Session"),
+						x_getLangInfo(x_languageData.find("saveSession").find("closeButton")[0], "description", "Close Save Session"),
+						null,
+						null,
+						function () {
+							$x_saveSessionBtn
+								.blur()
+								.removeClass("ui-state-focus")
+								.removeClass("ui-state-hover");
+						}
+					);
+				});
+		}
+		else
+		{
+			$x_saveSessionBtn.hide();
+		}
 		if (x_params.kblanguage != undefined) {
 			if (typeof charpadstr != 'undefined')
 			{
@@ -1485,9 +1565,21 @@ function x_continueSetUp1() {
 
 function x_continueSetUp2() {
 	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
-	var mediaElementText = [{name:"stopButton", label:"Stop", description:"Stop Media Button"},{name:"playPauseButton", label:"Play/Pause", description:"Play/Pause Media Button"},{name:"muteButton", label:"Mute Toggle", description:"Toggle Mute Button"},{name:"fullscreenButton", label:"Fullscreen", description:"Fullscreen Movie Button"},{name:"captionsButton", label:"Captions/Subtitles", description:"Show/Hide Captions Button"}];
+	var mediaElementText = [{
+		name: "stopButton",
+		label: "Stop",
+		description: "Stop Media Button"
+	}, {name: "playPauseButton", label: "Play/Pause", description: "Play/Pause Media Button"}, {
+		name: "muteButton",
+		label: "Mute Toggle",
+		description: "Toggle Mute Button"
+	}, {name: "fullscreenButton", label: "Fullscreen", description: "Fullscreen Movie Button"}, {
+		name: "captionsButton",
+		label: "Captions/Subtitles",
+		description: "Show/Hide Captions Button"
+	}];
 
-	for (var i=0, len=mediaElementText.length; i<len; i++) {
+	for (var i = 0, len = mediaElementText.length; i < len; i++) {
 		x_mediaText.push({
 			label: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]),
 			description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
@@ -1500,26 +1592,67 @@ function x_continueSetUp2() {
 
 	// script optional property added after all interface set up & before any pages load
 	if (x_params.script != undefined && x_params.script != "") {
-		$x_head.append('<script>' +  x_params.script + '</script>');
+		$x_head.append('<script>' + x_params.script + '</script>');
 	}
 
 	// Setup beforeunload
-    window.onbeforeunload = XTTerminate;
+	window.onbeforeunload = XTTerminate;
 
-    XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
-	// Set course and module options AFTER XTInitialise
-    if (x_params.course != undefined && x_params.course != "")
-    {
-        XTSetOption('course', x_params.course);
-    }
-    if (x_params.module != undefined && x_params.module != "")
-    {
-        XTSetOption('module', x_params.module);
-    }
-	
-	setUpComplete = true;
+	XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
+	// Set course, module and resume options AFTER XTInitialise
+	if (x_params.course != undefined && x_params.course != "") {
+		XTSetOption('course', x_params.course);
+	}
+	if (x_params.module != undefined && x_params.module != "") {
+		XTSetOption('module', x_params.module);
+	}
+	if (XTTrackingSystem() === 'xAPI') {
+		var callStartPage = false;
+		if (x_params.restartOptions != undefined) {
+			switch (x_params.restartOptions) {
+				case 'ask':
+					var canResume = XTCanResume();
+					if (canResume.canResume) {
+						x_dialogInfo.push({type: 'resumeSession', built: false});
+						x_openDialog(
+							"resumeSession",
+							x_getLangInfo(x_languageData.find("resumeSession")[0], "label", "Resume Session"),
+							x_getLangInfo(x_languageData.find("resumeSession").find("closeButton")[0], "description", "Close Resume Session Dialog"),
+							null,
+							null,
+							function () {
+								setUpComplete = true;
 
-    x_navigateToPage(true, x_startPage);
+								x_navigateToPage(true, x_startPage);
+							}
+						);
+					} else {
+						XTSetOption('resume', false);
+						callStartPage = true;
+					}
+					break;
+				case 'restart':
+					XTSetOption('resume', true);
+					callStartPage = true;
+					break;
+				case 'do_not_restart':
+					XTSetOption('resume', false);
+					callStartPage = true;
+					break;
+			}
+		} else {
+			XTSetOption('resume', true);
+			callStartPage = true;
+		}
+		if (callStartPage)
+		{
+			setUpComplete = true;
+			x_navigateToPage(true, x_startPage);
+		}
+	} else {
+		setUpComplete = true;
+		x_navigateToPage(true, x_startPage);
+	}
 }
 
 // function checks whether a media file exists
@@ -1568,7 +1701,6 @@ function x_dialog(text){
 
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID}
-	
     var page = XTStartPage();
     if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved by the LO
         x_changePage(page, addHistory);
@@ -1737,6 +1869,13 @@ function x_changePage(x_gotoPage, addHistory) {
 	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' && parent.window.$.featherlight.current()) {
 		standAlonePage = false;
 		addHistory = false;
+	} else if (parent.window.$.featherlight.current()) {
+		// force lightbox to close
+		parent.window.$.featherlight.current().close();
+	}
+	
+	if (x_params.forcePage1 == 'true') {
+		addHistory = false;
 	}
 	
 	// normal page change, or a standalone page being opened in same window
@@ -1823,6 +1962,15 @@ function x_changePageStep3(x_gotoPage) {
 }
 
 function x_changePageStep4(x_gotoPage) {
+	// Check if saveSession button is styled
+	if (typeof x_varSaveSessionBtnIsStyled == "undefined") {
+		x_varSaveSessionBtnIsStyled = x_saveSessionBtnIsStyled();
+		if (!x_varSaveSessionBtnIsStyled) {
+			if ($('#savesessionbtn_css').length == 0) {
+				$x_head.append('<style type="text/css" id="savesessionbtn_css">#x_saveSessionBtn:after {content: "\\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; } #x_saveSessionBtn { font-size: 1.9em; width:1.1em; }  .ui-button .ui-icon.x_saveSession { background-image: none; } #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button { padding: 0; } #x_saveSessionBtn span { display: none; }</style>');
+			}
+		}
+	}
     if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
         x_insertCSS(x_evalURL(x_params.stylesheet), function () {
             x_changePageStep5(x_gotoPage);
@@ -1934,7 +2082,7 @@ function x_changePageStep5a(x_gotoPage) {
         x_pageHistory.push(x_currentPage);
     }
 	
-	// if it's astandalone page then it's possible that the header or footer bar are hidden
+	// if it's a standalone page then it's possible that the header or footer bar are hidden
 	var headerHidden = false, footerHidden = false;
 	if (x_pageInfo[x_currentPage].standalone == true) {
 		if (x_currentPageXML.getAttribute('headerHide') == 'true') {
@@ -1991,6 +2139,7 @@ function x_changePageStep5a(x_gotoPage) {
 function x_changePageStep6() {
 
     $("#x_headerBlock h2").html(pageTitle);
+	$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
 
     x_updateCss(false);
 
@@ -2154,8 +2303,26 @@ function x_changePageStep6() {
 
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();
+	}x_focusPageContents();
+}
+
+function x_focusPageContents(){
+	//focus pageContents after page load and page change
+		$('#pageContents').attr('tabIndex', 0).focus();
+		//#pageContents:focus is set to none in default theme
+		//uncomment the line below to see the focus outline
+		//or use a theme where this isn't hidden
+		//$('#pageContents:focus').css('outline','solid');
+	if(x_pageInfo[x_currentPage].type=="adaptiveContent"){
+		$('#adaptiveContentMain').attr('tabIndex', 0).focus();
 	}
 }
+
+//skip to main contents link but this code needs checking
+// and language string needs to be added to replace default English text
+$('[href^="#"][href!="#"]').click(function() {
+	$($(this).attr('href')).attr('tabIndex', -1).focus();
+});
 
 // trigger that page contents have updated
 function x_pageContentsUpdated() {
@@ -2321,7 +2488,9 @@ function x_setUpPage() {
 		if (x_currentPageXML.getAttribute("next") == "false") {
 			$x_nextBtn.button("disable");
 		}
-
+		if (x_currentPageXML.getAttribute("save") == "false") {
+			$x_saveSessionBtn.button("disable");
+		}
 	} else if (!x_isMenu() && x_currentPageXML.getAttribute("navSetting") != undefined) {
 		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
 		if (x_currentPageXML.getAttribute("navSetting") != "all") {
@@ -2355,6 +2524,7 @@ function x_setUpPage() {
 // function called from each model when fully loaded to trigger fadeIn
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
+    x_pageInfo[x_currentPage].viewed = true;
 	
 	// calls function in current theme (if it exists)
 	var pt = x_pageInfo[x_currentPage].type;
@@ -2399,6 +2569,7 @@ function x_pageLoaded() {
     $(config.selector, config.context).featherlight();
 
 	doPercentage();
+	x_focusPageContents();
 }
 
 // detect page loaded change and update progress bar
@@ -2407,7 +2578,7 @@ function doPercentage() {
 	
 	// by default stand-alone pages are excluded from being included in progress - this can be overridden with optional property
     var totalPages = $(x_pageInfo).filter(function(i){ return this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true'; }).length - menuOffset,
-		pagesViewed = $(x_pageInfo).filter(function(i){ return (this.built !== false && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true')) || this.builtLightBox == true || this.builtNewWindow == true; }).length - menuOffset;
+		pagesViewed = $(x_pageInfo).filter(function(i){ return (this.viewed !== false && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true')) || this.builtLightBox == true || this.builtNewWindow == true; }).length - menuOffset;
 	
     var progress = Math.round((pagesViewed * 100) / totalPages),
 		pBarText = x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
@@ -2839,7 +3010,7 @@ function x_isMenu() {
 
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML, exclude, list) {
-    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt"],
+    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt", "side1", "side2"],
         i, j, len;
 	if (pageXML.nodeName == "mcqStepOption") { attrToCheck.push("name"); } // don't include name normally as it's generally only used in titles
 
@@ -2876,6 +3047,11 @@ function x_insertText(node, exclude, list) {
 	// also handle case where comma decimal separator has been requested
 	if (XENITH.VARIABLES && XENITH.VARIABLES.exist() && (exclude == undefined || (exclude == false && list.indexOf("variables") > -1) || (exclude == true && list.indexOf("variables") == -1))) {
 		tempText = XENITH.VARIABLES.replaceVariables(tempText, x_params.decimalseparator);
+	}
+	
+	// check text for global variables - if found replace with variable value
+	if (x_params.globalVars == 'true' && (exclude == undefined || (exclude == false && list.indexOf("globalVars") > -1) || (exclude == true && list.indexOf("globalVars") == -1))) {
+		tempText = XENITH.GLOBALVARS.replaceGlobalVars(tempText);
 	}
 
 	// if project is being viewed as https then force iframe src to be https too
@@ -3264,6 +3440,22 @@ function x_isYouTubeVimeo(url) {
 // strip html tags and return just text which is appropriate for screen reader
 function x_getAriaText(text) {
 	return $('<p>' + text + '</p>').text();
+}
+
+// Script to check whther saveSession button is styled in theme
+function x_saveSessionBtnIsStyled() {
+	if (x_params.theme != undefined && x_params.theme == "default")
+		return true;
+	var files = $.map(document.styleSheets, function(s) {
+		return s.href && s.href.indexOf('/themes/Nottingham/')>0 ? s : null;
+	});
+
+	var isStyled = files.reduce(function(a,r){
+		return [].slice.call(r.rules).reduce(function(a,r){
+			return (r.cssText && r.cssText.indexOf('x_saveSession')>0) || a;
+		}, false) || a;
+	}, false);
+	return isStyled;
 }
 
 
@@ -3746,7 +3938,6 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	
 	
 	replaceVariables = function (tempText, decimalSeparator) {
-
 		tempText = tempText.replace(
 			new RegExp('\\[\\{(.*?)\\}(?:\\s|&nbsp;)*(?:(?:\\,(?:\\s|&nbsp;)*?(\\d+?)?))?\\]|<span class="x_var x_dyn_(.*?)">(?:.*?)</span>', 'g'),
 			function (match, contents, round, id) {
@@ -3777,7 +3968,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 			// if it's first attempt to replace vars on this page look at vars in image tags first
 			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
 			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
-				var $tempText = $(tempText);
+				var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
 				for (var m=0; m<$tempText.find('img').length; m++){
 					var tempImgTag = $tempText.find('img')[m].outerHTML,
 						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
@@ -3922,8 +4113,12 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			$x_glossaryHover,
 
 
-	// function starts the calculation of variables set by author via the variables optional property
 	init = function () {
+		
+		$x_glossaryHover = $('<div id="x_glossaryHover" class="x_tooltip" role="tooltip"></div>')
+			.appendTo($x_mainHolder)
+			.hide();
+		
 		x_dialogInfo.push({type:'glossary', built:false});
 
 		var i, len, item, word,
@@ -3976,10 +4171,6 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 						myText = $this.text().trim(),
 						myDefinition, i, len;
 
-					// Rip out the title attribute
-					$this.data('title', $this.attr('title'));
-					$this.attr('title', '');
-
 					for (i=0, len=x_glossary.length; i<len; i++) {
 						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().trim().toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>"
@@ -3990,32 +4181,27 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 							}
 						}
 					}
-
-					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
-
-					// Queue reparsing of MathJax - fails if no network connection
-					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
-					$x_glossaryHover = $("#x_glossaryHover");
-					$x_glossaryHover.css({
+					
+					$x_glossaryHover
+						.html(myDefinition)
+						.css({
 						"left"	:$(this).offset().left + 20,
 						"top"	:$(this).offset().top + 20
 					});
+					
+					// Queue reparsing of MathJax - fails if no network connection
+					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+					
 					$x_glossaryHover.fadeIn("slow");
+					
 					if (x_browserInfo.touchScreen == true) {
 						$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
 					}
 				})
 				.on("mouseleave", ".x_glossary", function(e) {
 					$x_mainHolder.off("click.glossary");
-
-					if ($x_glossaryHover != undefined) {
-						$x_glossaryHover.remove();
-					}
-
-					// Put back the title attribute
-					$this = $(this);
-					$this.attr('title', $this.data('title'));
+					
+					$x_glossaryHover.hide();
 				})
 				.on("mousemove", ".x_glossary", function(e) {
 					var leftPos,
@@ -4080,8 +4266,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			}
 			for (var k=0, len=x_glossary.length; k<len; k++) {
 				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
-				//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
-				tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+				tempText = tempText.replace(regExp, '$1<span class="x_glossary" aria-describedby="x_glossaryHover" tabindex="0" role="link">$3</span>$4');
 			}
 		}
 		
@@ -4091,7 +4276,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 	touchStartHandler = function() {
 		$x_mainHolder.off("click.glossary");
 		if ($x_glossaryHover != undefined) {
-			$x_glossaryHover.remove();
+			$x_glossaryHover.hide();
 		}
 	};
 		
@@ -4100,5 +4285,32 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
     self.buildPage = buildPage;
 	self.insertText = insertText;
 	self.touchStartHandler = touchStartHandler;
+
+return parent; })(jQuery, XENITH || {});
+
+
+
+// _____ GLOBAL VARIABLES _____
+// allows surfacing of any global variables
+
+var XENITH = (function ($, parent) { var self = parent.GLOBALVARS = {};
+	
+	var	replaceGlobalVars = function (tempText) {
+		var regExp = new RegExp('\\{(.*?)\\}', 'g');
+		
+		var matches = tempText.match(regExp);
+		if (matches != null) {
+			for (var m=0; m<matches.length; m++) {
+				try {
+					tempText = tempText.replace(matches[m], '<span class="x_globalVar">' + eval(matches[m]) + '</span>');
+				} catch (e){}
+			}
+		}
+		
+		return tempText;
+	};
+	
+	// make some public methods
+	self.replaceGlobalVars = replaceGlobalVars;
 
 return parent; })(jQuery, XENITH || {});

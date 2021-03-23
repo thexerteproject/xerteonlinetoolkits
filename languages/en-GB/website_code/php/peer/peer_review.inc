@@ -25,4 +25,3 @@
 	
 	define("PEER_REVIEW_PROBLEM","A problem has occured");
 	
-?>

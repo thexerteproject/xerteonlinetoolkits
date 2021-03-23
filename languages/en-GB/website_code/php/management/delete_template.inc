@@ -15,4 +15,3 @@
 
 	define("MANAGEMENT_DELETE_FAIL", "Failed to delete");
 	
-?>

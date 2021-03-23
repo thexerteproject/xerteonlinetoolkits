@@ -76,6 +76,13 @@
 
 		this.init = function() {
             $pageContents = $("#pageContents");
+			
+			//Add aria-label to answer box
+			var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
+			if (answerFieldLabel === undefined | answerFieldLabel === null) {
+				answerFieldLabel = "Answer";
+			}
+			$("#answerTxt").attr({"aria-label" : answerFieldLabel});
 
             // uses data from timedText file if there is one - otherwise use nested page info
             if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined && x_currentPageXML.getAttribute("sound") != "" && x_currentPageXML.getAttribute("sound") != undefined) {

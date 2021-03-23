@@ -36,4 +36,3 @@
 	
 	define("MEDIA_AND_QUOTA_FAIL", "Sorry you do not have rights to this project");
 
-?>

@@ -16,5 +16,3 @@
 	define("MANAGEMENT_SITE_CHANGES_OK_NOT_AV", "Site changes made - but check your antivirus check settings.");
 
 	define("MANAGEMENT_SITE_CHANGES_FAIL", "Site changes failed");
-
-?>

@@ -15,4 +15,3 @@
 	
 	define("SITE_EDIT_MAXIMISE", "Maximise Window Size");
 	
-?>

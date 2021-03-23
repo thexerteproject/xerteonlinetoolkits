@@ -132,7 +132,7 @@ Start the page and once loaded set the default option
                                         </div>
                                         <!--
 
-												Last spacer given sufficient heigbt to fill the rest of the border for the right hand panel
+												Last spacer given sufficient height to fill the rest of the border for the right hand panel
 
 										-->
 										<div class="tab_spacer" style="height:357px;">							

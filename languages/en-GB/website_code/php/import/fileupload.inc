@@ -17,5 +17,3 @@
 	define("FILE_UPLOAD_SUCCESS","File successfully uploaded");
 
 	define("FILE_UPLOAD_MIME_FAIL","Invalid file type");
-
-?>

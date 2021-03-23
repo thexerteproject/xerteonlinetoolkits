@@ -17,4 +17,3 @@
 	
 	define("FOLDER_RSS_TEMPLATE_MY_FOLDER_FEED", "The RSS feeds for my folders are");
 	
-?>

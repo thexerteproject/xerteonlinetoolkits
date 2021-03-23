@@ -94,6 +94,9 @@
   border:$contrastcolor;
   color:$fontcolorforcontrastcolor;
 }
+.back.panel a{
+  color:$whiteorlightest;
+}
 //*****hyperlinks******/
 .x_links_page #linkHolder a{
   color:$linkcolor;
@@ -341,7 +344,7 @@ a.hotspot, a.hotspot.selected {
   color:white !important;
 }
 .x_grid_page #grid ul li.static {
-  background: none;
+  background: $blackordarkest;
   border-color: transparent;
 }
 /*****timeline matching pairs*****/
@@ -414,6 +417,9 @@ a.hotspot, a.hotspot.selected {
   background-color: $lightestcolor;
   margin:.5em;
 }
+.x_youtuberss_page #resultsHolder div a{
+  color: #0000A0;
+}
 .x_youtuberss_page .shadedDiv {
    background-color: lighten($lightestcolor, 20%) !important; //doesn't work without important
    border-radius: $mediumroundedcorners;
@@ -452,12 +458,36 @@ div#shorturltodisplay a{
   background: $contrastcolor;
   color:$fontcolorforcontrastcolor;
 }
-.x_results_page .details th {
+.x_results_page .details th, .x_results_page .details tr:first-of-type td.correct {
   background: $darkestcolor;
   color: $fontcolorfordarkestcolor;
 }
 .x_results_page #general_summary th {
   background: #ffffff;//hide otherwise black line at to of summary table
+}
+.fas.fa-check-circle{
+  color:green;
+}
+.fas.fa-times-circle{
+  color:#CD2A2A;
+}
+.fas.fa-circle.blue{
+  color:white;
+  background:black;
+  border-radius: 12px;
+}
+.far.fa-circle.blue{
+  color:white;
+  border-radius: 12px;
+}
+.x_results_page tr.alt .far.fa-circle.blue {
+  color: #ffffff !important;
+  border-radius: 12px;
+}
+
+.x_results_page tr .far.fa-circle.blue {
+  color: #010101 !important;
+  border-radius: 12px;
 }
 //***********************************Media query/responsive changes*************************************/
 //*****change tick/cross size on all pages where used******/
