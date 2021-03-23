@@ -24,6 +24,7 @@
         <disableAnswers label = "Disable Answers" type="CheckBox" optional="true"/>
         <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
 
+
         <checkBtn label="Check Button Text" type="TextInput" wysiwyg="true" language="true"/>
         <attemptLabel label="Attempt Label" type="TextInput" wysiwyg="false" language="true"/>
         <textRight label="Passed the test" type="TextInput" wysiwyg="true" language="true"/>

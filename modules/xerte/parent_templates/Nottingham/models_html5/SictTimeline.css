@@ -15,7 +15,7 @@
 }
 .tl-menubar{
     position: fixed !important;
-    top: 10% !important;
+
 }
 
 .tl-slide-content{
@@ -39,3 +39,61 @@
     background-color: #0a8bee !important;
 }
 
+/*Make the box smaller*/
+.tl-timemarker-content{
+    background-color: #DEDEDE !important;
+}
+/*make the image smaller*/
+.tl-icon-image{
+    font-size: 15px !important;
+}
+
+.tl-timemarker-text{
+    color: #808080 !important;
+}
+.tl-timemarker-text h2{
+    color: #808080 !important;
+}
+
+.lightboxWrapper{
+    background-color: red!important;
+    z-index: 1!important;
+}
+
+/*.tl-slide-content-container{*/
+/*    display: block!important;*/
+/*}*/
+
+.tl-slide-scrollable-container{
+    width: 100% !important;
+}
+
+.tl-slide-content{
+    width: 100% !important;
+    height: 100% !important;
+}
+#pageContents h3{
+    padding-top: 20px; !important;
+}
+
+.tl-media-item{
+    margin: auto !important;
+}
+
+.tl-media{
+    max-width: 100% !important;
+}
+
+.tl-media-audio:focus { outline: none; }
+
+/*.tl-caption{*/
+/*    float: left !important;*/
+/*    margin-left: 2% !important;*/
+/*}*/
+/*.tl-slidenav-next{*/
+/*    top: 0!important; */
+/*}*/
+
+/*.tl-timeline{*/
+/*    height: 700px!important;*/
+/*}*/

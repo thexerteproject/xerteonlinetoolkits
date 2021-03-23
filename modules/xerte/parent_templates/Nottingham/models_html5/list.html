@@ -86,6 +86,7 @@
 			}
 			
 			var $listItem = $(".listItem:first");
+			debugger
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var $thisItem;
@@ -173,6 +174,22 @@
 							}
 						});
 				});
+			debugger
+			if(x_currentPageXML.getAttribute('hicol') !== null){
+				var color = "#" + x_currentPageXML.getAttribute('hicol').substr(2)
+			}else{
+				color = "#000000"
+			}
+			if(x_currentPageXML.getAttribute('hicolback') !== null){
+				var backgroundColor = "#" + x_currentPageXML.getAttribute('hicolback').substr(2)
+			}else{
+				backgroundColor = "#FFFFFF"
+			}
+
+			$(".listItem").css({
+				'color': color,
+				'background-color':backgroundColor
+			})
 			
 			x_pageLoaded();
 		}

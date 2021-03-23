@@ -136,7 +136,7 @@
 			$qCount.html(qNoTxt.replace("{i}", currentWord + 1).replace("{n}", words.length));
 
 			$(document).on("keypress.pageEvent", function(e) { // has .pageEvent namespace so it can be removed on page change from xenith.js
-				debugger
+
 
 				var charCode = e.charCode || e.keyCode;
 				var char = String.fromCharCode(charCode).toLowerCase();
@@ -223,13 +223,13 @@
 					button.setAttribute("id", letter);
 					button.className = 'alphabet';
 					button.addEventListener("click", function () {
-						debugger
+
 						const letterID = button.id;
 						const letter = letterID.toLowerCase();
 						if ($.trim(letter) !== "") { // ignore non-character key presses e.g. tab
 							if (thisWord.indexOf(letter.toUpperCase()) !== -1 || thisWord.indexOf(letter.toLowerCase()) !== -1 || specialCharacters === true) { // correct
-								console.log("correct");
 								var startIndex = thisWord.indexOf(letter);
+
 								while (startIndex > -1) {
 									$($clue.find(".dash, .space")[startIndex]).html(letter);
 									startIndex = thisWord.indexOf(letter, startIndex + 1);

@@ -1,12 +1,10 @@
- #crossword {
-    text-align: center;
-}
+
 
 #crossword-table {
     border-collapse: collapse;
     font-family: "Courier New", Courier, monospace;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 0;
+    margin-right: 30px;
     clear: both;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -40,9 +38,9 @@
     font-size: 30px;
 }
 
-.crossword-input[type=text]{
-    text-align: center;
-}
+/*.crossword-input[type=text]{*/
+/*    text-align: center;*/
+/*}*/
 
 .hide_answer {
     color: transparent;
@@ -62,13 +60,29 @@
     padding: 0;
 }
 
+.table-hint{
+    list-style-type:none ;
+
+}
+
+#across{
+    padding-left: 0;
+    padding-right:20px ;
+}
+
+#down{
+    padding-left: 0;
+}
+
 #x_pageDiv table td, #x_pageDiv table th{
     padding: 0;
 }
 
 #show_button{
-    margin:0 auto;
+    margin-left: 0;
     display:block;
+    width: 80%;
+    height: 65%;
 }
 
 #crossword-table #input__container__across{
@@ -96,6 +110,66 @@
      top: 3px;
      content: attr(data-placeholder);
      pointer-events: none;
-     opacity: 0.5;
+     opacity: 1;
      z-index: 1;
+     font-size: 15px;
+     font-weight: bold;
+ }
+
+ .highlighted .crossword-input[type=text]{
+     background-color: yellow;
+ }
+
+ #pageContents-innerContainer{
+     display: flex ;
+ }
+
+ #clues-container{
+     width: 100%;
+
+ }
+
+ #crossword{
+     flex: 1;
+     margin-right: 20px;
+     text-align: center;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+
+ }
+
+ #showButton{
+     padding-top: 20px;
+     justify-content: flex-start;
+     height: 10%;
+ }
+
+ .li-clue{
+     cursor: pointer;
+     list-style-type: circle;
+     display: flex;
+     flex-direction: row;
+ }
+
+ .li-clue p{
+     padding: 0;
+ }
+
+ .crossword-input{
+     text-align: center;
+ }
+
+ .hint-number{
+     margin-right: 5%;
+ }
+
+ #clues-across{
+     margin-top: 20px;
+ }
+ #attempt h3{
+     border-top: 1px solid #ccc;
+     padding-top: 1.5em;
+     text-align: center;
+
  }
