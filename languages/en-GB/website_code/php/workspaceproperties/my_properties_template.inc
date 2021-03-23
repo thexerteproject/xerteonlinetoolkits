@@ -20,4 +20,3 @@
 	define("MY_PROPERTIES_USERNAME_DETAILS", "My username is");
 
 
-?>

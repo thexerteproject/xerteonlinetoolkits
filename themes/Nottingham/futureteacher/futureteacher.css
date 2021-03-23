@@ -74,7 +74,7 @@
 
 .ui-button {
   border-radius: 3px;
-  background: #84849a;
+  background: #535365;
   border: none;
   color: #ffffff; }
 
@@ -119,7 +119,7 @@
 
 .ui-tabs .ui-tabs-nav li {
   border-radius: 3px;
-  background: #84849a;
+  background: #6a6a81;
   border: none;
   color: #ffffff; }
 
@@ -284,44 +284,6 @@ a.hotspot, a.hotspot.selected {
 .sliderHolder .labelHolder a p {
   color: #000000; }
 
-.x_grid_page #gridBorders {
-  border-radius: 3px; }
-
-.x_grid_page #grid .listHolder.constrainC li {
-  border-radius: 3px; }
-
-.x_grid_page #grid ul li.header {
-  color: #ffffff;
-  background: #418545;
-  color: #ffffff; }
-
-.x_grid_page table.simple {
-  border: transparent; }
-
-.x_grid_page table.header.simple tr:first-child {
-  border-bottom: transparent;
-  background: #000000; }
-
-.x_grid_page table.header.shaded tr:first-child {
-  background: #000000; }
-
-.x_grid_page #grid ul li {
-  background: #6a6a81;
-  border-color: transparent;
-  color: #ffffff !important; }
-
-.x_grid_page table tr.shaded {
-  background: #84849a;
-  color: #000000 !important; }
-
-.x_grid_page table tr {
-  background: #a0a0b1;
-  color: white !important; }
-
-.x_grid_page #grid ul li.static {
-  background: none;
-  border-color: transparent; }
-
 /*****timeline matching pairs*****/
 .x_timeline_page #dragDropHolder {
   background: #ffffff; }
@@ -331,7 +293,7 @@ a.hotspot, a.hotspot.selected {
   background-color: #F4F4F6; }
 
 .x_timeline_page .label.panel.ui-draggable {
-  background: #84849a;
+  background: #6a6a81;
   color: #ffffff;
   border-color: #84849a; }
 
@@ -501,6 +463,11 @@ div#shorturltodisplay a {
 
 #x_menuBtn:after {
   content: "\f0c9"; }
+
+#x_saveSessionBtn:after {
+  content: "\f0c7";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900; }
 
 #x_footerBlock button {
   color: #84849a; }

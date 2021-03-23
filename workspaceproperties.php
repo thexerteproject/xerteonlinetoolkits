@@ -172,7 +172,7 @@ Hidden Iframe to allow for ajax file uploads
                 </div>
                 <!--
 
-                    Last spacer given sufficient heigbt to fill the rest of the border for the right hand panel
+                    Last spacer given sufficient height to fill the rest of the border for the right hand panel
 
                 -->
 

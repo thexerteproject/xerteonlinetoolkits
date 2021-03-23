@@ -29,4 +29,3 @@
 
 	define("WORKSPACE_LIBRARY_TEMPLATE_NAME", "Name");
 		
-?>

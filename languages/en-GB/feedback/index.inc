@@ -38,4 +38,3 @@
 	define("FEEDBACK_TEXTAREA","Feedback");
 	define("FEEDBACK_BUTTON","Send Feedback");
 
-?>

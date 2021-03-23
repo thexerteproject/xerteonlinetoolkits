@@ -1,5 +1,4 @@
 @charset "UTF-8";
-@import url("https://fonts.googleapis.com/css?family=Roboto");
 /*set background colors*/
 /* default #2196F3;*/
 /*set font family*/
@@ -28,6 +27,9 @@
 
 table.glossary tr {
   background: #ffff66; }
+
+table.glossary tr.shaded {
+  background: #ffff80; }
 
 .highlight {
   background: #FFFF99; }
@@ -311,8 +313,11 @@ a.hotspot, a.hotspot.selected {
   border-radius: 3px; }
 
 .x_grid_page #grid ul li.header {
-  background: #000000;
+  background: #000000 !important;
   color: #FFFF99 !important; }
+
+.x_grid_page table.header.shaded tr:first-child {
+  background: #000000; }
 
 .x_grid_page table.simple {
   border: transparent; }
@@ -522,6 +527,11 @@ div#shorturltodisplay a {
 
 #x_menuBtn:after {
   content: "\f0c9"; }
+
+#x_saveSessionBtn:after {
+  content: "\f0c7";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900; }
 
 #x_footerBlock button {
   color: #FFFF99; }

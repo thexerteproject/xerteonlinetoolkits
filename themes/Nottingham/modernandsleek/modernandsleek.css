@@ -25,7 +25,7 @@
   overflow: hidden; }
 
 a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
-  color: #EDEDED; }
+  color: #3A5199; }
 
 .highlight {
   background: #EDEDED; }
@@ -296,8 +296,12 @@ a.hotspot, a.hotspot.selected {
 .x_grid_page table.header.shaded tr:first-child {
   background: #000000; }
 
+.x_grid_page .ui-state-default.header.static {
+  background: black !important; }
+
 .x_grid_page table tr {
-  background: #D5D6D2; }
+  background: #D5D6D2;
+  color: red !important; }
 
 .x_grid_page tr.shaded {
   background: #EDEDED; }
@@ -488,6 +492,11 @@ div#shorturltodisplay a {
 
 #x_menuBtn:after {
   content: "\f0c9"; }
+
+#x_saveSessionBtn:after {
+  content: "\f0c7";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900; }
 
 #x_footerBlock button {
   color: #ffffff; }

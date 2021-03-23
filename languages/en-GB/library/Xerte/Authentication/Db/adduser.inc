@@ -15,4 +15,3 @@ define("AUTH_DB_ADDUSER_PASSWORDTOOSHORT", "Password needs to be at least 5 char
 define("AUTH_DB_ADDUSER_FAILED", "Failed to add user:");
 define("AUTH_DB_ADDUSER_SUCCEEDED", "User added successfully");
 
-?>

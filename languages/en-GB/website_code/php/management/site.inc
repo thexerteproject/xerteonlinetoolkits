@@ -198,4 +198,3 @@ define("LTI_KEYS_ADD_SUBMIT","Add New LTI Key");
 define("LTI_KEYS_EDIT_SUBMIT","Save LTI Key");
 define("LTI_KEYS_DELETE_SUBMIT","Delete LTI Key");
 
-?>

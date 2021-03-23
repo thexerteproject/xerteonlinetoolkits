@@ -105,7 +105,7 @@ _load_language_file("/properties.inc");
         
         -->
 
-        <iframe id="upload_iframe" name="upload_iframe" src="#" style="width:0px;height:0px; display:none"></iframe>
+        <iframe id="upload_iframe" name="upload_iframe" src="" style="width:0px;height:0px; display:none"></iframe>
         <iframe id="download_frame" style="display:none"></iframe>
 
         <div class="properties_main">
@@ -284,7 +284,7 @@ if (in_array("give", $template_supports)) {
                             </div>						
                             <!-- 
 
-                                            Last spacer given sufficient heigbt to fill the rest of the border for the right hand panel	
+                                            Last spacer given sufficient height to fill the rest of the border for the right hand panel	
 
                             -->
                             <?PHP

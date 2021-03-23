@@ -182,12 +182,12 @@ button.ui-button-icon-only {
 	 float:		none;
  }
 
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home {
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home, .ui-icon.x_saveSession {
 	height:					40px;
 	background-position:	center;
 }
 
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home {
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home, .ui-icon.x_saveSession {
 	width:	41px;
 }
 
@@ -256,14 +256,14 @@ button.ui-button-icon-only {
 
 /* GLOSSARY */
 
-a.x_glossary {
+span.x_glossary {
 	font-weight:		bold;
 	text-decoration:	none;
 	color:				#010101;
 	border-bottom:		1px dotted;
 }
 
-a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
+span.x_glossary:link, span.x_glossary:visited, span.x_glossary:hover, span.x_glossary:active {
 	color:	#010101;
 }
 
@@ -632,4 +632,8 @@ textarea {
 
 .lightBoxCaption {
 	margin: 5px 0;
+}
+/*#pageContents and #adaptiveContentMain not usually an actionable item so hide focus border*/
+#pageContents:focus,#adaptiveContentMain:focus{
+	outline:none;
 }

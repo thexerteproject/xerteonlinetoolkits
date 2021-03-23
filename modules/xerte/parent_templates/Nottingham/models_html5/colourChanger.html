@@ -44,7 +44,21 @@
 		this.init = function() {
 			// get language strings
 			$("#p1").html(x_getLangInfo(x_languageData.find("colourChanger").find("selectTxt")[0], "label", "Please select from the options below") + ":");
-			$("#p2").html(x_getLangInfo(x_languageData.find("colourChanger").find("adviceTxt")[0], "label", "Need more advice? Visit the <a target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=151'>Xerte Online Toolkits guide to accessibility</a>.")+' <a target=\'_blank\' href=\'https://xot.xerte.org.uk/play.php?template_id=214#home\'><img class="wcagLogo" src="'+ x_templateLocation + 'common_html5/wcag2.1AA-blue-v.png" alt="'+x_getLangInfo(x_languageData.find("colourChanger").find("wcagLogo")[0], "label", "WCAG WAI-AA logo and link to Xerte accessibility statement")+'" title="'+x_getLangInfo(x_languageData.find("colourChanger").find("wcagTxt")[0], "label", "View the Xerte accessibility statement")+'"> </a>');
+			$("#p2").html(x_getLangInfo(x_languageData.find("colourChanger").find("adviceTxt")[0], "label", "Need more advice? Visit the <a target='_blank' href='https://xot.xerte.org.uk/play.php?template_id=151'>Xerte Online Toolkits guide to accessibility</a>.")+' <a class=\'wcagLink\' target=\'_blank\' href=\'https://xot.xerte.org.uk/play.php?template_id=214#home\'><img class="wcagLogo" src="'+ x_templateLocation + 'common_html5/wcag2.1AA-blue-v.png" alt="'+x_getLangInfo(x_languageData.find("colourChanger").find("wcagLogo")[0], "label", "WCAG WAI-AA logo and link to Xerte accessibility statement")+'" title="'+x_getLangInfo(x_languageData.find("colourChanger").find("wcagTxt")[0], "label", "View the Xerte accessibility statement")+'"> </a>');
+
+			//populate wcag logo and link and/or hide it from wizard values
+			if (x_params.wcagAlt != undefined){
+				$(".wcagLogo").attr("alt",x_params.wcagAlt);
+			}
+			if (x_params.wcagLinkTitle != undefined){
+				$(".wcagLogo").attr("title",x_params.wcagLinkTitle);
+			}
+			if (x_params.wcagLink != undefined && x_params.wcagLink != ""){
+				$(".wcagLink").prop("href",x_params.wcagLink);
+			}
+			if (x_params.wcagHide != undefined && x_params.wcagHide == 'true'){
+				$('.wcagLink').remove();
+			}
 
 			var styles = [];
 

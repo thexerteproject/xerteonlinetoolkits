@@ -12,4 +12,3 @@ define("DELETE_LANGUAGE_FAILED", "Deletion of fanguage definition failed:\n");
 define("DELETE_LANGUAGE_WRITABLE", " needs to be writeable. Cannot perform installation");
 define("DELETE_LANGUAGE_INVALIDCODE", " No valid language code given!");
 define("DELETE_LANGUAGE_UNABLE_TO_DELETE", " Unable to delete ");
-?>

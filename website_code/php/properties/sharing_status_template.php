@@ -128,6 +128,11 @@ foreach($query_sharing_rows as $row) {
         }
 
     }
+    else
+    {
+        echo "<p class=\"share_files_paragraph\">" . SHARING_CREATOR . "</p>";
+        echo "<p class=\"share_border\"></p>";
+    }
 
 }
 

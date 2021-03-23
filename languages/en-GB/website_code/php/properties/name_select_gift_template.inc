@@ -16,4 +16,3 @@
 
 	define("NAME_SELECT_GIFT_FIND_FAIL","No one found with those details");
 
-?>

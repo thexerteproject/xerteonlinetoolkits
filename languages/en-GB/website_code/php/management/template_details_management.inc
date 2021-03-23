@@ -13,4 +13,3 @@
 	define("TEMPLATE_CHANGE_SUCCESS", "Template changes made");
 	define("TEMPLATE_CHANGE_FAIL", "Template changes failed");
 
-?>

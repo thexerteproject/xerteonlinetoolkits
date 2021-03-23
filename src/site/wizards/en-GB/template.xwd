@@ -30,7 +30,9 @@
 			<headerColour type="ColourPicker" optional="true" label="Background Colour"/>
 			<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
 			<logoR type="Media" optional="true" label="Logo (Right)"/>
+			<logoRAlt label="Logo Right Alt text" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true" mandatory="true"/>
 			<logoL type="Media" optional="true" label="Logo (Left)"/>
+			<logoLAlt label="Logo Left Alt text" type="TextInput" defaultValue="Enter a Description for Accessibility" optional="true" mandatory="true"/>
 			<logoRHide label="Hide Default Logo (Right)" type="Checkbox" defaultValue="false" optional="true"/>
 			<logoLHide label="Hide Default Logo (Left)" type="Checkbox" defaultValue="false" optional="true"/>
             <headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
@@ -62,6 +64,13 @@
 			<footerPos type="ComboBox" data="above,below,replace" options="Above Social Icons,Below Social Icons,Replace Social Icons" optional="true" label="Custom Footer Position" defaultValue="above" width="175"/>
             <footerColour type="ColourPicker" optional="true" label="Footer Background Colour"/>
 		</footerGroup>
+
+		<wcagGroup type="group" label="Accessilibity logo and link" optional="true" tooltip="Hide the accessilibity logo and link or change the link.">
+                    <wcagHide label="Hide the Accessibility logo and link" type="Checkbox" conditionTrigger="true" defaultValue="false" optional="true"/>
+        			<wcagAlt label="Accessilibity logo alt text" type="TextInput" defaultValue="WCAG WAI-AA logo" condition="wcagHide=='false'" optional="true"/>
+        			<wcagLinkTitle label="Link tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="wcagHide=='false'" optional="true"/>
+                    <wcagLink type="Media" label="Accessibility statement link" tooltip="Add a url or browse to a file to link to your own accessibility statement. Leave empty to link to the accessibility statement on xerte.org.uk." condition="wcagHide=='false'" optional="true"/>
+        		</wcagGroup>
 		
 		<print type="CheckBox" label="Print Button" defaultValue="true" optional="true" tooltip="Add a print button to the navigation bar. Pages can still be printed via browser controls if button is not added"/>
 		<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
@@ -81,6 +90,8 @@
 		<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/156-fay-Nottingham/media/Variables_Documentation.pdf' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for help creating and using variables">
 			<variables optional="true" label="Variable Data" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
 		</varGroup>
+		
+		<globalVars type="CheckBox" label="Surface Global Variables" defaultValue="true" optional="true" tooltip="Allow the surfacing of global variables using the format {variableName}"/>
 		
 		<newNodes>
 		<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page></newNodes>

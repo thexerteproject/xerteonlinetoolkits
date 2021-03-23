@@ -13,4 +13,3 @@
 
 	define("SHARED_TEMPLATE_CREATOR", "creator");
 	
-?>
