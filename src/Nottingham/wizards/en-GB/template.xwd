@@ -128,7 +128,7 @@
 	  />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong."/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
-	  />]]></hangman><hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title"  panelWidth = "Medium" generalFeedback="Enter a feedback" text="Enter Instructions" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
+	  />]]></hangman><hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter a feedback" text="Enter Instructions" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
   	  warning="You have not selected anything"
 	  scoreTxt="You have /r answer(s) right and /w wrong"
 	  again="Try again, you have /a attempt(s) left"
@@ -2766,7 +2766,8 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="250"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+	<textWidth label="Min Text Width" options="No Text,Small,Medium,Large" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200"/>
+
 
 	<image type="group" label="Image">
 		<url label="File" type="media"/>

@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title"  panelWidth = "Medium" generalFeedback="Enter a feedback" text="Enter Instructions" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
+      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter a feedback" text="Enter Instructions" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
   	  warning="You have not selected anything"
 	  scoreTxt="You have /r answer(s) right and /w wrong"
 	  again="Try again, you have /a attempt(s) left"
@@ -15,7 +15,8 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="250"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+	<textWidth label="Min Text Width" options="No Text,Small,Medium,Large" type="ComboBox"  data="none,narrow,wide,max" defaultValue="narrow" width="200"/>
+
 
 	<image type="group" label="Image">
 		<url label="File" type="media"/>

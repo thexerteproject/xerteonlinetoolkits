@@ -69,11 +69,6 @@
 		//
 		// };
 			this.sizeChanged = function () {
-				if (x_browserInfo.mobile == false) {
-
-					var $panel = $("#pageContents .panel");
-					$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				}
 
 				if ($("#pageContents .audioHolder").length > 0) {
 					var audioBarW = 0;
@@ -94,64 +89,70 @@
 			}
 			XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
 
-
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
-					$splitScreen = $("#pageContents .splitScreen");
+			debugger
 			var $textHolder = $("#pageText");
-
-			if (panelWidth === "Full") {
-				$("#pageContents .panel").appendTo($("#pageContents"));
-				$splitScreen.remove();
+			if (x_currentPageXML.getAttribute("textWidth") == "none") {
+				$textHolder.remove();
+				$("#pageContents").css("text-align", "center");
+				// Remove panel
+				//$("#panel").removeClass("inline");
+				$("#panel").removeClass("panel");
 			} else {
 				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
-				var textAlign = x_currentPageXML.getAttribute("align");
-				if (textAlign !== "Right") {
-					if (panelWidth === "Small") {
-						$splitScreen.addClass("large");
-					} else if (panelWidth === "Large") {
-						$splitScreen.addClass("small");
-					} else {
-						$splitScreen.addClass("medium");
-					}
+				if (x_currentPageXML.getAttribute("align") == "Right") {
+					$("#panel").addClass("left");
 				} else {
-					$textHolder
-							.removeClass("left")
-							.addClass("right")
-							.appendTo($splitScreen);
-					$("#infoHolder")
-							.removeClass("right")
-							.addClass("left");
-					if (panelWidth === "Small") {
-						$splitScreen.addClass("medium");
-						$textHolder.addClass("paddingLeft")
-					} else if (panelWidth === "Large") {
-						$splitScreen.addClass("xlarge");
-						$textHolder.addClass("paddingLeft")
-					} else {
-						$splitScreen.addClass("large");
-						$textHolder.addClass("paddingLeft")
-					}
+					$("#panel").addClass("right");
 				}
 			}
 
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
+			// var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
+			// 		$splitScreen = $("#pageContents .splitScreen");
+			// var $textHolder = $("#pageText");
+			//
+			// if (panelWidth === "Full") {
+			// 	$("#pageContents .panel").appendTo($("#pageContents"));
+			// 	$splitScreen.remove();
+			// } else {
+			// 	$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			//
+			// 	var textAlign = x_currentPageXML.getAttribute("align");
+			// 	if (textAlign !== "Right") {
+			// 		if (panelWidth === "Small") {
+			// 			$splitScreen.addClass("large");
+			// 		} else if (panelWidth === "Large") {
+			// 			$splitScreen.addClass("small");
+			// 		} else {
+			// 			$splitScreen.addClass("medium");
+			// 		}
+			// 	} else {
+			// 		$textHolder
+			// 				.removeClass("left")
+			// 				.addClass("right")
+			// 				.appendTo($splitScreen);
+			// 		$("#infoHolder")
+			// 				.removeClass("right")
+			// 				.addClass("left");
+			// 		if (panelWidth === "Small") {
+			// 			$splitScreen.addClass("medium");
+			// 			$textHolder.addClass("paddingLeft")
+			// 		} else if (panelWidth === "Large") {
+			// 			$splitScreen.addClass("xlarge");
+			// 			$textHolder.addClass("paddingLeft")
+			// 		} else {
+			// 			$splitScreen.addClass("large");
+			// 			$textHolder.addClass("paddingLeft")
+			// 		}
+			// 	}
+			// }
+
 
 		    x_currentPageXML.childNodes.forEach(function () {
 				hits.push(false);
 				counter.push(0);
             });
 			$img = $("#image");
-
-
-            if (x_currentPageXML.getAttribute("align") == "Right") {
-				$("#panel").addClass("left");
-			} else {
-				$("#panel").addClass("right");
-			}
 
 
 			$img
@@ -320,7 +321,7 @@
 		};
 
 		this.resizeImg = function(firstLoad) {
-
+			debugger
 			var imgMaxW, imgMaxH;
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				imgMaxW = Math.round($x_pageHolder.width() - 30);
@@ -338,11 +339,14 @@
 			}
 			$img.mapster('unbind');
 
-			if(imgMaxW > imgMaxH){
-				var percentage = imgMaxW/imgMaxH
-				imgMaxW = imgMaxW/percentage
-			}
+
+			// if(imgMaxW > imgMaxH){
+			// 	var percentage = imgMaxW/imgMaxH
+			// 	imgMaxW = imgMaxW/percentage
+			// }
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
+
+			debugger
 
 			$img.css({
 				"opacity"	:1,
@@ -350,13 +354,12 @@
 				"max-height" : imgMaxH-50,
 				"max-width"	:imgMaxW-50
 			});
-
-
-			if($img.width() > $img.height()){
-				$('.x_noLightBox').css("width", "100%")
-			}else{
-				$('.mapster_wrap_1').css("margin", "auto")
-			}
+			//
+			// if($img.width() > $img.height()){
+			// 	$('.x_noLightBox').css("width", "100%")
+			// }else{
+			// 	$('.mapster_wrap_0').css("margin", "auto")
+			// }
 
 			this.createHS();
 		};
@@ -590,7 +593,6 @@
 
 
 <div id="pageContents">
-<div class="splitScreen">
 	<div id="textHolder" class="left">
 		<p id="pageText"></p>
 	</div>
@@ -626,5 +628,4 @@
 	</div>
 		</fieldset>
 	</div>
-</div>
 </div>
