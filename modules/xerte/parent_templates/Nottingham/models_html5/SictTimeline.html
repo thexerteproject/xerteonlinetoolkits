@@ -184,12 +184,11 @@
 					}
 					$('.tl-media-content').unwrap();
 					if(imgPath !== "" && !youtube){
-						debugger
 						$('.tl-media-content').wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
 					}
-					var margT = $('.tl-media-item ')[counter].outerWidth(true) - $('.tl-media-item ')[counter].outerWidth();
-					$('.tl-caption').css("marginLeft", margT/2)
-					$('.tl-caption').css("width", margT/2)
+					// var margT = $('.tl-media-item ')[counter].outerWidth(true) - $('.tl-media-item ')[counter].outerWidth();
+					// $('.tl-caption').css("marginLeft", margT/2)
+					// $('.tl-caption').css("width", margT/2)
 
 					SictTimeline.resizeImg();
 
@@ -264,7 +263,6 @@
 
 		this.resizeImg = function() {
 			var imgMaxW, imgMaxH;
-
 			var pageHeight = $x_pageHolder.height()
 			var pageWidth = $x_pageHolder.width()
 			var pageMarginRight = $x_mainHolder.css("marginRight")
@@ -300,7 +298,7 @@
 			var normal;
 			var small;
 			var arrow;
-			debugger
+
 			img = document.getElementsByClassName("tl-media-item")
 
 			big = imgMaxH*0.7
@@ -350,7 +348,7 @@
 
 			var margT = $('.tl-media-item ').outerWidth(true) - $('.tl-media-item ').outerWidth();
 			$('.tl-caption').css("marginLeft", margT/2)
-			$('.tl-caption').css("width", margT/2)
+			$('.tl-caption').css("width", margT)
 
 			var heightTimeLine = $('.tl-timenav').height()
 			heightTimeLine= heightTimeLine/3
