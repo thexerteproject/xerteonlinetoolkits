@@ -55,6 +55,12 @@ if (!isset($_SESSION['toolkits_logon_username']))
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
 }
+if (strpos($_POST['mediapath'], 'USER-FILES') === false)
+{
+    // Invalid upload path
+    _debug("Invalid or illegal mediapath");
+    die("Invalid or illegal mediapath");
+}
 
 _load_language_file("/website_code/php/import/fileupload.inc");
 
