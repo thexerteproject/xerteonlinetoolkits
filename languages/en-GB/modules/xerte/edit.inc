@@ -15,4 +15,3 @@
 	
 	define("XERTE_EDIT_MAXIMISE", "Maximise Window Size");
 	
-?>

@@ -84,7 +84,8 @@
   color: #2F3131; }
 
 #pageContents.button button.selected {
-  background-color: #F8F1E5; }
+  background-color: #2F3131;
+  color: #ffffff; }
 
 #pageContents.slide #btnHolder button {
   background: #426E86;
@@ -254,8 +255,17 @@ a.hotspot, a.hotspot.selected {
   background: #2F3131;
   color: #ffffff !important; }
 
-table.header.shaded tr:first-child {
+.x_grid_page table.header.shaded tr:first-child {
   background: #2F3131; }
+
+.x_grid_page table.full td {
+  border: none; }
+
+.x_grid_page table {
+  background: none !important; }
+
+.x_grid_page .ui-state-default.header.static {
+  background: black !important; }
 
 #grid ul li {
   color: #2F3131;
@@ -273,7 +283,14 @@ table tr.shaded {
 
 tr {
   background: #F9BA32;
-  color: #ffffff; }
+  color: #2F3131; }
+
+table.glossary tr {
+  background: #F8F1E5; }
+
+table.glossary tr.shaded {
+  background: #dfeaf1;
+  color: #2F3131; }
 
 #grid ul li.static {
   background: none;
@@ -445,6 +462,11 @@ tr.alt td {
 
 #x_menuBtn:after {
   content: "\f0c9"; }
+
+#x_saveSessionBtn:after {
+  content: "\f0c7";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900; }
 
 #x_footerBlock button {
   color: #ffffff; }

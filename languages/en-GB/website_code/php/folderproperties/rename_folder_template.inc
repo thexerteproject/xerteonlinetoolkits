@@ -13,4 +13,3 @@
 
 	define("FOLDER_RENAMED","Folder renamed");
 
-?>

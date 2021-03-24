@@ -66,9 +66,6 @@
 					$paneHolder.height($infoHolder.height() - $("#tabHolder").outerHeight());
 					$paneHolder.find(".navChild").height($paneHolder.height() - parseInt($paneHolder.find(".navChild").css("padding-top")) * 2);
 					
-					// forces tabindexes to be different to jquery ui default so it's consistent with controls on other page types
-					$infoHolder.find(".navChildTitle").attr("tabindex", 0);
-					
 				} else {
 					var $panel = $("#navHolder .panel").length > 0 ? $("#navHolder .panel") : $("#pageContents > div.panel");
 					$("#infoHolder").height($x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - $("#btnHolder").outerHeight(true) - (parseInt($panel.css("padding-top")) * 2) - 5);
@@ -225,7 +222,7 @@
 					
 					$(x_currentPageXML).children().each(function(i) {
 						$tabHolder.append('<li class="navChildTitle"><a id="navChildTitle' + i + '" href="#navChild' + i + '"></a></li>');
-						$paneHolder.append('<div id="navChild' + i + '" class="navChild"/>');
+						$paneHolder.append('<div id="navChild' + i + '" class="navChild" tabindex="0"/>');
 					});
 				}
 				
@@ -352,7 +349,7 @@
 						.attr("aria-label", this.getAttribute("name") + (i != 0 ? " " + $pageContents.data("clickTxt") : ""));
 					
 				} else if (x_currentPageXML.getAttribute("type") == "Tab") {
-					$("#navChildTitle" + i).parent('.navChildTitle').attr("aria-hidden", "true");
+					$("#navChildTitle" + i).parent('.navChildTitle').attr("aria-hidden", "false");
 					
 				} else if (x_currentPageXML.getAttribute("type") == "Button") {
 					$("#navChildTitle" + i)
@@ -463,8 +460,6 @@
 					activate: function(e, ui) {
 						ui.newPanel.find('.navMedia.audio .mejs-inner').show();
 						nav.resizeMedia();
-						
-						$("#infoHolder").find(".navChildTitle").attr("tabindex", 0);
 						ui.newPanel.scrollTop(0);
 					},
 					beforeActivate: function(e, ui) {

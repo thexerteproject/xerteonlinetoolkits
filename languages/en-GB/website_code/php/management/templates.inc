@@ -80,5 +80,3 @@
 
     define("NOTTINGHAM_TEMPLATES", "<h2>Nottingham templates:</h2>");
 
-
-?>

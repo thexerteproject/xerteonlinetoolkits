@@ -19,4 +19,3 @@
 	
 	define("RSS_WORKSPACE_OFF", "Off");
 	
-?>

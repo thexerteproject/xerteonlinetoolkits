@@ -203,6 +203,14 @@ if ($fullArchive) {
                 array_push($file_array, array($parent_template_path . "models_html5/glossary.css", ""));
                 $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_glossary.js\"></script>\n";
             }
+            create_offline_file("modelfilestrs['saveSession']", $parent_template_path . "models_html5/saveSession.html", "offline/offline_saveSession.js");
+            array_push($file_array, array($parent_template_path . "models_html5/saveSession.css", ""));
+            $offline_includes .= "   <!-- Offline dialogs -->\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_saveSession.js\"></script>\n";
+            create_offline_file("modelfilestrs['resumeSession']", $parent_template_path . "models_html5/resumeSession.html", "offline/offline_resumeSession.js");
+            array_push($file_array, array($parent_template_path . "models_html5/resumeSession.css", ""));
+            $offline_includes .= "   <!-- Offline dialogs -->\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_resumeSession.js\"></script>\n";
             $offline_includes .= "\n";
 
             // Offline models
@@ -256,6 +264,14 @@ if ($fullArchive) {
                 array_push($file_array, array($parent_template_path . "models_html5/glossary.html", ""));
                 array_push($file_array, array($parent_template_path . "models_html5/glossary.css", ""));
             }
+            /* Always add saveSession.html */
+            _debug("copy model " . $parent_template_path . "models_html5/saveSession.html");
+            array_push($file_array, array($parent_template_path . "models_html5/saveSession.html", ""));
+            array_push($file_array, array($parent_template_path . "models_html5/saveSession.css", ""));
+            /* Always add resumeSession.html */
+            _debug("copy model " . $parent_template_path . "models_html5/resumeSession.html");
+            array_push($file_array, array($parent_template_path . "models_html5/resumeSession.html", ""));
+            array_push($file_array, array($parent_template_path . "models_html5/resumeSession.css", ""));
         }
         export_folder_loop($parent_template_path . "common_html5/");
         copy_parent_files();

@@ -13,4 +13,3 @@
 
 	define("UPDATE_SUCCESS", "Your project has been updated");
 
-?>

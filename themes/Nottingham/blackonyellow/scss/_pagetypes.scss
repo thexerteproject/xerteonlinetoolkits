@@ -8,6 +8,9 @@
 table.glossary tr {
   background: darken($lightestcolor, 10%);
 }
+table.glossary tr.shaded {
+  background: darken($lightestcolor, 5%);
+}
 //***********************************Media*************************************
 //default highlight if not overriden
 .highlight {
@@ -334,8 +337,11 @@ a.hotspot, a.hotspot.selected {
   border-radius: $smallroundedcorners;
 }
 .x_grid_page #grid ul li.header {
-  background:$blackordarkest;
+  background:$blackordarkest !important;
   color:$lightestcolor !important;
+}
+.x_grid_page table.header.shaded tr:first-child {
+  background: $blackordarkest;
 }
 .x_grid_page table.simple {
   border: transparent;

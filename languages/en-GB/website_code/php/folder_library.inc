@@ -15,5 +15,3 @@
 
 	define("FOLDER_LIBRARY_FAIL", "Error creating folder");
 
-
-?>

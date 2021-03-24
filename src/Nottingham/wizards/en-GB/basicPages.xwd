@@ -11,6 +11,7 @@
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns>
 	
 	<hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
@@ -23,9 +24,9 @@
 	
 	<linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links">
 		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="same" optional="true" tooltip="Determines how links to this page are opened"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup>
 	
@@ -57,7 +58,7 @@
 	
 	<pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero">
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
-		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true" />
 		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
 	</pageTimer>
 	

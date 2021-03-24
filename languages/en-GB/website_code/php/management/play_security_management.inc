@@ -15,4 +15,3 @@
 
 	define("MANAGEMENT_PLAY_FAIL", "Update failed");
 
-?>

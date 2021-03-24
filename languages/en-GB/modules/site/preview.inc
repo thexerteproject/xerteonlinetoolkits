@@ -13,4 +13,3 @@
 
 	define("SITE_PREVIEW_TITLE", "Interactive Learning Object");
 	
-?>

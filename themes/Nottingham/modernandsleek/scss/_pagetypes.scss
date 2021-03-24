@@ -7,7 +7,7 @@
 }
 
 a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
-  color: $lightestcolor;
+  color: $darkestcolor;
 }
 //***********************************Media*************************************
 //default highlight if not overriden
@@ -313,6 +313,7 @@ a.hotspot, a.hotspot.selected {
   border-color: transparent;
   color:$darkestcolor !important;
 }
+
 //font colour of the header only
 .x_grid_page #grid ul li.header {
   color: $whiteorlightest !important;
@@ -321,9 +322,13 @@ a.hotspot, a.hotspot.selected {
 .x_grid_page table.header.shaded tr:first-child {
   background: #000000;
 }
+.x_grid_page .ui-state-default.header.static{
+  background:black !important;
+}
 //default background of table rows
 .x_grid_page table tr{
   background: $brightcolor;
+  color:red !important;
 }
 //background of shaded/alternate rows
 .x_grid_page tr.shaded {

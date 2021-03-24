@@ -31,7 +31,7 @@
 			if (x_params.pageTick == undefined || x_params.pageTick == "true") {
 				$("#menuItems .menuItem").each(function(i) {
 					var tempIndex = x_normalPages[i+1];
-					if (x_pageInfo[tempIndex].built) $(this).find('i').removeClass('notvisited');
+					if (x_pageInfo[tempIndex].viewed) $(this).find('i').removeClass('notvisited');
 				});
 			}
 		}
@@ -139,7 +139,7 @@
 			if (x_params.pageTick == undefined || x_params.pageTick == "true") {
 				$("#menuItems .menuItem").each(function(i) {
 					var tempIndex = x_normalPages[i];
-					if (x_pageInfo[tempIndex].built) $(this).find('i').removeClass('notvisited');
+					if (x_pageInfo[tempIndex].viewed) $(this).find('i').removeClass('notvisited');
 				});
 			}
 		}
