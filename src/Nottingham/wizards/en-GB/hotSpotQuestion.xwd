@@ -1,20 +1,22 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="hotSpotQuestion"  panelWidth = "Medium" generalFeedback="Algemene feedback" text="Pagina met fotos waar je om moet kliken en score bijkomt" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
-  	  nextTxt="Next"
-	  priorTxt="Previous"
+      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter a feedback" text="Enter Instructions" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
+  	  warning="You have not selected anything"
+	  scoreTxt="You have /r answer(s) right and /w wrong"
+	  again="Try again, you have /a attempt(s) left"
 	  />]]></hotSpotQuestion>
     </newNodes>
   </pageWizard>
 
   <!-- HOTSPOT IMAGE INTERACTION============================= -->
-  <hotSpotQuestion menu="Interactivity" menuItem="Hotspot Question" hint="Een test hotspot van Summa" icon="icHotspot"  thumb="thumbs/hotspotImage.jpg" remove="true">
+  <hotSpotQuestion menu="Interactivity" menuItem="Hotspot Question" hint="Mark a certain area of an image. When creating the question, you can specify what area of the picture acts as the answer and customize its size." icon="icHotspotQuestion"  thumb="thumbs/hotspotQuestion.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="250"/>
+    <text label="Instructions" type="TextArea" height="250"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+	<textWidth label="Min Text Width" options="No Text,Small,Medium,Large" type="ComboBox"  data="none,narrow,wide,max" defaultValue="narrow" width="200"/>
+
 
 	<image type="group" label="Image">
 		<url label="File" type="media"/>
@@ -33,9 +35,12 @@
 	</hsAppearance>
     <attempts label="Amount of attempts" type="TextInput" defaultValue="1"></attempts>
     <generalFeedback label="General Feedback" type="TextArea" wysiwyg="true" DefaultValue="true"/>
+    <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
 
-    <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
+    <scoreTxt label="Score Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/r (right) and /w (wrong) are where the score are placed "/>
+    <warning label="Warning Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+    <again label="Try again Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/a is where the attempts will be placed "/>
+
 
     <newNodes>
 	  <QHotSpot><![CDATA[<QHotSpot name="Hotspot" Feedback="Feedback for the hotspot" x="0" y="0" w="100" h="100" truth="false"/>]]></QHotSpot>

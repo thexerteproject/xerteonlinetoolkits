@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wizard menus="xAPI">
+<wizard menus="Tracking / xAPI">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction="Enter introduction text here"></adaptiveContent>]]></adaptiveContent>
       </newNodes>
     </pageWizard>
     <!-- Adaptive Content =============================================== -->
-    <adaptiveContent menu="xAPI" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icAdaptiveContent" thumb="thumbs/adaptiveContent.jpg" remove="true">
+    <adaptiveContent menu="Tracking / xAPI" menuItem="Adaptive Content" hint="A page where you can import xerte result data from an xAPI LRS to present adaptive contant based on the scores of previously executed content" icon="icAdaptiveContent" thumb="thumbs/adaptiveContent.jpg" remove="true">
       <name label="Page Title" type="TextInput" wysiwyg="true" />
       <introduction label="Introduction" type="textArea"  height="120"/>
       <displayMode label="Display Mode" conditionTrigger='true' optional="true" type="combobox" options="Unlisted,Listed" data="Unlisted,Listed" defaultValue="Unlisted" />
@@ -51,7 +51,7 @@
         <xertelo label="ID of Xerte learning object" type="xertelo" mandatory="true" defaultValue="" />
         <label label="Tracking Label of source" type="TextInput" condition="interactionType!='grouping'" wysiwyg="false" />
         <grouping label="Grouping equals" type="Grouping" mandatory="true" defaultValue="" condition="interactionType=='grouping'" tooltip="Choose the grouping to extract the score from. More than one score can be part of the same grouping, and then the average score is used" />
-        <opinionClass label="Opinion Class" type="TextInput" condition="interactionType=='opinion'" wysiwyg="false" optional="true" defaultValue="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interactiontype is based on 2D opinion" />
+        <opinionClass label="Opinion Class" type="TextInput" condition="interactionType=='score'" wysiwyg="false" optional="true" defaultValue="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interactiontype is based on score and the score comes from an opinion class" />
         <graph type="group" label="Graph" condition="interactionType!='open'" optional="true">
           <graph label="Show graph" type="checkbox" defaultValue="false" optional="true"/>
           <graphType label="Graph type" type="combobox" condition="interactionType!='opinion'||opinionClass!=null" data="bar_answers,bar_marks,bar_comb_marks,pie_marks,line_own_marks,line_average_marks" options="Bar graph for given answers,Bar graph for received marks,Bar graph for combined received marks,Pie chart for received marks,Line graph for own received marks,Line graph for average marks of others" defaultValue="bar_answers" optional="true" />

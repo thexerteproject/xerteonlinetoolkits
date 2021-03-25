@@ -27,9 +27,10 @@
 			qNoTxt,
 			myProgress,
             resultsShown = false,
-			tracked = false;
+			tracked = false,
+			questionFeedbackText;
 
-		// function called every time the page is viewed after it has initially loaded
+			// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			if ($(x_currentPageXML).children().length > 0) {
 				this.startQs();
@@ -152,6 +153,7 @@
 				$("#optionHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noQ", "No questions have been added") + '</span>');
 				
 			} else {
+
 				var $thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
 
 				$("#qNo").html(this.qNoTxt.replace("{i}", this.currentQ + 1).replace("{n}", this.questions.length));
@@ -181,7 +183,8 @@
 				//}
 
 				$("#feedback").html("");
-				
+				$("#generalFeedback").html("");
+
 				if ($($thisQ).children().length == 0) {
 					$("#optionHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
 				} else {
@@ -301,6 +304,7 @@
 
         this.showFeedBackandTrackResults = function()
         {
+
             this.tracked = true;
 
             var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
@@ -314,7 +318,9 @@
 
             var generalFeedback = "";
             var correctCounter = 0;
+
             var thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
+			questionFeedbackText = thisQ.getAttribute('generalFeedback')
             var currentQuestionsChildren = $($(x_currentPageXML).children()[this.questions[this.currentQ]]).children();
             for(i = 0; i < currentQuestionsChildren.length; i++)
            	{
@@ -410,6 +416,15 @@
 							width	:"100%"
 						});
 					});
+
+                if(questionFeedbackText !== null){
+                	if(questionFeedbackText !== ""){
+						var questionFeedback = "<h3>" + $("#pageContents").data("generalFeedbackLabel") + "</h3>" + questionFeedbackText
+						$('#generalFeedback').html(questionFeedback)
+					}
+
+				}
+
 
                 //if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
                 //    $("#feedback").find("a.x_glossary").contents().unwrap();
@@ -602,15 +617,20 @@
             if (feedbackLabel == undefined) {
                 feedbackLabel = "Feedback";
             }
+			var generalFeedbackLabel = x_currentPageXML.getAttribute("generalFeedbackLabel");
+			if (generalFeedbackLabel == undefined) {
+				generalFeedbackLabel = "General Feedback";
+			}
 
             $("#pageContents").data({
-				"feedbackLabel"		:feedbackLabel,
-				"singleRight"		:singleRight,
-				"singleWrong"		:singleWrong,
-				"multiRight"		:multiRight,
-				"multiWrong"		:multiWrong,
-				"onCompletionText"	:onCompletionText,
-				"scoreText"			:scoreText
+				"feedbackLabel"			:feedbackLabel,
+				"generalFeedbackLabel"	:generalFeedbackLabel,
+				"singleRight"			:singleRight,
+				"singleWrong"			:singleWrong,
+				"multiRight"			:multiRight,
+				"multiWrong"			:multiWrong,
+				"onCompletionText"		:onCompletionText,
+				"scoreText"				:scoreText
 			});
 
 			$("#checkBtn")
@@ -694,7 +714,7 @@
 						<button id="nextBtn"></button>
 						<button id="restartBtn"></button>
 					</div>
-					
+					<div id="generalFeedback" aria-live="polite"></div>
 					<div id="feedback" aria-live="polite"></div>
 					
 				</fieldset>

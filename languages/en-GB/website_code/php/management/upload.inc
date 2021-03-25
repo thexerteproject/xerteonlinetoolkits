@@ -29,4 +29,3 @@
     define("TEMPLATE_UPLOAD_CANT_UPLOAD_PARENT", "Parent templates cannot be overwritten, choose a different sub-template name!");
 
     define("TEMPLATE_UPLOAD_NO_FILE_SELECTED", "There is no file selected!");
-?>

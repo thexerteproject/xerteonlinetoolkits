@@ -55,6 +55,17 @@ if (!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
     exit(0);
 }
 
+function xmlRemoveNamespace($xml)
+{
+    // Gets rid of all namespace definitions
+    $xml_string = preg_replace('/xmlns[^=]*="[^"]*"/i', '', $xml);
+
+    // Gets rid of all namespace references
+    $xml_string = preg_replace('/(<\/|<)[a-zA-Z]+:([a-zA-Z0-9]+[ =>])/', '$1$2', $xml_string);
+
+    return $xml_string;
+}
+
 //Decrypt Function
 function decrypt($decrypt) {
     global $pedit_config;
@@ -118,10 +129,52 @@ if (is_numeric($id))
         $xerte_toolkits_site->lti_user->email = (string)$members[0]['emailAddressPrivate'];
         $xerte_toolkits_site->lti_user->displayname = $xerte_toolkits_site->lti_user->first_name . ' ' . $xerte_toolkits_site->lti_user->last_name;
 
+        // Get goup information
+        $soapresult = $client->GetPageInformation(array(
+            'sKey' => $pedit_config->soapKey,
+            'iPageID' => $params['pageid']
+        ));
+        _debug("Page information is (" . $params['pageid'] . "): " . print_r($soapresult, true));
+        $pageinfoxml = xmlRemoveNamespace($soapresult->GetPageInformationResult);
+        $pageinfo = simplexml_load_string($pageinfoxml);
+
+        $classinfopart = $pageinfo->xpath('/*/DSPartContentFull[Class]');
+        if (count($classinfopart)) {
+            $classinfo=$classinfopart[0]->Class;
+            $keywords = $classinfopart[0]->keywords;
+            $metadata = (string)$classinfo[0]['ingress'];
+            if (trim($metadata) != "") {
+                $pos = strpos($metadata, '(');
+                if ($pos !== false) {
+                    $metadata_groep = substr($metadata, 0, $pos);
+                    $metadata_groep = trim($metadata_groep);
+                } else {
+                    $metadata_groep = trim($metadata);
+                }
+                $xerte_toolkits_site->group = $metadata_groep;
+                $groupssource = "metadata " . $metadata;
+            }
+            for($k=0; $k<count($keywords); $k++)
+            {
+                $keywordxml = $keywords[$k];
+                $keyword = (string)$keywordxml->keyword;
+                if (stripos($keyword, 'groep=') !== false)
+                {
+                    $groeparr = explode('=', $keyword);
+                    if (count($groeparr) == 2)
+                    {
+                        $xerte_toolkits_site->group = $groeparr[1];
+                        $groupssource = "keyword " . $keyword;
+                    }
+                }
+            }
+            if (isset($xerte_toolkits_site->group))
+                _debug("groupsinformation is set to " . $xerte_toolkits_site->group . " based on " . $groupssource);
+        }
     }
     $pedit_enabled = true;
     $tsugi_enabled = true;
-    if (isset($_REQUEST['group']))
+    if (isset($_REQUEST['group']) && !isset($xerte_toolkits_site->group))
     {
         $xerte_toolkits_site->group = $_REQUEST{'group'};
     }

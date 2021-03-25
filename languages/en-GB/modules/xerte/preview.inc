@@ -13,4 +13,3 @@
 
 	define("XERTE_PREVIEW_TITLE", "Interactive Learning Object");
 	
-?>

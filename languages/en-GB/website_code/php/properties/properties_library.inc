@@ -270,5 +270,5 @@
 	define("PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL", "Your launch url is:");
 
 
-?>
+
 

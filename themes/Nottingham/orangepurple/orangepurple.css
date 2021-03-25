@@ -113,6 +113,10 @@ h3 {
 .ui-button.ui-state-focus .ui-icon.x_colourChanger {	background-position: -42px 0px; }
 .ui-button.ui-state-active .ui-icon.x_colourChanger {	background-position: -84px 0px; }
 
+.ui-button .ui-icon.x_saveSession { background-image: url("save_session.svg");background-position: 0px 0px;}
+.ui-button.ui-state-hover .ui-icon.x_saveSession {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_saveSession {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_saveSession {	background-position: -84px 0px; }
 
 .ui-dialog .ui-widget-header {
 border: 1px solid #7c097d;

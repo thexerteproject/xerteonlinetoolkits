@@ -213,7 +213,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
             <body class="extend" onload="list_modules()">
 
-                <iframe id="upload_iframe" name="upload_iframe" src="#" style="width:0px;height:0px; display:none;"></iframe>
+                <iframe id="upload_iframe" name="upload_iframe" src="" style="width:0px;height:0px; display:none;"></iframe>
 
                 <!--
 

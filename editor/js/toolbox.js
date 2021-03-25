@@ -231,11 +231,15 @@ var EDITOR = (function ($, parent) {
     {
         switch (icon) {
             case "deprecated":
-                if (enabled) {
-                    return '<i class="deprecatedIcon iconEnabled fa fa-exclamation-triangle " id="' + key + '_deprecated" title ="' + tooltip + '"></i>';
+				// if deprecatedLevel is low the appearance is slightly different
+				var isDeprecated = enabled[0],
+					deprecatedLevel = enabled[1];
+				
+                if (isDeprecated) {
+                    return '<i class="deprecatedIcon iconEnabled fa ' + (deprecatedLevel == 'low' ? 'fa-info-circle' : 'fa-exclamation-triangle') + ' ' + (deprecatedLevel == 'low' ? 'deprecatedLevel_low' : '') + '" id="' + key + '_deprecated" title ="' + tooltip + '"></i>';
                 }
                 else {
-                    return '<i class="deprecatedIcon iconDisabled fa fa-exclamation-triangle " id="' + key + '_deprecated"></i>';
+                    return '<i class="deprecatedIcon iconDisabled fa ' + (deprecatedLevel == 'low' ? 'fa-info-circle' : 'fa-exclamation-triangle') + ' ' + (deprecatedLevel == 'low' ? 'deprecatedLevel_low' : '') + '" id="' + key + '_deprecated"></i>';
                 }
             case "unmark":
                 if (enabled)
@@ -262,10 +266,10 @@ var EDITOR = (function ($, parent) {
                 }
 			case "standalone":
                 if (enabled) {
-                    return '<i class="standaloneIcon iconEnabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
+                    return '<i class="standaloneIcon iconEnabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>';
                 }
                 else {
-                    return '<i class="standaloneIcon iconDisabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
+                    return '<i class="standaloneIcon iconDisabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>';
                 }
         }
     },
@@ -273,13 +277,13 @@ var EDITOR = (function ($, parent) {
     changeNodeStatus = function(key, item, enabled, newtext)
     {
         // Get icon states
-
         var deprecatedState = ($("#"+key+"_deprecated.iconEnabled").length > 0);
         var hiddenState = ($("#"+key+"_hidden.iconEnabled").length > 0);
 		var standaloneState = ($("#"+key+"_standalone.iconEnabled").length > 0);
         var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
         var change = false;
         var tooltip = "";
+		var level;
         switch(item)
         {
             case "deprecated":
@@ -309,8 +313,9 @@ var EDITOR = (function ($, parent) {
 
             if (deprecatedState) {
                 tooltip = $("#" + key + '_deprecated')[0].attributes['title'];
+				level = $("#" + key + '_deprecated').hasClass('deprecatedLevel_low') ? 'low' : undefined;
             }
-            var deprecatedIcon = getExtraTreeIcon(key, "deprecated", (item == "deprecated" ? enabled : deprecatedState), tooltip);
+            var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [item == "deprecated" ? enabled : deprecatedState, level], tooltip);
             var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" ? enabled : hiddenState));
 			var standaloneIcon = getExtraTreeIcon(key, "standalone", (item == "standalone" ? enabled : standaloneState));
             var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
@@ -406,7 +411,7 @@ var EDITOR = (function ($, parent) {
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
         }
 
-        var deprecatedIcon = getExtraTreeIcon(key, "deprecated", wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecated);
+        var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecatedLevel], wizard_data[xmlData[0].nodeName].menu_options.deprecated);
         var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
         var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
@@ -882,14 +887,19 @@ var EDITOR = (function ($, parent) {
 
     showToolBar = function(show){
         defaultToolBar = show;
-        var tree = $.jstree.reference("#treeview");
+        /*var tree = $.jstree.reference("#treeview");
         var ids = tree.get_selected();
         var id;
         if (ids.length>0)
         {
             id = ids[0];
             parent.tree.showNodeData(id, true);
-        }
+        }*/
+        $(".cke_toolbox_collapser").each(function(){
+          var min = $(this).hasClass("cke_toolbox_collapser_min");
+          if (show && min || !show && !min)
+            $(this).click();
+        });
     },
 
     onclickJqGridSubmitLocal = function(id, key, name, options, postdata) {
@@ -1512,6 +1522,25 @@ var EDITOR = (function ($, parent) {
 			}
         });
     },
+	
+	convertIconPickers = function ()
+    {
+        $.each(iconpickers, function (i, options){
+			IconPicker.Init({
+				jsonUrl: 'editor/js/vendor/iconpicker/' + options.iconList + '.json',
+				searchPlaceholder: language.fontawesome.search,
+				showAllButton: language.fontawesome.showAll,
+				cancelButton: language.fontawesome.cancel,
+				noResultsFound: language.fontawesome.noResult,
+				borderRadius: '0px'
+			});
+			
+			IconPicker.Run('#' + options.id, function(e){
+				// manually trigger input change after new icon selected - even though input changes it doesn't get triggered without this as element is hidden & not in focus
+				$('#' + options.id).data('input').change();
+			});
+        });
+    },
 
     convertDataGrids = function ()
     {
@@ -2041,7 +2070,7 @@ var EDITOR = (function ($, parent) {
 
     inputChanged = function (id, key, name, value, obj)
     {
-        console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+        //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
         var actvalue = value;
 
         if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
@@ -2249,60 +2278,110 @@ var EDITOR = (function ($, parent) {
      * getPagelist in an array. the array has contains arrays of length 2, the first element is the name (or label
      * the second element is the value
      *
-     * This is the format that ckEditor dialog expects for se;ect lists
+     * This is the format that ckEditor dialog expects for select lists
      * We use the same format in the displayDataType for the pagelist type.
      *
      * Also make sure we only take the text from the name, and not the full HTML
      */
-	getPageList = function()
+	getPageList = function(thisKey, thisTarget)
 	{
 
 		var tree = $.jstree.reference("#treeview");
-		var lo_node = tree.get_node("treeroot", false);
 		var pages=[];
 
-		if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
-			pages = [
-								[language.XotLinkRelativePages.firstpage,'[first]'],
-								[language.XotLinkRelativePages.lastpage,'[last]'],
-								[language.XotLinkRelativePages.prevpage,'[previous]'],
-								[language.XotLinkRelativePages.nextpage,'[next]']
-							];
-						$.each(lo_node.children, function(i, key){
-								var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-								/*var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);*/
-								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-								var hidden = lo_data[key]['attributes'].hidePage;
-
-								if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
-								{
-										var page = [];
-										// Also make sure we only take the text from the name, and not the full HTML
-										page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
-										page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-										pages.push(page);
-
-										// Now we do the children (if deeplinking is allowed)
-										if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
-											var childNode = tree.get_node(key, false);
-											$.each(childNode.children, function(i, key){
-												var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-												//var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-												var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-												if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
-												{
-													var page = [];
-													// Also make sure we only take the text from the name, and not the full HTML
-													page.push(getTextFromHTML("&nbsp;- "+name.value));
-													page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-													pages.push(page);
-												}
-											});
-										}
-								}
+		// list of everything at same level or everything at parent's level
+		if (thisTarget != undefined) {
+			
+			// 0 finds nodes at this level, 1 finds nodes at parent level, 2 finds nodes at parent's parent level....
+			// * makes it include all the children too
+			var children = false;
+			if (thisTarget.indexOf('*') != -1) {
+				children = true;
+				thisTarget = thisTarget.replace('*','');
+			}
+			
+			var level = Number(thisTarget);
+			var lo_node = tree.get_node(tree.get_node(thisKey, false).parents[level], false);
+			
+			$.each(lo_node.children, function(i, key){
+				var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+				var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+				var hidden = lo_data[key]['attributes'].hidePage;
+				
+				if (linkID.found && linkID.value != "") {
+					var page = [];
+					// Also make sure we only take the text from the name, and not the full HTML
+					page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
+					page.push(linkID.value);
+					pages.push(page);
+					
+					// Now we do the children
+					if (children == true) {
+						var childNode = tree.get_node(key, false);
+						$.each(childNode.children, function(i, key){
+							var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+							var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+							var hidden = lo_data[key]['attributes'].hidePage;
+							
+							if (linkID.found && linkID.value != "") {
+								var page = [];
+								// Also make sure we only take the text from the name, and not the full HTML
+								page.push("&nbsp;- " + (hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
+								page.push(linkID.value);
+								pages.push(page);
+							}
 						});
 					}
+				}
+			});
+			
+		// list of all pages & their children (if deep linking allowed)
+		} else if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
+			pages = [
+						[language.XotLinkRelativePages.firstpage,'[first]'],
+						[language.XotLinkRelativePages.lastpage,'[last]'],
+						[language.XotLinkRelativePages.prevpage,'[previous]'],
+						[language.XotLinkRelativePages.nextpage,'[next]']
+					];
+			
+			var lo_node = tree.get_node("treeroot", false);
+			
+			$.each(lo_node.children, function(i, key){
+					var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+					/*var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);*/
+					var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+					var hidden = lo_data[key]['attributes'].hidePage;
+					
+					if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
+					{
+						
+						var page = [];
+						// Also make sure we only take the text from the name, and not the full HTML
+						page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
+						page.push(/*pageID.found ? pageID.value :*/ linkID.value);
+						pages.push(page);
 
+						// Now we do the children (if deeplinking is allowed)
+						if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
+							var childNode = tree.get_node(key, false);
+							$.each(childNode.children, function(i, key){
+								var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+								//var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+								if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
+								{
+									var page = [];
+									// Also make sure we only take the text from the name, and not the full HTML
+									page.push(getTextFromHTML("&nbsp;- "+name.value));
+									page.push(/*pageID.found ? pageID.value :*/ linkID.value);
+									pages.push(page);
+								}
+							});
+						}
+					}
+			});
+		}
+		
 		return pages;
 	},
 
@@ -2478,25 +2557,7 @@ var EDITOR = (function ($, parent) {
 
         edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');
         edit_img.append('<div class="hsinstructions" id="instructions_' + id + '"></div>');
-        /*
-        edit_img.append($('<button>')
-            .attr('id', id + '_ok')
-            .attr('name', 'ok')
-            .attr('type', 'button')
-            .attr('title', language.Alert.oklabel)
-            .addClass('hseditModeButton')
-            .append('<i class="far fa-2x fa-check-square"></i>')
-        )
-            .append($('<button>')
-                .attr('id', id + '_cancel')
-                .attr('name', 'cancel')
-                .attr('type', 'button')
-                .attr('title', language.Alert.cancellabel)
-                .addClass('hseditModeButton')
-                .append('<i class="far fa-2x fa-window-close"></i>')
-            );
-
-         */
+        
         if (!forceRectangle && hsattrs.mode != undefined)
         {
             shape = hsattrs.mode;
@@ -3126,6 +3187,375 @@ var EDITOR = (function ($, parent) {
         }
 
     };
+	
+	draw360Hotspot = function(html, url, hsattrs, id, hspgattrs) {
+        // Add Hotspot on the wizard page as preview on the thumbnail image
+		
+        // find image, set scale and wrap with overlayWrapper
+        var img =  html.find('img'),
+			width = img.width(),
+			height = img.height();
+		
+        img.wrap('<div class="overlayWrapper" id="overlayWrapper_' + id + '"></div>');
+        img.hide();
+
+        // create canvas over img
+        var canvasObj = $('<canvas>')
+            .attr('id', 'wizard_hscanvas_' + id);
+		
+        $('#overlayWrapper_' + id).append(canvasObj);
+		
+        var canvas = new fabric.Canvas('wizard_hscanvas_' + id, { selection: false, interaction: false });
+        canvas.setWidth(width);
+        canvas.setHeight(height);
+		
+        fabric.Image.fromURL(url, function (bgimg) {
+            bgimg.scaleToWidth(width);
+            bgimg.scaleToHeight(height);
+            canvas.setBackgroundImage(bgimg, canvas.renderAll.bind(canvas), { stretch: true });
+        });
+
+        // open editor when thumbnail is clicked
+		canvas.on('mouse:down', function() { edit360Hotspot(url, hsattrs, id, hspgattrs) });
+		
+        // draw target
+		var xy = {};
+        if (hsattrs.p != '' && hsattrs.y != '') {
+			// convert from pitch & yaw to image coordinates
+			xy.x = Math.floor((hsattrs.y / 360 + 0.5) * width);
+			xy.y = Math.floor((0.5 - hsattrs.p / 180) * height);
+			
+			canvas.add(new fabric.Circle({radius: 5,
+				fill: 'rgba(255,0,0,0.5)',
+				left: xy.x,
+				top: xy.y,
+				originX: 'center', 
+				originY: 'center',
+				selectable: false,
+				objectCaching: false,
+				evented:false
+			}));
+			
+			for (var j=0; j<2; j++) {
+				var x0 = j == 0 ? xy.x - 0.5 : xy.x - 3.5,
+					y0 = j == 0 ? xy.y - 3.5 : xy.y - 0.5,
+					x1 = j == 0 ? xy.x - 0.5 : xy.x + 3.5,
+					y1 = j == 0 ? xy.y + 3.5 : xy.y - 0.5;
+				
+				canvas.add(new fabric.Line([x0, y0, x1, y1], {
+					stroke: 'white',
+					strokeWidth: 1,
+					selectable: false,
+					evented: false
+				}));
+			}
+        }
+    };
+
+    edit360Hotspot = function (url, hsattrs, id, hspgattrs) {
+		// set up contents of lightbox (buttons, panorama & instructions)
+	    var $editImg = $("<div></div>")
+			.attr('id', 'outer_img_' + id)
+			.addClass('hotspotEditor');
+		
+		var btns = ['reset', 'ok', 'cancel'],
+			btnLang = [language.edit360Hotspot.Buttons.Reset, language.Alert.oklabel, language.Alert.cancellabel],
+			btnIcon = ['fa-undo-alt', 'fa-check-square', 'fa-window-close'];
+		
+        $editImg
+			.data("id", id)
+			.append('<div class="hsbutton_holder" id="hsbutton_holder_' + id + '" style="float: right;">');
+		
+		var $hsBtnHolder = $editImg.find('.hsbutton_holder');
+		
+		for (var i=0; i<btns.length; i++) {
+			$('<button id="' + btns[i] + '_' + id + '" class="hseditModeButton" title="' + btnLang[i] + '"><i class="fas fa-2x ' + btnIcon[i] + '"></i></button>').appendTo($hsBtnHolder);
+		}
+		
+		$editImg.append('<div id="panoramaHolder"><div id="panorama_' + id + '"></div><div class="hsinstructions" id="instructions_' + id + '"></div></div>');
+		
+		var instructions = language.edit360Hotspot.Instructions.header +
+				'<ul id="defaultInstructions">' +
+				'<li>' + language.edit360Hotspot.Instructions.line1 + '</li>' +
+				'<li>' + language.edit360Hotspot.Instructions.line2 + '</li>' +
+				'<li>' + language.edit360Hotspot.Instructions.reset + '</li>' +
+				'<li>' + language.edit360Hotspot.Instructions.save + '</li>' +
+				'</ul>';
+		
+		$editImg.find('#instructions_' + id).html(instructions);
+		
+		var currentHsDetails = {};
+		
+		// get the info about the icon appearance
+		if (hsattrs.icon == '' || hsattrs.icon == undefined) { currentHsDetails.icon = 'fas fa-info'; } else { currentHsDetails.icon = hsattrs.icon; }
+		if (hsattrs.orientation == '' || hsattrs.orientation == undefined) { currentHsDetails.orientation = '0'; } else { currentHsDetails.orientation = hsattrs.orientation; }
+		
+		// colours & size can be set at page or hs level
+		if (hsattrs.colour1 == '' || hsattrs.colour1 == undefined || hsattrs.colour1 == '0x') {
+			if (hspgattrs.colour1 == '' || hspgattrs.colour1 == undefined || hspgattrs.colour1 == '0x') {
+				currentHsDetails.colour1 = 'black';
+			} else {
+				currentHsDetails.colour1 = hspgattrs.colour1;
+			}
+		} else {
+			currentHsDetails.colour1 = hsattrs.colour1;
+		}
+		
+		if (hsattrs.colour2 == '' || hsattrs.colour2 == undefined || hsattrs.colour2 == '0x') {
+			if (hspgattrs.colour2 == '' || hspgattrs.colour2 == undefined || hspgattrs.colour2 == '0x') {
+				currentHsDetails.colour2 = 'white';
+			} else {
+				currentHsDetails.colour2 = hspgattrs.colour2;
+			}
+		} else {
+			currentHsDetails.colour2 = hsattrs.colour2;
+		}
+		
+		if (hsattrs.size == '' || hsattrs.size == undefined) {
+			if (hspgattrs.hsSize == '' || hspgattrs.hsSize == undefined) {
+				currentHsDetails.size = '14';
+			} else {
+				currentHsDetails.size = hspgattrs.hsSize;
+			}
+		} else {
+			currentHsDetails.size = hsattrs.size;
+		}
+		
+		// correct the format of the colour codes (start with # rather than 0x)
+		currentHsDetails.colour1 = currentHsDetails.colour1.indexOf('0x') === 0 ? currentHsDetails.colour1.replace("0x", "#") : currentHsDetails.colour1;
+		currentHsDetails.colour2 = currentHsDetails.colour2.indexOf('0x') === 0 ? currentHsDetails.colour2.replace("0x", "#") : currentHsDetails.colour2;
+		
+		var panorama;
+		
+		// open lightbox
+		$.featherlight($editImg, {
+			closeOnClick: 'false',
+			closeOnEsc: true,
+			closeIcon: '',
+			afterOpen: function () {
+				
+				// scale panorama
+				var dimensions = [0.7 * $('body').width(), 0.7 * $('body').height() - $('#hsbutton_holder').height() - $('.hsinstructions').height()];
+				
+				$('#panorama_' + id).add('.hover')
+					.width(dimensions[0])
+					.height(dimensions[1]);
+				
+				$('#outer_img_' + id).width(dimensions[0]);
+				
+				// set up panorama
+				panorama = pannellum.viewer('panorama_' + id, {
+					'type': 'equirectangular',
+					'panorama': url,
+					'autoLoad': true,
+					'showFullscreenCtrl': false,
+					'compass': false,
+					'pitch': Number(hsattrs.p), // turn to look at existing hotspot (if there is one)
+					'yaw': Number(hsattrs.y)
+				});
+				
+				// add hotspot (if there is one!)
+				if (hsattrs.p != '' && hsattrs.y != '') {
+					panorama.on('load', function(event) {
+						create360Hotspot(Number(hsattrs.p), Number(hsattrs.y));
+					});
+				}
+				
+				// move hotspot on mouse up (attempt to disregard dragging by looking at position of mouse down & making sure it was quite close)
+				var downPos = [];
+				
+				panorama.on('mousedown', function(event) {
+					downPos = panorama.mouseEventToCoords(event);
+				});
+				
+				panorama.on('mouseup', function(event) {
+					var coords = panorama.mouseEventToCoords(event);
+					
+					if (Math.abs(downPos[0]-coords[0]) < 0.01 && Math.abs(downPos[1]-coords[1]) < 0.01) {
+						create360Hotspot(coords[0], coords[1]);
+					}
+				});
+				
+				// remove existing hotspot & draw a new one
+				function create360Hotspot(pitch, yaw) {
+					panorama.removeHotSpot('currentHs');
+					
+					currentHsDetails.pitch = pitch;
+					currentHsDetails.yaw = yaw;
+					var borderWidth = Number(currentHsDetails.size)/4;
+					
+					panorama.addHotSpot({
+						'id': 'currentHs',
+						'pitch': pitch,
+						'yaw': yaw,
+						'cssClass': 'hotspot360Icon'
+					});
+					
+					// hotspot styles
+					$('.hotspot360Icon')
+						.append('<span class="icon360Holder"><span class="icon360"></span></span>')
+						.css({
+							height: (Number(currentHsDetails.size)*2+2) + 'px',
+							width: (Number(currentHsDetails.size)*2+2) + 'px',
+							background: currentHsDetails.colour1,
+							'border-color': currentHsDetails.colour2,
+							'border-width': borderWidth + 'px'
+						})
+						.hover(
+							function() {
+								$(this).css('box-shadow', '0px 0px ' + (Number(currentHsDetails.size)/2) + 'px ' + currentHsDetails.colour2);
+							},
+							function() {
+								$(this).css('box-shadow', 'none');
+							})
+						.find('.icon360')
+							.css({
+								transform: 'rotate(' + currentHsDetails.orientation + 'deg)',
+								'font-size': Number(currentHsDetails.size) + 'px',
+								color: currentHsDetails.colour2
+							})
+							.addClass(currentHsDetails.icon);
+				}
+			}
+		});
+		
+		// set up buttons
+		var key = $('#inner_img_' + id).data('key');
+		
+		// reset button - clear hotspot & all the customised icon info
+		$('.featherlight-content button#reset_' + id).click(function(event) {
+			panorama.removeHotSpot('currentHs');
+			currentHsDetails.pitch = '';
+			currentHsDetails.yaw = '';
+		});
+		
+		// OK button - save hotspot info & close lightbox
+		$('.featherlight-content button#ok_' + id).click(function(event) {
+			var current = $.featherlight.current();
+			setAttributeValue(key, ['p', 'y'], [currentHsDetails.pitch, currentHsDetails.yaw]);
+			current.close();
+			parent.tree.showNodeData(key);
+		});
+		
+		// cancel button - close lightbox without saving hotspot info
+		$('.featherlight-content button#cancel_' + id).click(function(event) {
+			var current = $.featherlight.current();
+			current.close();
+			parent.tree.showNodeData(key);
+		});
+    };
+	
+	edit360View = function (url, hsattrs, id, name) {
+		// set up contents of lightbox (buttons, panorama & instructions)
+	    var $editImg = $("<div></div>")
+			.attr('id', 'outer_img_' + id)
+			.addClass('hotspotEditor');
+		
+		var btns = ['reset', 'ok', 'cancel'],
+			btnLang = [language.edit360View.Buttons.Reset, language.Alert.oklabel, language.Alert.cancellabel],
+			btnIcon = ['fa-undo-alt', 'fa-check-square', 'fa-window-close'];
+		
+        $editImg
+			.data("id", id)
+			.append('<div class="hsbutton_holder" id="hsbutton_holder_' + id + '" style="float: right;">');
+		
+		var $hsBtnHolder = $editImg.find('.hsbutton_holder');
+		
+		for (var i=0; i<btns.length; i++) {
+			$('<button id="' + btns[i] + '_' + id + '" class="hseditModeButton" title="' + btnLang[i] + '"><i class="fas fa-2x ' + btnIcon[i] + '"></i></button>').appendTo($hsBtnHolder);
+		}
+		
+		$editImg.append('<div id="panoramaHolder"><div id="panorama_' + id + '"></div><div class="hsinstructions" id="instructions_' + id + '"></div></div>');
+		
+		var instructions = language.edit360View.Instructions.header +
+				'<ul id="defaultInstructions">' +
+				'<li>' + language.edit360View.Instructions.line1 + '</li>' +
+				'<li>' + language.edit360View.Instructions.reset + '</li>' +
+				'<li>' + language.edit360View.Instructions.save + '</li>' +
+				'</ul>';
+		
+		$editImg.find('#instructions_' + id).html(instructions);
+		
+		var panorama;
+		
+		// open lightbox
+		$.featherlight($editImg, {
+			closeOnClick: 'false',
+			closeOnEsc: true,
+			closeIcon: '',
+			afterOpen: function () {
+				
+				// scale panorama
+				var dimensions = [0.7 * $('body').width(), 0.7 * $('body').height() - $('#hsbutton_holder').height() - $('.hsinstructions').height()];
+				
+				$('#panorama_' + id)
+					.width(dimensions[0])
+					.height(dimensions[1]);
+				
+				$('#outer_img_' + id).width(dimensions[0]);
+				
+				// get the info about the current position
+				var initPitch = 0,
+					initYaw = 0;
+				if (hsattrs[name] != undefined && hsattrs[name].split('|').length == 2) {
+					var info = hsattrs[name].split('|');
+					initPitch = $.isNumeric(info[0]) ? Number(info[0]) : initPitch;
+					initYaw = $.isNumeric(info[1]) ? Number(info[1]) : initYaw;
+				}
+				
+				// set up panorama
+				panorama = pannellum.viewer('panorama_' + id, {
+					'type': 'equirectangular',
+					'panorama': url,
+					'autoLoad': true,
+					'compass': false,
+					'showFullscreenCtrl': false,
+					'pitch': initPitch,
+					'yaw': initYaw
+				});
+				
+				// focus point on mouse up (attempt to disregard dragging by looking at position of mouse down & making sure it was quite close)
+				var downPos = [];
+				
+				panorama.on('mousedown', function(event) {
+					downPos = panorama.mouseEventToCoords(event);
+				});
+				
+				panorama.on('mouseup', function(event) {
+					var coords = panorama.mouseEventToCoords(event);
+					
+					if (Math.abs(downPos[0]-coords[0]) < 0.01 && Math.abs(downPos[1]-coords[1]) < 0.01) {
+						panorama.setPitch(coords[0]).setYaw(coords[1]);
+					}
+				});
+			}
+		});
+		
+		// set up buttons
+		var key = $('#' + id + '_btn').data('key');
+		
+		// reset button - return to default view
+		$('.featherlight-content button#reset_' + id).click(function(event) {
+			panorama
+				.setPitch(0)
+				.setYaw(0);
+		});
+		
+		// OK button - save view info & close lightbox
+		$('.featherlight-content button#ok_' + id).click(function(event) {
+			var current = $.featherlight.current();
+			setAttributeValue(key, [name], [panorama.getPitch() + '|' + panorama.getYaw()]); // view is saved to one attribute in format 'pitch|yaw'
+			current.close();
+			parent.tree.showNodeData(key);
+		});
+		
+		// cancel button - close lightbox without saving view info
+		$('.featherlight-content button#cancel_' + id).click(function(event) {
+			var current = $.featherlight.current();
+			current.close();
+			parent.tree.showNodeData(key);
+		});
+    };
 
     triggerRedrawPage = function(key)
     {
@@ -3261,24 +3691,32 @@ var EDITOR = (function ($, parent) {
 						.attr('value', value)
 						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
-							if (this.value <= max &&  this.value >= min) {
+							if ((isNaN(max) || this.value <= max) && (isNaN(min) || this.value >= min)) {
 								if (this.value == '') {
-									this.value = (min + max) / 2; // choose midpoint for NaN
+									if (isNaN(max) || isNaN(min)) {
+										this.value = 0;
+									} else {
+										this.value = (min + max) / 2; // choose midpoint for NaN
+									}
 								}
 								inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                                if (event.data.trigger)
+								if (event.data.trigger)
                                 {
                                     triggerRedrawPage(event.data.key);
                                 }
 							}
 							else { // set to max or min if out of range
-								this.value = Math.max(Math.min(this.value, max), min);
+								if (this.value > max) {
+									this.value = max;
+								} else {
+									this.value = min;
+								}
 							}
 						});
 				}
 				break;
 			case 'pagelist':
-				// Implement differently then in the flash editor
+				// Implement differently than in the flash editor
 				// Leave PageIDs untouched, and prefer to use the PageID over the linkID
 				var id = 'select_' + form_id_offset;
 				form_id_offset++;
@@ -3299,7 +3737,14 @@ var EDITOR = (function ($, parent) {
 					option.prop('selected', true);
 				option.append("&nbsp;");
 				html.append(option);
-				var pages = getPageList();
+				// by default the drop down will list all pages (& relevant nested pages) - can also be set to target everything at this level or at this item's parent level
+				var pages;
+				if (options.listTarget != undefined) {
+					pages = getPageList(key, options.listTarget);
+				} else {
+					pages = getPageList();
+				}
+				
 				$.each(pages, function(page)
 				{
 					option = $('<option>')
@@ -3795,7 +4240,105 @@ var EDITOR = (function ($, parent) {
                     html.append("<span class=\"error\">" + language.editHotspot.Error.selectFile + "</span>");
                 }
 
-                break;
+				break;
+				
+			case 'hotspot360':
+				var id = 'hotspot360_' + form_id_offset;
+				form_id_offset++;
+
+                // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
+                // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
+				var hsattrs = lo_data[key].attributes;
+                var hsparent = parent.tree.getParent(key);
+                var hspattrs = lo_data[hsparent].attributes;
+				var hspage = parent.tree.getParent(hsparent);
+				var hspgattrs = lo_data[hspage].attributes;
+				
+				// Create the container
+				html = $('<div>').attr('id', id);
+
+				var url = hspattrs.file;
+				// Replace FileLocation + ' with full url
+				url = makeAbsolute(url);
+				// Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
+				if (url.substring(0,4) == "http")
+				{
+					html.addClass('clickableHotspot');
+					html.append("<img>");
+					var cur_key = key;
+					html.find('img')
+						.attr('id', 'inner_img_' + id)
+						.attr("data-key", cur_key)
+						.attr("src", url)
+						.load(function(){
+							$(this).css({width: '100%'});
+							draw360Hotspot(html, url, hsattrs, id, hspgattrs);
+						}).click(function(){
+							edit360Hotspot(url, hsattrs, id, hspgattrs);
+						});
+				}
+				else
+				{
+					html.append("<span class=\"error\">" + language.edit360Hotspot.Error.selectFile + "</span>");
+				}
+
+				break;
+			
+			case 'view360':
+				var id = 'view360_' + form_id_offset;
+				form_id_offset++;
+				
+				var hsattrs = lo_data[key].attributes;
+                var hsparent = parent.tree.getParent(key);
+                var hspattrs = lo_data[hsparent].attributes;
+				
+				// what image are we going to set view for? defaults to <file> unless file attr is set
+				// e.g. file='parent' looks at this parent's <file>, file='scene' looks at <scene>, file='parent.scene' looks at this parent's <scene>
+				var url = options.file == undefined ? hsattrs.file : (options.file == 'parent' ? hspattrs.file : false);
+				if (url === false) {
+					var info = options.file.split('.');
+					if (info > 1 && info[0] == 'parent') {
+						url = hspattrs[info[1]];
+					} else {
+						url = hsattrs[info[0]];
+					}
+				}
+				
+				// we might only have the linkID of the file we need - try to find the real file
+				if (url.substring(0,12) != "FileLocation") {
+					$.each(lo_data, function(key, value) {
+						if (this.attributes.linkID == url) {
+							url = this.attributes.file;
+							return false;
+						}
+						
+					});
+					
+				}
+				
+				// Replace FileLocation + ' with full url
+				url = makeAbsolute(url);
+				
+				// Create the container
+				html = $('<div>').attr('id', id);
+
+				if (url.substring(0,4) == "http")
+				{
+					$('<button id="' + id + '_btn" class="xerte_button icon_browse"></button>')
+						.html(language.edit360View.Buttons.Edit)
+						.attr("data-key", key)
+						.appendTo(html)
+						.click(function(){
+							edit360View(url, hsattrs, id, name);
+						});
+				}
+				else
+				{
+					html.append("<span class=\"error\">" + language.edit360View.Error.selectFile + "</span>");
+				}
+
+				break;
+				
 			case 'media':
 				var id = 'media_' + form_id_offset;
 				form_id_offset++;
@@ -3932,6 +4475,52 @@ var EDITOR = (function ($, parent) {
 				)
 					.append(language.edit.$label);
 				break;
+			
+			case 'fontawesome':
+				var id = 'icon_' + form_id_offset;
+				form_id_offset++;
+				html = $('<div>').attr('id', id);
+				
+				var $input = $('<input id="' + id + '_hiddenInput" class="icon_hiddenInput" type="text" value="' + value + '">')
+					.appendTo(html)
+					.data({
+						'id': id,
+						'key': key,
+						'name': name
+					})
+					.change(function() {
+						var $this = $(this);
+						
+						// if an icon hasn't already been chosen swap the 'select icon' button for the icon preview
+						if ($('#' + $this.data('id') + '_btn').find('i').length == 0) {
+							$('#' + $this.data('id') + '_btn').html('<i id="' + id + '_preview" class="fas fa-fw fa-lg ' + this.value + '" title="' + language.fontawesome.preview + ': ' + this.value + '"></i>');
+						} else {
+							$('#' + $this.data('id') + '_btn').find('i').attr('title', language.fontawesome.preview + ': ' + this.value);
+						}
+						
+						inputChanged($this.data('id'), $this.data('key'), $this.data('name'), this.value);
+					});
+				
+				$('<button id="' + id + '_btn" class="xerte_button icon_browse" data-iconpicker-input="input#' + id + '_hiddenInput" data-iconpicker-preview="i#' + id + '_preview"></button>')
+					.data('input', $input)
+					.html(value != undefined && value != '' ? '<i id="' + id + '_preview" class="fa-fw ' + value + '" title="' + language.fontawesome.preview + ': ' + value + '"></i>' : language.fontawesome.preview)
+					.appendTo(html)
+					.click(
+						// manually set height/position of icon picker after it's been created
+						function() {setTimeout(function() {
+							var totalH = $('body').height() * 0.9;
+							var availH = totalH - (parseInt($('.ip-icons-content').css('padding-top')) * 2) - $('.ip-icons-search').outerHeight(true) - $('.ip-icons-footer').outerHeight(true);
+							
+							$('.ip-icons-area').css('max-height', availH + 'px');
+							$('#IconPickerModal')
+								.css('top', $('body').height() * 0.05);
+						}, 10);
+					});
+				
+				iconpickers.push({id: id + '_btn', iconList: options.iconList});
+				
+				break;
+			
 			case 'webpage':  //Not used??
 			case 'xerteurl':
 			case 'xertelo':
@@ -4011,6 +4600,7 @@ var EDITOR = (function ($, parent) {
     my.convertTextAreas = convertTextAreas;
     my.convertTextInputs = convertTextInputs;
     my.convertColorPickers = convertColorPickers;
+	my.convertIconPickers = convertIconPickers;
     my.convertDataGrids = convertDataGrids;
     my.showToolBar = showToolBar;
     my.getIcon = getIcon;

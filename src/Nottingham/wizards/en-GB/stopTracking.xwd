@@ -1,4 +1,4 @@
-<wizard menus="Misc">
+<wizard menus="Tracking / xAPI">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <stopTracking><![CDATA[<stopTracking name="Enter Page Title" textIntro="Instruction" buttonLbl="Stop and finish tracking of this session" textAfter="You can now close the window">Enter text for the page here</stopTracking>]]></stopTracking>
@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- CLOSELO PAGE=============================================== -->
-  <stopTracking label="Page Text" type="text"  height="360" menu="Misc" menuItem="Stop Tracking" hint="A page with a button to stop and finish tracking the learning object." icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
+  <stopTracking label="Page Text" type="text"  height="360" menu="Tracking / xAPI" menuItem="Stop Tracking" hint="A page with a button to stop and finish tracking the learning object." icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <textIntro label="Instruction" type="textarea" wysiwyg="true" />

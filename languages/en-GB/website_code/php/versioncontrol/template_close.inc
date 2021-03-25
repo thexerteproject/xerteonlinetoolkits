@@ -30,4 +30,3 @@
 	define("TEMPLATE_CLOSE_QUESTION","Would you like to publish your changes?");
 
 
-?>

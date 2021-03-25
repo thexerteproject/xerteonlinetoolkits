@@ -13,4 +13,3 @@ define("AUTH_DB_CHANGEPASSWORD_PASSWORDTOOSHORT", "Password needs to be at least
 define("AUTH_DB_CHANGEPASSWORD_FAILED", "Failed to change password:");
 define("AUTH_DB_CHANGEPASSWORD_SUCCEEDED", "Password is changed successfully");
 
-?>

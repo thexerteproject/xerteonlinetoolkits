@@ -19,13 +19,20 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 }
 
 $version = getVersion();
+$template = $_GET["template"];
 
 $workspace = json_decode(get_users_projects("date_down", true));
 
 $items = array();
-$Nottingham = simplexml_load_file("../../modules/xerte/parent_templates/Nottingham/wizards/en-GB/data.xwd");
+if ($template == "site") {
+	$Nottingham = simplexml_load_file("../../modules/site/parent_templates/site/wizards/en-GB/data.xwd");
+} else {
+	$Nottingham = simplexml_load_file("../../modules/xerte/parent_templates/Nottingham/wizards/en-GB/data.xwd");
+}
+
 $nodes = $Nottingham->xpath("/wizard/learningObject/newNodes/*");
 $pageIcons = array();
+
 foreach($nodes as $node)
 {
     $name = $node->getName();
@@ -47,7 +54,7 @@ for($i=count($workspace->items) - 1; $i>=0; $i--)
         array_splice($workspace->items, $i, 1);
         continue;
     }
-    if ($item->type != "nottingham" && $item->type != "workspace" && $item->type != "folder")
+    if ((($template == "xerte" && $item->type != "nottingham") || ($template == "site" && $item->type != "site")) && $item->type != "workspace" && $item->type != "folder")
     {
         unset($workspace->nodes->{$item->id});
         array_splice($workspace->items, $i, 1);
@@ -151,6 +158,7 @@ foreach($workspace->items as $item)
 <script>
     jsonData = JSON.parse('<?php echo str_replace("'", "\\'", json_encode($items));?>');
     workspace = JSON.parse('<?php echo str_replace("'", "\\'",$workspace_json); ?>');
+	var x_mergeTemplate = '<?php echo $template?>';
 </script>
 
 <?php

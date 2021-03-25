@@ -1,7 +1,7 @@
 <wizard menus="Connectors" restrict="template" modelFile="connectorMenu">
   <pageWizard remove="true" duplicate="false">
     <newNodes>    
-      <connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu>
+      <connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" buttonWidth="100%" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu>
     </newNodes>  	  
   </pageWizard>
   
@@ -9,7 +9,7 @@
   <connectorMenu menu="Connectors" menuItem="Menu Connector" hint="Generate a menu of all or a selected range of the pages in a project." icon="icConMenu"  thumb="thumbs/connectorMenu.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-
+    <buttonWidth label="Button Width" type="TextInput" wysiwyg="true"/>
 	<text label="Page Text" type="TextArea"  height="200" defaultValue="Enter text for the page here" optional="true" tooltip="Add text to the page"/>
 	<startPageID label="First Entry" type="pageList" defaultValue="" optional="true" tooltip="Include menu links from this page onwards"/>
 	<endPageID label="Last Entry" type="pageList" defaultValue="" optional="true" tooltip="Include menu links up to and including this page"/>
@@ -34,6 +34,7 @@
   <cMenuListedPage menuItem="Item" remove="true" icon="icBullet" >
     <name label="Title" type="TextInput" wysiwyg="true" />
     <pageID label="Destination Page" type="pageList" defaultValue=""/>
+    <checkIfVisited  label="Check if Visited Page" type="pageList" defaultValue="" optional="true" />
 	<btnTxt label="Use Title on Button" type="CheckBox" defaultValue="false" mandatory="true" tooltip="By default the text on the menu button will be the destination page title. Check this box to use the title text from the field above instead."/>
   </cMenuListedPage>
 

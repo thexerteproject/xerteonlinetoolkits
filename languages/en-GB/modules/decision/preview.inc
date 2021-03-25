@@ -13,4 +13,3 @@
 
 	define("DECISION_PREVIEW_TITLE", "Interactive Learning Object");
 	
-?>

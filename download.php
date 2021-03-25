@@ -33,6 +33,13 @@
  *
  */
 
+require_once("config.php");
+
+if (Xerte_Validate_FileExtension::canRun()) {
+    Xerte_Validate_FileExtension::$BLACKLIST = $xerte_toolkits_site->file_extensions;
+}
+
+$validator = new Xerte_Validate_FileExtension();
 
 class mime10class
 {
@@ -115,8 +122,26 @@ while ($ipos !== false) {
         $epos = strpos($doc, $quote, $bpos);
         if ($epos !== false) {
             $imgfile = substr($doc, $bpos, $epos - $bpos);
-            $imgdata = file_get_contents($imgfile);
             $imgparts = pathinfo($imgfile);
+            if (strlen($imgparts["extension"]) > 0 && strpos($imgfile, "../") === false) {
+                // Check file location
+                if (strpos($imgfile, "USER-FILES/") === 0) {
+                    if ($validator->isValid($imgfile)) {
+                        $imgdata = file_get_contents($imgfile);
+                    } else {
+                        $imgdata = "";
+                    }
+                } else if (strpos($imgfile, "http") === 0) {
+                    $imgdata = file_get_contents($imgfile);
+                } else {
+                    $imgdata = "";
+                }
+            }
+            else{
+                // Prohibit extensionless files and prohibit ../ in paths
+                $imgdata = "";
+            }
+
             $new_imgfile = 'images/' . $imgparts['basename'];
 
             $src = $new_imgfile;

@@ -14,4 +14,3 @@
 	define("XML_TEMPLATE_NAME", "XML sharing");
 
 	
-?>

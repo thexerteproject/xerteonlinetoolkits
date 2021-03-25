@@ -12,4 +12,3 @@ define("AUTH_DB_MODUSER_PASSWORDTOOSHORT", "Password needs to be at least 5 char
 define("AUTH_DB_MODUSER_FAILED", "Failed to modify user:");
 define("AUTH_DB_MODUSER_SUCCEEDED", "User modified successfully");
 
-?>
