@@ -23,7 +23,8 @@
     var topXQ = new function () {
             // function called every time the page is viewed after it has initially loaded
             this.pageChanged = function () {
-
+                $("#OptionHolder, #checkButton, #attempts, #result, #correctAnswer, #mainFeedback").html("");
+                this.init();
             };
             var amountOfAnswers = x_currentPageXML.getAttribute("numberAnswers");
             var amountOfGoodAnswers = 0;
