@@ -38,7 +38,7 @@ $query_for_file_name = "select template_name from {$xerte_toolkits_site->databas
 
 $row_template_name = db_query_one($query_for_file_name, array($_SESSION['template_id']));
 
-$query_for_access_to_whom = "select access_to_whom from {$xerte_toolkits_site->database_table_prefix}templatedetails where template_id =?";
+$query_for_access_to_whom = "select td.access_to_whom, ld.firstname, ld.surname from {$xerte_toolkits_site->database_table_prefix}templatedetails td, {$xerte_toolkits_site->database_table_prefix}logindetails ld where template_id =? and td.creator_id=ld.login_id";
 
 $row_access_to_whom = db_query_one($query_for_access_to_whom, array($_SESSION['template_id']));
 $access=$row_access_to_whom["access_to_whom"];
@@ -62,6 +62,7 @@ if(isset($_SESSION['retouremail'])){
     $identification = PEER_REVIEW_IDENTIFICATION;
     $identification = str_replace("{template_id}", $_SESSION['template_id'], $identification);
     $identification = str_replace("{url}", $xerte_toolkits_site->site_url, $identification);
+    $identification = str_replace("{creator}", $row_access_to_whom['firstname'] . ' ' . $row_access_to_whom['surname'], $identification);
 
     $subject = PEER_REVIEW_FEEDBACK . " - \"" . str_replace("_"," ",$row_template_name['template_name']) ."\"";
 

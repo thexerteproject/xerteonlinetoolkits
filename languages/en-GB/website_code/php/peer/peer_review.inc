@@ -21,7 +21,7 @@
 
 	define("PEER_REVIEW_EMAIL_SIGNATURE","The Xerte Project");
 
-    define("PEER_REVIEW_IDENTIFICATION","This email was sent as feedback on learning object {template_id} of the Xerte installation hosted at {url}");
+    define("PEER_REVIEW_IDENTIFICATION","This email was sent as feedback on learning object {template_id} created by {creator} of the Xerte installation hosted at {url}");
 
     define("PEER_REVIEW_USER_FEEDBACK","Your feedback has been sent to the user");
 
