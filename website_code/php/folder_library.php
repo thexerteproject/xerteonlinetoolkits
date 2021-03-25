@@ -196,3 +196,15 @@ function move_folder($folder_id,$destination)
     }
 }
 
+function has_rights_to_this_folder($folder_id, $user_id){
+    global $xerte_toolkits_site;
+    $query = "select * from {$xerte_toolkits_site->database_table_prefix}folderdetails where login_id=? AND folder_id = ?";
+    $result = db_query_one($query, array($user_id, $folder_id));
+
+    if(!empty($result)) {
+        return true;
+    }
+    return false;
+}
+
+

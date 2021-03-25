@@ -29,6 +29,7 @@
 
 require_once("../../../config.php");
 include "../user_library.php";
+include "../folder_library.php";
 include "../template_library.php";
 include "../template_status.php";
 
@@ -44,90 +45,91 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
+
 if(is_numeric($_POST['folder_id'])){
+    if (has_rights_to_this_folder($_POST['folder_id'], $_SESSION['toolkits_logon_id'])) {
+        $folder_id = $_POST['folder_id'];
 
-    $folder_id = $_POST['folder_id'];
+        if ($_POST['parentfolder_id'] == "workspace") {
 
-    if($_POST['parentfolder_id']=="workspace"){
+            $parentfolder_id = get_user_root_folder();
 
-        $parentfolder_id = get_user_root_folder();
+        } else {
 
-    }else{
+            $parentfolder_id = $_POST['parentfolder_id'];
 
-        $parentfolder_id = $_POST['parentfolder_id'];
-
-    }
-
-    /*
-     * get the maximum id number from templates, as the id for this template
-     */
-
-    // Check all templates within the folder
-    // Get all templates within chosen folder
-    $sql = "select td.*, tr.user_id, tr.folder, tr.role, otd.template_framework, otd.template_name as org_template_name from {$prefix}templaterights tr, {$prefix}templatedetails td, {$prefix}originaltemplatesdetails otd where td.template_id=tr.template_id and td.template_type_id=otd.template_type_id and tr.user_id=? and tr.folder=?";
-    $params = array($_SESSION['toolkits_logon_id'], $folder_id);
-
-    $templates = db_query($sql, $params);
-    if ($templates !== false)
-    {
-        foreach ($templates as $template)
-        {
-            if ($template['role'] != 'creator' && $template['role'] != 'co-author')
-            {
-                echo DUPLICATE_TEMPLATE_NOT_CREATOR;
-                exit(-1);
-            }
         }
-        // Create duplicate of folder
-        $folder_name = "Copy of " . $_POST['folder_name'];
-        $query = "INSERT INTO {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
-        $params = array($_SESSION['toolkits_logon_id'], $parentfolder_id, $folder_name, date('Y-m-d'));
 
-        $new_folder_id = db_query($query, $params);
+        /*
+         * get the maximum id number from templates, as the id for this template
+         */
 
-        // Create copies (with same name in new folder)
-        foreach ($templates as $template)
-        {
-            /*
-            * create the new template record in the database
-            */
+        // Check all templates within the folder
+        // Get all templates within chosen folder
+        $sql = "select td.*, tr.user_id, tr.folder, tr.role, otd.template_framework, otd.template_name as org_template_name from {$prefix}templaterights tr, {$prefix}templatedetails td, {$prefix}originaltemplatesdetails otd where td.template_id=tr.template_id and td.template_type_id=otd.template_type_id and tr.user_id=? and tr.folder=?";
+        $params = array($_SESSION['toolkits_logon_id'], $folder_id);
 
-            $query_for_new_template = "INSERT INTO {$prefix}templatedetails "
-                . "(creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags)"
-                . " VALUES (?,?,?,?,?,?,?)";
-            $params = array(
-                $_SESSION['toolkits_logon_id'],
-                $template['template_type_id'],
-                date('Y-m-d'),
-                date('Y-m-d'),
-                $template['access_to_whom'],
-                $template['template_name'],
-                $template['extra_flags']);
-
-            $new_template_id = db_query($query_for_new_template, $params);
-            if($new_template_id !== FALSE) {
-
-                $query_for_template_rights = "INSERT INTO {$prefix}templaterights (template_id,user_id,role, folder) VALUES (?,?,?,?)";
-                $params = array($new_template_id, $_SESSION['toolkits_logon_id'], "creator", $new_folder_id);
-
-                if (db_query($query_for_template_rights, $params) !== FALSE) {
-
-                    receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
-
-                    require_once $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $template['template_framework'] . "/duplicate_template.php";
-
-                    duplicate_template($new_template_id, $template['template_id'], $template['org_template_name']);
+        $templates = db_query($sql, $params);
+        if ($templates !== false) {
+            foreach ($templates as $template) {
+                if ($template['role'] != 'creator' && $template['role'] != 'co-author') {
+                    echo DUPLICATE_TEMPLATE_NOT_CREATOR;
+                    exit(-1);
                 }
-                else{
-                    receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create new template record for the database", $query_for_template_rights);
+            }
+            // Create duplicate of folder
+            $folder_name = "Copy of " . $_POST['folder_name'];
+            $query = "INSERT INTO {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
+            $params = array($_SESSION['toolkits_logon_id'], $parentfolder_id, $folder_name, date('Y-m-d'));
+
+            $new_folder_id = db_query($query, $params);
+
+            // Create copies (with same name in new folder)
+            foreach ($templates as $template) {
+                /*
+                * create the new template record in the database
+                */
+
+                $query_for_new_template = "INSERT INTO {$prefix}templatedetails "
+                    . "(creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags)"
+                    . " VALUES (?,?,?,?,?,?,?)";
+                $params = array(
+                    $_SESSION['toolkits_logon_id'],
+                    $template['template_type_id'],
+                    date('Y-m-d'),
+                    date('Y-m-d'),
+                    $template['access_to_whom'],
+                    $template['template_name'],
+                    $template['extra_flags']);
+
+                $new_template_id = db_query($query_for_new_template, $params);
+                if ($new_template_id !== FALSE) {
+
+                    $query_for_template_rights = "INSERT INTO {$prefix}templaterights (template_id,user_id,role, folder) VALUES (?,?,?,?)";
+                    $params = array($new_template_id, $_SESSION['toolkits_logon_id'], "creator", $new_folder_id);
+
+                    if (db_query($query_for_template_rights, $params) !== FALSE) {
+
+                        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
+
+                        require_once $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $template['template_framework'] . "/duplicate_template.php";
+
+                        duplicate_template($new_template_id, $template['template_id'], $template['org_template_name']);
+                    } else {
+                        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create new template record for the database", $query_for_template_rights);
+
+                        echo("FAILED-" . $_SESSION['toolkits_most_recent_error']);
+                    }
+                } else {
+                    receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create new template record for the database", $query_for_new_template);
 
                     echo("FAILED-" . $_SESSION['toolkits_most_recent_error']);
                 }
-            }
-            else{
-                receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create new template record for the database", $query_for_new_template);
-
-                echo("FAILED-" . $_SESSION['toolkits_most_recent_error']);
             }
         }
     }
