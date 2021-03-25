@@ -36,6 +36,12 @@ require $xerte_toolkits_site->php_library_path . "display_library.php";
 
 function show_peer_template_form($row, $retouremail)
 {
+    global $xerte_toolkits_site;
+    $helptext = XERTE_PEER_TEXTAREA_INSTRUCTIONS;
+    $helptext = str_replace("{creator}", $row['firstname'] . ' ' . $row['surname'], $helptext);
+    $helptext = str_replace("{url}", $xerte_toolkits_site->site_url, $helptext);
+    $helptext = str_replace("{email}", $retouremail, $helptext);
+
     ?>
 <html>
     <head>
@@ -53,8 +59,9 @@ function show_peer_template_form($row, $retouremail)
                     <p><?php echo XERTE_PEER_GUIDANCE; ?> <a href="show_peer.php" data-featherlight="iframe" data-featherlight-iframe-style="display:block;border:none;height:85vh;width:85vw;"><?php echo XERTE_PEER_LIGHTBOX; ?></a></p>
                 </div>
                 <div style="width:24%; display:inline-block; position: fixed;">
-                    <form name="peer" action="javascript:send_review('<?php echo $retouremail; ?>','<?php echo $row['template_id']; ?>')" method="post" enctype="text/plain">
-                        <textarea style="width:100%; height:70vh;" name="response"><?php echo XERTE_PEER_TEXTAREA_INSTRUCTIONS; ?></textarea>
+                    <!--form name="peer" action="javascript:send_review('<?php //echo $retouremail; ?>','<?php //echo $row['template_id']; ?>')" method="post" enctype="text/plain"-->
+                    <form name="peer" action="javascript:send_review()" method="post" enctype="text/plain">
+                        <textarea style="width:100%; height:70vh;" name="response"><?php echo $helptext; ?></textarea>
                         <br/>
                         <button type="submit" class="xerte_button"><?php echo XERTE_PEER_BUTTON_SEND; ?></button>
                     </form>
@@ -105,7 +112,7 @@ $query_for_peer_response = db_query_one("SELECT * FROM {$xerte_toolkits_site->da
 
 if(!empty($query_for_peer_response)) {
 
-    $query_for_play_content = "select otd.template_name, otd.parent_template, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags";
+    $query_for_play_content = "select otd.template_name, otd.parent_template, ld.username, ld.surname, ld.firstname, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags";
     $query_for_play_content .= " from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "logindetails ld";
     $query_for_play_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=" . $template_id .  " and (role='creator' or role='co-author')";
 
@@ -146,6 +153,7 @@ if(!empty($query_for_peer_response)) {
              *  Output the code
              */
             $_SESSION['template_id'] = $template_id;
+            $_SESSION['retouremail'] = $retouremail;
             show_peer_template_form($row_play, $retouremail);
         }else{
             show_peer_login_form(PEER_LOGON_FAIL);

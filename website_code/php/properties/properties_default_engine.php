@@ -35,45 +35,48 @@ include "../url_library.php";
 include "../user_library.php";
 include "properties_library.php";
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
+
 if(is_numeric($_POST['template_id'])){
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()) {
+        $template_id = (int)$_POST['template_id'];
+        $engine = $_POST['engine'];
 
-    $template_id = (int) $_POST['template_id'];
-    $engine = $_POST['engine'];
-
-    if ($engine != 'flash' && $engine!='javascript')
-    {
-        $engine = 'javascript';
-    }
-
-    // Get extra flags
-    $row = db_query_one("SELECT td.extra_flags  FROM {$xerte_toolkits_site->database_table_prefix}templatedetails td WHERE td.template_id = ?", array($template_id));
-
-    $extra_flags = explode(";", $row['extra_flags']);
-    $data = array();
-    foreach($extra_flags as $i => $flag) {
-        $bits = explode('=', $flag);
-        $data[$bits[0]] = $bits[1];
-    }
-    $data['engine'] = $engine;
-    // need to form into something like: engine=flash;foo=bar;something=somethingelse
-    $db_flags = http_build_query($data, '', ';');
-    $db_flags = str_replace(' ', '_', $db_flags); // not sure why we do this.
-
-    $query = "UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET extra_flags = ? WHERE template_id = ?";
-    $params = array($db_flags, $template_id);
-    $ok = db_query($query, $params);
-
-    if($ok) { 
-        if ($_REQUEST['page']=='properties')
-        {
-            properties_display($xerte_toolkits_site,$template_id,true,"engine");
-        }
-        else
-        {
-            publish_display($template_id);
+        if ($engine != 'flash' && $engine != 'javascript') {
+            $engine = 'javascript';
         }
 
-    }else{
+        // Get extra flags
+        $row = db_query_one("SELECT td.extra_flags  FROM {$xerte_toolkits_site->database_table_prefix}templatedetails td WHERE td.template_id = ?", array($template_id));
 
+        $extra_flags = explode(";", $row['extra_flags']);
+        $data = array();
+        foreach ($extra_flags as $i => $flag) {
+            $bits = explode('=', $flag);
+            $data[$bits[0]] = $bits[1];
+        }
+        $data['engine'] = $engine;
+        // need to form into something like: engine=flash;foo=bar;something=somethingelse
+        $db_flags = http_build_query($data, '', ';');
+        $db_flags = str_replace(' ', '_', $db_flags); // not sure why we do this.
+
+        $query = "UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET extra_flags = ? WHERE template_id = ?";
+        $params = array($db_flags, $template_id);
+        $ok = db_query($query, $params);
+
+        if ($ok) {
+            if ($_REQUEST['page'] == 'properties') {
+                properties_display($xerte_toolkits_site, $template_id, true, "engine");
+            } else {
+                publish_display($template_id);
+            }
+
+        } else {
+
+        }
     }
 }

@@ -32,6 +32,11 @@ require_once("../../../config.php");
 _load_language_file("/website_code/php/folderproperties/folderproperties_template.inc");
 _load_language_file("/website_code/php/folderproperties/rename_folder_template.inc");
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
 
 if(is_numeric($_POST['folder_id'])&&is_string($_POST['folder_name'])){
 

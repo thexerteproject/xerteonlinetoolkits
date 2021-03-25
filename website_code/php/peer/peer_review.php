@@ -30,22 +30,22 @@ require_once("../../../config.php");
 
 _load_language_file("/website_code/php/peer/peer_review.inc");
 
-if(empty($_POST['template_id'])) {
+if(empty($_SESSION['template_id'])) {
     die("invalid form submission");
 }
 
 $query_for_file_name = "select template_name from {$xerte_toolkits_site->database_table_prefix}templatedetails where template_id =?";
 
-$row_template_name = db_query_one($query_for_file_name, array($_POST['template_id']));
+$row_template_name = db_query_one($query_for_file_name, array($_SESSION['template_id']));
 
 $query_for_access_to_whom = "select access_to_whom from {$xerte_toolkits_site->database_table_prefix}templatedetails where template_id =?";
 
-$row_access_to_whom = db_query_one($query_for_access_to_whom, array($_POST['template_id']));
+$row_access_to_whom = db_query_one($query_for_access_to_whom, array($_SESSION['template_id']));
 $access=$row_access_to_whom["access_to_whom"];
 
 $headers = get_email_headers();
 
-if(isset($_POST['retouremail'])){
+if(isset($_SESSION['retouremail'])){
 
     if($xerte_toolkits_site->apache=="true") {
         $playstring = "peerreview_";
@@ -59,12 +59,15 @@ if(isset($_POST['retouremail'])){
         }
     }
 
+    $identification = PEER_REVIEW_IDENTIFICATION;
+    $identification = str_replace("{template_id}", $_SESSION['template_id'], $identification);
+    $identification = str_replace("{url}", $xerte_toolkits_site->site_url, $identification);
 
     $subject = PEER_REVIEW_FEEDBACK . " - \"" . str_replace("_"," ",$row_template_name['template_name']) ."\"";
 
-    $message = PEER_REVIEW_EMAIL_GREETING . " <br><br> " . PEER_REVIEW_EMAIL_INTRO . " ". str_replace("_"," ",$row_template_name['template_name']) ."."."<br><br><br><a href='" . $xerte_toolkits_site->site_url . $playstring . $_POST['template_id'] . "'>" . $xerte_toolkits_site->site_url . $playstring . $_POST['template_id'] . "</a><br><br><br>" . str_replace("\n", "<br>\n", $_POST['feedback']) . "<br><br><br>" . PEER_REVIEW_EMAIL_YOURS . "<br><br>" . PEER_REVIEW_EMAIL_SIGNATURE;
+    $message = PEER_REVIEW_EMAIL_GREETING . " <br><br> " . PEER_REVIEW_EMAIL_INTRO . " ". str_replace("_"," ",$row_template_name['template_name']) ."."."<br><br><br><a href='" . $xerte_toolkits_site->site_url . $playstring . $_SESSION['template_id'] . "'>" . $xerte_toolkits_site->site_url . $playstring . $_SESSION['template_id'] . "</a><br><br><br>" . str_replace("\n", "<br>\n", $_POST['feedback']) . "<br><br><br>" . PEER_REVIEW_EMAIL_YOURS . "<br><br>" . PEER_REVIEW_EMAIL_SIGNATURE . "<br><br>" . $identification;
 
-    if(mail( $_POST['retouremail'], $subject, $message, $headers)){
+    if(mail( $_SESSION['retouremail'], $subject, $message, $headers)){
 
         echo "<b>" . PEER_REVIEW_USER_FEEDBACK . "</b>";
 
