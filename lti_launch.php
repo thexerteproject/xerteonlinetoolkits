@@ -49,9 +49,15 @@ if(is_numeric($id) || $id == null)
 	$lti_enabled = true;
     $LAUNCH = LTIX::requireData();
 
+    $islti13 = $LAUNCH->isLTIAdvantage();
+    if ($islti13) {
+        $msg = array();
+        $nrps = $LAUNCH->context->loadNamesAndRoles(false, $msg);
+    }
+
     if ($id == null)
     {
-        $id = $LAUNCH->ltiRawParameter('template_id');
+        $id = $LAUNCH->ltiCustomGet('template_id');
         if (!is_numeric($id))
         {
             exit;
@@ -63,7 +69,7 @@ if(is_numeric($id) || $id == null)
     _debug("LTI user: " . print_r($USER, true));
     $xerte_toolkits_site->lti_user = $USER;
 
-    $group = $LAUNCH->ltiRawParameter('group');
+    $group = $LAUNCH->ltiParameter('group');
     if ($group === false)
     {
         $group = $LAUNCH->ltiCustomGet('group');
@@ -76,7 +82,7 @@ if(is_numeric($id) || $id == null)
     {
         $xerte_toolkits_site->group = $group;
     }
-    $course = $LAUNCH->ltiRawParameter('course');
+    $course = $LAUNCH->ltiParameter('course');
     if ($course === false)
     {
         $course = $LAUNCH->ltiCustomGet('course');
@@ -89,7 +95,7 @@ if(is_numeric($id) || $id == null)
     {
         $xerte_toolkits_site->course = $course;
     }
-    $module = $LAUNCH->ltiRawParameter('module');
+    $module = $LAUNCH->ltiParameter('module');
     if ($module === false)
     {
         $module = $LAUNCH->ltiCustomGet('module');

@@ -395,7 +395,8 @@ function button_check(){
                         edit_window(false, "edit");
                     }
                     else if (e.ctrlKey) {
-                        edit_window(false, "edithtml", "_blank");
+                        win = edit_window(false, "edithtml", "_blank");
+                        win.focus();
                     }
                     else
                     {

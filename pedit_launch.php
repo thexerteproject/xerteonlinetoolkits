@@ -84,10 +84,10 @@ if (is_numeric($id))
 
     if (!isset($_REQUEST['param']))
     {
-        $xerte_toolkits_site->lti_user->first_name = "Guest";
-        $xerte_toolkits_site->lti_user->last_name = "User";
-        $xerte_toolkits_site->lti_user->email = "info@cowsignals.com";
-        $xerte_toolkits_site->lti_user->displayname = "Guest User";
+        $xerte_toolkits_site->xapi_user->first_name = "Guest";
+        $xerte_toolkits_site->xapi_user->last_name = "User";
+        $xerte_toolkits_site->xapi_user->email = "info@example.com";
+        $xerte_toolkits_site->xapi_user->displayname = "Guest User";
     }
     else
     {
@@ -118,16 +118,16 @@ if (is_numeric($id))
 
         $attrs = $members[0]->attributes();
 
-        $xerte_toolkits_site->lti_user->first_name = (string) $members[0]['firstName'];
+        $xerte_toolkits_site->xapi_user->first_name = (string) $members[0]['firstName'];
         if (strlen($members[0]['middleName']) > 0)
         {
-            $xerte_toolkits_site->lti_user->last_name = (string)$members[0]['middleName'] . ' ' . (string)$members[0]['lastName'];
+            $xerte_toolkits_site->xapi_user->last_name = (string)$members[0]['middleName'] . ' ' . (string)$members[0]['lastName'];
         }
         else {
-            $xerte_toolkits_site->lti_user->last_name = (string)$members[0]['lastName'];
+            $xerte_toolkits_site->xapi_user->last_name = (string)$members[0]['lastName'];
         }
-        $xerte_toolkits_site->lti_user->email = (string)$members[0]['emailAddressPrivate'];
-        $xerte_toolkits_site->lti_user->displayname = $xerte_toolkits_site->lti_user->first_name . ' ' . $xerte_toolkits_site->lti_user->last_name;
+        $xerte_toolkits_site->xapi_user->email = (string)$members[0]['emailAddressPrivate'];
+        $xerte_toolkits_site->xapi_user->displayname = $xerte_toolkits_site->xapi_user->first_name . ' ' . $xerte_toolkits_site->xapi_user->last_name;
 
         // Get goup information
         $soapresult = $client->GetPageInformation(array(

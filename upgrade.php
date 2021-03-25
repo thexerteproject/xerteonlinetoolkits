@@ -192,7 +192,8 @@ function _do_cleanup()
         'themes/Nottingham/flatred/responsivetext.css',
         'themes/Nottingham/flatwhite/responsivetext.css',
         'themes/Nottingham/orangepurple/responsivetext.css',
-        'themes/Nottingham/sketch/responsivetext.css'
+        'themes/Nottingham/sketch/responsivetext.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/DO NOT CHANGE THESE FILES. USE -src- FOLDER.txt'
     );
 
     foreach ($filelist as $file)
@@ -1013,5 +1014,29 @@ function upgrade_24()
     return "Creating template_sub_pages field in originaltemplatesdetails already present - ok ? ". "<br>";
 }
 
+function upgrade_25()
+{
+    if (!_db_field_exists('templatedetails', 'tsugi_usetsugikey')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_usetsugikey', 'int(1)', '1', 'tsugi_published');
+        $error1_returned = true;
 
+        $error2 = _db_add_field('templatedetails', 'tsugi_privatekeyonly', 'int(1)', '0', 'tsugi_usetsugikey');
+        $error2_returned = true;
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+            // echo "creating LRS_Endpoint field FAILED";
+        }
+
+        if (($error2 === false)) {
+            $error2_returned = false;
+            // echo "creating LRS_Key field FAILED";
+        }
+        return "Creating tsugi_usetsugikey and  tsugi_privatekeyonly field in templatedetails - ok ? " . ($error1_returned && $error2_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating tsugi_usetsugikey and  tsugi_privatekeyonly field in templatedetails already present - ok ? ". "<br>";
+    }
+}
 ?>
