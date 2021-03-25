@@ -50,7 +50,7 @@ if(is_numeric($_POST['template_id'])){
         $database_id = database_connect("Template rename database connect success", "Template rename database connect failed");
 
         $query = "update {$prefix}templatedetails SET template_name = ? WHERE template_id = ?";
-        $params = array(str_replace(" ", "_", $_POST['template_name']), $_POST['template_id']);
+        $params = array(htmlspecialchars(str_replace(" ", "_", $_POST['template_name'])), $_POST['template_id']);
 
         if (db_query($query, $params)) {
 

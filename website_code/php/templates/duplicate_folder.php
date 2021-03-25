@@ -28,10 +28,10 @@
  */
 
 require_once("../../../config.php");
-include "../user_library.php";
-include "../folder_library.php";
-include "../template_library.php";
-include "../template_status.php";
+require_once("../user_library.php");
+require_once("../folder_library.php");
+require_once("../template_library.php");
+require_once("../template_status.php");
 
 _load_language_file("/website_code/php/templates/duplicate_folder.inc");
 
