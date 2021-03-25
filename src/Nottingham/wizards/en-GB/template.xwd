@@ -114,10 +114,7 @@
 	  home="false" back="false" next="false"
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
-	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><chooseImage><![CDATA[<chooseImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Click Explore" align="Left" attempts="1"
-  	  nextTxt="Next"
-	  priorTxt="Previous"
-	  />]]></chooseImage><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="Enter text for the page here" textWidth="narrow" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" align="Left" home="false" back="false" next="false"
+	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="Enter text for the page here" textWidth="narrow" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" align="Left" home="false" back="false" next="false"
 	  notFoundMessage="could not be found in this project." continueBtnTxt="Close" />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" buttonWidth="100%" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts = "1"  again="Try again, you have /a attempt(s) left" text="Enter Page text" />]]></crossword><customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true"
 	  hotspotsTxt="Explore the diagram. Click on the various parts to learn more."
 	  labelsTxt="Drag the pins for each label to the correct position in the diagram. You can re-position the labels if required." 
@@ -148,10 +145,7 @@
   	  warning="You have not selected anything"
 	  scoreTxt="You have /r answer(s) right and /w wrong"
 	  again="Try again, you have /a attempt(s) left"
-	  />]]></hotSpotQuestion><hotSpotSumma><![CDATA[<hotSpotSumma name="hotSpotSumma" text="Pagina met fotos waar je om moet kliken en score bijkomt" url="Plaats een foto" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" align="Left" attempts = "1"
-  	  nextTxt="Next"
-	  priorTxt="Previous"
-	  />]]></hotSpotSumma><hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" align="Left" attempts = "1"
+	  />]]></hotSpotQuestion><hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter here the instructions for the page" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" align="Left" attempts = "1"
   	  nextTxt="Next"
 	  priorTxt="Previous"
 	  />]]></hotspotImage><iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring><imageViewer><![CDATA[<imageViewer name="Enter Page Title" align="Left" url="Select an Image" tip="Enter a Description for Accessibility"
@@ -1316,96 +1310,7 @@
     <name label="Series Name" type="TextInput" wysiwyg="true"/>
     <data label="Chart Data" headers="X,Y" newRow="label,data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1"/>
     <colour label="Colour" type="colourPicker" defaultValue="0xFF0000"/>
-  </series><chooseImage menu="Interactivity" menuItem="Choose Image" hint="An interaction where you have to choose the correct and incorrect regions of an image." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
-
-    <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="250"/>
-	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-	
-	<image type="group" label="Image">
-		<url label="File" type="media"/>
-		<tip label="Description" type="TextInput"/>
-	</image>
-    
-    <hsAppearance type="group" label="Hotspot highlight appearance" optional="true" tooltip="Set colours of hotspots">
-        <hicol label="Stroke colour" type="ColourPicker" optional="true" defaultValue="0xFFFFFF" tooltip="The colour of the edges of the hotspot"/>
-        <hs_strokeOpacity label="Stroke opacity" type="TextInput" optional="true" defaultValue="0" tooltip="The opacity (a decimal number between 0 and 1) of the edges of the hotspot"/>
-        <hs_strokeWidth label="Stroke width" type="TextInput" optional="true" defaultValue="0" tooltip="Width of the edges of the hotspot"/>
-        <hs_fill label="Fill hotspot" type="CheckBox" optional="true" defaultValue="true" tooltip="Fill the hotspot"/>
-        <hs_fillColor label="Fill colour" type="ColourPicker" optional="true" defaultValue="0x000000" tooltip="The fill colour of the hotspot"/>
-        <hs_fillOpacity label="Fill opacity" type="TextInput" optional="true" defaultValue="0.1" tooltip="The opacity (a decimal number between 0 and 1) of fill colour of the hotspot"/>
-	</hsAppearance>
-    <attempts label="Amount of attempts" type="TextInput" defaultValue="1"/>
-	
-    <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
-
-  <button menuItem="Button" icon="icBulletBlue" remove="true">
-    <name label="Button Label" type="TextInput" wysiwyg="true"/>
-	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" deprecated="Width is now set automatically"/>	
-    <text label="Feedback" type="TextArea" height="250"/>
-  </button>
-
-    <newNodes>
-	  <chotspot><![CDATA[<chotspot name="Hotspot" x="0" y="0" w="100" h="100" truth="false"/>]]></chotspot>
-    </newNodes>
-
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
-		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
-		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
-		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
-	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled." common="true"/><navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this pages" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here." common="true">
-		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
-		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
-		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
-		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
-		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
-		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
-	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
-		<pageID label="Page ID" type="TextInput" optional="true"/>
-	</customLinkGroup><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page" common="true"/><styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page" common="true"/><tracking type="group" label="Tracking" optional="true" common="true">
-        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use instead of page number as tracking identifier (SCORM and xAPI)"/>
-        <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
-	</tracking><scripts type="group" label="Script" optional="true" tooltip="Add JavaScript to run either on first load or every view of this page" common="true">
-		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
-		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
-	</scripts><background type="group" label="Background" optional="true" tooltip="Add a background image to this page" common="true">
-		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
-		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
-		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
-		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
-		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
-		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
-		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
-		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
-		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
-		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
-	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
-		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
-		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></chooseImage><chotspot type="flexhotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
-    <name label="Title" type="TextInput" wysiwyg="true"/>
-    <truth label="Hotspot Truth" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
-  </chotspot><hotspotquestion type="hotSpot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
-
-    <name label="Label" type="TextInput" wysiwyg="true"/>
-    <question label="Question" type="TextArea" height="250"/>
-    <feedback label="Feedback" type="TextArea" wysiwyg="true" DefaultValue="true"/>
-    <hint label="Hint" type="TextArea" wysiwyg="true" optional="true"/>
-
-  </hotspotquestion><columnPage menu="Text" menuItem="Columns" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
+  </series><columnPage menu="Text" menuItem="Columns" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
 	
@@ -3032,88 +2937,7 @@
     <text label="Feedback" type="TextArea" height="250"/>
     <truth label="Hotspot Truth" options="True,False" type="ComboBox" data="true,false" defaultValue="true" width="100"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
-  </QHotSpot><hotSpotSumma menu="Interactivity" menuItem="SummaHotSpot" hint="Een test hotspot van Summa" icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
-
-    <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="250"/>
-	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-	
-	<image type="group" label="Image">
-		<url label="File" type="media"/>
-		<tip label="Description" type="TextInput"/>
-	</image>
-    
-    <highlight label="Show Highlight" type="CheckBox" defaultValue="false"/>
-    <hsAppearance type="group" label="Hotspot highlight appearance" optional="true" tooltip="Set colours of hotspots">
-        <hicol label="Stroke colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the edges of the hotspot"/>
-        <hs_strokeOpacity label="Stroke opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of the edges of the hotspot"/>
-        <hs_strokeWidth label="Stroke width" type="TextInput" optional="true" defaultValue="2" tooltip="Width of the edges of the hotspot"/>
-        <hs_fill label="Fill hotspot" type="CheckBox" optional="true" defaultValue="true" tooltip="Fill the hotspot"/>
-        <hs_fillColor label="Fill colour" type="ColourPicker" optional="true" defaultValue="0x000000" tooltip="The fill colour of the hotspot"/>
-        <hs_fillOpacity label="Fill opacity" type="TextInput" optional="true" defaultValue="0.1" tooltip="The opacity (a decimal number between 0 and 1) of fill colour of the hotspot"/>
-        <hs_showTooltip label="Show tooltip" type="CheckBox" optional="true" defaultValue="true" tooltip="Show tooltip on hover, the label is used as tooltip"/>
-	</hsAppearance>
-	<interactivity label="Interactivity" options="Show Me,Click Explore" type="ComboBox" data="Show Me,Click Explore" defaultValue="Show Me" width="100"/>
-    <attempts label="Amount of attempts" type="TextInput" defaultValue="1"/>
-	
-    <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
-
-    <newNodes>
-	  <SummaHotSpot><![CDATA[<SummaHotSpot name="Hotspot" text="Description for the hotspot" x="0" y="0" w="100" h="100" truth="false"/>]]></SummaHotSpot>
-    </newNodes>
-
-  <narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
-		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
-		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
-		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
-	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled." common="true"/><navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this pages" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here." common="true">
-		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
-		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
-		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
-		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
-		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
-		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
-	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
-		<pageID label="Page ID" type="TextInput" optional="true"/>
-	</customLinkGroup><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page" common="true"/><styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page" common="true"/><tracking type="group" label="Tracking" optional="true" common="true">
-        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use instead of page number as tracking identifier (SCORM and xAPI)"/>
-        <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
-	</tracking><scripts type="group" label="Script" optional="true" tooltip="Add JavaScript to run either on first load or every view of this page" common="true">
-		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
-		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
-	</scripts><background type="group" label="Background" optional="true" tooltip="Add a background image to this page" common="true">
-		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
-		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
-		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
-		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
-		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
-		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
-		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
-		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
-		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
-		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
-	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
-		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
-		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></hotSpotSumma><SummaHotSpot type="flexhotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
-    <name label="Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
-    <truth label="Hotspot Truth" options="True,False" type="ComboBox" data="true,false" defaultValue="true" width="100"/>
-	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
-  </SummaHotSpot><hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
+  </QHotSpot><hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -3193,7 +3017,14 @@
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="Enter a Description for Accessibility" optional="true"/>
-  </flexhotspot><iSpring menu="Media" menuItem="iSpring Movie" hint="Adds an iSpring Movie to your piece. iSpring movies should be published to 685 x 514 pixels." icon="icISpring" thumb="thumbs/ispring.jpg" remove="true" deprecated="This page is no longer supported">
+  </flexhotspot><hotspotquestion type="hotSpot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
+
+    <name label="Label" type="TextInput" wysiwyg="true"/>
+    <question label="Question" type="TextArea" height="250"/>
+    <feedback label="Feedback" type="TextArea" wysiwyg="true" DefaultValue="true"/>
+    <hint label="Hint" type="TextArea" wysiwyg="true" optional="true"/>
+
+  </hotspotquestion><iSpring menu="Media" menuItem="iSpring Movie" hint="Adds an iSpring Movie to your piece. iSpring movies should be published to 685 x 514 pixels." icon="icISpring" thumb="thumbs/ispring.jpg" remove="true" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="ISpring Movie" type="Media"/>
@@ -4268,8 +4099,8 @@
 		<name label="Overlay Panel Title" type="TextInput"/>
 
 		<newNodes>
-			<!--<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchXot>
-			--><!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearpanel="true" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
+			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchXot>
+			<!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearpanel="true" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
 			<!--<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchGoogleFeed>
 			--><!--<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearpanel="true" pauseMedia="false" fullH="true"/>]]></synchWebpage>
 			--><!--<synchMediaPlus><![CDATA[<synchMediaPlus name="Enter Title" media="Select Media" width="800" height="600" tip="Enter a Description for Accessibility" synchStart="0" autoplay="false" clearpanel="true" pauseMedia="true" transcriptBtnTxt="Transcript"/>]]></synchMediaPlus>
@@ -4312,7 +4143,15 @@
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+		<hsAppearance type="group" label="Optional Hotspot Appearance" optional="true" tooltip="Customise the appearance of hotspots">
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+			<tooltip label="Show Title as Tooltip" type="CheckBox" defaultValue="true"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" mandatory="false"/>
+			<colour1 label="Main Colour" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="5" max="25" step="1" defaultValue="14" optional="true"/>
+			<orientation label="Orientation" type="NumericStepper" min="-359" max="359" step="1" defaultValue="0" mandatory="true"/>
+		</hsAppearance>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>

@@ -84,8 +84,8 @@
 		<name label="Overlay Panel Title" type="TextInput"/>
 
 		<newNodes>
-			<!--<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchXot>
-			--><!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearpanel="true" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
+			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchXot>
+			<!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearpanel="true" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
 			<!--<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchGoogleFeed>
 			--><!--<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearpanel="true" pauseMedia="false" fullH="true"/>]]></synchWebpage>
 			--><!--<synchMediaPlus><![CDATA[<synchMediaPlus name="Enter Title" media="Select Media" width="800" height="600" tip="Enter a Description for Accessibility" synchStart="0" autoplay="false" clearpanel="true" pauseMedia="true" transcriptBtnTxt="Transcript"/>]]></synchMediaPlus>
@@ -138,7 +138,15 @@
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+		<hsAppearance type="group" label="Optional Hotspot Appearance" optional="true" tooltip="Customise the appearance of hotspots">
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+			<tooltip  label="Show Title as Tooltip" type="CheckBox" defaultValue="true"/>
+			<icon     label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" mandatory="false"/>
+			<colour1  label="Main Colour" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour2  label="Secondary Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+			<hsSize   label="Size" type="NumericStepper" min="5" max="25" step="1" defaultValue="14" optional="true"/>
+			<orientation label="Orientation" type="NumericStepper" min="-359" max="359" step="1" defaultValue="0" mandatory="true"/>
+		</hsAppearance>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content"  type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>

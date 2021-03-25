@@ -58,6 +58,78 @@
     display: inline-block;
 }
 
+div.hotspot360Icon {
+    border-style: solid;
+    border-radius: 50%;
+    cursor: pointer;
+}
+    
+div.hotspot360Icon span.icon360Holder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: table;
+}
+
+div.hotspot360Icon span.icon360Holder .icon360 {
+    display: table-cell;
+}
+
+div.hotspot360Icon.hide:not(.hover), div.hotspot360Icon.hover:not(:hover):not(:focus) {
+    background: none !important;
+    border: none;
+}
+
+div.hotspot360Icon.hide:not(.hover) span.icon360Holder, div.hotspot360Icon.hover:not(:hover):not(:focus) span.icon360Holder {
+    opacity: 0;
+}
+
+div.hotspot360Icon.hide:not(.hover) {
+    box-shadow: none !important;
+}
+
+div.hotspot360Icon:not(.hide):focus, div.hotspot360Icon.hover:focus {
+    outline: none;
+}
+
+div.hotspot360Icon.lock.lockHide {
+    display: none;
+}
+
+div.hotspot360Icon.tooltip .tip {
+    position: absolute;
+    border-radius: 3px;
+    background-color:rgba(0,0,0,0.7);
+    color:#fff;
+    text-align: center;
+    padding: 5px 10px;
+    cursor: default;
+    width: max-content;
+}
+
+div.hotspot360Icon.tooltip .tip {
+    outline: none;
+}
+
+div.hotspot360Icon.tooltip .tip .tipArrow {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-width: 10px;
+    border-style: solid;
+    border-color:rgba(0,0,0,0.7) transparent transparent transparent;
+    bottom: -20px;
+    left: -10px;
+    margin: 0 50%;
+}
+
+div.hotspot360Icon.tooltip .tip .tipArrow.arrowUp {
+    border-color: transparent transparent rgba(0,0,0,0.7) transparent;
+    top: -20px;
+}
+
 /* QUESTION MENUS 
     Should have a bg but its set in code easier this way
     INP add an Active class which handles this?*/
