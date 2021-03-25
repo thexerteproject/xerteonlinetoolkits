@@ -95,9 +95,17 @@
 			$("#pageContents").data("judge", judge);
 			
             // Create fallback label
-            var questionTxt = (x_currentPageXML.getAttribute('questionTxt') != undefined ? x_currentPageXML.getAttribute('questionTxt') : "Multiple choice question");
-            questionTxt += ' ' + (x_currentPage+1);
-            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), questionTxt), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
+            var label = (x_currentPageXML.getAttribute('questionTxt') != undefined ? x_currentPageXML.getAttribute('questionTxt') : "Multiple choice question");
+            label += ' ' + (x_currentPage+1);
+			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+			{
+				label = x_currentPageXML.getAttribute("trackinglabel");
+			}
+			else
+			{
+				label = x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), label);
+			}
+            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', label, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
         }
 
         this.leavePage = function() {

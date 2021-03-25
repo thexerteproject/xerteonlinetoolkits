@@ -427,8 +427,12 @@
                     correctOptions.push(correctOption);
             	}
             );
-            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswers, correctFeedbacks, x_currentPageXML.getAttribute("grouping"));
-
+            var label=x_currentPageXML.getAttribute("name");
+			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+			{
+				label = x_currentPageXML.getAttribute("trackinglabel");
+			}
+            XTEnterInteraction(x_currentPage, 0, 'match', label, correctOptions, correctAnswers, correctFeedbacks, x_currentPageXML.getAttribute("grouping"));
 		}
 		
 		
