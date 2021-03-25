@@ -28,8 +28,8 @@ if (file_exists('../../../config.php')) {
   require_once('config.php');
 
 }
-include 'file_library.php';
-include 'user_library.php';
+require_once('file_library.php');
+require_once('user_library.php');
 
 _load_language_file("/website_code/php/folder_library.inc");
 

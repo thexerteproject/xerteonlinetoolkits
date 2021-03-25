@@ -36,4 +36,4 @@ if (!isset($_SESSION['toolkits_logon_username']))
     die("Session is invalid or expired");
 }
 
-make_new_folder($_POST['folder_id'],$_POST['folder_name']);
+make_new_folder($_POST['folder_id'],htmlspecialchars($_POST['folder_name']));

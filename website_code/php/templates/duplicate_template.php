@@ -84,7 +84,7 @@ if(is_numeric($_POST['template_id'])){
             date('Y-m-d'), 
             date('Y-m-d'),
             "Private",
-            "Copy of " . $_POST['template_name'], 
+            "Copy of " . htmlspecialchars($_POST['template_name']),
             $row_template_type['extra_flags']);
 
         $new_template_id = db_query($query_for_new_template, $params);
