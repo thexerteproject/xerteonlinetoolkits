@@ -191,6 +191,7 @@
 	.panel .contentBlock {
 		width:			100%;
 		margin-bottom:	5px;
+		z-index: 10;
 	}
 	
 	

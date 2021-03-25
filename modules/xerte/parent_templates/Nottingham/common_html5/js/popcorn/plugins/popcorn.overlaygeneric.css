@@ -64,6 +64,7 @@
 .qWindow {
     width: 60%;
     margin: 5px;
+    z-index: 10;
     background-color: #FE00FE
 }
 

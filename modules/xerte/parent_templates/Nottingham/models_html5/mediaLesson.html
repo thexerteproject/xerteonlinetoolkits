@@ -179,7 +179,7 @@
                 mediaLesson.resizeVimeo($(this));
             });
 
-            $(".popcornMedia.midiasite").each(function(i) {
+            $(".popcornMedia.mediasite").each(function(i) {
                 mediaLesson.resizeMediasite($(this));
 			});
 			
@@ -224,6 +224,10 @@
 					else {
 						$('#playButton').removeClass('fa-x-pause').addClass('fa-x-play'); 
 					}
+					$(".popcornMedia.vimeo").each(function(i) {
+						$('#playButton').removeClass('fa-x-play').removeClass('fa-x-pause');
+						$('#playButton').css("height", "0em");
+					});
 				}
 			}
 			
@@ -1423,7 +1427,6 @@
 				
 				// ____ ADD SYNCH EVENT ON SLIDER ____
 				// Clear Content should not be counted as an event.
-				debugger;
 				if (thisContent.type != "synchEmpty")
 				{
 					var $eventMarker =  $('<div id=marker_' + j + ' class="trackBarEventMarker ui-icon-play"></div>')
