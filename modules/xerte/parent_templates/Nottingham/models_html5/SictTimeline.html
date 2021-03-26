@@ -13,6 +13,7 @@
 
 		var counter = 0;
 		var img = []
+		var items = []
 		this.loadJS = function () {
 
 			$('<link/>', {
@@ -176,19 +177,20 @@
 
 				$('.tl-slidenav-next').click(function (){
 					debugger
+					//NIEUW------------------------------------
 					counter++
-					var imgPath = img[counter].src
+					var imgPath = items.eq(counter).find('img')[0]
+					if(imgPath !== undefined){
+						imgPath = imgPath.src
+					}
 					var youtube = false
 					if(imgPath!== undefined && imgPath!== null){
 						youtube = imgPath.includes("youtube")
 					}
-					$('.tl-media-content').unwrap();
-					if(imgPath !== "" && !youtube){
+					$('.tl-media-content').find('.lightboxWrapper').unwrap();
+					if(imgPath !== "" && imgPath !== undefined && !youtube){
 						$('.tl-media-content').wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
 					}
-					// var margT = $('.tl-media-item ')[counter].outerWidth(true) - $('.tl-media-item ')[counter].outerWidth();
-					// $('.tl-caption').css("marginLeft", margT/2)
-					// $('.tl-caption').css("width", margT/2)
 
 					SictTimeline.resizeImg();
 
@@ -298,57 +300,46 @@
 			var normal;
 			var small;
 			var arrow;
+			var imgH;
 
-			img = document.getElementsByClassName("tl-media-item")
+			//img = document.getElementsByClassName("tl-media-item")
+			img = $('.tl-media-item')
+			items = $('.tl-slide')
 
 			big = imgMaxH*0.7
 			normal = imgMaxH*0.6
 			small = imgMaxH*0.4
 			arrow = small*0.5
+			imgH = normal*1.3
+
 			big = big.toString()
 			normal = normal.toString()
 			small = small.toString()
 			arrow = arrow.toString()
+			imgH = imgH.toString()
 
-
-
-			for(var i =0; i < img.length; i++){
-				if(img[i].src !== ""){
-
-					//document.getElementById("timeline-embed").style = "height: " + height + "px !important;"
-					//document.getElementsByClassName("tl-storyslider").style = "height: " + imgMaxH + "px !important;"
-					$("#timeline-embed").css("height", big)
-					$(".tl-storyslider").css("height", big)
-					$(".tl-media-content-container").css("height", small)
-					$(".tl-media").css("height", small)
-					$(".tl-media-content").css("height", small)
-
-					//arrow ajustment
-					$(".tl-slidenav-next").css("top", arrow)
-
-
-					img[i].style = "max-height: "+normal+"px; !important"
-					img[i].style = "max-width: "+normal+"px; !important"
-				}else{
-					$("#timeline-embed").css("height", big)
-					$(".tl-storyslider").css("height", big)
-					$(".tl-media-content-container").css("height", small)
-					$(".tl-media").css("height", small)
-					$(".tl-media-content").css("height", small)
-
-					//arrow ajustment
-					$(".tl-slidenav-next").css("top", arrow)
-
-					img[i].style = "max-height: "+small +"px; !important"
-					img[i].style = "width: 30%; !important"
-				}
-
+			var imgPath = items.eq(counter).find('img')[0]
+			if(imgPath !== undefined){
+				imgPath = imgPath.src
 			}
 
+			if(imgPath !== "" && imgPath !== undefined){
+				$("#timeline-embed").css("height", big+"px")
+				$(".tl-storyslider").css("height", big+"px")
+				$(".tl-media-content-container").css("height", small+"px")
+				$(".tl-media").css("height", small+"px")
+				$(".tl-media-content").css("height", normal+"px")
 
-			var margT = $('.tl-media-item ').outerWidth(true) - $('.tl-media-item ').outerWidth();
-			$('.tl-caption').css("marginLeft", margT/2)
-			$('.tl-caption').css("width", margT)
+				items.eq(counter).find('img').css({
+					"max-height": normal +"px",
+					"max-width": imgH +"px"
+				});
+
+				var margT = items.eq(counter).find('img').css('margin-left')
+				$('.tl-caption').css("marginLeft", margT)
+				$('.tl-caption').css("width", "100px")
+
+			}
 
 			var heightTimeLine = $('.tl-timenav').height()
 			heightTimeLine= heightTimeLine/3
@@ -362,7 +353,8 @@
 			})
 
 
-		};
+
+			};
 
 		var isoCountries = {
 
