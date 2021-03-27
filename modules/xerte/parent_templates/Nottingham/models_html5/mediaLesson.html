@@ -1288,11 +1288,11 @@
 				prevStart = 0,
 				start, end;
 			var overlayScreen = $("#overlay");
-            if($(synchData).context.getAttribute("overlay"))
+            if($(synchData).context.getAttribute("overlay")){
                 $(synchData).each(function() {
                     this.overlay = true;
 				});
-
+			}
 			$(synchData).each(function(j) {
 				// ignore the media synchCues as they will be set up separately
 				if (this.nodeName != "synchCue") {
@@ -1457,11 +1457,31 @@
 					});
 				}
 				if (thisContent.type != "synchEmpty") {
+					// Background Color
+					var colour1 = thisContent.allInfo.getAttribute("colour1");
+					colour1 = colour1 == '' || colour1 == undefined ? '#000000' : colour1;
+					colour1 = colour1.indexOf('0x') === 0 ? colour1.replace("0x", "#") : colour1;
+
+					// Icon Color
+					var colour2 = thisContent.allInfo.getAttribute("colour2");
+					colour2 = colour2 == '' || colour2 == undefined ? '#FFFFFF' : colour2;
+					colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
+
+					// Collect Look-and-Feel data for hotspots.
+					var hsAttributes = {
+						optional: thisContent.allInfo.getAttribute("optional"),
+						tooltip : thisContent.allInfo.getAttribute("tooltip"),
+						icon    : thisContent.allInfo.getAttribute("icon"),
+						colour1 : colour1,
+						colour2 : colour2,
+						hsSize  : thisContent.allInfo.getAttribute("hsSize"), 
+					};
 					var pluginAttributes = {
-						start	:thisContent.start,
-						end		:thisContent.end,
-						target	:thisContent.target,
-						optional: thisContent.optional,
+						start	  : thisContent.start,
+						end		  : thisContent.end,
+						target	  : thisContent.target,
+						optional  : thisContent.optional,
+						attrib	  : hsAttributes,
 						overlayPan: thisContent.overlayPanel
 					};
 

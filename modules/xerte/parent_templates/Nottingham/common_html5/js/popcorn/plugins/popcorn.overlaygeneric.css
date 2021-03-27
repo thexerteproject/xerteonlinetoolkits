@@ -25,15 +25,15 @@
 
 
 /* OPTIONAL ELEMENT BUTTON */
-.showButton { 
-    position: absolute;
-    width: 48px;
-    height: 48px;
-    float: left;
-    z-index: 6; /*always have this higher than the label's */
+.showHotspot { 
+    position      : absolute;
+    height        : auto;
+    width         : auto;
+    float         : left;
+    box-shadow    : none;
+    z-index       : 6; /*always have this higher than the label's */
+    text-align    : center;
     vertical-align: middle;
-    border-radius: 25px;
-    background-color: #BBBBBB
 }
 .showLabel {
     position: absolute;
@@ -52,67 +52,19 @@
     background-color: #DEDEDE;
 }
 
-#showHolder {
-    cursor: pointer;
-    z-index: 10000;
-    display: inline-block;
-}
-
-div.hotspot360Icon {
-    border-style: solid;
-    border-radius: 50%;
-    cursor: pointer;
-}
-    
-div.hotspot360Icon span.icon360Holder {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: table;
-}
-
-div.hotspot360Icon span.icon360Holder .icon360 {
-    display: table-cell;
-}
-
-div.hotspot360Icon.hide:not(.hover), div.hotspot360Icon.hover:not(:hover):not(:focus) {
-    background: none !important;
-    border: none;
-}
-
-div.hotspot360Icon.hide:not(.hover) span.icon360Holder, div.hotspot360Icon.hover:not(:hover):not(:focus) span.icon360Holder {
-    opacity: 0;
-}
-
-div.hotspot360Icon.hide:not(.hover) {
-    box-shadow: none !important;
-}
-
-div.hotspot360Icon:not(.hide):focus, div.hotspot360Icon.hover:focus {
-    outline: none;
-}
-
-div.hotspot360Icon.lock.lockHide {
-    display: none;
-}
-
-div.hotspot360Icon.tooltip .tip {
+.tooltip {
     position: absolute;
     border-radius: 3px;
     background-color:rgba(0,0,0,0.7);
-    color:#fff;
+    color:#EEEEEE;
     text-align: center;
     padding: 5px 10px;
+    outline: none;
     cursor: default;
     width: max-content;
 }
 
-div.hotspot360Icon.tooltip .tip {
-    outline: none;
-}
-
-div.hotspot360Icon.tooltip .tip .tipArrow {
+.tooltip .tipArrow {
     content: '';
     position: absolute;
     width: 0;
@@ -125,10 +77,32 @@ div.hotspot360Icon.tooltip .tip .tipArrow {
     margin: 0 50%;
 }
 
-div.hotspot360Icon.tooltip .tip .tipArrow.arrowUp {
+.tooltip .tipArrow.arrowUp {
     border-color: transparent transparent rgba(0,0,0,0.7) transparent;
     top: -20px;
 }
+
+#showHolder {
+    cursor: pointer;
+    z-index: 10000;
+    display: inline-block;
+}
+
+div.hotspotIcon {
+    border-style: solid;
+    border-radius: 50%;
+    cursor: pointer;
+}
+    
+div.hotspotIcon span.iconHolder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: table;
+}
+
+
 
 /* QUESTION MENUS 
     Should have a bg but its set in code easier this way
