@@ -897,6 +897,7 @@
 
 		this.addEvents = function() {
             this.popcornInstance.on( "timeupdate", function() {
+				mediaLesson.enableControls(this.media, false, false);
 				var popTime = mediaLesson.popcornInstance.currentTime();
                 //console.log("Timeupdate: " + popTime + " prevTime=" + prevTime + ", seeking=" + mediaLesson.popcornInstance.seeking());
 				var block = mediaLesson.getBlock(lastTime);
@@ -1655,7 +1656,7 @@
 
 				// disable media controls
 				if (synchData.getAttribute("disable") == "true") {
-					mediaLesson.enableControls(this.media, false);
+					mediaLesson.enableControls(this.media, false, true);
 				}
 				
 				// skip media
@@ -1666,7 +1667,7 @@
 		}
 		
 		// function disables / enables media controls
-		this.enableControls = function(media, enable) {
+		this.enableControls = function(media, enable, includeTrackbar = false) {
 			if (enable == true) {
 				// enable
 				if (media.player) {
@@ -1679,20 +1680,24 @@
 					} else {
 						$(media).parent().parent().find(".mejs-controls").children("div").show();
 					}
-					$("#trackBarHolder").show();
+					if (includeTrackbar == true) {
+						$("#trackBarHolder").show();
+					}
 				}
 			} else {
 				// disable
 				if (media.player) {
 					media.player.controlsEnabled = false;
-					media.player.options.clickToPlayPause = false;
+					//media.player.options.clickToPlayPause = false;
 					if (media.nodeName == "VIDEO") {
 						$(media).parent().parent().find(".mejs-controls").hide()
 						$(media).parent().parent().find(".mejs-layers").hide();
 					} else {
 						$(media).parent().parent().find(".mejs-controls").children("div").hide();
 					}
-					$("#trackBarHolder").hide();
+					if (includeTrackbar == true) {
+						$("#trackBarHolder").hide();
+					}
 				}
 			}
 		}
