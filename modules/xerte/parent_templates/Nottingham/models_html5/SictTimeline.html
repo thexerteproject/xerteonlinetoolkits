@@ -199,11 +199,17 @@
 				$('.tl-slidenav-previous').click(function (){
 
 					counter--
-					var imgPath = img[counter].src
-					if(imgPath !== "" && !imgPath.includes("youtube")){
+					var imgPath = items.eq(counter).find('img')[0]
+					if(imgPath !== undefined){
+						imgPath = imgPath.src
+					}
+					var youtube = false
+					if(imgPath!== undefined && imgPath!== null){
+						youtube = imgPath.includes("youtube")
+					}
+					$('.tl-media-content').find('.lightboxWrapper').unwrap();
+					if(imgPath !== "" && imgPath !== undefined && !youtube){
 						$('.tl-media-content').wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
-					}else{
-						$('.tl-media-content').unwrap();
 					}
 					SictTimeline.resizeImg();
 
@@ -310,13 +316,18 @@
 			normal = imgMaxH*0.6
 			small = imgMaxH*0.4
 			arrow = small*0.5
-			imgH = normal*1.3
+			imgH = normal*1.6
 
 			big = big.toString()
 			normal = normal.toString()
 			small = small.toString()
 			arrow = arrow.toString()
 			imgH = imgH.toString()
+
+
+			debugger
+
+			var className = items.eq(counter).attr('class')
 
 			var imgPath = items.eq(counter).find('img')[0]
 			if(imgPath !== undefined){
@@ -339,6 +350,38 @@
 				$('.tl-caption').css("marginLeft", margT)
 				$('.tl-caption').css("width", "100px")
 
+			}
+
+			if(className === "tl-slide tl-slide-media-only"){
+				$('.tl-slide-content').css({
+					"display": "flex",
+					"flex-direction" : 'row-reverse'
+				})
+
+				items.eq(counter).find('iframe').css({
+					"max-height": normal +"px"
+				})
+
+				$(".tl-media").css("height", normal+"px")
+				$(".tl-media-item").css("max-height", normal+"px")
+				$(".tl-text").css({
+					"display": "flex",
+					"align-items": "center"
+				})
+			}else{
+				$('.tl-slide-content').css({
+					"display": "",
+					"flex-direction" : ''
+				})
+
+				items.eq(counter).find('iframe').css({
+					"max-height": ""
+				})
+
+				$(".tl-text").css({
+					"display": "",
+					"align-items": ""
+				})
 			}
 
 			var heightTimeLine = $('.tl-timenav').height()
