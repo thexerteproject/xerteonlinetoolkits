@@ -38,7 +38,7 @@ optional: feedback page synch play enable
 	Popcorn.plugin("mcq", function(options) {
 
 		// define plugin wide variables / functions here
-		var $target, $optHolder, $checkBtn, $feedbackDiv, $continueBtn, media, selected, judge, autoEnable, $showBtn, $showLbl;
+		var $target, $optHolder, $checkBtn, $feedbackDiv, $continueBtn, media, selected, judge, autoEnable, $showHs, $showHsActive;
 		
 		// Score tracking Manager
 		var finishTracking = function(options) {
@@ -421,15 +421,69 @@ optional: feedback page synch play enable
 					$target.hide();
 					
                 	if(options.optional == "true") {
-						var $openPng = x_templateLocation + "common_html5/qmark.png";
 						var $showHolder  = $('<div id="showHolder" />').appendTo($target);
-						$showBtn = $('<image class="showButton x_noLightBox" type="image" src="' + $openPng + '" >').appendTo($showHolder);
-						$showLbl = $("<div class='showLabel'>" + options.name + "</div>").appendTo($showHolder);
+						var size = options.attrib.hsSize;
+						$showHs = $('<div class="Hs x_noLightBox showHotspot"/>').addClass(options.attrib.icon).appendTo($showHolder);
+						$showHs.css({
+							"padding" : size * 0.1,
+							"border-radius" : size / 2 + 1,
+							"font-size" : size * 0.8,
+							"background-color": options.attrib.colour1,
+							"color": options.attrib.colour2,
+						}).data({
+							size: options.attrib.hsSize,
+							colour2: options.attrib.colour1
+						}).hover(function(){
+							var $this = $(this);
+							$this.css({
+								'box-shadow': '0px 0px ' + ($this.data('size')/2) + 'px ' + $this.data('colour2'),
+								'cursor': 'pointer',
+								'z-index': 1000
+							});
+						},
+						function() { // On end hover, remove glow effect
+							$(this)
+								.css({
+									'box-shadow': 'none',
+									'z-index': 1
+								})
+						});
+							
+						var $showLbl = $("<div class='showLabel'>" + options.name + "</div>");
+
+						if(options.attrib.tooltip == "label") {
+							$showLbl.appendTo($showHolder);
+							// Cap the fontsize to reasonable values
+							var fs = size * 0.3 <= 8 ? 8 : size * 0.3 > 16 ? 16 : size * 0.3;
+							$showLbl.css({
+								"padding": 5,
+								"padding-left": size * 0.7 + 7,
+								"left": size * 0.6,
+								"top": size * 0.5,
+								"font-size": fs
+							})
+						}
+						else if(options.attrib.tooltip == "tooltip"){
+							$showLbl.removeClass("showLabel").addClass("tooltip").appendTo($showHolder).hide();
+							$('<div class="tipArrow arrowDown"/>').appendTo($showLbl);
+							$showHs.hover
+							(function(){
+								$showLbl.css({
+									"left": $showLbl.outerWidth()  * -0.5 + size * 0.5,
+									"top" : $showLbl.outerHeight() * -1
+								}).show();
+							}, function() {
+								$showLbl.css({
+									'box-shadow': 'none',
+									'z-index': 1
+								}).hide();
+							});
+						}
 						$showHolder
 							.click(function () {
 								$target.parent().css({"padding": 5, "width": options._w + "%", height: "auto"});
                                 $("#overlay").show();
-								$showLbl = true;
+								$showHsActive = true;
                                 mediaLesson.popcornInstance.media.pause();
                                 $target.parent().addClass("qWindow");
 								$showHolder.hide();
@@ -478,7 +532,7 @@ optional: feedback page synch play enable
 						.html("")
 						.hide()
 						.find("button").remove();
-					if ($showBtn) {
+					if ($showHs) {
 						$optHolder.hide();
 						$checkBtn.hide();
 					} else {
@@ -500,11 +554,11 @@ optional: feedback page synch play enable
 					}
 				}
 				if (options.overlayPan) {
-					if ($showLbl == true) {
+					if ($showHsActive == true) {
 						$target.parent().css({"margin-right" : "5px"});
 					}
 
-					if ($showLbl == true || options.optional == "false" || options.optional == undefined) {
+					if ($showHsActive == true || options.optional == "false" || options.optional == undefined) {
 						$target.parent().addClass("qWindow");
 						$target.parent().css({"width" : options._w + "%"});
 						$optHolder.show();
@@ -512,7 +566,7 @@ optional: feedback page synch play enable
 					}
 					else {
 						$target.parent().css({
-							"padding": 0,	
+							"padding": 0,
 							"height": 0
 						});
 					}

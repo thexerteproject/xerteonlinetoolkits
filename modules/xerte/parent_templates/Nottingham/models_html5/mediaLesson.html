@@ -1457,33 +1457,54 @@
 					});
 				}
 				if (thisContent.type != "synchEmpty") {
-					// Background Color
-					var colour1 = thisContent.allInfo.getAttribute("colour1");
-					colour1 = colour1 == '' || colour1 == undefined ? '#000000' : colour1;
-					colour1 = colour1.indexOf('0x') === 0 ? colour1.replace("0x", "#") : colour1;
+					if (thisContent.type == "synchMCQ" || thisContent.type == "synchTextPlus" || thisContent.type == "synchSlides" || thisContent.type == "synchXot") {
+						// Collect Look-and-Feel data for hotspots.
+						var optional = thisContent.allInfo.getAttribute("optional");
+						optional = optional == '' || optional == undefined  ? 'false' : optional;
 
-					// Icon Color
-					var colour2 = thisContent.allInfo.getAttribute("colour2");
-					colour2 = colour2 == '' || colour2 == undefined ? '#FFFFFF' : colour2;
-					colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
+						var tooltip = thisContent.allInfo.getAttribute("tooltip");
+						tooltip = tooltip == '' || tooltip == undefined  ? 'label' : tooltip;
+						
+						var icon = thisContent.allInfo.getAttribute("icon");
+						icon = icon == '' || icon == undefined  ? 'fas fa-info' : icon;
+						// Background Color
+						var colour1 = thisContent.allInfo.getAttribute("colour1");
+						colour1 = colour1 == '' || colour1 == undefined ? '#000000' : colour1;
+						colour1 = colour1.indexOf('0x') === 0 ? colour1.replace("0x", "#") : colour1;
+						// Icon Color
+						var colour2 = thisContent.allInfo.getAttribute("colour2");
+						colour2 = colour2 == '' || colour2 == undefined ? '#FFFFFF' : colour2;
+						colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
+						
+						var hsSize = thisContent.allInfo.getAttribute("hsSize");
+						hsSize = hsSize == '' || hsSize == undefined ? '24px' : hsSize;
 
-					// Collect Look-and-Feel data for hotspots.
-					var hsAttributes = {
-						optional: thisContent.allInfo.getAttribute("optional"),
-						tooltip : thisContent.allInfo.getAttribute("tooltip"),
-						icon    : thisContent.allInfo.getAttribute("icon"),
-						colour1 : colour1,
-						colour2 : colour2,
-						hsSize  : thisContent.allInfo.getAttribute("hsSize"), 
-					};
-					var pluginAttributes = {
-						start	  : thisContent.start,
-						end		  : thisContent.end,
-						target	  : thisContent.target,
-						optional  : thisContent.optional,
-						attrib	  : hsAttributes,
-						overlayPan: thisContent.overlayPanel
-					};
+						var hsAttributes = {
+							optional: optional,
+							tooltip : tooltip,
+							icon    : icon,
+							colour1 : colour1,
+							colour2 : colour2,
+							hsSize  : hsSize, 
+						};
+						var pluginAttributes = {
+							start	  : thisContent.start,
+							end		  : thisContent.end,
+							target	  : thisContent.target,
+							optional  : thisContent.optional,
+							attrib	  : hsAttributes,
+							overlayPan: thisContent.overlayPanel
+						};
+					}
+					else {
+						var pluginAttributes = {
+							start	  : thisContent.start,
+							end		  : thisContent.end,
+							target	  : thisContent.target,
+							optional  : thisContent.optional,
+							overlayPan: thisContent.overlayPanel
+						};
+					}
 
 					// add other info to pluginAttributes
 					$.each(thisContent.allInfo.attributes, function(i, attrib) {

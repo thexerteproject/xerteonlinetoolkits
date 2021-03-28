@@ -55,19 +55,79 @@ optional: caption captionPosV captionPosH
 					
 					// Handle the holder having the appear over the video.
 					if(options.overlayPan == "true"){
+						$target[0].setAttribute("active", false);
 						$target.parent().hide()
 						$target.hide();
 						// Handle optional slides
 						if(options.optional === "true") {
-							var $openPng = x_templateLocation + "common_html5/qmark.png";
 							var $showHolder  = $('<div id="showHolder" />').appendTo($target);
-							$showBtn = $('<image class="showButton x_noLightBox" type="image" src="' + $openPng + '" >').appendTo($showHolder);
-							$showLbl = $("<div class='showLabel'>" + options.name + "</div>").appendTo($showHolder);
+							var size = options.attrib.hsSize;
+							$showHs = $('<div class="Hs x_noLightBox showHotspot"/>').addClass(options.attrib.icon).appendTo($showHolder);
+							$showHs.css({
+								"padding" : size * 0.1,
+								"border-radius" : size / 2 + 1,
+								"font-size" : size * 0.8,
+								"background-color": options.attrib.colour1,
+								"color": options.attrib.colour2,
+							}).data({
+								size: options.attrib.hsSize,
+								colour2: options.attrib.colour1
+							}).hover(function(){
+								var $this = $(this);
+								$this.css({
+									'box-shadow': '0px 0px ' + ($this.data('size')/2) + 'px ' + $this.data('colour2'),
+									'cursor': 'pointer',
+									'z-index': 1000
+								});
+							},
+							function() { // On end hover, remove glow effect
+								$(this)
+									.css({
+										'box-shadow': 'none',
+										'z-index': 1
+									})
+							});
+
+							var $showLbl = $("<div class='showLabel'>" + options.name + "</div>");
+
+							if(options.attrib.tooltip == "label") {
+								$showLbl.appendTo($showHolder);
+								// Cap the fontsize to reasonable values
+								var fs = size * 0.3 <= 8 ? 8 : size * 0.3 > 16 ? 16 : size * 0.3;
+								$showLbl.css({
+									"padding": 5,
+									"padding-left": size * 0.5 + 3,
+									"left": size * 0.5,
+									"top": size * 0.5,
+									"font-size": fs
+								})
+							}
+							else if(options.attrib.tooltip == "tooltip"){
+								$showLbl.removeClass("showLabel").addClass("tooltip").appendTo($showHolder).hide();
+								$('<div class="tipArrow arrowDown"/>').appendTo($showLbl);
+								$showHs.hover(function(){
+									$showLbl.css({
+										"left": $showLbl.outerWidth()  * -0.5 + size * 0.5,
+										"top" : $showLbl.outerHeight() * -1
+									}).show();
+								}, function() {
+									$showLbl.css({
+										'box-shadow': 'none',
+										'z-index': 1
+									}).hide();
+								});
+							}
 							$showHolder.click(function () {
-							 			$showHolder.hide();
-										$target.prepend(txt);
-										$target.parent().addClass("qWindow");
-										$target.parent().css({"padding": 5});
+							 	$showHolder.hide();
+								$target[0].setAttribute("active", true);
+								$target.prepend(txt);
+								var lms = $target[0].getAttribute("lastMissedSlide")
+								if (lms != undefined && lms != null) {
+									$("#" + lms).parent().show();
+									$("#" + lms).show(); 
+								}
+								$target.parent().addClass("qWindow");
+								$target.parent().css({"padding": 5});
 							});
 						} else {
 							$target.parent().css({"padding": 5});
@@ -89,8 +149,7 @@ optional: caption captionPosV captionPosH
 					} else {
 						var caption = "";
 					}
-					
-					$slide = $('<div class="slide"><img src="' + options.url + '" alt="' + options.name + '" />' + caption + '</div>');
+					$slide = $('<div id="slide_' + $target.children().length + '" class="slide"><img src="' + options.url + '" alt="' + options.name + '" />' + caption + '</div>');
 					$slide.appendTo($target);
 					
 					$slide.find("img")
@@ -107,11 +166,9 @@ optional: caption captionPosV captionPosH
 			},
 			
 			start: function(event, options) {
-				console.log(options)
 				// fire on options.start		
 				if (options.overlayPan == "true") {
-					if (options.optional === "false")
-					{
+					if (options.optional === "false") {
 						$target.parent().addClass("qWindow");
 					}
 					else {
@@ -140,8 +197,13 @@ optional: caption captionPosV captionPosH
 						}
 						//eval(x_currentPageXML.nodeName).resizeContent($slide.find("img"));
 						resizeImage($slide);
-						$slide.show();
-						$slide.parent().show();
+						if($target.parent()[0].getAttribute("active") == "true") {
+							$slide.show();
+							$slide.parent().show();
+						}
+						else {
+							$target.parent()[0].setAttribute("lastMissedSlide", $slide.attr('id'));
+						}
 					}
 				} else {
 					if (options.child == "false") {
@@ -193,7 +255,8 @@ optional: caption captionPosV captionPosH
 					}
 					$target.hide();
 				} else {
-					$slide.hide();
+					if ($slide != undefined)
+						$slide.hide();
 				}
 			}
 		};

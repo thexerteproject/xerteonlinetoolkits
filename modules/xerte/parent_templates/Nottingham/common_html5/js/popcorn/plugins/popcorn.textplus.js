@@ -78,14 +78,14 @@ optional: end position* line
 						});
 							
 						var $showLbl = $("<div class='showLabel'>" + options.name + "</div>");
-
 						if(options.attrib.tooltip == "label") {
+							
 							$showLbl.appendTo($showHolder);
 							// Cap the fontsize to reasonable values
 							var fs = size * 0.3 <= 8 ? 8 : size * 0.3 > 16 ? 16 : size * 0.3;
 							$showLbl.css({
 								"padding": 5,
-								"padding-left": size * 0.5 + 3,
+								"padding-left": size * 0.55 + 5,
 								"left": size * 0.5,
 								"top": size * 0.5,
 								"font-size": fs

@@ -4163,7 +4163,14 @@
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+		<hsAppearance type="group" label="Optional Hotspot Appearance" optional="true" tooltip="Customise the appearance of hotspots">
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+			<tooltip label="Title label" type="ComboBox" options="Tooltip,Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
+			<colour1 label="Background Colour" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="12" max="64" step="1" defaultValue="14" optional="true"/>
+		</hsAppearance>
 		<pauseMedia label="Pause Media" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
@@ -4232,7 +4239,14 @@
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+		<hsAppearance type="group" label="Optional Hotspot Appearance" optional="true" tooltip="Customise the appearance of hotspots">
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+			<tooltip label="Title label" type="ComboBox" options="Tooltip,Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
+			<colour1 label="Background Colour" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="12" max="64" step="1" defaultValue="14" optional="true"/>
+		</hsAppearance>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
 
@@ -4289,7 +4303,14 @@
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+		<hsAppearance type="group" label="Optional Hotspot Appearance" optional="true" tooltip="Customise the appearance of hotspots">
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+			<tooltip label="Title label" type="ComboBox" options="Tooltip,Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
+			<colour1 label="Background Colour" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="12" max="64" step="1" defaultValue="14" optional="true"/>
+		</hsAppearance>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
