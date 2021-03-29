@@ -589,7 +589,7 @@
             if (x_browserInfo.touchScreen === false) {
                 if (position == "Right") {
                     $("#pageContents").append(
-                        '<div id="pageContents-innerContainer"><div id="crossword"></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">Show answers</button></div><div id="attempt"></div></div></div>'
+                        '<div id="pageContents-innerContainer"><div id="crossword"></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">Check</button></div><div id="attempt"></div></div></div>'
                     );
                 } else if (position == "Left") {
                     $("#pageContents").append(
@@ -680,21 +680,21 @@
                 $(".crossword-input").css("height", amountOfpixels)
 
                 if(imgMaxW < 430){
-                    $("#show_button").css("font-size", "80%")
+                   // $("#show_button").css("font-size", "80%")
                 }else  if(imgMaxW > 650 && imgMaxW < 1200){
-                    $("#show_button").css("font-size", "150%")
+                   // $("#show_button").css("font-size", "150%")
                     $("#show_button").css("width", "50%")
                     $("#crossword").css("margin-right", "50px")
                     $("#clues-container").css("width", "30%")
                 }else if(imgMaxW > 1200){
-                    $("#show_button").css("font-size", "200%")
+                   // $("#show_button").css("font-size", "200%")
                     $("#show_button").css("width", "50%")
 
                     $("#crossword").css("margin-right", "50px")
                     $("#clues-container").css("width", "30%")
 
                 } else{
-                    $("#show_button").css("font-size", "100%")
+                    //$("#show_button").css("font-size", "100%")
 
                 }
 

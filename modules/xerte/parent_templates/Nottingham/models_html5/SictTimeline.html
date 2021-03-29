@@ -270,134 +270,186 @@
 		}
 
 		this.resizeImg = function() {
-			var imgMaxW, imgMaxH;
-			var pageHeight = $x_pageHolder.height()
-			var pageWidth = $x_pageHolder.width()
-			var pageMarginRight = $x_mainHolder.css("marginRight")
-			pageMarginRight = parseInt( pageMarginRight.slice(0,  pageMarginRight.length - 2));
-			var pageMarginLeft = $x_mainHolder.css("marginLeft")
-			pageMarginLeft = parseInt( pageMarginLeft.slice(0,  pageMarginLeft.length - 2));
-			var header = $x_headerBlock.height()
-			var footer = $x_footerBlock.height()
-
-			var totalPageWidth = pageWidth + pageMarginLeft + pageMarginRight
-
-			if( pageMarginRight !== 0 && pageMarginLeft !==0 && footer !== 0){
-				var footerHeight = $x_footerBlock.height();
-				var footerMarginHeight = $('#x_footerBlock').css('marginBottom')
-				footerMarginHeight = parseInt( footerMarginHeight.slice(0,  footerMarginHeight.length - 2));
-
-				footerHeight+= footerMarginHeight
-				if(header === 0){
-					footerHeight+= 96
-				}
-
-				var top = pageHeight -  footerHeight
-				$(".tl-timenav").css("top", top)
-
-
-			}else{
-				$(".tl-timenav").css("top", "auto")
-			}
-			imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
-			imgMaxH = Math.round($x_pageHolder.height() - 50);
-
-			var big;
-			var normal;
-			var small;
-			var arrow;
-			var imgH;
-
-			//img = document.getElementsByClassName("tl-media-item")
-			img = $('.tl-media-item')
-			items = $('.tl-slide')
-
-			big = imgMaxH*0.7
-			normal = imgMaxH*0.6
-			small = imgMaxH*0.4
-			arrow = small*0.5
-			imgH = normal*1.6
-
-			big = big.toString()
-			normal = normal.toString()
-			small = small.toString()
-			arrow = arrow.toString()
-			imgH = imgH.toString()
-
-
 			debugger
 
-			var className = items.eq(counter).attr('class')
-
-			var imgPath = items.eq(counter).find('img')[0]
-			if(imgPath !== undefined){
-				imgPath = imgPath.src
-			}
-
-			if(imgPath !== "" && imgPath !== undefined){
-				$("#timeline-embed").css("height", big+"px")
-				$(".tl-storyslider").css("height", big+"px")
-				$(".tl-media-content-container").css("height", small+"px")
-				$(".tl-media").css("height", small+"px")
-				$(".tl-media-content").css("height", normal+"px")
-
-				items.eq(counter).find('img').css({
-					"max-height": normal +"px",
-					"max-width": imgH +"px"
-				});
-
-				var margT = items.eq(counter).find('img').css('margin-left')
-				$('.tl-caption').css("marginLeft", margT)
-				$('.tl-caption').css("width", "100px")
-
-			}
-
-			if(className === "tl-slide tl-slide-media-only"){
-				$('.tl-slide-content').css({
-					"display": "flex",
-					"flex-direction" : 'row-reverse'
-				})
-
-				items.eq(counter).find('iframe').css({
-					"max-height": normal +"px"
-				})
-
-				$(".tl-media").css("height", normal+"px")
-				$(".tl-media-item").css("max-height", normal+"px")
-				$(".tl-text").css({
-					"display": "flex",
-					"align-items": "center"
-				})
+			if(x_browserInfo.mobile === true){
+				debugger
+				// $(".tl-timenav").css("top", "")
+				// $("#timeline-embed").css("height", "")
+				// //$(".tl-storyslider").css("height","")
+				// $(".tl-media-content-container").css("height", "")
+				// $(".tl-media").css("height", "")
+				// $(".tl-media-content").css("height", "")
+				// $('.tl-caption').css("marginLeft", "")
+				// $('.tl-caption').css("width", "")
+				// // items.eq(counter).find('img').css({
+				// // 	"max-height": "",
+				// // 	"max-width": ""
+				// // });
+				// $('.tl-slide-content').css({
+				// 	"display": "",
+				// 	"flex-direction" : ''
+				// })
+				//
+				// items.eq(counter).find('iframe').css({
+				// 	"max-height": ""
+				// })
+				//
+				// $(".tl-text").css({
+				// 	"display": "",
+				// 	"align-items": ""
+				// })
+				// $('.tl-menubar').css("top", "")
+				//
+				// $('.tl-headline-date').css({
+				// 	"padding-left" : "",
+				// 	"padding-top" : "",
+				// 	"padding-bottom" : ""
+				// })
+				//
+				// $(".tl-slidenav-title").html("")
+				// $(".tl-slidenav-description").html("")
+				// $('.tl-slidenav-next').css('top', "")
+				// $('.tl-slidenav-previous').css('top', "")
 			}else{
-				$('.tl-slide-content').css({
-					"display": "",
-					"flex-direction" : ''
+				var imgMaxW, imgMaxH;
+				var pageHeight = $x_pageHolder.height()
+				var pageWidth = $x_pageHolder.width()
+				var pageMarginRight = $x_mainHolder.css("marginRight")
+				pageMarginRight = parseInt( pageMarginRight.slice(0,  pageMarginRight.length - 2));
+				var pageMarginLeft = $x_mainHolder.css("marginLeft")
+				pageMarginLeft = parseInt( pageMarginLeft.slice(0,  pageMarginLeft.length - 2));
+				var header = $x_headerBlock.height()
+				var footer = $x_footerBlock.height()
+
+				var totalPageWidth = pageWidth + pageMarginLeft + pageMarginRight
+
+				if( pageMarginRight !== 0 && pageMarginLeft !==0 && footer !== 0){
+					var footerHeight = $x_footerBlock.height();
+					var footerMarginHeight = $('#x_footerBlock').css('marginBottom')
+					footerMarginHeight = parseInt( footerMarginHeight.slice(0,  footerMarginHeight.length - 2));
+
+					footerHeight+= footerMarginHeight
+					if(header === 0){
+						footerHeight+= 96
+					}
+
+					var top = pageHeight -  footerHeight
+					$(".tl-timenav").css("top", top)
+
+
+				}else{
+					$(".tl-timenav").css("top", "auto")
+				}
+				imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 50);
+
+				var big;
+				var normal;
+				var small;
+				var arrow;
+				var imgH;
+
+				//img = document.getElementsByClassName("tl-media-item")
+				img = $('.tl-media-item')
+				items = $('.tl-slide')
+
+				big = imgMaxH*0.7
+				normal = imgMaxH*0.6
+				small = imgMaxH*0.4
+				arrow = small*0.5
+				imgH = normal*1.6
+
+				big = big.toString()
+				normal = normal.toString()
+				small = small.toString()
+				arrow = arrow.toString()
+				imgH = imgH.toString()
+
+
+				debugger
+
+				var className = items.eq(counter).attr('class')
+
+				var imgPath = items.eq(counter).find('img')[0]
+				if(imgPath !== undefined){
+					imgPath = imgPath.src
+				}
+
+				if(imgPath !== "" && imgPath !== undefined){
+					$("#timeline-embed").css("height", big+"px")
+					$(".tl-storyslider").css("height", big+"px")
+					$(".tl-media-content-container").css("height", small+"px")
+					$(".tl-media").css("height", small+"px")
+					$(".tl-media-content").css("height", normal+"px")
+
+					items.eq(counter).find('img').css({
+						"max-height": normal +"px",
+						"max-width": imgH +"px"
+					});
+
+					var margT = items.eq(counter).find('img').css('margin-left')
+					$('.tl-caption').css("marginLeft", margT)
+					$('.tl-caption').css("width", "100px")
+
+				}
+
+				if(className === "tl-slide tl-slide-media-only"){
+					$('.tl-slide-content').css({
+						"display": "flex",
+						"flex-direction" : 'row-reverse'
+					})
+
+					items.eq(counter).find('iframe').css({
+						"max-height": normal +"px"
+					})
+
+					$(".tl-media").css("height", normal+"px")
+					$(".tl-media-item").css("max-height", normal+"px")
+					$(".tl-text").css({
+						"display": "flex",
+						"align-items": "center"
+					})
+				}else{
+					$('.tl-slide-content').css({
+						"display": "",
+						"flex-direction" : ''
+					})
+
+					items.eq(counter).find('iframe').css({
+						"max-height": ""
+					})
+
+					$(".tl-text").css({
+						"display": "",
+						"align-items": ""
+					})
+				}
+
+				var heightTimeLine = $('.tl-timenav').height()
+				heightTimeLine= heightTimeLine/3
+				var top = imgMaxH-heightTimeLine
+				$('.tl-menubar').css("top", top+"px")
+
+				$('.tl-headline-date').css({
+					"padding-left" : 0+"px",
+					"padding-top" : 20+"px",
+					"padding-bottom" : 10+"px",
+					"display" : "flex"
 				})
 
-				items.eq(counter).find('iframe').css({
-					"max-height": ""
-				})
+				$(".tl-slidenav-title").html("")
+				$(".tl-slidenav-description").html("")
+				debugger
 
-				$(".tl-text").css({
-					"display": "",
-					"align-items": ""
-				})
-			}
-
-			var heightTimeLine = $('.tl-timenav').height()
-			heightTimeLine= heightTimeLine/3
-			var top = imgMaxH-heightTimeLine
-			$('.tl-menubar').css("top", top)
-
-			$('.tl-headline-date').css({
-				"padding-left" : 0,
-				"padding-top" : 20,
-				"padding-bottom" : 10
-			})
-
-
+				var panel = $('#timeline-embed').css('height')
+				panel = parseInt( panel.slice(0,  panel.length - 2))/2;
+				$('.tl-slidenav-next').css('top', panel+"px")
+				$('.tl-slidenav-previous').css('top', panel+"px")
 
 			};
+
+		}
 
 		var isoCountries = {
 
