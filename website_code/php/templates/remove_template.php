@@ -82,6 +82,10 @@ if(is_numeric($_POST['template_id'])){
                 $params = array($safe_template_id);
                 db_query($query_to_delete_syndication, $params);
 
+                $query_to_delete_group_rights = "delete from {$prefix}template_group_rights where template_id=?";
+                $params = array($safe_template_id);
+                db_query($query_to_delete_group_rights, $params);
+
                 $query_to_delete_xml_and_peer = "delete from {$prefix}additional_sharing where template_id=?"; 
                 $params = array($safe_template_id);
 

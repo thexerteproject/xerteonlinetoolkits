@@ -116,7 +116,7 @@ function folder_rss_template(){
 
 	if(setup_ajax()!=false){
     
-		var url="folder_rss_template.php";
+		var url="folder_rss.php";
 
 		folders_ajax_send_prepare(url);
 
@@ -138,7 +138,7 @@ function folderproperties_template(){
 
 	if(setup_ajax()!=false){
     
-		var url="folderproperties_template.php";
+		var url="folderproperties.php";
 
 		folders_ajax_send_prepare(url);
 
@@ -161,7 +161,7 @@ function folder_content_template(){
 
 	if(setup_ajax()!=false){
     
-		var url="folder_content_template.php";
+		var url="folder_content.php";
 
 		folders_ajax_send_prepare(url);
 
@@ -214,7 +214,7 @@ function rename_folder(folder_id,form_tag){
 
 		if(setup_ajax()!=false){
     
-			var url="rename_folder_template.php";
+			var url="rename_folder.php";
 
 			xmlHttp.open("post","website_code/php/folderproperties/" + url,true);
 			xmlHttp.onreadystatechange=folder_rename_stateChanged;
@@ -246,7 +246,7 @@ function sharing_status_folder_template(){
 
 	if(setup_ajax()!=false){
 
-		var url="sharing_status_folder_template.php";
+		var url="sharing_status_folder.php";
 
 		folders_ajax_send_prepare(url);
 
@@ -276,7 +276,7 @@ function name_select_folder_template(){
 
 		if(is_ok_user(search_string)){
 
-			var url="name_select_folder_template.php";
+			var url="name_select_folder.php";
 
 			xmlHttp.open("post","website_code/php/folderproperties/" + url,true);
 			xmlHttp.onreadystatechange=name_share_stateChanged;
@@ -320,7 +320,7 @@ function share_stateChanged(){
 function share_this_folder(folder, id, group=false){
 
 	if(setup_ajax()!=false){
-		var url="share_this_folder_template.php";
+		var url="share_this_folder.php";
 
 		var role = document.querySelector('input[name="role"]:checked').value;
 
