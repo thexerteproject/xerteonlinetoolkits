@@ -39,7 +39,7 @@ body{
 	background-image:url(../images/TopBar.jpg);
 	background-repeat:repeat-x;
 	margin:0 auto;
-	width:910px;
+	width:100%;
 }
 
 
@@ -73,8 +73,9 @@ body{
 /* 2nd page css code */
 
 .pagecontainer{
-	margin:0 auto; 
-	width:910px
+	margin:0 auto;
+	width: 100%;
+	max-width: 1280px;
 }
 
 .admin_mgt_area{
@@ -113,9 +114,10 @@ body{
 .admin_mgt_area_middle_button{
 	float:left; 
 	position:relative; 
-	width:99.5%; 
+	width:100%;
 	border:1px #b6b3a8 solid; 
-	background-color:#e8edf3; 
+	background-color:#e8edf3;
+	max-width: 1277px;
 }
 
 .admin_mgt_area_middle_button img{
@@ -196,13 +198,16 @@ body{
 }
 
 div#admin_area{
-	height:500px; 
+	height:77vh;
 	overflow:scroll; 
 	float:left; 
 	position:relative; 
 	width:100%;
 	background-color:#fff;
 	color:#555;
+	padding-left: 20px;
+	padding-right: 20px;
+	max-width: 1240px;
 }
 
 div#admin_area p{
