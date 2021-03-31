@@ -468,7 +468,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only) 
     foreach($query_response as $row) {
 
         // Check whther shared LO is in recyclebin
-        if ($row['role'] != 'creator' && $row['role'] != 'co-author')
+        if ($row['role'] != 'creator')
         {
             $sql = "select * from {$prefix}templaterights tr, {$prefix}folderdetails fd where tr.role='creator' and tr.folder=fd.folder_id and tr.template_id=?";
             $params = array($row['template_id']);
