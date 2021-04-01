@@ -220,7 +220,7 @@ db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SE
 
 if ($tsugi_enabled) {
     /* Tsugi enabled */
-    if ($row_play["tsugi_published"] == 1 || $row_play["tsugi_xapi_enabled"] == 1) {
+    if ($row_play["tsugi_published"] == 1) {
         // Actually published for Tsugi
         db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
