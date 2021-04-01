@@ -48,6 +48,8 @@ define("INDEX_SORT","Sort");
 
 define("INDEX_SEARCH","Search");
 
+define("INDEX_SEARCH_PLACEHOLDER", "Name or Id");
+
 define("INDEX_SORT_A","Alphabetical A-Z");
 
 define("INDEX_SORT_Z","Alphabetical Z-A");

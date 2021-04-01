@@ -362,7 +362,7 @@ Folder popup is the div that appears when creating a new folder
 				<div class="workspace_search_outer">
 					<div class="workspace_search">
 						<i class="fa  fa-search"></i>&nbsp;<?PHP echo INDEX_SEARCH; ?>
-						<input type="text" id="workspace_search" label="Search">
+						<input type="text" id="workspace_search" label="Search" placeholder="<?php echo INDEX_SEARCH_PLACEHOLDER?>">
 					</div>
 				</div>
 			</div>
