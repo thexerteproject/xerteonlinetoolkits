@@ -1189,11 +1189,48 @@ function remove_this() {
         alert(WORKSPACE_DELETE);
     } else {
 
-        if (ids.length != 1) {
-            var response = confirm(DELETE_PROMPT);
-        } else {
-            var response = confirm(workspace.nodes[ids[0]].text + "\n\n" + DELETE_PROMPT);
+        // Check publish attributes, warn if LO is not private and/or published through LTI
+        var published = false;
+        var shared = false;
+        for (var i = 0; i < ids.length; i++)
+        {
+            var node = workspace.nodes[ids[i]];
+            if (node.published)
+                published = true;
+            if (node.shared)
+                shared = true;
+            if (published && shared)
+                break;
         }
+        var prompt = "";
+        if (ids.length ==1)
+        {
+            prompt = workspace.nodes[ids[0]].text.replace('_', ' ') + "\n\n";
+        }
+        if (published)
+        {
+            if (ids.length != 1) {
+                prompt += SOME_ITEMS_PUBLISHED_PROMPT + "\n\n";
+            } else {
+                prompt += ITEM_PUBLISHED_PROMPT + "\n\n";
+            }
+        }
+        if (shared)
+        {
+            if (ids.length != 1) {
+                prompt += SOME_ITEMS_SHARED_PROMPT + "\n\n";
+            } else {
+                prompt += ITEM_SHARED_PROMPT + "\n\n";
+            }
+        }
+        if (ids.length != 1)
+        {
+            prompt +=  DELETE_MULTIPLE_PROMPT;
+        }
+        else {
+            prompt += DELETE_PROMPT;
+        }
+        var response = confirm(prompt);
 
         if (response) {
             for (var i = 0; i < ids.length; i++) {

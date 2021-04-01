@@ -413,6 +413,8 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
         $item->text = $row['folder_name'];
         $item->type = "folder";
         $item->xot_type = "folder";
+        $item->published = false;
+        $item->shared = false;
 
         $items[] = $item;
 
@@ -441,7 +443,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only) 
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $query = "select td.template_name as project_name, otd.template_name,"
+    $query = "select td.template_name as project_name, otd.template_name, td.access_to_whom, td.tsugi_published, "
         . " otd.parent_template, otd.template_framework, td.template_id, tr.role from {$prefix}templatedetails td, "
         . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd where td.template_id = tr.template_id and tr.user_id = ? "
         . " and tr.folder= ? and  otd.template_type_id = td.template_type_id ";
@@ -467,7 +469,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only) 
 
     foreach($query_response as $row) {
 
-        // Check whther shared LO is in recyclebin
+        // Check whether shared LO is in recyclebin
         if ($row['role'] != 'creator')
         {
             $sql = "select * from {$prefix}templaterights tr, {$prefix}folderdetails fd where tr.role='creator' and tr.folder=fd.folder_id and tr.template_id=?";
@@ -479,6 +481,10 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only) 
                 continue;
             }
         }
+        // Check if template is shared
+        $sql = "select count(tr.template_id) as nr_shared from {$prefix}templaterights tr where tr.template_id=?";
+        $params = array($row['template_id']);
+        $shared = db_query_one($sql, $params);
 
         //echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" preview_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size . "\" editor_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size . "\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page_".strtolower($row['template_name']).".gif\" style=\"vertical-align:middle;padding-right:5px\" />" . str_replace("_", " ", $row['project_name']) . "</div>";
         $item = new stdClass();
@@ -488,6 +494,8 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only) 
         $item->text = $row['project_name'];
         $item->type = strtolower($row['parent_template']);
         $item->xot_type = "file";
+        $item->published = $row['access_to_whom'] != 'Private' || $row['tsugi_published'] == 1;
+        $item->shared = $shared['nr_shared'] > 1;
         $item->editor_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size;
         $item->preview_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size;
 
@@ -551,6 +559,8 @@ function get_users_projects($sort_type, $copy_only=false)
     $item->text = DISPLAY_WORKSPACE;
     $item->type = "workspace";
     $item->xot_type = "workspace";
+    $item->published = false;
+    $item->shared = false;
     $state = new stdClass();
     $state->opened = true;
     $state->disabled = false;
@@ -583,6 +593,7 @@ function get_users_projects($sort_type, $copy_only=false)
         $item->text = DISPLAY_RECYCLE;
         $item->type = "recyclebin";
         $item->xot_type = "recyclebin";
+        $item->published = false;
 
         $workspace->items[] = $item;
         $workspace->nodes[$item->id] = $item;
