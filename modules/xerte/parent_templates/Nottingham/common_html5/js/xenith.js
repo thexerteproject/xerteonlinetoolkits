@@ -1869,9 +1869,19 @@ function x_changePage(x_gotoPage, addHistory) {
 	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' && parent.window.$.featherlight.current()) {
 		standAlonePage = false;
 		addHistory = false;
-	} else if (parent.window.$.featherlight.current()) {
-		// force lightbox to close
-		parent.window.$.featherlight.current().close();
+	} else {
+		// If the whole Xerte object is loaded in a lightbox, we could trigger a DOMException (cross-origin)
+		// So enclose in a try block
+		try {
+			if (parent.window.$.featherlight.current()) {
+				// force lightbox to close
+				parent.window.$.featherlight.current().close();
+			}
+		}
+		catch(e)
+		{
+			// Ignore
+		}
 	}
 	
 	if (x_params.forcePage1 == 'true') {
