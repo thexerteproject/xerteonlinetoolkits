@@ -27,6 +27,25 @@
  * @package
  */
 
+/*
+ * Make sure that play does not use cookie based sessions
+ * Thise requires to switch off cookiebased sessions and some helper functions.
+ *
+ * If this is an LTI session, do not use this functionality, because tsugi will handle the session
+ *
+ * This must be done before loading config.php
+*/
+if (!isset($lti_enabled))
+{
+    $lti_enabled = false;
+}
+if (!$lti_enabled)
+{
+    require_once(dirname(__FILE__) . "/session_helpers.php");
+    ini_set('session.use_cookies', 0);
+    ini_set('session.use_only_cookies', 0);
+    ini_set('session.use_trans_sid', 1);
+}
 
 
 require_once(dirname(__FILE__) . "/config.php");
@@ -173,7 +192,7 @@ if (is_numeric($id))
         }
     }
     $pedit_enabled = true;
-    $tsugi_enabled = true;
+    $xapi_enabled = true;
     if (isset($_REQUEST['group']) && !isset($xerte_toolkits_site->group))
     {
         $xerte_toolkits_site->group = $_REQUEST{'group'};
@@ -194,6 +213,10 @@ if (is_numeric($id))
     {
         die("template_id not found");
     }
+    if ($row['tsugi_xapi_enabled'] != '1')
+    {
+        die("Xapi is not enabled");
+    }
     if ($row['tsugi_xapi_useglobal'])
     {
         $q = "select LRS_Endpoint, LRS_Key, LRS_Secret from {$prefix}sitedetails where site_id=1";
@@ -209,7 +232,6 @@ if (is_numeric($id))
             'lrssecret' => $row['tsugi_xapi_secret'],
         );
     }
-
 
     $_SESSION['XAPI_PROXY'] = $lrs;
 

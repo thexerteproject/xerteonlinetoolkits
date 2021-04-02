@@ -27,8 +27,6 @@
  * @package
  */
 
-
-
 require_once(dirname(__FILE__) . "/config.php");
 
 _load_language_file("/play.inc");
@@ -224,7 +222,7 @@ if ($tsugi_enabled) {
         // Actually published for Tsugi
         db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
-        show_template($row_play, $tsugi_enabled);
+        show_template($row_play, $xapi_enabled);
     }
     else{
 
@@ -247,7 +245,7 @@ if ($tsugi_enabled) {
 
             db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
-            show_template($row_play);
+            show_template($row_play, $xapi_enabled);
 
         } else {
             if ($row_play['access_to_whom'] == "Password") {
@@ -304,7 +302,7 @@ if ($tsugi_enabled) {
                     //successful authentication
                     db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
-					show_template($row_play);
+					show_template($row_play, $xapi_enabled);
                 } else {
                     html_headers();
                     login_prompt($errors);
@@ -359,7 +357,7 @@ if ($tsugi_enabled) {
                         $ok = check_host($_SERVER['HTTP_REFERER'], $test_string);
                         if ($ok) {
                             db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
-                            show_template($row_play);
+                            show_template($row_play, $xapi_enabled);
                         } else {
                             dont_show_template('Doesnt Match Referer:' . $_SERVER['HTTP_REFERER']);
                         }
@@ -388,7 +386,7 @@ if ($tsugi_enabled) {
                             if ($row_play['access_to_whom'] == $row_security['security_setting']) {
                                 if (check_security_type($row_security['security_data'])) {
                                     db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
-                                    show_template($row_play);
+                                    show_template($row_play, $xapi_enabled);
                                     $flag = true;
 
                                     break;

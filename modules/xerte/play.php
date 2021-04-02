@@ -32,7 +32,7 @@ require_once(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 // (pl)
 // Set up the preview window for a xerte piece
 
-function show_template_page($row, $datafile="", $tsugi_enabled = false)
+function show_template_page($row, $datafile="", $xapi_enabled = false)
 {
     global $xerte_toolkits_site;
 	global $youtube_api_key;
@@ -104,29 +104,20 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         }
     }
     $tracking_js_file = array($template_path . "common_html5/js/xttracking_noop.js");
-    if($tsugi_enabled) {
-        $rlo_object_file = "rloObject.htm";
-
-
-        if ($pedit_enabled)
-        {
-            if($row["tsugi_xapi_enabled"] == 1) {
+    if($xapi_enabled) {
+        if ($pedit_enabled) {
+            if ($row["tsugi_xapi_enabled"] == 1) {
                 $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $flash_js_dir . "xAPI/xttracking_xapi.js");
-            }
-            else
-            {
+            } else {
                 $tracking_js_file = array($flash_js_dir . "pedit/ALOConnection.js", $template_path . "common_html5/js/xttracking_noop.js");
             }
-        }
-        else
-        {
-            if($row["tsugi_xapi_enabled"] == 1) {
+        } else {
+            if ($row["tsugi_xapi_enabled"] == 1) {
                 $tracking_js_file = array($flash_js_dir . "xAPI/xttracking_xapi.js");
             }
         }
-    }else{
-        $rlo_object_file = "rloObject.htm";
     }
+    $rlo_object_file = "rloObject.htm";
     if ($engine == 'flash')
     {
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player/$rlo_object_file");
@@ -145,10 +136,10 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         {
             $tracking .= "<script type=\"text/javascript\" src=\"$jsfile?version=" . $version . "\"></script>\n";
         }
-        if ($tsugi_enabled && $row["tsugi_xapi_enabled"] == 1) {
+        if ($xapi_enabled && $row["tsugi_xapi_enabled"] == 1) {
             $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapidashboard.min.js?version=" . $version . "\"></script>\n";
             $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapiwrapper.min.js?version=" . $version . "\"></script>\n";        }
-        if($tsugi_enabled)
+        if($xapi_enabled)
         {
             $tracking .= "<script>\n";
             if($row["tsugi_xapi_enabled"] == 1) {
@@ -245,12 +236,12 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
         {
             $tracking .= "<script type=\"text/javascript\" src=\"$jsfile?version=" . $version . "\"></script>\n";
         }
-        if ($tsugi_enabled && $row["tsugi_xapi_enabled"] == 1) {
+        if ($xapi_enabled && $row["tsugi_xapi_enabled"] == 1) {
             $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapidashboard.min.js?version=" . $version . "\"></script>\n";
             //$tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapicollection.min.js?version=" . $version . "\"></script>\n";
             $tracking .= "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "xAPI/xapiwrapper.min.js?version=" . $version . "\"></script>\n";
         }
-        if($tsugi_enabled)
+        if($xapi_enabled)
         {
             $tracking .= "<script>\n";
             if (isset($lti_enabled) && $lti_enabled)
@@ -316,23 +307,12 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
 		$page_content = str_replace("%DATECREATED%", $row['date_created'], $page_content);
 		$page_content = str_replace("%NUMPLAYS%", $row['number_of_uses'], $page_content);
     }
-    if(substr($rlo_object_file, -3) == "php")
-    {
-        $tmp = tmpfile ();
-        $tmpf = stream_get_meta_data ( $tmp );
-        $tmpf = $tmpf ['uri'];
-        fwrite ( $tmp, $page_content );
-        $ret = include($tmpf);
-        fclose ( $tmp );
-        return $ret;
-
-    }
 
     return $page_content;
 }
 
-function show_template($row, $tsugi_enabled=false)
+function show_template($row, $xapi_enabled=false)
 {
-    echo show_template_page($row, "", $tsugi_enabled);
+    echo show_template_page($row, "", $xapi_enabled);
 }
 
