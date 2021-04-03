@@ -35,6 +35,7 @@
 			isPlaying = false;
 			isMuted = false;
             lastTime = -1;
+			trackBarEnabled = true;
 
 		
 		// function called every time the page is viewed after it has initially loaded
@@ -808,7 +809,7 @@
 
 			keyPressHandler = function(e)
 			{
-				if (mp.media.player.controlsEnabled == true)
+				if (trackBarEnabled == true)
 				{
 					time = mp.currentTime();
 					switch(e.key)
@@ -842,12 +843,9 @@
 							break;
 						}
 				}
-
 			}
 
 			document.addEventListener("keypress", keyPressHandler);
-			
-
 			
 			//Append the OVERLAY PANEL to the main media.
 			for(i = 0; i < panelData.length; i++) {
@@ -863,7 +861,14 @@
                     break;
                 }
             }
-
+			$("#overlay").on('click', function(e){
+				if(isPlaying) {
+					mp.pause();
+				}
+				else {
+					mp.play();
+				}
+			});
 
 			$(".panel").each(function(i) {
 			    if (i == 0)
@@ -897,7 +902,7 @@
 
 		this.addEvents = function() {
             this.popcornInstance.on( "timeupdate", function() {
-				mediaLesson.enableControls(this.media, false, false);
+				mediaLesson.enableControls(this.media, false, true);
 				var popTime = mediaLesson.popcornInstance.currentTime();
                 //console.log("Timeupdate: " + popTime + " prevTime=" + prevTime + ", seeking=" + mediaLesson.popcornInstance.seeking());
 				var block = mediaLesson.getBlock(lastTime);
@@ -1288,7 +1293,7 @@
 			var data = new Array(), // array of objects containing details of a synch point event
 				prevStart = 0,
 				start, end;
-			var overlayScreen = $("#overlay");
+			var $overlayScreen = $("#overlay");
             if($(synchData).context.getAttribute("overlay")){
                 $(synchData).each(function() {
                     this.overlay = true;
@@ -1560,7 +1565,7 @@
 							// Gray out the background and fix z-index if the media is paused on an overlay panel
 							if (thisContent.overlayPanel)
 							{
-							    overlayScreen.css("display", "inline-block");
+							    //$overlayScreen.css("display", "inline-block");
 							}
                             if (thisContent.allInfo.getAttribute("overlay") != "true") {
                                 mediaLesson.exitFullScreen();
@@ -1656,7 +1661,7 @@
 
 				// disable media controls
 				if (synchData.getAttribute("disable") == "true") {
-					mediaLesson.enableControls(this.media, false, true);
+					mediaLesson.enableControls(this.media, false, true, true);
 				}
 				
 				// skip media
@@ -1667,39 +1672,59 @@
 		}
 		
 		// function disables / enables media controls
-		this.enableControls = function(media, enable, includeTrackbar = false) {
+		this.enableControls = function(media, enable, includeMejs = true, includeTrackbar = false) {
+			if(includeMejs == true)
+				$("#overlay").hide();
 			if (enable == true) {
 				// enable
 				if (media.player) {
 					media.player.controls = true;
 					media.player.controlsEnabled = true;
 					media.player.options.clickToPlayPause = true;
-					if (media.nodeName == "VIDEO") {
-						$(media).parent().parent().find(".mejs-controls").show()
-						$(media).parent().parent().find(".mejs-layers").show();
-					} else {
-						$(media).parent().parent().find(".mejs-controls").children("div").show();
+					if (includeMejs == true) {
+						if (media.nodeName == "VIDEO") {
+							$(media).parent().parent().find(".mejs-controls").show()
+							$(media).parent().parent().find(".mejs-layers").show();
+						} else {
+							$(media).parent().parent().find(".mejs-controls").children("div").show();
+						}
 					}
 					if (includeTrackbar == true) {
+						trackBarEnabled = true;
 						$("#trackBarHolder").show();
 					}
 				}
 			} else {
 				// disable
+				if(includeMejs == true)
+					$("#overlay").show();
 				if (media.player) {
 					media.player.controlsEnabled = false;
-					//media.player.options.clickToPlayPause = false;
-					if (media.nodeName == "VIDEO") {
-						$(media).parent().parent().find(".mejs-controls").hide()
-						$(media).parent().parent().find(".mejs-layers").hide();
-					} else {
-						$(media).parent().parent().find(".mejs-controls").children("div").hide();
+					media.player.options.clickToPlayPause = false;
+					if (includeMejs == true) {
+						if (media.nodeName == "VIDEO") {
+							$(media).parent().parent().find(".mejs-controls").hide()
+							$(media).parent().parent().find(".mejs-layers").hide();
+						} else {
+							$(media).parent().parent().find(".mejs-controls").children("div").hide();
+						}
 					}
 					if (includeTrackbar == true) {
+						trackBarEnabled = false;
 						$("#trackBarHolder").hide();
 					}
 				}
 			}
+			
+		}
+
+		this.hideControlLayer = function(media) {
+			if (media.nodeName == "VIDEO") {
+				$(media).parent().parent().find(".mejs-controls").hide()
+				$(media).parent().parent().find(".mejs-layers").hide();
+			} else {
+				$(media).parent().parent().find(".mejs-controls").children("div").hide();
+			}	
 		}
 		
 		// function receives dimensions of video from mediaPlayer.js to set its max dimensions

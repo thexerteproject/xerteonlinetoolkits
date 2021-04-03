@@ -31,7 +31,7 @@
 		width: 80%;
 		display: inline-block;
 		position: relative;
-		z-index: 2;
+		z-index: 1;
 	}
 	#trackBarRail:hover{
 		cursor: pointer;
@@ -127,7 +127,7 @@
 		height: inherit;
 		width: inherit;
 		background-color: #222222;
-		opacity: 0.55;
+		opacity: 0.0;
 		display: inline-block;
 		z-index: 3;
 	}
