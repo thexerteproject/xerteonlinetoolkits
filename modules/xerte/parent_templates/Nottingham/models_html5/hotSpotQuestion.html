@@ -90,7 +90,7 @@
 			XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
 
 			debugger
-			var $textHolder = $("#pageText");
+			var $textHolder = $('#textHolder');
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				$textHolder.remove();
 				$("#pageContents").css("text-align", "center");
@@ -98,7 +98,7 @@
 				//$("#panel").removeClass("inline");
 				$("#panel").removeClass("panel");
 			} else {
-				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				$('#textHolder').html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
 				if (x_currentPageXML.getAttribute("align") == "Right") {
 					$("#panel").addClass("left");
@@ -593,9 +593,7 @@
 
 
 <div id="pageContents">
-	<div id="textHolder" class="left">
-		<p id="pageText"></p>
-	</div>
+
 	<div id="infoHolder" class="right">
 		<fieldset class="noStyle">
 	<div id="panel" class="panel inline">
@@ -621,11 +619,17 @@
 	<div id="textContents">
 
 		<button id="checkButton"></button>
-		<div id="score" class="hsinfo"></div>
-		<div id="generalFeedback"></div>
+		<div id="text">
+			<div id="score"></div>
+			<div id="generalFeedback"></div>
+		</div>
+
 
 	</div>
 	</div>
+			<div id="textHolder" tabindex="1">
+			</div>
 		</fieldset>
+
 	</div>
 </div>

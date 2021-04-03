@@ -82,6 +82,11 @@
 
 .tl-media{
     max-width: 100% !important;
+    padding-left: 7%
+}
+
+.tl-text{
+    padding-left: 4%
 }
 
 .tl-media-audio:focus { outline: none; }
@@ -102,6 +107,7 @@ div.tl-media-vimeo.tl-media-shadow  {
 .tl-timeline p{
     font-size: 1.6vw !important;
 }
+
 /*.tl-caption{*/
 /*    float: left !important;*/
 /*    margin-left: 2% !important;*/
