@@ -92,7 +92,7 @@
 			--><synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
 			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" clearpanel="true" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
 			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchTextPlus>
-			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
+			<!--<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>-->
 		</newNodes>
 
 	</overlayPanel>
