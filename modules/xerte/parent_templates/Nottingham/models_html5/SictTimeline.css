@@ -86,6 +86,22 @@
 
 .tl-media-audio:focus { outline: none; }
 
+.spinner{
+    z-index: 1000;
+    position: absolute;
+    left: 50%;
+    top: 35%;
+}
+
+div.tl-media-vimeo.tl-media-shadow  {
+    -webkit-box-shadow: unset;
+    -moz-box-shadow: unset;
+    box-shadow: unset;
+}
+
+.tl-timeline p{
+    font-size: 1.6vw !important;
+}
 /*.tl-caption{*/
 /*    float: left !important;*/
 /*    margin-left: 2% !important;*/
