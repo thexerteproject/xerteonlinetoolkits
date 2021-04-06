@@ -32,6 +32,7 @@
 
 			// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+			$("#feedbackGroup").find('.feedbackBlock').html("");
 			if ($(x_currentPageXML).children().length > 0) {
 				this.startQs();
 			}
@@ -265,7 +266,9 @@
 									})
 								.data("correct", thisOption.correct)
 								.change(function() {
+									debugger
 									$feedback.html("");
+									$("#feedbackGroup").find('.feedbackBlock').html("");
 									var $selected = $("#optionHolder input:checked");
 									if ($selected.length > 0) {
 										$checkBtn.button("enable");
@@ -374,19 +377,49 @@
                 // add correct feedback depending on if question overall has been answered correctly or not
                 if (currentQuestion.getAttribute("type") == "Multiple Answer") {
                     if (correct == true) {
-                        rightWrongTxt = '<p><br/>' + $("#pageContents").data("multiRight") + '</p>';
+                        rightWrongTxt = '<p>' + $("#pageContents").data("multiRight") + '</p>';
                     } else {
-                        rightWrongTxt = '<p><br/>' + $("#pageContents").data("multiWrong") + '</p>';
+                        rightWrongTxt = '<p>' + $("#pageContents").data("multiWrong") + '</p>';
                     }
                 } else {
                     if (correct == true) {
-                        rightWrongTxt = '<p><br/>' + $("#pageContents").data("singleRight") + '</p>';
+                        rightWrongTxt = '<p>' + $("#pageContents").data("singleRight") + '</p>';
                     } else {
-                        rightWrongTxt = '<p><br/>' + $("#pageContents").data("singleWrong") + '</p>';
+                        rightWrongTxt = '<p>' + $("#pageContents").data("singleWrong") + '</p>';
                     }
                 }
             }
-            // Track answer
+
+			var feedbackDiv = ['top', 'middle', 'bottom'],
+					feedbackOrder = thisQ.getAttribute('feedbackPos') == undefined ? 'GAC' : thisQ.getAttribute('feedbackPos');
+
+			feedbackOrder = [...feedbackOrder];
+			debugger
+            ////HIER
+			for (var i=0; i<feedbackDiv.length; i++) {
+				var thisFeedback;
+				if (feedbackOrder[i] == 'G') {
+					thisFeedback = thisQ.getAttribute('feedback');
+				} else if (feedbackOrder[i] == 'A') {
+					thisFeedback = selectedOption.feedback;
+				} else {
+					thisFeedback = rightWrongTxt;
+				}
+
+				$('#' + feedbackDiv[i] + 'Feedback')
+						.html(thisFeedback)
+						.show();
+
+			}
+
+			var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+			if (feedbackLabel == undefined) {
+				feedbackLabel = "Feedback";
+			}
+			$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
+
+
+			// Track answer
             var result = {
                 success: correct,
                 score: correct ? 100.0 : 0.0
@@ -438,6 +471,7 @@
             else
             {
                 // Continue to next question
+				debugger
                 $("#checkBtn").button("disable");
                 quiz.currentQ++;
                 if (quiz.currentQ == quiz.questions.length) {
@@ -477,7 +511,7 @@
 			//if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
 			//	$("#feedback").find("a.x_glossary").contents().unwrap();
 			//}
-			
+
             $("#optionHolder").hide();
 			$("#nextBtn, #checkBtn").button("disable");
             if (XTGetMode() != "normal")
@@ -648,7 +682,7 @@
 					})
 				.click(function() {
 					$(this).button("disable");
-					
+					$("#feedbackGroup").find('.feedbackBlock').html("");
 					quiz.currentQ++;
 					if (quiz.currentQ == quiz.questions.length) {
                         // last question answered - show results
@@ -714,8 +748,14 @@
 						<button id="nextBtn"></button>
 						<button id="restartBtn"></button>
 					</div>
-					<div id="generalFeedback" aria-live="polite"></div>
-					<div id="feedback" aria-live="polite"></div>
+<!--					<div id="generalFeedback" aria-live="polite"></div>-->
+<!--					<div id="feedback" aria-live="polite"></div>-->
+					<div id="feedbackGroup" aria-live="polite">
+						<div id="feedbackHeader" class="feedbackBlock"></div>
+						<div id="topFeedback" class="feedbackBlock"></div>
+						<div id="middleFeedback" class="feedbackBlock"></div>
+						<div id="bottomFeedback" class="feedbackBlock"></div>
+					</div>
 					
 				</fieldset>
 				
