@@ -423,9 +423,9 @@ function upgrade_5_step2()
             {
                 $tutorial = "";
             }
-            db_query_one("insert into " . $table . " set config_key='" . $tutorialkey . "', value='" . $tutorial . "', category='xerte', mandatory=1" . $extraflags);
+            db_query("insert into " . $table . " set config_key='" . $tutorialkey . "', value='" . $tutorial . "', category='xerte', mandatory=1" . $extraflags);
         }
-        db_query_one("insert into " . $table . " set config_key='" . $key . "', value='" . $value . "', category='xerte', mandatory=1" . $extraflags);
+        db_query("insert into " . $table . " set config_key='" . $key . "', value='" . $value . "', category='xerte', mandatory=1" . $extraflags);
     }
     return true;
 }
@@ -477,7 +477,7 @@ function upgrade_8()
     // Check if auto_increment is set
     $sql = "SELECT * FROM information_schema.COLUMNS where table_schema=? and table_name=? and column_name='template_id'";
     $res = db_query($sql, array($xerte_toolkits_site->database_name, $xerte_toolkits_site->database_table_prefix . 'templatedetails'));
-    if ($res !== false && count($res)>0)
+    if ($res !== false && count($res)>0 && isset($res[0]['extra']))
     {
         if (strpos('auto_increment', $res[0]['extra']) === false)
         {
@@ -973,14 +973,10 @@ function upgrade_22()
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
     );
 
+    $error1 = true;
     $message = "Creating course table - ok ? " . ($ok ? 'true' : 'false');
     if (!_db_field_exists('sitedetails', 'course_freetext_enabled')) {
         $error1 = _db_add_field('sitedetails', 'course_freetext_enabled', 'char(255)', 'true', 'dashboard_allowed_links');
-        $error1_returned = true;
-        if($error1 === false)
-        {
-            $error1_returned = false;
-        }
     }
     $message .= "<br>Creating course_freetext_enabled field in sitedetails = ok ? " . ($error1 ? 'true' : 'false');
     return $message;

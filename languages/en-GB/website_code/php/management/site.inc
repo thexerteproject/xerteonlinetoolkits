@@ -34,6 +34,8 @@
 
 	define("MANAGEMENT_SITE_TEXT", "The site text is (The text to the right of the tools on index.php)");
 
+    define("MANAGEMENT_TUTORIAL_TEXT", "The text shown below the welcome message on the left side of the login page");
+
 	define("MANAGEMENT_SITE_NEWS", "The news text is (The second pod under the login pod on index.php)");
 
 	define("MANAGEMENT_SITE_POD_ONE", "The content of pod one is (The first pod underneath the file area on the logged in page)");

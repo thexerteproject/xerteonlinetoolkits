@@ -225,13 +225,14 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
     $version = getVersion();
+    $language = $_SESSION['toolkits_language'];
     $language_ISO639_1code = substr($language, 0, 2);
 
     $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 	
    
     $buffer = str_replace("%VERSION%", $version, $buffer);
-    $buffer = str_replace("%LNAGUAGE%", $language_ISO639_1code, $buffer);
+    $buffer = str_replace("%LANGUAGE%", $language_ISO639_1code, $buffer);
     $buffer = str_replace("%VERSION_PARAM%", "", $buffer);
     $buffer = str_replace("%TITLE%", $lo_name, $buffer);
     $buffer = str_replace("%TEMPLATEPATH%", "", $buffer);

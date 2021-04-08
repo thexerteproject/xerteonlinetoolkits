@@ -71,6 +71,7 @@
             $lti_def->xapi_endpoint = "";
             $lti_def->xapi_username = "";
             $lti_def->xapi_password = "";
+            $lti_def->dashboard_urls = "";
             $lti_def->xapi_student_id_mode = 0; // e-mail address
             if ($tsugi_installed) {
                 if ($lti_def->published == 1 && !$lti_def->tsugi_useglobal) {

@@ -58,7 +58,7 @@ function xml_template_display($xerte_toolkits_site,$change){
 
     }
 
-    echo "<p class=\"share_status_paragraph\"><form action=\"javascript:xml_change_template()\" name=\"xmlshare\">" . PROPERTIES_LIBRARY_XML_RESTRICT . " <br><br><input type=\"text\" size=\"30\" name=\"sitename\" style=\"margin:0px; padding:0px\" value=\"" . $row['extra'] . "\" /><br><br><button type=\"submit\" class=\"xerte_button\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button></p></form>";
+    echo "<p class=\"share_status_paragraph\"><form action=\"javascript:xml_change_template()\" name=\"xmlshare\">" . PROPERTIES_LIBRARY_XML_RESTRICT . " <br><br><input type=\"text\" size=\"30\" name=\"sitename\" style=\"margin:0px; padding:0px\" value=\"" . (isset($row['extra']) ? $row['extra'] : "") . "\" /><br><br><button type=\"submit\" class=\"xerte_button\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button></p></form>";
 
     if($change){
 
@@ -385,7 +385,7 @@ function syndication_display($xerte_toolkits_site, $change){
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_PROMPT . " ";
 
-    if($row_syndication['syndication']=="true"){
+    if($row_syndication !== false && $row_syndication != null && $row_syndication['syndication']=="true"){
 
         echo "<img id=\"syndon\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:rss_tick_toggle('syndon')\" /> " . PROPERTIES_LIBRARY_YES . "  <img id=\"syndoff\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:rss_tick_toggle('syndoff')\" /> " . PROPERTIES_LIBRARY_NO . " </p>";
 
@@ -395,7 +395,7 @@ function syndication_display($xerte_toolkits_site, $change){
 
     }
 
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_CATEGORY . "<br><select SelectedItem=\"" . $row_syndication['category'] . "\" name=\"type\" id=\"category_list\" style=\"margin:5px 0 0 0; padding:0px;\">";
+    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_CATEGORY . "<br><select SelectedItem=\"" . ($row_syndication !== false && $row_syndication != null ? $row_syndication['category'] : "") . "\" name=\"type\" id=\"category_list\" style=\"margin:5px 0 0 0; padding:0px;\">";
 
     $query_for_categories = "select category_name from {$prefix}syndicationcategories";
 
@@ -447,8 +447,8 @@ function syndication_display($xerte_toolkits_site, $change){
 
     echo "</select></p>";
 
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_DESCRIPTION . "<form action=\"javascript:syndication_change_template()\" name=\"syndshare\" ><textarea id=\"description\" style=\"width:95%; height:100px\">" . $row_syndication['description'] . "</textarea>";
-    echo PROPERTIES_LIBRARY_SYNDICATION_KEYWORDS . "<textarea id=\"keywords\" style=\"width:95%; height:40px\">" . $row_syndication['keywords'] . "</textarea><button type=\"submit\" class=\"xerte_button\" style=\"padding-top:5px\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button></p></form>";
+    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_DESCRIPTION . "<form action=\"javascript:syndication_change_template()\" name=\"syndshare\" ><textarea id=\"description\" style=\"width:95%; height:100px\">" . ($row_syndication !== false && $row_syndication != null ? $row_syndication['description'] : "") . "</textarea>";
+    echo PROPERTIES_LIBRARY_SYNDICATION_KEYWORDS . "<textarea id=\"keywords\" style=\"width:95%; height:40px\">" . ($row_syndication !== false && $row_syndication != null ? $row_syndication['keywords'] : "") . "</textarea><button type=\"submit\" class=\"xerte_button\" style=\"padding-top:5px\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button></p></form>";
 
     if($change){
 
@@ -799,7 +799,7 @@ function rss_syndication($template_id)
 
     $info =  PROJECT_INFO_RSS_SYNDICATION . "<br/>";
 
-    if ($row['rss'] != 'true' && $row['export'] != 'true' && $row['syndication'] != 'true')
+    if ($row == null || ($row['rss'] != 'true' && $row['export'] != 'true' && $row['syndication'] != 'true'))
     {
         return "";
     }
@@ -1003,7 +1003,7 @@ function rss_display($xerte_toolkits_site,$tutorial_id,$change){
 
     echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_RSS . "</span></p>";
 
-    if($row_rss['rss']=="true"){
+    if($row_rss !== false && $row_rss != null && $row_rss['rss']=="true"){
 
         echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_INCLUDE . " <img id=\"rsson\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:rss_tick_toggle('rsson')\" /> " . PROPERTIES_LIBRARY_YES . "  <img id=\"rssoff\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:rss_tick_toggle('rssoff')\" /> " . PROPERTIES_LIBRARY_NO . " </p>";
 
@@ -1013,7 +1013,7 @@ function rss_display($xerte_toolkits_site,$tutorial_id,$change){
 
     }
 
-    if($row_rss['export']=="true"){
+    if($row_rss !== false && $row_rss != null && $row_rss['export']=="true"){
 
         echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_EXPORT . "<img id=\"exporton\" src=\"website_code/images/TickBoxOn.gif\"  onclick=\"javascript:rss_tick_toggle('exporton')\" /> " . PROPERTIES_LIBRARY_YES . "  <img id=\"exportoff\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:rss_tick_toggle('exportoff')\" /> " . PROPERTIES_LIBRARY_NO . " </p>";
 
@@ -1023,7 +1023,7 @@ function rss_display($xerte_toolkits_site,$tutorial_id,$change){
 
     }
 
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_DESCRIPTION . "<form action=\"javascript:rss_change_template()\" name=\"xmlshare\" ><textarea id=\"desc\" style=\"width:90%; height:120px;\">" . $row_rss['description'] . "</textarea><br><br><button type=\"submit\" class=\"xerte_button\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button></form></p>";
+    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_DESCRIPTION . "<form action=\"javascript:rss_change_template()\" name=\"xmlshare\" ><textarea id=\"desc\" style=\"width:90%; height:120px;\">" . ($row_rss !== false && $row_rss != null ? $row_rss['description'] : "") . "</textarea><br><br><button type=\"submit\" class=\"xerte_button\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button></form></p>";
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_SITE . "</p>";
 
