@@ -3544,6 +3544,9 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100"/>
+	<hicol label="Button colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the button"/>
+    <hicolback label="Background Button colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the button"/>
+    <hicolHover label="Hover Button colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the button when the mouse is hovering over the button"/>
 
     <newNodes>
       <listItem><![CDATA[<listItem name="Enter Item Title Here" text="Enter text for the list item here"/>]]></listItem>

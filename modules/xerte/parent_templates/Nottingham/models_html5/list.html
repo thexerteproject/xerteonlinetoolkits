@@ -186,10 +186,36 @@
 				backgroundColor = "#FFFFFF"
 			}
 
-			$(".listItem").css({
-				'color': color,
-				'background-color':backgroundColor
-			})
+			if(x_currentPageXML.getAttribute('hicolHover') !== null){
+				var hicolHover = "#" + x_currentPageXML.getAttribute('hicolHover').substr(2)
+			}
+
+			debugger
+			if(x_currentPageXML.getAttribute('hicolHover') !== null && x_currentPageXML.getAttribute('hicolHover') !== undefined){
+				$(".listItem").css({
+					'color': color,
+					'background-color':backgroundColor,
+				}).on({
+					mouseenter: function (event) {
+						$( this ).css({
+							'background-color':hicolHover,
+						})
+					},
+					mouseleave: function (event) {
+						$( this ).css({
+							'background-color':backgroundColor,
+
+						})
+					}
+				})
+			}else{
+				$(".listItem").css({
+					'color': color,
+					'background-color':backgroundColor
+				})
+			}
+
+
 			
 			x_pageLoaded();
 		}
