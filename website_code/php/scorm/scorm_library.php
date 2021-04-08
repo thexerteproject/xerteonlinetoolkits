@@ -481,7 +481,7 @@ function copy_extra_files() {
  * @global $zipfile
  * @global $file_array - emptied by array_pop calls.
  */
-function xerte_zip_files($fullArchive = false, $dir_path) {
+function xerte_zip_files($fullArchive, $dir_path) {
 
     global $file_array, $zipfile;
 
