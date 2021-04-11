@@ -775,7 +775,6 @@
 				}).on('mouseup', function(e){
 					offset = $trackBarSlider.offset().left - $trackBarRail.offset().left;
 					mp.currentTime(mp.duration() * ((dr.offset().left - minx) / ($trackBarRail.width() - dr.outerWidth())));
-					mp.pause();
 					dr.removeClass("drag");
 				});
 			});
@@ -828,18 +827,23 @@
 							break;
 						case "k":
 						case " ":
-							if(isPlaying) {
-								mp.pause();
+							if ($playButton.hasClass('fa-x-play') || $playButton.hasClass('fa-x-pause')){
+								if(isPlaying) {
+									mp.pause();
+								} else {
+									mp.play();
+								}
 							}
-							else {
-								mp.play();
-							}	
 							break;
 						case "l":
-							mp.currentTime(time + 10);
+						if ($playButton.hasClass('fa-x-play') || $playButton.hasClass('fa-x-pause')){
+								mp.currentTime(time + 10);
+							}
 							break;
 						case "j":
-							mp.currentTime(time - 10);	
+						if ($playButton.hasClass('fa-x-play') || $playButton.hasClass('fa-x-pause')){
+								mp.currentTime(time - 10);	
+							}
 							break;
 						}
 				}
@@ -987,7 +991,7 @@
                 vidFullWatched.duration = mediaLesson.popcornInstance.duration();
                 duration = mediaLesson.popcornInstance.duration();
                 XTVideo(x_currentPage, trackinglabel, name, "seeked", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
-                mediaLesson.popcornInstance.pause();
+                //mediaLesson.popcornInstance.pause();
             });
             this.popcornInstance.on("ended", function() {
                 var popTime = mediaLesson.popcornInstance.duration();
@@ -1108,8 +1112,6 @@
 					mediaLesson.resizeVimeo($vimeo);
 					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .vimeo", mediaData.media);
 					$vimeo.data("popcornInstance", popcornInstance);
-					//popcornInstance.play();
-					//popcornInstance.pause();
 					if (mediaData.autoplay == "true") {
 						popcornInstance.play();
 					}
