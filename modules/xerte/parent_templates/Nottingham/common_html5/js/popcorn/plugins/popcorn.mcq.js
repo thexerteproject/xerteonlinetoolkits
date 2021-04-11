@@ -448,6 +448,15 @@ optional: feedback page synch play enable
 									'z-index': 1
 								})
 						});
+
+						var w = 0.5 * (size - $showHs.outerWidth(true));
+						var h = 0.2 * (size - $showHs.outerHeight(true));						
+						$showHs.css({
+							"padding-top"   : size * 0.2,
+							"padding-bottom": h,
+							"padding-left"  : w,
+							"padding-right" : w
+						})
 							
 						var $showLbl = $("<div class='showLabel'>" + options.name + "</div>");
 
