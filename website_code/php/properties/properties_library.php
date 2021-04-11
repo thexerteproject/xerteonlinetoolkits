@@ -20,10 +20,9 @@
 
 //PROPERTIES LIBRARY
 
-require_once(dirname(__FILE__) . "/../../../config.php");
-require_once(dirname(__FILE__) . "/../template_status.php");
-require_once(dirname(__FILE__) . "/../template_library.php");
-require_once(dirname(__FILE__) . "/../xAPI/xAPI_library.php");
+require_once("../../../config.php");
+require_once("../template_library.php");
+require_once("../xAPI/xAPI_library.php");
 
 
 _load_language_file("/website_code/php/properties/publish.inc");
@@ -275,16 +274,7 @@ function notes_display($notes, $change, $template_id){
     $notes = htmlentities($notes, ENT_QUOTES, 'UTF-8', false);
     echo "<p class=\"header\"><span>" . PROPERTIES_TAB_NOTES . "</span></p>";
 
-    echo "<p>" . PROPERTIES_LIBRARY_NOTES_EXPLAINED . "<br/><form id=\"notes_form\" action=\"javascript:change_notes('" . $template_id ."', 'notes_form')\"><textarea id=\"notes\" style=\"width:90%; height:330px\">" . $notes . "</textarea><button type=\"submit\" class=\"xerte_button\"><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . " </button></form></p>";
-    echo "<script type=\"text/javascript\">
-        function makeeditor() {
-        ckeditor = CKEDITOR.replace(\"notes\", {
-                toolbarStartupExpanded: false,
-                height: 360,
-                language: '" . $_SESSION['toolkits_language'] . "'
-            });
-        }
-        </script>";
+    echo "<p>" . PROPERTIES_LIBRARY_NOTES_EXPLAINED . "<br/><form id=\"notes_form\" action=\"javascript:change_notes('" . $template_id ."', 'notes_form')\"><textarea style=\"width:90%; height:330px\">" . $notes . "</textarea><button type=\"submit\" class=\"xerte_button\"><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . " </button></form></p>";
 
     if($change){
 
@@ -570,7 +560,7 @@ function project_info($template_id){
 
 }
 
-function statistics_prepare($template_id, $force=false)
+function statistics_prepare($template_id)
 {
     global $xerte_toolkits_site;
 
@@ -583,28 +573,27 @@ function statistics_prepare($template_id, $force=false)
 
     $html = "<div id='graph_" . $template_id . "' class='statistics'><img src='editor/img/loading16.gif'/></div>";
 
-    if ($xerte_toolkits_site->dashboard_enabled != 'false' || $force) {
+    if ($xerte_toolkits_site->dashboard_enabled != 'false') {
+
+        // determine role and check against minrole
+        $role = get_user_access_rights($template_id);
         $access = false;
-        if (! $force) {
-            // determine role and check against minrole
-            $role = get_user_access_rights($template_id);
-            $access = false;
-            switch ($xerte_toolkits_site->xapi_dashboard_minrole) {
-                case 'creator':
-                    $access = ($role == 'creator');
-                    break;
-                case 'co-author':
-                    $access = ($role == 'creator' || $role == 'co-author');
-                    break;
-                case 'editor':
-                    $access = ($role == 'creator' || $role == 'co-author' || $role == 'editor');
-                    break;
-                case 'read-only':
-                    $access = ($role == 'creator' || $role == 'co-author' || $role == 'editor' || $role == 'read-only');
-                    break;
-            }
+        switch($xerte_toolkits_site->xapi_dashboard_minrole)
+        {
+            case 'creator':
+                $access = ($role == 'creator');
+                break;
+            case 'co-author':
+                $access = ($role == 'creator' || $role == 'co-author');
+                break;
+            case 'editor':
+                $access = ($role == 'creator' || $role == 'co-author' || $role == 'editor');
+                break;
+            case 'read-only':
+                $access = ($role == 'creator' || $role == 'co-author' || $role == 'editor' || $role=='read-only');
+                break;
         }
-        if ($access || $force) {
+        if ($access) {
 
             $prefix = $xerte_toolkits_site->database_table_prefix;
 
@@ -1066,16 +1055,12 @@ function tsugi_display($id, $lti_def, $mesg = "")
     <p><?php echo PROPERTIES_LIBRARY_TSUGI_DESCRIPTION; ?></p>
 
     <p>
-    <label for="tsugi_published"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH; ?></label><input id="pubChk" type="checkbox" onchange="javascript:tsugi_toggle_tsugi_publish('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_published" <?php echo ($lti_def->published ? "checked" : ""); ?>>
+    <label for="tsugi_published"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH; ?></label><input id="pubChk" type="checkbox" name="tsugi_published" <?php echo ($lti_def->published ? "checked" : ""); ?>>
     </p>
-    <div id="publish" class="publish <?php echo($lti_def->published ? "" : "disabled"); ?>">
-        <label for="tsugi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_USEGLOBAL; ?></label><input type="checkbox" onchange="javascript:tsugi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_useglobal" id="tsugi_useglobal" <?php echo ($lti_def->tsugi_useglobal ? "checked" : "");?>><br>
-        <label for="tsugi_useprivateonly"><?php echo PROPERTIES_LIBRARY_TSUGI_USEPRIVATEONLY; ?></label><input type="checkbox" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_useprivateonly" id="tsugi_useprivateonly" <?php echo ($lti_def->tsugi_privateonly ? "checked" : "");?>><br>
-        <table>
-            <tr><td><label for="tsugi_title"><?php echo PROPERTIES_LIBRARY_TSUGI_NAME; ?></label></td><td><input id="tsugi_title"  name="tsugi_title" type="text" <?php echo ($lti_def->tsugi_useglobal || !$lti_def->published ? "disabled value=\"\"" : "value=\"" . $lti_def->title . "\"");?>></td></tr>
-            <tr><td><label for="tsugi_key"><?php echo PROPERTIES_LIBRARY_TSUGI_KEY; ?></label></td><td><input id="tsugi_key" name="tsugi_key" type="text" <?php echo ($lti_def->tsugi_useglobal || !$lti_def->published ? "disabled value=\"\"" : "value=\"" .  $lti_def->key . "\"");?>></td></tr>
-            <tr><td><label for="tsugi_secret"><?php echo PROPERTIES_LIBRARY_TSUGI_SECRET; ?></label></td><td><input id="tsugi_secret" name="tsugi_secret" type="text" <?php echo ($lti_def->tsugi_useglobal || !$lti_def->published ? "disabled value=\"\"" : "value=\"" .  $lti_def->secret . "\"");?>></td></tr>
-        </table>
+    <div id="publish" class="publish">
+        <label for="tsugi_title"><?php echo PROPERTIES_LIBRARY_TSUGI_NAME; ?></label><input name="tsugi_title" type="text" value="<?php echo $lti_def->title ?>"><br>
+        <label for="tsugi_key"><?php echo PROPERTIES_LIBRARY_TSUGI_KEY; ?></label><input name="tsugi_key" type="text" value="<?php echo $lti_def->key ?>"><br>
+        <label for="tsugi_secret"><?php echo PROPERTIES_LIBRARY_TSUGI_SECRET; ?></label><input name="tsugi_secret" type="text" value="<?php echo $lti_def->secret ?>"><br>
     </div>
         <?php
 
@@ -1091,15 +1076,14 @@ function tsugi_display($id, $lti_def, $mesg = "")
     }
     ?>
     <p>
-        <label for="xChk"><?php echo PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI; ?></label><input id="xChk" type="checkbox" onchange="javascript:tsugi_toggle_usexapi('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_xapi" <?php echo ($lti_def->xapi_enabled ? "checked" : "");?>>
+        <label for="xChk"><?php echo PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI; ?></label><input id="xChk" type="checkbox" name="tsugi_xapi" <?php echo ($lti_def->xapi_enabled ? "checked" : "");?>>
     </p>
-        <div id="xApi" class="publish <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?>">
-            <label for="tsugi_xapi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USEGLOBAL; ?></label><input type="checkbox" <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?> onchange="javascript:xapi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_xapi_useglobal" id="tsugi_xapi_useglobal" <?php echo ($lti_def->xapi_useglobal ? "checked" : "");?>><br>
-            <table>
-                <tr><td><label for="tsugi_xapi_endpoint"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_ENDPOINT; ?></label></td><td><input type="text" name="tsugi_xapi_endpoint" id="tsugi_xapi_endpoint" <?php echo ($lti_def->xapi_useglobal || !$lti_def->xapi_enabled ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_endpoint . "\""); ?>"></td></tr>
-                <tr><td><label for="tsugi_xapi_username"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USERNAME; ?></label></td><td><input type="text" name="tsugi_xapi_username" id="tsugi_xapi_username" <?php echo ($lti_def->xapi_useglobal || !$lti_def->xapi_enabled ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_username . "\""); ?>"></td></tr>
-                <tr><td><label for="tsugi_xapi_password"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_PASSWORD; ?></label></td><td><input type="text" name="tsugi_xapi_password" id="tsugi_xapi_password" <?php echo ($lti_def->xapi_useglobal || !$lti_def->xapi_enabled ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_password . "\""); ?>"></td></tr>
-                <tr><td><label for="tsugi_xapi_student_id_mode"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE; ?></label></td><td><select name="tsugi_xapi_student_id_mode" id="tsugi_xapi_student_id_mode" <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?> >
+        <div id="xApi" class="publish">
+            <label for="tsugi_xapi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USEGLOBAL; ?></label><input type="checkbox" onchange="javascript:xapi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_xapi_useglobal" id="tsugi_xapi_useglobal" <?php echo ($lti_def->xapi_useglobal ? "checked" : "");?>><br>
+            <label for="tsugi_xapi_endpoint"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_ENDPOINT; ?></label><input type="text" name="tsugi_xapi_endpoint" id="tsugi_xapi_endpoint" <?php echo ($lti_def->xapi_useglobal ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_endpoint . "\""); ?>"><br>
+            <label for="tsugi_xapi_username"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USERNAME; ?></label><input type="text" name="tsugi_xapi_username" id="tsugi_xapi_username" <?php echo ($lti_def->xapi_useglobal ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_username . "\""); ?>"><br>
+            <label for="tsugi_xapi_password"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_PASSWORD; ?></label><input type="text" name="tsugi_xapi_password" id="tsugi_xapi_password" <?php echo ($lti_def->xapi_useglobal ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_password . "\""); ?>"><br>
+            <label for="tsugi_xapi_student_id_mode"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE; ?></label><select name="tsugi_xapi_student_id_mode" id="tsugi_xapi_student_id_mode">
                 <?php
                 for ($i=0; $i<4; $i++)
                 {
@@ -1126,10 +1110,9 @@ function tsugi_display($id, $lti_def, $mesg = "")
                     echo "</option>\n";
                 }
                 ?>
-            </select></td></tr>
-            <tr><td colspan="2"><label for="dashboard_urls"><?php echo PROPERTIES_LIBRARY_TSUGI_DASHBOARD_URLS; ?></label></td></tr>
-            <tr><td colspan="2"><input name="dashboard_urls" type="text" <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?> value="<?php echo $lti_def->dashboard_urls ?>"></td></tr>
-            </table>
+            </select><br>
+            <label for="dashboard_urls"><?php echo PROPERTIES_LIBRARY_TSUGI_DASHBOARD_URLS; ?></label><input name="dashboard_urls" type="text" value="<?php echo $lti_def->dashboard_urls ?>"><br>
+
         </div>
         <input type="button" value="<?php echo PROPERTIES_LIBRARY_TSUGI_UPDATE_BUTTON_LABEL; ?>" class="xerte_button" onclick="javascript:lti_update(<?php echo $id;?>)">
     <?php
