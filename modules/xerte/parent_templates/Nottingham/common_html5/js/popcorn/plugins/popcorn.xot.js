@@ -105,13 +105,17 @@ optional: pauseMedia*
 						$showHolder
                     	    .click(function () {
                         	    $showHolder.hide();
-								$target.prepend(options.name);
+								if (options.name != "") {
+									$target.prepend('<h4>' + options.name + '</h4>');
+								}
 								$target.parent().addClass("qWindow");
 								$target.parent().css({"padding": 5});
                         	});
                		} else {
 						$target.parent().css({"padding": 5});
-						$target.prepend(options.name);
+						if (options.name != "") {
+							$target.prepend('<h4>' + options.name + '</h4>');
+						}
 					}
 				}
 
@@ -127,10 +131,6 @@ optional: pauseMedia*
 							"frameborder":	0,
 							"scrolling":	"no"
 						});
-					
-					if (options.name != "") {
-						$iframe.before('<h4>' + options.name + '</h4>');
-					}
 					
 					if (options.description) {
 						$iframe.attr("title", options.description);
@@ -259,13 +259,19 @@ optional: pauseMedia*
 						})
 					}
 					var h = $target.parent().parent().height() - 20;
+					var hs = h - 2 * $target.parent().css("padding").replace(/[^-\d\.]/g, '');
 					var w = $target.parent().parent().width() - 20;
 					$target.parent().css({
 						"height": h,
 						"width": w
 					}).show();
-					$target.css("height", "100%");
-					$iframe.css("height", "93%");
+					$target.css("height", hs);
+					if (options.name == "") {
+						$iframe.css("height", h);
+					}
+					else {
+						$iframe.css("height", hs - 33);
+					}
 				}
 
 				$target.show();
