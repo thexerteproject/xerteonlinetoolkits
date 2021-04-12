@@ -1,7 +1,7 @@
 <wizard menus="Connectors" restrict="template" modelFile="connectorMenu">
   <pageWizard remove="true" duplicate="false">
     <newNodes>    
-      <connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" buttonWidth="100%" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu>
+      <connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu>
     </newNodes>  	  
   </pageWizard>
   
@@ -9,7 +9,7 @@
   <connectorMenu menu="Connectors" menuItem="Menu Connector" hint="Generate a menu of all or a selected range of the pages in a project." icon="icConMenu"  thumb="thumbs/connectorMenu.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <buttonWidth label="Button Width" type="TextInput" wysiwyg="true"/>
+    <buttonWidth label="Button Width" type="TextInput" wysiwyg="true" optional="true" tooltip="The number indicates in percent how wide the buttons are. It can be used with and without the percent symbool(%) at the end."/>
 	<text label="Page Text" type="TextArea"  height="200" defaultValue="Enter text for the page here" optional="true" tooltip="Add text to the page"/>
 	<startPageID label="First Entry" type="pageList" defaultValue="" optional="true" tooltip="Include menu links from this page onwards"/>
 	<endPageID label="Last Entry" type="pageList" defaultValue="" optional="true" tooltip="Include menu links up to and including this page"/>

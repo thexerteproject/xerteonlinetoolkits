@@ -96,10 +96,10 @@
 					}
 				}
 			}
-			
+			debugger
 			var $menuItems = $("#subMenuItems"),
 				$menuItem = $menuItems.find(".subMenuItem:first");
-			
+
 			for (var i=0; i<menuItems.length; i++) {
 				var $thisItem;
 				if (i != 0) {
@@ -139,8 +139,11 @@
 						if ($.isArray(page)) {
 							name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : this.getNestedName(page);
 							$thisItem.data('parent', x_pages[page[0]].getAttribute('linkID'));
-						} else {
+						} else if( menuItems[i] != undefined &&  menuItems[i] != "") {
 							name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_pages[page].getAttribute("name");
+						}else{
+							$('#subMenuItems').html("There are one or more page destinations empty")
+							break;
 						}
 					}
 				}
@@ -172,7 +175,7 @@
 
 			var buttonWidth = x_currentPageXML.getAttribute("buttonWidth")
 			if(buttonWidth === undefined || buttonWidth === null){
-				buttonWidth = "100%"
+				buttonWidth = "80%"
 			}
 			if(buttonWidth.slice(-1)!=="%"){
 				buttonWidth+="%"
@@ -231,7 +234,7 @@
 <div id="pageContents">
 	<div id="subMenuHolder">
 		<div id="subMenuItems">
-			<button class="subMenuItem width80"/>
+			<button class="subMenuItem width100"/>
 		</div>
 	</div>
 </div>

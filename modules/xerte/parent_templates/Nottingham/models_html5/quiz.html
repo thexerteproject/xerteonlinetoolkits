@@ -266,7 +266,7 @@
 									})
 								.data("correct", thisOption.correct)
 								.change(function() {
-									debugger
+
 									$feedback.html("");
 									$("#feedbackGroup").find('.feedbackBlock').html("");
 									var $selected = $("#optionHolder input:checked");
@@ -395,28 +395,69 @@
 
 			feedbackOrder = [...feedbackOrder];
 			debugger
-            ////HIER
-			for (var i=0; i<feedbackDiv.length; i++) {
-				var thisFeedback;
-				if (feedbackOrder[i] == 'G') {
-					thisFeedback = thisQ.getAttribute('feedback');
-				} else if (feedbackOrder[i] == 'A') {
-					thisFeedback = selectedOption.feedback;
-				} else {
-					thisFeedback = rightWrongTxt;
+            if(this.showfeedback){
+            	if(thisQ.getAttribute("type") != "Multiple Answer"){
+					for (var i=0; i<feedbackDiv.length; i++) {
+						var thisFeedback;
+						if (feedbackOrder[i] == 'G') {
+							thisFeedback = thisQ.getAttribute('feedback');
+						} else if (feedbackOrder[i] == 'A') {
+							thisFeedback = selectedOption.feedback;
+						} else {
+							thisFeedback = rightWrongTxt;
+						}
+
+						$('#' + feedbackDiv[i] + 'Feedback')
+								.html(thisFeedback)
+								.show();
+					}
+
+					var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+					if (feedbackLabel == undefined) {
+						feedbackLabel = "Feedback";
+					}
+					$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
+				}else{
+
+					for (var p=0; p<feedbackDiv.length; p++) {
+						var thisFeedback;
+						if (feedbackOrder[p] == 'G') {
+							thisFeedback = thisQ.getAttribute('feedback');
+						} else if (feedbackOrder[p] == 'A') {
+							debugger
+							var selectedInput = $("#optionHolder input:checked")
+							var multipleFeedback = []
+							var feedback = "";
+
+							for(var f = 0; f <selectedInput.length; f++){
+								multipleFeedback.push(selectedInput[f].value)
+							}
+
+							for(var l = 0; l < multipleFeedback.length; l++){
+								for(var j = 0; j < thisQ.children.length; j++){
+									if(multipleFeedback[l] === thisQ.children[j].attributes.text.value){
+										feedback += thisQ.children[j].attributes.feedback.value
+									}
+								}
+							}
+							thisFeedback = feedback;
+						} else {
+							thisFeedback = rightWrongTxt;
+						}
+
+						$('#' + feedbackDiv[p] + 'Feedback')
+								.html(thisFeedback)
+								.show();
+					}
+					var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+					if (feedbackLabel == undefined) {
+						feedbackLabel = "Feedback";
+					}
+					$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
 				}
 
-				$('#' + feedbackDiv[i] + 'Feedback')
-						.html(thisFeedback)
-						.show();
-
 			}
 
-			var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
-			if (feedbackLabel == undefined) {
-				feedbackLabel = "Feedback";
-			}
-			$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
 
 
 			// Track answer
@@ -471,7 +512,7 @@
             else
             {
                 // Continue to next question
-				debugger
+
                 $("#checkBtn").button("disable");
                 quiz.currentQ++;
                 if (quiz.currentQ == quiz.questions.length) {
