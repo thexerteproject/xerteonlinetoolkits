@@ -58,7 +58,8 @@ function properties_stateChanged(){
 		if(xmlHttp.responseText!=""){
 
 			document.getElementById('dynamic_area').innerHTML = xmlHttp.responseText;
-
+			if (typeof "makeeditor" == "function")
+				makeeditor();
 		}
 	}
 }
@@ -1576,6 +1577,8 @@ function lti_update(id)
 
         xmlHttp.send('template_id=' + id
 			+ '&tsugi_published=' + $("#pubChk").prop('checked')
+			+ '&tsugi_useglobal=' + $("[name=tsugi_useglobal]").prop('checked')
+			+ '&tsugi_privateonly=' + $("#tsugi_useprivateonly").prop('checked')
 			+ '&tsugi_title=' + $("[name=tsugi_title]").val()
 			+ '&tsugi_key=' + $("[name=tsugi_key]").val()
             + '&tsugi_secret=' + $("[name=tsugi_secret]").val()
@@ -1603,6 +1606,71 @@ function xapi_toggle_useglobal(lti_def_str)
         $("#tsugi_xapi_endpoint").val(lti_def['xapi_endpoint']).prop('disabled', false);
         $("#tsugi_xapi_username").val(lti_def['xapi_username']).prop('disabled', false);
         $("#tsugi_xapi_password").val(lti_def['xapi_password']).prop('disabled', false);
+
+	}
+}
+
+function tsugi_toggle_tsugi_publish(lti_def_str)
+{
+	var published = $("#pubChk").prop('checked');
+	var useglobal = $("#tsugi_useglobal").prop('checked');
+	var lti_def = JSON.parse(lti_def_str);
+	if (published) {
+		$("#publish").removeClass("disabled");
+		$("#publish input").prop("disabled", false);
+		if (useglobal) {
+			$("#tsugi_useprivateonly").prop('disabled', true);
+			$("label[for=tsugi_useprivateonly]").addClass("disabled");
+			$("#tsugi_title").val("").prop('disabled', true);
+			$("#tsugi_key").val("").prop('disabled', true);
+			$("#tsugi_secret").val("").prop('disabled', true);
+		}
+	}
+	else {
+		$("#publish").addClass("disabled");
+		$("#publish input").prop("disabled", true);
+	}
+}
+
+function tsugi_toggle_usexapi(lti_def_str)
+{
+	var xapi = $("#xChk").prop('checked');
+	var useglobal = $("#tsugi_xapi_useglobal").prop('checked');
+	var lti_def = JSON.parse(lti_def_str);
+
+	if (xapi) {
+		$("#xApi").removeClass("disabled");
+		$("#xApi input, #xApi select").prop("disabled", false);
+		if (useglobal) {
+			$("#tsugi_xapi_endpoint").val("").prop('disabled', true);
+			$("#tsugi_xapi_username").val("").prop('disabled', true);
+			$("#tsugi_xapi_password").val("").prop('disabled', true);
+		}
+	}
+	else {
+		$("#xApi").addClass("disabled");
+		$("#xApi input, #xApi select").prop("disabled", true);
+	}
+}
+
+function tsugi_toggle_useglobal(lti_def_str)
+{
+	var useglobal = $("#tsugi_useglobal").prop('checked');
+	var lti_def = JSON.parse(lti_def_str);
+	$("#tsugi_useglobal").prop('checked', useglobal);
+	if (useglobal) {
+		$("#tsugi_useprivateonly").prop('disabled', true);
+		$("label[for=tsugi_useprivateonly]").addClass("disabled");
+		$("#tsugi_title").val("").prop('disabled', true);
+		$("#tsugi_key").val("").prop('disabled', true);
+		$("#tsugi_secret").val("").prop('disabled', true);
+	}
+	else {
+		$("#tsugi_useprivateonly").prop('disabled', false);
+		$("label[for=tsugi_useprivateonly]").removeClass("disabled");
+		$("#tsugi_title").val(lti_def['title']).prop('disabled', false);
+		$("#tsugi_key").val(lti_def['key']).prop('disabled', false);
+		$("#tsugi_secret").val(lti_def['secret']).prop('disabled', false);
 
 	}
 }

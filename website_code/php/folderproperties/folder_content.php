@@ -35,6 +35,12 @@ _load_language_file("/website_code/php/folderproperties/folder_content.inc");
 
 include "../display_library.php";
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
+
 /**
  * connect to the database
  */

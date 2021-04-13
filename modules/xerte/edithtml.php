@@ -399,7 +399,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "course_list=" . json_encode($course) . ";\n";
     // Some upgrade.php in teh past prevented the course_freetext_enabled column to be set correctly in the sitedetails table
     // If not present, set to true
-    if ($xerte_toolkits_site->course_freetext_enabled == "undefined")
+    if (!isset($xerte_toolkits_site->course_freetext_enabled))
     {
         echo "course_freetext_enabled=true;\n";
     }

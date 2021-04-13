@@ -35,41 +35,50 @@ require_once("../properties/properties_library.php");
 if(empty($_SESSION['toolkits_logon_id'])) {
             die("Please login");
 }
+if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) || is_user_admin()) {
+    $info = new stdClass();
+    $info->template_id = $_POST['template_id'];
+    $_SESSION["XAPI_PROXY"] = $_POST['template_id'];
+    $info->properties = project_info($_POST['template_id']);
+    $info->properties .= media_quota_info($_POST['template_id']);
+    $info->properties .= access_info($_POST['template_id']);
+    $info->properties .= sharing_info($_POST['template_id']);
+    $info->properties .= rss_syndication($_POST['template_id']);
 
-$info = new stdClass();
-$info->template_id = $_POST['template_id'];
-$_SESSION["XAPI_PROXY"] = $_POST['template_id'];
-$info->properties = project_info($_POST['template_id']);
-$info->properties .= media_quota_info($_POST['template_id']);
-$info->properties .= access_info($_POST['template_id']);
-$info->properties .= sharing_info($_POST['template_id']);
-$info->properties .= rss_syndication($_POST['template_id']);
+    $statistics_available = statistics_prepare($_POST['template_id']);
 
-$statistics_available = statistics_prepare($_POST['template_id']);
+    if ($statistics_available->published) {
+        $info->properties .= $statistics_available->linkinfo;
+    }
 
-if ($statistics_available->published) {
-    $info->properties .= $statistics_available->linkinfo;
-}
+    if ($statistics_available->available) {
+        $info->properties .= $statistics_available->xapi_linkinfo;
+        $info->properties .= "<li><a target=\"_blank\" href='" . $statistics_available->xapi_url . "'>" . $statistics_available->xapi_url . "</a></li>";
+    }
+    $info->properties .= $statistics_available->info;
+    $info->fetch_statistics = $statistics_available->available;
+    if (isset($statistics_available->lrs)) {
+        $info->lrs = $statistics_available->lrs;
+    } else {
+        $info->lrs = "";
+    }
+    if (isset($statistics_available->dashboard)) {
+        $info->dashboard = $statistics_available->dashboard;
+    } else {
+        $info->dashnoard = "";
+    }
 
-if ($statistics_available->available)
-{
-    $info->properties .= $statistics_available->xapi_linkinfo;
-    $info->properties .= "<li><a target=\"_blank\" href='" . $statistics_available->xapi_url . "'>" . $statistics_available->xapi_url . "</a></li>";
-}
-$info->properties .= $statistics_available->info;
-$info->fetch_statistics = $statistics_available->available;
-$info->lrs = $statistics_available->lrs;
-$info->dashboard = $statistics_available->dashboard;
+    $sql = "SELECT template_id, user_id, firstname, surname, role FROM " .
+        " {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
+        " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}templaterights.user_id and template_id= ? and user_id = ?";
 
-$sql = "SELECT template_id, user_id, firstname, surname, role FROM " .
-    " {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
-    " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}templaterights.user_id and template_id= ? and user_id = ?";
+    $row = db_query_one($sql, array($_POST['template_id'], $_SESSION['toolkits_logon_id']));
 
-$row = db_query_one($sql, array($_POST['template_id'], $_SESSION['toolkits_logon_id']));
+    $info->role = $row['role'];
 
-$info->role = $row['role'];
 
-echo json_encode($info);
+    echo json_encode($info);
 
 //$info = get_project_info($_POST['template_id']);
 //echo $info;
+}

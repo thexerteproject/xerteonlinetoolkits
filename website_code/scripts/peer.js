@@ -53,7 +53,8 @@ function peer_stateChanged(){
 	 * @author Patrick Lockley
 	 */
 
-function send_review(retouremail,template_id){
+//function send_review(retouremail,template_id){
+function send_review(){
 
 	if(setup_ajax()!=false){
 
@@ -63,7 +64,11 @@ function send_review(retouremail,template_id){
 		xmlHttp.onreadystatechange=peer_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		xmlHttp.send('retouremail=' + retouremail + '&template_id=' + template_id + '&feedback=' + document.peer.response.value);
+		// Cleanup peer review text
+		var response = $('<div>').html(document.peer.response.value);
+		var response_cleantxt = $.trim(response.text());
+		//xmlHttp.send('retouremail=' + retouremail + '&template_id=' + template_id + '&feedback=' + response_cleantxt);
+		xmlHttp.send('feedback=' + response_cleantxt);
 
 	}	
 

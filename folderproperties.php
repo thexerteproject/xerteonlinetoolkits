@@ -44,6 +44,9 @@ Version 1.0
 <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
 
 <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+
 <?php
 _include_javascript_file("website_code/scripts/template_management.js");
 _include_javascript_file("website_code/scripts/properties_tab.js");

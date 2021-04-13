@@ -36,12 +36,19 @@ include "../url_library.php";
 include "../user_library.php";
 include "properties_library.php";
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
+
 if(is_numeric($_POST['template_id'])){
 
-    $tutorial_id = $_POST['template_id'];
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()) {
+        $tutorial_id = $_POST['template_id'];
 
-    publish_display($tutorial_id);
-
+        publish_display($tutorial_id);
+    }
 }
 
 ?>

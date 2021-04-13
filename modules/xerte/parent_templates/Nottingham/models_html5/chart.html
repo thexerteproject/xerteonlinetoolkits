@@ -255,7 +255,7 @@
 
 		this.doAxesAndLabels = function(canvas, maxH, availW, availH, txtColour) {
 			// draw x/y axis
-			canvas.strokeStyle = $('body').css('color');
+			canvas.strokeStyle = $('#chartTitle').css('color');
 			canvas.beginPath();
 			canvas.moveTo(0, 10);
 			canvas.lineTo(0, availH - 20 + 5);

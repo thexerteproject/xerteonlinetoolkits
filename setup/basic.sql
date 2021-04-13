@@ -187,6 +187,11 @@ CREATE TABLE `$grouping` (
 
 insert  into `$grouping` (`grouping_id`,`grouping_name`) values (1,'Grouping 1'),(2,'Grouping 2'),(3,'Grouping 3'),(4,'Grouping 4'),(5,'Grouping 5'),(6,'Grouping 6'),(7,'Grouping 7'),(8,'Grouping 8'),(9,'Grouping 9'),(10,'Grouping 10');
 
+CREATE TABLE `$course` (
+  `course_id` int(11) NOT NULL AUTO_INCREMENT,
+  `course_name` char(255) DEFAULT NULL,
+  PRIMARY KEY (`course_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$syndicationlicenses` (
   `license_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -208,6 +213,8 @@ CREATE TABLE `$templatedetails` (
   `access_to_whom` text,
   `extra_flags` varchar(45) DEFAULT NULL,
   `tsugi_published` int DEFAULT 0,
+  `tsugi_usetsugikey` int(1) DEFAULT 1,
+  `tsugi_privatekeyonly` int(1) DEFAULT 0,
   `tsugi_xapi_enabled` int DEFAULT 0,
   `tsugi_xapi_useglobal` int(1) DEFAULT 1,
   `tsugi_xapi_endpoint` text,

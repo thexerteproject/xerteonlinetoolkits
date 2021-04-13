@@ -51,7 +51,7 @@
 
 if(!function_exists('file_put_contents')){
 	// If not PHP5, creates a compatible function
-	Function file_put_contents($file, $data){
+	function file_put_contents($file, $data){
 		if($tmp = fopen($file, "w")){
 			fwrite($tmp, $data);
 			fclose($tmp);
@@ -63,7 +63,7 @@ if(!function_exists('file_put_contents')){
 }
 
 class dUnzip2{
-	Function getVersion(){
+	function getVersion(){
 		return "2.6";
 	}
 	// Public
@@ -80,14 +80,14 @@ class dUnzip2{
 	var $dirSignatureE= "\x50\x4b\x05\x06"; // end of central dir signature
 	
 	// Public
-	Function dUnzip2($fileName){
+	function __construct($fileName){
 		$this->fileName       = $fileName;
-		$this->compressedList = 
-		$this->centralDirList = 
-		$this->endOfCentral   = Array();
+		$this->compressedList = array();
+		$this->centralDirList = array();
+		$this->endOfCentral   = array();
 	}
 	
-	Function getList($stopOnFile=false){
+	function getList($stopOnFile=false){
 		if(sizeof($this->compressedList)){
 			$this->debugMsg(1, "Returning already loaded file list.");
 			return $this->compressedList;
@@ -173,19 +173,19 @@ class dUnzip2{
 		
 		return $this->compressedList;
 	}
-	Function getExtraInfo($compressedFileName){
+	function getExtraInfo($compressedFileName){
 		return
 			isset($this->centralDirList[$compressedFileName])?
 			$this->centralDirList[$compressedFileName]:
 			false;
 	}
-	Function getZipInfo($detail=false){
+	function getZipInfo($detail=false){
 		return $detail?
 			$this->endOfCentral[$detail]:
 			$this->endOfCentral;
 	}
 	
-	Function unzip($compressedFileName, $targetFileName=false, $applyChmod=0777){
+	function unzip($compressedFileName, $targetFileName=false, $applyChmod=0777){
 		if(!sizeof($this->compressedList)){
 			$this->debugMsg(1, "Trying to unzip before loading file list... Loading it!");
 			$this->getList(false, $compressedFileName);
@@ -219,7 +219,7 @@ class dUnzip2{
 		
 		return $ret;
 	}
-	Function unzipAll($targetDir=false, $baseDir="", $maintainStructure=true, $applyChmod=0777){
+	function unzipAll($targetDir=false, $baseDir="", $maintainStructure=true, $applyChmod=0777){
 		if($targetDir === false)
 			$targetDir = dirname(__FILE__)."/";
 		
@@ -253,16 +253,16 @@ class dUnzip2{
 		}
 	}
 	
-	Function close(){     // Free the file resource
+	function close(){     // Free the file resource
 		if($this->fh)
 			fclose($this->fh);
 	}
-	Function __destroy(){ 
+	function __destroy(){ 
 		$this->close();
 	}
 	
 	// Private (you should NOT call these methods):
-	Function uncompress($content, $mode, $uncompressedSize, $targetFileName=false){
+	function uncompress($content, $mode, $uncompressedSize, $targetFileName=false){
 		switch($mode){
 			case 0:
 				// Not compressed
@@ -308,7 +308,7 @@ class dUnzip2{
 				return false;
 		}
 	}
-	Function debugMsg($level, $string){
+	function debugMsg($level, $string){
 		if($this->debug)
 			if($level == 1)
 				echo "<b style='color: #777'>dUnzip2:</b> $string<br>";
@@ -316,7 +316,7 @@ class dUnzip2{
 				echo "<b style='color: #F00'>dUnzip2:</b> $string<br>";
 	}
 
-	Function _loadFileListByEOF(&$fh, $stopOnFile=false){
+	function _loadFileListByEOF(&$fh, $stopOnFile=false){
 		// Check if there's a valid Central Dir signature.
 		// Let's consider a file comment smaller than 1024 characters...
 		// Actually, it length can be 65536.. But we're not going to support it.
@@ -426,7 +426,7 @@ class dUnzip2{
 		}
 		return false;
 	}
-	Function _loadFileListBySignatures(&$fh, $stopOnFile=false){
+	function _loadFileListBySignatures(&$fh, $stopOnFile=false){
 		fseek($fh, 0);
 		
 		$return = false;
@@ -450,7 +450,7 @@ class dUnzip2{
 		
 		return $return;
 	}
-	Function _getFileHeaderInformation(&$fh, $startOffset=false){
+	function _getFileHeaderInformation(&$fh, $startOffset=false){
 		if($startOffset !== false)
 			fseek($fh, $startOffset);
 		

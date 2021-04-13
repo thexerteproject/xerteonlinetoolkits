@@ -193,7 +193,12 @@
 					});
 				});
 
-            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
+			var label = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
+			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+			{
+				label = x_currentPageXML.getAttribute("trackinglabel");
+			}
+            XTEnterInteraction(x_currentPage, 0, 'match', label, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 			var $pageContents = $("#pageContents");
 			$pageContents.data("labels", labels);
 			

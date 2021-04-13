@@ -417,7 +417,8 @@ function button_check(){
                         edit_window(false, "edit");
                     }
                     else if (e.ctrlKey) {
-                        edit_window(false, "edithtml", "_blank");
+                        win = edit_window(false, "edithtml", "_blank");
+                        win.focus();
                     }
                     else
                     {
@@ -723,6 +724,19 @@ function create_node_type(nodetype, children) {
     };
 }
 
+function workspace_search_callback(search, node)
+{
+    var reg = new RegExp(search, 'gi');
+    var match = node.text.match(reg);
+    if (match == null)
+    {
+        var wsnode = workspace.nodes[node.id];
+        //match = wsnode.xot_id.match(reg);
+        if (wsnode.xot_id == search)
+            match = [search];
+    }
+    return match != null && match.length > 0;
+}
 
 var lastTreeItemTimestamp = undefined;
 
@@ -789,7 +803,8 @@ function init_workspace()
             "types": node_types,
             "search": {
                 "show_only_matches": true,
-                "fuzzy": false
+                "fuzzy": false,
+                "search_callback" : workspace_search_callback,
             },
             "dnd": {
                 "is_draggable" : function(node) {
@@ -848,6 +863,8 @@ function init_workspace()
          }
          })
          */
+
+        $.jstree.defaults.search.search_callback = workspace_search_callback;
 
         var to = false;
         $('#workspace_search').keyup(function () {

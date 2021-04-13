@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,25 +17,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/**
- * 
- * delete folder page, the site deletes a folder
- *
- * @author Patrick Lockley
- * @version 1.0
- * @package
- */
 
-require_once('../../../config.php');
-include "../folder_library.php";
+function addSession($url) {
+    if ( ini_get('session.use_cookies') != '0' ) return $url;
+    if ( stripos($url, '&'.session_name().'=') > 0 ||
+        stripos($url, '?'.session_name().'=') > 0 ) return $url;
+    $session_id = session_id();
 
-if (!isset($_SESSION['toolkits_logon_username']))
-{
-    _debug("Session is invalid or expired");
-    die("Session is invalid or expired");
+    // Don't add more than once...
+    $parameter = session_name().'=';
+    if ( strpos($url, $parameter) !== false ) return $url;
+
+    $url = add_url_parm($url, session_name(), $session_id);
+    return $url;
 }
 
-delete_folder($_POST['folder_id']);
-
-?>
+function add_url_parm($url, $key, $val) {
+    $url .= strpos($url,'?') === false ? '?' : '&';
+    $url .= urlencode($key) . '=' . urlencode($val);
+    return $url;
+}
