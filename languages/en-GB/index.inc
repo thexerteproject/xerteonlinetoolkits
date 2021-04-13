@@ -107,3 +107,7 @@ define("INDEX_XAPI_DASHBOARD_SHOW_HIDE_COLUMNS", "Show / hide columns");
 define("INDEX_XAPI_DASHBOARD_QUESTION_OVERVIEW", "Interaction overview");
 
 define("INDEX_XAPI_DASHBOARD_PRINT", "Print");
+
+define("INDEX_CHANGE_PASSWORD", "Change Password");
+
+define("INDEX_SETTINGS_BUTTON", "Settings");

@@ -2,7 +2,7 @@
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"  
-	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
+	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" generalFeedbackLabel="General Feedback"
 	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
 	  onCompletion="You have completed the exercise" score="You scored {i} / {n}" 
@@ -29,6 +29,7 @@
 	
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true" />
+    <generalFeedbackLabel label="General Feedback Label" type="TextInput" wysiwyg="true" language="true" />
     <singleRight label="Single Answer Correct" type="TextInput" wysiwyg="true" language="true" />
 	<singleWrong label="Single Answer Wrong" type="TextInput" wysiwyg="true" language="true" />
     <multiRight label="Multi Answer Correct" type="TextInput" wysiwyg="true" language="true" />
@@ -66,6 +67,11 @@
     <prompt label="Question" type="TextArea"  height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" />
     <type label="Question Type" options="Single Answer,Multiple Answer"  type="ComboBox"  data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120" />
+	<feedbackGroup type="group" label="Feedback" optional="true">
+    	<feedback type="TextArea" height="40" label="General Feedback" optional="true" tooltip="Feedback shown when an answer is submitted. Can be used in conjunction with tailored feedback for each answer option."/>
+    	<markFeedback label="Mark Answer" type="CheckBox" defaultValue="true" tooltip="Mark answer as correct or incorrect in feedback block (at least one answer option must also be set as correct for this to be shown)"/>
+    	<feedbackPos label="Feedback Order" options="General > Answer > Correct/Incorrect,General > Correct/Incorrect > Answer,Answer > Correct/Incorrect > General,Answer > General > Correct/Incorrect,Correct/Incorrect > General > Answer,Correct/Incorrect > Answer > General" type="ComboBox" data="GAC,GCA,ACG,AGC,CGA,CAG" defaultValue="GAC" width="120" tooltip="The order the different types of feedback are shown within the feedback block. Default order is General feedback > Answer feedback > Correct/Incorrect feedback"/>
+    </feedbackGroup>
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
 	
 	<imgInfo type="group" label="Image" optional="true">

@@ -29,8 +29,8 @@
 
 require_once("../../../config.php");
 
-_load_language_file("/website_code/php/folderproperties/folderproperties_template.inc");
-_load_language_file("/website_code/php/folderproperties/rename_folder_template.inc");
+_load_language_file("/website_code/php/folderproperties/folderproperties.inc");
+_load_language_file("/website_code/php/folderproperties/rename_folder.inc");
 
 if (!isset($_SESSION['toolkits_logon_username']))
 {

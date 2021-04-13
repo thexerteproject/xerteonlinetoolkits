@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" colour="0xFFFF00" shape="None" align="Left"/>]]></annotatedDiagram>
+      <annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="Enter text for the page here" url="Select an Image" imageRatio="100%" tip="Enter a Description for Accessibility" colour="0xFFFF00" shape="None" align="Left"/>]]></annotatedDiagram>
     </newNodes>
   </pageWizard>
 
@@ -11,10 +11,11 @@
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <text label="Page Text" type="TextArea" height="250" />
 	<align label="Text Align" type="ComboBox"  options="Left,Bottom" data="Left,Top" defaultValue="Left" width="100"/>
-	
+
 	<image type="group" label="Image">
 		<url label="File" type="media" />
 		<tip label="Description" type="TextInput" />
+		<imageRatio label="Image size" defaultValue="100%" type="TextInput" wysiwyg="true" tooltip="The number indicates in percent how wide the image is. It can be used with and without the percent symbool(%) at the end."/>
 	</image>
 	
 	<hs type="group" label="Highlight">

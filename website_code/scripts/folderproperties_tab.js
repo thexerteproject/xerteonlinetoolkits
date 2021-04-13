@@ -116,7 +116,7 @@ function folder_rss_template(){
 	/*
 	if(setup_ajax()!=false){
     
-		var url="folder_rss_template.php";
+		var url="folder_rss.php";
 
 		folders_ajax_send_prepare(url);
 
@@ -241,3 +241,114 @@ function rename_folder(folder_id,form_tag){
 	}
 
 }
+
+
+/**
+ *
+ * Function sharing status folder
+ * This function handles the display of the current sharing status
+ * modified for use with folders
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function sharing_status_folder_template(){
+
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/folderproperties/sharing_status_folder.php",
+		data: {folder_id: window.name},
+	})
+	.done(function(response){
+		$('#dynamic_area').html(response);
+	})
+}
+
+/**
+ *
+ * Function name select template
+ * This function handles the selecting of a name
+ * modified for use with folders
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function name_select_folder_template(){
+
+	if(setup_ajax()!=false){
+
+		search_string = document.getElementById('share_form').childNodes[0].value;
+
+		if(search_string==""){
+			document.getElementById('area2').innerHTML="<p>" + NAMES_APPEAR + "</p>";
+		}
+
+		if(is_ok_user(search_string)){
+			$.ajax({
+				type: "POST",
+				url: "website_code/php/folderproperties/name_select_folder.php",
+				data: {
+					search_string : search_string,
+					folder_id: window.name
+				},
+			})
+			.done(function(response){
+				$('#area2').html(response);
+			});
+		}else{
+			$('#area2').html("<p>" + SEARCH_FAIL + "</p>");
+		}
+
+	}
+
+}
+
+
+function share_stateChanged(){
+
+	if (xmlHttp.readyState==4){
+
+		if(xmlHttp.responseText!=""){
+			document.getElementById('area3').innerHTML = xmlHttp.responseText;
+			alert( document.getElementById('area3').textContent);
+
+		}
+	}
+}
+
+/**
+ *
+ * Function share this folder
+ * This function handles the sharing of a folder
+ * @param string folder = id of the folder
+ * @param string user - the user to give it to
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function share_this_folder(folder, id, group=false){
+
+	if(setup_ajax()!=false){
+		var role = document.querySelector('input[name="role"]:checked').value;
+
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/folderproperties/share_this_folder.php",
+			data: {
+				folder_id: window.name,
+				id: id,
+				role: role,
+				group: group,
+			},
+		})
+		.done(function(response){
+			$('#area3').html(response);
+			alert( $('#area3').text());
+		});
+	}
+
+}
+
+//   	xmlHttp.open("post",properties_ajax_php_path + url,true);
+// 	xmlHttp.onreadystatechange=properties_stateChanged;
+// 	xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

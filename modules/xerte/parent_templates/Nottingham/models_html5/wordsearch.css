@@ -1,28 +1,42 @@
 /* wordsearch.html */
-	
+
 	#puzzle .selected {
 		cursor: pointer;
 	}
-	
+
 	#puzzle, #words {
 		float: left;
 	}
-	
+
 	#words {
 		padding: 0;
 		margin: 1em;
 		text-align:	center;
 	}
-	
+
 	#words ul {
 		margin: 0;
 		padding: 0;
 	}
-	
+
 	#btnHolder {
 		clear: both;
 	}
-	
+
 	#infoHolder {
 		margin-left: 1em;
 	}
+
+	#pageContents{
+		height: 100%;
+		overflow: hidden;
+		position: fixed;
+	}
+
+	.stop-scrolling {
+		height: 100%;
+		overflow: hidden;
+		width: 100%;
+		position: fixed;
+	}
+

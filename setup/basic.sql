@@ -19,6 +19,11 @@ DROP TABLE IF EXISTS `$templaterights` ;
 DROP TABLE IF EXISTS `$templatesyndication` ;
 DROP TABLE IF EXISTS `$user_sessions` ;
 DROP TABLE IF EXISTS `$user` ;
+DROP TABLE IF EXISTS `$user_groups` ;
+DROP TABLE IF EXISTS `$user_group_members` ;
+DROP TABLE IF EXISTS `$template_group_rights` ;
+DROP TABLE IF EXISTS `$folderrights` ;
+DROP TABLE IF EXISTS `$folder_group_rights` ;
 
 DROP TABLE IF EXISTS `$lti_context` ;
 DROP TABLE IF EXISTS `$lti_keys` ;
@@ -255,6 +260,43 @@ CREATE TABLE `$user` (
   `surname` varchar(45) DEFAULT NULL,
   `email` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`iduser`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `$user_groups` (
+  `group_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_name` char(255) DEFAULT NULL,
+  PRIMARY KEY (`group_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `$user_group_members` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) NOT NULL,
+  `login_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `template_group_rights` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) NOT NULL,
+  `template_id` bigint(20) NOT NULL,
+  `role` char(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `folderrights` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `folder_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `role` char(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `folder_group_rights` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `folder_id` bigint(20) NOT NULL,
+  `group_id` bigint(20) NOT NULL,
+  `role` char(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_context` (

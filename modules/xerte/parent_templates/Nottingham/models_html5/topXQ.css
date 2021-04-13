@@ -49,3 +49,6 @@
     padding-top: 1em;
 }
 
+#textHolder{
+    overflow-wrap: break-word !important;
+}

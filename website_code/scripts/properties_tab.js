@@ -152,6 +152,28 @@ function share_this_stateChanged(){
 	}
 }
 
+/**
+ *
+ * Function share this state changed
+ * This function handles the response from making a share request for groups
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function group_share_this_stateChanged(){
+
+	if (xmlHttp.readyState==4){
+
+		if(xmlHttp.responseText!=""){
+
+			document.getElementById('area2').innerHTML = xmlHttp.responseText;
+			group_sharing_status_template();
+
+		}
+	}
+}
+
+
  /**
 	 *
 	 * Function delete share state changed
@@ -279,6 +301,39 @@ function delete_sharing_template(template_id,user_id,who_deleted_flag){
 	}
 
 }
+
+
+/**
+ *
+ * Function delete sharing template
+ * This function handles the deletion of a share by a user
+ * @param string template_id = window type to open
+ * @param string group_id = group we are removing
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function group_delete_sharing_template(template_id,group_id){
+
+	var answer = confirm(SHARING_CONFIRM);
+
+	if(answer){
+		if(setup_ajax()!=false){
+
+			var url="group_remove_sharing_template.php";
+
+			xmlHttp.open("post",properties_ajax_php_path + url,true);
+			xmlHttp.onreadystatechange=group_sharing_status_template;
+			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			xmlHttp.send('template_id=' + template_id +'&group_id=' + group_id );
+
+		}
+
+	}
+
+}
+
 
      /**
 	 *
@@ -1263,6 +1318,57 @@ function sharing_status_template(){
 
 }
 
+	/**
+	 *
+	 * Function group sharing status template
+	 * This function handles the display of the current sharing status for groups
+	 * @version 1.0
+	 * @author Noud Liefrink
+	 */
+
+function group_sharing_status_template(){
+
+
+	if(setup_ajax()!=false){
+
+		var url="group_sharing_status_template.php";
+
+		properties_ajax_send_prepare(url);
+
+		xmlHttp.send('template_id=' + window.name);
+
+	}
+
+}
+
+	/**
+	 *
+	 * Function share this template with a group
+	 * This function handles the sharing of a template of a group
+	 * @param string template = id of the template
+	 * @version 1.0
+	 * @author Noud Liefrink
+	 */
+
+function group_share_this_template(template){
+
+	var group_id = $('#group').val();
+
+	if(setup_ajax()!=false){
+
+		var url="group_share_this_template.php";
+
+		xmlHttp.open("post",properties_ajax_php_path + url,true);
+		xmlHttp.onreadystatechange=group_share_this_stateChanged;
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		xmlHttp.send('template_id=' + template + '&group_id=' + group_id);
+
+	}
+
+}
+
+
      /**
 	 *
 	 * Function export template
@@ -1349,6 +1455,33 @@ function set_sharing_rights_template(rights, template, user){
 	}
 
 }
+
+	/**
+	 *
+	 * Function set sharing rights for groups
+	 * @param string rights = the rights to give
+	 * @param string template - the template
+	 * @param string group - the group id
+	 * @version 1.0
+	 * @author Noud Liefrink
+	 */
+
+function group_set_sharing_rights_template(rights, template, group){
+
+	if(setup_ajax()!=false){
+
+		var url="group_set_sharing_rights_template.php";
+
+		xmlHttp.open("post",properties_ajax_php_path + url,true);
+		xmlHttp.onreadystatechange=group_sharing_status_template;
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		xmlHttp.send('rights=' + rights + '&template_id=' + template + '&group_id=' + group);
+
+	}
+
+}
+
 
 
 var last_selected=null;
