@@ -63,6 +63,8 @@ function show_template($row_play){
     $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
 	$page_content = str_replace("%THEMEPATH%", "themes/" . $row_play['parent_template'] . "/",$page_content);
     $page_content = str_replace("%LASTUPDATED%", $row_play['date_modified'], $page_content);
+    $page_content = str_replace("%DATECREATED%", $row_play['date_created'], $page_content);
+    $page_content = str_replace("%NUMPLAYS%", $row_play['number_of_uses'], $page_content);
 
     echo $page_content;
 

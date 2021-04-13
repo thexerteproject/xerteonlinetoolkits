@@ -23,4 +23,3 @@
 
     define("XERTE_PEER_LOGIN_BUTTON", "SignIn");
 
-?>

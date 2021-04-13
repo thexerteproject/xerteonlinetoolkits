@@ -9,6 +9,7 @@
 		display:		block;
 		padding:		5px;
 		text-decoration: none;
+		margin-bottom: 10px;
 	}
 	
 	#infoHolder {
@@ -24,4 +25,5 @@
 		opacity:	0;
 		filter:		alpha(opacity=0);
 	}
+
 	

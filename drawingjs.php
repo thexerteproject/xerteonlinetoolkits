@@ -56,7 +56,6 @@ if (isset($_POST['data']))
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <script src="modules/xerte/js/swfobject.js"></script>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Xerte Online Editor Window</title>
         <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
@@ -123,7 +122,12 @@ if (isset($_POST['data']))
         </div>
 
         <div id="flashcontent">
-            This text is replaced by the Flash movie.
+<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" width="800" height="600">
+    <param name="mymovie" value="modules/xerte/engine/drawEditJS.swf">
+    <param name="quality" value="high">
+	<param name="FlashVars" value="xmldata=<?php echo urlencode($xmlData) ?>&rlovariable=<?php echo $rlofile ?>" />
+    <embed id="mymovie" src="modules/xerte/engine/drawEditJS.swf" quality="high" FlashVars="xmldata=<?php echo urlencode($xmlData) ?>&rlovariable=<?php echo $rlofile ?>" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" width="800" height="600">
+  </object>
         </div>
         <div class="bottombar" style="width: 800px">
             <div style="float: right; margin-right: 10px;     padding-top: 3px;">
@@ -131,16 +135,5 @@ if (isset($_POST['data']))
                 <button type="button" class="xerte_button_c_no_width" onclick="window.close();">Cancel</button>
             </div>
         </div>
-
-
-        <script type="text/javascript">
-            var so = new SWFObject("modules/xerte/engine/drawEditJS.swf", "mymovie", "800", "600", "8,0,0,0", "#e0e0e0");
-            so.addParam("quality", "high");
-        <?php
-            echo "so.addVariable(\"xmldata\", \"" . urlencode($xmlData) . "\");";
-            echo "so.addVariable(\"rlovariable\", \"$rlofile\");";
-            echo "so.write(\"flashcontent\");";
-        ?>
-        </script>
     </body>
 </html>

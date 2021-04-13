@@ -229,7 +229,10 @@
 				.click(function() {
 					var $this = $(this);
 					$this.hide();
-					$("#fbTxt").html($("#pageContents").data("feedback"));
+					$("#fbTxt")
+						.empty()
+						.html($("#pageContents").data("feedback"));
+					
 					$("#copyBtn, #copyTxt").show();
 
 					x_pageContentsUpdated();
@@ -241,7 +244,18 @@
 					}
 				});
 			
-			$("#answerTxt").change(function() {
+			if (x_currentPageXML.getAttribute("required") == 'true') {
+				$("#button").prop("disabled", true);
+			}
+			
+			$("#answerTxt").on('input', function() {
+				// if answer is required, only show submit button when something has been typed in box
+				if (x_currentPageXML.getAttribute("required") == 'true' && $("#answerTxt").val().trim() == '') {
+					$("#button").prop("disabled", true);
+				} else {
+					$("#button").prop("disabled", false);
+				}
+				
 				modelAnswer.saveData();
 			});
 			

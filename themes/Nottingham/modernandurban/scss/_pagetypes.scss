@@ -85,7 +85,8 @@
 }
 //*****navigator*****/
 #pageContents.button button.selected {
-  background-color: $lightestcolor;
+  background-color: $blackordarkest;
+  color:$whiteorlightest;
 }
 #pageContents.slide #btnHolder button {
   background: $contrastcolor;
@@ -280,8 +281,17 @@ a.hotspot, a.hotspot.selected {
   background:$darkestcolor;
   color:$whiteorlightest !important;
 }
-table.header.shaded tr:first-child {
+.x_grid_page table.header.shaded tr:first-child {
   background: $darkestcolor;
+}
+.x_grid_page table.full td{
+border:none;
+}
+.x_grid_page table {
+  background: none !important;
+}
+.x_grid_page .ui-state-default.header.static{
+  background:black !important;
 }
 #grid ul li {
   color: $mainfontcolour ;
@@ -299,7 +309,14 @@ table tr.shaded {
 }
 tr {
   background: $brightcolor;
-  color:$whiteorlightest;
+  color:$blackordarkest;
+}
+table.glossary tr {
+  background: #F8F1E5;
+}
+table.glossary tr.shaded {
+  background: #dfeaf1;
+  color: $blackordarkest;
 }
 #grid ul li.static {
   background: none;

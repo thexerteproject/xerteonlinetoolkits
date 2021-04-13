@@ -152,6 +152,14 @@
                     copyText = x_currentPageXML.getAttribute("copyText").trim();
                 }
                 var $textArea = $("#text");
+				
+				//Add aria-label to answer box
+				var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
+				if (answerFieldLabel === undefined | answerFieldLabel === null) {
+					answerFieldLabel = "Answer";
+				}
+				$textArea.attr({"aria-label" : answerFieldLabel});
+			
                 if( copyText === "true"){
                     question = $("<div>").html(question).text().trim();
                     $textArea.val(question)

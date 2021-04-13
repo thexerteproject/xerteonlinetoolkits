@@ -576,3 +576,21 @@ img.centre {
     height: 90vh;
     width: 90vw;
 }
+.wcagLink {
+       float: right;
+       position: relative;
+       bottom: 40px;
+}
+@media only screen
+and (max-width :600px) {
+    /*change logo position when viewed portrait on mobile*/
+    .wcagLink{
+        position:inherit;
+        display:inline-block;
+        margin-bottom:10px;
+        margin-top:10px;
+        width:80px;
+        bottom:0px;
+        float:unset;
+    }
+}

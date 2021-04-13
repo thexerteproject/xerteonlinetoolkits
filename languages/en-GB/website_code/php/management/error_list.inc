@@ -15,4 +15,4 @@
 
 	define("DELETE_ALL_LOGS", "Delete all log files");
 
-?>
+

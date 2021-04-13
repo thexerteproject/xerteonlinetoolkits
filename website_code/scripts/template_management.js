@@ -195,7 +195,7 @@ function toggle(tag) {
  * @author Patrick Lockley
  */
 
-function edit_window(admin, edit) {
+function edit_window(admin, edit, location) {
 
     if (!admin) {
 
@@ -227,11 +227,19 @@ function edit_window(admin, edit) {
 
                         size = node.editor_size.split(",");
 
-                        if (size.length == 1) {
-                            var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id);
-                        } else {
-                            var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "height=" + size[1] + ", width=" +
-                                size[0] + ", resizable=yes");
+                        if (location != null) {
+                            if (size.length == 1) {
+                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), location);
+                            } else {
+                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), '_blank');
+                            }
+                        }
+                        else {
+                            if (size.length == 1) {
+                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "toolbar=yes,location=yes");
+                            } else {
+                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "toolbar=yes,location=yes,resizable=yes");
+                            }
                         }
 
                         try {

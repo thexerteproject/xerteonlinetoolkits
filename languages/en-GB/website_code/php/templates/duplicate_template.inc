@@ -14,4 +14,3 @@
 	define("DUPLICATE_TEMPLATE_NOT_CREATOR", "Only project creators or co-authors can duplicate a project");
 
 
-?>

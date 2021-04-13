@@ -10,16 +10,15 @@
 		margin:	0 20px 20px 0;
 	}
 
-	#panel{
-		width: 100%;
-		height: 100% !important;
-	}
 	/*.splitScreen .right {*/
 	/*	margin-left: 0!important;*/
 	/*}*/
 
 	#imageHolder {
 		position:	relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	#pageContents .hotspot {
@@ -59,9 +58,9 @@
 	.mapster_el{
 		width: 100% !important;
 	}
-	.x_noLightBox{
-		width: 100% !important;
-	}
+	/*.x_noLightBox{*/
+	/*	width: 100% !important;*/
+	/*}*/
 
 	#infoHolder{
 		padding-top: 0!important;
@@ -83,7 +82,26 @@
 		padding-right: 7% !important;
 
 	}
+	#score{
+		margin-top: 30px
+	}
+	.mapster_wrap_0{
+		margin: auto !important;
+	}
 
+	#checkButton{
+		float: right;
+	}
+
+	#score h3{
+		padding: 0;
+	}
+
+	#text{
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
 	/*#btnHolder {*/
 	/*	margin-top: 0.5em;*/
 	/*	float: right;*/

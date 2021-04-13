@@ -77,7 +77,7 @@ function iframe_check_upload() {
             window["upload_iframe"].document.body.innerHTML = "";
 
         } else {
-            debugger;
+            //debugger;
             clearInterval(iframe_interval);
 
             string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">") + 1);
@@ -202,7 +202,7 @@ function iframe_check() {
 /**
  *
  * Function iframe upload check initialise
- * This function starts checking the iframe for the response text every 5 seconds (used by the media quota import page).
+ * This function starts checking the iframe for the response text every 500 milliseconds (used by the media quota import page).
  * @version 1.0
  * @author Patrick Lockley
  */
@@ -221,7 +221,7 @@ function iframe_upload_check_initialise(disable_btn) {
 /**
  *
  * Function iframe check initialise
- * This function starts checking the iframe for the response text every 5 seconds
+ * This function starts checking the iframe for the response text every 500 milliseconds.
  * @version 1.0
  * @author Patrick Lockley
  */
@@ -238,7 +238,7 @@ function iframe_check_initialise(disable_btn) {
 
 /**
  *
- * Function import template pop up (OSBOLETE)
+ * Function import template pop up (OBSOLETE)
  * This function repurposes the folder pop up for the import action
  * @param string id_to_replace = the id of the template we might replace
  * @version 1.0
@@ -410,7 +410,7 @@ function import_template() {
 function load_button_spinner(this1) {
 
     var string = this1.innerHTML;
-    debugger;
+    //debugger;
     if (string.indexOf('fa-upload') != -1) {
         if (typeof IMPORT_BUTTON_IMPORT !== 'undefined' && string.indexOf('</i> ' + IMPORT_BUTTON_IMPORT) != -1) {
             string = string.replace('<i class="fa fa-upload"></i> ' + IMPORT_BUTTON_IMPORT, '<i class="fa fa-spinner fa-spin"></i> ' + IMPORT_BUTTON_IMPORTING);

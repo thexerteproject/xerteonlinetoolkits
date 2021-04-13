@@ -12,5 +12,3 @@
 	 
 
 	define("FOLDER_CONTENT_TEMPLATE_CONTENTS","Folder contents");
-
-?>

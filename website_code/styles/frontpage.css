@@ -839,3 +839,7 @@ div.ui-layout-center {
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 .show {display:block;}
+.featherlight iframe {
+	height: 90vh;
+	width: 90vw;
+}

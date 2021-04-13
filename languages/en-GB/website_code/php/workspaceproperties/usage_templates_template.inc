@@ -13,4 +13,3 @@
 
 	define("USAGE_TEMPLATE_STATS", "Plays");
 	
-?>

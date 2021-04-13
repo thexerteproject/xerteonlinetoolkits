@@ -20,13 +20,13 @@
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_PRIVATE", "Include Private templates in the transfer.");
 
-    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_DELETEUSER", "Remove user's access to other templates. Also remove user if Pravate templates are included in the transfer.");
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_DELETEUSER", "Remove user's access to other templates. Also remove the user if private templates are included in the transfer.");
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_BUTTON", "Do bulk transfer");
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_CLOSE_PANEL", "Clear Report");
 
-    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_FEEDBACKLINE", "Placed template with id {template_id} (\"{template_name}\") in folder \"{folder}\" of user {newuser} and renamed {oldfolder} to {newfolder}");
+    define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_FEEDBACKLINE", "Placed template with id {template_id} ('{template_name}') in folder '{folder}' of user {newuser} and renamed {oldfolder} to {newfolder}");
 
     define("USERS_MANAGEMENT_TEMPLATE_TRANSFER_FEEDBACK_DELETED", "Deleted template found in recyclebin of user {user} (folder {folder})");
 
@@ -63,4 +63,3 @@
     define("USERS_MANAGEMENT_TEMPLATE_OWNER", "Owner");
 
     define("USERS_MANAGEMENT_TEMPLATE_ROLE", "Role");
-?>

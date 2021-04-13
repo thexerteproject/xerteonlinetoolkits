@@ -128,6 +128,7 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 	$xmlTarget->save($target_file);
 
 	$xml = $xmlTarget->saveXML();
+	_debug("Merged xml: '" . print_r($xml, true) . "'");
 	echo $xml;
 
 
@@ -234,5 +235,3 @@ $target_insert_page_position = $_REQUEST["target_page_position"];
 $merge_glossary= $_REQUEST["merge_glossary"];
 merge_pages_to_project($source_project, $source_pages, $target_project, $target_insert_page_position, $merge_glossary);
 
-
-?>

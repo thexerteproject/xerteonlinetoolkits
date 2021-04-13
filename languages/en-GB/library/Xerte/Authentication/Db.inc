@@ -23,4 +23,3 @@ define("AUTH_DB_USERMODFAILED", "Error when updating user in the Db, do you have
 define("AUTH_DB_USERDELFAILED", "Error when deleting user from the Db, do you have write permissions for MySQL?");
 define("AUTH_DB_CHANGEPASSWORDFAILED", "Error when changing the user password in the Db, do you have write permissions for MySQL?");
 
-?>
