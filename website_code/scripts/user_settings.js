@@ -53,13 +53,17 @@ $(function() {
  */
 
 function changepasswordPopup() {
-    if(setup_ajax()!=false){
-        var changePassWindow = window.open(site_url + "user_settings.php", "settingswindow", "height=665, width=800");
+    var left = window.screenLeft;
+    var top = window.screenTop;
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    var leftPopup = left + (width - 400) / 2;
+    var topPopup = top + (height - 350) / 2;
+    var changePassWindow = window.open(site_url + "user_settings.php", "settingswindow", "left=" + leftPopup + ", top=" + topPopup + ", height=350, width=300");
 
-        changePassWindow.window_reference = self;
+    changePassWindow.window_reference = self;
 
-        changePassWindow.focus();
-    }
+    changePassWindow.focus();
 }
 
 function ajax_send(url, mesg, success){

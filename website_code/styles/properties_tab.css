@@ -46,7 +46,7 @@ body{
 	/*RM responsive changes*/
 	width:98%;
 	height:93vh;
-	overflow:scroll;
+	/* overflow:scroll; */
 }
 
 span#title{
@@ -71,7 +71,7 @@ div#dynamic_area{
 	background-color:#fff;
 	/*width:410px; */
 	/*height:520px;	*/
-	overflow:scroll;
+	overflow:auto;
 	border-top-left-radius:7px;
 	/*RM responsive changes*/
 	width: 70%;/*80vw;*/
