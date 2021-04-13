@@ -41,9 +41,6 @@ _load_language_file("/user_settings.inc");
         <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
-
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
         <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
         <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
         <script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
@@ -86,7 +83,7 @@ _load_language_file("/user_settings.inc");
             <div class="main_area">
                 <div>
                     <span id="title">
-                        <img src="website_code/images/Icon_Page.gif" style="vertical-align:middle; padding-left:10px;" /> 
+                        <img src="website_code/images/Icon_Page.gif" style="vertical-align:middle; padding-left:10px;" />
                         <?php echo USER_SETTINGS_PASSWORD_DISPLAY_TITLE; ?>
                     </span>
                 </div>
@@ -104,8 +101,8 @@ _load_language_file("/user_settings.inc");
                         </form>
                         <div id="result"></div>
                     </div>
-                    </div>						
-                </div>									
+                    </div>
+                </div>
                 <div style="clear:both;"></div>
             </div>
             <div style="clear:both;"></div>
