@@ -28,7 +28,7 @@
 
 require_once("../../../config.php");
 
-_load_language_file("/website_code/php/folderproperties/sharing_status_folder_template.inc");
+_load_language_file("/website_code/php/folderproperties/sharing_status_folder.inc");
 _load_language_file("/folderproperties.inc");
 include "../url_library.php";
 

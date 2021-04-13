@@ -10,7 +10,7 @@
 	 * @package
 	 */
 
-	define("SHARING_INSTRUCTION","To share the contents of this folder with someone, please type their name here. The user must have an account on the site to appear in this search. Also select a role to grant the user.");
+	define("SHARING_INSTRUCTION","To share the contents of this folder with a user or a group, please type their name here. A user must have an account on the site to appear in this search. Also select a role to grant the user or group.");
 
 	define("SHARING_NAMES","Names will appear here");
 

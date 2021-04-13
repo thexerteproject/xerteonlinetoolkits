@@ -1014,4 +1014,75 @@ function upgrade_24()
 }
 
 
+function upgrade_25()
+{
+    $table = table_by_key('user_groups');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `group_id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `group_name` char(255) DEFAULT NULL,
+        PRIMARY KEY (`group_id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message = "Creating user_groups table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('user_group_members');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `group_id` bigint(20) NOT NULL,
+        `login_id` bigint(20) NOT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message .= "Creating user_group_members - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('template_group_rights');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `group_id` bigint(20) NOT NULL,
+        `template_id` bigint(20) NOT NULL,
+        `role` char(255) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message .= "Creating template_group_rights - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+
+}
+
+
+function upgrade_26()
+{
+    $table = table_by_key('folderrights');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `folder_id` bigint(20) NOT NULL,
+        `user_id` bigint(20) NOT NULL,
+        `role` char(255) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message .= "Creating folderrights table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('folder_group_rights');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `folder_id` bigint(20) NOT NULL,
+        `group_id` bigint(20) NOT NULL,
+        `role` char(255) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message .= "Creating folder_group_rights table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+
+}
+
 ?>
+
