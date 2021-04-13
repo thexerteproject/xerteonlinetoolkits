@@ -443,7 +443,8 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
  * @param int $group_id if we are looking for files in a group not folder.
  */
 
-function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, $group_id = -1) {
+function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, $group_id = -1)
+{
 
     global $xerte_toolkits_site;
 
@@ -452,13 +453,13 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
     $prefix = $xerte_toolkits_site->database_table_prefix;
     $query = NULL;
     $params = NULL;
-    if ($group_id == -1){
+    if ($group_id == -1) {
         $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
             . " otd.parent_template, otd.template_framework, td.template_id, tr.role from {$prefix}templatedetails td, "
             . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd where td.template_id = tr.template_id and tr.user_id = ? "
             . " and tr.folder= ? and  otd.template_type_id = td.template_type_id ";
         $params = array($_SESSION['toolkits_logon_id'], $folder_id);
-    }else{
+    } else {
         //select templates the same way as regularly, however, now check for group_id in template_group_rights
         $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
             . " otd.parent_template, otd.template_framework, td.template_id, tgr.role from {$prefix}templatedetails td, "
@@ -467,8 +468,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
         $params = array($group_id);
     }
 
-    if ($copy_only)
-    {
+    if ($copy_only) {
         $query .= " and (tr.role = 'creator' or tr.role ='co-author') ";
     }
 
@@ -485,17 +485,15 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
 
     $query_response = db_query($query, $params);
 
-    foreach($query_response as $row) {
+    foreach ($query_response as $row) {
 
         // Check whether shared LO is in recyclebin
-        if ($row['role'] != 'creator')
-        {
+        if ($row['role'] != 'creator') {
             $sql = "select * from {$prefix}templaterights tr, {$prefix}folderdetails fd where tr.role='creator' and tr.folder=fd.folder_id and tr.template_id=?";
             $params = array($row['template_id']);
             $res = db_query_one($sql, $params);
 
-            if ($res !== false && $res['folder_name'] == 'recyclebin')
-            {
+            if ($res !== false && $res['folder_name'] == 'recyclebin') {
                 continue;
             }
         }
@@ -522,7 +520,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
     }
     return $items;
 
-
+}
 
 /**
  * Builds an array with the files only of the group suitable for jsTree
