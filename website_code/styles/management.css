@@ -330,3 +330,9 @@ form[name='user_templates'], form[name='user_groups'], form[name='all_users'] {
 #transferownership {
 	padding:10px;
 }
+
+.selectize-control {
+	display: inline-block;
+	width:50%;
+	vertical-align: middle;
+}

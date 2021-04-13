@@ -48,7 +48,7 @@ if(is_numeric($_POST['template_id'])){
         . "((firstname like ? ) or (surname like ?) or (username like ?) ) "
         . "AND login_id not in( SELECT creator_id from {$prefix}templatedetails where template_id= ? ) ORDER BY firstname ASC"; 
 
-$params = array("$search%", "$search%", "$search%", $tutorial_id);
+$params = array("%$search%", "%$search%", "%$search%", $tutorial_id);
         $rows = db_query($query_for_names, $params);
 
         if(sizeof($rows) > 0){			

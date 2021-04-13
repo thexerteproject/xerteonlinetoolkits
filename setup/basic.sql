@@ -22,6 +22,8 @@ DROP TABLE IF EXISTS `$user` ;
 DROP TABLE IF EXISTS `$user_groups` ;
 DROP TABLE IF EXISTS `$user_group_members` ;
 DROP TABLE IF EXISTS `$template_group_rights` ;
+DROP TABLE IF EXISTS `$folderrights` ;
+DROP TABLE IF EXISTS `$folder_group_rights` ;
 
 DROP TABLE IF EXISTS `$lti_context` ;
 DROP TABLE IF EXISTS `$lti_keys` ;
@@ -274,6 +276,21 @@ CREATE TABLE `template_group_rights` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `folderrights` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `folder_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `role` char(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `folder_group_rights` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `folder_id` bigint(20) NOT NULL,
+  `group_id` bigint(20) NOT NULL,
+  `role` char(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_context` (
   `lti_context_key` varchar(255) NOT NULL,

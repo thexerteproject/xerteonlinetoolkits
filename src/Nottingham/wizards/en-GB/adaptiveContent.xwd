@@ -36,7 +36,7 @@
         SpecificationText = "Specification"
         AdviceText = "Advice"
         CorrectText = "Correct"
-        IncorrectText = "incorrect"
+        IncorrectText = "Incorrect"
         PassingGrade = "75"
 
         ><interactionBlock adaptiveContent="Place your adaptive content here" conScoreBetween="0,100"></interactionBlock></interaction>]]>

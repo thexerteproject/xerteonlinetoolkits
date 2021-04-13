@@ -55,6 +55,11 @@ function management_stateChanged(){
 
 			document.getElementById('admin_area').innerHTML = xmlHttp.responseText;
 			loadModal();
+
+			$('#list_user').selectize({
+				plugins: ['remove_button'],
+				hideSelected: false
+			});
 		}
 	}
 }
@@ -414,6 +419,7 @@ function templates_list(){
 // remove a share, and check who did it
 
 function update_template(){
+	//bababoeie
 
 	// Get selected pages of the active_section
 	// 1. First get non-selected boxes
@@ -1477,7 +1483,7 @@ function list_group_members_stateChanged(){
 function add_member(login_id, group_id){
 
 	var group = document.getElementById(group_id).value;
-	var login = document.getElementById(login_id).value;
+	var login = $("#" + login_id).val(); //array
 
 	if(setup_ajax()!=false && group != ""){
 
@@ -1586,3 +1592,4 @@ function delete_group( group_tag ){
 
 	}
 }
+

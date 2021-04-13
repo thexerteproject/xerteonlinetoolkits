@@ -1053,5 +1053,36 @@ function upgrade_25()
 
 }
 
+
+function upgrade_26()
+{
+    $table = table_by_key('folderrights');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `folder_id` bigint(20) NOT NULL,
+        `user_id` bigint(20) NOT NULL,
+        `role` char(255) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message .= "Creating folderrights table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('folder_group_rights');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `folder_id` bigint(20) NOT NULL,
+        `group_id` bigint(20) NOT NULL,
+        `role` char(255) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message .= "Creating folder_group_rights table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+
+}
+
 ?>
 

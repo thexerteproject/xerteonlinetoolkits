@@ -366,8 +366,9 @@ function list_users_projects($sort_type) {
  * Called by an AJAX function, that returns the array as a alternative JSON file for jstree
  * @param $folder_id
  * @param $sort_type
+ * @param int $group_id if we are looking a group not a folder
  */
-function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only=false){
+function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only=false, $group_id = -1){
 
     /*
     * use the global level for folder indenting
@@ -381,8 +382,14 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $query = "select folder_id, folder_name from {$prefix}folderdetails where login_id = ? AND folder_parent = ?";
-    $params = array($_SESSION['toolkits_logon_id'], $folder_id);
+    if ($group_id == -1){
+        $query = "select folder_id, folder_name from {$prefix}folderdetails where login_id = ? AND folder_parent = ?";
+        $params = array($_SESSION['toolkits_logon_id'], $folder_id);
+    }else{
+        $query = "select fd.folder_id, fd.folder_name from {$prefix}folderdetails fd, {$prefix}folder_group_rights fgr "
+        . " where fd.folder_id = fgr.folder_id AND fgr.group_id = ?";
+        $params = array($group_id);
+    }
 
     /*
     * Add some more to the query to sort the files
@@ -431,20 +438,32 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
  * Called by an AJAX function, that returns the array as a alternative JSON file for jstree
  * @param $folder_id
  * @param $sort_type
+ * @param int $group_id if we are looking for files in a group not folder.
  */
 
-function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only) {
+function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, $group_id = -1) {
 
     global $xerte_toolkits_site;
 
     $items = array();
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
-
-    $query = "select td.template_name as project_name, otd.template_name,"
-        . " otd.parent_template, otd.template_framework, td.template_id, tr.role from {$prefix}templatedetails td, "
-        . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd where td.template_id = tr.template_id and tr.user_id = ? "
-        . " and tr.folder= ? and  otd.template_type_id = td.template_type_id ";
+    $query = NULL;
+    $params = NULL;
+    if ($group_id == -1){
+        $query = "select td.template_name as project_name, otd.template_name,"
+            . " otd.parent_template, otd.template_framework, td.template_id, tr.role from {$prefix}templatedetails td, "
+            . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd where td.template_id = tr.template_id and tr.user_id = ? "
+            . " and tr.folder= ? and  otd.template_type_id = td.template_type_id ";
+        $params = array($_SESSION['toolkits_logon_id'], $folder_id);
+    }else{
+        //select templates the same way as regularly, however, now check for group_id in template_group_rights
+        $query = "select td.template_name as project_name, otd.template_name,"
+            . " otd.parent_template, otd.template_framework, td.template_id, tgr.role from {$prefix}templatedetails td, "
+            . " {$prefix}template_group_rights tgr, {$prefix}originaltemplatesdetails otd where td.template_id = tgr.template_id and tgr.group_id = ? "
+            . " and otd.template_type_id = td.template_type_id ";
+        $params = array($group_id);
+    }
 
     if ($copy_only)
     {
@@ -461,7 +480,6 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only) 
         $query .= "order by td.date_created ASC";
     }
 
-    $params = array($_SESSION['toolkits_logon_id'], $folder_id);
 
     $query_response = db_query($query, $params);
 
@@ -486,7 +504,10 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only) 
         $item->xot_id = $row['template_id'];
         $item->parent = $tree_id;
         $item->text = $row['project_name'];
-        $item->type = strtolower($row['parent_template']);
+        if ($group_id == -1)
+            $item->type = strtolower($row['parent_template']);
+        else
+            $item->type = strtolower($row['parent_template'] . "_group");
         $item->xot_type = "file";
         $item->editor_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size;
         $item->preview_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size;
@@ -494,8 +515,6 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only) 
         $items[] = $item;
     }
     return $items;
-
-}
 
 
 
@@ -579,11 +598,17 @@ function get_files_in_this_group($group_id, $tree_id, $sort_type, $copy_only) {
  * Called by an AJAX function, that returns the array as a alternative JSON file for jstree
  * @param $folder_id
  * @param $sort_type
+ * @param int $group_id if we are looking for files in a group not folder.
  */
-function get_folder_contents($folder_id, $tree_id, $sort_type, $copy_only) {
+function get_folder_contents($folder_id, $tree_id, $sort_type, $copy_only, $group_id = -1) {
 
-    $folders = get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only);
-    $files = get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only);
+    if ($group_id == -1){
+        $folders = get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only);
+        $files = get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only);
+    }else{
+        $folders = get_folders_in_this_folder(-1, $tree_id, $sort_type, $copy_only, $group_id);
+        $files = get_files_in_this_folder(-1, $tree_id, $sort_type, $copy_only, $group_id);
+    }
     if ($folders && $files) {
         return array_merge($folders, $files);
     }
@@ -692,7 +717,7 @@ function get_users_projects($sort_type, $copy_only=false)
 
         $workspace->items[] = $item;
         $workspace->nodes[$item->id] = $item;
-        $items = get_group_contents($item->xot_id, $item->id, $sort_type, $copy_only);
+        $items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only, $item->xot_id);
         if ($items) {
             $workspace->items = array_merge($workspace->items, $items);
             foreach($items as $item)

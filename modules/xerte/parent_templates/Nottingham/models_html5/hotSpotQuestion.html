@@ -33,6 +33,7 @@
 		var hotSpotScore = 0;
 		var AmountOfWrongScore = 0;
 		var highlightsArray= []
+		var allHighlightsArray= [];
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$img = $("#image");
@@ -44,22 +45,89 @@
 		};
 
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function() {
-			$img.css({
-				"opacity"	:0,
-				"filter"	:'alpha(opacity=0)'
-			});
-			this.resizeImg(false);
+		// this.sizeChanged = function() {
+		// 	$img.css({
+		// 		"opacity"	:0,
+		// 		"filter"	:'alpha(opacity=0)'
+		// 	});
+		// 	this.resizeImg(false);
+		//
+		// };
+			this.sizeChanged = function () {
+				if (x_browserInfo.mobile == false) {
+					var $panel = $("#pageContents .panel");
+					$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				}
 
-		};
+				if ($("#pageContents .audioHolder").length > 0) {
+					var audioBarW = 0;
+					$("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function () {
+						audioBarW += $(this).outerWidth();
+					});
+					if (audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() > 2) {
+						$x_window.resize();
+					}
+				}
+				this.resizeImg(false);
+			};
 
 		this.init = function() {
-			// XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
+			this.weighting = 1.0;
+			if(x_currentPageXML.getAttribute("trackingWeight") != null){
+				this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+			}
+			XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
+
+
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
+					$splitScreen = $("#pageContents .splitScreen");
+			var $textHolder = $("#pageText");
+
+			if (panelWidth === "Full") {
+				$("#pageContents .panel").appendTo($("#pageContents"));
+				$splitScreen.remove();
+			} else {
+				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+				var textAlign = x_currentPageXML.getAttribute("align");
+				if (textAlign !== "Right") {
+					if (panelWidth === "Small") {
+						$splitScreen.addClass("large");
+					} else if (panelWidth === "Large") {
+						$splitScreen.addClass("small");
+					} else {
+						$splitScreen.addClass("medium");
+					}
+				} else {
+					$textHolder
+							.removeClass("left")
+							.addClass("right")
+							.appendTo($splitScreen);
+					$("#infoHolder")
+							.removeClass("right")
+							.addClass("left");
+					if (panelWidth === "Small") {
+						$splitScreen.addClass("medium");
+						$textHolder.addClass("paddingLeft")
+					} else if (panelWidth === "Large") {
+						$splitScreen.addClass("xlarge");
+						$textHolder.addClass("paddingLeft")
+					} else {
+						$splitScreen.addClass("large");
+						$textHolder.addClass("paddingLeft")
+					}
+				}
+			}
+
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .panel");
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			}
+
 		    x_currentPageXML.childNodes.forEach(function () {
 				hits.push(false);
 				counter.push(0);
             });
-
 			$img = $("#image");
 
 
@@ -68,7 +136,7 @@
 			} else {
 				$("#panel").addClass("right");
 			}
-			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
 			$img
 				.css({
 						"opacity"	:0,
@@ -94,38 +162,104 @@
 			$("#checkButton").button({
 				label: "Check"
 			}).click(function (){
+
 				$("#checkButton").button("disable")
 				$("area").off('click')
-				highlightsArray.forEach((highlight) =>{
+				var name;
+				// var div = $(document.createElement('div')).addClass("feedbackIcon").append("<i class=\"fas fa-check\"></i>");
+				highlightsArray.forEach((highlight, index) =>{
+					name = "Hotspot" + " " + highlight.getAttribute("name");
+
+					var points = JSON.parse(highlight.getAttribute("points"))
+					var x = (points[0]["x"]+points[1]["x"])/2
+					var y = (points[0]["y"]+points[2]["y"])/2
+					XTEnterInteraction(x_currentPage, index, "fill-in", name, [], "-", x_currentPageXML.getAttribute("generalFeedback"), x_currentPageXML.getAttribute("grouping"));
 
 					if(highlight.getAttribute("truth") === "true"){
 						hotSpotScore++;
+						// div.top = y
+						// div.left = x
+						// $("#imageHolder").append(div)
 					}else{
 						AmountOfWrongScore++;
+						// div.top = y
+						// div.left = x
+						// $("#imageHolder").append(div)
 					}
 				})
+
+				debugger
+				var scoreTxt = x_currentPageXML.getAttribute("scoreTxt")
+				if(scoreTxt==""){
+					scoreTxt = "You have /r answers right and /w wrong"
+				}
+
+				var scoreTemp = scoreTxt.replace("/r", hotSpotScore)
+
+				var scoreLabel = scoreTemp.replace("/w", AmountOfWrongScore)
+
+
 				if(highlightsArray.length > 0){
 					highlightsArray.forEach((highlight) =>{
-						debugger
 						if(highlight.getAttribute("text") !== null){
-							$("#infoHolder").html("<hr/><h3> je hebt " + hotSpotScore + " antwoorden goed en " + AmountOfWrongScore + " antwoorden fout </h3><br/>");
+							var h3 = $('<h3>').append(scoreLabel)
+							$("#score").html(h3);
 							$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
 						}else{
-							$("#infoHolder").html("<hr/><h3> je hebt " + hotSpotScore + " antwoorden goed en " + AmountOfWrongScore + " antwoorden fout</h3>");
+							var h3 = $('<h3>').append(scoreLabel)
+							$("#score").html(h3);
 							$("#generalFeedback").html(x_currentPageXML.getAttribute("generalFeedback"));
 						}
 					})
 				}else{
-					$("#infoHolder").html("<hr/><h3>Je hebt geen antwoorden ingevuld</h3><br/>");
+					$("#score").html("<hr/><h3>Je hebt geen antwoorden ingevuld</h3><br/>");
 				}
 
+				var amountOfCorrectOptions = 0;
+				allHighlightsArray.forEach((highlight)=>{
+					if(highlight.getAttribute("truth") === "true"){
+						amountOfCorrectOptions++;
+					}
+				})
+
+            	var setScore = (hotSpotScore/highlightsArray.length)*100
+				highlightsArray.forEach((highlight, index)=> {
+					var result;
+					if(highlight.getAttribute("truth")==="true"){
+						result = {
+							success: true,
+							score: 100.0
+						}
+					}else{
+						result = {
+							correct: false,
+							score: 0
+						}
+					}
+
+					XTExitInteraction(x_currentPage, index, result, "", highlight.getAttribute("name"), "", x_currentPageXML.getAttribute("trackinglabel"));
+				})
+
+				XTSetPageScore(x_currentPage, setScore);
 			});
 		};
 
 		this.resizeImg = function(firstLoad) {
-			var imgMaxW = Math.round($x_pageHolder.width() * (400.0/800.0)),
-				imgMaxH = Math.round($x_pageHolder.height() * (550.0/600.0) - 100);
-
+			var imgMaxW, imgMaxH;
+			if (x_currentPageXML.getAttribute("textWidth") == "none") {
+				imgMaxW = Math.round($x_pageHolder.width() - 30);
+				imgMaxH = Math.round($x_pageHolder.height() - 30);
+				$('#panel').css('margin', '0px');
+			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
+				imgMaxW = Math.round($x_pageHolder.width() * 0.8 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 50);
+			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
+				imgMaxW = Math.round($x_pageHolder.width() * 0.3 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 50);
+			} else {
+				imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 50);
+			}
 			$img.mapster('unbind');
 
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
@@ -148,7 +282,7 @@
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var _this = this;
-
+					allHighlightsArray.push(_this)
 					// var $hotspot = $('<a class="hotspot transparent" href="#" tabindex="' + (i+2) + '" />');
 					var $hotspot = $('<area class="hotspot" shape="poly" href="#" tabindex="' + (i+2) + '" />');
 
@@ -185,7 +319,6 @@
 						.attr("coords", coords_string)
 						.click(function() {
 
-							debugger
 							var $this = $(this);
 							if($this[0].className === "hotspot highlight"){
 								$this.addClass("selected");
@@ -376,7 +509,12 @@
 
 
 <div id="pageContents">
-
+<div class="splitScreen">
+	<div id="textHolder" class="left">
+		<p id="pageText"></p>
+	</div>
+	<div id="infoHolder" class="right">
+		<fieldset class="noStyle">
 	<div id="panel" class="panel inline">
 		<div id="questionText" class="right">
 		<div id="imageHolder">
@@ -398,12 +536,16 @@
 		</div>
 
 	</div>
+
 	<div id="textContents">
-		<div id="mainText" tabindex="1"></div>
+
 		<button id="checkButton"></button>
-		<div id="infoHolder" class="hsinfo"></div>
+		<div id="score" class="hsinfo"></div>
 		<div id="generalFeedback"></div>
 
 	</div>
 	</div>
+		</fieldset>
+	</div>
+</div>
 </div>
