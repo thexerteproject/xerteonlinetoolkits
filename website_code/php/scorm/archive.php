@@ -15,7 +15,7 @@
 
 class archive {
 
-    function archive($name) {
+    function __construct($name) {
         $this->options = array(
             'basedir' => ".",
             'name' => $name,

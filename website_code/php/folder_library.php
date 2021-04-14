@@ -28,8 +28,8 @@ if (file_exists('../../../config.php')) {
   require_once('config.php');
 
 }
-include 'file_library.php';
-include 'user_library.php';
+require_once('file_library.php');
+require_once('user_library.php');
 
 _load_language_file("/website_code/php/folder_library.inc");
 
@@ -108,13 +108,9 @@ function delete_folder($folder_id){
 
     $ok = db_query($query_to_delete_folder, $params);
     if($ok !== false) {
-
         receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder " . $folder_id . " deleted for " . $_SESSION['toolkits_logon_username'], "Folder deletion succeeded for " . $_SESSION['toolkits_logon_username']);
-
     }else{
-
         receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Folder " . $folder_id . " not deleted for " . $_SESSION['toolkits_logon_username'], "Folder deletion falied for " . $_SESSION['toolkits_logon_username']);
-
     }
 
 }
@@ -152,12 +148,9 @@ function move_file($template_id,$destination)
         $ok = db_query($query_file, $params);
 
         if ($ok !== false) {
-            receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $template_id . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $new_files_array[$x] . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
-
+            receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $template_id . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "Template " . $template_id . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
         } else {
-
-            receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $template_id . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $new_files_array[$x] . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
-
+            receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $template_id . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $$template_id . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
         }
     }
 }
@@ -184,15 +177,23 @@ function move_folder($folder_id,$destination)
 
         $ok = db_query($query_folder, $params);
         if ($ok) {
-
             receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder " . $folder_id . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $new_files_array[$x] . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
-
         } else {
-
             receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $folder_id . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "Folder " . $new_files_array[$x] . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
-
         }
 
     }
 }
+
+function has_rights_to_this_folder($folder_id, $user_id){
+    global $xerte_toolkits_site;
+    $query = "select * from {$xerte_toolkits_site->database_table_prefix}folderdetails where login_id=? AND folder_id = ?";
+    $result = db_query_one($query, array($user_id, $folder_id));
+
+    if(!empty($result)) {
+        return true;
+    }
+    return false;
+}
+
 

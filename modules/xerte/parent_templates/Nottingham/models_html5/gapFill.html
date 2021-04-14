@@ -274,6 +274,10 @@
 			    correctAnswers = [];
                 correctOptions = [];
                 name = x_currentPageXML.getAttribute("name");
+				if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+				{
+					name = x_currentPageXML.getAttribute("trackinglabel");
+				}
 				for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
 					correctAnswer = answerData[interactionNumber][0];
 					correctAnswer = correctAnswer + "-->" + correctAnswer;
@@ -310,6 +314,7 @@
                             result: correctAnswer
                         });
 					}
+                    debugger;
                     XTEnterInteraction(x_currentPage,  interactionNumber , 'multiplechoice', name, correctOptions, correctAnswers, "Correct", x_currentPageXML.getAttribute("grouping"));
                 }
 			}

@@ -11,6 +11,8 @@
 	 */
 
 	define("NAME_SELECT_CLICK","Add user");
+
+	define("NAME_SELECT_CLICK_GROUP","Add group");
 	
 	define("NAME_SELECT_DETAILS_FAIL","No one found with those details ");
 

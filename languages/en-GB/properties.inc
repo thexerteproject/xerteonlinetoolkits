@@ -24,5 +24,6 @@
 	define("PROPERTIES_TAB_PEER","Peer review");
 	define("PROPERTIES_TAB_GIVE","Give this project");
 	define("PROPERTIES_TAB_XML","XML sharing");
+    define("PROPERTIES_TAB_GROUP_SHARED","Group sharing");
 
 ?>

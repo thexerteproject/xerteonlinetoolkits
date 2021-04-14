@@ -33,6 +33,12 @@ _load_language_file("/website_code/php/versioncontrol/update_file.inc");
 
 require('../template_status.php');
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
+
 database_connect("file update success","file_update_fail");
 
 if(isset($_POST['template_id'])){

@@ -24,7 +24,7 @@ require(dirname(__FILE__) . "/module_functions.php");
 // (pl)
 // Set up the preview window for a xerte piece
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
-function show_template($row_play){
+function show_template($row_play, $xapi_enabled=false){
     global $xerte_toolkits_site;
 
     $string_for_flash = $xerte_toolkits_site-> users_file_area_short . $row_play['template_id'] . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/";

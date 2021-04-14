@@ -679,25 +679,10 @@
                 $(".crossword-input").css("width", amountOfpixels)
                 $(".crossword-input").css("height", amountOfpixels)
 
-
-                // if(imgMaxW < 430){
-                //    // $("#show_button").css("font-size", "80%")
-                // }else  if(imgMaxW > 650 && imgMaxW < 1200){
-                //    // $("#show_button").css("font-size", "150%")
-                //     $("#show_button").css("width", "50%")
-                //     $("#crossword").css("margin-right", "50px")
-                //     $("#clues-container").css("width", "30%")
-                // }else if(imgMaxW > 1200) {
-                //     // $("#show_button").css("font-size", "200%")
-                //     $("#show_button").css("width", "50%")
-                //
-                //     $("#crossword").css("margin-right", "50px")
-                //     $("#clues-container").css("width", "40%")
-                // }
-
                 debugger
                 var cluesWidth = $x_pageHolder.width() * 0.30
                 $("#clues-container").css("width", cluesWidth+"px")
+
 
                 var position = x_currentPageXML.getAttribute("align")
 
@@ -719,6 +704,9 @@
                 }
             }
         }
+
+
+
 
 
         var cw = ""

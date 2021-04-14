@@ -20,3 +20,6 @@ USER-FILES/
 
 # Ignore Saml2 Settings file
 library/Xerte/Authentication/Saml2/settings.php
+
+#ignore tsugi folder (if installed)
+tsugi/

@@ -42,7 +42,8 @@
 			}
 			
 			var menuItems = [],
-				pageNames = [];
+				pageNames = [],
+				checkIfVistedItems = [];
 			
 			// work out which pages to include in menu item list...
 			
@@ -51,6 +52,7 @@
 				$(x_currentPageXML).children().each(function() {
 					menuItems.push(this.getAttribute("pageID"));
 					pageNames.push(this.getAttribute("btnTxt") == "true" ? this.getAttribute("name") : undefined);
+					checkIfVistedItems.push(this.getAttribute("checkIfVisited") != undefined ? this.getAttribute("checkIfVisited") : this.getAttribute("pageID"));
 				});
 				
 			} else {
@@ -150,6 +152,7 @@
 				
 				$thisItem
 					.data("id", menuItems[i])
+					.data("visitedid", $thisItem.data('parent') != undefined ? $thisItem.data('parent') : checkIfVistedItems[i])
 					.html(name);
 				
 				$thisItem.append(' <i class="fa fa-x-tick-circle notvisited" aria-hidden="true"></i>');
@@ -211,7 +214,8 @@
 					
 					$("#subMenuItems .subMenuItem").each(function(i) {
 						// if nested page then look to parent page to see if visited
-						var pageToCheck = $(this).data('parent') != undefined ? $(this).data('parent') : $(this).data("id");
+						//var pageToCheck = $(this).data('parent') != undefined ? $(this).data('parent') : $(this).data("id");
+						var pageToCheck = $(this).data('visitedid');
 						if (pageToCheck.substring(0,4) == 'page') {
 							if ($.inArray(Number(pageToCheck.substring(4)), allBuiltPageNums) > -1) {
 								$(this).find('i').removeClass('notvisited')

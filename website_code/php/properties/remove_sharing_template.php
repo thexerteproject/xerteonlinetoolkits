@@ -28,21 +28,29 @@
  */
 
 require_once("../../../config.php");
+include "../template_status.php";
+
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
 
 if(is_numeric($_POST['template_id'])){
 
-    $prefix = $xerte_toolkits_site->database_table_prefix;
-    
-    $user_id = $_POST['user_id'];
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()) {
+        $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $tutorial_id = $_POST['template_id'];
+        $user_id = $_POST['user_id'];
 
-    $database_id=database_connect("Template sharing database connect failed","Template sharing database connect failed");
+        $tutorial_id = $_POST['template_id'];
 
-    $query_to_delete_share = "delete from {$prefix}templaterights where template_id = ? AND user_id = ?";
+        $database_id = database_connect("Template sharing database connect failed", "Template sharing database connect failed");
 
-    $params = array($tutorial_id, $user_id);
-    db_query($query_to_delete_share, $params);
-    
+        $query_to_delete_share = "delete from {$prefix}templaterights where template_id = ? AND user_id = ?";
 
+        $params = array($tutorial_id, $user_id);
+        db_query($query_to_delete_share, $params);
+
+    }
 }
