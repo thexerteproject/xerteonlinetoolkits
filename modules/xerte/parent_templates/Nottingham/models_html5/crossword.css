@@ -175,3 +175,6 @@
      text-align: center;
 
  }
+#pageContents input{
+    padding: 0!important;
+}
