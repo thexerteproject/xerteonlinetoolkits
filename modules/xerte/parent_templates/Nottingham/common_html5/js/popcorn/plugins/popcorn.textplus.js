@@ -82,7 +82,7 @@ optional: end position* line
 							
 							$showLbl.appendTo($showHolder);
 							// Cap the fontsize to reasonable values
-							var fs = size * 0.3 <= 8 ? 8 : size * 0.3 > 16 ? 16 : size * 0.3;
+							var fs = size * 0.4 <= 12 ? 12 : size * 0.4 > 32 ? 32 : size * 0.4;
 							$showLbl.css({
 								"padding": 5,
 								"padding-left": size * 0.55 + 5,
