@@ -458,7 +458,7 @@ optional: feedback page synch play enable
 							"padding-right" : w
 						})
 							
-						var $showLbl = $("<div class='showLabel'>" + options.name + "</div>");
+						var $showLbl = $("<div class='showLabel panel'>" + options.name + "</div>");
 
 						if(options.attrib.tooltip == "label") {
 							$showLbl.appendTo($showHolder);

@@ -77,7 +77,7 @@ optional: end position* line
 								})
 						});
 							
-						var $showLbl = $("<div class='showLabel'>" + options.name + "</div>");
+						var $showLbl = $("<div class='showLabel panel'>" + options.name + "</div>");
 						if(options.attrib.tooltip == "label") {
 							
 							$showLbl.appendTo($showHolder);
@@ -113,6 +113,7 @@ optional: end position* line
 								$target.parent().addClass("qWindow");
 								$target.parent().css({"padding": 5});
                         	});
+					// If not optional
                		} else {
 						$target.parent().css({"padding": 5});
 						$target.prepend(txt);

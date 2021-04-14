@@ -73,7 +73,7 @@ optional: pauseMedia*
 								})
 						});
 							
-						var $showLbl = $("<div class='showLabel'>" + options.name + "</div>");
+						var $showLbl = $("<div class='showLabel panel'>" + options.name + "</div>");
 
 						if(options.attrib.tooltip == "label") {
 							$showLbl.appendTo($showHolder);
@@ -102,15 +102,23 @@ optional: pauseMedia*
 								}).hide();
 							});
 						}
+						$target.show();
 						$showHolder
+							.show()
                     	    .click(function () {
                         	    $showHolder.hide();
 								if (options.name != "") {
 									$target.prepend('<h4>' + options.name + '</h4>');
 								}
 								$target.parent().addClass("qWindow");
-								$target.parent().css({"padding": 5});
+								//$target.parent().css({"padding": 5});
+								$target.parent().css({
+									"height": h,
+									"width": w
+								});
+								$iframe.show();
                         	});
+					// if not optional
                		} else {
 						$target.parent().css({"padding": 5});
 						if (options.name != "") {
@@ -221,7 +229,7 @@ optional: pauseMedia*
 				} else if (options.child) {
 					$iframe = $target.children(".xotiframe");
 				}
-				
+				$iframe.hide();
 				$target.hide();
 			},
 			
@@ -249,22 +257,26 @@ optional: pauseMedia*
 				}
 				
 				if (options.overlayPan) {
-					if (options.optional == undefined || options.optional === "false")
-					{
-						$target.parent().addClass("qWindow");
-					}
-					else {
-						$target.parent().css({
-							"padding": 0
-						})
-					}
 					var h = $target.parent().parent().height() - 20;
 					var hs = h - 2 * $target.parent().css("padding").replace(/[^-\d\.]/g, '');
 					var w = $target.parent().parent().width() - 20;
-					$target.parent().css({
-						"height": h,
-						"width": w
-					}).show();
+					
+					if (options.optional == undefined || options.optional === "false") {
+						$target.parent().addClass("qWindow");
+						$target.parent().css({
+							"height": h,
+							"width": w
+						}).show();
+						$iframe.show();
+					}
+					else {
+						$target.parent().css({
+							"padding": 0,
+							"height": "auto"
+						});
+					}
+					
+					
 					$target.css("height", hs);
 					if (options.name == "") {
 						$iframe.css("height", h);
@@ -273,7 +285,7 @@ optional: pauseMedia*
 						$iframe.css("height", hs - 33);
 					}
 				}
-
+				$target.parent().show();
 				$target.show();
 			},
 			

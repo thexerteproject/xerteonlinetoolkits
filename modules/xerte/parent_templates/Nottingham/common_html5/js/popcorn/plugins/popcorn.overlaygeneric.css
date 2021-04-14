@@ -49,7 +49,7 @@
 
     top: 28px;
     left: 30px;
-    background-color: #DEDEDE;
+    /*background-color: #DEDEDE;*/
 }
 
 .tooltip {
@@ -111,6 +111,6 @@ div.hotspotIcon span.iconHolder {
     width: 60%;
     margin: 5px;
     z-index: 10;
-    background-color: #FE00FE
+    /*background-color: #FE00FE*/
 }
 
