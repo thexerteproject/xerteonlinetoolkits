@@ -479,7 +479,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
     }
 
     if ($group_id == -1) {
-        $query .= " group by tr.template_id ";
+        $query .= " group by td.template_id, tr.role ";
     }
 
     if ($sort_type == "alpha_down") {
