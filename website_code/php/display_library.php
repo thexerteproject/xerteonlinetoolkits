@@ -455,14 +455,20 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
     $params = NULL;
     if ($group_id == -1) {
         $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
-            . " otd.parent_template, otd.template_framework, td.template_id, tr.role from {$prefix}templatedetails td, "
-            . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd where td.template_id = tr.template_id and tr.user_id = ? "
+            . " otd.parent_template, otd.template_framework, td.template_id, tr.role, count(tr2.template_id) as nrshared from {$prefix}templatedetails td, "
+            . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd left join {$prefix}templaterights tr2 on tr.template_id=tr2.template_id "
+            . " where td.template_id = tr.template_id and tr.user_id = ? "
             . " and tr.folder= ? and  otd.template_type_id = td.template_type_id ";
+        $query  = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
+            . " otd.parent_template, otd.template_framework, td.template_id, tr.role, count(tr2.template_id) as nrshared from {$prefix}templatedetails td "
+            . " join {$prefix}templaterights tr on td.template_id=tr.template_id and tr.user_id=? and tr.folder=? "
+            . " join {$prefix}originaltemplatesdetails otd on otd.template_type_id = td.template_type_id "
+            . " left join templaterights tr2 on td.template_id=tr2.template_id ";
         $params = array($_SESSION['toolkits_logon_id'], $folder_id);
     } else {
         //select templates the same way as regularly, however, now check for group_id in template_group_rights
         $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
-            . " otd.parent_template, otd.template_framework, td.template_id, tgr.role from {$prefix}templatedetails td, "
+            . " otd.parent_template, otd.template_framework, td.template_id, tgr.role, 2 as nrshared from {$prefix}templatedetails td, "
             . " {$prefix}template_group_rights tgr, {$prefix}originaltemplatesdetails otd where td.template_id = tgr.template_id and tgr.group_id = ? "
             . " and otd.template_type_id = td.template_type_id ";
         $params = array($group_id);
@@ -470,6 +476,10 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
 
     if ($copy_only) {
         $query .= " and (tr.role = 'creator' or tr.role ='co-author') ";
+    }
+
+    if ($group_id == -1) {
+        $query .= " group by tr.template_id ";
     }
 
     if ($sort_type == "alpha_down") {
@@ -498,9 +508,9 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
             }
         }
         // Check if template is shared
-        $sql = "select count(tr.template_id) as nr_shared from {$prefix}templaterights tr where tr.template_id=?";
-        $params = array($row['template_id']);
-        $shared = db_query_one($sql, $params);
+        //$sql = "select count(tr.template_id) as nr_shared from {$prefix}templaterights tr where tr.template_id=?";
+        //$params = array($row['template_id']);
+        //$shared = db_query_one($sql, $params);
 
         //echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" preview_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size . "\" editor_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size . "\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page_".strtolower($row['template_name']).".gif\" style=\"vertical-align:middle;padding-right:5px\" />" . str_replace("_", " ", $row['project_name']) . "</div>";
         $item = new stdClass();
@@ -513,14 +523,16 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
         else
             $item->type = strtolower($row['parent_template'] . "_group");
         $item->xot_type = "file";
+        $item->published = $row['access_to_whom'] != 'Private' || $row['tsugi_published'] == 1;
+        $item->shared = $row['nrshared'] > 1;
         $item->editor_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size;
         $item->preview_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size;
 
         $items[] = $item;
     }
     return $items;
-
 }
+
 
 /**
  * Builds an array with the files only of the group suitable for jsTree

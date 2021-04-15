@@ -685,7 +685,7 @@ function dynamicResize()
         xertemain_layout.close('south');
     }
     $("div.dashboard-wrapper").css("top", $("#mainHeader").height());
-    refresh_workspace();
+    //refresh_workspace();
 }
 
 function getIcon(nodetype)
