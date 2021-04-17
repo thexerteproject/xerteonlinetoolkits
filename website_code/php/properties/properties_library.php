@@ -19,11 +19,9 @@
  */
 
 //PROPERTIES LIBRARY
-
 require_once("../../../config.php");
 require_once("../template_library.php");
 require_once("../xAPI/xAPI_library.php");
-
 
 _load_language_file("/website_code/php/properties/publish.inc");
 _load_language_file("/website_code/php/properties/properties_library.inc");
