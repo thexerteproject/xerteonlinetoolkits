@@ -55,7 +55,8 @@ function show_peer_form($row, $retouremail)
 				<?php echo XERTE_FEEDBACK_CONTACT_INSTRUCTIONS; ?></p>
                 </div>
                 <div style="width:90% !important; display:inline-block; position: fixed;">
-                    <form name="peer" action="javascript:send_review('<?php echo $retouremail; ?>','<?php echo $row['template_id']; ?>')" method="post" enctype="text/plain">
+                    <!-- form name="peer" action="javascript:send_review('<?php echo $retouremail; ?>','<?php echo $row['template_id']; ?>')" method="post" enctype="text/plain"-->
+                    <form name="peer" action="javascript:send_review()" method="post" enctype="text/plain">
                         <textarea style="width:100%; height:40vh;font-size:14pt" name="response"></textarea>
                         <br/>
                         <button type="submit" class="xerte_button" style="margin-top:5px"><?php echo XERTE_FEEDBACK_BUTTON_SEND; ?></button>
@@ -106,6 +107,7 @@ if(!empty($query_for_peer_response)) {
         $retouremail = $extra[1];
 
     $_SESSION['template_id'] = $template_id;
+    $_SESSION['retouremail'] = $retouremail;
     show_peer_form($row_play, $retouremail);
 
 }

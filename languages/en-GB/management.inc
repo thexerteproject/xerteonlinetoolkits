@@ -33,6 +33,8 @@
 	define("MANAGEMENT_MENUBAR_CENTRAL","Central templates");
 	
 	define("MANAGEMENT_MENUBAR_USERS","Users");
+
+	define("MANAGEMENT_MENUBAR_USER_GROUPS","User Groups");
 	
 	define("MANAGEMENT_MENUBAR_TEMPLATES","Users projects");
 	
@@ -51,5 +53,6 @@
 	define("MANAGEMENT_MENUBAR_FEEDS","Feeds");
 	
 	define("MANAGEMENT_MENUBAR_SAVE","Save");
+
 	
 ?>

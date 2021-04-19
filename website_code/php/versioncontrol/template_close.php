@@ -49,6 +49,8 @@ if(file_exists($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] 
      *  Code to delete the lock file
      */
 
+    _debug("Detected lockfile on closing " . $_POST['file_path']);
+
     $row_template_name = db_query_one("Select template_name from {$xerte_toolkits_site->database_table_prefix}templatedetails WHERE template_id = ?", array($temp_array[0]));
 
     $lock_file_data = file_get_contents($xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "/lockfile.txt");
@@ -91,6 +93,7 @@ if(file_exists($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] 
 
     unlink($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] . "lockfile.txt");
 
+    _debug("Lockfile " . $xerte_toolkits_site->users_file_area_full . $_POST['file_path'] . "lockfile.txt" . " is deleted.");
 }
 
 /*

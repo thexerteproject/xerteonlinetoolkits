@@ -34,6 +34,12 @@ include "../template_status.php";
 
 include "properties_library.php";
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
+
 /**
  * 
  * Function template share status
@@ -64,21 +70,22 @@ $database_id = database_connect("Access change database connect success","Access
  * Update the database setting
  */
 $prefix = $xerte_toolkits_site->database_table_prefix;
+if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()) {
+    $query = "UPDATE {$prefix}templatedetails SET access_to_whom = ? WHERE template_id = ?";
+    if (isset($_POST['server_string'])) {
+        $access_to_whom = $_POST['access'] . '-' . $_POST['server_string'];
+    } else {
+        $access_to_whom = $_POST['access'];
+    }
 
- $query = "UPDATE {$prefix}templatedetails SET access_to_whom = ? WHERE template_id = ?";
-if(isset($_POST['server_string'])){
-    $access_to_whom = $_POST['access'] . '-' . $_POST['server_string'];    
-}else{
-    $access_to_whom = $_POST['access'];
-}
+    $params = array($access_to_whom, $_POST['template_id']);
+    $ok = db_query($query, $params);
 
-$params = array($access_to_whom, $_POST['template_id']);
-$ok = db_query($query, $params);
+    if ($ok === false) {
+        access_display_fail();
 
-if($ok === false) {
-    access_display_fail();
+    } else {
 
-}else {
-
-    access_display($xerte_toolkits_site, true);
+        access_display($xerte_toolkits_site, true);
+    }
 }

@@ -23,7 +23,8 @@
     var topXQ = new function () {
             // function called every time the page is viewed after it has initially loaded
             this.pageChanged = function () {
-
+                $("#OptionHolder, #checkButton, #attempts, #result, #correctAnswer, #mainFeedback").html("");
+                this.init();
             };
             var amountOfAnswers = x_currentPageXML.getAttribute("numberAnswers");
             var amountOfGoodAnswers = 0;
@@ -306,6 +307,7 @@
 
 
             this.init = function () {
+
 				$('#result, #mainFeedback, #correctAnswer').hide();
 			
                 var hasExited = false;
@@ -381,7 +383,7 @@
                     elements.push(
                         {
                             label: this.getAttribute("name"),
-                            answer: this.getAttribute("answer"),
+                            answer: $("<div>").html(this.getAttribute("answer")).text(),
                             correct: this.getAttribute("correct"),
                             feedback: this.getAttribute("feedback")
                         }
@@ -469,6 +471,7 @@
                         label: checkBtnTxt
                     })
                     .click(function () {
+                        $("#checkButton").prop("disabled",true);
                         var tries;
 						if (x_currentPageXML.getAttribute("amountOfTries") != undefined && $.isNumeric(x_currentPageXML.getAttribute("amountOfTries"))) {
 							tries = parseInt(x_currentPageXML.getAttribute("amountOfTries"));

@@ -42,7 +42,8 @@
 			}
 			
 			var menuItems = [],
-				pageNames = [];
+				pageNames = [],
+				checkIfVistedItems = [];
 			
 			// work out which pages to include in menu item list...
 			
@@ -51,6 +52,7 @@
 				$(x_currentPageXML).children().each(function() {
 					menuItems.push(this.getAttribute("pageID"));
 					pageNames.push(this.getAttribute("btnTxt") == "true" ? this.getAttribute("name") : undefined);
+					checkIfVistedItems.push(this.getAttribute("checkIfVisited") != undefined ? this.getAttribute("checkIfVisited") : this.getAttribute("pageID"));
 				});
 				
 			} else {
@@ -96,10 +98,10 @@
 					}
 				}
 			}
-			
+			debugger
 			var $menuItems = $("#subMenuItems"),
 				$menuItem = $menuItems.find(".subMenuItem:first");
-			
+
 			for (var i=0; i<menuItems.length; i++) {
 				var $thisItem;
 				if (i != 0) {
@@ -139,14 +141,18 @@
 						if ($.isArray(page)) {
 							name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : this.getNestedName(page);
 							$thisItem.data('parent', x_pages[page[0]].getAttribute('linkID'));
-						} else {
+						} else if( menuItems[i] != undefined &&  menuItems[i] != "") {
 							name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_pages[page].getAttribute("name");
+						}else{
+							$('#subMenuItems').html("There are one or more page destinations empty")
+							break;
 						}
 					}
 				}
 				
 				$thisItem
 					.data("id", menuItems[i])
+					.data("visitedid", $thisItem.data('parent') != undefined ? $thisItem.data('parent') : checkIfVistedItems[i])
 					.html(name);
 				
 				$thisItem.append(' <i class="fa fa-x-tick-circle notvisited" aria-hidden="true"></i>');
@@ -172,7 +178,7 @@
 
 			var buttonWidth = x_currentPageXML.getAttribute("buttonWidth")
 			if(buttonWidth === undefined || buttonWidth === null){
-				buttonWidth = "100%"
+				buttonWidth = "80%"
 			}
 			if(buttonWidth.slice(-1)!=="%"){
 				buttonWidth+="%"
@@ -208,7 +214,8 @@
 					
 					$("#subMenuItems .subMenuItem").each(function(i) {
 						// if nested page then look to parent page to see if visited
-						var pageToCheck = $(this).data('parent') != undefined ? $(this).data('parent') : $(this).data("id");
+						//var pageToCheck = $(this).data('parent') != undefined ? $(this).data('parent') : $(this).data("id");
+						var pageToCheck = $(this).data('visitedid');
 						if (pageToCheck.substring(0,4) == 'page') {
 							if ($.inArray(Number(pageToCheck.substring(4)), allBuiltPageNums) > -1) {
 								$(this).find('i').removeClass('notvisited')
@@ -231,7 +238,7 @@
 <div id="pageContents">
 	<div id="subMenuHolder">
 		<div id="subMenuItems">
-			<button class="subMenuItem width80"/>
+			<button class="subMenuItem width100"/>
 		</div>
 	</div>
 </div>

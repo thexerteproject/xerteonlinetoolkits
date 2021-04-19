@@ -25,7 +25,12 @@ require_once(dirname(__FILE__) . "/../database.php");
 
 $success_string = '';
 $fail_string = '';
-$magic_quotes = get_magic_quotes_gpc();
+if (function_exists('get_magic_quotes_gpc')) {
+    $magic_quotes = get_magic_quotes_gpc();
+}
+else {
+    $magic_quotes = false;
+}
 $development = true;
 
 /*

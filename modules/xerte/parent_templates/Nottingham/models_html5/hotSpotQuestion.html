@@ -89,8 +89,7 @@
 			}
 			XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
 
-			debugger
-			var $textHolder = $("#pageText");
+			var $textHolder = $('#textHolder');
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				$textHolder.remove();
 				$("#pageContents").css("text-align", "center");
@@ -98,7 +97,7 @@
 				//$("#panel").removeClass("inline");
 				$("#panel").removeClass("panel");
 			} else {
-				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				$('#textHolder').html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
 				if (x_currentPageXML.getAttribute("align") == "Right") {
 					$("#panel").addClass("left");
@@ -226,7 +225,6 @@
 					var name;
 					highlightsArray.forEach((highlight, index) =>{
 						name = "Hotspot" + " " + highlight.getAttribute("name");
-
 						var points = JSON.parse(highlight.getAttribute("points"))
 						var x = (points[0]["x"]+points[1]["x"])/2
 						var y = (points[0]["y"]+points[2]["y"])/2
@@ -238,7 +236,7 @@
 							AmountOfWrongScore++;
 						}
 					})
-					debugger
+
 					var scoreTxt = x_currentPageXML.getAttribute("scoreTxt")
 					if(scoreTxt==""){
 						scoreTxt = "You have /r answers right and /w wrong"
@@ -321,7 +319,7 @@
 		};
 
 		this.resizeImg = function(firstLoad) {
-			debugger
+
 			var imgMaxW, imgMaxH;
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				imgMaxW = Math.round($x_pageHolder.width() - 30);
@@ -344,9 +342,7 @@
 			// 	var percentage = imgMaxW/imgMaxH
 			// 	imgMaxW = imgMaxW/percentage
 			// }
-			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
-
-			debugger
+			x_scaleImg($img, imgMaxW-50, imgMaxH-50, true, firstLoad, false);
 
 			$img.css({
 				"opacity"	:1,
@@ -593,9 +589,6 @@
 
 
 <div id="pageContents">
-	<div id="textHolder" class="left">
-		<p id="pageText"></p>
-	</div>
 	<div id="infoHolder" class="right">
 		<fieldset class="noStyle">
 	<div id="panel" class="panel inline">
@@ -621,11 +614,17 @@
 	<div id="textContents">
 
 		<button id="checkButton"></button>
-		<div id="score" class="hsinfo"></div>
-		<div id="generalFeedback"></div>
+		<div id="text">
+			<div id="score"></div>
+			<div id="generalFeedback"></div>
+		</div>
+
 
 	</div>
 	</div>
+			<div id="textHolder" tabindex="1">
+			</div>
 		</fieldset>
+
 	</div>
 </div>

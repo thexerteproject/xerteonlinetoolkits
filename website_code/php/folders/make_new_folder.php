@@ -30,4 +30,10 @@
 require_once("../../../config.php");
 include '../folder_library.php';
 
-make_new_folder($_POST['folder_id'],$_POST['folder_name']);
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
+
+make_new_folder($_POST['folder_id'],htmlspecialchars($_POST['folder_name']));

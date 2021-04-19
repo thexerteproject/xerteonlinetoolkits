@@ -88,6 +88,13 @@ if ($full_access && isset($_REQUEST['list']))
         $offset = $_REQUEST['offset'];
     }
 
+    $since = false;
+    if (isset($_REQUEST['since']))
+    {
+        $since = new DateTime($_REQUEST['since']);
+    }
+
+
 
     $q = "select td.template_id, 
           otd.template_framework, 
@@ -140,6 +147,11 @@ if ($full_access && isset($_REQUEST['list']))
     else
     {
         die("Invalid query");
+    }
+    if ($since !== false)
+    {
+        $q .= " and td.date_modified > ?";
+        $params[] = $since->format('Y-m-d');
     }
 
     $templates = db_query($q, $params);

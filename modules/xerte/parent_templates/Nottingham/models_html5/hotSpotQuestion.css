@@ -2,7 +2,7 @@
 
 	#panel.right {
 		float:	right;
-		margin:	0 0 0 20px;
+		margin:	0 0 20px 20px;
 	}
 
 	#panel.left {
@@ -91,12 +91,17 @@
 
 	#checkButton{
 		float: right;
+		margin-top: 30px;
 	}
 
 	#score h3{
-		border-top: 1px solid #ccc;
-		padding-top: 1.5em;
+		padding: 0;
+	}
 
+	#text{
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
 	}
 	/*#btnHolder {*/
 	/*	margin-top: 0.5em;*/

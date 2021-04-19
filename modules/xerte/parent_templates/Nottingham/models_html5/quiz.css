@@ -67,8 +67,9 @@
 	#feedback .audioHolder {
 		margin:	0.5em 0 1em 0;
 	}
-	
-	#feedback h3 {
+
+	#feedbackGroup h3 {
+		border-top: 1px solid #ccc;
 		padding-top: 1em;
 	}
 
@@ -76,12 +77,6 @@
 		width: 100%;
 	}
 
-	#generalFeedback{
-		clear:		both;
-		margin:	0.5em 0 1em 0;
-	}
-
-	#generalFeedback h3 {
-		border-top: 1px solid #ccc;
-		padding-top: 1em;
+	#feedbackGroup .feedbackBlock {
+		margin-bottom: 0.5em;
 	}

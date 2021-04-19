@@ -29,9 +29,14 @@
 
 require_once("../../../config.php");
 
-_load_language_file("/website_code/php/folderproperties/folderproperties_template.inc");
-_load_language_file("/website_code/php/folderproperties/rename_folder_template.inc");
+_load_language_file("/website_code/php/folderproperties/folderproperties.inc");
+_load_language_file("/website_code/php/folderproperties/rename_folder.inc");
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
 
 if(is_numeric($_POST['folder_id'])&&is_string($_POST['folder_name'])){
 
@@ -40,7 +45,7 @@ if(is_numeric($_POST['folder_id'])&&is_string($_POST['folder_name'])){
     $prefix = $xerte_toolkits_site->database_table_prefix;
     
     $query = "update {$prefix}folderdetails SET folder_name = ? WHERE folder_id = ?";
-    $params = array($_POST['folder_name'], $_POST['folder_id']);
+    $params = array(htmlspecialchars($_POST['folder_name']), $_POST['folder_id']);
 
     $ok = db_query($query, $params);
     
@@ -48,13 +53,13 @@ if(is_numeric($_POST['folder_id'])&&is_string($_POST['folder_name'])){
 
         echo "<p class=\"header\"><span>" . FOLDER_PROPERTIES_PROPERTIES . "</span></p>";			
 
-        echo "<p>" . FOLDER_PROPERTIES_CALLED . " " . $_POST['folder_name'] . "</p>";
+        echo "<p>" . FOLDER_PROPERTIES_CALLED . " " . htmlspecialchars($_POST['folder_name']) . "</p>";
 
         echo "<p>" . FOLDER_PROPERTIES_CHANGE . "</p>";
 
         echo "<p><form id=\"rename_form\" action=\"javascript:rename_folder('" . $_POST['folder_id'] ."',"
                 . " 'rename_form')\"><input style=\"padding-bottom:5px\" type=\"text\" value=\"" .
-                str_replace("_", " ", $_POST['folder_name']) . "\" name=\"newfoldername\" />"
+                htmlspecialchars(str_replace("_", " ", $_POST['folder_name'])) . "\" name=\"newfoldername\" />"
                 . "<button type=\"submit\" class=\"xerte_button\"  align=\"top\" style=\"padding-left:5px\">" . 
                 FOLDER_PROPERTIES_BUTTON_SAVE . "</button></form>";
 

@@ -176,8 +176,11 @@ function db_query_one($sql, $params = array())
 {
     $results = db_query($sql, $params);
 
-    if ($results!==false && sizeof($results) > 0) {
+    if ($results !== false && gettype($results) == 'array' && sizeof($results) > 0) {
         return $results[0];
+    } else if (gettype($results) == 'string' || gettype($results) == 'integer') {
+        return $results;
     }
+
     return null;
 }

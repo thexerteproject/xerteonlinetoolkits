@@ -414,6 +414,25 @@
         return url;
     }
 
+    function getGroupingLabel(statement)
+    {
+        // statements DO have context.contextActivities.grouping[0].id defined (see above)
+        // Check context.contextActivities.grouping[0].definition.name['en-US']
+        if (statement.context.contextActivities.grouping[0].definition != undefined
+            && statement.context.contextActivities.grouping[0].definition.name != undefined
+            && statement.context.contextActivities.grouping[0].definition.name['en-US'] != undefined)
+        {
+            return statement.context.contextActivities.grouping[0].definition.name['en-US'];
+        }
+        else
+        {
+            let id = statement.context.contextActivities.grouping[0].id;
+            let pos = id.lastIndexOf('/');
+            let group = id.substr(pos+1);
+            return group.replace(/_/g, ' ');
+        }
+    }
+
     function getStatements(
         xerteurl,
         xertelo,
@@ -602,7 +621,7 @@
                             }
                         }
                         let groups = []
-                        statements.forEach(x => groups.push(x.context.contextActivities.grouping[0].definition.name['en-US']));
+                        statements.forEach(x => groups.push(getGroupingLabel(x)));
                         let uniqueGroups = groups.filter((v, i, a) => a.indexOf(v) === i);
 
                         for (let uniqueGroup in uniqueGroups) {
@@ -622,7 +641,7 @@
                             uniqueStatements = groupingStatements;
                         } else {
                             for (let groupingStatement in groupingStatements) {
-                                let group = groupingStatements[groupingStatement].context.contextActivities.grouping[0].definition.name["en-US"];
+                                let group = getGroupingLabel(groupingStatements[groupingStatement]);
                                 if (!visitedGroups.includes(group)) {
                                     uniqueStatements.push(groupingStatements[groupingStatement]);
                                     visitedGroups.push(group);
@@ -719,6 +738,13 @@
 
         // Function called every time the page is viewed after it has initially loaded.
         this.pageChanged = function() {
+            $("#adaptiveContentMain").html("");
+            var displayMode = x_currentPageXML.getAttribute('displayMode');
+            if(displayMode == "Listed"){
+                this.setUpListed();
+            }else {
+                this.setUpUnlisted();
+            }
         }
 
         // Function called every time the size of the LO is changed.
@@ -753,6 +779,7 @@
         };
 
         this.init = function() {
+            debugger;
             var loadFiles = true;
             for (var i = 0; i < x_pageInfo.length; i++) {
                 if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
@@ -838,12 +865,31 @@
                 adviceHeader = `<h4>${interaction.getAttribute('AdviceText')}</h4>`;
             }
 
+            debugger;
+            let introductionText = interaction.getAttribute('introduction');
+            if (introductionText == undefined) {
+                introductionText = "";
+            }
+            let summaryText = interaction.getAttribute('SummaryText');
+            if (summaryText == undefined)
+            {
+                summaryText = "";
+            }
+            if (interaction.getAttribute('showNrOfQuestions') != "true"  && interaction.getAttribute('showNrOfCorrectQuestions') != "true")
+            {
+                // Do not show Summry heading
+                summaryText = "";
+            }
+            else
+            {
+                summaryText = `<h1><p>${summaryText}</p></h1>`;
+            }
             div.html(
                 `<h2><p>${name}</p></h2>` +
-                `<div class='introduction'>${interaction.getAttribute('introduction')}</div>` +
+                `<div class='introduction'>${introductionText}</div>` +
                 '<div class="summary-container">' +
                     '<div class="summary">' +
-                        `<h1><p>${interaction.getAttribute('SummaryText')}</p></h1>` +
+                        summaryText +
                         '<div class="score">' +
                           '<div class="stats-div"><ul class="stats"></ul></div>' +
                         '</div>' +
@@ -1144,7 +1190,7 @@
                         $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<li>' + txt + '%</li>');
                     }
                 }
-                if (!adaptiveContent.dashboardMode) {
+                if (adaptiveContent.dashboardMode == "false") {
                     for (blockIndex = 0; blockIndex < interaction.children.length; blockIndex++) {
                         block = interaction.children[blockIndex];
                         scoreRange = block.getAttribute('conScoreBetween');
@@ -1283,9 +1329,19 @@
                     chart.draw();
                 }
                 else if (interaction.getAttribute('graphType') == 'bar_comb_marks') {
-                    let passingGrade = interaction.getAttribute('PassingGrade');
+                    let passingGrade = x_params.trackingPassed;
                     if (passingGrade == null) {
-                        passingGrade = '100';
+                        passingGrade = '55';
+                    }
+                    else
+                    {
+                        if (passingGrade.indexOf('%') >=0) {
+                            passingGrade = parseInt(passingGrade) + '';
+                        }
+                        else if (parsefloat(passingGrade) >= 0 && parsefloat(passingGrade) <= 1)
+                        {
+                            passingGrade = (parseFloat(passingGrade) * 100.0) + '';
+                        }
                     }
                     let ldData = [];
                     let ldLabels = [];

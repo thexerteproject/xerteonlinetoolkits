@@ -192,7 +192,8 @@ function _do_cleanup()
         'themes/Nottingham/flatred/responsivetext.css',
         'themes/Nottingham/flatwhite/responsivetext.css',
         'themes/Nottingham/orangepurple/responsivetext.css',
-        'themes/Nottingham/sketch/responsivetext.css'
+        'themes/Nottingham/sketch/responsivetext.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/DO NOT CHANGE THESE FILES. USE -src- FOLDER.txt'
     );
 
     foreach ($filelist as $file)
@@ -422,9 +423,9 @@ function upgrade_5_step2()
             {
                 $tutorial = "";
             }
-            db_query_one("insert into " . $table . " set config_key='" . $tutorialkey . "', value='" . $tutorial . "', category='xerte', mandatory=1" . $extraflags);
+            db_query("insert into " . $table . " set config_key='" . $tutorialkey . "', value='" . $tutorial . "', category='xerte', mandatory=1" . $extraflags);
         }
-        db_query_one("insert into " . $table . " set config_key='" . $key . "', value='" . $value . "', category='xerte', mandatory=1" . $extraflags);
+        db_query("insert into " . $table . " set config_key='" . $key . "', value='" . $value . "', category='xerte', mandatory=1" . $extraflags);
     }
     return true;
 }
@@ -476,7 +477,7 @@ function upgrade_8()
     // Check if auto_increment is set
     $sql = "SELECT * FROM information_schema.COLUMNS where table_schema=? and table_name=? and column_name='template_id'";
     $res = db_query($sql, array($xerte_toolkits_site->database_name, $xerte_toolkits_site->database_table_prefix . 'templatedetails'));
-    if ($res !== false && count($res)>0)
+    if ($res !== false && count($res)>0 && isset($res[0]['extra']))
     {
         if (strpos('auto_increment', $res[0]['extra']) === false)
         {
@@ -972,14 +973,10 @@ function upgrade_22()
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
     );
 
+    $error1 = true;
     $message = "Creating course table - ok ? " . ($ok ? 'true' : 'false');
     if (!_db_field_exists('sitedetails', 'course_freetext_enabled')) {
         $error1 = _db_add_field('sitedetails', 'course_freetext_enabled', 'char(255)', 'true', 'dashboard_allowed_links');
-        $error1_returned = true;
-        if($error1 === false)
-        {
-            $error1_returned = false;
-        }
     }
     $message .= "<br>Creating course_freetext_enabled field in sitedetails = ok ? " . ($error1 ? 'true' : 'false');
     return $message;
@@ -1013,5 +1010,99 @@ function upgrade_24()
     return "Creating template_sub_pages field in originaltemplatesdetails already present - ok ? ". "<br>";
 }
 
+function upgrade_25()
+{
+    if (!_db_field_exists('templatedetails', 'tsugi_usetsugikey')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_usetsugikey', 'int(1)', '1', 'tsugi_published');
+        $error1_returned = true;
+
+        $error2 = _db_add_field('templatedetails', 'tsugi_privatekeyonly', 'int(1)', '0', 'tsugi_usetsugikey');
+        $error2_returned = true;
+        if (($error1 === false)) {
+            $error1_returned = false;
+            // echo "creating LRS_Endpoint field FAILED";
+        }
+
+        if (($error2 === false)) {
+            $error2_returned = false;
+            // echo "creating LRS_Key field FAILED";
+        }
+        return "Creating tsugi_usetsugikey and  tsugi_privatekeyonly field in templatedetails - ok ? " . ($error1_returned && $error2_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Creating tsugi_usetsugikey and  tsugi_privatekeyonly field in templatedetails already present - ok ? ". "<br>";
+    }
+}
+
+function upgrade_26()
+{
+    $table = table_by_key('user_groups');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `group_id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `group_name` char(255) DEFAULT NULL,
+        PRIMARY KEY (`group_id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message = "Creating user_groups table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('user_group_members');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `group_id` bigint(20) NOT NULL,
+        `login_id` bigint(20) NOT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message .= "Creating user_group_members - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('template_group_rights');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `group_id` bigint(20) NOT NULL,
+        `template_id` bigint(20) NOT NULL,
+        `role` char(255) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message .= "Creating template_group_rights - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+
+}
+
+
+function upgrade_27()
+{
+    $table = table_by_key('folderrights');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `folder_id` bigint(20) NOT NULL,
+        `user_id` bigint(20) NOT NULL,
+        `role` char(255) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message = "Creating folderrights table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    $table = table_by_key('folder_group_rights');
+    $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `folder_id` bigint(20) NOT NULL,
+        `group_id` bigint(20) NOT NULL,
+        `role` char(255) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+    );
+
+    $message .= "Creating folder_group_rights table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+
+}
 
 ?>
