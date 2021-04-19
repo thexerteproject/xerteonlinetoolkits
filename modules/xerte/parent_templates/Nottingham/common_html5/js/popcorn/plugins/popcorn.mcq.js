@@ -477,7 +477,16 @@ optional: feedback page synch play enable
 						correctAnswers.push(x_GetTrackingTextFromHTML(v.getAttribute("text"), (i+1)+""));
 					correctFeedback.push(v.getAttribute("correct") == "true" ? "Correct" : "Incorrect");
 				});
-				XTEnterInteraction(x_currentPage, ia_nr, 'multiplechoice', x_GetTrackingTextFromHTML(options.text, ia_nr + ""), correctOptions, correctAnswers, correctFeedback, x_currentPageXML.getAttribute("grouping"));
+				var label=ia_nr+"";
+				if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+				{
+					label = x_currentPageXML.getAttribute("trackinglabel");
+				}
+				else
+				{
+					label = x_GetTrackingTextFromHTML(options.text, ia_nr + "");
+				}
+				XTEnterInteraction(x_currentPage, ia_nr, 'multiplechoice', label, correctOptions, correctAnswers, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 				if ($(options.childNodes).length > 0) {
 					// reset any previous answers given
 					if (options.type == "radio") {

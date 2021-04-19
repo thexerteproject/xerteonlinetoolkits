@@ -22,7 +22,7 @@ require(dirname(__FILE__) . "/module_functions.php");
 // Set up the preview window for a xerte piece
 
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
-function show_template($row_play)
+function show_template($row_play, $xapi_enabled=false)
 {
     global $xerte_toolkits_site;
 

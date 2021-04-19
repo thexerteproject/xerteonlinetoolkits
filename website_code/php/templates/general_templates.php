@@ -31,5 +31,11 @@
 require_once("../../../config.php");
 include "../display_library.php";
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
+
 list_blank_templates();
 

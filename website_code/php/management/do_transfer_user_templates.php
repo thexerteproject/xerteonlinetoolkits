@@ -145,6 +145,10 @@ function delete_template($template)
     $params = array($template['template_id']);
     db_query($query_to_delete_template_rights, $params);
 
+    $query_to_delete_template_group_rights = "delete from {$prefix}template_group_rights where template_id= ?";
+    $params = array($template['template_id']);
+    db_query($query_to_delete_template_group_rights, $params);
+
     $query_to_delete_syndication = "delete from {$prefix}templatesyndication where template_id=?";
     $params = array($template['template_id']);
     db_query($query_to_delete_syndication, $params);

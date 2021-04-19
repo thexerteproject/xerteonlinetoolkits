@@ -46,7 +46,7 @@ body{
 	/*RM responsive changes*/
 	width:98%;
 	height:93vh;
-	overflow:scroll;
+	/* overflow:scroll; */
 }
 
 span#title{
@@ -71,7 +71,7 @@ div#dynamic_area{
 	background-color:#fff;
 	/*width:410px; */
 	/*height:520px;	*/
-	overflow:scroll;
+	overflow:auto;
 	border-top-left-radius:7px;
 	/*RM responsive changes*/
 	width: 70%;/*80vw;*/
@@ -286,12 +286,12 @@ div#menu_tabs{
 div.publish label{
 	display:inline-block;
 	/*width:150px;*/
-	margin-left: 10px;
+	margin-left: 20px;
 	padding: 1%;
 }
 
 div.publish input,  div.publish select{
-	margin-left: 10px;
+	margin-left: 20px;
 	padding: 4px;
 
 }
@@ -324,10 +324,26 @@ input[name=sitename] {
 input[name=retouremail], input[name=templatename] {
 	width: 55%;
 }
-#xApi input[type=text] {
-	width: 60%;
-}
-#publish input[type=text] {
-	width: 60%;
+.publish table{
+	width: 90%;
 }
 
+.publish td {
+	width: 55%;
+}
+
+.publish td:first-child {
+	width: 40%;
+}
+
+#xApi input[type=text] {
+	width: 100%;
+}
+#publish input[type=text] {
+	width: 100%;
+}
+
+
+#publish.disabled label, #xApi.disabled label {
+	color: gray;
+}

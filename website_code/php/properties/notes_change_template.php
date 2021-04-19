@@ -32,22 +32,28 @@ require_once("../../../config.php");
 include "../user_library.php";
 
 include "properties_library.php";
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
 
 if(is_numeric($_POST['template_id'])){
 
-    $database_id = database_connect("notes change template database connect success","notes change template database connect failed");
-    $prefix = $xerte_toolkits_site->database_table_prefix;
-    $query = "update {$prefix}templaterights SET notes = ?  WHERE template_id = ?";
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
+        $database_id = database_connect("notes change template database connect success", "notes change template database connect failed");
+        $prefix = $xerte_toolkits_site->database_table_prefix;
+        $query = "update {$prefix}templaterights SET notes = ?  WHERE template_id = ?";
 
-    $params = array($_POST['notes'], $_POST['template_id']);
-    
-    
-    if(db_query($query, $params)){
+        $params = array($_POST['notes'], $_POST['template_id']);
 
-        notes_display($_POST['notes'],true, $_POST['template_id']);
 
-    }else{
-        notes_display($_POST['notes'],false, $_POST['template_id']);
+        if (db_query($query, $params)) {
+
+            notes_display($_POST['notes'], true, $_POST['template_id']);
+
+        } else {
+            notes_display($_POST['notes'], false, $_POST['template_id']);
+        }
     }
-
 }

@@ -2029,6 +2029,7 @@ var EDITOR = (function ($, parent) {
             }
 
         }
+        loLanguage = value;
         setAttributeValue(key, [name], [value]);
     },
 
@@ -3548,7 +3549,7 @@ var EDITOR = (function ($, parent) {
     displayDataType = function (value, options, name, key) {
 		var html;
 
-		var conditionTrigger = (typeof options.conditonTrigger != "undfined" && options.conditionTrigger == "true");
+		var conditionTrigger = (typeof options.conditionTrigger != "undefined" && options.conditionTrigger == "true");
 		switch(options.type.toLowerCase())
 		{
 			case 'checkbox':

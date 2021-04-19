@@ -48,7 +48,7 @@
             $template_id = $id;
             $safe_template_id = (int)$id;
             $query_for_preview_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.template_name as name, td.access_to_whom, td.extra_flags,";
-            $query_for_preview_content .= "td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links";
+            $query_for_preview_content .= "td.tsugi_published, td.tsugi_usetsugikey, td.tsugi_privatekeyonly, td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links";
             $query_for_preview_content .= " from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "logindetails ld";
             $query_for_preview_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=? and (role='creator' || role='co-author')";
 
@@ -62,6 +62,8 @@
             $lti_def->key = $row['name'] . "_" . $id;
             $lti_def->secret = generatePwd(16);
             $lti_def->published = $row["tsugi_published"];
+            $lti_def->tsugi_useglobal = $row['tsugi_usetsugikey'];
+            $lti_def->tsugi_privateonly = $row['tsugi_privatekeyonly'];
             $lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $row['template_id'];
             $lti_def->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $row['template_id'];
             $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $row['template_id'] . "&group=groupname";
@@ -69,9 +71,10 @@
             $lti_def->xapi_endpoint = "";
             $lti_def->xapi_username = "";
             $lti_def->xapi_password = "";
+            $lti_def->dashboard_urls = "";
             $lti_def->xapi_student_id_mode = 0; // e-mail address
             if ($tsugi_installed) {
-                if ($lti_def->published == 1) {
+                if ($lti_def->published == 1 && !$lti_def->tsugi_useglobal) {
                     $PDOX = LTIX::getConnection();
                     $tsugirow = $PDOX->rowDie(
                         "	SELECT l.title, k.key_key, k.secret
@@ -83,6 +86,11 @@
                         $lti_def->secret = $tsugirow["secret"];
                         $lti_def->title = $tsugirow["title"];
                     }
+                }
+                else{
+                    $lti_def->key = "";
+                    $lti_def->secret = "";
+                    $lti_def->title = "";
                 }
             }
             if($lti_def->xapi_enabled == 1)

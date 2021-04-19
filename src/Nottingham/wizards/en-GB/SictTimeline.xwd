@@ -41,26 +41,26 @@
     </SictTimeline>
 
   <!--  <timelinedate menuItem="Item" icon="icPageWhite" max="12" remove="true">
-      <date label="Datum" type="dateField" defaultValue="" />
+      <date label="Date" type="dateField" defaultValue="" />
       <name label="Name" type="TextInput" wysiwyg="true"/>
       <text label="Description" type="TextArea" height="100"/>
 
     </timelinedate> -->
 
     <timeLineText menuItem="Text item" icon="icPageWhite" remove="true">
-      <date label="Datum" type="dateField" defaultValue=""/>
+      <date label="Date" type="dateField" defaultValue=""/>
       <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 
       <name label="Name" type="TextInput" wysiwyg="true"/>
       <text label="Page Text" type="TextArea" height="150"/>
         <TimeLineEndDate type="group" label="End Date" optional="true">
-      		      <endDate label="Datum" type="dateField" defaultValue="" optional="true"/>
+      		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
                   <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
         </TimeLineEndDate>
     </timeLineText>
 
     <timelineimage menuItem="Image item" icon="icPageWhite" max="12" remove="true">
-      <date label="Datum" type="dateField" defaultValue="" />
+      <date label="Date" type="dateField" defaultValue="" />
       <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
       <name label="Name" type="TextInput" wysiwyg="true"/>
       <text label="Page Text" type="TextArea" height="150"/>
@@ -69,29 +69,29 @@
         <tip label="Description" type="TextInput"/>
       </image>
       <TimeLineEndDate type="group" label="End Date" optional="true">
-            		      <endDate label="Datum" type="dateField" defaultValue="" optional="true"/>
+            		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
                         <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
               </TimeLineEndDate>
     </timelineimage>
 
     <timelinevideo menuItem="Video item" icon="icPageWhite" max="12" remove="true">
-      <date label="Datum" type="dateField" defaultValue=""/>
+      <date label="Date" type="dateField" defaultValue=""/>
       <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
       <name label="Page Title" type="TextInput" wysiwyg="true"/>
       <url label="Video" type="Media"/>
       <TimeLineEndDate type="group" label="End Date" optional="true">
-            		      <endDate label="Datum" type="dateField" defaultValue="" optional="true"/>
+            		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
                         <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
               </TimeLineEndDate>
     </timelinevideo>
 
     <timeLineAudio menuItem="Audio item" icon="icPageWhite" max="12" remove="true">
-          <date label="Datum" type="dateField" defaultValue=""/>
+          <date label="Date" type="dateField" defaultValue=""/>
           <time label="Start time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
           <name label="Page Title" type="TextInput" wysiwyg="true"/>
           <url label="Audio" type="Media"/>
           <TimeLineEndDate type="group" label="End Date" optional="true">
-                		      <endDate label="Datum" type="dateField" defaultValue="" optional="true"/>
+                		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
                             <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
                   </TimeLineEndDate>
     </timeLineAudio>

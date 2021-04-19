@@ -113,17 +113,25 @@ function folder_rename_stateChanged(){
 	 */
 
 function folder_rss_template(){
-
+	/*
 	if(setup_ajax()!=false){
     
-		var url="folder_rss_template.php";
+		var url="folder_rss.php";
 
 		folders_ajax_send_prepare(url);
 
 		xmlHttp.send('folder_id=' + window.name); 
 
-	}
-
+	 }
+	 */
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/folderproperties/folder_rss_template.php",
+		 data: {folder_id: window.name},
+	 })
+	 .done(function(response){
+		 $('#dynamic_area').html(response);
+	 })
 }
 
  /**
@@ -135,17 +143,14 @@ function folder_rss_template(){
 	 */
 
 function folderproperties_template(){
-
-	if(setup_ajax()!=false){
-    
-		var url="folderproperties_template.php";
-
-		folders_ajax_send_prepare(url);
-
-		xmlHttp.send('folder_id=' + String(window.name).substr(0,String(window.name).indexOf("_"))); 
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/folderproperties/folderproperties_template.php",
+		 data: {folder_id: String(window.name).substr(0,String(window.name).indexOf("_"))},
+	 })
+	 .done(function(response){
+		 $('#dynamic_area').html(response);
+	 })
 }
 
  /**
@@ -159,15 +164,14 @@ function folderproperties_template(){
 
 function folder_content_template(){
 
-	if(setup_ajax()!=false){
-    
-		var url="folder_content_template.php";
-
-		folders_ajax_send_prepare(url);
-
-		xmlHttp.send('folder_id=' + String(window.name).substr(0,String(window.name).indexOf("_"))); 
-
-	}
+	$.ajax({
+		 type: "POST",
+		 url: "website_code/php/folderproperties/folder_content_template.php",
+		 data: {folder_id: String(window.name).substr(0,String(window.name).indexOf("_"))},
+	})
+	.done(function(response){
+		$('#dynamic_area').html(response);
+	})
 
 }
 
@@ -181,19 +185,17 @@ function folder_content_template(){
 	 */
 
 
-function folder_name_template_a(){
+function folder_name_template_a() {
 
-	if(setup_ajax()!=false){
-    
-		var url="folder_name_template.php";
-
-		folders_ajax_send_prepare(url);
-
-		xmlHttp.send('folder_id=' + window.name); 
-
-	}
-
-}
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/folderproperties/folder_name_template.php",
+		 data: {folder_id: window.name},
+	 })
+	 .done(function (response) {
+		 $('#dynamic_area').html(response);
+	 })
+ }
 
  	/**
 	 * 
@@ -208,26 +210,34 @@ function folder_name_template_a(){
 
 function rename_folder(folder_id,form_tag){
 
-	new_name = document.getElementById(form_tag).childNodes[0].value;
+	var new_name = $('#'+ form_tag + ' input').val();
 
 	if(is_ok_name(new_name)){
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/folderproperties/rename_folder_template.php",
+			data: {
+				folder_id: folder_id,
+				folder_name: new_name
+			},
+		})
+		.done(function (response) {
 
-		if(setup_ajax()!=false){
-    
-			var url="rename_folder_template.php";
+			// the response contains the new html and the new file name, so split them
+			var array_response = response.split("~*~");
 
-			xmlHttp.open("post","website_code/php/folderproperties/" + url,true);
-			xmlHttp.onreadystatechange=folder_rename_stateChanged;
-			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			// set the html
+			$('#dynamic_area').html(array_response[0]);
 
-			xmlHttp.send('folder_id=' + folder_id +'&folder_name=' + new_name); 
-
-		}
-
+			// set the file name in the file_area
+			if (typeof window_reference === "undefined") {
+				window.opener.refresh_workspace();
+			} else {
+				window_reference.refresh_workspace();
+			}
+		})
 	}else{
-
 		alert(NAME_FAIL_FOLDER_PROPERTIES);
-
 	}
 
 }
@@ -244,15 +254,14 @@ function rename_folder(folder_id,form_tag){
 
 function sharing_status_folder_template(){
 
-	if(setup_ajax()!=false){
-
-		var url="sharing_status_folder_template.php";
-
-		folders_ajax_send_prepare(url);
-
-		xmlHttp.send('folder_id=' + window.name);
-
-	}
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/folderproperties/sharing_status_folder.php",
+		data: {folder_id: window.name},
+	})
+	.done(function(response){
+		$('#dynamic_area').html(response);
+	})
 }
 
 /**
@@ -275,19 +284,19 @@ function name_select_folder_template(){
 		}
 
 		if(is_ok_user(search_string)){
-
-			var url="name_select_folder_template.php";
-
-			xmlHttp.open("post","website_code/php/folderproperties/" + url,true);
-			xmlHttp.onreadystatechange=name_share_stateChanged;
-			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-			xmlHttp.send('search_string=' + search_string + '&folder_id=' + window.name);
-
+			$.ajax({
+				type: "POST",
+				url: "website_code/php/folderproperties/name_select_folder.php",
+				data: {
+					search_string : search_string,
+					folder_id: window.name
+				},
+			})
+			.done(function(response){
+				$('#area2').html(response);
+			});
 		}else{
-
-			document.getElementById('area2').innerHTML="<p>" + SEARCH_FAIL + "</p>";
-
+			$('#area2').html("<p>" + SEARCH_FAIL + "</p>");
 		}
 
 	}
@@ -317,19 +326,25 @@ function share_stateChanged(){
  * @author Patrick Lockley
  */
 
-function share_this_folder(folder, user){
+function share_this_folder(folder, id, group=false){
 
 	if(setup_ajax()!=false){
-		var url="share_this_folder_template.php";
-
 		var role = document.querySelector('input[name="role"]:checked').value;
 
-		xmlHttp.open("post","website_code/php/folderproperties/" + url,true);
-		xmlHttp.onreadystatechange=share_stateChanged;
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-		xmlHttp.send('folder_id=' + folder + '&user_id=' + user + '&role=' + role);
-
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/folderproperties/share_this_folder.php",
+			data: {
+				folder_id: window.name,
+				id: id,
+				role: role,
+				group: group,
+			},
+		})
+		.done(function(response){
+			$('#area3').html(response);
+			alert( $('#area3').text());
+		});
 	}
 
 }

@@ -30,6 +30,12 @@
 require_once('../../../config.php');
 include '../folder_library.php';
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
+
 if (isset($_POST['folder_id']))
 {
     move_folder($_POST['folder_id'], $_POST['destination']);

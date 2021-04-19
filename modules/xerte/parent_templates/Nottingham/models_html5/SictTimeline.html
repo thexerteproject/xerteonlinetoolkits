@@ -60,9 +60,6 @@
 					var startDate = element.getAttribute("date");
 					var endDate = element.getAttribute("endDate");
 
-
-
-
 					if(startDate === "Choose Date" || startDate === null || startDate === undefined){
 						var now     = new Date();
 						var year    = now.getFullYear();
@@ -176,8 +173,7 @@
 			setTimeout(function (){
 
 				$('.tl-slidenav-next').click(function (){
-					debugger
-					//NIEUW------------------------------------
+
 					counter++
 					var imgPath = items.eq(counter).find('img')[0]
 					if(imgPath !== undefined){
@@ -214,6 +210,37 @@
 					SictTimeline.resizeImg();
 
 				})
+				$('.tl-timemarker-content').mouseup(function (){
+					setTimeout(function() {
+						var itemBlocks = $('.tl-timemarker')
+						debugger
+
+						for (var i = 0; i < itemBlocks.length; i++) {
+							var className = itemBlocks.eq(i).attr('class')
+							if (className.includes('tl-timemarker-active')) {
+								i++
+								counter = i
+								break
+							} else {
+								counter = 0
+							}
+						}
+						var imgPath = items.eq(counter).find('img')[0]
+						if(imgPath !== undefined){
+							imgPath = imgPath.src
+						}
+						var youtube = false
+						if(imgPath!== undefined && imgPath!== null){
+							youtube = imgPath.includes("youtube")
+						}
+						$('.tl-media-content').find('.lightboxWrapper').unwrap();
+						if(imgPath !== "" && imgPath !== undefined && !youtube){
+							$('.tl-media-content').wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
+						}
+
+						SictTimeline.resizeImg();
+					},500)
+				})
 				 SictTimeline.resizeImg();
 				$('.spinnerHolder').remove();
 				$('.tl-media-content').wrap('<a data-featherlight="image" href="' + img[0].src + '" class="lightboxWrapper">');
@@ -236,6 +263,10 @@
 
 		}
 
+		this.leavePage = function() {
+			debugger;
+			$('.spinnerHolder').remove();
+		}
 
 
 		this.init = function() {
@@ -270,47 +301,10 @@
 		}
 
 		this.resizeImg = function() {
-			debugger
+
 
 			if(x_browserInfo.mobile === true){
-				debugger
-				// $(".tl-timenav").css("top", "")
-				// $("#timeline-embed").css("height", "")
-				// //$(".tl-storyslider").css("height","")
-				// $(".tl-media-content-container").css("height", "")
-				// $(".tl-media").css("height", "")
-				// $(".tl-media-content").css("height", "")
-				// $('.tl-caption').css("marginLeft", "")
-				// $('.tl-caption').css("width", "")
-				// // items.eq(counter).find('img').css({
-				// // 	"max-height": "",
-				// // 	"max-width": ""
-				// // });
-				// $('.tl-slide-content').css({
-				// 	"display": "",
-				// 	"flex-direction" : ''
-				// })
-				//
-				// items.eq(counter).find('iframe').css({
-				// 	"max-height": ""
-				// })
-				//
-				// $(".tl-text").css({
-				// 	"display": "",
-				// 	"align-items": ""
-				// })
-				// $('.tl-menubar').css("top", "")
-				//
-				// $('.tl-headline-date').css({
-				// 	"padding-left" : "",
-				// 	"padding-top" : "",
-				// 	"padding-bottom" : ""
-				// })
-				//
-				// $(".tl-slidenav-title").html("")
-				// $(".tl-slidenav-description").html("")
-				// $('.tl-slidenav-next').css('top', "")
-				// $('.tl-slidenav-previous').css('top', "")
+
 			}else{
 				var imgMaxW, imgMaxH;
 				var pageHeight = $x_pageHolder.height()
@@ -367,8 +361,6 @@
 				imgH = imgH.toString()
 
 
-				debugger
-
 				var className = items.eq(counter).attr('class')
 
 				var imgPath = items.eq(counter).find('img')[0]
@@ -387,10 +379,15 @@
 						"max-height": normal +"px",
 						"max-width": imgH +"px"
 					});
-
+					debugger
 					var margT = items.eq(counter).find('img').css('margin-left')
+					var margB = items.eq(counter).find('img').css('marginBottom')
+					margB = parseInt( margB.slice(0,  margB.length - 2));
+					margB *= 0.66
+					margB.toString()
 					$('.tl-caption').css("marginLeft", margT)
 					$('.tl-caption').css("width", "100px")
+					$('.tl-caption').css("margin-top", "-" + margB+"px")
 
 				}
 
@@ -408,7 +405,8 @@
 					$(".tl-media-item").css("max-height", normal+"px")
 					$(".tl-text").css({
 						"display": "flex",
-						"align-items": "center"
+						"align-items": "center",
+						"padding-left": "4%"
 					})
 				}else{
 					$('.tl-slide-content').css({
@@ -422,7 +420,8 @@
 
 					$(".tl-text").css({
 						"display": "",
-						"align-items": ""
+						"align-items": "",
+						"padding-left": "4%"
 					})
 				}
 
@@ -440,7 +439,7 @@
 
 				$(".tl-slidenav-title").html("")
 				$(".tl-slidenav-description").html("")
-				debugger
+
 
 				var panel = $('#timeline-embed').css('height')
 				panel = parseInt( panel.slice(0,  panel.length - 2))/2;

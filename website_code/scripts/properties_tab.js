@@ -58,7 +58,8 @@ function properties_stateChanged(){
 		if(xmlHttp.responseText!=""){
 
 			document.getElementById('dynamic_area').innerHTML = xmlHttp.responseText;
-
+			if (typeof "makeeditor" == "function")
+				makeeditor();
 		}
 	}
 }
@@ -150,6 +151,28 @@ function share_this_stateChanged(){
 		}
 	}
 }
+
+/**
+ *
+ * Function share this state changed
+ * This function handles the response from making a share request for groups
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function group_share_this_stateChanged(){
+
+	if (xmlHttp.readyState==4){
+
+		if(xmlHttp.responseText!=""){
+
+			document.getElementById('area2').innerHTML = xmlHttp.responseText;
+			group_sharing_status_template();
+
+		}
+	}
+}
+
 
  /**
 	 *
@@ -278,6 +301,39 @@ function delete_sharing_template(template_id,user_id,who_deleted_flag){
 	}
 
 }
+
+
+/**
+ *
+ * Function delete sharing template
+ * This function handles the deletion of a share by a user
+ * @param string template_id = window type to open
+ * @param string group_id = group we are removing
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function group_delete_sharing_template(template_id,group_id){
+
+	var answer = confirm(SHARING_CONFIRM);
+
+	if(answer){
+		if(setup_ajax()!=false){
+
+			var url="group_remove_sharing_template.php";
+
+			xmlHttp.open("post",properties_ajax_php_path + url,true);
+			xmlHttp.onreadystatechange=group_sharing_status_template;
+			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			xmlHttp.send('template_id=' + template_id +'&group_id=' + group_id );
+
+		}
+
+	}
+
+}
+
 
      /**
 	 *
@@ -1262,6 +1318,57 @@ function sharing_status_template(){
 
 }
 
+	/**
+	 *
+	 * Function group sharing status template
+	 * This function handles the display of the current sharing status for groups
+	 * @version 1.0
+	 * @author Noud Liefrink
+	 */
+
+function group_sharing_status_template(){
+
+
+	if(setup_ajax()!=false){
+
+		var url="group_sharing_status_template.php";
+
+		properties_ajax_send_prepare(url);
+
+		xmlHttp.send('template_id=' + window.name);
+
+	}
+
+}
+
+	/**
+	 *
+	 * Function share this template with a group
+	 * This function handles the sharing of a template of a group
+	 * @param string template = id of the template
+	 * @version 1.0
+	 * @author Noud Liefrink
+	 */
+
+function group_share_this_template(template){
+
+	var group_id = $('#group').val();
+
+	if(setup_ajax()!=false){
+
+		var url="group_share_this_template.php";
+
+		xmlHttp.open("post",properties_ajax_php_path + url,true);
+		xmlHttp.onreadystatechange=group_share_this_stateChanged;
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		xmlHttp.send('template_id=' + template + '&group_id=' + group_id);
+
+	}
+
+}
+
+
      /**
 	 *
 	 * Function export template
@@ -1348,6 +1455,33 @@ function set_sharing_rights_template(rights, template, user){
 	}
 
 }
+
+	/**
+	 *
+	 * Function set sharing rights for groups
+	 * @param string rights = the rights to give
+	 * @param string template - the template
+	 * @param string group - the group id
+	 * @version 1.0
+	 * @author Noud Liefrink
+	 */
+
+function group_set_sharing_rights_template(rights, template, group){
+
+	if(setup_ajax()!=false){
+
+		var url="group_set_sharing_rights_template.php";
+
+		xmlHttp.open("post",properties_ajax_php_path + url,true);
+		xmlHttp.onreadystatechange=group_sharing_status_template;
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		xmlHttp.send('rights=' + rights + '&template_id=' + template + '&group_id=' + group);
+
+	}
+
+}
+
 
 
 var last_selected=null;
@@ -1443,6 +1577,8 @@ function lti_update(id)
 
         xmlHttp.send('template_id=' + id
 			+ '&tsugi_published=' + $("#pubChk").prop('checked')
+			+ '&tsugi_useglobal=' + $("[name=tsugi_useglobal]").prop('checked')
+			+ '&tsugi_privateonly=' + $("#tsugi_useprivateonly").prop('checked')
 			+ '&tsugi_title=' + $("[name=tsugi_title]").val()
 			+ '&tsugi_key=' + $("[name=tsugi_key]").val()
             + '&tsugi_secret=' + $("[name=tsugi_secret]").val()
@@ -1470,6 +1606,71 @@ function xapi_toggle_useglobal(lti_def_str)
         $("#tsugi_xapi_endpoint").val(lti_def['xapi_endpoint']).prop('disabled', false);
         $("#tsugi_xapi_username").val(lti_def['xapi_username']).prop('disabled', false);
         $("#tsugi_xapi_password").val(lti_def['xapi_password']).prop('disabled', false);
+
+	}
+}
+
+function tsugi_toggle_tsugi_publish(lti_def_str)
+{
+	var published = $("#pubChk").prop('checked');
+	var useglobal = $("#tsugi_useglobal").prop('checked');
+	var lti_def = JSON.parse(lti_def_str);
+	if (published) {
+		$("#publish").removeClass("disabled");
+		$("#publish input").prop("disabled", false);
+		if (useglobal) {
+			$("#tsugi_useprivateonly").prop('disabled', true);
+			$("label[for=tsugi_useprivateonly]").addClass("disabled");
+			$("#tsugi_title").val("").prop('disabled', true);
+			$("#tsugi_key").val("").prop('disabled', true);
+			$("#tsugi_secret").val("").prop('disabled', true);
+		}
+	}
+	else {
+		$("#publish").addClass("disabled");
+		$("#publish input").prop("disabled", true);
+	}
+}
+
+function tsugi_toggle_usexapi(lti_def_str)
+{
+	var xapi = $("#xChk").prop('checked');
+	var useglobal = $("#tsugi_xapi_useglobal").prop('checked');
+	var lti_def = JSON.parse(lti_def_str);
+
+	if (xapi) {
+		$("#xApi").removeClass("disabled");
+		$("#xApi input, #xApi select").prop("disabled", false);
+		if (useglobal) {
+			$("#tsugi_xapi_endpoint").val("").prop('disabled', true);
+			$("#tsugi_xapi_username").val("").prop('disabled', true);
+			$("#tsugi_xapi_password").val("").prop('disabled', true);
+		}
+	}
+	else {
+		$("#xApi").addClass("disabled");
+		$("#xApi input, #xApi select").prop("disabled", true);
+	}
+}
+
+function tsugi_toggle_useglobal(lti_def_str)
+{
+	var useglobal = $("#tsugi_useglobal").prop('checked');
+	var lti_def = JSON.parse(lti_def_str);
+	$("#tsugi_useglobal").prop('checked', useglobal);
+	if (useglobal) {
+		$("#tsugi_useprivateonly").prop('disabled', true);
+		$("label[for=tsugi_useprivateonly]").addClass("disabled");
+		$("#tsugi_title").val("").prop('disabled', true);
+		$("#tsugi_key").val("").prop('disabled', true);
+		$("#tsugi_secret").val("").prop('disabled', true);
+	}
+	else {
+		$("#tsugi_useprivateonly").prop('disabled', false);
+		$("label[for=tsugi_useprivateonly]").removeClass("disabled");
+		$("#tsugi_title").val(lti_def['title']).prop('disabled', false);
+		$("#tsugi_key").val(lti_def['key']).prop('disabled', false);
+		$("#tsugi_secret").val(lti_def['secret']).prop('disabled', false);
 
 	}
 }

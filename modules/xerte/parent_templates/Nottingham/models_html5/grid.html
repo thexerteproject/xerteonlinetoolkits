@@ -843,7 +843,12 @@
 		}
 		XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
 
-		XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
+		var label = x_currentPageXML.getAttribute("name");
+		if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+		{
+			label = x_currentPageXML.getAttribute("trackinglabel");
+		}
+		XTEnterInteraction(x_currentPage, 0, 'match', label, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 		/*
 		for(var i = 0; i < correctOptions.length; i++)
 		{

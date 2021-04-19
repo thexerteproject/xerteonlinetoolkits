@@ -4,7 +4,6 @@
     border-collapse: collapse;
     font-family: "Courier New", Courier, monospace;
     margin-left: 0;
-    margin-right: 30px;
     clear: both;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -136,8 +135,9 @@
      margin-right: 20px;
      text-align: center;
      display: flex;
-     align-items: center;
+     /* align-items: center; */
      justify-content: center;
+     margin-top: 10px;
 
  }
 
@@ -175,3 +175,6 @@
      text-align: center;
 
  }
+#pageContents input{
+    padding: 0!important;
+}

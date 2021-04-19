@@ -237,6 +237,10 @@
 
 	define("PROPERTIES_LIBRARY_TSUGI_PUBLISH", "Publish project through Tsugi as an LTI1 tool");
 
+    define("PROPERTIES_LIBRARY_TSUGI_USEGLOBAL", "Use globally configured keys and secrets (including LTI 1.3) ");
+
+    define("PROPERTIES_LIBRARY_TSUGI_USEPRIVATEONLY", "Allow only private key/secret configured below ");
+
 	define("PROPERTIES_LIBRARY_TSUGI_NAME", "Name:");
 
     define("PROPERTIES_LIBRARY_TSUGI_KEY", "Key:");

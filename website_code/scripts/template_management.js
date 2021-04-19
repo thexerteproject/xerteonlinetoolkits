@@ -268,6 +268,8 @@ function edit_window(admin, edit, location) {
                             window: NewEditWindow
                         });
 
+                        return NewEditWindow;
+
                     } else {
                         window_open.focus();
                     }
@@ -634,14 +636,24 @@ function properties_window(admin) {
 
 
 function refresh_workspace() {
-    if (setup_ajax() != false) {
-        var url = "website_code/php/templates/get_templates_sorted.php";
-
-        xmlHttp.open("post", url, true);
-        xmlHttp.onreadystatechange = refreshworkspace_stateChanged;
-        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlHttp.send('sort_type=' + document.sorting.type.value);
-    }
+    // if (setup_ajax() != false) {
+    //     var url = "website_code/php/templates/get_templates_sorted.php";
+    //
+    //     xmlHttp.open("post", url, true);
+    //     xmlHttp.onreadystatechange = refreshworkspace_stateChanged;
+    //     xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    //     xmlHttp.send('sort_type=' + document.sorting.type.value);
+    // }
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/templates/get_templates_sorted.php",
+        data: {sort_type: document.sorting.type.value},
+        dataType: "json",
+        success: function(data) {
+            workspace = data;
+            init_workspace();
+        }
+    });
 }
 
 /**
@@ -668,14 +680,69 @@ function refreshworkspace_stateChanged() {
 }
 
 function getProjectInformation(user_id, template_id) {
-    if (setup_ajax() != false) {
-        var url = "website_code/php/templates/get_template_info.php";
+    // if (setup_ajax() != false) {
+    //     var url = "website_code/php/templates/get_template_info.php";
+    //
+    //     xmlHttp.open("post", url, true);
+    //     xmlHttp.onreadystatechange = getProjectInformation_stateChanged;
+    //     xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    //     xmlHttp.send('user_id=' + user_id + '&template_id=' + template_id);
+    // }
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/templates/get_template_info.php",
+        data: {user_id: user_id, template_id: template_id},
+        dataType: "json",
+        success: function(info) {
+            document.getElementById('project_information').innerHTML = info.properties;
+            if (info.role == 'read-only') {
+                // disable edit button.
+                var editbtn = document.getElementById("edit");
+                var propertiesbtn = document.getElementById("properties");
+                var deletebtn = document.getElementById("delete");
+                var publishbtn = document.getElementById("publish");
 
-        xmlHttp.open("post", url, true);
-        xmlHttp.onreadystatechange = getProjectInformation_stateChanged;
-        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlHttp.send('user_id=' + user_id + '&template_id=' + template_id);
-    }
+                editbtn.disabled = "disabled";
+                editbtn.className = "xerte_button_c_no_width disabled";
+                editbtn.onclick = "";
+
+                publishbtn.disabled = "disabled";
+                publishbtn.className = "xerte_button_c_no_width disabled";
+                publishbtn.onclick = "";
+
+                propertiesbtn.disabled = "disabled";
+                propertiesbtn.className = "xerte_button_c_no_width disabled";
+                propertiesbtn.onclick = "";
+
+                deletebtn.disabled = "disabled";
+                deletebtn.className = "xerte_button_c_no_width disabled";
+                deletebtn.onclick = "";
+            }
+            if (info.fetch_statistics) {
+                url = site_url + info.template_id;
+                q = {};
+
+                if (info.lrs.site_allowed_urls != null && info.lrs.site_allowed_urls != undefined && info.lrs.site_allowed_urls != "") {
+                    q['activities'] = [url].concat(info.lrs.lrsurls.split(",")).concat(info.lrs.site_allowed_urls.split(",").map(function(url) {return url + info.template_id})).filter(function(url) {return  url != ""});
+                }
+                q['activity'] = url;
+
+                q['verb'] = "http://adlnet.gov/expapi/verbs/launched";
+                q['related_activities'] = false;
+
+                var today = new Date();
+                var start = new Date(today.getTime() - info.dashboard.default_period * 24 * 60 * 60 * 1000);
+                var startstartofday = new Date(start.getFullYear(), start.getMonth(), start.getDate(), 0, 0, 0, 0);
+                var todayendofday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 0);
+                q['since'] = startstartofday.toISOString();
+                x_Dashboard = new xAPIDashboard(info);
+                x_Dashboard.getStatements(q, false, function() {
+                    $("#graph_" + info.template_id).html("");
+                    x_Dashboard.drawActivityChart("", $("#graph_" + info.template_id), startstartofday, todayendofday);
+                });
+            }
+        }
+    });
 }
 
 function getProjectInformation_stateChanged() {
@@ -1122,11 +1189,48 @@ function remove_this() {
         alert(WORKSPACE_DELETE);
     } else {
 
-        if (ids.length != 1) {
-            var response = confirm(DELETE_PROMPT);
-        } else {
-            var response = confirm(workspace.nodes[ids[0]].text + "\n\n" + DELETE_PROMPT);
+        // Check publish attributes, warn if LO is not private and/or published through LTI
+        var published = false;
+        var shared = false;
+        for (var i = 0; i < ids.length; i++)
+        {
+            var node = workspace.nodes[ids[i]];
+            if (node.published)
+                published = true;
+            if (node.shared)
+                shared = true;
+            if (published && shared)
+                break;
         }
+        var prompt = "";
+        if (ids.length ==1)
+        {
+            prompt = workspace.nodes[ids[0]].text.replace('_', ' ') + "\n\n";
+        }
+        if (published)
+        {
+            if (ids.length != 1) {
+                prompt += SOME_ITEMS_PUBLISHED_PROMPT + "\n\n";
+            } else {
+                prompt += ITEM_PUBLISHED_PROMPT + "\n\n";
+            }
+        }
+        if (shared)
+        {
+            if (ids.length != 1) {
+                prompt += SOME_ITEMS_SHARED_PROMPT + "\n\n";
+            } else {
+                prompt += ITEM_SHARED_PROMPT + "\n\n";
+            }
+        }
+        if (ids.length != 1)
+        {
+            prompt +=  DELETE_MULTIPLE_PROMPT;
+        }
+        else {
+            prompt += DELETE_PROMPT;
+        }
+        var response = confirm(prompt);
 
         if (response) {
             for (var i = 0; i < ids.length; i++) {

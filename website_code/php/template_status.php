@@ -184,10 +184,17 @@ function has_template_multiple_editors($template_id){
 
 function has_rights_to_this_template($template_id, $user_id){
     global $xerte_toolkits_site;
+    //individual rights:
     $query = "select * from {$xerte_toolkits_site->database_table_prefix}templaterights where user_id=? AND template_id = ?";
     $result = db_query_one($query, array($user_id, $template_id));
 
-    if(!empty($result)) {
+    //group rights:
+    $query = "select role from {$xerte_toolkits_site->database_table_prefix}template_group_rights where template_id = ? AND " .
+             "group_id IN (select group_id from {$xerte_toolkits_site->database_table_prefix}user_group_members where login_id=?)";
+    $groupresult = db_query($query, array($template_id, $user_id));
+
+
+    if(!empty($result) || !empty($groupresult)) {
         return true;
     }
     return false;
@@ -196,10 +203,53 @@ function has_rights_to_this_template($template_id, $user_id){
 function get_user_access_rights($template_id){
 
     global $xerte_toolkits_site;
+    $user_id = $_SESSION['toolkits_logon_id'];
 
-    $row = db_query_one("select role from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id=? AND user_id=?", array($template_id, $_SESSION['toolkits_logon_id']));
+    $row = db_query_one("select role from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id=? AND user_id=?", array($template_id, $user_id));
+    $groupresult = get_user_group_access_rights($user_id, $template_id);
 
-    return $row['role'];
+    $roles = array($row['role'], $groupresult);
+    usort($roles, "compare_roles");
+    return $roles[0];
+}
+
+function get_user_group_access_rights($user_id, $template_id){
+    global $xerte_toolkits_site;
+    $query = $query = "select role from {$xerte_toolkits_site->database_table_prefix}template_group_rights where template_id = ? AND " .
+        "group_id IN (select group_id from {$xerte_toolkits_site->database_table_prefix}user_group_members where login_id=?)";
+    $groupresult = db_query($query, array($template_id, $user_id));
+    $roles = array();
+    foreach ($groupresult as $result){
+        array_push($roles, $result['role']);
+    }
+    if (empty($roles)){
+        return "";
+    }
+    usort($roles, "compare_roles");
+    return $roles[0];
+}
+
+// custom comparator for roles (high to low = creator, co-author, editor, read-only)
+function compare_roles($role1, $role2){
+    $a = compare_roles_helper($role1);
+    $b = compare_roles_helper($role2);
+    if ($a == $b){
+        return 0;
+    }
+    return ($a > $b) ? -1 : 1;
+}
+
+function compare_roles_helper($role){
+    if ($role == "creator"){
+        return 3;
+    }elseif ($role == "co-author"){
+        return 2;
+    }elseif ($role == "editor"){
+        return 1;
+    }elseif ($role == "read-only"){
+        return 0;
+    }
+    return -1;
 }
 
 /**
@@ -222,8 +272,12 @@ function is_user_an_editor($template_id, $user_id){
     $params = array($user_id, $template_id );
 
     $row = db_query_one($query, $params);
+    //check for group rights and use highest role
+    $groupright = get_user_group_access_rights($user_id, $template_id);
+    $roles = array($row['role'], $groupright);
+    usort($roles, "compare_roles");
 
-    if(($row['role']=="creator")||($row['role']=="co-author")||($row['role']=="editor")){
+    if(($roles[0]=="creator")||($roles[0]=="co-author")||($roles[0]=="editor")){
 
         return true;
 
@@ -313,9 +367,14 @@ function is_user_creator_or_coauthor($template_id){
 
     global $xerte_toolkits_site;
 
-    $row = db_query_one("select role from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id=? AND user_id=?", array($template_id, $_SESSION['toolkits_logon_id']));
+    $user_id = $_SESSION['toolkits_logon_id'];
+    $row = db_query_one("select role from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id=? AND user_id=?", array($template_id, $user_id));
+    //check for group rights and use highest role
+    $groupright = get_user_group_access_rights($user_id, $template_id);
+    $roles = array($row['role'], $groupright);
+    usort($roles, "compare_roles");
 
-    if($row['role']=="creator" || $row['role']=="co-author"){
+    if($roles[0]=="creator" || $roles[0]=="co-author"){
         return true;
     }else{
         return false;
