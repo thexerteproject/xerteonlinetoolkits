@@ -49,9 +49,11 @@ optional: pauseMedia*
 						var size = options.attrib.hsSize;
 						$showHs = $('<div class="Hs x_noLightBox showHotspot"/>').addClass(options.attrib.icon).appendTo($showHolder);
 						$showHs.css({
-							"padding" : size * 0.1,
-							"border-radius" : size / 2 + 1,
-							"font-size" : size * 0.8,
+							"height"  : size * 0.8,
+							"width"   : size * 0.8,
+							"padding" : size * 0.1 + "%",
+							"border-radius" : size / 2 + 1 + "%",
+							"font-size" : size * 0.8 + "%",
 							"background-color": options.attrib.colour1,
 							"color": options.attrib.colour2,
 						}).data({
@@ -81,11 +83,11 @@ optional: pauseMedia*
 							var fs = size * 0.4 <= 12 ? 12 : size * 0.4 > 32 ? 32 : size * 0.4;
 							$showLbl.css({
 								"padding": 5,
-								"padding-left": size * 0.5 + 3,
+								"padding-left": size * 0.55 + 5,
 								"left": size * 0.5,
 								"top": size * 0.5,
 								"font-size": fs
-							})
+							});
 						}
 						else if(options.attrib.tooltip == "tooltip"){
 							$showLbl.removeClass("showLabel").addClass("tooltip").appendTo($showHolder).hide();
@@ -93,7 +95,9 @@ optional: pauseMedia*
 							$showHs.hover(function(){
 								$showLbl.css({
 									"left": $showLbl.outerWidth()  * -0.5 + size * 0.5,
-									"top" : $showLbl.outerHeight() * -1
+									"top" : $showLbl.outerHeight() * -1,
+									'box-shadow': 'none',
+									"overflow" : 'hidden'
 								}).show();
 							}, function() {
 								$showLbl.css({
@@ -298,6 +302,7 @@ optional: pauseMedia*
 						"left": 0,
 						"padding": 0
 					}).hide();
+					$target.hide();
 				}
 
 				if (!options.child == true) {

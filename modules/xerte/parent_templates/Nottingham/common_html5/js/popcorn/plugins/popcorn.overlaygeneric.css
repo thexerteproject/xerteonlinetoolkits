@@ -27,6 +27,7 @@
 /* OPTIONAL ELEMENT BUTTON */
 .showHotspot { 
     position      : absolute;
+    display       : table-cell;
     height        : auto;
     width         : auto;
     float         : left;
@@ -56,6 +57,8 @@
     position: absolute;
     border-radius: 3px;
     background-color:rgba(0,0,0,0.7);
+    border-color: rgba(0,0,0,0.7);
+    margin: 0%;
     color:#EEEEEE;
     text-align: center;
     padding: 5px 10px;

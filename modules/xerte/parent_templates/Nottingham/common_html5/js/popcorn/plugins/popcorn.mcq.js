@@ -425,6 +425,8 @@ optional: feedback page synch play enable
 						var size = options.attrib.hsSize;
 						$showHs = $('<div class="Hs x_noLightBox showHotspot"/>').addClass(options.attrib.icon).appendTo($showHolder);
 						$showHs.css({
+							"height"  : size * 0.8,
+							"width"   : size * 0.8,
 							"padding" : size * 0.1,
 							"border-radius" : size / 2 + 1,
 							"font-size" : size * 0.8,
@@ -449,14 +451,14 @@ optional: feedback page synch play enable
 								})
 						});
 
-						var w = 0.5 * (size - $showHs.outerWidth(true));
-						var h = 0.2 * (size - $showHs.outerHeight(true));						
-						$showHs.css({
-							"padding-top"   : size * 0.2,
-							"padding-bottom": h,
-							"padding-left"  : w,
-							"padding-right" : w
-						})
+						// var w = 0.5 * (size - $showHs.outerWidth(true));
+						// var h = 0.2 * (size - $showHs.outerHeight(true));						
+						// $showHs.css({
+						// 	"padding-top"   : size * 0.2,
+						// 	"padding-bottom": h,
+						// 	"padding-left"  : w,
+						// 	"padding-right" : w
+						// })
 							
 						var $showLbl = $("<div class='showLabel panel'>" + options.name + "</div>");
 
@@ -466,11 +468,11 @@ optional: feedback page synch play enable
 							var fs = size * 0.4 <= 12 ? 12 : size * 0.4 > 32 ? 32 : size * 0.4;
 							$showLbl.css({
 								"padding": 5,
-								"padding-left": size * 0.7 + 7,
-								"left": size * 0.6,
+								"padding-left": size * 0.55 + 5,
+								"left": size * 0.5,
 								"top": size * 0.5,
 								"font-size": fs
-							})
+							});
 						}
 						else if(options.attrib.tooltip == "tooltip"){
 							$showLbl.removeClass("showLabel").addClass("tooltip").appendTo($showHolder).hide();
@@ -479,7 +481,9 @@ optional: feedback page synch play enable
 							(function(){
 								$showLbl.css({
 									"left": $showLbl.outerWidth()  * -0.5 + size * 0.5,
-									"top" : $showLbl.outerHeight() * -1
+									"top" : $showLbl.outerHeight() * -1,
+									'box-shadow': 'none',
+									"overflow" : 'hidden'
 								}).show();
 							}, function() {
 								$showLbl.css({
