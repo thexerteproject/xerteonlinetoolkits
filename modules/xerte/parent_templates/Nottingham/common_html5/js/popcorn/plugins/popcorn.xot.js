@@ -51,9 +51,9 @@ optional: pauseMedia*
 						$showHs.css({
 							"height"  : size * 0.8,
 							"width"   : size * 0.8,
-							"padding" : size * 0.1 + "%",
-							"border-radius" : size / 2 + 1 + "%",
-							"font-size" : size * 0.8 + "%",
+							"padding" : size * 0.1,
+							"border-radius" : size / 2 + 1,
+							"font-size" : size * 0.8,
 							"background-color": options.attrib.colour1,
 							"color": options.attrib.colour2,
 						}).data({
@@ -261,6 +261,15 @@ optional: pauseMedia*
 				}
 				
 				if (options.overlayPan) {
+					// if (options.optional == undefined || options.optional === "false")
+					// {
+					// 	$target.parent().addClass("qWindow");
+					// }
+					// else {
+					// 	$target.parent().css({
+					// 		"padding": 0
+					// 	})
+					// }
 					var h = $target.parent().parent().height() - 20;
 					var hs = h - 2 * $target.parent().css("padding").replace(/[^-\d\.]/g, '');
 					var w = $target.parent().parent().width() - 20;
@@ -268,6 +277,7 @@ optional: pauseMedia*
 					if (options.optional == undefined || options.optional === "false") {
 						$target.parent().addClass("qWindow");
 						$target.parent().css({
+							"max-width": '',
 							"height": h,
 							"width": w
 						}).show();
