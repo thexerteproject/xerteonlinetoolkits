@@ -264,7 +264,6 @@
 		}
 
 		this.leavePage = function() {
-			debugger;
 			$('.spinnerHolder').remove();
 		}
 
@@ -294,11 +293,28 @@
 				$('.tl-message-content').html(str)
 
 			}, 100);
+			debugger
+			$('.tl-slidenav-next').attr("title","next")
 
+			$(document).on('keydown', e => {
+
+				var keyCode;
+				var amountOfItems = items.length-1
+				keyCode = e.originalEvent.keyCode;
+
+				if(keyCode == 9 && e.ctrlKey == false && counter<amountOfItems){
+					$('.tl-slidenav-next').click()
+					e.preventDefault();
+				}else if(e.ctrlKey && keyCode == 9 && counter>0) {
+					$('.tl-slidenav-previous').click()
+					e.preventDefault();
+				};
+			});
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 
 		}
+
 
 		this.resizeImg = function() {
 
@@ -379,7 +395,7 @@
 						"max-height": normal +"px",
 						"max-width": imgH +"px"
 					});
-					debugger
+
 					var margT = items.eq(counter).find('img').css('margin-left')
 					var margB = items.eq(counter).find('img').css('marginBottom')
 					margB = parseInt( margB.slice(0,  margB.length - 2));
