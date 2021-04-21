@@ -36,6 +36,8 @@
 		var AmountOfWrongScore = 0;
 		var highlightsArray= [];
 		var allHighlightsArray= [];
+		var amountOfCorrect = 0
+		var amountOfWrong = 0
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 
@@ -52,6 +54,9 @@
 			this.attempts = 0;
 			hotSpotScore = 0;
 			AmountOfWrongScore = 0;
+			amountOfCorrect = 0;
+			amountOfWrong = 0;
+			highlightsArray= [];
 			this.highlightsArray= [];
 			this.allHighlightsArray= [];
 			this.amountOfCorrect = 0;
@@ -181,7 +186,9 @@
 			$("#checkButton").button({
 				label: "Check"
 			}).click(function (){
-
+				debugger
+				hotSpotScore = 0;
+				AmountOfWrongScore = 0;
 				amountOfCorrectOptions = 0
 				allHighlightsArray.forEach((highlight)=>{
 					if(highlight.getAttribute("truth") === "true"){
@@ -189,8 +196,8 @@
 					}
 				})
 
-				var amountOfCorrect = 0;
-				var amountOfWrong = 0;
+				amountOfCorrect = 0;
+				amountOfWrong = 0;
 				highlightsArray.forEach((highlight)=>{
 					if(highlight.getAttribute("truth") === "true"){
 						amountOfCorrect++;
