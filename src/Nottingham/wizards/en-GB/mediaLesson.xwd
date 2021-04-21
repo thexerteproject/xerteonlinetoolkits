@@ -138,11 +138,11 @@
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<hsAppearance type="group" label="Optional Hotspot Appearance" optional="true" tooltip="Customise the appearance of hotspots">
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
 			<optional    label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip	 label="Title label" type="ComboBox" options="Tooltip,Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
+			<tooltip	 label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
 			<icon        label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1     label="Background Colour" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour1     label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
 			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
 			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %"/>
 		</hsAppearance>
@@ -160,11 +160,11 @@
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR" />
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<hsAppearance type="group" label="Optional Hotspot Appearance" optional="true" tooltip="Customise the appearance of hotspots">
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
 			<optional    label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip	 label="Title label" type="ComboBox" options="Tooltip,Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
+			<tooltip	 label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
 			<icon        label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1     label="Background Colour" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour1     label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
 			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
 			<hsSize      label="Size" type="NumericStepper" min="12" max="64" step="1" defaultValue="14" optional="true"/>
 		</hsAppearance>
@@ -243,11 +243,11 @@
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<hsAppearance type="group" label="Optional Hotspot Appearance" optional="true" tooltip="Customise the appearance of hotspots">
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
 			<optional    label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip	 label="Title label" type="ComboBox" options="Tooltip,Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
+			<tooltip	 label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
 			<icon        label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1     label="Background Colour" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour1     label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
 			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
 			<hsSize      label="Size" type="NumericStepper" min="12" max="64" step="1" defaultValue="14" optional="true"/>
 		</hsAppearance>
@@ -313,11 +313,11 @@
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<hsAppearance type="group" label="Optional Hotspot Appearance" optional="true" tooltip="Customise the appearance of hotspots">
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
 			<optional    label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip	 label="Title label" type="ComboBox" options="Tooltip,Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
+			<tooltip	 label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
 			<icon        label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1     label="Background Colour" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour1     label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
 			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
 			<hsSize      label="Size" type="NumericStepper" min="12" max="64" step="1" defaultValue="14" optional="true"/>
 		</hsAppearance>

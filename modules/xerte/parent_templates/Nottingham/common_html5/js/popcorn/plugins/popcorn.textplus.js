@@ -114,8 +114,8 @@ optional: end position* line
                     	    .click(function () { // Open the textbox.
                         	    $showHolder.hide();
 								$target.prepend(txt);
-								$target.parent().addClass("qWindow");
-								$target.parent().css({"padding": 5});
+								$target.parent().addClass("qWindow").addClass("panel");
+								$target.parent().css({"padding": 5, "overflow-x": "hidden"});
                         	});
 					// If not optional
                		} else {
@@ -130,7 +130,11 @@ optional: end position* line
 				if (options.overlayPan) {
 					if (options.optional == undefined || options.optional === "false")
 					{
-						$target.parent().addClass("qWindow");
+						$target.parent().addClass("qWindow").addClass("panel");
+						$target.parent().css({
+							"width" : options._w + "%",
+							"overflow-x": "hidden"
+						});
 					}
 					else {
 						var hh = $(".mainMedia").height();
@@ -184,7 +188,7 @@ optional: end position* line
 			end: function(event, options) {
 				// fire on options.end
                 if (options.overlayPan) {
-					$target.parent().removeClass("qWindow");
+					$target.parent().removeClass("qWindow").removeClass("panel");
 					$target.parent().css({
 						"top": 0,
 						"left": 0,

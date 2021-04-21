@@ -451,17 +451,7 @@ optional: feedback page synch play enable
 								})
 						});
 
-						// var w = 0.5 * (size - $showHs.outerWidth(true));
-						// var h = 0.2 * (size - $showHs.outerHeight(true));						
-						// $showHs.css({
-						// 	"padding-top"   : size * 0.2,
-						// 	"padding-bottom": h,
-						// 	"padding-left"  : w,
-						// 	"padding-right" : w
-						// })
-							
 						var $showLbl = $("<div class='showLabel panel'>" + options.name + "</div>");
-
 						if(options.attrib.tooltip == "label") {
 							$showLbl.appendTo($showHolder);
 							// Cap the fontsize to reasonable values
@@ -494,11 +484,11 @@ optional: feedback page synch play enable
 						}
 						$showHolder
 							.click(function () {
-								$target.parent().css({"padding": 5, "width": options._w + "%", height: "auto"});
+								$target.parent().css({"padding": 5, "width": options._w + "%", "height": "auto", "overflow-x": "hidden"});
                                 $("#overlay").show();
 								$showHsActive = true;
                                 mediaLesson.popcornInstance.media.pause();
-                                $target.parent().addClass("qWindow");
+                                $target.parent().addClass("qWindow").addClass("panel");
 								$showHolder.hide();
 								$optHolder.show();
 								$target.prepend($optionText);
@@ -581,8 +571,11 @@ optional: feedback page synch play enable
 					}
 
 					if ($showHsActive == true || options.optional == "false" || options.optional == undefined) {
-						$target.parent().addClass("qWindow");
-						$target.parent().css({"width" : options._w + "%"});
+						$target.parent().addClass("qWindow").addClass("panel");
+						$target.parent().css({
+							"width" : options._w + "%",
+							"overflow-x": "hidden"
+						});
 						$optHolder.show();
 						$checkBtn.show();
 					}
@@ -606,7 +599,7 @@ optional: feedback page synch play enable
 				// fire on options.end
 				mediaLesson.enableControls(this.media, true);
                 if (options.overlayPan) {
-					$target.parent().removeClass("qWindow")
+					$target.parent().removeClass("qWindow").removeClass("panel");
                 	$target.parent().css( //The overlay panel
                 	{
 						"top": 0,
