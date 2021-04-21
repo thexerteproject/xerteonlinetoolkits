@@ -174,7 +174,8 @@ optional: end position* line
 					$target.parent().css({
 						"top": 0,
 						"left": 0,
-						"padding": 0
+						"padding": 0,
+						"overflow-x": ''
 					}).hide();
 				}
 				$target.hide();

@@ -546,7 +546,7 @@ optional: feedback page synch play enable
 				}
 				if (options.overlayPan) {
 					if ($showHsActive == true) {
-						$target.parent().css({"margin-right" : "5px"});
+						$target.parent().css({"margin-right" : "5px", "overflow-x": "hidden"});
 					}
 
 					if ($showHsActive == true || options.optional == "false" || options.optional == undefined) {
@@ -619,7 +619,8 @@ optional: feedback page synch play enable
 						"top": 0,
 						"left": 0,
 						"padding": 0,
-						"margin-right" : 0
+						"margin-right" : 0,
+						"overflow-x": ''
                 	}).hide();
 				}
 				$target.hide();
