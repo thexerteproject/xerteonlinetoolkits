@@ -422,7 +422,6 @@ optional: feedback page synch play enable
 					
                 	if(options.optional == "true") {
 						var $showHolder  = $('<div id="showHolder" />').appendTo($target);
-						var size = options.attrib.hsSize;
 						$showHs = $('<div class="Hs x_noLightBox showHotspot"/>').addClass(options.attrib.icon).appendTo($showHolder);
 						$showHs.css({
 							"background-color": options.attrib.colour1,
@@ -554,8 +553,8 @@ optional: feedback page synch play enable
 						$target.parent().addClass("qWindow").addClass("panel");
 						$target.parent().css({
 							"width" : options._w + "%",
-							"overflow-x": "hidden"
 						});
+						$target.css("overflow-x", "hidden")
 						$optHolder.show();
 						$checkBtn.show();
 					}
@@ -575,7 +574,7 @@ optional: feedback page synch play enable
 							$showLbl.css({
 								"padding": 5,
 								"padding-left": (size * 0.55) * 0.01 * hh + 5,
-								"left": (size * 0.005) * hh,
+								"left": (size * 0.005) * hh + 5,
 								"top": (size * 0.005) * hh,
 								"font-size": fs
 							});
