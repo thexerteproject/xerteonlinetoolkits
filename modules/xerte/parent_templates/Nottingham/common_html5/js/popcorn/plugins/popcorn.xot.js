@@ -101,7 +101,7 @@ optional: pauseMedia*
                         	});
 					// if not optional
                		} else {
-						$target.parent().css({"padding": 5, "overflow": "hidden"});
+						$target.parent().css({"padding": 5});
 						if (options.name != "") {
 							$target.prepend('<h4>' + options.name + '</h4>');
 						}
