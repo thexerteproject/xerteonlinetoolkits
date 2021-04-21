@@ -53,11 +53,6 @@ optional: end position* line
 						var size = options.attrib.hsSize;
 						$showHs = $('<div class="Hs x_noLightBox showHotspot"/>').addClass(options.attrib.icon).appendTo($showHolder);
 						$showHs.css({
-							"height"  :       size * 0.8,
-							"width"   :       size * 0.8,
-							"padding" :       size * 0.1,
-							"border-radius" : size / 2 + 1,
-							"font-size" : 	  size * 0.8,
 							"background-color": options.attrib.colour1,
 							"color": options.attrib.colour2,
 						}).data({
@@ -81,33 +76,15 @@ optional: end position* line
 							
 						$showLbl = $("<div class='showLabel panel'>" + options.name + "</div>");
 						if(options.attrib.tooltip == "label") {
-							
 							$showLbl.appendTo($showHolder);
-							// Cap the fontsize to reasonable values
-							var fs = size * 0.4 <= 12 ? 12 : size * 0.4 > 32 ? 32 : size * 0.4;
-							$showLbl.css({
-								"padding": 5,
-								"padding-left": size * 0.55 + 5,
-								"left": size * 0.5,
-								"top": size * 0.5,
-								"font-size": fs
-							});
 						}
 						else if(options.attrib.tooltip == "tooltip"){
 							$showLbl.removeClass("showLabel").addClass("tooltip").appendTo($showHolder).hide();
 							$('<div class="tipArrow arrowDown"/>').appendTo($showLbl);
 							$showHs.hover(function(){
-								$showLbl.css({
-									"left": $showLbl.outerWidth()  * -0.5 + size * 0.5,
-									"top" : $showLbl.outerHeight() * -1,
-									'box-shadow': 'none',
-									"overflow" : 'hidden'
-								}).show();
+								$showLbl.show();
 							}, function() {
-								$showLbl.css({
-									'box-shadow': 'none',
-									'z-index': 1
-								}).hide();
+								$showLbl.hide();
 							});
 						}
 						$showHolder
