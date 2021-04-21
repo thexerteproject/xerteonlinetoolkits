@@ -30,7 +30,7 @@ optional: end position* line
 	Popcorn.plugin("textplus", function(options) {
 		
 		// define plugin wide variables / functions here
-		var $target, $showHs, $showLbl;
+		var $target, $showHs, $showLbl, showHsActive;
 		
 		return {
 			_setup: function(options) {
@@ -89,14 +89,17 @@ optional: end position* line
 						}
 						$showHolder
                     	    .click(function () { // Open the textbox.
+								showHsActive =true;
                         	    $showHolder.hide();
 								$target.prepend(txt);
 								$target.parent().addClass("qWindow").addClass("panel");
-								$target.parent().css({"padding": 5, "overflow-x": "hidden"});
+								$target.parent().css({"padding": 5});
+								$target.css("overflow-x", "hidden");
                         	});
 					// If not optional
                		} else {
 						$target.parent().css({"padding": 5});
+						showHsActive = true;
 						$target.prepend(txt);
 					}
 				}
@@ -105,13 +108,15 @@ optional: end position* line
 			start: function(event, options) {
 				// fire on options.start
 				if (options.overlayPan) {
+					if (showHsActive == true)
+					{
+						$target.parent().addClass("qWindow").addClass("panel");
+					}
 					if (options.optional == undefined || options.optional === "false")
 					{
 						$target.parent().addClass("qWindow").addClass("panel");
-						$target.parent().css({
-							"width" : options._w + "%",
-							"overflow-x": "hidden"
-						});
+						$target.parent().css({"width" : options._w + "%"});
+						$target.css("overflow-x", "hidden");
 					}
 					else {
 						var hh = $(".mainMedia").height();
