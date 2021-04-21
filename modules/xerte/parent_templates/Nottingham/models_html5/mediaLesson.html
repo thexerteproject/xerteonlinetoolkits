@@ -751,10 +751,9 @@
 			// Handle interactivity of slider.
 			var duration = 0;
 			var mp = mediaLesson.popcornInstance;
-			var hasNotYetPlayed = $playButton.hasClass('fa-x-play') == false && $playButton.hasClass('fa-x-pause') == false
 			
 			$trackBarSlider.on('mousedown', function(e){
-				if (hasNotYetPlayed) {
+				if ($playButton.hasClass('fa-x-play') == false && $playButton.hasClass('fa-x-pause') == false) {
 					return;
 				}
 				mp.pause();
@@ -783,12 +782,12 @@
 				});
 			});
 			$trackBarRail.on('hover', function(e){
-				if (hasNotYetPlayed) {
+				if ($playButton.hasClass('fa-x-play') == false && $playButton.hasClass('fa-x-pause') == false) {
 					return;
 				}
 				$(this).css("cursor","pointer")
 			}).on('mousedown', function(e){
-				if (hasNotYetPlayed) {
+				if ($playButton.hasClass('fa-x-play') == false && $playButton.hasClass('fa-x-pause') == false) {
 					return;
 				}
 				$trackBarSlider.offset({left: e.pageX});
