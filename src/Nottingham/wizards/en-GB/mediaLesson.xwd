@@ -144,7 +144,7 @@
 			<icon        label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
 			<colour1     label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
 			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %"/>
+			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %; Max = 40%"/>
 		</hsAppearance>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content"  type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
@@ -166,7 +166,7 @@
 			<icon        label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
 			<colour1     label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
 			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %"/>
+			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %; Max = 40"/>
 		</hsAppearance>
 		<pauseMedia label="Pause Media" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content"  type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
@@ -249,7 +249,7 @@
 			<icon        label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
 			<colour1     label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
 			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %"/>
+			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %; Max = 40"/>
 		</hsAppearance>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
@@ -319,7 +319,7 @@
 			<icon        label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
 			<colour1     label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
 			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %"/>
+			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %; Max = 40"/>
 		</hsAppearance>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
