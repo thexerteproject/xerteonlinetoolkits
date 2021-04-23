@@ -1850,7 +1850,18 @@ function x_checkPages(type, id, pageArray) {
 
 	return false;
 }
-
+function x_setMaxWidth() {
+	if (x_params.maxWidth != undefined && x_params.maxWidth != "") {
+		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioSlideshow','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageViewer','interactiveText','inventory','language','links','list','map','mcq','media360','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss',];
+		var styleString = '<style>';
+		for (var i=0; i<workingPages.length; i++) {
+			if (i>0) { styleString += ', '; }
+			styleString += '.x_' + workingPages[i] + '_page #x_pageDiv';
+		}
+		styleString += '{max-width: '+x_params.maxWidth+'px;margin: 0 auto;}</style>';
+		$('head').append(styleString);
+	}
+}
 
 // function called on page change to remove old page and load new page model
 // If x_currentPage == -1, than do not try to exit tracking of the page
@@ -2017,9 +2028,8 @@ function x_endPageTracking(pagechange, x_gotoPage) {
         XTExitPage(x_currentPage);
     }
 }
-
 function x_changePageStep5(x_gotoPage) {
-	
+	x_setMaxWidth();
     if (x_params.styles != undefined) {
         if ($('#lo_css').length == 0) {
             $x_head.append('<style type="text/css" id="lo_css">' + x_params.styles + '</style>');
