@@ -27,13 +27,18 @@
 /* OPTIONAL ELEMENT BUTTON */
 .showHotspot { 
     position      : absolute;
-    display       : table-cell;
+    display       : table;
     height        : auto;
     width         : auto;
     float         : left;
     box-shadow    : none;
     z-index       : 6; /*always have this higher than the label's */
     text-align    : center;
+    vertical-align: middle;
+}
+
+.showHotspot::before {
+    display: table-cell;
     vertical-align: middle;
 }
 .showLabel {

@@ -269,7 +269,7 @@ optional: pauseMedia*
 							"width"   :       (size * 0.008) * hh + "px",
 							"padding" :       (size * 0.001) * hh + "px",
 							"border-radius" : (size / 2 + 1) * 0.01 * hh + "px",
-							"font-size" : 	  (size * 0.008) * hh + "px",
+							"font-size" : 	  (size * 0.007) * hh + "px",
 						});
 						if(options.attrib.tooltip == "label") {	
 							// Cap the fontsize to reasonable values
@@ -278,7 +278,7 @@ optional: pauseMedia*
 								"padding": 5,
 								"padding-left": (size * 0.55) * 0.01 * hh + 5,
 								"left": (size * 0.005) * hh,
-								"top": (size * 0.005) * hh,
+								"top": (size * 0.005) * hh - 2,
 								"font-size": fs
 							});
 						}

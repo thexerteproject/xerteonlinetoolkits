@@ -553,8 +553,8 @@ optional: feedback page synch play enable
 						$target.parent().addClass("qWindow").addClass("panel");
 						$target.parent().css({
 							"width" : options._w + "%",
+							"overflow-x": "hidden"
 						});
-						$target.css("overflow-x", "hidden")
 						$optHolder.show();
 						$checkBtn.show();
 					}
@@ -566,7 +566,7 @@ optional: feedback page synch play enable
 							"width"   :       (size * 0.008) * hh + "px",
 							"padding" :       (size * 0.001) * hh + "px",
 							"border-radius" : (size / 2 + 1) * 0.01 * hh + "px",
-							"font-size" : 	  (size * 0.008) * hh + "px",
+							"font-size" : 	  (size * 0.007) * hh + "px",
 						});
 						if(options.attrib.tooltip == "label") {	
 							// Cap the fontsize to reasonable values
@@ -575,7 +575,7 @@ optional: feedback page synch play enable
 								"padding": 5,
 								"padding-left": (size * 0.55) * 0.01 * hh + 5,
 								"left": (size * 0.005) * hh + 5,
-								"top": (size * 0.005) * hh,
+								"top": (size * 0.005) * hh - 2,
 								"font-size": fs
 							});
 						}
@@ -619,6 +619,7 @@ optional: feedback page synch play enable
 						"top": 0,
 						"left": 0,
 						"padding": 0,
+						"height": "auto",
 						"margin-right" : 0,
 						"overflow-x": ''
                 	}).hide();

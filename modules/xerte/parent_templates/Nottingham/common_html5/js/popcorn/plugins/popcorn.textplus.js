@@ -93,8 +93,7 @@ optional: end position* line
                         	    $showHolder.hide();
 								$target.prepend(txt);
 								$target.parent().addClass("qWindow").addClass("panel");
-								$target.parent().css({"padding": 5});
-								$target.css("overflow-x", "hidden");
+								$target.parent().css({"padding": 5, "overflow-x": "hidden"});
                         	});
 					// If not optional
                		} else {
@@ -115,8 +114,7 @@ optional: end position* line
 					if (options.optional == undefined || options.optional === "false")
 					{
 						$target.parent().addClass("qWindow").addClass("panel");
-						$target.parent().css({"width" : options._w + "%"});
-						$target.css("overflow-x", "hidden");
+						$target.parent().css({"width" : options._w + "%", "overflow-x": "hidden"});
 					}
 					else {
 						var hh = $(".mainMedia").height();
@@ -126,7 +124,7 @@ optional: end position* line
 							"width"   :       (size * 0.008) * hh + "px",
 							"padding" :       (size * 0.001) * hh + "px",
 							"border-radius" : (size / 2 + 1) * 0.01 * hh + "px",
-							"font-size" : 	  (size * 0.008) * hh + "px",
+							"font-size" : 	  (size * 0.007) * hh + "px",
 						});
 						if(options.attrib.tooltip == "label") {	
 							// Cap the fontsize to reasonable values
@@ -135,7 +133,7 @@ optional: end position* line
 								"padding": 5,
 								"padding-left": (size * 0.55) * 0.01 * hh + 5,
 								"left": (size * 0.005) * hh,
-								"top": (size * 0.005) * hh,
+								"top": (size * 0.005) * hh - 2,
 								"font-size": fs
 							});
 						}
