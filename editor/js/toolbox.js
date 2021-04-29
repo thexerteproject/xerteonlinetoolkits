@@ -64,15 +64,13 @@ var EDITOR = (function ($, parent) {
 			// it's a page type
             } else if (itemData.item != undefined) {
 				var hint = itemData.hint != undefined ? '<p>' + itemData.hint + '</p>' : "";
-				hint = itemData.thumb != undefined ? hint + (itemData.example != undefined ? '<a href="#" class="pageExample">' : '') + '<img class="preview_thumb" alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + (itemData.example != undefined ? '</a>' : '') : hint;
-				hint = itemData.example != undefined ? hint + '<p><a href="#" class="pageExample exampleButton"><i class="fa fa-play-circle"></i>' + language.insertDialog.$example + '</a></p>' : hint;
+				hint = itemData.thumb != undefined ? hint + (itemData.example != undefined ? '<a href="' + itemData.example + '" data-featherlight="iframe" class="pageExample">' : '') + '<img class="preview_thumb" alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + (itemData.example != undefined ? '</a>' : '') : hint;
+				hint = itemData.example != undefined ? hint + '<p><a href="' + itemData.example + '" data-featherlight="iframe" class="pageExample exampleButton"><i class="fa fa-play-circle"></i>' + language.insertDialog.$example + '</a></p>' : hint;
 				hint = hint != "" ? '<hr/>' + hint : hint;
 
 				var $insertInfo = $('<ul class="details"><li><a href="#"><div class="insert_buttons"/>' + hint + '</a></li></ul>'),
 					label = language.insertDialog.$label + ":",
 					pos = label.indexOf('{i}');
-				
-				$insertInfo.find('.pageExample').click(function() { $.featherlight({iframe: itemData.example}) });
 				
 				label = pos >= 0 ? label.substr(0, pos) + itemData.name + label.substr(pos + 3) : label;
 
