@@ -6,7 +6,7 @@
   </pageWizard>
   
   <!-- BULLETS PAGE========================================== -->
-  <bullets menu="Text" menuItem="Bullets / Timed Content" hint="A page of bullet points (or other content) which appears on screen at timed intervals." label="Page Text" type="text" height="310"  icon="icBullets" thumb="thumbs/bullets.jpg" remove="true" tooltip="Each paragraph and bullet point (including numbered list, sub-list items and images) will appear separately at timed intervals on screen. Apply bullets/numbers to selected text using the toolbar buttons.">
+  <bullets menu="Text" menuItem="Bullets / Timed Content" hint="A page of bullet points (or other content) which appears on screen at timed intervals." label="Page Text" type="text" height="310" icon="icBullets" thumb="thumbs/bullets.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#bullets" remove="true" tooltip="Each paragraph and bullet point (including numbered list, sub-list items and images) will appear separately at timed intervals on screen. Apply bullets/numbers to selected text using the toolbar buttons.">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <delaySecs label="Delay (secs)" type="NumericStepper" min="1" max="10" step="0.25"  width="100" defaultValue="1" />

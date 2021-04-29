@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- EMBED A DIV=============================================== -->
-  <embedDiv menu="Links / Feeds" menuItem="Embed Content" hint="A page for including any web page or embed code in your project." icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" remove="true">
+  <embedDiv menu="Links / Feeds" menuItem="Embed Content" hint="A page for including any web page or embed code in your project." icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#embedcontent" remove="true">
     
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <src label="Embed Code or URL" type="script" height="300"/>
