@@ -65,47 +65,50 @@ if (!$.fn.toggleClick) {
 }
 
 $(document).keydown(function(e) {
-    switch(e.which) {
-        case 33: // PgUp
-			var pageIndex = $.inArray(x_currentPage, x_normalPages);
-            if (pageIndex > -1 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
-                if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
-					// linear back
-					if (pageIndex > 0) {
-						x_changePage(x_normalPages[pageIndex -1]);
-					}
-					
-                } else {
-					var prevPage = x_pageHistory[x_pageHistory.length-2];
-                    x_pageHistory.splice(x_pageHistory.length - 2, 2);
-					
-					// check if history is empty and if so allow normal back navigation and change to normal back button
-					if (prevPage == undefined && x_currentPage > 0) {
-						x_changePage(x_normalPages[pageIndex -1]);
+	// if lightbox open then don't allow page up/down buttons to change the page open in the background
+	if (!parent.window.$.featherlight.current()) {
+		switch(e.which) {
+			case 33: // PgUp
+				var pageIndex = $.inArray(x_currentPage, x_normalPages);
+				if (pageIndex > -1 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
+					if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
+						// linear back
+						if (pageIndex > 0) {
+							x_changePage(x_normalPages[pageIndex -1]);
+						}
+						
 					} else {
-						x_changePage(prevPage);
+						var prevPage = x_pageHistory[x_pageHistory.length-2];
+						x_pageHistory.splice(x_pageHistory.length - 2, 2);
+						
+						// check if history is empty and if so allow normal back navigation and change to normal back button
+						if (prevPage == undefined && x_currentPage > 0) {
+							x_changePage(x_normalPages[pageIndex -1]);
+						} else {
+							x_changePage(prevPage);
+						}
 					}
-                }
-			} else if (pageIndex == -1) {
-				// historic back (standalone page)
-				if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
-					history.go(-1);
-				} else {
-					x_changePage(x_normalPages[0]);
+				} else if (pageIndex == -1) {
+					// historic back (standalone page)
+					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
+						history.go(-1);
+					} else {
+						x_changePage(x_normalPages[0]);
+					}
 				}
-			}
-            break;
+				break;
 
-        case 34: // PgDn
-			// if it's a standalone page then nothing will happen
-			var pageIndex = $.inArray(x_currentPage, x_normalPages);
-			if (pageIndex != -1 && $x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
-				x_changePage(x_normalPages[pageIndex + 1]);
-			}
-            break;
+			case 34: // PgDn
+				// if it's a standalone page then nothing will happen
+				var pageIndex = $.inArray(x_currentPage, x_normalPages);
+				if (pageIndex != -1 && $x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
+					x_changePage(x_normalPages[pageIndex + 1]);
+				}
+				break;
 
-        default: return; // exit this handler for other keys
-    }
+			default: return; // exit this handler for other keys
+		}
+	}
     e.preventDefault(); // prevent the default action (scroll / move caret)
 });
 
@@ -1880,19 +1883,6 @@ function x_changePage(x_gotoPage, addHistory) {
 	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' && parent.window.$.featherlight.current()) {
 		standAlonePage = false;
 		addHistory = false;
-	} else {
-		// If the whole Xerte object is loaded in a lightbox, we could trigger a DOMException (cross-origin)
-		// So enclose in a try block
-		try {
-			if (parent.window.$.featherlight.current()) {
-				// force lightbox to close
-				parent.window.$.featherlight.current().close();
-			}
-		}
-		catch(e)
-		{
-			// Ignore
-		}
 	}
 	
 	if (x_params.forcePage1 == 'true') {
