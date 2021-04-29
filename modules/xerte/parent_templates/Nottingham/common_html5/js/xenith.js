@@ -2020,11 +2020,26 @@ function x_endPageTracking(pagechange, x_gotoPage) {
 }
 function x_changePageStep5(x_gotoPage) {
 	x_setMaxWidth();
-    if (x_params.styles != undefined) {
+	
+	if (x_params.styles != undefined || x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
         if ($('#lo_css').length == 0) {
-            $x_head.append('<style type="text/css" id="lo_css">' + x_params.styles + '</style>');
+			
+			var lightboxStyle = '',
+				loStyles = x_params.styles != undefined ? x_params.styles : '';
+			
+			if (x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
+				lightboxColour = x_params.lightboxColour != undefined ? x_params.lightboxColour.substr(x_params.lightboxColour.length - 6) : '000000';
+				lightboxOpacity = x_params.lightboxOpacity != undefined ? x_params.lightboxOpacity / 100 : '0.8';
+				
+				var rgbaColour = x_hexToRgb(lightboxColour, lightboxOpacity);
+				
+				lightboxStyle = '.featherlight:last-of-type { background:' + rgbaColour + ';}';
+			}
+			
+            $x_head.append('<style type="text/css" id="lo_css">' + lightboxStyle + ' ' + loStyles + '</style>');
         }
     }
+	
     // If special_theme_css does not exist yet, create a disabled special_theme_css
     if (x_specialTheme != undefined && x_specialTheme != '') {
         x_insertCSS(x_themePath + x_specialTheme + '/' + x_specialTheme + '.css', function () {
@@ -3422,6 +3437,17 @@ function x_blackOrWhite(colour) {
 	return (brightness > 160) ? "#000000" : "#FFFFFF"; // checks whether black or white text is best on bg colour
 }
 
+// function converts hex colour to rgb
+function x_hexToRgb(hex, opa) {
+	var bigint = parseInt(hex, 16);
+	var r = (bigint >> 16) & 255;
+	var g = (bigint >> 8) & 255;
+	var b = bigint & 255;
+	
+	console.log(bigint);
+	
+	return "rgba(" + r + "," + g + "," + b + "," + opa + ")";
+}
 
 // function randomises the order of items in an array
 function x_shuffleArray(array) {
