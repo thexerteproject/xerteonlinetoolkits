@@ -871,6 +871,11 @@
 						.appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex).children(".mainMedia"))
                         .attr("id", "overlay")
 						.hide();
+					$('<div class="overlayGray"></div>')
+						.appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex).children(".mainMedia"))
+                        .attr("id", "overlayGray")
+						.css("opacity", "0.75")
+						.hide();
                     break;
                 }
             }
@@ -915,6 +920,7 @@
 
 		this.addEvents = function() {
             this.popcornInstance.on( "timeupdate", function() {
+				$("#overlayGray").hide();
 				mediaLesson.enableControls(this.media, false, true);
 				var popTime = mediaLesson.popcornInstance.currentTime();
                 //console.log("Timeupdate: " + popTime + " prevTime=" + prevTime + ", seeking=" + mediaLesson.popcornInstance.seeking());
@@ -943,6 +949,7 @@
             });
             this.popcornInstance.on( "play", function() {
                 $("#overlay").hide();
+				$("#overlayGray").hide();
 				$('#playButton').removeClass('fa-x-play').addClass('fa-x-pause');
 				isPlaying = true;
                 var popTime = mediaLesson.popcornInstance.currentTime();
@@ -1304,7 +1311,6 @@
 			var data = new Array(), // array of objects containing details of a synch point event
 				prevStart = 0,
 				start, end;
-			var $overlayScreen = $("#overlay");
             if($(synchData).context.getAttribute("overlay")){
                 $(synchData).each(function() {
                     this.overlay = true;
@@ -1574,9 +1580,9 @@
 						popcornInstance.cue(thisContent.start, function() {
 							this.pause();
 							// Gray out the background and fix z-index if the media is paused on an overlay panel
-							if (thisContent.overlayPanel)
+							if (thisContent.allInfo.getAttribute("overlayPan") == "true" && thisContent.type == "synchXot")
 							{
-							    //$overlayScreen.css("display", "inline-block");
+							    $("#overlayGray").show();
 							}
                             if (thisContent.allInfo.getAttribute("overlay") != "true") {
                                 mediaLesson.exitFullScreen();

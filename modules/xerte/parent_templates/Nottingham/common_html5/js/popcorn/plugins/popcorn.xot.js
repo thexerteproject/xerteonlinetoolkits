@@ -35,7 +35,7 @@ optional: pauseMedia*
 	Popcorn.plugin("xot", function(options) {
 		
 		// define plugin wide variables here
-		var $target, $iframe;
+		var $target, $iframe, $showHs, $showLbl, $showHsActive;
 		
 		return {
 			_setup: function(options) {
@@ -69,7 +69,7 @@ optional: pauseMedia*
 								})
 						});
 							
-						var $showLbl = $("<div class='showLabel panel'>" + options.name + "</div>");
+						$showLbl = $("<div class='showLabel panel'>" + options.name + "</div>");
 						if(options.attrib.tooltip == "label") {
 							$showLbl.appendTo($showHolder);
 						}
@@ -86,12 +86,15 @@ optional: pauseMedia*
 						$showHolder
 							.show()
                     	    .click(function () {
+								$showHsActive = true;
                         	    $showHolder.hide();
 								if (options.name != "") {
 									$target.prepend('<h4>' + options.name + '</h4>');
 								}
 								$target.parent().addClass("qWindow").addClass("panel");
 								//$target.parent().css({"padding": 5});
+								var h = $target.parent().parent().height() - 15;
+								var w = $target.parent().parent().width() - 15;
 								$target.parent().css({
 									"height": h,
 									"width": w,
@@ -101,6 +104,7 @@ optional: pauseMedia*
                         	});
 					// if not optional
                		} else {
+						$showHsActive = true;
 						$target.parent().css({"padding": 5});
 						if (options.name != "") {
 							$target.prepend('<h4>' + options.name + '</h4>');
@@ -202,8 +206,9 @@ optional: pauseMedia*
 					
 					// call function to set $iframe to use 100% of available height
 					$iframe
-						.addClass("fullH")
+						.addClass("fullH fullW")
 						.data("exclude", $target.find("h4"));
+					eval(x_currentPageXML.nodeName).resizeContent($target);
 					eval(x_currentPageXML.nodeName).resizeContent($iframe);
 					
 				// if it's a child then at synch points the url stays the same but the project page can change
@@ -236,20 +241,21 @@ optional: pauseMedia*
 						$iframe.attr("src", $iframe.data("url") + pageStr);
 					}
 				}
-				
+				if ($showHsActive == true) 
+				{
+					var h = $target.parent().parent().height() - 15;
+					var w = $target.parent().parent().width()  - 15;
+					$target.parent().css({
+						"height"  : h,
+						"width"   : w,
+						"overflow": "hidden"
+					});
+					$target.parent().addClass("qWindow").addClass("panel");
+				}
 				if (options.overlayPan) {
-					// if (options.optional == undefined || options.optional === "false")
-					// {
-					// 	$target.parent().addClass("qWindow");
-					// }
-					// else {
-					// 	$target.parent().css({
-					// 		"padding": 0
-					// 	})
-					// }
-					var h = $target.parent().parent().height() - 20;
+					var h = $target.parent().parent().height() - 15;
 					var hs = h - 2 * $target.parent().css("padding").replace(/[^-\d\.]/g, '');
-					var w = $target.parent().parent().width() - 20;
+					var w = $target.parent().parent().width() - 15;
 					
 					if (options.optional == undefined || options.optional === "false") {
 						$target.parent().addClass("qWindow").addClass("panel");
