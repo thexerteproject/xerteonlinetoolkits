@@ -135,32 +135,7 @@ var EDITOR = (function ($, parent) {
 
                     $menu.find(".insert_buttons").append(button);
             });
-            if (templateframework == "xerte") {
-                $([
-
-                    {
-                        name: language.insertDialog.insertMerge.$label,
-                        icon: 'editor/img/insert-end.png',
-                        tooltip: language.insertDialog.insertMerge.$tooltip,
-                        id: 'insert_button_merge',
-                        btnvalue: "merge"
-                    }
-
-                ]).each(function (index, value) {
-                    var button = $('<button>')
-                        .attr('id', value.id)
-                        .attr('title', value.tooltip)
-                        .attr('value', value.btnvalue)
-                        .attr('tabindex', index + 3)
-                        .addClass("insert_button")
-                        .click(insert_import)
-                        .append($('<img>').attr('src', value.icon).height(14))
-                        .append(value.name);
-
-                        $menu.find(".insert_buttons").last().append(button);
-                });
-            }
-
+            
 		if (typeof insert_menu_object !== 'undefined')
         {
             // menu is aleready set once
