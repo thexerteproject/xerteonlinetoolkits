@@ -325,12 +325,17 @@ optional: pauseMedia*
 			end: function(event, options) {
 				// fire on options.end
 				if (options.overlayPan) {
-					$target.parent().removeClass("qWindow").removeClass("panel");
-					$target.parent().css({
-						"top": 0,
-						"left": 0,
-						"padding": 0
-					}).hide();
+					if ($target.parent().hasClass("qWindow")) {
+						$target.parent().removeClass("qWindow").removeClass("panel");
+						$target.parent().css({
+							"top": 0,
+							"left": 0,
+							"padding": 0,
+							"height": "auto",
+							"margin-right" : 0,
+							"overflow-x": ''
+						}).hide();
+					}
 					$target.hide();
 				}
 
