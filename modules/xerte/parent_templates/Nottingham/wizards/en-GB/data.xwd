@@ -155,7 +155,7 @@
 	  selectAreaTip="Select Area"
 	  resetImageTip="Reset Image"
 	  toggleScreenTip="Toggle Full Screen"
-	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" passage="&lt;p&gt;Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;/p&gt;&lt;p&gt;For example:&lt;/p&gt;&lt;p&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;/p&gt;&lt;p&gt;Where | are adjectives, * are verbs and # are nouns.&lt;/p&gt;" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" mcqDialogClose="Close" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
+	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" passage="&lt;p&gt;Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;/p&gt;&lt;p&gt;For example:&lt;/p&gt;&lt;p&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;/p&gt;&lt;p&gt;Where | are adjectives, * are verbs and # are nouns.&lt;/p&gt;" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" mcqDialogClose="Close" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><overlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
@@ -3248,7 +3248,414 @@
     <text label="Description" type="TextArea" height="150"/>
 	<bgColour label="Highlight Colour" type="ColourPicker"/>
 
-  </group><inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Present a survey where answers map to different classes. The results for each class are displayed on a chart at the end of the survey." thumb="thumbs/inventory.jpg" remove="true">
+  </group><interactiveVideo menu="Media" menuItem="Interactive Video" hint="Synchronise a variety of types of content to a piece of media." icon="icApplicationTile" thumb="thumbs/interactiveVideo.jpg" remove="true">
+
+		<name label="Page Title" type="TextInput" wysiwyg="true"/>
+		<layout label="Panel Layout" type="ComboBox" options="Grid,Tile Horizontally,Tile Vertically,Full Top - Tile Bottom,Tile Top - Full Bottom,Full Left - Tile Right,Tile Left - Full Right" data="grid,tileH,tileV,top,bottom,left,right" defaultValue="grid" width="200"/>
+
+		<intro label="Introduction" type="TextArea" height="200" defaultValue="Enter Introduction Text" optional="true"/>
+
+		<introTitle label="Introduction Title" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+		<introClose label="Introduction Close" type="TextInput" wysiwyg="true" language="true"/>
+
+		<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+		<trackVideo label="Track video progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs" tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)."/>
+		<newNodes>
+			<overlayPanel><![CDATA[<panel name="Enter Panel Title"/>]]></overlayPanel>
+		</newNodes>
+
+	<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
+		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
+		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
+	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled." common="true"/><navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this pages" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here." common="true">
+		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
+		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
+		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
+		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
+		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
+		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
+	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
+		<pageID label="Page ID" type="TextInput" optional="true"/>
+	</customLinkGroup><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page" common="true"/><styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page" common="true"/><tracking type="group" label="Tracking" optional="true" common="true">
+        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use instead of page number as tracking identifier (SCORM and xAPI)"/>
+        <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
+	</tracking><scripts type="group" label="Script" optional="true" tooltip="Add JavaScript to run either on first load or every view of this page" common="true">
+		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
+		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
+	</scripts><background type="group" label="Background" optional="true" tooltip="Add a background image to this page" common="true">
+		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
+		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
+		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
+		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+	</lightboxGroup></interactiveVideo><mediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
+
+		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
+		
+		<mediaGroup type="group" label="Media">
+			<media label="File" type="media"/>
+			<tip label="Description" type="TextInput"/>
+			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
+		</mediaGroup>
+
+		<audioImg type="group" label="Image (Audio only)" optional="true">
+			<audioImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+			<audioImageTip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		</audioImg>
+
+		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
+		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+		<audioPosition label="Audio Player Position" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
+		<aspectRatio label="Media aspect ratio" type="ComboBox" data="1.333333,1.777777,2.333333" options="4:3,16:9,21:9" defaultValue="1.777777" optional="true"/>
+
+		<newNodes>
+			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
+			<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>
+			<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchGoogleFeed>
+			<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchWebpage>
+			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearPanel="false" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
+			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" clearPanel="false" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
+			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchTextPlus>
+			<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>
+			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
+			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
+		</newNodes>
+
+	</mediaPanel><panel menuItem="Panel" icon="icApplication" remove="true" max="3">
+
+		<name label="Panel Title" type="TextInput" wysiwyg="true"/>
+		<overlay label="Overlay Panel" type="CheckBox" defaultValue="false" optional="true"/>
+
+		<newNodes>
+			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="false" pauseMedia="false"/>]]></synchXot>
+			<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearpanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>
+			<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearpanel="false" pauseMedia="false"/>]]></synchGoogleFeed>
+			<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearpanel="false" pauseMedia="false" fullH="true"/>]]></synchWebpage>
+			<synchMediaPlus><![CDATA[<synchMediaPlus name="Enter Title" media="Select Media" width="800" height="600" tip="Enter a Description for Accessibility" synchStart="0" autoplay="false" clearpanel="false" pauseMedia="true" transcriptBtnTxt="Transcript"/>]]></synchMediaPlus>
+			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearpanel="false" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
+			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" clearpanel="false" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
+			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearpanel="false" pauseMedia="false"/>]]></synchTextPlus>
+			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
+		</newNodes>
+
+	</panel><overlayPanel menuItem="Overlay Panel" icon="icApplicationTile" remove="true" max="1">
+
+		<name label="Overlay Panel Title" type="TextInput"/>
+
+		<newNodes>
+			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchXot>
+			<!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearpanel="true" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
+			<!--<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchGoogleFeed>
+			--><!--<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearpanel="true" pauseMedia="false" fullH="true"/>]]></synchWebpage>
+			--><!--<synchMediaPlus><![CDATA[<synchMediaPlus name="Enter Title" media="Select Media" width="800" height="600" tip="Enter a Description for Accessibility" synchStart="0" autoplay="false" clearpanel="true" pauseMedia="true" transcriptBtnTxt="Transcript"/>]]></synchMediaPlus>
+			--><synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
+			<!--<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" clearpanel="true" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>-->
+			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchTextPlus>
+			<!--<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>-->
+		</newNodes>
+
+	</overlayPanel><synchCue menuItem="Pause/Jump Point" icon="icPause" remove="true">
+		<synch label="Synch Point" type="TextInput" defaultValue="0"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<disable label="Disable Controls" type="CheckBox" defaultValue="false"/>
+		<visibleStreamTypes label="Visible stream types" type="TextInput" defaultValue="0 1 2 3 4 5" optional="true"/>
+		<destination label="Jump To" type="TextInput" defaultValue="0" optional="true"/>
+	</synchCue><synchEmpty menuItem="Clear Panel" icon="icBullet" remove="true">
+		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
+	</synchEmpty><synchSubtitlePlus menuItem="Subtitles" icon="icFolderPage" remove="true" max="1">
+
+		<info><![CDATA[This is the holder for the media's subtitles.<br/>Select 'New Subtitle' to add and synch each caption.]]></info>
+
+		<newNodes>
+			<synchSub><![CDATA[<synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/>]]></synchSub>
+		</newNodes>
+
+	</synchSubtitlePlus><synchSub menuItem="Subtitle" icon="icBullet" remove="true">
+
+		<name label="Subtitle Text" type="TextArea" height="100"/>
+		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="bottom" width="100"/>
+
+		<synchStart label="Synch Point" type="TextInput"/>
+		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+
+	</synchSub><synchTextPlus menuItem="Text Content" icon="icPageWhiteText" remove="true">
+		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
+		<name label="Title" type="TextInput" wysiwyg="true"/>
+		<text label="Text" type="TextArea" height="250"/>
+
+		<synchStart label="Synch Point" type="TextInput"/>
+		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %; Max = 40%"/>
+		</hsAppearance>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
+		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
+		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
+		
+
+	</synchTextPlus><synchSlides menuItem="Slideshow" icon="icFolderImg" remove="true">
+
+		<name label="Title" type="TextInput" wysiwyg="true"/>
+		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
+		<synchStart label="Synch Point" type="TextInput"/>
+		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %; Max = 40"/>
+		</hsAppearance>
+		<pauseMedia label="Pause Media" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false"/>
+		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
+		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
+		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
+
+		<newNodes>
+			<synchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchSlide>
+		</newNodes>
+
+	</synchSlides><synchSlide menuItem="Slide" icon="icBullet" remove="true">
+
+		<name label="Image Description" type="TextInput"/>
+		<url label="Image" type="media"/>
+		<synchStart label="Synch Point" type="TextInput"/>
+		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+
+		<captionOptions type="group" label="Caption" optional="true">
+			<caption label="Text" type="TextInput" wysiwyg="true" defaultValue="Enter Caption Text" optional="true"/>
+			<captionPosV label="Vertical Position" type="ComboBox" options="Top,Middle,Bottom" data="top,middle,bottom" defaultValue="bottom" width="100" optional="true"/>
+			<captionPosH label="Horizontal Position" type="ComboBox" options="Left,Centre,Right" data="left,centre,right" defaultValue="centre" width="100" optional="true"/>
+		</captionOptions>
+
+	</synchSlide><synchMediaPlus menuItem="Media" icon="icFilm" remove="true">
+
+		<name label="Title" type="TextInput" wysiwyg="true"/>
+		
+		<mediaGroup type="group" label="Media">
+			<media label="File" type="media"/>
+			<tip label="Description" type="TextInput"/>
+			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
+		</mediaGroup>
+
+		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
+		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+
+		<audioImg type="group" label="Image (Audio only)" optional="true">
+			<audioImage label="Image" type="media" optional="true"/>
+			<audioImageTip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		</audioImg>
+
+		<synchStart label="Synch Point" type="TextInput"/>
+		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
+		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
+		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
+		<aspect label="Maintain Aspect Ratio" type="CheckBox" defaultValue="true" optional="true"/>
+
+		<newNodes>
+			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" disable="true" synchStart="0" clearpanel="true" pauseMedia="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
+			<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>
+			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
+		</newNodes>
+
+	</synchMediaPlus><synchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
+
+		<name label="Title" type="TextInput" wysiwyg="true"/>
+		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
+		<text label="Question" type="TextArea" height="100"/>
+		<!--<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>-->
+		<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>
+		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
+		<disable label="Disable Controls" type="CheckBox"/>
+		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
+		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %; Max = 40"/>
+		</hsAppearance>
+		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
+		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
+
+		
+
+		<feedback type="TextArea" height="40" label="Feedback" optional="true"/>
+
+		<feedbackLabel label="Feedback Label" type="textInput" wysiwyg="true" divider="true" language="true"/>
+		<singleRight label="Single Answer Correct" type="TextInput" wysiwyg="true" language="true"/>
+		<singleWrong label="Single Answer Wrong" type="TextInput" wysiwyg="true" language="true"/>
+		<multiRight label="Multi Answer Correct" type="TextInput" wysiwyg="true" language="true"/>
+		<multiWrong label="Multi Answer Wrong" type="TextInput" wysiwyg="true" language="true"/>
+		<checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
+		<continueBtnTxt label="Continue Button Label" type="TextInput" wysiwyg="true" language="true"/>
+		<topOption label="Drop Down Menu Option 1" type="TextInput" wysiwyg="true" language="true"/>
+
+		<newNodes>
+			<synchMCQOption><![CDATA[<synchMCQOption name="Answer" text="Option text" correct="false"/>]]></synchMCQOption>
+		</newNodes>
+
+	</synchMCQ><synchMCQOption menuItem="Answer" icon="icBullet" remove="true">
+
+		<text label="Answer" type="TextArea" wysiwyg="true"/>
+	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
+	    <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
+
+		<feedback label="Feedback" type="TextArea" height="100" defaultValue="Feedback for this option" optional="true"/>
+		<page label="Go to Page" type="PageList" optional="true"/>
+		<synch label="Go to Synch Point" type="TextInput" optional="true"/>
+		<play label="Play Media" type="CheckBox" defaultValue="false" optional="true"/>
+		<enable label="Enable Controls" type="CheckBox" defaultValue="true" optional="true"/>
+
+	</synchMCQOption><synchWebpage menuItem="Embed Web Page" icon="icPageWorld" remove="true">
+
+		<name label="Title" type="TextInput" wysiwyg="true"/>
+		<src label="URL" type="TextInput"/>
+
+		<synchStart label="Synch Point" type="TextInput"/>
+		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
+		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
+		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
+
+	</synchWebpage><synchXot menuItem="Embed XOT Project" icon="icPageWhiteCodeRed" remove="true">
+
+		<name label="Title" type="TextInput" wysiwyg="true"/>
+		<url label="URL" type="TextInput"/>
+		<page label="Page" type="TextInput" wysiwyg="true" defaultValue="Enter Page Number"/>
+		<hide label="Hide" type="ComboBox" options="None,Header,Footer,Both" data="none,top,bottom,both" defaultValue="none" width="100"/>
+
+		<description label="Description" type="TextInput" wysiwyg="true" optional="true"/>
+
+		<synchStart label="Synch Point" type="TextInput"/>
+		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %; Max = 40"/>
+		</hsAppearance>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
+		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
+		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
+
+		<newNodes>
+			<synchXotChange><![CDATA[<synchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></synchXotChange>
+		</newNodes>
+
+	</synchXot><synchXotChange menuItem="XOT Page Change" icon="icBullet" remove="true">
+
+		<page label="Page" type="TextInput" defaultValue="Enter Page Number"/>
+
+		<synchStart label="Synch Point" type="TextInput"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+
+	</synchXotChange><synchGoogleFeed menuItem="RSS Feed" icon="icRSS" remove="true">
+
+		<name label="Title" type="TextInput" wysiwyg="true"/>
+		<url label="RSS Feed URL" type="TextInput"/>
+
+		<synchStart label="Synch Point" type="TextInput"/>
+		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
+		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
+		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
+
+	</synchGoogleFeed><synchGoogleMap menuItem="Google Map" icon="icMap" remove="true">
+
+		<name label="Title" type="TextInput" wysiwyg="true"/>
+		<type label="Map Type" type="ComboBox" options="Hybrid,Road,Satellite,Terrain,Street view" data="HYBRID,ROADMAP,SATELLITE,TERRAIN,STREETVIEW" width="100"/>
+		<zoom label="Zoom" type="TextInput"/>
+		<lat label="Latitude" type="TextInput"/>
+		<lng label="Longitude" type="TextInput"/>
+		<location label="Location" type="TextInput"/>
+
+		<orientation type="group" label="Orientation (Street view only)" optional="true">
+			<heading label="Horizontal" type="TextInput" defaultValue="0" optional="true"/>
+			<pitch label="Vertical" type="TextInput" defaultValue="1" optional="true"/>
+		</orientation>
+
+		<info><![CDATA[Either Latitude & Longitude or Location must be set for the map to load.]]></info>
+
+		<synchStart label="Synch Point" type="TextInput"/>
+		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
+		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
+		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
+
+		<!--<newNodes>
+			<synchGoogleMapChange><![CDATA[<synchGoogleMapChange type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" pauseMedia="false"/>]]></synchGoogleMapChange>
+		</newNodes>-->
+
+	</synchGoogleMap><synchGoogleMapChange menuItem="Google Map Location" icon="icBullet" remove="true">
+
+		<type label="Map Type" type="ComboBox" options="Hybrid,Road map,Satellite,Terrain,Street view" data="HYBRID,ROADMAP,SATELLITE,TERRAIN,STREETVIEW" width="100"/>
+		<zoom label="Zoom" type="TextInput"/>
+		<lat label="Latitude" type="TextInput"/>
+		<lng label="Longitude" type="TextInput"/>
+		<location label="Location" type="TextInput"/>
+
+		<orientation type="group" label="Orientation (Street view only)" optional="true">
+			<heading label="Horizontal" type="TextInput" defaultValue="0" optional="true"/>
+			<pitch label="Vertical" type="TextInput" defaultValue="1" optional="true"/>
+		</orientation>
+
+		<tween label="Tween (Street view only)" type="CheckBox" defaultValue="false" optional="true"/>
+		<interval label="Tween Interval (Street view only)" type="TextInput" defaultValue="1000" optional="true"/>
+
+		<info><![CDATA[Either Latitude & Longitude or Location must be set for the map to load.]]></info>
+
+		<synchStart label="Synch Point" type="TextInput"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+
+	</synchGoogleMapChange><inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Present a survey where answers map to different classes. The results for each class are displayed on a chart at the end of the survey." thumb="thumbs/inventory.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instructions label="Instructions" type="textArea" height="100"/>
     <feedback label="Inventory Feedback" type="textArea" height="100"/>
@@ -4048,353 +4455,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></mediaLesson><mediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
-
-		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
-		
-		<mediaGroup type="group" label="Media">
-			<media label="File" type="media"/>
-			<tip label="Description" type="TextInput"/>
-			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
-		</mediaGroup>
-
-		<audioImg type="group" label="Image (Audio only)" optional="true">
-			<audioImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
-			<audioImageTip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
-		</audioImg>
-
-		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
-		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-		<audioPosition label="Audio Player Position" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
-		<aspectRatio label="Media aspect ratio" type="ComboBox" data="1.333333,1.777777,2.333333" options="4:3,16:9,21:9" defaultValue="1.777777" optional="true"/>
-
-		<newNodes>
-			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
-			<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>
-			<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchGoogleFeed>
-			<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchWebpage>
-			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearPanel="false" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
-			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" clearPanel="false" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
-			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchTextPlus>
-			<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>
-			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
-			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
-		</newNodes>
-
-	</mediaPanel><panel menuItem="Panel" icon="icApplication" remove="true" max="3">
-
-		<name label="Panel Title" type="TextInput" wysiwyg="true"/>
-		<overlay label="Overlay Panel" type="CheckBox" defaultValue="false" optional="true"/>
-
-		<newNodes>
-			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="false" pauseMedia="false"/>]]></synchXot>
-			<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearpanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>
-			<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearpanel="false" pauseMedia="false"/>]]></synchGoogleFeed>
-			<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearpanel="false" pauseMedia="false" fullH="true"/>]]></synchWebpage>
-			<synchMediaPlus><![CDATA[<synchMediaPlus name="Enter Title" media="Select Media" width="800" height="600" tip="Enter a Description for Accessibility" synchStart="0" autoplay="false" clearpanel="false" pauseMedia="true" transcriptBtnTxt="Transcript"/>]]></synchMediaPlus>
-			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearpanel="false" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
-			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" clearpanel="false" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
-			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearpanel="false" pauseMedia="false"/>]]></synchTextPlus>
-			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
-		</newNodes>
-
-	</panel><overlayPanel menuItem="Overlay Panel" icon="icApplicationTile" remove="true" max="1">
-
-		<name label="Overlay Panel Title" type="TextInput"/>
-
-		<newNodes>
-			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchXot>
-			<!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearpanel="true" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
-			<!--<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchGoogleFeed>
-			--><!--<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearpanel="true" pauseMedia="false" fullH="true"/>]]></synchWebpage>
-			--><!--<synchMediaPlus><![CDATA[<synchMediaPlus name="Enter Title" media="Select Media" width="800" height="600" tip="Enter a Description for Accessibility" synchStart="0" autoplay="false" clearpanel="true" pauseMedia="true" transcriptBtnTxt="Transcript"/>]]></synchMediaPlus>
-			--><synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
-			<!--<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" clearpanel="true" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>-->
-			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchTextPlus>
-			<!--<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>-->
-		</newNodes>
-
-	</overlayPanel><synchCue menuItem="Pause/Jump Point" icon="icPause" remove="true">
-		<synch label="Synch Point" type="TextInput" defaultValue="0"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		<disable label="Disable Controls" type="CheckBox" defaultValue="false"/>
-		<visibleStreamTypes label="Visible stream types" type="TextInput" defaultValue="0 1 2 3 4 5" optional="true"/>
-		<destination label="Jump To" type="TextInput" defaultValue="0" optional="true"/>
-	</synchCue><synchEmpty menuItem="Clear Panel" icon="icBullet" remove="true">
-		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
-	</synchEmpty><synchSubtitlePlus menuItem="Subtitles" icon="icFolderPage" remove="true" max="1">
-
-		<info><![CDATA[This is the holder for the media's subtitles.<br/>Select 'New Subtitle' to add and synch each caption.]]></info>
-
-		<newNodes>
-			<synchSub><![CDATA[<synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/>]]></synchSub>
-		</newNodes>
-
-	</synchSubtitlePlus><synchSub menuItem="Subtitle" icon="icBullet" remove="true">
-
-		<name label="Subtitle Text" type="TextArea" height="100"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="bottom" width="100"/>
-
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-
-	</synchSub><synchTextPlus menuItem="Text Content" icon="icPageWhiteText" remove="true">
-		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
-		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<text label="Text" type="TextArea" height="250"/>
-
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
-			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
-			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
-			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %; Max = 40%"/>
-		</hsAppearance>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
-		
-
-	</synchTextPlus><synchSlides menuItem="Slideshow" icon="icFolderImg" remove="true">
-
-		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
-			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
-			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
-			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %; Max = 40"/>
-		</hsAppearance>
-		<pauseMedia label="Pause Media" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
-
-		<newNodes>
-			<synchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchSlide>
-		</newNodes>
-
-	</synchSlides><synchSlide menuItem="Slide" icon="icBullet" remove="true">
-
-		<name label="Image Description" type="TextInput"/>
-		<url label="Image" type="media"/>
-		<synchStart label="Synch Point" type="TextInput"/>
-		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-
-		<captionOptions type="group" label="Caption" optional="true">
-			<caption label="Text" type="TextInput" wysiwyg="true" defaultValue="Enter Caption Text" optional="true"/>
-			<captionPosV label="Vertical Position" type="ComboBox" options="Top,Middle,Bottom" data="top,middle,bottom" defaultValue="bottom" width="100" optional="true"/>
-			<captionPosH label="Horizontal Position" type="ComboBox" options="Left,Centre,Right" data="left,centre,right" defaultValue="centre" width="100" optional="true"/>
-		</captionOptions>
-
-	</synchSlide><synchMediaPlus menuItem="Media" icon="icFilm" remove="true">
-
-		<name label="Title" type="TextInput" wysiwyg="true"/>
-		
-		<mediaGroup type="group" label="Media">
-			<media label="File" type="media"/>
-			<tip label="Description" type="TextInput"/>
-			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
-		</mediaGroup>
-
-		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
-		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-
-		<audioImg type="group" label="Image (Audio only)" optional="true">
-			<audioImage label="Image" type="media" optional="true"/>
-			<audioImageTip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
-		</audioImg>
-
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-		<aspect label="Maintain Aspect Ratio" type="CheckBox" defaultValue="true" optional="true"/>
-
-		<newNodes>
-			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" disable="true" synchStart="0" clearpanel="true" pauseMedia="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
-			<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>
-			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
-		</newNodes>
-
-	</synchMediaPlus><synchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
-
-		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
-		<text label="Question" type="TextArea" height="100"/>
-		<!--<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>-->
-		<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>
-		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
-		<disable label="Disable Controls" type="CheckBox"/>
-		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
-			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
-			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
-			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %; Max = 40"/>
-		</hsAppearance>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
-
-		
-
-		<feedback type="TextArea" height="40" label="Feedback" optional="true"/>
-
-		<feedbackLabel label="Feedback Label" type="textInput" wysiwyg="true" divider="true" language="true"/>
-		<singleRight label="Single Answer Correct" type="TextInput" wysiwyg="true" language="true"/>
-		<singleWrong label="Single Answer Wrong" type="TextInput" wysiwyg="true" language="true"/>
-		<multiRight label="Multi Answer Correct" type="TextInput" wysiwyg="true" language="true"/>
-		<multiWrong label="Multi Answer Wrong" type="TextInput" wysiwyg="true" language="true"/>
-		<checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
-		<continueBtnTxt label="Continue Button Label" type="TextInput" wysiwyg="true" language="true"/>
-		<topOption label="Drop Down Menu Option 1" type="TextInput" wysiwyg="true" language="true"/>
-
-		<newNodes>
-			<synchMCQOption><![CDATA[<synchMCQOption name="Answer" text="Option text" correct="false"/>]]></synchMCQOption>
-		</newNodes>
-
-	</synchMCQ><synchMCQOption menuItem="Answer" icon="icBullet" remove="true">
-
-		<text label="Answer" type="TextArea" wysiwyg="true"/>
-	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
-	    <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
-
-		<feedback label="Feedback" type="TextArea" height="100" defaultValue="Feedback for this option" optional="true"/>
-		<page label="Go to Page" type="PageList" optional="true"/>
-		<synch label="Go to Synch Point" type="TextInput" optional="true"/>
-		<play label="Play Media" type="CheckBox" defaultValue="false" optional="true"/>
-		<enable label="Enable Controls" type="CheckBox" defaultValue="true" optional="true"/>
-
-	</synchMCQOption><synchWebpage menuItem="Embed Web Page" icon="icPageWorld" remove="true">
-
-		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<src label="URL" type="TextInput"/>
-
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-
-	</synchWebpage><synchXot menuItem="Embed XOT Project" icon="icPageWhiteCodeRed" remove="true">
-
-		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<url label="URL" type="TextInput"/>
-		<page label="Page" type="TextInput" wysiwyg="true" defaultValue="Enter Page Number"/>
-		<hide label="Hide" type="ComboBox" options="None,Header,Footer,Both" data="none,top,bottom,both" defaultValue="none" width="100"/>
-
-		<description label="Description" type="TextInput" wysiwyg="true" optional="true"/>
-
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
-			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true"/>
-			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
-			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="10" optional="true" tooltip="Size in %; Max = 40"/>
-		</hsAppearance>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-
-		<newNodes>
-			<synchXotChange><![CDATA[<synchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></synchXotChange>
-		</newNodes>
-
-	</synchXot><synchXotChange menuItem="XOT Page Change" icon="icBullet" remove="true">
-
-		<page label="Page" type="TextInput" defaultValue="Enter Page Number"/>
-
-		<synchStart label="Synch Point" type="TextInput"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-
-	</synchXotChange><synchGoogleFeed menuItem="RSS Feed" icon="icRSS" remove="true">
-
-		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<url label="RSS Feed URL" type="TextInput"/>
-
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-
-	</synchGoogleFeed><synchGoogleMap menuItem="Google Map" icon="icMap" remove="true">
-
-		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<type label="Map Type" type="ComboBox" options="Hybrid,Road,Satellite,Terrain,Street view" data="HYBRID,ROADMAP,SATELLITE,TERRAIN,STREETVIEW" width="100"/>
-		<zoom label="Zoom" type="TextInput"/>
-		<lat label="Latitude" type="TextInput"/>
-		<lng label="Longitude" type="TextInput"/>
-		<location label="Location" type="TextInput"/>
-
-		<orientation type="group" label="Orientation (Street view only)" optional="true">
-			<heading label="Horizontal" type="TextInput" defaultValue="0" optional="true"/>
-			<pitch label="Vertical" type="TextInput" defaultValue="1" optional="true"/>
-		</orientation>
-
-		<info><![CDATA[Either Latitude & Longitude or Location must be set for the map to load.]]></info>
-
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-
-		<!--<newNodes>
-			<synchGoogleMapChange><![CDATA[<synchGoogleMapChange type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" pauseMedia="false"/>]]></synchGoogleMapChange>
-		</newNodes>-->
-
-	</synchGoogleMap><synchGoogleMapChange menuItem="Google Map Location" icon="icBullet" remove="true">
-
-		<type label="Map Type" type="ComboBox" options="Hybrid,Road map,Satellite,Terrain,Street view" data="HYBRID,ROADMAP,SATELLITE,TERRAIN,STREETVIEW" width="100"/>
-		<zoom label="Zoom" type="TextInput"/>
-		<lat label="Latitude" type="TextInput"/>
-		<lng label="Longitude" type="TextInput"/>
-		<location label="Location" type="TextInput"/>
-
-		<orientation type="group" label="Orientation (Street view only)" optional="true">
-			<heading label="Horizontal" type="TextInput" defaultValue="0" optional="true"/>
-			<pitch label="Vertical" type="TextInput" defaultValue="1" optional="true"/>
-		</orientation>
-
-		<tween label="Tween (Street view only)" type="CheckBox" defaultValue="false" optional="true"/>
-		<interval label="Tween Interval (Street view only)" type="TextInput" defaultValue="1000" optional="true"/>
-
-		<info><![CDATA[Either Latitude & Longitude or Location must be set for the map to load.]]></info>
-
-		<synchStart label="Synch Point" type="TextInput"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-
-	</synchGoogleMapChange><memory menu="Games" menuItem="Memory Game" hint="A memory card game. Create pairs of text and images for the user to match." icon="icLightbulb" thumb="thumbs/memoryGame.jpg" remove="true">
+	</lightboxGroup></mediaLesson><memory menu="Games" menuItem="Memory Game" hint="A memory card game. Create pairs of text and images for the user to match." icon="icLightbulb" thumb="thumbs/memoryGame.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
