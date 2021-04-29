@@ -35,7 +35,7 @@ optional: pauseMedia*
 	Popcorn.plugin("xot", function(options) {
 		
 		// define plugin wide variables here
-		var $target, $iframe, $showHs, $showLbl, $showHsActive;
+		var $target, $iframe, $showHs, $showLbl, $showHsActive, $panelHeight, $panelWidth;
 		
 		return {
 			_setup: function(options) {
@@ -93,11 +93,11 @@ optional: pauseMedia*
 								}
 								$target.parent().addClass("qWindow").addClass("panel");
 								//$target.parent().css({"padding": 5});
-								var h = $target.parent().parent().height() - 15;
-								var w = $target.parent().parent().width() - 15;
+								$panelHeight = (($target.parent().parent().height() - 15) / $target.parent().parent().height()) * 100 + "%";
+								$panelWidth  = (($target.parent().parent().width() - 15)  / $target.parent().parent().width() ) * 100 + "%";
 								$target.parent().css({
-									"height": h,
-									"width": w,
+									"height": $panelHeight,
+									"width": $panelWidth,
 									"overflow": "hidden"
 								});
 								$iframe.show();
@@ -241,28 +241,26 @@ optional: pauseMedia*
 						$iframe.attr("src", $iframe.data("url") + pageStr);
 					}
 				}
+				$panelHeight = (($target.parent().parent().height() - 15) / $target.parent().parent().height()) * 100 + "%";
+				$panelWidth  = (($target.parent().parent().width() - 15)  / $target.parent().parent().width())  * 100 + "%";
 				if ($showHsActive == true) 
 				{
-					var h = $target.parent().parent().height() - 15;
-					var w = $target.parent().parent().width()  - 15;
 					$target.parent().css({
-						"height"  : h,
-						"width"   : w,
+						"height"  : $panelHeight,
+						"width"   : $panelWidth,
 						"overflow": "hidden"
 					});
 					$target.parent().addClass("qWindow").addClass("panel");
 				}
 				if (options.overlayPan) {
-					var h = $target.parent().parent().height() - 15;
-					var hs = h - 2 * $target.parent().css("padding").replace(/[^-\d\.]/g, '');
-					var w = $target.parent().parent().width() - 15;
+					var hs = $panelHeight - 2 * $target.parent().css("padding").replace(/[^-\d\.]/g, '');
 					
 					if (options.optional == undefined || options.optional === "false") {
 						$target.parent().addClass("qWindow").addClass("panel");
 						$target.parent().css({
 							"max-width": '',
-							"height": h,
-							"width": w,
+							"height": $panelHeight,
+							"width": $panelWidth,
 							"overflow-y": "hidden"
 						}).show();
 						$iframe.show();
@@ -305,7 +303,7 @@ optional: pauseMedia*
 						}
 						$target.parent().css({
 							"padding": 0,
-							"height": "auto"
+							"height": "auto",
 						});
 					}
 					
