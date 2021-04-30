@@ -329,12 +329,12 @@
 
 			var imgMaxW, imgMaxH;
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
-				imgMaxW = Math.round($x_pageHolder.width() - 30);
-				imgMaxH = Math.round($x_pageHolder.height() - 30);
+				imgMaxW = Math.round($x_pageHolder.width() * 0.85 -20);
+				imgMaxH = Math.round($x_pageHolder.height() * 0.85 -20);
 				$('#panel').css('margin', '0px');
 			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
-				imgMaxW = Math.round($x_pageHolder.width() * 0.8 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxW = Math.round($x_pageHolder.width() * 0.6 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 0.6 - 20);
 			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.3 - 20);
 				imgMaxH = Math.round($x_pageHolder.height() - 50);
@@ -349,13 +349,13 @@
 			// 	var percentage = imgMaxW/imgMaxH
 			// 	imgMaxW = imgMaxW/percentage
 			// }
-			x_scaleImg($img, imgMaxW-50, imgMaxH-50, true, firstLoad, false);
+			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
 
 			$img.css({
 				"opacity"	:1,
 				"filter"	:'alpha(opacity=100)',
-				"max-height" : imgMaxH-50,
-				"max-width"	:imgMaxW-50
+				"max-height" : imgMaxH,
+				"max-width"	:imgMaxW
 			});
 			//
 			// if($img.width() > $img.height()){
