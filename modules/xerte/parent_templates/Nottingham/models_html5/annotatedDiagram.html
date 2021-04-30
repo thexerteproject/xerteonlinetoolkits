@@ -87,15 +87,14 @@
 		this.resizeImg = function(firstLoad) {
 			debugger;
 			var imgMaxW, imgMaxH;
+			var footerMargin = parseInt($x_footerBlock.css('margin-bottom'));
+			imgMaxH = $x_pageHolder.height() - $x_footerBlock.height() - footerMargin - 50;
 			if (x_currentPageXML.getAttribute("panelWidth") == "Large") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.8 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() * 0.98 - 50);
 			} else if (x_currentPageXML.getAttribute("panelWidth") == "Small") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.3 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() * 0.98 - 50);
 			} else {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() * 0.98 - 50);
 			}
 			$img.mapster('unbind');
 
@@ -120,12 +119,15 @@
 			
 			if (x_currentPageXML.getAttribute("align") != "Top") {
 				$imageHolder.css("right", $x_pageDiv.css("padding-right"));
+				var margin = parseFloat($('#x_mainHolder').css('margin-right'));
+				var padding = parseFloat($x_pageDiv.css("padding-right"));
+				var right = padding - margin;
 				$hsHolder.css("right", $x_pageDiv.css("padding-right"));
 			}
 			$textContents.find("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			
-			padding = parseInt($imageHolder.css("padding-left"));
-			$hsHolder.css("margin", padding);
+			//padding = parseInt($imageHolder.css("padding-left"));
+			$hsHolder.css("margin", $imageHolder.css("padding-left"));
 			debugger
 			if (x_currentPageXML.getAttribute("url").split(".")[1].slice(0, -1) != "swf") {
 				var imgMaxW = 400,	imgMaxH = 450;
@@ -211,9 +213,12 @@
 			}
 			
 			// create hotspots - taking scale of image into account
+			var width = $imageHolder.outerWidth() - parseInt($imageHolder.css('padding-left')) - parseInt($imageHolder.css('padding-right'));
+			var height = $imageHolder.outerHeight() - parseInt($imageHolder.css('padding-top')) - parseInt($imageHolder.css('padding-bottom'));
+
 			$hsHolder
-				.width($imageHolder.width())
-				.height($imageHolder.height());
+				.width(width)
+				.height(height);
 				scale = imgW / $img.data("origSize")[0];
 
 
@@ -405,15 +410,14 @@
 	<div id="imageHolder" class="panel inline"></div>
 	
 	<canvas id="canvas"></canvas>
-	<div class="splitScreen">
 	<div id="hsHolder"></div>
-
-	<div id="textContents">
-		<div id="mainText" tabindex="1"></div>
-		<div id="listHolder">
-			<a class="listItem"></a>
+	<div class="splitScreen">
+		<div id="textContents">
+			<div id="mainText" tabindex="1"></div>
+			<div id="listHolder">
+				<a class="listItem"></a>
+			</div>
+			<div id="infoHolder" aria-live="polite"></div>
 		</div>
-		<div id="infoHolder" aria-live="polite"></div>
-	</div>
 	</div>
 </div>
