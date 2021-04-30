@@ -89,7 +89,7 @@ optional: end position* line
 						}
 						$showHolder
                     	    .click(function () { // Open the textbox.
-								showHsActive =true;
+								showHsActive = true;
                         	    $showHolder.hide();
 								$target.prepend(txt);
 								$target.parent().addClass("qWindow").addClass("panel");
@@ -173,7 +173,8 @@ optional: end position* line
 						"top": 0,
 						"left": 0,
 						"padding": 0,
-						"overflow-x": ''
+						"overflow-x": '',
+						"max-width": ''
 					}).hide();
 				}
 				$target.hide();

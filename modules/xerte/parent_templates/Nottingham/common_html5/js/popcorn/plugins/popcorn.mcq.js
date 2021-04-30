@@ -621,7 +621,8 @@ optional: feedback page synch play enable
 						"padding": 0,
 						"height": "auto",
 						"margin-right" : 0,
-						"overflow-x": ''
+						"overflow-x": '',
+						"max-width": ''
                 	}).hide();
 				}
 				$target.hide();
