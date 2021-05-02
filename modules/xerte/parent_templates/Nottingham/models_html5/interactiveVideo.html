@@ -277,10 +277,6 @@
                 var $holder = $youTube.parent(),
                     ratio = 16 / 9; // assume videos are 16:9 ratio
     
-                if ($(x_currentPageXML).children("mediaPanel").attr("aspectRatio") != undefined)
-                {
-                    ratio = parseFloat($(x_currentPageXML).children("mediaPanel").attr("aspectRatio"));
-                }
                 var ww = $holder.width(),
                     wh = Math.floor(ww / ratio),
                     hh = $holder.height() - $holder.find(".panelTitle").outerHeight(true) - $holder.find("#trackBarHolder").outerHeight(true),
@@ -488,7 +484,7 @@
                 $panelHolder.html("");
                 
                 var	panelData = $(x_currentPageXML).children(),
-                    panelLayout = x_currentPageXML.getAttribute("layout");
+                    panelLayout = "grid";
                 
                 var	mediaFile = $(x_currentPageXML).children("mediaPanel").attr("media"),
                     mediaType = "video",
