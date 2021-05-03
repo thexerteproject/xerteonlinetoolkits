@@ -36,7 +36,7 @@
 
 	</ivMediaPanel>
 
-	<ivOverlayPanel menuItem="Overlay Panel" icon="icApplicationTile" remove="false" max="1">
+	<ivOverlayPanel menuItem="Overlay Panel" icon="icApplication" remove="false" max="1">
 
 		<name label="Overlay Panel Title" type="TextInput"/>
 
