@@ -570,6 +570,28 @@ function project_info($template_id){
 
 }
 
+function folder_info($folder_id){
+
+    global $xerte_toolkits_site;
+
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    $query = "select folder_name, folder_id, date_created from "
+        . "{$prefix}folderdetails where folder_id= ?";
+
+    $params = array($folder_id);
+    $row = db_query_one($query, $params);
+
+    $info = PROJECT_INFO_NAME . ": " . str_replace('_', ' ', $row['folder_name']) . "<br/>";
+
+    $info .= PROJECT_INFO_ID . ": " . $row['folder_id'] . "<br/>";
+
+    $info .= PROJECT_INFO_CREATED . ": " . $row['date_created'] . "<br/>";
+
+    return $info;
+
+}
+
 function statistics_prepare($template_id, $force=false)
 {
     global $xerte_toolkits_site;
@@ -680,6 +702,7 @@ function statistics_prepare($template_id, $force=false)
     }
     return $info;
 }
+
 function media_quota_info($template_id)
 {
     global $xerte_toolkits_site;
@@ -755,6 +778,80 @@ function sharing_info($template_id)
         "{$xerte_toolkits_site->database_table_prefix}user_groups WHERE template_id = ? AND template_group_rights.group_id = user_groups.group_id";
 
     $query_group_sharing_rows = db_query($sql, array($template_id));
+
+    $info =  PROJECT_INFO_SHARED . ": ";
+
+    if(sizeof($query_sharing_rows)==1 && empty($query_group_sharing_rows)){
+        $info .= PROJECT_INFO_NOTSHARED . "<br/>";
+        return $info;
+    }
+
+    $info .=  SHARING_CURRENT . "<br>";
+    foreach($query_sharing_rows as $row) {
+        $info .=  "<li><span>" . $row['firstname'] . " " . $row['surname'] ." (" .$row['username'] . ")  -  (";
+        switch($row['role'])
+        {
+            case "creator":
+                $info .=  SHARING_CREATOR;
+                break;
+            case "co-author":
+                $info .=  SHARING_COAUTHOR;
+                break;
+            case "editor":
+                $info .=  SHARING_EDITOR;
+                break;
+            case "read-only":
+                $info .=  SHARING_READONLY;
+                break;
+        }
+
+        $info .=  ")</span></li>";
+    }
+    foreach($query_group_sharing_rows as $row) {
+        $info .=  "<li><span>" . $row['group_name'] . "  -  (";
+        switch($row['role'])
+        {
+            case "creator":
+                $info .=  SHARING_CREATOR;
+                break;
+            case "co-author":
+                $info .=  SHARING_COAUTHOR;
+                break;
+            case "editor":
+                $info .=  SHARING_EDITOR;
+                break;
+            case "read-only":
+                $info .=  SHARING_READONLY;
+                break;
+        }
+
+        $info .=  ")</span></li>";
+    }
+
+    $info .=  "</ul>";
+
+    return $info;
+}
+
+
+function folder_sharing_info($folder_id)
+{
+    global $xerte_toolkits_site;
+
+    if(!has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+        return "";
+    }
+
+    $sql = "SELECT folder_id, logindetails.login_id, firstname, surname, username, role FROM " .
+        " {$xerte_toolkits_site->database_table_prefix}folderrights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
+        " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}folderrights.login_id and folder_id= ?";
+
+    $query_sharing_rows = db_query($sql, array($folder_id));
+
+    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}folder_group_rights, " .
+        "{$xerte_toolkits_site->database_table_prefix}user_groups WHERE folder_id = ? AND folder_group_rights.group_id = user_groups.group_id";
+
+    $query_group_sharing_rows = db_query($sql, array($folder_id));
 
     $info =  PROJECT_INFO_SHARED . ": ";
 

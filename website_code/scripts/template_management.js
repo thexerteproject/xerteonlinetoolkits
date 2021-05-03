@@ -745,6 +745,17 @@ function getProjectInformation(user_id, template_id) {
     });
 }
 
+function getFolderInformation(user_id, folder_id) {
+    if (setup_ajax() != false) {
+        var url = "website_code/php/folders/get_folder_info.php";
+
+        xmlHttp.open("post", url, true);
+        xmlHttp.onreadystatechange = getProjectInformation_stateChanged;
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xmlHttp.send('&folder_id=' + folder_id);
+    }
+}
+
 function getProjectInformation_stateChanged() {
 
     if (xmlHttp.readyState == 4) {

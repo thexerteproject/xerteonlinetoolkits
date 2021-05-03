@@ -53,19 +53,22 @@ function make_new_folder($folder_id,$folder_name){
     $prefix = $xerte_toolkits_site->database_table_prefix;
     
     if($folder_id=="file_area"){
+        $folder_id = get_user_root_folder();
+    }
+    $query = "INSERT INTO {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
+    $params = array($_SESSION['toolkits_logon_id'], $folder_id, $folder_name, date('Y-m-d'));
 
-        $query = "INSERT INTO {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
-        $params = array($_SESSION['toolkits_logon_id'], get_user_root_folder(), $folder_name, date('Y-m-d'));
-        
-    }else{
 
-        $query = "INSERT INTO {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
-        $params = array($_SESSION['toolkits_logon_id'], $folder_id, $folder_name, date('Y-m-d'));
+    $new_folder_id = db_query($query, $params);
+    $ok = false;
+    if ($new_folder_id !== false){
+        $query = "INSERT INTO {$prefix}folderrights (folder_id, login_id, folder_parent, role) values (?,?,?,?)";
+        $params = array($new_folder_id, $_SESSION['toolkits_logon_id'], $folder_id, "creator");
+        $ok = db_query($query, $params);
     }
 
-    $ok = db_query($query, $params);
-    
     if($ok !== false) {
+
 
         receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder creation succeeded for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
 

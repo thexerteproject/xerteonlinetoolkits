@@ -1082,6 +1082,7 @@ function upgrade_27()
         `id` bigint(20) NOT NULL AUTO_INCREMENT,
         `folder_id` bigint(20) NOT NULL,
         `user_id` bigint(20) NOT NULL,
+        `folder_parent` bigint(20) NOT NULL,
         `role` char(255) DEFAULT NULL,
         PRIMARY KEY (`id`)
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"

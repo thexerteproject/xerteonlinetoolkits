@@ -379,17 +379,19 @@ function button_check(){
                 };
                 break;
             case "folder":
+                deletebtn.removeAttribute("disabled");
+                deletebtn.className = "xerte_workspace_button";
+                deletebtn.onclick = function () {
+                    remove_this()
+                };
+            case "folder_group":
+            case "folder_shared":
                 propertiesbtn.removeAttribute("disabled");
                 propertiesbtn.className = "xerte_workspace_button";
                 propertiesbtn.onclick = function () {
                     properties_window()
                 };
 
-                deletebtn.removeAttribute("disabled");
-                deletebtn.className = "xerte_workspace_button";
-                deletebtn.onclick = function () {
-                    remove_this()
-                };
                 duplicatebtn.removeAttribute("disabled");
                 duplicatebtn.className = "xerte_workspace_button";
                 duplicatebtn.onclick = function () {
@@ -693,6 +695,7 @@ function getIcon(nodetype)
     var nodetypetemp = nodetype;
     if (nodetype){
         nodetypetemp = nodetype.replace("_group", "");
+        nodetypetemp = nodetypetemp.replace("_shared", "");
     }
     switch(nodetypetemp)
     {
@@ -704,6 +707,9 @@ function getIcon(nodetype)
             break;
         case "folder":
             icon = "website_code/images/Icon_Folder.gif";
+            break;
+        case "shared_folder":
+            icon = "website_code/images/Icon_Shared.gif"; // PLACEHOLDER ?
             break;
         case "group":
             icon = "website_code/images/Icon_Shared.gif";
@@ -749,7 +755,7 @@ function init_workspace()
     // build Types structure for the types plugin
     var node_types = {};
     // root
-    node_types["#"] = create_node_type(null, ["workspace", "recyclebin", "group"]); // Make sure that only the Workspace, recyclebin and groups can be at root level
+    node_types["#"] = create_node_type(null, ["workspace", "recyclebin"]); // Make sure that only the Workspace and recyclebin can be at root level
 
     // workspace
     var workspace_children = ["folder"];
@@ -766,15 +772,26 @@ function init_workspace()
     folder_children = folder_children.concat(workspace.templates);
     node_types["folder"] = create_node_type("folder", folder_children);
 
+    //shared folder
+    var shared_children = workspace.sharedtemplates;
+    node_types["folder_shared"] = create_node_type("folder_shared", shared_children);
+
     //group
     var group_children = workspace.grouptemplates;
     node_types["group"] = create_node_type("group", group_children);
+
+    //group folder
+    node_types["folder_group"] = create_node_type("folder_group", group_children);
 
     $.each(workspace.templates, function () {
         node_types[this] = create_node_type(this, [""]);
     });
 
     $.each(workspace.grouptemplates, function () {
+        node_types[this] = create_node_type(this, [""]);
+    });
+
+    $.each(workspace.sharedtemplates, function () {
         node_types[this] = create_node_type(this, [""]);
     });
 
@@ -809,7 +826,7 @@ function init_workspace()
             "dnd": {
                 "is_draggable" : function(node) {
                     console.log('is_draggable called: ', node[0]);
-                    if (node[0].type.includes("_group")) {
+                    if (node[0].type.includes("_group") || node[0].type.includes("_shared")) {
                         return false;
                     }
                     return true;
@@ -890,6 +907,7 @@ function init_workspace()
             switch(type)
             {
                 case "folder":
+                case "folder_shared":
                 case "workspace":
                 case "recyclebin":
                 case "group":
@@ -920,8 +938,11 @@ function showInformationAndSetStatus(node)
 		switch(type)
 		{
 			case "folder":
-				$("#project_information").html("Folder " + node.text);
+                getFolderInformation(workspace.user, xot_id);
 				break;
+            case "folder_shared":
+                getFolderInformation(workspace.user, xot_id);
+                break;
             case "group":
                 $("#project_information").html(node.text);
                 break;

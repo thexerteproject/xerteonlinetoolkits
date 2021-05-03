@@ -361,14 +361,20 @@ function list_users_projects($sort_type) {
 
 }
 
+if (!function_exists('str_contains')) {
+    function str_contains(string $haystack, string $needle): bool
+    {
+        return '' === $needle || false !== strpos($haystack, $needle);
+    }
+}
+
 /**
  * Builds an array with the folders only of the folder suitable for jsTree
  * Called by an AJAX function, that returns the array as a alternative JSON file for jstree
  * @param $folder_id
  * @param $sort_type
- * @param int $group_id if we are looking a group not a folder
  */
-function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only=false, $group_id = -1){
+function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only=false, $type = ""){
 
     /*
     * use the global level for folder indenting
@@ -382,13 +388,20 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    if ($group_id == -1){
-        $query = "select folder_id, folder_name from {$prefix}folderdetails where login_id = ? AND folder_parent = ?";
-        $params = array($_SESSION['toolkits_logon_id'], $folder_id);
-    }else{
+    if ($type == "group_top") {
         $query = "select fd.folder_id, fd.folder_name from {$prefix}folderdetails fd, {$prefix}folder_group_rights fgr "
-        . " where fd.folder_id = fgr.folder_id AND fgr.group_id = ?";
-        $params = array($group_id);
+            . " where fd.folder_id = fgr.folder_id AND fgr.group_id = ?";
+        $params = array($folder_id);
+    }else{
+        $query = "select fd.folder_id, fd.folder_name, fr.role from {$prefix}folderdetails fd, {$prefix}folderrights fr where fr.folder_id = fd.folder_id AND fr.folder_parent = ?";
+        $params = array($folder_id);
+    }
+
+    $top = false;
+    $newtype = $type;
+    if (str_contains($type, "_top")){
+        $top = true;
+        $newtype = str_replace("_top", "", $type);
     }
 
     /*
@@ -396,13 +409,13 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
     */
 
     if ($sort_type == "alpha_down") {
-        $query .= " order by folder_name DESC";
+        $query .= " order by fd.folder_name DESC";
     } elseif ($sort_type == "alpha_up") {
-        $query .= " order by folder_name ASC";
+        $query .= " order by fd.folder_name ASC";
     } elseif ($sort_type == "date_down") {
-        $query .= " order by date_created DESC";
+        $query .= " order by fd.date_created DESC";
     } elseif ($sort_type == "date_up") {
-        $query .= " order by date_created ASC";
+        $query .= " order by fd.date_created ASC";
     }
 
     $query_response = db_query($query, $params);
@@ -418,21 +431,24 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
         $item->xot_id = $row['folder_id'];
         $item->parent = $tree_id;
         $item->text = $row['folder_name'];
-        $item->type = "folder";
+        if ($row['role'] != 'creator' && $newtype != 'group'){
+            $newtype = 'shared';
+        }
+        $item->type = ($newtype == "") ?  "folder" : "folder" . _ .$newtype;
         $item->xot_type = "folder";
         $item->published = false;
         $item->shared = false;
 
         $items[] = $item;
 
-        $files = get_folder_contents($item->xot_id, $item->id,  $sort_type, $copy_only);
+        $files = get_folder_contents($item->xot_id, $item->id,  $sort_type, $copy_only, $newtype);
         if ($files) {
             $items = array_merge($items, $files);
         }
 
     }
-    return $items;
 
+    return $items;
 }
 
 /**
@@ -443,7 +459,7 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
  * @param int $group_id if we are looking for files in a group not folder.
  */
 
-function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, $group_id = -1) {
+function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, $type = "") {
 
     global $xerte_toolkits_site;
 
@@ -452,25 +468,36 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
     $prefix = $xerte_toolkits_site->database_table_prefix;
     $query = NULL;
     $params = NULL;
-    if ($group_id == -1){
-        $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
-            . " otd.parent_template, otd.template_framework, td.template_id, tr.role from {$prefix}templatedetails td, "
-            . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd where td.template_id = tr.template_id and tr.user_id = ? "
-            . " and tr.folder= ? and  otd.template_type_id = td.template_type_id ";
-        $params = array($_SESSION['toolkits_logon_id'], $folder_id);
-    }else{
+
+    if ($type == "group_top") {
         //select templates the same way as regularly, however, now check for group_id in template_group_rights
         $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
             . " otd.parent_template, otd.template_framework, td.template_id, tgr.role from {$prefix}templatedetails td, "
             . " {$prefix}template_group_rights tgr, {$prefix}originaltemplatesdetails otd where td.template_id = tgr.template_id and tgr.group_id = ? "
             . " and otd.template_type_id = td.template_type_id ";
-        $params = array($group_id);
+        if ($copy_only)
+            $query .= " and (tgr.role = 'creator' or tgr.role ='co-author') ";
+        $params = array($folder_id);
+    }else{
+        $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
+            . " otd.parent_template, otd.template_framework, td.template_id, tr.role from {$prefix}templatedetails td, "
+            . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd where td.template_id = tr.template_id "//and tr.user_id = ? "
+            . " and tr.folder= ? and  otd.template_type_id = td.template_type_id ";
+        $params = array($_SESSION['toolkits_logon_id'], $folder_id);
+
+        if ($copy_only)
+            $query .= " and (tr.role = 'creator' or tr.role ='co-author') ";
+
+        $params = array($folder_id);//$_SESSION['toolkits_logon_id'], $folder_id);
     }
 
-    if ($copy_only)
-    {
-        $query .= " and (tr.role = 'creator' or tr.role ='co-author') ";
+    $top = false;
+    $newtype = $type;
+    if (str_contains($type, "_top")){
+        $top = true;
+        $newtype = str_replace("_top", "", $type);
     }
+
 
     if ($sort_type == "alpha_down") {
         $query .= "order by td.template_name DESC";
@@ -510,84 +537,14 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
         $item->xot_id = $row['template_id'];
         $item->parent = $tree_id;
         $item->text = $row['project_name'];
-        if ($group_id == -1)
-            $item->type = strtolower($row['parent_template']);
-        else
-            $item->type = strtolower($row['parent_template'] . "_group");
-        $item->xot_type = "file";
-        $item->editor_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size;
-        $item->preview_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size;
 
-        $items[] = $item;
-    }
-    return $items;
-
-
-
-/**
- * Builds an array with the files only of the group suitable for jsTree
- * Called by an AJAX function, that returns the array as a alternative JSON file for jstree
- * @param $group_id
- * @param $sort_type
- */
-
-function get_files_in_this_group($group_id, $tree_id, $sort_type, $copy_only) {
-
-    global $xerte_toolkits_site;
-
-    $items = array();
-
-    $prefix = $xerte_toolkits_site->database_table_prefix;
-
-    //select templates the same way as in regular get_files_in_this_folder, however, now check for group_id in template_group_rights
-    $query = "select td.template_name as project_name, otd.template_name,"
-        . " otd.parent_template, otd.template_framework, td.template_id, tgr.role from {$prefix}templatedetails td, "
-        . " {$prefix}template_group_rights tgr, {$prefix}originaltemplatesdetails otd where td.template_id = tgr.template_id and tgr.group_id = ? "
-        . " and otd.template_type_id = td.template_type_id ";
-
-    if ($copy_only)
-    {
-        $query .= " and (tgr.role = 'creator' or tgr.role ='co-author') ";
-    }
-
-    if ($sort_type == "alpha_down") {
-        $query .= "order by td.template_name DESC";
-    } elseif ($sort_type == "alpha_up") {
-        $query .= "order by td.template_name ASC";
-    } elseif ($sort_type == "date_down") {
-        $query .= "order by td.date_created DESC";
-    } elseif ($sort_type == "date_up") {
-        $query .= "order by td.date_created ASC";
-    }
-
-    $params = array($group_id);
-
-    $query_response = db_query($query, $params);
-
-    foreach($query_response as $row) {
-
-        // Check whether shared LO is in recyclebin
-        /*
-        if ($row['role'] != 'creator' && $row['role'] != 'co-author')
-        {
-            $sql = "select * from {$prefix}templaterights tr, {$prefix}folderdetails fd where tr.role='creator' and tr.folder=fd.folder_id and tr.template_id=?";
-            $params = array($row['template_id']);
-            $res = db_query_one($sql, $params);
-
-            if ($res !== false && $res['folder_name'] == 'recyclebin')
-            {
-                continue;
-            }
+        if ($row['role'] != 'creator' && $newtype != 'group'){
+            $newtype = 'shared';
         }
-        */
 
-        $item = new stdClass();
-        $item->id = $tree_id . "_" . $row['template_id'];
-        $item->xot_id = $row['template_id'];
-        $item->parent = $tree_id;
-        $item->text = $row['project_name'];
-        $item->type = strtolower($row['parent_template']) . "_group";
+        $item->type = ($newtype == "") ?  strtolower($row['parent_template']) : strtolower($row['parent_template']) . _ .$newtype;
         $item->xot_type = "file";
+
         $item->published = $row['access_to_whom'] != 'Private' || $row['tsugi_published'] == 1;
         $item->shared = $shared['nr_shared'] > 1;
         $item->editor_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size;
@@ -597,26 +554,16 @@ function get_files_in_this_group($group_id, $tree_id, $sort_type, $copy_only) {
     }
     return $items;
 
-}
-
-
-
 /**
  * Builds an array with the whole structure of the folder suitable for jsTree
  * Called by an AJAX function, that returns the array as a alternative JSON file for jstree
  * @param $folder_id
  * @param $sort_type
- * @param int $group_id if we are looking for files in a group not folder.
  */
-function get_folder_contents($folder_id, $tree_id, $sort_type, $copy_only, $group_id = -1) {
+function get_folder_contents($folder_id, $tree_id, $sort_type, $copy_only, $type = "") {
+    $folders = get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, $type);
+    $files = get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, $type);
 
-    if ($group_id == -1){
-        $folders = get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only);
-        $files = get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only);
-    }else{
-        $folders = get_folders_in_this_folder(-1, $tree_id, $sort_type, $copy_only, $group_id);
-        $files = get_files_in_this_folder(-1, $tree_id, $sort_type, $copy_only, $group_id);
-    }
     if ($folders && $files) {
         return array_merge($folders, $files);
     }
@@ -676,7 +623,6 @@ function get_users_projects($sort_type, $copy_only=false)
      * - Workspace
      * - Recyclebin
      *
-     * Groups are toplevel now too
      */
 
     $workspace->workspace_id = "ID_" . $_SESSION['toolkits_logon_id'] . "_F" . get_user_root_folder();
@@ -695,23 +641,28 @@ function get_users_projects($sort_type, $copy_only=false)
     $state->selected = true;
     $item->state = $state;
 
-    //workspace content
+    //workspace content (this includes shared content, group content is handled seperately
     $workspace->items[] = $item;
     $workspace->nodes[$item->id] = $item;
-    $items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only);
+    $items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only, "_top");
     if ($items) {
         $workspace->items = array_merge($workspace->items, $items);
-        foreach($items as $item)
+        foreach($items as $curitem)
         {
-            $workspace->nodes[$item->id] = $item;
+            $workspace->nodes[$curitem->id] = $curitem;
         }
     }
 
     //group shared content
     //check to which groups the user belongs
-    $prefix = $xerte_toolkits_site->database_table_prefix;
     $query = "SELECT * FROM {$prefix}user_group_members, {$prefix}user_groups WHERE user_group_members.login_id = ?".
-        " AND user_group_members.group_id = user_groups.group_id ORDER BY user_groups.group_name";
+        " AND user_group_members.group_id = user_groups.group_id ";
+    if ($sort_type == "alpha_down") {
+        $query .= "order by user_groups.group_name DESC";
+    } elseif ($sort_type == "alpha_up") {
+        $query .= "order by user_groups.group_name ASC";
+    }
+
     $groups = db_query($query, array($_SESSION['toolkits_logon_id']));
     $workspace->groups = array();
     $counter = 0;
@@ -720,14 +671,14 @@ function get_users_projects($sort_type, $copy_only=false)
         $item = new stdClass();
         $item->id = $workspace->groups[$counter];
         $item->xot_id = $group['group_id'];
-        $item->parent = "#";
+        $item->parent = $workspace->workspace_id;
         $item->text = $group['group_name'];
         $item->type = "group";
         $item->xot_type = "group";
 
         $workspace->items[] = $item;
         $workspace->nodes[$item->id] = $item;
-        $items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only, $item->xot_id);
+        $items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only, $type = "group_top");
         if ($items) {
             $workspace->items = array_merge($workspace->items, $items);
             foreach($items as $item)
@@ -772,14 +723,17 @@ function get_users_projects($sort_type, $copy_only=false)
 
     $templates = array();
     $grouptemplates = array();
+    $sharedtemplates = array();
     $rows = db_query($query_for_blank_templates, array());
     foreach($rows as $row)
     {
         $templates[] = strtolower($row['parent_template']);
         $grouptemplates[] = strtolower($row['parent_template']) . "_group";
+        $sharedtemplates[] = strtolower($row['parent_template']) . "_shared";
     }
     $workspace->templates = $templates;
     $workspace->grouptemplates = $grouptemplates;
+    $workspace->sharedtemplates = $sharedtemplates;
 
     return json_encode($workspace);
 }
