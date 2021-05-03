@@ -3248,7 +3248,7 @@
     <text label="Description" type="TextArea" height="150"/>
 	<bgColour label="Highlight Colour" type="ColourPicker"/>
 
-  </group><interactiveVideo menu="Media" menuItem="Interactive Video" hint="Synchronise a variety of types of content to a piece of media." icon="icApplicationTile" thumb="thumbs/interactiveVideo.jpg" remove="true">
+  </group><interactiveVideo menu="Media" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationTile" thumb="thumbs/interactiveVideo.jpg" remove="true">
 
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
 		
@@ -3260,9 +3260,6 @@
 
 		<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 		<trackVideo label="Track video progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs" tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)."/>
-		<newNodes>
-			<overlayPanel><![CDATA[<panel name="Enter Panel Title"/>]]></overlayPanel>
-		</newNodes>
 
 	<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -3322,7 +3319,7 @@
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
-	</mediaPanel><overlayPanel menuItem="Overlay Panel" icon="icApplicationTile" remove="true" max="1">
+	</mediaPanel><overlayPanel menuItem="Overlay Panel" icon="icApplicationTile" remove="false" max="1">
 
 		<name label="Overlay Panel Title" type="TextInput"/>
 
