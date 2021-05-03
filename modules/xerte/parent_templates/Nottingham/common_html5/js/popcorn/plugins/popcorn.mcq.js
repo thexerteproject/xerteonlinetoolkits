@@ -552,6 +552,7 @@ optional: feedback page synch play enable
 					if ($showHsActive == true || options.optional == "false" || options.optional == undefined) {
 						$target.parent().addClass("qWindow").addClass("panel");
 						$target.parent().css({
+							"padding": "5px",
 							"width" : options._w + "%",
 							"overflow-x": "hidden"
 						});

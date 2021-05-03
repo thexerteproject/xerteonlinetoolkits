@@ -54,13 +54,14 @@
 .mcqHolder .optionGroup {
 	padding-top:	5px;
 	padding-bottom:	5px;
+	padding-left: 0.5em;
 	pointer-events: all;
 }
 
 .mcqHolder .optionTxt {
 	cursor:			pointer;
 	position:		relative;
-	margin-left:	2em;
+	margin-left:	1.5em;
 	display:		block;
 }
 
