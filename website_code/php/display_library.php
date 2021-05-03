@@ -459,7 +459,8 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
  * @param int $group_id if we are looking for files in a group not folder.
  */
 
-function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, $type = "") {
+function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, $type = "")
+{
 
     global $xerte_toolkits_site;
 
@@ -478,7 +479,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
         if ($copy_only)
             $query .= " and (tgr.role = 'creator' or tgr.role ='co-author') ";
         $params = array($folder_id);
-    }else{
+    } else {
         $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
             . " otd.parent_template, otd.template_framework, td.template_id, tr.role from {$prefix}templatedetails td, "
             . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd where td.template_id = tr.template_id "//and tr.user_id = ? "
@@ -493,7 +494,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
 
     $top = false;
     $newtype = $type;
-    if (str_contains($type, "_top")){
+    if (str_contains($type, "_top")) {
         $top = true;
         $newtype = str_replace("_top", "", $type);
     }
@@ -512,17 +513,15 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
 
     $query_response = db_query($query, $params);
 
-    foreach($query_response as $row) {
+    foreach ($query_response as $row) {
 
         // Check whether shared LO is in recyclebin
-        if ($row['role'] != 'creator')
-        {
+        if ($row['role'] != 'creator') {
             $sql = "select * from {$prefix}templaterights tr, {$prefix}folderdetails fd where tr.role='creator' and tr.folder=fd.folder_id and tr.template_id=?";
             $params = array($row['template_id']);
             $res = db_query_one($sql, $params);
 
-            if ($res !== false && $res['folder_name'] == 'recyclebin')
-            {
+            if ($res !== false && $res['folder_name'] == 'recyclebin') {
                 continue;
             }
         }
@@ -538,11 +537,11 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
         $item->parent = $tree_id;
         $item->text = $row['project_name'];
 
-        if ($row['role'] != 'creator' && $newtype != 'group'){
+        if ($row['role'] != 'creator' && $newtype != 'group') {
             $newtype = 'shared';
         }
 
-        $item->type = ($newtype == "") ?  strtolower($row['parent_template']) : strtolower($row['parent_template']) . _ .$newtype;
+        $item->type = ($newtype == "") ? strtolower($row['parent_template']) : strtolower($row['parent_template']) . _ . $newtype;
         $item->xot_type = "file";
 
         $item->published = $row['access_to_whom'] != 'Private' || $row['tsugi_published'] == 1;
@@ -553,6 +552,8 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
         $items[] = $item;
     }
     return $items;
+}
+
 
 /**
  * Builds an array with the whole structure of the folder suitable for jsTree

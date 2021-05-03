@@ -708,9 +708,6 @@ function getIcon(nodetype)
         case "folder":
             icon = "website_code/images/Icon_Folder.gif";
             break;
-        case "shared_folder":
-            icon = "website_code/images/Icon_Shared.gif"; // PLACEHOLDER ?
-            break;
         case "group":
             icon = "website_code/images/Icon_Shared.gif";
             break;
