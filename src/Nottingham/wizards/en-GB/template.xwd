@@ -155,7 +155,7 @@
 	  selectAreaTip="Select Area"
 	  resetImageTip="Reset Image"
 	  toggleScreenTip="Toggle Full Screen"
-	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" passage="&lt;p&gt;Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;/p&gt;&lt;p&gt;For example:&lt;/p&gt;&lt;p&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;/p&gt;&lt;p&gt;Where | are adjectives, * are verbs and # are nouns.&lt;/p&gt;" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" mcqDialogClose="Close" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><overlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
+	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" passage="&lt;p&gt;Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;/p&gt;&lt;p&gt;For example:&lt;/p&gt;&lt;p&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;/p&gt;&lt;p&gt;Where | are adjectives, * are verbs and # are nouns.&lt;/p&gt;" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" mcqDialogClose="Close" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
@@ -3306,7 +3306,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></interactiveVideo><mediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
+	</lightboxGroup></interactiveVideo><ivMediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
 
 		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
 		
@@ -3319,17 +3319,17 @@
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
-	</mediaPanel><overlayPanel menuItem="Overlay Panel" icon="icApplicationTile" remove="false" max="1">
+	</ivMediaPanel><ivOverlayPanel menuItem="Overlay Panel" icon="icApplicationTile" remove="false" max="1">
 
 		<name label="Overlay Panel Title" type="TextInput"/>
 
 		<newNodes>
-			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchXot>
-			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
-			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchTextPlus>			
+			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></ivSynchXot>
+			<ivSynchMCQ><![CDATA[<ivSynchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></ivSynchMCQ>
+			<ivSynchTextPlus><![CDATA[<ivSynchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></ivSynchTextPlus>
 		</newNodes>
 
-	</overlayPanel><synchTextPlus menuItem="Text Content" icon="icPageWhiteText" remove="true">
+	</ivOverlayPanel><ivSynchTextPlus menuItem="Text Content" icon="icPageWhiteText" remove="true">
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<text label="Text" type="TextArea" height="250"/>
@@ -3350,7 +3350,7 @@
 		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
 		
 
-	</synchTextPlus><synchSlides menuItem="Slideshow" icon="icFolderImg" remove="true">
+	</ivSynchTextPlus><ivSynchSlides menuItem="Slideshow" icon="icFolderImg" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
@@ -3370,10 +3370,10 @@
 		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
 
 		<newNodes>
-			<synchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></synchSlide>
+			<ivSynchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></ivSynchSlide>
 		</newNodes>
 
-	</synchSlides><synchSlide menuItem="Slide" icon="icBullet" remove="true">
+	</ivSynchSlides><ivSynchSlide menuItem="Slide" icon="icBullet" remove="true">
 
 		<name label="Image Description" type="TextInput"/>
 		<url label="Image" type="media"/>
@@ -3387,7 +3387,7 @@
 			<captionPosH label="Horizontal Position" type="ComboBox" options="Left,Centre,Right" data="left,centre,right" defaultValue="centre" width="100" optional="true"/>
 		</captionOptions>
 
-	</synchSlide><synchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
+	</ivSynchSlide><ivSynchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
@@ -3425,10 +3425,10 @@
 		<topOption label="Drop Down Menu Option 1" type="TextInput" wysiwyg="true" language="true"/>
 
 		<newNodes>
-			<synchMCQOption><![CDATA[<synchMCQOption name="Answer" text="Option text" correct="false"/>]]></synchMCQOption>
+			<ivSynchMCQOption><![CDATA[<synchMCQOption name="Answer" text="Option text" correct="false"/>]]></ivSynchMCQOption>
 		</newNodes>
 
-	</synchMCQ><synchMCQOption menuItem="Answer" icon="icBullet" remove="true">
+	</ivSynchMCQ><ivSynchMCQOption menuItem="Answer" icon="icBullet" remove="true">
 
 		<text label="Answer" type="TextArea" wysiwyg="true"/>
 	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
@@ -3440,7 +3440,7 @@
 		<play label="Play Media" type="CheckBox" defaultValue="false" optional="true"/>
 		<enable label="Enable Controls" type="CheckBox" defaultValue="true" optional="true"/>
 
-	</synchMCQOption><synchXot menuItem="Embed XOT Project" icon="icPageWhiteCodeRed" remove="true">
+	</ivSynchMCQOption><ivSynchXot menuItem="Embed XOT Project" icon="icPageWhiteCodeRed" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<url label="URL" type="TextInput"/>
@@ -3462,17 +3462,17 @@
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
 
 		<newNodes>
-			<synchXotChange><![CDATA[<synchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></synchXotChange>
+			<ivSynchXotChange><![CDATA[<synchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></ivSynchXotChange>
 		</newNodes>
 
-	</synchXot><synchXotChange menuItem="XOT Page Change" icon="icBullet" remove="true">
+	</ivSynchXot><ivSynchXotChange menuItem="XOT Page Change" icon="icBullet" remove="true">
 
 		<page label="Page" type="TextInput" defaultValue="Enter Page Number"/>
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 
-	</synchXotChange><inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Present a survey where answers map to different classes. The results for each class are displayed on a chart at the end of the survey." thumb="thumbs/inventory.jpg" remove="true">
+	</ivSynchXotChange><inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Present a survey where answers map to different classes. The results for each class are displayed on a chart at the end of the survey." thumb="thumbs/inventory.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instructions label="Instructions" type="textArea" height="100"/>
     <feedback label="Inventory Feedback" type="textArea" height="100"/>

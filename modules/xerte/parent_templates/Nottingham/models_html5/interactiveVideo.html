@@ -205,7 +205,7 @@
                             }
                         });
                         if (vimeoFixed == false){
-                            if ($(x_currentPageXML).children("mediaPanel").attr("autoplay") == "true") {
+                            if ($(x_currentPageXML).children("ivMediaPanel").attr("autoplay") == "true") {
                                 $('#playButton').removeClass('fa-x-play').addClass('fa-x-pause');
                             }
                             else {
@@ -392,7 +392,7 @@
             }
             
             this.initTracking = function(){
-                var questions = x_currentPageXML.getElementsByTagName("synchMCQ");
+                var questions = x_currentPageXML.getElementsByTagName("ivSynchMCQ");
                 var numOfQuestions = questions.length;
                 // Number the quesion in the order they appear in the editor
     
@@ -486,14 +486,14 @@
                 var	panelData = $(x_currentPageXML).children(),
                     panelLayout = "grid";
                 
-                var	mediaFile = $(x_currentPageXML).children("mediaPanel").attr("media"),
+                var	mediaFile = $(x_currentPageXML).children("ivMediaPanel").attr("media"),
                     mediaType = "video",
                     maxPanels = 4,
                     mediaPanelIndex;
     
                 // get index of media panel
                 for (var i=0; i<panelData.length; i++) {
-                    if (panelData[i].nodeName == "mediaPanel") {
+                    if (panelData[i].nodeName == "ivMediaPanel") {
                         mediaPanelIndex = i;
                         break;
                     }
@@ -578,9 +578,9 @@
                         title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
                     }
                     // mark the overlay panel and all its relevant children as such
-                    if (panelData[i].nodeName == "overlayPanel") {
+                    if (panelData[i].nodeName == "ivOverlayPanel") {
                         $(panelData[i].children).each(function(j){
-                            if (this.nodeName == "synchSlides")	{
+                            if (this.nodeName == "ivSynchSlides")	{
                                 $(this.children).each(function(k){
                                     this.setAttribute("overlayPan", "true");
     
@@ -691,7 +691,7 @@
                 
                 // _____ LOAD MEDIA _____
                 
-                var mediaPanelData = $(x_currentPageXML).children("mediaPanel");
+                var mediaPanelData = $(x_currentPageXML).children("ivMediaPanel");
                 if (mediaPanelIndex != -1) {
                     this.popcornInstance = this.loadMedia(
                         $('#' + interactiveVideo.panelbaseid + mediaPanelIndex),
@@ -848,7 +848,7 @@
                 
                 //Append the OVERLAY PANEL to the main media.
                 for(i = 0; i < panelData.length; i++) {
-                    if(panelData[i].nodeName == "overlayPanel") {
+                    if(panelData[i].nodeName == "ivOverlayPanel") {
                         $('<div class="overlay" id="mydiv"></div>')
                             .appendTo($('#' + interactiveVideo.panelbaseid + mediaPanelIndex).children(".mainMedia"))
                             .attr("id", interactiveVideo.panelbaseid + i)
@@ -1229,12 +1229,12 @@
             this.loadAudioInFooter = function() {
                 var $mainAudio = $('<div class="x_pageNarration popcornMedia mainMedia"/>').insertBefore($("#x_footerBlock div:first"));
                  $mainAudio
-                    .attr("title", $(x_currentPageXML).children("mediaPanel").attr("tip"))
+                    .attr("title", $(x_currentPageXML).children("ivMediaPanel").attr("tip"))
                     .mediaPlayer({
                         type		:"audio",
-                        source		:$(x_currentPageXML).children("mediaPanel").attr("media"),
+                        source		:$(x_currentPageXML).children("ivMediaPanel").attr("media"),
                         width       :"100%",
-                        autoPlay    :$(x_currentPageXML).children("mediaPanel").attr("autoplay")
+                        autoPlay    :$(x_currentPageXML).children("ivMediaPanel").attr("autoplay")
                     });
                 return Popcorn(".mainMedia audio");
                 x_updateCss(false);
@@ -1325,7 +1325,7 @@
                         });
                             
                         if ($(this).children().length > 0) {
-                            if (this.nodeName == "synchMediaPlus") {
+                            if (this.nodeName == "synchMediaPlus") {  //TODO What is this? Nodename does not exist
                                 // store child data of media content as they aren't synced to the mainMedia
                                 data[data.length-1].childNodes = $(this).children();		
                             } else {
@@ -1429,10 +1429,11 @@
                     }
                 }
                 // add all other synch events
+                debugger;
                 for (var j=0; j<data.length; j++) {
                     // each synch event
                     var thisContent = data[j],
-                        pluginName = thisContent.type.split("synch")[1].toLowerCase();
+                        pluginName = thisContent.type.split("ivSynch")[1].toLowerCase();
                     
                     // ____ ADD SYNCH EVENT ON SLIDER ____
                     // Clear Content should not be counted as an event.
@@ -1457,7 +1458,7 @@
                             }
                         }
                     }
-                    if (thisContent.type == "synchSlides") {
+                    if (thisContent.type == "ivSynchSlides") {
                         $.each(thisContent.allInfo.children, function(i, e){
                             e.optional = thisContent.optional;
                             e.setAttribute("_w", parseFloat(thisContent.allInfo.attributes._w.value));
@@ -1466,7 +1467,7 @@
                         });
                     }
                     if (thisContent.type != "synchEmpty") {
-                        if (thisContent.type == "synchMCQ" || thisContent.type == "synchTextPlus" || thisContent.type == "synchSlides" || thisContent.type == "synchXot") {
+                        if (thisContent.type == "ivSynchMCQ" || thisContent.type == "ivSynchTextPlus" || thisContent.type == "ivSynchSlides" || thisContent.type == "ivSynchXot") {
                             // Collect Look-and-Feel data for hotspots.
                             var optional = thisContent.allInfo.getAttribute("optional");
                             optional = optional == '' || optional == undefined  ? 'false' : optional;
@@ -1502,7 +1503,7 @@
                                 target	  : thisContent.target,
                                 optional  : thisContent.optional,
                                 attrib	  : hsAttributes,
-                                overlayPan: thisContent.overlayPanel
+                                overlayPan: thisContent.ivOverlayPanel
                             };
                         }
                         else {
@@ -1511,7 +1512,7 @@
                                 end		  : thisContent.end,
                                 target	  : thisContent.target,
                                 optional  : thisContent.optional,
-                                overlayPan: thisContent.overlayPanel
+                                overlayPan: thisContent.ivOverlayPanel
                             };
                         }
     
@@ -1566,7 +1567,7 @@
                             popcornInstance.cue(thisContent.start, function() {
                                 this.pause();
                                 // Gray out the background and fix z-index if the media is paused on an overlay panel
-                                if (thisContent.allInfo.getAttribute("overlayPan") == "true" && thisContent.type == "synchXot")
+                                if (thisContent.allInfo.getAttribute("overlayPan") == "true" && thisContent.type == "ivSynchXot")
                                 {
                                     $("#overlayGray").show();
                                 }
@@ -1576,7 +1577,7 @@
                             });
                         }
     
-                        if (data[0].type == "synchMCQ")
+                        if (data[0].type == "ivSynchMCQ")
                         {
                             $(data).each(function (e){
                                 var testSynch = this.allInfo.getAttribute("synchStart");
