@@ -241,6 +241,7 @@ optional: pauseMedia*
 						$iframe.attr("src", $iframe.data("url") + pageStr);
 					}
 				}
+
 				$panelHeight = (($target.parent().parent().height() - 15) / $target.parent().parent().height()) * 100 + "%";
 				$panelWidth  = (($target.parent().parent().width() - 15)  / $target.parent().parent().width())  * 100 + "%";
 				if ($showHsActive == true) 
@@ -253,7 +254,7 @@ optional: pauseMedia*
 					$target.parent().addClass("qWindow").addClass("panel");
 				}
 				if (options.overlayPan) {
-					var hs = $panelHeight - 2 * $target.parent().css("padding").replace(/[^-\d\.]/g, '');
+					var hs = ((($target.parent().parent().height() - 15 - 2 * $target.parent().css("padding").replace(/[^-\d\.]/g, ''))) / $target.parent().parent().height())  * 100 + "%"
 					
 					if (options.optional == undefined || options.optional === "false") {
 						$target.parent().addClass("qWindow").addClass("panel");
@@ -261,6 +262,7 @@ optional: pauseMedia*
 							"max-width": '',
 							"height": $panelHeight,
 							"width": $panelWidth,
+							"top": "3px",
 							"overflow-y": "hidden"
 						}).show();
 						$iframe.show();
@@ -308,12 +310,12 @@ optional: pauseMedia*
 					}
 					
 					
-					$target.css("height", hs);
+					$target.css("height", "100%");
 					if (options.name == "") {
-						$iframe.css("height", h);
+						$iframe.css("height", "100%");
 					}
 					else {
-						$iframe.css("height", hs - 33);
+						$iframe.css("height", ((($target.parent().parent().height() - 26 - 2 * $target.parent().css("padding").replace(/[^-\d\.]/g, ''))) / $target.parent().parent().height())  * 100 + "%")
 					}
 				}
 				$target.parent().show();
