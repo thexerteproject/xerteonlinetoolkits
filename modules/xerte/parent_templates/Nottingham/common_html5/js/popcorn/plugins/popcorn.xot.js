@@ -242,8 +242,12 @@ optional: pauseMedia*
 					}
 				}
 
-				$panelHeight = (($target.parent().parent().height() - 15) / $target.parent().parent().height()) * 100 + "%";
-				$panelWidth  = (($target.parent().parent().width() - 15)  / $target.parent().parent().width())  * 100 + "%";
+				//var marginWidth = ($target.parent().css("padding") + $target.parent().css("margin") + 1) * 2
+				//var marginTop = ($target.parent().css("padding") + $target.parent().css("margin") + 3) * 2
+				var marginWidth = 22;
+				var marginTop = 25;
+				$panelHeight = (($target.parent().parent().height() - marginTop) / $target.parent().parent().height()) * 100 + "%";
+				$panelWidth  = (($target.parent().parent().width() - marginWidth)  / $target.parent().parent().width())  * 100 + "%";
 				if ($showHsActive == true) 
 				{
 					$target.parent().css({
