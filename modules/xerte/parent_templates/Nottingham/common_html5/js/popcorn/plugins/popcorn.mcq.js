@@ -184,6 +184,7 @@ optional: feedback page synch play enable
 
 				//#Warning: unused by Xerte at the current time.
 				if (action >= 0) {
+					$(".mcqContinueBtn").hide();
 					$('<button>')
 						.appendTo($feedbackDiv)
 						.button({"label": options.continueBtnTxt != "" ? options.continueBtnTxt : "Continue"})
