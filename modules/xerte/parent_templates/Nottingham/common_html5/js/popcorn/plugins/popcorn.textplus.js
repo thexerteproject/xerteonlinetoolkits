@@ -174,6 +174,7 @@ optional: end position* line
 						"left": 0,
 						"padding": 0,
 						"overflow-x": '',
+						"overflow" : '',
 						"max-width": ''
 					}).hide();
 				}

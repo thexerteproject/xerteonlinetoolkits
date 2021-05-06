@@ -624,6 +624,7 @@ optional: feedback page synch play enable
 						"height": "auto",
 						"margin-right" : 0,
 						"overflow-x": '',
+						"overflow" : '',
 						"max-width": ''
                 	}).hide();
 				}
