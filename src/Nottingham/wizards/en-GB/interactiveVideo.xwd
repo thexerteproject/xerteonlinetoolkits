@@ -1,4 +1,4 @@
-<wizard menus="Media">
+<wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
 	  <interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo>
@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- INTERACTIVE VIDEO======================= -->
-  <interactiveVideo menu="Media" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationTile" thumb="thumbs/interactiveVideo.jpg" remove="true">
+  <interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationTile" thumb="thumbs/interactiveVideo.jpg" remove="true">
 
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
 		
@@ -63,7 +63,7 @@
 			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
 			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40%"/>
 		</hsAppearance>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
 		<clearPanel label="Clear Existing Content"  type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
@@ -102,7 +102,7 @@
 		<url label="Image" type="media"/>
 		<synchStart label="Synch Point" type="TextInput"/>
 		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
 
 		<captionOptions type="group" label="Caption" optional="true">
 			<caption label="Text" type="TextInput" wysiwyg="true" defaultValue="Enter Caption Text" optional="true"/>
@@ -123,7 +123,7 @@
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
 		<disable label="Disable Controls" type="CheckBox"/>
 		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
@@ -187,7 +187,7 @@
 			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
 			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40"/>
 		</hsAppearance>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
 
@@ -202,7 +202,7 @@
 		<page label="Page" type="TextInput" defaultValue="Enter Page Number"/>
 
 		<synchStart label="Synch Point" type="TextInput"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
 
 	</ivSynchXotChange>
 	
