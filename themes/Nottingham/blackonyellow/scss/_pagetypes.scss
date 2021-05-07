@@ -183,6 +183,16 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   padding-left: 10px;
   background:darken($lightestcolor, 5%) !important;
 }
+//*****highlight text******/
+.x_textHighlight_page .ui-widget-content .ui-state-default {
+  border-radius: $smallroundedcorners;
+  background: $blackordarkest;
+  border: none;
+  color: $lightestcolor;
+}
+.x_textHighlight_page .ui-widget-content .ui-state-default:focus {
+  color: darken($lightestcolor, 30%);
+}
 //*****annotated diagram******/
 #listholder a.listitem, a:visited {
   color:$contrastcolor ;
