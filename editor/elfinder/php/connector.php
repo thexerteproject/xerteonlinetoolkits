@@ -39,7 +39,7 @@ if (!isset($_SESSION['toolkits_logon_id'])){
 $rootpath = $_REQUEST['uploadDir'];
 $rooturl = $_REQUEST['uploadURL'];
 
-if (strpos($rootpath, 'USER-FILES') === false || strpos($rooturl, 'USER-FILES') === false)
+if (strpos($rootpath, 'USER-FILES') === false  || strpos($rootpath, '../') !== false || strpos($rooturl, 'USER-FILES') === false)
 {
     die("Invalid upload location");
 }

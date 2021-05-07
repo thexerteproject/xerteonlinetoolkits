@@ -79,7 +79,7 @@ if (strpos($_FILES['Filedata']['name'], '../') !== false)
     $pass = false;
 if (strpos($_FILES['Filedata']['name'], '...') !== false)
     $pass = false;
-if (strpos($_GET['path'], 'USER-FILES') === false)
+if (strpos($_GET['path'], 'USER-FILES') === false || strpos($_GET['path'], '../') !== false)
     $pass = false;
 
 if ($pass === false) {
