@@ -319,7 +319,7 @@ optional: pauseMedia*
 						$iframe.css("height", "100%");
 					}
 					else {
-						$iframe.css("height", ((($target.parent().parent().height() - 26 - 2 * $target.parent().css("padding").replace(/[^-\d\.]/g, ''))) / $target.parent().parent().height())  * 100 + "%")
+						$iframe.css("height", ((($target.parent().parent().height() - 44 - 2 * $target.parent().css("padding").replace(/[^-\d\.]/g, ''))) / $target.parent().parent().height())  * 100 + "%")
 					}
 				}
 				$target.parent().show();
