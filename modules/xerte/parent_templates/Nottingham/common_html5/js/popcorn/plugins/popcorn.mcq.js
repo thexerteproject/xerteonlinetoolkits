@@ -77,25 +77,23 @@ optional: feedback page synch play enable
             });
             interactiveVideo.questions[ia_nr] = true;
             var scormScore = 0;
-            if (ia_nr == numOfQuestions-1) {
-                var score = 0;
-                for (var i=0; i<numOfQuestions; i++)
-                {
-                    if (interactiveVideo.questions[i])
-                    {
-                        score++;
-                    }
-                }
-                scormScore = Math.ceil(score / numOfQuestions * 100);
-			}
-			//Push results
-			var result =
+			var score = 0;
+			for (var i=0; i<numOfQuestions; i++)
+			{
+				if (interactiveVideo.questions[i])
 				{
-					success: allValid,
-					score: scormScore
-				};
-            XTExitInteraction(x_currentPage, ia_nr, result, l_options, l_answers, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
-            XTSetPageScore(x_currentPage, scormScore, x_currentPageXML.getAttribute("trackinglabel"));
+					score++;
+				}
+			}
+			scormScore = Math.ceil(score / numOfQuestions * 100);
+			var result =
+			{
+				success: allValid,
+				score: scormScore
+			};
+			//Push results
+			XTSetPageScore(x_currentPage, scormScore, x_currentPageXML.getAttribute("trackinglabel"));
+			XTExitInteraction(x_currentPage, ia_nr, result, l_options, l_answers, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
             interactiveVideo.enableControls(media.media, true);
         }
 		
