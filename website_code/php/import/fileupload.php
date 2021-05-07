@@ -25,7 +25,7 @@ if (!isset($_SESSION['toolkits_logon_username']))
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
 }
-if (strpos($_POST['mediapath'], 'USER-FILES') === false)
+if (strpos($_POST['mediapath'], 'USER-FILES') === false || strpos($_POST['mediapath'], '../') !== false)
 {
     // Invalid upload path
     _debug("Invalid or illegal mediapath");
