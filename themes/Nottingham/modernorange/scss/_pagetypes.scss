@@ -156,6 +156,21 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   border-radius: $smallroundedcorners;
   padding-left: 10px;
 }
+//*****highlight text******/
+.x_textHighlight_page .ui-widget-content button.ui-state-default {
+  border-radius: $smallroundedcorners;
+  background: $accent1;
+  border: none;
+  color: #ffffff;
+}
+.x_textHighlight_page .ui-widget-content button.ui-state-default.ui-state-active {
+  background: $lightestcolor;
+  color: $darkestcolor;
+}
+.x_textHighlight_page .ui-tabs {
+	border-radius:$mediumroundedcorners;
+	background: $brightcolor;
+}
 //*****annotated diagram******/
 #listholder a.listitem, a:visited {
   color:$contrastcolor ;
