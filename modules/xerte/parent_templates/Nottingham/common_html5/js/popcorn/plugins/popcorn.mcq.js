@@ -122,7 +122,6 @@ optional: feedback page synch play enable
 				}
 			}
 			
-
 			// feedback if question has true/false answers
 			if (judge == true) {
 				var fb;

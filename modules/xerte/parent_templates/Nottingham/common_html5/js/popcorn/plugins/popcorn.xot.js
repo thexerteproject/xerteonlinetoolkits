@@ -337,6 +337,7 @@ optional: pauseMedia*
 							"padding": 0,
 							"height": "auto",
 							"margin-right" : 0,
+							"overflow": '',
 							"overflow-x": '',
 							"overflow-y": ''
 						}).hide();

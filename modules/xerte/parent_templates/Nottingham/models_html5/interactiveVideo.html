@@ -326,6 +326,7 @@
             };
     
             this.leavePage = function () {
+                $x_pageHolder.css("overflow", '');
                 currSegment.end = lastTime;
                 this.addSegment(currSegment);
                 $(".youTube, .vimeo").each(function() {
