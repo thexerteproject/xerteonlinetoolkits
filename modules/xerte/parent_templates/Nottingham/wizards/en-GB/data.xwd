@@ -213,9 +213,9 @@
       PersonalLastLabel = "Your last attempt"
       AvgLabel = "Avg. of all attempts"
       ></showGraph>]]></showGraph><slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" nextBtnTip="Next" priorBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></slideshow><stopTracking><![CDATA[<stopTracking name="Enter Page Title" textIntro="Instruction" buttonLbl="Stop and finish tracking of this session" textAfter="You can now close the window">Enter text for the page here</stopTracking>]]></stopTracking><summary><![CDATA[<summary name="Enter Page Title" summaryHeader="Summary" summary="Summarise the key points" nextstepsHeader="Next Steps" nextsteps="Suggest how the knowledge can be applied and any useful next steps"/>]]></summary><tabNav><![CDATA[<tabNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></tabNav><tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" panelWidth="Large"/>]]></tabNavExtra><table><![CDATA[<table name="Enter Page Title" text="Enter text for the page here" align="left"><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table><text><![CDATA[<text name="Enter Page Title">Enter text for the page here</text>]]></text><textCorrection><![CDATA[<textCorrection name="Enter Page Title" copyText="false" align="Left" introduction="Enter text for the page here" wrongText="Enter the wrong text here" answer="Enter the correct text here" feedback="Enter the feedback here" panelWidth="Medium" checkBtn="Check"  textRight="Your answer is correct" textWrong="Your answer is incorrect"  resultLabel="Result" FurtherClarificationLabel="Feedback" answerLabel="Answer" attemptLabel="Attempts" textIncomplete="You have not attempted the question"/>]]></textCorrection><textDrawing><![CDATA[<textDrawing name="Enter Page Title" desc="Enter a description" align="left" interactivity="off"> </textDrawing>]]></textDrawing><textGraphics><![CDATA[<textGraphics name="Enter Page Title" align="Left" imagesize="auto" url="Select an Image" tip="Enter a Description for Accessibility" transcriptbuttonlabel="Transcript">Enter text for the page here</textGraphics>]]></textGraphics><textHighlight><![CDATA[<textHighlight name="Enter Page Title" 
-		text="Enter text for the page here" textPos="top" textTitle="Introduction" 
-		initialText="Enter initial text here" initialPos="panelA" initialTitle="Initial Text" 
-		suggestedText="Enter suggested answer text here" suggestedPos="panelB" suggestedTitle="Suggested Text" 
+		text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" textPos="top" textTitle="Introduction" 
+		initialText="&lt;p&gt;Enter initial text here&lt;/p&gt;" initialPos="panelA" initialTitle="Initial Text" 
+		suggestedText="&lt;p&gt;Enter suggested answer text here&lt;/p&gt;" suggestedPos="panelB" suggestedTitle="Suggested Text" 
 		notesPos="panelB" notesTitle="Notes"
 		mode="Highlight" highlight1="0xFFFF00" highlight2="0xFFCC00" 
 		selectBtn="Highlight" 
@@ -6478,7 +6478,7 @@
 	
 	<feedbackGroup type="group" label="Feedback Text" optional="true" tooltip="The optional feedback text appears after answers are submitted">
 		<feedbackTitle label="Title" type="TextInput" wysiwyg="true" condition="(feedbackPos=='panelA'||feedbackPos=='panelB') || download=='true'" defaultValue="Feedback" optional="true" tooltip="Title to appear on tab and in downloaded document"/>
-		<feedback label="Text" type="TextArea" height="100" defaultValue="Enter feedback text here" optional="true"/>
+		<feedback label="Text" type="TextArea" height="100" defaultValue="&lt;p&gt;Enter feedback text here&lt;/p&gt;" optional="true"/>
 		<feedbackPos label="Position" type="combobox" options="Panel 1,Panel 2,Lightbox" data="panelA,panelB,lightbox" conditionTrigger="true" defaultValue="panelB" optional="true" tooltip="The position of the feedback text on the screen"/>
 	</feedbackGroup>
 	
