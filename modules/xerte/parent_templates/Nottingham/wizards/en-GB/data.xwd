@@ -6479,7 +6479,7 @@
 	<feedbackGroup type="group" label="Feedback Text" optional="true" tooltip="The optional feedback text appears after answers are submitted">
 		<feedbackTitle label="Title" type="TextInput" wysiwyg="true" condition="(feedbackPos=='panelA'||feedbackPos=='panelB') || download=='true'" defaultValue="Feedback" optional="true" tooltip="Title to appear on tab and in downloaded document"/>
 		<feedback label="Text" type="TextArea" height="100" defaultValue="Enter feedback text here" optional="true"/>
-		<feedbackPos label="Position" type="combobox" options="Panel 1,Panel 2,Lightbox" data="panelA,panelB,lightbox" conditionTrigger="true" defaultValue="lightbox" optional="true" tooltip="The position of the feedback text on the screen"/>
+		<feedbackPos label="Position" type="combobox" options="Panel 1,Panel 2,Lightbox" data="panelA,panelB,lightbox" conditionTrigger="true" defaultValue="panelB" optional="true" tooltip="The position of the feedback text on the screen"/>
 	</feedbackGroup>
 	
 	<notesText label="Notes Placeholder Text" type="TextArea" height="100" defaultValue="" condition="mode=='Notes'" optional="true" tooltip="When in note taking mode this text will appear in the notes area by default"/>
