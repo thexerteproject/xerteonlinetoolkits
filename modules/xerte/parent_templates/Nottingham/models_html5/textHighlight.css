@@ -1,0 +1,58 @@
+/* textHighlight.html */
+	
+	#textHolder {
+		margin-bottom: 1em;
+	}
+	
+	#initTxt, #notesTxt, #suggestedTxt {
+		border: 1px solid rgb(169, 169, 169);
+		overflow: auto;
+	}
+	
+	#notesTxt {
+		padding: 0.3em;
+	}
+	
+	#notesTxt p {
+		padding-left: 0;
+		padding-right: 0;
+	}
+	
+	#notesTxt p:first-child {
+		padding-top: 0;
+	}
+	
+	.btnHolder {
+		float: right;
+		padding-top: 0.3em;
+	}
+	
+	.btnHolder button {
+		float: left;
+		margin-right: 0em;
+	}
+	
+	.btnHolder button:not(:first-of-type) {
+		margin-left: .5em;
+	}
+	
+	#pageContents .ui-tabs .ui-tabs-panel {
+		padding: 0.5em 0.5em 0.6em;
+	}
+	
+	#mainBtnHolder {
+		margin-top: 1em;
+		float: right;
+	}
+	
+	.tabHolder.ui-widget-header {
+		border: none;
+	}
+	
+	.tabHolder .navChildTitle.ui-tabs-active {
+		border-bottom: 1px solid white !important;
+	}
+	
+	.paneHolder {
+		overflow: auto;
+	}
