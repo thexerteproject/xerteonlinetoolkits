@@ -13,6 +13,7 @@
         var active = 0;
         var nextPosition;
         var is_keyboard = false
+        var tries = 30;
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function () {
             this.resize()
@@ -66,7 +67,7 @@
                                 for (var j = 0; j < columns; j++) {
                                     if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined && counter !== columns) {
                                         $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
-                                        // debugger
+
                                         // var x = startPositionArray[i][0]
                                         // var y = counter
                                         // var coord = x + "," + y
@@ -336,7 +337,7 @@
             }
 
             next = function (e, x, y){
-                debugger
+
                 var columns = $('#crossword-table tbody tr:eq(0) td').length;
 
                 var tabColumns = x * columns
@@ -418,7 +419,7 @@
 
             addHighlightHint = function (id, direction){
                 removeHighlight();
-                debugger
+
                 var rows = $('#crossword-table tbody tr').length;
                 var columns = $('#crossword-table tbody tr:eq(0) td').length;
                 id = parseInt(id)-1
@@ -618,7 +619,7 @@
 			// Create crossword object with the words and clues
 			var cw = getCrossword(words, hints)
 			// create the crossword grid (try to make it have a 1:1 width to height ratio in 10 tries)
-			var tries = 10;
+			//var tries = 30;
 			var grid = cw.getSquareGrid(tries);
 
 			// report a problem with the words in the crossword
@@ -679,7 +680,6 @@
                 $(".crossword-input").css("width", amountOfpixels)
                 $(".crossword-input").css("height", amountOfpixels)
 
-                debugger
                 var cluesWidth = $x_pageHolder.width() * 0.30
                 $("#clues-container").css("width", cluesWidth+"px")
 
@@ -1122,7 +1122,7 @@
                 var letters = [];
                 var coordinate = ""
                 var table = document.getElementById('crossword-table');
-                var grid = cw.getSquareGrid(10);
+                var grid = cw.getSquareGrid(tries);
                 for(var d = 0; d < grid.length; d++){
                     for(var c = 0; c < grid[d].length; c++){
                         if(grid[d][c] !== null){
@@ -1250,8 +1250,6 @@
 
 
 		var CrosswordUtils = {
-			PATH_TO_PNGS_OF_NUMBERS: "/modules/xerte/parent_templates/Nottingham/common_html5/numbers/",
-
 			toHtml: function (grid, show_answers) {
 				if (grid == null) return;
 				var html = [];
