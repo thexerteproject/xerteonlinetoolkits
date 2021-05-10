@@ -36,6 +36,8 @@
 		var AmountOfWrongScore = 0;
 		var highlightsArray= [];
 		var allHighlightsArray= [];
+		var amountOfCorrect = 0
+		var amountOfWrong = 0
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 
@@ -52,6 +54,9 @@
 			this.attempts = 0;
 			hotSpotScore = 0;
 			AmountOfWrongScore = 0;
+			amountOfCorrect = 0;
+			amountOfWrong = 0;
+			highlightsArray= [];
 			this.highlightsArray= [];
 			this.allHighlightsArray= [];
 			this.amountOfCorrect = 0;
@@ -89,7 +94,6 @@
 			}
 			XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
 
-			debugger;
 			var $textHolder = $('#textHolder');
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				$textHolder.remove();
@@ -182,7 +186,9 @@
 			$("#checkButton").button({
 				label: "Check"
 			}).click(function (){
-
+				debugger
+				hotSpotScore = 0;
+				AmountOfWrongScore = 0;
 				amountOfCorrectOptions = 0
 				allHighlightsArray.forEach((highlight)=>{
 					if(highlight.getAttribute("truth") === "true"){
@@ -190,8 +196,8 @@
 					}
 				})
 
-				var amountOfCorrect = 0;
-				var amountOfWrong = 0;
+				amountOfCorrect = 0;
+				amountOfWrong = 0;
 				highlightsArray.forEach((highlight)=>{
 					if(highlight.getAttribute("truth") === "true"){
 						amountOfCorrect++;
@@ -226,7 +232,6 @@
 					var name;
 					highlightsArray.forEach((highlight, index) =>{
 						name = "Hotspot" + " " + highlight.getAttribute("name");
-
 						var points = JSON.parse(highlight.getAttribute("points"))
 						var x = (points[0]["x"]+points[1]["x"])/2
 						var y = (points[0]["y"]+points[2]["y"])/2
@@ -238,7 +243,7 @@
 							AmountOfWrongScore++;
 						}
 					})
-					debugger
+
 					var scoreTxt = x_currentPageXML.getAttribute("scoreTxt")
 					if(scoreTxt==""){
 						scoreTxt = "You have /r answers right and /w wrong"
@@ -321,15 +326,15 @@
 		};
 
 		this.resizeImg = function(firstLoad) {
-			debugger
+
 			var imgMaxW, imgMaxH;
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
-				imgMaxW = Math.round($x_pageHolder.width() - 30);
-				imgMaxH = Math.round($x_pageHolder.height() - 30);
+				imgMaxW = Math.round($x_pageHolder.width() * 0.85 -20);
+				imgMaxH = Math.round($x_pageHolder.height() * 0.85 -20);
 				$('#panel').css('margin', '0px');
 			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
-				imgMaxW = Math.round($x_pageHolder.width() * 0.8 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxW = Math.round($x_pageHolder.width() * 0.6 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 0.6 - 20);
 			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.3 - 20);
 				imgMaxH = Math.round($x_pageHolder.height() - 50);
@@ -346,13 +351,11 @@
 			// }
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
 
-			debugger
-
 			$img.css({
 				"opacity"	:1,
 				"filter"	:'alpha(opacity=100)',
-				"max-height" : imgMaxH-50,
-				"max-width"	:imgMaxW-50
+				"max-height" : imgMaxH,
+				"max-width"	:imgMaxW
 			});
 			//
 			// if($img.width() > $img.height()){

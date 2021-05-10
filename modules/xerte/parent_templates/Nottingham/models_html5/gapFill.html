@@ -1,4 +1,4 @@
-<script type="text/javascript">
+ <script type="text/javascript">
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
@@ -160,7 +160,9 @@
 						answerData.push(decodedAnswer.split(delimiter));
 
 					} else if (x_currentPageXML.getAttribute("interactivity") == "Drop Down Menu") {
-						var allAnswers = decodedAnswer.split(dropDownDelimiter);
+
+						var answer = $("<div>").html(decodedAnswer).text();
+						var allAnswers = answer.split(dropDownDelimiter);
 						answerData.push(allAnswers[0].split(delimiter));
 						
 						// options in combo boxes include all correct answers (1st answers separated by delimiter ","), all incorrect answers (subsequent answers separated by dropDownDelimiter "/") & all noise answers (separated by noiseDelimiter)
@@ -184,6 +186,7 @@
 								allAnswers.splice(j+1,1);
 							}
 						}
+
 						allDropDownAnswers.push(allAnswers);
 						gapFillStr += '<select id="gap' + (i-1)/2 + '" class="menu" tabindex="' + tabIndex + '">';
 						gapFillStr += '<option value=" "> </option>';
@@ -194,10 +197,11 @@
 						
 					} else { // fill in the blank
 
-						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + decodedAnswer + '" tabindex="' + tabIndex + '" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" />';
+						var answer = $("<div>").html(decodedAnswer).text();
+						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + answer + '" tabindex="' + tabIndex + '" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" />';
 
 						var tempArray = [];
-						tempArray = decodedAnswer.split(delimiter);
+						tempArray = answer.split(delimiter);
 						if (x_currentPageXML.getAttribute("casesensitive") != "true" && x_currentPageXML.getAttribute("casesensitive") != "1") {
 							for (var j=0; j < tempArray.length; j++) {
 								tempArray[j] = tempArray[j].toLowerCase();
@@ -222,6 +226,7 @@
 						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
 					$this.html(longest);
 				} else if (x_currentPageXML.getAttribute("interactivity") != "Drop Down Menu") {
+
 					var	answers = $this.attr("value").split(delimiter),
 						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
 					$this.attr("value", longest);
@@ -292,6 +297,7 @@
 			else
 			{
                 for (interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {
+
                     correctAnswers = [];
                     correctOptions = [];
                     name = "interaction number" + " " + interactionNumber;
@@ -314,7 +320,6 @@
                             result: correctAnswer
                         });
 					}
-                    debugger;
                     XTEnterInteraction(x_currentPage,  interactionNumber , 'multiplechoice', name, correctOptions, correctAnswers, "Correct", x_currentPageXML.getAttribute("grouping"));
                 }
 			}
@@ -351,6 +356,7 @@
 				})
 				//.attr("tabindex",tabIndex) // **
 				.click(function() {
+
 					var wrong = 0;
 					$targetHolder.find("select").each(function(i) {
 						var $this = $(this);
@@ -440,7 +446,7 @@
 											$this.data("attempt", $this.data("attempt")+1);
 											if ($this.data("attempt") % 2 != 0) { // odd num
 												var currentHint = $this.data("hint"),
-														correctAnswer = answerData[$this.data("index")][0];
+														correctAnswer = answerData[$this.data("index")][0]
 
 												if (currentHint == undefined) { // show 1st letter
 													currentHint = "";

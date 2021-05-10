@@ -307,6 +307,7 @@
 
 
             this.init = function () {
+
 				$('#result, #mainFeedback, #correctAnswer').hide();
 			
                 var hasExited = false;
@@ -382,7 +383,7 @@
                     elements.push(
                         {
                             label: this.getAttribute("name"),
-                            answer: this.getAttribute("answer"),
+                            answer: $("<div>").html(this.getAttribute("answer")).text(),
                             correct: this.getAttribute("correct"),
                             feedback: this.getAttribute("feedback")
                         }
@@ -470,6 +471,7 @@
                         label: checkBtnTxt
                     })
                     .click(function () {
+                        $("#checkButton").prop("disabled",true);
                         var tries;
 						if (x_currentPageXML.getAttribute("amountOfTries") != undefined && $.isNumeric(x_currentPageXML.getAttribute("amountOfTries"))) {
 							tries = parseInt(x_currentPageXML.getAttribute("amountOfTries"));

@@ -103,15 +103,18 @@ function iframeResize($iframe) {
 
 function initSidebar(){
 	var $window = $(window)
+	var top = $window.width() <= 980 ? 290 : 210
+	var bottom = 270
 
 	//TOC
+
 	$('.bs-docs-sidenav').affix
 	(
 		{
 			offset:
 			{
-				top: function () { return $window.width() <= 980 ? 290 : 210 },
-				bottom: 270
+				top: top,
+				bottom: bottom
 			}
 		}
 	)
@@ -817,7 +820,6 @@ function setup() {
 							} else {
 								linkAction = "x_navigateToPage(false, { type:'linkID', ID:'" + $(data).find('page').eq(index[0]).children().eq(index[1]).attr('linkID') + "' }); $.featherlight.close(true); return false;";
 							}
-
 							var matchType = uniqueCats.length == catsUsed.length ? 'fullMatch' : 'partialMatch',
 								$resultDiv = $('<div class="result ' + matchType + '"><a href="#" onclick="' + linkAction + '"><i class="fa ' + faIcon + ' text-white ml-3" aria-hidden="true"></i>' + title + '</a>' + '<div class="matchList"><i>' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('matchTitle1') != null ? languageData.find("search")[0].getAttribute('matchTitle1') : "Matches") + ': ' + catMatches + '</i></div></div>');
 
@@ -1508,7 +1510,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 							var tocName = $(this).attr('name');
 
 							// remove size & background color styles from links on toc
-							if ($('<p>' + tocName + '</p>').children().length > 0) {
+							if ($('<p>' + tocName + '</p>').children().length > 0 && tocName.indexOf("sup") < 0) {
 								tocName = $(tocName);
 								tocName.css({ 'font-size': '', 'background-color': 'transparent' });
 								tocName.find('[style*="font-size"]').css('font-size', '');
