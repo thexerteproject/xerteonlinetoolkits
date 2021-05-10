@@ -173,15 +173,9 @@ function folders_reopen(){
 	 * @author Patrick Lockley
 	 */
 // TODO: depracate
-function file_area_redraw_stateChanged(){
-
-	if (xmlHttp.readyState==4){ 
-	
-		document.getElementById("file_area").innerHTML =  xmlHttp.responseText;
-		sort_display_settings();
-
-	}
-
+function file_area_redraw_stateChanged(response){
+    document.getElementById("file_area").innerHTML =  response;
+    sort_display_settings();
 }
 
 	 /**
@@ -283,19 +277,16 @@ function screen_refresh_no_ajax(){
 	 */
 //TODO : depracate
 function screen_refresh(){
-
-	if(setup_ajax()!=false){
-
-		var url="website_code/php/templates/your_templates.php";
-
-   		xmlHttp.open("post",url,true);
-		xmlHttp.onreadystatechange=file_area_redraw_stateChanged;
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-		
-		xmlHttp.send('sort_type=' + document.sorting.type.value); 
-
-	}
-
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/templates/your_templates.php",
+        data: {
+            sort_type: document.sorting.type.value
+        }
+    })
+    .done(function (response) {
+        file_area_redraw_stateChanged(response);
+    });
 }
 
 	 /**
