@@ -349,15 +349,12 @@ function close_edit_window(path) {
  * @author Patrick Lockley
  */
 
-function file_version_sync() {
-
-    if (xmlHttp.readyState == 4) {
-        response = xmlHttp.responseText.trim();
-        if (response != "") {
-            alert(response);
-        }
-        refresh_workspace();
+function file_version_sync(response) {
+    response = response.trim();
+    if (response != "") {
+        alert(response);
     }
+    refresh_workspace();
 }
 
 /**
@@ -368,31 +365,29 @@ function file_version_sync() {
  * @author Patrick Lockley
  */
 
-function file_need_save() {
+function file_need_save(response) {
+    result = response.split("~*~");
 
-    if (xmlHttp.readyState == 4) {
+    if (response != "") {
 
-        result = xmlHttp.responseText.split("~*~");
+        var response = confirm(result[0]);
 
-        if (xmlHttp.responseText != "") {
-
-            var response = confirm(result[0]);
-
-            if (response) {
-
-                var url = "website_code/php/versioncontrol/update_file.php";
-
-                xmlHttp.open("post", url, true);
-                xmlHttp.onreadystatechange = file_version_sync;
-                xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xmlHttp.send('file_path=' + result[1] + "&template_id=" + result[2]);
-
-            }
-
+        if (response) {
+            $.ajax({
+                type: "POST",
+                url: "wwebsite_code/php/versioncontrol/update_file.php",
+                data: {
+                    file_path: result[1],
+                    template_id: result[2]
+                }
+            })
+            .done(function (response) {
+                file_version_sync(response);
+            });
         }
 
-    }
 
+    }
 }
 
 /**
@@ -422,18 +417,16 @@ function edit_window_close(path) {
         }
 
     }
-
-    if (setup_ajax() != false) {
-
-        var url = "website_code/php/versioncontrol/template_close.php";
-
-        xmlHttp.open("post", url, true);
-        xmlHttp.onreadystatechange = file_need_save;
-        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlHttp.send('file_path=' + path);
-
-    }
-
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/versioncontrol/template_close.php",
+        data: {
+            file_path: path
+        }
+    })
+    .done(function (response) {
+        file_need_save(response);
+    });
 }
 
 /**
@@ -449,16 +442,16 @@ function example_window(example_id) {
 
     if (example_id != 0) {
 
-        if (setup_ajax() != false) {
-
-            var url = "website_code/php/properties/screen_size_template.php";
-
-            xmlHttp.open("post", url, true);
-            xmlHttp.onreadystatechange = example_stateChanged;
-            xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xmlHttp.send('tutorial_id=' + example_id);
-
-        }
+        $.ajax({
+            type: "POST",
+            url: "website_code/php/properties/screen_size_template.php",
+            data: {
+                tutorial_id: example_id
+            }
+        })
+        .done(function (response) {
+            example_stateChanged(response);
+        });
 
     } else {
 
@@ -534,26 +527,19 @@ function preview_window(admin) {
  * @author Patrick Lockley
  */
 
-function example_stateChanged() {
+function example_stateChanged(response) {
+    if (response != "") {
 
-    if (xmlHttp.readyState == 4) {
+        temp = response.toString().split("~");
 
-        if (xmlHttp.responseText != "") {
+        parameter = "height=" + temp[1] + ",width=" + temp[0] + ",status=No";
 
-            temp = xmlHttp.responseText.toString().split("~");
+        var property_id = temp[2];
 
-            parameter = "height=" + temp[1] + ",width=" + temp[0] + ",status=No";
+        var NewWindow = window.open(site_url + url_return("play", property_id), "examplewindow" + property_id, parameter);
 
-            var property_id = temp[2];
-
-            var NewWindow = window.open(site_url + url_return("play", property_id), "examplewindow" + property_id, parameter);
-
-            NewWindow.focus();
-
-        }
-
+        NewWindow.focus();
     }
-
 }
 
 /**
@@ -647,36 +633,14 @@ function refresh_workspace() {
     $.ajax({
         type: "POST",
         url: "website_code/php/templates/get_templates_sorted.php",
-        data: {sort_type: document.sorting.type.value},
-        dataType: "json",
-        success: function(data) {
-            workspace = data;
-            init_workspace();
+        data: {
+            sort_type: document.sorting.type.value
         }
-    });
-}
-
-/**
- *
- * Function selection changed state changed
- * This function redisplays the file area after sorting
- * @version 1.0
- * @author Patrick Lockley
- */
-
-
-function refreshworkspace_stateChanged() {
-
-    if (xmlHttp.readyState == 4) {
-
-        //document.getElementById('file_area').innerHTML = xmlHttp.responseText;
-
-        var response = xmlHttp.responseText;
-        workspace = JSON.parse(response);
+    })
+    .done(function(response){
+        workspace = response;
         init_workspace();
-
-    }
-
+    });
 }
 
 function getProjectInformation(user_id, template_id) {
@@ -692,64 +656,8 @@ function getProjectInformation(user_id, template_id) {
         type: "POST",
         url: "website_code/php/templates/get_template_info.php",
         data: {user_id: user_id, template_id: template_id},
-        dataType: "json",
-        success: function(info) {
-            document.getElementById('project_information').innerHTML = info.properties;
-            if (info.role == 'read-only') {
-                // disable edit button.
-                var editbtn = document.getElementById("edit");
-                var propertiesbtn = document.getElementById("properties");
-                var deletebtn = document.getElementById("delete");
-                var publishbtn = document.getElementById("publish");
-
-                editbtn.disabled = "disabled";
-                editbtn.className = "xerte_button_c_no_width disabled";
-                editbtn.onclick = "";
-
-                publishbtn.disabled = "disabled";
-                publishbtn.className = "xerte_button_c_no_width disabled";
-                publishbtn.onclick = "";
-
-                propertiesbtn.disabled = "disabled";
-                propertiesbtn.className = "xerte_button_c_no_width disabled";
-                propertiesbtn.onclick = "";
-
-                deletebtn.disabled = "disabled";
-                deletebtn.className = "xerte_button_c_no_width disabled";
-                deletebtn.onclick = "";
-            }
-            if (info.fetch_statistics) {
-                url = site_url + info.template_id;
-                q = {};
-
-                if (info.lrs.site_allowed_urls != null && info.lrs.site_allowed_urls != undefined && info.lrs.site_allowed_urls != "") {
-                    q['activities'] = [url].concat(info.lrs.lrsurls.split(",")).concat(info.lrs.site_allowed_urls.split(",").map(function(url) {return url + info.template_id})).filter(function(url) {return  url != ""});
-                }
-                q['activity'] = url;
-
-                q['verb'] = "http://adlnet.gov/expapi/verbs/launched";
-                q['related_activities'] = false;
-
-                var today = new Date();
-                var start = new Date(today.getTime() - info.dashboard.default_period * 24 * 60 * 60 * 1000);
-                var startstartofday = new Date(start.getFullYear(), start.getMonth(), start.getDate(), 0, 0, 0, 0);
-                var todayendofday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 0);
-                q['since'] = startstartofday.toISOString();
-                x_Dashboard = new xAPIDashboard(info);
-                x_Dashboard.getStatements(q, false, function() {
-                    $("#graph_" + info.template_id).html("");
-                    x_Dashboard.drawActivityChart("", $("#graph_" + info.template_id), startstartofday, todayendofday);
-                });
-            }
-        }
-    });
-}
-
-function getProjectInformation_stateChanged() {
-
-    if (xmlHttp.readyState == 4) {
-        var response = xmlHttp.responseText;
-        var info = JSON.parse(response);
+    })
+    .done(function(info) {
         document.getElementById('project_information').innerHTML = info.properties;
         if (info.role == 'read-only') {
             // disable edit button.
@@ -797,8 +705,13 @@ function getProjectInformation_stateChanged() {
                 x_Dashboard.drawActivityChart("", $("#graph_" + info.template_id), startstartofday, todayendofday);
             });
         }
-    }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown)
+    {
+
+    });
 }
+
 
 /**
  *
@@ -810,19 +723,16 @@ function getProjectInformation_stateChanged() {
  */
 
 function remove_template(template_id) {
-
-
-    if (setup_ajax() != false) {
-
-        var url = "website_code/php/templates/remove_template.php";
-
-        xmlHttp.open("post", url, true);
-        xmlHttp.onreadystatechange = delete_stateChanged;
-        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlHttp.send('template_id=' + (template_id.substr(template_id.indexOf("_") + 1, template_id.length)));
-
-    }
-
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/templates/remove_template.php",
+        data: {
+            template_id: template_id.substr(template_id.indexOf("_") + 1, template_id.length)
+        }
+    })
+    .done(function(response){
+        delete_stateChanged(response);
+    });
 }
 
 /**
@@ -838,40 +748,20 @@ function remove_template(template_id) {
 var number_of_files_to_delete = 0;
 
 function recycle_bin_remove_all_template(template_id) {
-
-
-    if (setup_ajax() != false) {
-
-        var url = "website_code/php/templates/remove_template.php";
-
-        var xmlHttpDelete = new XMLHttpRequest();
-
-        xmlHttpDelete.open("post", url, true);
-
-        xmlHttpDelete.onreadystatechange = function() {
-
-            if (xmlHttpDelete.readyState == 4) {
-
-                if (number_of_files_to_delete != 1) {
-
-                    number_of_files_to_delete -= 1;
-
-                } else {
-
-                    //screen_refresh();
-                    refresh_workspace();
-
-                }
-
-            }
-
-        };
-
-        xmlHttpDelete.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlHttpDelete.send('template_id=' + (template_id.substr(template_id.indexOf("_") + 1, template_id.length)));
-
-    }
-
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/templates/remove_template.php",
+        data: {
+            template_id: template_id.substr(template_id.indexOf("_") + 1, template_id.length)
+        }
+    })
+    .done(function(response){
+        if (number_of_files_to_delete != 1) {
+            number_of_files_to_delete -= 1;
+        } else {
+            refresh_workspace();
+        }
+    });
 }
 
 /**
@@ -884,19 +774,16 @@ function recycle_bin_remove_all_template(template_id) {
  */
 
 function delete_template(template_id) {
-
-
-    if (setup_ajax() != false) {
-
-        var url = "website_code/php/templates/delete_template.php";
-
-        xmlHttp.open("post", url, true);
-        xmlHttp.onreadystatechange = delete_stateChanged;
-        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlHttp.send('template_id=' + (template_id.substr(template_id.indexOf("_") + 1, template_id.length)));
-
-    }
-
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/templates/delete_template.php",
+        data: {
+            template_id: template_id.substr(template_id.indexOf("_") + 1, template_id.length)
+        }
+    })
+    .done(function(response){
+        delete_stateChanged(response);
+    });
 }
 
 /**
@@ -909,21 +796,15 @@ function delete_template(template_id) {
 
 var delete_feedback_string = "";
 
-function delete_stateChanged() {
+function delete_stateChanged(response) {
 
-    if (xmlHttp.readyState == 4) {
-        response = xmlHttp.responseText.trim();
+    response = response.trim();
 
-        if (response.indexOf("Sorry") == 0) {
-            alert(DELETE_ERROR + ' "' + response + '"');
-
-        }
-
-        //screen_refresh();
-        refresh_workspace();
-
+    if (response.indexOf("Sorry") == 0) {
+        alert(DELETE_ERROR + ' "' + response + '"');
     }
 
+    refresh_workspace();
 }
 
 /**
@@ -949,45 +830,32 @@ function duplicate_template() {
                  * code to prevent folders being dupped
                  */
 
-                if (setup_ajax() != false) {
-
-                    var url = "website_code/php/templates/duplicate_template.php";
-
-                    template_id = node.xot_id;
-
-                    template_name = node.text;
-
-                    folder_id = workspace.nodes[node.parent].xot_id;
-
-                    xmlHttp.open("post", url, true);
-                    xmlHttp.onreadystatechange = duplicate_stateChanged;
-                    xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                    xmlHttp.send('template_id=' + template_id + '&template_name=' + template_name + '&folder_id=' + folder_id);
-
-                }
-
+                var template_id = node.xot_id;
+                var template_name = node.text;
+                var folder_id = workspace.nodes[node.parent].xot_id;
+                $.ajax({
+                    type: "POST",
+                    url: "website_code/php/templates/duplicate_template.php",
+                    data: {
+                        template_id: template_id,
+                        template_name: template_name,
+                        folder_id: folder_id
+                    }
+                })
+                .done(function(response){
+                    duplicate_stateChanged(response);
+                });
             } else {
-
                 alert(RECYCLE_DUPLICATE);
-
             }
-
         } else {
-
             alert(DUPLICATE_PROMPT);
-
         }
-
     } else if (ids.length == 0) {
-
         alert(DUPLICATE_PROMPT_OTHER);
-
     } else {
-
         alert(DUPLICATE_LIMIT);
-
     }
-
 }
 
 /**
@@ -998,21 +866,13 @@ function duplicate_template() {
  * @author Patrick Lockley
  */
 
-function duplicate_stateChanged() {
+function duplicate_stateChanged(response) {
+    response = response.trim();
 
-    if (xmlHttp.readyState == 4) {
-        response = xmlHttp.responseText.trim();
-
-        if (response != "") {
-            alert(DUPLICATE_ERROR + ' "' + response + '"');
-
-        }
-
-        //screen_refresh();
-        refresh_workspace();
-
+    if (response != "") {
+        alert(DUPLICATE_ERROR + ' "' + response + '"');
     }
-
+    refresh_workspace();
 }
 
 /**
@@ -1038,44 +898,33 @@ function duplicate_folder() {
                  * code to prevent folders being dupped
                  */
 
-                if (setup_ajax() != false) {
+                var folder_id = node.xot_id;
+                var folder_name = node.text;
+                var parentfolder_id = workspace.nodes[node.parent].xot_id;
 
-                    var url = "website_code/php/templates/duplicate_folder.php";
-
-                    folder_id = node.xot_id;
-
-                    folder_name = node.text;
-
-                    parentfolder_id = workspace.nodes[node.parent].xot_id;
-
-                    xmlHttp.open("post", url, true);
-                    xmlHttp.onreadystatechange = duplicatefolder_stateChanged;
-                    xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                    xmlHttp.send('folder_id=' + folder_id + '&folder_name=' + folder_name + '&parentfolder_id=' + parentfolder_id);
-
-                }
-
+                $.ajax({
+                    type: "POST",
+                    url: "website_code/php/templates/duplicate_folder.php",
+                    data: {
+                        folder_id: folder_id,
+                        folder_name: folder_name,
+                        parentfolder_id: parentfolder_id
+                    }
+                })
+                .done(function(response){
+                    duplicatefolder_stateChanged(response);
+                });
             } else {
-
                 alert(RECYCLE_DUPLICATE);
-
             }
-
         } else {
-
             alert(DUPLICATE_PROMPT);
         }
-
     } else if (ids.length == 0) {
-
         alert(DUPLICATE_PROMPT_OTHER);
-
     } else {
-
         alert(DUPLICATE_LIMIT);
-
     }
-
 }
 
 /**
@@ -1086,36 +935,28 @@ function duplicate_folder() {
  * @author Patrick Lockley
  */
 
-function duplicatefolder_stateChanged() {
+function duplicatefolder_stateChanged(response) {
+    response = response.trim();
 
-    if (xmlHttp.readyState == 4) {
-        response = xmlHttp.responseText.trim();
-
-        if (response != "") {
-            alert(DUPLICATE_ERROR + ' "' + response + '"');
-
-        }
-
-        //screen_refresh();
-        refresh_workspace();
-
+    if (response != "") {
+        alert(DUPLICATE_ERROR + ' "' + response + '"');
     }
 
+    refresh_workspace();
 }
 
 
 function publish_project(template_id) {
-
-    if (setup_ajax() != false) {
-
-        var url = "website_code/php/versioncontrol/update_file.php";
-        xmlHttp.open("post", url, true);
-        xmlHttp.onreadystatechange = publish_stateChanged;
-        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlHttp.send('template_id=' + template_id);
-
-    }
-
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/templates/update_file.php",
+        data: {
+            template_id: template_id
+        }
+    })
+    .done(function(response){
+        publish_stateChanged(response);
+    });
 }
 
 /**
@@ -1146,14 +987,8 @@ function publish_this() {
  * @author Patrick Lockley
  */
 
-function publish_stateChanged() {
-
-    if (xmlHttp.readyState == 4) {
-
-        alert(PUBLISH_SUCCESS);
-
-    }
-
+function publish_stateChanged(response) {
+    alert(PUBLISH_SUCCESS);
 }
 
 
@@ -1276,21 +1111,16 @@ var lock = "false";
  */
 
 function update_your_projects() {
-
-    if (setup_ajax() != false) {
-
-        var url = "website_code/php/templates/your_templates.php";
-
-        xmlHttp.open("post", url, true);
-        xmlHttp.onreadystatechange = tutorials_stateChanged;
-        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-        // send dummy code
-
-        xmlHttp.send("loginid=1");
-
-    }
-
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/templates/your_templates.php",
+        data: {
+            loginid: 1
+        }
+    })
+    .done(function(response){
+        tutorials_stateChanged(response);
+    });
 }
 
 /**
@@ -1302,19 +1132,16 @@ function update_your_projects() {
  */
 
 function update_templates() {
-
-    if (setup_ajax() != false) {
-
-        var url = "website_code/php/templates/general_templates.php";
-
-        xmlHttp.open("post", url, true);
-        xmlHttp.onreadystatechange = templates_stateChanged;
-        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-        xmlHttp.send("loginid=1");
-
-    }
-
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/templates/general_templates.php",
+        data: {
+            loginid: 1
+        }
+    })
+    .done(function(response){
+        tutorials_stateChanged(response);
+    });
 }
 
 /**
@@ -1325,18 +1152,10 @@ function update_templates() {
  * @author Patrick Lockley
  */
 
-function templates_stateChanged() {
-
-    if (xmlHttp.readyState == 4) {
-
-        if (xmlHttp.responseText != "") {
-
-            document.getElementById('new_template_area_middle_ajax').innerHTML = xmlHttp.responseText;
-
-        }
-
+function templates_stateChanged(response) {
+    if (response != "") {
+        document.getElementById('new_template_area_middle_ajax').innerHTML = response;
     }
-
 }
 
 var active_div = null;
@@ -1352,23 +1171,15 @@ var new_template_folder = null;
  * @author Patrick Lockley
  */
 
-function tutorials_stateChanged() {
+function tutorials_stateChanged(response) {
+    if (response != "") {
 
-    if (xmlHttp.readyState == 4) {
+        template_toggle(active_div);
+        active_div = "";
 
-        if (xmlHttp.responseText != "") {
-
-            //$("#" + tutorial +"_filename").val("");
-
-            template_toggle(active_div);
-            active_div = "";
-
-            refresh_workspace();
-
-        }
+        refresh_workspace();
 
     }
-
 }
 
 /**
@@ -1408,37 +1219,34 @@ var popupBlockerChecker = {
  * @author Patrick Lockley
  */
 
-function tutorial_created() {
+function tutorial_created(response) {
+    if (typeof response == 'string') {
+        response = String(response);
+        response = response.trim();
+        if (response != "") {
+            data = response.split(",");
 
-    if (xmlHttp.readyState == 4) {
-        if (typeof xmlHttp.responseText == 'string') {
-            response = String(xmlHttp.responseText);
-            response = response.trim();
-            if (response != "") {
-                data = xmlHttp.responseText.split(",");
+            open_created_node(data[0], new_template_folder);
+            update_your_projects();
 
-                open_created_node(data[0], new_template_folder);
-                update_your_projects();
+            if (data[1] == "*") {
 
-                if (data[1] == "*") {
+                var neweditorwindow = window.open(site_url + url_return("edithtml", data[0]), "editwindow" + data[0], "height=" + screen.height +
+                    ", width=" + screen.width);
 
-                    var neweditorwindow = window.open(site_url + url_return("edithtml", data[0]), "editwindow" + data[0], "height=" + screen.height +
-                        ", width=" + screen.width);
-
-                } else {
-                    var url = site_url + url_return("edithtml", data[0]);
-                    var title = "editwindow" + data[0];
-                    var options = "height=" + data[2].trim() + ", width=" + data[1].trim();
-                    var neweditorwindow = window.open(url, title, options);
-
-                }
-                popupBlockerChecker.check(neweditorwindow);
-                new_file = xmlHttp.responseText;
-                neweditorwindow.window_reference = self;
-
-                neweditorwindow.focus();
+            } else {
+                var url = site_url + url_return("edithtml", data[0]);
+                var title = "editwindow" + data[0];
+                var options = "height=" + data[2].trim() + ", width=" + data[1].trim();
+                var neweditorwindow = window.open(url, title, options);
 
             }
+            popupBlockerChecker.check(neweditorwindow);
+            new_file = xmlHttp.responseText;
+            neweditorwindow.window_reference = self;
+
+            neweditorwindow.focus();
+
         }
     }
 }
@@ -1480,19 +1288,27 @@ function create_tutorial(tutorial) {
          */
         var tree = $.jstree.reference("#workspace"),
             ids = tree.get_selected();
-        new_template_folder = "";
+        var new_template_folder = "";
         if (ids.length == 1) {
             var node = workspace.nodes[ids[0]];
             if (node.xot_type == "folder") {
                 new_template_folder = node.xot_id;
             }
         }
-        xmlHttp.open("post", url, true);
-        xmlHttp.onreadystatechange = tutorial_created;
-        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         if (is_ok_name($("#" + tutorial + "_filename").val())) {
-            xmlHttp.send('tutorialid=' + tutorial + '&templatename=' + $("#" + tutorial + "_templatename").val() + '&tutorialname=' + $("#" + tutorial +
-                "_filename").val() + '&folder_id=' + new_template_folder);
+            $.ajax({
+                type: "POST",
+                url: "website_code/php/templates/update_file.php",
+                data: {
+                    tutorialid: tutorial,
+                    templatename: $("#" + tutorial + "_templatename").val(),
+                    tutorialname: $("#" + tutorial + "_filename").val(),
+                    folder_id: new_template_folder
+                }
+            })
+            .done(function(response){
+                tutorial_created(response);
+            });
         } else {
             alert(NAME_FAIL);
         }
@@ -1501,25 +1317,23 @@ function create_tutorial(tutorial) {
 
 function template_submit()
 {
-    if (setup_ajax() != false) {
-        var url = "website_code/php/management/upload.php";
-        var form = document.getElementById("form-template-upload");
-        var formData = new FormData(form);
-        xmlHttp.open("post", url, true);
-        xmlHttp.onreadystatechange = function (e) {
-            if (xmlHttp.readyState == 4 && xmlHttp.status == 400) {
-                $("body").css("cursor", "default");
-                alert(xmlHttp.responseText);
-            } else if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                $("body").css("cursor", "default");
-                alert(xmlHttp.responseText);
-                // Refresh templates list
-                templates_list();
-            }
-        };
-        $("body").css("cursor", "progress");
-        xmlHttp.send(formData);
-    }
+    var form = document.getElementById("form-template-upload");
+    var formData = new FormData(form);
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/management/upload.php",
+        data: formData
+    })
+    .done(function(response){
+        $("body").css("cursor", "default");
+        alert(response);
+        // Refresh templates list
+        templates_list();
+    })
+    .fail(function(response){
+        $("body").css("cursor", "default");
+        alert(response);
+    });
 }
 
 /********** CHECK **************/
@@ -1536,13 +1350,17 @@ function example() {
 
 
     }
-
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/example.php",
+        data: {
+            nullid: 'null'
+        }
+    })
+    .done(function(response){
+        example_alert(response);
+    });
 }
 
-function example_alert() {
-
-    if (xmlHttp.readyState == 4) {
-
-
-    }
+function example_alert(response) {
 }

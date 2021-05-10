@@ -37,7 +37,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.extraAllowedContent = 'p(*)[*]{*};div(*)[*]{*};li(*)[*]{*};ul(*)[*]{*}';
     config.fillEmptyBlocks = false;
 
-    config.uploadUrl = '',
+    config.uploadUrl = '';
 
     config.contentsCss = ['modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/css/themeStyles.css',
@@ -47,7 +47,15 @@ CKEDITOR.editorConfig = function( config ) {
         'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/v4-shims.min.css',
 		'modules/xerte/parent_templates/Nottingham/common_html5/css/fonts.css'
     ];
-	
+
+    //Somehow the greek alphabet misses out the OMega
+    var startGreek = config.specialChars.indexOf('&Alpha;');
+    var endGreek = config.specialChars.indexOf('&psi;')
+    config.specialChars.splice(startGreek, endGreek-startGreek+1);
+    config.specialChars = config.specialChars.concat(['&Alpha;', '&Beta;', '&Gamma;', '&Delta;', '&Epsilon;', '&Zeta;', '&Eta;', '&Theta;', '&Iota;', '&Kappa;', '&Lambda;', '&Mu;', '&Nu;', '&Xi;', '&Omicron;', '&Pi;', '&Rho;', '&Sigma;', '&Tau;', '&Upsilon;', '&Phi;', '&Chi;', '&Psi;', '&Omega;', '&alpha;', '&beta;', '&gamma;', '&delta;', '&epsilon;', '&zeta;', '&eta;', '&theta;', '&iota;', '&kappa;', '&lambda;', '&mu;', '&nu;', '&xi;', '&omicron;', '&pi; ', '&rho;', '&sigma; ', '&tau;', '&upsilon;', '&phi;', '&chi;', '&psi;', '&omega;']);
+
+    //config.scayt_autoStartup = true;
+    //config.scayt_sLang = loLanguage.replace("-", "_");
 	// custom fonts can be added here that have been included in fonts.css:
 	//config.font_names = 'fontnametodisplay/yourfontname;' + config.font_names;
 
@@ -65,7 +73,6 @@ CKEDITOR.editorConfig = function( config ) {
         }
         config.contentsCss.push(themecss);
         config.contentsCss.push(xerteeditorcss);
-
     }
 };
 CKEDITOR.dtd.$removeEmpty.i = 0;
