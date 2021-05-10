@@ -656,6 +656,7 @@ function getProjectInformation(user_id, template_id) {
     $.ajax({
         type: "POST",
         url: "website_code/php/templates/get_template_info.php",
+        dataType: 'json',
         data: {user_id: user_id, template_id: template_id},
     })
     .done(function(info) {
