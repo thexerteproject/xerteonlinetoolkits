@@ -53,6 +53,9 @@ function display_property_engines($change,$msgtype){
         echo "<img id=\"flash\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\" /> " . PROPERTIES_LIBRARY_DEFAULT_FLASH;
 		echo "</p>";
     }
+	
+	echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE_WARNING  . "</p>";
+	
     if($change && $msgtype=="engine"){
 
         echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE_CHANGED . "</p>";
@@ -75,6 +78,8 @@ function display_publish_engine(){
         echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:publish_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br>";
         echo "<img id=\"flash\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:publish_engine_toggle('flash', 'flash', 'javascript')\" /> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
     }
+	
+	echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE_WARNING  . "</p>";
 }
 
 function dont_show_template($optional=''){

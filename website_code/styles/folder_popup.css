@@ -27,6 +27,10 @@
 	border:#ccc 1px solid; 
 }
 
+.folder_popup .main_area {
+	height: auto;
+}
+
 .main_area{
 	width:320px;
 	height:80px;
@@ -34,4 +38,8 @@
 	border-radius:3px;
 	margin:0px;
 	padding:10px;
+}
+
+.folder_popup p {
+	color: white;
 }

@@ -7,7 +7,7 @@
   </pageWizard>
 
   <!-- DIALOG INTERACTION================================= -->
-  <dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icScript" thumb="thumbs/dialog.jpg" remove="true">
+  <dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icScript" thumb="thumbs/dialog.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#dialogue" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text  label="Page Text" type="TextArea" height="100"/>

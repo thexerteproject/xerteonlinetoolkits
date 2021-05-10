@@ -7,7 +7,7 @@
   </pageWizard>
 
   <!-- DOCUMENTATION=============================== -->  
-    <documentation menu="Interactivity" menuItem="Documentation" icon="icForm" remove="true" thumb="thumbs/documentation.jpg" hint="A form based interaction where the user downloads a copy of their responses.">
+    <documentation menu="Interactivity" menuItem="Documentation" icon="icForm" remove="true" thumb="thumbs/documentation.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#documentation" hint="A form based interaction where the user downloads a copy of their responses.">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <text label="Page Text" type="TextArea" height="120"/>
 	<intro label="Introduction Text" type="TextArea" height="120"/>

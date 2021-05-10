@@ -193,6 +193,9 @@ function make_new_folder(){
 	
 	file_area_width = document.getElementById("file_area").offsetWidth;
 */
+	document.getElementById("foldername").value = '';
+	document.getElementById("folder_feedback").innerHTML = '';
+
 	document.getElementById("message_box").style.left = "250px"; // x + (file_area_width/2) - 150 + "px";
 	document.getElementById("message_box").style.top = "150px";  // y + 100 +"px";
 	document.getElementById("message_box").style.display = "block";

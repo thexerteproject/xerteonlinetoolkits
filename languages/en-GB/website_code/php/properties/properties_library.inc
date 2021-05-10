@@ -94,6 +94,8 @@
 	define("PROPERTIES_LIBRARY_PROJECT_MODIFY", "This project was last modified on");
 
     define("PROPERTIES_LIBRARY_DEFAULT_ENGINE", "What is the default engine to use for this project?");
+	
+	define("PROPERTIES_LIBRARY_DEFAULT_ENGINE_WARNING", "Please note that Flash is no longer supported and these checkboxes should only be used to convert older Flash projects to use the HTML5 interface.");
 
     define("PROPERTIES_LIBRARY_PUBLISH_ENGINE", "Default engine");
 

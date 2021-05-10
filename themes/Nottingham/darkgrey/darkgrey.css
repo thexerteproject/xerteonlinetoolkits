@@ -51,6 +51,10 @@ h3 {
 	margin:		0px;
 }
 
+.featherlight .featherlight-content {
+	background-color: #1c1c1c;
+}
+
 .qSeparator hr {
 	background-color: #cfcfcf;
 	border-color: #cfcfcf;
