@@ -633,6 +633,7 @@ function refresh_workspace() {
     $.ajax({
         type: "POST",
         url: "website_code/php/templates/get_templates_sorted.php",
+        dataType: 'json',
         data: {
             sort_type: document.sorting.type.value
         }
