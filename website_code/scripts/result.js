@@ -4,6 +4,7 @@
         var generalResultsTxt,
             averageTxt,
             completionTxt,
+            weightedscoreTxt,
             startTimeTxt,
             durationTxt,
             interactivityResultsTxt,
@@ -93,11 +94,12 @@
             // ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
 
             var showzeroweight = false;
-            xtresults = XTResults(false, trackingState);
+            xtresults = XTResults(true, trackingState);
             var altnormalrow = false;
             var altfullrow = false;
             $("#" + classIdentifier + " .averageScore").html(xtresults.averageScore + "%");
             $("#" + classIdentifier + " .completion").html(xtresults.completion + "%");
+            $("#" + classIdentifier + " .weightedscore").html(Math.round(xtresults.averageScore * xtresults.completion / 100) + "%");
             $("#" + classIdentifier + " .totalDuration").html(xtresults.totalDuration + "s");
             $("#" + classIdentifier + " .startTime").html(moment(new Date(xtresults.start)).format('YYYY-MM-DD HH:mm:ss'));
             var detailstables=0;
@@ -156,7 +158,7 @@
                         normalcolumns = [x_GetTrackingTextFromHTML(nameTxt, ""), scoreTxt, durationTxt, weightingTxt, completedTxt];
                         firstnormalrow = false;
                     }
-                    $("#" + classIdentifier + " .questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-center'>" + scoretxt + "</td><td class='td-center'>" + x.duration + "s</td><td class='td-center'>" + x.weighting + "</td><td class='td-center'>" + completedToken + "</td></tr>");
+                    $("#" + classIdentifier + " .questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-right'>" + scoretxt + "</td><td class='td-right'>" + x.duration + "s</td><td class='td-center'>" + x.weighting + "</td><td class='td-center'>" + completedToken + "</td></tr>");
                     var normalrow = [x_GetTrackingTextFromHTML(x.title, ""), scoretxt, x.duration, x.weighting, completedTokenTxt];
                     normalrows.push(normalrow);
                     altnormalrow = !altnormalrow;
@@ -170,7 +172,7 @@
                         $("#" + classIdentifier + " .questionScores").append("<th>" + nameTxt + "</th><th>" + scoreTxt + "</th><th>" + durationTxt + "</th><th>" + weightingTxt + "</th><th>" + completedTxt + "</th><th>" + detailsTxt + "</th>");
                         firstnormalrow = false;
                     }
-                    $("#" + classIdentifier + " .questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-center'>" + scoretxt + "</td><td class='td-center'>" + x.duration + "s</td><td class='td-center'>" + x.weighting + "</td><td class='td-center'>" + completedToken + "</td><td class='td-center'>" + interactiveToken + "</td></tr>");
+                    $("#" + classIdentifier + " .questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-right'>" + scoretxt + "</td><td class='td-right'>" + x.duration + "s</td><td class='td-center'>" + x.weighting + "</td><td class='td-center'>" + completedToken + "</td><td class='td-center'>" + interactiveToken + "</td></tr>");
                     var normalrow = [x_GetTrackingTextFromHTML(x.title, ""), scoretxt, x.duration, x.weighting, completedTokenTxt, interactiveTokenTxt];
                     normalrows.push(normalrow);
                     altnormalrow = !altnormalrow;
@@ -211,6 +213,7 @@
             generalResultsTxt = "General Results";
             averageTxt =  "Average: ";
             completionTxt =  "Completion: ";
+            weightedscoreTxt =  "Score: ";
             durationTxt = "Duration: ";
             startTimeTxt = "Start Time";
             interactivityResultsTxt = "Interactivity Results";
@@ -242,6 +245,7 @@
             $("#" + classIdentifier + " .durationTxt1").html(durationTxt);
             $("#" + classIdentifier + " .startTimeTxt").html(startTimeTxt);
             $("#" + classIdentifier + " .completionTxt").html(completionTxt);
+            $("#" + classIdentifier + " .weightedscoreTxt").html(weightedscoreTxt);
             $("#" + classIdentifier + " .interactivityResultsTxt").html(interactivityResultsTxt);
             $("#" + classIdentifier + " .globalResultsTxt").html(globalResultsTxt);
             $("#" + classIdentifier + " .nameTxt").html(nameTxt);
@@ -840,7 +844,7 @@ function getSuccessStatus(x)
     {
         if (x.lo_type != "pages only")
         {
-            if (getScaledScore(x) > x.lo_passed)
+            if (getdScaledScore(x) > (x.lo_passed / 100))
             {
                 return "passed";
             }
