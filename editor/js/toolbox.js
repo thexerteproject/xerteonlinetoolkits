@@ -64,13 +64,14 @@ var EDITOR = (function ($, parent) {
 			// it's a page type
             } else if (itemData.item != undefined) {
 				var hint = itemData.hint != undefined ? '<p>' + itemData.hint + '</p>' : "";
-				hint = itemData.thumb != undefined ? '<div>' + language.insertDialog.$preview + ':</div><img class="preview_thumb" alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + hint : hint;
+				hint = itemData.thumb != undefined ? hint + (itemData.example != undefined ? '<a href="' + itemData.example + '" data-featherlight="iframe" class="pageExample">' : '') + '<img class="preview_thumb" alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + (itemData.example != undefined ? '</a>' : '') : hint;
+				hint = itemData.example != undefined ? hint + '<p><a href="' + itemData.example + '" data-featherlight="iframe" class="pageExample exampleButton"><i class="fa fa-play-circle"></i>' + language.insertDialog.$example + '</a></p>' : hint;
 				hint = hint != "" ? '<hr/>' + hint : hint;
 
 				var $insertInfo = $('<ul class="details"><li><a href="#"><div class="insert_buttons"/>' + hint + '</a></li></ul>'),
 					label = language.insertDialog.$label + ":",
 					pos = label.indexOf('{i}');
-
+				
 				label = pos >= 0 ? label.substr(0, pos) + itemData.name + label.substr(pos + 3) : label;
 
 				$insertInfo.find(".insert_buttons").append('<div>' + label + '</div>');
@@ -132,32 +133,7 @@ var EDITOR = (function ($, parent) {
 
                     $menu.find(".insert_buttons").append(button);
             });
-            if (templateframework == "xerte") {
-                $([
-
-                    {
-                        name: language.insertDialog.insertMerge.$label,
-                        icon: 'editor/img/insert-end.png',
-                        tooltip: language.insertDialog.insertMerge.$tooltip,
-                        id: 'insert_button_merge',
-                        btnvalue: "merge"
-                    }
-
-                ]).each(function (index, value) {
-                    var button = $('<button>')
-                        .attr('id', value.id)
-                        .attr('title', value.tooltip)
-                        .attr('value', value.btnvalue)
-                        .attr('tabindex', index + 3)
-                        .addClass("insert_button")
-                        .click(insert_import)
-                        .append($('<img>').attr('src', value.icon).height(14))
-                        .append(value.name);
-
-                        $menu.find(".insert_buttons").last().append(button);
-                });
-            }
-
+            
 		if (typeof insert_menu_object !== 'undefined')
         {
             // menu is aleready set once

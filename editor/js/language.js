@@ -104,7 +104,8 @@ var EDITOR = (function ($, parent) {
                         "name"  : attributes.menuItem,
                         "hint"  : attributes.hint,
                         "thumb" : attributes.thumb,
-                        "icon"  : attributes.icon
+                        "icon"  : attributes.icon,
+                        "example"  : attributes.example
                     };
                     if (attributes.deprecated)
                     {

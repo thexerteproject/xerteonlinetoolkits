@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- DRAG DROP LABEL INTERACTION==================== -->
-  <dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" remove="true">
+  <dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#draganddroplabelling" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text  label="Page Text" type="TextArea" height="250"/>

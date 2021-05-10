@@ -32,6 +32,12 @@ _load_language_file("/website_code/php/folderproperties/sharing_status_folder.in
 _load_language_file("/folderproperties.inc");
 include "../url_library.php";
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
+
 $parameters = explode("_", $_POST['folder_id']);
 
 if(!is_numeric($parameters[0])&&is_string($parameters[1])){

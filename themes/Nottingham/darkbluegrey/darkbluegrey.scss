@@ -109,6 +109,10 @@ a:hover{
 img {
 	border-radius: $imageroundedcorners;
 }
+/******lightboxes******/
+.featherlight .featherlight-content {
+	background-color: $defaultpagebackground;
+}
 
 //******@media changes******/
 @media (min-width: 1366px) {
