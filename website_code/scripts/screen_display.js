@@ -935,9 +935,8 @@ function showInformationAndSetStatus(node)
 		switch(type)
 		{
 			case "folder":
-                getFolderInformation(workspace.user, xot_id);
-				break;
             case "folder_shared":
+            case "folder_group":
                 getFolderInformation(workspace.user, xot_id);
                 break;
             case "group":
