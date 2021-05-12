@@ -65,47 +65,50 @@ if (!$.fn.toggleClick) {
 }
 
 $(document).keydown(function(e) {
-    switch(e.which) {
-        case 33: // PgUp
-			var pageIndex = $.inArray(x_currentPage, x_normalPages);
-            if (pageIndex > -1 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
-                if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
-					// linear back
-					if (pageIndex > 0) {
-						x_changePage(x_normalPages[pageIndex -1]);
-					}
-					
-                } else {
-					var prevPage = x_pageHistory[x_pageHistory.length-2];
-                    x_pageHistory.splice(x_pageHistory.length - 2, 2);
-					
-					// check if history is empty and if so allow normal back navigation and change to normal back button
-					if (prevPage == undefined && x_currentPage > 0) {
-						x_changePage(x_normalPages[pageIndex -1]);
+	// if lightbox open then don't allow page up/down buttons to change the page open in the background
+	if (!parent.window.$.featherlight.current()) {
+		switch(e.which) {
+			case 33: // PgUp
+				var pageIndex = $.inArray(x_currentPage, x_normalPages);
+				if (pageIndex > -1 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
+					if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
+						// linear back
+						if (pageIndex > 0) {
+							x_changePage(x_normalPages[pageIndex -1]);
+						}
+						
 					} else {
-						x_changePage(prevPage);
+						var prevPage = x_pageHistory[x_pageHistory.length-2];
+						x_pageHistory.splice(x_pageHistory.length - 2, 2);
+						
+						// check if history is empty and if so allow normal back navigation and change to normal back button
+						if (prevPage == undefined && x_currentPage > 0) {
+							x_changePage(x_normalPages[pageIndex -1]);
+						} else {
+							x_changePage(prevPage);
+						}
 					}
-                }
-			} else if (pageIndex == -1) {
-				// historic back (standalone page)
-				if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
-					history.go(-1);
-				} else {
-					x_changePage(x_normalPages[0]);
+				} else if (pageIndex == -1) {
+					// historic back (standalone page)
+					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
+						history.go(-1);
+					} else {
+						x_changePage(x_normalPages[0]);
+					}
 				}
-			}
-            break;
+				break;
 
-        case 34: // PgDn
-			// if it's a standalone page then nothing will happen
-			var pageIndex = $.inArray(x_currentPage, x_normalPages);
-			if (pageIndex != -1 && $x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
-				x_changePage(x_normalPages[pageIndex + 1]);
-			}
-            break;
+			case 34: // PgDn
+				// if it's a standalone page then nothing will happen
+				var pageIndex = $.inArray(x_currentPage, x_normalPages);
+				if (pageIndex != -1 && $x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
+					x_changePage(x_normalPages[pageIndex + 1]);
+				}
+				break;
 
-        default: return; // exit this handler for other keys
-    }
+			default: return; // exit this handler for other keys
+		}
+	}
     e.preventDefault(); // prevent the default action (scroll / move caret)
 });
 
@@ -1850,7 +1853,18 @@ function x_checkPages(type, id, pageArray) {
 
 	return false;
 }
-
+function x_setMaxWidth() {
+	if (x_params.maxWidth != undefined && x_params.maxWidth != "") {
+		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioSlideshow','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageViewer','interactiveText','inventory','language','links','list','map','mcq','media360','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss',];
+		var styleString = '<style>';
+		for (var i=0; i<workingPages.length; i++) {
+			if (i>0) { styleString += ', '; }
+			styleString += '.x_' + workingPages[i] + '_page #x_pageDiv';
+		}
+		styleString += '{max-width: '+x_params.maxWidth+'px;margin: 0 auto;}</style>';
+		$('head').append(styleString);
+	}
+}
 
 // function called on page change to remove old page and load new page model
 // If x_currentPage == -1, than do not try to exit tracking of the page
@@ -1869,19 +1883,6 @@ function x_changePage(x_gotoPage, addHistory) {
 	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' && parent.window.$.featherlight.current()) {
 		standAlonePage = false;
 		addHistory = false;
-	} else {
-		// If the whole Xerte object is loaded in a lightbox, we could trigger a DOMException (cross-origin)
-		// So enclose in a try block
-		try {
-			if (parent.window.$.featherlight.current()) {
-				// force lightbox to close
-				parent.window.$.featherlight.current().close();
-			}
-		}
-		catch(e)
-		{
-			// Ignore
-		}
 	}
 	
 	if (x_params.forcePage1 == 'true') {
@@ -2017,14 +2018,28 @@ function x_endPageTracking(pagechange, x_gotoPage) {
         XTExitPage(x_currentPage);
     }
 }
-
 function x_changePageStep5(x_gotoPage) {
+	x_setMaxWidth();
 	
-    if (x_params.styles != undefined) {
+	if (x_params.styles != undefined || x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
         if ($('#lo_css').length == 0) {
-            $x_head.append('<style type="text/css" id="lo_css">' + x_params.styles + '</style>');
+			
+			var lightboxStyle = '',
+				loStyles = x_params.styles != undefined ? x_params.styles : '';
+			
+			if (x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
+				lightboxColour = x_params.lightboxColour != undefined ? x_params.lightboxColour.substr(x_params.lightboxColour.length - 6) : '000000';
+				lightboxOpacity = x_params.lightboxOpacity != undefined ? x_params.lightboxOpacity / 100 : '0.8';
+				
+				var rgbaColour = x_hexToRgb(lightboxColour, lightboxOpacity);
+				
+				lightboxStyle = '.featherlight:last-of-type { background:' + rgbaColour + ';}';
+			}
+			
+            $x_head.append('<style type="text/css" id="lo_css">' + lightboxStyle + ' ' + loStyles + '</style>');
         }
     }
+	
     // If special_theme_css does not exist yet, create a disabled special_theme_css
     if (x_specialTheme != undefined && x_specialTheme != '') {
         x_insertCSS(x_themePath + x_specialTheme + '/' + x_specialTheme + '.css', function () {
@@ -3422,6 +3437,17 @@ function x_blackOrWhite(colour) {
 	return (brightness > 160) ? "#000000" : "#FFFFFF"; // checks whether black or white text is best on bg colour
 }
 
+// function converts hex colour to rgb
+function x_hexToRgb(hex, opa) {
+	var bigint = parseInt(hex, 16);
+	var r = (bigint >> 16) & 255;
+	var g = (bigint >> 8) & 255;
+	var b = bigint & 255;
+	
+	console.log(bigint);
+	
+	return "rgba(" + r + "," + g + "," + b + "," + opa + ")";
+}
 
 // function randomises the order of items in an array
 function x_shuffleArray(array) {

@@ -35,6 +35,7 @@
         var classnames = [];
         var classtitles = [];
         var numUserSubmits = 0;
+        var xertelo = interaction.getAttribute('xertelo');
         var textSize = Math.round(interaction.getAttribute("labelFontSize"));
 
         if (textSize == null || textSize == 0) textSize = 12;
@@ -99,6 +100,14 @@
                         matchactor = true;
                     }
                     break;
+            }
+            if (!matchactor && xertelo == x_TemplateId
+                && obj.context != undefined
+                && obj.context.extensions != undefined
+                && obj.context.extension['http://xerte.org.uk/sessionId'] != undefined
+                && obj.context.extension['http://xerte.org.uk/sessionId'] == state.sessionId)
+            {
+                matchactor = true;
             }
 
             if (matchactor) {
@@ -279,7 +288,7 @@
         );
     }
 
-    function matchActor(statement)
+    function matchActor(statement, xertelo)
     {
         switch (studentidmode) {
             case 0:
@@ -299,35 +308,22 @@
                 }
                 break;
         }
+        if (xertelo != undefined && xertelo == x_TemplateId
+            && obj.context != undefined
+            && obj.context.extensions != undefined
+            && obj.context.extension['http://xerte.org.uk/sessionId'] != undefined
+            && obj.context.extension['http://xerte.org.uk/sessionId'] == state.sessionId)
+        {
+            return true;
+        }
         return false;
     }
 
-    function filterOwnStatements(data) {
+    function filterOwnStatements(data, xertelo) {
         var statements = [];
         for (var i = 0; i < data.length; i++)
         {
-            statement = data[i];
-            matchactor = false;
-            switch (studentidmode) {
-                case 0:
-                case 2:
-                    if (statement.actor.mbox == 'mailto:' + username) {
-                        matchactor = true;
-                    }
-                    break;
-                case 1:
-                    if (statement.actor.mbox_sha1sum == mboxsha1) {
-                        matchactor = true;
-                    }
-                    break;
-                case 3:
-                    if (statement.actor.account != undefined && statement.actor.account.name == groupname) {
-                        matchactor = true;
-                    }
-                    break;
-            }
-
-            if (matchActor(data[i])) {
+            if (matchActor(data[i], xertelo)) {
 
               statements.push(data[i]);
             }
@@ -548,7 +544,7 @@
                     url = data[0].object.id;
                 }
                 interaction = $(x_currentPageXML).children()[interactionIndex];
-                if (data.length >= 1 && (retrieveAll || filterOwnStatements(data).length >= 1)) {
+                if (data.length >= 1 && (retrieveAll || filterOwnStatements(data, xertelo).length >= 1)) {
                     if (opinionClass != undefined && opinionClass != "")
                     {
                         // Just filter out the items with the following structure
@@ -1079,10 +1075,9 @@
             if (IncorrectText == undefined) {
                 IncorrectText = 'Incorrect';
             }
-
+            var xertelo = interaction.getAttribute('xertelo');
             var statements = filterOwnStatements(data);
             xerteurl = interaction.getAttribute('xerteurl');
-            xertelo = interaction.getAttribute('xertelo');
             xertelabel = interaction.getAttribute('label');
             name = interaction.getAttribute('name');
             interactionType = interaction.getAttribute('interactionType');
@@ -1596,17 +1591,18 @@
             {
                 nrbars = 10;
             }
-            statements = filterOwnStatements(data);
+            var xertelo = interaction.getAttribute('xertelo');
+            var statements = filterOwnStatements(data, xertelo);
             if (statements.length > 0) {
-                givenAnswer = statements[0].result.response;
+                var givenAnswer = statements[0].result.response;
                 if (interaction.getAttribute("showScore") == "true") {
                     var txt = answerLabelText;
                     txt = txt.replace(/\{0\}/, givenAnswer);
                     $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '</p>');
                 }
                 for (blockIndex = 0; blockIndex < interaction.children.length; blockIndex++) {
-                    block = interaction.children[blockIndex];
-                    conScoreAnswer = block.getAttribute('conScoreAnswer');
+                    var block = interaction.children[blockIndex];
+                    var conScoreAnswer = block.getAttribute('conScoreAnswer');
                     if (conScoreAnswer == givenAnswer) {
                         $('#' + escapeUrl(
                             url,

@@ -17,22 +17,22 @@
  * limitations under the License.
  */
 
-	/**	
-	 * 
-	 * folders, code for handling folders
-	 *
-	 * @author Patrick Lockley
-	 * @version 1.0
-	 * @package
-	 */
+/**
+ *
+ * folders, code for handling folders
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @package
+ */
 
- 	/**
-	 * 
-	 * Function file status stage changed
- 	 * This function renames the folder
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ *
+ * Function file status stage changed
+ * This function renames the folder
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 
 function file_status_stateChanged(){ 
@@ -47,13 +47,13 @@ function file_status_stateChanged(){
 
 var folder_timeout = 0;
 
- 	/**
-	 * 
-	 * Function folder status state changed
- 	 * This function handles what happens after a new folder has been recreated
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ *
+ * Function folder status state changed
+ * This function handles what happens after a new folder has been recreated
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 
 function folder_status_stateChanged(){ 
@@ -69,98 +69,92 @@ function folder_status_stateChanged(){
 	}
 }
 
- 	/**
-	 * 
-	 * Function delete folder
- 	 * This function deletes a folder
-	 * @param string folder_id = the id of this folder
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ *
+ * Function delete folder
+ * This function deletes a folder
+ * @param string folder_id = the id of this folder
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 
 function delete_folder(folder_id){
-
-	if(setup_ajax()!=false){
-    
-		var url="website_code/php/folders/delete_folder.php";
-
-   		xmlHttp.open("post",url,true);
-		xmlHttp.onreadystatechange=file_status_stateChanged;
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-		xmlHttp.send('folder_id=' + folder_id); 
-
-	}
-
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/folders/delete_folder.php",
+		data: {folder_id: folder_id},
+	})
+	.done(function(response){
+		refresh_workspace();
+	});
 }
 
- 	/**
-	 * 
-	 * Function create folder
- 	 * This function creates a folder
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ *
+ * Function create folder
+ * This function creates a folder
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 
 function create_folder(){
 
-    var foldername = document.getElementById('foldername').value;
-	if(is_ok_name(foldername)){
+    var foldername = $('#foldername').val();
+	if(is_ok_name(foldername)) {
 
-		if(setup_ajax()!=false){
+		var tree = $.jstree.reference("#workspace"),
+			ids = tree.get_selected();
+		if (ids.length == 1) {
+			var node = workspace.nodes[ids[0]];
+			if (node.xot_type == "folder") {
+				/*
+                * Open this folder
+                */
+				setTimeout(function () {
+					tree.open_node(node.id)
+				}, 250);
 
-			var url="website_code/php/folders/make_new_folder.php";
-
-	   		xmlHttp.open("post",url,true);
-			xmlHttp.onreadystatechange=folder_status_stateChanged;
-			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-			/*
-			* if a folder is selected, create the folder in that folder
-			*/
-            var tree = $.jstree.reference("#workspace"),
-                ids = tree.get_selected();
-			if(ids.length==1){
-                var node = workspace.nodes[ids[0]];
-                if(node.xot_type == "folder"){
-                    /*
-                    * Open this folder
-                    */
-
-                    setTimeout(function () {tree.open_node(node.id)}, 250);
-
-
-                    xmlHttp.send('folder_id=' + node.xot_id + '&folder_name=' + foldername);
-
-                }else{
-
-                    xmlHttp.send('folder_id=file_area&folder_name=' + foldername);
-
-                }
-			}else{
-
-				xmlHttp.send('folder_id=file_area&folder_name=' + foldername);
- 
+				var data = {
+					folder_id: node.xot_id,
+					folder_name: foldername
+				};
+			} else {
+				var data = {
+					folder_id: file_area,
+					folder_name: foldername
+				};
 			}
-
+		} else {
+			var data = {
+				folder_id: file_area,
+				folder_name: foldername
+			};
 		}
-	
+
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/folders/make_new_folder.php",
+			data: data,
+		})
+		.done(function(response) {
+			$("#folder_feedback").html(xmlHttp.responseText);
+			refresh_workspace();
+			folder_timeout = setTimeout("popup_close()", 500);
+		});
 	}else{
-
 		alert("Sorry that is not a valid folder name. Please use only letters and numbers");
-
-	}	
-
+	}
 }
 
- 	/**
-	 * 
-	 * Function make new folder
- 	 * This function shows the new folder pop up
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ *
+ * Function make new folder
+ * This function shows the new folder pop up
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 
 function make_new_folder(){
@@ -193,6 +187,9 @@ function make_new_folder(){
 	
 	file_area_width = document.getElementById("file_area").offsetWidth;
 */
+	document.getElementById("foldername").value = '';
+	document.getElementById("folder_feedback").innerHTML = '';
+
 	document.getElementById("message_box").style.left = "250px"; // x + (file_area_width/2) - 150 + "px";
 	document.getElementById("message_box").style.top = "150px";  // y + 100 +"px";
 	document.getElementById("message_box").style.display = "block";
@@ -205,13 +202,13 @@ function make_new_folder(){
 	
 }
 
- 	/**
-	 * 
-	 * Function popup close
- 	 * This function closes the new folder pop up
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ *
+ * Function popup close
+ * This function closes the new folder pop up
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 function popup_close(){
 
@@ -222,42 +219,47 @@ function popup_close(){
 
 }
 
- 	/**
-	 * 
-	 * Function copy to folder
- 	 * This function moves files and folders to other folders
-	 * @param string items = the id of the item dropped
- 	 * @param string items_type = whether file or folder
-  	 * @param string items_parent = The previous parent for this item
-  	 * @param string destination - the target
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ *
+ * Function copy to folder
+ * This function moves files and folders to other folders
+ * @param string items = the id of the item dropped
+ * @param string items_type = whether file or folder
+ * @param string items_parent = The previous parent for this item
+ * @param string destination - the target
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
-function copy_to_folder(data){
-    var tree = $.jstree.reference("#workspace"),
-        ids = tree.get_selected();
+function copy_to_folder(data) {
+	var tree = $.jstree.reference("#workspace"),
+		ids = tree.get_selected();
 
-    // node to move
-    var node = workspace.nodes[data.node.id];
-    var destination = workspace.nodes[data.parent];
-    setTimeout(function () {tree.open_node(destination.id)}, 250);
-	if(setup_ajax()!=false){
-    
-		var url="website_code/php/folders/copy_to_new_folder.php";
+	// node to move
+	var node = workspace.nodes[data.node.id];
+	var destination = workspace.nodes[data.parent];
+	setTimeout(function () {
+		tree.open_node(destination.id)
+	}, 250);
 
-   		xmlHttp.open("post",url,true);
-		xmlHttp.onreadystatechange=file_status_stateChanged;
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-        if (node.xot_type == "folder") {
-            xmlHttp.send('folder_id=' + node.xot_id + '&destination=' + destination.xot_id);
-        }
-        else
-        {
-            xmlHttp.send('template_id=' + node.xot_id + '&destination=' + destination.xot_id);
-        }
-
+	if (node.xot_type == "folder") {
+		var data = {
+			folder_id: node.xot_id,
+			destination: destination.xot_id
+		};
+	} else {
+		var data = {
+			template_id: node.xot_id,
+			destination: destination.xot_id
+		};
 	}
-	
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/folders/copy_to_new_folder.php",
+		data: data,
+	})
+	.done(function (response) {
+		refresh_workspace();
+	});
 }
