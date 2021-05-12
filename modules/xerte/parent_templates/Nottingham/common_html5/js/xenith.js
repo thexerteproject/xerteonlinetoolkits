@@ -1185,7 +1185,7 @@ function x_continueSetUp1() {
 					});
 				return(false);
 			});
-			if (x_params.footerTools == "hideFooterTools") {
+			if (x_params.footerTools == "hideFooterTools" || x_browserInfo.mobile) {
 				$('#x_footerBlock .x_floatLeft').hide();
 				$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
 				$('#x_footerChevron').prop('title', showMsg);
