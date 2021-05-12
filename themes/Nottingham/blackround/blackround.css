@@ -39,6 +39,13 @@ body {
 #x_footerBg {
 	background-image: none;
 }
+#x_footerChevron{
+    color: #eee;
+}
+
+#x_footerChevron:focus, #x_footerChevron:hover {
+	color: #ccc;
+}
 
 #x_pageNo {
 	background:	#010101;

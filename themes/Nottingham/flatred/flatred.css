@@ -32,6 +32,12 @@ x_headerBlock.x_floatLeft{
 	background-image:none;
 	/*background-repeat:	repeat-x;*/
 }
+#x_footerChevron {
+	color: #FFFFFF;
+}
+#x_footerChevron:focus, #x_footerChevron:hover {
+	color: #000000;
+}
 
 #x_pageNo {
 	background:	none;

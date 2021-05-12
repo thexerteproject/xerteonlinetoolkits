@@ -32,6 +32,13 @@ a, a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:act
 	background-image: none;
 }
 
+#x_footerChevron {
+	color: #CFCFCF;
+}
+#x_footerChevron:focus, #x_footerChevron:hover {
+	color: #FFFFFF;
+}
+
 #x_pageNo {
 	background:	#1c1c1c;
 }
