@@ -2116,7 +2116,10 @@ function x_changePageStep5a(x_gotoPage) {
 		}
 		if (x_currentPageXML.getAttribute('footerHide') == 'true') {
 			footerHidden = true;
-			$x_footerBlock.hide().height(0);
+			// more complex than just hiding all of footer bar in one go as narration may be in there which still needs to show
+			$('#x_footerBlock > div').each(function () {
+				$(this).hide().height(0);
+			});
 		}
 	}
 	
