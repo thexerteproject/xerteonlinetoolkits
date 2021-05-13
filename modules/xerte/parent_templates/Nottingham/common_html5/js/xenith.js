@@ -549,15 +549,29 @@ x_projectDataLoaded = function(xmlData) {
 		}
 		
 		var info = getHashInfo(temp[0]);
-		if (info != false) {
+		if (info !== false) {
 			x_startPage = {type : "index", ID : info};
 			customStartPage = true;
 		}
 	}
 	
 	// any params in URL which can change the start page can be disabled from working by adding optional property
-	if (x_params.forcePage1 == 'true' && customStartPage == true && (x_pageInfo[x_startPage.ID].standalone == undefined || x_pageInfo[x_startPage.ID].standalone == false)) {
-		x_startPage = {type : "index", ID : "0"};
+	// also, if 1st page is project is standalone page then it should default to 1st non-standalone page instead
+	if ((x_pageInfo[x_startPage.ID].standalone == true && customStartPage == false) || 
+		(x_params.forcePage1 == 'true' && customStartPage == true && (x_pageInfo[x_startPage.ID].standalone == undefined || x_pageInfo[x_startPage.ID].standalone == false))) {
+		var tempIndex;
+		for (var i=0; i<x_pageInfo.length; i++) {
+			if (x_pageInfo[i].standalone != true) {
+				tempIndex = i;
+				break;
+			}
+		}
+		
+		if (tempIndex) {
+			x_startPage = {type : "index", ID : String(tempIndex)};
+		} else {
+			x_startPage = {type : "index", ID : "0"};
+		}
 	}
 	
 	// tidy up the URL to remove all of the params about start page - hash at end of URL will change according to currently viewed page
@@ -3451,8 +3465,6 @@ function x_hexToRgb(hex, opa) {
 	var r = (bigint >> 16) & 255;
 	var g = (bigint >> 8) & 255;
 	var b = bigint & 255;
-	
-	console.log(bigint);
 	
 	return "rgba(" + r + "," + g + "," + b + "," + opa + ")";
 }
