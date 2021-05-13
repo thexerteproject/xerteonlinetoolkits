@@ -820,6 +820,7 @@ function setup() {
 							} else {
 								linkAction = "x_navigateToPage(false, { type:'linkID', ID:'" + $(data).find('page').eq(index[0]).children().eq(index[1]).attr('linkID') + "' }); $.featherlight.close(true); return false;";
 							}
+							// full match doesn't mean every category matches but that a category from each group matches
 							var matchType = uniqueCats.length == catsUsed.length ? 'fullMatch' : 'partialMatch',
 								$resultDiv = $('<div class="result ' + matchType + '"><a href="#" onclick="' + linkAction + '"><i class="fa ' + faIcon + ' text-white ml-3" aria-hidden="true"></i>' + title + '</a>' + '<div class="matchList"><i>' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('matchTitle1') != null ? languageData.find("search")[0].getAttribute('matchTitle1') : "Matches") + ': ' + catMatches + '</i></div></div>');
 
@@ -833,6 +834,9 @@ function setup() {
 
 								$searchResults.find('.result').each(function(k) {
 									if (uniqueCats.length > $(this).data('numCats')) {
+										$resultDiv.insertBefore($(this));
+										return false;
+									} else if (uniqueCats.length == $(this).data('numCats') && pageOrSection.match.length > $(this).data('match').length) {
 										$resultDiv.insertBefore($(this));
 										return false;
 									} else if ($searchResults.find('.result').length - 1 == k) {
