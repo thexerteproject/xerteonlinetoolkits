@@ -108,8 +108,9 @@ $(document).keydown(function(e) {
 
 			default: return; // exit this handler for other keys
 		}
+	} else {
+		return;
 	}
-    e.preventDefault(); // prevent the default action (scroll / move caret)
 });
 
 $(document).ready(function() {
