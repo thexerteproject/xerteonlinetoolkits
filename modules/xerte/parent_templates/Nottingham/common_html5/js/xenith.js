@@ -1114,7 +1114,12 @@ function x_continueSetUp1() {
 				})
 				.attr("aria-label", $("#x_helpBtn").attr("title") + " " + x_params.newWindowTxt)
 				.click(function() {
-					window.open(x_evalURL(x_params.nfo), "_blank");
+					if (x_params.helpTarget != 'lightbox') {
+						window.open(x_evalURL(x_params.nfo), "_blank");
+					} else {
+						$.featherlight({iframe: x_evalURL(x_params.nfo), iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
+					}
+					
 					$(this)
 						.blur()
 						.removeClass("ui-state-focus")

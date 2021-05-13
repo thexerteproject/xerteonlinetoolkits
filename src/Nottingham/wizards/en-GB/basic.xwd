@@ -31,7 +31,11 @@
 	
 	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
 	
-	<nfo optional="true" label="Help File" type="media"/>
+	<helpGroup type="group" label="Help File" optional="true">
+		<nfo label="File" type="media" optional="true" tooltip="Upload a file (e.g. pdf) or enter a URL"/>
+		<helpTarget type="ComboBox" label="Open in" defaultValue="new" options="New Window,Lightbox" data="new,lightbox" tooltip="Where the help file will open - by default it will open in a new browser tab/window" optional="true"/>
+	</helpGroup>
+	
     <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" defaultValue="term|definition" wysiwyg="false,true"/>
     <controller optional="true" label="Custom Interface" type="media" flashonly="true" deprecated="This property is deprecated" />
 	
