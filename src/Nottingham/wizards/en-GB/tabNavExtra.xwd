@@ -12,7 +12,12 @@
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox"  data="Small,Medium,Large" defaultValue="Large" width="100" mandatory="true"/>
 
-    <rememberTab label="Stay on Current Tab" type="CheckBox" optional="true" tooltip="Display the currently viewed tab when changing between topics containing tabs of the same name"/>
+	<txtGroup type="group" label="Page Text" optional="true">
+		<text label="Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
+		<textPos label="Position" options="Top,Above Topic List" type="ComboBox" data="Top,Above" defaultValue="Top" width="100" optional="true"/>
+	</txtGroup>
+	
+	<rememberTab label="Stay on Current Tab" type="CheckBox" optional="true" tooltip="Display the currently viewed tab when changing between topics containing tabs of the same name"/>
 	
     <newNodes>
       <topic><![CDATA[<topic name="Enter Topic Name"><nestedTab name="Enter Tab Name"><nestedPage name="Nested Page Name" text="Content for the pane"/></nestedTab></topic>]]></topic>
