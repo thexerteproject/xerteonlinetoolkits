@@ -454,6 +454,10 @@ var EDITOR = (function ($, parent) {
             attribute_value = attributes[name];
             attr_found = true;
         }
+        if (name == "HotSpot")
+        {
+            return {found : true, value: "ERROR"};
+        }
         if (!attr_found)
         {
             if (options.cdata && options.cdata_name == name)
@@ -2442,7 +2446,7 @@ var EDITOR = (function ($, parent) {
         return urlPath;
     },
 
-    drawHotspot = function(html, url, hsattrs, hspattrs, id, forceRectangle){
+    drawHotspot = function(html, url, hsattrs, hspattrs, id, forceRectangle, lp){
         // Draw Hotspot on the wizard page as preview on the thumbnail image
         // Always treat hotspot as a polygon
         // Step 0. Find image, set scale and wrap with overlayWrapper
@@ -2472,7 +2476,7 @@ var EDITOR = (function ($, parent) {
                 });
         });
 
-        canvas.on('mouse:down', function(){editHotspot(url, hsattrs, hspattrs, id, forceRectangle)});
+        canvas.on('mouse:down', function(){editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp)});
         // Step 2. Create polygon in appropriate scale
         var scaledpoints = [];
         // Old way of specifying hotspot: x,y,w,h
@@ -2505,7 +2509,7 @@ var EDITOR = (function ($, parent) {
         }
     };
 
-    editHotspot = function (url, hsattrs, hspattrs, id, forceRectangle){
+    editHotspot = function (url, hsattrs, hspattrs, id, forceRectangle, lp){
 	    var shape = "rectangle";
 	    var scale;
 	    var isDown = false;
@@ -2528,7 +2532,7 @@ var EDITOR = (function ($, parent) {
             '<button id="' + id + '_ok" name="ok" class="hseditModeButton" title="' + language.Alert.oklabel + '" style="float:right"><i class="fas fa-2x fa-check-square"></i></button>' +
             '</div>');
 
-            edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');
+        edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');
         edit_img.append('<div class="hsinstructions" id="instructions_' + id + '"></div>');
         
         if (!forceRectangle && hsattrs.mode != undefined)
@@ -2652,25 +2656,28 @@ var EDITOR = (function ($, parent) {
                                 borderColor: 'yellow'
                             });
                         }
+                        // Old definition of hotspot
                         else if (forceRectangle || (hsattrs.x != undefined && hsattrs.y != undefined && hsattrs.w != undefined && hsattrs.h != undefined)) {
-                            // Old definition of hotspot
-                            hs = new fabric.Rect({
-                                top: parseFloat(hsattrs.y) / scale,
-                                left: parseFloat(hsattrs.x) / scale,
-                                width : parseFloat(hsattrs.w) /scale,
-                                height : parseFloat(hsattrs.h) /scale,
-                                angle: 0,
-                                fill: 'rgba(255,0,0,0.5)',
-                                selectable: true,
-                                objectCaching: false,
-                                transparentCorners: true,
-                                cornerColor: 'yellow',
-                                borderColor: 'yellow',
-                                hasRotatingPoint: !forceRectangle
-                            });
+                            // Don't draw the optional empty value
+                            if (hsattrs.x > 0 || hsattrs.y > 0 || hsattrs.w > 0 || hsattrs.h > 0) {
+                                hs = new fabric.Rect({
+                                    top: parseFloat(hsattrs.y) / scale,
+                                    left: parseFloat(hsattrs.x) / scale,
+                                    width : parseFloat(hsattrs.w) /scale,
+                                    height : parseFloat(hsattrs.h) /scale,
+                                    angle: 0,
+                                    fill: 'rgba(255,0,0,0.5)',
+                                    selectable: true,
+                                    objectCaching: false,
+                                    transparentCorners: true,
+                                    cornerColor: 'yellow',
+                                    borderColor: 'yellow',
+                                    hasRotatingPoint: !forceRectangle
+                                });
+                            }
                         }
                         setDrawingModeButtonState(shape);
-                        if (hs == null) {
+                        if (hs == null || (hsattrs.x == 0 && hsattrs.y == 0 && hsattrs.w == 0 && hsattrs.h == 0)) {
                             setRectangleHandlers();
                             disableReset();
                         }
@@ -2744,7 +2751,6 @@ var EDITOR = (function ($, parent) {
             // Ok handler
             var okbutton = $('.hotspotEditor  button[name="ok"]');
             okbutton.click(function(event){
-
                 var key = $("#inner_img_" + id).data("key");
                 var current = $.featherlight.current();
                 var npoints = [];
@@ -2755,23 +2761,34 @@ var EDITOR = (function ($, parent) {
                             //Get tl, tr, br, bl
                             var cornerpoints = ['tl', 'tr', 'br', 'bl'];
                             for (var pi in cornerpoints) {
-                                var point = hspoints[cornerpoints[pi]];
+                            var point = hspoints[cornerpoints[pi]];
                                 npoints.push({
                                     "x": point.x * scale,
                                     "y": point.y * scale
                                 });
                             }
-                            var rect = {};
+                            var rect = {}, _rect = {};
+                            canvasWidth = $('.overlayCanvas').width()
+                            canvasHeight = $('.overlayCanvas').height()
+                            _rect.top = (hs.top / canvasHeight) * 100;
+                            _rect.left = (hs.left / canvasWidth) * 100;
+                            _rect.width = (hs.getScaledWidth() / canvasWidth) * 100;
+                            _rect.height = (hs.getScaledHeight() / canvasHeight) * 100;
+                            _rect.angle = hs.angle;
+
                             rect.top = hs.top * scale;
                             rect.left = hs.left * scale;
                             rect.width = hs.getScaledWidth() * scale;
                             rect.height = hs.getScaledHeight() * scale;
-                            rect.angle = hs.angle;
+                            rect.angle = hs.angle; 
                             var stringPoints = JSON.stringify(npoints);
                             var stringShape = JSON.stringify(rect);
 
                             if (forceRectangle) {
                                 setAttributeValue(key, ["x", "y", "w", "h"], [rect.left, rect.top, rect.width, rect.height]);
+                                if (lp) {
+                                    setAttributeValue(key, ["_x", "_y", "_w", "_h"], [_rect.left, _rect.top, _rect.width, _rect.height]);
+                                }
                             }
                             else {
                                 setAttributeValue(key, ["points", "mode", "shape"], [stringPoints, shape, stringShape]);
@@ -4136,15 +4153,16 @@ var EDITOR = (function ($, parent) {
 					}
 
 				}
-				break;
+                break;
+            case 'locpicker':
 			case 'hotspot':
             case 'flexhotspot':
 				var id = 'hotspot_' + form_id_offset;
 				form_id_offset++;
-
                 // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
                 // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
-                var forceRectangle = (options.type.toLowerCase() === "hotspot");
+                var forceRectangle = !(options.type.toLowerCase() === "flexhotspot");
+                var lp = (options.type.toLowerCase() === "locpicker");
 				var hsattrs = lo_data[key].attributes;
                 var hsparent = parent.tree.getParent(key);
                 var hspattrs = lo_data[hsparent].attributes;
@@ -4155,35 +4173,49 @@ var EDITOR = (function ($, parent) {
                     hspattrs = lo_data[hsparent].attributes;
                 }
 
-                    // Create the container
-                    html = $('<div>').attr('id', id);
+                // Create the container
+                html = $('<div>').attr('id', id);
 
-                    var url = hspattrs.url;
-                    // Replace FileLocation + ' with full url
+                var url = hspattrs.url;
+                // Replace FileLocation + ' with full url
+                if (url != undefined) {
                     url = makeAbsolute(url);
-                    // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
-                    if (url.substring(0,4) == "http")
-                    {
-                        var shape = "square";
-                        html.addClass('clickableHotspot');
-                        html.append("<img>");
-                        var cur_key = key;
-                        html.find('img')
-                            .attr('id', 'inner_img_' + id)
-                            .attr("data-key", cur_key)
-                            .attr("src", url)
-                            .load(function(){
+                }
 
-                                $(this).css({width: '100%'});
-                                drawHotspot(html, url, hsattrs, hspattrs, id, forceRectangle);
-                            }).click(function(){
-                                editHotspot(url, hsattrs, hspattrs, id, forceRectangle);
-                            });
+                // Create a white canvas to use in lieu of an image for location selector.
+                else if (lp === true) {
+                    var whiteImage = document.createElement("CANVAS");
+                    var ctx = whiteImage.getContext("2d");
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.fillRect(0, 0, whiteImage.width, whiteImage.height);
+                    url = whiteImage.toDataURL();
+                    // Set a default value if using locpicker, so plugins can be rendered.
+                    if (hsattrs.x == undefined || hsattrs.y == undefined){
+                        setAttributeValue(key, ["x", "y", "w", "h"], [0, 0, 0, 0]);
                     }
-                    else
-                    {
-                        html.append("<span class=\"error\">" + language.editHotspot.Error.selectFile + "</span>");
-                    }
+                }
+                // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
+                if (url.substring(0,4) == "http" || lp === true)
+                {                    
+                    var shape = "square";
+                    html.addClass('clickableHotspot');
+                    html.append("<img>");
+                    var cur_key = key;
+                    html.find('img')
+                        .attr('id', 'inner_img_' + id)
+                        .attr("data-key", cur_key)
+                        .attr("src", url)
+                        .load(function(){
+                            $(this).css({width: '100%'});
+                            drawHotspot(html, url, hsattrs, hspattrs, id, forceRectangle, lp);
+                        }).click(function(){
+                            editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp);
+                        });
+                }
+                else
+                {
+                    html.append("<span class=\"error\">" + language.editHotspot.Error.selectFile + "</span>");
+                }
 
 				break;
 				

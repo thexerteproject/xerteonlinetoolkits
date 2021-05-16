@@ -4320,7 +4320,7 @@
 
             $.getScript("modules/xerte/parent_templates/Nottingham/common_html5/js/popcorn/plugins/MediasitePlayerIFrameAPI.js")
                 .done(function () {
-                    $("#mediasiteIframe").parent()[0].style.visibility = "hidden";
+                    //$("#mediasiteIframe").parent()[0].style.visibility = "hidden";
                     console.log(" Mediasiteplayer loaded " + aSrc + "\n" + elem.id);
                     player = new Mediasite.Player(elem.id,
                         {
