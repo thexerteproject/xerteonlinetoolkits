@@ -6586,6 +6586,7 @@
 	<incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true"/>
 	
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+    <markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>
 	
     <newNodes>
       <sentence><![CDATA[<sentence p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint" name="Sentence" />]]></sentence>
