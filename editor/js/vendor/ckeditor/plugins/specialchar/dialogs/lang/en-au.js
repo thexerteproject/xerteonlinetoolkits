@@ -164,10 +164,20 @@ CKEDITOR.plugins.setLang( 'specialchar', 'en-au', {
 	pi:'Pi small',
 	rho:'Rho small',
 	sigma:'Sigma small',
+	sigmaf:'Sigma final',
 	tau:'Tau small',
 	upsilon:'Upsilon small',
 	phi:'Phi small',
 	chi:'Chi small',
 	psi:'Psi small',
-	omega:'Omega small'
+	omega:'Omega small',
+	leq:'Less than or equal to',
+	geq:'Greater than or equal to',
+	NotEqual:'Not equal to',
+	plusmn:'Plus or minus',
+	centerdot:'Centred dot',
+	therefore:'Therefore',
+	gt:'Greater than',
+	lt:'Less than',
+	amp:'Ampersand'
 } );

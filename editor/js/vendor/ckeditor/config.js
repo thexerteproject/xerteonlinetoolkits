@@ -52,7 +52,13 @@ CKEDITOR.editorConfig = function( config ) {
     var startGreek = config.specialChars.indexOf('&Alpha;');
     var endGreek = config.specialChars.indexOf('&psi;')
     config.specialChars.splice(startGreek, endGreek-startGreek+1);
-    config.specialChars = config.specialChars.concat(['&Alpha;', '&Beta;', '&Gamma;', '&Delta;', '&Epsilon;', '&Zeta;', '&Eta;', '&Theta;', '&Iota;', '&Kappa;', '&Lambda;', '&Mu;', '&Nu;', '&Xi;', '&Omicron;', '&Pi;', '&Rho;', '&Sigma;', '&Tau;', '&Upsilon;', '&Phi;', '&Chi;', '&Psi;', '&Omega;', '&alpha;', '&beta;', '&gamma;', '&delta;', '&epsilon;', '&zeta;', '&eta;', '&theta;', '&iota;', '&kappa;', '&lambda;', '&mu;', '&nu;', '&xi;', '&omicron;', '&pi; ', '&rho;', '&sigma; ', '&tau;', '&upsilon;', '&phi;', '&chi;', '&psi;', '&omega;']);
+    config.specialChars = config.specialChars.concat(['&Alpha;', '&Beta;', '&Gamma;', '&Delta;', '&Epsilon;', '&Zeta;', '&Eta;', '&Theta;', '&Iota;', '&Kappa;', '&Lambda;', '&Mu;', '&Nu;', '&Xi;', '&Omicron;', '&Pi;', '&Rho;', '&Sigma;', '&Tau;', '&Upsilon;', '&Phi;', '&Chi;', '&Psi;', '&Omega;', '&alpha;', '&beta;', '&gamma;', '&delta;', '&epsilon;', '&zeta;', '&eta;', '&theta;', '&iota;', '&kappa;', '&lambda;', '&mu;', '&nu;', '&xi;', '&omicron;', '&pi;', '&rho;', '&sigma;', '&sigmaf;', '&tau;', '&upsilon;', '&phi;', '&chi;', '&psi;', '&omega;']);
+	
+	// add some other characters to the special characters dialog
+	var newCharacters = ['&leq;', '&geq;', '&NotEqual;', '&plusmn;', '&centerdot;', '&therefore;'];
+	var insertPosition = config.specialChars.indexOf('&gt;')+1;
+	var temp = config.specialChars.slice(0, insertPosition).concat(newCharacters).concat(config.specialChars.slice(insertPosition));
+	config.specialChars = temp;
 
     //config.scayt_autoStartup = true;
     //config.scayt_sLang = loLanguage.replace("-", "_");

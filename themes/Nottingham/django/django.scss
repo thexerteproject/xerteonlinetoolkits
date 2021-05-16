@@ -14,6 +14,14 @@ body {
     }
 }
 
+#x_footerChevron{
+    color: #fff;
+}
+
+#x_footerChevron:focus, #x_footerChevron:hover {
+	color: #A40000;
+}
+
 /*.ui-widget-content {
   border: 1px solid #aaaaaa;
   background: #1c1c1c; url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x;
