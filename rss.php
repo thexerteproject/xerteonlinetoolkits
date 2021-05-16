@@ -52,7 +52,7 @@ if(!isset($_GET['username'])){
 
     echo "<rss version=\"2.0\"
                     xmlns=\"http://backend.userland.com/rss2\"
-                    xmlns:xerte=\"http://xert.org.uk/rssDownload\">
+                    xmlns:xerte=\"http://xerte.org.uk/rssDownload\">
         <channel><title>{$xerte_toolkits_site->name}</title>
         <link>{$xerte_toolkits_site->site_url}</link>
         <description>" . RSS_DESCRIPTION . " " . $xerte_toolkits_site->name . "</description>
@@ -81,7 +81,7 @@ if(!isset($_GET['username'])){
 
         echo "<rss version=\"2.0\"
                     xmlns=\"http://backend.userland.com/rss2\"
-                    xmlns:xerte=\"http://xert.org.uk/rssDownload\">
+                    xmlns:xerte=\"http://xerte.org.uk/rssDownload\">
         <channel><title>{$xerte_toolkits_site->name}</title>
         <link>{$xerte_toolkits_site->site_url}</link>
         <description>" . RSS_DESCRIPTION . " " . $xerte_toolkits_site->name . "</description>

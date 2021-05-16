@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- FLICKR SLIDESHOW=============================== -->
-  <flickr menu="Media" menuItem="Flickr Slideshow" hint="Include freely available graphical content from the Flickr photo sharing service." label="Page Text" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" remove="true">
+  <flickr menu="Media" menuItem="Flickr Slideshow" hint="Include freely available graphical content from the Flickr photo sharing service." label="Page Text" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#flickrslideshow" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <keywords label="Keyword(s)" type="TextInput"/>

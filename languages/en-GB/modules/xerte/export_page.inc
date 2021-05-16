@@ -11,7 +11,7 @@
 	 */
 
     define("XERTE_EXPORT_HTML5", "Export with Javascript (a.k.a. HTML5) Engine");
-    define("XERTE_EXPORT_FLASH", "Export with Flash Engine");
+    define("XERTE_EXPORT_FLASH", "Export with Flash Engine (please note that Flash is no longer supported)");
     define("XERTE_EXPORT_DESCRIPTION","There are several ways to export a project. An exported project is packaged, but not deleted, into a zip file for you to share with another user, to deploy on the web, or to import into a SCORM compliant LMS or VLE. You can choose whether to export all of the project's files, or just those files used by the project.");
 
     define("XERTE_EXPORT_ZIP_ARCHIVE", "Archive export. Complete backup including offline editing and round-tripping back to toolkits or sharing with other Xerte users: ");

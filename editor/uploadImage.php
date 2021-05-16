@@ -72,7 +72,7 @@ if (!isset($_FILES['upload']))
 }
 
 // Check upload path, should contain USER-FILES
-if (strpos($_REQUEST['uploadURL'], 'USER-FILES') === false)
+if (strpos($_REQUEST['uploadPath'], 'USER-FILES') === false || strpos($_REQUEST['uploadPath'], '../') !== false || strpos($_REQUEST['uploadURL'], 'USER-FILES') === false)
 {
     // Invalid folder, reject!
     $response->uploaded = 0;

@@ -36,6 +36,8 @@
 		var AmountOfWrongScore = 0;
 		var highlightsArray= [];
 		var allHighlightsArray= [];
+		var amountOfCorrect = 0
+		var amountOfWrong = 0
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 
@@ -52,6 +54,9 @@
 			this.attempts = 0;
 			hotSpotScore = 0;
 			AmountOfWrongScore = 0;
+			amountOfCorrect = 0;
+			amountOfWrong = 0;
+			highlightsArray= [];
 			this.highlightsArray= [];
 			this.allHighlightsArray= [];
 			this.amountOfCorrect = 0;
@@ -87,7 +92,7 @@
 			if(x_currentPageXML.getAttribute("trackingWeight") != null){
 				this.weighting = x_currentPageXML.getAttribute("trackingWeight");
 			}
-			XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
+			XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
 
 			var $textHolder = $('#textHolder');
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
@@ -181,7 +186,9 @@
 			$("#checkButton").button({
 				label: "Check"
 			}).click(function (){
-
+				debugger
+				hotSpotScore = 0;
+				AmountOfWrongScore = 0;
 				amountOfCorrectOptions = 0
 				allHighlightsArray.forEach((highlight)=>{
 					if(highlight.getAttribute("truth") === "true"){
@@ -189,8 +196,8 @@
 					}
 				})
 
-				var amountOfCorrect = 0;
-				var amountOfWrong = 0;
+				amountOfCorrect = 0;
+				amountOfWrong = 0;
 				highlightsArray.forEach((highlight)=>{
 					if(highlight.getAttribute("truth") === "true"){
 						amountOfCorrect++;
@@ -228,7 +235,7 @@
 						var points = JSON.parse(highlight.getAttribute("points"))
 						var x = (points[0]["x"]+points[1]["x"])/2
 						var y = (points[0]["y"]+points[2]["y"])/2
-						XTEnterInteraction(x_currentPage, index, "fill-in", name, [], truthNames, x_currentPageXML.getAttribute("generalFeedback"), x_currentPageXML.getAttribute("grouping"));
+						// XTEnterInteraction(x_currentPage, index, "fill-in", name, [], truthNames, x_currentPageXML.getAttribute("generalFeedback"), x_currentPageXML.getAttribute("grouping"));
 
 						if(highlight.getAttribute("truth") === "true"){
 							hotSpotScore++;
@@ -272,25 +279,41 @@
 
 
 
-					var setScore = (hotSpotScore/highlightsArray.length)*100
+					//var setScore = (hotSpotScore/highlightsArray.length)*100;
+					var setScore = 0;
+					if (hotSpotScore == highlightsArray.length)
+					{
+						setScore = 100.0;
+					}
+					var correct = true,
+							l_options = [],
+							l_answers = [],
+							l_feedbacks = [];
 					highlightsArray.forEach((highlight, index)=> {
-						var result;
-						if(highlight.getAttribute("truth")==="true"){
-							result = {
-								success: true,
-								score: 100.0
-							}
-						}else{
-							result = {
-								correct: false,
-								score: 0
-							}
+						var currCorrect = highlight.getAttribute("truth")==="true";
+						correct = correct && currCorrect;
+						if (highlight.getAttribute("name") != undefined)
+						{
+							var answerTxt = highlight.getAttribute("name");
 						}
-
-						XTExitInteraction(x_currentPage, index, result, "", highlight.getAttribute("name"), "", x_currentPageXML.getAttribute("trackinglabel"));
-					})
-
-					XTSetPageScore(x_currentPage, setScore);
+						else
+						{
+							var answerTxt = 'Hotspot ' + highlight.getAttribute("id") + 1;
+						}
+						l_options.push({
+							id :highlight.getAttribute("id")+1+"",
+							answer: answerTxt,
+							result: currCorrect
+						});
+						l_answers.push(answerTxt);
+						l_feedbacks.push(x_GetTrackingTextFromHTML(highlight.text, ""));
+					});
+					var result = {
+						success: correct,
+						score: setScore
+					}
+					XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+					XTSetPageScore(x_currentPage, setScore, x_currentPageXML.getAttribute("trackinglabel"));
 
 				}else{
 
@@ -322,12 +345,12 @@
 
 			var imgMaxW, imgMaxH;
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
-				imgMaxW = Math.round($x_pageHolder.width() - 30);
-				imgMaxH = Math.round($x_pageHolder.height() - 30);
+				imgMaxW = Math.round($x_pageHolder.width() * 0.85 -20);
+				imgMaxH = Math.round($x_pageHolder.height() * 0.85 -20);
 				$('#panel').css('margin', '0px');
 			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
-				imgMaxW = Math.round($x_pageHolder.width() * 0.8 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxW = Math.round($x_pageHolder.width() * 0.6 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 0.6 - 20);
 			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.3 - 20);
 				imgMaxH = Math.round($x_pageHolder.height() - 50);
@@ -342,13 +365,13 @@
 			// 	var percentage = imgMaxW/imgMaxH
 			// 	imgMaxW = imgMaxW/percentage
 			// }
-			x_scaleImg($img, imgMaxW-50, imgMaxH-50, true, firstLoad, false);
+			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
 
 			$img.css({
 				"opacity"	:1,
 				"filter"	:'alpha(opacity=100)',
-				"max-height" : imgMaxH-50,
-				"max-width"	:imgMaxW-50
+				"max-height" : imgMaxH,
+				"max-width"	:imgMaxW
 			});
 			//
 			// if($img.width() > $img.height()){
@@ -364,12 +387,33 @@
 			// create hotspots - taking scale of image into account
 			var scale = $img.width() / $img.data("origSize")[0],
 				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;
+			var correctOptions = [],
+					correctAnswer = [],
+					correctFeedback = [];
 			$("#hsHolder").html("<map id=\"hsHolder_map\" name=\"hsHolder_map\"></map>");
 
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var _this = this;
-					allHighlightsArray.push(_this)
+					_this.setAttribute("id", i);
+					allHighlightsArray.push(_this);
+					if (this.getAttribute("name") != undefined)
+					{
+						var answerTxt = this.getAttribute("name");
+					}
+					else
+					{
+						var answerTxt = 'Hotspot ' + i + 1;
+					}
+					correctOptions.push({
+						id: (i+1)+"",
+						answer: answerTxt,
+						result: this.getAttribute('truth') == 'true'
+					});
+					if (this.getAttribute('truth') == 'true') {
+						correctAnswer.push(answerTxt);
+					}
+					correctFeedback.push(x_GetTrackingTextFromHTML(this.getAttribute('text'), ""));
 					// var $hotspot = $('<a class="hotspot transparent" href="#" tabindex="' + (i+2) + '" />');
 					var $hotspot = $('<area class="hotspot" shape="poly" href="#" tabindex="' + (i+2) + '" />');
 
@@ -405,9 +449,9 @@
 					$hotspot
 						.attr("coords", coords_string)
 						.click(function() {
-
+							debugger;
 							var $this = $(this);
-							if($this[0].className === "hotspot highlight"){
+							if($this.hasClass('hotspot') && !$this.hasClass("selected")){
 								$this.addClass("selected");
 								highlightsArray.push(_this)
 
@@ -462,6 +506,13 @@
 
 					$("#hsHolder_map").append($hotspot);
                 });
+
+			var label = x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute('name'), "Hotspot question " + (x_currentPage+1));
+			if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
+			{
+				label = x_currentPageXML.getAttribute("trackinglabel");
+			}
+			XTEnterInteraction(x_currentPage, 0, 'multiplechoice', label, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 
 			if (selected != undefined) {
 

@@ -333,11 +333,8 @@
 						.click(function() {
 							connectorHotspotImage.pauseAudio();
 							
-							// force open dialogs & ligtboxes to close
+							// force open dialogs to close
 							$(".x_popupDialog").parent().detach();
-							if (parent.window.$.featherlight.current()) {
-								parent.window.$.featherlight.current().close();
-							}
 
 							$("#pageContents .selected").removeClass("selected");
 							$("#pageContents .highlighted").removeClass("highlighted");
@@ -477,6 +474,7 @@
 										$pageContents.data("dialogPos").height = undefined;
 									} else {
 										$.featherlight(dialogHtml, {});
+										x_pageContentsUpdated();
 									}
 								}
 								
