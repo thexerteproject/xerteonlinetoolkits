@@ -58,6 +58,7 @@ function XApiTrackingState() {
     this.category = "";
     this.language = "en";
     this.resume = false;
+    this.resumedSessions= new Array();
 
     this.initialise = initialise;
     this.setVars = setVars;
@@ -142,6 +143,11 @@ function XApiTrackingState() {
                 if (typeof jsonObj.pagesViewed != "undefined") {
                     x_restorePagesViewed(jsonObj.pagesViewed);
                 }
+                if (typeof jsonObj.resumedSessions != undefined)
+                {
+                    this.resumedSessions = jsonObj.resumedSessions;
+                }
+                this.resumedSessions.push(jsonObj.sessionId);
             }
         }
     }
@@ -272,7 +278,7 @@ function XApiTrackingState() {
 
     function getSuccessStatus() {
         if (this.lo_type != "pages only") {
-            if (this.getScaledScore() > (this.lo_passed / 100)) {
+            if (this.getdScaledScore() > (this.lo_passed / 100)) {
                 return "passed";
             } else {
                 return "failed";
@@ -1871,7 +1877,14 @@ function XTInitialise(category) {
                 id: baseUrl() + 'course/' + coursename
             };
             state.coursename = coursename;
-        } else {
+        }
+        else if (typeof x_params['course'] != "undefined" && x_params['course'] != "") {
+            state.course = {
+                id: baseUrl() + 'course/' + x_params['course']
+            };
+            state.coursename = x_params['course'];
+        }
+        else {
             state.course = "";
             state.coursename = "";
         }
@@ -1880,7 +1893,14 @@ function XTInitialise(category) {
                 id: baseUrl() + 'module/' + modulename
             };
             state.modulename = modulename;
-        } else {
+        }
+        else if (typeof x_params['module'] != "undefined" && x_params['module'] != "") {
+            state.module = {
+                id: baseUrl() + 'module/' + x_params['module']
+            };
+            state.modulename = x_params['module'];
+        }
+        else {
             state.module = "";
             state.modulename = "";
         }
