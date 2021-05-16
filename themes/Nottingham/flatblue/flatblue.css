@@ -31,6 +31,9 @@ x_headerBlock.x_floatLeft{
 #x_footerChevron {
 	color: #ffffff;
 }
+#x_footerChevron:focus, #x_footerChevron:hover {
+	color: #A40000;
+}
 
 #x_footerBg {
 	background-image:none;

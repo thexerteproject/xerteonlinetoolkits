@@ -1,0 +1,707 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var textHighlight = new function() {
+	    var docData = {
+				'filename': 'textHighlight',
+				'pages':[]
+			},
+			$pageContents;
+
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$pageContents = $('#pageContents');
+		};
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			// resize panels to maximum possible height
+			var textHolderH = $('#textHolder').length > 0 ? $('#textHolder').outerHeight(true) : 0,
+				mainBtnHolderH = $('#mainBtnHolder').length > 0 ? $('#mainBtnHolder').outerHeight(true) : 0,
+				panels = ['panelA', 'panelB'];
+			
+			for (var i=0; i<panels.length; i++) {
+				var $thisPanel = $('.' + panels[i]),
+					$thisPanelPaneHolder = $thisPanel.find('.paneHolder'),
+					$thisPanelTabHolder = $thisPanel.find('.tabHolder');
+				
+				var availH;
+				if (x_browserInfo.mobile == true) {
+					availH = $x_mobileScroll.height() - $x_footerBlock.height() - mainBtnHolderH - (parseInt($thisPanel.css('padding-top')) * 2) - 4;
+				} else {
+					availH = $x_pageHolder.height() - textHolderH - mainBtnHolderH - (parseInt($x_pageDiv.css('padding-top')) * 2) - (parseInt($thisPanel.css('padding-top')) * 2) - 4;
+				}
+				
+				$thisPanel.height(availH);
+				
+				// this resizing is for if the panel is a tabbed navigator
+				$thisPanelPaneHolder.height($thisPanel.height() - $thisPanelTabHolder.outerHeight());
+				$thisPanelPaneHolder.find('.navChild').height($thisPanelPaneHolder.height() - parseInt($thisPanelPaneHolder.find('.navChild').css('padding-top')) * 2 - 2);
+			}
+			
+			// resize the contenteditable divs within panels
+			$('.editableDiv').each(function() {
+				textHighlight.resizeEditable($(this));
+			});
+		};
+		
+		// function resizes contenteditable div
+		this.resizeEditable = function($editableDiv) {
+			var btnHolderH = $editableDiv.parent().find('.btnHolder').length > 0 ? $editableDiv.parent().find('.btnHolder').outerHeight() : 0;
+			$editableDiv.innerHeight(Math.floor($editableDiv.parents('.panel, .navChild').height() - btnHolderH));
+		};
+
+        this.leavePage = function() {
+            if ($pageContents.data('tracked') != true) {
+                this.finishTracking();
+            }
+        };
+
+		this.init = function() {
+			$pageContents = $('#pageContents');
+			$pageContents.data({
+				'mode': x_currentPageXML.getAttribute("mode"),
+				'tracked': false
+			});
+			
+			// tracking - there's no correct answer so tracking just saves highlighted text/notes text alongside the suggested text - any highlights/notes count as activity completed
+			var weighting = x_currentPageXML.getAttribute("trackingWeight") != undefined ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
+			var label = x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "" ? x_currentPageXML.getAttribute("trackinglabel") : $('<div>').html(x_currentPageXML.getAttribute('name')).text();
+            XTSetPageType(x_currentPage, 'numeric', 1, weighting);
+            var suggestedTxt = $('<div>').html(x_currentPageXML.getAttribute("suggestedText")).text();
+			XTEnterInteraction(x_currentPage, 0, 'text', label, [], suggestedTxt, [], x_currentPageXML.getAttribute("grouping"));
+			
+			// get info about downloadable document if download is allowed
+			if (x_currentPageXML.getAttribute('download') == 'true') {
+				docData.documentName = x_currentPageXML.getAttribute('name');
+				docData.orientation = x_currentPageXML.getAttribute('fileOrientation') != undefined ? x_currentPageXML.getAttribute('fileOrientation') : 'portrait';
+				docData.size = docData.orientation == 'landscape' ? '841.7pt 595.45pt' : '595.45pt 841.7pt';
+				
+				// styles used in downloaded word doc
+				var styles = '';
+				styles += 'body, .ui-widget { font-family: Arial, sans-serif; -webkit-font-smoothing: antialiased; color: black; font-size: 12pt; } ';
+				docData.styles = styles;
+				
+				if (x_currentPageXML.getAttribute('filename') && x_currentPageXML.getAttribute('filename').trim().length > 0) {
+					docData.filename = x_currentPageXML.getAttribute('filename');
+				}
+			}
+			
+			// set up highlight / select style css
+			var groupStyles = "<style type='text/css'>",
+				highlightColour = x_getColour(x_currentPageXML.getAttribute('highlight1')),
+				selectedColour = x_getColour(x_currentPageXML.getAttribute('highlight2'));
+			groupStyles += " #initTxt *::selection {color:" + x_blackOrWhite(highlightColour) + "; background:" + highlightColour + ";} ";
+			groupStyles += " #initTxt *::-moz-selection {color:" + x_blackOrWhite(highlightColour) + "; background:" + highlightColour + ";} ";
+			groupStyles += "</style>";
+			$pageContents.prepend($(groupStyles));
+			
+			// selected style is added as inline css rather than a class so that it shows up in downloaded files - selected class is also used but just so the highlights can be easily removed
+			$pageContents.data("selectedStyle", "color:" + x_blackOrWhite(selectedColour) + "; background:" + selectedColour + ";");
+			
+			// if language attributes aren't in xml will have to use english fall back
+			var selectBtnLabel = x_currentPageXML.getAttribute("selectBtn") == undefined ? "Select" : x_currentPageXML.getAttribute("selectBtn"),
+				noteBtnLabel = x_currentPageXML.getAttribute("noteBtn") == undefined ? "Copy to Notes" : x_currentPageXML.getAttribute("noteBtn"),
+				downloadBtnLabel = x_currentPageXML.getAttribute("downloadBtn") == undefined ? "Download" : x_currentPageXML.getAttribute("downloadBtn"),
+				checkBtnLabel = x_currentPageXML.getAttribute("checkBtn") == undefined ? "Check" : x_currentPageXML.getAttribute("checkBtn"),
+				clearBtnLabel = x_currentPageXML.getAttribute("clearBtn") == undefined ? "Clear" : x_currentPageXML.getAttribute("clearBtn"),
+				resetBtnLabel = x_currentPageXML.getAttribute("resetBtn") == undefined ? "Reset" : x_currentPageXML.getAttribute("resetBtn"),
+				initTxtLabel = x_currentPageXML.getAttribute("initTxtLabel") == undefined ? "Initial text - select text and copy to your notes" : x_currentPageXML.getAttribute("initTxtLabel"),
+				initTxtLabel2 = x_currentPageXML.getAttribute("initTxtLabel2") == undefined ? "Initial text - select text before clicking highlight button" : x_currentPageXML.getAttribute("initTxtLabel2"),
+				suggestedTxtLabel = x_currentPageXML.getAttribute("suggestedTxtLabel") == undefined ? "A suggested answer" : x_currentPageXML.getAttribute("suggestedTxtLabel"),
+				notesTxtLabel = x_currentPageXML.getAttribute("notesTxtLabel") == undefined ? "Notes" : x_currentPageXML.getAttribute("notesTxtLabel");
+			
+			// sort layout of the different text fields & store the info that will be in the downloadable file
+			var position = { top:[], left:[], panelA:[], panelB:[], lightbox:[] },
+				submit = false,
+				index = 0;
+			
+			// page text (instructions) - optional
+			if (x_currentPageXML.getAttribute("text") != "") {
+				position[x_currentPageXML.getAttribute("textPos")].push({ txt: x_currentPageXML.getAttribute("text"), title: x_currentPageXML.getAttribute("textTitle"), index: index, class: 'introTxt' });
+				index++;
+				
+				if (x_currentPageXML.getAttribute('download') == 'true') {
+					var txtInfo = { pageName: x_currentPageXML.getAttribute("textTitle"), pageText: x_currentPageXML.getAttribute("text") };
+					docData.pages.push(txtInfo);
+				}
+			}
+			
+			// the initial text used for highlighting/note taking activity - mandatory
+			position[x_currentPageXML.getAttribute("initialPos")].push({ txt: x_currentPageXML.getAttribute("initialText"), title: x_currentPageXML.getAttribute("initialTitle"), index: index, class: 'initTxt' });
+			index++;
+			
+			if (x_currentPageXML.getAttribute('download') == 'true') {
+				var txtInfo = { pageName: x_currentPageXML.getAttribute("initialTitle"), pageText: x_currentPageXML.getAttribute("initialText") };
+				docData.pages.push(txtInfo);
+			}
+			
+			// when in notes mode a text field for typing in will be on screen - placeholder text for this notes field is optional
+			if ($pageContents.data('mode') == 'Notes') {
+				position[x_currentPageXML.getAttribute("notesPos")].push({ txt: x_currentPageXML.getAttribute("notesText") != undefined ? x_currentPageXML.getAttribute("notesText") : '', title: x_currentPageXML.getAttribute("notesTitle"), index: index, class: 'notesTxt' })
+				index++;
+				
+				if (x_currentPageXML.getAttribute('download') == 'true') {
+					var txtInfo = { pageName: x_currentPageXML.getAttribute("notesTitle"), pageText: x_currentPageXML.getAttribute("notesText") != undefined ? x_currentPageXML.getAttribute("notesText") : '' };
+					docData.pages.push(txtInfo);
+				}
+			}
+			
+			// suggested text & feedback are optional but the activities probably make more sense if at least one is present
+			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
+				submit = true;
+				position[x_currentPageXML.getAttribute("feedbackPos")].push({ txt: x_currentPageXML.getAttribute("feedback"), title: x_currentPageXML.getAttribute("feedbackTitle"), index: index, class: 'feedbackTxt', hide: true });
+				index++;
+				
+				if (x_currentPageXML.getAttribute('download') == 'true') {
+					var txtInfo = { pageName: x_currentPageXML.getAttribute("feedbackTitle"), pageText: x_currentPageXML.getAttribute("feedback") };
+					docData.pages.push(txtInfo);
+				}
+			}
+			
+			if (x_currentPageXML.getAttribute("suggestedText") != "") {
+				submit = true;
+				position[x_currentPageXML.getAttribute("suggestedPos")].push({ txt: x_currentPageXML.getAttribute("suggestedText"), title: x_currentPageXML.getAttribute("suggestedTitle"), index: index, class: 'suggestedTxt', hide: true });
+				index++;
+				
+				if (x_currentPageXML.getAttribute('download') == 'true') {
+					var txtInfo = { pageName: x_currentPageXML.getAttribute("suggestedTitle"), pageText: x_currentPageXML.getAttribute("suggestedText") };
+					docData.pages.push(txtInfo);
+				}
+			}
+			
+			// can't have text in two tabs & on left (not enough screen space) so move intro text to panel 1
+			if (position.left.length > 0 && position.panelA.length > 0 && position.panelB.length > 0) {
+				position.panelA.unshift(position.left[0]);
+				position.left = [];
+			}
+			
+			// add intro text to top or remove element if not needed
+			if (position.top.length > 0) {
+				$('#textHolder').addClass('introTxt');
+			} else {
+				$('#textHolder').remove();
+			}
+			
+			// only one panel used so make sure it's panel A
+			if (position.panelA.length == 0 && position.panelB.length > 0) {
+				position.panelA = position.panelB;
+				position.panelB = [];
+			}
+			
+			// on mobiles the screen shouldn't be split - everything on left, panelA or panelB should move to panelA
+			if (x_browserInfo.mobile == true) {
+				position.panelA = position.left.concat(position.panelA, position.panelB); 
+				position.left = [];
+				position.panelB = [];
+			}
+			
+			// remember all the position info in case of page changes
+			$pageContents.data({
+				'position': position,
+				'docData': docData
+			});
+			
+			// sort split screen & add required classes...
+			var $contentHolder = $('#contentHolder'),
+				left = position.left.length > 0 ? 'left' : 'panelA',
+				right = left == 'left' ? 'panelB' : position.panelB.length > 0 ? 'panelB' : undefined;
+			
+			if (right == undefined) {
+				// no split screen needed
+				$contentHolder.append('<div class="panel panelA"/>');
+				
+			} else {
+				// create split screen layout
+				$contentHolder
+					.addClass('splitScreen')
+					.append('<div class="left"></div><div class="right"><div class="panel"></div></div>');
+				
+				if (left == 'panelA') {
+					$contentHolder.find('.left').append('<div class="panel panelA"></div>');
+					$contentHolder.find('.right .panel').addClass('panelB');
+				} else {
+					$contentHolder.find('.right .panel').addClass('panelA');
+					$contentHolder.find('.left').addClass('introTxt');
+				}
+			}
+			
+			// add info to the panels - if there's more than one thing to show on the panel then it will become tabbed navigator
+			// an optional property also forces panels with one thing on to be tabbed navigator anyway
+			var panels = ['panelA', 'panelB'];
+			
+			for (var i=0; i<panels.length; i++) {
+				var $thisPanel = $contentHolder.find('.' + panels[i]);
+				
+				// create tabs
+				if (position[panels[i]].length > 1 || x_currentPageXML.getAttribute('forceTabs') == "true") {
+					$thisPanel.removeClass('panel');
+					
+					var $thisTabHolder = $('<ul class="tabHolder"/>').appendTo($thisPanel),
+						$thisPaneHolder = $('<div class="paneHolder"/>').appendTo($thisPanel);
+					
+					for (var j=0; j<position[panels[i]].length; j++) {
+						var tabTitle = position[panels[i]][j].title == null || position[panels[i]][j].title == '' ? ' ' : position[panels[i]][j].title;
+						$thisTabHolder.append('<li class="navChildTitle" aria-hidden="false"><a id="' + panels[i] + 'Title_' + j + '" href="#' + panels[i] + '_' + j + '">' + tabTitle + '</a></li>');
+						$thisPaneHolder.append('<div id="' + panels[i] + '_' + j + '" class="navChild ' + position[panels[i]][j].class + '" tabindex="0"/>')
+					}
+					
+					$thisPanel.tabs({
+						heightStyle: "content",
+						activate: function(e, ui) {
+							textHighlight.resizeEditable(ui.newPanel.find('.editableDiv'));
+							ui.newPanel.scrollTop(0);
+						}
+					});
+					
+				// tabs not needed
+				} else if (position[panels[i]].length > 0) {
+					$thisPanel.append('<div class="' + position[panels[i]][0].class + '">');
+				}
+			}
+			
+			// layout has been sorted - now add the content to the holders that have been set up
+			$.each(position, function(key, info) {
+				if (key != 'lightbox') {
+					var hidden = 0;
+					
+					for (var i=0; i<info.length; i++) {
+						var $holder = $('.' + info[i].class);
+					
+						if (info[i].class == 'initTxt' || info[i].class == 'notesTxt' || info[i].class == 'suggestedTxt') {
+							$holder.append('<div id="' + info[i].class + '" contenteditable="true" spellcheck="false" class="editableDiv">' + info[i].txt + '</div>');
+							
+							if (info[i].class == 'initTxt') {
+								$holder.append('<div id="' + info[i].class + 'BtnHolder" class="btnHolder"></div>');
+							}
+							
+							// if download is enabled then keep track of the editable regions as we'll need to get text from these when download (might have changed)
+							if (x_currentPageXML.getAttribute('download') == 'true') {
+								if ($pageContents.data('mode') == 'Notes' && info[i].class == 'notesTxt') {
+									$holder.find('.editableDiv').data('docDataIndex', info[i].index);
+								}
+								
+								if ($pageContents.data('mode') == 'Highlight' && info[i].class == 'initTxt') {
+									$holder.find('.editableDiv').data('docDataIndex', info[i].index);
+								}
+							}
+							
+							if (info[i].class == 'notesTxt') {
+								if (info[i].txt != '') {
+									$holder
+										.addClass('placeHolder')
+										.data('placeHolder', info[i].txt);
+								} else {
+									$holder.find('.editableDiv').html('<p></p>');
+								}
+							}
+							
+						} else {
+							$holder.html(info[i].txt);
+						}
+						
+						// hide suggestedTxt and feedbackTxt until work has been submitted
+						if (info[i].hide == true) {
+							var $pane = $('.' + info[i].class);
+							$pane.hide();
+							hidden++;
+							
+							// in tab nav so tab also needs hiding
+							if (this.length > 1 || x_currentPageXML.getAttribute('forceTabs') == "true") {
+								if (x_browserInfo.mobile == true) {
+									$('#' + $pane.attr('aria-labelledby')).parent('.navChildTitle').hide();
+								} else {
+									$('#' + $pane.attr('aria-labelledby')).parent('.navChildTitle').css('visibility','hidden');
+								}
+							}
+						}
+					}
+				}
+			});
+			
+			// set up contenteditable fields...
+			// initial text has been set up as contenteditable so selection without mouse works easily & so it can still include HTML (images etc.) that textarea won't support
+			// but need to intercept any attempts to change text as we don't actually want it to be editable
+			$('#initTxt, #suggestedTxt')
+				.on('keypress paste dragover drop', function(e) {
+					e.preventDefault();
+				})
+				.attr('aria-readonly', 'true');
+			
+			// also prevent editing of notes field when not in notes mode
+			if ($pageContents.data('mode') != 'Notes' || x_currentPageXML.getAttribute('allowTyping') == 'false') {
+				$('#notesTxt')
+					.on('keypress paste dragover drop', function(e) {
+						e.preventDefault();
+					});
+				
+			} else if (x_currentPageXML.getAttribute('required') == "true") {
+				$('#notesTxt')
+					.on('input', function(e) {
+						if (x_currentPageXML.getAttribute('required') == 'true') {
+							if ($('#notesTxt').text().trim() != '') {
+								$("#checkBtn").prop('disabled', false);
+							} else {
+								$("#checkBtn").prop('disabled', true);
+							}
+						}
+					});
+			}
+			
+			// add aria-labels for screen readers
+			$('#initTxt').attr('aria-label', $pageContents.data('mode') == 'Notes' ? initTxtLabel : initTxtLabel2);
+			$('#suggestedTxt').attr('aria-label', suggestedTxtLabel);
+			$('#notesTxt').attr('aria-label', notesTxtLabel);
+			
+			
+			// set up buttons...
+			if (submit == false) {
+				// select, clear & download buttons only - all go on the initialTxt panel
+				$('#initTxtBtnHolder').append('<button id="downloadBtn"></button><button id="selectBtn"></button><button id="clearBtn"></button>');
+				$('#mainBtnHolder').remove();
+			} else {
+				// select, clear, submit & download buttons
+				// select on initialTxt panel & others at bottom
+				$('#initTxtBtnHolder').append('<button id="selectBtn"></button>');
+				$('#mainBtnHolder').append('<button id="downloadBtn"></button><button id="clearBtn"></button><button id="checkBtn"></button>');
+			}
+			
+			// select button - depending on mode this either duplicates text or highlights it
+			$("#selectBtn")
+				.button({
+					label: $pageContents.data('mode') == 'Notes' ? noteBtnLabel : selectBtnLabel
+				})
+				.click(function() {
+					// selected sections of text can be moved to notes panel
+					if ($pageContents.data('mode') == 'Notes') {
+						var selectedInfo = textHighlight.getSelectionHTML();
+						var selectedTxt = selectedInfo[0],
+							selectedParent = selectedInfo[1];
+						
+						if ($(selectedParent).is('#initTxt') || $(selectedParent).parents('#initTxt').length > 0) {
+							// wrap in p tag if plain text
+							if (selectedTxt.charAt(0) != '<' || selectedTxt.charAt(selectedTxt.length-1) != '>' || $('<div></div>').html(selectedTxt).text() == selectedTxt) {
+								selectedTxt = '<p>' + selectedTxt + '</p>';
+							}
+							
+							// move to notes panel & remove hightlight
+							$('#notesTxt').append(selectedTxt);
+							window.getSelection().removeAllRanges();
+							
+							if (x_currentPageXML.getAttribute('required') == "true") {
+								$("#checkBtn").prop('disabled', false);
+							}
+							
+							$('#notesTxt').animate({ scrollTop: $('#notesTxt').prop("scrollHeight")}, 1000);
+							
+						} else if (selectedTxt == '') {
+							// nothing's been selected
+							alert(x_currentPageXML.getAttribute("highlightTxt") == undefined ? "Selection error - no text selected" : x_currentPageXML.getAttribute("highlightTxt"));
+						}
+						
+					// highlighted sections of text are marked up with css so they can be later compared with the suggested highlights
+					} else {
+						var selectedInfo = textHighlight.getSelectionHTML();
+						var selectedTxt = selectedInfo[0],
+							selectedParent = selectedInfo[1];
+						
+						// wrap selected text in span to show permenant highlight
+						if ($(selectedParent).parents('#initTxt').length > 0) {
+							var selection = window.getSelection().getRangeAt(0),
+								selectedTxt = selection.extractContents(),
+								span = document.createElement("span");
+							
+							span.setAttribute('class', 'selected');
+							span.setAttribute('style', $pageContents.data('selectedStyle'));
+							span.appendChild(selectedTxt);
+							
+							// nothing's been selected
+							if ($(span).children().length == 0 && $(span).text() == '') {
+								alert(x_currentPageXML.getAttribute("highlightTxt") == undefined ? "Selection error - no text selected" : x_currentPageXML.getAttribute("highlightTxt"));
+								
+							} else {
+								selection.insertNode(span);
+								
+								// remove text highlight (leaving css highlight)
+								window.getSelection().removeAllRanges();
+								
+								if (x_currentPageXML.getAttribute('required') == "true") {
+									$("#checkBtn").prop('disabled', false);
+								}
+							}
+								
+						} else if ($(selectedParent).is('#initTxt')) {
+							// wrapping multiple paragraphs causes line break issues so avoid this
+							alert(x_currentPageXML.getAttribute("errorTxt") == undefined ? "Selection error - you can not select content from more than one paragraph at a time" : x_currentPageXML.getAttribute("errorTxt"));
+						} else if (selectedTxt == '') {
+							// nothing's been selected
+							alert(x_currentPageXML.getAttribute("highlightTxt") == undefined ? "Selection error - no text selected" : x_currentPageXML.getAttribute("highlightTxt"));
+						}
+					}
+				});
+			
+			// clear button - depending on mode this either clears notes panel or clears highlights from initial text
+			// also resets hidden areas if already submitted
+			$("#clearBtn")
+				.button({
+					label: $pageContents.data('mode') != 'Notes' || $('.notesTxt').hasClass('placeHolder') ? resetBtnLabel : clearBtnLabel
+				})
+				.click(function() {
+					// clear the notes panel
+					if ($pageContents.data('mode') == 'Notes') {
+						if ($('.notesTxt').hasClass('placeHolder')) {
+							$('#notesTxt').html($('.notesTxt').data('placeHolder'));
+						} else {
+							$('#notesTxt').html('<p></p>');
+							$("#clearBtn").button({label: $("#clearBtn").data('clearBtnLabel')});
+						}
+					
+					// clear the highlights from the initTxt div
+					} else {
+						$('#initTxt span.selected').contents().unwrap();
+					}
+					
+					// disable check button if attempt required before feedback
+					if (x_currentPageXML.getAttribute('required') == "true") {
+						$("#checkBtn").prop('disabled', true);
+					}
+					
+					// if the activity has already been submitted then reset everything (hide suggestedTxt & feedbackTxt etc.)
+					if ($pageContents.data('submitted') == true) {
+						$pageContents.data('submitted', false);
+						
+						// rehide any bits bits of info that were hidden at the beginning of the activity
+						$.each($pageContents.data('position'), function(key, info) {
+							if (key == 'panelA' || key == 'panelB') {
+								var hidden = 0,
+									active = false;
+								
+								for (var i=0; i<info.length; i++) {
+									if (info[i].hide == true) {
+										var $pane = $('.' + info[i].class);
+										$pane.hide();
+										hidden++;
+										
+										// in tab nav so tab also needs hiding
+										if (this.length > 1) {
+											if (x_browserInfo.mobile == true) {
+												$('#' + $pane.attr('aria-labelledby')).parent('.navChildTitle').hide();
+											} else {
+												$('#' + $pane.attr('aria-labelledby')).parent('.navChildTitle').css('visibility','hidden');
+											}
+										}
+									} else if (this.length > 1 && active == false) {
+										// if in tabbed navigator then make sure the 1st unhidden tab is active
+										$('.' + info[i].class).parents('.ui-tabs').tabs('option', 'active', i);
+										active = true;
+									}
+								}
+							}
+						});
+					}
+					
+					$('#downloadBtn').prop('disabled', true);
+				})
+				.data({
+					'resetBtnLabel': resetBtnLabel,
+					'clearBtnLabel': clearBtnLabel
+				});
+			
+			// check button - displays feedback & suggested answer text
+			$("#checkBtn")
+				.button({
+					label: checkBtnLabel
+				})
+				.click(function() {
+					// show the suggestedTxt & feedbackTxt
+					var show = ['feedbackTxt', 'suggestedTxt'],
+						activateTab = true;
+					
+					for (var i=0; i<show.length; i++) {
+						var $show = $('.' + show[i]);
+						
+						if ($show.length > 0) {
+							// if in tab nav then show all related hidden bits too
+							if ($show.attr('aria-labelledby') != undefined) {
+								var $tab = $('#' + $show.attr('aria-labelledby'));
+								if (x_browserInfo.mobile == true) {
+									$tab.parent('.navChildTitle').show();
+								} else {
+									$tab.parent('.navChildTitle').css('visibility','visible');
+								}
+								
+								var activeTab = $show.parents('.ui-tabs').tabs('option', 'active');
+								if (activeTab == $show.index()) {
+									$show.show();
+								}
+								
+								if (activateTab == true) {
+									$show.parents('.ui-tabs').tabs('option', 'active', $show.index());
+									activateTab = false;
+								}
+								
+							} else {
+								$show.show();
+							}
+						}
+					}
+					
+					// if reset button label is 'clear' change to 'reset'
+					if ($pageContents.data('mode') == 'Notes' && !$('.notesTxt').hasClass('placeHolder')) {
+						$("#clearBtn").button({label: $("#clearBtn").data('resetBtnLabel')});
+					}
+					
+					// update data that will be used in downloadable document with changes made to any editable regions (highlights or notes)
+					if (x_currentPageXML.getAttribute('download') == 'true') {
+						$('.editableDiv').each(function() {
+							if ($(this).data('docDataIndex') != undefined) {
+								docData.pages[$(this).data('docDataIndex')].pageText = $(this).html();
+							}
+						});
+						
+						$('#downloadBtn').prop('disabled', false);
+					}
+					
+					$pageContents.data({
+						'submitted': true,
+						'tracked': true
+					});
+					
+					textHighlight.finishTracking();
+					textHighlight.sizeChanged();
+					
+					// only feedbackTxt can be in lightbox so no need to loop through them
+					if ($pageContents.data('position').lightbox.length > 0) {
+						$.featherlight($pageContents.data('position').lightbox[0].txt);
+						x_pageContentsUpdated();
+					}
+				});
+			
+			// download button - triggers download of all text on page
+			if (x_currentPageXML.getAttribute('download') == 'true') {
+				$('#downloadBtn')
+					.button({
+						label: downloadBtnLabel
+					})
+					.click(function() {
+						textHighlight.postData($("#pageContents").data("docData"));
+					})
+					.prop('disabled', true);
+				
+			} else {
+				$("#downloadBtn").remove();
+			}
+			
+			// is an attempt required before clicking check button?
+			if (x_currentPageXML.getAttribute('required') == "true") {
+				$("#checkBtn").prop('disabled', true);
+			}
+			
+			this.sizeChanged();
+			x_pageLoaded();
+		};
+		
+		this.getSelectionHTML = function() {
+			var html = "",
+				container = null;
+			
+			if (typeof window.getSelection != "undefined") {
+				var sel = window.getSelection();
+				if (sel.rangeCount) {
+					var temp = document.createElement("div");
+					for (var i=0, len=sel.rangeCount; i<len; ++i) {
+						temp.appendChild(sel.getRangeAt(i).cloneContents());
+					}
+					html = temp.innerHTML;
+					
+					var node = sel.getRangeAt(0).commonAncestorContainer;
+					container = node.nodeType == 1 ? node : node.parentNode;
+				}
+				
+			// IE
+			} else if (typeof document.selection != "undefined" && document.selection.type != "Control") {
+				var textRange = document.selection.createRange();
+				container = textRange.parentElement();
+				text = textRange.htmlText;
+			}
+			
+			return [html, container];
+		};
+		
+		// function triggers the download of word document containing all the info on the screen
+		this.postData = function (data) {
+			var form = document.createElement("form");
+			form.method = 'post';
+			form.target = 'displayjson';
+			form.action = (typeof x_downloadURL != 'undefined') ? x_downloadURL : 'download.php';
+
+			$('<input type="hidden">') // IE compatibility
+				.attr({
+					name: 'data',
+					value: JSON.stringify(data)
+				})
+				.appendTo(form);
+			document.body.appendChild(form);
+			form.submit();
+			document.body.removeChild(form);
+		};
+
+        this.finishTracking = function() {
+			var answerTxt;
+			if ($pageContents.data('mode') == 'Notes') {
+				// if notes text has placeholder text only class as completed if the text here has changed
+				if ($('.notesTxt').hasClass('placeHolder') && $('#notesTxt').html() != $('.notesTxt').data('placeHolder')) {
+					answerTxt = '';
+				} else {
+					answerTxt = $('#notesTxt').html();
+				}
+			} else {
+				if ($('#initTxt').find('.selected').length > 0) {
+					answerTxt = $('#initTxt').html();
+				} else {
+					answerTxt = '';
+				}
+			}
+			
+			var answered = $(answerTxt).text().trim() == "" ? false : true;
+			result = { success: answered, score: (answered == false ? 0.0 : 100.0) };
+			XTExitInteraction(x_currentPage, 0, result, [], answerTxt, []);
+			XTSetPageScore(x_currentPage, (answered == false ? 0.0 : 100.0));
+			$pageContents.data('tracked', true);
+		};
+
+    };
+	
+	textHighlight.init();
+
+</script>
+
+
+<div id="pageContents">
+	
+	<div id="textHolder"></div>
+	
+	<div id="contentHolder"></div>
+	
+	<div id="mainBtnHolder" class="btnHolder"></div>
+	
+</div>

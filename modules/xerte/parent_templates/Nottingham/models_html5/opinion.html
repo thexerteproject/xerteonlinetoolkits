@@ -730,7 +730,7 @@
 
 		this.createDiagram = function(graphObject)
 		{
-      var htmlToChar = function(h){return $("<div>").html(h).text();};
+      		var htmlToChar = function(h){return $("<div>").html(h).text();};
 			var classNames = graphObject.classnames.map(function(a){return htmlToChar(a);});
 			var classTitles = graphObject.classtitles.map(function(a){return htmlToChar(a);});
 			var classValues = graphObject.classvalues;

@@ -793,6 +793,7 @@
 							
 						} else {
 							$.featherlight(args.text, {});
+							x_pageContentsUpdated();
 						}
 						
 					} else if (args.type == 'rotate') {
@@ -865,6 +866,7 @@
 				});
 				
 				$.featherlight($pswdHtml);
+				x_pageContentsUpdated();
 			}
 		}
 		

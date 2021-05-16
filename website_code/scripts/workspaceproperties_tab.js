@@ -52,17 +52,11 @@ function workspace_ajax_send_prepare(url){
 	 * @author Patrick Lockley
 	 */
 
-function workspace_properties_stateChanged(){ 
-
-	if (xmlHttp.readyState==4){ 
-			
-		if(xmlHttp.responseText!=""){
-			
-			document.getElementById('dynamic_area').innerHTML = xmlHttp.responseText;
-
-		}
+function workspace_properties_stateChanged(response){
+	if(response!=""){
+		document.getElementById('dynamic_area').innerHTML = response;
 	}
-} 
+}
 
  /**
 	 * 
@@ -73,17 +67,16 @@ function workspace_properties_stateChanged(){
 	 */
 
 function workspace_templates_template(){
-
-	if(setup_ajax()!=false){
-    
-		var url="workspace_templates_template.php";
-
-		workspace_ajax_send_prepare(url);
-
-		xmlHttp.send('details=null'); 
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/workspaceproperties/workspace_templates_template.php",
+		 data: {
+			 details: 'null'
+		 }
+	 })
+	 .done(function(response){
+		 workspace_properties_stateChanged(response);
+	 });
 }
 
  /**
@@ -95,17 +88,16 @@ function workspace_templates_template(){
 	 */
 
 function shared_templates_template(){
-
-	if(setup_ajax()!=false){
-    
-		var url="shared_templates_template.php";
-
-		workspace_ajax_send_prepare(url);
-
-		xmlHttp.send('details=null'); 
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/workspaceproperties/shared_templates_template.php",
+		 data: {
+			 details: 'null'
+		 }
+	 })
+	 .done(function(response){
+		 workspace_properties_stateChanged(response);
+	 });
 }
 
  /**
@@ -117,17 +109,16 @@ function shared_templates_template(){
 	 */
 
 function public_templates_template(){
-
-	if(setup_ajax()!=false){
-    
-		var url="public_templates_template.php";
-
-		workspace_ajax_send_prepare(url);
-
-		xmlHttp.send('details=null'); 
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/workspaceproperties/public_templates_template.php",
+		 data: {
+			 details: 'null'
+		 }
+	 })
+	 .done(function(response){
+		 workspace_properties_stateChanged(response);
+	 });
 }
 
  /**
@@ -139,17 +130,16 @@ function public_templates_template(){
 	 */
 
 function usage_templates_template(){
-
-	if(setup_ajax()!=false){
-    
-		var url="usage_templates_template.php";
-
-		workspace_ajax_send_prepare(url);
-
-		xmlHttp.send('details=null'); 
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/workspaceproperties/usage_templates_template.php",
+		 data: {
+			 details: 'null'
+		 }
+	 })
+	 .done(function(response){
+		 workspace_properties_stateChanged(response);
+	 });
 }
 
  /**
@@ -161,17 +151,16 @@ function usage_templates_template(){
 	 */
 
 function rss_templates_template(){
-
-	if(setup_ajax()!=false){
-    
-		var url="rss_templates_template.php";
-
-		workspace_ajax_send_prepare(url);
-
-		xmlHttp.send('details=null'); 
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/workspaceproperties/rss_templates_template.php",
+		 data: {
+			 details: 'null'
+		 }
+	 })
+	 .done(function(response){
+		 workspace_properties_stateChanged(response);
+	 });
 }
 
 /**
@@ -183,17 +172,16 @@ function rss_templates_template(){
 	 */
 
 function syndication_templates_template(){
-
-	if(setup_ajax()!=false){
-    
-		var url="syndication_templates_template.php";
-
-		workspace_ajax_send_prepare(url);
-
-		xmlHttp.send('details=null'); 
-
-	}
-
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/workspaceproperties/syndication_templates_template.php",
+		data: {
+			details: 'null'
+		}
+	})
+	.done(function(response){
+		workspace_properties_stateChanged(response);
+	});
 }
 
 /**
@@ -205,17 +193,16 @@ function syndication_templates_template(){
 	 */
 
 function peer_templates_template(){
-
-	if(setup_ajax()!=false){
-    
-		var url="peer_templates_template.php";
-
-		workspace_ajax_send_prepare(url);
-
-		xmlHttp.send('details=null'); 
-
-	}
-
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/workspaceproperties/peer_templates_template.php",
+		data: {
+			details: 'null'
+		}
+	})
+	.done(function(response){
+		workspace_properties_stateChanged(response);
+	});
 }
 
 /**
@@ -227,17 +214,16 @@ function peer_templates_template(){
 	 */
 
 function xml_templates_template(){
-
-	if(setup_ajax()!=false){
-    
-		var url="xml_templates_template.php";
-
-		workspace_ajax_send_prepare(url);
-
-		xmlHttp.send('details=null'); 
-
-	}
-
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/workspaceproperties/xml_templates_template.php",
+		data: {
+			details: 'null'
+		}
+	})
+	.done(function(response){
+		workspace_properties_stateChanged(response);
+	});
 }
 
 /**
@@ -249,17 +235,16 @@ function xml_templates_template(){
 	 */
 
 function my_properties_template(){
-
-	if(setup_ajax()!=false){
-    
-		var url="my_properties_template.php";
-
-		workspace_ajax_send_prepare(url);
-
-		xmlHttp.send('details=null'); 
-
-	}
-
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/workspaceproperties/my_properties_template.php",
+		data: {
+			details: 'null'
+		}
+	})
+	.done(function(response){
+		workspace_properties_stateChanged(response);
+	});
 }
 
 /**
@@ -271,17 +256,16 @@ function my_properties_template(){
 	 */
 
 function folder_rss_templates_template(){
-
-	if(setup_ajax()!=false){
-    
-		var url="folder_rss_templates_template.php";
-
-		workspace_ajax_send_prepare(url);
-
-		xmlHttp.send('details=null'); 
-
-	}
-
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/workspaceproperties/folder_rss_templates_template.php",
+		data: {
+			details: 'null'
+		}
+	})
+	.done(function(response){
+		workspace_properties_stateChanged(response);
+	});
 }
 
 /**
@@ -307,17 +291,15 @@ function import_templates_template(){
 	 */
 
 function api_template(){
-
-	//document.getElementById("dynamic_area").innerHTML = '<p class="header"><span>' + WORKSPACE_API + '</span></p><p></p>';
-	
-	if(setup_ajax()!=false){
-    
-		var url="api_template.php";
-
-		workspace_ajax_send_prepare(url);
-
-		xmlHttp.send('details=null');
-
-	}
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/workspaceproperties/api_template.php",
+		data: {
+			details: 'null'
+		}
+	})
+	.done(function(response){
+		workspace_properties_stateChanged(response);
+	});
 
 }
