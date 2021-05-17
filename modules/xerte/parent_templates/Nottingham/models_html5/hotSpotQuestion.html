@@ -349,6 +349,10 @@
 			// 	var percentage = imgMaxW/imgMaxH
 			// 	imgMaxW = imgMaxW/percentage
 			// }
+			debugger
+			if(imgMaxH+70 > $x_pageHolder.height()){
+				imgMaxH*=0.75
+			}
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
 
 			$img.css({
