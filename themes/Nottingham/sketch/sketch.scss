@@ -38,6 +38,13 @@ body {
 x_headerBlock.x_floatLeft{
 	float: right;
 }
+#x_footerChevron{
+    color: #D3D7CF;
+}
+
+#x_footerChevron:focus, #x_footerChevron:hover {
+	color: #000000;
+}
 
 .ui-accordion .ui-accordion-header a {
   font-family: 'Permanent Marker', cursive;

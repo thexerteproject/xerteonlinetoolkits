@@ -592,6 +592,7 @@
 					// only feedbackTxt can be in lightbox so no need to loop through them
 					if ($pageContents.data('position').lightbox.length > 0) {
 						$.featherlight($pageContents.data('position').lightbox[0].txt);
+						x_pageContentsUpdated();
 					}
 				});
 			

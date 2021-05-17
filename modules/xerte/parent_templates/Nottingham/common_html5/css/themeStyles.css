@@ -185,12 +185,16 @@ h3 {
 
 /*styling for optional show/hider footer tools*/
 #x_footerChevron{
-    /*color: grey;*/
+    color: white;
 	background: none;
 	border: none;
 	height:45px;
 	font-size: 14px !important;
 	width:25px !important;
+}
+
+#x_footerChevron:focus, #x_footerChevron:hover {
+	color: #FF9900;
 }
 
 /* PROGRESS BAR */
@@ -213,6 +217,12 @@ h3 {
 .fa-x-prev:before { content: "\f053"; }
 .fa-x-next-circle:before { content: "\f138"; } /* circle versions are used in multiple perspectives & thumbnail viewer pages */
 .fa-x-prev-circle:before { content: "\f137"; }
+
+/* Media */
+.fa-x-play:before   { content: "\f04b"; }
+.fa-x-pause:before  { content: "\f04c"; }
+.fa-x-mute:before   { content: "\f028"; }
+.fa-x-unmute:before { content: "\f6a9"; }
 
 /* arrow */
 /*

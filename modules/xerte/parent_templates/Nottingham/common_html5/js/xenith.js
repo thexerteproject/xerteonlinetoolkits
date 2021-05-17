@@ -108,8 +108,9 @@ $(document).keydown(function(e) {
 
 			default: return; // exit this handler for other keys
 		}
+	} else {
+		return;
 	}
-    e.preventDefault(); // prevent the default action (scroll / move caret)
 });
 
 $(document).ready(function() {
@@ -549,15 +550,29 @@ x_projectDataLoaded = function(xmlData) {
 		}
 		
 		var info = getHashInfo(temp[0]);
-		if (info != false) {
+		if (info !== false) {
 			x_startPage = {type : "index", ID : info};
 			customStartPage = true;
 		}
 	}
 	
 	// any params in URL which can change the start page can be disabled from working by adding optional property
-	if (x_params.forcePage1 == 'true' && customStartPage == true && (x_pageInfo[x_startPage.ID].standalone == undefined || x_pageInfo[x_startPage.ID].standalone == false)) {
-		x_startPage = {type : "index", ID : "0"};
+	// also, if 1st page is project is standalone page then it should default to 1st non-standalone page instead
+	if ((x_pageInfo[x_startPage.ID].standalone == true && customStartPage == false) || 
+		(x_params.forcePage1 == 'true' && customStartPage == true && (x_pageInfo[x_startPage.ID].standalone == undefined || x_pageInfo[x_startPage.ID].standalone == false))) {
+		var tempIndex;
+		for (var i=0; i<x_pageInfo.length; i++) {
+			if (x_pageInfo[i].standalone != true) {
+				tempIndex = i;
+				break;
+			}
+		}
+		
+		if (tempIndex) {
+			x_startPage = {type : "index", ID : String(tempIndex)};
+		} else {
+			x_startPage = {type : "index", ID : "0"};
+		}
 	}
 	
 	// tidy up the URL to remove all of the params about start page - hash at end of URL will change according to currently viewed page
@@ -1114,7 +1129,12 @@ function x_continueSetUp1() {
 				})
 				.attr("aria-label", $("#x_helpBtn").attr("title") + " " + x_params.newWindowTxt)
 				.click(function() {
-					window.open(x_evalURL(x_params.nfo), "_blank");
+					if (x_params.helpTarget != 'lightbox') {
+						window.open(x_evalURL(x_params.nfo), "_blank");
+					} else {
+						$.featherlight({iframe: x_evalURL(x_params.nfo), iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
+					}
+					
 					$(this)
 						.blur()
 						.removeClass("ui-state-focus")
@@ -1185,7 +1205,7 @@ function x_continueSetUp1() {
 					});
 				return(false);
 			});
-			if (x_params.footerTools == "hideFooterTools") {
+			if (x_params.footerTools == "hideFooterTools" || x_browserInfo.mobile) {
 				$('#x_footerBlock .x_floatLeft').hide();
 				$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
 				$('#x_footerChevron').prop('title', showMsg);
@@ -2116,7 +2136,10 @@ function x_changePageStep5a(x_gotoPage) {
 		}
 		if (x_currentPageXML.getAttribute('footerHide') == 'true') {
 			footerHidden = true;
-			$x_footerBlock.hide().height(0);
+			// more complex than just hiding all of footer bar in one go as narration may be in there which still needs to show
+			$('#x_footerBlock > div').each(function () {
+				$(this).hide().height(0);
+			});
 		}
 	}
 	
@@ -3443,8 +3466,6 @@ function x_hexToRgb(hex, opa) {
 	var r = (bigint >> 16) & 255;
 	var g = (bigint >> 8) & 255;
 	var b = bigint & 255;
-	
-	console.log(bigint);
 	
 	return "rgba(" + r + "," + g + "," + b + "," + opa + ")";
 }

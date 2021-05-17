@@ -29,7 +29,7 @@ childNodes (synchMCQOption):
 required: text correct
 optional: feedback page synch play enable
 
-*dealt with in mediaLesson.html
+*dealt with in interactiveVideo.html
 
 */
 
@@ -38,9 +38,11 @@ optional: feedback page synch play enable
 	Popcorn.plugin("mcq", function(options) {
 
 		// define plugin wide variables / functions here
-		var $target, $optHolder, $checkBtn, $feedbackDiv, media, selected, judge, autoEnable, questions;
+		var $target, $optHolder, $checkBtn, $feedbackDiv, $continueBtn, media, selected, judge, autoEnable, $showHs, $showLbl, $showHsActive;
 		
+		// Score tracking Manager
 		var finishTracking = function(options) {
+			// Check the exercise and all individual questions
             var allValid = true;
             var ia_nr = Number(options.tracking_nr);
             var numOfQuestions = Number(options.total_questions);
@@ -57,7 +59,9 @@ optional: feedback page synch play enable
                 if (!curValid && options.childNodes[i].getAttribute("correct") == "true") {
                     allValid = false;
                 }
-            }
+			}
+			
+			// Xerte Tracking setup
             var l_options = [];
             var l_answers = [];
             var l_feedback = [];
@@ -71,29 +75,29 @@ optional: feedback page synch play enable
                 l_answers.push(x_GetTrackingTextFromHTML(options.childNodes[v].getAttribute("text"), (v+1) + ""));
                 l_feedback.push("");
             });
-            mediaLesson.questions[ia_nr] = true;
+            interactiveVideo.questions[ia_nr] = true;
             var scormScore = 0;
-            if (ia_nr == numOfQuestions-1) {
-                var score = 0;
-                for (var i=0; i<numOfQuestions; i++)
-                {
-                    if (mediaLesson.questions[i])
-                    {
-                        score++;
-                    }
-                }
-                scormScore = Math.ceil(score / numOfQuestions * 100);
-            }
-			var result =
+			var score = 0;
+			for (var i=0; i<numOfQuestions; i++)
+			{
+				if (interactiveVideo.questions[i])
 				{
-					success: allValid,
-					score: scormScore
-				};
-            XTExitInteraction(x_currentPage, ia_nr, result, l_options, l_answers, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
-            XTSetPageScore(x_currentPage, scormScore, x_currentPageXML.getAttribute("trackinglabel"));
-            mediaLesson.enableControls(media.media, true);
+					score++;
+				}
+			}
+			scormScore = Math.ceil(score / numOfQuestions * 100);
+			var result =
+			{
+				success: allValid,
+				score: scormScore
+			};
+			//Push results
+			XTSetPageScore(x_currentPage, scormScore, x_currentPageXML.getAttribute("trackinglabel"));
+			XTExitInteraction(x_currentPage, ia_nr, result, l_options, l_answers, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
+            interactiveVideo.enableControls(media.media, true);
         }
 		
+		// Feedback Manager
 		var answerSelected = function() {
 			// put together feedback string;
 			var feedbackTxt = "",
@@ -116,7 +120,6 @@ optional: feedback page synch play enable
 				}
 			}
 			
-
 			// feedback if question has true/false answers
 			if (judge == true) {
 				var fb;
@@ -159,12 +162,12 @@ optional: feedback page synch play enable
 			
 			if (options.childNodes[index].getAttribute("enable") == "true" || (enable == true && ((options.childNodes[index].getAttribute("page") == undefined || options.childNodes[index].getAttribute("page") == "") && (options.childNodes[index].getAttribute("synch") == undefined || options.childNodes[index].getAttribute("synch") == "")))) {
 				// controls will be enabled if correct answer selected unless there is a 'go to page' or 'go to synch point' action associated with it
-				mediaLesson.enableControls(media.media, true);
+				interactiveVideo.enableControls(media.media, true);
 			}
 			
 			// automatically enable if the question has been set up so there's no answer that will enable them
 			if (autoEnable == true) {
-				mediaLesson.enableControls(media.media, true);
+				interactiveVideo.enableControls(media.media, true);
 			}
 			
 			// show feedback if there is some, with button to do action afterwards (change page, media current time, play media)
@@ -174,8 +177,11 @@ optional: feedback page synch play enable
 				$feedbackDiv
 					.html(feedbackLabel + feedbackTxt)
 					.show();
-				
+				$continueBtn.show();
+
+				//#Warning: unused by Xerte at the current time.
 				if (action >= 0) {
+					$(".mcqContinueBtn").hide();
 					$('<button>')
 						.appendTo($feedbackDiv)
 						.button({"label": options.continueBtnTxt != "" ? options.continueBtnTxt : "Continue"})
@@ -190,8 +196,7 @@ optional: feedback page synch play enable
 			}
 		}
 		
-		
-		
+		// Media Action Manger (seek, pause, change LO)
 		var doAction = function(index) {
 			if (options.childNodes[index].getAttribute("page") != undefined && options.childNodes[index].getAttribute("page") != "") {
 				// change LO page
@@ -215,43 +220,21 @@ optional: feedback page synch play enable
 					media.play();
 				}
 			}
-			mediaLesson.enableControls(media.media, true);
+			interactiveVideo.enableControls(media.media, true);
 		}
 		
 		return {
 			_setup: function(options) {
-
 				media = this;
 				judge = false;
 				autoEnable = true;
 				var tempEnable = false;
+				$target = $("#" + options.target);
+				var $optionText = options.name !== "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
+				$target.hide();
 
-				// is it to appear over media?
-				if (options.overlay == "true" && (this.video != undefined || $(this.audio).closest(".mediaHolder").find(".audioImg").length > 0)) {
-					var $parent;
-					if (this.video != undefined) {
-						$parent = $(this.media).parent();
-					} else {
-						$parent = $(this.media).closest(".mediaHolder").find(".audioImgHolder");
-					}
-					
-					// move mcqHolder to overlay media
-					$("#" + options.target)
-						.appendTo($parent)
-						.removeClass("contentBlock")
-						.addClass("overlay");
-					
-					$target = $('<div class="holder"/>').appendTo($("#" + options.target));
-				} else {
-					$target = $("#" + options.target);
-				}
-				
-				$target
-					.append(options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text))
-					.hide();
-				
 				$optHolder = $('<div class="optionHolder"/>').appendTo($target);
-				
+
 				if ($(options.childNodes).length == 0) {
 					$optHolder.html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
 				} else {
@@ -390,30 +373,107 @@ optional: feedback page synch play enable
 					
 					// unless it's a button question there needs to be a submit answer button
 					if (options.type != "button") {
-						$checkBtn = $('<button class="mcqCheckBtn"></button>').appendTo($target);
-						$checkBtn
-							.button({
-								"label":	options.checkBtnTxt != "" ? options.checkBtnTxt : "Check",
-								"disabled":	true
-							})
-							.click(function() {
-								answerSelected();
-								$checkBtn.hide();
-							});
-					}
+                        $checkBtn = $('<button class="mcqCheckBtn"></button>').appendTo($target);
+                        $checkBtn
+                            .button({
+                                "label": options.checkBtnTxt != "" ? options.checkBtnTxt : "Check",
+                                "disabled": true
+                            })
+                            .click(function () {
+                                answerSelected();
+                                $checkBtn.hide();
+                            });
+                    }
 					
 					$feedbackDiv = $('<div class="mcqFeedback"></div>')
 						.appendTo($target)
 						.hide();
-					
+
+					$continueBtn = $('<button class="mcqContinueBtn"></button>').appendTo($target).hide();
+					$continueBtn
+						.button({
+							"label": options.continueBtnTxt != "" ? options.continueBtnTxt : "Continue"
+						})
+						.click(function () {
+							$target.hide();
+							media.play();
+                            if (options.overlayPan)
+                                $target.parent().hide();
+                        });
+
 					$target.append('<div class="bottom"/>');
 				}
 				
+
 				if (options.line == "true") {
 					if (options.position == "top") {
 						$target.append("<hr/>");
 					} else {
 						$target.prepend("<hr/>");
+					}
+				}
+			
+				if(options.overlayPan == "true")
+				{
+					$target.parent().hide();
+					$target.hide();
+					
+                	if(options.optional == "true") {
+						var $showHolder  = $('<div id="showHolder" />').appendTo($target);
+						$showHs = $('<div class="Hs x_noLightBox showHotspot"/>').addClass(options.attrib.icon).appendTo($showHolder);
+						$showHs.css({
+							"background-color": options.attrib.colour1,
+							"color": options.attrib.colour2,
+						}).data({
+							size: options.attrib.hsSize,
+							colour2: options.attrib.colour1
+						}).hover(function(){
+							var $this = $(this);
+							$this.css({
+								'box-shadow': '0px 0px ' + ($this.data('size')/2) + 'px ' + $this.data('colour2'),
+								'cursor': 'pointer',
+								'z-index': 1000
+							});
+						},
+						function() { // On end hover, remove glow effect
+							$(this)
+								.css({
+									'box-shadow': 'none',
+									'z-index': 1
+								})
+						});
+
+						$showLbl = $("<div class='showLabel panel'>" + options.name + "</div>");
+						if(options.attrib.tooltip == "label") {
+							$showLbl.appendTo($showHolder);
+						}
+						else if(options.attrib.tooltip == "tooltip"){
+							$showLbl.removeClass("showLabel").addClass("tooltip").appendTo($showHolder).hide();
+							$('<div class="tipArrow arrowDown"/>').appendTo($showLbl);
+							$showHs.hover(function(){
+								$showLbl.show();
+							}, function() {
+								$showLbl.css({
+									'box-shadow': 'none',
+									'z-index': 1
+								}).hide();
+							});
+						}
+						$showHolder
+							.click(function () {
+								$target.parent().css({"padding": 5, "width": options._w + "%", "height": "auto", "overflow-x": "hidden"});
+                                $("#overlay").show();
+								$showHsActive = true;
+                                interactiveVideo.popcornInstance.media.pause();
+                                $target.parent().addClass("qWindow").addClass("panel");
+								$showHolder.hide();
+								$optHolder.show();
+								$target.prepend($optionText);
+							});
+
+					} else {
+						$optHolder.show();
+						$target.parent().css({"padding": 5});
 					}
 				}
 			},
@@ -461,29 +521,112 @@ optional: feedback page synch play enable
 						.html("")
 						.hide()
 						.find("button").remove();
-					
-					if ($checkBtn) {
-						$checkBtn
-							.show()
-							.button("disable");
-					}
+					if ($showHs) {
+						$optHolder.hide();
+						$checkBtn.hide();
+					} else {
+						formattedQuestionText = options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
+						if (!$target.html().includes(formattedQuestionText)) {
+							$target.prepend(formattedQuestionText);
+						}
+                        if ($checkBtn) {
+                            $checkBtn
+                                .show()
+                                .button("disable");
+                        }
+                    }
 					
 					if (options.disable == "true") {
-						mediaLesson.enableControls(this.media, false);
+						interactiveVideo.enableControls(this.media, false);
 					} else {
-						mediaLesson.enableControls(this.media, true);
+						interactiveVideo.enableControls(this.media, true);
 					}
 				}
-				
+				if (options.overlayPan) {
+					if ($showHsActive == true) {
+						$target.parent().css({"margin-right" : "5px", "overflow-x": "hidden"});
+					}
+
+					if ($showHsActive == true || options.optional == "false" || options.optional == undefined) {
+						$target.parent().addClass("qWindow").addClass("panel");
+						$target.parent().css({
+							"padding": "5px",
+							"width" : options._w + "%",
+							"overflow-x": "hidden"
+						});
+						$optHolder.show();
+						$checkBtn.show();
+					}
+					else {
+						var hh = $(".mainMedia").height();
+						var size = options.attrib.hsSize;
+						$showHs.css({
+							"height"  :       (size * 0.008) * hh + "px",
+							"width"   :       (size * 0.008) * hh + "px",
+							"padding" :       (size * 0.001) * hh + "px",
+							"border-radius" : (size / 2 + 1) * 0.01 * hh + "px",
+							"font-size" : 	  (size * 0.007) * hh + "px",
+						});
+						if(options.attrib.tooltip == "label") {	
+							// Cap the fontsize to reasonable values
+							var fs = size * 0.4 <= 12 ? 12 : size * 0.4 > 32 ? 32 : size * 0.4;
+							$showLbl.css({
+								"padding": 5,
+								"padding-left": (size * 0.55) * 0.01 * hh + 5,
+								"left": (size * 0.005) * hh + 5,
+								"top": (size * 0.005) * hh - 2,
+								"font-size": fs
+							});
+						}
+						else if(options.attrib.tooltip == "tooltip"){
+							$showHs.hover(function(){
+								$showLbl.css({
+									"left": $showLbl.outerWidth()  * -0.5 + (size * 0.005 * hh),
+									"top" : $showLbl.outerHeight() * -1,
+									'box-shadow': 'none',
+									"overflow" : 'hidden'
+								}).show();
+							}, function() {
+								$showLbl.css({
+									'box-shadow': 'none',
+									'z-index': 1
+								}).hide();
+							});
+						}
+						$target.parent().css({
+							"padding": 0,
+							"height": 0
+						});
+					}
+					$target.parent().css({
+						"max-width": options._w + "%",
+						"top": options._y + "%",
+						"left": options._x + "%"
+					}).show();
+				}
 				$target.show();
 			},
 			
 			end: function(event, options) {
+				
 				// fire on options.end
-				mediaLesson.enableControls(this.media, true);
+				interactiveVideo.enableControls(this.media, true);
+                if (options.overlayPan) {
+					$target.parent().removeClass("qWindow").removeClass("panel");
+                	$target.parent().css( //The overlay panel
+                	{
+						"top": 0,
+						"left": 0,
+						"padding": 0,
+						"height": "auto",
+						"margin-right" : 0,
+						"overflow-x": '',
+						"overflow" : '',
+						"max-width": ''
+                	}).hide();
+				}
 				$target.hide();
-			}
-		};
-		
+			},
+		};		
 	});
 })(Popcorn);
