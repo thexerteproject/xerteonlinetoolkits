@@ -672,18 +672,18 @@
                     );
                 } else if (position == "Left") {
                     $("#pageContents").append(
-                        '<div id="pageContents-innerContainer"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">Show answers</button></div><div id="attempt"></div></div><div id="crossword"></div></div>'
+                        '<div id="pageContents-innerContainer"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">Show answers</button></div><div id="attempt"></div><div id="feedback"></div></div><div id="crossword"></div></div>'
                     );
                 } else if (position == "Bottom") {
                     $("#pageContents").append(
                         '<div id="crossword"></div><table id="clues"><thead><tr><th>Across</th><th>Down</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
-                        '<div id="showButton"><button id="show_button" onclick=\"Check()\">Show answers</button></div><div id="attempt"></div>'
+                        '<div id="showButton"><button id="show_button" onclick=\"Check()\">Show answers</button></div><div id="attempt"></div><div id="feedback"></div>'
                     );
                 }
             }else{
                 $("#pageContents").append(
                     '<div id="crossword"></div><table id="clues"><thead><tr><th>Across</th><th>Down</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
-                    '<button id="show_button" onclick=\"Check()\">Show answers</button><div id="attempt"></div>'
+                    '<button id="show_button" onclick=\"Check()\">Show answers</button><div id="attempt"></div><div id="feedback"></div>'
                 );
             }
 
@@ -708,7 +708,7 @@
 				for (var i = 0; i < bad_words.length; i++) {
 					str.push(bad_words[i].word);
 				}
-				alert("Shoot! A grid could not be created with these words:\n" + str.join("\n"));
+				alert("Shoot! A grid could not be created with these words, because there are no similar characters:\n" + str.join("\n"));
 				return;
 			}
 
@@ -1178,10 +1178,21 @@
 
 			var attempts = x_currentPageXML.getAttribute("attempts")
             attempts = parseInt(attempts)
+
 			Check = function (){
 			    if(attempts === 1){
 			        showAnswers()
                     $("#attempt").html("");
+                    var feedback = x_currentPageXML.getAttribute("feedback");
+                    debugger
+                    if(feedback !== undefined && feedback !== null){
+                        var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel")
+                        var h3feedback = $('<h3>').append(feedbackLabel)
+                        var feedbacktext = $('<p>').append(feedback)
+                        $("#feedback").append(h3feedback);
+                        $("#feedback").append(feedbacktext);
+                    }
+
                 }else{
 			         checkAttempt()
                     attempts--

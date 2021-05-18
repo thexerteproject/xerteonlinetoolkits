@@ -122,7 +122,7 @@
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
 	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="Enter text for the page here" textWidth="narrow" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" align="Left" home="false" back="false" next="false"
-	  notFoundMessage="could not be found in this project." continueBtnTxt="Close" />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts = "1"  again="Try again, you have /a attempt(s) left" text="Enter Page text" />]]></crossword><customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true"
+	  notFoundMessage="could not be found in this project." continueBtnTxt="Close" />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts = "1" feedbackLabel="Feedback" again="Try again, you have /a attempt(s) left" text="Enter Page text" />]]></crossword><customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true"
 	  hotspotsTxt="Explore the diagram. Click on the various parts to learn more."
 	  labelsTxt="Drag the pins for each label to the correct position in the diagram. You can re-position the labels if required." 
 	  showMeTxt="Use the arrows to learn more."
@@ -162,7 +162,7 @@
 	  selectAreaTip="Select Area"
 	  resetImageTip="Reset Image"
 	  toggleScreenTip="Toggle Full Screen"
-	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" passage="&lt;p&gt;Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;/p&gt;&lt;p&gt;For example:&lt;/p&gt;&lt;p&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;/p&gt;&lt;p&gt;Where | are adjectives, * are verbs and # are nouns.&lt;/p&gt;" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" mcqDialogClose="Close" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
+	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="&lt;p&gt;Enter text for the page here&lt;/p&gt;" passage="&lt;p&gt;Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;/p&gt;&lt;p&gt;For example:&lt;/p&gt;&lt;p&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;/p&gt;&lt;p&gt;Where | are adjectives, * are verbs and # are nouns.&lt;/p&gt;" interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="You have completed this activity." find2Feedback="You have selected the the correct number of items, please click the button to check your answers." findTxt2="You have found {i} of {n}" findTxt22="You have selected {i} of {n}" findCheckTxt="Check" feedbackTxt="Feedback" groupTxt="Group"  yourAnswerTxt="Your Answer" correctAnswerTxt="Correct Answer" passedQuestionTxt="You passed the question" failedQuestionTxt="Not all answers are correct" passedFindTxt="All selections are correct" failedFindTxt="You still have incorrect selections" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" mcqDialogClose="Close" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
@@ -1609,11 +1609,14 @@
   </cMenuListedPage><crossword menu="Games" icon="icCrossword" menuItem="Crossword" hint="A crossword is a word puzzle that usually takes the form of a square or a rectangular grid of white- and black-shaded squares. The game's goal is to fill the white squares with letters, forming words or phrases, by solving clues, which lead to the answers." thumb="thumbs/crossword.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <attempts label="Amount of attempts" type="TextInput" defaultValue="1"/>
-    <again label="Try again Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/a is where the attempts will be placed "/>
+
     <!-- <hicol label="Input colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the background of the image"/>-->
     <align label="Clues Positions" options="Left,Bottom,Right" type="ComboBox" defaultValue="Right" data="Left,Bottom,Right" width="100" optional="true"/>
+    <feedback label="Feedback" type="TextInput" wysiwyg="true" optional="true"/>
      <!-- <text label="Instructions" type="TextArea" height="100"/> -->
     <!-- <words label="Words" type="script" height="100"/> -->
+      <again label="Try again Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/a is where the attempts will be placed "/>
+      <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true"/>
       <newNodes>
       <wordAndHint><![CDATA[<wordAndHint name="Word" text="The hint for your word" wordAnswer="The word you want to have in the crossword"/>]]></wordAndHint>
     </newNodes>
@@ -1665,7 +1668,7 @@
 	</lightboxGroup></crossword><wordAndHint menuItem="Word" icon="icBullet">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Word" wysiwyg="false"/>
     <wordAnswer label="Word" type="TextInput" wysiwyg="false"/>
-    <text label="Hint" type="TextArea" height="100"/>
+    <text label="Hint" type="TextInput" height="100"/>
   </wordAndHint><customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="Create a hotspot based diagram where regions can be explored using a variety of interactivities." icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true" deprecated="This page is now deprecated as Flash (used by the diagram editor) will be unavailable after 2020. Existing pages will continue to work after this date but will not be editable. Try the Hotspot Image, Annotated Diagram, Drag &amp; Drop Labelling and Hotspot Image Connector pages for similar functionality.">
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
@@ -3278,7 +3281,231 @@
     <text label="Description" type="TextArea" height="150"/>
 	<bgColour label="Highlight Colour" type="ColourPicker"/>
 
-  </group><inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Present a survey where answers map to different classes. The results for each class are displayed on a chart at the end of the survey." thumb="thumbs/inventory.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#inventory" remove="true">
+  </group><interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationTile" thumb="thumbs/interactiveVideo.jpg" remove="true">
+
+		<name label="Page Title" type="TextInput" wysiwyg="true"/>
+		
+
+		<intro label="Introduction" type="TextArea" height="200" defaultValue="Enter Introduction Text" optional="true"/>
+
+		<introTitle label="Introduction Title" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+		<introClose label="Introduction Close" type="TextInput" wysiwyg="true" language="true"/>
+
+		<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+		<trackVideo label="Track video progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs" tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)."/>
+
+	<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
+		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
+		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
+	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled." common="true"/><navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this pages" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here." common="true">
+		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save session Button" type="CheckBox" defaultValue="true" optional="true"/>
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available" common="true">
+		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
+		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links" common="true">
+		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
+		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
+		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
+	</linkGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
+		<pageID label="Page ID" type="TextInput" optional="true"/>
+	</customLinkGroup><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page" common="true"/><styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page" common="true"/><tracking type="group" label="Tracking" optional="true" common="true">
+        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use instead of page number as tracking identifier (SCORM and xAPI)"/>
+        <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
+	</tracking><scripts type="group" label="Script" optional="true" tooltip="Add JavaScript to run either on first load or every view of this page" common="true">
+		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
+		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
+	</scripts><background type="group" label="Background" optional="true" tooltip="Add a background image to this page" common="true">
+		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
+		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
+		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
+		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+	</lightboxGroup></interactiveVideo><ivMediaPanel menuItem="Media Panel" icon="icApplicationMedia" remove="false" duplicate="false">
+
+		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
+		
+		<mediaGroup type="group" label="Media">
+			<media label="File" type="media"/>
+			<tip label="Description" type="TextInput"/>
+			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
+		</mediaGroup>
+
+		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
+		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+
+	</ivMediaPanel><ivOverlayPanel menuItem="Overlay Panel" icon="icApplication" remove="false" max="1">
+
+		<name label="Overlay Panel Title" type="TextInput"/>
+
+		<newNodes>
+			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchXot>
+			<ivSynchMCQ><![CDATA[<ivSynchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></ivSynchMCQ>
+			<ivSynchTextPlus><![CDATA[<ivSynchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchTextPlus>
+		</newNodes>
+
+	</ivOverlayPanel><ivSynchTextPlus menuItem="Text Content" icon="icPageWhiteText" remove="true">
+		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
+		<name label="Title" type="TextInput" wysiwyg="true"/>
+		<text label="Text" type="TextArea" height="250"/>
+
+		<synchStart label="Synch Point" type="TextInput"/>
+		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" tooltip="Label not suited for small screens"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40%"/>
+		</hsAppearance>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
+		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
+		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
+		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
+		
+
+	</ivSynchTextPlus><ivSynchSlides menuItem="Slideshow" icon="icFolderImg" remove="true">
+
+		<name label="Title" type="TextInput" wysiwyg="true"/>
+		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
+		<synchStart label="Synch Point" type="TextInput"/>
+		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" tooltip="Label not suited for small screens"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40"/>
+		</hsAppearance>
+		<pauseMedia label="Pause Media" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
+		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
+		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
+		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
+
+		<newNodes>
+			<ivSynchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></ivSynchSlide>
+		</newNodes>
+
+	</ivSynchSlides><ivSynchSlide menuItem="Slide" icon="icBullet" remove="true">
+
+		<name label="Image Description" type="TextInput"/>
+		<url label="Image" type="media"/>
+		<synchStart label="Synch Point" type="TextInput"/>
+		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
+
+		<captionOptions type="group" label="Caption" optional="true">
+			<caption label="Text" type="TextInput" wysiwyg="true" defaultValue="Enter Caption Text" optional="true"/>
+			<captionPosV label="Vertical Position" type="ComboBox" options="Top,Middle,Bottom" data="top,middle,bottom" defaultValue="bottom" width="100" optional="true"/>
+			<captionPosH label="Horizontal Position" type="ComboBox" options="Left,Centre,Right" data="left,centre,right" defaultValue="centre" width="100" optional="true"/>
+		</captionOptions>
+
+	</ivSynchSlide><ivSynchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
+
+		<name label="Title" type="TextInput" wysiwyg="true"/>
+		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
+		<text label="Question" type="TextArea" height="100"/>
+		<!--<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>-->
+		<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>
+		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
+		<disable label="Disable Controls" type="CheckBox"/>
+		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
+		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
+		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" tooltip="Label not suited for small screens"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40"/>
+		</hsAppearance>
+		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
+		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
+
+		
+
+		<feedback type="TextArea" height="40" label="Feedback" optional="true"/>
+
+		<feedbackLabel label="Feedback Label" type="textInput" wysiwyg="true" divider="true" language="true"/>
+		<singleRight label="Single Answer Correct" type="TextInput" wysiwyg="true" language="true"/>
+		<singleWrong label="Single Answer Wrong" type="TextInput" wysiwyg="true" language="true"/>
+		<multiRight label="Multi Answer Correct" type="TextInput" wysiwyg="true" language="true"/>
+		<multiWrong label="Multi Answer Wrong" type="TextInput" wysiwyg="true" language="true"/>
+		<checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
+		<continueBtnTxt label="Continue Button Label" type="TextInput" wysiwyg="true" language="true"/>
+		<topOption label="Drop Down Menu Option 1" type="TextInput" wysiwyg="true" language="true"/>
+
+		<newNodes>
+			<ivSynchMCQOption><![CDATA[<synchMCQOption name="Answer" text="Option text" correct="false"/>]]></ivSynchMCQOption>
+		</newNodes>
+
+	</ivSynchMCQ><ivSynchMCQOption menuItem="Answer" icon="icBullet" remove="true">
+
+		<text label="Answer" type="TextArea" wysiwyg="true"/>
+	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
+	    <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
+
+		<feedback label="Feedback" type="TextArea" height="100" defaultValue="Feedback for this option" optional="true"/>
+		<page label="Go to Page" type="PageList" optional="true"/>
+		<synch label="Go to Synch Point" type="TextInput" optional="true"/>
+		<play label="Play Media" type="CheckBox" defaultValue="false" optional="true"/>
+		<enable label="Enable Controls" type="CheckBox" defaultValue="true" optional="true"/>
+
+	</ivSynchMCQOption><ivSynchXot menuItem="Embed XOT Project" icon="icPageWhiteCodeRed" remove="true">
+
+		<name label="Title" type="TextInput" wysiwyg="true"/>
+		<url label="URL" type="TextInput"/>
+		<page label="Page" type="TextInput" wysiwyg="true" defaultValue="Enter Page Number"/>
+		<hide label="Hide" type="ComboBox" options="None,Header,Footer,Both" data="none,top,bottom,both" defaultValue="none" width="100"/>
+
+		<synchStart label="Synch Point" type="TextInput"/>
+		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" tooltip="Label not suited for small screens"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40"/>
+		</hsAppearance>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
+		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
+		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
+
+		<newNodes>
+			<ivSynchXotChange><![CDATA[<synchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></ivSynchXotChange>
+		</newNodes>
+
+	</ivSynchXot><ivSynchXotChange menuItem="XOT Page Change" icon="icBullet" remove="true">
+
+		<page label="Page" type="TextInput" defaultValue="Enter Page Number"/>
+
+		<synchStart label="Synch Point" type="TextInput"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
+
+	</ivSynchXotChange><inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Present a survey where answers map to different classes. The results for each class are displayed on a chart at the end of the survey." thumb="thumbs/inventory.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#inventory" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instructions label="Instructions" type="textArea" height="100"/>
     <feedback label="Inventory Feedback" type="textArea" height="100"/>
@@ -6601,6 +6828,7 @@
 	<incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true"/>
 	
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
+    <markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>
 	
     <newNodes>
       <sentence><![CDATA[<sentence p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint" name="Sentence" />]]></sentence>

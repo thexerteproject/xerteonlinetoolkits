@@ -175,6 +175,12 @@
      text-align: center;
 
  }
+
+#feedback h3{
+    border-top: 1px solid #ccc;
+    padding-top: 1.5em;
+
+}
 #pageContents input{
     padding: 0!important;
 }
