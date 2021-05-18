@@ -264,6 +264,12 @@ h3 {
 	content: "\f00d"; color: #ff0000;
 }
 
+/* Media */
+.fa-x-play:before { content: "\f04b"; }
+.fa-x-pause:before { content: "\f04c"; }
+.fa-x-mute:before { content: "\f028"; }
+.fa-x-unmute:before { content: "\f6a9"; }
+
 /*class for hidden screenreader only content*/
 .sr-only {
 	position:absolute;
