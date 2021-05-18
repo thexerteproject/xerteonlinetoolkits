@@ -23,7 +23,7 @@
   <wordAndHint menuItem="Word" icon="icBullet">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Word" wysiwyg="false"/>
     <wordAnswer label="Word" type="TextInput" wysiwyg="false"/>
-    <text label="Hint" type="TextArea" height="100"/>
+    <text label="Hint" type="TextInput" height="100"/>
   </wordAndHint>
 
 </wizard>
