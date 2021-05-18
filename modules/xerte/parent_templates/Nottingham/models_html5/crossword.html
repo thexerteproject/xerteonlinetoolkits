@@ -47,7 +47,7 @@
                 if(x_browserInfo.mobile === true){
                     is_keyboard = true
                 }
-
+                debugger
                 active = $(this).closest('table tbody').find('td').index(this);
                 if($('#crossword-table tbody tr td').eq(active).find('input')[0] !== undefined) {
                 rePosition();
@@ -156,7 +156,7 @@
                 var total;
 
 
-
+                debugger
                 if (e.keyCode == 37) {
                     temp = active;
                     while (temp > 0) {
@@ -188,6 +188,7 @@
                 }
                 if (e.keyCode == 38) {
                     temp = active;
+
                     while (temp - columns >= 0) {
                         temp = temp - columns;
                         removeHighlight();
@@ -274,7 +275,7 @@
                     }
                 }
 
-                if(e.keyCode == 9){
+                if(e.keyCode == 9 && e.ctrlKey==false){
 
                     temp = active
                     var wholeNumber = Math.floor(temp/columns)
@@ -293,7 +294,7 @@
                                 total = tabColumns + tabRow
                                 active = total
 
-                                addHighlight(active, i, rows,columns, "tab")
+                                addHighlight(active, i, rows,columns, "tab", false)
 
                                 searching = false
                                 return
@@ -309,7 +310,7 @@
                                 tabRow = startPositionArray[tab][1]
                                 total = tabColumns + tabRow
                                 active = total
-                                addHighlight(active, i, rows,columns, "tab")
+                                addHighlight(active, i, rows,columns, "tab", false)
 
                                 searching = false
                                 return
@@ -326,7 +327,66 @@
                                 total = tabColumns + tabRow
                                 active = total
 
-                                addHighlight(active, i, rows,columns, "tab")
+                                addHighlight(active, i, rows,columns, "tab",false)
+
+                                searching = false
+                                return
+                            }
+                        }
+                    }
+                }else if(e.keyCode == 9 && e.ctrlKey){
+                    debugger
+                    temp = active
+                    var wholeNumber = Math.floor(temp/columns)
+                    var remainder = active%columns
+                    var searching = true
+                    removeHighlight();
+                    while(searching) {
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
+                                tab = i - 1
+                                if(tab <0){
+                                    tab = startPositionArray.length-1
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+                                debugger
+                                addHighlight(active, tab, rows,columns, "tab",true)
+
+                                searching = false
+                                return
+                            }
+                        }
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber) {
+                                tab = i - 1
+                                if(tab < 0) {
+                                    tab = startPositionArray.length-1
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+                                addHighlight(active, i, rows,columns, "tab",true)
+
+                                searching = false
+                                return
+                            }
+                        }
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][1] == remainder) {
+                                tab = i - 1
+                                if(tab <0) {
+                                    tab = startPositionArray.length-1
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+
+                                addHighlight(active, i, rows,columns, "tab",true)
 
                                 searching = false
                                 return
@@ -469,12 +529,16 @@
 
 
 
-            addHighlight = function (active, position, rows, columns, type){
-
+            addHighlight = function (active, position, rows, columns, type, ctrl){
+                debugger
+                 var p = 1;
+                if(ctrl){
+                    p = 0
+                }
                 if(type === "tab") {
-                    if (startPositionArray[position + 1] !== undefined) {
-                        if (startPositionArray[position + 1][2] === "across") {
-                            var counter = startPositionArray[position+1][1];
+                    if (startPositionArray[position + p] !== undefined) {
+                        if (startPositionArray[position + p][2] === "across") {
+                            var counter = startPositionArray[position+p][1];
                             for (var j = 0; j < columns; j++) {
                                 if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined && counter!== columns) {
                                     $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
@@ -497,7 +561,7 @@
                         }
                     } else {
                         if (startPositionArray[0][2] === "across") {
-                            var counter = startPositionArray[position+1][1];
+                            var counter = startPositionArray[position+p][1];
                             for (var j = 0; j < columns; j++) {
                                 if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined && counter!== columns) {
                                     $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
@@ -519,27 +583,37 @@
                         }
                     }
                 }else if(type === "arrow"){
+                    debugger
 
-                    if (startPositionArray[position] !== undefined) {
-                        if (startPositionArray[position][2] === "across") {
-                            var counterArrow = startPositionArray[position][1];
-                            for (var j = 0; j < columns; j++) {
-                                var temp = startPositionArray[position][0] * columns
-                                temp+= startPositionArray[position][1]
-                                if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counterArrow !== columns) {
-                                    $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
-                                    counterArrow++
-                                } else {
-                                    return
+                    var wholeNumber = Math.floor(active / columns)
+                    var remainder = active % columns
+
+                    if($('#crossword-table tbody tr td').eq(active-1).find('input')[0] || $('#crossword-table tbody tr td').eq(active+1).find('input')[0]){
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber) {
+                                var counter = startPositionArray[i][1]
+                                for (var j = 0; j < columns; j++) {
+                                    var temp = startPositionArray[i][0] * columns
+                                    temp += startPositionArray[i][1]
+                                    if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counter !== columns) {
+                                        $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
+                                        nextPosition = startPositionArray[i][2]
+                                        counter++
+                                    } else {
+                                        return;
+                                    }
                                 }
 
+                                return
                             }
+                        }
+                    }
 
-                        } else {
-
+                    for (var i = 0; i < startPositionArray.length; i++) {
+                        if (startPositionArray[i][1] == remainder) {
                             var alignH
                             var alignV
-                            if(startPositionArray[position][2]=="across"){
+                            if(startPositionArray[i][2]=="across"){
                                 alignH = columns
                                 alignV= rows
                             }else{
@@ -547,18 +621,22 @@
                                 alignV = rows
                             }
                             for (var j = 0; j < alignV; j++) {
-                                var temp = startPositionArray[position][0] * alignH
-                                temp+= startPositionArray[position][1]
+                                var temp = startPositionArray[i][0] * alignH
+                                temp += startPositionArray[i][1]
 
                                 var add = j * alignH
                                 if ($('#crossword-table tbody tr td').eq(temp + add).find('input')[0] !== undefined) {
                                     $('#crossword-table tbody tr td').eq(temp + add).addClass('highlighted')
+                                    nextPosition = startPositionArray[i][2]
                                 } else {
                                     return;
                                 }
                             }
+                            return
                         }
                     }
+
+
                 }
             }
 
@@ -590,11 +668,11 @@
             if (x_browserInfo.touchScreen === false) {
                 if (position == "Right") {
                     $("#pageContents").append(
-                        '<div id="pageContents-innerContainer"><div id="crossword"></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">Check</button></div><div id="attempt"></div></div></div>'
+                        '<div id="pageContents-innerContainer"><div id="crossword"></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">Check</button></div><div id="attempt"></div><div id="feedback"></div></div></div>'
                     );
                 } else if (position == "Left") {
                     $("#pageContents").append(
-                        '<div id="pageContents-innerContainer"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">Show answers</button></div></div><div id="crossword"></div></div>'
+                        '<div id="pageContents-innerContainer"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">Show answers</button></div><div id="attempt"></div></div><div id="crossword"></div></div>'
                     );
                 } else if (position == "Bottom") {
                     $("#pageContents").append(
@@ -611,8 +689,9 @@
 
 
 			//store all the words and hints
+            debugger
 			$(x_currentPageXML).children().each(function (i) {
-				hints.push(jQuery(this.getAttribute("text")).text());
+				hints.push(this.getAttribute("text"));
 				words.push(this.getAttribute("wordAnswer"));
 			});
 

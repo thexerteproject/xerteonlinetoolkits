@@ -1760,7 +1760,7 @@
 	</lightboxGroup></crossword><wordAndHint menuItem="Word" icon="icBullet">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Word" wysiwyg="false"/>
     <wordAnswer label="Word" type="TextInput" wysiwyg="false"/>
-    <text label="Hint" type="TextArea" height="100"/>
+    <text label="Hint" type="TextInput" height="100"/>
   </wordAndHint><customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="Create a hotspot based diagram where regions can be explored using a variety of interactivities." icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true" deprecated="This page is now deprecated as Flash (used by the diagram editor) will be unavailable after 2020. Existing pages will continue to work after this date but will not be editable. Try the Hotspot Image, Annotated Diagram, Drag &amp; Drop Labelling and Hotspot Image Connector pages for similar functionality.">
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
