@@ -2,7 +2,7 @@
 
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <crossword><![CDATA[<crossword name="Enter Page Title"  attempts = "1" feedbackLabel="Feedback" again="Try again, you have /a attempt(s) left" text="Enter Page text" />]]></crossword>
+      <crossword><![CDATA[<crossword name="Enter Page Title"  attempts = "1" acrossLabel="Across" downLabel="Down" checkLabel="Check" feedbackLabel="Feedback" again="Try again, you have /a attempt(s) left" text="Enter Page text" />]]></crossword>
 
     </newNodes>
   </pageWizard>
@@ -13,11 +13,14 @@
 
     <!-- <hicol label="Input colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the background of the image"/>-->
     <align label = "Clues Positions" options = "Left,Bottom,Right" type = "ComboBox" defaultValue="Right" data = "Left,Bottom,Right" width = "100" optional="true"/>
-    <feedback label="Feedback" type="TextInput" wysiwyg="true" optional="true"></feedback>
+    <feedback label="Feedback" type="TextArea" wysiwyg="true" optional="true"></feedback>
      <!-- <text label="Instructions" type="TextArea" height="100"/> -->
     <!-- <words label="Words" type="script" height="100"/> -->
       <again label="Try again Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/a is where the attempts will be placed "/>
-      <feedbackLabel label = "Feedback Label" type="TextInput" wysiwyg="true" language="true"></feedbackLabel>
+      <feedbackLabel label = "Feedback Label" type="TextInput" wysiwyg="true" language="true"/>
+      <checkLabel label = "Check Label" type="TextInput" wysiwyg="true" language="true"/>
+      <acrossLabel label = "Across Label" type="TextInput" wysiwyg="true" language="true"/>
+      <downLabel label = "Down Label" type="TextInput" wysiwyg="true" language="true"/>
       <newNodes>
       <wordAndHint><![CDATA[<wordAndHint name="Word" text="The hint for your word" wordAnswer="The word you want to have in the crossword"/>]]></wordAndHint>
     </newNodes>

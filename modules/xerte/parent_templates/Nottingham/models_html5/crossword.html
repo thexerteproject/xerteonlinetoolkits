@@ -665,25 +665,41 @@
             if(position === null || position === undefined  || position===""){
                 position = "Right"
             }
+            debugger
+            var checkLabel = x_currentPageXML.getAttribute("checkLabel")
+            if(checkLabel === null || checkLabel === undefined  || checkLabel===""){
+                checkLabel = "Check"
+            }
+
+            var acrossLabel = x_currentPageXML.getAttribute("acrossLabel")
+            if(acrossLabel === null || acrossLabel === undefined  || acrossLabel===""){
+                acrossLabel = "Across"
+            }
+
+            var downLabel = x_currentPageXML.getAttribute("downLabel")
+            if(downLabel === null || downLabel === undefined  || downLabel===""){
+                downLabel = "Down"
+            }
+
             if (x_browserInfo.touchScreen === false) {
                 if (position == "Right") {
                     $("#pageContents").append(
-                        '<div id="pageContents-innerContainer"><div id="crossword"></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">Check</button></div><div id="attempt"></div><div id="feedback"></div></div></div>'
+                        '<div id="pageContents-innerContainer"><div id="crossword"></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>'+acrossLabel+'</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>'+downLabel+'</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">'+checkLabel+'</button></div><div id="attempt"></div><div id="feedback"></div></div></div>'
                     );
                 } else if (position == "Left") {
                     $("#pageContents").append(
-                        '<div id="pageContents-innerContainer"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">Show answers</button></div><div id="attempt"></div><div id="feedback"></div></div><div id="crossword"></div></div>'
+                        '<div id="pageContents-innerContainer"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>'+acrossLabel+'</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>'+downLabel+'</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">'+checkLabel+'</button></div><div id="attempt"></div><div id="feedback"></div></div><div id="crossword"></div></div>'
                     );
                 } else if (position == "Bottom") {
                     $("#pageContents").append(
-                        '<div id="crossword"></div><table id="clues"><thead><tr><th>Across</th><th>Down</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
-                        '<div id="showButton"><button id="show_button" onclick=\"Check()\">Show answers</button></div><div id="attempt"></div><div id="feedback"></div>'
+                        '<div id="crossword"></div><table id="clues"><thead><tr><th>'+acrossLabel+'</th><th>'+downLabel+'</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
+                        '<div id="showButton"><button id="show_button" onclick=\"Check()\">'+checkLabel+'</button></div><div id="attempt"></div><div id="feedback"></div>'
                     );
                 }
             }else{
                 $("#pageContents").append(
-                    '<div id="crossword"></div><table id="clues"><thead><tr><th>Across</th><th>Down</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
-                    '<button id="show_button" onclick=\"Check()\">Show answers</button><div id="attempt"></div><div id="feedback"></div>'
+                    '<div id="crossword"></div><table id="clues"><thead><tr><th>'+acrossLabel+'</th><th>'+downLabel+'</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
+                    '<button id="show_button" onclick=\"Check()\">'+checkLabel+'</button><div id="attempt"></div><div id="feedback"></div>'
                 );
             }
 

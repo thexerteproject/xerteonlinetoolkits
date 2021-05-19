@@ -122,7 +122,7 @@
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
 	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="Enter text for the page here" textWidth="narrow" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" align="Left" home="false" back="false" next="false"
-	  notFoundMessage="could not be found in this project." continueBtnTxt="Close" />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts = "1" feedbackLabel="Feedback" again="Try again, you have /a attempt(s) left" text="Enter Page text" />]]></crossword><customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true"
+	  notFoundMessage="could not be found in this project." continueBtnTxt="Close" />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" home="false" back="false" next="false" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts = "1" acrossLabel="Across" downLabel="Down" checkLabel="Check" feedbackLabel="Feedback" again="Try again, you have /a attempt(s) left" text="Enter Page text" />]]></crossword><customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true"
 	  hotspotsTxt="Explore the diagram. Click on the various parts to learn more."
 	  labelsTxt="Drag the pins for each label to the correct position in the diagram. You can re-position the labels if required." 
 	  showMeTxt="Use the arrows to learn more."
@@ -1612,11 +1612,14 @@
 
     <!-- <hicol label="Input colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the background of the image"/>-->
     <align label="Clues Positions" options="Left,Bottom,Right" type="ComboBox" defaultValue="Right" data="Left,Bottom,Right" width="100" optional="true"/>
-    <feedback label="Feedback" type="TextInput" wysiwyg="true" optional="true"/>
+    <feedback label="Feedback" type="TextArea" wysiwyg="true" optional="true"/>
      <!-- <text label="Instructions" type="TextArea" height="100"/> -->
     <!-- <words label="Words" type="script" height="100"/> -->
       <again label="Try again Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/a is where the attempts will be placed "/>
       <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true"/>
+      <checkLabel label="Check Label" type="TextInput" wysiwyg="true" language="true"/>
+      <acrossLabel label="Across Label" type="TextInput" wysiwyg="true" language="true"/>
+      <downLabel label="Down Label" type="TextInput" wysiwyg="true" language="true"/>
       <newNodes>
       <wordAndHint><![CDATA[<wordAndHint name="Word" text="The hint for your word" wordAnswer="The word you want to have in the crossword"/>]]></wordAndHint>
     </newNodes>
