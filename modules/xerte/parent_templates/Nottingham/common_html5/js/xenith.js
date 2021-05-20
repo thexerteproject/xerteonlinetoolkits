@@ -4026,7 +4026,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 		);
 		
 		for (var k=0; k<variables.length; k++) {
-			// if it's first attempt to replace vars on this page look at vars in image tags first
+			// if it's first attempt to replace vars on this page look at vars in image & mathjax tags first
 			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
 			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
 				var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
@@ -4035,6 +4035,17 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
 					tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
 					$($tempText.find('img')[m]).replaceWith(tempImgTag);
+				}
+				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
+			}
+			
+			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
+				var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
+				for (var m=0; m<$tempText.find('.mathjax').length; m++){
+					var tempImgTag = $tempText.find('.mathjax')[m].outerHTML,
+						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+					tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
+					$($tempText.find('.mathjax')[m]).replaceWith(tempImgTag);
 				}
 				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
 			}
