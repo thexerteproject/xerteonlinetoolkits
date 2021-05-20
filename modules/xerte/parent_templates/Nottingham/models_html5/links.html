@@ -69,6 +69,11 @@
 						})
 					.find("span.ui-helper-hidden-accessible").attr("id", "linkHelper" + i);
 				
+				// open link in lightbox
+				if (this.getAttribute("target") == "lightbox") {
+					$thisLink.find(".link a").attr('data-featherlight', 'iframe');
+				}
+				
 				if (i % numCols == 0) {
 					$thisLink.addClass("clear");
 				}
