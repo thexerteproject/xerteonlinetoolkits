@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
     <pageWizard remove="true" duplicate="false">
         <newNodes>
-            <textCorrection><![CDATA[<textCorrection name="Enter Page Title" copyText="false" align="Left" introduction="Enter text for the page here" wrongText="Enter the wrong text here" answer="Enter the correct text here" feedback="Enter the feedback here" panelWidth="Medium" checkBtn="Check"  textRight="Your answer is correct" textWrong="Your answer is incorrect" FurtherClarificationLabel="Feedback" answerLabel="Answer" attemptLabel="Attempts remaining" correctLabel="Correct Answer" textIncomplete="You have not attempted the question"/>]]></textCorrection>
+            <textCorrection><![CDATA[<textCorrection name="Enter Page Title" copyText="false" align="Left" introduction="Enter text for the page here" wrongText="Enter the wrong text here" answer="Enter the correct text here" feedback="Enter the feedback here" panelWidth="Medium" checkBtn="Submit"  textRight="Your answer is correct" textWrong="Your answer is incorrect" FurtherClarificationLabel="Feedback" answerLabel="Answer" attemptLabel="Attempts remaining" correctLabel="Correct Answer" textIncomplete="You have not attempted the question"/>]]></textCorrection>
         </newNodes>
     </pageWizard>
 
@@ -25,13 +25,13 @@
         <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
 
         <checkBtn label="Check Button Text" type="TextInput" wysiwyg="true" language="true"/>
-        <attemptLabel label="Attempt Label" type="TextInput" wysiwyg="false" language="true"/>
+        <attemptLabel label="Attempt Label" type="TextInput" wysiwyg="true" language="true"/>
         <textRight label="Passed the test" type="TextInput" wysiwyg="true" language="true"/>
         <textWrong label="Failed the test" type="TextInput" wysiwyg="true" language="true" />
         <textIncomplete label= "Text Incomplete" type="TextInput" wysiwyg="true" language="true"/>
         <resultLabel label="Result" type="TextInput" wysiwyg="true" language="true" deprecated="This property is deprecated"/>
         <correctLabel label="Correct Answer" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Correct Answer"/>
         <FurtherClarificationLabel label="Feedback" type="TextInput" wysiwyg="true" language="true"/>
-        <answerLabel label="Answer" type="TextInput" wysiwyg="true" language="true"/>
+        <answerLabel label="Answer" type="TextInput" wysiwyg="false" language="true"/>
     </textCorrection>
 </wizard>

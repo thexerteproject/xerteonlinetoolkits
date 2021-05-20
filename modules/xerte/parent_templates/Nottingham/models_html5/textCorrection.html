@@ -40,7 +40,6 @@
 
                 var $mainPanel = $("#mainPanel");
                 var padding = $mainPanel.innerWidth() - $mainPanel.width();
-                $("#text").width($mainPanel.width() - padding);
             };
 
             this.leavePage = function () {
@@ -224,12 +223,9 @@
                         if (attemptMade && (input === $pageContents.data('answer') || triesLeft == undefined || triesLeft <= 0)) {
 							// disable check btn & text area when correct answer entered or max tries reached
 							if ((triesLeft != undefined && triesLeft <= 0) || input == $pageContents.data('answer')) {
-								$(this).button("disable");
+								$(this).hide();
+								$attempts.hide();
 								$textArea.attr('readonly','true');
-							}
-							
-							if (input === $pageContents.data('answer') && $attempts.length > 0) {
-								$attempts.html("");
 							}
 							
 							// feedback
