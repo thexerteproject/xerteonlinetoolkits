@@ -1950,6 +1950,8 @@ function x_changePage(x_gotoPage, addHistory) {
 			doPercentage();
 		}
 		
+		x_pageInfo[x_gotoPage].viewedNewWindow = true;
+		
 	// standalone page opening in lightbox
 	} else {
 		$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
@@ -1959,6 +1961,8 @@ function x_changePage(x_gotoPage, addHistory) {
 			x_pageInfo[x_gotoPage].builtLightBox = true;
 			doPercentage();
 		}
+		
+		x_pageInfo[x_gotoPage].viewedLightBox = true;
 	}
 }
 
