@@ -6,6 +6,7 @@
 
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
+	
 	var crossword = new function () {
 
         var startPositionArray = []
@@ -577,8 +578,13 @@
         }
 
 		this.init = function () {
+			
+			// add text to the top of the page
+			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != '') {
+				 $("#pageContents").append('<div id="textHolder">' + x_currentPageXML.getAttribute("text") + '</div>');
+			}
+			
 			// array with words
-
 			var words = [];
 			//array with hints
 			var hints = [];
@@ -587,25 +593,28 @@
             if(position === null || position === undefined  || position===""){
                 position = "Right"
             }
+			
+			var btnLabel = x_currentPageXML.getAttribute("checkBtn") != undefined ? x_currentPageXML.getAttribute("checkBtn") : 'Submit';
+			
             if (x_browserInfo.touchScreen === false) {
                 if (position == "Right") {
                     $("#pageContents").append(
-                        '<div id="pageContents-innerContainer"><div id="crossword"></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">Check</button></div><div id="attempt"></div></div></div>'
+                        '<div id="pageContents-innerContainer"><div id="crossword"></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div><div id="attempt"></div></div></div>'
                     );
                 } else if (position == "Left") {
                     $("#pageContents").append(
-                        '<div id="pageContents-innerContainer"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">Show answers</button></div></div><div id="crossword"></div></div>'
+                        '<div id="pageContents-innerContainer"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>Across</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>Down</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><div id="crossword"></div></div>'
                     );
                 } else if (position == "Bottom") {
                     $("#pageContents").append(
                         '<div id="crossword"></div><table id="clues"><thead><tr><th>Across</th><th>Down</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
-                        '<div id="showButton"><button id="show_button" onclick=\"Check()\">Show answers</button></div><div id="attempt"></div>'
+                        '<div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div><div id="attempt"></div>'
                     );
                 }
             }else{
                 $("#pageContents").append(
                     '<div id="crossword"></div><table id="clues"><thead><tr><th>Across</th><th>Down</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
-                    '<button id="show_button" onclick=\"Check()\">Show answers</button><div id="attempt"></div>'
+                    '<button id="show_button" onclick=\"Check()\">' + btnLabel + '</button><div id="attempt"></div>'
                 );
             }
 
@@ -643,6 +652,9 @@
 			var legend = cw.getLegend(grid);
 			addLegendToPage(legend);
             this.resize()
+			
+			$('#show_button').button(); // do this so button styling is consistent with other pages
+			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		}
@@ -1102,13 +1114,12 @@
 			Check = function (){
 			    if(attempts === 1){
 			        showAnswers()
-                    $("#attempt").html("");
                 }else{
-			         checkAttempt()
+			        checkAttempt()
                     attempts--
                     var again = x_currentPageXML.getAttribute("again")
                     if(again === null || again===undefined){
-                        again = "Try again, you have /a attempt(s) left"
+                        again = "Try again, you have /a attempt(s) left" // **
                     }
                     var again = again.replace("/a", attempts)
                     var h3 = $('<h3>').append(again)
@@ -1178,6 +1189,13 @@
                 }
 
                 document.getElementById("show_button").disabled = true;
+				
+				if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
+					var fbHeading =  x_currentPageXML.getAttribute("feedbackLabel") != undefined ? x_currentPageXML.getAttribute("feedbackLabel") : 'Feedback';
+					$('#attempt').html('<h3>' + fbHeading + '</h3><div id="feedback">' + x_currentPageXML.getAttribute("feedback") + '</div>');
+				} else {
+					$("#attempt").html("");
+				}
             }
 
             hintClick = function (hint){

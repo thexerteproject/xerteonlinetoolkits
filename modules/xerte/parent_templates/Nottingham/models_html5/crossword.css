@@ -79,11 +79,6 @@
 
 #show_button{
     margin-left: 0;
-    display:block;
-    width: 80%;
-    height: 65%;
-    font-size: 2.5vmin
-
 }
 
 #crossword-table #input__container__across{
@@ -172,8 +167,6 @@
  #attempt h3{
      border-top: 1px solid #ccc;
      padding-top: 1.5em;
-     text-align: center;
-
  }
 #pageContents input{
     padding: 0!important;
