@@ -118,10 +118,11 @@ function initSidebar(){
 			}
 		}
 	)
+	
+	fixSideBar();
 }
 
 function loadContent(){
-
 	$.ajax({
 
 		type: "GET",
@@ -177,7 +178,19 @@ function loadContent(){
 		$('.vidHolder iframe').each(function() {
 			iframeResize($(this))
 		});
+		
+		fixSideBar();
 	});
+}
+
+function fixSideBar() {
+	var $sideBar = $('.bs-docs-sidenav.affix, .bs-docs-sidenav.affix-top');
+	
+	if ($sideBar.outerHeight() > $(window).height()) {
+		$sideBar.addClass('staticPosition');
+	} else {
+		$sideBar.removeClass('staticPosition');
+	}
 }
 
 // Make absolute urls from urls with FileLocation + ' in their strings
