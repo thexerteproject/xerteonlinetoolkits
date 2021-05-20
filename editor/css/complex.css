@@ -971,7 +971,10 @@ div.hotspotEditor {
 
 .featherlight .featherlight-content
 {
-	padding:5px 5px 0 !important;
+	padding:5px !important;
+	min-width: 0 !important;
+	max-width: 95%;
+	border-bottom: none !important;
 }
 
 .hotspotEditor
@@ -1189,13 +1192,14 @@ div#IconPickerModal.show-all .ip-icons-content .ip-icons-area {
 	white-space: normal;
 }
 
-.featherlight-content {
-	min-width: 0 !important;
+.previewFile {
+	max-height: 90vh;
+	max-width: 90vw;
 }
 
-.previewFile {
-	max-width: 100%;
-	max-height: 100%;
+.previewVideo {
+	max-width: 90vw;
+	height: auto;
 }
 
 .unmarkCompletionIcon
