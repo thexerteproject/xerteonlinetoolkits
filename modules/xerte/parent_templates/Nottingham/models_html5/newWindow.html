@@ -35,14 +35,11 @@
 
 
 		this.resizeImg = function(firstLoad) {
-			debugger
 			var imgMaxW, imgMaxH;
 			imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
 			imgMaxH = Math.round($x_pageHolder.height() - 50);
 			$img.mapster('unbind');
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
-
-			debugger
 
 			$img.css({
 				"opacity"	:1,
@@ -88,16 +85,33 @@
 					}
 				});
 			
-			$("#pageContents .newWindowLink").on("click", function() {
+			
+			if (x_currentPageXML.getAttribute("target") == "lightbox") {
 				if (x_currentPageXML.getAttribute("htm") != undefined && x_currentPageXML.getAttribute("htm") != "") {
-					var popupWindow = window.open("", "", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight") + ",scrollbars=1");
-					popupWindow.document.write(x_currentPageXML.getAttribute("htm"));
-					popupWindow.focus();
+					$("#pageContents .newWindowLink").attr({
+						'data-featherlight': x_currentPageXML.getAttribute("htm"),
+						'href': '#'
+					});
+					
 				} else {
-					var src = x_currentPageXML.getAttribute("url");
-					window.open(src, "_blank", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight") + ",scrollbars=1");
+					$("#pageContents .newWindowLink").attr({
+						'data-featherlight': 'iframe',
+						'href': x_currentPageXML.getAttribute("url")
+					});
 				}
-			});
+				
+			} else {
+				$("#pageContents .newWindowLink").on("click", function() {
+					if (x_currentPageXML.getAttribute("htm") != undefined && x_currentPageXML.getAttribute("htm") != "") {
+						var popupWindow = window.open("", "", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight") + ",scrollbars=1");
+						popupWindow.document.write(x_currentPageXML.getAttribute("htm"));
+						popupWindow.focus();
+					} else {
+						var src = x_currentPageXML.getAttribute("url");
+						window.open(src, "_blank", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight") + ",scrollbars=1");
+					}
+				});
+			}
 		}
 	}
 	

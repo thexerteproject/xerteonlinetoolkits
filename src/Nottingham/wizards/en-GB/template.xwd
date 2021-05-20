@@ -184,7 +184,7 @@
 	  copypasteinfo="Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference."
 	  >Enter text for the page here</modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="Provide a prompt here" answer="Provide a model answer here"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Feedback" answerFieldLabel="Answer"
-	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter a Description for Accessibility" url2="Select Image" tip2="Enter a Description for Accessibility" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><nav><![CDATA[<nav name="Enter Page Title" text="Enter text for the page here" type="Tab" nextBtnTip="Next" prevBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></nav><newWindow><![CDATA[<newWindow name="Enter Page Title" text="Enter text for the page" url="Enter a URL to launch" descrip="Enter link text" previewImage="Select a preview image" tip="Enter a Description for Accessibility" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="Enter Instruction" showfeedback="true" feedback="Provide feedback here"
+	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter a Description for Accessibility" url2="Select Image" tip2="Enter a Description for Accessibility" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><nav><![CDATA[<nav name="Enter Page Title" text="Enter text for the page here" type="Tab" nextBtnTip="Next" prevBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></nav><newWindow><![CDATA[<newWindow name="Enter Page Title" text="Enter text for the page" url="Enter a URL to launch" descrip="Enter link text" target="new" previewImage="Select a preview image" tip="Enter a Description for Accessibility" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="Enter Instruction" showfeedback="true" feedback="Provide feedback here"
 	  quesCount="Question {i} of {n}"
 	  onCompletion="You have completed the questionnaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit" 
@@ -1604,7 +1604,13 @@
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 	</lightboxGroup></connectorMenu><cMenuListedPage menuItem="Item" remove="true" icon="icBullet">
     <name label="Title" type="TextInput" wysiwyg="true"/>
-    <pageID label="Destination Page" type="pageList" defaultValue=""/>
+    <pageID label="Destination Page" type="pageList" defaultValue="" optional="true"/>
+	
+	<externalGroup type="group" label="External URL" optional="true" tooltip="Open another web page when menu button is clicked">
+		<externalURL label="External URL" type="TextInput" wysiwyg="false" optional="true"/>
+		<externalTarget label="Open In" options="This Window,New Window,Lightbox" type="ComboBox" data="this,new,lightbox" defaultValue="this" width="380" optional="true"/>
+	</externalGroup>
+	
     <checkIfVisited label="Check if Visited Page" type="pageList" defaultValue="" optional="true"/>
 	<btnTxt label="Use Title on Button" type="CheckBox" defaultValue="false" mandatory="true" tooltip="By default the text on the menu button will be the destination page title. Check this box to use the title text from the field above instead."/>
   </cMenuListedPage><crossword menu="Games" icon="icCrossword" menuItem="Crossword" hint="A crossword is a word puzzle that usually takes the form of a square or a rectangular grid of white- and black-shaded squares. The game's goal is to fill the white squares with letters, forming words or phrases, by solving clues, which lead to the answers." thumb="thumbs/crossword.jpg" remove="true">
@@ -4774,6 +4780,8 @@
 		<url label="URL" type="TextInput"/>
 		<descrip label="Text" type="TextInput"/>
 	</link>
+	
+	<target label="Open In" options="New Window,Lightbox" type="ComboBox" data="new,lightbox" defaultValue="new" mandatory="true"/>
 	
 	<image type="group" label="Preview Image">
 		<previewImage label="File" type="media"/>
