@@ -102,6 +102,10 @@ optional: end position* line
 						$target.prepend(txt);
 					}
 				}
+				// Else if not on overlay panel
+				else {
+					$target.prepend(txt);
+				}
 			},
 			
 			start: function(event, options) {

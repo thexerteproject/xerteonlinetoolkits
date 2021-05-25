@@ -35,7 +35,6 @@
 			isPlaying = false;
 			isMuted = false;
             lastTime = -1;
-			trackBarEnabled = true;
 
 		
 		// function called every time the page is viewed after it has initially loaded
@@ -139,19 +138,18 @@
 			$(".popcornMedia video").each(function(i) {
 				var	$this = $(this),
 					$popcornMedia = $this.closest(".popcornMedia");
-				var holderHeight = toResize ? $('#trackBarHolder').height() : 0;
 				var titleHeight = $(".panelTitle").outerHeight(true);
 				
 				var tempW = $popcornMedia.data("max-width");
-				var tempH = $popcornMedia.data("max-height") - titleHeight - holderHeight;
+				var tempH = $popcornMedia.data("max-height") - titleHeight;
 				if (tempW > $popcornMedia.closest(".panel").width()) {
 					var scale = $popcornMedia.closest(".panel").width() / tempW;
 					tempW = $popcornMedia.closest(".panel").width();
 					tempH = Math.floor(tempH * scale);
 				}
-				if (tempH > $popcornMedia.closest(".panel").height() - titleHeight - holderHeight) {
-					var scale = ($popcornMedia.closest(".panel").height() - titleHeight - holderHeight) / tempH;
-					tempH = $popcornMedia.closest(".panel").height() - titleHeight - holderHeight;
+				if (tempH > $popcornMedia.closest(".panel").height() - titleHeight) {
+					var scale = ($popcornMedia.closest(".panel").height() - titleHeight) / tempH;
+					tempH = $popcornMedia.closest(".panel").height() - titleHeight;
 					tempW = Math.floor(tempW * scale);
 				}
 				
@@ -200,37 +198,6 @@
 					$x_window.resize();
 				}
 			});
-
-			// 1) Resize trackbar holder. 2) Move slider. 3) Move all markers
-			if (toResize == true){
-				if ($(".mainMedia") != undefined){
-					$('#trackBarHolder').css("width", $(".mainMedia").width());
-					UIWidth = 2 * parseFloat(($('.trackBarButton').outerWidth(true) + $('.trackBarTime').width() + 2 * parseFloat($('#trackBarRail').css("margin-left"))));
-					newWidth = $('#trackBarHolder').width() - UIWidth;
-					$('#trackBarRail').css("width", newWidth);
-					frac = mediaLesson.popcornInstance.currentTime() / mediaLesson.popcornInstance.duration();
-					sliderOffset = frac * ($('#trackBarRail').width() - $('#trackBarSlider').width());
-					$('#trackBarSlider').css("left", sliderOffset);
-
-					$(".trackBarEventMarker").each(function(i,e){
-						eventOffset = e.getAttribute("synchFrac") * $('#trackBarRail').width()
-						e.style.left = eventOffset + "px";
-						if ($('#marker_mandatory_' + i).length == 1) {
-							$('#marker_mandatory_' + i).css("left", eventOffset - 0.25 * $('.trackBarEventMarkerMandatory').width());
-						}
-					});
-					if ($(x_currentPageXML).children("mediaPanel").attr("autoplay") == "true") {
-						$('#playButton').removeClass('fa-x-play').addClass('fa-x-pause');
-					}
-					else {
-						$('#playButton').removeClass('fa-x-pause').addClass('fa-x-play'); 
-					}
-					$(".popcornMedia.vimeo").each(function(i) {
-						$('#playButton').removeClass('fa-x-play').removeClass('fa-x-pause');
-						$('#playButton').css("height", "0em");
-					});
-				}
-			}
 			
 			$panelHolder.find(".panel .fullH").each(function() {
 				mediaLesson.resizeContent($(this));
@@ -293,7 +260,7 @@
 			}
 			var ww = $holder.width(),
 				wh = Math.floor(ww / ratio),
-				hh = $holder.height() - $holder.find(".panelTitle").outerHeight(true) - $holder.find("#trackBarHolder").outerHeight(true),
+				hh = $holder.height() - $holder.find(".panelTitle").outerHeight(true),
 				hw = Math.floor(hh * ratio);
 
 			if (ww < hw)
@@ -315,11 +282,6 @@
 					"height": "100%"
 			    });
 			}
-
-			//if (h < 200) { // must be at least 200 x 200
-			//	h = 200;
-			//	w = Math.floor(h * (1 / ratio));
-			//}
 
 			$youTube.css({
 				"width":	w,
@@ -362,17 +324,7 @@
 			this.sendXAPI(vidFullWatched, progress);
 			XTVideo(x_currentPage, trackinglabel, "", "exit", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
 		};
-		// function called when page first loads
-		/*
-		this.init = function()
-		{
-            // Load in the required scripts before we can begin
-            $script.path(x_templateLocation + 'common_html5/js/featherlight/');
-            $script(['featherlight.min.js', 'featherlight.min.css'], function () {
-				mediaLesson.begin();
-            });
-		};
-		|*/
+		
 		this.init = function() {
             this.panelbaseid = "panel_" + x_currentPage + '_';
 			if (!!document.createElement("canvas").getContext) {
@@ -399,10 +351,8 @@
 			} else {
 				$("#infoHolder, #panelHolder, #contentCover").remove();
 				$("#pageContents").append('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
-				x_pageLoaded();
-				
-			}
-			
+				x_pageLoaded();	
+			}	
 		}
 		
 		this.initTracking = function(){
@@ -473,18 +423,6 @@
                 var csegment = $.extend(true, {}, segment);
                 // console.log("Adding segment: (" + csegment.start + ", " + csegment.end +")");
                 vidFullWatched.segments.push(csegment);
-
-                /*
-                var segstr = "[";
-                for (var i=0; i<vidFullWatched.segments.length; i++)
-                {
-                    if (i>0)
-                        segstr += ", ";
-                    segstr += "(" + vidFullWatched.segments[i].start + ", " + vidFullWatched.segments[i].end + ")";
-                }
-                segstr += "]";
-                console.log("Current segments: " + segstr);
-                */
             }
         };
 
@@ -724,141 +662,6 @@
 					true
 					);
 			}
-
-			// _____ BUILD TRACKBAR HOLDER ____
-
-			// Build trackbar structure hierarchy and add it to the media panel.
-			var $trackBarHolder = $('<div id="trackBarHolder"></div>')
-				.appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex)[0]);
-			var $playButton = $('<div id="playButton" class="trackBarButton fa fa-fw fa-x-pause" tabindex=0/>')
-				.appendTo($trackBarHolder);2
-			var $trackBarTime = $('<div id="trackBarCurrentTime" class="trackBarTime">00:00:00</div>')
-				.appendTo($trackBarHolder);
-			var $trackBarRail = $('<div id="trackBarRail"></div>')
-				.appendTo($trackBarHolder);
-			var $trackBarSlider = $('<div id="trackBarSlider"></div>')
-				.appendTo($trackBarRail);
-			var $trackBarDuration = $('<div id="trackBarDuration" class="trackBarTime">00:00:00</div>')
-				.appendTo($trackBarHolder);
-			var $muteButton = $('<div id="muteButton" class="trackBarButton fa fa-fw fa-x-mute" tabindex=1/>')
-				.appendTo($trackBarHolder);
-			
-
-			// Fit the structure to the panel by hijacking the main media margins.
-			toResize = true;
-			this.resizeMedia();
-
-			// Handle interactivity of slider.
-			var duration = 0;
-			var mp = mediaLesson.popcornInstance;
-			
-			$trackBarSlider.on('mousedown', function(e){
-				if ($playButton.hasClass('fa-x-play') == false && $playButton.hasClass('fa-x-pause') == false) {
-					return;
-				}
-				mp.pause();
-				var dr = $(this).addClass("drag").css("cursor","pointer");
-				xpos = dr.offset().left + dr.outerWidth() - e.pageX;
-				
-				minx = $trackBarRail.offset().left;
-				maxx = $trackBarRail.width() + $trackBarRail.offset().left - dr.outerWidth();
-				
-				//convert video duration (s) to HH:MM:SS
-				$trackBarDuration.text("" + new Date(mp.duration() * 1000).toISOString().substr(11, 8)); 
-
-				$(document.body).on('mousemove', function(e){
-					var ileft = e.pageX + xpos - dr.outerWidth();
-					newTime = mp.duration() * ((dr.offset().left - minx) / ($trackBarRail.width() - dr.outerWidth()));
-					ileft = ileft <= minx ? minx : ileft >= maxx ? maxx : ileft;
-
-					if(dr.hasClass("drag")){
-						dr.offset({left: ileft});
-						$trackBarTime.text((new Date(newTime * 1000).toISOString().substr(11, 8)));
-					}
-				}).on('mouseup', function(e){
-					offset = $trackBarSlider.offset().left - $trackBarRail.offset().left;
-					mp.currentTime(mp.duration() * ((dr.offset().left - minx) / ($trackBarRail.width() - dr.outerWidth())));
-					dr.removeClass("drag");
-				});
-			});
-			$trackBarRail.on('hover', function(e){
-				if ($playButton.hasClass('fa-x-play') == false && $playButton.hasClass('fa-x-pause') == false) {
-					return;
-				}
-				$(this).css("cursor","pointer")
-			}).on('mousedown', function(e){
-				if ($playButton.hasClass('fa-x-play') == false && $playButton.hasClass('fa-x-pause') == false) {
-					return;
-				}
-				$trackBarSlider.offset({left: e.pageX});
-				mp.currentTime(mp.duration() * (e.offsetX / $trackBarRail.width()));
-				mp.pause();
-			});
-			$playButton.on('click', function(e){
-				if(isPlaying) {
-					mp.pause();
-				}
-				else {
-					mp.play();
-				}
-			});
-			$muteButton.on('click', function(e){
-				if($(this).hasClass('fa-x-mute')) {
-					mp.mute();
-					isMuted = true;
-					$(this).removeClass('fa-x-mute').addClass('fa-x-unmute');
-				}
-				else {
-					mp.unmute();
-					isMuted = false;
-					$(this).removeClass('fa-x-unmute').addClass('fa-x-mute');
-				}
-			});
-
-			keyPressHandler = function(e)
-			{
-				if (trackBarEnabled == true)
-				{
-					time = mp.currentTime();
-					switch(e.key)
-					{
-						case "m":
-							if (isMuted) {
-								mp.unmute();
-								isMuted = false;
-								$muteButton.removeClass('fa-x-unmute').addClass('fa-x-mute');
-							}
-							else {
-								mp.mute();
-								isMuted = true;
-								$muteButton.removeClass('fa-x-mute').addClass('fa-x-unmute');
-							}
-							break;
-						case "k":
-						case " ":
-							if ($playButton.hasClass('fa-x-play') || $playButton.hasClass('fa-x-pause')){
-								if(isPlaying) {
-									mp.pause();
-								} else {
-									mp.play();
-								}
-							}
-							break;
-						case "l":
-						if ($playButton.hasClass('fa-x-play') || $playButton.hasClass('fa-x-pause')){
-								mp.currentTime(time + 10);
-							}
-							break;
-						case "j":
-						if ($playButton.hasClass('fa-x-play') || $playButton.hasClass('fa-x-pause')){
-								mp.currentTime(time - 10);	
-							}
-							break;
-						}
-				}
-			}
-
-			document.addEventListener("keypress", keyPressHandler);
 			
 			//Append the OVERLAY PANEL to the main media.
 			for(i = 0; i < panelData.length; i++) {
@@ -866,10 +669,6 @@
                     $('<div class="overlay" id="mydiv"></div>')
 						.appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex).children(".mainMedia"))
                         .attr("id", mediaLesson.panelbaseid + i)
-						.hide();
-                    $('<div class="overlayGray"></div>')
-						.appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex).children(".mainMedia"))
-                        .attr("id", "overlay")
 						.hide();
 					$('<div class="overlayGray"></div>')
 						.appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex).children(".mainMedia"))
@@ -879,14 +678,6 @@
                     break;
                 }
             }
-			$("#overlay").on('click', function(e){
-				if(isPlaying) {
-					mp.pause();
-				}
-				else {
-					mp.play();
-				}
-			});
 
 			$(".panel").each(function(i) {
 			    if (i == 0)
@@ -931,26 +722,9 @@
                     mediaLesson.updateTable(vidFullWatched, lastTime);
                     mediaLesson.updateTable(block, lastTime);
 				}
-				
-				//Update time and Slider location on trackbar timeline
-				$('#trackBarCurrentTime').text(convertTime(popTime));
-				$('#trackBarDuration').text(convertTime(mediaLesson.popcornInstance.duration()));
-				$slider = $('#trackBarSlider');
-				frac = popTime / mediaLesson.popcornInstance.duration();
-				sliderOffset = frac * ($('#trackBarRail').width() - $slider.width());
-				$slider.css("left", sliderOffset);
-
-				function convertTime(seconds){
-					if ($.isNumeric(seconds)) {
-						return new Date(seconds * 1000).toISOString().substr(11, 8);
-					}
-					return "00:00"
-				}
             });
             this.popcornInstance.on( "play", function() {
-                $("#overlay").hide();
 				$("#overlayGray").hide();
-				$('#playButton').removeClass('fa-x-play').addClass('fa-x-pause');
 				isPlaying = true;
                 var popTime = mediaLesson.popcornInstance.currentTime();
                 console.log("Play    : " + popTime);
@@ -1449,85 +1223,15 @@
 					pluginName = thisContent.type.split("synch")[1].toLowerCase();
 				
 				// ____ ADD SYNCH EVENT ON SLIDER ____
-				// Clear Content should not be counted as an event.
-				if (thisContent.type != "synchEmpty")
-				{
-					var $eventMarker =  $('<div id=marker_' + j + ' class="trackBarEventMarker ui-icon-play"></div>')
-						.appendTo($('#trackBarRail'));
-					var duration = isNaN(popcornInstance.duration()) ? $mediaDiv.data("duration") : popcornInstance.duration();
-					frac = thisContent.start / duration
-					// Do not add this event to the timeline if it doesn't occur during the duration of the video.
-					if (frac < 0 || frac > 1) {
-						$eventMarker.remove();
-					}
-					else {
-						$eventMarker.attr("synchFrac", frac);
-						eventOffset = frac * $('#trackBarRail').width();
-						$eventMarker.css("left", eventOffset);
-						if (thisContent.optional == "false") {
-							$eventMarkerMandatory = $('<div id=marker_mandatory_' + j + ' class="trackBarEventMarkerMandatory"></div>')
-							.appendTo($('#trackBarRail'));
-							$eventMarkerMandatory.css("left", eventOffset - $eventMarkerMandatory.width() * 0.25);
-						}
-					}
-				}
-				if (thisContent.type == "synchSlides") {
-					$.each(thisContent.allInfo.children, function(i, e){
-						e.optional = thisContent.optional;
-						e.setAttribute("_w", parseFloat(thisContent.allInfo.attributes._w.value));
-						e.setAttribute("_x", parseFloat(thisContent.allInfo.attributes._x.value));
-						e.setAttribute("_y", parseFloat(thisContent.allInfo.attributes._y.value));
-					});
-				}
+				
 				if (thisContent.type != "synchEmpty") {
-					if (thisContent.type == "synchMCQ" || thisContent.type == "synchTextPlus" || thisContent.type == "synchSlides" || thisContent.type == "synchXot") {
-						// Collect Look-and-Feel data for hotspots.
-						var optional = thisContent.allInfo.getAttribute("optional");
-						optional = optional == '' || optional == undefined  ? 'false' : optional;
-
-						var tooltip = thisContent.allInfo.getAttribute("tooltip");
-						tooltip = tooltip == '' || tooltip == undefined  ? 'label' : tooltip;
-						
-						var icon = thisContent.allInfo.getAttribute("icon");
-						icon = icon == '' || icon == undefined  ? 'fas fa-info' : icon;
-						// Background Color
-						var colour1 = thisContent.allInfo.getAttribute("colour1");
-						colour1 = colour1 == '' || colour1 == undefined ? '#000000' : colour1;
-						colour1 = colour1.indexOf('0x') === 0 ? colour1.replace("0x", "#") : colour1;
-						// Icon Color
-						var colour2 = thisContent.allInfo.getAttribute("colour2");
-						colour2 = colour2 == '' || colour2 == undefined ? '#FFFFFF' : colour2;
-						colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
-						
-						var hsSize = thisContent.allInfo.getAttribute("hsSize");
-						hsSize = hsSize == '' || hsSize == undefined ? '24px' : hsSize;
-
-						var hsAttributes = {
-							optional: optional,
-							tooltip : tooltip,
-							icon    : icon,
-							colour1 : colour1,
-							colour2 : colour2,
-							hsSize  : hsSize, 
-						};
-						var pluginAttributes = {
-							start	  : thisContent.start,
-							end		  : thisContent.end,
-							target	  : thisContent.target,
-							optional  : thisContent.optional,
-							attrib	  : hsAttributes,
-							overlayPan: thisContent.overlayPanel
-						};
-					}
-					else {
-						var pluginAttributes = {
-							start	  : thisContent.start,
-							end		  : thisContent.end,
-							target	  : thisContent.target,
-							optional  : thisContent.optional,
-							overlayPan: thisContent.overlayPanel
-						};
-					}
+					var pluginAttributes = {
+						start	  : thisContent.start,
+						end		  : thisContent.end,
+						target	  : thisContent.target,
+						optional  : thisContent.optional,
+						overlayPan: thisContent.overlayPanel
+					};
 
 					// add other info to pluginAttributes
 					$.each(thisContent.allInfo.attributes, function(i, attrib) {
@@ -1689,61 +1393,35 @@
 		}
 		
 		// function disables / enables media controls
-		this.enableControls = function(media, enable, includeMejs = true, includeTrackbar = false) {
-			if(includeMejs == true)
-				$("#overlay").hide();
+		this.enableControls = function(media, enable) {
 			if (enable == true) {
 				// enable
 				if (media.player) {
 					media.player.controls = true;
 					media.player.controlsEnabled = true;
 					media.player.options.clickToPlayPause = true;
-					if (includeMejs == true) {
-						if (media.nodeName == "VIDEO") {
-							$(media).parent().parent().find(".mejs-controls").show()
-							$(media).parent().parent().find(".mejs-layers").show();
-						} else {
-							$(media).parent().parent().find(".mejs-controls").children("div").show();
-						}
-					}
-					if (includeTrackbar == true) {
-						trackBarEnabled = true;
-						$("#trackBarHolder").show();
+					if (media.nodeName == "VIDEO") {
+						$(media).parent().parent().find(".mejs-controls").show()
+						$(media).parent().parent().find(".mejs-layers").show();
+					} else {
+						$(media).parent().parent().find(".mejs-controls").children("div").show();
 					}
 				}
 			} else {
 				// disable
-				if(includeMejs == true)
-					$("#overlay").show();
 				if (media.player) {
 					media.player.controlsEnabled = false;
 					media.player.options.clickToPlayPause = false;
-					if (includeMejs == true) {
-						if (media.nodeName == "VIDEO") {
-							$(media).parent().parent().find(".mejs-controls").hide()
-							$(media).parent().parent().find(".mejs-layers").hide();
-						} else {
-							$(media).parent().parent().find(".mejs-controls").children("div").hide();
-						}
-					}
-					if (includeTrackbar == true) {
-						trackBarEnabled = false;
-						$("#trackBarHolder").hide();
+					if (media.nodeName == "VIDEO") {
+						$(media).parent().parent().find(".mejs-controls").hide()
+						$(media).parent().parent().find(".mejs-layers").hide();
+					} else {
+						$(media).parent().parent().find(".mejs-controls").children("div").hide();
 					}
 				}
 			}
-			
 		}
 
-		this.hideControlLayer = function(media) {
-			if (media.nodeName == "VIDEO") {
-				$(media).parent().parent().find(".mejs-controls").hide()
-				$(media).parent().parent().find(".mejs-layers").hide();
-			} else {
-				$(media).parent().parent().find(".mejs-controls").children("div").hide();
-			}	
-		}
-		
 		// function receives dimensions of video from mediaPlayer.js to set its max dimensions
 		this.mediaMetadata = function($video, dimensions) {
 			$video.closest(".popcornMedia")

@@ -29,7 +29,7 @@ childNodes (synchMCQOption):
 required: text correct
 optional: feedback page synch play enable
 
-*dealt with in interactiveVideo.html
+*dealt with in interactiveVideo.html and in the medialesson.html
 
 */
 
@@ -38,7 +38,7 @@ optional: feedback page synch play enable
 	Popcorn.plugin("mcq", function(options) {
 
 		// define plugin wide variables / functions here
-		var $target, $optHolder, $checkBtn, $feedbackDiv, $continueBtn, media, selected, judge, autoEnable, $showHs, $showLbl, $showHsActive;
+		var $target, $optHolder, $checkBtn, $feedbackDiv, $continueBtn, media, selected, judge, autoEnable, $showHs, $showLbl, $showHsActive, $learningObjectParent;
 		
 		// Score tracking Manager
 		var finishTracking = function(options) {
@@ -75,12 +75,12 @@ optional: feedback page synch play enable
                 l_answers.push(x_GetTrackingTextFromHTML(options.childNodes[v].getAttribute("text"), (v+1) + ""));
                 l_feedback.push("");
             });
-            interactiveVideo.questions[ia_nr] = true;
+            $learningObjectParent.questions[ia_nr] = true;
             var scormScore = 0;
 			var score = 0;
 			for (var i=0; i<numOfQuestions; i++)
 			{
-				if (interactiveVideo.questions[i])
+				if ($learningObjectParent.questions[i])
 				{
 					score++;
 				}
@@ -94,7 +94,7 @@ optional: feedback page synch play enable
 			//Push results
 			XTSetPageScore(x_currentPage, scormScore, x_currentPageXML.getAttribute("trackinglabel"));
 			XTExitInteraction(x_currentPage, ia_nr, result, l_options, l_answers, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
-            interactiveVideo.enableControls(media.media, true);
+            $learningObjectParent.enableControls(media.media, true);
         }
 		
 		// Feedback Manager
@@ -162,12 +162,12 @@ optional: feedback page synch play enable
 			
 			if (options.childNodes[index].getAttribute("enable") == "true" || (enable == true && ((options.childNodes[index].getAttribute("page") == undefined || options.childNodes[index].getAttribute("page") == "") && (options.childNodes[index].getAttribute("synch") == undefined || options.childNodes[index].getAttribute("synch") == "")))) {
 				// controls will be enabled if correct answer selected unless there is a 'go to page' or 'go to synch point' action associated with it
-				interactiveVideo.enableControls(media.media, true);
+				$learningObjectParent.enableControls(media.media, true);
 			}
 			
 			// automatically enable if the question has been set up so there's no answer that will enable them
 			if (autoEnable == true) {
-				interactiveVideo.enableControls(media.media, true);
+				$learningObjectParent.enableControls(media.media, true);
 			}
 			
 			// show feedback if there is some, with button to do action afterwards (change page, media current time, play media)
@@ -220,7 +220,7 @@ optional: feedback page synch play enable
 					media.play();
 				}
 			}
-			interactiveVideo.enableControls(media.media, true);
+			$learningObjectParent.enableControls(media.media, true);
 		}
 		
 		return {
@@ -229,6 +229,7 @@ optional: feedback page synch play enable
 				judge = false;
 				autoEnable = true;
 				var tempEnable = false;
+				$learningObjectParent = (mediaLesson == null || mediaLesson == undefined) ? interactiveVideo : mediaLesson;
 				$target = $("#" + options.target);
 				var $optionText = options.name !== "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
 				$target.hide();
@@ -464,7 +465,7 @@ optional: feedback page synch play enable
 								$target.parent().css({"padding": 5, "width": options._w + "%", "height": "auto", "overflow-x": "hidden"});
                                 $("#overlay").show();
 								$showHsActive = true;
-                                interactiveVideo.popcornInstance.media.pause();
+                                $learningObjectParent.popcornInstance.media.pause();
                                 $target.parent().addClass("qWindow").addClass("panel");
 								$showHolder.hide();
 								$optHolder.show();
@@ -475,6 +476,8 @@ optional: feedback page synch play enable
 						$optHolder.show();
 						$target.parent().css({"padding": 5});
 					}
+					// If not on overlay panel
+					$optHolder.show();
 				}
 			},
 			
@@ -537,9 +540,9 @@ optional: feedback page synch play enable
                     }
 					
 					if (options.disable == "true") {
-						interactiveVideo.enableControls(this.media, false);
+						$learningObjectParent.enableControls(this.media, false);
 					} else {
-						interactiveVideo.enableControls(this.media, true);
+						$learningObjectParent.enableControls(this.media, true);
 					}
 				}
 				if (options.overlayPan) {
@@ -610,7 +613,7 @@ optional: feedback page synch play enable
 			end: function(event, options) {
 				
 				// fire on options.end
-				interactiveVideo.enableControls(this.media, true);
+				$learningObjectParent.enableControls(this.media, true);
                 if (options.overlayPan) {
 					$target.parent().removeClass("qWindow").removeClass("panel");
                 	$target.parent().css( //The overlay panel

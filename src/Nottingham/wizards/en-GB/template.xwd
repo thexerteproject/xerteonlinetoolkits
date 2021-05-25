@@ -4343,8 +4343,6 @@
 	</mediaPanel><panel menuItem="Panel" icon="icApplication" remove="true" max="3">
 
 		<name label="Panel Title" type="TextInput" wysiwyg="true"/>
-		<overlay label="Overlay Panel" type="CheckBox" defaultValue="false" optional="true"/>
-
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
 			<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>
@@ -4366,28 +4364,20 @@
 	</synchCue><synchEmpty menuItem="Clear Panel" icon="icBullet" remove="true">
 		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
 	</synchEmpty><synchSubtitlePlus menuItem="Subtitles" icon="icFolderPage" remove="true" max="1">
-
 		<info><![CDATA[This is the holder for the media's subtitles.<br/>Select 'New Subtitle' to add and synch each caption.]]></info>
-
 		<newNodes>
 			<synchSub><![CDATA[<synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/>]]></synchSub>
 		</newNodes>
-
 	</synchSubtitlePlus><synchSub menuItem="Subtitle" icon="icBullet" remove="true">
-
 		<name label="Subtitle Text" type="TextArea" height="100"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="bottom" width="100"/>
-
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-
 	</synchSub><synchTextPlus menuItem="Text Content" icon="icPageWhiteText" remove="true">
-
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<text label="Text" type="TextArea" height="250"/>
-
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
@@ -4395,13 +4385,8 @@
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-        <offsetTop label="offset top in %" type="TextInput" defaultValue="0" optional="true"/>
-        <offsetLeft label="offset left in %" type="TextInput" defaultValue="0" optional="true"/>
-
 	</synchTextPlus><synchSlides menuItem="Slideshow" icon="icFolderImg" remove="true">
-
 		<name label="Title" type="TextInput" wysiwyg="true"/>
-
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
 		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
@@ -4410,29 +4395,22 @@
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-
 		<newNodes>
 			<synchSlide><![CDATA[<synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchSlide>
 		</newNodes>
-
 	</synchSlides><synchSlide menuItem="Slide" icon="icBullet" remove="true">
-
 		<name label="Image Description" type="TextInput"/>
 		<url label="Image" type="media"/>
 		<synchStart label="Synch Point" type="TextInput"/>
 		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-
 		<captionOptions type="group" label="Caption" optional="true">
 			<caption label="Text" type="TextInput" wysiwyg="true" defaultValue="Enter Caption Text" optional="true"/>
 			<captionPosV label="Vertical Position" type="ComboBox" options="Top,Middle,Bottom" data="top,middle,bottom" defaultValue="bottom" width="100" optional="true"/>
 			<captionPosH label="Horizontal Position" type="ComboBox" options="Left,Centre,Right" data="left,centre,right" defaultValue="centre" width="100" optional="true"/>
 		</captionOptions>
-
 	</synchSlide><synchMediaPlus menuItem="Media" icon="icFilm" remove="true">
-
 		<name label="Title" type="TextInput" wysiwyg="true"/>
-		
 		<mediaGroup type="group" label="Media">
 			<media label="File" type="media"/>
 			<tip label="Description" type="TextInput"/>
@@ -4463,7 +4441,6 @@
 		</newNodes>
 
 	</synchMediaPlus><synchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
-
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<text label="Question" type="TextArea" height="100"/>
 		<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>
@@ -4477,12 +4454,7 @@
 		<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-		<offsetTop label="offset top in %" type="TextInput" defaultValue="0" optional="true"/>
-        <offsetLeft label="offset left in %" type="TextInput" defaultValue="0" optional="true"/>
-
 		<feedback type="TextArea" height="40" label="Feedback" optional="true"/>
-
-
 		<feedbackLabel label="Feedback Label" type="textInput" wysiwyg="true" divider="true" language="true"/>
 		<singleRight label="Single Answer Correct" type="TextInput" wysiwyg="true" language="true"/>
 		<singleWrong label="Single Answer Wrong" type="TextInput" wysiwyg="true" language="true"/>
@@ -4537,7 +4509,6 @@
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-
 		<newNodes>
 			<synchXotChange><![CDATA[<synchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></synchXotChange>
 		</newNodes>
