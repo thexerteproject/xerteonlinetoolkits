@@ -51,8 +51,8 @@ function list_folders_in_this_folder_event_free($folder_id, $path = '', $item = 
   global $xerte_toolkits_site,$level;
 
   $prefix = $xerte_toolkits_site->database_table_prefix;
-  $query = "SELECT folder_id, folder_name FROM {$prefix}folderdetails WHERE login_id = ? AND folder_parent = ?";
-  $rows = db_query($query, array($_SESSION['toolkits_logon_id'], $folder_id));
+  $query = "SELECT folder_id, folder_name FROM {$prefix}folderdetails WHERE folder_parent = ?";
+  $rows = db_query($query, array($folder_id));
   
   foreach($rows as $row) { 
     $extra='<p>';
@@ -93,10 +93,10 @@ function list_files_in_this_folder_event_free($folder_id, $path = '', $item = fa
   $prefix = $xerte_toolkits_site->database_table_prefix;
 
   $query = "SELECT template_name, template_id FROM {$prefix}templatedetails WHERE template_id IN (
-      SELECT {$prefix}templaterights.template_id FROM {$prefix}templaterights WHERE user_id = ? AND folder = ?)
+      SELECT {$prefix}templaterights.template_id FROM {$prefix}templaterights WHERE folder = ?)
           ORDER BY {$prefix}templatedetails.date_created ASC";
 
-  $rows = db_query($query, array($_SESSION['toolkits_logon_id'], $folder_id));
+  $rows = db_query($query, array($folder_id));
   foreach($rows as $row) {
     $extra='<p>';
     $extra1='</p>';

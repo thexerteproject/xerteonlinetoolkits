@@ -115,16 +115,18 @@ function has_folder_multiple_editors($folder_id){
 function has_rights_to_this_folder($folder_id, $login_id){
     global $xerte_toolkits_site;
     //individual rights:
-    $query = "select * from {$xerte_toolkits_site->database_table_prefix}folderrights where login_id=? AND folder_id = ?";
-    $result = db_query_one($query, array($login_id, $folder_id));
+
+    $result = get_implicit_folder_role($login_id, $folder_id);
+    //$query = "select * from {$xerte_toolkits_site->database_table_prefix}folderrights where login_id=? AND folder_id = ?";
+    //$result = db_query_one($query, array($login_id, $folder_id));
 
     //group rights:
     $query = "select role from {$xerte_toolkits_site->database_table_prefix}folder_group_rights where folder_id = ? AND " .
              "group_id IN (select group_id from {$xerte_toolkits_site->database_table_prefix}user_group_members where login_id=?)";
     $groupresult = db_query($query, array($folder_id, $login_id));
+    $implicit_group = get_implicit_folder_group_role($login_id, $folder_id);
 
-
-    if(!empty($result) || !empty($groupresult)) {
+    if($result != "" || !empty($groupresult) || $implicit_group != "") {
         return true;
     }
     return false;
@@ -134,11 +136,11 @@ function get_user_access_rights_folder($folder_id){
     require_once("template_status.php");
     global $xerte_toolkits_site;
     $login_id = $_SESSION['toolkits_logon_id'];
-
-    $row = db_query_one("select role from {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=? AND login_id=?", array($folder_id, $login_id));
+    $role = get_implicit_folder_role($login_id, $folder_id);
+    //$row = db_query_one("select role from {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=? AND login_id=?", array($folder_id, $login_id));
     $groupresult = get_user_group_access_rights_folder($login_id, $folder_id);
-
-    $roles = array($row['role'], $groupresult);
+    $implicit_group = get_implicit_folder_group_role($login_id, $folder_id);
+    $roles = array($role, $groupresult, $implicit_group);
     usort($roles, "compare_roles");
     return $roles[0];
 }
@@ -176,13 +178,14 @@ function is_user_an_editor_folder($folder_id, $login_id){
     require_once("template_status.php");
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
-    $query = "select role from {$prefix}folderrights where login_id= ? AND folder_id = ? ";
-    $params = array($login_id, $folder_id );
+    //$query = "select role from {$prefix}folderrights where login_id= ? AND folder_id = ? ";
+    //$params = array($login_id, $folder_id );
 
-    $row = db_query_one($query, $params);
+    //$row = db_query_one($query, $params);
+    $role = get_implicit_folder_role($login_id, $folder_id);
     //check for group rights and use highest role
     $groupright = get_user_group_access_rights_folder($login_id, $folder_id);
-    $roles = array($row['role'], $groupright);
+    $roles = array($role, $groupright);
     usort($roles, "compare_roles");
 
     if(($roles[0]=="creator")||($roles[0]=="co-author")||($roles[0]=="editor")){
@@ -190,7 +193,10 @@ function is_user_an_editor_folder($folder_id, $login_id){
         return true;
 
     }else{
-
+        $implicit_group = get_implicit_folder_group_role($login_id, $folder_id);
+        if(($implicit_group=="creator")||($implicit_group=="co-author")||($implicit_group=="editor")){
+            return true;
+        }
         return false;
 
     }
@@ -226,15 +232,79 @@ function is_user_creator_or_coauthor_folder($folder_id){
     global $xerte_toolkits_site;
 
     $login_id = $_SESSION['toolkits_logon_id'];
-    $row = db_query_one("select role from {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=? AND login_id=?", array($folder_id, $login_id));
+    //$row = db_query_one("select role from {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id=? AND login_id=?", array($folder_id, $login_id));
+    $role = get_implicit_folder_role($login_id, $folder_id);
     //check for group rights and use highest role
     $groupright = get_user_group_access_rights_folder($login_id, $folder_id);
-    $roles = array($row['role'], $groupright);
+    $roles = array($role, $groupright);
     usort($roles, "compare_roles");
 
     if($roles[0]=="creator" || $roles[0]=="co-author"){
         return true;
     }else{
+        $implicit_group = get_implicit_folder_group_role($login_id, $folder_id);
+        if(($implicit_group=="creator") || ($implicit_group=="co-author")){
+            return true;
+        }
+
         return false;
     }
+}
+
+function get_implicit_folder_role($login_id, $folder_id, $group_id=-1){
+    require_once("template_status.php");
+    global $xerte_toolkits_site;
+    $role_known = false;
+    $pre = $xerte_toolkits_site->database_table_prefix;
+    $current_known_roles = array();
+
+    $failsafe = 50; // Folders are probably never 50 deep, and this prevents an infinite loop
+    while (!$role_known && $failsafe > 0){
+        $result = null;
+        if ($group_id == -1){
+            //selects original parent and this user's role (if it exists) of this folder
+            $query = "select fd.folder_parent, fr.role from {$pre}folderdetails fd ".
+                "LEFT JOIN {$pre}folderrights fr ON fr.folder_id=fd.folder_id and fr.login_id = ?".
+                "where fd.folder_id=? ";
+            $result = db_query_one($query, array($login_id, $folder_id));
+        }else{ // check in group rights
+            $query = "select fd.folder_parent, fgr.role from {$pre}folderdetails fd ".
+                "LEFT JOIN {$pre}folder_group_rights fgr ON fgr.folder_id=fd.folder_id and fgr.group_id = ?".
+                "where fd.folder_id=? ";
+            $result = db_query_one($query, array($group_id, $folder_id));
+        }
+        if (!is_null($result['role'])){
+            array_push($current_known_roles, $result['role']);
+            if ($result['role'] == 'creator' or $result['role'] == 'co-author'){
+                $role_known = true;
+            }
+        }
+        if ($result['folder_parent'] == 0){
+            $role_known = true;
+        }
+        $folder_id = $result['folder_parent'];
+        $failsafe--;
+    }
+    if (!empty($current_known_roles)){
+        usort($current_known_roles, "compare_roles");
+        return $current_known_roles[0];
+    }
+    return "";
+}
+
+function get_implicit_folder_group_role($login_id, $folder_id){
+    global $xerte_toolkits_site;
+    //Check to which groups the user belongs to
+    $query = "SELECT group_id FROM {$xerte_toolkits_site->database_table_prefix}user_group_members where login_id=?";
+    $groups = db_query($query, array($login_id));
+    $results = array();
+    foreach ($groups as $group) {
+        $results[] = get_implicit_folder_role($login_id, $folder_id, $group_id=$group['group_id']);
+    }
+    if (!empty($results)){
+        usort($results, "compare_roles");
+        return $results[0];
+    }
+    return "";
+
 }

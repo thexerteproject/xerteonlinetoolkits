@@ -32,11 +32,13 @@ _load_language_file("/website_code/php/folderproperties/share_this_folder.inc");
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
-if(is_numeric($_POST['id'])&&is_numeric($_POST['folder_id'])){
+$parameters = explode("_", $_POST['folder_id']);
+
+if(is_numeric($_POST['id']) && is_numeric($parameters[0]) && is_string($parameters[1])){
 
     $id = $_POST['id'];
 
-    $folder_id = $_POST['folder_id'];
+    $folder_id = $parameters[0];
 
     $new_role = $_POST['role'];
 

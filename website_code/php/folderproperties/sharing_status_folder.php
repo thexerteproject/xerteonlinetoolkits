@@ -27,14 +27,16 @@
  */
 
 require_once("../../../config.php");
+include "../folder_status.php";
 
 _load_language_file("/website_code/php/folderproperties/sharing_status_folder.inc");
 _load_language_file("/folderproperties.inc");
 include "../url_library.php";
+include "../user_library.php";
 
 $parameters = explode("_", $_POST['folder_id']);
 
-if(!is_numeric($parameters[0])&&is_string($parameters[1])){
+if(!(is_user_creator_or_coauthor_folder($parameters[0])||is_user_admin()) && !is_numeric($parameters[0]) && is_string($parameters[1])){
     echo "<p>" . SHARING_FAIL . "</p>";
     exit(0);
 }else{
@@ -50,7 +52,7 @@ if(!is_numeric($parameters[0])&&is_string($parameters[1])){
                 SHARING_READONLY .
         "</div>";
 
-    echo "<form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_folder_template()\" type=\"text\" size=\"20\" /></form>";
+    echo "<form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_folder()\" type=\"text\" size=\"20\" /></form>";
     echo "<div id=\"area2\"><p>" . SHARING_NAMES . "</p></div>";
     echo "<p id=\"area3\">";
     echo "</div>";

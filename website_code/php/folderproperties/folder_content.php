@@ -29,6 +29,8 @@
 
 
 require_once("../../../config.php");
+include "../folder_status.php";
+include "../user_library.php";
 
 _load_language_file("/website_code/php/folderproperties/folder_content.inc");
 
@@ -45,13 +47,15 @@ if (!isset($_SESSION['toolkits_logon_username']))
  * connect to the database
  */
 
-if(is_numeric($_POST['folder_id'])){
+if(is_numeric($_POST['folder_id']) && (has_rights_to_this_folder($_POST['folder_id'], $_SESSION['toolkits_logon_id']) || is_user_admin())){
 
     $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
     echo "<p class=\"header\"><span>" . FOLDER_CONTENT_TEMPLATE_CONTENTS . "</span></p>";			
     list_folder_contents_event_free($_POST['folder_id']);
     
+}else{
+    echo "<p>" . FOLDER_PROPERTIES_FAIL . "</p>";
 }
 
 ?>
