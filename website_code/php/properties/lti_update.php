@@ -103,7 +103,7 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
             $mesg = "Object is no longer published.";
         }
 
-        if ($tsugi_publish) {
+        if ($tsugi_publish && (!$lti_def->tsugi_useglobal || $lti_def->tsugi_privateonly)) {
             $url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
             $PDOX = LTIX::getConnection();
             $p = $CFG->dbprefix;
