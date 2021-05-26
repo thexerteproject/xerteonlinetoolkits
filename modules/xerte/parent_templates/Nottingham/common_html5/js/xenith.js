@@ -4171,6 +4171,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	self.replaceVariables = replaceVariables;
 	self.showVariables = showVariables;
 	self.updateVariable = updateVariable;
+	self.setVariable = setVariable;
 
 return parent; })(jQuery, XENITH || {});
 
