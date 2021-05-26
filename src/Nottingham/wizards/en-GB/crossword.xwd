@@ -3,6 +3,8 @@
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1"
+	  across="Across"
+	  down="Down"
 	  checkBtn="Submit"
 	  again="Try again, you have /a attempt(s) left"
 	  />]]></crossword>
@@ -17,8 +19,10 @@
 	<feedback label="Feedback" type="TextArea" height="100" optional="true"/>
     <align label="Clue Position" options="Left,Bottom,Right" type="ComboBox" defaultValue="Right" data="Left,Bottom,Right" width="100" optional="true"/>
 	
-	<checkBtn label="Check Button Text" type="TextInput" wysiwyg="true" divider="true" language="true" mandatory="true" defaultValue="Submit"/>
-	<again label="Attempt Label" type="TextInput" wysiwyg="true" language="true" tooltip="/a is where the attempts will be placed "/>
+	<across label="Across Clue Title" type="TextInput" wysiwyg="true" divider="true" language="true" mandatory="true" defaultValue="Across"/>
+	<down label="Down Clue Title" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Down"/>
+	<checkBtn label="Check Button Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
+	<again label="Attempt Label" type="TextInput" wysiwyg="true" language="true" tooltip="/a is where the attempts will be placed"/>
 	<feedbackLabel label="Feedback" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Feedback"/>
 	
     <newNodes>
