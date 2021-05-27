@@ -558,20 +558,22 @@ x_projectDataLoaded = function(xmlData) {
 	
 	// any params in URL which can change the start page can be disabled from working by adding optional property
 	// also, if 1st page is project is standalone page then it should default to 1st non-standalone page instead
-	if ((x_pageInfo[x_startPage.ID].standalone == true && customStartPage == false) || 
-		(x_params.forcePage1 == 'true' && customStartPage == true && (x_pageInfo[x_startPage.ID].standalone == undefined || x_pageInfo[x_startPage.ID].standalone == false))) {
-		var tempIndex;
-		for (var i=0; i<x_pageInfo.length; i++) {
-			if (x_pageInfo[i].standalone != true) {
-				tempIndex = i;
-				break;
+	if (x_pageInfo[x_startPage.ID] != undefined) {
+		if ((x_pageInfo[x_startPage.ID].standalone == true && customStartPage == false) || 
+			(x_params.forcePage1 == 'true' && customStartPage == true && (x_pageInfo[x_startPage.ID].standalone == undefined || x_pageInfo[x_startPage.ID].standalone == false))) {
+			var tempIndex;
+			for (var i=0; i<x_pageInfo.length; i++) {
+				if (x_pageInfo[i].standalone != true) {
+					tempIndex = i;
+					break;
+				}
 			}
-		}
-		
-		if (tempIndex) {
-			x_startPage = {type : "index", ID : String(tempIndex)};
-		} else {
-			x_startPage = {type : "index", ID : "0"};
+			
+			if (tempIndex) {
+				x_startPage = {type : "index", ID : String(tempIndex)};
+			} else {
+				x_startPage = {type : "index", ID : "0"};
+			}
 		}
 	}
 	
