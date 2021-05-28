@@ -138,7 +138,11 @@
 				this.isTracked = false;
 			}
 
-			$("#showBtn").hide();
+			// add aria-label to answer box input/selects
+			$("#submitBtn").attr("aria-label", x_currentPageXML.getAttribute("checkBtn") != undefined && x_currentPageXML.getAttribute("checkBtn") != "" ? x_currentPageXML.getAttribute("checkBtn") : "Check");
+			$("#showBtn")
+				.attr("aria-label", x_currentPageXML.getAttribute("showBtn") != undefined && x_currentPageXML.getAttribute("showBtn") != "" ? x_currentPageXML.getAttribute("showBtn") : "Show Answers")
+				.hide();
 			
 			// set panel appearance
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
@@ -180,6 +184,12 @@
 					var noiseDelimiter = x_currentPageXML.getAttribute("noiseDelimiter") != "" && x_currentPageXML.getAttribute("noiseDelimiter") != undefined ? x_currentPageXML.getAttribute("noiseDelimiter") : " ";
 					dropDownNoise = x_currentPageXML.getAttribute("noise").split(noiseDelimiter);
 				}
+			}
+			
+			// add aria-label to answer box input/selects
+			var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
+			if (answerFieldLabel === undefined | answerFieldLabel === null) {
+				answerFieldLabel = "Answer";
 			}
 
 			// add passage with spaces/comboboxes for marked words
@@ -225,7 +235,7 @@
 						}
 
 						allDropDownAnswers.push(allAnswers);
-						gapFillStr += '<select id="gap' + (i-1)/2 + '" class="menu" tabindex="0">';
+						gapFillStr += '<select id="gap' + (i-1)/2 + '" class="menu" tabindex="0" aria-label="' + answerFieldLabel + ' ' + (1+(i-1)/2) + '">';
 						gapFillStr += '<option value=" "> </option>';
 						for (var j=0; j<allAnswers.length; j++) {
 							gapFillStr += '<option value="' + allAnswers[j] + '">' + allAnswers[j] + '</option>';
@@ -235,7 +245,7 @@
 					} else { // fill in the blank
 
 						var answer = $("<div>").html(decodedAnswer).text();
-						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + answer + '" tabindex="0" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" />';
+						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + answer + '" tabindex="0" aria-label="' + answerFieldLabel + ' ' + (1+(i-1)/2) + '" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" />';
 
 						var tempArray = [];
 						tempArray = answer.split(delimiter);
