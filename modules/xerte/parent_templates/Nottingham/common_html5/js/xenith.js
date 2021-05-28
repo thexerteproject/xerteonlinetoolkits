@@ -2837,7 +2837,6 @@ function x_loadPageBg(loadModel) {
 
 // function sorts out css that's dependant on screensize
 function x_updateCss(updatePage) {
-	
 	if (updatePage != false) {
 		// adjust width of narration controls - to get this to work consistently across browsers and with both html5/flash players the audio needs to be reset
 		if ($("#x_pageNarration").length > 0) {
@@ -2845,17 +2844,22 @@ function x_updateCss(updatePage) {
 				var audioRefNum = $("#x_pageNarration .mejs-audio").attr("id").substring(4);
 				$("body div#me_flash_" + audioRefNum + "_container").remove();
 			}
-			$("#x_pageNarration").remove();
 			
-			x_addNarration('x_updateCss2', updatePage);
+			if ($("#x_pageNarration").length > 0) {
+				var audioBarW = 0;
+				$("#x_pageNarration .mejs-inner .mejs-controls").children().each(function() {
+					audioBarW += $(this).outerWidth();
+				});
+				
+				if (audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() < -2 || audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() > 2) {
+					$x_window.resize();
+				}
+			}
 			
-		} else {
-			x_updateCss2(updatePage);
 		}
-		
-	} else {
-		x_updateCss2(updatePage);
 	}
+	
+	x_updateCss2(updatePage);
 }
 
 // function isn't called until the narration bar has loaded
