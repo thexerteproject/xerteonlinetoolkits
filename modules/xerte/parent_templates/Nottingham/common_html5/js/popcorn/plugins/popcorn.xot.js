@@ -324,6 +324,7 @@ optional: pauseMedia*
 				}
 				$target.parent().show();
 				$target.show();
+				$iframe.show();
 			},
 			
 			end: function(event, options) {
