@@ -227,6 +227,12 @@
 			}
 			$("#subMenuItems").css("width", buttonWidth)
 
+			//wrap into columns
+			var cols = x_currentPageXML.getAttribute("columns")
+			if(cols !== undefined && cols !== null){
+				$("#subMenuItems").css("column-count", cols);
+				$("#subMenuItems").css("width", "100%");
+			}
 			this.checkVisited();
 			
 			x_pageLoaded();
