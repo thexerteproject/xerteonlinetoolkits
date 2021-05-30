@@ -132,8 +132,9 @@ optional: caption captionPosV captionPosH
 					} else {
 						var caption = "";
 					}
+					
 					$slide = $('<div id="slide_' + $target.children().length + '" class="slide"><img src="' + options.url + '" alt="' + options.name + '" />' + caption + '</div>');
-					$slide.appendTo($target);
+					$slide.appendTo($("#" + options.target));
 					
 					$slide.find("img")
 						.addClass("fullH")
@@ -247,6 +248,7 @@ optional: caption captionPosV captionPosH
 								eval(x_currentPageXML.nodeName).resizeContent($slide.find("img"));
 							}
 						}
+						$slide.show();
 					}
 				}
 
