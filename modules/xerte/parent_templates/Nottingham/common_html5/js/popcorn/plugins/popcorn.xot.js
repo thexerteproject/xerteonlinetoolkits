@@ -322,9 +322,13 @@ optional: pauseMedia*
 						$iframe.css("height", ((($target.parent().parent().height() - 44 - 2 * $target.parent().css("padding").replace(/[^-\d\.]/g, ''))) / $target.parent().parent().height())  * 100 + "%")
 					}
 				}
+				// If not overlaypanel show frame directly
+				else {
+					$iframe.show();
+				}
 				$target.parent().show();
 				$target.show();
-				$iframe.show();
+				
 			},
 			
 			end: function(event, options) {
