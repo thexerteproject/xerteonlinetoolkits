@@ -229,7 +229,7 @@ optional: feedback page synch play enable
 				judge = false;
 				autoEnable = true;
 				var tempEnable = false;
-				$learningObjectParent = (mediaLesson == null || mediaLesson == undefined) ? interactiveVideo : mediaLesson;
+				$learningObjectParent = eval(x_currentPageXML.nodeName);
 				$target = $("#" + options.target);
 				var $optionText = options.name !== "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
 				$target.hide();
