@@ -6,17 +6,21 @@
 
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
+	
 	var crossword = new function () {
 
+		var $pageContents;
         var startPositionArray = []
         var tab = 0;
         var active = 0;
         var nextPosition;
         var is_keyboard = false
         var tries = 30;
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function () {
-            this.resize()
+			$pageContents = $("#pageContents");
+            this.resize();
 		}
 
 		// function called every time the size of the LO is changed
@@ -655,8 +659,17 @@
         }
 
 		this.init = function () {
+			
+			$pageContents = $("#pageContents");
+			
+			// add text to the top of the page
+			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != '') {
+				$pageContents
+					.addClass('txtTop')
+					.append('<div id="textHolder">' + x_currentPageXML.getAttribute("text") + '</div>');
+			}
+			
 			// array with words
-
 			var words = [];
 			//array with hints
 			var hints = [];
@@ -665,41 +678,30 @@
             if(position === null || position === undefined  || position===""){
                 position = "Right"
             }
-            debugger
-            var checkLabel = x_currentPageXML.getAttribute("checkLabel")
-            if(checkLabel === null || checkLabel === undefined  || checkLabel===""){
-                checkLabel = "Check"
-            }
 
-            var acrossLabel = x_currentPageXML.getAttribute("acrossLabel")
-            if(acrossLabel === null || acrossLabel === undefined  || acrossLabel===""){
-                acrossLabel = "Across"
-            }
-
-            var downLabel = x_currentPageXML.getAttribute("downLabel")
-            if(downLabel === null || downLabel === undefined  || downLabel===""){
-                downLabel = "Down"
-            }
-
+			var btnLabel = x_currentPageXML.getAttribute("checkLabel") != undefined ? x_currentPageXML.getAttribute("checkLabel") : 'Submit',
+				acrossTxt = x_currentPageXML.getAttribute("acrossLabel") != undefined ? x_currentPageXML.getAttribute("acrossLabel") : 'Across',
+				downTxt = x_currentPageXML.getAttribute("downLabel") != undefined ? x_currentPageXML.getAttribute("downLabel") : 'Down';
+			
             if (x_browserInfo.touchScreen === false) {
                 if (position == "Right") {
-                    $("#pageContents").append(
-                        '<div id="pageContents-innerContainer"><div id="crossword"></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>'+acrossLabel+'</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>'+downLabel+'</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">'+checkLabel+'</button></div><div id="attempt"></div><div id="feedback"></div></div></div>'
+                    $pageContents.append(
+                        '<div id="pageContents-innerContainer" class="crosswordLeft"><div id="crosswordHolder" class="panel"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="attempt"></div></div></div>'
                     );
                 } else if (position == "Left") {
-                    $("#pageContents").append(
-                        '<div id="pageContents-innerContainer"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>'+acrossLabel+'</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>'+downLabel+'</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="showButton"><button id="show_button" onclick=\"Check()\">'+checkLabel+'</button></div><div id="attempt"></div><div id="feedback"></div></div><div id="crossword"></div></div>'
+                    $pageContents.append(
+                        '<div id="pageContents-innerContainer" class="crosswordRight"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div></div><div id="crosswordHolder" class="panel"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div></div>'
                     );
                 } else if (position == "Bottom") {
-                    $("#pageContents").append(
-                        '<div id="crossword"></div><table id="clues"><thead><tr><th>'+acrossLabel+'</th><th>'+downLabel+'</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
-                        '<div id="showButton"><button id="show_button" onclick=\"Check()\">'+checkLabel+'</button></div><div id="attempt"></div><div id="feedback"></div>'
+                    $pageContents.append(
+                        '<div id="crosswordHolder" class="panel crosswordTop"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><table id="clues"><thead><tr><th>' + acrossTxt + '</th><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
+                        '<div id="attempt"></div>'
                     );
                 }
             }else{
-                $("#pageContents").append(
-                    '<div id="crossword"></div><table id="clues"><thead><tr><th>'+acrossLabel+'</th><th>'+downLabel+'</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
-                    '<button id="show_button" onclick=\"Check()\">'+checkLabel+'</button><div id="attempt"></div><div id="feedback"></div>'
+                $pageContents.append(
+                    '<div class="panel"><div id="crossword"></div></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div><table id="clues"><thead><tr><th>' + acrossTxt + '</th><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
+                    '<div id="attempt"></div>'
                 );
             }
 
@@ -737,58 +739,47 @@
 			// make a nice legend for the clues
 			var legend = cw.getLegend(grid);
 			addLegendToPage(legend);
-            this.resize()
+			
+			$('#show_button').button(); // do this so button styling is consistent with other pages
+			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
+			
+			this.resize();
 		}
 
         this.resize = function (){
-
             if(x_browserInfo.mobile === true){
-                //if(!is_keyboard){
                 $(".crossword-input").css("width", "25px")
                 $(".crossword-input").css("height", "25px")
                 $("#crossword").css("margin", "auto")
                 $("#crossword-table").css("margin", "0")
                 $(".crossword-input").css("font-size", "100%")
-                //}
+				
             }else{
-                var imgMaxW, imgMaxH;
+				// calculate the size of each cell in grid
+                var imgMaxW, imgMaxH,
+					$crosswordHolder = $("#crosswordHolder");
 
                 imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
-                imgMaxH = Math.round($x_pageHolder.height() - 50);
+                imgMaxH = Math.round($x_pageHolder.height() - ($crosswordHolder.innerHeight() - $crosswordHolder.height()) - $("#showButton").outerHeight(true) - 50);
 
                 if(imgMaxW > imgMaxH){
-                    var percentage = imgMaxW/imgMaxH
-                    imgMaxW = imgMaxW/percentage
+                    imgMaxW = imgMaxH
                 }
 
-                //var width = $("#crossword").width()
-                var rowcount = $('#crossword-table tbody tr ').length;
-                var amountOfCells = $('#crossword-table tbody tr td').length;
-                var amountofColums = amountOfCells/rowcount
-                var amountOfpixels = imgMaxW/amountofColums
+                var rowCount = $('#crossword-table tbody tr ').length,
+					cellCount = $('#crossword-table tbody tr td').length,
+					columnCount = cellCount/rowCount,
+					maxRowCol = Math.max(rowCount, columnCount),
+					inputPixels = Math.floor(imgMaxW/maxRowCol) - ($(".crossword-input").outerHeight(true) - $(".crossword-input").innerHeight());
 
-                //amountOfpixels = amountOfpixels-20
-                amountOfpixels = amountOfpixels.toString()
+                inputPixels = inputPixels.toString();
 
-                $(".crossword-input").css("width", amountOfpixels)
-                $(".crossword-input").css("height", amountOfpixels)
-
-                var cluesWidth = $x_pageHolder.width() * 0.30
-                $("#clues-container").css("width", cluesWidth+"px")
-
-
-                var position = x_currentPageXML.getAttribute("align")
-
-                if(position === "Bottom"){
-                    $("#crossword").css("margin-bottom", "10px")
-                    $("#show_button").css("width", "20%")
-                    $("#show_button").css("margin-left", "auto")
-                    $("#show_button").css("margin-right", "auto")
-                    $("#showButton").css("margin-bottom", "20px")
-
-                }
+                $(".crossword-input").css({
+					"width": inputPixels,
+					"height": inputPixels
+				});
 
                 if(imgMaxW < 200){
                     $(".crossword-input").css("font-size", "80%")
@@ -799,10 +790,6 @@
                 }
             }
         }
-
-
-
-
 
         var cw = ""
         function getCrossword(words, hints){
@@ -821,10 +808,7 @@
                 }
                 document.getElementById(k).innerHTML = html.join("\n");
             }
-
-
         }
-
 
 		// Each cell on the crossword grid is null or one of these
 		function CrosswordCell(letter) {
@@ -1192,32 +1176,21 @@
 				return best;
 			}
 
-			var attempts = x_currentPageXML.getAttribute("attempts")
-            attempts = parseInt(attempts)
+			var attempts = x_currentPageXML.getAttribute("attempts");
+            attempts = parseInt(attempts);
 
 			Check = function (){
 			    if(attempts === 1){
-			        showAnswers()
-                    $("#attempt").html("");
-                    var feedback = x_currentPageXML.getAttribute("feedback");
-                    debugger
-                    if(feedback !== undefined && feedback !== null){
-                        var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel")
-                        var h3feedback = $('<h3>').append(feedbackLabel)
-                        var feedbacktext = $('<p>').append(feedback)
-                        $("#feedback").append(h3feedback);
-                        $("#feedback").append(feedbacktext);
-                    }
-
+			        showAnswers();
                 }else{
-			         checkAttempt()
-                    attempts--
+			        checkAttempt();
+                    attempts--;
                     var again = x_currentPageXML.getAttribute("again")
                     if(again === null || again===undefined){
                         again = "Try again, you have /a attempt(s) left"
                     }
-                    var again = again.replace("/a", attempts)
-                    var h3 = $('<h3>').append(again)
+                    var again = again.replace("/a", attempts);
+                    var h3 = $('<h3>').append(again);
                     $("#attempt").html(h3);
                 }
             }
@@ -1233,21 +1206,21 @@
                     for(var c = 0; c < grid[d].length; c++){
                         if(grid[d][c] !== null){
                             coordinate = d + "," + c;
-                            coordinates.push(coordinate)
-                            letters.push(grid[d][c].char)
+                            coordinates.push(coordinate);
+                            letters.push(grid[d][c].char);
                         }
                     }
                 }
 
                 for(var coor = 0; coor < coordinates.length; coor++){
-                    var inputValue = document.getElementById(coordinates[coor]).value.toLowerCase()
+                    var inputValue = document.getElementById(coordinates[coor]).value.toLowerCase();
                     if(letters[coor].toLowerCase() === inputValue){
 
                         //make border green
 
                     }else{
                         //replace letter
-                        document.getElementById(coordinates[coor]).value =  document.getElementById(coordinates[coor]).value.replace(/[^\d,]/g,'')
+                        document.getElementById(coordinates[coor]).value =  document.getElementById(coordinates[coor]).value.replace(/[^\d,]/g,'');
 
                     }
                 }
@@ -1284,6 +1257,13 @@
                 }
 
                 document.getElementById("show_button").disabled = true;
+				
+				if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
+					var fbHeading =  x_currentPageXML.getAttribute("feedbackLabel") != undefined ? x_currentPageXML.getAttribute("feedbackLabel") : 'Feedback';
+					$('#attempt').html('<h3>' + fbHeading + '</h3><div id="feedback">' + x_currentPageXML.getAttribute("feedback") + '</div>');
+				} else {
+					$("#attempt").html("");
+				}
             }
 
             hintClick = function (hint){
@@ -1361,7 +1341,6 @@
 				var html = [];
 				html.push("<table id='crossword-table'>");
 				html.push("<tbody>")
-				var label = 1;
                 var legend = cw.getLegend(grid)
 				var counterAcross = 0
                 var counterDown = 0;
@@ -1418,15 +1397,8 @@
 
 						}
 
-						if (is_start_of_word) {
-							var img_url = CrosswordUtils.PATH_TO_PNGS_OF_NUMBERS + label + ".png";
-							html.push("<td class='" + css_class + "' " +
-                                "style=\"background-image:url('" + img_url +
-								"'); background-repeat:no-repeat;\">");
-							label++;
-						} else {
-							html.push("<td class='" + css_class + "' >");
-						}
+						html.push("<td class='" + css_class + "' >");
+						
 						if (show_answers) {
 							html.push(char);
 						} else {
