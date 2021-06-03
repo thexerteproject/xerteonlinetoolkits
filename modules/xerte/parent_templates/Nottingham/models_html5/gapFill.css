@@ -21,7 +21,7 @@
 		text-align:	center;
 	}
 	
-	#targetHolder input[readonly], #targetHolder .target.correct, #targetHolder input[correct] {
+	#targetHolder input[readonly].correct, #targetHolder .target.correct, #targetHolder input[correct] {
 		color:			green;
 		border-color:	transparent;
 	}
@@ -50,8 +50,11 @@
 	}
 	
 	#targetHolder select[disabled] {
+		color: red;
+	}
+	
+	#targetHolder select[disabled].correct {
 		color:	green;
-		background:inherit;
 	}
 	
 	#targetHolder select[disabled].answerShown {
@@ -88,6 +91,10 @@
 	
 	#feedbackTxt #audioHolder {
 		margin-top:	20px;
+	}
+	
+	#btnHolder {
+		overflow: auto;
 	}
 	
 	#submitBtn, #showBtn {

@@ -118,10 +118,11 @@ function initSidebar(){
 			}
 		}
 	)
+	
+	fixSideBar();
 }
 
 function loadContent(){
-
 	$.ajax({
 
 		type: "GET",
@@ -177,7 +178,19 @@ function loadContent(){
 		$('.vidHolder iframe').each(function() {
 			iframeResize($(this))
 		});
+		
+		fixSideBar();
 	});
+}
+
+function fixSideBar() {
+	var $sideBar = $('.bs-docs-sidenav.affix, .bs-docs-sidenav.affix-top');
+	
+	if ($sideBar.outerHeight() > $(window).height()) {
+		$sideBar.addClass('staticPosition');
+	} else {
+		$sideBar.removeClass('staticPosition');
+	}
 }
 
 // Make absolute urls from urls with FileLocation + ' in their strings
@@ -3180,7 +3193,7 @@ var XBOOTSTRAP = (function ($, parent) { var self = parent.VARIABLES = {};
 		);
 
 		for (var k=0; k<variables.length; k++) {
-			// if it's first attempt to replace vars on this page look at vars in image tags first
+			// if it's first attempt to replace vars on this page look at vars in image & mathjax tags first
 			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
 			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
 				var $tempText = $(tempText);
@@ -3189,6 +3202,17 @@ var XBOOTSTRAP = (function ($, parent) { var self = parent.VARIABLES = {};
 						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
 					tempImgTag = tempImgTag.replace(regExp2, checkDecimalSeparator(variables[k].value));
 					$($tempText.find('img')[m]).replaceWith(tempImgTag);
+				}
+				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
+			}
+			
+			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
+				var $tempText = $(tempText);
+				for (var m=0; m<$tempText.find('.mathjax').length; m++){
+					var tempImgTag = $tempText.find('.mathjax')[m].outerHTML,
+						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+					tempImgTag = tempImgTag.replace(regExp2, checkDecimalSeparator(variables[k].value));
+					$($tempText.find('.mathjax')[m]).replaceWith(tempImgTag);
 				}
 				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
 			}

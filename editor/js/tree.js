@@ -898,7 +898,7 @@ var EDITOR = (function ($, parent) {
 
             //node_options['optional'] = node_options['optional'].concat(optGroups);
 
-            // Determine whether optionsal properties are used and if theay are visble according to their condition
+            // Determine whether optional properties are used and if they are visble according to their condition
             // is optional property (or any children of group) already in project?
             for (var i = 0; i < node_options['optional'].length; i++) {
                 var found = [];
@@ -1283,6 +1283,13 @@ var EDITOR = (function ($, parent) {
 
         // Make sure subpanels are visible
         $("#subPanels").show();
+		
+		// remove any property groups that are empty because of conditions
+		$('.wizardgroup .wizardgroup_table').each(function() {
+			if ($(this).find('tr').length == 0) {
+				$(this).parents('.wizardattribute').remove();
+			}
+		});
     },
 
     addNodeToTree = function(key, pos, nodeName, xmlData, tree, select)

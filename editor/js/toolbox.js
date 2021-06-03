@@ -2145,10 +2145,32 @@ var EDITOR = (function ($, parent) {
 
 	previewFile = function(alt, src, title)
 	{
-		// ** currently only previews images - need to allow other file types too
+		var origSrc = src;
 		src = src.indexOf("FileLocation + '") == 0 ? rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1) : src;
-
-		var $previewImg = $('<img class="previewFile"/>')
+		
+		var previewType,
+			$preview,
+			fileFormats = [
+				{ type: 'image', fileExt: ['jpg', 'jpeg', 'gif', 'png'] },
+				{ type: 'video', fileExt: ['mp4'] },
+				{ type: 'audio', fileExt: ['mp3'] },
+				{ type: 'pdf', fileExt: ['pdf'] }
+			];
+		
+		$(fileFormats).each(function() {
+			for (var i=0; i<this.fileExt.length; i++) {
+				var ext = this.fileExt[i],
+					srcLowerC = src.toLowerCase();
+				if (srcLowerC.lastIndexOf('.' + ext) == srcLowerC.length - (ext.length + 1)) {
+					previewType = this.type;
+					return false;
+				}
+			}
+		});
+		
+		if (previewType == 'image') {
+			$preview = $('<div/>');
+			$('<img class="previewFile"/>')
 				.on("error", function() {
 						$('.featherlight .previewFile')
 							.after('<p>' + language.compPreview.$error + '</p>')
@@ -2158,9 +2180,27 @@ var EDITOR = (function ($, parent) {
 					"src": src,
 					"alt": alt
 				})
-
-		var $preview = $('<div/>')
-				.append($previewImg);
+				.appendTo($preview);
+			
+		} else if (previewType == 'video') {
+			$preview = $('<div/>');
+			$('<video class="previewVideo" controls><source src="' + src + '"></video>').appendTo($preview);
+			
+		} else if (previewType == 'audio') {
+			$preview = $('<div/>');
+			$('<audio controls><source src="' + src + '"></video>').appendTo($preview);
+			
+		} else if (previewType == 'pdf') {
+			$preview = {iframe: src };
+			
+		} else {
+			var srcLowerC = origSrc.toLowerCase();
+			if (srcLowerC.indexOf('<iframe') === 0) {
+				$preview = $('<div>' + src + '</div>');
+			} else {
+				$preview = $('<div><p>' + language.compPreview.$error + '</p></div>');
+			}
+		}
 
 		if (title != undefined && title != '') {
 			$preview.prepend('<div class="preview_title">' + title + '</div>');

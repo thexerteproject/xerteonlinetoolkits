@@ -19,8 +19,17 @@
      */
 
     var textCorrection = new function() {
+			
+			var $pageContents,
+				$attempts,
+				$answer,
+				$textArea;
+			
             this.pageChanged = function() {
-
+				$pageContents = $('#pageContents');
+				$attempts = $("#attempts");
+				$answer = $("#answer");
+				$textArea = $(".answer textarea");
             };
 
             this.sizeChanged = function() {
@@ -29,35 +38,21 @@
                     $panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
                 }
 
-                if ($("#pageContents .audioHolder").length > 0) {
-                    var audioBarW = 0;
-                    $("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function () {
-                        audioBarW += $(this).outerWidth();
-                    });
-                    if (audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() > 2) {
-                        $x_window.resize();
-                    }
-                }
-
                 var $mainPanel = $("#mainPanel");
                 var padding = $mainPanel.innerWidth() - $mainPanel.width();
-                $("#text").width($mainPanel.width() - padding);
             };
 
             this.leavePage = function () {
-                hasExited = textCorrection.hasExited;
-                if(!hasExited){
+                if(!$pageContents.data('hasExited')) {
                     this.exitTrackTextCorrection();
                 }
             };
 
             this.exitTrackTextCorrection = function () {
-                answer = textCorrection.answer;
-                var input =  $(".answer textarea").val();
-
+                var input = $textArea.val();
 
                 var checkAnswer = false;
-                if(input === answer){
+                if(input === $pageContents.data('answer')){
                     checkAnswer = true;
                 }
 
@@ -68,32 +63,34 @@
                 }else{
                     result = 0;
                 }
+				
                 XTExitInteraction(x_currentPage, 0, result,[], input, []);
-
-
                 XTSetPageScore(x_currentPage, result);
-
             };
 
             this.init = function() {
-                var hadExited = false;
+				$pageContents = $("#pageContents");
+				$attempts = $("#attempts");
+				$answer = $("#answer");
+				$textArea = $(".answer textarea");
+				
+				$pageContents.data('hasExited', false)
 
-                this.weighting = 1.0;
+                var weighting = 1.0;
                 if(x_currentPageXML.getAttribute("trackingWeight") != null){
-                    this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+                    weighting = x_currentPageXML.getAttribute("trackingWeight");
                 }
-                XTSetPageType(x_currentPage, "fill in", 1,this.weighting);
+                XTSetPageType(x_currentPage, "fill in", 1, weighting);
 
-
+				// page layout
                 var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
                     $splitScreen = $("#pageContents .splitScreen");
                 var $textHolder = $("#textHolder");
 
                 if (panelWidth == "Full") {
-                    $("#pageContents .panel").appendTo($("#pageContents"));
+                    $("#pageContents .panel").appendTo($pageContents);
                     $splitScreen.remove();
                 } else {
-
                     $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("introduction")));
 
                     var textAlign = x_currentPageXML.getAttribute("align");
@@ -123,189 +120,127 @@
                     }
                 }
 
-                var $attempts = $("#attempts");
-                var amountofTries = x_currentPageXML.getAttribute("amountOfTries");
-                if(amountofTries === null || amountofTries === undefined){
-                    amountofTries = "1";
-                }
+                var $question = $("#question");
+				var originalQuestion = x_currentPageXML.getAttribute("wrongText");
+                var convertedQuestion = $(originalQuestion).length > 0 ? originalQuestion : '<p>' + originalQuestion.replace(/(?:\r\n|\r|\n)/g, '<br>') + '</p>';
+                $question.html(convertedQuestion);
 
-
-                var $pageContents = $("#pageContents");
-
-                var $textHolder = $("#textHolder");
-                var $question = $("#infoHolder #question");
-                var question = x_currentPageXML.getAttribute("wrongText");
-                var orginalQuestion = x_currentPageXML.getAttribute("wrongText");
-                orginalQuestion = $("<div>").html(orginalQuestion);
-                $question.html(orginalQuestion);
-
-                var $answer = $("#infoHolder #answer");
-                var answer = x_currentPageXML.getAttribute("answer");
-                answer = $("<div>").html(answer).text().trim();
-
-                textCorrection.answer = answer;
-
-
-                var copyText = false;
-                if (x_currentPageXML.getAttribute("copyText") != undefined)
-                {
-                    copyText = x_currentPageXML.getAttribute("copyText").trim();
-                }
-                var $textArea = $("#text");
+                var answer = $('<div>').html(x_currentPageXML.getAttribute("answer")).text().trim();
+				$pageContents.data('answer', answer);
+				
+				if (x_currentPageXML.getAttribute("disableAnswers") !== "false") {
+					var correctLabel = x_currentPageXML.getAttribute("correctLabel") !== null ? x_currentPageXML.getAttribute("correctLabel") : 'Correct Answer',
+						convertedAnswer = $(answer).length > 0 ? answer : '<p>' + answer.replace(/(?:\r\n|\r|\n)/g, '<br>') + '</p>';
+					
+					$answer
+						.append("<h3>" + correctLabel + "</h3>")
+						.append(convertedAnswer)
+						.hide();
+				} else {
+					$answer.remove();
+				}
 				
 				//Add aria-label to answer box
-				var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
+				var answerFieldLabel = x_currentPageXML.getAttribute("answerLabel");
 				if (answerFieldLabel === undefined | answerFieldLabel === null) {
 					answerFieldLabel = "Answer";
 				}
 				$textArea.attr({"aria-label" : answerFieldLabel});
 			
-                if( copyText === "true"){
-                    question = $("<div>").html(question).text().trim();
-                    $textArea.val(question)
+                if(x_currentPageXML.getAttribute("copyText") === "true"){
+					var placeHolder = $('<div>').html(originalQuestion).text().trim();
+                    $textArea
+						.val(placeHolder)
+						.data('placeHolder', placeHolder);
                 }
 
-                var $correctOrNot = $("#infoHolder #correctOrNot");
-                var correct = "Good job";
+                $("#FurtherClarification")
+					.append("<h3>" + x_currentPageXML.getAttribute("FurtherClarificationLabel") + "</h3>")
+                    .append(x_currentPageXML.getAttribute("FurtherClarification"))
+					.hide();
 
-                var $FurtherClarification = $("#infoHolder #FurtherClarification");
-                var FurtherClarification = x_currentPageXML.getAttribute("FurtherClarification");
-                var AllowFurtherClarification = x_currentPageXML.getAttribute("showFurtherClarification");
-
-                FurtherClarification = $("<div>").html(FurtherClarification).text().trim();
-
-                var $answer = $("#infoHolder #answer");
-                var disableAnswer =  x_currentPageXML.getAttribute("disableAnswers");
-
-                //Translation
-                var incorrect = x_currentPageXML.getAttribute("textWrong");
-
-                var incompleet = x_currentPageXML.getAttribute("textIncomplete");
-
-                var correct = x_currentPageXML.getAttribute("textRight");
-
+				var correctIcon = '<span class="fa fa-fw fa-x-tick"></span>';
+                var incorrectIcon = '<span class="fa fa-fw fa-x-cross"></span>';
+                var incorrect = '<p>' + incorrectIcon + x_currentPageXML.getAttribute("textWrong") + '</p>';
+                var incompleet = '<p>' + incorrectIcon + x_currentPageXML.getAttribute("textIncomplete") + '</p>';
+                var correct = '<p>' + correctIcon + x_currentPageXML.getAttribute("textRight") + '</p>';
                 var checkButtonTxt = x_currentPageXML.getAttribute("checkBtn");
-
-                var resultLabel = x_currentPageXML.getAttribute("resultLabel");
-
-                var FurtherClarificationLabel = x_currentPageXML.getAttribute("FurtherClarificationLabel");
-
-                var answerLabel = x_currentPageXML.getAttribute("answerLabel");
-
                 var attemptLabel = x_currentPageXML.getAttribute("attemptLabel");
+				
                 if( x_currentPageXML.getAttribute("attemptLabel") == null){
                     attemptLabel = "Attempt";
                 }
-
-                $attempts.html(attemptLabel+ ": "+ amountofTries);
-
-                // pageScore
-                var correctIcon = $("<div>").addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
-
-                var incorrectICon = $("<div>").addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
-                // if (checkBtnTxt == undefined) {
-                //     checkBtnTxt = "Check";
-                // }
-                var attempt = 1;
+				
+				// no. of tries allowed
+				var amountOfTries = x_currentPageXML.getAttribute("amountOfTries");
+				
+				if (amountOfTries !== null && amountOfTries !== undefined) {
+					$pageContents.data('triesLeft', parseInt(amountOfTries));
+					$attempts.html('<p>' + attemptLabel + ": " + amountOfTries + '</p>');
+				} else {
+					$pageContents.data('triesLeft', undefined);
+					$attempts.remove();
+				}
+				
                 $("#checkButton")
                     .button({
                         label: checkButtonTxt
                     })
                     .click(function () {
+						
+                        var input = $textArea.val(),
+							attemptMade = !(input === "" || ($textArea.data('placeHolder') != undefined && $textArea.data('placeHolder') == input));
+						
+						if (attemptMade && $pageContents.data('triesLeft') !== undefined) {
+							$pageContents.data('triesLeft', $pageContents.data('triesLeft') - 1);
+						}
+						
+						var triesLeft = $pageContents.data('triesLeft');
 
-                        var amountOfTries = x_currentPageXML.getAttribute("amountOfTries");
-                        if(amountOfTries === null || amountOfTries === undefined){
-                            amountOfTries = "1";
-                        }
-
-                        var tries = parseInt(amountOfTries);
-
+						if ($attempts.length > 0) {
+							$attempts.html('<p>' + attemptLabel + ": " + $pageContents.data('triesLeft') + '</p>');
+						}
+						
+                        XTEnterInteraction(x_currentPage, 0, "text", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("introduction"), ""), "",$pageContents.data('answer'), FurtherClarification);
+						
+						var $correctOrNot = $("#correctOrNot");
                         $correctOrNot.html("");
+						
+						if (!attemptMade) {
+							$correctOrNot.append(incompleet);
+							
+						} else {
+							if (input == $pageContents.data('answer')) {
+								$correctOrNot.append(correct);
+							}else{
+								$correctOrNot.append(incorrect);
+							}
 
-                        amountofTries -= 1;
+							textCorrection.exitTrackTextCorrection();
+							$pageContents.data('hasExited', true);
+						}
 
-                        if(amountofTries > 0) {
-                            $attempts.html(attemptLabel+ ": "+ amountofTries);
-                        }else{
-                            $attempts.html("");
+                        if (attemptMade && (input === $pageContents.data('answer') || triesLeft == undefined || triesLeft <= 0)) {
+							// disable check btn & text area when correct answer entered or max tries reached
+							if ((triesLeft != undefined && triesLeft <= 0) || input == $pageContents.data('answer')) {
+								$(this).hide();
+								$attempts.hide();
+								$textArea.attr('readonly','true');
+							}
+							
+							// feedback
+                            if (x_currentPageXML.getAttribute("showFurtherClarification") !== "false" && x_currentPageXML.getAttribute("FurtherClarification") != undefined && x_currentPageXML.getAttribute("FurtherClarification").trim() != '') {
+                                $('#FurtherClarification').show();
+                            }
+
+							// show the correct answer unless answer entered is correct or show answer optional property is off
+                            if (input !== $pageContents.data('answer')) {
+                                $answer.show();
+							}
                         }
-
-                        $(checkButton).button("disable");
-                        XTEnterInteraction(x_currentPage, 0, "text", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("introduction"), ""), "",answer, FurtherClarification);
-
-                        var input = $(".answer textarea").val();
-                        //get value of text area
-                        if(attempt < tries) {
-                            $(checkButton).button("enable");
-
-
-                            textCorrection.input = input;
-
-                            $correctOrNot.append("<h3>"+resultLabel+"</h3>");
-                            if (input === "") {
-                                $correctOrNot.append(incompleet);
-                                $correctOrNot.append(incorrectICon)
-                            }
-
-                            if(input !== "") {
-                                if (input === answer) {
-                                    $correctOrNot.append(correct);
-                                    $correctOrNot.append(correctIcon)
-                                }else{
-                                    $correctOrNot.append(incorrect);
-                                    $correctOrNot.append(incorrectICon)
-                                }
-
-                                textCorrection.exitTrackTextCorrection();
-                                textCorrection.hasExited = true;
-
-                            }else{
-                                $(checkButton).button("disable");
-                            }
-                        }else{
-                            $(checkButton).button("enable");
-                        }
-
-                        attempt ++;
-
-                        if(input === answer|| attempt > tries){
-                            $(checkButton).button("disable");
-                            $correctOrNot.html("");
-                            $attempts.html("");
-                            $correctOrNot.append("<h3>"+resultLabel+"</h3>");
-                            if (input === "") {
-                                $correctOrNot.append(incompleet);
-                                $correctOrNot.append(incorrectICon)
-                            }
-
-                            if(input !== "") {
-                                if (input === answer) {
-                                    $correctOrNot.append(correct);
-                                    $correctOrNot.append(correctIcon)
-                                } else {
-                                    $correctOrNot.append(incorrect);
-                                    $correctOrNot.append(incorrectICon)
-                                }
-
-                                textCorrection.exitTrackTextCorrection();
-                                textCorrection.hasExited = true;
-                            }
-                            if (AllowFurtherClarification === "true") {
-                                $FurtherClarification.append("<h3>" + FurtherClarificationLabel + "</h3>");
-                                $FurtherClarification.append(FurtherClarification);
-                            }
-
-                            if (disableAnswer === "false" ||disableAnswer === null) {
-
-                                $answer.append("<h3>" + answerLabel + "</h3>");
-                                $answer.append(x_currentPageXML.getAttribute("answer"))
-                            }
-
-                        }
-
                     });
+					
                 this.sizeChanged();
-
 
                 x_pageLoaded();
             }
@@ -326,13 +261,13 @@
 
                 </div>
                 <div id="optionHolder">
-                    <div class="answer"><textarea id="text" rows="4" cols="50" spellcheck="false"></textarea></div>
+                    <div class="answer"><textarea id="text" rows="5" cols="50" spellcheck="false"></textarea></div>
                 </div>
                 <button id="checkButton"></button>
                 <div id="attempts"></div>
                 <div id="correctOrNot"></div>
+				<div id="answer"></div>
                 <div id="FurtherClarification"></div>
-                <div id ="answer"></div>
             </div>
         </div>
     </div>

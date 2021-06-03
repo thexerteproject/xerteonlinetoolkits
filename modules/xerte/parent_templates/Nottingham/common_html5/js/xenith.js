@@ -558,20 +558,22 @@ x_projectDataLoaded = function(xmlData) {
 	
 	// any params in URL which can change the start page can be disabled from working by adding optional property
 	// also, if 1st page is project is standalone page then it should default to 1st non-standalone page instead
-	if ((x_pageInfo[x_startPage.ID].standalone == true && customStartPage == false) || 
-		(x_params.forcePage1 == 'true' && customStartPage == true && (x_pageInfo[x_startPage.ID].standalone == undefined || x_pageInfo[x_startPage.ID].standalone == false))) {
-		var tempIndex;
-		for (var i=0; i<x_pageInfo.length; i++) {
-			if (x_pageInfo[i].standalone != true) {
-				tempIndex = i;
-				break;
+	if (x_pageInfo[x_startPage.ID] != undefined) {
+		if ((x_pageInfo[x_startPage.ID].standalone == true && customStartPage == false) || 
+			(x_params.forcePage1 == 'true' && customStartPage == true && (x_pageInfo[x_startPage.ID].standalone == undefined || x_pageInfo[x_startPage.ID].standalone == false))) {
+			var tempIndex;
+			for (var i=0; i<x_pageInfo.length; i++) {
+				if (x_pageInfo[i].standalone != true) {
+					tempIndex = i;
+					break;
+				}
 			}
-		}
-		
-		if (tempIndex) {
-			x_startPage = {type : "index", ID : String(tempIndex)};
-		} else {
-			x_startPage = {type : "index", ID : "0"};
+			
+			if (tempIndex) {
+				x_startPage = {type : "index", ID : String(tempIndex)};
+			} else {
+				x_startPage = {type : "index", ID : "0"};
+			}
 		}
 	}
 	
@@ -1950,6 +1952,8 @@ function x_changePage(x_gotoPage, addHistory) {
 			doPercentage();
 		}
 		
+		x_pageInfo[x_gotoPage].viewedNewWindow = true;
+		
 	// standalone page opening in lightbox
 	} else {
 		$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
@@ -1959,6 +1963,8 @@ function x_changePage(x_gotoPage, addHistory) {
 			x_pageInfo[x_gotoPage].builtLightBox = true;
 			doPercentage();
 		}
+		
+		x_pageInfo[x_gotoPage].viewedLightBox = true;
 	}
 }
 
@@ -2831,7 +2837,6 @@ function x_loadPageBg(loadModel) {
 
 // function sorts out css that's dependant on screensize
 function x_updateCss(updatePage) {
-	
 	if (updatePage != false) {
 		// adjust width of narration controls - to get this to work consistently across browsers and with both html5/flash players the audio needs to be reset
 		if ($("#x_pageNarration").length > 0) {
@@ -2839,17 +2844,22 @@ function x_updateCss(updatePage) {
 				var audioRefNum = $("#x_pageNarration .mejs-audio").attr("id").substring(4);
 				$("body div#me_flash_" + audioRefNum + "_container").remove();
 			}
-			$("#x_pageNarration").remove();
 			
-			x_addNarration('x_updateCss2', updatePage);
+			if ($("#x_pageNarration").length > 0) {
+				var audioBarW = 0;
+				$("#x_pageNarration .mejs-inner .mejs-controls").children().each(function() {
+					audioBarW += $(this).outerWidth();
+				});
+				
+				if (audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() < -2 || audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() > 2) {
+					$x_window.resize();
+				}
+			}
 			
-		} else {
-			x_updateCss2(updatePage);
 		}
-		
-	} else {
-		x_updateCss2(updatePage);
 	}
+	
+	x_updateCss2(updatePage);
 }
 
 // function isn't called until the narration bar has loaded
@@ -4022,7 +4032,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 		);
 		
 		for (var k=0; k<variables.length; k++) {
-			// if it's first attempt to replace vars on this page look at vars in image tags first
+			// if it's first attempt to replace vars on this page look at vars in image & mathjax tags first
 			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
 			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
 				var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
@@ -4031,6 +4041,17 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
 					tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
 					$($tempText.find('img')[m]).replaceWith(tempImgTag);
+				}
+				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
+			}
+			
+			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
+				var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
+				for (var m=0; m<$tempText.find('.mathjax').length; m++){
+					var tempImgTag = $tempText.find('.mathjax')[m].outerHTML,
+						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+					tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
+					$($tempText.find('.mathjax')[m]).replaceWith(tempImgTag);
 				}
 				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
 			}
@@ -4156,6 +4177,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	self.replaceVariables = replaceVariables;
 	self.showVariables = showVariables;
 	self.updateVariable = updateVariable;
+	self.setVariable = setVariable;
 
 return parent; })(jQuery, XENITH || {});
 

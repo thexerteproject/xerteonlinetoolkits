@@ -2,20 +2,30 @@
 
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <crossword><![CDATA[<crossword name="Enter Page Title"  attempts = "1"  again="Try again, you have /a attempt(s) left" text="Enter Page text" />]]></crossword>
-
+      <crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1"
+	  across="Across"
+	  down="Down"
+	  checkBtn="Submit"
+	  again="Try again, you have /a attempt(s) left"
+	  />]]></crossword>
     </newNodes>
   </pageWizard>
 
   <crossword menu="Games" icon="icCrossword" menuItem="Crossword" hint="A crossword is a word puzzle that usually takes the form of a square or a rectangular grid of white- and black-shaded squares. The game's goal is to fill the white squares with letters, forming words or phrases, by solving clues, which lead to the answers." thumb="thumbs/crossword.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <attempts label="Amount of attempts" type="TextInput" defaultValue="1"></attempts>
-    <again label="Try again Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/a is where the attempts will be placed "/>
-    <!-- <hicol label="Input colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the background of the image"/>-->
-    <align label = "Clues Positions" options = "Left,Bottom,Right" type = "ComboBox" defaultValue="Right" data = "Left,Bottom,Right" width = "100" optional="true"/>
-     <!-- <text label="Instructions" type="TextArea" height="100"/> -->
-    <!-- <words label="Words" type="script" height="100"/> -->
-      <newNodes>
+    <attempts label="Attempts" type="TextInput" defaultValue="1" tooltip="Attempts allowed before correct answers are given"></attempts>
+	
+	<text label="Page Text" type="TextArea" height="100" optional="true"/>
+	<feedback label="Feedback" type="TextArea" height="100" optional="true"/>
+    <align label="Clue Position" options="Left,Bottom,Right" type="ComboBox" defaultValue="Right" data="Left,Bottom,Right" width="100" optional="true"/>
+	
+	<across label="Across Clue Title" type="TextInput" wysiwyg="true" divider="true" language="true" mandatory="true" defaultValue="Across"/>
+	<down label="Down Clue Title" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Down"/>
+	<checkBtn label="Check Button Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
+	<again label="Attempt Label" type="TextInput" wysiwyg="true" language="true" tooltip="/a is where the attempts will be placed"/>
+	<feedbackLabel label="Feedback" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Feedback"/>
+	
+    <newNodes>
       <wordAndHint><![CDATA[<wordAndHint name="Word" text="The hint for your word" wordAnswer="The word you want to have in the crossword"/>]]></wordAndHint>
     </newNodes>
   </crossword>

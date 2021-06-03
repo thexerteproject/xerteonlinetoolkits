@@ -50,9 +50,16 @@
 			// use pages set in child nodes
 			if ($(x_currentPageXML).children().length > 0) {
 				$(x_currentPageXML).children().each(function() {
-					menuItems.push(this.getAttribute("pageID"));
-					pageNames.push(this.getAttribute("btnTxt") == "true" ? this.getAttribute("name") : undefined);
-					checkIfVistedItems.push(this.getAttribute("checkIfVisited") != undefined ? this.getAttribute("checkIfVisited") : this.getAttribute("pageID"));
+					if (this.getAttribute("pageID") != undefined && this.getAttribute("pageID") != '') {
+						menuItems.push(this.getAttribute("pageID"));
+						checkIfVistedItems.push(this.getAttribute("checkIfVisited") != undefined ? this.getAttribute("checkIfVisited") : this.getAttribute("pageID"));
+						pageNames.push(this.getAttribute("btnTxt") == "true" ? this.getAttribute("name") : undefined);
+						
+					} else if (this.getAttribute("externalURL") != undefined && this.getAttribute("externalURL") != '') {
+						menuItems.push({ type: "URL", url: this.getAttribute("externalURL"), target: this.getAttribute("externalTarget") });
+						checkIfVistedItems.push(false);
+						pageNames.push(this.getAttribute("btnTxt") == "true" ? this.getAttribute("name") : this.getAttribute("externalURL"));
+					}
 				});
 				
 			} else {
@@ -98,76 +105,111 @@
 					}
 				}
 			}
-			debugger
+			
 			var $menuItems = $("#subMenuItems"),
 				$menuItem = $menuItems.find(".subMenuItem:first");
 
 			for (var i=0; i<menuItems.length; i++) {
-				var $thisItem;
+				var $thisItem,
+					name;
+				
 				if (i != 0) {
 					$thisItem = $menuItem.clone().appendTo($menuItems);
 				} else {
 					$thisItem = $menuItem;
 				}
 				
-				switch (menuItems[i]) {
-					case "[first]":
-						menuItems.splice(i, 1, x_pageInfo[x_normalPages[0]].linkID);
-						break;
-					case "[last]":
-						menuItems.splice(i, 1, x_pageInfo[x_normalPages[x_normalPages.length-1]].linkID);
-						break;
-					case "[previous]":
-						var tempIndex = x_normalPages.indexOf(x_currentPage);
-						menuItems.splice(i, 1, x_pageInfo[tempIndex > 0 ? x_normalPages[tempIndex-1] : x_normalPages[0]].linkID);
-						break;
-					case "[next]":
-						var tempIndex = x_normalPages.indexOf(x_currentPage);
-						menuItems.splice(i, 1, x_pageInfo[tempIndex != x_normalPages.length-1 && tempIndex != -1 ? x_normalPages[tempIndex+1] : x_normalPages[x_normalPages.length-1]].linkID);
-						break;
-				}
-				
-				var name;
-				if (i == 0 && menuItems[i] == undefined && x_pageInfo[0].type == 'menu') {
-					name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
-					menuItems.splice(i, 1, "toc_menu");
+				if (menuItems[i].type == "URL") {
+					$thisItem.data({
+						"url": menuItems[i].url,
+						"target": menuItems[i].target,
+						"visitedid": false
+					});
+					
+					name = pageNames[i];
+					
 				} else {
-					if (menuItems[i].substring(0,4) == 'page') {
-						var tempIndex = x_normalPages[Number(menuItems[i].substring(4))];
-						name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_pages[tempIndex].getAttribute("name");
-						$thisItem.data('pageNo', tempIndex);
-					} else {
-						var page = x_lookupPage("linkID", menuItems[i]);
-						if ($.isArray(page)) {
-							name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : this.getNestedName(page);
-							$thisItem.data('parent', x_pages[page[0]].getAttribute('linkID'));
-						} else if( menuItems[i] != undefined &&  menuItems[i] != "") {
-							name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_pages[page].getAttribute("name");
-						}else{
-							$('#subMenuItems').html("There are one or more page destinations empty")
+					
+					switch (menuItems[i]) {
+						case "[first]":
+							menuItems.splice(i, 1, x_pageInfo[x_normalPages[0]].linkID);
 							break;
+						case "[last]":
+							menuItems.splice(i, 1, x_pageInfo[x_normalPages[x_normalPages.length-1]].linkID);
+							break;
+						case "[previous]":
+							var tempIndex = x_normalPages.indexOf(x_currentPage);
+							menuItems.splice(i, 1, x_pageInfo[tempIndex > 0 ? x_normalPages[tempIndex-1] : x_normalPages[0]].linkID);
+							break;
+						case "[next]":
+							var tempIndex = x_normalPages.indexOf(x_currentPage);
+							menuItems.splice(i, 1, x_pageInfo[tempIndex != x_normalPages.length-1 && tempIndex != -1 ? x_normalPages[tempIndex+1] : x_normalPages[x_normalPages.length-1]].linkID);
+							break;
+					}
+					
+					if (i == 0 && menuItems[i] == undefined && x_pageInfo[0].type == 'menu') {
+						name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
+						menuItems.splice(i, 1, "toc_menu");
+						name = pageNames[i];
+						
+					} else {
+						if (menuItems[i].substring(0,4) == 'page') {
+							var tempIndex = x_normalPages[Number(menuItems[i].substring(4))];
+							name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_pages[tempIndex].getAttribute("name");
+							$thisItem.data('pageNo', tempIndex);
+						} else {
+							var page = x_lookupPage("linkID", menuItems[i]);
+							if ($.isArray(page)) {
+								name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : this.getNestedName(page);
+								$thisItem.data('parent', x_pages[page[0]].getAttribute('linkID'));
+							} else if( menuItems[i] != undefined &&  menuItems[i] != "") {
+								name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_pages[page].getAttribute("name");
+							}else{
+								$('#subMenuItems').html("There are one or more page destinations empty")
+								break;
+							}
 						}
 					}
+					
+					$thisItem
+						.data({
+							"id": menuItems[i],
+							"visitedid": $thisItem.data('parent') != undefined ? $thisItem.data('parent') : checkIfVistedItems[i]
+						});
 				}
 				
 				$thisItem
-					.data("id", menuItems[i])
-					.data("visitedid", $thisItem.data('parent') != undefined ? $thisItem.data('parent') : checkIfVistedItems[i])
-					.html(name);
-				
-				$thisItem.append(' <i class="fa fa-x-tick-circle notvisited" aria-hidden="true"></i>');
+					.html(name)
+					.append(' <i class="fa fa-x-tick-circle notvisited" aria-hidden="true"></i>');
 			}
 			
 			$(".subMenuItem")
 				.button()
 				.click(function() {
-					if ($(this).data("id") == "toc_menu") {
-						x_changePage(0);
-					} else if ($(this).data('pageNo') != undefined) {
-						x_changePage($(this).data('pageNo'));
+					var $this = $(this);
+					
+					if ($this.data("url") != undefined) {
+						$this.data("visitedid", true);
+						
+						if ($this.data("target") == "lightbox") {
+							$.featherlight({iframe: $this.data("url")});
+						} else if ($this.data("target") == "this") {
+							window.location.href = $this.data("url");
+						} else {
+							window.open($this.data("url"));
+						}
+						
 					} else {
-						x_navigateToPage(false, {type:"linkID", ID:$(this).data("id")});
+						if ($this.data("id") == "toc_menu") {
+							x_changePage(0);
+						} else if ($this.data('pageNo') != undefined) {
+							x_changePage($this.data('pageNo'));
+						} else {
+							x_navigateToPage(false, {type:"linkID", ID:$this.data("id")});
+						}
 					}
+					
+					connectorMenu.checkVisited();
 				});
 			
 			
@@ -185,6 +227,12 @@
 			}
 			$("#subMenuItems").css("width", buttonWidth)
 
+			//wrap into columns
+			var cols = x_currentPageXML.getAttribute("columns")
+			if(cols !== undefined && cols !== null){
+				$("#subMenuItems").css("column-count", cols);
+				$("#subMenuItems").css("width", "100%");
+			}
 			this.checkVisited();
 			
 			x_pageLoaded();
@@ -206,7 +254,7 @@
 				if (x_params.pageTick == undefined || x_params.pageTick == "true") {
 					var allBuiltPages = [], allBuiltPageNums = [];
 					for (var i=0; i<x_pageInfo.length; i++) {
-						if (x_pageInfo[i].viewed) {
+						if (x_pageInfo[i].viewed || x_pageInfo[i].viewedLightBox || x_pageInfo[i].viewedNewWindow) {
 							allBuiltPages.push(x_pageInfo[i].linkID);
 							allBuiltPageNums.push(i);
 						}
@@ -214,10 +262,11 @@
 					
 					$("#subMenuItems .subMenuItem").each(function(i) {
 						// if nested page then look to parent page to see if visited
-						//var pageToCheck = $(this).data('parent') != undefined ? $(this).data('parent') : $(this).data("id");
 						var pageToCheck = $(this).data('visitedid');
-						if (pageToCheck.substring(0,4) == 'page') {
-							if ($.inArray(Number(pageToCheck.substring(4)), allBuiltPageNums) > -1) {
+						if (pageToCheck != undefined && (pageToCheck === true || (pageToCheck !== false && pageToCheck.substring(0,4) == 'page'))) {
+							if ($(this).data("url") != undefined) {
+								$(this).find('i').removeClass('notvisited')
+							} else if ($.inArray(Number(pageToCheck.substring(4)), allBuiltPageNums) > -1) {
 								$(this).find('i').removeClass('notvisited')
 							}
 						} else {
