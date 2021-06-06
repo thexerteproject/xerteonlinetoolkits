@@ -1728,6 +1728,9 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 			//an event for user defined code to know when loading is done
 			$(document).trigger('contentLoaded');
 
+			$('[data-spy="scroll"]').each(function () {
+				var $spy = $(this).scrollspy('refresh')
+			})
 			//force facebook / twitter objects to initialise
 			//twttr.widgets.load(); // REMOVED??
 
