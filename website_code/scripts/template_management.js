@@ -695,9 +695,9 @@ function getProjectInformation(user_id, template_id) {
         dataType: "json",
         success: function(info) {
             document.getElementById('project_information').innerHTML = info.properties;
-            if (info.role == 'read-only') {
-                disableReadOnlyButtons();
-            }
+
+            disableReadOnlyButtons(info);
+
             if (info.fetch_statistics) {
                 url = site_url + info.template_id;
                 q = {};
@@ -725,28 +725,40 @@ function getProjectInformation(user_id, template_id) {
     });
 }
 
-function disableReadOnlyButtons(){
-    // disable edit button.
+function disableReadOnlyButtons(info){
     var editbtn = document.getElementById("edit");
     var propertiesbtn = document.getElementById("properties");
     var deletebtn = document.getElementById("delete");
     var publishbtn = document.getElementById("publish");
+    var newfolderbtn = document.getElementById("newfolder");
 
-    editbtn.disabled = "disabled";
-    editbtn.className = "xerte_workspace_button disabled";
-    editbtn.onclick = "";
+    switch(info.role){
+        case "creator":
+        case "co-creator":
+            break;
+        case "read-editor":
+            editbtn.disabled = "disabled";
+            editbtn.className = "xerte_workspace_button disabled";
+            editbtn.onclick = "";
 
-    publishbtn.disabled = "disabled";
-    publishbtn.className = "xerte_workspace_button disabled";
-    publishbtn.onclick = "";
+            publishbtn.disabled = "disabled";
+            publishbtn.className = "xerte_workspace_button disabled";
+            publishbtn.onclick = "";
 
-    propertiesbtn.disabled = "disabled";
-    propertiesbtn.className = "xerte_workspace_button disabled";
-    propertiesbtn.onclick = "";
+            propertiesbtn.disabled = "disabled";
+            propertiesbtn.className = "xerte_workspace_button disabled";
+            propertiesbtn.onclick = "";
 
-    deletebtn.disabled = "disabled";
-    deletebtn.className = "xerte_workspace_button disabled";
-    deletebtn.onclick = "";
+            deletebtn.disabled = "disabled";
+            deletebtn.className = "xerte_workspace_button disabled";
+            deletebtn.onclick = "";
+        case "editor":
+            newfolderbtn.disabled="disabled";
+            newfolderbtn.className = "xerte_workspace_button disabled";
+            newfolderbtn.onclick="";
+            break;
+
+    }
 }
 
 function getFolderInformation(user_id, folder_id) {
@@ -757,9 +769,9 @@ function getFolderInformation(user_id, folder_id) {
         dataType: "json",
         success: function (info) {
             document.getElementById('project_information').innerHTML = info.properties;
-            if (info.role == 'read-only') {
-                disableReadOnlyButtons();
-            }
+
+            disableReadOnlyButtons(info);
+
         }
     });
 }

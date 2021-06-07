@@ -706,7 +706,13 @@ function getIcon(nodetype)
             icon = "website_code/images/rb_empty.gif";
             break;
         case "folder":
-            icon = "website_code/images/Icon_Folder.gif";
+            if (nodetype == "folder_group"){
+                icon = "website_code/images/Icon_Folder_Group.gif";
+            }else if (nodetype == "folder_shared"){
+                icon = "website_code/images/Icon_Folder_Shared.gif";
+            }else{
+                icon = "website_code/images/Icon_Folder.gif";
+            }
             break;
         case "group":
             icon = "website_code/images/Icon_Shared.gif";
