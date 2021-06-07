@@ -51,7 +51,7 @@
                 if(x_browserInfo.mobile === true){
                     is_keyboard = true
                 }
-                debugger
+
                 active = $(this).closest('table tbody').find('td').index(this);
                 if($('#crossword-table tbody tr td').eq(active).find('input')[0] !== undefined) {
                 rePosition();
@@ -160,7 +160,7 @@
                 var total;
 
 
-                debugger
+
                 if (e.keyCode == 37) {
                     temp = active;
                     while (temp > 0) {
@@ -339,7 +339,7 @@
                         }
                     }
                 }else if(e.keyCode == 9 && e.ctrlKey){
-                    debugger
+
                     temp = active
                     var wholeNumber = Math.floor(temp/columns)
                     var remainder = active%columns
@@ -356,7 +356,7 @@
                                 tabRow = startPositionArray[tab][1]
                                 total = tabColumns + tabRow
                                 active = total
-                                debugger
+
                                 addHighlight(active, tab, rows,columns, "tab",true)
 
                                 searching = false
@@ -534,7 +534,7 @@
 
 
             addHighlight = function (active, position, rows, columns, type, ctrl){
-                debugger
+
                  var p = 1;
                 if(ctrl){
                     p = 0
@@ -587,7 +587,7 @@
                         }
                     }
                 }else if(type === "arrow"){
-                    debugger
+
 
                     var wholeNumber = Math.floor(active / columns)
                     var remainder = active % columns
@@ -679,6 +679,8 @@
                 position = "Right"
             }
 
+
+
 			var btnLabel = x_currentPageXML.getAttribute("checkLabel") != undefined ? x_currentPageXML.getAttribute("checkLabel") : 'Submit',
 				acrossTxt = x_currentPageXML.getAttribute("acrossLabel") != undefined ? x_currentPageXML.getAttribute("acrossLabel") : 'Across',
 				downTxt = x_currentPageXML.getAttribute("downLabel") != undefined ? x_currentPageXML.getAttribute("downLabel") : 'Down';
@@ -686,15 +688,15 @@
             if (x_browserInfo.touchScreen === false) {
                 if (position == "Right") {
                     $pageContents.append(
-                        '<div id="pageContents-innerContainer" class="crosswordLeft"><div id="crosswordHolder" class="panel"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="attempt"></div></div></div>'
+                        '<div id="pageContents-innerContainer" class="crosswordLeft"><div id="crosswordHolder" ><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="attempt"></div></div></div>'
                     );
                 } else if (position == "Left") {
                     $pageContents.append(
-                        '<div id="pageContents-innerContainer" class="crosswordRight"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div></div><div id="crosswordHolder" class="panel"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div></div>'
+                        '<div id="pageContents-innerContainer" class="crosswordRight"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="attempt"></div></div><div id="crosswordHolder"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div></div>'
                     );
                 } else if (position == "Bottom") {
                     $pageContents.append(
-                        '<div id="crosswordHolder" class="panel crosswordTop"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><table id="clues"><thead><tr><th>' + acrossTxt + '</th><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
+                        '<div id="crosswordHolder" class="crosswordTop"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><table id="clues"><thead><tr><th>' + acrossTxt + '</th><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
                         '<div id="attempt"></div>'
                     );
                 }
@@ -707,7 +709,6 @@
 
 
 			//store all the words and hints
-            debugger
 			$(x_currentPageXML).children().each(function (i) {
 				hints.push(this.getAttribute("text"));
 				words.push(this.getAttribute("wordAnswer"));
@@ -767,7 +768,7 @@
                 if(imgMaxW > imgMaxH){
                     imgMaxW = imgMaxH
                 }
-
+                debugger
                 var rowCount = $('#crossword-table tbody tr ').length,
 					cellCount = $('#crossword-table tbody tr td').length,
 					columnCount = cellCount/rowCount,
@@ -777,17 +778,10 @@
                 inputPixels = inputPixels.toString();
 
                 $(".crossword-input").css({
-					"width": inputPixels,
-					"height": inputPixels
+					"width": inputPixels + "px",
+					"height": inputPixels + "px",
+                    "font-size" : inputPixels + "px"
 				});
-
-                if(imgMaxW < 200){
-                    $(".crossword-input").css("font-size", "80%")
-                }else  if(imgMaxW > 450){
-                    $(".crossword-input").css("font-size", "200%")
-                }else{
-                    $(".crossword-input").css("font-size", "125%")
-                }
             }
         }
 
@@ -1257,7 +1251,7 @@
                 }
 
                 document.getElementById("show_button").disabled = true;
-				
+
 				if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
 					var fbHeading =  x_currentPageXML.getAttribute("feedbackLabel") != undefined ? x_currentPageXML.getAttribute("feedbackLabel") : 'Feedback';
 					$('#attempt').html('<h3>' + fbHeading + '</h3><div id="feedback">' + x_currentPageXML.getAttribute("feedback") + '</div>');

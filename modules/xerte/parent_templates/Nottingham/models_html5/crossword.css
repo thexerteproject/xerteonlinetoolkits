@@ -155,7 +155,13 @@
      display: flex;
      justify-content: center;
  }
- 
+
+ #clues-container{
+     width: 40%;
+ }
+
+
+
  /*#pageContents-innerContainer.crosswordLeft #crossword {
 	 margin-right: 1em;
  }
