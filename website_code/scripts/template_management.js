@@ -696,27 +696,7 @@ function getProjectInformation(user_id, template_id) {
         success: function(info) {
             document.getElementById('project_information').innerHTML = info.properties;
             if (info.role == 'read-only') {
-                // disable edit button.
-                var editbtn = document.getElementById("edit");
-                var propertiesbtn = document.getElementById("properties");
-                var deletebtn = document.getElementById("delete");
-                var publishbtn = document.getElementById("publish");
-
-                editbtn.disabled = "disabled";
-                editbtn.className = "xerte_button_c_no_width disabled";
-                editbtn.onclick = "";
-
-                publishbtn.disabled = "disabled";
-                publishbtn.className = "xerte_button_c_no_width disabled";
-                publishbtn.onclick = "";
-
-                propertiesbtn.disabled = "disabled";
-                propertiesbtn.className = "xerte_button_c_no_width disabled";
-                propertiesbtn.onclick = "";
-
-                deletebtn.disabled = "disabled";
-                deletebtn.className = "xerte_button_c_no_width disabled";
-                deletebtn.onclick = "";
+                disableReadOnlyButtons();
             }
             if (info.fetch_statistics) {
                 url = site_url + info.template_id;
@@ -745,6 +725,30 @@ function getProjectInformation(user_id, template_id) {
     });
 }
 
+function disableReadOnlyButtons(){
+    // disable edit button.
+    var editbtn = document.getElementById("edit");
+    var propertiesbtn = document.getElementById("properties");
+    var deletebtn = document.getElementById("delete");
+    var publishbtn = document.getElementById("publish");
+
+    editbtn.disabled = "disabled";
+    editbtn.className = "xerte_workspace_button disabled";
+    editbtn.onclick = "";
+
+    publishbtn.disabled = "disabled";
+    publishbtn.className = "xerte_workspace_button disabled";
+    publishbtn.onclick = "";
+
+    propertiesbtn.disabled = "disabled";
+    propertiesbtn.className = "xerte_workspace_button disabled";
+    propertiesbtn.onclick = "";
+
+    deletebtn.disabled = "disabled";
+    deletebtn.className = "xerte_workspace_button disabled";
+    deletebtn.onclick = "";
+}
+
 function getFolderInformation(user_id, folder_id) {
     $.ajax({
         type: "POST",
@@ -754,27 +758,7 @@ function getFolderInformation(user_id, folder_id) {
         success: function (info) {
             document.getElementById('project_information').innerHTML = info.properties;
             if (info.role == 'read-only') {
-                // disable edit button.
-                var editbtn = document.getElementById("edit");
-                var propertiesbtn = document.getElementById("properties");
-                var deletebtn = document.getElementById("delete");
-                var publishbtn = document.getElementById("publish");
-
-                editbtn.disabled = "disabled";
-                editbtn.className = "xerte_button_c_no_width disabled";
-                editbtn.onclick = "";
-
-                publishbtn.disabled = "disabled";
-                publishbtn.className = "xerte_button_c_no_width disabled";
-                publishbtn.onclick = "";
-
-                propertiesbtn.disabled = "disabled";
-                propertiesbtn.className = "xerte_button_c_no_width disabled";
-                propertiesbtn.onclick = "";
-
-                deletebtn.disabled = "disabled";
-                deletebtn.className = "xerte_button_c_no_width disabled";
-                deletebtn.onclick = "";
+                disableReadOnlyButtons();
             }
         }
     });
