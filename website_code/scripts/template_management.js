@@ -736,7 +736,7 @@ function disableReadOnlyButtons(info){
         case "creator":
         case "co-creator":
             break;
-        case "read-editor":
+        case "read-only":
             editbtn.disabled = "disabled";
             editbtn.className = "xerte_workspace_button disabled";
             editbtn.onclick = "";
@@ -769,7 +769,6 @@ function getFolderInformation(user_id, folder_id) {
         dataType: "json",
         success: function (info) {
             document.getElementById('project_information').innerHTML = info.properties;
-
             disableReadOnlyButtons(info);
 
         }
