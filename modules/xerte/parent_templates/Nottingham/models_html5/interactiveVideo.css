@@ -1,0 +1,250 @@
+/* interactiveVideo.html */
+	
+.popcornMedia {
+    position:		relative;
+    /*overflow:		hidden;*/
+    margin-left:	auto;
+    margin-right:	auto;
+    z-index: 2;
+}
+
+.popcornMedia.youTube {
+    position:	relative;
+}
+
+/* TRACKBAR */
+#trackBarHolder {
+    display: block;
+    height: 3em;
+    width: auto;
+    margin: auto;
+    background: #F0F6FD;
+    z-index: 1;
+}
+
+#trackBarRail {
+    background: #D5E4FD;
+    margin-left: 1em;
+    margin-right: 1em;
+    top: 1.2em;
+    height: 0.6em;
+    width: 80%;
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+}
+#trackBarRail:hover{
+    cursor: pointer;
+}
+
+#trackBarSlider {
+    width: 1.2em;
+    height: 1.2em;
+    top: -0.3em;
+    border-radius: 50%;
+    background: #1967D2;
+    position: relative;
+    display: inline-block;
+    z-index: 5;
+}
+#trackBarSlider:hover{
+    cursor: pointer;
+}
+
+.trackBarButton {
+    display: inline-block;
+    height: 1.8em;
+    width: 1.8em;
+    top: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    position: relative;
+    color: #1967D2;
+    z-index: 1;
+}
+.trackBarButton:focus {
+    cursor: pointer;
+}
+.trackBarButton:focus {
+    outline: 0px;
+}
+
+.trackBarEventMarker {
+    width: 0.6em;
+    height: 0.6em;
+    background: #77A6E8;
+    border-radius: 50%;
+    position: absolute;
+    display: inline-block;
+    z-index: 4;
+}
+
+.trackBarEventMarker:hover {
+    cursor: pointer;
+}
+
+.trackBarEventMarkerMandatory {
+    width: 1.2em;
+    height: 1.2em;
+    background: #D5E4FD;
+    top: -0.3em;
+    
+    border-radius: 50%;
+    position: absolute;
+    display: inline-block;
+    z-index: 3;
+}
+
+.trackBarEventMarkerMandatory:hover {
+    cursor: pointer;
+}
+
+.trackBarTime {
+    color: #222222;
+    display: inline-block;
+    top: 1em;
+    position: relative;
+}
+
+/* PANEL LAYOUT */
+#panelHolder .overlay {
+    position: absolute;
+    height: auto;
+    width: auto;
+    top: 0;
+    left: 0;
+    padding: 0px;
+    text-align: left;
+    border-radius: 5px;
+    z-index: 4;
+    
+    overflow-wrap: break-word;
+}
+
+#panelHolder .overlayGray {
+    position: absolute;
+    height: inherit;
+    width: inherit;
+    background-color: #222222;
+    opacity: 0.0;
+    display: inline-block;
+    z-index: 3;
+}
+
+#panelHolder .panel.tileH {
+    display:	inline-block;
+}
+
+#panelHolder .panel.fullW {
+    display:	block;
+}
+
+
+#panelHolder .panel {
+    vertical-align:	top;
+    overflow:		auto;
+}
+
+#panelHolder .top .panel.halfH {
+    margin-bottom:	15px;
+}
+
+#panelHolder .panel.tileH:not(:last-of-type) {
+    margin-right:	15px;
+}
+
+#panelHolder .panel.tileV:not(:last-of-type) {
+    margin-bottom:	15px;
+}
+
+.mediaHolder {
+    margin: 0 auto;
+}
+
+.splitScreen .right {
+    margin-left:	15px;
+}
+
+.audioImgHolder {
+    position:	relative;
+    overflow:	hidden;
+}
+
+.transcript {
+    padding-top:	10px;
+    text-align:		left;
+}
+
+.transcriptBtn {
+    margin-top:	10px;
+    margin-bottom:	10px;
+}
+
+.panel h3 {
+    border-bottom:	1px solid #CCCCCC;
+    padding-bottom:	10px;
+    margin-bottom:	1em;
+}
+
+.panel h4 {
+    margin-top:		10px;
+    margin-bottom:	5px;
+    padding-left: 0.3em;
+}
+
+.panel h5 {
+    margin-bottom:	0.5em;
+    margin-top:		0.5em;
+    padding-left: 0.3em;
+}
+
+hr {
+    border: none;
+    background-color: #CCCCCC;
+    height: 1px;
+}
+
+.panel .contentBlock {
+    width:			100%;
+    margin-bottom:	5px;
+    z-index: 10;
+}
+
+
+/* ACCORDION STYLES */
+
+#infoHolder {
+    position:	absolute;
+    top:		0px;
+    left:		0px;
+    width:		100%;
+    z-index:	999;
+}
+
+#infoHolder .accTitle {
+    margin-top:	0px;
+    z-index:	1000;
+}
+
+#infoHolder .ui-corner-all, #infoHolder .ui-corner-bottom, #infoHolder .ui-corner-top {
+    border-radius:	0px;
+}
+
+#infoHolder .accContent .closeTxt {
+    float:	right;
+}
+
+#contentCover {
+    width:		100%;
+    height:		100%;
+    position:	absolute;
+    top:		0px;
+    left:		0px;
+    z-index:	998;
+}
+
+#infoHolder .ui-state-active {
+    background:	url("images/ui-bg_glass_75_e6e6e6_1x400.png") repeat-x scroll 50% 50% #e6e6e6;
+}
+
+  
