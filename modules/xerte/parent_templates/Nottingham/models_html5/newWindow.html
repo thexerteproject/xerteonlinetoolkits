@@ -65,8 +65,8 @@
 			
 			$("#pageImg")
 				.one("load", function() {
-					var imgMaxW = 500, // desktop / tablet
-						imgMaxH = 400;
+					var imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
+					var imgMaxH = Math.round($x_pageHolder.height() - 50);
 					if (x_browserInfo.mobile == true) {
 						imgMaxW = 250; // mobile
 						imgMaxH = 250;

@@ -22,15 +22,18 @@
 	// other functions for model should also be in here to avoid conflicts
 	var mediaLesson = new function() {
 		var	$panelHolder,
-			plugins = ["textplus", "subtitleplus", "xot", "mediaplus", "mcq", "slides", "sortholder"], // list of popcorn plugins to load
-			css = ["subtitleplus", "mcq", "slides"], // list of popcorn plugin css to load
+			plugins = ["textplus", "subtitleplus", "xot", "mediaplus", "mcq", "overlaygeneric" ,"slides", "sortholder"], // list of popcorn plugins to load
+			css = ["subtitleplus", "mcq", "overlaygeneric", "slides"], // list of popcorn plugin css to load
 			numLoaded = 0,
 			duration = 0,
             blocks = new Array (),
 		    vidFullWatched,
             currSegment,
-            trackinglabel = "",
-            prevTime = -1,
+			trackinglabel = "",
+			toResize = false,
+			prevTime = -1,
+			isPlaying = false;
+			isMuted = false;
             lastTime = -1;
 
 		
@@ -86,9 +89,10 @@
 		};
 		
 		this.resizePanels = function() {
+			var zoomLevel = window.devicePixelRatio;
+			var zoomCorrection = -1/zoomLevel;
 		    // make sure no scroll bars are on screen during panel sizing
 			$x_pageHolder.css("overflow", "hidden");
-			
 			var numTileH = $("#panelHolder .panel.tileH").length,
 				numTileV = $("#panelHolder .panel.tileV").length;
 			
@@ -99,7 +103,7 @@
 			var marginR = parseInt($panelHolder.find(".panel.tileH").css("margin-right")) == 0 ? 15 : parseFloat($panelHolder.find(".panel.tileH").css("margin-right"));
 			
 			$panelHolder.find(".panel.tileH")
-				.width(Math.floor(($x_pageHolder.width() - (parseFloat($x_pageDiv.css("padding-left")) * 2) - (parseFloat($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * (numTileH-1))) / numTileH) - 2);
+				.width(Math.floor(($x_pageHolder.width() - (parseFloat($x_pageDiv.css("padding-left")) * 2) - (parseFloat($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * (numTileH-1))) / numTileH) - 2 + zoomCorrection);
 			
 			$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2);
 			
@@ -107,13 +111,20 @@
 				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - parseFloat($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseFloat($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2)
 				.css('width', '');
 
+			var infoHolderHeight = 0;
+			if (x_currentPageXML.getAttribute("intro") != "" && x_currentPageXML.getAttribute("intro") != undefined) {
+				var infoHolderHeight = $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2
+			}
+
 			$panelHolder.find(".panel.fullH")
-				.height($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - 5);
-			
+				.height($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - 
+					(parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.fullH").css("padding-top")) * 2 
+					+ infoHolderHeight) - 5);
+
 			$panelHolder.find(".panel.halfH")
 				.height(Math.floor(($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2) - 2);
 			
-			$x_pageHolder.css("overflow", "auto");
+			$x_pageHolder.css("overflow", "hidden");
 			
 			this.resizeMedia();
 		};
@@ -127,16 +138,18 @@
 			$(".popcornMedia video").each(function(i) {
 				var	$this = $(this),
 					$popcornMedia = $this.closest(".popcornMedia");
+				var titleHeight = $(".panelTitle").outerHeight(true);
 				
-				var tempW = $popcornMedia.data("max-width"), tempH = $popcornMedia.data("max-height");
+				var tempW = $popcornMedia.data("max-width");
+				var tempH = $popcornMedia.data("max-height") - titleHeight;
 				if (tempW > $popcornMedia.closest(".panel").width()) {
 					var scale = $popcornMedia.closest(".panel").width() / tempW;
 					tempW = $popcornMedia.closest(".panel").width();
 					tempH = Math.floor(tempH * scale);
 				}
-				if (tempH > $popcornMedia.closest(".panel").height()) {
-					var scale = $popcornMedia.closest(".panel").height() / tempH;
-					tempH = $popcornMedia.closest(".panel").height();
+				if (tempH > $popcornMedia.closest(".panel").height() - titleHeight) {
+					var scale = ($popcornMedia.closest(".panel").height() - titleHeight) / tempH;
+					tempH = $popcornMedia.closest(".panel").height() - titleHeight;
 					tempW = Math.floor(tempW * scale);
 				}
 				
@@ -144,6 +157,10 @@
 						"max-width"	:tempW,
 						"max-height":tempH
 					});
+
+				$popcornMedia.children().each(function(i, e){
+					$(this).css("max-height", $(this).parent().css("max-height"));
+				});
 				
 				if ($this.width() != $popcornMedia.width() && triggerResize == true) {
 					triggerResize = false;
@@ -153,18 +170,17 @@
 					$popcornMedia.next().width($popcornMedia.width());
 				}
 			});
-			
-			$(".popcornMedia.youTube").each(function(i) {
-				mediaLesson.resizeYouTube($(this));
+		    $(".popcornMedia.youTube").each(function(i) {
+		    	mediaLesson.resizeYouTube($(this));
 			});
 			
 			$(".popcornMedia.vimeo").each(function(i) {
                 mediaLesson.resizeVimeo($(this));
             });
 
-            $(".popcornMedia.vimeo").each(function(i) {
+            $(".popcornMedia.mediasite").each(function(i) {
                 mediaLesson.resizeMediasite($(this));
-            });
+			});
 			
 			$(".audioImg").each(function() {
 				var $this = $(this);
@@ -242,10 +258,10 @@
 			{
 			    ratio = parseFloat($(x_currentPageXML).children("mediaPanel").attr("aspectRatio"));
 			}
-			var ww = $holder.width(),// - parseInt($holder.css("padding-left")) * 2,
+			var ww = $holder.width(),
 				wh = Math.floor(ww / ratio),
-				hh = $holder.height() - $holder.find(".panelTitle").outerHeight(),  // - parseInt($holder.css("padding-top")) * 2,
-				hw = 1000; //This has to be changed.  Math.floor(hh * ratio);
+				hh = $holder.height() - $holder.find(".panelTitle").outerHeight(true),
+				hw = Math.floor(hh * ratio);
 
 			if (ww < hw)
 			{
@@ -267,11 +283,6 @@
 			    });
 			}
 
-			//if (h < 200) { // must be at least 200 x 200
-			//	h = 200;
-			//	w = Math.floor(h * (1 / ratio));
-			//}
-
 			$youTube.css({
 				"width":	w,
 				"height":	h,
@@ -282,15 +293,12 @@
 		
 		this.resizeVimeo = function($vimeo) {
 			this.resizeYouTube($vimeo);
+			var h = $vimeo.width() / 16 * 9;
+			$vimeo.css({"height": h});
 		};
 
 		this.resizeMediasite = function($mediasite) {
-		  var parent = $mediasite[0].parentElement;
-
-		  var parentt = $(" .panel tileH fullH ");
-
-		  $mediasite[0].style.height = "90%"//parent.style.height;
-		  $mediasite[0].style.width = "100%";
+		  this.resizeYouTube($mediasite)
 		};
 
 		this.leavePage = function () {
@@ -316,17 +324,7 @@
 			this.sendXAPI(vidFullWatched, progress);
 			XTVideo(x_currentPage, trackinglabel, "", "exit", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
 		};
-		// function called when page first loads
-		/*
-		this.init = function()
-		{
-            // Load in the required scripts before we can begin
-            $script.path(x_templateLocation + 'common_html5/js/featherlight/');
-            $script(['featherlight.min.js', 'featherlight.min.css'], function () {
-				mediaLesson.begin();
-            });
-		};
-		|*/
+		
 		this.init = function() {
             this.panelbaseid = "panel_" + x_currentPage + '_';
 			if (!!document.createElement("canvas").getContext) {
@@ -353,10 +351,8 @@
 			} else {
 				$("#infoHolder, #panelHolder, #contentCover").remove();
 				$("#pageContents").append('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
-				x_pageLoaded();
-				
-			}
-			
+				x_pageLoaded();	
+			}	
 		}
 		
 		this.initTracking = function(){
@@ -407,7 +403,6 @@
 						x_insertCSS(x_templateLocation + "common_html5/js/popcorn/" + fileToLoad + ".css");
 					}
 				}
-				
 				$.getScript(x_templateLocation + "common_html5/js/popcorn/" + fileToLoad + ".js")
 					.done(function(script, textStatus) {
                         numLoaded++;
@@ -428,18 +423,6 @@
                 var csegment = $.extend(true, {}, segment);
                 // console.log("Adding segment: (" + csegment.start + ", " + csegment.end +")");
                 vidFullWatched.segments.push(csegment);
-
-                /*
-                var segstr = "[";
-                for (var i=0; i<vidFullWatched.segments.length; i++)
-                {
-                    if (i>0)
-                        segstr += ", ";
-                    segstr += "(" + vidFullWatched.segments[i].start + ", " + vidFullWatched.segments[i].end + ")";
-                }
-                segstr += "]";
-                console.log("Current segments: " + segstr);
-                */
             }
         };
 
@@ -539,17 +522,33 @@
 				$("#contentCover").hide();
 			}
 			
-			// create all panels
+			// create all panels, including the overlay panel
 			for (var i=0; i<panelData.length; i++) {
 				var title = "";
+				// give the panel a name
 				if (panelData[i].getAttribute("name") != "") {
-					title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
+                    title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
 				}
-				$('<div class="panel">' + title + '</div>')
-					.appendTo($panelHolder)
-					.attr("id", mediaLesson.panelbaseid + i);
+				// mark the overlay panel and all its relevant children as such
+				if (panelData[i].nodeName == "overlayPanel") {
+					$(panelData[i].children).each(function(j){
+						if (this.nodeName == "synchSlides")	{
+							$(this.children).each(function(k){
+								this.setAttribute("overlayPan", "true");
+
+							});
+						}
+						this.setAttribute("overlayPan", "true");
+						this.setAttribute("clearPanel", "true");
+					});
+				}
+				// name and id all other panels
+				else{
+                    $('<div class="panel">' + title + '</div>')
+                        .appendTo($panelHolder)
+                        .attr("id", mediaLesson.panelbaseid + i);
+				}
 			}
-			
 			// layouts where panels are roughly the same size - either in grid or stacked vertically/horizontally
 			if (panelLayout == "tileH") {
 				$panelHolder.find(".panel").addClass("tileH fullH");
@@ -645,7 +644,6 @@
 			// _____ LOAD MEDIA _____
 			
 			var mediaPanelData = $(x_currentPageXML).children("mediaPanel");
-			
 			if (mediaPanelIndex != -1) {
 			    this.popcornInstance = this.loadMedia(
 					$('#' + mediaLesson.panelbaseid + mediaPanelIndex),
@@ -665,6 +663,22 @@
 					);
 			}
 			
+			//Append the OVERLAY PANEL to the main media.
+			for(i = 0; i < panelData.length; i++) {
+			    if(panelData[i].nodeName == "overlayPanel") {
+                    $('<div class="overlay" id="mydiv"></div>')
+						.appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex).children(".mainMedia"))
+                        .attr("id", mediaLesson.panelbaseid + i)
+						.hide();
+					$('<div class="overlayGray"></div>')
+						.appendTo($('#' + mediaLesson.panelbaseid + mediaPanelIndex).children(".mainMedia"))
+                        .attr("id", "overlayGray")
+						.css("opacity", "0.75")
+						.hide();
+                    break;
+                }
+            }
+
 			$(".panel").each(function(i) {
 			    if (i == 0)
 					$('<div id="panelContent' + 0 + '" class="panelContent" />').appendTo($(this));
@@ -673,11 +687,8 @@
 			});
 			
 			// _____ SORT & CREATE SYNCH POINT EVENTS FOR EACH PANEL _____
-
 			if (this.popcornInstance != undefined) {
-
-                if (vidFullWatched == null || vidFullWatched == undefined)
-                {
+                if (vidFullWatched == null || vidFullWatched == undefined) {
                     vidFullWatched = {
                         time: 0,
                         synchStart: 0,
@@ -691,30 +702,30 @@
                 panelData.each(function(i) {
                     mediaLesson.sortPopcorn($(this).children(), mediaLesson.panelbaseid + i, mediaLesson.popcornInstance, $(".mainMedia"));
                 });
-
                 //Adds events to popcorn
                 this.addEvents();
-
 			}
             this.initTracking();
 			x_pageLoaded();
 		};
 
-		this.addEvents = function()
-        {
+		this.addEvents = function() {
             this.popcornInstance.on( "timeupdate", function() {
-                var popTime = mediaLesson.popcornInstance.currentTime();
+				$("#overlayGray").hide();
+				mediaLesson.enableControls(this.media, false, true);
+				var popTime = mediaLesson.popcornInstance.currentTime();
                 //console.log("Timeupdate: " + popTime + " prevTime=" + prevTime + ", seeking=" + mediaLesson.popcornInstance.seeking());
-                var block = mediaLesson.getBlock(lastTime);
+				var block = mediaLesson.getBlock(lastTime);
                 if (lastTime != popTime && popTime > 0) {
                     prevTime = lastTime;
                     lastTime = popTime;
                     mediaLesson.updateTable(vidFullWatched, lastTime);
                     mediaLesson.updateTable(block, lastTime);
-                }
-
+				}
             });
             this.popcornInstance.on( "play", function() {
+				$("#overlayGray").hide();
+				isPlaying = true;
                 var popTime = mediaLesson.popcornInstance.currentTime();
                 console.log("Play    : " + popTime);
                 currSegment = {
@@ -723,8 +734,7 @@
                 };
                 var block = mediaLesson.getBlock(popTime);
                 var name = "";
-                if (block != null)
-                {
+                if (block != null) {
                     name = block.synchName;
                 }
                 vidFullWatched.duration = mediaLesson.popcornInstance.duration();
@@ -732,14 +742,16 @@
                 duration = mediaLesson.popcornInstance.duration();
                 XTVideo(x_currentPage, trackinglabel, name, "played", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
             });
-            this.popcornInstance.on( "pause", function() {
+			this.popcornInstance.on( "pause", function() {
                 var popTime = mediaLesson.popcornInstance.currentTime();
-                vidFullWatched.time = popTime;
+				vidFullWatched.time = popTime;
+				$('#playButton').removeClass('fa-x-pause').addClass('fa-x-play');
                 console.log("Pause   : " + popTime);
                 var block = mediaLesson.getBlock(popTime);
-                var name = "";
-                if (block != null)
-                {
+				var name = "";
+				isPlaying = false;
+				
+                if (block != null) {
                     name = block.synchName;
                 }
                 currSegment.end = popTime;
@@ -754,7 +766,6 @@
                 mediaLesson.sendXAPI(vidFullWatched, progress);
                 mediaLesson.sendXAPI(block,lookupTable(block));
                 XTVideo(x_currentPage, trackinglabel, name, "paused", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
-
             });
             this.popcornInstance.on( "seeked", function() {
                 var popTime = mediaLesson.popcornInstance.currentTime();
@@ -770,8 +781,7 @@
                 vidFullWatched.duration = mediaLesson.popcornInstance.duration();
                 duration = mediaLesson.popcornInstance.duration();
                 XTVideo(x_currentPage, trackinglabel, name, "seeked", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
-                mediaLesson.popcornInstance.pause();
-                mediaLesson.popcornInstance.play();
+                //mediaLesson.popcornInstance.pause();
             });
             this.popcornInstance.on("ended", function() {
                 var popTime = mediaLesson.popcornInstance.duration();
@@ -781,8 +791,7 @@
                 console.log("End     : " + popTime);
                 var block = mediaLesson.getBlock(popTime);
                 var name = "";
-                if (block != null)
-                {
+                if (block != null) {
                     name = block.synchName;
                 }
                 currSegment.end = popTime;
@@ -792,12 +801,10 @@
                     end: -1
                 };
                 XTVideo(x_currentPage, trackinglabel, name, "paused", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
-
             });
         };
 
-        this.removeEvents = function()
-        {
+        this.removeEvents = function() {
             this.popcornInstance.off("timeupdate");
             this.popcornInstance.off("play");
             this.popcornInstance.off("pause");
@@ -805,16 +812,12 @@
             this.popcornInstance.off("ended");
         };
 
-        this.getBlock = function(time)
-        {
-            if (blocks.length == 0)
-			{
+        this.getBlock = function(time) {
+            if (blocks.length == 0) {
 			    return null;
 			}
-            for(var i = 0; i < blocks.length; i++)
-            {
-                if (parseFloat(blocks[i].synchStart) + parseFloat(blocks[i].duration) > time)
-                {
+            for(var i = 0; i < blocks.length; i++) {
+                if (parseFloat(blocks[i].synchStart) + parseFloat(blocks[i].duration) > time) {
                     return blocks[i];
                 }
             }
@@ -840,28 +843,24 @@
 		this.sendXAPI = function(block, percentageWatched)
         {
             //if (block != null)
-            //	XTSetViewed(x_currentPage, block.synchName, percentageWatched)
+            //TSetViewed(x_currentPage, block.synchName, percentageWatched)
         };
 
 		// function calculates the time watched within a video block based on an array (in %).
 		lookupTable = function (block) {
 			var playedTime = 0;
-			if (block == null || block.watched == undefined || block.duration == undefined)
-			{
+			if (block == null || block.watched == undefined || block.duration == undefined) {
 			    return 0;
 			}
-			if (block.duration >= 30)
-			{
-				for (var i = 1; i < 100; i++)
-				{
+			if (block.duration >= 30) {
+				for (var i = 1; i < 100; i++) {
 					if (block.watched[i] == 1) {
 						playedTime++;
 					}
 				}
 			}
 			else {
-				for (var i = 1; i < 100; i++)
-				{
+				for (var i = 1; i < 100; i++) {
 					if (block.watched[i] == 1) {
 						playedTime += 5;
 					}
@@ -869,6 +868,7 @@
 			}
 			return playedTime;
 		}
+
 		// function loads media - can be either main media in media panel or additional media to appear in another panel (called from media plugin)
 		this.loadMedia = function($holder, mediaType, mediaData, mainMedia) {
 			var $mediaHolder,
@@ -892,7 +892,6 @@
 					var urlsep = (mediaData.media.indexOf("?") < 0 ? "?" : "&");
 					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .youTube", mediaData.media + urlsep + "controls=2&playsinline=1"); // force controls to appear, and force online play on iPhone
 					$youTube.data("popcornInstance", popcornInstance);
-					
 					if (mediaData.autoplay == "true") {
 						popcornInstance.play();
 					}
@@ -901,16 +900,11 @@
 					var $vimeo = $holder.find(".popcornMedia").addClass("vimeo");
                     $vimeo.attr("aspect", mediaData.aspect);
 					mediaLesson.resizeVimeo($vimeo);
-					
 					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .vimeo", mediaData.media);
-
 					$vimeo.data("popcornInstance", popcornInstance);
-
-
 					if (mediaData.autoplay == "true") {
 						popcornInstance.play();
 					}
-					
 				} else if (mediaData.media.indexOf("mediamission.nl") != -1) {
                     var $mediasite = $holder.find(".popcornMedia").addClass("mediasite");
 
@@ -919,13 +913,9 @@
 
                     popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .mediasite", mediaData.media);
                     $mediasite.data("popcornInstance", popcornInstance);
-
-
-
                     if (mediaData.autoplay == "true") {
                         popcornInstance.play();
                     }
-
                 } else {
 					$myVideo
 						.attr("title", mediaData.tip)
@@ -938,13 +928,13 @@
 							autoPlay	:mediaData.autoplay,
 							pageName	:"mediaLesson"
 						});
-					
+	
 					popcornInstance = Popcorn("#" +$holder.attr("id") + " video");
-					
 					if (mainMedia == true) {
 						$("#" + $holder.attr("id") + " video").attr('id', 'mainVideo');
 					} else {
-						$("#" + $holder.attr("id") + " video").attr('id', 'video_' + $("#" + $holder.attr("id") + " video").parents('.mejs-video').attr('id'));
+						$("#" + $holder.attr("id") + " video").attr('id', 'video_' 
+							+ $("#" + $holder.attr("id") + " video").parents('.mejs-video').attr('id'));
 					}
 				}
 				
@@ -963,11 +953,11 @@
 					});
 				
 				popcornInstance = Popcorn("#" + $holder.attr("id") + " audio");
-				
 				if (mainMedia == true) {
 					$("#" + $holder.attr("id") + " audio").attr('id', 'mainAudio');
 				} else {
-					$("#" + $holder.attr("id") + " audio").attr('id', 'audio_' + $("#" + $holder.attr("id") + " audio").parents('.mejs-audio').attr('id'));
+					$("#" + $holder.attr("id") + " audio").attr('id', 'audio_' + 
+					    $("#" + $holder.attr("id") + " audio").parents('.mejs-audio').attr('id'));
 				}
 				
 				if (mediaData.audioImage != "" && mediaData.audioImage != undefined) {
@@ -986,7 +976,6 @@
 								$(this).trigger("load");
 							}
 						});
-					
 					if (mediaData.audioImageTip != "" && mediaData.audioImageTip != undefined) {
 						$img.attr("alt", mediaData.audioImageTip);
 					}
@@ -995,7 +984,8 @@
 			
 			// add transcript to media panel if required
 			if (mediaData.transcript != "" && mediaData.transcript != undefined) {
-				$mediaHolder.append('<div class="transcriptHolder"><div class="transcript">' + x_addLineBreaks(mediaData.transcript) + '</div><button class="transcriptBtn"></button></div>');
+				$mediaHolder.append('<div class="transcriptHolder"><div class="transcript">' 
+					+ x_addLineBreaks(mediaData.transcript) + '</div><button class="transcriptBtn"></button></div>');
 				$mediaHolder.find(".transcript").hide();
 				$mediaHolder.find(".transcriptBtn")
 					.button({
@@ -1020,7 +1010,6 @@
 						.css("margin", "0 auto");
 				}
 			}
-			
 			return popcornInstance;
 		}
 		
@@ -1035,15 +1024,12 @@
 					width       :"100%",
 					autoPlay    :$(x_currentPageXML).children("mediaPanel").attr("autoplay")
 				});
-			
 			return Popcorn(".mainMedia audio");
-			
 			x_updateCss(false);
 		}
 		
-		
-		// the following three functions sort synchData (so events have correct start / end points), creates popcorn instance and calls plugins to create synch points
-		
+		// the following three functions sort synchData (so events have correct start / end points), 
+		// creates popcorn instance and calls plugins to create synch points
 		// function can be called for mainMedia & additional media from mediaPlus plugin
 		this.sortPopcorn = function(synchData, targetRef, popcornInstance, $mediaDiv) {
 			// wait until metadata has loaded before continuing
@@ -1060,7 +1046,8 @@
 						$mediaDiv.data("duration", data.data.duration);
 						mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
 						window.removeEventListener("message", onMessageReceived, false);
-						// ** vimeo events are unreliable. Sometimes they only start working after play/pause/play again - can't work out why. Possible issue in popcorn.js itself
+						// ** vimeo events are unreliable. Sometimes they only start working after play/pause/play again - can't work out why.
+						// Possible issue in popcorn.js itself
 					}
 				}
 				window.addEventListener("message", onMessageReceived, false);
@@ -1098,45 +1085,53 @@
 			var data = new Array(), // array of objects containing details of a synch point event
 				prevStart = 0,
 				start, end;
+            if($(synchData).context.getAttribute("overlay")){
+                $(synchData).each(function() {
+                    this.overlay = true;
+				});
+			}
 			$(synchData).each(function(j) {
-                        // ignore the media synchCues as they will be set up separately
-                        if (this.nodeName != "synchCue") {
-                            if (this.nodeName != "synchSubtitlePlus") {
-                                start = mediaLesson.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStart);
-                                end = mediaLesson.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, undefined);
-                                prevStart = start;
-                            } else {
-                                // there's no start or end synch on subtitle holder - store previous sibling's start for relative synching to be done against
-                                start = 0;
-                            }
-
-                            data.push({
-                                type:		this.nodeName,
-                                start:		start,
-                                end:		end,
-                                target:		targetRef + "_" + j,
-                                allInfo:	this
-                            });
-
+				// ignore the media synchCues as they will be set up separately
+				if (this.nodeName != "synchCue") {
+					if (this.nodeName != "synchSubtitlePlus") {
+						start = mediaLesson.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStart);
+						end = mediaLesson.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, undefined);
+						prevStart = start;
+					} else {
+						// there's no start or end synch on subtitle holder - 
+						// store previous sibling's start for relative synching to be done against
+						start = 0;
+					}
 					
+					data.push({
+						type:			this.nodeName,
+						start:			start,
+						end:			end,
+						target:			targetRef + "_" + j,
+						optional:		this.getAttribute("optional"),
+						allInfo:		this
+					});
+						
 					if ($(this).children().length > 0) {
 						if (this.nodeName == "synchMediaPlus") {
 							// store child data of media content as they aren't synced to the mainMedia
-							data[data.length-1].childNodes = $(this).children();
-							
+							data[data.length-1].childNodes = $(this).children();		
 						} else {
 							var $parent = $(this),
 								syncChildren = true,
 								prevStartII = prevStart;
 							
+							this.setAttribute("child", false);
 							$parent.children().each(function(k) {
-								// if child nodes have a synch point then include their details too - with ref. to the parent as this will create the holder for the child
-								// e.g. for subtitles the parent creates a holder and 1st caption - the children then have their own synch points and load in the same holder
+								// if child nodes have a synch point then include their details too
+								// with reference to the parent as this will create the holder for the child
+								// e.g. for subtitles the parent creates a holder and 1st caption
+								// the children then have their own synch points and load in the same holder
 								if (this.getAttribute("synchStart") == undefined) {
 									syncChildren = false;
-									
 								} else {
-									// if no end point is set force it to be at the start of the next child - otherwise it won't revert if rewinding (if no next child then use parent synchEnd)
+									// if no end point is set force it to be at the start of the next child
+									//otherwise it won't revert if rewinding (if no next child then use parent synchEnd)
 									// this won't be right if the next child is using relative synching so it's fixed later after that has been calculated
 									var defaultEnd = $parent.children()[k+1] ? $parent.children()[k+1].getAttribute("synchStart") : $.isNumeric($parent[0].getAttribute("synchEnd")) ? ($parent[0].getAttribute("synchEnd")[0] == "+" ? end : Number($parent[0].getAttribute("synchEnd"))) : undefined;
 									this.setAttribute("child", true);
@@ -1149,6 +1144,7 @@
 										start:		start,
 										end:		end,
 										target:		targetRef + "_" + j, // ref. to parent synch point to make sure it loads in correct place
+										optional:   $(this).parent()[0].optional,
 										allInfo:	this
 									});
 								}
@@ -1167,7 +1163,6 @@
 						this.setAttribute("destination", Number(this.getAttribute("destination").slice(1)) + start);
 					}
 				}
-
 			});
 
 			// fixes any end points that weren't calculated right because of relative synching
@@ -1214,33 +1209,35 @@
 				}
 			}
 			
-			
 			// _____ ADD EVENTS FOR EACH SYNCH POINT _____
-			
 			// add pause points for mainMedia/mediaPlus
 			for (var j=0; j<synchData.length; j++) {
 				if (synchData[j].nodeName == "synchCue") {
 					mediaLesson.setUpPopcornCue(popcornInstance, synchData[j]);
 				}
 			}
-			
 			// add all other synch events
 			for (var j=0; j<data.length; j++) {
 				// each synch event
 				var thisContent = data[j],
 					pluginName = thisContent.type.split("synch")[1].toLowerCase();
 				
+				// ____ ADD SYNCH EVENT ON SLIDER ____
+				
 				if (thisContent.type != "synchEmpty") {
 					var pluginAttributes = {
-						start	:thisContent.start,
-						end		:thisContent.end,
-						target	:thisContent.target
+						start	  : thisContent.start,
+						end		  : thisContent.end,
+						target	  : thisContent.target,
+						optional  : thisContent.optional,
+						overlayPan: thisContent.overlayPanel
 					};
-					
+
 					// add other info to pluginAttributes
 					$.each(thisContent.allInfo.attributes, function(i, attrib) {
-						// ignore attributes that aren't needed or are dealt with here rather than in individual plugins
-						if (attrib.name != "synchStart" && attrib.name != "synchEnd" && attrib.name != "clearPanel" && attrib.name != "pauseMedia" && attrib.name != "linkID") {
+						// ignore attributes that aren't need ed or are dealt with here rather than in individual plugins
+						if (attrib.name != "synchStart" && attrib.name != "synchEnd" && attrib.name != "clearPanel" 
+								&& attrib.name != "pauseMedia" && attrib.name != "linkID") {
 							pluginAttributes[attrib.name] = attrib.value;
 						}
 					});
@@ -1286,6 +1283,11 @@
 					if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
 						popcornInstance.cue(thisContent.start, function() {
 							this.pause();
+							// Gray out the background and fix z-index if the media is paused on an overlay panel
+							if (thisContent.allInfo.getAttribute("overlayPan") == "true" && thisContent.type == "synchXot")
+							{
+							    $("#overlayGray").show();
+							}
                             if (thisContent.allInfo.getAttribute("overlay") != "true") {
                                 mediaLesson.exitFullScreen();
                             }
@@ -1357,13 +1359,13 @@
 		this.setUpPopcornCue = function(popcornInstance, synchData) {
 			popcornInstance.cue(Number(synchData.getAttribute("synch")), function() {
 				// pause / play media
-				if (synchData.getAttribute("pauseMedia") == "true") {
+				if (synchData.getAttribute("pauseMedia") == "true") { //TODO not here
 				    this.pause();
 				    if (synchData.getAttribute("overlay") != "true") {
                         mediaLesson.exitFullScreen();
                     }
 				} else {
-					this.play();
+					this.play()
 				}
 
 				// Show the following streams (Mediasite)
@@ -1380,7 +1382,7 @@
 
 				// disable media controls
 				if (synchData.getAttribute("disable") == "true") {
-					mediaLesson.enableControls(this.media, false);
+					mediaLesson.enableControls(this.media, false, true, true);
 				}
 				
 				// skip media
@@ -1395,6 +1397,7 @@
 			if (enable == true) {
 				// enable
 				if (media.player) {
+					media.player.controls = true;
 					media.player.controlsEnabled = true;
 					media.player.options.clickToPlayPause = true;
 					if (media.nodeName == "VIDEO") {
@@ -1418,7 +1421,7 @@
 				}
 			}
 		}
-		
+
 		// function receives dimensions of video from mediaPlayer.js to set its max dimensions
 		this.mediaMetadata = function($video, dimensions) {
 			$video.closest(".popcornMedia")

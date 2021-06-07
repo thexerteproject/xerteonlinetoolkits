@@ -418,15 +418,20 @@
 							$("#result")
 								.html('<p><span id="finalResult"></span>' + passedOrFailed + '</p>')
 								.show();
-
+                            debugger
 							if(passed=== true){
-								$("#finalResult")
-									.removeClass("fa-x-cross")
-									.addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+							    if(passedTxt !== ""){
+                                    $("#finalResult")
+                                        .removeClass("fa-x-cross")
+                                        .addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+                                }
 							}else{
-								$("#finalResult")
-									.removeClass("fa-x-tick")
-									.addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+							    if(failedTxt !== ""){
+                                    $("#finalResult")
+                                        .removeClass("fa-x-tick")
+                                        .addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
+                                }
+
 							}
 							
 							var mainFeedback = x_currentPageXML.getAttribute("feedback");

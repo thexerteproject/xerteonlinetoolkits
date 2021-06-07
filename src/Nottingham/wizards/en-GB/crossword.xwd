@@ -3,9 +3,9 @@
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1"
-	  across="Across"
-	  down="Down"
-	  checkBtn="Submit"
+	  acrossLabel="Across"
+	  downLabel="Down"
+	  checkLabel="Submit"
 	  again="Try again, you have /a attempt(s) left"
 	  />]]></crossword>
     </newNodes>
@@ -16,12 +16,12 @@
     <attempts label="Attempts" type="TextInput" defaultValue="1" tooltip="Attempts allowed before correct answers are given"></attempts>
 	
 	<text label="Page Text" type="TextArea" height="100" optional="true"/>
-	<feedback label="Feedback" type="TextArea" height="100" optional="true"/>
+	<feedback label="Feedback" type="TextArea" wysiwyg="true" height="100" optional="true"/>
     <align label="Clue Position" options="Left,Bottom,Right" type="ComboBox" defaultValue="Right" data="Left,Bottom,Right" width="100" optional="true"/>
 	
-	<across label="Across Clue Title" type="TextInput" wysiwyg="true" divider="true" language="true" mandatory="true" defaultValue="Across"/>
-	<down label="Down Clue Title" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Down"/>
-	<checkBtn label="Check Button Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
+	<acrossLabel label="Across Clue Title" type="TextInput" wysiwyg="true" divider="true" language="true" mandatory="true" defaultValue="Across"/>
+	<downLabel label="Down Clue Title" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Down"/>
+	<checkLabel label="Check Button Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
 	<again label="Attempt Label" type="TextInput" wysiwyg="true" language="true" tooltip="/a is where the attempts will be placed"/>
 	<feedbackLabel label="Feedback" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Feedback"/>
 	
@@ -33,7 +33,7 @@
   <wordAndHint menuItem="Word" icon="icBullet">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Word" wysiwyg="false"/>
     <wordAnswer label="Word" type="TextInput" wysiwyg="false"/>
-    <text label="Hint" type="TextArea" height="100"/>
+    <text label="Hint" type="TextInput" height="100"/>
   </wordAndHint>
 
 </wizard>

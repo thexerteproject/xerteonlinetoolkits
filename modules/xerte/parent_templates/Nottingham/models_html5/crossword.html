@@ -192,6 +192,7 @@
                 }
                 if (e.keyCode == 38) {
                     temp = active;
+
                     while (temp - columns >= 0) {
                         temp = temp - columns;
                         removeHighlight();
@@ -278,7 +279,7 @@
                     }
                 }
 
-                if(e.keyCode == 9){
+                if(e.keyCode == 9 && e.ctrlKey==false){
 
                     temp = active
                     var wholeNumber = Math.floor(temp/columns)
@@ -297,7 +298,7 @@
                                 total = tabColumns + tabRow
                                 active = total
 
-                                addHighlight(active, i, rows,columns, "tab")
+                                addHighlight(active, i, rows,columns, "tab", false)
 
                                 searching = false
                                 return
@@ -313,7 +314,7 @@
                                 tabRow = startPositionArray[tab][1]
                                 total = tabColumns + tabRow
                                 active = total
-                                addHighlight(active, i, rows,columns, "tab")
+                                addHighlight(active, i, rows,columns, "tab", false)
 
                                 searching = false
                                 return
@@ -330,7 +331,66 @@
                                 total = tabColumns + tabRow
                                 active = total
 
-                                addHighlight(active, i, rows,columns, "tab")
+                                addHighlight(active, i, rows,columns, "tab",false)
+
+                                searching = false
+                                return
+                            }
+                        }
+                    }
+                }else if(e.keyCode == 9 && e.ctrlKey){
+
+                    temp = active
+                    var wholeNumber = Math.floor(temp/columns)
+                    var remainder = active%columns
+                    var searching = true
+                    removeHighlight();
+                    while(searching) {
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
+                                tab = i - 1
+                                if(tab <0){
+                                    tab = startPositionArray.length-1
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+
+                                addHighlight(active, tab, rows,columns, "tab",true)
+
+                                searching = false
+                                return
+                            }
+                        }
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber) {
+                                tab = i - 1
+                                if(tab < 0) {
+                                    tab = startPositionArray.length-1
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+                                addHighlight(active, i, rows,columns, "tab",true)
+
+                                searching = false
+                                return
+                            }
+                        }
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][1] == remainder) {
+                                tab = i - 1
+                                if(tab <0) {
+                                    tab = startPositionArray.length-1
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+
+                                addHighlight(active, i, rows,columns, "tab",true)
 
                                 searching = false
                                 return
@@ -473,12 +533,16 @@
 
 
 
-            addHighlight = function (active, position, rows, columns, type){
+            addHighlight = function (active, position, rows, columns, type, ctrl){
 
+                 var p = 1;
+                if(ctrl){
+                    p = 0
+                }
                 if(type === "tab") {
-                    if (startPositionArray[position + 1] !== undefined) {
-                        if (startPositionArray[position + 1][2] === "across") {
-                            var counter = startPositionArray[position+1][1];
+                    if (startPositionArray[position + p] !== undefined) {
+                        if (startPositionArray[position + p][2] === "across") {
+                            var counter = startPositionArray[position+p][1];
                             for (var j = 0; j < columns; j++) {
                                 if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined && counter!== columns) {
                                     $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
@@ -501,7 +565,7 @@
                         }
                     } else {
                         if (startPositionArray[0][2] === "across") {
-                            var counter = startPositionArray[position+1][1];
+                            var counter = startPositionArray[position+p][1];
                             for (var j = 0; j < columns; j++) {
                                 if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined && counter!== columns) {
                                     $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
@@ -524,26 +588,36 @@
                     }
                 }else if(type === "arrow"){
 
-                    if (startPositionArray[position] !== undefined) {
-                        if (startPositionArray[position][2] === "across") {
-                            var counterArrow = startPositionArray[position][1];
-                            for (var j = 0; j < columns; j++) {
-                                var temp = startPositionArray[position][0] * columns
-                                temp+= startPositionArray[position][1]
-                                if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counterArrow !== columns) {
-                                    $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
-                                    counterArrow++
-                                } else {
-                                    return
+
+                    var wholeNumber = Math.floor(active / columns)
+                    var remainder = active % columns
+
+                    if($('#crossword-table tbody tr td').eq(active-1).find('input')[0] || $('#crossword-table tbody tr td').eq(active+1).find('input')[0]){
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber) {
+                                var counter = startPositionArray[i][1]
+                                for (var j = 0; j < columns; j++) {
+                                    var temp = startPositionArray[i][0] * columns
+                                    temp += startPositionArray[i][1]
+                                    if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counter !== columns) {
+                                        $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
+                                        nextPosition = startPositionArray[i][2]
+                                        counter++
+                                    } else {
+                                        return;
+                                    }
                                 }
 
+                                return
                             }
+                        }
+                    }
 
-                        } else {
-
+                    for (var i = 0; i < startPositionArray.length; i++) {
+                        if (startPositionArray[i][1] == remainder) {
                             var alignH
                             var alignV
-                            if(startPositionArray[position][2]=="across"){
+                            if(startPositionArray[i][2]=="across"){
                                 alignH = columns
                                 alignV= rows
                             }else{
@@ -551,18 +625,22 @@
                                 alignV = rows
                             }
                             for (var j = 0; j < alignV; j++) {
-                                var temp = startPositionArray[position][0] * alignH
-                                temp+= startPositionArray[position][1]
+                                var temp = startPositionArray[i][0] * alignH
+                                temp += startPositionArray[i][1]
 
                                 var add = j * alignH
                                 if ($('#crossword-table tbody tr td').eq(temp + add).find('input')[0] !== undefined) {
                                     $('#crossword-table tbody tr td').eq(temp + add).addClass('highlighted')
+                                    nextPosition = startPositionArray[i][2]
                                 } else {
                                     return;
                                 }
                             }
+                            return
                         }
                     }
+
+
                 }
             }
 
@@ -600,23 +678,25 @@
             if(position === null || position === undefined  || position===""){
                 position = "Right"
             }
-			
-			var btnLabel = x_currentPageXML.getAttribute("checkBtn") != undefined ? x_currentPageXML.getAttribute("checkBtn") : 'Submit',
-				acrossTxt = x_currentPageXML.getAttribute("across") != undefined ? x_currentPageXML.getAttribute("across") : 'Across',
-				downTxt = x_currentPageXML.getAttribute("down") != undefined ? x_currentPageXML.getAttribute("down") : 'Down';
+
+
+
+			var btnLabel = x_currentPageXML.getAttribute("checkLabel") != undefined ? x_currentPageXML.getAttribute("checkLabel") : 'Submit',
+				acrossTxt = x_currentPageXML.getAttribute("acrossLabel") != undefined ? x_currentPageXML.getAttribute("acrossLabel") : 'Across',
+				downTxt = x_currentPageXML.getAttribute("downLabel") != undefined ? x_currentPageXML.getAttribute("downLabel") : 'Down';
 			
             if (x_browserInfo.touchScreen === false) {
                 if (position == "Right") {
                     $pageContents.append(
-                        '<div id="pageContents-innerContainer" class="crosswordLeft"><div id="crosswordHolder" class="panel"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="attempt"></div></div></div>'
+                        '<div id="pageContents-innerContainer" class="crosswordLeft"><div id="crosswordHolder" ><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="attempt"></div></div></div>'
                     );
                 } else if (position == "Left") {
                     $pageContents.append(
-                        '<div id="pageContents-innerContainer" class="crosswordRight"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div></div><div id="crosswordHolder" class="panel"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div></div>'
+                        '<div id="pageContents-innerContainer" class="crosswordRight"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="attempt"></div></div><div id="crosswordHolder"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div></div>'
                     );
                 } else if (position == "Bottom") {
                     $pageContents.append(
-                        '<div id="crosswordHolder" class="panel crosswordTop"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><table id="clues"><thead><tr><th>' + acrossTxt + '</th><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
+                        '<div id="crosswordHolder" class="crosswordTop"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><table id="clues"><thead><tr><th>' + acrossTxt + '</th><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
                         '<div id="attempt"></div>'
                     );
                 }
@@ -647,7 +727,7 @@
 				for (var i = 0; i < bad_words.length; i++) {
 					str.push(bad_words[i].word);
 				}
-				alert("Shoot! A grid could not be created with these words:\n" + str.join("\n"));
+				alert("Shoot! A grid could not be created with these words, because there are no similar characters:\n" + str.join("\n"));
 				return;
 			}
 
@@ -688,7 +768,7 @@
                 if(imgMaxW > imgMaxH){
                     imgMaxW = imgMaxH
                 }
-
+                debugger
                 var rowCount = $('#crossword-table tbody tr ').length,
 					cellCount = $('#crossword-table tbody tr td').length,
 					columnCount = cellCount/rowCount,
@@ -698,17 +778,10 @@
                 inputPixels = inputPixels.toString();
 
                 $(".crossword-input").css({
-					"width": inputPixels,
-					"height": inputPixels
+					"width": inputPixels + "px",
+					"height": inputPixels + "px",
+                    "font-size" : inputPixels + "px"
 				});
-
-                if(imgMaxW < 200){
-                    $(".crossword-input").css("font-size", "80%")
-                }else  if(imgMaxW > 450){
-                    $(".crossword-input").css("font-size", "200%")
-                }else{
-                    $(".crossword-input").css("font-size", "125%")
-                }
             }
         }
 
@@ -1097,20 +1170,21 @@
 				return best;
 			}
 
-			var attempts = x_currentPageXML.getAttribute("attempts")
-            attempts = parseInt(attempts)
+			var attempts = x_currentPageXML.getAttribute("attempts");
+            attempts = parseInt(attempts);
+
 			Check = function (){
 			    if(attempts === 1){
-			        showAnswers()
+			        showAnswers();
                 }else{
-			        checkAttempt()
-                    attempts--
+			        checkAttempt();
+                    attempts--;
                     var again = x_currentPageXML.getAttribute("again")
                     if(again === null || again===undefined){
                         again = "Try again, you have /a attempt(s) left"
                     }
-                    var again = again.replace("/a", attempts)
-                    var h3 = $('<h3>').append(again)
+                    var again = again.replace("/a", attempts);
+                    var h3 = $('<h3>').append(again);
                     $("#attempt").html(h3);
                 }
             }
@@ -1126,21 +1200,21 @@
                     for(var c = 0; c < grid[d].length; c++){
                         if(grid[d][c] !== null){
                             coordinate = d + "," + c;
-                            coordinates.push(coordinate)
-                            letters.push(grid[d][c].char)
+                            coordinates.push(coordinate);
+                            letters.push(grid[d][c].char);
                         }
                     }
                 }
 
                 for(var coor = 0; coor < coordinates.length; coor++){
-                    var inputValue = document.getElementById(coordinates[coor]).value.toLowerCase()
+                    var inputValue = document.getElementById(coordinates[coor]).value.toLowerCase();
                     if(letters[coor].toLowerCase() === inputValue){
 
                         //make border green
 
                     }else{
                         //replace letter
-                        document.getElementById(coordinates[coor]).value =  document.getElementById(coordinates[coor]).value.replace(/[^\d,]/g,'')
+                        document.getElementById(coordinates[coor]).value =  document.getElementById(coordinates[coor]).value.replace(/[^\d,]/g,'');
 
                     }
                 }
@@ -1177,7 +1251,7 @@
                 }
 
                 document.getElementById("show_button").disabled = true;
-				
+
 				if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
 					var fbHeading =  x_currentPageXML.getAttribute("feedbackLabel") != undefined ? x_currentPageXML.getAttribute("feedbackLabel") : 'Feedback';
 					$('#attempt').html('<h3>' + fbHeading + '</h3><div id="feedback">' + x_currentPageXML.getAttribute("feedback") + '</div>');
