@@ -152,55 +152,6 @@ function share_this_stateChanged(){
 	}
 }
 
-/**
- *
- * Function share this state changed
- * This function handles the response from making a share request for groups
- * @version 1.0
- * @author Patrick Lockley
- */
-
-function group_share_this_stateChanged(){
-
-	if (xmlHttp.readyState==4){
-
-		if(xmlHttp.responseText!=""){
-
-			document.getElementById('area2').innerHTML = xmlHttp.responseText;
-			group_sharing_status_template();
-
-		}
-	}
-}
-
-
- /**
-	 *
-	 * Function delete share state changed
- 	 * This function handles the deletion of a share
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
-
-function delete_share_stateChanged(){
-
-	if (xmlHttp.readyState==4){
-
-		sharing_status_template();
-
-		if(after_sharing_deleted){
-            if(typeof window_reference==="undefined"){
-                window.opener.refresh_workspace();
-            }
-            else {
-                window_reference.refresh_workspace();
-            }
-
-		}
-
-	}
-}
-
  /**
 	 *
 	 * Function share rights state changed
@@ -256,84 +207,50 @@ var after_sharing_deleted = false;
 	 * Function delete sharing template
  	 * This function handles the deletion of a share by a user
 	 * @param string template_id = window type to open
- 	 * @param string user_id = user we are removing
-  	 * @param string who_deleted_flag = obsolete ***** CHECK ******
+ 	 * @param string id = user or group we are removing
+  	 * @param string who_deleted_flag = obsolete ***** CHECK *******
+     * @group bool group = if we are removing a gorup
 	 * @version 1.0
-	 * @author Patrick Lockley
 	 */
 
-function delete_sharing_template(template_id,user_id,who_deleted_flag){
+
+function delete_sharing_template(template_id,id,who_deleted_flag, group=false){
 
 	var answer = confirm(SHARING_CONFIRM);
-
 	if(answer){
-
 		if(who_deleted_flag){
-
 			after_sharing_deleted = true;
-
-		}else{
-
-			after_sharing_deleted = true;
-
 		}
 
 		if(setup_ajax()!=false){
+			$.ajax({
+				type: "POST",
+				url: "website_code/php/properties/remove_sharing_template.php",
+				data: {
+					template_id: template_id,
+					id: id,
+					group: group,
+					user_deleting_self: after_sharing_deleted
+				},
+			})
+				.done(function(response){
+					$('#area3').html(response);
 
-			var url="remove_sharing_template.php";
+					if(after_sharing_deleted){
+						if(typeof window_reference==="undefined"){
+							window.opener.refresh_workspace();
+						}
+						else {
+							window_reference.refresh_workspace();
+						}
 
-			xmlHttp.open("post",properties_ajax_php_path + url,true);
-			xmlHttp.onreadystatechange=delete_share_stateChanged;
-			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+					}
 
-			if(who_deleted_flag){
-
-				xmlHttp.send('template_id=' + template_id +'&user_id=' + user_id + '&user_deleting_self=true');
-
-			}else{
-
-				xmlHttp.send('template_id=' + template_id +'&user_id=' + user_id + '&user_deleting_self=false');
-
-			}
-
+					sharing_status_template()
+				});
 		}
-
 	}
-
 }
-
-
-/**
- *
- * Function delete sharing template
- * This function handles the deletion of a share by a user
- * @param string template_id = window type to open
- * @param string group_id = group we are removing
- * @version 1.0
- * @author Patrick Lockley
- */
-
-function group_delete_sharing_template(template_id,group_id){
-
-	var answer = confirm(SHARING_CONFIRM);
-
-	if(answer){
-		if(setup_ajax()!=false){
-
-			var url="group_remove_sharing_template.php";
-
-			xmlHttp.open("post",properties_ajax_php_path + url,true);
-			xmlHttp.onreadystatechange=group_sharing_status_template;
-			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-			xmlHttp.send('template_id=' + template_id +'&group_id=' + group_id );
-
-		}
-
-	}
-
-}
-
 
      /**
 	 *
@@ -1228,22 +1145,24 @@ function name_select_template(){
 		}
 
 		if(is_ok_user(search_string)){
-
-			var url="name_select_template.php";
-
-			xmlHttp.open("post",properties_ajax_php_path + url,true);
-			xmlHttp.onreadystatechange=name_share_stateChanged;
-			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-			xmlHttp.send('search_string=' + search_string + '&template_id=' + window.name);
-
+			$.ajax({
+				type: "POST",
+				url: "website_code/php/properties/name_select_template.php",
+				data: {
+					search_string : search_string,
+					template_id: window.name
+				},
+			})
+				.done(function(response){
+					$('#area2').html(response);
+				});
 		}else{
-
-			document.getElementById('area2').innerHTML="<p>" + SEARCH_FAIL + "</p>";
-
+			$('#area2').html("<p>" + SEARCH_FAIL + "</p>");
 		}
 
+
 	}
+
 
 }
 
@@ -1279,19 +1198,27 @@ function gift_template(){
 	 * @author Patrick Lockley
 	 */
 
-function share_this_template(template, user){
+function share_this_template(template, id, group=false){
 
-	if(setup_ajax()!=false){
+	 if(setup_ajax()!=false){
+		 var role = document.querySelector('input[name="role"]:checked').value;
 
-		var url="share_this_template.php";
-
-		xmlHttp.open("post",properties_ajax_php_path + url,true);
-		xmlHttp.onreadystatechange=share_this_stateChanged;
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-		xmlHttp.send('template_id=' + template + '&user_id=' + user);
-
-	}
+		 $.ajax({
+			 type: "POST",
+			 url: "website_code/php/properties/share_this_template.php",
+			 data: {
+				 template_id: template,
+				 id: id,
+				 role: role,
+				 group: group,
+			 },
+		 })
+			 .done(function(response){
+				 $('#area2').html("");
+				 $('#area3').html(response);
+				 sharing_status_template()
+			 });
+	 }
 
 }
 
@@ -1317,57 +1244,6 @@ function sharing_status_template(){
 	}
 
 }
-
-	/**
-	 *
-	 * Function group sharing status template
-	 * This function handles the display of the current sharing status for groups
-	 * @version 1.0
-	 * @author Noud Liefrink
-	 */
-
-function group_sharing_status_template(){
-
-
-	if(setup_ajax()!=false){
-
-		var url="group_sharing_status_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name);
-
-	}
-
-}
-
-	/**
-	 *
-	 * Function share this template with a group
-	 * This function handles the sharing of a template of a group
-	 * @param string template = id of the template
-	 * @version 1.0
-	 * @author Noud Liefrink
-	 */
-
-function group_share_this_template(template){
-
-	var group_id = $('#group').val();
-
-	if(setup_ajax()!=false){
-
-		var url="group_share_this_template.php";
-
-		xmlHttp.open("post",properties_ajax_php_path + url,true);
-		xmlHttp.onreadystatechange=group_share_this_stateChanged;
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-		xmlHttp.send('template_id=' + template + '&group_id=' + group_id);
-
-	}
-
-}
-
 
      /**
 	 *
@@ -1440,49 +1316,26 @@ function showOptions() {
 	 * @author Patrick Lockley
 	 */
 
-function set_sharing_rights_template(rights, template, user){
+function set_sharing_rights_template(role, template, id, group=false){
 
-	if(setup_ajax()!=false){
-
-		var url="set_sharing_rights_template.php";
-
-		xmlHttp.open("post",properties_ajax_php_path + url,true);
-		xmlHttp.onreadystatechange=share_rights_stateChanged;
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-		xmlHttp.send('rights=' + rights + '&template_id=' + window.name + '&user_id=' + user);
-
-	}
-
-}
-
-	/**
-	 *
-	 * Function set sharing rights for groups
-	 * @param string rights = the rights to give
-	 * @param string template - the template
-	 * @param string group - the group id
-	 * @version 1.0
-	 * @author Noud Liefrink
-	 */
-
-function group_set_sharing_rights_template(rights, template, group){
-
-	if(setup_ajax()!=false){
-
-		var url="group_set_sharing_rights_template.php";
-
-		xmlHttp.open("post",properties_ajax_php_path + url,true);
-		xmlHttp.onreadystatechange=group_sharing_status_template;
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-		xmlHttp.send('rights=' + rights + '&template_id=' + template + '&group_id=' + group);
-
-	}
+	 if(setup_ajax()!=false){
+		 $.ajax({
+			 type: "POST",
+			 url: "website_code/php/properties/set_sharing_rights_template.php",
+			 data: {
+				 template_id: template,
+				 id: id,
+				 role: role,
+				 group: group,
+			 },
+		 })
+			 .done(function(response){
+				 //$('#area3').html(response);
+				 sharing_status_template()
+			 });
+	 }
 
 }
-
-
 
 var last_selected=null;
 

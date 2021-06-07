@@ -746,14 +746,38 @@ function getProjectInformation(user_id, template_id) {
 }
 
 function getFolderInformation(user_id, folder_id) {
-    if (setup_ajax() != false) {
-        var url = "website_code/php/folders/get_folder_info.php";
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/folders/get_folder_info.php",
+        data: {folder_id: folder_id},
+        dataType: "json",
+        success: function (info) {
+            document.getElementById('project_information').innerHTML = info.properties;
+            if (info.role == 'read-only') {
+                // disable edit button.
+                var editbtn = document.getElementById("edit");
+                var propertiesbtn = document.getElementById("properties");
+                var deletebtn = document.getElementById("delete");
+                var publishbtn = document.getElementById("publish");
 
-        xmlHttp.open("post", url, true);
-        xmlHttp.onreadystatechange = getProjectInformation_stateChanged;
-        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlHttp.send('&folder_id=' + folder_id);
-    }
+                editbtn.disabled = "disabled";
+                editbtn.className = "xerte_button_c_no_width disabled";
+                editbtn.onclick = "";
+
+                publishbtn.disabled = "disabled";
+                publishbtn.className = "xerte_button_c_no_width disabled";
+                publishbtn.onclick = "";
+
+                propertiesbtn.disabled = "disabled";
+                propertiesbtn.className = "xerte_button_c_no_width disabled";
+                propertiesbtn.onclick = "";
+
+                deletebtn.disabled = "disabled";
+                deletebtn.className = "xerte_button_c_no_width disabled";
+                deletebtn.onclick = "";
+            }
+        }
+    });
 }
 
 function getProjectInformation_stateChanged() {

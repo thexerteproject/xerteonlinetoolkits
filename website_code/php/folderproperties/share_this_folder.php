@@ -98,6 +98,7 @@ if(is_numeric($_POST['id']) && is_numeric($parameters[0]) && is_string($paramete
             $group = db_query_one($query_for_name, $params);
             echo "<p>" . SHARING_THIS_FEEDBACK_SUCCESS . $group['group_name'] . ".</p>";
         }
+
     }
 
 

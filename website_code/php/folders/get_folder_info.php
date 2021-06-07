@@ -42,12 +42,12 @@ $_SESSION["XAPI_PROXY"] = $_POST['folder_id'];
 $info->properties = folder_info($_POST['folder_id']);
 $info->properties .= folder_sharing_info($_POST['folder_id']);
 
-$sql = "SELECT role FROM " .
-    " {$xerte_toolkits_site->database_table_prefix}folderrights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
-    " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}folderrights.login_id and folder_id= ? and login_id = ?";
+//$sql = "SELECT role FROM " .
+//    " {$xerte_toolkits_site->database_table_prefix}folderrights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
+//    " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}folderrights.login_id and folder_id= ? and login_id = ?";
+//
+//$row = db_query_one($sql, array($_POST['folder_id'], $_SESSION['toolkits_logon_id']));
 
-$row = db_query_one($sql, array($_POST['folder_id'], $_SESSION['toolkits_logon_id']));
-
-$info->role = $row['role'];
+$info->role = get_user_access_rights_folder($_POST['folder_id']);
 
 echo json_encode($info);

@@ -189,17 +189,27 @@ function has_rights_to_this_template($template_id, $user_id){
     //individual rights:
     $query = "select role, folder from {$pre}templaterights where user_id=? AND template_id = ?";
     $result = db_query_one($query, array($user_id, $template_id));
-    //implicit role:
-    $implicit = get_implicit_role($template_id, $user_id);
+
     //group rights:
     $query = "select role from {$xerte_toolkits_site->database_table_prefix}template_group_rights where template_id = ? AND " .
              "group_id IN (select group_id from {$xerte_toolkits_site->database_table_prefix}user_group_members where login_id=?)";
     $groupresult = db_query($query, array($template_id, $user_id));
-    //implicit group role
-    $implicit_group = get_implicit_group_role($template_id, $user_id);
 
-    if(!empty($result) || !empty($groupresult) || $implicit != "" || $implicit_group != "") {
+
+    if(!empty($result) || !empty($groupresult)) {
         return true;
+    }else{
+        //implicit role:
+        $implicit = get_implicit_role($template_id, $user_id);
+        if ( $implicit != ""){
+            return true;
+        }else{
+            //implicit group role
+            $implicit_group = get_implicit_group_role($template_id, $user_id);
+            if ( $implicit_group != ""){
+                return true;
+            }
+        }
     }
     return false;
 }
