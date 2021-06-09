@@ -281,6 +281,18 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   font-weight:bold;
   background-color:transparentize($whiteorlightest, .8);
 }
+.x_gapFill_page #targetHolder select {
+  background:darken($lightestcolor, 10%);
+}
+/*gap fill: change styling of correct and disable answers*/
+.x_gapFill_page #targetHolder input[readonly].correct, .x_gapFill_page #targetHolder .target.correct, .x_gapFill_page #targetHolder input[correct], .x_gapFill_page #targetHolder select[disabled].correct {
+  background:$lightestcolor !important;
+}
+/*gap fill: drop down shows answers styling*/
+#targetHolder select[disabled].answerShown {
+  color: #c36b00;
+  background:$lightestcolor !important;
+}
 //*****hotspot image*****/
 a.hotspot, a.hotspot.selected {
   background: none;
