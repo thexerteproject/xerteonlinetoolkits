@@ -338,3 +338,36 @@ and (max-width :500px) {
 	transform: translateY(0%);
 	color:#ffffff !important;
 }
+
+/*gap fill: change styling of correct and disable answers*/
+.x_gapFill_page #targetHolder input[readonly].correct, .x_gapFill_page #targetHolder .target.correct, .x_gapFill_page #targetHolder input[correct], .x_gapFill_page #targetHolder select[disabled].correct {
+	color:unset;
+	color: green;
+	opacity:1.0;
+	font-weight:400;
+	border-color: unset;
+	border-width:2px;
+	border-style:outset;
+	background:#ffffff;
+	cursor: default;
+	padding:initial !important;
+}
+/*gap fill: add ticks to correct answers*/
+.x_gapFill_page #targetHolder input[readonly].correct+span:before, .x_gapFill_page #targetHolder input[correct]+span:before, .x_gapFill_page #targetHolder .target.correct+span:before,.x_gapFill_page #targetHolder select[disabled].correct+span:before{
+	font-family: FontAwesome;
+	content: "\f00c";
+	color: green;
+	margin-left:1px;
+}
+/*gap fill: drop down shows answers styling*/
+#targetHolder select[disabled].answerShown {
+	color: #c36b00;
+	opacity:1.0;
+	font-weight:400;
+	border-color: unset;
+	border-width:2px;
+	border-style:outset;
+	background:#ffffff;
+	cursor: default;
+	padding:initial !important;
+}
