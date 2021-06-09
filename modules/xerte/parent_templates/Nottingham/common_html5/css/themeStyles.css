@@ -338,7 +338,6 @@ and (max-width :500px) {
 	transform: translateY(0%);
 	color:#ffffff !important;
 }
-
 /*gap fill: change styling of correct and disable answers*/
 .x_gapFill_page #targetHolder input[readonly].correct, .x_gapFill_page #targetHolder .target.correct, .x_gapFill_page #targetHolder input[correct], .x_gapFill_page #targetHolder select[disabled].correct {
 	color:unset;
@@ -351,6 +350,7 @@ and (max-width :500px) {
 	background:#ffffff;
 	cursor: default;
 	padding:initial !important;
+	caret-color: transparent;
 }
 /*gap fill: add ticks to correct answers*/
 .x_gapFill_page #targetHolder input[readonly].correct+span:before, .x_gapFill_page #targetHolder input[correct]+span:before, .x_gapFill_page #targetHolder .target.correct+span:before,.x_gapFill_page #targetHolder select[disabled].correct+span:before{
