@@ -41,7 +41,7 @@
 	}
 	
 	#targetHolder .target.answerShown, #targetHolder input.answerShown {
-		color:			#FF8C00;
+		color:			#c36b00;
 		border-color:	transparent;
 	}
 	
@@ -58,7 +58,7 @@
 	}
 	
 	#targetHolder select[disabled].answerShown {
-		color:			#FF8C00;
+		color:			#c36b00;
 	}
 	
 	#labelHolder {

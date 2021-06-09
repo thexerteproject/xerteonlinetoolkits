@@ -270,15 +270,7 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   border-color: lighten($blackordarkest, 10%);
   color:$whiteorlightest;
 }
-.x_gapFill_page .target.correct{
-  color:lightgreen;
-  font-weight:bold;
-//  background-color:transparentize($whiteorlightest, .8);
-}
-.x_gapFill_page #targetHolder select[disabled]{
-  color: #00ff19;
-  border: #00ff19 dotted 2px;
-}
+
 
 
 //*****hotspot image*****/

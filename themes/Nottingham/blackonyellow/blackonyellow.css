@@ -281,9 +281,6 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
 .x_gapFill_page #targetHolder select[disabled], .x_gapFill_page #targetHolder .target.incorrect, .x_gapFill_page #targetHolder input[readonly] {
   background: #FFFF99; }
 
-.x_gapFill_page #targetHolder .target.answerShown + span:before, .x_gapFill_page #targetHolder select[disabled].answerShown + span:before, .x_gapFill_page #targetHolder input.answerShown + span:before {
-  content: ""; }
-
 a.hotspot, a.hotspot.selected {
   background: none; }
 
