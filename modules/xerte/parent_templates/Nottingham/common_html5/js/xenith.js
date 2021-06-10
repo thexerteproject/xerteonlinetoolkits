@@ -3076,6 +3076,10 @@ function x_findText(pageXML, exclude, list) {
         if ($.inArray(pageXML.attributes[i].name, attrToCheck) > -1) {
             x_insertText(pageXML.attributes[i], exclude, list);
         }
+		
+		if (pageXML.attributes[i].name == 'data') {
+			x_insertText(pageXML.attributes[i], true, ['glossary'], true);
+		}
     }
 
     for (i=0, len=pageXML.childNodes.length; i<len; i++) {
@@ -3090,7 +3094,7 @@ function x_findText(pageXML, exclude, list) {
 }
 
 // function adds glossary links, LaTeX, page links to text found in x_findText function
-function x_insertText(node, exclude, list) {
+function x_insertText(node, exclude, list, data) {
 	// Decode node.value in order to make sure it works for for foreign characters like é
 	// But keep html tags, so use textarea
 	// cf. http://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it (3rd answer)
@@ -3104,7 +3108,7 @@ function x_insertText(node, exclude, list) {
 	// check text for variables - if found replace with variable value
 	// also handle case where comma decimal separator has been requested
 	if (XENITH.VARIABLES && XENITH.VARIABLES.exist() && (exclude == undefined || (exclude == false && list.indexOf("variables") > -1) || (exclude == true && list.indexOf("variables") == -1))) {
-		tempText = XENITH.VARIABLES.replaceVariables(tempText, x_params.decimalseparator);
+		tempText = XENITH.VARIABLES.replaceVariables(tempText, x_params.decimalseparator, data);
 	}
 	
 	// check text for global variables - if found replace with variable value
@@ -4004,7 +4008,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	},
 	
 	
-	replaceVariables = function (tempText, decimalSeparator) {
+	replaceVariables = function (tempText, decimalSeparator, dataInfo) {
 		tempText = tempText.replace(
 			new RegExp('\\[\\{(.*?)\\}(?:\\s|&nbsp;)*(?:(?:\\,(?:\\s|&nbsp;)*?(\\d+?)?))?\\]|<span class="x_var x_dyn_(.*?)">(?:.*?)</span>', 'g'),
 			function (match, contents, round, id) {
@@ -4032,45 +4036,53 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 		);
 		
 		for (var k=0; k<variables.length; k++) {
-			// if it's first attempt to replace vars on this page look at vars in image & mathjax tags first
-			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
-			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
-				var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
-				for (var m=0; m<$tempText.find('img').length; m++){
-					var tempImgTag = $tempText.find('img')[m].outerHTML,
-						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-					tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
-					$($tempText.find('img')[m]).replaceWith(tempImgTag);
+			if (dataInfo == true) {
+				// we're looking at the data for chart, documetaion, grid and table pages - these are treated differently to normal text
+				// replace with the variable text
+				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+				tempText = tempText.replace(regExp, x_checkDecimalSeparator(variables[k].value));
+				
+			} else {
+				// if it's first attempt to replace vars on this page look at vars in image & mathjax tags first
+				// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
+				if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
+					var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
+					for (var m=0; m<$tempText.find('img').length; m++){
+						var tempImgTag = $tempText.find('img')[m].outerHTML,
+							regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+						tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
+						$($tempText.find('img')[m]).replaceWith(tempImgTag);
+					}
+					tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
 				}
-				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
-			}
-			
-			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
-				var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
-				for (var m=0; m<$tempText.find('.mathjax').length; m++){
-					var tempImgTag = $tempText.find('.mathjax')[m].outerHTML,
-						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-					tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
-					$($tempText.find('.mathjax')[m]).replaceWith(tempImgTag);
+				
+				if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
+					var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
+					for (var m=0; m<$tempText.find('.mathjax').length; m++){
+						var tempImgTag = $tempText.find('.mathjax')[m].outerHTML,
+							regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+						tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
+						$($tempText.find('.mathjax')[m]).replaceWith(tempImgTag);
+					}
+					tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
 				}
-				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
-			}
-			
-			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
-			var regExp = new RegExp('\\[' + variables[k].name + '\\]|<span class="x_var x_var_' + variables[k].name + '">(.*?)</span>', 'g');
-			tempText = tempText.replace(regExp, '<span class="x_var x_var_' + variables[k].name + '">' + x_checkDecimalSeparator(variables[k].value) + '</span>');
-			
-			// replace with a text input field which the end user can use to set the value of the variable
-			regExp = new RegExp('\\[=' + variables[k].name + '\\]', 'g');
-			tempText = tempText.replace(regExp, '<input type="text" name="' + variables[k].name + '" class="x_varInput">');
-			
-			// this format of the text input field has specified a default value
-			regExp = new RegExp('\\[=' + variables[k].name + ':(.*?)\\]', 'g');
-			
-			var matches = tempText.match(regExp);
-			if (matches != null) {
-				for (var m=0; m<matches.length; m++) {
-					tempText = tempText.replace(matches[m], '<input type="text" name="' + variables[k].name + '" class="x_varInput" placeholder="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '">');
+				
+				// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
+				var regExp = new RegExp('\\[' + variables[k].name + '\\]|<span class="x_var x_var_' + variables[k].name + '">(.*?)</span>', 'g');
+				tempText = tempText.replace(regExp, '<span class="x_var x_var_' + variables[k].name + '">' + x_checkDecimalSeparator(variables[k].value) + '</span>');
+				
+				// replace with a text input field which the end user can use to set the value of the variable
+				regExp = new RegExp('\\[=' + variables[k].name + '\\]', 'g');
+				tempText = tempText.replace(regExp, '<input type="text" name="' + variables[k].name + '" class="x_varInput">');
+				
+				// this format of the text input field has specified a default value
+				regExp = new RegExp('\\[=' + variables[k].name + ':(.*?)\\]', 'g');
+				
+				var matches = tempText.match(regExp);
+				if (matches != null) {
+					for (var m=0; m<matches.length; m++) {
+						tempText = tempText.replace(matches[m], '<input type="text" name="' + variables[k].name + '" class="x_varInput" placeholder="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '">');
+					}
 				}
 			}
 		}
