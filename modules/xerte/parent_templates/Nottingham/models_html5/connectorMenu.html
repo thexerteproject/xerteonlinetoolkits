@@ -69,7 +69,7 @@
 					// exclude standalone pages
 					if (this.standalone != true) {
 						if (this.linkID == undefined) {
-							// old project pages might bot have linkID - use the page number instead
+							// old project pages might but have linkID - use the page number instead
 							allIDs.push('page' + i);
 						} else {
 							allIDs.push(this.linkID);
@@ -91,6 +91,7 @@
 						if (i >= start && i <= end && i != x_currentPage && (x_pageInfo[0].type != "menu" || i > 0)) {
 							menuItems.push(allIDs[i]);
 							pageNames.push(undefined);
+							checkIfVistedItems.push(allIDs[i]);
 						}
 					}
 				
@@ -101,6 +102,7 @@
 						if ((x_pageInfo[0].type != "menu" || i > 0) && i != x_currentPage) {
 							menuItems.push(allIDs[i]);
 							pageNames.push(undefined);
+							checkIfVistedItems.push(allIDs[i]);
 						}
 					}
 				}
