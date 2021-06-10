@@ -359,7 +359,7 @@ and (max-width :500px) {
 	color: green;
 	margin-left:1px;
 }
-/*gap fill: drop down shows answers styling*/
+/*gap fill: drop down show answers styling*/
 #targetHolder select[disabled].answerShown {
 	color: #c36b00;
 	opacity:1.0;
@@ -370,4 +370,26 @@ and (max-width :500px) {
 	background:#ffffff;
 	cursor: default;
 	padding:initial !important;
+}
+/*gap fill: show red crosses when incorrect and in tracking mode*/
+.x_gapFill_page #targetHolder select[disabled]+span:before,.x_gapFill_page #targetHolder .target.incorrect+span:before, .x_gapFill_page #pageContents input[readonly]+span:before{
+	font-family: FontAwesome;
+	content: "\f00d";
+	color: red;
+	margin-left:1px;
+}
+/*gap fill: styling of disabled/incorrect responses when in tracking mode*/
+.x_gapFill_page #targetHolder select[disabled],.x_gapFill_page #targetHolder .target.incorrect,  .x_gapFill_page #targetHolder input[readonly]{
+	opacity:1.0;
+	font-weight:400;
+	border-color: unset;
+	border-width:2px;
+	border-style:outset;
+	background:#ffffff;
+	cursor: default;
+	padding:initial !important;
+}
+/*gap fill: remove red crosses when show answers selected*/
+.x_gapFill_page #targetHolder .target.answerShown+span:before, .x_gapFill_page #targetHolder select[disabled].answerShown+span:before, .x_gapFill_page #targetHolder input.answerShown+span:before {
+	content:"";
 }
