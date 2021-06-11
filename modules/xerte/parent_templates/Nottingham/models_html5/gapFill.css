@@ -27,17 +27,20 @@
 	}
 
 	#targetHolder .target.incorrect {
-		color:			red;
+		color:			#EB0000;
 		border-color:	transparent;
+		font-weight:600;
 	}
 	
 	#targetHolder input.incorrect, #targetHolder input[incorrect] {
-		color: 			red;
+		color: 			#EB0000;
+		font-weight:600;
 	}
 	
 	#targetHolder .target.incorrect {
-		color:			red;
+		color:			#EB0000;
 		border-color:	transparent;
+		font-weight:600;
 	}
 	
 	#targetHolder .target.answerShown, #targetHolder input.answerShown {
@@ -50,7 +53,8 @@
 	}
 	
 	#targetHolder select[disabled] {
-		color: red;
+		color: #EB0000;
+		font-weight:600;
 	}
 	
 	#targetHolder select[disabled].correct {
