@@ -3199,28 +3199,23 @@ var XBOOTSTRAP = (function ($, parent) { var self = parent.VARIABLES = {};
 		);
 
 		for (var k=0; k<variables.length; k++) {
-			// if it's first attempt to replace vars on this page look at vars in image & mathjax tags first
+			// if it's first attempt to replace vars on this page look at vars in image, iframe, a & mathjax tags first
 			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
-			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
-				var $tempText = $(tempText);
-				for (var m=0; m<$tempText.find('img').length; m++){
-					var tempImgTag = $tempText.find('img')[m].outerHTML,
-						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-					tempImgTag = tempImgTag.replace(regExp2, checkDecimalSeparator(variables[k].value));
-					$($tempText.find('img')[m]).replaceWith(tempImgTag);
-				}
-				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
-			}
+			var tags = ['img', '.mathjax', 'iframe', 'a'];
 			
-			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
-				var $tempText = $(tempText);
-				for (var m=0; m<$tempText.find('.mathjax').length; m++){
-					var tempImgTag = $tempText.find('.mathjax')[m].outerHTML,
-						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-					tempImgTag = tempImgTag.replace(regExp2, checkDecimalSeparator(variables[k].value));
-					$($tempText.find('.mathjax')[m]).replaceWith(tempImgTag);
+			for (var p=0; p<tags.length; p++) {
+				var thisTag = tags[p];
+				
+				if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
+					var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
+					for (var m=0; m<$tempText.find(thisTag).length; m++){
+						var tempTag = $tempText.find(thisTag)[m].outerHTML,
+							regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+						tempTag = tempTag.replace(regExp2, checkDecimalSeparator(variables[k].value));
+						$($tempText.find(thisTag)[m]).replaceWith(tempTag);
+					}
+					tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
 				}
-				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
 			}
 
 			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
