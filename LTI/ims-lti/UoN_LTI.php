@@ -22,7 +22,7 @@ class UoN_LTI extends BLTI {
 
   function __construct($db, $parm = false) {
     $this->db = $db;
-    if (is_array($parm) or is_string($parm)) $this->parm = $parm;
+    if (is_array($parm) or is_string($parm)) array_replace($this->parm, $parm);
   }
 
   /**
