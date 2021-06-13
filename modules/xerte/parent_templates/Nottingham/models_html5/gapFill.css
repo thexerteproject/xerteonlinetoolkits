@@ -27,21 +27,24 @@
 	}
 
 	#targetHolder .target.incorrect {
-		color:			red;
+		color:			#EB0000;
 		border-color:	transparent;
+		font-weight:600;
 	}
 	
 	#targetHolder input.incorrect, #targetHolder input[incorrect] {
-		color: 			red;
+		color: 			#EB0000;
+		font-weight:600;
 	}
 	
 	#targetHolder .target.incorrect {
-		color:			red;
+		color:			#EB0000;
 		border-color:	transparent;
+		font-weight:600;
 	}
 	
 	#targetHolder .target.answerShown, #targetHolder input.answerShown {
-		color:			#FF8C00;
+		color:			#c36b00;
 		border-color:	transparent;
 	}
 	
@@ -50,7 +53,8 @@
 	}
 	
 	#targetHolder select[disabled] {
-		color: red;
+		color: #EB0000;
+		font-weight:600;
 	}
 	
 	#targetHolder select[disabled].correct {
@@ -58,7 +62,7 @@
 	}
 	
 	#targetHolder select[disabled].answerShown {
-		color:			#FF8C00;
+		color:			#c36b00;
 	}
 	
 	#labelHolder {
