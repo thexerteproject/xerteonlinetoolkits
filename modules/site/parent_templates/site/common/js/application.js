@@ -1389,8 +1389,9 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	// check if it's a valid page index
 	if (pageRefType != 'id') {
 		pageID = $.isNumeric(pageID) ? Number(pageID) : pageID;
-
-		if (Number.isInteger(pageID)) {
+		
+		if ($.isNumeric(pageID)) {
+			var temp = pageID;
 			// pageID refers to actual page num of valid pages - need to convert to index of all pages
 			if (pageRefType == 'start' || pageRefType == 'check') {
 				pageID = validPages[pageID];
@@ -1403,7 +1404,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 				pageRefType = 'index';
 
 			} else {
-				console.log("Page *" + (pageID+1) + "* not found");
+				console.log("Page *" + (temp) + "* not found");
 			}
 
 		} else {
