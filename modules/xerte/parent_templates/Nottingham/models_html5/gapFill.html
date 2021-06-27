@@ -780,6 +780,7 @@
 				$thisTarget.addClass("correct");
                 if ($thisLabel.data("answer") == $thisTarget.data("answer")) {
                     score++;
+					$thisLabel.add($thisTarget).data("correct", true);
                 }
 			}
 			
