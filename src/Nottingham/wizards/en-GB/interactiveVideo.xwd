@@ -25,7 +25,7 @@
 
 		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
 		
-		<mediaGroup type="group" label="Media" tooltip="Add video or audio (file or url)">
+		<mediaGroup type="group" label="Video" tooltip="Add video (file or url)">
 			<media label="File" type="media"/>
 			<tip label="Description" type="TextInput"/>
 			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
