@@ -66,7 +66,17 @@ if (!$.fn.toggleClick) {
 
 $(document).keydown(function(e) {
 	// if lightbox open then don't allow page up/down buttons to change the page open in the background
-	if (!parent.window.$.featherlight.current()) {
+	// Place lightbox check in a try block, because an exception will be triggereed if LO is embedded in an iframe
+	let shownInFeatherlight = false;
+	try
+	{
+		shownInFeatherlight = parent.window.$.featherlight.current();
+	}
+	catch (e)
+	{
+		// Ignore
+	}
+	if (!shownInFeatherlight) {
 		switch(e.which) {
 			case 33: // PgUp
 				var pageIndex = $.inArray(x_currentPage, x_normalPages);
