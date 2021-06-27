@@ -319,7 +319,7 @@ if(!isset($mysqli)) {
 }
 if(!isset($lti)) {
   require_once('../../../LTI/ims-lti/UoN_LTI.php');
-  $lti = new UoN_LTI($mysqli,$xerte_toolkits_site->database_table_prefix);
+  $lti = new UoN_LTI($mysqli,array('table_prefix' => $xerte_toolkits_site->database_table_prefix));
 }
 
 
