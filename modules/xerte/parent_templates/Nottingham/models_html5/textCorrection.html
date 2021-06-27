@@ -130,7 +130,7 @@
 				
 				if (x_currentPageXML.getAttribute("disableAnswers") !== "false") {
 					var correctLabel = x_currentPageXML.getAttribute("correctLabel") !== null ? x_currentPageXML.getAttribute("correctLabel") : 'Correct Answer',
-						convertedAnswer = $(answer).length > 0 ? answer : '<p>' + answer.replace(/(?:\r\n|\r|\n)/g, '<br>') + '</p>';
+						convertedAnswer = '<p>' + answer.replace(/(?:\r\n|\r|\n)/g, '<br>') + '</p>';
 					
 					$answer
 						.append("<h3>" + correctLabel + "</h3>")
