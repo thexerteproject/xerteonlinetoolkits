@@ -121,13 +121,12 @@
                 }
 
                 var $question = $("#question");
-				var originalQuestion = x_currentPageXML.getAttribute("wrongText");
-                var convertedQuestion = $(originalQuestion).length > 0 ? originalQuestion : '<p>' + originalQuestion.replace(/(?:\r\n|\r|\n)/g, '<br>') + '</p>';
+				var originalQuestion = $('<div>').html(x_currentPageXML.getAttribute("wrongText")).text().trim();
+                var convertedQuestion = '<p>' + originalQuestion.replace(/(?:\r\n|\r|\n)/g, '<br>') + '</p>';
                 $question.html(convertedQuestion);
 
                 var answer = $('<div>').html(x_currentPageXML.getAttribute("answer")).text().trim();
 				$pageContents.data('answer', answer);
-				
 				if (x_currentPageXML.getAttribute("disableAnswers") !== "false") {
 					var correctLabel = x_currentPageXML.getAttribute("correctLabel") !== null ? x_currentPageXML.getAttribute("correctLabel") : 'Correct Answer',
 						convertedAnswer = '<p>' + answer.replace(/(?:\r\n|\r|\n)/g, '<br>') + '</p>';
