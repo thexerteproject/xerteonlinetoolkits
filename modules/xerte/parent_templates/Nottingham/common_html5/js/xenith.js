@@ -1643,41 +1643,40 @@ function x_continueSetUp2() {
 	}
 	if (XTTrackingSystem() === 'xAPI') {
 		var callStartPage = false;
-		if (x_params.restartOptions != undefined) {
-			switch (x_params.restartOptions) {
-				case 'ask':
-					var canResume = XTCanResume();
-					if (canResume.canResume) {
-						x_dialogInfo.push({type: 'resumeSession', built: false});
-						x_openDialog(
-							"resumeSession",
-							x_getLangInfo(x_languageData.find("resumeSession")[0], "label", "Resume Session"),
-							x_getLangInfo(x_languageData.find("resumeSession").find("closeButton")[0], "description", "Close Resume Session Dialog"),
-							null,
-							null,
-							function () {
-								setUpComplete = true;
+		if (x_params.restartOptions == undefined)
+		{
+			x_params.restartOptions = 'ask';
+		}
+		switch (x_params.restartOptions) {
+			case 'ask':
+				var canResume = XTCanResume();
+				if (canResume.canResume) {
+					x_dialogInfo.push({type: 'resumeSession', built: false});
+					x_openDialog(
+						"resumeSession",
+						x_getLangInfo(x_languageData.find("resumeSession")[0], "label", "Resume Session"),
+						x_getLangInfo(x_languageData.find("resumeSession").find("closeButton")[0], "description", "Close Resume Session Dialog"),
+						null,
+						null,
+						function () {
+							setUpComplete = true;
 
-								x_navigateToPage(true, x_startPage);
-							}
-						);
-					} else {
-						XTSetOption('resume', false);
-						callStartPage = true;
-					}
-					break;
-				case 'restart':
-					XTSetOption('resume', true);
-					callStartPage = true;
-					break;
-				case 'do_not_restart':
+							x_navigateToPage(true, x_startPage);
+						}
+					);
+				} else {
 					XTSetOption('resume', false);
 					callStartPage = true;
-					break;
-			}
-		} else {
-			XTSetOption('resume', true);
-			callStartPage = true;
+				}
+				break;
+			case 'restart':
+				XTSetOption('resume', true);
+				callStartPage = true;
+				break;
+			case 'do_not_restart':
+				XTSetOption('resume', false);
+				callStartPage = true;
+				break;
 		}
 		if (callStartPage)
 		{
