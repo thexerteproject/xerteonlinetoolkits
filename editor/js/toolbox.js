@@ -488,6 +488,14 @@ var EDITOR = (function ($, parent) {
                         return evaluateConditionExpression(ctree.left, key) == evaluateConditionExpression(ctree.right, key);
                     case "!=":
                         return evaluateConditionExpression(ctree.left, key) != evaluateConditionExpression(ctree.right, key);
+                    case "<":
+                        return evaluateConditionExpression(ctree.left, key) < evaluateConditionExpression(ctree.right, key);
+                    case "<=":
+                        return evaluateConditionExpression(ctree.left, key) <= evaluateConditionExpression(ctree.right, key);
+                    case ">":
+                        return evaluateConditionExpression(ctree.left, key) > evaluateConditionExpression(ctree.right, key);
+                    case ">=":
+                        return evaluateConditionExpression(ctree.left, key) >= evaluateConditionExpression(ctree.right, key);
                     default:
                         return null;
                 }
