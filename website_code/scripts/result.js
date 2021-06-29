@@ -524,173 +524,148 @@
 
 
 function XTResults(fullcompletion, trackingState) {
-        var completion = 0;
-        var nrcompleted = 0;
-        var nrvisited = 0;
-        var completed;
-        $.each(trackingState.completedPages, function (i, completed) {
-            // indices not defined will be visited anyway.
-            // In that case 'completed' will be undefined
-            if (completed) {
-                nrcompleted++;
-            }
-            if (typeof(completed) != "undefined") {
-                nrvisited++;
-            }
-        })
+    var completion = getCompletionPercentage(fullcompletion, trackingState);
 
-        if (nrcompleted != 0) {
-            if (!fullcompletion) {
-                completion = Math.round((nrcompleted / nrvisited) * 100);
+    var results = {};
+    results.mode = "full-results";
+
+    var score = 0,
+        nrofquestions = 0,
+        totalWeight = 0,
+        totalDuration = 0;
+    results.interactions = Array();
+
+    for (i = 0; i < trackingState.interactions.length - 1; i++) {
+
+
+        score += trackingState.interactions[i].score * trackingState.interactions[i].weighting;
+        if (trackingState.interactions[i].ia_nr < 0 || trackingState.interactions[i].nrinteractions > 0) {
+
+            var interaction = {};
+            interaction.score = Math.round(trackingState.interactions[i].score);
+            interaction.title = trackingState.interactions[i].ia_name;
+            interaction.type = trackingState.interactions[i].ia_type;
+            interaction.correct = trackingState.interactions[i].result;
+            interaction.duration = Math.round(trackingState.interactions[i].duration / 1000);
+            interaction.weighting = trackingState.interactions[i].weighting;
+            interaction.subinteractions = Array();
+
+            var j = 0;
+            for (j; j < trackingState.toCompletePages.length; j++) {
+                var currentPageNr = trackingState.toCompletePages[j];
+                if (currentPageNr == trackingState.interactions[i].page_nr) {
+                    if (trackingState.completedPages[j]) {
+                        interaction.completed = "true";
+                    }
+                    else if (!trackingState.completedPages[j]) {
+                        interaction.completed = "false";
+                    }
+                    else {
+                        interaction.completed = "unknown";
+                    }
+                }
             }
-            else {
-                completion = Math.round((nrcompleted / trackingState.toCompletePages.length) * 100);
-            }
+
+            results.interactions[nrofquestions] = interaction;
+            totalDuration += trackingState.interactions[i].duration;
+            nrofquestions++;
+            totalWeight += trackingState.interactions[i].weighting;
+
         }
-        else {
-            completion = 0;
-        }
+        else if (results.mode == "full-results") {
+            var subinteraction = {};
 
-        var results = {};
-        results.mode = "full-results";
-
-        var score = 0,
-            nrofquestions = 0,
-            totalWeight = 0,
-            totalDuration = 0;
-        results.interactions = Array();
-
-        for (i = 0; i < trackingState.interactions.length - 1; i++) {
-
-
-            score += trackingState.interactions[i].score * trackingState.interactions[i].weighting;
-            if (trackingState.interactions[i].ia_nr < 0 || trackingState.interactions[i].nrinteractions > 0) {
-
-                var interaction = {};
-                interaction.score = Math.round(trackingState.interactions[i].score);
-                interaction.title = trackingState.interactions[i].ia_name;
-                interaction.type = trackingState.interactions[i].ia_type;
-                interaction.correct = trackingState.interactions[i].result;
-                interaction.duration = Math.round(trackingState.interactions[i].duration / 1000);
-                interaction.weighting = trackingState.interactions[i].weighting;
-                interaction.subinteractions = Array();
-
-                var j = 0;
-                for (j; j < trackingState.toCompletePages.length; j++) {
-                    var currentPageNr = trackingState.toCompletePages[j];
-                    if (currentPageNr == trackingState.interactions[i].page_nr) {
-                        if (trackingState.completedPages[j]) {
-                            interaction.completed = "true";
-                        }
-                        else if (!trackingState.completedPages[j]) {
-                            interaction.completed = "false";
+            var learnerAnswer, correctAnswer;
+            switch (trackingState.interactions[i].ia_type) {
+                case "match":
+                    var resultCorrect=false;
+                    for (var c = 0; c < trackingState.interactions[i].correctOptions.length; c++) {
+                        var matchSub = {}; //Create a subinteraction here for every match sub instead
+                        correctAnswer = trackingState.interactions[i].correctOptions[c].source + ' --> ' + trackingState.interactions[i].correctOptions[c].target;
+                        source = trackingState.interactions[i].correctOptions[c].source;
+                        if (trackingState.interactions[i].learnerOptions.length == 0) {
+                            learnerAnswer = source + ' --> ' + ' ';
                         }
                         else {
-                            interaction.completed = "unknown";
-                        }
-                    }
-                }
-
-                results.interactions[nrofquestions] = interaction;
-                totalDuration += trackingState.interactions[i].duration;
-                nrofquestions++;
-                totalWeight += trackingState.interactions[i].weighting;
-
-            }
-            else if (results.mode == "full-results") {
-                var subinteraction = {};
-
-                var learnerAnswer, correctAnswer;
-                switch (trackingState.interactions[i].ia_type) {
-                    case "match":
-                        var resultCorrect=false;
-                        for (var c = 0; c < trackingState.interactions[i].correctOptions.length; c++) {
-                            var matchSub = {}; //Create a subinteraction here for every match sub instead
-                            correctAnswer = trackingState.interactions[i].correctOptions[c].source + ' --> ' + trackingState.interactions[i].correctOptions[c].target;
-                            source = trackingState.interactions[i].correctOptions[c].source;
-                            if (trackingState.interactions[i].learnerOptions.length == 0) {
-                                learnerAnswer = source + ' --> ' + ' ';
-                            }
-                            else {
-                                for (var d = 0; d < trackingState.interactions[i].learnerOptions.length; d++) {
-                                    if (source == trackingState.interactions[i].learnerOptions[d].source) {
-                                        learnerAnswer = source + ' --> ' + trackingState.interactions[i].learnerOptions[d].target;
-                                        break;
-                                    }
-                                    else {
-                                        learnerAnswer = source + ' --> ' + ' ';
-                                    }
+                            for (var d = 0; d < trackingState.interactions[i].learnerOptions.length; d++) {
+                                if (source == trackingState.interactions[i].learnerOptions[d].source) {
+                                    learnerAnswer = source + ' --> ' + trackingState.interactions[i].learnerOptions[d].target;
+                                    break;
+                                }
+                                else {
+                                    learnerAnswer = source + ' --> ' + ' ';
                                 }
                             }
-
-                            matchSub.question = trackingState.interactions[i].ia_name;
-                            matchSub.correct = resultCorrect;
-                            matchSub.learnerAnswer = learnerAnswer;
-                            matchSub.correctAnswer = correctAnswer;
-                            results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                         }
 
-                        break;
-                    case "text":
-                        learnerAnswer = trackingState.interactions[i].learnerAnswers;
-                        correctAnswer = trackingState.interactions[i].correctAnswers;
-                        break;
-                    case "multiplechoice":
-                        learnerAnswer = trackingState.interactions[i].learnerAnswers[0] != undefined ? trackingState.interactions[i].learnerAnswers[0] : "";
-                        for (var j = 1; j < trackingState.interactions[i].learnerAnswers.length; j++) {
-                            learnerAnswer += "\n" + trackingState.interactions[i].learnerAnswers[j];
-                        }
-                        correctAnswer = "";
-                        for (var j = 0; j < trackingState.interactions[i].correctAnswers.length; j++) {
-                            if (trackingState.interactions[i].correctAnswers[j] != undefined) {
-                                if (correctAnswer.length > 0)
-                                    correctAnswer += "\n";
-                                correctAnswer += trackingState.interactions[i].correctAnswers[j];
-                            }
-                        }
-                        break;
-                    case "numeric":
-
-                        learnerAnswer = trackingState.interactions[i].learnerAnswers;
-                        correctAnswer = "-";  // Not applicable
-                        //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
-                        break;
-                    case "fill-in":
-                        learnerAnswer = trackingState.interactions[i].learnerAnswers;
-                        correctAnswer = trackingState.interactions[i].correctAnswers;
-                        break;
-                }
-                if (trackingState.interactions[i].ia_type != "match") {
-                    subinteraction.question = trackingState.interactions[i].ia_name;
-                    if (trackingState.interactions[i].result != undefined && trackingState.interactions[i].result.success != undefined) {
-                        subinteraction.correct = trackingState.interactions[i].result.success;
+                        matchSub.question = trackingState.interactions[i].ia_name;
+                        matchSub.correct = resultCorrect;
+                        matchSub.learnerAnswer = learnerAnswer;
+                        matchSub.correctAnswer = correctAnswer;
+                        results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
-                    else
-                    {
-                        subinteraction.correct = false;
+
+                    break;
+                case "text":
+                    learnerAnswer = trackingState.interactions[i].learnerAnswers;
+                    correctAnswer = trackingState.interactions[i].correctAnswers;
+                    break;
+                case "multiplechoice":
+                    learnerAnswer = trackingState.interactions[i].learnerAnswers[0] != undefined ? trackingState.interactions[i].learnerAnswers[0] : "";
+                    for (var j = 1; j < trackingState.interactions[i].learnerAnswers.length; j++) {
+                        learnerAnswer += "\n" + trackingState.interactions[i].learnerAnswers[j];
                     }
-                    subinteraction.learnerAnswer = learnerAnswer;
-                    subinteraction.correctAnswer = correctAnswer;
-                    results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
+                    correctAnswer = "";
+                    for (var j = 0; j < trackingState.interactions[i].correctAnswers.length; j++) {
+                        if (trackingState.interactions[i].correctAnswers[j] != undefined) {
+                            if (correctAnswer.length > 0)
+                                correctAnswer += "\n";
+                            correctAnswer += trackingState.interactions[i].correctAnswers[j];
+                        }
+                    }
+                    break;
+                case "numeric":
+
+                    learnerAnswer = trackingState.interactions[i].learnerAnswers;
+                    correctAnswer = "-";  // Not applicable
+                    //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
+                    break;
+                case "fill-in":
+                    learnerAnswer = trackingState.interactions[i].learnerAnswers;
+                    correctAnswer = trackingState.interactions[i].correctAnswers;
+                    break;
+            }
+            if (trackingState.interactions[i].ia_type != "match") {
+                subinteraction.question = trackingState.interactions[i].ia_name;
+                if (trackingState.interactions[i].result != undefined && trackingState.interactions[i].result.success != undefined) {
+                    subinteraction.correct = trackingState.interactions[i].result.success;
                 }
+                else
+                {
+                    subinteraction.correct = false;
+                }
+                subinteraction.learnerAnswer = learnerAnswer;
+                subinteraction.correctAnswer = correctAnswer;
+                results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
             }
         }
-        results.completion = completion;
-        results.score = score;
-        results.nrofquestions = nrofquestions;
-        results.averageScore = getScaledScore(trackingState) * 100;
-        results.totalDuration = Math.round(totalDuration / 1000);
-        results.start = trackingState.start.toLocaleString();
-
-        //$.ajax({
-        //    type: "POST",
-        //    url: window.location.href,
-        //    data: {
-        //        grade: results.averageScore / 100
-        //    }
-        //});
-        return results;
     }
+    results.completion = completion;
+    results.score = score;
+    results.nrofquestions = nrofquestions;
+    results.averageScore = getScaledScore(trackingState) * 100;
+    results.totalDuration = Math.round(totalDuration / 1000);
+    results.start = trackingState.start.toLocaleString();
+
+    //$.ajax({
+    //    type: "POST",
+    //    url: window.location.href,
+    //    data: {
+    //        grade: results.averageScore / 100
+    //    }
+    //});
+    return results;
+}
 
 function getdScaledScore(x)
 {
@@ -844,7 +819,7 @@ function getSuccessStatus(x)
     {
         if (x.lo_type != "pages only")
         {
-            if (getdScaledScore(x) > (x.lo_passed / 100))
+            if (getdScaledScore(x) * getCompletionPercentage(true,x)> x.lo_passed)
             {
                 return "passed";
             }
@@ -895,4 +870,31 @@ function getCompletionStatus(state)
         {
             return "unknown"
         }
+    }
+
+    function getCompletionPercentage(fullcompletion, trackingState)
+    {
+        var completion = 0;
+        var nrcompleted = 0;
+        var nrvisited = 0;
+        $.each(trackingState.completedPages, function (i, completed) {
+            // indices not defined will be visited anyway.
+            // In that case 'completed' will be undefined
+            if (completed) {
+                nrcompleted++;
+            }
+            if (typeof(completed) != "undefined") {
+                nrvisited++;
+            }
+        })
+
+        if (nrcompleted != 0) {
+            if (!fullcompletion) {
+                completion = Math.round((nrcompleted / nrvisited) * 100);
+            }
+            else {
+                completion = Math.round((nrcompleted / trackingState.toCompletePages.length) * 100);
+            }
+        }
+        return completion;
     }
