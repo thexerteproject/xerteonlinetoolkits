@@ -122,13 +122,13 @@ function create_folder(){
 				};
 			} else {
 				var data = {
-					folder_id: file_area,
+					folder_id: 'file_area',
 					folder_name: foldername
 				};
 			}
 		} else {
 			var data = {
-				folder_id: file_area,
+				folder_id: 'file_area',
 				folder_name: foldername
 			};
 		}
@@ -139,9 +139,9 @@ function create_folder(){
 			data: data,
 		})
 		.done(function(response) {
-			$("#folder_feedback").html(xmlHttp.responseText);
+			$("#folder_feedback").html(response);
 			refresh_workspace();
-			folder_timeout = setTimeout("popup_close()", 500);
+			folder_timeout = setTimeout("popup_close()", 1000);
 		});
 	}else{
 		alert("Sorry that is not a valid folder name. Please use only letters and numbers");
