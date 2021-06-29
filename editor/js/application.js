@@ -21,6 +21,7 @@ var wizard_data = {};
 var lo_data = {};
 var menu_data = [];
 var topLevelObject="learningObject";
+var loLanguage = ""
 var alreadyUpgraded = false; 
 
 

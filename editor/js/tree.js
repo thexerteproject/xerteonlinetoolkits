@@ -1516,6 +1516,8 @@ var EDITOR = (function ($, parent) {
             };
         };
 
+        loLanguage = lo_data['treeroot'].attributes.language;
+
         // build Types structure for the types plugin
         var node_types = {};
         node_types["#"] = create_node_type(null, ["treeroot"]); // Make sure that only the LO can be at root level
