@@ -2391,8 +2391,19 @@ function loadXotContent($this) {
 		xotLink += separator + 'page=' + $this.attr('pageNum');
 	}
 
+	// If this bootstrap LO is started using LTI, launch Xerte as an LTI tool as well.
+	if (typeof lti_enabled != 'undefined' && lti_enabled)
+	{
+		xotLink += separator + 'site=' + x_TemplateId;
+		xotLink = xotLink.replace('play.php?', ltiEndpoint);
+	}
+	else if (typeof xapi_enabled != 'undefined' && xapi_enabled)
+	{
+		xotLink += separator + 'site=' + x_TemplateId;
+		xotLink = xotLink.replace('play.php?', xapiEndpoint);
+	}
 	// the embed url parameter makes it responsive, full screen & hides minimise/maximise button (these can be overridden by manually adding other params to the url entered in editor)
-	xotLink += separator + 'embed=true';
+	xotLink += separator + 'embed=true' + separator + "embedded_from=" + encodeURIComponent(x_SiteUrl + x_TemplateId) + separator + "embedded_fromTitle=" + encodeURIComponent($(data).find('learningObject').attr('name'));
 
 	// add back any url params that haven't been overridden
 	for (var i=0; i<params.length; i++) {
