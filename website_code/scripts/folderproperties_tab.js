@@ -126,7 +126,7 @@ function folder_rss_template(){
 	 */
 	 $.ajax({
 		 type: "POST",
-		 url: "website_code/php/folderproperties/folder_rss_template.php",
+		 url: "website_code/php/folderproperties/folder_rss.php",
 		 data: {folder_id: window.name},
 	 })
 	 .done(function(response){
@@ -145,7 +145,7 @@ function folder_rss_template(){
 function folderproperties_template(){
 	 $.ajax({
 		 type: "POST",
-		 url: "website_code/php/folderproperties/folderproperties_template.php",
+		 url: "website_code/php/folderproperties/folderproperties.php",
 		 data: {folder_id: String(window.name).substr(0,String(window.name).indexOf("_"))},
 	 })
 	 .done(function(response){
@@ -166,7 +166,7 @@ function folder_content_template(){
 
 	$.ajax({
 		 type: "POST",
-		 url: "website_code/php/folderproperties/folder_content_template.php",
+		 url: "website_code/php/folderproperties/folder_content.php",
 		 data: {folder_id: String(window.name).substr(0,String(window.name).indexOf("_"))},
 	})
 	.done(function(response){
@@ -215,7 +215,7 @@ function rename_folder(folder_id,form_tag){
 	if(is_ok_name(new_name)){
 		$.ajax({
 			type: "POST",
-			url: "website_code/php/folderproperties/rename_folder_template.php",
+			url: "website_code/php/folderproperties/rename_folder.php",
 			data: {
 				folder_id: folder_id,
 				folder_name: new_name
