@@ -278,7 +278,7 @@ function XApiTrackingState() {
 
     function getSuccessStatus() {
         if (this.lo_type != "pages only") {
-            if (this.getdScaledScore() > (this.lo_passed / 100)) {
+            if (this.getdScaledScore() * this.getCompletionPercentage() > this.lo_passed) {
                 return "passed";
             } else {
                 return "failed";
@@ -1945,6 +1945,16 @@ function XTInitialise(category) {
 
         }
     }
+    if (typeof x_urlParams.embedded_from != "undefined")
+    {
+        state.embedded = true;
+        state.embedded_from = decodeURIComponent(x_urlParams.embedded_from);
+        state.embedded_fromTitle = decodeURIComponent(x_urlParams.embedded_fromTitle);
+    }
+    else
+    {
+        state.embedded = false;
+    }
 
     if (!state.initialised) {
         state.initialised = true;
@@ -3316,6 +3326,11 @@ function SaveStatement(statement, async) {
         "http://xerte.org.uk/learningObjectId": baseUrl() + state.templateId,
         "http://xerte.org.uk/learningObjectTitle": $("<div>").html(x_params.name).text()
     };
+    if (state.embedded)
+    {
+        extension["http://xerte.org.uk/launchedFrom"] = state.embedded_from;
+        extension["http://xerte.org.uk/launchedFromTitle"] = state.embedded_fromTitle;
+    }
     if (state.coursename != "") {
         extension["http://xerte.org.uk/course"] = state.coursename;
     }
