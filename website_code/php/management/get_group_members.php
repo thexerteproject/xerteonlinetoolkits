@@ -53,7 +53,7 @@ function get_group_members($group_id){
         if ($membercount == 1){
             echo "<p>" . USER_GROUPS_MANAGEMENT_ONE_MEMBER . "</p>";
         }else{
-            echo "<p>" . str_replace("{&}", $membercount, USER_GROUPS_MANAGEMENT_MEMBERS_COUNT) . "</p>";
+            echo "<p>" . str_replace("{n}", $membercount, USER_GROUPS_MANAGEMENT_MEMBERS_COUNT) . "</p>";
         }
         foreach($query_response as $row) {
 
