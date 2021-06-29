@@ -5745,6 +5745,7 @@
     		<deployment label="Deployment" type="CheckBox" defaultValue="true" optional="true"/>
     		<scorm12 label="SCORM 1.2 (XOT Projects)" type="CheckBox" defaultValue="true" optional="true"/>
     		<scorm2004 label="SCORM 2004 (XOT Projects)" type="CheckBox" defaultValue="true" optional="true"/>
+			<offline label="Offline (XOT Projects)" type="CheckBox" defaultValue="true" optional="true"/>
     		<author label="Project author" type="CheckBox" defaultValue="false" optional="true"/>
     		<license label="License" type="CheckBox" defaultValue="false" optional="true"/>
     		<moddate label="Last modified date" type="CheckBox" defaultValue="false" optional="true"/>
