@@ -103,7 +103,7 @@ if(is_numeric($id) || $id == null)
     }
     if ($module===false && isset($_REQUEST['module']))
     {
-        $module = $_REQUEST{'module'};
+        $module = $_REQUEST['module'];
     }
     if ($module !== false)
     {
