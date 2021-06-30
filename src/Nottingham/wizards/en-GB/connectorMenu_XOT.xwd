@@ -9,7 +9,7 @@
   <connectorMenu menu="Connectors" menuItem="Menu Connector" hint="Generate a menu of all or a selected range of the pages in a project." icon="icConMenu"  thumb="thumbs/connectorMenu.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#menuconnector" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <buttonWidth label="Button Width" condition="columns &lt; '2'" type="TextInput" wysiwyg="true" optional="true" tooltip="The number indicates in percent how wide the buttons are. It can be used with and without the percent symbool(%) at the end."/>
+    <buttonWidth label="Button Width" condition="columns &lt; '2'" type="NumericStepper" optional="true" min="1" max="100" step="1" width="100" defaultValue="80" tooltip="The number indicates in percent how wide the buttons are."/>
 	<text label="Page Text" type="TextArea"  height="200" defaultValue="Enter text for the page here" optional="true" tooltip="Add text to the page"/>
 	<startPageID label="First Entry" type="pageList" defaultValue="" optional="true" tooltip="Include menu links from this page onwards"/>
 	<endPageID label="Last Entry" type="pageList" defaultValue="" optional="true" tooltip="Include menu links up to and including this page"/>
