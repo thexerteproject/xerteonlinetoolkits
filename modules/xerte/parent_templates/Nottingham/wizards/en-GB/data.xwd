@@ -6502,7 +6502,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></text><textCorrection menu="Interactivity" menuItem="Text Correction" hint="A page to compare texts. The user can rewrite a text with errors and then compare it with the correct answer." icon="icTextCorrection" thumb="thumbs/textCorrection.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#textcorrection" remove="true">
+	</lightboxGroup></text><textCorrection menu="Interactivity" menuItem="Text Correction" hint="A page for comparing texts. A text prompt containing errors can be rewritten and compared with the correct answer." icon="icTextCorrection" thumb="thumbs/textCorrection.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#textcorrection" remove="true">
         <name label="Page Title" type="textInput" wysiwyg="true"/>
         <introduction label="Page Text" type="TextArea" height="100"/>
         
