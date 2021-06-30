@@ -308,7 +308,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></QRcode><SictTimeline menu="Media" menuItem="Timeline Media" icon="icTimeline" hint="A scrollable timeline containing sections of text and media." thumb="thumbs/sictTimeline.jpg" removed="true">
+	</lightboxGroup></QRcode><SictTimeline menu="Media" menuItem="Timeline Media" icon="icTimeline" hint="A scrollable timeline containing sections of text and media." thumb="thumbs/sictTimeline.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#timelinemedia" remove="true">
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <text label="Page Text" type="TextArea" height="150"/>
         <language label="Language" options="Afrikaans,Arabic,Armenian,Basque,Belarusian,Bulgarian,Catalan,Chinese,Croatian/Hrvatski,Czech,Danish,Dutch,English,Esperanto,Estonian,Faroese,Farsi,Finnish,French,Frisian,Galician,Georgian,German,Greek,Hebrew,Hindi,         Hungarian,Icelandic,Indonesian,Irish,Italian,Japanese,Korean,Latvian,Lithuanian,Luxembourgish,Malay,Nepali,Norwegian,Polish,Portuguese,Portuguese (Brazilian),Romanian,Romansh,Russian,Serbian - Cyrillic, Serbian - Latin,Sinhalese,Slovak,Slovenian,Spanish,Swedish,         Tagalog,Tamil,Taiwanese,Telugu,Thai,Turkish,Ukrainian" type="ComboBox" data="Afrikaans,Arabic,Armenian,Basque,Belarusian,Bulgarian,Catalan,Chinese,Croatian/Hrvatski,Czech,Danish,Dutch,English,Esperanto,Estonian,Faroese,Farsi,Finnish,French,Frisian,Galician,Georgian,German,Greek,Hebrew,Hindi,         Hungarian,Icelandic,Indonesian,Irish,Italian,Japanese,Korean,Latvian,Lithuanian,Luxembourgish,Malay,Nepali,Norwegian,Polish,Portuguese,Portuguese (Brazilian),Romanian,Romansh,Russian,Serbian - Cyrillic, Serbian - Latin,Sinhalese,Slovak,Slovenian,Spanish,Swedish,         Tagalog,Tamil,Taiwanese,Telugu,Thai,Turkish,Ukrainian" defaultValue="English" width="100"/>
@@ -1618,7 +1618,7 @@
 	
     <checkIfVisited label="Check if Visited Page" type="pageList" defaultValue="" optional="true"/>
 	<btnTxt label="Use Title on Button" type="CheckBox" defaultValue="false" mandatory="true" tooltip="By default the text on the menu button will be the destination page title. Check this box to use the title text from the field above instead."/>
-  </cMenuListedPage><crossword menu="Games" icon="icCrossword" menuItem="Crossword" hint="A crossword puzzle where clues are given to each word or phrase that must be completed in the grid." thumb="thumbs/crossword.jpg" remove="true">
+  </cMenuListedPage><crossword menu="Games" icon="icCrossword" menuItem="Crossword" hint="A crossword puzzle where clues are given to each word or phrase that must be completed in the grid." thumb="thumbs/crossword.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#crossword" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <attempts label="Attempts" type="TextInput" defaultValue="1" tooltip="Attempts allowed before correct answers are given"/>
 	
@@ -2901,7 +2901,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></hangman><hotSpotQuestion menu="Interactivity" menuItem="Hotspot Question" hint="An interaction where the answer to the question posed is given by selecting one or more relevant hotspots on an image." icon="icHotspotQuestion" thumb="thumbs/hotspotQuestion.jpg" remove="true">
+	</lightboxGroup></hangman><hotSpotQuestion menu="Interactivity" menuItem="Hotspot Question" hint="An interaction where the answer to the question posed is given by selecting one or more relevant hotspots on an image." icon="icHotspotQuestion" thumb="thumbs/hotspotQuestion.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hotspotquestion" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -3296,7 +3296,7 @@
     <text label="Description" type="TextArea" height="150"/>
 	<bgColour label="Highlight Colour" type="ColourPicker"/>
 
-  </group><interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationTile" thumb="thumbs/interactiveVideo.jpg" remove="true">
+  </group><interactiveVideo menu="Interactivity" menuItem="Interactive Video" hint="Synchronise a variety of interactive events to a video. These events occur on top of the video." icon="icApplicationTile" thumb="thumbs/interactiveVideo.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivevideo" remove="true">
 
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
 		
@@ -4081,7 +4081,7 @@
     <feedback label="Feedback" type="TextArea" height="100" tooltip="Feedback shown when this answer is submitted"/>
     <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
 	<audioFB label="Audio Feedback" defaultValue="Select a Sound File" type="media" optional="true"/>
-  </option><media360 menu="Media" menuItem="360&#xB0; Image" hint="An interaction allowing you to mark up a 360&#xB0; image with hotspots. Can be used to create tours of linked images." icon="ic360" thumb="thumbs/image360.jpg" remove="true">
+  </option><media360 menu="Media" menuItem="360&#xB0; Image" hint="An interaction allowing you to mark up a 360&#xB0; image with hotspots. Can be used to create tours of linked images." icon="ic360" thumb="thumbs/image360.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#image360" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -6690,7 +6690,7 @@
 	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup></textGraphics><textHighlight menu="Interactivity" menuItem="Highlight Text" hint="A page where an initial piece of text can be highlighted and then compared to a suggested answer." icon="icHighlight" thumb="thumbs/textHighlight.jpg" remove="true">
+	</lightboxGroup></textGraphics><textHighlight menu="Interactivity" menuItem="Highlight Text" hint="A page where an initial piece of text can be highlighted and then compared to a suggested answer." icon="icHighlight" thumb="thumbs/textHighlight.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#highlighttext" remove="true">
 
 	<name label="Page Title" type="TextInput" wysiwyg="true"/>
 	
