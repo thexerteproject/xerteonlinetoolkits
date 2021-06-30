@@ -45,6 +45,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     _load_language_file("/modules/xerte/edit.inc");
 
+    _debug("Loading editor page");
+
     $row_username = db_query_one("select username from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?" , array($row_edit['user_id']));
 
     if(empty($row_username)) {
@@ -131,7 +133,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         $d = opendir($theme_folder);
         while($f = readdir($d)){
             if(is_dir($theme_folder . $f)){
-                if (file_exists($theme_folder . $f . "/" . $f . ".info"))
+                if (file_exists($theme_folder . $f . "/" . $f . ".info") && !file_exists($theme_folder . $f . "/hidden.info"))
                 {
                     $info = file($theme_folder . $f . "/" . $f . ".info", FILE_SKIP_EMPTY_LINES);
                     $themeProperties = new StdClass();
@@ -208,7 +210,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     /**
      * set up the onunload function used in version control
      */
-
+    _debug("Starting editor page");
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $_SESSION['toolkits_language'];?>">
@@ -230,6 +232,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/jqgrid/css/ui.jqgrid.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css?version=<?php echo $version;?>" />
+	<link rel="stylesheet" type="text/css" href="editor/js/vendor/pannellum/pannellum.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" type="text/css" href="editor/js/vendor/iconpicker/iconpicker-1.5.0.css?version=<?php echo $version;?>" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
@@ -327,13 +331,15 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <div id="insert_menu" class="hide"></div>
 
 <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<!--script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
 <?php if (preg_match('~MSIE|Internet Explorer~i', $_SERVER['HTTP_USER_AGENT']) || (strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/7.0; rv:11.0') !== false)) { ?>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <?php }else{ ?>
-<script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
+<script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script -->
 <?php } ?>
+<script src="editor/js/vendor/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js?version=<?php echo $version;?>"></script>
@@ -349,6 +355,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="<?php echo $jqgridlangfile; ?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery.jqGrid.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jsep.min.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/pannellum/pannellum.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/iconpicker/iconpicker-1.5.0.js?version=<?php echo $version;?>"></script>
 
 <!-- load exactly the same codemirror scripts as needed by ckeditor -->
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.min.js?version=<?php echo $version;?>"></script>
@@ -391,7 +399,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "course_list=" . json_encode($course) . ";\n";
     // Some upgrade.php in teh past prevented the course_freetext_enabled column to be set correctly in the sitedetails table
     // If not present, set to true
-    if ($xerte_toolkits_site->course_freetext_enabled == undefined)
+    if (!isset($xerte_toolkits_site->course_freetext_enabled))
     {
         echo "course_freetext_enabled=true;\n";
     }
@@ -417,6 +425,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     }
 
+
 </script>
 <script type="text/javascript" src="editor/js/data.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/application.js?version=<?php echo $version;?>"></script>
@@ -429,5 +438,5 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 <?php
 }
-?>
+_debug("Sent editor page");
 

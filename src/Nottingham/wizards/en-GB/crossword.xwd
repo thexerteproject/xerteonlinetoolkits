@@ -1,0 +1,39 @@
+<wizard menus="Games">
+
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1"
+	  acrossLabel="Across"
+	  downLabel="Down"
+	  checkLabel="Submit"
+	  again="Try again, you have /a attempt(s) left"
+	  />]]></crossword>
+    </newNodes>
+  </pageWizard>
+
+  <crossword menu="Games" icon="icCrossword" menuItem="Crossword" hint="A crossword puzzle where clues are given to each word or phrase that must be completed in the grid." thumb="thumbs/crossword.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#crossword" remove="true">
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <attempts label="Attempts" type="TextInput" defaultValue="1" tooltip="Attempts allowed before correct answers are given"></attempts>
+	
+	<text label="Page Text" type="TextArea" height="100" optional="true"/>
+	<feedback label="Feedback" type="TextArea" wysiwyg="true" height="100" optional="true"/>
+    <align label="Clue Position" options="Left,Bottom,Right" type="ComboBox" defaultValue="Right" data="Left,Bottom,Right" width="100" optional="true"/>
+	
+	<acrossLabel label="Across Clue Title" type="TextInput" wysiwyg="true" divider="true" language="true" mandatory="true" defaultValue="Across"/>
+	<downLabel label="Down Clue Title" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Down"/>
+	<checkLabel label="Check Button Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
+	<again label="Attempt Label" type="TextInput" wysiwyg="true" language="true" tooltip="/a is where the attempts will be placed"/>
+	<feedbackLabel label="Feedback" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Feedback"/>
+	
+    <newNodes>
+      <wordAndHint><![CDATA[<wordAndHint name="Word" text="The hint for your word" wordAnswer="The word you want to have in the crossword"/>]]></wordAndHint>
+    </newNodes>
+  </crossword>
+
+  <wordAndHint menuItem="Word" icon="icBullet">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Word" wysiwyg="false"/>
+    <wordAnswer label="Word" type="TextInput" wysiwyg="false"/>
+    <text label="Hint" type="TextInput" height="100"/>
+  </wordAndHint>
+
+</wizard>

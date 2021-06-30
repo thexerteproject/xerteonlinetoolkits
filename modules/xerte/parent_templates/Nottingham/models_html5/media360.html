@@ -1,0 +1,1019 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var media360 = new function() {
+		var $pageContents,
+			$panoramaHolder,
+			$panorama,
+			thisPannellum,
+			scenes,
+			lockedHs,
+			currentScene,
+			videoResize = true;
+		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$pageContents = $("#pageContents");
+			$panoramaHolder = $('#panoramaHolder');
+			$panorama = $('#panorama');
+			thisPannellum = $pageContents.data('thisPannellum');
+			scenes = $pageContents.data('scenes');
+			lockedHs = $pageContents.data('lockedHs');
+			currentScene = $pageContents.data('currentScene');
+			
+			// sometimes when returning to the page the panorama isn't shown correctly or hotspots aren't in correct place
+			this.fixView();
+			thisPannellum.setPitch(thisPannellum.getPitch()-1); // moving slightly ensures hotspots re in correct places
+		};
+		
+		this.leavePage = function() {
+			$pageContents.data({
+				'thisPannellum': thisPannellum,
+				'scenes': scenes,
+				'lockedHs': lockedHs,
+				'currentScene': currentScene
+			});
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+			// if this has been triggered from window.resize() called manually for video sizing then skip all this
+			if (videoResize == true) {
+				
+				if (parent.window.$.featherlight.current()) {
+					parent.window.$.featherlight.current().close();
+				}
+				
+				var $panel = $("#pageContents .panel");
+				
+				if (x_browserInfo.mobile == false) {
+					$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				} else {
+					$panel.height($x_mobileScroll.height() - $x_footerBlock.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				}
+				
+				if (thisPannellum != undefined) {
+					thisPannellum.resize();
+				}
+				
+			} else {
+				videoResize = true;
+				$('.featherlight-content').removeClass('max hidden');
+			}
+		};
+		
+		this.init = function() {
+			$pageContents = $("#pageContents");
+			$panoramaHolder = $('#panoramaHolder');
+			$panorama = $('#panorama');
+			
+			// Load in the required scripts before we begin
+			var filePath = x_templateLocation + 'common_html5/js/pannellum/';
+			
+			x_insertCSS(filePath + 'pannellum.css');
+			
+			$.getScript(filePath + 'pannellum.js')
+				.done(function(script, textStatus) {
+					media360.begin();
+				})
+				.fail(function( jqxhr, settings, exception ) {
+					console.log("Failed to load pannellum files: " + exception);
+				});
+		}
+		
+		this.begin = function() {
+			var $mainText = $("#mainText");
+		
+			var panelWidth = x_currentPageXML.getAttribute('size') == undefined ? 'large' : x_currentPageXML.getAttribute('size');
+				textContents = x_addLineBreaks(x_currentPageXML.getAttribute('text'));
+			
+			// no text & full width panel
+			if (panelWidth == "full" || textContents == undefined || textContents == "") {
+				
+				$mainText
+					.appendTo($pageContents)
+					.removeClass('left');
+				
+				$("#pageContents .panel").appendTo($pageContents);
+				$("#pageContents .splitScreen").remove();
+				
+				panelWidth == "full";
+				
+			// text shown alongside panel
+			} else {
+				$mainText.html(textContents);
+				
+				// swap positions of text & panel
+				if (x_currentPageXML.getAttribute('position') == 'left') {
+					
+					$('.splitScreen .right')
+						.removeClass('right')
+						.addClass('left');
+					
+					$mainText
+						.removeClass('left')
+						.addClass('right')
+						.insertAfter('.splitScreen.left');
+					
+					// Set the width of the panel
+					if (panelWidth == 'small') {
+						$('#pageContents .splitScreen').addClass('medium');
+					} else if (panelWidth == 'large') {
+						$('#pageContents .splitScreen').addClass('xlarge');
+					} else {
+						$('#pageContents .splitScreen').addClass('large');
+					}
+					
+				} else {
+					// Set the width of the pamel
+					if (panelWidth == 'small') {
+						$('#pageContents .splitScreen').addClass('large'); // make text area on left large so panel on right is small
+					} else if (panelWidth == 'large') {
+						$('#pageContents .splitScreen').addClass('small');
+					} else {
+						$('#pageContents .splitScreen').addClass('medium');
+					}
+				}
+			}
+			
+			// get the default hotspot colours & size to use - these might be override by opt property added to hotspot
+			this.colour1 = x_currentPageXML.getAttribute('colour1') != undefined && x_currentPageXML.getAttribute('colour1') != '' && x_currentPageXML.getAttribute('colour1') != '0x' ? x_currentPageXML.getAttribute('colour1') : '0x000000';
+			this.colour2 = x_currentPageXML.getAttribute('colour2') != undefined && x_currentPageXML.getAttribute('colour2') != '' && x_currentPageXML.getAttribute('colour2') != '0x' ? x_currentPageXML.getAttribute('colour2') : '0xFFFFFF';
+			this.size = x_currentPageXML.getAttribute('hsSize') != undefined && x_currentPageXML.getAttribute('hsSize') != '' ? x_currentPageXML.getAttribute('hsSize') : '14';
+			
+			var firstScene;
+			scenes = {};
+			lockedHs = [];
+			
+			// collate info about different scenes
+			$(x_currentPageXML).children().each(function(i) {
+				
+				var scene = {
+					'tip': this.getAttribute('tip'),
+					'type': 'equirectangular',
+					'panorama': this.getAttribute('file'),
+					'compass': this.getAttribute('compass') == 'true' ? true : false,
+					'autoRotate': this.getAttribute('rotate') == 'true' ? Number( (this.getAttribute('direction') == 'right' ? '-' : '') + this.getAttribute('speed') ) : 0,
+					'autoRotateInactivityDelay': this.getAttribute('continueRotate') != undefined && this.getAttribute('continueRotate') != '0' ? Number(this.getAttribute('continueRotate')) * 1000 : undefined,
+					'tooltipBg': this.getAttribute('tooltipBg'),
+					'titleBg': this.getAttribute('titleBg'),
+					'hotSpots': []
+				};
+				
+				if (this.getAttribute('title') == 'true' && this.getAttribute('name') != '') {
+					scene.title = this.getAttribute('name');
+				}
+				
+				if (x_currentPageXML.getAttribute('sceneMenu') == 'true') {
+					if (this.getAttribute('hidePage') != 'true') {
+						scene.menuTitle = this.getAttribute('name');
+					}
+				}
+				
+				// set initial view of scene
+				if (this.getAttribute('initPos') != undefined && this.getAttribute('initPos').split('|').length == 2) {
+					var initPos = this.getAttribute('initPos').split('|');
+					
+					if ($.isNumeric(initPos[0])) {
+						scene.pitch = Number(initPos[0]);
+					}
+					
+					if ($.isNumeric(initPos[1])) {
+						scene.yaw = Number(initPos[1]);
+					}
+				}
+				
+				// id of scene: used when linking between scenes so make it the linkID that pageList will output
+				var thisId = this.getAttribute('linkID');
+				
+				if (firstScene == undefined) {
+					firstScene = thisId;
+				}
+				
+				// collate info about hotspots on this scene
+				$(this).children().each(function(i) {
+					
+					if (this.getAttribute('p') != '' && this.getAttribute('p') != undefined) {
+						
+						// correct the format of the colour codes (start with # rather than 0x)
+						var colour1 = this.getAttribute('colour1') != undefined && this.getAttribute('colour1') != '' && this.getAttribute('colour1') != '0x' ? this.getAttribute('colour1') : media360.colour1;
+						var colour2 = this.getAttribute('colour2') != undefined && this.getAttribute('colour2') != '' && this.getAttribute('colour2') != '0x' ? this.getAttribute('colour2') : media360.colour2;
+						colour1 = colour1.indexOf('0x') === 0 ? colour1.replace("0x", "#") : colour1;
+						colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
+						
+						// store info about hotspots that are locked
+						if (this.getAttribute('lock') == 'true') {
+							var hsInfo = { id: this.getAttribute('linkID'), scene: thisId };
+							hsInfo.locked = true;
+							hsInfo.unlock = this.getAttribute('unlock');
+							lockedHs.push(hsInfo);
+						}
+						
+						var lockInfo;
+						if (this.getAttribute('lock') == undefined || this.getAttribute('lock') == 'false') {
+							lockInfo = false;
+						} else {
+							lockInfo = {
+								hide: this.getAttribute('lockHide') != undefined ? this.getAttribute('lockHide') : 'false',
+								tip: this.getAttribute('lockTip') != undefined ? this.getAttribute('lockTip') : 'false',
+								unlockOn: this.getAttribute('unlockOn') != undefined ? this.getAttribute('unlockOn') : 'false',
+								unlock: this.getAttribute('unlock') != undefined ? this.getAttribute('unlock') : 'false',
+								unlockPswd: this.getAttribute('unlockPswd') != undefined ? this.getAttribute('unlockPswd') : 'false',
+								unlockPswdTxt: this.getAttribute('unlockPswdTxt') != undefined ? this.getAttribute('unlockPswdTxt') : 'false',
+								unlockCase: this.getAttribute('unlockCase') != undefined ? this.getAttribute('unlockCase') : 'true'
+							};
+						}
+						
+						var thisHs = {
+							'pitch': this.getAttribute('p'),
+							'yaw': this.getAttribute('y'),
+							
+							'cssClass': 'hotspot360Icon',
+							'clickHandlerFunc': media360.hsClicked,
+							'createTooltipFunc': media360.hsCreated,
+							'createTooltipArgs': {
+								index: i,
+								name: this.getAttribute('name'),
+								id: this.getAttribute('linkID'),
+								tip: this.getAttribute('tooltip'),
+								pitch: this.getAttribute('p'),
+								yaw: this.getAttribute('y'),
+								size: Number(this.getAttribute('size') != undefined && this.getAttribute('size') != '' ? this.getAttribute('size') : media360.size),
+								icon: this.getAttribute('icon') != undefined ? this.getAttribute('icon') : 'fas fa-info',
+								orientation: this.getAttribute('orientation') != undefined ? this.getAttribute('orientation') : '0',
+								hide: this.getAttribute('hide') != undefined ? this.getAttribute('hide') : 'false',
+								hover: this.getAttribute('hover') != undefined ? this.getAttribute('hover') : 'false',
+								lockInfo: lockInfo,
+								colour1: colour1,
+								colour2: colour2
+							}
+						};
+						
+						// load another scene
+						if (this.getAttribute('scene') != undefined && this.getAttribute('scene') != '') {
+							thisHs.clickHandlerArgs = {
+								type: 'scene',
+								scene: this.getAttribute('scene'),
+								scenePos: this.getAttribute('scenePos')
+							};
+						
+						// turn to new view
+						} else if (this.getAttribute('position') != undefined && this.getAttribute('position') != '') {
+							thisHs.clickHandlerArgs = {
+								type: 'rotate',
+								position: this.getAttribute('position')
+							};
+							
+						// open text in lightbox
+						} else if (this.getAttribute('hotspotPopUp') != undefined && this.getAttribute('hotspotPopUp') != '') {
+							thisHs.clickHandlerArgs = {
+								type: 'lightbox',
+								text: this.getAttribute('hotspotPopUp')
+							};
+							
+						// open image in lightbox
+						} else if (this.getAttribute('imageFile') != undefined && this.getAttribute('imageFile') != '') {
+							var tip = this.getAttribute('imageTip') != undefined && this.getAttribute('imageTip') != '' ? this.getAttribute('imageTip') : '';
+							thisHs.clickHandlerArgs = {
+								type: 'lightbox',
+								img: this.getAttribute('imageFile'),
+								tip: tip
+							};
+							
+						// open audio player in lightbox (or auto-play audio)
+						} else if (this.getAttribute('hotspotSound') != undefined && this.getAttribute('hotspotSound') != '') {
+							if (this.getAttribute('playerType') == 'auto') {
+								// auto play audio when hotspot clicked
+								// some of setup needs to be done after hs created so send info to create function
+								thisHs.createTooltipArgs.setUp = {
+									sound: this.getAttribute("hotspotSound"),
+									start: this.getAttribute('soundStart'),
+									end: this.getAttribute('soundEnd')
+								};
+								
+								thisHs.clickHandlerArgs = {
+									type: 'sound',
+									start: this.getAttribute('soundStart')
+								};
+								
+							} else {
+								// show audio player in lightbox
+								thisHs.clickHandlerArgs = {
+									type: 'lightbox',
+									sound: this.getAttribute('hotspotSound'),
+									start: this.getAttribute('soundStart'),
+									end: this.getAttribute('soundEnd')
+								};
+							}
+							
+						// open video in lightbox
+						} else if (this.getAttribute('hotspotMovie') != undefined && this.getAttribute('hotspotMovie') != '') {
+							thisHs.clickHandlerArgs = {
+								type: 'lightbox',
+								video: this.getAttribute('hotspotMovie'),
+								tip: this.getAttribute('tip'),
+								start: this.getAttribute('startFrame'),
+								end: this.getAttribute('endFrame'),
+								size: this.getAttribute('movieSize')
+							};
+						
+						// open another page in this project (in lightbox or just go to page)
+						} else if (this.getAttribute('destination') != undefined && this.getAttribute('destination') != '') {
+							if (x_lookupPage("linkID", this.getAttribute('destination')) === false && ['[previous]', '[next]', '[first]', '[last]'].indexOf(this.getAttribute('destination')) < 0) { // destination not found
+								if (x_params.authorSupport == "true") {
+									thisHs.clickHandlerArgs = {
+										type: 'lightbox',
+										text: '<div class="alert"><p>' + x_currentPageXML.getAttribute('pageError') + '</p></div>'
+									};
+								}
+							} else { // go to destination page
+								thisHs.clickHandlerArgs = {
+									type: 'xotPage',
+									id: this.getAttribute('destination')
+								};	
+							}
+							
+						// open an external page (in lightbox or just go to page)
+						} else if (this.getAttribute('url') != undefined && this.getAttribute('url') != '') {
+							// open page
+							if (this.getAttribute('urlAction') == 'open') {
+								thisHs.clickHandlerArgs = {
+									type: 'url',
+									url: this.getAttribute('url'),
+									target: this.getAttribute('urlTarget') == 'this' ? '_self' : '_blank'
+								};
+								
+							} else {
+								// open in lightbox
+								thisHs.clickHandlerArgs = {
+									type: 'lightbox',
+									iframe: this.getAttribute('url')
+								};
+							}
+						}
+						
+						scene.hotSpots.push(thisHs);
+					}
+				});
+				
+				scenes[thisId] = scene;
+			});
+			
+			// is there at least one scene?
+			if (Object.keys(scenes).length > 0) {
+				
+				// set up panorama including all scenes & hotspots
+				thisPannellum = pannellum.viewer('panorama', {
+					'default': {
+						'firstScene': firstScene,
+						'sceneFadeDuration': 1000,
+						'autoLoad': true
+					},
+					'scenes': scenes
+				})
+				.on('load', function() {
+					// first scene loaded - make controls more accessible
+					if (currentScene == undefined) {
+						
+						var btnInfo = ['zoomIn', 'zoomOut', 'fullScreen'];
+						
+						$('.pnlm-control:not(.pnlm-compass)').each(function(e) {
+							var $this = $(this);
+							
+							$this.wrap("<button class='pannellumBtn " + btnInfo[e] + "'></button>");
+							
+							$this.parent()
+								.keydown(function (e) {
+									if (e.keyCode == 13) {
+										$this.click();
+										
+									} else if (e.keyCode == 16) {
+										// prevent default shift to zoom as this confuses the shift-tab to move focus around controls
+										e.stopPropagation();
+									}
+								})
+								.attr('aria-label', x_currentPageXML.getAttribute(btnInfo[e] + 'Txt'));
+						});
+						
+						// set up menu of links to scenes
+						if (x_currentPageXML.getAttribute('sceneMenu') == 'true') {
+							
+							// create a scene menu containing links to open each unhidden scene
+							var $sceneMenu = $('<div id="sceneLinkHolder"></div>');
+							
+							for(var key in scenes) {
+								if (scenes[key].menuTitle != undefined) {
+									var $thisSceneLink = $('<button class="sceneLink">' + scenes[key].menuTitle + '</button>');
+									
+									$thisSceneLink
+										.attr('id', key + 'Link')
+										.data('sceneId', key)
+										.appendTo($sceneMenu)
+										.click(function() {
+											$sceneMenu.hide();
+											thisPannellum.loadScene($(this).data('sceneId'));
+										})
+										.keydown(function(e){
+											// trigger click when focused & enter key pressed
+											if (e.keyCode == 13) {
+												$(this).click();
+												
+											} else if (e.keyCode == 16) {
+												// prevent default shift to zoom as this confuses the shift-tab to move focus around controls
+												e.stopPropagation();
+											}
+										});
+								}
+							}
+							
+							$sceneMenu.hide();
+							
+							// clone the full screen menu & use as menu btn
+							var $menuBtn = $('.pannellumBtn.fullScreen').clone();
+							
+							$menuBtn
+								.removeClass('fullScreen')
+								.addClass('sceneMenu')
+								.insertAfter('.pnlm-panorama-info')
+								.append($sceneMenu)
+								.hover(
+									function(e) {
+										$('.sceneLink.current').removeClass('current');
+										$('#' + currentScene + 'Link').addClass('current');
+										
+										$sceneMenu.show();
+									},
+									function() {
+										$sceneMenu.hide();
+									})
+								.focusin(function() {
+									$(this).mouseenter();
+									media360.fixView();
+								})
+								.focusout(function(e) {
+									if ($(this).has(e.relatedTarget).length == 0) {
+										$(this).mouseleave();
+									}
+								})
+								.keydown(function(e){
+									if (e.keyCode == 16) {
+										// prevent default shift to zoom as this confuses the shift-tab to move focus around controls
+										e.stopPropagation();
+									}
+								});
+							
+							$('.pnlm-panorama-info').addClass('indent');
+						}
+					}
+					
+					currentScene = thisPannellum.getScene();
+					
+					$panorama.find('canvas').attr({
+						'role': 'img',
+						'aria-label': scenes[currentScene].tip
+					});
+					
+					// for some reason in FF hotSpot array becomes jumbled after pannellum viewer is set up
+					// this results in hotspots not being adding in correct order which can affect tabbing
+					// manually check they are in correct order in array & on screen
+					scenes[currentScene].hotSpots.sort(function(a, b) {
+						if (a.createTooltipArgs.index > b.createTooltipArgs.index) {
+							return 1;
+						}
+						if (a.createTooltipArgs.index < b.createTooltipArgs.index) {
+							return -1;
+						}
+						return 0;
+					});
+					
+					for (var i=scenes[currentScene].hotSpots.length-1; i>-1; i--) {
+						var $thisHs = $('#' + scenes[currentScene].hotSpots[i].createTooltipArgs.id);
+						$thisHs.insertAfter($('.pnlm-render-container canvas'));
+					}
+					
+					// does this scene unlock a hotspot when visited? If so, unlock it
+					for (var i=0; i<lockedHs.length; i++) {
+						if (lockedHs[i].locked == true && lockedHs[i].unlock == currentScene) {
+							lockedHs[i].locked = false;
+						}
+					}
+					
+					// check all hotspots on this scene that should be unlocked, are unlocked
+					for (var i=0; i<lockedHs.length; i++) {
+						if (lockedHs[i].scene == currentScene && lockedHs[i].locked == false) {
+							media360.unlockHs(i);
+						}
+					}
+					
+					media360.fixView();
+				})
+				.on('scenechange', function(e) {
+					media360.applySceneStyles(e);
+				});
+				
+				media360.applySceneStyles(thisPannellum.getScene());
+			}
+			
+			this.sizeChanged();
+			x_pageLoaded();
+		}
+		
+		// called after hotspots are individually created
+		this.hsCreated = function(hotspotDiv, args) {
+			
+			var $hotspotDiv = $(hotspotDiv),
+				borderWidth = args.size/4;
+			
+			var initIcon = args.icon;
+			
+			// locked hotspots will have a different icon
+			if (args.lockInfo != false) {
+				initIcon = x_currentPageXML.getAttribute('lockIcon') != undefined && x_currentPageXML.getAttribute('lockIcon') != '' ? x_currentPageXML.getAttribute('lockIcon') : 'fas fa-lock';
+				$hotspotDiv.addClass('lock');
+			}
+			
+			// add hotspot styles, icon etc.
+			$hotspotDiv
+				.attr({
+					'id': args.id,
+					'tabindex': 0
+				})
+				.append('<span class="icon360Holder"><span class="icon360"></span></span>')
+				.css({
+					height: (args.size*2+2) + 'px',
+					width: (args.size*2+2) + 'px',
+					background: args.colour1,
+					'border-color': args.colour2,
+					'border-width': borderWidth + 'px'
+				})
+				.data({
+					size: args.size,
+					colour2: args.colour2,
+					pitch: args.pitch,
+					yaw: args.yaw
+				})
+				.hover(
+					function() {
+						var $this = $(this);
+						$this.css({
+							'box-shadow': '0px 0px ' + ($this.data('size')/2) + 'px ' + $this.data('colour2'),
+							'z-index': 1000
+						});
+						
+						$('.hotspot360Icon').find('.tip').not($this.find('.tip')).mouseleave();
+						
+						var thisBorderWidth = parseInt($this.css('border-top-width'));
+						
+						if ($this.hasClass('tooltip') && !$this.hasClass('disableTip')) {
+							
+							var $tooltip = $this.find('.tip');
+							
+							$tooltip
+								.show()
+								.find('.tipArrow')
+									.removeClass('arrowUp')
+									.addClass('arrowDown');
+							
+							// set the width first so margins can be calculated afterwarda
+							$tooltip.css('max-width', ($panorama.width() * (x_browserInfo.mobile == false ? 0.25 : 0.8)) + 'px');
+							
+							$tooltip
+								.css({
+									'margin-left': -($tooltip[0].scrollWidth - this.offsetWidth + thisBorderWidth) / 2 + 'px',
+									'margin-top': -($tooltip[0].scrollHeight + thisBorderWidth) + 6 + 'px'
+								})
+								.find('.tipArrow')
+									.removeClass('arrowUp')
+									.addClass('arrowDown');
+							
+							// move tooltip below hs is it's off top of screen
+							if ($tooltip.offset().top < $panorama.offset().top) {
+								
+								$tooltip.find('.tipArrow')
+									.removeClass('arrowDown')
+									.addClass('arrowUp');	
+								
+								$tooltip.css({
+									'margin-top': $this.height() + thisBorderWidth + 12 + 'px'
+								});
+							}
+						}
+					},
+					function() {
+						$(this)
+							.css({
+								'box-shadow': 'none',
+								'z-index': 1
+							})
+							.find('.tip').hide();
+					})
+				.focusin(function() {
+					var $this = $(this);
+					
+					// if focus is from tabbing then turn to look at hotspot
+					// only do this on tab as if also done on mouse click the click functions become temporamental
+					window.addEventListener('keyup', function tabCheck(e) {
+						var code = (e.keyCode ? e.keyCode : e.which);
+						if (code == 9) {
+							thisPannellum.setPitch(Number($this.data('pitch')));
+							thisPannellum.setYaw(Number($this.data('yaw')));
+							media360.fixView(); // sometimes panorama goes off screen so this forces it back
+						}
+						
+						window.removeEventListener('keyup', tabCheck);
+					});
+					
+					$this.mouseenter();
+				})
+				.focusout(function() {
+					$(this).mouseleave();
+				})
+				.keydown(function(e){
+					// trigger click when focused & enter key pressed
+					if (e.which === 13) {
+						$(this)
+							.data('tab', true)
+							.click()
+							.data('tab', false);
+						
+					// prevent default shift to zoom as this confuses the shift-tab to move focus around hotspots
+					// also prevent move by arrow keys when focused on hs as this sometimes starts an unstoppable spin
+					} else if (e.keyCode == 16 || (e.keyCode >= 37 && e.keyCode <= 40)) {
+						e.stopPropagation();
+					}
+				})
+				.find('.icon360')
+					.css({
+						transform: 'rotate(' + (args.lock == 'true' ? '0' : args.orientation) + 'deg)',
+						'font-size': args.size + 'px',
+						color: args.colour2
+					})
+					.addClass(initIcon)
+					.data({
+						'icon': args.icon,
+						'lockIcon': initIcon,
+						'orientation': args.orientation
+					});
+			
+			// show tooltip on hover
+			if (args.tip == 'true' && args.name != '' && args.name != undefined) {
+				$hotspotDiv.addClass('tooltip');
+				
+				$('<span class="tip"><span class="tipArrow arrowDown"></span>' + args.name + '</span>')
+					.appendTo($hotspotDiv)
+					.hide();
+			}
+			
+			// hide hotspot (will still be clickable)
+			if (args.hide == 'true') {
+				$hotspotDiv.addClass('hide');
+				if (args.hover == 'true') { // show hotspot on hover
+					$hotspotDiv.addClass('hover');
+				}
+			}
+			
+			if (args.lockInfo != false) {
+				// hide locked hotspot (not clickable)
+				if (args.lockInfo.lockHide == 'true') {
+					$hotspotDiv.addClass('lockHide');
+				}
+				
+				// hide tooltip on locked hotspots
+				if (args.lockInfo.tip != 'true') {
+					$hotspotDiv.addClass('disableTip');
+				}
+				
+				$hotspotDiv.data('lockInfo', args.lockInfo);
+			}
+			
+			// create hidden audio players
+			if (args.setUp != undefined && args.setUp.sound != undefined) {
+				if ($('#audioHolder').length == 0) {
+					// pause audio auto-play audio on press Esc
+					$(document).keyup(function(e) {
+						if (e.key === "Escape") {
+							media360.pauseAudio();
+						}
+					});
+				}
+				
+				var $audioHolder = $('#audioHolder').length == 0 ? $('<div id="audioHolder"></div>').appendTo($panoramaHolder) : $('#audioHolder');
+				var $hsAudio = $('<div class="hsAudio"></div>').appendTo($audioHolder).data('hs', $hotspotDiv);
+				
+				$hsAudio.mediaPlayer({
+					type: "audio",
+					source: args.setUp.sound,
+					startEndFrame: [Number(args.setUp.start), Number(args.setUp.end)]
+				});
+			}
+		}
+		
+		// some hotspot actions are automatically carried out with inbuilt pannellum code - where this isn't possible (e.g. open lightbox) the click events call this function
+		this.hsClicked = function(e, args) {
+			
+			media360.pauseAudio();
+			
+			var $hs = $(e.target).hasClass('hotspot360Icon') ? $(e.target) : $(e.target).parents('.hotspot360Icon');
+			
+			// locked hotspots aren't clickable (unless password protected when click opens password box)
+			if (!$hs.hasClass('lock')) {
+				
+				// does this hotspot unlock another when clicked? If so, unlock it
+				for (var i=0; i<lockedHs.length; i++) {
+					if (lockedHs[i].locked == true && lockedHs[i].unlock == $hs.attr('id')) {
+						lockedHs[i].locked = false;
+						
+						// hotspot is on this scene so immediately update
+						if (lockedHs[i].scene == currentScene) {
+							media360.unlockHs(i);
+						}
+					}
+				}
+				
+				if (args != undefined) {
+					if (args.type == 'lightbox') {
+						// content to open in lightbox
+						if (args.img != undefined) {
+							$.featherlight({image: args.img, afterOpen: function(e) { if (args.tip != '') { this.$content.attr('alt', args.tip); } } });
+						} else if (args.iframe != undefined) {
+							$.featherlight({iframe: args.iframe, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
+						} else if (args.sound != undefined) {
+							var $pageAudio = $('<div id="pageAudio"></div>')
+									.width($x_mainHolder.width()*0.8)
+									.css('max-width', '300px');
+							
+							$.featherlight($pageAudio);
+							
+							$('#pageAudio')
+								.mediaPlayer({
+									type: 'audio',
+									source: args.sound,
+									width: '100%',
+									startEndFrame: [Number(args.start), Number(args.end)]
+								});
+							
+						} else if (args.video != undefined) {
+							var $pageVideo = $('<div id="pageVideo"></div>');
+							
+							$.featherlight($pageVideo);
+							
+							if (args.video.indexOf("www.youtube.com") != -1 || args.video.indexOf("//youtu") != -1) {
+								$('.featherlight-content').addClass('max youTube');
+							}
+							
+							$('#pageVideo')
+								.attr('title', args.tip)
+								.mediaPlayer({
+									type: 'video',
+									source: args.video,
+									width: '100%',
+									height: '100%',
+									startEndFrame: [Number(args.start), Number(args.end)]
+								});
+							
+						} else {
+							$.featherlight(args.text, {});
+							x_pageContentsUpdated();
+						}
+						
+					} else if (args.type == 'rotate') {
+						// turn to new view in this scene
+						if (args.position != undefined && args.position.split('|').length == 2) {
+							var info = args.position.split('|');
+							var animateSpeed = $hs.data('tab') == true ? false : 1000; // for some reason this won't work with animation on if tabbed to & press enter - so turn animation off
+							thisPannellum.lookAt( Number(info[0]),  Number(info[1]), undefined, animateSpeed);
+						}
+						
+					} else if (args.type == 'xotPage') {
+						// go to page in this project (might open in lightbox if standalone page)
+						x_navigateToPage(false, {type:"linkID", ID: args.id});
+						
+					} else if (args.type == 'sound') {
+						// auto-play an audio file
+						var audioPlayer = $hs.data('audioPlayer');
+						
+						// hs click toggles play / pause
+						if ($(audioPlayer).data('playing')) {
+							audioPlayer.pause();
+						} else {
+							audioPlayer.setCurrentTime(Number(args.start));
+							audioPlayer.play();
+						}
+						
+					} else if (args.type == 'url') {
+						// open url in this window
+						window.open(args.url, args.target);
+						
+					} else if (args.type == 'scene') {
+						// load new scene in viewer
+						var initPitch, initYaw;
+						if (args.scenePos != undefined && args.scenePos.split('|').length == 2) {
+							var info = args.scenePos.split('|');
+							if ($.isNumeric(info[0])) { initPitch = Number(info[0]) }
+							if ($.isNumeric(info[1])) { initYaw = Number(info[1]) }
+						}
+						
+						thisPannellum.loadScene(args.scene, initPitch, initYaw);
+					}
+				}
+				
+			// locked hotspot is password protected
+			} else if ($hs.data('lockInfo') != undefined && $hs.data('lockInfo').unlockOn == 'password') {
+				
+				var caseSensitive = $hs.data('lockInfo').unlockCase,
+					pswd = caseSensitive == 'false' ? $hs.data('lockInfo').unlockPswd.toLowerCase() : $hs.data('lockInfo').unlockPswd,
+					pswdTxt = $hs.data('lockInfo').unlockPswdTxt,
+					label =  x_currentPageXML.getAttribute('lockLabel') != undefined ? x_currentPageXML.getAttribute('lockLabel') : 'Password:',
+					submit =  x_currentPageXML.getAttribute('lockSubmit') != undefined ? x_currentPageXML.getAttribute('lockSubmit') : 'Submit',
+					wrong =  x_currentPageXML.getAttribute('lockPswdWrong') != undefined ? x_currentPageXML.getAttribute('lockPswdWrong') : 'Incorrect password';
+				
+				var $pswdHtml = $('<div class="featherlightContent">' + pswdTxt + '<div class="pswdBlock"><label for="password">' + label + '</label><input id="password"><input id="pswdSubmit" type="submit" value="' + submit + '"></div><p id="errorTxt" class="alert"></p></div>');
+				
+				$pswdHtml.find('#pswdSubmit').button().click(function() {
+					
+					var pswdEntered = caseSensitive == 'false' ? $('#password').val().toLowerCase() : $('#password').val();
+					if (pswdEntered == pswd) {
+						for (var i=0; i<lockedHs.length; i++) {
+							if (lockedHs[i].locked == true && lockedHs[i].id == $hs.attr('id')) {
+								media360.unlockHs(i);
+								parent.window.$.featherlight.current().close();
+								break;
+							}
+						}
+					} else {
+						$('#errorTxt').html(wrong);
+					}
+				});
+				
+				$.featherlight($pswdHtml);
+				x_pageContentsUpdated();
+			}
+		}
+		
+		// unlock hotspots after a linked hs or scene has been clicked on / viewed
+		this.unlockHs = function(index) {
+			var $lockedHs = $('#' + lockedHs[index].id).removeClass('lock lockHide disableTip'),
+				$icon = $lockedHs.find('.icon360');
+			
+			$icon
+				.css('transform', 'rotate(' + $icon.data('orientation') + 'deg)')
+				.removeClass($icon.data('lockIcon'))
+				.addClass($icon.data('icon'));
+			
+			lockedHs[index].locked = false;
+		}
+		
+		this.mediaFunct = function(mediaElement) {
+			var $mediaElement = $(mediaElement);
+			if ($mediaElement.parents('.hsAudio').length > 0) {
+				// audio that plays immediately when hotspot clicked
+				$mediaElement.parents('.hsAudio').data('hs').data('audioPlayer', mediaElement);
+				
+				$mediaElement.data('playing', false);
+				
+				mediaElement.addEventListener('playing', function() {
+					$mediaElement.data('playing', true);
+				});
+				mediaElement.addEventListener('pause', function() {
+					$mediaElement.data('playing', false);
+				});
+				mediaElement.addEventListener('ended', function() {
+					$mediaElement.data('playing', false);
+				});
+			}
+		}		
+		
+		this.pauseAudio = function() {
+			// pause any auto-play audio that may be playing
+			$('#audioHolder .hsAudio').each(function() {
+				$(this).data('hs').data('audioPlayer').pause();
+			});
+		}
+		
+		this.mediaMetadata = function($video, wh) {
+			
+			$video.data({
+				width: wh[0],
+				height: wh[1]
+			});
+			
+			$video.closest(".mejs-video").css({
+				"maxWidth": wh[0] + 'px',
+				"maxHeight": wh[1] + 'px'
+			});
+			
+			$('.featherlight-content').addClass('max hidden');
+			
+			var availSpace = [$('.featherlight-content').width()- 20, $('.featherlight-content').height() - 20],
+				$videoDiv = $('#pageVideo').find('.mejs-video');
+			
+			// resize if the media is the wrong size for its holder
+			// this is done by manually triggering the window resize event (mediaelement.js listens to this event)
+			if ($videoDiv.width() > availSpace[0] || $videoDiv.height() < availSpace[1]) {
+				videoResize = false;
+				$x_window.resize();
+				
+				if (x_fillWindow == false) {
+					videoResize = true;
+					$('.featherlight-content').removeClass('max hidden');
+				}
+				
+			} else {
+				$('.featherlight-content').removeClass('max hidden');
+			}
+		}
+		
+		this.applySceneStyles = function(e) {
+			// remove all styles specific to a scene
+			$('.overlayBgStyles').remove();
+			
+			// add any styles specific to this scene
+			if ((scenes[e].tooltipBg != undefined && scenes[e].tooltipBg != '') || (scenes[e].titleBg != undefined && scenes[e].titleBg != '')) {
+				
+				var styleTag = '<style class="overlayBgStyles">'
+				
+				if (scenes[e].tooltipBg != undefined && scenes[e].tooltipBg != '') {
+					var bg = x_getColour(scenes[e].tooltipBg),
+						txt = x_blackOrWhite(bg),
+						rgb = media360.hexToRgb(bg),
+						rgbTxt = 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.7)';
+					
+					styleTag = styleTag + 'div.hotspot360Icon.tooltip .tip { background-color: ' + rgbTxt + '; color: ' + txt + '; background-opacity: 0.7; } div.hotspot360Icon.tooltip .tip .tipArrow { border-color: ' + rgbTxt + ' transparent transparent transparent; } div.hotspot360Icon.tooltip .tip .tipArrow.arrowUp { border-color: transparent transparent ' + rgbTxt + ' transparent; }';
+				}
+				
+				if (scenes[e].titleBg != undefined && scenes[e].titleBg != '') {
+					var bg = x_getColour(scenes[e].titleBg),
+						txt = x_blackOrWhite(bg),
+						rgb = media360.hexToRgb(bg),
+						rgbTxt = 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.7)';
+					
+					styleTag = styleTag + '.pnlm-panorama-info { background-color: ' + rgbTxt + '; color: ' + txt + '; }';
+				}
+				
+				styleTag += '</style>';
+				
+				$("#pageContents").append(styleTag);
+			}
+		}
+		
+		this.hexToRgb = function(hex) {
+			var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+			return result ? {
+				r: parseInt(result[1], 16),
+				g: parseInt(result[2], 16),
+				b: parseInt(result[3], 16)
+			} : null;
+		}
+		
+		this.fixView = function() {
+			if ($('.pnlm-ui.pnlm-grab').offset() != undefined && ($('.pnlm-ui.pnlm-grab').offset().left != $panorama.offset().left || $('.pnlm-ui.pnlm-grab').offset().top != $panorama.offset().top)) {
+				$('.pnlm-ui.pnlm-grab').offset({ left: $panorama.offset().left, top: $panorama.offset().top });
+			}
+			if ($('.pnlm-render-container').offset() != undefined && ($('.pnlm-render-container').offset().left != $panorama.offset().left || $('.pnlm-render-container').offset().top != $panorama.offset().top)) {
+				$('.pnlm-render-container').offset({ left: $panorama.offset().left, top: $panorama.offset().top });
+			}
+		}
+	}
+	
+	media360.init();
+	
+</script>
+
+
+<div id="pageContents">
+	
+	<div class="splitScreen">
+		
+		<div id="mainText" class="left"></div>
+		
+		<div class="right">
+			<div class="panel">
+				<div id="panoramaHolder">
+					<div id="panorama"></div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	
+</div>

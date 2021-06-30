@@ -66,32 +66,32 @@
 
     }
 
-    function course_list(){
+    function course_list()
+    {
 
-    global $xerte_toolkits_site;
+        global $xerte_toolkits_site;
 
-    $query="select course_freetext_enabled from " . $xerte_toolkits_site->database_table_prefix . "sitedetails";
+        $query = "select course_freetext_enabled from " . $xerte_toolkits_site->database_table_prefix . "sitedetails";
 
-    $row = db_query_one($query);
-    echo "<p>" . MANAGEMENT_COURSE_FREE_TEXT_ENABLE . "<form><textarea id=\"course_freetext_enabled\">" . $row['course_freetext_enabled'] . "</textarea></form></p>";
+        $row = db_query_one($query);
+        echo "<p>" . MANAGEMENT_COURSE_FREE_TEXT_ENABLE . "<form><textarea id=\"course_freetext_enabled\">" . $row['course_freetext_enabled'] . "</textarea></form></p>";
 
-    $query="select * from " . $xerte_toolkits_site->database_table_prefix . "course order by course_name ASC";
+        $query = "select * from " . $xerte_toolkits_site->database_table_prefix . "course order by course_name ASC";
 
-    echo "<p>" . MANAGEMENT_LIBRARY_ADD_COURSE . "</p>";
+        echo "<p>" . MANAGEMENT_LIBRARY_ADD_COURSE . "</p>";
 
-    echo "<p>" . MANAGEMENT_LIBRARY_NEW_COURSE . "<form><textarea cols=\"100\" rows=\"2\" id=\"newcourse\">" . MANAGEMENT_LIBRARY_NEW_COURSE_NAME . "</textarea></form></p>";
-    echo "<p><form action=\"javascript:new_course();\"><button class=\"xerte_button\" type=\"submit\"><i class=\"fa fa-plus-circle\"></i> " . MANAGEMENT_LIBRARY_NEW_LABEL . "</button></form></p>";
+        echo "<p>" . MANAGEMENT_LIBRARY_NEW_COURSE . "<form><textarea cols=\"100\" rows=\"2\" id=\"newcourse\">" . MANAGEMENT_LIBRARY_NEW_COURSE_NAME . "</textarea></form></p>";
+        echo "<p><form action=\"javascript:new_course();\"><button class=\"xerte_button\" type=\"submit\"><i class=\"fa fa-plus-circle\"></i> " . MANAGEMENT_LIBRARY_NEW_LABEL . "</button></form></p>";
 
-    echo "<p>" . MANAGEMENT_LIBRARY_EXISTING_COURSES . "</p>";
+        echo "<p>" . MANAGEMENT_LIBRARY_EXISTING_COURSES . "</p>";
 
-    $query_response = db_query($query);
+        $query_response = db_query($query);
 
-    foreach($query_response as $row) {
-
-        echo "<p>" . $row['course_name'] . " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_course('" . $row['course_id'] .  "')\"><i class=\"fa fa-minus-circle\"></i> " . MANAGEMENT_LIBRARY_REMOVE . " </button></p>";
-
-    }
-
+        if ($query_response !== false && $query_response != null) {
+            foreach ($query_response as $row) {
+                echo "<p>" . $row['course_name'] . " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_course('" . $row['course_id'] . "')\"><i class=\"fa fa-minus-circle\"></i> " . MANAGEMENT_LIBRARY_REMOVE . " </button></p>";
+            }
+        }
     }
 
 	function syndication_list(){

@@ -31,6 +31,7 @@ use \Tsugi\Util\Net;
 use \Tsugi\Grades\GradeUtil;
 
 global $tsugi_enabled;
+global $xapi_enabled;
 global $lti_enabled;
 global $xerte_toolkits_site;
 
@@ -49,9 +50,15 @@ if(is_numeric($id) || $id == null)
 	$lti_enabled = true;
     $LAUNCH = LTIX::requireData();
 
+    $islti13 = $LAUNCH->isLTIAdvantage();
+    if ($islti13) {
+        $msg = array();
+        $nrps = $LAUNCH->context->loadNamesAndRoles(false, $msg);
+    }
+
     if ($id == null)
     {
-        $id = $LAUNCH->ltiRawParameter('template_id');
+        $id = $LAUNCH->ltiCustomGet('template_id');
         if (!is_numeric($id))
         {
             exit;
@@ -63,7 +70,7 @@ if(is_numeric($id) || $id == null)
     _debug("LTI user: " . print_r($USER, true));
     $xerte_toolkits_site->lti_user = $USER;
 
-    $group = $LAUNCH->ltiRawParameter('group');
+    $group = $LAUNCH->ltiParameter('group');
     if ($group === false)
     {
         $group = $LAUNCH->ltiCustomGet('group');
@@ -76,7 +83,7 @@ if(is_numeric($id) || $id == null)
     {
         $xerte_toolkits_site->group = $group;
     }
-    $course = $LAUNCH->ltiRawParameter('course');
+    $course = $LAUNCH->ltiParameter('course');
     if ($course === false)
     {
         $course = $LAUNCH->ltiCustomGet('course');
@@ -89,14 +96,14 @@ if(is_numeric($id) || $id == null)
     {
         $xerte_toolkits_site->course = $course;
     }
-    $module = $LAUNCH->ltiRawParameter('module');
+    $module = $LAUNCH->ltiParameter('module');
     if ($module === false)
     {
         $module = $LAUNCH->ltiCustomGet('module');
     }
     if ($module===false && isset($_REQUEST['module']))
     {
-        $module = $_REQUEST{'module'};
+        $module = $_REQUEST['module'];
     }
     if ($module !== false)
     {
@@ -115,24 +122,25 @@ if(is_numeric($id) || $id == null)
     {
         die("template_id not found");
     }
-    if ($row['tsugi_xapi_useglobal'])
-    {
-        $q = "select LRS_Endpoint, LRS_Key, LRS_Secret from {$prefix}sitedetails where site_id=1";
-        $globalrow = db_query_one($q);
-        $lrs = array('lrsendpoint' => $globalrow['LRS_Endpoint'],
-            'lrskey' => $globalrow['LRS_Key'],
-            'lrssecret' => $globalrow['LRS_Secret'],
-        );
-    }
-    else{
-        $lrs = array('lrsendpoint' => $row['tsugi_xapi_endpoint'],
-            'lrskey' => $row['tsugi_xapi_key'],
-            'lrssecret' => $row['tsugi_xapi_secret'],
-        );
-    }
-    $lrs = CheckLearningLocker($lrs);
+    if ($row['tsugi_xapi_enabled'] == '1') {
+        $xapi_enabled = true;
+        if ($row['tsugi_xapi_useglobal']) {
+            $q = "select LRS_Endpoint, LRS_Key, LRS_Secret from {$prefix}sitedetails where site_id=1";
+            $globalrow = db_query_one($q);
+            $lrs = array('lrsendpoint' => $globalrow['LRS_Endpoint'],
+                'lrskey' => $globalrow['LRS_Key'],
+                'lrssecret' => $globalrow['LRS_Secret'],
+            );
+        } else {
+            $lrs = array('lrsendpoint' => $row['tsugi_xapi_endpoint'],
+                'lrskey' => $row['tsugi_xapi_key'],
+                'lrssecret' => $row['tsugi_xapi_secret'],
+            );
+        }
+        $lrs = CheckLearningLocker($lrs);
 
-    $_SESSION['XAPI_PROXY'] = $lrs;
+        $_SESSION['XAPI_PROXY'] = $lrs;
+    }
 
     require("play.php");
 

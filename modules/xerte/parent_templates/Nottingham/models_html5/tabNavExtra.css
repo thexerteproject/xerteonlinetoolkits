@@ -42,3 +42,11 @@
 		overflow:	auto;
 	}
 	
+	.paneInfo {
+		outline: none;
+	}
+	
+	#txtHolder {
+		margin-bottom: 1em;
+	}
+	

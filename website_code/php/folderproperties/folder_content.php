@@ -30,7 +30,7 @@
 
 require_once("../../../config.php");
 
-_load_language_file("/website_code/php/folderproperties/folder_content_template.inc");
+_load_language_file("/website_code/php/folderproperties/folder_content.inc");
 
 
 include "../display_library.php";

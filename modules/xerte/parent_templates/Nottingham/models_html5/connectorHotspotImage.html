@@ -36,8 +36,8 @@
 			$("#pageContents .highlighted").removeClass("highlighted");
 			$("#feedback").html("");
 			$(".x_popupDialog").parent().detach(); // remove any open dialogs
+			
 			if (x_currentPageXML.getAttribute("highlight") == "true") {
-
 				$("area").mapster('select');
 			}
             else {
@@ -63,37 +63,25 @@
 				$("#mainText").remove();
 				$("#pageContents").css("text-align", "center");
 				// Remove panel
-				//$("#panel").removeClass("inline");
 				$("#panel").removeClass("panel");
 			} else {
 				$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 				
-				if (x_currentPageXML.getAttribute("align") == "Right") {
-					$("#panel").addClass("left");
-				} else {
-					$("#panel").addClass("right");
+				if (x_browserInfo.mobile == false) {
+					if (x_currentPageXML.getAttribute("align") == "Right") {
+						$("#panel").addClass("left");
+					} else {
+						$("#panel").addClass("right");
+					}
 				}
 			}
 			
-			// set up dialog object for later if it hasn't already been set up on another page of this type
-			// xenith.js contains the function used for creating/attaching dialogs - x_openDialog()
-			var newDialog = true;
-			$(x_dialogInfo).each(function(i) {
-				if (this.type == "connectorHotspotImage") {
-					newDialog = false;
-				}
-			});
-			if (newDialog == true) {
-				var dialog = new Object();
-				dialog.type = "connectorHotspotImage";
-				dialog.built = false;
-				x_dialogInfo.push(dialog);
-			}
+			this.setUpDialog();
 			
 			$img
 				.css({
-						"opacity"	:0,
-						"filter"	:'alpha(opacity=0)'
+					"opacity": 0,
+					"filter": 'alpha(opacity=0)'
 				})
 				.one("load", function() {
 					connectorHotspotImage.resizeImg(true);
@@ -102,9 +90,9 @@
 					x_pageLoaded();
 				})
 				.attr({
-					"src"	:x_evalURL(x_currentPageXML.getAttribute("url")),
-					"alt"	:x_currentPageXML.getAttribute("tip"),
-					"usemap":"#hsHolder_map"
+					"src": x_evalURL(x_currentPageXML.getAttribute("url")),
+					"alt": x_currentPageXML.getAttribute("tip"),
+					"usemap": "#hsHolder_map"
 				})
 				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 					if (this.complete) {
@@ -149,6 +137,7 @@
 				imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
 				imgMaxH = Math.round($x_pageHolder.height() - 50);
 			}
+			
 			$img.mapster('unbind');
 
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
@@ -157,9 +146,8 @@
 				"opacity"	:1,
 				"filter"	:'alpha(opacity=100)'
 			});
-
+			
 			this.createHS();
-
 		};
 		
 		this.createHS = function() {
@@ -230,22 +218,45 @@
 			// Make sure focus is ALWAYS visible, even if strokewidth is set to 0
 			tabfocusoptions.render_highlight.stroke = true;
 			tabfocusoptions.render_highlight.strokeWidth = (strokeWidth == 0? 1 : strokeWidth * 2);
+			
+			if ($('#audioHolder')) $('#audioHolder').empty();
 
 			$(x_currentPageXML).children()
 				.each(function(i){
 					var hsType,	// what does hs do when clicked?
 						hsInfo;
 					
-					// open dialog popup
+					var windowType = this.getAttribute("windowType") == 'lightbox' ? 'lightbox' : 'dialog';
+					
+					// if more than one action has been added then priority is:
+					// video > audio > image > text > iframe > new window (html) > new window (url) > external destination > destination
+					
+					// open dialog popup / lightbox
 					if (this.getAttribute("hotspotMovie") != undefined && this.getAttribute("hotspotMovie") != "") {
-						hsType = "dialog";
+						//hsType = windowType; // ** video in lightbox not working yet - needs some work on video scaling
+						hsType = 'dialog';
 						hsInfo = "video";
 					} else if (this.getAttribute("hotspotSound") != undefined && this.getAttribute("hotspotSound") != "") {
-						hsType = "dialog";
 						hsInfo = "sound";
+						
+						if (this.getAttribute("playerType") != 'auto') {
+							hsType = windowType;
+						} else {
+							// auto play audio without showing player in dialog / lightbox
+							hsType = "autoPlay";
+						}
+					} else if (this.getAttribute("imageFile") != undefined && this.getAttribute("imageFile") != "") {
+						hsType = windowType;
+						hsInfo = "image";
+						
 					} else if (this.getAttribute("hotspotPopUp") != undefined && this.getAttribute("hotspotPopUp") != "") {
-						hsType = "dialog";
+						hsType = windowType;
 						hsInfo = "text";
+						
+					} else if (this.getAttribute("iframe") != undefined && this.getAttribute("iframe") != "") {
+						// iframe in dialog / lightbox
+						hsType = windowType;
+						hsInfo = "iframe";
 					
 					// open new window
 					} else if (this.getAttribute("htm") != undefined && this.getAttribute("htm") != "") {
@@ -254,6 +265,11 @@
 					} else if (this.getAttribute("windowURL") != undefined && this.getAttribute("windowURL") != "") {
 						hsType = "newWindow";
 						hsInfo = "url";
+					
+					// go to external page
+					} else if (this.getAttribute("destinationURL") != undefined && this.getAttribute("destinationURL") != "") {
+						hsType = "url";
+						hsInfo = this.getAttribute("destinationURL");
 					
 					// go to page in LO
 					} else if (this.getAttribute("destination") != undefined && this.getAttribute("destination") != "") {
@@ -311,27 +327,26 @@
 							}
 						}
 					}
-
+					
 					$hotspot
 						.attr("coords", coords_string)
-
 						.click(function() {
-
-							// when audio dialogs are closed because another dialog has been opened - stop flash audio playing first
-							if ($("#x_connectorHotspotImage #pageAudio .mejs-audio").attr("id") != undefined) {
-								var audioRefNum = $("#x_connectorHotspotImage #pageAudio .mejs-audio").attr("id").substring(4);
-								$("body div#me_flash_" + audioRefNum + "_container").remove();
-							}
+							connectorHotspotImage.pauseAudio();
 							
-							$(".x_popupDialog").parent().detach(); // remove any open dialogs
+							// force open dialogs to close
+							$(".x_popupDialog").parent().detach();
+
 							$("#pageContents .selected").removeClass("selected");
 							$("#pageContents .highlighted").removeClass("highlighted");
 							
-							if (hsType != "pageLink") $(this).addClass("selected");
+							if (hsType != "pageLink" && hsType != "url") $(this).addClass("selected");
 							$("#feedback").html("");
 							
+							if (hsType == "url") {
+								window.location.href = hsInfo;
+							
 							// go to page in LO
-							if (hsType == "pageLink") {
+							} else if (hsType == "pageLink") {
 								if (x_lookupPage("linkID", hsInfo) === false && ['[previous]', '[next]', '[first]', '[last]'].indexOf(hsInfo) < 0) { // destination not found
 									if (x_params.authorSupport == "true") {
 										$("#feedback").html(hsInfo + " " + $pageContents.data("authorSupport"));
@@ -340,8 +355,13 @@
 									x_navigateToPage(false, {type:"linkID", ID: hsInfo});
 								}
 							
-							// open dialog popup
-							} else if (hsType == "dialog") {
+							// auto play audio
+							} else if (hsType == "autoPlay") {
+								$(this).data('audioPlayer').setCurrentTime(Number(_this.getAttribute("soundStart")));
+								$(this).data('audioPlayer').play();
+							
+							// open dialog popup / lightbox
+							} else if (hsType == "dialog" || hsType == "lightbox") {
 								var dialogHtml;
 								if (hsInfo == "video") {
 									var videoDimensions = [320,240];
@@ -356,49 +376,110 @@
 										videoTip = _this.getAttribute("tip");
 									}
 									
-									dialogHtml = '<div id="pageVideo"></div>' +
-										'<script type="text/javascript">' +
-											'$("#pageVideo")' +
-												'.attr("title", "' + videoTip + '")' +
-												'.mediaPlayer({' +
-													'type			:"video",' +
-													'source			:"' + _this.getAttribute("hotspotMovie") + '",' +
-													'width			:' + videoDimensions[0] + ',' +
-													'height			:' + videoDimensions[1] + ',' +
-													'startEndFrame	:[' + Number(_this.getAttribute("startFrame")) + ', ' + Number(_this.getAttribute("endFrame")) + ']' +
-												'});' +
-										'</' + 'script>'; // broken in to 2 strings to stop unterminated string literal problem
+									//if (hsType == 'dialog') {
+										dialogHtml = '<div id="pageVideo"></div>' +
+											'<script type="text/javascript">' +
+												'$("#pageVideo")' +
+													'.attr("title", "' + videoTip + '")' +
+													'.mediaPlayer({' +
+														'type			:"video",' +
+														"source			:'" + _this.getAttribute("hotspotMovie") + "'," +
+														'width			:' + videoDimensions[0] + ',' +
+														'height			:' + videoDimensions[1] + ',' +
+														'startEndFrame	:[' + Number(_this.getAttribute("startFrame")) + ', ' + Number(_this.getAttribute("endFrame")) + ']' +
+													'});' +
+											'</' + 'script>'; // broken in to 2 strings to stop unterminated string literal problem
+										
+										$pageContents.data("dialogPos").width = videoDimensions[0];
+										$pageContents.data("dialogPos").height = Number(videoDimensions[1]) + 5;
 									
-									$pageContents.data("dialogPos").width = videoDimensions[0];
-									$pageContents.data("dialogPos").height = Number(videoDimensions[1]) + 3;
+									/*} else {
+										var $pageVideo = $('<div id="pageVideo"></div>');
+										
+										$.featherlight($pageVideo, {});
+										
+										$('#pageVideo')
+											.attr('title', videoTip)
+											.mediaPlayer({
+												type: 'video',
+												source: _this.getAttribute('hotspotMovie'),
+												startEndFrame: [Number(_this.getAttribute('startFrame')), Number(_this.getAttribute('endFrame'))]
+											});
+									}*/
 									
 								} else if (hsInfo == "sound") {
-									dialogHtml = '<div id="pageAudio"></div>' +
-										'<script type="text/javascript">' +
-											'$("#pageAudio").mediaPlayer({' +
-												'type : "audio",' +
-												'source : "' + _this.getAttribute("hotspotSound") + '",' +
-												'width : "100%"' +
-											'});' +
-										'</' + 'script>';
+									if (hsType == 'dialog') {
+										dialogHtml = '<div id="pageAudio"></div>' +
+											'<script type="text/javascript">' +
+												'$("#pageAudio").mediaPlayer({' +
+													'type : "audio",' +
+													'source : "' + _this.getAttribute("hotspotSound") + '",' +
+													'width : "100%"' + ',' +
+													'startEndFrame: [' + Number(_this.getAttribute("soundStart")) + ', ' + Number(_this.getAttribute("soundEnd")) + ']' +
+												'});' +
+											'</' + 'script>';
+										
+										$pageContents.data("dialogPos").width = undefined;
+										$pageContents.data("dialogPos").height = x_audioBarH;
+										
+									} else {
+										var $pageAudio = $('<div id="pageAudio"></div>')
+												.width($x_mainHolder.width()*0.8)
+												.css('max-width', '300px');
+										
+										$.featherlight($pageAudio);
+										
+										$('#pageAudio')
+											.attr('title', videoTip)
+											.mediaPlayer({
+												type: 'audio',
+												source: _this.getAttribute('hotspotSound'),
+												width: '100%',
+												startEndFrame: [Number(_this.getAttribute('soundStart')), Number(_this.getAttribute('soundEnd'))]
+											});
+									}
 									
-									$pageContents.data("dialogPos").width = undefined;
-									$pageContents.data("dialogPos").height = x_audioBarH;
+								} else if (hsInfo == "image") {
+									
+									if (hsType == 'dialog') {
+										
+										var styleAttr = 'style="max-width:' + $x_mainHolder.width()*0.8 + 'px; max-height:' + $x_mainHolder.height()*0.8 + 'px"';
+										
+										dialogHtml = '<img src="' + _this.getAttribute("imageFile") + '" class="dialogImg" ' + styleAttr + '/>';
+										$pageContents.data("dialogPos").width = 'auto';
+										$pageContents.data("dialogPos").height = 'auto';
+									
+									} else {
+										var tip = _this.getAttribute('imageTip') != undefined && _this.getAttribute('imageTip') != '' ? _this.getAttribute('imageTip') : '';
+										$.featherlight({image: _this.getAttribute('imageFile'), afterOpen: function(e) { if (tip != '') { this.$content.attr('alt', tip); } } });
+										
+									}
+									
+								} else if (hsInfo == "iframe") {
+									
+									if (hsType == 'dialog') {
+										dialogHtml = '<iframe src="' + _this.getAttribute("iframe") + '" width="99%" height="98%"></iframe>';
+										$pageContents.data("dialogPos").width = $x_mainHolder.width()*0.8;
+										$pageContents.data("dialogPos").height = $x_mainHolder.height()*0.8;
+									
+									} else {
+										$.featherlight({iframe: _this.getAttribute("iframe"), iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
+									}
 									
 								} else { // text
 									dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotPopUp"));
-									$pageContents.data("dialogPos").width = undefined;
-									$pageContents.data("dialogPos").height = undefined;
+									
+									if (hsType == 'dialog') {
+										$pageContents.data("dialogPos").width = undefined;
+										$pageContents.data("dialogPos").height = undefined;
+									} else {
+										$.featherlight(dialogHtml, {});
+										x_pageContentsUpdated();
+									}
 								}
 								
-								x_openDialog("connectorHotspotImage", "", $pageContents.data("continueBtnTxt"), $pageContents.data("dialogPos"), dialogHtml);
-								
-								// when audio dialogs are closed with dialog x button - stop flash audio playing first
-								if (hsInfo == "sound") {
-									var audioRefNum = $("#x_connectorHotspotImage #pageAudio .mejs-audio").attr("id").substring(4);
-									$("#x_connectorHotspotImage").parent().on("dialogclose", function() {
-										$("body div#me_flash_" + audioRefNum + "_container").remove();
-									});
+								if (hsType == 'dialog') {
+									x_openDialog("connectorHotspotImage", _this.getAttribute("showTitle") == "true" ? _this.getAttribute("name") : '', $pageContents.data("continueBtnTxt"), $pageContents.data("dialogPos"), dialogHtml);
 								}
 							
 							// open new window
@@ -416,7 +497,7 @@
 									window.open(src, "_blank", "width=" + wh[0] + ", height=" + wh[1]);
 								} else {
 									var popupWindow = window.open("", "", "width=" + wh[0] + ", height=" + wh[1]);
-									popupWindow.document.write(_this.getAttribute("htm"));
+									popupWindow.document.write((_this.getAttribute("showTitle") == "true" ? '<title>' + _this.getAttribute("name") + '</title>' : '') + _this.getAttribute("htm"));
 									popupWindow.focus();
 								}
 							}
@@ -446,11 +527,24 @@
 							$("img").mapster('highlight', false);
 						})
 						.keypress(function(e) {
-						var charCode = e.charCode || e.keyCode;
-						if (charCode == 32) {
-							$(this).trigger("click");
-						}
+							var charCode = e.charCode || e.keyCode;
+							if (charCode == 32) {
+								$(this).trigger("click");
+							}
 						});
+					
+					// create hidden audio players
+					if (hsType == 'autoPlay' && hsInfo == 'sound') {
+						var $audioHolder = $('#audioHolder').length == 0 ? $('<div id="audioHolder"></div>').appendTo($('#imageHolder')) : $('#audioHolder');
+						var $hsAudio = $('<div class="hsAudio"></div>').appendTo($audioHolder).data('hs', $hotspot);
+						
+						$hsAudio.mediaPlayer({
+							type: "audio",
+							source: _this.getAttribute("hotspotSound"),
+							startEndFrame: [Number(_this.getAttribute("soundStart")), Number(_this.getAttribute("soundEnd"))]
+						});
+					}
+					
 					if (x_currentPageXML.getAttribute("hs_showTooltip") == undefined || x_currentPageXML.getAttribute("hs_showTooltip") !== "false") {
 						if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
 							$hotspot.attr("title", this.getAttribute("alttext"));
@@ -461,11 +555,52 @@
 
 					$("#hsHolder_map").append($hotspot);
 				});
-
+			
 			$('img').mapster(options);
 			if (x_currentPageXML.getAttribute("highlight") == "true") {
 
 				$("area").mapster('select');
+			}
+			
+			// pause audio auto-play audio on press Esc
+			if ($('#audioHolder').length > 0) {
+				$(document).keyup(function(e) {
+					 if (e.key === "Escape") {
+						connectorHotspotImage.pauseAudio();
+					}
+				});
+			}
+		}
+		
+		this.mediaFunct = function(mediaElement) {
+			var $mediaElement = $(mediaElement);
+			if ($mediaElement.parents('.hsAudio').length > 0) {
+				// audio that plays immediately when hotspot clicked
+				$mediaElement.parents('.hsAudio').data('hs').data('audioPlayer', mediaElement);
+			}
+		}		
+		
+		this.pauseAudio = function() {
+			// pause any auto-play audio that may be playing
+			$('#audioHolder .hsAudio').each(function() {
+				$(this).data('hs').data('audioPlayer').pause();
+			});
+		}
+		
+		this.setUpDialog = function() {
+			// set up dialog object for later if it hasn't already been set up on another page of this type
+			// xenith.js contains the function used for creating/attaching dialogs - x_openDialog()
+			var newDialog = true;
+			$(x_dialogInfo).each(function(i) {
+				if (this.type == "connectorHotspotImage") {
+					newDialog = false;
+				}
+			});
+			if (newDialog == true) {
+				var dialog = new Object();
+				dialog.type = "connectorHotspotImage";
+				dialog.built = false;
+				x_dialogInfo.push(dialog);
 			}
 		}
 
@@ -477,7 +612,7 @@
 
 
 <div id="pageContents">
-	
+
 	<div id="panel" class="panel inline">
 		<div id="imageHolder">
 			<img id="image" class="x_noLightBox"/>
@@ -485,7 +620,7 @@
 			<div id="feedback" class="alert" />
 		</div>
 	</div>
-	
+
 	<div id="mainText" tabindex="1"></div>
-	
+
 </div>

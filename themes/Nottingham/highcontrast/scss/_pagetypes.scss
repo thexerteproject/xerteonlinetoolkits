@@ -168,6 +168,21 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   border-radius: $smallroundedcorners;
   padding-left: 10px;
 }
+//*****highlight text******/
+.x_textHighlight_page .ui-widget-content button.ui-state-default {
+  border-radius: $smallroundedcorners;
+  background: lighten($blackordarkest, 10%);
+  border: none;
+  color: #ffffff;
+}
+
+.x_textHighlight_page .ui-widget-content button.ui-state-default.ui-state-active{
+  border-radius: $smallroundedcorners;
+  background: darken($lightestcolor, 70%);
+  border: none;
+  color: $whiteorlightest;
+}
+
 //*****annotated diagram******/
 #listholder a.listitem, a:visited {
   color:$whiteorlightest ;
@@ -255,15 +270,9 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   border-color: lighten($blackordarkest, 10%);
   color:$whiteorlightest;
 }
-.x_gapFill_page .target.correct{
-  color:lightgreen;
-  font-weight:bold;
-//  background-color:transparentize($whiteorlightest, .8);
-}
-.x_gapFill_page #targetHolder select[disabled]{
-  color: #00ff19;
-  border: #00ff19 dotted 2px;
-}
+
+
+
 //*****hotspot image*****/
 a.hotspot, a.hotspot.selected {
   background: none;

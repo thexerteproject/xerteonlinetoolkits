@@ -94,6 +94,8 @@
 	define("PROPERTIES_LIBRARY_PROJECT_MODIFY", "This project was last modified on");
 
     define("PROPERTIES_LIBRARY_DEFAULT_ENGINE", "What is the default engine to use for this project?");
+	
+	define("PROPERTIES_LIBRARY_DEFAULT_ENGINE_WARNING", "Please note that Flash is no longer supported and these checkboxes should only be used to convert older Flash projects to use the HTML5 interface.");
 
     define("PROPERTIES_LIBRARY_PUBLISH_ENGINE", "Default engine");
 
@@ -236,6 +238,10 @@
 	define("PROPERTIES_LIBRARY_TSUGI_NOTAVAILABLE_DESCRIPTION", "<p>Here you could publish your project as an LTI1 tool if you install and configure TSUGI as part of your installation, however Tsugi is not currently installed. See <a href='https://xot.xerte.org.uk/play.php?template_id=88' target='_blank'>how to install Tsugi</a> for further details.</p><p>You can also choose to track activities through xAPI. If you want to do so you need to specify the end-point, the username and the password of the LRS that is going to receive the xAPI events. You can still use xAPI without Tsugi/LTI installed but in this case the only option you have as a learner identifier is setting a group value. The group will need to be specified in the launch URL (substitute groupname by the groupname you want to be used).</p>");
 
 	define("PROPERTIES_LIBRARY_TSUGI_PUBLISH", "Publish project through Tsugi as an LTI1 tool");
+
+    define("PROPERTIES_LIBRARY_TSUGI_USEGLOBAL", "Use globally configured keys and secrets (including LTI 1.3) ");
+
+    define("PROPERTIES_LIBRARY_TSUGI_USEPRIVATEONLY", "Allow only private key/secret configured below ");
 
 	define("PROPERTIES_LIBRARY_TSUGI_NAME", "Name:");
 

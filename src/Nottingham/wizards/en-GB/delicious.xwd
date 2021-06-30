@@ -1,4 +1,4 @@
-<wizard menus="Misc">
+<wizard menus="Links / Feeds">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20" panelWidth="Medium" 
@@ -7,7 +7,7 @@
   </pageWizard>
 
   <!-- DELICIOUS============================ -->
-  <delicious menu="Misc" menuItem="Delicious Bookmarks" hint="Include Delicious bookmarks in your project." thumb="thumbs/delicious.jpg" icon="icDelicious" deprecated="This page is no longer supported">
+  <delicious menu="Links / Feeds" menuItem="Delicious Bookmarks" hint="Include Delicious bookmarks in your project." thumb="thumbs/delicious.jpg" icon="icDelicious" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="textArea" height="300"/>

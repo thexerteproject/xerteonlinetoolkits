@@ -1,0 +1,1436 @@
+<script type="text/javascript">
+    /**
+     * Licensed to The Apereo Foundation under one or more contributor license
+     * agreements. See the NOTICE file distributed with this work for
+     * additional information regarding copyright ownership.
+
+     * The Apereo Foundation licenses this file to you under the Apache License,
+     * Version 2.0 (the "License"); you may not use this file except in
+     * compliance with the License. You may obtain a copy of the License at:
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+
+	var crossword = new function () {
+
+		var $pageContents;
+        var startPositionArray = []
+        var tab = 0;
+        var active = 0;
+        var nextPosition;
+        var is_keyboard = false
+        var tries = 30;
+		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function () {
+			$pageContents = $("#pageContents");
+            this.resize();
+		}
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function () {
+            this.resize()
+        }
+
+        this.move = function (){
+
+            rePosition();
+            $(document).keydown(function(e) {
+                var inp = String.fromCharCode(e.keyCode);
+                if (!(/[a-zA-Z0-9-_ ]/.test(inp) || e.keyCode == 96)){
+                    reCalculate(e);
+                    rePosition();
+                    // if key is an arrow key, don't type the user input.
+                    // if it is any other key (a, b, c, etc)
+                    // edit the text
+
+                    if (e.keyCode > 36 && e.keyCode < 41 || e.keyCode === 9) {
+                        return false;
+                    }
+                }
+            });
+
+            $('td').click(function() {
+
+                if(x_browserInfo.mobile === true){
+                    is_keyboard = true
+                }
+
+                active = $(this).closest('table tbody').find('td').index(this);
+                if($('#crossword-table tbody tr td').eq(active).find('input')[0] !== undefined) {
+                rePosition();
+                removeHighlight();
+
+                var rows = $('#crossword-table tbody tr').length;
+                var columns = $('#crossword-table tbody tr:eq(0) td').length;
+
+
+                var wholeNumber = Math.floor(active/columns)
+                var remainder = active%columns
+
+                    for (var i = 0; i < startPositionArray.length; i++) {
+                        if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
+                            if (startPositionArray[i][2] === "across") {
+                                var counter = startPositionArray[i][1]
+                                for (var j = 0; j < columns; j++) {
+                                    if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined && counter !== columns) {
+                                        $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
+
+                                        // var x = startPositionArray[i][0]
+                                        // var y = counter
+                                        // var coord = x + "," + y
+                                        // document.getElementById(coord).style.backgroundColor= "#24FF00"
+                                        counter++
+                                        nextPosition = startPositionArray[i][2]
+                                    } else {
+                                        return
+                                    }
+                                }
+
+                            } else {
+                                for (var j = 0; j < rows; j++) {
+                                    var temp = j * columns
+                                    if ($('#crossword-table tbody tr td').eq(active + temp).find('input')[0] !== undefined) {
+                                        $('#crossword-table tbody tr td').eq(active + temp).addClass('highlighted')
+                                        nextPosition = startPositionArray[i][2]
+                                    } else {
+                                        return;
+                                    }
+                                }
+                            }
+                            return
+                        }
+                    }
+
+                    if($('#crossword-table tbody tr td').eq(active-1).find('input')[0] || $('#crossword-table tbody tr td').eq(active+1).find('input')[0]){
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber) {
+                                var counter = startPositionArray[i][1]
+                                for (var j = 0; j < columns; j++) {
+                                    var temp = startPositionArray[i][0] * columns
+                                    temp += startPositionArray[i][1]
+                                    if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counter !== columns) {
+                                        $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
+                                        nextPosition = startPositionArray[i][2]
+                                        counter++
+                                    } else {
+                                        return;
+                                    }
+                                }
+
+                                return
+                            }
+                        }
+                    }
+
+                    for (var i = 0; i < startPositionArray.length; i++) {
+                        if (startPositionArray[i][1] == remainder) {
+                            var alignH
+                            var alignV
+                            if(startPositionArray[i][2]=="across"){
+                                alignH = columns
+                                alignV= rows
+                            }else{
+                                alignH = columns
+                                alignV = rows
+                            }
+                            for (var j = 0; j < alignV; j++) {
+                                var temp = startPositionArray[i][0] * alignH
+                                temp += startPositionArray[i][1]
+
+                                var add = j * alignH
+                                if ($('#crossword-table tbody tr td').eq(temp + add).find('input')[0] !== undefined) {
+                                    $('#crossword-table tbody tr td').eq(temp + add).addClass('highlighted')
+                                    nextPosition = startPositionArray[i][2]
+                                } else {
+                                    return;
+                                }
+                            }
+                            return
+                        }
+                    }
+                }
+
+            });
+
+            function reCalculate(e) {
+
+                var rows = $('#crossword-table tbody tr').length;
+                var columns = $('#crossword-table tbody tr:eq(0) td').length;
+                var temp;
+
+                var tabColumns;
+                var tabRow;
+                var total;
+
+
+
+                if (e.keyCode == 37) {
+                    temp = active;
+                    while (temp > 0) {
+                        temp = temp - 1;
+                        removeHighlight();
+                        if ($('#crossword-table tbody tr td').eq(temp).find('input').length != 0) {
+                            active = temp;
+                            var wholeNumber = Math.floor(active / columns)
+                            var remainder = active % columns
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][0] == wholeNumber) {
+
+                                    addHighlight(active, i, rows, columns,"arrow")
+
+                                    return
+                                }
+                            }
+
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][1] == remainder) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
+                        }
+                    }
+                }
+                if (e.keyCode == 38) {
+                    temp = active;
+
+                    while (temp - columns >= 0) {
+                        temp = temp - columns;
+                        removeHighlight();
+                        if ($('#crossword-table tbody tr td').eq(temp).find('input').length != 0) {
+                            active = temp;
+                            var wholeNumber = Math.floor(active / columns)
+                            var remainder = active % columns
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][0] == wholeNumber) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
+
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][1] == remainder) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
+                        }
+                    }
+                }
+                if (e.keyCode == 39) {
+                    temp = active;
+                    while (temp < (columns * rows) - 1) {
+                        temp = temp + 1;
+                        removeHighlight();
+                        if ($('#crossword-table tbody tr td').eq(temp).find('input').length != 0) {
+                            active = temp;
+                            var wholeNumber = Math.floor(active / columns)
+                            var remainder = active % columns
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][0] == wholeNumber) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
+
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][1] == remainder) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
+                        }
+                    }
+                }
+                if (e.keyCode == 40) {
+                    temp = active;
+                    while (temp + columns <= (rows * columns) - 1) {
+                        temp = temp + columns;
+                        removeHighlight();
+                        if ($('#crossword-table tbody tr td').eq(temp).find('input').length != 0) {
+                            active = temp;
+                            var wholeNumber = Math.floor(active / columns)
+                            var remainder = active % columns
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][0] == wholeNumber) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
+
+                            for (var i = 0; i < startPositionArray.length; i++) {
+                                if (startPositionArray[i][1] == remainder) {
+
+                                    addHighlight(active, i, rows, columns, "arrow")
+
+                                    return
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if(e.keyCode == 9 && e.ctrlKey==false){
+
+                    temp = active
+                    var wholeNumber = Math.floor(temp/columns)
+                    var remainder = active%columns
+                    var searching = true
+                    removeHighlight();
+                    while(searching) {
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
+                                tab = i + 1
+                                if(tab >= startPositionArray.length){
+                                   tab = 0
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+
+                                addHighlight(active, i, rows,columns, "tab", false)
+
+                                searching = false
+                                return
+                            }
+                        }
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber) {
+                                tab = i + 1
+                                if(tab >= startPositionArray.length) {
+                                 tab = 0
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+                                addHighlight(active, i, rows,columns, "tab", false)
+
+                                searching = false
+                                return
+                            }
+                        }
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][1] == remainder) {
+                                tab = i + 1
+                                if(tab >= startPositionArray.length) {
+                                    tab = 0
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+
+                                addHighlight(active, i, rows,columns, "tab",false)
+
+                                searching = false
+                                return
+                            }
+                        }
+                    }
+                }else if(e.keyCode == 9 && e.ctrlKey){
+
+                    temp = active
+                    var wholeNumber = Math.floor(temp/columns)
+                    var remainder = active%columns
+                    var searching = true
+                    removeHighlight();
+                    while(searching) {
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber && startPositionArray[i][1] == remainder) {
+                                tab = i - 1
+                                if(tab <0){
+                                    tab = startPositionArray.length-1
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+
+                                addHighlight(active, tab, rows,columns, "tab",true)
+
+                                searching = false
+                                return
+                            }
+                        }
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber) {
+                                tab = i - 1
+                                if(tab < 0) {
+                                    tab = startPositionArray.length-1
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+                                addHighlight(active, i, rows,columns, "tab",true)
+
+                                searching = false
+                                return
+                            }
+                        }
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][1] == remainder) {
+                                tab = i - 1
+                                if(tab <0) {
+                                    tab = startPositionArray.length-1
+                                }
+                                tabColumns = startPositionArray[tab][0] * columns
+                                tabRow = startPositionArray[tab][1]
+                                total = tabColumns + tabRow
+                                active = total
+
+                                addHighlight(active, i, rows,columns, "tab",true)
+
+                                searching = false
+                                return
+                            }
+                        }
+                    }
+                }
+            }
+
+            next = function (e, x, y){
+
+                var columns = $('#crossword-table tbody tr:eq(0) td').length;
+
+                var tabColumns = x * columns
+                var tabRow =y
+                var total = tabColumns + tabRow
+                active = total
+
+                var wholeNumber = Math.floor(active/columns)
+                var remainder = active%columns
+
+
+                if(e > 36 && e < 41 || e === 9){
+                    for(var i = 0; i < startPositionArray.length; i++){
+                        if(startPositionArray[i][0] == wholeNumber){
+                            nextPosition = startPositionArray[i][2]
+
+                        }
+                    }
+                    for (var i = 0; i < startPositionArray.length; i++) {
+                        if (startPositionArray[i][1] == remainder) {
+                            nextPosition = startPositionArray[i][2]
+                        }
+                    }
+                }else if(e > 64 && e < 91){
+
+                    if(nextPosition === "across"){
+                        active++
+                        relocateFocus(active)
+                        return;
+                    }else{
+                        active+=columns
+                        relocateFocus(active)
+                        return;
+                    }
+                }else if(e === 8){
+
+                    if(nextPosition === "across"){
+                        active--
+                        relocateFocus(active)
+                        return;
+                    }else{
+                        active-=columns
+                        relocateFocus(active)
+                        return;
+                    }
+                }
+
+
+            }
+
+            function rePosition() {
+                $('.active').removeClass('active');
+                $('#crossword-table tbody tr td').eq(active).addClass('active');
+                $('#crossword-table tbody tr td').find('input').removeClass('textClass');
+                $('#crossword-table tbody tr td').eq(active).find('input').addClass('textClass');
+                $('#crossword-table tbody tr td').eq(active).find('input').select();
+                var input = $('#crossword-table tbody tr td').eq(active).find('input').focus();
+                scrollInView();
+            }
+
+            function relocateFocus(active){
+                $('.active').removeClass('active');
+                $('#crossword-table tbody tr td').eq(active).addClass('active');
+                $('#crossword-table tbody tr td').find('input').removeClass('textClass');
+                $('#crossword-table tbody tr td').eq(active).find('input').addClass('textClass');
+                $('#crossword-table tbody tr td').eq(active).find('input').select();
+                var input = $('#crossword-table tbody tr td').eq(active).find('input').focus();
+            }
+
+            removeHighlight = function (){
+                var rows = $('#crossword-table tbody tr').length;
+                var columns = $('#crossword-table tbody tr:eq(0) td').length;
+                var total = rows*columns
+                for(var i = 0; i < total; i++){
+                    $('#crossword-table tbody tr td').eq(i).removeClass('highlighted')
+                }
+
+            }
+
+            addHighlightHint = function (id, direction){
+                removeHighlight();
+
+                var rows = $('#crossword-table tbody tr').length;
+                var columns = $('#crossword-table tbody tr:eq(0) td').length;
+                id = parseInt(id)-1
+                var num1 = startPositionArray[id][0]*columns
+                var dir = startPositionArray[id][2]
+
+                var tabColumns = startPositionArray[id][0] * columns
+                var tabRow = startPositionArray[id][1]
+                var total = tabColumns + tabRow
+                active = total
+
+                if(dir === "down, across"){
+                    dir = direction
+                }
+                num1+= startPositionArray[id][1]
+                relocateFocus(num1)
+                var counter = startPositionArray[id][1]
+                if (dir === "across") {
+                    for (var j = 0; j < columns; j++) {
+                        var temp = startPositionArray[id][0] * columns
+                        temp+= startPositionArray[id][1]
+                        if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counter !== columns) {
+                            $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
+                            counter++
+                            nextPosition = dir
+                        } else {
+                            return
+                        }
+
+                    }
+
+                } else {
+                    for (var j = 0; j < columns; j++) {
+                        var temp = startPositionArray[id][0] * columns
+                        temp+= startPositionArray[id][1]
+
+                        var add = j * columns
+                        if ($('#crossword-table tbody tr td').eq(temp + add).find('input')[0] !== undefined) {
+                            $('#crossword-table tbody tr td').eq(temp + add).addClass('highlighted')
+                            nextPosition = dir
+                        } else {
+                            return;
+                        }
+                    }
+                }
+            }
+
+
+
+            addHighlight = function (active, position, rows, columns, type, ctrl){
+
+                 var p = 1;
+                if(ctrl){
+                    p = 0
+                }
+                if(type === "tab") {
+                    if (startPositionArray[position + p] !== undefined) {
+                        if (startPositionArray[position + p][2] === "across") {
+                            var counter = startPositionArray[position+p][1];
+                            for (var j = 0; j < columns; j++) {
+                                if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined && counter!== columns) {
+                                    $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
+                                    counter++
+                                } else {
+                                    return
+                                }
+
+                            }
+
+                        } else {
+                            for (var j = 0; j < rows; j++) {
+                                var temp = j * columns
+                                if ($('#crossword-table tbody tr td').eq(active + temp).find('input')[0] !== undefined) {
+                                    $('#crossword-table tbody tr td').eq(active + temp).addClass('highlighted')
+                                } else {
+                                    return;
+                                }
+                            }
+                        }
+                    } else {
+                        if (startPositionArray[0][2] === "across") {
+                            var counter = startPositionArray[position+p][1];
+                            for (var j = 0; j < columns; j++) {
+                                if ($('#crossword-table tbody tr td').eq(active + j).find('input')[0] !== undefined && counter!== columns) {
+                                    $('#crossword-table tbody tr td').eq(active + j).addClass('highlighted')
+                                    counter++
+                                } else {
+                                    return
+                                }
+                            }
+
+                        } else {
+                            for (var j = 0; j < rows; j++) {
+                                var temp = j * columns
+                                if ($('#crossword-table tbody tr td').eq(active + temp).find('input')[0] !== undefined) {
+                                    $('#crossword-table tbody tr td').eq(active + temp).addClass('highlighted')
+                                } else {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }else if(type === "arrow"){
+
+
+                    var wholeNumber = Math.floor(active / columns)
+                    var remainder = active % columns
+
+                    if($('#crossword-table tbody tr td').eq(active-1).find('input')[0] || $('#crossword-table tbody tr td').eq(active+1).find('input')[0]){
+                        for (var i = 0; i < startPositionArray.length; i++) {
+                            if (startPositionArray[i][0] == wholeNumber) {
+                                var counter = startPositionArray[i][1]
+                                for (var j = 0; j < columns; j++) {
+                                    var temp = startPositionArray[i][0] * columns
+                                    temp += startPositionArray[i][1]
+                                    if ($('#crossword-table tbody tr td').eq(temp + j).find('input')[0] !== undefined && counter !== columns) {
+                                        $('#crossword-table tbody tr td').eq(temp + j).addClass('highlighted')
+                                        nextPosition = startPositionArray[i][2]
+                                        counter++
+                                    } else {
+                                        return;
+                                    }
+                                }
+
+                                return
+                            }
+                        }
+                    }
+
+                    for (var i = 0; i < startPositionArray.length; i++) {
+                        if (startPositionArray[i][1] == remainder) {
+                            var alignH
+                            var alignV
+                            if(startPositionArray[i][2]=="across"){
+                                alignH = columns
+                                alignV= rows
+                            }else{
+                                alignH = columns
+                                alignV = rows
+                            }
+                            for (var j = 0; j < alignV; j++) {
+                                var temp = startPositionArray[i][0] * alignH
+                                temp += startPositionArray[i][1]
+
+                                var add = j * alignH
+                                if ($('#crossword-table tbody tr td').eq(temp + add).find('input')[0] !== undefined) {
+                                    $('#crossword-table tbody tr td').eq(temp + add).addClass('highlighted')
+                                    nextPosition = startPositionArray[i][2]
+                                } else {
+                                    return;
+                                }
+                            }
+                            return
+                        }
+                    }
+
+
+                }
+            }
+
+            function scrollInView() {
+                var target = $('#crossword-table tbody tr td:eq(' + active + ')');
+                if (target.length) {
+                    var top = target.offset().top;
+
+                    $('html,body').stop().animate({
+                        scrollTop: top - 100
+                    }, 400);
+                    return false;
+                }
+            }
+
+        }
+
+		this.init = function () {
+			
+			$pageContents = $("#pageContents");
+			
+			// add text to the top of the page
+			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != '') {
+				$pageContents
+					.addClass('txtTop')
+					.append('<div id="textHolder">' + x_currentPageXML.getAttribute("text") + '</div>');
+			}
+			
+			// array with words
+			var words = [];
+			//array with hints
+			var hints = [];
+
+			var position = x_currentPageXML.getAttribute("align")
+            if(position === null || position === undefined  || position===""){
+                position = "Right"
+            }
+
+
+
+			var btnLabel = x_currentPageXML.getAttribute("checkLabel") != undefined ? x_currentPageXML.getAttribute("checkLabel") : 'Submit',
+				acrossTxt = x_currentPageXML.getAttribute("acrossLabel") != undefined ? x_currentPageXML.getAttribute("acrossLabel") : 'Across',
+				downTxt = x_currentPageXML.getAttribute("downLabel") != undefined ? x_currentPageXML.getAttribute("downLabel") : 'Down';
+			
+            if (x_browserInfo.touchScreen === false) {
+                if (position == "Right") {
+                    $pageContents.append(
+                        '<div id="pageContents-innerContainer" class="crosswordLeft"><div id="crosswordHolder" ><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="attempt"></div></div></div>'
+                    );
+                } else if (position == "Left") {
+                    $pageContents.append(
+                        '<div id="pageContents-innerContainer" class="crosswordRight"><div id="clues-container"><div id="Across"><table id="clues-across"><thead><tr><th>' + acrossTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="across"></ul></td></tr></tbody></table></div><div id="Down"><table id="clues-down"><thead><tr><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul class="table-hint" id="down"></ul></td></tr></tbody></table></div><div id="attempt"></div></div><div id="crosswordHolder"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div></div>'
+                    );
+                } else if (position == "Bottom") {
+                    $pageContents.append(
+                        '<div id="crosswordHolder" class="crosswordTop"><div id="crossword"></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div></div><table id="clues"><thead><tr><th>' + acrossTxt + '</th><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
+                        '<div id="attempt"></div>'
+                    );
+                }
+            }else{
+                $pageContents.append(
+                    '<div class="panel"><div id="crossword"></div></div><div id="showButton"><button id="show_button" onclick=\"Check()\">' + btnLabel + '</button></div><table id="clues"><thead><tr><th>' + acrossTxt + '</th><th>' + downTxt + '</th></tr></thead><tbody><tr><td><ul id="across"></ul></td><td><ul id="down"></ul></td></tr></tbody></table>' +
+                    '<div id="attempt"></div>'
+                );
+            }
+
+
+			//store all the words and hints
+			$(x_currentPageXML).children().each(function (i) {
+				hints.push(this.getAttribute("text"));
+				words.push(this.getAttribute("wordAnswer"));
+			});
+
+			// Create crossword object with the words and clues
+			var cw = getCrossword(words, hints)
+			// create the crossword grid (try to make it have a 1:1 width to height ratio in 10 tries)
+			//var tries = 30;
+			var grid = cw.getSquareGrid(tries);
+
+			// report a problem with the words in the crossword
+			if (grid == null) {
+				var bad_words = cw.getBadWords();
+				var str = [];
+				for (var i = 0; i < bad_words.length; i++) {
+					str.push(bad_words[i].word);
+				}
+				alert("Shoot! A grid could not be created with these words, because there are no similar characters:\n" + str.join("\n"));
+				return;
+			}
+
+
+
+			// turn the crossword grid into HTML
+			var show_answers = true;
+			document.getElementById("crossword").innerHTML = CrosswordUtils.toHtml(grid, show_answers);
+
+			// make a nice legend for the clues
+			var legend = cw.getLegend(grid);
+			addLegendToPage(legend);
+			
+			$('#show_button').button(); // do this so button styling is consistent with other pages
+			
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+			
+			this.resize();
+		}
+
+        this.resize = function (){
+            if(x_browserInfo.mobile === true){
+                $(".crossword-input").css("width", "25px")
+                $(".crossword-input").css("height", "25px")
+                $("#crossword").css("margin", "auto")
+                $("#crossword-table").css("margin", "0")
+                $(".crossword-input").css("font-size", "100%")
+				
+            }else{
+				// calculate the size of each cell in grid
+                var imgMaxW, imgMaxH,
+					$crosswordHolder = $("#crosswordHolder");
+
+                imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
+                imgMaxH = Math.round($x_pageHolder.height() - ($crosswordHolder.innerHeight() - $crosswordHolder.height()) - $("#showButton").outerHeight(true) - 50);
+
+                if(imgMaxW > imgMaxH){
+                    imgMaxW = imgMaxH
+                }
+                debugger
+                var rowCount = $('#crossword-table tbody tr ').length,
+					cellCount = $('#crossword-table tbody tr td').length,
+					columnCount = cellCount/rowCount,
+					maxRowCol = Math.max(rowCount, columnCount),
+					inputPixels = Math.floor(imgMaxW/maxRowCol) - ($(".crossword-input").outerHeight(true) - $(".crossword-input").innerHeight());
+
+                inputPixels = inputPixels.toString();
+
+                $(".crossword-input").css({
+					"width": inputPixels + "px",
+					"height": inputPixels + "px",
+                    "font-size" : inputPixels + "px"
+				});
+            }
+        }
+
+        var cw = ""
+        function getCrossword(words, hints){
+		    if(cw === ""){
+                cw = new Crossword(words, hints);
+            }
+
+		    return cw;
+        }
+
+        function addLegendToPage(groups) {
+            for (var k in groups) {
+                var html = [];
+                for (var i = 0; i < groups[k].length; i++) {
+                    html.push("<li class='li-clue' name='"+k+"' id='"+ groups[k][i]['position']+ "' onclick=\"hintClick(this)\"'><strong class='hint-number'>" + groups[k][i]['position'] + ". </strong><p>" + groups[k][i]['clue'] +"</p></li>");
+                }
+                document.getElementById(k).innerHTML = html.join("\n");
+            }
+        }
+
+		// Each cell on the crossword grid is null or one of these
+		function CrosswordCell(letter) {
+			this.char = letter; // the actual letter for the cell on the crossword
+			// If a word hits this cell going in the "across" direction, this will be a CrosswordCellNode
+			this.across = null;
+			// If a word hits this cell going in the "down" direction, this will be a CrosswordCellNode
+			this.down = null;
+		}
+
+		// You can tell if the Node is the start of a word (which is needed if you want to number the cells)
+		// and what word and clue it corresponds to (using the index)
+		function CrosswordCellNode(is_start_of_word, index) {
+			this.is_start_of_word = is_start_of_word;
+			this.index = index; // use to map this node to its word or clue
+		}
+
+		function WordElement(word, index) {
+			this.word = word; // the actual word
+			this.index = index; // use to map this node to its word or clue
+		}
+
+        var best_grid = null;
+		function Crossword(words_in, clues_in) {
+			var GRID_ROWS = 50;
+			var GRID_COLS = 50;
+			// This is an index of the positions of the char in the crossword (so we know where we can potentially place words)
+			// example {"a" : [{'row' : 10, 'col' : 5}, {'row' : 62, 'col' :17}], {'row' : 54, 'col' : 12}], "b" : [{'row' : 3, 'col' : 13}]}
+			// where the two item arrays are the row and column of where the letter occurs
+			var char_index = {};
+
+			// these words are the words that can't be placed on the crossword
+			var bad_words;
+
+			// returns the crossword grid that has the ratio closest to 1 or null if it can't build one
+			this.getSquareGrid = function (max_tries) {
+				if(best_grid===null){
+                    var best_ratio = 0;
+                    for (var i = 0; i < max_tries; i++) {
+                        var a_grid = this.getGrid(1);
+                        if (a_grid == null) continue;
+                        var ratio = Math.min(a_grid.length, a_grid[0].length) * 1.0 / Math.max(a_grid.length, a_grid[0]
+                            .length);
+                        if (ratio > best_ratio) {
+                            best_grid = a_grid;
+                            best_ratio = ratio;
+                        }
+
+                        if (best_ratio == 1) break;
+                    }
+                }
+
+				return best_grid;
+			}
+
+			// returns an abitrary grid, or null if it can't build one
+			this.getGrid = function (max_tries) {
+				for (var tries = 0; tries < max_tries; tries++) {
+					clear(); // always start with a fresh grid and char_index
+					// place the first word in the middle of the grid
+					var start_dir = randomDirection();
+					var r = Math.floor(grid.length / 2);
+					var c = Math.floor(grid[0].length / 2);
+					var word_element = word_elements[0];
+					if (start_dir == "across") {
+						c -= Math.floor(word_element.word.length / 2);
+					} else {
+						r -= Math.floor(word_element.word.length / 2);
+					}
+
+					if (canPlaceWordAt(word_element.word, r, c, start_dir) !== false) {
+						placeWordAt(word_element.word, word_element.index, r, c, start_dir);
+					} else {
+						bad_words = [word_element];
+						return null;
+					}
+
+					// start with a group containing all the words (except the first)
+					// as we go, we try to place each word in the group onto the grid
+					// if the word can't go on the grid, we add that word to the next group
+					var groups = [];
+					groups.push(word_elements.slice(1));
+					for (var g = 0; g < groups.length; g++) {
+						word_has_been_added_to_grid = false;
+						// try to add all the words in this group to the grid
+						for (var i = 0; i < groups[g].length; i++) {
+							var word_element = groups[g][i];
+							var best_position = findPositionForWord(word_element.word);
+							if (!best_position) {
+								// make the new group (if needed)
+								if (groups.length - 1 == g) groups.push([]);
+								// place the word in the next group
+								groups[g + 1].push(word_element);
+							} else {
+								var r = best_position["row"],
+									c = best_position["col"],
+									dir = best_position['direction'];
+								placeWordAt(word_element.word, word_element.index, r, c, dir);
+								word_has_been_added_to_grid = true;
+							}
+						}
+						// if we haven't made any progress, there is no point in going on to the next group
+						if (!word_has_been_added_to_grid) break;
+					}
+					// no need to try again
+					if (word_has_been_added_to_grid) return minimizeGrid();
+				}
+
+				bad_words = groups[groups.length - 1];
+				return null;
+			}
+
+			// returns the list of WordElements that can't fit on the crossword
+			this.getBadWords = function () {
+				return bad_words;
+			}
+
+			// get two arrays ("across" and "down") that contain objects describing the
+			// topological position of the word (e.g. 1 is the first word starting from
+			// the top left, going to the bottom right), the index of the word (in the
+			// original input list), the clue, and the word itself
+			this.getLegend = function (grid) {
+				var groups = {
+					"across": [],
+					"down": []
+				};
+				var position = 1;
+				for (var r = 0; r < grid.length; r++) {
+
+					for (var c = 0; c < grid[r].length; c++) {
+						var cell = grid[r][c];
+						var increment_position = false;
+						// check across and down
+						for (var k in groups) {
+							// does a word start here? (make sure the cell isn't null, first)
+							if (cell && cell[k] && cell[k]['is_start_of_word']) {
+								var index = cell[k]['index'];
+								groups[k].push({
+									"position": position,
+									"index": index,
+									"clue": clues_in[index],
+									"word": words_in[index]
+								});
+								increment_position = true;
+							}
+						}
+
+						if (increment_position) position++;
+					}
+				}
+				return groups;
+			}
+
+			// move the grid onto the smallest grid that will fit it
+			var minimizeGrid = function () {
+				// find bounds
+				var r_min = GRID_ROWS - 1,
+					r_max = 0,
+					c_min = GRID_COLS - 1,
+					c_max = 0;
+				for (var r = 0; r < GRID_ROWS; r++) {
+					for (var c = 0; c < GRID_COLS; c++) {
+						var cell = grid[r][c];
+						if (cell != null) {
+							if (r < r_min) r_min = r;
+							if (r > r_max) r_max = r;
+							if (c < c_min) c_min = c;
+							if (c > c_max) c_max = c;
+						}
+					}
+				}
+				// initialize new grid
+				var rows = r_max - r_min + 1;
+				var cols = c_max - c_min + 1;
+				var new_grid = new Array(rows);
+				for (var r = 0; r < rows; r++) {
+					for (var c = 0; c < cols; c++) {
+						new_grid[r] = new Array(cols);
+					}
+				}
+
+				// copy the grid onto the smaller grid
+				for (var r = r_min, r2 = 0; r2 < rows; r++, r2++) {
+					for (var c = c_min, c2 = 0; c2 < cols; c++, c2++) {
+						new_grid[r2][c2] = grid[r][c];
+					}
+				}
+
+				return new_grid;
+			}
+
+			// helper for placeWordAt();
+			var addCellToGrid = function (word, index_of_word_in_input_list, index_of_char, r, c, direction) {
+
+				var char = word.charAt(index_of_char);
+				if (grid[r][c] == null) {
+					grid[r][c] = new CrosswordCell(char);
+
+					// init the char_index for that character if needed
+					if (!char_index[char]) char_index[char] = [];
+
+					// add to index
+					char_index[char].push({
+						"row": r,
+						"col": c
+					});
+				}
+
+				var is_start_of_word = index_of_char == 0;
+				grid[r][c][direction] = new CrosswordCellNode(is_start_of_word, index_of_word_in_input_list);
+
+			}
+
+			// place the word at the row and col indicated (the first char goes there)
+			// the next chars go to the right (across) or below (down), depending on the direction
+			var placeWordAt = function (word, index_of_word_in_input_list, row, col, direction) {
+
+				if (direction == "across") {
+					for (var c = col, i = 0; c < col + word.length; c++, i++) {
+						addCellToGrid(word, index_of_word_in_input_list, i, row, c, direction);
+					}
+				} else if (direction == "down") {
+					for (var r = row, i = 0; r < row + word.length; r++, i++) {
+						addCellToGrid(word, index_of_word_in_input_list, i, r, col, direction);
+					}
+				} else {
+					throw "Invalid Direction";
+				}
+			}
+
+			// you can only place a char where the space is blank, or when the same
+			// character exists there already
+			// returns false, if you can't place the char
+			// 0 if you can place the char, but there is no intersection
+			// 1 if you can place the char, and there is an intersection
+			var canPlaceCharAt = function (char, row, col) {
+				// no intersection
+				if (grid[row][col] == null) return 0;
+				// intersection!
+				if (grid[row][col]['char'] == char) return 1;
+
+				return false;
+			}
+
+			// determines if you can place a word at the row, column in the direction
+			var canPlaceWordAt = function (word, row, col, direction) {
+				// out of bounds
+				if (row < 0 || row >= grid.length || col < 0 || col >= grid[row].length) return false;
+
+				if (direction == "across") {
+					// out of bounds (word too long)
+					if (col + word.length > grid[row].length) return false;
+					// can't have a word directly to the left
+					if (col - 1 >= 0 && grid[row][col - 1] != null) return false;
+					// can't have word directly to the right
+					if (col + word.length < grid[row].length && grid[row][col + word.length] != null) return false;
+
+					// check the row above to make sure there isn't another word
+					// running parallel. It is ok if there is a character above, only if
+					// the character below it intersects with the current word
+					for (var r = row - 1, c = col, i = 0; r >= 0 && c < col + word.length; c++, i++) {
+						var is_empty = grid[r][c] == null;
+						var is_intersection = grid[row][c] != null && grid[row][c]['char'] == word.charAt(i);
+						var can_place_here = is_empty || is_intersection;
+						if (!can_place_here) return false;
+					}
+
+					// same deal as above, we just search in the row below the word
+					for (var r = row + 1, c = col, i = 0; r < grid.length && c < col + word.length; c++, i++) {
+						var is_empty = grid[r][c] == null;
+						var is_intersection = grid[row][c] != null && grid[row][c]['char'] == word.charAt(i);
+						var can_place_here = is_empty || is_intersection;
+						if (!can_place_here) return false;
+					}
+
+					// check to make sure we aren't overlapping a char (that doesn't match)
+					// and get the count of intersections
+					var intersections = 0;
+					for (var c = col, i = 0; c < col + word.length; c++, i++) {
+						var result = canPlaceCharAt(word.charAt(i), row, c);
+						if (result === false) return false;
+						intersections += result;
+					}
+				} else if (direction == "down") {
+					// out of bounds
+					if (row + word.length > grid.length) return false;
+					// can't have a word directly above
+					if (row - 1 >= 0 && grid[row - 1][col] != null) return false;
+					// can't have a word directly below
+					if (row + word.length < grid.length && grid[row + word.length][col] != null) return false;
+
+					// check the column to the left to make sure there isn't another
+					// word running parallel. It is ok if there is a character to the
+					// left, only if the character to the right intersects with the
+					// current word
+					for (var c = col - 1, r = row, i = 0; c >= 0 && r < row + word.length; r++, i++) {
+						var is_empty = grid[r][c] == null;
+						var is_intersection = grid[r][col] != null && grid[r][col]['char'] == word.charAt(i);
+						var can_place_here = is_empty || is_intersection;
+						if (!can_place_here) return false;
+					}
+
+					// same deal, but look at the column to the right
+					for (var c = col + 1, r = row, i = 0; r < row + word.length && c < grid[r].length; r++, i++) {
+						var is_empty = grid[r][c] == null;
+						var is_intersection = grid[r][col] != null && grid[r][col]['char'] == word.charAt(i);
+						var can_place_here = is_empty || is_intersection;
+						if (!can_place_here) return false;
+					}
+
+					// check to make sure we aren't overlapping a char (that doesn't match)
+					// and get the count of intersections
+					var intersections = 0;
+					for (var r = row, i = 0; r < row + word.length; r++, i++) {
+						var result = canPlaceCharAt(word.charAt(i, 1), r, col);
+						if (result === false) return false;
+						intersections += result;
+					}
+				} else {
+					throw "Invalid Direction";
+				}
+				return intersections;
+			}
+
+			var randomDirection = function () {
+				return Math.floor(Math.random() * 2) ? "across" : "down";
+			}
+
+			var findPositionForWord = function (word) {
+				// check the char_index for every letter, and see if we can put it there in a direction
+				var bests = [];
+				for (var i = 0; i < word.length; i++) {
+					var possible_locations_on_grid = char_index[word.charAt(i)];
+					if (!possible_locations_on_grid) continue;
+					for (var j = 0; j < possible_locations_on_grid.length; j++) {
+						var point = possible_locations_on_grid[j];
+						var r = point['row'];
+						var c = point['col'];
+						// the c - i, and r - i here compensate for the offset of character in the word
+						var intersections_across = canPlaceWordAt(word, r, c - i, "across");
+						var intersections_down = canPlaceWordAt(word, r - i, c, "down");
+
+						if (intersections_across !== false)
+							bests.push({
+								"intersections": intersections_across,
+								"row": r,
+								"col": c - i,
+								"direction": "across"
+							});
+						if (intersections_down !== false)
+							bests.push({
+								"intersections": intersections_down,
+								"row": r - i,
+								"col": c,
+								"direction": "down"
+							});
+					}
+				}
+
+				if (bests.length == 0) return false;
+
+				// find a good random position
+				var best = bests[Math.floor(Math.random() * bests.length)];
+
+				return best;
+			}
+
+			var attempts = x_currentPageXML.getAttribute("attempts");
+            attempts = parseInt(attempts);
+
+			Check = function (){
+			    if(attempts === 1){
+			        showAnswers();
+                }else{
+			        checkAttempt();
+                    attempts--;
+                    var again = x_currentPageXML.getAttribute("again")
+                    if(again === null || again===undefined){
+                        again = "Try again, you have /a attempt(s) left"
+                    }
+                    var again = again.replace("/a", attempts);
+                    var h3 = $('<h3>').append(again);
+                    $("#attempt").html(h3);
+                }
+            }
+
+			checkAttempt = function (){
+
+                var coordinates = [];
+                var letters = [];
+                var coordinate = ""
+                var table = document.getElementById('crossword-table');
+                var grid = cw.getSquareGrid(tries);
+                for(var d = 0; d < grid.length; d++){
+                    for(var c = 0; c < grid[d].length; c++){
+                        if(grid[d][c] !== null){
+                            coordinate = d + "," + c;
+                            coordinates.push(coordinate);
+                            letters.push(grid[d][c].char);
+                        }
+                    }
+                }
+
+                for(var coor = 0; coor < coordinates.length; coor++){
+                    var inputValue = document.getElementById(coordinates[coor]).value.toLowerCase();
+                    if(letters[coor].toLowerCase() === inputValue){
+
+                        //make border green
+
+                    }else{
+                        //replace letter
+                        document.getElementById(coordinates[coor]).value =  document.getElementById(coordinates[coor]).value.replace(/[^\d,]/g,'');
+
+                    }
+                }
+            }
+
+            showAnswers = function () {
+			    removeHighlight();
+			    var coordinates = [];
+                var letters = [];
+                var coordinate = ""
+                var table = document.getElementById('crossword-table');
+                var grid = cw.getSquareGrid(10);
+			    for(var d = 0; d < grid.length; d++){
+                    for(var c = 0; c < grid[d].length; c++){
+                        if(grid[d][c] !== null){
+                            coordinate = d + "," + c;
+                            coordinates.push(coordinate)
+                            letters.push(grid[d][c].char)
+                        }
+                    }
+                }
+
+			    for(var coor = 0; coor < coordinates.length; coor++){
+                    var inputValue = document.getElementById(coordinates[coor]).value.toLowerCase()
+                    if(letters[coor].toLowerCase() === inputValue){
+
+                        //make border green
+                        document.getElementById(coordinates[coor]).style.backgroundColor= "#24FF00"
+                    }else{
+                        //replace letter
+                        document.getElementById(coordinates[coor]).value =  document.getElementById(coordinates[coor]).value.replace(/[^\d,]/g,'')
+                        document.getElementById(coordinates[coor]).value = letters[coor];
+                    }
+                }
+
+                document.getElementById("show_button").disabled = true;
+
+				if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
+					var fbHeading =  x_currentPageXML.getAttribute("feedbackLabel") != undefined ? x_currentPageXML.getAttribute("feedbackLabel") : 'Feedback';
+					$('#attempt').html('<h3>' + fbHeading + '</h3><div id="feedback">' + x_currentPageXML.getAttribute("feedback") + '</div>');
+				} else {
+					$("#attempt").html("");
+				}
+            }
+
+            hintClick = function (hint){
+
+                addHighlightHint(hint.id, hint.attributes.name.value)
+            }
+
+
+			var clear = function () {
+				for (var r = 0; r < grid.length; r++) {
+					for (var c = 0; c < grid[r].length; c++) {
+						grid[r][c] = null;
+					}
+				}
+				char_index = {};
+			}
+
+			// constructor
+			if (words_in.length < 2) throw "A crossword must have at least 2 words";
+			if (words_in.length != clues_in.length) throw "The number of words must equal the number of clues";
+
+			// build the grid;
+			var grid = new Array(GRID_ROWS);
+			for (var i = 0; i < GRID_ROWS; i++) {
+				grid[i] = new Array(GRID_COLS);
+			}
+
+			// build the element list (need to keep track of indexes in the originial input arrays)
+			var word_elements = [];
+			for (var i = 0; i < words_in.length; i++) {
+				word_elements.push(new WordElement(words_in[i], i));
+			}
+
+			// I got this sorting idea from http://stackoverflow.com/questions/943113/algorithm-to-generate-a-crossword/1021800#1021800
+			// seems to work well
+			word_elements.sort(function (a, b) {
+				return b.word.length - a.word.length;
+			});
+		}
+
+        $(document).on('input', e => {
+            var keyCode;
+            var x;
+            var y;
+
+            if (e.originalEvent.data == null && e.originalEvent.inputType == 'deleteContentBackward')
+            {
+                keyCode = 8;
+            }
+            else {
+                keyCode = e.originalEvent.data.charCodeAt(0);
+            }
+            if(keyCode > 96 && keyCode < 155){
+                keyCode^=32
+                var id = e.target.id
+                var coorList = id.split(',')
+                x = parseInt(coorList[0])
+                y = parseInt(coorList[1])
+
+            }else if(keyCode > 64 && keyCode < 91){
+                var id = e.target.id
+                var coorList = id.split(',')
+                x = parseInt(coorList[0])
+                y = parseInt(coorList[1])
+            }
+            next(keyCode, x, y)
+
+        })
+
+
+
+		var CrosswordUtils = {
+			toHtml: function (grid, show_answers) {
+				if (grid == null) return;
+				var html = [];
+				html.push("<table id='crossword-table'>");
+				html.push("<tbody>")
+                var legend = cw.getLegend(grid)
+				var counterAcross = 0
+                var counterDown = 0;
+                var doubleStarts = [];
+				for (var r = 0; r < grid.length; r++) {
+					html.push("<tr>");
+					for (var c = 0; c < grid[r].length; c++) {
+						var cell = grid[r][c];
+						var is_start_of_word = false;
+						if (cell == null) {
+							var char = "";
+							var css_class = "no-border";
+						} else {
+						    var char = ""
+                            var is_start_of_word = (cell['across'] && cell['across']['is_start_of_word']) || (
+                                cell['down'] && cell['down']['is_start_of_word']);
+                            var css_class = "no-border";
+
+                            if(is_start_of_word){
+
+                                if(cell['down'] !== null && cell['across'] !== null){
+                                    if(cell['across']['is_start_of_word']===true && cell['down']['is_start_of_word']===true){
+
+                                        var char ="<div id='"+legend['down'][counterDown].position+ "' class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input  type='text' autocomplete='off' class='crossword-input'  maxlength='1' id='" + r + "," + c + "' /></div>"
+                                        startPositionArray.push([r,c,"down, across"])
+                                        counterDown++;
+                                        counterAcross++;
+                                    }else{
+                                        if(cell['across']['is_start_of_word']===false){
+
+                                            var char ="<div id='"+legend['down'][counterDown].position+"' class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input  type='text' autocomplete='off' class='crossword-input'  maxlength='1' id='" + r + "," + c + "' /></div>"
+                                            startPositionArray.push([r,c,"down"])
+                                            counterDown++;
+                                        }else{
+                                            var char ="<div id='"+legend['across'][counterAcross].position+"'  class='placeholder' data-placeholder='"+ legend['across'][counterAcross].position +"'><input  type='text'  autocomplete='off' class='crossword-input'   maxlength='1' id='" + r + "," + c + "' /></div>"
+                                            startPositionArray.push([r,c,"across"])
+                                            counterAcross++;
+                                        }
+                                    }
+
+                                }else if (cell['down'] !== null) {
+                                    var char ="<div id='"+legend['down'][counterDown].position+"'  class='placeholder' data-placeholder='"+ legend['down'][counterDown].position +"'><input type='text'  autocomplete='off' class='crossword-input'  maxlength='1' id='" + r + "," + c + "' /></div>"
+                                    startPositionArray.push([r,c,"down"])
+                                    counterDown++;
+                                }else{
+                                    var char ="<div id='"+legend['across'][counterAcross].position+"' ' class='placeholder' data-placeholder='"+ legend['across'][counterAcross].position +"' maxlength='1'><input type='text'  autocomplete='off' class='crossword-input' maxlength='1' id='" + r + "," + c + "' /></div>"
+                                    startPositionArray.push([r,c,"across"])
+                                    counterAcross++;
+                                }
+                            }else{
+                                var char ="<div id='input__container' class='placeholder' ><input type='text' autocomplete='off' class='crossword-input'  placeholder='' maxlength='1' id='" + r + "," + c + "' /></div>"
+
+                            }
+
+						}
+
+						html.push("<td class='" + css_class + "' >");
+						
+						if (show_answers) {
+							html.push(char);
+						} else {
+							html.push("&nbsp;");
+						}
+					}
+					html.push("</tr>");
+				}
+				html.push("</tbody>")
+				html.push("</table>");
+
+
+				return html.join("\n");
+
+			}
+		}
+
+	}
+
+	crossword.init();
+	crossword.move();
+</script>
+
+
+<style type="text/css">
+
+</style>
+
+
+<div id="pageContents"></div>

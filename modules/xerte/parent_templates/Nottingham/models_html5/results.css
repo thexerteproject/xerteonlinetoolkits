@@ -5,12 +5,14 @@
 
     #questionScores
 	{
-		width: 100%;
+		width: 97%;
+		margin: auto;
 	}
 
 	table.details
 	{
-		width: 100%;
+		width: 97%;
+		margin: auto;
 	}
 
 	#pageContents p:first-child {
@@ -46,7 +48,7 @@
 	#questionScores th:not(:first-child) {
 		text-align: center;
 	}
-	.details th {
+	.details th, .details td.th {
 		background: #434343;
 		color: #ffffff;
 	}

@@ -27,6 +27,25 @@
  * @package
  */
 
+/*
+ * Make sure that play does not use cookie based sessions
+ * Thise requires to switch off cookiebased sessions and some helper functions.
+ *
+ * If this is an LTI session, do not use this functionality, because tsugi will handle the session
+ *
+ * This must be done before loading config.php
+*/
+if (!isset($lti_enabled))
+{
+    $lti_enabled = false;
+}
+if (!$lti_enabled)
+{
+    require_once(dirname(__FILE__) . "/session_helpers.php");
+    ini_set('session.use_cookies', 0);
+    ini_set('session.use_only_cookies', 0);
+    ini_set('session.use_trans_sid', 1);
+}
 
 
 require_once(dirname(__FILE__) . "/config.php");
@@ -55,6 +74,17 @@ if (!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
     exit(0);
 }
 
+function xmlRemoveNamespace($xml)
+{
+    // Gets rid of all namespace definitions
+    $xml_string = preg_replace('/xmlns[^=]*="[^"]*"/i', '', $xml);
+
+    // Gets rid of all namespace references
+    $xml_string = preg_replace('/(<\/|<)[a-zA-Z]+:([a-zA-Z0-9]+[ =>])/', '$1$2', $xml_string);
+
+    return $xml_string;
+}
+
 //Decrypt Function
 function decrypt($decrypt) {
     global $pedit_config;
@@ -73,10 +103,10 @@ if (is_numeric($id))
 
     if (!isset($_REQUEST['param']))
     {
-        $xerte_toolkits_site->lti_user->first_name = "Guest";
-        $xerte_toolkits_site->lti_user->last_name = "User";
-        $xerte_toolkits_site->lti_user->email = "info@cowsignals.com";
-        $xerte_toolkits_site->lti_user->displayname = "Guest User";
+        $xerte_toolkits_site->xapi_user->first_name = "Guest";
+        $xerte_toolkits_site->xapi_user->last_name = "User";
+        $xerte_toolkits_site->xapi_user->email = "info@example.com";
+        $xerte_toolkits_site->xapi_user->displayname = "Guest User";
     }
     else
     {
@@ -107,21 +137,63 @@ if (is_numeric($id))
 
         $attrs = $members[0]->attributes();
 
-        $xerte_toolkits_site->lti_user->first_name = (string) $members[0]['firstName'];
+        $xerte_toolkits_site->xapi_user->first_name = (string) $members[0]['firstName'];
         if (strlen($members[0]['middleName']) > 0)
         {
-            $xerte_toolkits_site->lti_user->last_name = (string)$members[0]['middleName'] . ' ' . (string)$members[0]['lastName'];
+            $xerte_toolkits_site->xapi_user->last_name = (string)$members[0]['middleName'] . ' ' . (string)$members[0]['lastName'];
         }
         else {
-            $xerte_toolkits_site->lti_user->last_name = (string)$members[0]['lastName'];
+            $xerte_toolkits_site->xapi_user->last_name = (string)$members[0]['lastName'];
         }
-        $xerte_toolkits_site->lti_user->email = (string)$members[0]['emailAddressPrivate'];
-        $xerte_toolkits_site->lti_user->displayname = $xerte_toolkits_site->lti_user->first_name . ' ' . $xerte_toolkits_site->lti_user->last_name;
+        $xerte_toolkits_site->xapi_user->email = (string)$members[0]['emailAddressPrivate'];
+        $xerte_toolkits_site->xapi_user->displayname = $xerte_toolkits_site->xapi_user->first_name . ' ' . $xerte_toolkits_site->xapi_user->last_name;
 
+        // Get goup information
+        $soapresult = $client->GetPageInformation(array(
+            'sKey' => $pedit_config->soapKey,
+            'iPageID' => $params['pageid']
+        ));
+        _debug("Page information is (" . $params['pageid'] . "): " . print_r($soapresult, true));
+        $pageinfoxml = xmlRemoveNamespace($soapresult->GetPageInformationResult);
+        $pageinfo = simplexml_load_string($pageinfoxml);
+
+        $classinfopart = $pageinfo->xpath('/*/DSPartContentFull[Class]');
+        if (count($classinfopart)) {
+            $classinfo=$classinfopart[0]->Class;
+            $keywords = $classinfopart[0]->keywords;
+            $metadata = (string)$classinfo[0]['ingress'];
+            if (trim($metadata) != "") {
+                $pos = strpos($metadata, '(');
+                if ($pos !== false) {
+                    $metadata_groep = substr($metadata, 0, $pos);
+                    $metadata_groep = trim($metadata_groep);
+                } else {
+                    $metadata_groep = trim($metadata);
+                }
+                $xerte_toolkits_site->group = $metadata_groep;
+                $groupssource = "metadata " . $metadata;
+            }
+            for($k=0; $k<count($keywords); $k++)
+            {
+                $keywordxml = $keywords[$k];
+                $keyword = (string)$keywordxml->keyword;
+                if (stripos($keyword, 'groep=') !== false)
+                {
+                    $groeparr = explode('=', $keyword);
+                    if (count($groeparr) == 2)
+                    {
+                        $xerte_toolkits_site->group = $groeparr[1];
+                        $groupssource = "keyword " . $keyword;
+                    }
+                }
+            }
+            if (isset($xerte_toolkits_site->group))
+                _debug("groupsinformation is set to " . $xerte_toolkits_site->group . " based on " . $groupssource);
+        }
     }
     $pedit_enabled = true;
-    $tsugi_enabled = true;
-    if (isset($_REQUEST['group']))
+    $xapi_enabled = true;
+    if (isset($_REQUEST['group']) && !isset($xerte_toolkits_site->group))
     {
         $xerte_toolkits_site->group = $_REQUEST{'group'};
     }
@@ -141,6 +213,10 @@ if (is_numeric($id))
     {
         die("template_id not found");
     }
+    if ($row['tsugi_xapi_enabled'] != '1')
+    {
+        die("Xapi is not enabled");
+    }
     if ($row['tsugi_xapi_useglobal'])
     {
         $q = "select LRS_Endpoint, LRS_Key, LRS_Secret from {$prefix}sitedetails where site_id=1";
@@ -156,7 +232,6 @@ if (is_numeric($id))
             'lrssecret' => $row['tsugi_xapi_secret'],
         );
     }
-
 
     $_SESSION['XAPI_PROXY'] = $lrs;
 

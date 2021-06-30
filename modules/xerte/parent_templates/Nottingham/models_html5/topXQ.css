@@ -18,11 +18,12 @@
     clear:		both;
     padding-top: 1em;
 }
-#pageContents #result.line {
-	border-top: 1px solid #ccc;
-}
 #correctAnswer {
     padding-top: 1em;
+}
+#correctAnswer ul {
+	margin-top: 0.5em;
+	margin-bottom: 0;
 }
 #feedback h3 {
     border-top: 1px solid #ccc;
@@ -49,3 +50,9 @@
     padding-top: 1em;
 }
 
+#textHolder{
+    overflow-wrap: break-word !important;
+}
+#mainPanel {
+	overflow: auto;
+}

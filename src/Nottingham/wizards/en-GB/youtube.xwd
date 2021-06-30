@@ -1,11 +1,11 @@
-<wizard menus="Misc">
+<wizard menus="Media">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <youtube><![CDATA[<youtube name="Enter Page Title" text="Enter text for the page here" >Enter Embed Code Here</youtube>]]></youtube>
     </newNodes>
   </pageWizard>
 
-  <youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Include video content from YouTube in your project." icon="icYoutube">>
+  <youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Media" remove="true" thumb="thumbs/youtube.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#youtubevideo" hint="Include video content from YouTube in your project." icon="icYoutube">>
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <text type="textArea" label="Instructions" height="300"/>

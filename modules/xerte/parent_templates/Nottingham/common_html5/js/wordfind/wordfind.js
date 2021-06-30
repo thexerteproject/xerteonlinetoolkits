@@ -339,6 +339,7 @@
           maxAttempts:  opts.maxAttempts || 3,
           preferOverlap: opts.preferOverlap !== undefined ? opts.preferOverlap : true
         };
+        letters = opts.fillCharacters ? opts.fillCharacters : letters;
 
         // add the words to the puzzle
         // since puzzles are random, attempt to create a valid one up to

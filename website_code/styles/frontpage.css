@@ -328,7 +328,7 @@ body{
 	margin:0 auto; 
 	padding-top:6px;
 	/* padding-bottom:5px; */
-	background-color:#ededed; 
+	background-color:#ededed;
 }
 
 .userbar {
@@ -786,7 +786,7 @@ div.ui-layout-center {
 #pagecontainer  .content {
     padding:	5px;
     position:	relative;
-    overflow:	auto;
+    overflow: 	auto;
     background: #fff;
 }
 
@@ -820,8 +820,11 @@ div.ui-layout-center {
 .xerte_info_button {
 	color:#f86718;
 }
-
 .featherlight iframe {
 	height: 90vh;
 	width: 90vw;
+}
+
+.settingsDropdown {
+	display: inline-block;
 }

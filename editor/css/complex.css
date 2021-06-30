@@ -971,7 +971,10 @@ div.hotspotEditor {
 
 .featherlight .featherlight-content
 {
-	padding:5px 5px 0 !important;
+	padding:5px !important;
+	min-width: 0 !important;
+	max-width: 95%;
+	border-bottom: none !important;
 }
 
 .hotspotEditor
@@ -1024,8 +1027,42 @@ button .flash-icon {padding-left: 4px;}
 
 button:hover {background: #f86718; color: #000000;}
 
-.insert_button {background: transparent; border: 0; font-size:0.8em; }
-.insert_button:hover {background: transparent; border: 0; color: #0099a0;}
+#menu.ui-menu .ui-state-focus {
+	background: none;
+	background-color:#f0f0f2;
+}
+
+.ui-menu-item a .ui-menu-icon {
+	margin-top: 2px;
+}
+
+#insert_menu .ui-menu.details a.pageExample {
+	cursor: pointer;
+	display: inline;
+}
+
+#insert_menu .ui-menu.details a.exampleButton .fa {
+	margin-right: .3em;
+	margin-top: .3em;
+}
+
+.insert_button, #insert_menu .ui-menu.details a.exampleButton {
+	background: #f0f0f2;
+	border: 2px solid #f0f0f2;
+	border-radius: 0px;
+	font-size:0.8em;
+	margin: 0 2px !important;
+	padding: .3em !important;
+}
+.insert_button:hover, #insert_menu .ui-menu.details a.exampleButton:hover {
+	background: #ff8c00;
+	border-color: #ff8c00;
+	color: #000000;
+}
+
+#insert_menu .ui-menu.details a.exampleButton {
+	font-size: 1em;
+}
 
 .xerte_button {background: transparent; border: 0;}
 .xerte_button:hover {background: transparent; border: 0; color: #0030a0;}
@@ -1037,9 +1074,10 @@ button:hover {background: #f86718; color: #000000;}
     color:#ccc;
 }
 
-button.hseditModeButton:hover {background: transparent; color: graytext;}
+/*button.hseditModeButton:hover {background: transparent; color: graytext;}*/
 
-button.hseditModeButton:hover:enabled {background: #f86718; color: #000000;}
+button.hseditModeButton:hover:enabled {background: #f86718; color: #000000; cursor: pointer;}
+button.hseditModeButton:hover {cursor: default;}
 
 
 #mainPanel .xerte_button { color: #000; }
@@ -1112,6 +1150,39 @@ div.wizardvalue_inner {
     cursor: pointer;
 }
 
+
+/* FONT AWESOME BUTTON & PICKER */
+.icon_browse {
+    cursor: pointer;
+	border: 1px solid #cdcdcd;
+}
+
+.icon_browse:hover {
+	border: 1px solid #cdcdcd;
+}
+
+.icon_hiddenInput {
+	display: none;
+}
+
+div#IconPickerModal .ip-icons-content {
+	width: auto !important;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-search > input#IconPickerSearch {
+	padding: 0 4px !important;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-area {
+	padding: 0 !important;
+}
+
+div#IconPickerModal.show-all .ip-icons-content .ip-icons-area {
+	overflow: auto !important;
+}
+
+
+
 .ui-jqgrid td
 {
     height: auto!important;
@@ -1121,13 +1192,14 @@ div.wizardvalue_inner {
 	white-space: normal;
 }
 
-.featherlight-content {
-	min-width: 0 !important;
+.previewFile {
+	max-height: 90vh;
+	max-width: 90vw;
 }
 
-.previewFile {
-	max-width: 100%;
-	max-height: 100%;
+.previewVideo {
+	max-width: 90vw;
+	height: auto;
 }
 
 .unmarkCompletionIcon
@@ -1140,6 +1212,11 @@ div.wizardvalue_inner {
 {
 	margin-right: 5px;
 	color: #ff8c00;
+}
+
+.deprecatedIcon.deprecatedLevel_low
+{
+	color: #ffcc33;
 }
 
 #optionalParams button.disabled .tooltipIcon {
@@ -1175,6 +1252,10 @@ li.hiddenNode >a{
 
 li.deprecatedNode >a {
 	background: rgba(248, 103, 24, 0.33);
+}
+
+li.deprecatedNode.deprecatedLevel_low >a {
+	background: none;
 }
 
 img.theme_preview
@@ -1256,6 +1337,27 @@ div.theme_description
 .featherlight iframe {
 	height: 90vh;
 	width: 90vw;
+}
+
+div.hotspot360Icon {
+	border-style: solid;
+	border-radius: 50%;
+}
+	
+div.hotspot360Icon span.icon360Holder {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: table;
+}
+
+div.hotspot360Icon span.icon360Holder .icon360 {
+	display: table-cell;
+}
+
+#panoramaHolder .pnlm-dragfix {
+	cursor: default;
 }
 
 /* start of xertecss.css

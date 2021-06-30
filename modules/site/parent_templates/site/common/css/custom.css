@@ -139,6 +139,9 @@ color: #6FD9D9;
   top: auto;
   bottom: 270px;
 }
+.bs-docs-sidenav.affix.staticPosition, .bs-docs-sidenav.affix-top.staticPosition {
+  position: static;
+}
 .bs-docs-sidenav > li > a:hover {
   background-color: #f5f5f5;
 }
@@ -591,5 +594,6 @@ and (max-width :600px) {
         margin-top:10px;
         width:80px;
         bottom:0px;
+        float:unset;
     }
 }

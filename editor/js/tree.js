@@ -52,6 +52,7 @@ var EDITOR = (function ($, parent) {
         var now = new Date().getTime();
         $.ajax({
             type: "GET",
+			data: { template: templateframework },
             url: url + "&t=" + now,
             dataType: "html",
             success: function (data) {
@@ -126,7 +127,7 @@ var EDITOR = (function ($, parent) {
 
 		create_tree_buttons = function() {
             var buttons = $('<div />').attr('id', 'top_buttons');
-            if (templateframework == "xerte") {
+			if (templateframework == "xerte" || templateframework == "site") {
                 var button_def =
                     [
                         {
@@ -321,6 +322,7 @@ var EDITOR = (function ($, parent) {
                 urlparam = '&linkID='+id;
             }
         }
+        var new_tab = clickevent.ctrlKey;
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
                 data: {
@@ -344,7 +346,13 @@ var EDITOR = (function ($, parent) {
             //alert( "success" );
             // We would also launch the preview window from here
             $('#loader').hide();
-            window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes, scrollbars=1" );
+            if (new_tab)
+            {
+                window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "_blank");
+            }
+            else {
+                window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes, scrollbars=1");
+            }
         })
         .fail(function() {
             $('#loader').hide();
@@ -504,7 +512,7 @@ var EDITOR = (function ($, parent) {
         }
 
         // Create node text based on xml, do not use text of original node, as this is not correct
-        var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
+        var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", [wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecatedLevel], wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
         var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true");
         var standaloneIcon = toolbox.getExtraTreeIcon(key, "standalone", lo_data[key].attributes.linkPage == "true");
         var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');
@@ -713,6 +721,7 @@ var EDITOR = (function ($, parent) {
         textareas_options = [];
         textinputs_options = [];
         colorpickers = [];
+		iconpickers = [];
         datagrids = [];
 
         form_fields = [];
@@ -889,7 +898,7 @@ var EDITOR = (function ($, parent) {
 
             //node_options['optional'] = node_options['optional'].concat(optGroups);
 
-            // Determine whether optionsal properties are used and if theay are visble according to their condition
+            // Determine whether optional properties are used and if they are visble according to their condition
             // is optional property (or any children of group) already in project?
             for (var i = 0; i < node_options['optional'].length; i++) {
                 var found = [];
@@ -1244,6 +1253,7 @@ var EDITOR = (function ($, parent) {
         toolbox.convertTextAreas();
         toolbox.convertTextInputs();
         toolbox.convertColorPickers();
+		toolbox.convertIconPickers();
         toolbox.convertDataGrids();
 		
 		// make buttons appear disabled when the node can't be duplicated / deleted
@@ -1273,6 +1283,13 @@ var EDITOR = (function ($, parent) {
 
         // Make sure subpanels are visible
         $("#subPanels").show();
+		
+		// remove any property groups that are empty because of conditions
+		$('.wizardgroup .wizardgroup_table').each(function() {
+			if ($(this).find('tr').length == 0) {
+				$(this).parents('.wizardattribute').remove();
+			}
+		});
     },
 
     addNodeToTree = function(key, pos, nodeName, xmlData, tree, select)
@@ -1499,6 +1516,8 @@ var EDITOR = (function ($, parent) {
             };
         };
 
+        loLanguage = lo_data['treeroot'].attributes.language;
+
         // build Types structure for the types plugin
         var node_types = {};
         node_types["#"] = create_node_type(null, ["treeroot"]); // Make sure that only the LO can be at root level
@@ -1540,6 +1559,10 @@ var EDITOR = (function ($, parent) {
             if ($("#"+key+"_deprecated.iconEnabled").length > 0)
             {
                 $("#"+key).addClass("deprecatedNode");
+				if ($("#"+key+"_deprecated.deprecatedLevel_low.iconEnabled").length > 0)
+				{
+					$("#"+key).addClass("deprecatedLevel_low");
+				}
             }
             if ($("#"+key+"_hidden.iconEnabled").length > 0)
             {

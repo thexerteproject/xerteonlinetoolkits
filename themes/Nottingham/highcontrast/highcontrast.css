@@ -167,6 +167,18 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   border-radius: 3px;
   padding-left: 10px; }
 
+.x_textHighlight_page .ui-widget-content button.ui-state-default {
+  border-radius: 3px;
+  background: #1a1a1a;
+  border: none;
+  color: #ffffff; }
+
+.x_textHighlight_page .ui-widget-content button.ui-state-default.ui-state-active {
+  border-radius: 3px;
+  background: #4d4d4d;
+  border: none;
+  color: #ffffff; }
+
 #listholder a.listitem, a:visited {
   color: #ffffff; }
 
@@ -241,14 +253,6 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   background: #1a1a1a;
   border-color: #1a1a1a;
   color: #ffffff; }
-
-.x_gapFill_page .target.correct {
-  color: lightgreen;
-  font-weight: bold; }
-
-.x_gapFill_page #targetHolder select[disabled] {
-  color: #00ff19;
-  border: #00ff19 dotted 2px; }
 
 a.hotspot, a.hotspot.selected {
   background: none; }
@@ -515,6 +519,11 @@ div#shorturltodisplay a {
 
 #x_menuBtn:after {
   content: "\f0c9"; }
+
+#x_saveSessionBtn:after {
+  content: "\f0c7";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900; }
 
 #x_footerBlock button {
   color: #ffffff; }
@@ -1118,6 +1127,10 @@ a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active
 /*****all images*****/
 img {
   border-radius: none; }
+
+/******lightboxes******/
+.featherlight .featherlight-content {
+  background-color: #000000; }
 
 /******@media changes******/
 @media (min-width: 1366px) {

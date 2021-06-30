@@ -1,0 +1,156 @@
+<wizard menus="Media">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <media360><![CDATA[<media360 name="Enter Page Title" text="Enter text for the page here" size="large" position="right"
+	  zoomInTxt="Zoom in" zoomOutTxt="Zoom out" fullScreenTxt="Full screen toggle" 
+	  pageError="Destination page not found"
+	  lockLabel="Password:" lockSubmit="Submit" lockPswdWrong="Incorrect password"
+	  />]]></media360>
+    </newNodes>
+  </pageWizard>
+
+  <!-- 360 IMAGE============================= -->
+  <media360 menu="Media" menuItem="360&#176; Image" hint="An interaction allowing you to mark up a 360&#176; image with hotspots. Can be used to create tours of linked images." icon="ic360" thumb="thumbs/image360.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#image360" remove="true">
+
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" height="250"/>
+	<size label="Image Size" options="Small,Medium,Large,Full" type="ComboBox"  data="small,medium,large,full" width="200"/>
+	<position label="Image Position" options="Left,Right" type="ComboBox" data="left,right" defaultValue="right" width="100"/>
+	
+	<sceneMenu label="Scene Menu" type="CheckBox" defaultValue="true" optional="true" tooltip="Show list of links to each scene at the top of the image viewer. Exclude scenes from this list by adding the 'Hide Scene' optional property."/>
+	
+	<lockIcon label="Locked Hotspot Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-lock" optional="true" tooltip="The icon used on locked hotspots"/>
+	
+	<hsAppearance type="group" label="Hotspot Appearance" optional="true" tooltip="Customise the appearance of hotspots throughout this page. Customisation of individual hotspots can also be done by adding the Hotspot Appearance optional property directly to hotspots.">
+		<colour1 label="Main Colour" type="ColourPicker" defaultValue="0x000000" optional="true"/>
+		<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
+		<hsSize label="Size" type="NumericStepper" min="5" max="25" step="1" defaultValue="14" optional="true"/>
+	</hsAppearance>
+	
+	<zoomInTxt label="Zoom In" type="TextInput" wysiwyg="true" language="true"/>
+	<zoomOutTxt label="Zoom Out" type="TextInput" wysiwyg="true" language="true"/>
+	<fullScreenTxt label="Full Screen" type="TextInput" wysiwyg="true" language="true"/>
+	<lockLabel label="Password Label" type="TextInput" wysiwyg="true" language="true"/>
+	<lockSubmit label="Password Submit" type="TextInput" wysiwyg="true" language="true"/>
+	<lockPswdWrong label="Wrong Password" type="TextInput" wysiwyg="true" language="true"/>
+	
+    <newNodes>
+	  <file360><![CDATA[<file360 name="Enter Scene Title" file="Select an Image" tip="Enter a Description for Accessibility" title="false"/>]]></file360>
+    </newNodes>
+
+  </media360>
+
+  <!-- MEDIA================================== -->
+  
+  <file360 menuItem="Scene" duplicate="true" remove="true">
+  
+	<name label="Title" type="TextInput" wysiwyg="true"/>
+  
+	<title label="Show Title" type="CheckBox" defaultValue="false"/>
+  
+    <media type="group" label="Image">
+		<file label="File" type="media"/>
+		<tip label="Description" type="TextInput"/>
+	</media>
+	
+	<compass label="Compass" type="CheckBox" defaultValue="true" optional="true"/>
+	
+	<initPos label="Initial View" type="view360" defaultValue="" optional="true" tooltip="The initial orientation for this scene"/>
+	
+	<autoRotate type="group" label="Auto-rotate" optional="true" tooltip="Auto-rotate image when first loaded">
+		<rotate label="Rotate" type="CheckBox" defaultValue="true" optional="true"/>
+		<direction label="Direction" options="Right,Left" type="ComboBox" data="right,left" defaultValue="right" width="200"/>
+		<speed label="Speed" type="NumericStepper" min="1" max="20" step="1" defaultValue="2" optional="true"/>
+		<continueRotate label="Inactivity Delay" type="NumericStepper" min="0" max="20" step="1" defaultValue="0" optional="true" tooltip="By default, rotation will stop after user interaction with image. Specify a time (in seconds) of inactivity after which rotation will continue"/>
+	</autoRotate>
+	
+	<hidePage label="Hide Scene" type="CheckBox" defaultValue="true" optional="true" tooltip="Remove this scene from the scene menu. When hidden, this scene can still be accessed via hotspots in other scenes."/>
+	
+	<overlayColours type="group" label="Overlay Colours" optional="true" tooltip="Change the default colour used for tooltip and title backgrounds">
+		<tooltipBg label="Tooltips" type="ColourPicker" defaultValue="" optional="true"/>
+		<titleBg label="Title Bar" type="ColourPicker" defaultValue="" optional="true"/>
+	</overlayColours>
+	
+	<newNodes>
+	  <hotspot360><![CDATA[<hotspot360 name="Enter Hotspot Title" tooltip="true" icon="fas fa-info" orientation="0" p="" y=""/>]]></hotspot360>
+    </newNodes>
+  
+  </file360>
+  
+  <!-- HOTSPOT================================== -->
+  
+  <hotspot360 type="hotspot360" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+	
+	<tooltip label="Show Title as Tooltip" type="CheckBox"/>
+	
+	<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" mandatory="true"/>
+	<orientation label="Orientation" type="NumericStepper" min="-359" max="359" step="1" defaultValue="0" mandatory="true"/>
+	
+	<hsAppearance type="group" label="Hotspot Appearance" optional="true" tooltip="Customise the appearance of this hotspot. Any customisation set here will override customisation at page level.">
+		<colour1 label="Main Colour" type="ColourPicker" defaultValue="" optional="true"/>
+		<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="" optional="true"/>
+		<size label="Size" type="NumericStepper" min="5" max="25" step="1" defaultValue="" optional="true"/>
+	</hsAppearance>
+	
+	<destinationScene type="group" label="Move to Scene" optional="true" tooltip="Load another scene from this page when hotspot clicked. Select the scene from the list">
+		<scene label="Scene" type="pageList" conditionTrigger="true" listTarget="1" defaultValue="" optional="true"/>
+		<scenePos label="Initial View" type="view360" condition="scene!=null" file="scene" defaultValue="" optional="true" tooltip="The new scene's initial orientation"/>
+	</destinationScene>
+	
+	<position label="Rotate to View" type="view360" file="parent" defaultValue="" optional="true" tooltip="Rotate to this view when hotspot clicked"/>
+	
+	<hotspotPopUp label="Text" type="TextArea" height="200" optional="true" tooltip="Show text/HTML when hotspot clicked"/>
+	
+	<imgGroup type="group" label="Image" optional="true" tooltip="Show an image when hotspot clicked">
+		<imageFile label="File" type="media" optional="true" defaultValue="Select an Image"/>
+		<imageTip label="Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
+	</imgGroup>
+	
+	<sound type="group" label="Sound" optional="true" tooltip="Show an audio player (or play a sound automatically) when hotspot clicked">
+		<hotspotSound label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select an MP3 File"/>
+		<playerType label="Type" options="Audio Player,Auto-Play" type="ComboBox" data="player,auto" defaultValue="player" width="200" optional="true"/>
+	</sound>
+	
+	<soundTiming type="group" label="Sound Start &amp; End Times" condition="hotspotSound!=null" optional="true" tooltip="Play from &amp; stop at the times entered (in seconds). By default the whole audio will play">
+		<soundStart label="Start Time" type="textInput" defaultValue="" optional="true"/>
+		<soundEnd label="End Time" type="textInput" defaultValue="" optional="true"/>
+	</soundTiming>
+	
+	<video type="group" label="Video" optional="true" tooltip="Show a video player when hotspot clicked">
+		<hotspotMovie label="File" type="media" conditionTrigger="true" optional="true" defaultValue="Select a Video"/>
+		<tip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	</video>
+	
+	<videoTiming type="group" label="Video Start &amp; End Times" condition="hotspotMovie!=null" optional="true" tooltip="Play from &amp; stop at the times entered (in seconds). By default the whole video will play">
+		<startFrame label="Start Time" type="textInput" defaultValue="" optional="true"/>
+		<endFrame label="End Time" type="textInput" defaultValue="" optional="true"/>
+	</videoTiming>
+	
+	<destination label="Move to Page" type="pageList" defaultValue="" optional="true" tooltip="Go to another page in this project when hotspot clicked. Select the page from the list"/>
+	
+	<externalPage type="group" label="External Page" optional="true" tooltip="Go to an external website (or open it in a lightbox) when hotspot clicked">
+		<url label="URL" type="TextInput" defaultValue="" optional="true"/>
+		<urlAction label="Action" conditionTrigger="true" options="Navigate to Page,Open in Lightbox" type="ComboBox" data="open,lightbox" defaultValue="open" width="200"/>
+		<urlTarget label="Target" condition="urlAction=='open'" options="New Window/Tab,This Window" type="ComboBox" data="new,this" defaultValue="new" width="200"/>
+	</externalPage>
+	
+	<hideHs type="group" label="Hide Hotspot" optional="true" tooltip="Hide the hotspot. Note that hidden hotspots can still be clicked">
+		<hide label="Hide" type="CheckBox" defaultValue="true" optional="true"/>
+		<hover label="Show on Hover" type="CheckBox" defaultValue="false" optional="true"/>
+	</hideHs>
+	
+	<lockHs type="group" label="Lock Hotspot" optional="true" tooltip="Lock the hotspot until another scene or hotspot has been viewed or password has been entered">
+		<lock label="Lock" type="CheckBox" conditionTrigger="true" defaultValue="true" optional="true"/>
+		<lockHide label="Hide" conditionTrigger="true" condition="lock=='true'" type="CheckBox" defaultValue="false" optional="true" tooltip="Only show hotspot when unlocked"/>
+		<lockTip label="Show Tooltip" condition="lock=='true'&amp;&amp;lockHide!='true'" type="CheckBox" defaultValue="false" optional="true" tooltip="Show title as tooltip when locked"/>
+		<unlockOn label="Unlock After" conditionTrigger="true" condition="lock=='true'" options="Viewing Scene or Hotspot,Entering Password" type="ComboBox" defaultValue="" data="view,password" width="200" optional="true"/>
+		<unlock label="Scene/Hotspot" condition="lock=='true'&amp;&amp;unlockOn=='view'" type="pageList" listTarget="1*" defaultValue="" optional="true" tooltip="Unlock after scene has been viewed or hotspot clicked. Select scene or hotspot from the list"/>
+		<unlockPswd label="Password" condition="lock=='true'&amp;&amp;unlockOn=='password'" type="TextInput" defaultValue="" optional="true" tooltip="Unlock after this password has been entered. Users must click hotspot to open password input field"/>
+		<unlockCase label="Case Sensitive" condition="lock=='true'&amp;&amp;unlockOn=='password'" type="CheckBox" defaultValue="true" optional="true"/>
+		<unlockPswdTxt label="Instructions" condition="lock=='true'&amp;&amp;unlockOn=='password'" type="TextArea" height="100" defaultValue="" optional="true" tooltip="Text to accompany the password input field"/>
+	</lockHs>
+	
+  </hotspot360>
+  
+</wizard>

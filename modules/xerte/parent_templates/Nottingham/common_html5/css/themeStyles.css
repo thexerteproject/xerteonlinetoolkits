@@ -147,6 +147,10 @@ h3 {
 .ui-button.ui-state-focus .ui-icon.x_prev_hist {	background-position: -44px 0px; }
 .ui-button.ui-state-active .ui-icon.x_prev_hist {	background-position: -88px 0px; }
 
+.ui-button .ui-icon.x_saveSession {					background-image: url("../save_session.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_saveSession {	background-position: -44px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_saveSession {	background-position: -44px 0px; }
+.ui-button.ui-state-active .ui-icon.x_saveSession {	background-position: -88px 0px; }
 
 /* only used on flashCards page at the moment but could be used elsewhere too to better style buttons that only have font awesome icon on (no text) */
 .circleBtn.ui-button .ui-button-text, .circleBtn.ui-button .ui-button-icon-primary, .circleBtn.ui-button .ui-button-icon-secondary {
@@ -181,12 +185,16 @@ h3 {
 
 /*styling for optional show/hider footer tools*/
 #x_footerChevron{
-    /*color: grey;*/
+    color: white;
 	background: none;
 	border: none;
 	height:45px;
 	font-size: 14px !important;
 	width:25px !important;
+}
+
+#x_footerChevron:focus, #x_footerChevron:hover {
+	color: #FF9900;
 }
 
 /* PROGRESS BAR */
@@ -209,6 +217,12 @@ h3 {
 .fa-x-prev:before { content: "\f053"; }
 .fa-x-next-circle:before { content: "\f138"; } /* circle versions are used in multiple perspectives & thumbnail viewer pages */
 .fa-x-prev-circle:before { content: "\f137"; }
+
+/* Media */
+.fa-x-play:before   { content: "\f04b"; }
+.fa-x-pause:before  { content: "\f04c"; }
+.fa-x-mute:before   { content: "\f028"; }
+.fa-x-unmute:before { content: "\f6a9"; }
 
 /* arrow */
 /*
@@ -249,6 +263,12 @@ h3 {
 .fa-x-cross {
 	content: "\f00d"; color: #ff0000;
 }
+
+/* Media */
+.fa-x-play:before { content: "\f04b"; }
+.fa-x-pause:before { content: "\f04c"; }
+.fa-x-mute:before { content: "\f028"; }
+.fa-x-unmute:before { content: "\f6a9"; }
 
 /*class for hidden screenreader only content*/
 .sr-only {
@@ -292,6 +312,84 @@ and (max-width :500px) {
     width: 16px !important;
 }
 .featherlight iframe {
-	height: 90vh;
-	width: 90vw;
+	height: 85vh;
+	width: 85vw;
+}
+
+.featherlight-content {
+	max-width: 95vw;
+}
+
+.skip-link {
+	background: #000000;
+	color: #ffffff;
+	font-weight: 700;
+	left: 50%;
+	padding: 4px;
+	position: absolute;
+	transform: translateY(-100%);
+	transition: transform 0.3s;
+}
+.skip-link a, .skip-link a:visited{
+	color:#ffffff !important;
+}
+
+.skip-link:focus {
+	transform: translateY(0%);
+	color:#ffffff !important;
+}
+/*gap fill: change styling of correct and disable answers*/
+.x_gapFill_page #targetHolder input[readonly].correct, .x_gapFill_page #targetHolder .target.correct, .x_gapFill_page #targetHolder input[correct], .x_gapFill_page #targetHolder select[disabled].correct {
+	color:unset;
+	color: green;
+	opacity:1.0;
+	font-weight:400;
+	border-color: unset;
+	border-width:2px;
+	border-style:outset;
+	background:#ffffff;
+	cursor: default;
+	padding:initial !important;
+	caret-color: transparent;
+}
+/*gap fill: add ticks to correct answers*/
+.x_gapFill_page #targetHolder input[readonly].correct+span:before, .x_gapFill_page #targetHolder input[correct]+span:before, .x_gapFill_page #targetHolder .target.correct+span:before,.x_gapFill_page #targetHolder select[disabled].correct+span:before{
+	font-family: FontAwesome;
+	content: "\f00c";
+	color: green;
+	margin-left:1px;
+}
+/*gap fill: drop down show answers styling*/
+#targetHolder select[disabled].answerShown {
+	color: #c36b00;
+	opacity:1.0;
+	font-weight:400;
+	border-color: unset;
+	border-width:2px;
+	border-style:outset;
+	background:#ffffff;
+	cursor: default;
+	padding:initial !important;
+}
+/*gap fill: show red crosses when incorrect and in tracking mode*/
+.x_gapFill_page #targetHolder select[disabled]+span:before,.x_gapFill_page #targetHolder .target.incorrect+span:before, .x_gapFill_page #pageContents input[readonly]+span:before{
+	font-family: FontAwesome;
+	content: "\f00d";
+	color: red;
+	margin-left:1px;
+}
+/*gap fill: styling of disabled/incorrect responses when in tracking mode*/
+.x_gapFill_page #targetHolder select[disabled],.x_gapFill_page #targetHolder .target.incorrect,  .x_gapFill_page #targetHolder input[readonly]{
+	opacity:1.0;
+	font-weight:400;
+	border-color: unset;
+	border-width:2px;
+	border-style:outset;
+	background:#ffffff;
+	cursor: default;
+	padding:initial !important;
+}
+/*gap fill: remove red crosses when show answers selected*/
+.x_gapFill_page #targetHolder .target.answerShown+span:before, .x_gapFill_page #targetHolder select[disabled].answerShown+span:before, .x_gapFill_page #targetHolder input.answerShown+span:before {
+	content:"";
 }

@@ -57,8 +57,16 @@ if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_
     }
     $info->properties .= $statistics_available->info;
     $info->fetch_statistics = $statistics_available->available;
-    $info->lrs = $statistics_available->lrs;
-    $info->dashboard = $statistics_available->dashboard;
+    if (isset($statistics_available->lrs)) {
+        $info->lrs = $statistics_available->lrs;
+    } else {
+        $info->lrs = "";
+    }
+    if (isset($statistics_available->dashboard)) {
+        $info->dashboard = $statistics_available->dashboard;
+    } else {
+        $info->dashnoard = "";
+    }
 
     $sql = "SELECT template_id, user_id, firstname, surname, role FROM " .
         " {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .

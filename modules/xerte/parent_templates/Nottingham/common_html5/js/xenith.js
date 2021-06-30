@@ -49,7 +49,7 @@ var x_languageData  = [],
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background;
 
 // Patch jQuery to add support for .toggle(function, function...) which was removed in jQuery 1.9
 // Code from http://forum.jquery.com/topic/beginner-function-toggle-deprecated-what-to-use-instead
@@ -65,48 +65,62 @@ if (!$.fn.toggleClick) {
 }
 
 $(document).keydown(function(e) {
-    switch(e.which) {
-        case 33: // PgUp
-			var pageIndex = $.inArray(x_currentPage, x_normalPages);
-            if (pageIndex > -1 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
-                if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
-					// linear back
-					if (pageIndex > 0) {
-						x_changePage(x_normalPages[pageIndex -1]);
-					}
-					
-                } else {
-					var prevPage = x_pageHistory[x_pageHistory.length-2];
-                    x_pageHistory.splice(x_pageHistory.length - 2, 2);
-					
-					// check if history is empty and if so allow normal back navigation and change to normal back button
-					if (prevPage == undefined && x_currentPage > 0) {
-						x_changePage(x_normalPages[pageIndex -1]);
+	// if lightbox open then don't allow page up/down buttons to change the page open in the background
+	// Place lightbox check in a try block, because an exception will be triggereed if LO is embedded in an iframe
+	let shownInFeatherlight = false;
+	try
+	{
+		shownInFeatherlight = parent.window.$.featherlight.current();
+	}
+	catch (e)
+	{
+		// Ignore
+	}
+	if (!shownInFeatherlight) {
+		switch(e.which) {
+			case 33: // PgUp
+				var pageIndex = $.inArray(x_currentPage, x_normalPages);
+				if (pageIndex > -1 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
+					if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
+						// linear back
+						if (pageIndex > 0) {
+							x_changePage(x_normalPages[pageIndex -1]);
+						}
+						
 					} else {
-						x_changePage(prevPage);
+						var prevPage = x_pageHistory[x_pageHistory.length-2];
+						x_pageHistory.splice(x_pageHistory.length - 2, 2);
+						
+						// check if history is empty and if so allow normal back navigation and change to normal back button
+						if (prevPage == undefined && x_currentPage > 0) {
+							x_changePage(x_normalPages[pageIndex -1]);
+						} else {
+							x_changePage(prevPage);
+						}
 					}
-                }
-			} else if (pageIndex == -1) {
-				// historic back (standalone page)
-				if (history.length > 1) {
-					history.go(-1);
-				} else {
-					x_changePage(x_normalPages[0]);
+				} else if (pageIndex == -1) {
+					// historic back (standalone page)
+					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
+						history.go(-1);
+					} else {
+						x_changePage(x_normalPages[0]);
+					}
 				}
-			}
-            break;
+				break;
 
-        case 34: // PgDn
-			// if it's a standalone page then nothing will happen
-			var pageIndex = $.inArray(x_currentPage, x_normalPages);
-			if (pageIndex != -1 && $x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
-				x_changePage(x_normalPages[pageIndex + 1]);
-			}
-            break;
+			case 34: // PgDn
+				// if it's a standalone page then nothing will happen
+				var pageIndex = $.inArray(x_currentPage, x_normalPages);
+				if (pageIndex != -1 && $x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
+					x_changePage(x_normalPages[pageIndex + 1]);
+				}
+				break;
 
-        default: return; // exit this handler for other keys
-    }
-    e.preventDefault(); // prevent the default action (scroll / move caret)
+			default: return; // exit this handler for other keys
+		}
+	} else {
+		return;
+	}
 });
 
 $(document).ready(function() {
@@ -165,6 +179,24 @@ $(document).ready(function() {
     }
 
 });
+
+x_pagesViewed = function()
+{
+	var viewed = [];
+	x_pageInfo.forEach(function(item, index){
+		if (item.viewed) {
+			viewed.push(index);
+		}
+	});
+	return viewed;
+}
+
+x_restorePagesViewed = function(viewed)
+{
+	viewed.forEach(function(item){
+		x_pageInfo[item].viewed = true;
+	});
+}
 
 // To be able to check on orientation, and also detect the difference between a mobile and tablet
 // See https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
@@ -337,7 +369,7 @@ x_projectDataLoaded = function(xmlData) {
 		if (hidePage == false || x_params.authorSupport == "true") {
 			var linkID = $(this)[0].getAttribute("linkID"),
 				pageID = $.trim($(this)[0].getAttribute("pageID")),
-				page = {type: $(this)[0].nodeName, built: false};
+				page = {type: $(this)[0].nodeName, built: false, viewed: false};
 			
 			if (linkID != undefined) {
 				page.linkID = linkID;
@@ -421,7 +453,7 @@ x_projectDataLoaded = function(xmlData) {
         }
         if (x_params.navigation != "Linear" && x_params.navigation != "LinearWithHistoric" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
             x_pages.splice(0, 0, "menu");
-            x_pageInfo.splice(0, 0, {type: 'menu', built: false});
+            x_pageInfo.splice(0, 0, {type: 'menu', built: false, viewed:false});
 			
 			// adjust normal page indexes to take into account menu page
 			for (var i=0; i<x_normalPages.length; i++) {
@@ -450,8 +482,10 @@ x_projectDataLoaded = function(xmlData) {
 			hash = tempUrlParams[i];
 		}
     }
-		
+	
 	// there are several URL params that can determine the 1st page viewed - check if they are valid pages before setting start page
+	var customStartPage = false;
+	
 	if (x_urlParams.linkID) { // ID auto-generated in xwd e.g. URL/play_123&linkID=PG1593081880325
 		var temp = getDeepLink(x_urlParams.linkID);
 		if (temp.length > 1) {
@@ -461,6 +495,7 @@ x_projectDataLoaded = function(xmlData) {
 		var validPage = x_lookupPage("linkID", temp[0]);
 		if (validPage !== false) {
 			x_startPage = { type : "index", ID : validPage };
+			customStartPage = true;
 		}
 		
 		delete x_urlParams.linkID;
@@ -475,6 +510,7 @@ x_projectDataLoaded = function(xmlData) {
 		var validPage = x_lookupPage("pageID", temp[0]);
 		if (validPage !== false) {
 			x_startPage = { type : "index", ID : validPage };
+			customStartPage = true;
 		}
 		
 		delete x_urlParams.pageID;
@@ -489,10 +525,13 @@ x_projectDataLoaded = function(xmlData) {
 		var validPage = x_lookupPage("pageID", temp[0]);
 		if (validPage !== false) {
 			x_startPage = {type : "index", ID : validPage};
+			customStartPage = true;
+			
 		} else {
 			if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
 				var tempIndex = x_normalPages[Number(temp[0])-1];
 				x_startPage = { type : "index", ID : tempIndex };
+				customStartPage = true;
 			}
 		}
 		
@@ -508,6 +547,7 @@ x_projectDataLoaded = function(xmlData) {
 		if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
 			var tempIndex = x_normalPages[Number(temp[0])-1];
 			x_startPage = { type : "index", ID : tempIndex };
+			customStartPage = true;
 		}
 		
 		delete x_urlParams.resume;
@@ -520,8 +560,30 @@ x_projectDataLoaded = function(xmlData) {
 		}
 		
 		var info = getHashInfo(temp[0]);
-		if (info != false) {
+		if (info !== false) {
 			x_startPage = {type : "index", ID : info};
+			customStartPage = true;
+		}
+	}
+	
+	// any params in URL which can change the start page can be disabled from working by adding optional property
+	// also, if 1st page is project is standalone page then it should default to 1st non-standalone page instead
+	if (x_pageInfo[x_startPage.ID] != undefined) {
+		if ((x_pageInfo[x_startPage.ID].standalone == true && customStartPage == false) || 
+			(x_params.forcePage1 == 'true' && customStartPage == true && (x_pageInfo[x_startPage.ID].standalone == undefined || x_pageInfo[x_startPage.ID].standalone == false))) {
+			var tempIndex;
+			for (var i=0; i<x_pageInfo.length; i++) {
+				if (x_pageInfo[i].standalone != true) {
+					tempIndex = i;
+					break;
+				}
+			}
+			
+			if (tempIndex) {
+				x_startPage = {type : "index", ID : String(tempIndex)};
+			} else {
+				x_startPage = {type : "index", ID : "0"};
+			}
 		}
 	}
 	
@@ -636,19 +698,23 @@ x_projectDataLoaded = function(xmlData) {
     {
         XTSetOption('force_tracking_mode', x_params.forceTrackingMode);
     }
+
 }
 
 // browser back / fwd button will trigger this - manually make page change to match #pageX
 window.onhashchange = function() {
-	var temp = getDeepLink(window.location.hash);
-	if (temp.length > 1) {
-		x_deepLink = temp[1];
-	}
-	
-	var pageInfo = getHashInfo(temp[0]);
 
-	if (pageInfo !== false) {
-		x_navigateToPage(false, { type: "index", "ID": pageInfo }, false );
+	if (x_params.forcePage1 == undefined || x_params.forcePage1 != 'true') {
+		var temp = getDeepLink(window.location.hash);
+		if (temp.length > 1) {
+			x_deepLink = temp[1];
+		}
+		
+		var pageInfo = getHashInfo(temp[0]);
+
+		if (pageInfo !== false) {
+			x_navigateToPage(false, { type: "index", "ID": pageInfo }, false );
+		}
 	}
 	
 	// force lightbox to close
@@ -830,6 +896,7 @@ function x_setUp() {
 		$x_footerBlock	= $("#x_footerBlock");
 		$x_footerL		= $("#x_footerBlock .x_floatLeft");
 		$x_menuBtn		= $("#x_menuBtn");
+		$x_saveSessionBtn = $("#x_saveSessionBtn");
 		$x_colourChangerBtn	= $("#x_colourChangerBtn");
 		$x_prevBtn		= $("#x_prevBtn");
 		$x_pageNo		= $("#x_pageNo");
@@ -847,7 +914,7 @@ function x_setUp() {
 		if (x_params.variables != undefined) {
 			XENITH.VARIABLES.init(x_params.variables);
 		}
-
+		
 		x_dialogInfo.push({type:'msg', built:false});
 
 		// hides header/footer if set in url
@@ -997,17 +1064,29 @@ function x_cssSetUp(param) {
             }
             break;
         case "colourChanger":
-            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("theme")});
+            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("saveSession")});
             break;
         case "colourChanger2":
             if (x_params.theme != undefined && x_params.theme != "default") {
-                x_insertCSS(x_themePath + x_params.theme + "/css/colourChanger.css", function () {x_cssSetUp("theme")});
+                x_insertCSS(x_themePath + x_params.theme + "/css/colourChanger.css", function () {x_cssSetUp("saveSession")});
             }
             else
             {
-                x_cssSetUp("theme");
+                x_cssSetUp("saveSession");
             }
             break;
+		case "saveSession":
+			x_insertCSS(x_templateLocation + "models_html5/saveSession.css", function() {x_cssSetUp("theme")});
+			break;
+		case "saveSession2":
+			if (x_params.theme != undefined && x_params.theme != "default") {
+				x_insertCSS(x_themePath + x_params.theme + "/css/saveSession.css", function () {x_cssSetUp("theme")});
+			}
+			else
+			{
+				x_cssSetUp("theme");
+			}
+			break;
         case "theme":
             if (!xot_offline) {
                 $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
@@ -1062,7 +1141,12 @@ function x_continueSetUp1() {
 				})
 				.attr("aria-label", $("#x_helpBtn").attr("title") + " " + x_params.newWindowTxt)
 				.click(function() {
-					window.open(x_evalURL(x_params.nfo), "_blank");
+					if (x_params.helpTarget != 'lightbox') {
+						window.open(x_evalURL(x_params.nfo), "_blank");
+					} else {
+						$.featherlight({iframe: x_evalURL(x_params.nfo), iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
+					}
+					
 					$(this)
 						.blur()
 						.removeClass("ui-state-focus")
@@ -1133,7 +1217,7 @@ function x_continueSetUp1() {
 					});
 				return(false);
 			});
-			if (x_params.footerTools == "hideFooterTools") {
+			if (x_params.footerTools == "hideFooterTools" || x_browserInfo.mobile) {
 				$('#x_footerBlock .x_floatLeft').hide();
 				$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
 				$('#x_footerChevron').prop('title', showMsg);
@@ -1243,7 +1327,7 @@ function x_continueSetUp1() {
 					}
 				} else if (pageIndex == -1) {
 					// historic back (standalone page)
-					if (history.length > 1) {
+					if (history.length > 1 && ((x_params.forcePage1 != undefined && x_params.forcePage1 != 'true') || parent.window.$.featherlight.current())) {
 						history.go(-1);
 					} else {
 						x_changePage(x_normalPages[0]);
@@ -1361,6 +1445,37 @@ function x_continueSetUp1() {
 				);
 			});
 
+		if (x_params["hideSaveSession"] !== "true" && (XTGetMode().indexOf("normal") >= 0 || XTTrackingSystem() === "xAPI")) {
+			x_dialogInfo.push({type:'saveSession', built:false});
+			$x_saveSessionBtn
+				.button({
+					icons: {
+						primary: "x_saveSession"
+					},
+					label: x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session"),
+					text: false
+				})
+				.attr("aria-label", $("#x_saveSessionBtn").attr("title") + " " + x_params.dialogTxt)
+				.click(function () {
+					x_openDialog(
+						"saveSession",
+						x_getLangInfo(x_languageData.find("saveSession")[0], "label", "Save Session"),
+						x_getLangInfo(x_languageData.find("saveSession").find("closeButton")[0], "description", "Close Save Session"),
+						null,
+						null,
+						function () {
+							$x_saveSessionBtn
+								.blur()
+								.removeClass("ui-state-focus")
+								.removeClass("ui-state-hover");
+						}
+					);
+				});
+		}
+		else
+		{
+			$x_saveSessionBtn.hide();
+		}
 		if (x_params.kblanguage != undefined) {
 			if (typeof charpadstr != 'undefined')
 			{
@@ -1485,9 +1600,21 @@ function x_continueSetUp1() {
 
 function x_continueSetUp2() {
 	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
-	var mediaElementText = [{name:"stopButton", label:"Stop", description:"Stop Media Button"},{name:"playPauseButton", label:"Play/Pause", description:"Play/Pause Media Button"},{name:"muteButton", label:"Mute Toggle", description:"Toggle Mute Button"},{name:"fullscreenButton", label:"Fullscreen", description:"Fullscreen Movie Button"},{name:"captionsButton", label:"Captions/Subtitles", description:"Show/Hide Captions Button"}];
+	var mediaElementText = [{
+		name: "stopButton",
+		label: "Stop",
+		description: "Stop Media Button"
+	}, {name: "playPauseButton", label: "Play/Pause", description: "Play/Pause Media Button"}, {
+		name: "muteButton",
+		label: "Mute Toggle",
+		description: "Toggle Mute Button"
+	}, {name: "fullscreenButton", label: "Fullscreen", description: "Fullscreen Movie Button"}, {
+		name: "captionsButton",
+		label: "Captions/Subtitles",
+		description: "Show/Hide Captions Button"
+	}];
 
-	for (var i=0, len=mediaElementText.length; i<len; i++) {
+	for (var i = 0, len = mediaElementText.length; i < len; i++) {
 		x_mediaText.push({
 			label: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]),
 			description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
@@ -1500,26 +1627,66 @@ function x_continueSetUp2() {
 
 	// script optional property added after all interface set up & before any pages load
 	if (x_params.script != undefined && x_params.script != "") {
-		$x_head.append('<script>' +  x_params.script + '</script>');
+		$x_head.append('<script>' + x_params.script + '</script>');
 	}
 
 	// Setup beforeunload
-    window.onbeforeunload = XTTerminate;
+	window.onbeforeunload = XTTerminate;
 
-    XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
-	// Set course and module options AFTER XTInitialise
-    if (x_params.course != undefined && x_params.course != "")
-    {
-        XTSetOption('course', x_params.course);
-    }
-    if (x_params.module != undefined && x_params.module != "")
-    {
-        XTSetOption('module', x_params.module);
-    }
-	
-	setUpComplete = true;
+	XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
+	// Set course, module and resume options AFTER XTInitialise
+	if (x_params.course != undefined && x_params.course != "") {
+		XTSetOption('course', x_params.course);
+	}
+	if (x_params.module != undefined && x_params.module != "") {
+		XTSetOption('module', x_params.module);
+	}
+	if (XTTrackingSystem() === 'xAPI') {
+		var callStartPage = false;
+		if (x_params.restartOptions == undefined)
+		{
+			x_params.restartOptions = 'ask';
+		}
+		switch (x_params.restartOptions) {
+			case 'ask':
+				var canResume = XTCanResume();
+				if (canResume.canResume) {
+					x_dialogInfo.push({type: 'resumeSession', built: false});
+					x_openDialog(
+						"resumeSession",
+						x_getLangInfo(x_languageData.find("resumeSession")[0], "label", "Resume Session"),
+						x_getLangInfo(x_languageData.find("resumeSession").find("closeButton")[0], "description", "Close Resume Session Dialog"),
+						null,
+						null,
+						function () {
+							setUpComplete = true;
 
-    x_navigateToPage(true, x_startPage);
+							x_navigateToPage(true, x_startPage);
+						}
+					);
+				} else {
+					XTSetOption('resume', false);
+					callStartPage = true;
+				}
+				break;
+			case 'restart':
+				XTSetOption('resume', true);
+				callStartPage = true;
+				break;
+			case 'do_not_restart':
+				XTSetOption('resume', false);
+				callStartPage = true;
+				break;
+		}
+		if (callStartPage)
+		{
+			setUpComplete = true;
+			x_navigateToPage(true, x_startPage);
+		}
+	} else {
+		setUpComplete = true;
+		x_navigateToPage(true, x_startPage);
+	}
 }
 
 // function checks whether a media file exists
@@ -1568,7 +1735,6 @@ function x_dialog(text){
 
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID}
-	
     var page = XTStartPage();
     if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved by the LO
         x_changePage(page, addHistory);
@@ -1718,7 +1884,18 @@ function x_checkPages(type, id, pageArray) {
 
 	return false;
 }
-
+function x_setMaxWidth() {
+	if (x_params.maxWidth != undefined && x_params.maxWidth != "") {
+		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioSlideshow','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageViewer','interactiveText','inventory','language','links','list','map','mcq','media360','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss',];
+		var styleString = '<style>';
+		for (var i=0; i<workingPages.length; i++) {
+			if (i>0) { styleString += ', '; }
+			styleString += '.x_' + workingPages[i] + '_page #x_pageDiv';
+		}
+		styleString += '{max-width: '+x_params.maxWidth+'px;margin: 0 auto;}</style>';
+		$('head').append(styleString);
+	}
+}
 
 // function called on page change to remove old page and load new page model
 // If x_currentPage == -1, than do not try to exit tracking of the page
@@ -1736,6 +1913,10 @@ function x_changePage(x_gotoPage, addHistory) {
 	// if this page is already shown in a lightbox then don't try to open another lightbox - load in the existing one
 	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' && parent.window.$.featherlight.current()) {
 		standAlonePage = false;
+		addHistory = false;
+	}
+	
+	if (x_params.forcePage1 == 'true') {
 		addHistory = false;
 	}
 	
@@ -1780,6 +1961,8 @@ function x_changePage(x_gotoPage, addHistory) {
 			doPercentage();
 		}
 		
+		x_pageInfo[x_gotoPage].viewedNewWindow = true;
+		
 	// standalone page opening in lightbox
 	} else {
 		$.featherlight({iframe: window.location.href.split('#')[0] + '#' + pageHash, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
@@ -1789,6 +1972,8 @@ function x_changePage(x_gotoPage, addHistory) {
 			x_pageInfo[x_gotoPage].builtLightBox = true;
 			doPercentage();
 		}
+		
+		x_pageInfo[x_gotoPage].viewedLightBox = true;
 	}
 }
 
@@ -1823,6 +2008,15 @@ function x_changePageStep3(x_gotoPage) {
 }
 
 function x_changePageStep4(x_gotoPage) {
+	// Check if saveSession button is styled
+	if (typeof x_varSaveSessionBtnIsStyled == "undefined") {
+		x_varSaveSessionBtnIsStyled = x_saveSessionBtnIsStyled();
+		if (!x_varSaveSessionBtnIsStyled) {
+			if ($('#savesessionbtn_css').length == 0) {
+				$x_head.append('<style type="text/css" id="savesessionbtn_css">#x_saveSessionBtn:after {content: "\\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; } #x_saveSessionBtn { font-size: 1.9em; width:1.1em; }  .ui-button .ui-icon.x_saveSession { background-image: none; } #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button { padding: 0; } #x_saveSessionBtn span { display: none; }</style>');
+			}
+		}
+	}
     if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
         x_insertCSS(x_evalURL(x_params.stylesheet), function () {
             x_changePageStep5(x_gotoPage);
@@ -1859,14 +2053,28 @@ function x_endPageTracking(pagechange, x_gotoPage) {
         XTExitPage(x_currentPage);
     }
 }
-
 function x_changePageStep5(x_gotoPage) {
+	x_setMaxWidth();
 	
-    if (x_params.styles != undefined) {
+	if (x_params.styles != undefined || x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
         if ($('#lo_css').length == 0) {
-            $x_head.append('<style type="text/css" id="lo_css">' + x_params.styles + '</style>');
+			
+			var lightboxStyle = '',
+				loStyles = x_params.styles != undefined ? x_params.styles : '';
+			
+			if (x_params.lightboxColour != undefined || x_params.lightboxOpacity != undefined) {
+				lightboxColour = x_params.lightboxColour != undefined ? x_params.lightboxColour.substr(x_params.lightboxColour.length - 6) : '000000';
+				lightboxOpacity = x_params.lightboxOpacity != undefined ? x_params.lightboxOpacity / 100 : '0.8';
+				
+				var rgbaColour = x_hexToRgb(lightboxColour, lightboxOpacity);
+				
+				lightboxStyle = '.featherlight:last-of-type { background:' + rgbaColour + ';}';
+			}
+			
+            $x_head.append('<style type="text/css" id="lo_css">' + lightboxStyle + ' ' + loStyles + '</style>');
         }
     }
+	
     // If special_theme_css does not exist yet, create a disabled special_theme_css
     if (x_specialTheme != undefined && x_specialTheme != '') {
         x_insertCSS(x_themePath + x_specialTheme + '/' + x_specialTheme + '.css', function () {
@@ -1934,7 +2142,7 @@ function x_changePageStep5a(x_gotoPage) {
         x_pageHistory.push(x_currentPage);
     }
 	
-	// if it's astandalone page then it's possible that the header or footer bar are hidden
+	// if it's a standalone page then it's possible that the header or footer bar are hidden
 	var headerHidden = false, footerHidden = false;
 	if (x_pageInfo[x_currentPage].standalone == true) {
 		if (x_currentPageXML.getAttribute('headerHide') == 'true') {
@@ -1943,7 +2151,10 @@ function x_changePageStep5a(x_gotoPage) {
 		}
 		if (x_currentPageXML.getAttribute('footerHide') == 'true') {
 			footerHidden = true;
-			$x_footerBlock.hide().height(0);
+			// more complex than just hiding all of footer bar in one go as narration may be in there which still needs to show
+			$('#x_footerBlock > div').each(function () {
+				$(this).hide().height(0);
+			});
 		}
 	}
 	
@@ -2155,8 +2366,26 @@ function x_changePageStep6() {
 
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();
+	}x_focusPageContents();
+}
+
+function x_focusPageContents(){
+	//focus pageContents after page load and page change
+		$('#pageContents').attr('tabIndex', 0).focus();
+		//#pageContents:focus is set to none in default theme
+		//uncomment the line below to see the focus outline
+		//or use a theme where this isn't hidden
+		//$('#pageContents:focus').css('outline','solid');
+	if(x_pageInfo[x_currentPage].type=="adaptiveContent"){
+		$('#adaptiveContentMain').attr('tabIndex', 0).focus();
 	}
 }
+
+//skip to main contents link but this code needs checking
+// and language string needs to be added to replace default English text
+$('[href^="#"][href!="#"]').click(function() {
+	$($(this).attr('href')).attr('tabIndex', -1).focus();
+});
 
 // trigger that page contents have updated
 function x_pageContentsUpdated() {
@@ -2322,7 +2551,9 @@ function x_setUpPage() {
 		if (x_currentPageXML.getAttribute("next") == "false") {
 			$x_nextBtn.button("disable");
 		}
-
+		if (x_currentPageXML.getAttribute("save") == "false") {
+			$x_saveSessionBtn.button("disable");
+		}
 	} else if (!x_isMenu() && x_currentPageXML.getAttribute("navSetting") != undefined) {
 		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
 		if (x_currentPageXML.getAttribute("navSetting") != "all") {
@@ -2356,6 +2587,7 @@ function x_setUpPage() {
 // function called from each model when fully loaded to trigger fadeIn
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
+    x_pageInfo[x_currentPage].viewed = true;
 	
 	// calls function in current theme (if it exists)
 	var pt = x_pageInfo[x_currentPage].type;
@@ -2400,6 +2632,7 @@ function x_pageLoaded() {
     $(config.selector, config.context).featherlight();
 
 	doPercentage();
+	x_focusPageContents();
 }
 
 // detect page loaded change and update progress bar
@@ -2408,7 +2641,7 @@ function doPercentage() {
 	
 	// by default stand-alone pages are excluded from being included in progress - this can be overridden with optional property
     var totalPages = $(x_pageInfo).filter(function(i){ return this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true'; }).length - menuOffset,
-		pagesViewed = $(x_pageInfo).filter(function(i){ return (this.built !== false && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true')) || this.builtLightBox == true || this.builtNewWindow == true; }).length - menuOffset;
+		pagesViewed = $(x_pageInfo).filter(function(i){ return (this.viewed !== false && (this.standalone != true || x_pages[i].getAttribute('reqProgress') == 'true')) || this.builtLightBox == true || this.builtNewWindow == true; }).length - menuOffset;
 	
     var progress = Math.round((pagesViewed * 100) / totalPages),
 		pBarText = x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
@@ -2613,7 +2846,6 @@ function x_loadPageBg(loadModel) {
 
 // function sorts out css that's dependant on screensize
 function x_updateCss(updatePage) {
-	
 	if (updatePage != false) {
 		// adjust width of narration controls - to get this to work consistently across browsers and with both html5/flash players the audio needs to be reset
 		if ($("#x_pageNarration").length > 0) {
@@ -2621,17 +2853,22 @@ function x_updateCss(updatePage) {
 				var audioRefNum = $("#x_pageNarration .mejs-audio").attr("id").substring(4);
 				$("body div#me_flash_" + audioRefNum + "_container").remove();
 			}
-			$("#x_pageNarration").remove();
 			
-			x_addNarration('x_updateCss2', updatePage);
+			if ($("#x_pageNarration").length > 0) {
+				var audioBarW = 0;
+				$("#x_pageNarration .mejs-inner .mejs-controls").children().each(function() {
+					audioBarW += $(this).outerWidth();
+				});
+				
+				if (audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() < -2 || audioBarW - $("#x_pageNarration").parents("#x_footerBlock").width() > 2) {
+					$x_window.resize();
+				}
+			}
 			
-		} else {
-			x_updateCss2(updatePage);
 		}
-		
-	} else {
-		x_updateCss2(updatePage);
 	}
+	
+	x_updateCss2(updatePage);
 }
 
 // function isn't called until the narration bar has loaded
@@ -2840,7 +3077,7 @@ function x_isMenu() {
 
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML, exclude, list) {
-    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt"],
+    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt", "side1", "side2"],
         i, j, len;
 	if (pageXML.nodeName == "mcqStepOption") { attrToCheck.push("name"); } // don't include name normally as it's generally only used in titles
 
@@ -2848,6 +3085,10 @@ function x_findText(pageXML, exclude, list) {
         if ($.inArray(pageXML.attributes[i].name, attrToCheck) > -1) {
             x_insertText(pageXML.attributes[i], exclude, list);
         }
+		
+		if (pageXML.attributes[i].name == 'data') {
+			x_insertText(pageXML.attributes[i], true, ['glossary'], true);
+		}
     }
 
     for (i=0, len=pageXML.childNodes.length; i<len; i++) {
@@ -2862,7 +3103,7 @@ function x_findText(pageXML, exclude, list) {
 }
 
 // function adds glossary links, LaTeX, page links to text found in x_findText function
-function x_insertText(node, exclude, list) {
+function x_insertText(node, exclude, list, data) {
 	// Decode node.value in order to make sure it works for for foreign characters like é
 	// But keep html tags, so use textarea
 	// cf. http://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it (3rd answer)
@@ -2876,7 +3117,12 @@ function x_insertText(node, exclude, list) {
 	// check text for variables - if found replace with variable value
 	// also handle case where comma decimal separator has been requested
 	if (XENITH.VARIABLES && XENITH.VARIABLES.exist() && (exclude == undefined || (exclude == false && list.indexOf("variables") > -1) || (exclude == true && list.indexOf("variables") == -1))) {
-		tempText = XENITH.VARIABLES.replaceVariables(tempText, x_params.decimalseparator);
+		tempText = XENITH.VARIABLES.replaceVariables(tempText, x_params.decimalseparator, data);
+	}
+	
+	// check text for global variables - if found replace with variable value
+	if (x_params.globalVars == 'true' && (exclude == undefined || (exclude == false && list.indexOf("globalVars") > -1) || (exclude == true && list.indexOf("globalVars") == -1))) {
+		tempText = XENITH.GLOBALVARS.replaceGlobalVars(tempText);
 	}
 
 	// if project is being viewed as https then force iframe src to be https too
@@ -3237,6 +3483,15 @@ function x_blackOrWhite(colour) {
 	return (brightness > 160) ? "#000000" : "#FFFFFF"; // checks whether black or white text is best on bg colour
 }
 
+// function converts hex colour to rgb
+function x_hexToRgb(hex, opa) {
+	var bigint = parseInt(hex, 16);
+	var r = (bigint >> 16) & 255;
+	var g = (bigint >> 8) & 255;
+	var b = bigint & 255;
+	
+	return "rgba(" + r + "," + g + "," + b + "," + opa + ")";
+}
 
 // function randomises the order of items in an array
 function x_shuffleArray(array) {
@@ -3265,6 +3520,22 @@ function x_isYouTubeVimeo(url) {
 // strip html tags and return just text which is appropriate for screen reader
 function x_getAriaText(text) {
 	return $('<p>' + text + '</p>').text();
+}
+
+// Script to check whther saveSession button is styled in theme
+function x_saveSessionBtnIsStyled() {
+	if (x_params.theme != undefined && x_params.theme == "default")
+		return true;
+	var files = $.map(document.styleSheets, function(s) {
+		return s.href && s.href.indexOf('/themes/Nottingham/')>0 ? s : null;
+	});
+
+	var isStyled = files.reduce(function(a,r){
+		return [].slice.call(r.rules).reduce(function(a,r){
+			return (r.cssText && r.cssText.indexOf('x_saveSession')>0) || a;
+		}, false) || a;
+	}, false);
+	return isStyled;
 }
 
 
@@ -3746,8 +4017,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	},
 	
 	
-	replaceVariables = function (tempText, decimalSeparator) {
-
+	replaceVariables = function (tempText, decimalSeparator, dataInfo) {
 		tempText = tempText.replace(
 			new RegExp('\\[\\{(.*?)\\}(?:\\s|&nbsp;)*(?:(?:\\,(?:\\s|&nbsp;)*?(\\d+?)?))?\\]|<span class="x_var x_dyn_(.*?)">(?:.*?)</span>', 'g'),
 			function (match, contents, round, id) {
@@ -3775,34 +4045,48 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 		);
 		
 		for (var k=0; k<variables.length; k++) {
-			// if it's first attempt to replace vars on this page look at vars in image tags first
-			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
-			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
-				var $tempText = $(tempText);
-				for (var m=0; m<$tempText.find('img').length; m++){
-					var tempImgTag = $tempText.find('img')[m].outerHTML,
-						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-					tempImgTag = tempImgTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
-					$($tempText.find('img')[m]).replaceWith(tempImgTag);
+			if (dataInfo == true) {
+				// we're looking at the data for chart, documetaion, grid and table pages - these are treated differently to normal text
+				// replace with the variable text
+				var regExp = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+				tempText = tempText.replace(regExp, x_checkDecimalSeparator(variables[k].value));
+				
+			} else {
+				// if it's first attempt to replace vars on this page look at vars in image, iframe, a & mathjax tags first
+				// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
+				var tags = ['img', '.mathjax', 'iframe', 'a'];
+				
+				for (var p=0; p<tags.length; p++) {
+					var thisTag = tags[p];
+					
+					if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
+						var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
+						for (var m=0; m<$tempText.find(thisTag).length; m++){
+							var tempTag = $tempText.find(thisTag)[m].outerHTML,
+								regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+							tempTag = tempTag.replace(regExp2, x_checkDecimalSeparator(variables[k].value));
+							$($tempText.find(thisTag)[m]).replaceWith(tempTag);
+						}
+						tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
+					}
 				}
-				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
-			}
-			
-			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
-			var regExp = new RegExp('\\[' + variables[k].name + '\\]|<span class="x_var x_var_' + variables[k].name + '">(.*?)</span>', 'g');
-			tempText = tempText.replace(regExp, '<span class="x_var x_var_' + variables[k].name + '">' + x_checkDecimalSeparator(variables[k].value) + '</span>');
-			
-			// replace with a text input field which the end user can use to set the value of the variable
-			regExp = new RegExp('\\[=' + variables[k].name + '\\]', 'g');
-			tempText = tempText.replace(regExp, '<input type="text" name="' + variables[k].name + '" class="x_varInput">');
-			
-			// this format of the text input field has specified a default value
-			regExp = new RegExp('\\[=' + variables[k].name + ':(.*?)\\]', 'g');
-			
-			var matches = tempText.match(regExp);
-			if (matches != null) {
-				for (var m=0; m<matches.length; m++) {
-					tempText = tempText.replace(matches[m], '<input type="text" name="' + variables[k].name + '" class="x_varInput" placeholder="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '">');
+				
+				// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)
+				var regExp = new RegExp('\\[' + variables[k].name + '\\]|<span class="x_var x_var_' + variables[k].name + '">(.*?)</span>', 'g');
+				tempText = tempText.replace(regExp, '<span class="x_var x_var_' + variables[k].name + '">' + x_checkDecimalSeparator(variables[k].value) + '</span>');
+				
+				// replace with a text input field which the end user can use to set the value of the variable
+				regExp = new RegExp('\\[=' + variables[k].name + '\\]', 'g');
+				tempText = tempText.replace(regExp, '<input type="text" name="' + variables[k].name + '" class="x_varInput">');
+				
+				// this format of the text input field has specified a default value
+				regExp = new RegExp('\\[=' + variables[k].name + ':(.*?)\\]', 'g');
+				
+				var matches = tempText.match(regExp);
+				if (matches != null) {
+					for (var m=0; m<matches.length; m++) {
+						tempText = tempText.replace(matches[m], '<input type="text" name="' + variables[k].name + '" class="x_varInput" placeholder="' + matches[m].substring(matches[m].indexOf(':')+1, matches[m].length-1) + '">');
+					}
 				}
 			}
 		}
@@ -3909,6 +4193,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	self.replaceVariables = replaceVariables;
 	self.showVariables = showVariables;
 	self.updateVariable = updateVariable;
+	self.setVariable = setVariable;
 
 return parent; })(jQuery, XENITH || {});
 
@@ -3923,8 +4208,12 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			$x_glossaryHover,
 
 
-	// function starts the calculation of variables set by author via the variables optional property
 	init = function () {
+		
+		$x_glossaryHover = $('<div id="x_glossaryHover" class="x_tooltip" role="tooltip"></div>')
+			.appendTo($x_mainHolder)
+			.hide();
+		
 		x_dialogInfo.push({type:'glossary', built:false});
 
 		var i, len, item, word,
@@ -3977,10 +4266,6 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 						myText = $this.text().trim(),
 						myDefinition, i, len;
 
-					// Rip out the title attribute
-					$this.data('title', $this.attr('title'));
-					$this.attr('title', '');
-
 					for (i=0, len=x_glossary.length; i<len; i++) {
 						if (myText.toLowerCase() == $('<div>' + x_glossary[i].word + '</div>').text().trim().toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>"
@@ -3991,32 +4276,27 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 							}
 						}
 					}
-
-					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
-
-					// Queue reparsing of MathJax - fails if no network connection
-					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
-					$x_glossaryHover = $("#x_glossaryHover");
-					$x_glossaryHover.css({
+					
+					$x_glossaryHover
+						.html(myDefinition)
+						.css({
 						"left"	:$(this).offset().left + 20,
 						"top"	:$(this).offset().top + 20
 					});
+					
+					// Queue reparsing of MathJax - fails if no network connection
+					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+					
 					$x_glossaryHover.fadeIn("slow");
+					
 					if (x_browserInfo.touchScreen == true) {
 						$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
 					}
 				})
 				.on("mouseleave", ".x_glossary", function(e) {
 					$x_mainHolder.off("click.glossary");
-
-					if ($x_glossaryHover != undefined) {
-						$x_glossaryHover.remove();
-					}
-
-					// Put back the title attribute
-					$this = $(this);
-					$this.attr('title', $this.data('title'));
+					
+					$x_glossaryHover.hide();
 				})
 				.on("mousemove", ".x_glossary", function(e) {
 					var leftPos,
@@ -4081,8 +4361,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 			}
 			for (var k=0, len=x_glossary.length; k<len; k++) {
 				var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
-				//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
-				tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+				tempText = tempText.replace(regExp, '$1<span class="x_glossary" aria-describedby="x_glossaryHover" tabindex="0" role="link">$3</span>$4');
 			}
 		}
 		
@@ -4092,7 +4371,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 	touchStartHandler = function() {
 		$x_mainHolder.off("click.glossary");
 		if ($x_glossaryHover != undefined) {
-			$x_glossaryHover.remove();
+			$x_glossaryHover.hide();
 		}
 	};
 		
@@ -4101,5 +4380,32 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
     self.buildPage = buildPage;
 	self.insertText = insertText;
 	self.touchStartHandler = touchStartHandler;
+
+return parent; })(jQuery, XENITH || {});
+
+
+
+// _____ GLOBAL VARIABLES _____
+// allows surfacing of any global variables
+
+var XENITH = (function ($, parent) { var self = parent.GLOBALVARS = {};
+	
+	var	replaceGlobalVars = function (tempText) {
+		var regExp = new RegExp('\\{(.*?)\\}', 'g');
+		
+		var matches = tempText.match(regExp);
+		if (matches != null) {
+			for (var m=0; m<matches.length; m++) {
+				try {
+					tempText = tempText.replace(matches[m], '<span class="x_globalVar">' + eval(matches[m]) + '</span>');
+				} catch (e){}
+			}
+		}
+		
+		return tempText;
+	};
+	
+	// make some public methods
+	self.replaceGlobalVars = replaceGlobalVars;
 
 return parent; })(jQuery, XENITH || {});

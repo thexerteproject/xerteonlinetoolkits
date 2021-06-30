@@ -22,7 +22,7 @@ require(dirname(__FILE__) . "/module_functions.php");
 // Set up the preview window for a xerte piece
 
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
-function show_template($row_play)
+function show_template($row_play, $xapi_enabled=false)
 {
     global $xerte_toolkits_site;
 
@@ -61,6 +61,8 @@ function show_template($row_play)
 	$page_content = str_replace("%THEMEPATH%", "themes/" . $row_play['parent_template'] . "/",$page_content);
     $page_content = str_replace("%MATHJAXPATH%", "https://cdn.jsdelivr.net/npm/mathjax@2/", $page_content);
     $page_content = str_replace("%LASTUPDATED%", $row_play['date_modified'], $page_content);
+	$page_content = str_replace("%DATECREATED%", $row_play['date_created'], $page_content);
+	$page_content = str_replace("%NUMPLAYS%", $row_play['number_of_uses'], $page_content);
 
     echo $page_content;
 }

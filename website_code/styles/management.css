@@ -39,7 +39,7 @@ body{
 	background-image:url(../images/TopBar.jpg);
 	background-repeat:repeat-x;
 	margin:0 auto;
-	width:910px;
+	width:100%;
 }
 
 
@@ -73,8 +73,9 @@ body{
 /* 2nd page css code */
 
 .pagecontainer{
-	margin:0 auto; 
-	width:910px
+	margin:0 auto;
+	width: 100%;
+	max-width: 1280px;
 }
 
 .admin_mgt_area{
@@ -113,9 +114,10 @@ body{
 .admin_mgt_area_middle_button{
 	float:left; 
 	position:relative; 
-	width:99.5%; 
+	width:100%;
 	border:1px #b6b3a8 solid; 
-	background-color:#e8edf3; 
+	background-color:#e8edf3;
+	max-width: 1277px;
 }
 
 .admin_mgt_area_middle_button img{
@@ -196,13 +198,16 @@ body{
 }
 
 div#admin_area{
-	height:500px; 
+	height:77vh;
 	overflow:scroll; 
 	float:left; 
 	position:relative; 
 	width:100%;
 	background-color:#fff;
 	color:#555;
+	padding-left: 20px;
+	padding-right: 20px;
+	max-width: 1240px;
 }
 
 div#admin_area p{
@@ -276,6 +281,42 @@ div#admin_area form textarea{
 	margin-bottom: 5px;
 }
 
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1;
+	padding-top: 100px;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgb(0,0,0);
+	background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+	background-color: #fefefe;
+	margin: auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 80%;
+}
+
+.close {
+	color: #aaaaaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+}
+
 .sub_page_selection_menuitem {
 	font-weight: bold;
 	font-style: italic;
@@ -286,10 +327,17 @@ div#admin_area form textarea{
 	margin-left: 40px;
 }
 
-form[name='user_templates'] {
+form[name='user_templates'], form[name='user_groups'], form[name='all_users'] {
 	padding: 10px;
 }
 
+
 #transferownership {
 	padding:10px;
+}
+
+.selectize-control {
+	display: inline-block;
+	width:50%;
+	vertical-align: middle;
 }

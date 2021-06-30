@@ -8,7 +8,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 // *******************
 // *     Toolbox    *
 // *******************
@@ -41,16 +41,16 @@ var EDITOR = (function ($, parent) {
                 html: itemData.name,
                 class: itemData.name
             };
-            
+
             if (itemData.icon != undefined) {
                 data.icon = itemData.icon;
 				data.html = '<img class="icon" src="' + moduleurlvariable + 'icons/' + itemData.icon + '.png"/>' + data.html;
             }
-			
+
             var item = $("<li>")
 				.append($("<a>", data))
 				.attr("item", itemData.item);
-			
+
 			// it's a category
 			if (itemData.submenu != undefined) {
                 var subList = $("<ul>");
@@ -60,32 +60,33 @@ var EDITOR = (function ($, parent) {
                     }
                 });
                 item.append(subList);
-				
+
 			// it's a page type
             } else if (itemData.item != undefined) {
 				var hint = itemData.hint != undefined ? '<p>' + itemData.hint + '</p>' : "";
-				hint = itemData.thumb != undefined ? '<div>' + language.insertDialog.$preview + ':</div><img class="preview_thumb" alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + hint : hint;
+				hint = itemData.thumb != undefined ? hint + (itemData.example != undefined ? '<a href="' + itemData.example + '" data-featherlight="iframe" class="pageExample">' : '') + '<img class="preview_thumb" alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + (itemData.example != undefined ? '</a>' : '') : hint;
+				hint = itemData.example != undefined ? hint + '<p><a href="' + itemData.example + '" data-featherlight="iframe" class="pageExample exampleButton"><i class="fa fa-play-circle"></i>' + language.insertDialog.$example + '</a></p>' : hint;
 				hint = hint != "" ? '<hr/>' + hint : hint;
-				
+
 				var $insertInfo = $('<ul class="details"><li><a href="#"><div class="insert_buttons"/>' + hint + '</a></li></ul>'),
 					label = language.insertDialog.$label + ":",
 					pos = label.indexOf('{i}');
 				
 				label = pos >= 0 ? label.substr(0, pos) + itemData.name + label.substr(pos + 3) : label;
-				
+
 				$insertInfo.find(".insert_buttons").append('<div>' + label + '</div>');
-				
+
 				$insertInfo.appendTo(item);
 			}
-			
+
             return item;
         };
-		
+
 		// create 1st level of menu and call getMenuItem to add every item and submenu to it
         var $menu = $("<ul>", {
             id: 'menu'
         });
-        
+
         $.each(menu_data.menu, function () {
             if (!this.deprecated && (this.simple_enabled || advanced_toggle)) {
                 $menu.append(
@@ -93,7 +94,7 @@ var EDITOR = (function ($, parent) {
                 )
             };
         });
-		
+
 		// create insert buttons above the page hints / thumbs
             $([
 
@@ -132,32 +133,7 @@ var EDITOR = (function ($, parent) {
 
                     $menu.find(".insert_buttons").append(button);
             });
-            if (templateframework == "xerte") {
-                $([
-
-                    {
-                        name: language.insertDialog.insertMerge.$label,
-                        icon: 'editor/img/insert-end.png',
-                        tooltip: language.insertDialog.insertMerge.$tooltip,
-                        id: 'insert_button_merge',
-                        btnvalue: "merge"
-                    }
-
-                ]).each(function (index, value) {
-                    var button = $('<button>')
-                        .attr('id', value.id)
-                        .attr('title', value.tooltip)
-                        .attr('value', value.btnvalue)
-                        .attr('tabindex', index + 3)
-                        .addClass("insert_button")
-                        .click(insert_import)
-                        .append($('<img>').attr('src', value.icon).height(14))
-                        .append(value.name);
-
-                        $menu.find(".insert_buttons").last().append(button);
-                });
-            }
-			
+            
 		if (typeof insert_menu_object !== 'undefined')
         {
             // menu is aleready set once
@@ -202,7 +178,7 @@ var EDITOR = (function ($, parent) {
         $("#insert_menu").html(insert_menu_object);
 		$menu.find(".ui-menu-item a").first().attr("tabindex", 2);
     },
-    
+
     //Loads the data into the import screen
 	insert_import = function() {
 		parent.tree.refresh_workspaceMerge()
@@ -231,11 +207,15 @@ var EDITOR = (function ($, parent) {
     {
         switch (icon) {
             case "deprecated":
-                if (enabled) {
-                    return '<i class="deprecatedIcon iconEnabled fa fa-exclamation-triangle " id="' + key + '_deprecated" title ="' + tooltip + '"></i>';
+				// if deprecatedLevel is low the appearance is slightly different
+				var isDeprecated = enabled[0],
+					deprecatedLevel = enabled[1];
+				
+                if (isDeprecated) {
+                    return '<i class="deprecatedIcon iconEnabled fa ' + (deprecatedLevel == 'low' ? 'fa-info-circle' : 'fa-exclamation-triangle') + ' ' + (deprecatedLevel == 'low' ? 'deprecatedLevel_low' : '') + '" id="' + key + '_deprecated" title ="' + tooltip + '"></i>';
                 }
                 else {
-                    return '<i class="deprecatedIcon iconDisabled fa fa-exclamation-triangle " id="' + key + '_deprecated"></i>';
+                    return '<i class="deprecatedIcon iconDisabled fa ' + (deprecatedLevel == 'low' ? 'fa-info-circle' : 'fa-exclamation-triangle') + ' ' + (deprecatedLevel == 'low' ? 'deprecatedLevel_low' : '') + '" id="' + key + '_deprecated"></i>';
                 }
             case "unmark":
                 if (enabled)
@@ -262,10 +242,10 @@ var EDITOR = (function ($, parent) {
                 }
 			case "standalone":
                 if (enabled) {
-                    return '<i class="standaloneIcon iconEnabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
+                    return '<i class="standaloneIcon iconEnabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>';
                 }
                 else {
-                    return '<i class="standaloneIcon iconDisabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>'; // ** lang
+                    return '<i class="standaloneIcon iconDisabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>';
                 }
         }
     },
@@ -273,13 +253,13 @@ var EDITOR = (function ($, parent) {
     changeNodeStatus = function(key, item, enabled, newtext)
     {
         // Get icon states
-
         var deprecatedState = ($("#"+key+"_deprecated.iconEnabled").length > 0);
         var hiddenState = ($("#"+key+"_hidden.iconEnabled").length > 0);
 		var standaloneState = ($("#"+key+"_standalone.iconEnabled").length > 0);
         var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
         var change = false;
         var tooltip = "";
+		var level;
         switch(item)
         {
             case "deprecated":
@@ -309,8 +289,9 @@ var EDITOR = (function ($, parent) {
 
             if (deprecatedState) {
                 tooltip = $("#" + key + '_deprecated')[0].attributes['title'];
+				level = $("#" + key + '_deprecated').hasClass('deprecatedLevel_low') ? 'low' : undefined;
             }
-            var deprecatedIcon = getExtraTreeIcon(key, "deprecated", (item == "deprecated" ? enabled : deprecatedState), tooltip);
+            var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [item == "deprecated" ? enabled : deprecatedState, level], tooltip);
             var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" ? enabled : hiddenState));
 			var standaloneIcon = getExtraTreeIcon(key, "standalone", (item == "standalone" ? enabled : standaloneState));
             var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
@@ -385,7 +366,7 @@ var EDITOR = (function ($, parent) {
         if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4)  // cdata-section
         {
             lo_data[key]['data'] = makeAbsolute(xmlData[0].firstChild.data);
-			
+
 			if (!alreadyUpgraded)
 			{
 				lo_data[key]['data'] = addLineBreaks(lo_data[key]['data']);
@@ -406,7 +387,7 @@ var EDITOR = (function ($, parent) {
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
         }
 
-        var deprecatedIcon = getExtraTreeIcon(key, "deprecated", wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecated);
+        var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecatedLevel], wizard_data[xmlData[0].nodeName].menu_options.deprecated);
         var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
         var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
@@ -473,6 +454,10 @@ var EDITOR = (function ($, parent) {
             attribute_value = attributes[name];
             attr_found = true;
         }
+        if (name == "HotSpot")
+        {
+            return {found : true, value: "ERROR"};
+        }
         if (!attr_found)
         {
             if (options.cdata && options.cdata_name == name)
@@ -503,6 +488,14 @@ var EDITOR = (function ($, parent) {
                         return evaluateConditionExpression(ctree.left, key) == evaluateConditionExpression(ctree.right, key);
                     case "!=":
                         return evaluateConditionExpression(ctree.left, key) != evaluateConditionExpression(ctree.right, key);
+                    case "<":
+                        return evaluateConditionExpression(ctree.left, key) < evaluateConditionExpression(ctree.right, key);
+                    case "<=":
+                        return evaluateConditionExpression(ctree.left, key) <= evaluateConditionExpression(ctree.right, key);
+                    case ">":
+                        return evaluateConditionExpression(ctree.left, key) > evaluateConditionExpression(ctree.right, key);
+                    case ">=":
+                        return evaluateConditionExpression(ctree.left, key) >= evaluateConditionExpression(ctree.right, key);
                     default:
                         return null;
                 }
@@ -541,7 +534,7 @@ var EDITOR = (function ($, parent) {
         var label = (nodelabel ? nodelabel : options.label);
         var deprecated = false,
 			groupChild = $(id).parents('.wizardgroup').length > 0 ? true : false;
-		
+
         if (options != null)
         {
             var flashonly = $('<img>')
@@ -568,7 +561,7 @@ var EDITOR = (function ($, parent) {
 						.attr('title', options.deprecated)
                         .height(14)
                         .addClass("deprecated deprecatedIcon"));
-				
+
                 if (options.optional == 'true' && groupChild == false) {
                     var opt = $('<i>').attr('id', 'optbtn_' + name)
                         .addClass('fa')
@@ -630,20 +623,20 @@ var EDITOR = (function ($, parent) {
                 tdlabel.addClass("wizarddeprecated")
             }
             tdlabel.append(label);
-			
+
 			if (options.tooltip) {
 				$('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
 					.attr('title', options.tooltip)
 					.appendTo(tdlabel);
 			}
-			
+
             tr.append(tdlabel)
                 .append($('<td>')
                     .addClass("wizardvalue")
                     .append($('<div>')
                         .addClass("wizardvalue_inner")
                         .append(displayDataType(value, options, name, key))));
-			
+
             $(id).append(tr);
             if (options.optional == 'true' && groupChild == false) {
                 $("#optbtn_"+ name).on("click", function () {
@@ -653,24 +646,24 @@ var EDITOR = (function ($, parent) {
             }
         }
     },
-	
-	
+
+
 	displayGroup = function (id, name, options, key)
     {
 		var tr = $('<tr><td colspan="3"/></tr>');
 		var group = $('<fieldset class="wizardgroup"></fieldset>').appendTo(tr.find('td'));
 		var legend = $('<legend></legend>').appendTo(group);
-		
+
 		if (options.deprecated) {
 			group.addClass("wizarddeprecated");
-			
+
 			legend
 				.append($('<img>')
 				.attr('id', 'deprbtn_' + name)
 				.attr('src', 'editor/img/deprecated.png')
 				.attr('title', options.deprecated)
 				.addClass("deprecated"));
-			
+
 			if (options.optional == 'true') {
 				legend.prepend($('<i>')
 					.attr('id', 'optbtn_' + name)
@@ -680,16 +673,16 @@ var EDITOR = (function ($, parent) {
 					.height(14)
 					.addClass("optional"));
 			}
-			
+
 			legend.append('<span class="legend_label">' + options.label + '</span>');
-			
+
 			tr.attr('id', 'group_' + name)
 				.addClass("wizardattribute")
 				.addClass("wizarddeprecated")
-			
+
 		} else if (options.optional == 'true') {
 			group.addClass("wizardoptional")
-			
+
 			legend
 				.append($('<i>')
 				.attr('id', 'optbtn_' + name)
@@ -698,56 +691,56 @@ var EDITOR = (function ($, parent) {
 				.addClass("xerte-icon")
 				.height(14)
 				.addClass("optional"));
-			
+
 			group.find('legend').append('<span class="legend_label">' + options.label + '</span>');
-			
+
 			tr.attr('id', 'group_' + name)
 				.addClass("wizardattribute")
-			
+
 		} else {
 			group.addClass("wizardparameter");
-			
+
 			group.find('legend').append('<span class="legend_label">' + options.label + '</span>');
-			
+
 			tr.attr('id', 'group_' + name)
 				.addClass("wizardattribute");
 		}
-		
+
 		if (options.tooltip) {
 			$('<i class="tooltipIcon iconEnabled fa fa-info-circle"></i>')
 				.attr('title', options.tooltip)
 				.appendTo(legend.find('.legend_label'));
 		}
-		
+
 		$('<i class="minMaxIcon fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
-		
+
 		legend.find('.legend_label').click(function() {
 			var $icon = $(this).find('i.minMaxIcon');
 			var $fieldset = $(this).parents('fieldset');
-			
+
 			if ($fieldset.find('.table_holder').is(':visible')) {
 				$fieldset.find('.table_holder').slideUp(400, function() {
 					$icon
 						.removeClass('fa-caret-up')
 						.addClass('fa-caret-down');
-					
+
 					$fieldset.addClass('collapsed');
 				});
-				
+
 			} else {
 				$fieldset.find('.table_holder').slideDown(400);
-				
+
 				$icon
 					.removeClass('fa-caret-down')
 					.addClass('fa-caret-up');
-				
+
 				$fieldset.removeClass('collapsed');
 			}
 		});
-		
+
 		var info = "";
 		if (options.info) info = '<div class="group_info">' + options.info + '</div>';
-		
+
 		group.append('<div class="table_holder">' + info + '</div>');
 		group.find('.table_holder').append(
 			$('<table width="100%" class="column_table"><tr></table>')
@@ -764,9 +757,9 @@ var EDITOR = (function ($, parent) {
 					.append(group_table)
 			);
 		}
-		
+
 		$(id).append(tr);
-		
+
 		if (options.optional == 'true') {
 			$("#optbtn_" + name).on("click", function () {
 				removeOptionalProperty(name, options.children);
@@ -796,9 +789,9 @@ var EDITOR = (function ($, parent) {
         if (!confirm('Are you sure?')) {
             return;
         }
-		
+
 		var toDelete = [];
-		
+
 		// if it's a group being deleted then remove all of its children
 		if (children) {
 			for (var i=0; i<children.length; i++) {
@@ -807,10 +800,10 @@ var EDITOR = (function ($, parent) {
 		} else {
 			toDelete.push(name);
 		}
-		
+
         // Find the property in the data store
         var key = parent.tree.getSelectedNodeKeys();
-		
+
 		for (var i=0; i<toDelete.length; i++) {
 			if (toDelete[i] == "hidePage") {
 			    changeNodeStatus(key, "hidden", false);
@@ -835,7 +828,7 @@ var EDITOR = (function ($, parent) {
 				delete lo_data[key]["attributes"][toDelete[i]];
 			};
 		}
-		
+
         /**
          * TOR 20150614
          *
@@ -861,7 +854,7 @@ var EDITOR = (function ($, parent) {
     {
 		// Place attribute
 		lo_data[key]['attributes'][name] = defaultvalue;
-		
+
 		// unlike hidePage, linkPage is initially set to true so tree icon should show immediately
 		if (name == "linkPage") {
             changeNodeStatus(key, "standalone", defaultvalue == "true");
@@ -870,7 +863,7 @@ var EDITOR = (function ($, parent) {
 		// Enable the optional parameter button
 		$('#insert_opt_' + name)
 			.prop('visible', true);
-		
+
 		if (load != false) {
 			parent.tree.showNodeData(key, false, scrollToId);
 		}
@@ -878,14 +871,19 @@ var EDITOR = (function ($, parent) {
 
     showToolBar = function(show){
         defaultToolBar = show;
-        var tree = $.jstree.reference("#treeview");
+        /*var tree = $.jstree.reference("#treeview");
         var ids = tree.get_selected();
         var id;
         if (ids.length>0)
         {
             id = ids[0];
             parent.tree.showNodeData(id, true);
-        }
+        }*/
+        $(".cke_toolbox_collapser").each(function(){
+          var min = $(this).hasClass("cke_toolbox_collapser_min");
+          if (show && min || !show && !min)
+            $(this).click();
+        });
     },
 
     onclickJqGridSubmitLocal = function(id, key, name, options, postdata) {
@@ -897,7 +895,7 @@ var EDITOR = (function ($, parent) {
             rowid,
             addMode,
             oldValueOfSortColumn;
-		
+
 		// replaces contents in empty cells with " " to avoid them being interpreted as end of row
 		$.each(postdata, function(key, element, i) {
 			if (key.indexOf("col_") == 0 && element == "") {
@@ -908,7 +906,7 @@ var EDITOR = (function ($, parent) {
 				postdata[key] = postdata[key].replace(/\|/g, "&#124;");
 			}
 		});
-		
+
         if (postdata[id_in_postdata])
         {
             rowid = postdata[id_in_postdata];
@@ -926,7 +924,7 @@ var EDITOR = (function ($, parent) {
         {
             addMode = rowid === "_empty";
         }
-		
+
         // postdata has row id property with another name. we fix it:
         if (addMode) {
             // generate new id
@@ -935,7 +933,7 @@ var EDITOR = (function ($, parent) {
                 new_id++;
             }
             postdata[idname] = String(new_id);
-			
+
         } else if (typeof(postdata[idname]) === "undefined") {
             // set id property only if the property not exist
             postdata[idname] = rowid;
@@ -951,7 +949,7 @@ var EDITOR = (function ($, parent) {
             data[field] = stripP(data[field]);
         };
         jqGrGridData[key + '_' + id][colnr] = data;
-		
+
         var xerte = convertjqGridData(jqGrGridData[key + '_' + id]);
         setAttributeValue(key, [name], [xerte]);
 
@@ -1007,7 +1005,7 @@ var EDITOR = (function ($, parent) {
                 grid.trigger("reloadGrid", [{current:true}]);
             },100);
         }
-		
+
 		checkRowIds(grid);
 
         // !!! the most important step: skip ajax request to the server
@@ -1018,14 +1016,14 @@ var EDITOR = (function ($, parent) {
     delRow = function(id, key, name, rowid){
 		var gridId = key + '_' + id;
         jqGrGridData[gridId].splice(rowid-1, 1);
-		
+
 		// renumber the data array
 		for (var i=0; i<jqGrGridData[gridId].length; i++) {
 			if (jqGrGridData[gridId][i]['col_0'] != i+1) {
 				jqGrGridData[gridId][i]['col_0'] = String(i+1);
 			}
 		}
-		
+
         var xerte = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [xerte]);
     },
@@ -1052,7 +1050,7 @@ var EDITOR = (function ($, parent) {
             var col = row.length-1;
             row['col_' + col] = defvalue;
         });
-		
+
         var data = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [data]);
         parent.tree.showNodeData(key, true);
@@ -1065,7 +1063,7 @@ var EDITOR = (function ($, parent) {
         $.each(jqGrGridData[gridId], function(i, row){
             delete row['col_' + (colnr)];
         });
-		
+
         var data = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [data]);
         parent.tree.showNodeData(key, true);
@@ -1091,14 +1089,14 @@ var EDITOR = (function ($, parent) {
                 }
             });
         })
-		
+
         return xerte;
     },
 
     jqGridAfterShowForm = function(id, ids, options)
     {
 		var col_id = this.id;
-		
+
         if (options.wysiwyg != 'false' && options.wysiwyg != undefined)
         {
             // destroy editor for all columns
@@ -1122,7 +1120,7 @@ var EDITOR = (function ($, parent) {
                 }
             }
         }
-		
+
         var ckoptions = {
             filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
@@ -1134,7 +1132,7 @@ var EDITOR = (function ($, parent) {
             height : 150,
             resize_enabled: false
         };
-		
+
 		var defaultToolbar = [
 			{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
 			{ name: 'editing',     groups: [ 'spellchecker' ] },
@@ -1144,7 +1142,7 @@ var EDITOR = (function ($, parent) {
 			{ name: 'colors' },
 			{ name: 'insert' }
 		];
-		
+
 		var fullToolbar = [
 			{ name: 'document',	   groups: [ 'mode' ] },
 			{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
@@ -1156,20 +1154,20 @@ var EDITOR = (function ($, parent) {
 			{ name: 'insert' },
 			{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align' ] }
 		];
-		
+
 		// wysiwyg option can be true (defaultToolbar), full (fullToolbar) or false (off) - false is default of no wysiwyg property
 		// can set different wysiwyg setting for each field by having list e.g. 'false,full,full' - otherwise all fields will have same setting
 		var wysiwyg = options.wysiwyg != undefined ? options.wysiwyg.split(',') : 'false';
-		
+
 		$('#' + ids[0].id + ' textarea:visible, #' + ids[0].id + ' input:visible').each(function(i) {
 			var col_id = this.id;
-			
+
 			if ((wysiwyg.length == 1 && i > 0 && wysiwyg[0] != 'false' && wysiwyg[0] != undefined) || wysiwyg[i] != 'false' && wysiwyg[i] != undefined) {
 				// destroy editor for all columns
 				var myCkOptions = ckoptions;
-				
+
 				myCkOptions.toolbarGroups = wysiwyg[i] == 'full' || (wysiwyg.length == 1 && i > 0 && wysiwyg[0] == 'full') ? fullToolbar : defaultToolbar;
-				
+
 				$(this).ckeditor(function () {
 					// JQGrid
 					// we need to get selected row in case currently we are in Edit Mode
@@ -1183,7 +1181,7 @@ var EDITOR = (function ($, parent) {
 						CKEDITOR.instances[col_id].setData(va[col_id]);
 					}
 				}, myCkOptions);
-				
+
 			} else if ($(this).is('textarea')) {
 				$(this).ckeditor(function () {
 					// JQGrid
@@ -1199,14 +1197,14 @@ var EDITOR = (function ($, parent) {
 					}
 				}, ckoptions);
 			}
-			
+
 		});
-		
+
 		// resize the dialog to make sure they fit on screen once ckeditor has loaded
 		setTimeout(function(){
 			var $dialog = $('#' + ids[0].id).parents('.ui-jqdialog'),
 			$dialogContent = $('#' + ids[0].id);
-			
+
 			if ($dialog.height() > ($('body').height() * 0.8)) {
 				var diff = $dialog.height() - $dialogContent.height();
 				$dialog.height($('body').height() * 0.8);
@@ -1218,10 +1216,10 @@ var EDITOR = (function ($, parent) {
     jqGridAfterCloseForm = function (id, selector, options)
     {
 		var wysiwyg = options.wysiwyg != undefined ? options.wysiwyg.split(',') : 'false';
-		
+
 		$(selector + ' textarea, ' + selector + ' input').each(function(i) {
 			var col_id = this.id;
-			
+
 			if ($(this).is('textarea')) {
 				if ((wysiwyg.length == 1 && i > 0 && wysiwyg[0] != 'false' && wysiwyg[0] != undefined) || wysiwyg[i] != 'false' && wysiwyg[i] != undefined) {
 					$(this).ckeditor(function () {
@@ -1235,7 +1233,7 @@ var EDITOR = (function ($, parent) {
 							}
 						}
 					});
-					
+
 				} else {
 					$(this).ckeditor(function () {
 						try {
@@ -1363,7 +1361,7 @@ var EDITOR = (function ($, parent) {
 										this.on('fileUploadResponse', function(e) {
 											/*self.on('NO-EVENT-WORKS-HERE', function(e) {
 												e.removeListener();
-												inputChanged(options.id, options.key, options.name, self.getData(), self);	
+												inputChanged(options.id, options.key, options.name, self.getData(), self);
 											});*/
 											setTimeout(function () {
 														self.fire('change');
@@ -1417,7 +1415,7 @@ var EDITOR = (function ($, parent) {
             return val;
         }
     },
-    
+
     convertTextInputs = function () {
         $.each(textinputs_options, function (i, options) {
             if (options) {
@@ -1502,10 +1500,29 @@ var EDITOR = (function ($, parent) {
     {
         $.each(colorpickers, function (i, options){
 			var myPicker = new jscolor.color(document.getElementById(options.id), {'required':false});
-			
+
 			if (options.value != undefined) {
 				myPicker.fromString(Array(7-options.value.length).join('0') + options.value);
 			}
+        });
+    },
+	
+	convertIconPickers = function ()
+    {
+        $.each(iconpickers, function (i, options){
+			IconPicker.Init({
+				jsonUrl: 'editor/js/vendor/iconpicker/' + options.iconList + '.json',
+				searchPlaceholder: language.fontawesome.search,
+				showAllButton: language.fontawesome.showAll,
+				cancelButton: language.fontawesome.cancel,
+				noResultsFound: language.fontawesome.noResult,
+				borderRadius: '0px'
+			});
+			
+			IconPicker.Run('#' + options.id, function(e){
+				// manually trigger input change after new icon selected - even though input changes it doesn't get triggered without this as element is hidden & not in focus
+				$('#' + options.id).data('input').change();
+			});
         });
     },
 
@@ -1516,9 +1533,9 @@ var EDITOR = (function ($, parent) {
         // cf. the source of http://www.ok-soft-gmbh.com/jqGrid/LocalFormEditing.htm as an excellent example
         jqGridsLastSel = {};
         jqGridsColSel = {};
-		
+
         $.each(datagrids, function(i, options){
-			
+
 			var thisGrid = this;
 			// Get the data for this grid
             var data = lo_data[options.key].attributes[options.name];
@@ -1535,16 +1552,16 @@ var EDITOR = (function ($, parent) {
                 });
                 rows.push(record);
             });
-			
+
             var gridoptions = options.options;
             var key = options.key;
 			var id = options.id;
 			var gridId = key + '_' + id; // uses this to store data against now instead of just key so that multiple grids on wizard work correctly
-			
+
 			jqGridsLastSel[gridId] = -1;
             jqGridsColSel[gridId] = -1;
             jqGrGridData[gridId] = rows;
-			
+
             var name = options.name;
             var nrCols = gridoptions.columns;
             var addCols = false;
@@ -1604,7 +1621,7 @@ var EDITOR = (function ($, parent) {
                 }
             };
             colModel.push(col);
-			
+
 			var wysiwygOn = false;
 
             for (var i=0; i<nrCols-1; i++)
@@ -1621,7 +1638,7 @@ var EDITOR = (function ($, parent) {
                 }
                 col['editable'] = (editable[i] !== undefined ? (editable[i] == "1" ? true : false) : true);
                 col['sortable'] = false;
-				
+
 				if (gridoptions.wysiwyg != undefined) {
 					var wysiwyg = gridoptions.wysiwyg.split(',');
 					if ((wysiwyg.length == 1 && i > 0 && wysiwyg[0] != 'false' && wysiwyg[0] != undefined) || wysiwyg[i] != 'false' && wysiwyg[i] != undefined) {
@@ -1631,14 +1648,14 @@ var EDITOR = (function ($, parent) {
 						wysiwygOn = true;
 					}
 				}
-				
+
                 colModel.push(col);
             }
-			
+
             var editSettings,
                 addSettings,
                 delSettings;
-			
+
 			editSettings = {
 				top: 50,
 				left: 300,
@@ -1655,7 +1672,7 @@ var EDITOR = (function ($, parent) {
 					return onclickJqGridSubmitLocal(id, key, name, options, postdata);
 				}
 			};
-			
+
 			addSettings = {
 				top: 50,
 				left: 300,
@@ -1671,7 +1688,7 @@ var EDITOR = (function ($, parent) {
 					return onclickJqGridSubmitLocal(id, key, name, options, postdata);
 				}
 			}
-			
+
 			delSettings = {
 				// because I use "local" data I don't want to send the changes to the server
                 // so I use "processing:true" setting and delete the row manually in onclickSubmit
@@ -1681,18 +1698,18 @@ var EDITOR = (function ($, parent) {
 					var grid_id = $.jgrid.jqID(grid[0].id),
                         grid_p = grid[0].p,
                         newPage = grid[0].p.page;
-					
+
 					// reset the value of processing option which could be modified
 					options.processing = true;
-					
+
                     // delete the row
                     grid.delRowData(rowid);
-					
+
 					// rename row ids so the next row that's deleted will be treated correctly
 					checkRowIds(grid);
-					
+
 					$.jgrid.hideModal("#delmod" + grid_id, { gb: "#gbox_"+grid_id, jqm: true, onClose:options.onClose });
-					
+
 					// on the multipage grid reload the grid
                     if (grid_p.lastpage > 1) {
                         if (grid_p.reccount === 0 && newPage === grid_p.lastpage) {
@@ -1703,36 +1720,36 @@ var EDITOR = (function ($, parent) {
                         // reload grid to make the row from the next page visable.
                         grid.trigger("reloadGrid", [{ page: newPage }]);
                     }
-					
+
 					delRow(id, key, name, rowid);
 					return true;
                 },
                 processing:true
             };
-			
+
 			// one or more of the fields being edited has wysiwyg turned on
             if (wysiwygOn == true) {
 				editSettings.afterclickPgButtons = function (whichbutton, formid, rowid) {
 					jqGridAfterclickPgButtons(id, whichbutton, formid, rowid);
 				}
-				
+
 				editSettings.afterShowForm = function(ids) {
 					jqGridAfterShowForm(id, ids, gridoptions);
 				}
-				
+
 				editSettings.onClose = function (selector) {
 					jqGridAfterCloseForm(id, selector, gridoptions);
 				}
-				
+
 				addSettings.afterShowForm = function(ids) {
 					jqGridAfterShowForm(id, ids, gridoptions);
 				}
-				
+
 				addSettings.onClose = function (selector) {
 					jqGridAfterCloseForm(id, selector, gridoptions);
 				}
             }
-			
+
             // Setup the grid
             var grid = $('#' + id + '_jqgrid');
 
@@ -1780,26 +1797,26 @@ var EDITOR = (function ($, parent) {
                         jqGridsColSel[gridId] = iCol - 1;
                     	delbutton.append($('<i>').addClass('fa').addClass('fa-trash').addClass('xerte-icon').height(14))
                         	.append(language.btnDelColumn.$label + ' ' + jqGridsColSel[gridId]);
-						
+
                     	delbutton.switchClass('disabled', 'enabled');
                     	delbutton.prop('disabled', false);
                     }
                     else {
                     	delbutton.append($('<i>').addClass('fa').addClass('fa-trash').addClass('xerte-icon').height(14))
                         	.append(language.btnDelColumn.$label);
-						
+
                     	delbutton.switchClass('enabled', 'disabled');
                     	delbutton.prop('disabled', true);
                     }
                 }
             });
-			
+
             grid.jqGrid('navGrid', '#' + id + '_nav', {refresh: false}, editSettings, addSettings, delSettings, {multipleSearch:true, overlay:false});
-			
+
 			// add the buttons to add / delete columns if required
             if (addCols) {
                 buttons = $('#' + id + '_addcolumns');
-				
+
                 $([
                     {name: language.btnAddColumn.$label, tooltip: language.btnAddColumn.$tooltip, icon:'fa-plus-circle', disabled: false, id: id + '_addcol', click:addColumn},
                     {name: language.btnDelColumn.$label, tooltip: language.btnDelColumn.$tooltip, icon:'fa-trash', disabled: true, id: id + '_delcol', click:delColumn}
@@ -1817,13 +1834,13 @@ var EDITOR = (function ($, parent) {
                         })
                         .append($('<i>').addClass('fa').addClass(value.icon).addClass('xerte-icon').height(14))
                         .append(value.name);
-					
+
                     buttons.append(button);
                 });
-				
+
                 buttons.append($('<br>'));
             }
-			
+
 			// can't get jqGrid to be automatically responsive so listens to window resize to manually resize the grids
 			if (jqGridSetUp != true) {
 				$(window).resize(function() {
@@ -1834,19 +1851,19 @@ var EDITOR = (function ($, parent) {
 						$(this).trigger("resizeEnd");
 					}, 200)
 				});
-				
+
 				$(window).on("resizeEnd", function() {
 					$("#mainPanel .ui-jqgrid").hide();
 					var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
 					$("#mainPanel .ui-jqgrid").show();
 					$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
 				});
-				
+
 				jqGridSetUp == true;
 			}
         });
     },
-	
+
 	checkRowIds = function (grid) {
 		var rows = grid.find('tr.jqgrow, tr.jqgfirstrow');
 		for (var i=0; i<rows.length; i++) {
@@ -1858,7 +1875,7 @@ var EDITOR = (function ($, parent) {
 			}
 		}
 	},
-					
+
 
     setAttributeValue = function (key, names, values)
     {
@@ -1883,7 +1900,7 @@ var EDITOR = (function ($, parent) {
             }
             */
         }
-		
+
 		if (names[0] == "linkPage") {
             changeNodeStatus(key, "standalone", values[0] == "true");
         }
@@ -2000,6 +2017,7 @@ var EDITOR = (function ($, parent) {
             }
 
         }
+        loLanguage = value;
         setAttributeValue(key, [name], [value]);
     },
 
@@ -2021,7 +2039,7 @@ var EDITOR = (function ($, parent) {
     {
         setAttributeValue(key, [name], [value]);
     },
-	
+
 	catListChanged = function (id, key, name, $parentDiv, obj)
 	{
 		var checked = $parentDiv.data('checked');
@@ -2031,13 +2049,13 @@ var EDITOR = (function ($, parent) {
 			checked.splice($.inArray(obj.id.substring(4), checked), 1);
 		}
 		$parentDiv.data('checked', checked);
-		
+
 		setAttributeValue(key, [name], [checked.toString()]);
 	},
 
     inputChanged = function (id, key, name, value, obj)
     {
-        console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+        //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
         var actvalue = value;
 
         if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
@@ -2136,13 +2154,35 @@ var EDITOR = (function ($, parent) {
         };
         window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable, 'Browse file', "height=600, width=800");
     },
-	
+
 	previewFile = function(alt, src, title)
 	{
-		// ** currently only previews images - need to allow other file types too
+		var origSrc = src;
 		src = src.indexOf("FileLocation + '") == 0 ? rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1) : src;
 		
-		var $previewImg = $('<img class="previewFile"/>')
+		var previewType,
+			$preview,
+			fileFormats = [
+				{ type: 'image', fileExt: ['jpg', 'jpeg', 'gif', 'png'] },
+				{ type: 'video', fileExt: ['mp4'] },
+				{ type: 'audio', fileExt: ['mp3'] },
+				{ type: 'pdf', fileExt: ['pdf'] }
+			];
+		
+		$(fileFormats).each(function() {
+			for (var i=0; i<this.fileExt.length; i++) {
+				var ext = this.fileExt[i],
+					srcLowerC = src.toLowerCase();
+				if (srcLowerC.lastIndexOf('.' + ext) == srcLowerC.length - (ext.length + 1)) {
+					previewType = this.type;
+					return false;
+				}
+			}
+		});
+		
+		if (previewType == 'image') {
+			$preview = $('<div/>');
+			$('<img class="previewFile"/>')
 				.on("error", function() {
 						$('.featherlight .previewFile')
 							.after('<p>' + language.compPreview.$error + '</p>')
@@ -2152,14 +2192,32 @@ var EDITOR = (function ($, parent) {
 					"src": src,
 					"alt": alt
 				})
-		
-		var $preview = $('<div/>')
-				.append($previewImg);
-		
+				.appendTo($preview);
+			
+		} else if (previewType == 'video') {
+			$preview = $('<div/>');
+			$('<video class="previewVideo" controls><source src="' + src + '"></video>').appendTo($preview);
+			
+		} else if (previewType == 'audio') {
+			$preview = $('<div/>');
+			$('<audio controls><source src="' + src + '"></video>').appendTo($preview);
+			
+		} else if (previewType == 'pdf') {
+			$preview = {iframe: src };
+			
+		} else {
+			var srcLowerC = origSrc.toLowerCase();
+			if (srcLowerC.indexOf('<iframe') === 0) {
+				$preview = $('<div>' + src + '</div>');
+			} else {
+				$preview = $('<div><p>' + language.compPreview.$error + '</p></div>');
+			}
+		}
+
 		if (title != undefined && title != '') {
 			$preview.prepend('<div class="preview_title">' + title + '</div>');
 		}
-		
+
 		$.featherlight($preview);
 	},
 
@@ -2245,59 +2303,109 @@ var EDITOR = (function ($, parent) {
      * getPagelist in an array. the array has contains arrays of length 2, the first element is the name (or label
      * the second element is the value
      *
-     * This is the format that ckEditor dialog expects for se;ect lists
+     * This is the format that ckEditor dialog expects for select lists
      * We use the same format in the displayDataType for the pagelist type.
      *
      * Also make sure we only take the text from the name, and not the full HTML
      */
-	getPageList = function()
+	getPageList = function(thisKey, thisTarget)
 	{
-		
-		var tree = $.jstree.reference("#treeview");
-		var lo_node = tree.get_node("treeroot", false);
-		var pages=[];
-		
-		if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
-			pages = [
-								[language.XotLinkRelativePages.firstpage,'[first]'],
-								[language.XotLinkRelativePages.lastpage,'[last]'],
-								[language.XotLinkRelativePages.prevpage,'[previous]'],
-								[language.XotLinkRelativePages.nextpage,'[next]']
-							];
-						$.each(lo_node.children, function(i, key){
-								var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-								/*var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);*/
-								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-								var hidden = lo_data[key]['attributes'].hidePage;
-								
-								if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
-								{
-										var page = [];
-										// Also make sure we only take the text from the name, and not the full HTML
-										page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
-										page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-										pages.push(page);
 
-										// Now we do the children (if deeplinking is allowed)
-										if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
-											var childNode = tree.get_node(key, false);
-											$.each(childNode.children, function(i, key){
-												var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-												//var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-												var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-												if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
-												{
-													var page = [];
-													// Also make sure we only take the text from the name, and not the full HTML
-													page.push(getTextFromHTML("&nbsp;- "+name.value));
-													page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-													pages.push(page);
-												}
-											});
-										}
-								}
+		var tree = $.jstree.reference("#treeview");
+		var pages=[];
+
+		// list of everything at same level or everything at parent's level
+		if (thisTarget != undefined) {
+			
+			// 0 finds nodes at this level, 1 finds nodes at parent level, 2 finds nodes at parent's parent level....
+			// * makes it include all the children too
+			var children = false;
+			if (thisTarget.indexOf('*') != -1) {
+				children = true;
+				thisTarget = thisTarget.replace('*','');
+			}
+			
+			var level = Number(thisTarget);
+			var lo_node = tree.get_node(tree.get_node(thisKey, false).parents[level], false);
+			
+			$.each(lo_node.children, function(i, key){
+				var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+				var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+				var hidden = lo_data[key]['attributes'].hidePage;
+				
+				if (linkID.found && linkID.value != "") {
+					var page = [];
+					// Also make sure we only take the text from the name, and not the full HTML
+					page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
+					page.push(linkID.value);
+					pages.push(page);
+					
+					// Now we do the children
+					if (children == true) {
+						var childNode = tree.get_node(key, false);
+						$.each(childNode.children, function(i, key){
+							var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+							var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+							var hidden = lo_data[key]['attributes'].hidePage;
+							
+							if (linkID.found && linkID.value != "") {
+								var page = [];
+								// Also make sure we only take the text from the name, and not the full HTML
+								page.push("&nbsp;- " + (hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
+								page.push(linkID.value);
+								pages.push(page);
+							}
 						});
 					}
+				}
+			});
+			
+		// list of all pages & their children (if deep linking allowed)
+		} else if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
+			pages = [
+						[language.XotLinkRelativePages.firstpage,'[first]'],
+						[language.XotLinkRelativePages.lastpage,'[last]'],
+						[language.XotLinkRelativePages.prevpage,'[previous]'],
+						[language.XotLinkRelativePages.nextpage,'[next]']
+					];
+			
+			var lo_node = tree.get_node("treeroot", false);
+			
+			$.each(lo_node.children, function(i, key){
+					var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+					/*var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);*/
+					var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+					var hidden = lo_data[key]['attributes'].hidePage;
+					
+					if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
+					{
+						
+						var page = [];
+						// Also make sure we only take the text from the name, and not the full HTML
+						page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
+						page.push(/*pageID.found ? pageID.value :*/ linkID.value);
+						pages.push(page);
+
+						// Now we do the children (if deeplinking is allowed)
+						if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
+							var childNode = tree.get_node(key, false);
+							$.each(childNode.children, function(i, key){
+								var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+								//var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+								if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
+								{
+									var page = [];
+									// Also make sure we only take the text from the name, and not the full HTML
+									page.push(getTextFromHTML("&nbsp;- "+name.value));
+									page.push(/*pageID.found ? pageID.value :*/ linkID.value);
+									pages.push(page);
+								}
+							});
+						}
+					}
+			});
+		}
 		
 		return pages;
 	},
@@ -2357,7 +2465,7 @@ var EDITOR = (function ($, parent) {
 			} else if (newText.indexOf("<table") != -1) { // no math tags - so just check table tags
 				var tempText = "",
 					tableNum = 0;
-				
+
 				while (newText.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) {
 					tempText += newText.substring(tableNum, newText.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
 					tempText += newText.substring(newText.indexOf("<table", tableNum), newText.indexOf("</table>", tableNum) + 8);
@@ -2386,7 +2494,7 @@ var EDITOR = (function ($, parent) {
         return urlPath;
     },
 
-    drawHotspot = function(html, url, hsattrs, hspattrs, id, forceRectangle){
+    drawHotspot = function(html, url, hsattrs, hspattrs, id, forceRectangle, lp){
         // Draw Hotspot on the wizard page as preview on the thumbnail image
         // Always treat hotspot as a polygon
         // Step 0. Find image, set scale and wrap with overlayWrapper
@@ -2416,7 +2524,7 @@ var EDITOR = (function ($, parent) {
                 });
         });
 
-        canvas.on('mouse:down', function(){editHotspot(url, hsattrs, hspattrs, id, forceRectangle)});
+        canvas.on('mouse:down', function(){editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp)});
         // Step 2. Create polygon in appropriate scale
         var scaledpoints = [];
         // Old way of specifying hotspot: x,y,w,h
@@ -2449,7 +2557,7 @@ var EDITOR = (function ($, parent) {
         }
     };
 
-    editHotspot = function (url, hsattrs, hspattrs, id, forceRectangle){
+    editHotspot = function (url, hsattrs, hspattrs, id, forceRectangle, lp){
 	    var shape = "rectangle";
 	    var scale;
 	    var isDown = false;
@@ -2472,27 +2580,9 @@ var EDITOR = (function ($, parent) {
             '<button id="' + id + '_ok" name="ok" class="hseditModeButton" title="' + language.Alert.oklabel + '" style="float:right"><i class="fas fa-2x fa-check-square"></i></button>' +
             '</div>');
 
-            edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');
+        edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');
         edit_img.append('<div class="hsinstructions" id="instructions_' + id + '"></div>');
-        /*
-        edit_img.append($('<button>')
-            .attr('id', id + '_ok')
-            .attr('name', 'ok')
-            .attr('type', 'button')
-            .attr('title', language.Alert.oklabel)
-            .addClass('hseditModeButton')
-            .append('<i class="far fa-2x fa-check-square"></i>')
-        )
-            .append($('<button>')
-                .attr('id', id + '_cancel')
-                .attr('name', 'cancel')
-                .attr('type', 'button')
-                .attr('title', language.Alert.cancellabel)
-                .addClass('hseditModeButton')
-                .append('<i class="far fa-2x fa-window-close"></i>')
-            );
-
-         */
+        
         if (!forceRectangle && hsattrs.mode != undefined)
         {
             shape = hsattrs.mode;
@@ -2614,25 +2704,28 @@ var EDITOR = (function ($, parent) {
                                 borderColor: 'yellow'
                             });
                         }
+                        // Old definition of hotspot
                         else if (forceRectangle || (hsattrs.x != undefined && hsattrs.y != undefined && hsattrs.w != undefined && hsattrs.h != undefined)) {
-                            // Old definition of hotspot
-                            hs = new fabric.Rect({
-                                top: parseFloat(hsattrs.y) / scale,
-                                left: parseFloat(hsattrs.x) / scale,
-                                width : parseFloat(hsattrs.w) /scale,
-                                height : parseFloat(hsattrs.h) /scale,
-                                angle: 0,
-                                fill: 'rgba(255,0,0,0.5)',
-                                selectable: true,
-                                objectCaching: false,
-                                transparentCorners: true,
-                                cornerColor: 'yellow',
-                                borderColor: 'yellow',
-                                hasRotatingPoint: !forceRectangle
-                            });
+                            // Don't draw the optional empty value
+                            if (hsattrs.x > 0 || hsattrs.y > 0 || hsattrs.w > 0 || hsattrs.h > 0) {
+                                hs = new fabric.Rect({
+                                    top: parseFloat(hsattrs.y) / scale,
+                                    left: parseFloat(hsattrs.x) / scale,
+                                    width : parseFloat(hsattrs.w) /scale,
+                                    height : parseFloat(hsattrs.h) /scale,
+                                    angle: 0,
+                                    fill: 'rgba(255,0,0,0.5)',
+                                    selectable: true,
+                                    objectCaching: false,
+                                    transparentCorners: true,
+                                    cornerColor: 'yellow',
+                                    borderColor: 'yellow',
+                                    hasRotatingPoint: !forceRectangle
+                                });
+                            }
                         }
                         setDrawingModeButtonState(shape);
-                        if (hs == null) {
+                        if (hs == null || (hsattrs.x == 0 && hsattrs.y == 0 && hsattrs.w == 0 && hsattrs.h == 0)) {
                             setRectangleHandlers();
                             disableReset();
                         }
@@ -2702,10 +2795,10 @@ var EDITOR = (function ($, parent) {
                 $("#instructions_" + id).html(instructions);
             };
 
-            // Ok handler
-            var okbutton = $('.featherlight-content button[name="ok"]');
-            okbutton.click(function(event){
 
+            // Ok handler
+            var okbutton = $('.hotspotEditor  button[name="ok"]');
+            okbutton.click(function(event){
                 var key = $("#inner_img_" + id).data("key");
                 var current = $.featherlight.current();
                 var npoints = [];
@@ -2716,23 +2809,34 @@ var EDITOR = (function ($, parent) {
                             //Get tl, tr, br, bl
                             var cornerpoints = ['tl', 'tr', 'br', 'bl'];
                             for (var pi in cornerpoints) {
-                                var point = hspoints[cornerpoints[pi]];
+                            var point = hspoints[cornerpoints[pi]];
                                 npoints.push({
                                     "x": point.x * scale,
                                     "y": point.y * scale
                                 });
                             }
-                            var rect = {};
+                            var rect = {}, _rect = {};
+                            canvasWidth = $('.overlayCanvas').width()
+                            canvasHeight = $('.overlayCanvas').height()
+                            _rect.top = (hs.top / canvasHeight) * 100;
+                            _rect.left = (hs.left / canvasWidth) * 100;
+                            _rect.width = (hs.getScaledWidth() / canvasWidth) * 100;
+                            _rect.height = (hs.getScaledHeight() / canvasHeight) * 100;
+                            _rect.angle = hs.angle;
+
                             rect.top = hs.top * scale;
                             rect.left = hs.left * scale;
                             rect.width = hs.getScaledWidth() * scale;
                             rect.height = hs.getScaledHeight() * scale;
-                            rect.angle = hs.angle;
+                            rect.angle = hs.angle; 
                             var stringPoints = JSON.stringify(npoints);
                             var stringShape = JSON.stringify(rect);
 
                             if (forceRectangle) {
                                 setAttributeValue(key, ["x", "y", "w", "h"], [rect.left, rect.top, rect.width, rect.height]);
+                                if (lp) {
+                                    setAttributeValue(key, ["_x", "_y", "_w", "_h"], [_rect.left, _rect.top, _rect.width, _rect.height]);
+                                }
                             }
                             else {
                                 setAttributeValue(key, ["points", "mode", "shape"], [stringPoints, shape, stringShape]);
@@ -2777,8 +2881,14 @@ var EDITOR = (function ($, parent) {
                 parent.tree.showNodeData(key);
             });
 
+            // Add handler
+            var addbutton = $('.hotspotEditor  button[name="add"]');
+            addbutton.click(function (event){
+                current.close();
+            });
+
             // Cancel handler
-            var cancelbutton = $('.featherlight-content button[name="cancel"]');
+            var cancelbutton = $('.hotspotEditor button[name="cancel"]');
             cancelbutton.click(function(event){
                 var key = $("#inner_img_" + id).data("key");
                 var current = $.featherlight.current();
@@ -2787,7 +2897,7 @@ var EDITOR = (function ($, parent) {
             });
 
             // Switch to polygon mode
-            var polygonbutton = $('.featherlight-content #poly_'+id);
+            var polygonbutton = $('.hotspotEditor  #poly_'+id);
             if (forceRectangle)
             {
                 polygonbutton.prop("disabled", true);
@@ -2812,7 +2922,7 @@ var EDITOR = (function ($, parent) {
                 disableReset();
             };
 
-            var rectanglebutton = $('.featherlight-content #rectangle_'+id);
+            var rectanglebutton = $('.hotspotEditor #rectangle_'+id);
             rectanglebutton.click(function (event) {
                 if (shape != "rectangle") {
                     switchToRectangleMode();
@@ -2833,7 +2943,7 @@ var EDITOR = (function ($, parent) {
             };
 
             // Reset handler
-            var resetbutton = $('.featherlight-content #reset_'+id);
+            var resetbutton = $('.hotspotEditor  #reset_'+id);
             resetbutton.click(function (event){
                 switch (shape)
                 {
@@ -3102,6 +3212,375 @@ var EDITOR = (function ($, parent) {
         }
 
     };
+	
+	draw360Hotspot = function(html, url, hsattrs, id, hspgattrs) {
+        // Add Hotspot on the wizard page as preview on the thumbnail image
+		
+        // find image, set scale and wrap with overlayWrapper
+        var img =  html.find('img'),
+			width = img.width(),
+			height = img.height();
+		
+        img.wrap('<div class="overlayWrapper" id="overlayWrapper_' + id + '"></div>');
+        img.hide();
+
+        // create canvas over img
+        var canvasObj = $('<canvas>')
+            .attr('id', 'wizard_hscanvas_' + id);
+		
+        $('#overlayWrapper_' + id).append(canvasObj);
+		
+        var canvas = new fabric.Canvas('wizard_hscanvas_' + id, { selection: false, interaction: false });
+        canvas.setWidth(width);
+        canvas.setHeight(height);
+		
+        fabric.Image.fromURL(url, function (bgimg) {
+            bgimg.scaleToWidth(width);
+            bgimg.scaleToHeight(height);
+            canvas.setBackgroundImage(bgimg, canvas.renderAll.bind(canvas), { stretch: true });
+        });
+
+        // open editor when thumbnail is clicked
+		canvas.on('mouse:down', function() { edit360Hotspot(url, hsattrs, id, hspgattrs) });
+		
+        // draw target
+		var xy = {};
+        if (hsattrs.p != '' && hsattrs.y != '') {
+			// convert from pitch & yaw to image coordinates
+			xy.x = Math.floor((hsattrs.y / 360 + 0.5) * width);
+			xy.y = Math.floor((0.5 - hsattrs.p / 180) * height);
+			
+			canvas.add(new fabric.Circle({radius: 5,
+				fill: 'rgba(255,0,0,0.5)',
+				left: xy.x,
+				top: xy.y,
+				originX: 'center', 
+				originY: 'center',
+				selectable: false,
+				objectCaching: false,
+				evented:false
+			}));
+			
+			for (var j=0; j<2; j++) {
+				var x0 = j == 0 ? xy.x - 0.5 : xy.x - 3.5,
+					y0 = j == 0 ? xy.y - 3.5 : xy.y - 0.5,
+					x1 = j == 0 ? xy.x - 0.5 : xy.x + 3.5,
+					y1 = j == 0 ? xy.y + 3.5 : xy.y - 0.5;
+				
+				canvas.add(new fabric.Line([x0, y0, x1, y1], {
+					stroke: 'white',
+					strokeWidth: 1,
+					selectable: false,
+					evented: false
+				}));
+			}
+        }
+    };
+
+    edit360Hotspot = function (url, hsattrs, id, hspgattrs) {
+		// set up contents of lightbox (buttons, panorama & instructions)
+	    var $editImg = $("<div></div>")
+			.attr('id', 'outer_img_' + id)
+			.addClass('hotspotEditor');
+		
+		var btns = ['reset', 'ok', 'cancel'],
+			btnLang = [language.edit360Hotspot.Buttons.Reset, language.Alert.oklabel, language.Alert.cancellabel],
+			btnIcon = ['fa-undo-alt', 'fa-check-square', 'fa-window-close'];
+		
+        $editImg
+			.data("id", id)
+			.append('<div class="hsbutton_holder" id="hsbutton_holder_' + id + '" style="float: right;">');
+		
+		var $hsBtnHolder = $editImg.find('.hsbutton_holder');
+		
+		for (var i=0; i<btns.length; i++) {
+			$('<button id="' + btns[i] + '_' + id + '" class="hseditModeButton" title="' + btnLang[i] + '"><i class="fas fa-2x ' + btnIcon[i] + '"></i></button>').appendTo($hsBtnHolder);
+		}
+		
+		$editImg.append('<div id="panoramaHolder"><div id="panorama_' + id + '"></div><div class="hsinstructions" id="instructions_' + id + '"></div></div>');
+		
+		var instructions = language.edit360Hotspot.Instructions.header +
+				'<ul id="defaultInstructions">' +
+				'<li>' + language.edit360Hotspot.Instructions.line1 + '</li>' +
+				'<li>' + language.edit360Hotspot.Instructions.line2 + '</li>' +
+				'<li>' + language.edit360Hotspot.Instructions.reset + '</li>' +
+				'<li>' + language.edit360Hotspot.Instructions.save + '</li>' +
+				'</ul>';
+		
+		$editImg.find('#instructions_' + id).html(instructions);
+		
+		var currentHsDetails = {};
+		
+		// get the info about the icon appearance
+		if (hsattrs.icon == '' || hsattrs.icon == undefined) { currentHsDetails.icon = 'fas fa-info'; } else { currentHsDetails.icon = hsattrs.icon; }
+		if (hsattrs.orientation == '' || hsattrs.orientation == undefined) { currentHsDetails.orientation = '0'; } else { currentHsDetails.orientation = hsattrs.orientation; }
+		
+		// colours & size can be set at page or hs level
+		if (hsattrs.colour1 == '' || hsattrs.colour1 == undefined || hsattrs.colour1 == '0x') {
+			if (hspgattrs.colour1 == '' || hspgattrs.colour1 == undefined || hspgattrs.colour1 == '0x') {
+				currentHsDetails.colour1 = 'black';
+			} else {
+				currentHsDetails.colour1 = hspgattrs.colour1;
+			}
+		} else {
+			currentHsDetails.colour1 = hsattrs.colour1;
+		}
+		
+		if (hsattrs.colour2 == '' || hsattrs.colour2 == undefined || hsattrs.colour2 == '0x') {
+			if (hspgattrs.colour2 == '' || hspgattrs.colour2 == undefined || hspgattrs.colour2 == '0x') {
+				currentHsDetails.colour2 = 'white';
+			} else {
+				currentHsDetails.colour2 = hspgattrs.colour2;
+			}
+		} else {
+			currentHsDetails.colour2 = hsattrs.colour2;
+		}
+		
+		if (hsattrs.size == '' || hsattrs.size == undefined) {
+			if (hspgattrs.hsSize == '' || hspgattrs.hsSize == undefined) {
+				currentHsDetails.size = '14';
+			} else {
+				currentHsDetails.size = hspgattrs.hsSize;
+			}
+		} else {
+			currentHsDetails.size = hsattrs.size;
+		}
+		
+		// correct the format of the colour codes (start with # rather than 0x)
+		currentHsDetails.colour1 = currentHsDetails.colour1.indexOf('0x') === 0 ? currentHsDetails.colour1.replace("0x", "#") : currentHsDetails.colour1;
+		currentHsDetails.colour2 = currentHsDetails.colour2.indexOf('0x') === 0 ? currentHsDetails.colour2.replace("0x", "#") : currentHsDetails.colour2;
+		
+		var panorama;
+		
+		// open lightbox
+		$.featherlight($editImg, {
+			closeOnClick: 'false',
+			closeOnEsc: true,
+			closeIcon: '',
+			afterOpen: function () {
+				
+				// scale panorama
+				var dimensions = [0.7 * $('body').width(), 0.7 * $('body').height() - $('#hsbutton_holder').height() - $('.hsinstructions').height()];
+				
+				$('#panorama_' + id).add('.hover')
+					.width(dimensions[0])
+					.height(dimensions[1]);
+				
+				$('#outer_img_' + id).width(dimensions[0]);
+				
+				// set up panorama
+				panorama = pannellum.viewer('panorama_' + id, {
+					'type': 'equirectangular',
+					'panorama': url,
+					'autoLoad': true,
+					'showFullscreenCtrl': false,
+					'compass': false,
+					'pitch': Number(hsattrs.p), // turn to look at existing hotspot (if there is one)
+					'yaw': Number(hsattrs.y)
+				});
+				
+				// add hotspot (if there is one!)
+				if (hsattrs.p != '' && hsattrs.y != '') {
+					panorama.on('load', function(event) {
+						create360Hotspot(Number(hsattrs.p), Number(hsattrs.y));
+					});
+				}
+				
+				// move hotspot on mouse up (attempt to disregard dragging by looking at position of mouse down & making sure it was quite close)
+				var downPos = [];
+				
+				panorama.on('mousedown', function(event) {
+					downPos = panorama.mouseEventToCoords(event);
+				});
+				
+				panorama.on('mouseup', function(event) {
+					var coords = panorama.mouseEventToCoords(event);
+					
+					if (Math.abs(downPos[0]-coords[0]) < 0.01 && Math.abs(downPos[1]-coords[1]) < 0.01) {
+						create360Hotspot(coords[0], coords[1]);
+					}
+				});
+				
+				// remove existing hotspot & draw a new one
+				function create360Hotspot(pitch, yaw) {
+					panorama.removeHotSpot('currentHs');
+					
+					currentHsDetails.pitch = pitch;
+					currentHsDetails.yaw = yaw;
+					var borderWidth = Number(currentHsDetails.size)/4;
+					
+					panorama.addHotSpot({
+						'id': 'currentHs',
+						'pitch': pitch,
+						'yaw': yaw,
+						'cssClass': 'hotspot360Icon'
+					});
+					
+					// hotspot styles
+					$('.hotspot360Icon')
+						.append('<span class="icon360Holder"><span class="icon360"></span></span>')
+						.css({
+							height: (Number(currentHsDetails.size)*2+2) + 'px',
+							width: (Number(currentHsDetails.size)*2+2) + 'px',
+							background: currentHsDetails.colour1,
+							'border-color': currentHsDetails.colour2,
+							'border-width': borderWidth + 'px'
+						})
+						.hover(
+							function() {
+								$(this).css('box-shadow', '0px 0px ' + (Number(currentHsDetails.size)/2) + 'px ' + currentHsDetails.colour2);
+							},
+							function() {
+								$(this).css('box-shadow', 'none');
+							})
+						.find('.icon360')
+							.css({
+								transform: 'rotate(' + currentHsDetails.orientation + 'deg)',
+								'font-size': Number(currentHsDetails.size) + 'px',
+								color: currentHsDetails.colour2
+							})
+							.addClass(currentHsDetails.icon);
+				}
+			}
+		});
+		
+		// set up buttons
+		var key = $('#inner_img_' + id).data('key');
+		
+		// reset button - clear hotspot & all the customised icon info
+		$('.featherlight-content button#reset_' + id).click(function(event) {
+			panorama.removeHotSpot('currentHs');
+			currentHsDetails.pitch = '';
+			currentHsDetails.yaw = '';
+		});
+		
+		// OK button - save hotspot info & close lightbox
+		$('.featherlight-content button#ok_' + id).click(function(event) {
+			var current = $.featherlight.current();
+			setAttributeValue(key, ['p', 'y'], [currentHsDetails.pitch, currentHsDetails.yaw]);
+			current.close();
+			parent.tree.showNodeData(key);
+		});
+		
+		// cancel button - close lightbox without saving hotspot info
+		$('.featherlight-content button#cancel_' + id).click(function(event) {
+			var current = $.featherlight.current();
+			current.close();
+			parent.tree.showNodeData(key);
+		});
+    };
+	
+	edit360View = function (url, hsattrs, id, name) {
+		// set up contents of lightbox (buttons, panorama & instructions)
+	    var $editImg = $("<div></div>")
+			.attr('id', 'outer_img_' + id)
+			.addClass('hotspotEditor');
+		
+		var btns = ['reset', 'ok', 'cancel'],
+			btnLang = [language.edit360View.Buttons.Reset, language.Alert.oklabel, language.Alert.cancellabel],
+			btnIcon = ['fa-undo-alt', 'fa-check-square', 'fa-window-close'];
+		
+        $editImg
+			.data("id", id)
+			.append('<div class="hsbutton_holder" id="hsbutton_holder_' + id + '" style="float: right;">');
+		
+		var $hsBtnHolder = $editImg.find('.hsbutton_holder');
+		
+		for (var i=0; i<btns.length; i++) {
+			$('<button id="' + btns[i] + '_' + id + '" class="hseditModeButton" title="' + btnLang[i] + '"><i class="fas fa-2x ' + btnIcon[i] + '"></i></button>').appendTo($hsBtnHolder);
+		}
+		
+		$editImg.append('<div id="panoramaHolder"><div id="panorama_' + id + '"></div><div class="hsinstructions" id="instructions_' + id + '"></div></div>');
+		
+		var instructions = language.edit360View.Instructions.header +
+				'<ul id="defaultInstructions">' +
+				'<li>' + language.edit360View.Instructions.line1 + '</li>' +
+				'<li>' + language.edit360View.Instructions.reset + '</li>' +
+				'<li>' + language.edit360View.Instructions.save + '</li>' +
+				'</ul>';
+		
+		$editImg.find('#instructions_' + id).html(instructions);
+		
+		var panorama;
+		
+		// open lightbox
+		$.featherlight($editImg, {
+			closeOnClick: 'false',
+			closeOnEsc: true,
+			closeIcon: '',
+			afterOpen: function () {
+				
+				// scale panorama
+				var dimensions = [0.7 * $('body').width(), 0.7 * $('body').height() - $('#hsbutton_holder').height() - $('.hsinstructions').height()];
+				
+				$('#panorama_' + id)
+					.width(dimensions[0])
+					.height(dimensions[1]);
+				
+				$('#outer_img_' + id).width(dimensions[0]);
+				
+				// get the info about the current position
+				var initPitch = 0,
+					initYaw = 0;
+				if (hsattrs[name] != undefined && hsattrs[name].split('|').length == 2) {
+					var info = hsattrs[name].split('|');
+					initPitch = $.isNumeric(info[0]) ? Number(info[0]) : initPitch;
+					initYaw = $.isNumeric(info[1]) ? Number(info[1]) : initYaw;
+				}
+				
+				// set up panorama
+				panorama = pannellum.viewer('panorama_' + id, {
+					'type': 'equirectangular',
+					'panorama': url,
+					'autoLoad': true,
+					'compass': false,
+					'showFullscreenCtrl': false,
+					'pitch': initPitch,
+					'yaw': initYaw
+				});
+				
+				// focus point on mouse up (attempt to disregard dragging by looking at position of mouse down & making sure it was quite close)
+				var downPos = [];
+				
+				panorama.on('mousedown', function(event) {
+					downPos = panorama.mouseEventToCoords(event);
+				});
+				
+				panorama.on('mouseup', function(event) {
+					var coords = panorama.mouseEventToCoords(event);
+					
+					if (Math.abs(downPos[0]-coords[0]) < 0.01 && Math.abs(downPos[1]-coords[1]) < 0.01) {
+						panorama.setPitch(coords[0]).setYaw(coords[1]);
+					}
+				});
+			}
+		});
+		
+		// set up buttons
+		var key = $('#' + id + '_btn').data('key');
+		
+		// reset button - return to default view
+		$('.featherlight-content button#reset_' + id).click(function(event) {
+			panorama
+				.setPitch(0)
+				.setYaw(0);
+		});
+		
+		// OK button - save view info & close lightbox
+		$('.featherlight-content button#ok_' + id).click(function(event) {
+			var current = $.featherlight.current();
+			setAttributeValue(key, [name], [panorama.getPitch() + '|' + panorama.getYaw()]); // view is saved to one attribute in format 'pitch|yaw'
+			current.close();
+			parent.tree.showNodeData(key);
+		});
+		
+		// cancel button - close lightbox without saving view info
+		$('.featherlight-content button#cancel_' + id).click(function(event) {
+			var current = $.featherlight.current();
+			current.close();
+			parent.tree.showNodeData(key);
+		});
+    };
 
     triggerRedrawPage = function(key)
     {
@@ -3111,7 +3590,7 @@ var EDITOR = (function ($, parent) {
     displayDataType = function (value, options, name, key) {
 		var html;
 
-		var conditionTrigger = (typeof options.conditonTrigger != "undfined" && options.conditionTrigger == "true");
+		var conditionTrigger = (typeof options.conditionTrigger != "undefined" && options.conditionTrigger == "true");
 		switch(options.type.toLowerCase())
 		{
 			case 'checkbox':
@@ -3152,11 +3631,11 @@ var EDITOR = (function ($, parent) {
                             triggerRedrawPage(event.data.key);
                         }
 					});
-				
+
 				if (value == '') {
 					html.append($('<option>').attr('value', '').prop('selected', true));
 				}
-				
+
 				for (var i=0; i<s_options.length; i++) {
 					var option = $('<option>')
 						.attr('value', s_data[i]);
@@ -3237,24 +3716,32 @@ var EDITOR = (function ($, parent) {
 						.attr('value', value)
 						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
-							if (this.value <= max &&  this.value >= min) {
+							if ((isNaN(max) || this.value <= max) && (isNaN(min) || this.value >= min)) {
 								if (this.value == '') {
-									this.value = (min + max) / 2; // choose midpoint for NaN
+									if (isNaN(max) || isNaN(min)) {
+										this.value = 0;
+									} else {
+										this.value = (min + max) / 2; // choose midpoint for NaN
+									}
 								}
 								inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                                if (event.data.trigger)
+								if (event.data.trigger)
                                 {
                                     triggerRedrawPage(event.data.key);
                                 }
 							}
 							else { // set to max or min if out of range
-								this.value = Math.max(Math.min(this.value, max), min);
+								if (this.value > max) {
+									this.value = max;
+								} else {
+									this.value = min;
+								}
 							}
 						});
 				}
 				break;
 			case 'pagelist':
-				// Implement differently then in the flash editor
+				// Implement differently than in the flash editor
 				// Leave PageIDs untouched, and prefer to use the PageID over the linkID
 				var id = 'select_' + form_id_offset;
 				form_id_offset++;
@@ -3275,7 +3762,14 @@ var EDITOR = (function ($, parent) {
 					option.prop('selected', true);
 				option.append("&nbsp;");
 				html.append(option);
-				var pages = getPageList();
+				// by default the drop down will list all pages (& relevant nested pages) - can also be set to target everything at this level or at this item's parent level
+				var pages;
+				if (options.listTarget != undefined) {
+					pages = getPageList(key, options.listTarget);
+				} else {
+					pages = getPageList();
+				}
+				
 				$.each(pages, function(page)
 				{
 					option = $('<option>')
@@ -3290,22 +3784,22 @@ var EDITOR = (function ($, parent) {
 				var id = 'select_' + form_id_offset;
 				form_id_offset++;
 				html = $('<div id="' + id + '" class="categoryListHolder">').data('checked', value != '' ? value.split(',') : []);
-				
+
 				if (lo_data.treeroot['attributes'][options.target] != undefined) {
 					// set up all the categories & their checkboxes
 					var categories = lo_data.treeroot['attributes'][options.target].split('||');
-					
+
 					// work out what categories & options there are
 					for (var i=0; i<categories.length; i++) {
 						var categoryInfo = categories[i].split('|');
-						
+
 						if (categoryInfo.length == 2) {
 							var catTitle = categoryInfo[0].trim(),
 								catOpts = categoryInfo[1].split('\n');
-							
+
 							for (var j=0; j<catOpts.length; j++) {
 								catOpts.splice(j, 1, catOpts[j].trim());
-								
+
 								if (catOpts[j].length == 0) {
 									catOpts.splice(j, 1);
 									j--;
@@ -3324,7 +3818,7 @@ var EDITOR = (function ($, parent) {
 									}
 								}
 							}
-							
+
 							if (catTitle.length > 0 && catOpts.length > 0) {
 								categories.splice(i, 1, { name: catTitle, options: catOpts });
 							} else {
@@ -3336,12 +3830,12 @@ var EDITOR = (function ($, parent) {
 							i--;
 						}
 					}
-					
+
 					// if some categories exist add them to the page
 					if (categories.length > 0) {
 						for (var i=0; i<categories.length; i++) {
 							var option = $('<div class="categoryList"><div class="catTitle">' + categories[i].name + ':</div></div>');
-							
+
 							for (var j=0; j<categories[i].options.length; j++) {
 								var checkbox = $('<input>')
 									.attr({
@@ -3357,9 +3851,9 @@ var EDITOR = (function ($, parent) {
                                             triggerRedrawPage(event.data.key);
                                         }
 									});
-								
+
 								var label = $('<label for="cat_' + categories[i].options[j].id + '">' + categories[i].options[j].name + '</label>');
-								
+
 								$('<div class="catGroup">')
 									.appendTo(option)
 									.append(checkbox)
@@ -3411,9 +3905,9 @@ var EDITOR = (function ($, parent) {
                                 triggerRedrawPage(event.data.key);
                             }
 						});
-					
+
 					colorpickers.push({id: id, options: options});
-					
+
 					if (colorvalue != '') {
 						html.attr('value', colorvalue);
 						colorpickers[colorpickers.length-1].value = colorvalue;
@@ -3479,7 +3973,7 @@ var EDITOR = (function ($, parent) {
 					.click(function() {
 						previewFile($(this).attr('alt'), $(this).attr('src'), $(this).attr('alt'));
 					});
-					
+
 				html.append(preview);
 				var description = $("<div>" + theme_list[currtheme].description + "</div><div class='theme_url_param'>" + language.ThemeUrlParam + " " + theme_list[currtheme].name + "</div>");
 				var description_box = $('<div>')
@@ -3707,15 +4201,16 @@ var EDITOR = (function ($, parent) {
 					}
 
 				}
-				break;
+                break;
+            case 'locpicker':
 			case 'hotspot':
             case 'flexhotspot':
 				var id = 'hotspot_' + form_id_offset;
 				form_id_offset++;
-
                 // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
                 // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
-                var forceRectangle = (options.type.toLowerCase() === "hotspot");
+                var forceRectangle = !(options.type.toLowerCase() === "flexhotspot");
+                var lp = (options.type.toLowerCase() === "locpicker");
 				var hsattrs = lo_data[key].attributes;
                 var hsparent = parent.tree.getParent(key);
                 var hspattrs = lo_data[hsparent].attributes;
@@ -3726,37 +4221,149 @@ var EDITOR = (function ($, parent) {
                     hspattrs = lo_data[hsparent].attributes;
                 }
 
-                    // Create the container
-                    html = $('<div>').attr('id', id);
+                // Create the container
+                html = $('<div>').attr('id', id);
 
-                    var url = hspattrs.url;
-                    // Replace FileLocation + ' with full url
+                var url = hspattrs.url;
+                // Replace FileLocation + ' with full url
+                if (url != undefined) {
                     url = makeAbsolute(url);
-                    // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
-                    if (url.substring(0,4) == "http")
-                    {
-                        var shape = "square";
-                        html.addClass('clickableHotspot');
-                        html.append("<img>");
-                        var cur_key = key;
-                        html.find('img')
-                            .attr('id', 'inner_img_' + id)
-                            .attr("data-key", cur_key)
-                            .attr("src", url)
-                            .load(function(){
+                }
 
-                                $(this).css({width: '100%'});
-                                drawHotspot(html, url, hsattrs, hspattrs, id, forceRectangle);
-                            }).click(function(){
-                                editHotspot(url, hsattrs, hspattrs, id, forceRectangle);
-                            });
+                // Create a white canvas to use in lieu of an image for location selector.
+                else if (lp === true) {
+                    var whiteImage = document.createElement("CANVAS");
+                    var ctx = whiteImage.getContext("2d");
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.fillRect(0, 0, whiteImage.width, whiteImage.height);
+                    url = whiteImage.toDataURL();
+                    // Set a default value if using locpicker, so plugins can be rendered.
+                    if (hsattrs.x == undefined || hsattrs.y == undefined){
+                        setAttributeValue(key, ["x", "y", "w", "h"], [0, 0, 0, 0]);
                     }
-                    else
-                    {
-                        html.append("<span class=\"error\">" + language.editHotspot.Error.selectFile + "</span>");
-                    }
+                }
+                // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
+                if (url.substring(0,4) == "http" || lp === true)
+                {                    
+                    var shape = "square";
+                    html.addClass('clickableHotspot');
+                    html.append("<img>");
+                    var cur_key = key;
+                    html.find('img')
+                        .attr('id', 'inner_img_' + id)
+                        .attr("data-key", cur_key)
+                        .attr("src", url)
+                        .load(function(){
+                            $(this).css({width: '100%'});
+                            drawHotspot(html, url, hsattrs, hspattrs, id, forceRectangle, lp);
+                        }).click(function(){
+                            editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp);
+                        });
+                }
+                else
+                {
+                    html.append("<span class=\"error\">" + language.editHotspot.Error.selectFile + "</span>");
+                }
 
 				break;
+				
+			case 'hotspot360':
+				var id = 'hotspot360_' + form_id_offset;
+				form_id_offset++;
+
+                // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
+                // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
+				var hsattrs = lo_data[key].attributes;
+                var hsparent = parent.tree.getParent(key);
+                var hspattrs = lo_data[hsparent].attributes;
+				var hspage = parent.tree.getParent(hsparent);
+				var hspgattrs = lo_data[hspage].attributes;
+				
+				// Create the container
+				html = $('<div>').attr('id', id);
+
+				var url = hspattrs.file;
+				// Replace FileLocation + ' with full url
+				url = makeAbsolute(url);
+				// Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
+				if (url.substring(0,4) == "http")
+				{
+					html.addClass('clickableHotspot');
+					html.append("<img>");
+					var cur_key = key;
+					html.find('img')
+						.attr('id', 'inner_img_' + id)
+						.attr("data-key", cur_key)
+						.attr("src", url)
+						.load(function(){
+							$(this).css({width: '100%'});
+							draw360Hotspot(html, url, hsattrs, id, hspgattrs);
+						}).click(function(){
+							edit360Hotspot(url, hsattrs, id, hspgattrs);
+						});
+				}
+				else
+				{
+					html.append("<span class=\"error\">" + language.edit360Hotspot.Error.selectFile + "</span>");
+				}
+
+				break;
+			
+			case 'view360':
+				var id = 'view360_' + form_id_offset;
+				form_id_offset++;
+				
+				var hsattrs = lo_data[key].attributes;
+                var hsparent = parent.tree.getParent(key);
+                var hspattrs = lo_data[hsparent].attributes;
+				
+				// what image are we going to set view for? defaults to <file> unless file attr is set
+				// e.g. file='parent' looks at this parent's <file>, file='scene' looks at <scene>, file='parent.scene' looks at this parent's <scene>
+				var url = options.file == undefined ? hsattrs.file : (options.file == 'parent' ? hspattrs.file : false);
+				if (url === false) {
+					var info = options.file.split('.');
+					if (info > 1 && info[0] == 'parent') {
+						url = hspattrs[info[1]];
+					} else {
+						url = hsattrs[info[0]];
+					}
+				}
+				
+				// we might only have the linkID of the file we need - try to find the real file
+				if (url.substring(0,12) != "FileLocation") {
+					$.each(lo_data, function(key, value) {
+						if (this.attributes.linkID == url) {
+							url = this.attributes.file;
+							return false;
+						}
+						
+					});
+					
+				}
+				
+				// Replace FileLocation + ' with full url
+				url = makeAbsolute(url);
+				
+				// Create the container
+				html = $('<div>').attr('id', id);
+
+				if (url.substring(0,4) == "http")
+				{
+					$('<button id="' + id + '_btn" class="xerte_button icon_browse"></button>')
+						.html(language.edit360View.Buttons.Edit)
+						.attr("data-key", key)
+						.appendTo(html)
+						.click(function(){
+							edit360View(url, hsattrs, id, name);
+						});
+				}
+				else
+				{
+					html.append("<span class=\"error\">" + language.edit360View.Error.selectFile + "</span>");
+				}
+
+				break;
+				
 			case 'media':
 				var id = 'media_' + form_id_offset;
 				form_id_offset++;
@@ -3775,7 +4382,7 @@ var EDITOR = (function ($, parent) {
                             }
 						})
 						.attr('value', value));
-				
+
 				var td2 = $('<td>');
 				var btnHolder = $('<div style="width:4.5em"></div>').appendTo(td2);
 				btnHolder.append($('<button>')
@@ -3788,7 +4395,7 @@ var EDITOR = (function ($, parent) {
 						browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')))
-				
+
 				btnHolder.append($('<button>')
 					.attr('id', 'preview_' + id)
 					.attr('title', language.compPreview.$tooltip)
@@ -3798,7 +4405,7 @@ var EDITOR = (function ($, parent) {
 						previewFile(options.label, $(this).closest('tr').find('input')[0].value);
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon')));
-						
+
 				html = $('<div>')
 					.attr('id', 'container_' + id)
 					.addClass('media_container');
@@ -3836,7 +4443,7 @@ var EDITOR = (function ($, parent) {
 					value = new Date().toISOString();
 					setAttributeValue(key, [name], [value]);
 				}
-				
+
 				// a datepicker with a browse buttons next to it
 				var td1 = $('<td width="100%">')
 					.append($('<input>')
@@ -3858,7 +4465,7 @@ var EDITOR = (function ($, parent) {
 							dateFormat: 'yy-mm-dd', // the format used to be dd/mm/yyyy so some of code above is to cope with this
 							minDate: options.preventPrev == "true" ? 0 : null
 						}));
-				
+
 				var td2 = $('<td>');
 				var btnHolder = $('<div style="width:4.5em"></div>').appendTo(td2);
 				btnHolder.append($('<button>')
@@ -3870,7 +4477,7 @@ var EDITOR = (function ($, parent) {
 						td1.datepicker("show");
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-calendar').addClass('xerte-icon')))
-				
+
 				html = $('<div>')
 					.attr('id', 'container_' + id)
 					.addClass('media_container');
@@ -3893,6 +4500,52 @@ var EDITOR = (function ($, parent) {
 				)
 					.append(language.edit.$label);
 				break;
+			
+			case 'fontawesome':
+				var id = 'icon_' + form_id_offset;
+				form_id_offset++;
+				html = $('<div>').attr('id', id);
+				
+				var $input = $('<input id="' + id + '_hiddenInput" class="icon_hiddenInput" type="text" value="' + value + '">')
+					.appendTo(html)
+					.data({
+						'id': id,
+						'key': key,
+						'name': name
+					})
+					.change(function() {
+						var $this = $(this);
+						
+						// if an icon hasn't already been chosen swap the 'select icon' button for the icon preview
+						if ($('#' + $this.data('id') + '_btn').find('i').length == 0) {
+							$('#' + $this.data('id') + '_btn').html('<i id="' + id + '_preview" class="fas fa-fw fa-lg ' + this.value + '" title="' + language.fontawesome.preview + ': ' + this.value + '"></i>');
+						} else {
+							$('#' + $this.data('id') + '_btn').find('i').attr('title', language.fontawesome.preview + ': ' + this.value);
+						}
+						
+						inputChanged($this.data('id'), $this.data('key'), $this.data('name'), this.value);
+					});
+				
+				$('<button id="' + id + '_btn" class="xerte_button icon_browse" data-iconpicker-input="input#' + id + '_hiddenInput" data-iconpicker-preview="i#' + id + '_preview"></button>')
+					.data('input', $input)
+					.html(value != undefined && value != '' ? '<i id="' + id + '_preview" class="fa-fw ' + value + '" title="' + language.fontawesome.preview + ': ' + value + '"></i>' : language.fontawesome.preview)
+					.appendTo(html)
+					.click(
+						// manually set height/position of icon picker after it's been created
+						function() {setTimeout(function() {
+							var totalH = $('body').height() * 0.9;
+							var availH = totalH - (parseInt($('.ip-icons-content').css('padding-top')) * 2) - $('.ip-icons-search').outerHeight(true) - $('.ip-icons-footer').outerHeight(true);
+							
+							$('.ip-icons-area').css('max-height', availH + 'px');
+							$('#IconPickerModal')
+								.css('top', $('body').height() * 0.05);
+						}, 10);
+					});
+				
+				iconpickers.push({id: id + '_btn', iconList: options.iconList});
+				
+				break;
+			
 			case 'webpage':  //Not used??
 			case 'xerteurl':
 			case 'xertelo':
@@ -3906,7 +4559,7 @@ var EDITOR = (function ($, parent) {
 						.addClass('inlinewysiwyg')
 						.attr('contenteditable', 'true')
 						.append('<p>' + value + '</p>');
-					
+
 					textinputs_options.push({id: id, key: key, name: name, options: options});
 				}
 				else {
@@ -3946,7 +4599,7 @@ var EDITOR = (function ($, parent) {
 		return html;
 	};
 
-		
+
 	CKEDITOR.on('dialogDefinition', function(event) {
 		try {
 			var dialogName = event.data.name;
@@ -3958,7 +4611,7 @@ var EDITOR = (function ($, parent) {
 			}
 		} catch(e) {};
 	});
-	
+
     // Add the functions that need to be public
     my.getExtraTreeIcon = getExtraTreeIcon;
     my.changeNodeStatus = changeNodeStatus;
@@ -3972,6 +4625,7 @@ var EDITOR = (function ($, parent) {
     my.convertTextAreas = convertTextAreas;
     my.convertTextInputs = convertTextInputs;
     my.convertColorPickers = convertColorPickers;
+	my.convertIconPickers = convertIconPickers;
     my.convertDataGrids = convertDataGrids;
     my.showToolBar = showToolBar;
     my.getIcon = getIcon;

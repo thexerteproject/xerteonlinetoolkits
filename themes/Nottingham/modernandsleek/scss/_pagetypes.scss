@@ -169,6 +169,15 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   border-radius: $smallroundedcorners;
   padding-left: 10px;
 }
+//*****highlight text******/
+.x_textHighlight_page .ui-widget-content button.ui-state-default {
+  background:$darkestcolor;
+  color:$fontcolorfordarkestcolor;
+}
+.x_textHighlight_page .ui-tabs {
+	border-radius:$mediumroundedcorners;
+	background: $brightcolor;
+}
 //*****annotated diagram******/
 #listholder a.listitem, a:visited {
   color:$contrastcolor ;

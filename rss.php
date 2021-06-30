@@ -52,7 +52,7 @@ if(!isset($_GET['username'])){
 
     echo "<rss version=\"2.0\"
                     xmlns=\"http://backend.userland.com/rss2\"
-                    xmlns:xerte=\"http://xert.org.uk/rssDownload\">
+                    xmlns:xerte=\"http://xerte.org.uk/rssDownload\">
         <channel><title>{$xerte_toolkits_site->name}</title>
         <link>{$xerte_toolkits_site->site_url}</link>
         <description>" . RSS_DESCRIPTION . " " . $xerte_toolkits_site->name . "</description>
@@ -81,7 +81,7 @@ if(!isset($_GET['username'])){
 
         echo "<rss version=\"2.0\"
                     xmlns=\"http://backend.userland.com/rss2\"
-                    xmlns:xerte=\"http://xert.org.uk/rssDownload\">
+                    xmlns:xerte=\"http://xerte.org.uk/rssDownload\">
         <channel><title>{$xerte_toolkits_site->name}</title>
         <link>{$xerte_toolkits_site->site_url}</link>
         <description>" . RSS_DESCRIPTION . " " . $xerte_toolkits_site->name . "</description>
@@ -165,8 +165,9 @@ foreach($rows as $row) {
         echo "<xerte:exportlink><![CDATA[" . $xerte_toolkits_site->site_url . url_return('export', $row['template_id']) . "]]></xerte:exportlink>";
         if ($row['template_framework'] == 'xerte') {
 
-            echo "<xerte:scorm12link><![CDATA[" . $xerte_toolkits_site->site_url . url_return('export', $row['template_id']) . "]]></xerte:scorm12link>
-            <xerte:scorm2004link><![CDATA[" . $xerte_toolkits_site->site_url . url_return('export', $row['template_id']) . "]]></xerte:scorm2004link>";
+            echo "<xerte:scorm12link><![CDATA[" . $xerte_toolkits_site->site_url . url_return('scorm', $row['template_id']) . "]]></xerte:scorm12link>
+            <xerte:scorm2004link><![CDATA[" . $xerte_toolkits_site->site_url . url_return('scorm2004', $row['template_id']) . "]]></xerte:scorm2004link>
+            <xerte:offlinelink><![CDATA[" . $xerte_toolkits_site->site_url . url_return('export_offline', $row['template_id']) . "]]></xerte:offlinelink>";
         }
     }
     echo "<xerte:keywords>" . $row['keywords'] . "</xerte:keywords>

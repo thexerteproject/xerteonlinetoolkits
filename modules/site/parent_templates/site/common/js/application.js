@@ -103,22 +103,26 @@ function iframeResize($iframe) {
 
 function initSidebar(){
 	var $window = $(window)
+	var top = $window.width() <= 980 ? 290 : 210
+	var bottom = 270
 
 	//TOC
+
 	$('.bs-docs-sidenav').affix
 	(
 		{
 			offset:
 			{
-				top: function () { return $window.width() <= 980 ? 290 : 210 },
-				bottom: 270
+				top: top,
+				bottom: bottom
 			}
 		}
 	)
+	
+	fixSideBar();
 }
 
 function loadContent(){
-
 	$.ajax({
 
 		type: "GET",
@@ -174,7 +178,19 @@ function loadContent(){
 		$('.vidHolder iframe').each(function() {
 			iframeResize($(this))
 		});
+		
+		fixSideBar();
 	});
+}
+
+function fixSideBar() {
+	var $sideBar = $('.bs-docs-sidenav.affix, .bs-docs-sidenav.affix-top');
+	
+	if ($sideBar.outerHeight() > $(window).height()) {
+		$sideBar.addClass('staticPosition');
+	} else {
+		$sideBar.removeClass('staticPosition');
+	}
 }
 
 // Make absolute urls from urls with FileLocation + ' in their strings
@@ -817,7 +833,7 @@ function setup() {
 							} else {
 								linkAction = "x_navigateToPage(false, { type:'linkID', ID:'" + $(data).find('page').eq(index[0]).children().eq(index[1]).attr('linkID') + "' }); $.featherlight.close(true); return false;";
 							}
-
+							// full match doesn't mean every category matches but that a category from each group matches
 							var matchType = uniqueCats.length == catsUsed.length ? 'fullMatch' : 'partialMatch',
 								$resultDiv = $('<div class="result ' + matchType + '"><a href="#" onclick="' + linkAction + '"><i class="fa ' + faIcon + ' text-white ml-3" aria-hidden="true"></i>' + title + '</a>' + '<div class="matchList"><i>' + (languageData.find("search")[0] != undefined && languageData.find("search")[0].getAttribute('matchTitle1') != null ? languageData.find("search")[0].getAttribute('matchTitle1') : "Matches") + ': ' + catMatches + '</i></div></div>');
 
@@ -831,6 +847,9 @@ function setup() {
 
 								$searchResults.find('.result').each(function(k) {
 									if (uniqueCats.length > $(this).data('numCats')) {
+										$resultDiv.insertBefore($(this));
+										return false;
+									} else if (uniqueCats.length == $(this).data('numCats') && pageOrSection.match.length > $(this).data('match').length) {
 										$resultDiv.insertBefore($(this));
 										return false;
 									} else if ($searchResults.find('.result').length - 1 == k) {
@@ -1109,9 +1128,13 @@ function setup() {
 			}
 
 			if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'replace'){
+				var wcagDefault=$(".wcagLink").html();
 			$('.footer .container').remove();
 			$('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
 				$("#customFooter").css({"margin-left": "10px"});
+				$('#customFooter').append('<div class="wcagLink">'+wcagDefault+'</div>');
+				$(".wcagLink").css({"margin-right": "10px", "margin-top":"10px"});
+
 			}
 		}
 
@@ -1243,6 +1266,8 @@ function x_checkForText(data, type) {
 					data[i].childNodes[0].data = data[i].childNodes[0].data.replace(/(<iframe([\s\S]*?)<\/iframe>)/g, changeProtocol);
 				} else if (type == 'variables') {
 					data[i].childNodes[0].data = XBOOTSTRAP.VARIABLES.replaceVariables(data[i].childNodes[0].data);
+				} else if (type == 'globalVars') {
+					data[i].childNodes[0].data = XBOOTSTRAP.GLOBALVARS.replaceGlobalVars(data[i].childNodes[0].data);
 				}
 
 			} else {
@@ -1364,8 +1389,8 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	// check if it's a valid page index
 	if (pageRefType != 'id') {
 		pageID = $.isNumeric(pageID) ? Number(pageID) : pageID;
-
-		if (Number.isInteger(pageID)) {
+		if ($.isNumeric(pageID)) {
+			var temp = pageID;
 			// pageID refers to actual page num of valid pages - need to convert to index of all pages
 			if (pageRefType == 'start' || pageRefType == 'check') {
 				pageID = validPages[pageID];
@@ -1378,7 +1403,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 				pageRefType = 'index';
 
 			} else {
-				console.log("Page *" + (pageID+1) + "* not found");
+				console.log("Page *" + (temp) + "* not found");
 			}
 
 		} else {
@@ -1406,314 +1431,317 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 		if ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && authorSupport == false) {
 			console.log("Page *" + (pageIndex+1) + "* is hidden");
 			pageIndex = validPages[0];
+		}
 
-		// Page exists & can be shown
-		} else {
+		var page = $(data).find('page').eq(pageIndex);
+		var pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
 
-			var page = $(data).find('page').eq(pageIndex);
-			var pageHash = page.attr('customLinkID') != undefined && page.attr('customLinkID') != '' ? page.attr('customLinkID') : (standAlonePage ? page.attr('linkID') : 'page' + (validPages.indexOf(pageIndex)+1));
+		// Load page as normal as it's not opening in a new window
+		if (!standAlonePage || (standAlonePage && $(data).find('page').eq(pageIndex).attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash) || pageRefType == 'start') {
 
-			// Load page as normal as it's not opening in a new window
-			if (!standAlonePage || (standAlonePage && $(data).find('page').eq(pageIndex).attr('newWindow') != 'true') || (window.location.href.split('section')[0] == window.location.href.split('section')[0].split('#')[0] + '#' + pageHash) || pageRefType == 'start') {
+			// make sure correct hash is used in url history
+			if (addHistory != false) {
+				var historyEntry = pageHash.substring(0,4) == "page" ? Number(pageHash.substring(4)) - 1 : pageHash;
 
-				// make sure correct hash is used in url history
-				if (addHistory != false) {
-					var historyEntry = pageHash.substring(0,4) == "page" ? Number(pageHash.substring(4)) - 1 : pageHash;
-
-					if (pageHistory[pageHistory.length-1] != historyEntry) {
-						pageHistory.push(historyEntry);
-					}
-
-					window.history.pushState('window.location.href',"",'#' + pageHash);
+				if (pageHistory[pageHistory.length-1] != historyEntry) {
+					pageHistory.push(historyEntry);
 				}
 
-				//clear out existing content
-				$('#mainContent').empty();
-				$('#toc').empty();
-
-				// store current page
-				currentPage = pageIndex;
-
-				//set the main page title and subtitle
-				$('#pageTitle').html(page.attr('name'));
-				$(document).prop('title', $('<p>' + page.attr('name') +' - ' + $(data).find('learningObject').attr('name') + '</p>').text());
-				if ($(".jumbotron").length > 0) {
-					// header bar can be hidden on standalone pages
-					if (standAlonePage && page.attr('headerHide') == 'true') {
-						$(".jumbotron").hide();
-
-					} else {
-						setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'));
-						$(".jumbotron").show();
-					}
-				}
-
-				// nav bar can be hidden on standalone pages
-				if ($(".navbar-inner").length > 0) {
-					if (standAlonePage && page.attr('navbarHide') == 'hidden') {
-						$(".navbar-inner").hide();
-
-					} else {
-						if (page.attr('navbarHide') == 'back') {
-							$("#nav li:not(.backBtn)").hide();
-							$("#nav .backBtn").show();
-						} else {
-							$("#nav li:not(.backBtn)").show();
-							$("#nav .backBtn").hide();
-						}
-
-						$(".navbar-inner").show();
-					}
-				}
-
-				var extraTitle = authorSupport == true && page.attr('hidePageInfo') != undefined && page.attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + page.attr('hidePageInfo') + '</span>' : '';
-
-				$('#pageSubTitle').html( page.attr('subtitle') + extraTitle);
-
-				$('#overview').removeClass('hide');// show the header
-				$('#topnav').removeClass('hide');// show the topnavbar
-
-				//create the sections
-				page.find('section').each( function(index, value){
-
-					// work out whether the section is hidden or not - can be simply hidden or hidden between specific dates/times
-					var hideSection = checkIfHidden($(this).attr('hidePage'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Section');
-					if ($.isArray(hideSection)) {
-						$(this).attr('hidePageInfo', hideSection[1]);
-						hideSection = hideSection[0];
-					}
-
-					if (hideSection == false || authorSupport == true) {
-
-						var sectionIndex = index;
-
-						//expand mainContent if section menu hidden and expand option is true
-						if (page.attr('sectionMenu') == 'true' && page.attr('expandMain') == 'true') {
-							$('#mainContent').addClass("expandMain");
-
-						}else{
-							$('#mainContent').removeClass("expandMain");
-						}
-
-						// add section menu unless turned off
-						if ($(this).attr('menu') != 'headings' && $(this).attr('menu') != 'neither' && page.attr('sectionMenu') != 'true') {
-
-							//add a TOC entry
-							var tocName = $(this).attr('name');
-
-							// remove size & background color styles from links on toc
-							if ($('<p>' + tocName + '</p>').children().length > 0) {
-								tocName = $(tocName);
-								tocName.css({ 'font-size': '', 'background-color': 'transparent' });
-								tocName.find('[style*="font-size"]').css('font-size', '');
-								tocName.find('[style*="background-color"]').css('background-color', 'transparent');
-							}
-
-							var $link = $('<li' + (index==0?' class="active"':'') +'><a href="#' + pageHash + 'section' + (index+1) + '"></a></li>').appendTo('#toc');
-							$link.find('a').append(tocName);
-						}
-
-						//add the section header
-						var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '',
-							links = $(this).attr('links') != undefined && $(this).attr('links') != "none" ? '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>' : '',
-							subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h1>' + $(this).attr('name') + '</h1>' : '';
-
-						var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
-
-						var section = $('<section id="' + pageHash + 'section' + (index+1) + '">' + pageHeader + '</section>');
-
-						//add the section contents
-						$(this).children().each( function(itemIndex, value){
-							if (($(this).attr('name') != '' && $(this).attr('name') != undefined && $(this).attr('showTitle') == 'true') || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
-
-								if ($(this).attr('showTitle') == 'true') {
-									var subLinkName = $(this).attr('name');
-
-									// remove size & background color styles from links on toc
-									if ($('<p>' + subLinkName + '</p>').children().length > 0) {
-										subLinkName = $(subLinkName);
-										subLinkName.css({ 'font-size': '', 'background-color': 'transparent' });
-										subLinkName.find('[style*="font-size"]').css('font-size', '');
-										subLinkName.find('[style*="background-color"]').css('background-color', 'transparent');
-									}
-									
-									var tempLink = validPages.indexOf(pageIndex) != -1 ? 'page' + (validPages.indexOf(pageIndex)+1) : (page.attr("customLinkID") != "" && page.attr("customLinkID") != undefined ? page.attr("customLinkID") : page.attr('linkID'));
-									var $link = $('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#' + tempLink + 'section' + (index+1) + 'content' + (itemIndex+1) + '"></a> </span>').appendTo(section.find('.sectionSubLinks'));
-									$link.find('a').append(subLinkName);
-
-								}
-
-								section.append( '<h2 id="' + pageHash + 'section' + (index+1) + 'content' + (itemIndex+1) + '">' + $(this).attr('name') + '</h2>');
-							}
-
-							if (this.nodeName == 'text'){
-								section.append( '<p>' + $(this).text() + '</p>');
-							}
-
-							if (this.nodeName == 'script'){
-
-								section.append( '<script>' + $(this).text() + '</script>');
-							}
-
-							if (this.nodeName == 'markup'){
-
-								if ( $(this).attr('url') != undefined ){
-
-									section.append( $('<div/>').load( $(this).attr('url') ));
-
-								} else {
-
-									section.append( $(this).text() );
-								}
-
-							}
-
-							if (this.nodeName == 'link'){
-
-								var url = $(this).attr('url');
-								var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
-								var options = '';
-								options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
-								options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
-								options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
-								options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
-								options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
-								options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
-								options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
-								options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
-
-								section.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
-
-							}
-
-							if (this.nodeName == 'canvas'){
-
-								var style;
-
-								if ( $(this).attr('style') != undefined){
-
-									style = ' style="' + $(this).attr('style') + '" ';
-
-								} else {
-
-									style = '';
-
-								}
-
-								var cls;
-
-								if ( $(this).attr('class') != undefined){
-
-									cls = ' class="' + $(this).attr('class') + '" ';
-
-								} else {
-
-									cls = '';
-
-								}
-
-								section.append( '<p><canvas id="' + $(this).attr('id') + '" width="' + $(this).attr('width') + '" height="' + $(this).attr('height') + '"' + style + cls + '/></p>');
-
-							}
-
-							if (this.nodeName == 'image'){
-								section.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
-							}
-
-							if (this.nodeName == 'audio'){
-								section.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
-							}
-
-							if (this.nodeName == 'video'){
-								var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), pageIndex + '_' + sectionIndex + '_' + itemIndex);
-								section.append('<p>' + videoInfo[0] + '</p>');
-
-								if (videoInfo[1] != undefined) {
-									section.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
-								}
-							}
-
-							if (this.nodeName == 'pdf'){
-								section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
-							}
-
-							if (this.nodeName == 'xot'){
-								section.append(loadXotContent($(this)));
-							}
-
-							if (this.nodeName == 'navigator'){
-
-								if ($(this).attr('type') == 'Tabs'){
-									makeNav( $(this), section, 'tabs', sectionIndex, itemIndex );
-								}
-
-								if ($(this).attr('type') == 'Accordion'){
-									makeAccordion( $(this), section, sectionIndex, itemIndex );
-								}
-
-								if ($(this).attr('type') == 'Pills'){
-									makeNav( $(this), section, 'pills', sectionIndex, itemIndex);
-								}
-
-								if ($(this).attr('type') == 'Carousel'){
-									makeCarousel(  $(this), section, sectionIndex, itemIndex );
-								}
-							}
-
-						});
-
-						if (section.find('.sectionSubLinks a').length == 0) {
-
-							section.find('.sectionSubLinks').remove();
-
-						}
-
-						//a return to top button
-						if ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') {
-
-							section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
-
-						}
-
-						//add the section to the document
-						$('#mainContent').append(section);
-
-						// lightbox image links might also need to be added
-						setUpLightBox(page, $(this));
-					}
-				});
-
-				//finish initialising the piece now we have the content loaded
-				initMedia($('audio,video:not(.navigator video)'));
-				$('.vidHolder.iframe').each(function() {
-					iframeInit($(this));
-				});
-
-				initSidebar();
-
-				// Queue reparsing of MathJax - fails if no network connection
-				try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
-				// check text for variables - if found make sure it contains the current var value
-				if (XBOOTSTRAP.VARIABLES && XBOOTSTRAP.VARIABLES.exist()) {
-					XBOOTSTRAP.VARIABLES.updateVariable();
-				}
-
-				//$('body').scrollSpy('refresh'); //seems to cause a bunch of errors with tabs
-				$('#toc a:first').tab('show');
-
-				//an event for user defined code to know when loading is done
-				$(document).trigger('contentLoaded');
-
-				//force facebook / twitter objects to initialise
-				//twttr.widgets.load(); // REMOVED??
-
-				//FB.XFBML.parse(); // REMOVED??
-
-			// Page is a stand alone page opening in a new window
-			} else {
-				window.open(window.location.href.split('#')[0] + '#' + pageHash + (sectionNum != undefined ? 'section' + sectionNum : ''));
+				window.history.pushState('window.location.href',"",'#' + pageHash);
 			}
+
+			//clear out existing content
+			$('#mainContent').empty();
+			$('#toc').empty();
+
+			// store current page
+			currentPage = pageIndex;
+
+			//set the main page title and subtitle
+			$('#pageTitle').html(page.attr('name'));
+			$(document).prop('title', $('<p>' + page.attr('name') +' - ' + $(data).find('learningObject').attr('name') + '</p>').text());
+			if ($(".jumbotron").length > 0) {
+				// header bar can be hidden on standalone pages
+				if (standAlonePage && page.attr('headerHide') == 'true') {
+					$(".jumbotron").hide();
+
+				} else {
+					setHeaderFormat(page.attr('header'), page.attr('headerPos'), page.attr('headerRepeat'), page.attr('headerColour'), page.attr('headerTextColour'));
+					$(".jumbotron").show();
+				}
+			}
+
+			// nav bar can be hidden on standalone pages
+			if ($(".navbar-inner").length > 0) {
+				if (standAlonePage && page.attr('navbarHide') == 'hidden') {
+					$(".navbar-inner").hide();
+
+				} else {
+					if (page.attr('navbarHide') == 'back') {
+						$("#nav li:not(.backBtn)").hide();
+						$("#nav .backBtn").show();
+					} else {
+						$("#nav li:not(.backBtn)").show();
+						$("#nav .backBtn").hide();
+					}
+
+					$(".navbar-inner").show();
+				}
+			}
+
+			var extraTitle = authorSupport == true && page.attr('hidePageInfo') != undefined && page.attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + page.attr('hidePageInfo') + '</span>' : '';
+
+			$('#pageSubTitle').html( page.attr('subtitle') + extraTitle);
+
+			$('#overview').removeClass('hide');// show the header
+			$('#topnav').removeClass('hide');// show the topnavbar
+
+			//create the sections
+			page.find('section').each( function(index, value){
+
+				// work out whether the section is hidden or not - can be simply hidden or hidden between specific dates/times
+				var hideSection = checkIfHidden($(this).attr('hidePage'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Section');
+				if ($.isArray(hideSection)) {
+					$(this).attr('hidePageInfo', hideSection[1]);
+					hideSection = hideSection[0];
+				}
+
+				if (hideSection == false || authorSupport == true) {
+
+					var sectionIndex = index;
+
+					//expand mainContent if section menu hidden and expand option is true
+					if (page.attr('sectionMenu') == 'true' && page.attr('expandMain') == 'true') {
+						$('#mainContent').addClass("expandMain");
+
+					}else{
+						$('#mainContent').removeClass("expandMain");
+					}
+
+					// add section menu unless turned off
+					if ($(this).attr('menu') != 'headings' && $(this).attr('menu') != 'neither' && page.attr('sectionMenu') != 'true') {
+
+						//add a TOC entry
+						var tocName = $(this).attr('name');
+
+						// remove size & background color styles from links on toc
+						if ($('<p>' + tocName + '</p>').children().length > 0 && tocName.indexOf("sup") < 0) {
+							tocName = $(tocName);
+							tocName.css({ 'font-size': '', 'background-color': 'transparent' });
+							tocName.find('[style*="font-size"]').css('font-size', '');
+							tocName.find('[style*="background-color"]').css('background-color', 'transparent');
+						}
+
+						var $link = $('<li' + (index==0?' class="active"':'') +'><a href="#' + pageHash + 'section' + (index+1) + '"></a></li>').appendTo('#toc');
+						$link.find('a').append(tocName);
+					}
+
+					//add the section header
+					var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '',
+						links = $(this).attr('links') != undefined && $(this).attr('links') != "none" ? '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>' : '',
+						subHeadings = ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h1>' + $(this).attr('name') + '</h1>' : '';
+
+					var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
+
+					var section = $('<section id="' + pageHash + 'section' + (index+1) + '">' + pageHeader + '</section>');
+
+					//add the section contents
+					$(this).children().each( function(itemIndex, value){
+						if (($(this).attr('name') != '' && $(this).attr('name') != undefined && $(this).attr('showTitle') == 'true') || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
+
+							if ($(this).attr('showTitle') == 'true') {
+								var subLinkName = $(this).attr('name');
+
+								// remove size & background color styles from links on toc
+								if ($('<p>' + subLinkName + '</p>').children().length > 0) {
+									subLinkName = $(subLinkName);
+									subLinkName.css({ 'font-size': '', 'background-color': 'transparent' });
+									subLinkName.find('[style*="font-size"]').css('font-size', '');
+									subLinkName.find('[style*="background-color"]').css('background-color', 'transparent');
+								}
+								
+								var tempLink = validPages.indexOf(pageIndex) != -1 ? 'page' + (validPages.indexOf(pageIndex)+1) : (page.attr("customLinkID") != "" && page.attr("customLinkID") != undefined ? page.attr("customLinkID") : page.attr('linkID'));
+								var $link = $('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#' + tempLink + 'section' + (index+1) + 'content' + (itemIndex+1) + '"></a> </span>').appendTo(section.find('.sectionSubLinks'));
+								$link.find('a').append(subLinkName);
+
+							}
+
+							section.append( '<h2 id="' + pageHash + 'section' + (index+1) + 'content' + (itemIndex+1) + '">' + $(this).attr('name') + '</h2>');
+						}
+
+						if (this.nodeName == 'text'){
+							section.append( '<p>' + $(this).text() + '</p>');
+						}
+
+						if (this.nodeName == 'script'){
+
+							section.append( '<script>' + $(this).text() + '</script>');
+						}
+
+						if (this.nodeName == 'markup'){
+
+							if ( $(this).attr('url') != undefined ){
+
+								section.append( $('<div/>').load( $(this).attr('url') ));
+
+							} else {
+
+								section.append( $(this).text() );
+							}
+
+						}
+
+						if (this.nodeName == 'link'){
+
+							var url = $(this).attr('url');
+							var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
+							var options = '';
+							options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
+							options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
+							options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
+							options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
+							options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
+							options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
+							options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
+							options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
+
+							section.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
+
+						}
+
+						if (this.nodeName == 'canvas'){
+
+							var style;
+
+							if ( $(this).attr('style') != undefined){
+
+								style = ' style="' + $(this).attr('style') + '" ';
+
+							} else {
+
+								style = '';
+
+							}
+
+							var cls;
+
+							if ( $(this).attr('class') != undefined){
+
+								cls = ' class="' + $(this).attr('class') + '" ';
+
+							} else {
+
+								cls = '';
+
+							}
+
+							section.append( '<p><canvas id="' + $(this).attr('id') + '" width="' + $(this).attr('width') + '" height="' + $(this).attr('height') + '"' + style + cls + '/></p>');
+
+						}
+
+						if (this.nodeName == 'image'){
+							section.append('<p><img class="img-polaroid" src="' + $(this).attr('url') + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+						}
+
+						if (this.nodeName == 'audio'){
+							section.append('<p><audio src="' + $(this).attr('url') + '" type="audio/mp3" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+						}
+
+						if (this.nodeName == 'video'){
+							var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), pageIndex + '_' + sectionIndex + '_' + itemIndex);
+							section.append('<p>' + videoInfo[0] + '</p>');
+
+							if (videoInfo[1] != undefined) {
+								section.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+							}
+						}
+
+						if (this.nodeName == 'pdf'){
+							section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
+						}
+
+						if (this.nodeName == 'xot'){
+							section.append(loadXotContent($(this)));
+						}
+
+						if (this.nodeName == 'navigator'){
+
+							if ($(this).attr('type') == 'Tabs'){
+								makeNav( $(this), section, 'tabs', sectionIndex, itemIndex );
+							}
+
+							if ($(this).attr('type') == 'Accordion'){
+								makeAccordion( $(this), section, sectionIndex, itemIndex );
+							}
+
+							if ($(this).attr('type') == 'Pills'){
+								makeNav( $(this), section, 'pills', sectionIndex, itemIndex);
+							}
+
+							if ($(this).attr('type') == 'Carousel'){
+								makeCarousel(  $(this), section, sectionIndex, itemIndex );
+							}
+						}
+
+					});
+
+					if (section.find('.sectionSubLinks a').length == 0) {
+
+						section.find('.sectionSubLinks').remove();
+
+					}
+
+					//a return to top button
+					if ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') {
+
+						section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
+
+					}
+
+					//add the section to the document
+					$('#mainContent').append(section);
+
+					// lightbox image links might also need to be added
+					setUpLightBox(page, $(this));
+				}
+			});
+
+			//finish initialising the piece now we have the content loaded
+			initMedia($('audio,video:not(.navigator video)'));
+			$('.vidHolder.iframe').each(function() {
+				iframeInit($(this));
+			});
+
+			initSidebar();
+
+			// Queue reparsing of MathJax - fails if no network connection
+			try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+
+			// check text for variables - if found make sure it contains the current var value
+			if (XBOOTSTRAP.VARIABLES && XBOOTSTRAP.VARIABLES.exist()) {
+				XBOOTSTRAP.VARIABLES.updateVariable();
+			}
+
+			//$('body').scrollSpy('refresh'); //seems to cause a bunch of errors with tabs
+			$('#toc a:first').tab('show');
+
+			//an event for user defined code to know when loading is done
+			$(document).trigger('contentLoaded');
+
+			//the following fixes the side bar active highlight issue but requires changes to makeNav
+			//so commented out until we can discuss on next dev day
+			//$('[data-spy="scroll"]').each(function () {
+			//	var $spy = $(this).scrollspy('refresh')
+			//})
+
+			//force facebook / twitter objects to initialise
+			//twttr.widgets.load(); // REMOVED??
+
+			//FB.XFBML.parse(); // REMOVED??
+
+		// Page is a stand alone page opening in a new window
+		} else {
+			window.open(window.location.href.split('#')[0] + '#' + pageHash + (sectionNum != undefined ? 'section' + sectionNum : ''));
 		}
 	}
 
@@ -1802,6 +1830,26 @@ window.onhashchange = function() {
 
 		parseContent({ type: "check", id: tempPage }, tempSection, tempContent, false);
 	}
+
+    var listID = Number(location.href.substr(location.href.length-1,1));
+    setTimeout("updateMenu("+listID+")", 100);  //-- run 100 ms later to avoid the confliction with the original codes
+}
+
+function updateMenu(listID) {
+	if (!$.isNumeric(listID)) {
+		listID = 1;
+	}
+	
+    var navUL = document.getElementById("toc");
+    navLists = navUL.getElementsByTagName('li');
+	
+    for (i=0; i<navLists.length; i++) {
+        if (i == listID-1) {
+            navLists[i].className = "active";
+        } else {
+            navLists[i].className = "";
+        }
+    }
 }
 
 // jump to specified section of current page
@@ -1949,7 +1997,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		var tabs = $( '<ul class="nav nav-pills" id="tab' + sectionIndex + '_' + itemIndex + '"/>' );
 	}
 
-	var content = $( '<div class="tab-content"/>' );
+	var content = $( '<div class="tab-content" tabindex="0"/>' );
 
 	var iframe = [],
 		pdf = [],
@@ -1960,14 +2008,13 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 
 			tabs.append( $('<li class="active"><a href="#tab' + sectionIndex + '_' + itemIndex + '_' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>') );
 
-			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane active"/>')
+			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane active" tabindex="0"/>')
 
 		} else {
 
 			tabs.append( $('<li><a href="#tab' + sectionIndex + '_' + itemIndex + '_' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>') );
 
-			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane"/>')
-
+			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane" tabindex="0"/>')
 		}
 
 		var i = index;
@@ -2121,7 +2168,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 		}
 
 
-		var inner = $('<div class="accordion-inner">');
+		var inner = $('<div class="accordion-inner" tabindex="0">');
 
 		$(this).children().each( function(i, value){
 
@@ -2342,8 +2389,19 @@ function loadXotContent($this) {
 		xotLink += separator + 'page=' + $this.attr('pageNum');
 	}
 
+	// If this bootstrap LO is started using LTI, launch Xerte as an LTI tool as well.
+	if (typeof lti_enabled != 'undefined' && lti_enabled)
+	{
+		xotLink += separator + 'site=' + x_TemplateId;
+		xotLink = xotLink.replace('play.php?', ltiEndpoint);
+	}
+	else if (typeof xapi_enabled != 'undefined' && xapi_enabled)
+	{
+		xotLink += separator + 'site=' + x_TemplateId;
+		xotLink = xotLink.replace('play.php?', xapiEndpoint);
+	}
 	// the embed url parameter makes it responsive, full screen & hides minimise/maximise button (these can be overridden by manually adding other params to the url entered in editor)
-	xotLink += separator + 'embed=true';
+	xotLink += separator + 'embed=true' + separator + "embedded_from=" + encodeURIComponent(x_SiteUrl + x_TemplateId) + separator + "embedded_fromTitle=" + encodeURIComponent($(data).find('learningObject').attr('name'));
 
 	// add back any url params that haven't been overridden
 	for (var i=0; i<params.length; i++) {
@@ -3151,17 +3209,23 @@ var XBOOTSTRAP = (function ($, parent) { var self = parent.VARIABLES = {};
 		);
 
 		for (var k=0; k<variables.length; k++) {
-			// if it's first attempt to replace vars on this page look at vars in image tags first
+			// if it's first attempt to replace vars on this page look at vars in image, iframe, a & mathjax tags first
 			// these are simply replaced with no surrounding tag so vars can be used as image sources etc.
-			if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
-				var $tempText = $(tempText);
-				for (var m=0; m<$tempText.find('img').length; m++){
-					var tempImgTag = $tempText.find('img')[m].outerHTML,
-						regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
-					tempImgTag = tempImgTag.replace(regExp2, checkDecimalSeparator(variables[k].value));
-					$($tempText.find('img')[m]).replaceWith(tempImgTag);
+			var tags = ['img', '.mathjax', 'iframe', 'a'];
+			
+			for (var p=0; p<tags.length; p++) {
+				var thisTag = tags[p];
+				
+				if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
+					var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
+					for (var m=0; m<$tempText.find(thisTag).length; m++){
+						var tempTag = $tempText.find(thisTag)[m].outerHTML,
+							regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
+						tempTag = tempTag.replace(regExp2, checkDecimalSeparator(variables[k].value));
+						$($tempText.find(thisTag)[m]).replaceWith(tempTag);
+					}
+					tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
 				}
-				tempText = $tempText.map(function(){ return this.outerHTML; }).get().join('');
 			}
 
 			// replace with the variable text (this looks at both original variable mark up (e.g. [a]) & the tag it's replaced with as it might be updating a variable value that's already been inserted)

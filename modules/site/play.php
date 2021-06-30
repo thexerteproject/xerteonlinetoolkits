@@ -24,10 +24,14 @@ require(dirname(__FILE__) . "/module_functions.php");
 // (pl)
 // Set up the preview window for a xerte piece
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
-function show_template($row_play){
-    global $xerte_toolkits_site;
 
-    $string_for_flash = $xerte_toolkits_site-> users_file_area_short . $row_play['template_id'] . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/";
+function show_template($row, $xapi_enabled=false){
+    global $xerte_toolkits_site;
+    global $youtube_api_key;
+    global $pedit_enabled;
+    global $lti_enabled;
+
+    $string_for_flash = $xerte_toolkits_site-> users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 
     $xmlfile = $string_for_flash . "data.xml";
 
@@ -45,24 +49,127 @@ function show_template($row_play){
 
     $string_for_flash_xml = $xmlfile . "?time=" . time();
 
-	$template_path_string = "modules/site/parent_templates/" . $row_play['parent_template'] ."/";
+	$template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
+    $js_dir = "modules/" . $row['template_framework'] . "/";
 
-    list($x, $y) = explode("~",get_template_screen_size($row_play['template_name'],$row_play['template_framework']));
+    list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
 
     _load_language_file("/modules/site/preview.inc");
 
     $version = getVersion();
+
+    $tracking_js_file = array($template_path . "common/js/xttracking_noop.js");
+    if($xapi_enabled) {
+        if ($pedit_enabled) {
+            if ($row["tsugi_xapi_enabled"] == 1) {
+                $tracking_js_file = array($js_dir . "pedit/ALOConnection.js", $js_dir . "xAPI/xttracking_xapi.js");
+            } else {
+                $tracking_js_file = array($js_dir . "pedit/ALOConnection.js", $template_path . "common/js/xttracking_noop.js");
+            }
+        } else {
+            if ($row["tsugi_xapi_enabled"] == 1) {
+                $tracking_js_file = array($js_dir . "xAPI/xttracking_xapi.js");
+            }
+        }
+    }
+
     $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);
     // $engine is assumed to be javascript if flash is NOT set
-    $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row_play['template_framework'] . "/player_html5/rloObject.htm");
+    $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
+    $page_content = str_replace("%VERSION%", $version , $page_content);
     $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
     $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
     $page_content = str_replace("%TITLE%", $title , $page_content);
-    $page_content = str_replace("%TEMPLATEPATH%", $template_path_string, $page_content);
+    $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
+    $page_content = str_replace("%TEMPLATEID%", $_GET['template_id'], $page_content);
     $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
     $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
-	$page_content = str_replace("%THEMEPATH%", "themes/" . $row_play['parent_template'] . "/",$page_content);
-    $page_content = str_replace("%LASTUPDATED%", $row_play['date_modified'], $page_content);
+	$page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
+	$page_content = str_replace("%SITEURL%", $xerte_toolkits_site->site_url, $page_content);
+
+    $tracking = "";
+    foreach($tracking_js_file as $jsfile)
+    {
+        $tracking .= "<script type=\"text/javascript\" src=\"$jsfile?version=" . $version . "\"></script>\n";
+    }
+    if ($xapi_enabled && $row["tsugi_xapi_enabled"] == 1) {
+        $tracking .= "<script type=\"text/javascript\" src=\"" . $js_dir . "xAPI/xapidashboard.min.js?version=" . $version . "\"></script>\n";
+        $tracking .= "<script type=\"text/javascript\" src=\"" . $js_dir . "xAPI/xapiwrapper.min.js?version=" . $version . "\"></script>\n";
+    }
+    if($xapi_enabled)
+    {
+        $tracking .= "<script>\n";
+        $tracking .= "  var xapi_enabled=true;\n";
+        if (isset($lti_enabled) && $lti_enabled)
+        {
+            // Set lti_enabled variable so that we can send back gradebook results through LTI
+            $tracking .= "  var lti_enabled=true;\n";
+        }
+        else
+        {
+            $tracking .= "  var lti_enabled=false;\n";
+        }
+        if($row["tsugi_xapi_enabled"] == 1) {
+            $tracking .= "  var lrsEndpoint = '" . $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php") . "';\n";
+            $tracking .= "  var lrsUsername = '';\n";
+            $tracking .= "  var lrsPassword  = '';\n";
+            $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
+            $tracking .= "  var ltiEndpoint = '" .  (function_exists('addSession') ? addSession("lti_launch.php") . "&tsugisession=1&" : "lti_launch.php?") . "';\n";
+            $tracking .= "  var xapiEndpoint = '" . (function_exists('addSession') ? addSession("xapi_launch.php") . "&tsugisession=1&" : "xapi_launch.php?") . "';\n";
+
+            if (isset($lti_enabled) && $lti_enabled && $row["tsugi_published"] == 1) {
+                _debug("LTI User detected: " . print_r($xerte_toolkits_site->lti_user, true));
+                $tracking .= "   var username = '" . $xerte_toolkits_site->lti_user->email . "';\n";
+                $tracking .= "   var fullusername = '" . $xerte_toolkits_site->lti_user->displayname . "';\n";
+                $tracking .= "   var studentidmode = '" . $row['tsugi_xapi_student_id_mode'] . "';\n";
+                if ($row['tsugi_xapi_student_id_mode'] == 1)
+                {
+                    $tracking .= "  var mboxsha1 = '" . sha1("mailto:" . $xerte_toolkits_site->lti_user->email) . "';\n";
+                }
+            }
+            else
+            {
+                // Only xAPI - force group mode
+                if (isset($xerte_toolkits_site->xapi_user))
+                {
+                    // actor is set
+                    _debug("xAPI User detected: " . print_r($xerte_toolkits_site->xapi_user, true));
+                    $tracking .= "   var username = '" . $xerte_toolkits_site->xapi_user->email . "';\n";
+                    $tracking .= "   var fullusername = '" . $xerte_toolkits_site->xapi_user->displayname . "';\n";
+                    $tracking .= "   var studentidmode = " . $xerte_toolkits_site->xapi_user->studentidmode . ";\n";
+                }
+                else {
+                    $tracking .= "   var studentidmode = 3;\n";
+                }
+            }
+            if (isset($xerte_toolkits_site->group))
+            {
+                $tracking .= "   var groupname = '" . $xerte_toolkits_site->group . "';\n";
+            }
+            if (isset($xerte_toolkits_site->course))
+            {
+                $tracking .= "   var coursename = '" . $xerte_toolkits_site->course . "';\n";
+            }
+            if (isset($xerte_toolkits_site->module))
+            {
+                $tracking .= "   var modulename = '" . $xerte_toolkits_site->module . "';\n";
+            }
+        }
+        $tracking .= "</script>\n";
+        _debug("Tracking script: " . $tracking);
+    }
+    else {
+        if (isset($lti_enabled) && $lti_enabled) {
+            // Set lti_enabled variable so that we can send back gradebook results through LTI
+            $tracking .= "<script>\n  var lti_enabled=true;\n  var xapi_enabled=false;\n</script>\n";
+        }
+    }
+
+    $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
+    $page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $page_content);
+    $page_content = str_replace("%LASTUPDATED%", $row['date_modified'], $page_content);
+    $page_content = str_replace("%DATECREATED%", $row['date_created'], $page_content);
+    $page_content = str_replace("%NUMPLAYS%", $row['number_of_uses'], $page_content);
 
     echo $page_content;
 

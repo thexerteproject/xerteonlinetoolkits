@@ -27,8 +27,6 @@
  * @package
  */
 
-
-
 require_once(dirname(__FILE__) . "/config.php");
 
 _load_language_file("/play.inc");
@@ -182,7 +180,7 @@ $safe_template_id = (int) $_GET['template_id'];
  */
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
-$sql = "SELECT otd.template_name, otd.parent_template, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.date_modified, td.extra_flags, td.template_name as zipname, " .
+$sql = "SELECT otd.template_name, otd.parent_template, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.date_modified, td.date_created, td.number_of_uses, td.extra_flags, td.template_name as zipname, " .
     " td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, tsugi_xapi_student_id_mode, dashboard_allowed_links ".
     " FROM {$prefix}originaltemplatesdetails otd, {$prefix}templaterights tr, {$prefix}templatedetails td, {$prefix}logindetails ld " .
     " WHERE td.template_type_id = otd.template_type_id AND td.creator_id = ld.login_id AND tr.template_id = td.template_id AND tr.template_id= ? AND (role=? OR role=?)";
@@ -220,11 +218,11 @@ db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SE
 
 if ($tsugi_enabled) {
     /* Tsugi enabled */
-    if ($row_play["tsugi_published"] == 1 || $row_play["tsugi_xapi_enabled"] == 1) {
+    if ($row_play["tsugi_published"] == 1) {
         // Actually published for Tsugi
         db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
-        show_template($row_play, $tsugi_enabled);
+        show_template($row_play, $xapi_enabled);
     }
     else{
 
@@ -247,7 +245,7 @@ if ($tsugi_enabled) {
 
             db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
-            show_template($row_play);
+            show_template($row_play, $xapi_enabled);
 
         } else {
             if ($row_play['access_to_whom'] == "Password") {
@@ -304,7 +302,7 @@ if ($tsugi_enabled) {
                     //successful authentication
                     db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
 
-					show_template($row_play);
+					show_template($row_play, $xapi_enabled);
                 } else {
                     html_headers();
                     login_prompt($errors);
@@ -359,7 +357,7 @@ if ($tsugi_enabled) {
                         $ok = check_host($_SERVER['HTTP_REFERER'], $test_string);
                         if ($ok) {
                             db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
-                            show_template($row_play);
+                            show_template($row_play, $xapi_enabled);
                         } else {
                             dont_show_template('Doesnt Match Referer:' . $_SERVER['HTTP_REFERER']);
                         }
@@ -388,7 +386,7 @@ if ($tsugi_enabled) {
                             if ($row_play['access_to_whom'] == $row_security['security_setting']) {
                                 if (check_security_type($row_security['security_data'])) {
                                     db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1, date_accessed=? WHERE template_id=?", array(date('Y-m-d'), $safe_template_id));
-                                    show_template($row_play);
+                                    show_template($row_play, $xapi_enabled);
                                     $flag = true;
 
                                     break;

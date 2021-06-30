@@ -168,7 +168,28 @@
 	  <mcq description="Deze pagina bevat een multiple choice vraag. Gebruik de tab en boven/onder pijltjestoetsen om de antwoorden te bekijken en klip op spatie om het antwoord te kiezen."/>
 	  <quiz description="Deze pagina bevat een serie van mulitiple choice vragen. Gebruik de tab en boven/onder pijltjestoetsen om de antwoorden te bekijken en klip op spatie om het antwoord te kiezen."/>
   </screenReaderInfo>
-  
+
+	<saveSession label="Sessie opslaan" description="Sla de sessie op en stop met de activiteit" tooltip="Sessie opslaan">
+		<closeButton label="" description="Sluit Sessie opslaan"/>
+		<trackingCloseTxt label="&lt;p&gt;Wil je stoppen met deze sessie en de volgende keer weer verder gaan? Dat kan. Klik op de onderstaande button om de sessie op te slaan.&lt;/p&gt;"/>
+		<closeTxt label="&lt;p&gt;Je sessie is opgeslagen. Je kunt nu het venster of het tabblad in je browser sluiten. Tot de volgende keer.&lt;/p&gt;"/>
+		<closeTxtEmbedded label="&lt;p&gt;Je sessie is opgeslagen. Je kunt de pagina verversen of opnieuw bezoeken om de sessie opnieuw te bekijken. Tot de volgende keer.&lt;/p&gt;"/>
+		<btnLabelTxt label="Deze sessie opslaan"/>
+
+
+	</saveSession>
+
+	<resumeSession label="Sessie hervatten" description="Ga verder met de laatste opgeslagen sessie" tooltip="Sessie hervatten">
+		<closeButton label="" description="Sluit Sessie hervatten dialoogvenster"/>
+		<resumeTxt label="&lt;p&gt;Welkom terug. Wil je verder gaan met de sessie van {date} {time}? Kies ‘Ja’ om verder te gaan. Kies ‘Nee’ om helemaal opnieuw te beginnen.&lt;/p&gt;"/>
+		<noBtnLbl label="Nee" />
+		<yesBtnLbl label="Ja" />
+		<cancelBtnLbl label="Annuleer" />
+		<closeTxtNo label="&lt;p&gt;Klik op het kruisje van dit scherm om een nieuwe sessie te starten.&lt;/p&gt;"/>
+		<closeTxtYes label="&lt;p&gt;Klik op het kruisje van dit scherm om de sessie te hervatten.&lt;/p&gt;"/>
+		<cancelTxtYes label="&lt;p&gt;Je kunt nu het venster of het tabblad in je browser sluiten.&lt;/p&gt;"/>
+	</resumeSession>
+
   <authorVars label="Toon variabele data">
 	<item>Naam</item>
 	<item>Vaste waarde</item>

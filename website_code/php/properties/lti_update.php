@@ -4,6 +4,7 @@ require_once("../../../config.php");
 require_once "properties_library.php";
 require_once("../template_status.php");
 
+
 global $xerte_toolkits_site;
 
 if (!isset($_SESSION['toolkits_logon_username']))
@@ -44,6 +45,8 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
     $lti_def->title = (isset($_POST["tsugi_title"]) ? htmlspecialchars($_POST["tsugi_title"]) : "");
     $lti_def->xapi_enabled = isset($_POST["tsugi_xapi"]) && $_POST["tsugi_xapi"] == "true";
     $lti_def->published = isset($_POST["tsugi_published"]) && $_POST["tsugi_published"] == "true";
+    $lti_def->tsugi_useglobal = isset($_POST["tsugi_useglobal"]) && $_POST["tsugi_useglobal"] == "true";
+    $lti_def->tsugi_privateonly = isset($_POST["tsugi_useprivateonly"]) && $_POST["tsugi_useprivateonly"] == "true";
     $lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
     $lti_def->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
     $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
@@ -101,7 +104,7 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
             $mesg = "Object is no longer published.";
         }
 
-        if ($tsugi_publish) {
+        if ($tsugi_publish && (!$lti_def->tsugi_useglobal || $lti_def->tsugi_privateonly)) {
             $url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
             $PDOX = LTIX::getConnection();
             $p = $CFG->dbprefix;
@@ -149,10 +152,12 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
 
         }
     }
-    $sql = "UPDATE {$xp}templatedetails SET tsugi_published = ?, tsugi_xapi_enabled = ?, tsugi_xapi_useglobal = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ?, dashboard_allowed_links = ? WHERE template_id = ?";
+    $sql = "UPDATE {$xp}templatedetails SET tsugi_published = ?, tsugi_usetsugikey = ?, tsugi_privatekeyonly = ?, tsugi_xapi_enabled = ?, tsugi_xapi_useglobal = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ?, tsugi_xapi_student_id_mode = ?, dashboard_allowed_links = ? WHERE template_id = ?";
     db_query($sql,
         array(
             $lti_def->published ? "1" : "0",
+            $lti_def->tsugi_useglobal ? "1" : "0",
+            $lti_def->tsugi_privateonly ? "1" : "0",
             $lti_def->xapi_enabled ? "1" : "0",
             $lti_def->xapi_enabled ? ($lti_def->xapi_useglobal ? "1" : "0") : "1",
             $lti_def->xapi_enabled ? $lti_def->xapi_endpoint : "",

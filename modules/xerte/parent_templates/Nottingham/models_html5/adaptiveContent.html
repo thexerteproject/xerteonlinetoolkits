@@ -35,6 +35,7 @@
         var classnames = [];
         var classtitles = [];
         var numUserSubmits = 0;
+        var xertelo = interaction.getAttribute('xertelo');
         var textSize = Math.round(interaction.getAttribute("labelFontSize"));
 
         if (textSize == null || textSize == 0) textSize = 12;
@@ -99,6 +100,14 @@
                         matchactor = true;
                     }
                     break;
+            }
+            if (!matchactor && xertelo == x_TemplateId
+                && obj.context != undefined
+                && obj.context.extensions != undefined
+                && obj.context.extension['http://xerte.org.uk/sessionId'] != undefined
+                && obj.context.extension['http://xerte.org.uk/sessionId'] == state.sessionId)
+            {
+                matchactor = true;
             }
 
             if (matchactor) {
@@ -279,7 +288,7 @@
         );
     }
 
-    function matchActor(statement)
+    function matchActor(statement, xertelo)
     {
         switch (studentidmode) {
             case 0:
@@ -299,35 +308,22 @@
                 }
                 break;
         }
+        if (xertelo != undefined && xertelo == x_TemplateId
+            && obj.context != undefined
+            && obj.context.extensions != undefined
+            && obj.context.extension['http://xerte.org.uk/sessionId'] != undefined
+            && obj.context.extension['http://xerte.org.uk/sessionId'] == state.sessionId)
+        {
+            return true;
+        }
         return false;
     }
 
-    function filterOwnStatements(data) {
+    function filterOwnStatements(data, xertelo) {
         var statements = [];
         for (var i = 0; i < data.length; i++)
         {
-            statement = data[i];
-            matchactor = false;
-            switch (studentidmode) {
-                case 0:
-                case 2:
-                    if (statement.actor.mbox == 'mailto:' + username) {
-                        matchactor = true;
-                    }
-                    break;
-                case 1:
-                    if (statement.actor.mbox_sha1sum == mboxsha1) {
-                        matchactor = true;
-                    }
-                    break;
-                case 3:
-                    if (statement.actor.account != undefined && statement.actor.account.name == groupname) {
-                        matchactor = true;
-                    }
-                    break;
-            }
-
-            if (matchActor(data[i])) {
+            if (matchActor(data[i], xertelo)) {
 
               statements.push(data[i]);
             }
@@ -414,6 +410,25 @@
         return url;
     }
 
+    function getGroupingLabel(statement)
+    {
+        // statements DO have context.contextActivities.grouping[0].id defined (see above)
+        // Check context.contextActivities.grouping[0].definition.name['en-US']
+        if (statement.context.contextActivities.grouping[0].definition != undefined
+            && statement.context.contextActivities.grouping[0].definition.name != undefined
+            && statement.context.contextActivities.grouping[0].definition.name['en-US'] != undefined)
+        {
+            return statement.context.contextActivities.grouping[0].definition.name['en-US'];
+        }
+        else
+        {
+            let id = statement.context.contextActivities.grouping[0].id;
+            let pos = id.lastIndexOf('/');
+            let group = id.substr(pos+1);
+            return group.replace(/_/g, ' ');
+        }
+    }
+
     function getStatements(
         xerteurl,
         xertelo,
@@ -478,7 +493,7 @@
         q['statement.verb.id'] = 'http://adlnet.gov/expapi/verbs/scored';
          */
         q['activity'] = url;
-        if (type == "grouping") {
+        if (type == "grouping" || type == "groupings") {
             q['related_activities'] = true;
         }
         q['verb'] = verb;
@@ -529,7 +544,7 @@
                     url = data[0].object.id;
                 }
                 interaction = $(x_currentPageXML).children()[interactionIndex];
-                if (data.length >= 1 && (retrieveAll || filterOwnStatements(data).length >= 1)) {
+                if (data.length >= 1 && (retrieveAll || filterOwnStatements(data, xertelo).length >= 1)) {
                     if (opinionClass != undefined && opinionClass != "")
                     {
                         // Just filter out the items with the following structure
@@ -581,6 +596,55 @@
                             }
                         }
                         handler(statements, interaction, url, type, interactionIndex, fullWidth);
+                    }
+                    else if (type == 'groupings')
+                    {
+                        var statements=[];
+                        let groupingStatements=[];
+
+                        for (var i=0; i<data.length; i++)
+                        {
+                            if (data[i].context != undefined
+                                && data[i].context.extensions != undefined
+                                && data[i].context.extensions['http://xerte.org.uk/learningObjectLevel'] != undefined
+                                && data[i].context.extensions['http://xerte.org.uk/learningObjectLevel'] == 'interactivity'
+                                && data[i].context.contextActivities != undefined
+                                && data[i].context.contextActivities.grouping != undefined
+                                && data[i].context.contextActivities.grouping[0] != undefined
+                                && data[i].context.contextActivities.grouping[0].id != undefined)
+                            {
+                                statements.push(data[i]);
+                            }
+                        }
+                        let groups = []
+                        statements.forEach(x => groups.push(getGroupingLabel(x)));
+                        let uniqueGroups = groups.filter((v, i, a) => a.indexOf(v) === i);
+
+                        for (let uniqueGroup in uniqueGroups) {
+                            var statementsGroup=[];
+                            xertelabel = uniqueGroups[uniqueGroup].replace(/ /g, "_");
+                            for (var i=0; i<statements.length; i++)
+                            {
+                                if (statements[i].context.contextActivities.grouping[0].id.indexOf(xertelabel) != -1) {
+                                    statementsGroup.push(statements[i]);
+                                }
+                            }
+                            groupingStatements = groupingStatements.concat(handler(statementsGroup));
+                        }
+                        let uniqueStatements = [];
+                        let visitedGroups = [];
+                        if (adaptiveContent.dashboardMode == 'true') {
+                            uniqueStatements = groupingStatements;
+                        } else {
+                            for (let groupingStatement in groupingStatements) {
+                                let group = getGroupingLabel(groupingStatements[groupingStatement]);
+                                if (!visitedGroups.includes(group)) {
+                                    uniqueStatements.push(groupingStatements[groupingStatement]);
+                                    visitedGroups.push(group);
+                                }
+                            }
+                        }
+                        adaptiveContent.drawScore(uniqueStatements.reverse(), interaction, url, type, interactionIndex, fullWidth);
                     }
                     else {
                         handler(data, interaction, url, type, interactionIndex, fullWidth);
@@ -641,6 +705,7 @@
             }
             else
             {
+
                 // All files have loaded
 
                 // Make sure config is correct
@@ -669,6 +734,13 @@
 
         // Function called every time the page is viewed after it has initially loaded.
         this.pageChanged = function() {
+            $("#adaptiveContentMain").html("");
+            var displayMode = x_currentPageXML.getAttribute('displayMode');
+            if(displayMode == "Listed"){
+                this.setUpListed();
+            }else {
+                this.setUpUnlisted();
+            }
         }
 
         // Function called every time the size of the LO is changed.
@@ -704,7 +776,6 @@
 
         this.init = function() {
             debugger;
-
             var loadFiles = true;
             for (var i = 0; i < x_pageInfo.length; i++) {
                 if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
@@ -778,11 +849,55 @@
                 .attr('data-index', interactionIndex)
                 .addClass("panel");
 
-            div.html('<h2><p>' +
-                name +
-                "</p></h2><div class='introduction'>" +
-                interaction.getAttribute('introduction') +
-                "</div><div class='score'><div class='stats'></div><div class='graph-container'></div></div><div class='message'></div>");
+            let specificationDiv = '';
+            if (interaction.getAttribute('showSpecification') == 'true') {
+                specificationDiv = '<div class="specification">' +
+                        `<h4>${interaction.getAttribute('SpecificationText')}</h4>` +
+                        '<ul class="question-list"></ul>' +
+                    '</div>';
+            }
+            let adviceHeader = '';
+            if (interaction.children.length !== 0 && !adaptiveContent.dashboardMode) {
+                adviceHeader = `<h4>${interaction.getAttribute('AdviceText')}</h4>`;
+            }
+
+            debugger;
+            let introductionText = interaction.getAttribute('introduction');
+            if (introductionText == undefined) {
+                introductionText = "";
+            }
+            let summaryText = interaction.getAttribute('SummaryText');
+            if (summaryText == undefined)
+            {
+                summaryText = "";
+            }
+            if (interaction.getAttribute('showNrOfQuestions') != "true"  && interaction.getAttribute('showNrOfCorrectQuestions') != "true")
+            {
+                // Do not show Summry heading
+                summaryText = "";
+            }
+            else
+            {
+                summaryText = `<h1><p>${summaryText}</p></h1>`;
+            }
+            div.html(
+                `<h2><p>${name}</p></h2>` +
+                `<div class='introduction'>${introductionText}</div>` +
+                '<div class="summary-container">' +
+                    '<div class="summary">' +
+                        summaryText +
+                        '<div class="score">' +
+                          '<div class="stats-div"><ul class="stats"></ul></div>' +
+                        '</div>' +
+                        specificationDiv +
+                        '<div class="advice">' +
+                            adviceHeader +
+                            '<div class="message"></div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="graph-container"></div>' +
+                '</div>'
+            );
 
             $(location).append(div);
 
@@ -799,7 +914,6 @@
                 "</div><div class='score'></div><div class='message'></div>",
             );
             */
-            debugger;
             if (interactionType == "score") {
                 var verb = 'http://adlnet.gov/expapi/verbs/scored';
                 if (interaction.data != null) {
@@ -866,7 +980,6 @@
             }
             else if (interactionType == "open")
             {
-                debugger;
                 // check open question special options
                 var verb = 'http://adlnet.gov/expapi/verbs/scored';
                 if (interaction.data != null) {
@@ -890,7 +1003,6 @@
             }
             else if (interactionType == "grouping")
             {
-                debugger;
                 // check open question special options
                 var verb = 'http://adlnet.gov/expapi/verbs/scored';
                 if (interaction.data != null) {
@@ -912,22 +1024,60 @@
                         this.drawGroupedScore);
                 }
             }
-
+            else if (interactionType == "groupings")
+            {
+                // check open question special options
+                var verb = 'http://adlnet.gov/expapi/verbs/scored';
+                if (interaction.data != null) {
+                    var url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
+                    this.drawGroupedScores(interaction.data, interaction, url, interactionType, interactionIndex, fullWidth);
+                }
+                else {
+                    statements = getStatements(
+                        xerteurl,
+                        xertelo,
+                        xertegrouping,
+                        verb,
+                        opinionClass,
+                        interactionType,
+                        hasToRetrieveAll(interaction),
+                        interactionIndex,
+                        group,
+                        fullWidth,
+                        this.drawGroupedScores);
+                }
+            }
 
         };
 
         this.drawScore = function(data, interaction, url, type, interactionIndex, fullWidth) {
-            var scoreLabelText = interaction.getAttribute('scoreText');
+            let scoreLabelText = interaction.getAttribute('scoreText');
             if (scoreLabelText == null) {
                 scoreLabelText = 'Your score is {0}';
             }
-            var nrParticipantsText = interaction.getAttribute('NrParticipantsText');
+            let nrParticipantsText = interaction.getAttribute('NrParticipantsText');
             if (nrParticipantsText == null) {
                 nrParticipantsText = 'The number of participants is {0}';
             }
+            let NrQuestionsText = interaction.getAttribute('NrQuestionsText');
+            if (NrQuestionsText == null) {
+                NrQuestionsText = 'Total number of questions {0}';
+            }
+            let NrCorrectQuestionsText = interaction.getAttribute('NrCorrectQuestionsText');
+            if (NrCorrectQuestionsText == null) {
+                NrCorrectQuestionsText = 'Total correct {0}';
+            }
+            var CorrectText = interaction.getAttribute('CorrectText');
+            if (CorrectText == undefined) {
+                CorrectText = 'Correct';
+            }
+            var IncorrectText = interaction.getAttribute('IncorrectText');
+            if (IncorrectText == undefined) {
+                IncorrectText = 'Incorrect';
+            }
+            var xertelo = interaction.getAttribute('xertelo');
             var statements = filterOwnStatements(data);
             xerteurl = interaction.getAttribute('xerteurl');
-            xertelo = interaction.getAttribute('xertelo');
             xertelabel = interaction.getAttribute('label');
             name = interaction.getAttribute('name');
             interactionType = interaction.getAttribute('interactionType');
@@ -938,33 +1088,126 @@
                 nrbars = 10;
             }
             if (statements.length > 0) {
-                score = statements[0].result.score.raw;
-                //score = interaction.score;
-                if (interaction.getAttribute("showScore") == "true") {
-                    var txt = scoreLabelText;
-                    txt = txt.replace(/\{0\}/, Math.round(score*10)/10);
-                    $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '%</p>');
+
+                if (statements[0].extensions !== undefined) {
+                    let numQuestions = statements[0].extensions['http://xerte.org.uk/grouping/num-grouped-statements'];
+                    if (numQuestions !== undefined) {
+                        if (interaction.getAttribute('showNrOfQuestions') == 'true') {
+                            var txt = NrQuestionsText;
+                            txt = txt.replace(/\{0\}/, numQuestions);
+                            $(`#${escapeUrl(url, type, interactionIndex)} .score .stats`).append(`<li>${txt}</li>`);
+                        }
+                    }
                 }
 
-                for (blockIndex = 0; blockIndex < interaction.children.length; blockIndex++) {
-                    block = interaction.children[blockIndex];
-                    scoreRange = block.getAttribute('conScoreBetween');
-                    range = scoreRange.split(",");
-                    if (range.length == 2) {
-                        lowerBound = range[0];
-                        upperBound = range[1];
-                        if (score >= lowerBound && score <= upperBound) {
-                            $('#' + escapeUrl(url, type, interactionIndex) + ' .message').html(
-                                block.getAttribute('adaptiveContent')
-                            );
+                if (statements[0].result.extensions !== undefined) {
+                    let correctQuestionScores;
+                    if (adaptiveContent.dashboardMode == 'true') {
+                        correctQuestionScores = {};
+                        for (let statement in statements) {
+                            let res = statements[statement].result.extensions['http://xerte.org.uk/result/grouping/scores'];
+                            for (let singleRes in res) {
+                                if (!(res[singleRes][0][0] in correctQuestionScores)) {
+                                    correctQuestionScores[res[singleRes][0][0]] = [res[singleRes][1]];
+                                } else {
+                                    correctQuestionScores[res[singleRes][0][0]].push(res[singleRes][1]);
+                                }
+                            }
+                        }
+                    } else {
+                        correctQuestionScores = statements[0].result.extensions['http://xerte.org.uk/result/grouping/scores'];
+                    }
+                    if (correctQuestionScores !== undefined) {
+                        if (interaction.getAttribute('showNrOfCorrectQuestions') == 'true') {
+                            let numCorrectQuestions = 0;
+                            for (let i = 0; i < correctQuestionScores.length; i++) {
+                                if (correctQuestionScores[i][1] === 100) {
+                                    numCorrectQuestions += 1;
+                                }
+                            }
+                            var txt = NrCorrectQuestionsText;
+                            txt = txt.replace(/\{0\}/, numCorrectQuestions);
+                            $(`#${escapeUrl(url, type, interactionIndex)} .score .stats`).append(`<li>${txt}</li>`);
+                        }
+                        if (interaction.getAttribute('showSpecification') == 'true') {
+                            if (adaptiveContent.dashboardMode == 'true') {
+                                const average = list => list.reduce((prev, curr) => prev + curr) / list.length;
+                                for (let questionScore in correctQuestionScores) {
+                                    txt = `${questionScore}: ${average(correctQuestionScores[questionScore]).toFixed(1)}`;
+                                    $(`#${escapeUrl(url, type, interactionIndex)} .specification .question-list`).append(`<li>${txt}%</li>`);
+                                }
+                            } else {
+                                for (let i = 0; i < correctQuestionScores.length; i++) {
+                                    txt = `${correctQuestionScores[i][0]}: ${(correctQuestionScores[i][1] === 100) ? CorrectText : IncorrectText}`;
+                                    $(`#${escapeUrl(url, type, interactionIndex)} .specification .question-list`).append(`<li>${txt}</li>`);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (interaction.getAttribute('interactionType') === 'groupings') {
+                    let visitedGroups = {};
+                    for (let statement in statements) {
+                        let group = statements[statement].context.contextActivities.grouping[0].definition.name["en-US"];
+                        if (!(group in visitedGroups)) {
+                            visitedGroups[group] = [statements[statement].result.score.raw];
+                        } else {
+                            visitedGroups[group].push(statements[statement].result.score.raw);
+                        }
+                    }
+                    const sortObject = obj => Object.keys(obj).sort().reduce((res, key) => (res[key] = obj[key], res), {});
+                    visitedGroups = sortObject(visitedGroups);
+                    const average = list => list.reduce((prev, curr) => prev + curr) / list.length;
+                    for (group in visitedGroups) {
+                        score = average(visitedGroups[group]);
+                        if (interaction.getAttribute("showScore") == "true") {
+                            var txt = group;
+                            txt = `${txt}: ${Math.round(score*10)/10}`;
+                            $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<li>' + txt + '%</li>');
+                        }
+                    }
+                } else {
+
+                    score = 0;
+
+                    if (adaptiveContent.dashboardMode == 'true') {
+                        for (let statement in statements) {
+                            score += statements[statement].result.score.raw;
+                        }
+                        score = score / statements.length;
+                    } else {
+                        score = statements[0].result.score.raw;
+                    }
+                    if (interaction.getAttribute("showScore") == "true") {
+                        var txt = scoreLabelText;
+                        txt = txt.replace(/\{0\}/, Math.round(score*10)/10);
+                        $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<li>' + txt + '%</li>');
+                    }
+                }
+                if (adaptiveContent.dashboardMode == "false") {
+                    for (blockIndex = 0; blockIndex < interaction.children.length; blockIndex++) {
+                        block = interaction.children[blockIndex];
+                        scoreRange = block.getAttribute('conScoreBetween');
+                        range = scoreRange.split(",");
+                        if (range.length == 2) {
+                            lowerBound = range[0];
+                            upperBound = range[1];
+                            if (score >= lowerBound && score <= upperBound) {
+                                $('#' + escapeUrl(url, type, interactionIndex) + ' .message').html(
+                                    block.getAttribute('adaptiveContent')
+                                );
+                            }
                         }
                     }
                 }
             }
             if (interaction.getAttribute("showNrOfParticipants") == "true") {
+                let sessionIds = statements.map(x => x.context.extensions["http://xerte.org.uk/sessionId"]);
+                let uniqueSessions = sessionIds.filter((e, i) => sessionIds.indexOf(e) === i);
                 var txt = nrParticipantsText;
-                txt = txt.replace(/\{0\}/, data.length);
-                $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '</p>');
+                txt = txt.replace(/\{0\}/, uniqueSessions.length);
+                $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<li>' + txt + '</li>');
             }
             if (interaction.getAttribute('graph') === 'true') {
                 var showExplanation = interaction.getAttribute('showExplanation');
@@ -982,12 +1225,21 @@
                 {
                     ExplanationPanelWidth = "40%";
                 }
-                div = $('#' + escapeUrl(url, type, interactionIndex) + ' .score .graph-container');
-                div.append(
-                    "<div class='graph'><svg id='" +
-                    escapeUrl(url, type, interactionIndex) +
-                    "-graph'></svg></div>"
-                );
+                div = $('#' + escapeUrl(url, type, interactionIndex) + ' .graph-container');
+                if (interaction.getAttribute('graphType') == 'pie_marks' || interaction.getAttribute('graphType') == 'bar_comb_marks'){
+                    div.append(
+                        "<div class='graph'><canvas id='" +
+                        escapeUrl(url, type, interactionIndex) +
+                        "-graph'></canvas></div>"
+                    );
+                }
+                else {
+                    div.append(
+                        "<div class='graph'><svg id='" +
+                        escapeUrl(url, type, interactionIndex) +
+                        "-graph'></svg></div>"
+                    );
+                }
                 if (showExplanation == 'true' && Explanation != "")
                 {
                     div.append("<div class=\"panel legend\" style=\"width: " + ExplanationPanelWidth + ";\">" + Explanation + "</div>");
@@ -1070,6 +1322,150 @@
                         }
                     );
                     chart.draw();
+                }
+                else if (interaction.getAttribute('graphType') == 'bar_comb_marks') {
+                    let passingGrade = x_params.trackingPassed;
+                    if (passingGrade == null) {
+                        passingGrade = '55';
+                    }
+                    else
+                    {
+                        if (passingGrade.indexOf('%') >=0) {
+                            passingGrade = parseInt(passingGrade) + '';
+                        }
+                        else if (parsefloat(passingGrade) >= 0 && parsefloat(passingGrade) <= 1)
+                        {
+                            passingGrade = (parseFloat(passingGrade) * 100.0) + '';
+                        }
+                    }
+                    let ldData = [];
+                    let ldLabels = [];
+                    let ldPassing = [];
+                    let visitedGroups = {};
+                    for (let statement in statements) {
+                        let group = statements[statement].context.contextActivities.grouping[0].definition.name["en-US"];
+                        if (!(group in visitedGroups)) {
+                            visitedGroups[group] = [statements[statement].result.score.raw];
+                        } else {
+                            visitedGroups[group].push(statements[statement].result.score.raw);
+                        }
+                    }
+                    const sortObject = obj => Object.keys(obj).sort().reduce((res, key) => (res[key] = obj[key], res), {});
+                    visitedGroups = sortObject(visitedGroups);
+                    const average = list => list.reduce((prev, curr) => prev + curr) / list.length;
+                    for (let group in visitedGroups) {
+                        ldData.push(average(visitedGroups[group]))
+                        ldLabels.push(group)
+                        ldPassing.push(Number(passingGrade));
+                    }
+                    //statements.forEach(x => {
+                    //    ldData.push(x.result.score.raw)
+                    //    ldLabels.push(x.context.contextActivities.grouping[0].definition.name['en-US'])
+                    //    ldPassing.push(Number(passingGrade));
+                    //});
+                    let ctx = escapeUrl(url, type, interactionIndex) + '-graph';
+                    let options = {
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    suggestedMin: 0,
+                                    suggestedMax: 100
+                                }
+                            }]
+                        }
+                    }
+                    var mixedChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            datasets: [{
+                                label: 'Bar Dataset',
+                                data: ldData,
+                                backgroundColor: 'rgba(40, 64, 150, 0.8)',
+                                borderColor: 'rgba(40, 64, 150, 1)',
+                                order: 1,
+                            }, {
+                                label: 'Line Dataset',
+                                data: ldPassing,
+
+                                // Changes this dataset to become a line
+                                type: 'line',
+                                fill: false,
+                                backgroundColor: 'rgba(40, 200, 64, 1)',
+                                borderColor: 'rgba(40, 200, 64, 1)',
+                                order: 2,
+                            }],
+                            labels: ldLabels,
+                        },
+                        options: options,
+                    });
+                }
+                else if (interaction.getAttribute('graphType') == 'pie_marks') {
+                    var correctLabel = interaction.getAttribute("correctLabel");
+                    var incorrectLabel = interaction.getAttribute("incorrectLabel");
+                    if (correctLabel == undefined) correctLabel = "Correct";
+                    if (incorrectLabel == undefined) incorrectLabel = "Incorrect";
+
+                    let numCorrectQuestions = 0;
+                    let numIncorrectQuestions = 0;
+
+                    if (adaptiveContent.dashboardMode == 'true') {
+                        for (let statement in statements) {
+                            if (statements[statement].result.extensions !== undefined) {
+                                let correctQuestionScores = statements[statement].result.extensions['http://xerte.org.uk/result/grouping/scores'];
+                                if (correctQuestionScores !== undefined) {
+                                    for (let i = 0; i < correctQuestionScores.length; i++) {
+                                        if (correctQuestionScores[i][1] === 100) {
+                                            numCorrectQuestions += 1;
+                                        } else {
+                                            numIncorrectQuestions += 1;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (statements[0].result.extensions !== undefined) {
+                            let correctQuestionScores = statements[0].result.extensions['http://xerte.org.uk/result/grouping/scores'];
+                            if (correctQuestionScores !== undefined) {
+                                for (let i = 0; i < correctQuestionScores.length; i++) {
+                                    if (correctQuestionScores[i][1] === 100) {
+                                        numCorrectQuestions += 1;
+                                    } else {
+                                        numIncorrectQuestions += 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    let ctx = escapeUrl(url, type, interactionIndex) + '-graph';
+                    let options = {
+                        maintainAspectRatio: false,
+                    };
+                    data = {
+                      labels: [correctLabel, incorrectLabel],
+                      datasets: [{
+                          label: '# of Votes',
+                          data: [numCorrectQuestions, numIncorrectQuestions],
+                          backgroundColor: [
+                              'rgba(40, 200, 64, 0.8)',
+                              'rgba(255, 95, 87, 0.8)',
+                          ],
+                          borderColor: [
+                              'rgba(40, 200, 64, 1)',
+                              'rgba(255, 95, 87, 1)',
+                          ],
+                          borderWidth: 1
+                      }],
+                    };
+                    chart = new Chart(ctx, {
+                        type: 'pie',
+                        data: data,
+                        options: options,
+                    });
                 }
                 else if (interaction.getAttribute("graphType") == "line_average_marks") {
                     var xAxisLabelLineAvgMarks = interaction.getAttribute("xAxisLabelLineAvgMarks");
@@ -1195,17 +1591,18 @@
             {
                 nrbars = 10;
             }
-            statements = filterOwnStatements(data);
+            var xertelo = interaction.getAttribute('xertelo');
+            var statements = filterOwnStatements(data, xertelo);
             if (statements.length > 0) {
-                givenAnswer = statements[0].result.response;
+                var givenAnswer = statements[0].result.response;
                 if (interaction.getAttribute("showScore") == "true") {
                     var txt = answerLabelText;
                     txt = txt.replace(/\{0\}/, givenAnswer);
                     $('#' + escapeUrl(url, type, interactionIndex) + ' .score .stats').append('<p>' + txt + '</p>');
                 }
                 for (blockIndex = 0; blockIndex < interaction.children.length; blockIndex++) {
-                    block = interaction.children[blockIndex];
-                    conScoreAnswer = block.getAttribute('conScoreAnswer');
+                    var block = interaction.children[blockIndex];
+                    var conScoreAnswer = block.getAttribute('conScoreAnswer');
                     if (conScoreAnswer == givenAnswer) {
                         $('#' + escapeUrl(
                             url,
@@ -1242,7 +1639,7 @@
                     url,
                     type,
                     interactionIndex
-                ) + ' .score .graph-container');
+                ) + ' .graph-container');
 
                 div.append(
                     "<div class='x_floatLeft'><svg id='" +
@@ -1481,7 +1878,7 @@
                 url,
                 type,
                 interactionIndex
-            ) + ' .score .graph-container');
+            ) + ' .graph-container');
 
             div.append(
                 "<fieldset class='noStyle'><canvas aria-live='polite'></canvas></fieldset>"
@@ -1494,7 +1891,7 @@
                 url,
                 type,
                 interactionIndex
-            ) + ' .score .graph-container canvas';
+            ) + ' .graph-container canvas';
             createDiagram(jsonData, identifier, adaptiveContent.dashboardMode, interaction);
         };
 
@@ -1687,6 +2084,8 @@
                 }
                 userGrouping[user]['sessions'][session].push(i);
             }
+
+
             // Calculate averages and create groupingStatments, which are pseudo xAPI statements which are a combination of all the grouping statements
             // Hmm... tric to enumerate array elements
             var userGroupingKeys = Object.keys(userGrouping);
@@ -1701,19 +2100,105 @@
                     var statement = JSON.parse(JSON.stringify(data[s[0]]));
                     var sum = statement.result.score.raw;
                     var duration = moment.duration(statement.result.duration);
+                    if (statement.result.extensions === undefined) {
+                        statement.result.extensions = {};
+                    }
+                    statement.result.extensions['http://xerte.org.uk/result/grouping/scores'] = [];
+                    statement.result.extensions['http://xerte.org.uk/result/grouping/scores'].push([[data[0].object.definition.name["en-US"]], data[s[0]].result.score.raw]);
                     for (var k=1; k<s.length; k++)
                     {
+                        statement.result.extensions['http://xerte.org.uk/result/grouping/scores'].push([[data[s[k]].object.definition.name["en-US"]],  data[s[k]].result.score.raw]);
                         sum += data[s[k]].result.score.raw;
                         duration.add(moment.duration(data[s[k]].result.duration));
                     }
+                    statement.result.extensions['http://xerte.org.uk/result/grouping/scores'].reverse();
                     statement.result.score.raw = sum / s.length;
                     statement.result.score.scaled = statement.result.score.raw / 100.0;
                     statement.result.duration = duration.toISOString();
+                    statement.extensions = {'http://xerte.org.uk/grouping/num-grouped-statements': s.length};
                     groupingStatements.push(statement);
                 }
             }
             // New statements can be handled by drawScore
             adaptiveContent.drawScore(groupingStatements, interaction, url, type, interactionIndex, fullWidth);
+        };
+
+        this.drawGroupedScores = function(data) {
+            // reshuffle
+            var groupingStatements = [];
+            var userGrouping = [];
+            for (var i=0; i<data.length; i++)
+            {
+                var user;
+                if (typeof data[i].actor.name != 'undefined')
+                {
+                    user = data[i].actor.name;
+                }
+                else if (typeof data[i].actor.mbox != 'undefined')
+                {
+                    user = data[i].actor.mbox.substr(7);
+                }
+                else if (typeof data[i].actor.mbox_sha1 != 'undefined') {
+                    user = data[i].actor.mbox_sha1.substr(7);
+                }
+                else if (typeof data[i].actor.account != 'undefined' && typeof data[i].actor.account.name != 'undefined' ){
+                    user = data[i].actor.account.name;
+                }
+                else {
+                    user = "unknown";
+                }
+                var session = "unknown";
+                if (typeof data[i].context != 'undefined'
+                    && typeof data[i].context.extensions != 'undefined'
+                    && typeof data[i].context.extensions['http://xerte.org.uk/sessionId'] != 'undefined')
+                {
+                    session = data[i].context.extensions['http://xerte.org.uk/sessionId']
+                }
+                if (typeof userGrouping[user] == 'undefined')
+                {
+                    userGrouping[user] = {
+                        sessions:  []
+                    };
+                }
+                if (typeof userGrouping[user]['sessions'][session] == 'undefined')
+                {
+                    userGrouping[user]['sessions'][session] = [];
+                }
+                userGrouping[user]['sessions'][session].push(i);
+            }
+
+            // Calculate averages and create groupingStatments, which are pseudo xAPI statements which are a combination of all the grouping statements
+            // Hmm... tric to enumerate array elements
+            var userGroupingKeys = Object.keys(userGrouping);
+            for (var i=0; i<userGroupingKeys.length; i++)
+            {
+                var sessions = userGrouping[userGroupingKeys[i]];
+                var sessionsKeys = Object.keys(sessions['sessions']);
+                for (var j=0; j<sessionsKeys.length; j++)
+                {
+                    var s = sessions['sessions'][sessionsKeys[j]];
+                    // make a full copy of statement
+                    var statement = JSON.parse(JSON.stringify(data[s[0]]));
+                    var sum = statement.result.score.raw;
+                    var duration = moment.duration(statement.result.duration);
+                    statement.result.extensions['http://xerte.org.uk/result/grouping/scores'] = [];
+                    statement.result.extensions['http://xerte.org.uk/result/grouping/scores'].push([[data[0].object.definition.name["en-US"]], data[s[0]].result.score.raw]);
+                    for (var k=1; k<s.length; k++)
+                    {
+                        statement.result.extensions['http://xerte.org.uk/result/grouping/scores'].push([[data[s[k]].object.definition.name["en-US"]],  data[s[k]].result.score.raw]);
+                        sum += data[s[k]].result.score.raw;
+                        duration.add(moment.duration(data[s[k]].result.duration));
+                    }
+                    statement.result.extensions['http://xerte.org.uk/result/grouping/scores'].reverse();
+                    statement.result.score.raw = sum / s.length;
+                    statement.result.score.scaled = statement.result.score.raw / 100.0;
+                    statement.result.duration = duration.toISOString();
+                    statement.extensions = {'http://xerte.org.uk/grouping/num-grouped-statements': s.length};
+                    groupingStatements.push(statement);
+                }
+            }
+            // New statements can be handled by drawScore
+            return groupingStatements;
         };
 
         this.orderInteractions = function(interactions, handler){
@@ -1803,7 +2288,6 @@
             }
             Promise.all(promises, function(){
             }).then(function(){
-                //debugger;
                 var sortorder = "none";
                 // find elements that should not be sorted
                 var donotsort = [];
@@ -1894,7 +2378,6 @@
             this.totalresolved = interactions.length;
             $("#loader_text").html(this.resolved + '/' + this.totalresolved);
             this.orderInteractions(interactions, function(oInteractions){
-                //debugger;
                 $("#loader").hide();
                 $('#introductionText').html(x_currentPageXML.getAttribute('introduction'));
 
@@ -1940,7 +2423,6 @@
                 $("#listPanel ul li").click(function(){
                     $("li.select-interaction[data-interaction-index=\"" + adaptiveContent.selected+'\"]').removeClass("selected");
                     adaptiveContent.selected  = $(this).data("interaction-index");
-                    //debugger;
                     $("#infoPanel").html("");
                     $("li.select-interaction[data-interaction-index=\"" + adaptiveContent.selected + '\"]').addClass("selected");
                     $this.drawBlock("#infoPanel", oInteractions[adaptiveContent.selected], adaptiveContent.selected, false);
