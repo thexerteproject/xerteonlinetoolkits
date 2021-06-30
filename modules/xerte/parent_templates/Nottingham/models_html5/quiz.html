@@ -564,7 +564,7 @@
             }
             $("#qTxt").html("");
 
-            var scormScore = Math.ceil(myScore / quiz.questions.length * 100, x_currentPageXML.getAttribute("trackinglabel"));
+            var scormScore = Math.round((myScore * 100 / quiz.questions.length) * 100)/100;
             XTSetPageScore(x_currentPage, scormScore);
             this.resultsShown = true;
         };
