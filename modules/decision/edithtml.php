@@ -114,7 +114,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         $d = opendir($theme_folder);
         while($f = readdir($d)){
             if(is_dir($theme_folder . $f)){
-                if (file_exists($theme_folder . $f . "/" . $f . ".info") && !file_exists($theme_folder . $f . "/hidden"))
+                if (file_exists($theme_folder . $f . "/" . $f . ".info") && !file_exists($theme_folder . $f . "/hidden.info"))
                 {
                     $info = file($theme_folder . $f . "/" . $f . ".info", FILE_SKIP_EMPTY_LINES);
                     $themeProperties = new StdClass();
