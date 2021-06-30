@@ -29,7 +29,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.removeButtons = 'Cut,Copy,Paste,Save,NewPage,Preview,Print,PageBreak,CreateDiv,Anchor,Smiley';
     
     config.format_tags = 'p;h3;h4;h5;h6;pre;address;div';
-
+    config.line_height="1rem;1.1rem;1.2rem;1.3rem;1.4rem;1.5rem;1.75rem;2rem;2.5rem" ;
     // Let's have it basic on dialogs as well.
     config.removeDialogTabs = 'link:advanced';
     config.toolbarCanCollapse = true;
