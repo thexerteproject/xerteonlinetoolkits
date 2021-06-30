@@ -206,13 +206,13 @@ function NoopTrackingState()
                 // If the weight is 0.0, set the score to 100
                 totalscore = 100.0;
             }
-            return Math.round(totalscore*100)/100;
+            return totalscore;
         }
     }
 
     function getRawScore()
     {
-        return this.getdRawScore() + "";
+        return Math.round(this.getdRawScore()*100)/100 + "";
     }
 
     function getdMinScore()
@@ -1214,7 +1214,7 @@ function XTTerminate()
                     method: "POST",
                     url: url,
                     data: {
-                        grade: state.getScaledScore()
+                        grade: state.getdScaledScore()
                     }
                 })
                     .done(function (msg) {
