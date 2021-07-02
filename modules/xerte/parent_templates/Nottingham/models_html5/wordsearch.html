@@ -124,7 +124,7 @@
       // Force words case
       if (puzzleCase === 'lowercase' || puzzleCase === '' || puzzleCase === undefined)
         words = words.toLowerCase();
-      else if (puzzleCase === 'uppercase')
+      else if (puzzleCase === 'uppercase' || puzzleCase == undefined)
         words = words.toUpperCase();
 
 			words = $.trim(words).split("\n");
@@ -158,8 +158,8 @@
 
 			// style the grid according to options
 
-			if (puzzleCase !== undefined && puzzleCase !== '') {
-				$("#puzzle .puzzleSquare").css('text-transform', (puzzleCase === 'lowercase' || puzzleCase === 'uppercase' ? puzzleCase : 'initial') );
+			if (puzzleCase !== '') {
+				$("#puzzle .puzzleSquare").css('text-transform', (puzzleCase === 'lowercase' ? 'lowercase' : puzzleCase === 'uppercase' || puzzleCase == undefined ? 'uppercase' : 'initial') );
 			}
 
 			// hide word list or make sure word list height is no greater than wordsearch height
