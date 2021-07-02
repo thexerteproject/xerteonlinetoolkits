@@ -812,6 +812,17 @@ function sharing_info($template_id)
     return $info;
 }
 
+function nr_user_groups()
+{
+    $count = 0;
+    $sql = "select count(*) as count from user_groups";
+    $res = db_query($sql);
+
+    if ($res !== false && $res != null)
+        $count = $res[0]['count'];
+    return $count;
+}
+
 function rss_syndication($template_id)
 {
     global $xerte_toolkits_site;
