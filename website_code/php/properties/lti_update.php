@@ -55,6 +55,7 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
     $lti_def->xapi_password = (isset($_POST["tsugi_xapi_password"]) ? htmlspecialchars($_POST["tsugi_xapi_password"]) : "");
     $lti_def->xapi_student_id_mode = (isset($_POST["tsugi_xapi_student_id_mode"]) ? $_POST["tsugi_xapi_student_id_mode"] : "");
     $lti_def->dashboard_urls = (isset($_POST["dashboard_urls"]) ? $_POST["dashboard_urls"] : "");
+
 // Force groupmode
     if (!$tsugi_installed) {
         $lti_def->xapi_student_id_mode = 3;
