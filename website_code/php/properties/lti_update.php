@@ -125,17 +125,19 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
                 ':secret' => $lti_def->secret
             );
             $res = $PDOX->queryDie($sql, $param);
+            unset($res);
 
 
             $sql = "INSERT INTO {$p}lti_context
             ( context_id, context_sha256, context_key, title, key_id, created_at, updated_at ) VALUES
             ( :context_id, :context_sha256, :context_key, :title, :key_id, NOW(), NOW() );";
-            $PDOX->queryDie($sql, array(
+            $res = $PDOX->queryDie($sql, array(
                 ':context_id' => $context_id,
                 ':context_sha256' => lti_sha256($context_id),
                 ':context_key' => $context_id,
                 ':title' => $lti_def->title,
                 ':key_id' => $key_id));
+            unset($res);
             $sql = "INSERT INTO {$p}lti_link
             ( link_id, link_sha256, link_key, title, context_id, path, created_at, updated_at ) VALUES
                 ( :link_id, :link_sha256, :link_key, :title, :context_id, :path, NOW(), NOW() );";
@@ -149,6 +151,7 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
                 ':path' => $lti_def->tsugi_url
             );
             $link = $PDOX->queryDie($sql, $params);
+            unset($link);
 
         }
     }
