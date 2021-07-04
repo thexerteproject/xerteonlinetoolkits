@@ -118,7 +118,7 @@
 
 	define("PROPERTIES_LIBRARY_NOTES", "Project Notes:");
 
-	define("PROPERTIES_LIBRARY_NOTES_EXPLAINED", "These notes are only visible to yourself");
+	define("PROPERTIES_LIBRARY_NOTES_EXPLAINED", "These notes are only visible to the creator and any co-authors of the project");
 
 	define("PROPERTIES_LIBRARY_NOTES_SAVED", "Notes saved");
 

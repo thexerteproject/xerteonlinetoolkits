@@ -69,7 +69,7 @@
             $lti_def->dashboard_urls = "";
             $lti_def->xapi_student_id_mode = 0; // e-mail address
             if ($tsugi_installed) {
-                if ($lti_def->published == 1 && !$lti_def->tsugi_useglobal) {
+                if ($lti_def->published == 1) {
                     $PDOX = LTIX::getConnection();
                     $tsugirow = $PDOX->rowDie(
                         "	SELECT l.title, k.key_key, k.secret
@@ -81,11 +81,6 @@
                         $lti_def->secret = $tsugirow["secret"];
                         $lti_def->title = $tsugirow["title"];
                     }
-                }
-                else{
-                    $lti_def->key = "";
-                    $lti_def->secret = "";
-                    $lti_def->title = "";
                 }
             }
             if($lti_def->xapi_enabled == 1)
