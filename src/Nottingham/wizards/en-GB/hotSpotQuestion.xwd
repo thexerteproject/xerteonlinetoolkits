@@ -1,10 +1,12 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter a feedback" text="Enter Instructions" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" align="Left" attempts = "1"
+      <hotSpotQuestion><![CDATA[<hotSpotQuestion name="Enter Page Title" textWidth="narrow"  panelWidth = "Medium" generalFeedback="Enter a feedback" text="Enter Instructions" url="Plaats een foto" tip="Enter a Description for Accessibility" highlight="false" answers="false" align="Left" attempts = "1"
   	  warning="You have not selected anything"
 	  scoreTxt="You have /r answer(s) right and /w wrong"
 	  again="Try again, you have /a attempt(s) left"
+	  allGood="You have selected all correct answers"
+	  allWrong="You have not selected any of the correct answers"
 	  />]]></hotSpotQuestion>
     </newNodes>
   </pageWizard>
@@ -24,6 +26,7 @@
 	</image>
 
     <highlight label="Show Highlight" type="CheckBox" defaultValue="false"/>
+    <answers label="Show Answers" type="CheckBox" defaultValue="false"/>
     <hsAppearance type="group" label="Hotspot highlight appearance" optional="true" tooltip="Set colours of hotspots">
         <hicol label="Stroke colour" type="ColourPicker" optional="true" defaultValue="0xFFFF00" tooltip="The colour of the edges of the hotspot"/>
         <hs_strokeOpacity label="Stroke opacity" type="TextInput" optional="true" defaultValue="1" tooltip="The opacity (a decimal number between 0 and 1) of the edges of the hotspot"/>
@@ -40,6 +43,8 @@
     <scoreTxt label="Score Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/r (right) and /w (wrong) are where the score are placed "/>
     <warning label="Warning Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <again label="Try again Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="/a is where the attempts will be placed "/>
+    <allGood label="All answers correct Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
+    <allWrong label="All answers wrong Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
 
 
     <newNodes>
