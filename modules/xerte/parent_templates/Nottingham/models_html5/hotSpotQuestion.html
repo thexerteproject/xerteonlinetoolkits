@@ -62,6 +62,7 @@
 			this.amountOfCorrect = 0;
 			this.amountOfWrong = 0;
 			this.resizeImg(false);
+
 		};
 
 		// function called every time the size of the LO is changed
@@ -84,7 +85,18 @@
 						$x_window.resize();
 					}
 				}
+				var resizehighlightArray = []
+				allHighlightsArray.forEach((highlight, index)=>{
+					if($('area[data-key="'+index+'"]').hasClass('selected')){
+						resizehighlightArray.push(index)
+					}
+				})
+				allHighlightsArray = []
 				this.resizeImg(false);
+				resizehighlightArray.forEach((h)=>{
+					$('area[data-key="'+h+'"]').mapster('select')
+					$('area[data-key="'+h+'"]').addClass("selected")
+				})
 			};
 
 		this.init = function() {
@@ -186,7 +198,13 @@
 			$("#checkButton").button({
 				label: "Check"
 			}).click(function (){
-				debugger
+				if (x_currentPageXML.getAttribute("answers") == "true") {
+					$("area").mapster('deselect');
+				}
+				else {
+
+					$("#pageContents .hotspot.selected").mapster("select");
+				}
 				hotSpotScore = 0;
 				AmountOfWrongScore = 0;
 				amountOfCorrectOptions = 0
@@ -220,12 +238,19 @@
 
 					})
 
+					var amountOfCorrectAnswers = 0;
 					allHighlightsArray.forEach((highlight, index)=>{
 						if(highlight.getAttribute('truth') === "true"){
+							amountOfCorrectAnswers++
 							truthNames = truthNames + "Hotspot" + " " + highlight.getAttribute("name");
 							if (index !== highlightsArray.length){
 								truthNames = truthNames + ", "
 							}
+
+							if (x_currentPageXML.getAttribute("answers") == "true"){
+								$('area[data-key="'+index+'"]').mapster('select')
+							}
+
 						}
 					})
 
@@ -244,14 +269,32 @@
 						}
 					})
 
-					var scoreTxt = x_currentPageXML.getAttribute("scoreTxt")
-					if(scoreTxt==""){
-						scoreTxt = "You have /r answers right and /w wrong"
+
+					var scoreLabel;
+					if(amountOfCorrectAnswers === hotSpotScore+AmountOfWrongScore){
+						var allgood = x_currentPageXML.getAttribute("allGood")
+						if(allgood==""){
+							allgood = "You have selected all correct answers"
+						}
+						scoreLabel = allgood;
+					}else if (hotSpotScore > 1){
+						var scoreTxt = x_currentPageXML.getAttribute("scoreTxt")
+						if(scoreTxt==""){
+							scoreTxt = "You have /r answers right and /w wrong"
+						}
+
+						var scoreTemp = scoreTxt.replace("/r", hotSpotScore)
+
+						var score = scoreTemp.replace("/w", AmountOfWrongScore)
+						scoreLabel = score;
+					}else{
+						var allwrong = x_currentPageXML.getAttribute("allWrong")
+						if(allwrong==""){
+							allwrong = "You have not selected any of the correct answers"
+						}
+						scoreLabel = allwrong;
 					}
 
-					var scoreTemp = scoreTxt.replace("/r", hotSpotScore)
-
-					var scoreLabel = scoreTemp.replace("/w", AmountOfWrongScore)
 
 
 					if(highlightsArray.length > 0){
@@ -347,10 +390,16 @@
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.85 -20);
 				imgMaxH = Math.round($x_pageHolder.height() * 0.85 -20);
-				$('#panel').css('margin', '0px');
+				$('#panel').css({
+					'margin' : '0px',
+				});
 			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.6 - 20);
 				imgMaxH = Math.round($x_pageHolder.height() - 0.6 - 20);
+				$('#panel').css({
+					'margin' : '0px',
+				});
+
 			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.3 - 20);
 				imgMaxH = Math.round($x_pageHolder.height() - 50);
@@ -365,7 +414,7 @@
 			// 	var percentage = imgMaxW/imgMaxH
 			// 	imgMaxW = imgMaxW/percentage
 			// }
-			debugger
+
 			if(imgMaxH+70 > $x_pageHolder.height()){
 				imgMaxH*=0.75
 			}
@@ -376,6 +425,9 @@
 				"filter"	:'alpha(opacity=100)',
 				"max-height" : imgMaxH,
 				"max-width"	:imgMaxW
+			});
+			$('#panel').css({
+				'max-width' : $img.width() + 'px',
 			});
 			//
 			// if($img.width() > $img.height()){
@@ -398,6 +450,7 @@
 
 			$(x_currentPageXML).children()
 				.each(function(i) {
+
 					var _this = this;
 					_this.setAttribute("id", i);
 					allHighlightsArray.push(_this);
@@ -419,7 +472,7 @@
 					}
 					correctFeedback.push(x_GetTrackingTextFromHTML(this.getAttribute('text'), ""));
 					// var $hotspot = $('<a class="hotspot transparent" href="#" tabindex="' + (i+2) + '" />');
-					var $hotspot = $('<area class="hotspot" shape="poly" href="#" tabindex="' + (i+2) + '" />');
+					var $hotspot = $('<area class="hotspot" data-key="'+i+'"  shape="poly" href="#" tabindex="' + (i+2) + '" />');
 
 					var coords = [];
 					var coords_string = "";
@@ -453,9 +506,10 @@
 					$hotspot
 						.attr("coords", coords_string)
 						.click(function() {
-							debugger;
+
 							var $this = $(this);
 							if($this.hasClass('hotspot') && !$this.hasClass("selected")){
+
 								$this.addClass("selected");
 								highlightsArray.push(_this)
 
@@ -469,33 +523,37 @@
 
 							}
 
-
-
-							if (x_currentPageXML.getAttribute("highlight") == "true") {
-
-								setTimeout(function(){
-									$("area").mapster('select');
-								}, 100);
-							}
+							// if (x_currentPageXML.getAttribute("highlight") == "true") {
+							//
+							// 	setTimeout(function(){
+							// 		$('img').mapster('set_options', highlightoptions);
+							// 		$("area").mapster('highlight');
+							// 	}, 100);
+							// }
 
 							x_pageContentsUpdated();
 						})
 						.focusin(function() {
+							$('img').mapster('set_options', tabfocusoptions);
 							$(this)
 								.removeClass("transparent")
 								.addClass("highlight");
-							})
+							$(this).mapster('highlight');
+
+						})
 						.focusout(function() {
+							$('img').mapster('set_options', options);
 							$(this)
 								.removeClass("highlight")
 								.addClass("transparent");
+							$("img").mapster('highlight', false);
 							})
 						.keypress(function(e) {
 							var charCode = e.charCode || e.keyCode;
 							if (charCode == 32) {
 								$(this).trigger("click");
 							}
-						});
+						})
 					if (x_currentPageXML.getAttribute("hs_showTooltip") != undefined && x_currentPageXML.getAttribute("hs_showTooltip") !== "false") {
 						if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
 							$hotspot.attr("title", this.getAttribute("alttext"));
@@ -581,13 +639,29 @@
 				scaleMap: true,
 				clickNavigate: true
 			};
+			var tabfocusoptions = JSON.parse(JSON.stringify(options));
+			// Make sure focus is ALWAYS visible, even if strokewidth is set to 0
+			tabfocusoptions.render_highlight.stroke = true;
+			tabfocusoptions.render_highlight.strokeWidth = (strokeWidth == 0? 1 : strokeWidth * 2);
+
+	/*		var highlightoptions = JSON.parse(JSON.stringify(options));
+
+			highlightoptions.render_select.stroke = fill/3;
+			highlightoptions.render_select.fillOpacity = fillOpacity/3;
+			highlightoptions.render_select.stroke = stroke/3;
+			highlightoptions.render_select.strokeOpacity = strokeOpacity/3;
+			highlightoptions.render_select.strokeWidth = strokeWidth/3;*/
 
 
 			$('img').mapster(options);
 			if (x_currentPageXML.getAttribute("highlight") == "true") {
 
+				allHighlightsArray.forEach((highlight, index)=>{
+					$('area[data-key="'+index+'"]').addClass('selected')
+					highlightsArray.push(highlight)
+				})
 				setTimeout(function(){
-
+/*					$('img').mapster('set_options', highlightoptions);*/
 					$("area").mapster('select');
 
 				}, 100);
