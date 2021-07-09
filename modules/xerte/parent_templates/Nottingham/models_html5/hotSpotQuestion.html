@@ -38,6 +38,7 @@
 		var allHighlightsArray= [];
 		var amountOfCorrect = 0
 		var amountOfWrong = 0
+		var resize = false
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 
@@ -93,10 +94,12 @@
 				})
 				allHighlightsArray = []
 				this.resizeImg(false);
+				debugger
 				resizehighlightArray.forEach((h)=>{
 					$('area[data-key="'+h+'"]').mapster('select')
 					$('area[data-key="'+h+'"]').addClass("selected")
 				})
+				resize = true;
 			};
 
 		this.init = function() {
@@ -198,8 +201,52 @@
 			$("#checkButton").button({
 				label: "Check"
 			}).click(function (){
+				var stroke = true;
+				var highlightColour = "#ffff00";
+				var strokeWidth = 2;
+				var strokeOpacity = 1;
+				var fill = true;
+				var fillColor = "#000000";
+				var fillOpacity = 0.1;
+				if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
+					highlightColour = x_getColour(x_currentPageXML.getAttribute("hicol"));
+				}
+				if (x_currentPageXML.getAttribute("hs_strokeWidth") != undefined && x_currentPageXML.getAttribute("hs_strokeWidth") != "") {
+					strokeWidth = parseInt(x_currentPageXML.getAttribute("hs_strokeWidth"));
+					if (strokeWidth == 0)
+					{
+						stroke = false;
+					}
+				}
+				if (x_currentPageXML.getAttribute("hs_strokeOpacity") != undefined && x_currentPageXML.getAttribute("hs_strokeOpacity") != "") {
+					strokeOpacity = parseFloat(x_currentPageXML.getAttribute("hs_strokeOpacity"));
+				}
+				if (x_currentPageXML.getAttribute("hs_fill") != undefined && x_currentPageXML.getAttribute("hs_fill") != "") {
+					fill = x_currentPageXML.getAttribute("hs_fill") === "true";
+				}
+				if (x_currentPageXML.getAttribute("hs_fillColor") != undefined && x_currentPageXML.getAttribute("hs_fillColor") != "") {
+					fillColor = x_getColour(x_currentPageXML.getAttribute("hs_fillColor"));
+				}
+				if (x_currentPageXML.getAttribute("hs_fillOpacity") != undefined && x_currentPageXML.getAttribute("hs_fillOpacity") != "") {
+					fillOpacity = parseFloat(x_currentPageXML.getAttribute("hs_fillOpacity"));
+				}
+				optionsCorrect = {
+					render_select:
+							{
+								fill: fill,
+								fillColor: fillColor.substr(1),
+								fillOpacity: fillOpacity,
+								stroke: stroke,
+								strokeColor: "7FFF00",
+								strokeOpacity: strokeOpacity,
+								strokeWidth: strokeWidth
+							},
+					scaleMap: true,
+					clickNavigate: true
+				};
 				if (x_currentPageXML.getAttribute("answers") == "true") {
-					$("area").mapster('deselect');
+					// $("area").mapster('deselect');
+					$('img').mapster('set_options', optionsCorrect);
 				}
 				else {
 
@@ -248,6 +295,9 @@
 							}
 
 							if (x_currentPageXML.getAttribute("answers") == "true"){
+								debugger
+								$('area[data-key="'+index+'"]').mapster('deselect')
+								$('img').mapster('set_options', optionsCorrect);
 								$('area[data-key="'+index+'"]').mapster('select')
 							}
 
@@ -269,15 +319,15 @@
 						}
 					})
 
-
+					debugger
 					var scoreLabel;
-					if(amountOfCorrectAnswers === hotSpotScore+AmountOfWrongScore){
+					if(AmountOfWrongScore==0){
 						var allgood = x_currentPageXML.getAttribute("allGood")
-						if(allgood==""){
+						if(allgood=="" || allgood == undefined){
 							allgood = "You have selected all correct answers"
 						}
 						scoreLabel = allgood;
-					}else if (hotSpotScore > 1){
+					}else if (hotSpotScore >= 1){
 						var scoreTxt = x_currentPageXML.getAttribute("scoreTxt")
 						if(scoreTxt==""){
 							scoreTxt = "You have /r answers right and /w wrong"
@@ -289,7 +339,7 @@
 						scoreLabel = score;
 					}else{
 						var allwrong = x_currentPageXML.getAttribute("allWrong")
-						if(allwrong==""){
+						if(allwrong=="" || allwrong == undefined){
 							allwrong = "You have not selected any of the correct answers"
 						}
 						scoreLabel = allwrong;
@@ -654,17 +704,20 @@
 
 
 			$('img').mapster(options);
+
 			if (x_currentPageXML.getAttribute("highlight") == "true") {
+				if(!resize) {
 
-				allHighlightsArray.forEach((highlight, index)=>{
-					$('area[data-key="'+index+'"]').addClass('selected')
-					highlightsArray.push(highlight)
-				})
-				setTimeout(function(){
-/*					$('img').mapster('set_options', highlightoptions);*/
-					$("area").mapster('select');
+					allHighlightsArray.forEach((highlight, index) => {
+						$('area[data-key="' + index + '"]').addClass('selected')
+						highlightsArray.push(highlight)
+					})
+					setTimeout(function () {
+						/*					$('img').mapster('set_options', highlightoptions);*/
+						$("area").mapster('select');
 
-				}, 100);
+					}, 100);
+				}
 			}
 			else {
 
