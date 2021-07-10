@@ -299,7 +299,7 @@ Folder popup is the div that appears when creating a new folder
                 if ($authmech->canManageUser($jsscript)){
                     echo '
                     <div class="settingsDropdown">
-                        <button onclick="changepasswordPopup()" title=" ' . INDEX_CHANGE_PASSWORD . ' " class="fa fa-cog xerte_button settingsButton"></button>
+                        <button onclick="changepasswordPopup()" title=" ' . INDEX_CHANGE_PASSWORD . ' " class="fa fa-cog xerte_workspace_button settingsButton"></button>
                         <!-- <div id="settings" class="settings-content">
                             <button class="xerte_button" onclick="changepasswordPopup()">' . INDEX_CHANGE_PASSWORD . '</button>
                             <button class="xerte_button">Placeholder</button>
