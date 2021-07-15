@@ -1489,7 +1489,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 				
 				for (var i=0; i<temp.length; i++) {
 					if (temp[i] != '') {
-						pswds.push(page.attr('passwordCase') != 'true' ? temp[i].toLowerCase() : temp[i]);
+						pswds.push(page.attr('passwordCase') != 'true' ? $.trim(temp[i].toLowerCase()) : $.trim(temp[i]));
 					}
 				}
 			}
@@ -1566,7 +1566,7 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 				
 				for (var i=0; i<temp.length; i++) {
 					if (temp[i] != '') {
-						pswds.push($(this).attr('passwordCase') != 'true' ? temp[i].toLowerCase() : temp[i]);
+						pswds.push($(this).attr('passwordCase') != 'true' ? $.trim(temp[i].toLowerCase()) : $.trim(temp[i]));
 					}
 				}
 			}
