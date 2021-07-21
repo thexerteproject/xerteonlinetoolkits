@@ -590,7 +590,7 @@ function properties_window(admin) {
                 if (workspace.nodes[ids[i]].type != "folder") {
                     if (workspace.nodes[ids[i]].parent != workspace.recyclebin_id) {
                         var NewWindow = window.open(site_url + url_return("properties", workspace.nodes[ids[i]].xot_id), workspace.nodes[ids[i]].xot_id,
-                            "height=760, width=1000");
+                            "height=760,width=1000,status=yes");
                         NewWindow.window_reference = self;
                         NewWindow.focus();
                     } else {

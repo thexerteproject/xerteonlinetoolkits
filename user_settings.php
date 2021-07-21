@@ -97,7 +97,7 @@ _load_language_file("/user_settings.inc");
                             <input type='password' id="newpass" ><br>
                             <?php echo '<label for="newpassrepeat">' . USER_SETTINGS_PASSWORD_NEW_REPEAT . '</label><br>'?>
                             <input type='password' id="newpassrepeat" ><br>
-                            <?php echo "<button type='button' class='xerte_button' onclick='changePassword(\"". $_SESSION['toolkits_logon_username'] ."\")'>" . USER_SETTINGS_PASSWORD_SUBMIT . "</button>"?>
+                            <?php echo "<button type='button' class='xerte_button_c' onclick='changePassword(\"". $_SESSION['toolkits_logon_username'] ."\")'>" . USER_SETTINGS_PASSWORD_SUBMIT . "</button>"?>
                         </form>
                         <div id="result"></div>
                     </div>

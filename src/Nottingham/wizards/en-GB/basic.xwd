@@ -104,7 +104,7 @@
         <forceTrackingMode label="Force tracking mode behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracking LO's. This changes the behaviour of some pagetypes, i.e. in Quiz the restart button will be disabled and in drag/drop exercises, the labels will stick, even if the answer is wrong" />
        	<category label="Tracking Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object, stored in xAPI events, to be used for categorising in xAPI reports"/>
 		<hideSaveSession label="Hide Save Session button" type="CheckBox" defaultValue="false" optional="true" tooltip="Hide the save session button" />
-		<restartOptions label="Restart session" type="ComboBox" options="Restart session if possible,Ask to restart session,Do not restart session" data="restart,ask,do_not_restart" defaultValue="restart" tooltip="If restart xAPI information is available, should that be used to restart tehe session?" />
+		<restartOptions label="Restart session" type="ComboBox" options="Restart session if possible,Ask to restart session,Do not restart session" data="restart,ask,do_not_restart" defaultValue="ask" tooltip="If restart xAPI information is available, should that be used to restart tehe session?" />
 	</tracking>
 
 	<meta type="group" label="Meta data" optional="true">

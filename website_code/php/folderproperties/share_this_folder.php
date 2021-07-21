@@ -37,11 +37,13 @@ if (!isset($_SESSION['toolkits_logon_username']))
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
-if(is_numeric($_POST['id'])&&is_numeric($_POST['folder_id'])){
+$folder_id = explode('_', $_POST['folder_id']);
+$folder_id = $folder_id[0];
+if(is_numeric($_POST['id'])&&is_numeric($folder_id)){
 
     $id = $_POST['id'];
 
-    $folder_id = $_POST['folder_id'];
+    //$folder_id = $_POST['folder_id'];
 
     $new_role = $_POST['role'];
 

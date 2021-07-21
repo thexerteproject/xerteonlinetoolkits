@@ -55,6 +55,7 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
     $lti_def->xapi_password = (isset($_POST["tsugi_xapi_password"]) ? htmlspecialchars($_POST["tsugi_xapi_password"]) : "");
     $lti_def->xapi_student_id_mode = (isset($_POST["tsugi_xapi_student_id_mode"]) ? $_POST["tsugi_xapi_student_id_mode"] : "");
     $lti_def->dashboard_urls = (isset($_POST["dashboard_urls"]) ? $_POST["dashboard_urls"] : "");
+
 // Force groupmode
     if (!$tsugi_installed) {
         $lti_def->xapi_student_id_mode = 3;
@@ -103,7 +104,7 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
             $mesg = "Object is no longer published.";
         }
 
-        if ($tsugi_publish) {
+        if ($tsugi_publish && (!$lti_def->tsugi_useglobal || $lti_def->tsugi_privateonly)) {
             $url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
             $PDOX = LTIX::getConnection();
             $p = $CFG->dbprefix;
@@ -124,17 +125,19 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
                 ':secret' => $lti_def->secret
             );
             $res = $PDOX->queryDie($sql, $param);
+            unset($res);
 
 
             $sql = "INSERT INTO {$p}lti_context
             ( context_id, context_sha256, context_key, title, key_id, created_at, updated_at ) VALUES
             ( :context_id, :context_sha256, :context_key, :title, :key_id, NOW(), NOW() );";
-            $PDOX->queryDie($sql, array(
+            $res = $PDOX->queryDie($sql, array(
                 ':context_id' => $context_id,
                 ':context_sha256' => lti_sha256($context_id),
                 ':context_key' => $context_id,
                 ':title' => $lti_def->title,
                 ':key_id' => $key_id));
+            unset($res);
             $sql = "INSERT INTO {$p}lti_link
             ( link_id, link_sha256, link_key, title, context_id, path, created_at, updated_at ) VALUES
                 ( :link_id, :link_sha256, :link_key, :title, :context_id, :path, NOW(), NOW() );";
@@ -148,6 +151,7 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
                 ':path' => $lti_def->tsugi_url
             );
             $link = $PDOX->queryDie($sql, $params);
+            unset($link);
 
         }
     }

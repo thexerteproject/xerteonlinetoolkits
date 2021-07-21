@@ -188,8 +188,9 @@
 
   <saveSession label="Save Session" description="Save session and stop tracking" tooltip="Save Session">
   	  <closeButton label="" description="Close Save Session"/>
-	  <trackingCloseTxt label="&lt;p&gt;Do you want to stop with this session and continue? If so, please press the button below to save this session.&lt;/p&gt;"/>
+	  <trackingCloseTxt label="&lt;p&gt;Do you want to stop with this session and continue later? If so, please press the button below to save this session.&lt;/p&gt;"/>
 	  <closeTxt label="&lt;p&gt;Your session has been saved. You can now close the browser window or browser tab of this LO.&lt;/p&gt;"/>
+	  <closeTxtEmbedded label="&lt;p&gt;Your session has been saved. You need to refresh or revisit this page to access the session again.&lt;/p&gt;"/>
 	  <btnLabelTxt label="Save this session"/>
 
 
@@ -230,6 +231,8 @@
   <submitConfirmMsg label="Your answers have been submitted"/>
   <closeBtnLabel label="Close"/>
   
+  <top label="Top"/>
+  <password label="Password"/>
   <search title="Search" searchBtn="Search" goBtn="Go" newBtn="New Search" resultTitle="Results" matchTitle1="Matches" matchTitle2="Best matches" matchTitle3="Partial matches" showMatch="Show partial matches" noMatch1="No pages or sections match your selection." noMatch2="No pages or sections completely match your criteria. Partial matches are listed below." />
   <print printBtn="Print page"/>
 

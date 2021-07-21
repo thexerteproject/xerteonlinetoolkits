@@ -92,6 +92,10 @@
     font-size: 2.5vmin;
   }
 
+  input#x_pagePswd {
+    font-size: 2.5vmin;
+  }
+
   #pageContents #mainText {
     font-size: 2.5vmin;
   }

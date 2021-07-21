@@ -135,6 +135,7 @@
 					var optdeployment=x_currentPageXML.getAttribute("deployment");
 					var optscorm2004=x_currentPageXML.getAttribute("scorm2004");
 					var optscorm12=x_currentPageXML.getAttribute("scorm12");
+					var optoffline=x_currentPageXML.getAttribute("offline");
 					var optauthor=x_currentPageXML.getAttribute("author");
 					var optlicense=x_currentPageXML.getAttribute("license");
 					var optmoddate=x_currentPageXML.getAttribute("moddate");
@@ -164,7 +165,12 @@
 						if (typeof item.scorm12link != "undefined" && optscorm12 !="false")
 						{
 							resultsString += '<span class="rssDownloadScorm12"><a target="_blank" href="' + item.scorm12link + '"><i class="fa fa-cube" aria-hidden="true"></i> Download SCORM 1.2</a></span>';
-						}+'</div>'
+						}
+						if (typeof item.offlinelink != "undefined" && optoffline !="false")
+						{
+							resultsString += '<span class="rssDownloadOffline"><a target="_blank" href="' + item.offlinelink + '"><i class="fa fa-cube" aria-hidden="true"></i> Download Offline</a></span>';
+						}
+						resultsString += '</div>'
 						if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.description != "undefined") {
 							// snippet is a bit long so shorten it
 							if (description != "undefined" && description.length > 400) {

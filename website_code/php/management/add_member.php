@@ -36,7 +36,7 @@ function add_members_to_group($login_ids, $group_id){
 
     $entries = array();
     foreach($login_ids as $login_id){
-        $entries[] = "('" . $login_id . "', '". $group_id . "')";
+        $entries[] = "(" . $login_id . ", ". $group_id . ")";
     }
 
     return "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "user_group_members (login_id, group_id) VALUES " . implode(', ', $entries);
@@ -64,7 +64,7 @@ if(is_user_admin()){
 
     $query = add_members_to_group($logins_arr, $group_id);
     //$query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "user_group_members (login_id, group_id) VALUES (?,?)";
-    db_query($query, $params);
+    db_query($query);
 
 }else{
 

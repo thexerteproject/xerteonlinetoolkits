@@ -160,7 +160,7 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_PATH_MODULE . "<form><textarea id=\"module_path\">" . $row['module_path'] . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_PATH_MODULE . "<form><textarea id=\"website_code_path\">" . $row['website_code_path'] . "</textarea></form></p>";
+    echo "<p>" . MANAGEMENT_SITE_PATH_WEBSITE . "<form><textarea id=\"website_code_path\">" . $row['website_code_path'] . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_PATH_SHORT . "<form><textarea id=\"users_file_area_short\">" . $row['users_file_area_short'] . "</textarea></form></p>";
 

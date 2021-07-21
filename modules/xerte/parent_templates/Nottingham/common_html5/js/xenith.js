@@ -66,7 +66,17 @@ if (!$.fn.toggleClick) {
 
 $(document).keydown(function(e) {
 	// if lightbox open then don't allow page up/down buttons to change the page open in the background
-	if (!parent.window.$.featherlight.current()) {
+	// Place lightbox check in a try block, because an exception will be triggereed if LO is embedded in an iframe
+	let shownInFeatherlight = false;
+	try
+	{
+		shownInFeatherlight = parent.window.$.featherlight.current();
+	}
+	catch (e)
+	{
+		// Ignore
+	}
+	if (!shownInFeatherlight) {
 		switch(e.which) {
 			case 33: // PgUp
 				var pageIndex = $.inArray(x_currentPage, x_normalPages);
@@ -1633,41 +1643,40 @@ function x_continueSetUp2() {
 	}
 	if (XTTrackingSystem() === 'xAPI') {
 		var callStartPage = false;
-		if (x_params.restartOptions != undefined) {
-			switch (x_params.restartOptions) {
-				case 'ask':
-					var canResume = XTCanResume();
-					if (canResume.canResume) {
-						x_dialogInfo.push({type: 'resumeSession', built: false});
-						x_openDialog(
-							"resumeSession",
-							x_getLangInfo(x_languageData.find("resumeSession")[0], "label", "Resume Session"),
-							x_getLangInfo(x_languageData.find("resumeSession").find("closeButton")[0], "description", "Close Resume Session Dialog"),
-							null,
-							null,
-							function () {
-								setUpComplete = true;
+		if (x_params.restartOptions == undefined)
+		{
+			x_params.restartOptions = 'ask';
+		}
+		switch (x_params.restartOptions) {
+			case 'ask':
+				var canResume = XTCanResume();
+				if (canResume.canResume) {
+					x_dialogInfo.push({type: 'resumeSession', built: false});
+					x_openDialog(
+						"resumeSession",
+						x_getLangInfo(x_languageData.find("resumeSession")[0], "label", "Resume Session"),
+						x_getLangInfo(x_languageData.find("resumeSession").find("closeButton")[0], "description", "Close Resume Session Dialog"),
+						null,
+						null,
+						function () {
+							setUpComplete = true;
 
-								x_navigateToPage(true, x_startPage);
-							}
-						);
-					} else {
-						XTSetOption('resume', false);
-						callStartPage = true;
-					}
-					break;
-				case 'restart':
-					XTSetOption('resume', true);
-					callStartPage = true;
-					break;
-				case 'do_not_restart':
+							x_navigateToPage(true, x_startPage);
+						}
+					);
+				} else {
 					XTSetOption('resume', false);
 					callStartPage = true;
-					break;
-			}
-		} else {
-			XTSetOption('resume', true);
-			callStartPage = true;
+				}
+				break;
+			case 'restart':
+				XTSetOption('resume', true);
+				callStartPage = true;
+				break;
+			case 'do_not_restart':
+				XTSetOption('resume', false);
+				callStartPage = true;
+				break;
 		}
 		if (callStartPage)
 		{
@@ -1727,7 +1736,7 @@ function x_dialog(text){
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID}
     var page = XTStartPage();
-    if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved by the LO
+    if (force && page >= 0) {  // this is a resumed tracked LO, go to the page saved by the LO
         x_changePage(page, addHistory);
     }
     else {
@@ -2020,7 +2029,7 @@ function x_changePageStep4(x_gotoPage) {
 
 function x_endPageTracking(pagechange, x_gotoPage) {
     // End page tracking of x_currentPage
-    if (x_currentPage != -1 && !x_isMenu() && (!pagechange || x_currentPage != x_gotoPage))
+    if (x_currentPage != -1 && !x_isMenu() && (!pagechange || x_currentPage != x_gotoPage) && x_pageInfo[x_currentPage].passwordPass != false)
     {
         var pageObj;
 
@@ -2185,13 +2194,89 @@ function x_changePageStep5a(x_gotoPage) {
 
 		pageTitle = pageTitle + extraTitle;
 		
-		x_addCountdownTimer();
-		x_addNarration('x_changePageStep6', '');
+		// is page password protected? if so, don't finish page setup until after a valid password entered
+		var pswds = [];
+		if ($.trim(x_currentPageXML.getAttribute('password')).length > 0) {
+			var temp = $.trim(x_currentPageXML.getAttribute('password')).split(',');
+			
+			for (var i=0; i<temp.length; i++) {
+				if (temp[i] != '') {
+					pswds.push(x_currentPageXML.getAttribute('passwordCase') != 'true' ? $.trim(temp[i].toLowerCase()) : $.trim(temp[i]));
+				}
+			}
+		}
+		
+		if (pswds.length > 0) {
+			x_passwordPage(pswds);
+		} else {
+			x_addCountdownTimer();
+			x_addNarration('x_changePageStep6', '');
+		}
     }
 }
 
-function x_changePageStep6() {
+function x_passwordPage(pswds) {
+	if (x_pageInfo[x_currentPage].passwordPass != true) {
+		
+		// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
+		if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+			x_findText(x_currentPageXML, true, ["glossary"]); // exclude glossary
+		} else {
+			x_findText(x_currentPageXML);
+		}
+		
+		x_pageInfo[x_currentPage].passwordPass = false;
+		
+		$("#x_headerBlock h2").html(pageTitle);
+		$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
+		
+		x_updateCss(false);
+		
+		$("#x_pageDiv").show();
+		$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
+		
+		var $pswdBlock = $('#x_page' + x_currentPage);
+		$pswdBlock.html('<div class="x_pswdBlock"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError"></div></div>');
+		$pswdBlock.find('.x_pswdInfo').append(x_currentPageXML.getAttribute('passwordInfo'));
+		$pswdBlock.find('.x_pswdError').append(x_currentPageXML.getAttribute('passwordError')).hide();
+		$pswdBlock.find('.x_pswdInput').append('<input type="text" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '"><button id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+		
+		$pswdBlock.find('#x_pagePswdBtn')
+			.button()
+			.on('click', function() {
+				var pswdEntered = x_currentPageXML.getAttribute('passwordCase') != 'true' ? $pswdBlock.find('#x_pagePswd').val().toLowerCase() : $pswdBlock.find('#x_pagePswd').val();
+				
+				if ($.inArray(pswdEntered, pswds) >= 0) {
+					// correct password - remember this so it doesn't need to be re-entered on return to page
+					x_pageInfo[x_currentPage].passwordPass = true;
+					$pswdBlock.remove();
+					x_addCountdownTimer();
+					x_addNarration('x_changePageStep6', '');
+				} else {
+					$pswdBlock.find('.x_pswdError').show();
+				}
+			});
+		
+		$pswdBlock.find('#x_pagePswd').keypress(function (e) {
+			if (e.which == 13) {
+				$pswdBlock.find('#x_pagePswdBtn').click();
+			} else {
+				$pswdBlock.find('.x_pswdError').hide();
+			}
+		});
+		
+		// Queue reparsing of MathJax - fails if no network connection
+		try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+		
+		x_setUpPage();
 
+	} else {
+		x_addCountdownTimer();
+		x_addNarration('x_changePageStep6', '');
+	}
+}
+
+function x_changePageStep6() {
     $("#x_headerBlock h2").html(pageTitle);
 	$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
 
@@ -2257,9 +2342,9 @@ function x_changePageStep6() {
 		
         // calls function in any customHTML that's been loaded into page
         if ($(".customHTMLHolder").length > 0) {
-                if (typeof customHTML.pageChanged === "function") {
-                	customHTML.pageChanged();
-                }
+			if (typeof customHTML.pageChanged === "function") {
+				customHTML.pageChanged();
+			}
         }
 		
 		// updates variables as their values might have changed
@@ -3068,7 +3153,7 @@ function x_isMenu() {
 
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML, exclude, list) {
-    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt", "side1", "side2"],
+    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt", "side1", "side2", "passwordInfo", "passwordError"],
         i, j, len;
 	if (pageXML.nodeName == "mcqStepOption") { attrToCheck.push("name"); } // don't include name normally as it's generally only used in titles
 

@@ -505,6 +505,46 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
 	padding-right: 0.3em;
 }
 
+/* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
+
+.pswdBlock {
+	margin-top: 1em;
+    background-color: #f5f5f5;
+    border: 1px solid #e5e5e5;
+    padding: 1em 1em 1.5em;
+}
+
+.pswdInput {
+	margin-top: 1em;
+}
+
+input.sectionPswd, input#pagePswd {
+	margin-bottom: 0;
+}
+
+.sectionPswdBtn, #pagePswdBtn {
+	vertical-align: middle;
+	margin-left: 1em;
+	color: #fff;
+	background-color: #0088cc;
+	background-image: none;
+	padding: 8px 12px;
+	border-radius: 5px;
+	border: 0;
+}
+
+.sectionPswdBtn:active, .sectionPswdBtn:hover, .sectionPswdBtn:focus,
+#pagePswdBtn:active, #pagePswdBtn:hover, #pagePswdBtn:focus {
+	text-decoration: underline;
+	background-color: #0088cc;
+}
+
+.pswdError {
+	margin-top: 1em;
+	font-size: 0.9em;
+	color: #c0392b;
+}
+
 table {
 	text-align: left;
 	border-collapse: collapse;
