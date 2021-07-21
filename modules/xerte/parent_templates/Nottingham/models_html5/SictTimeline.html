@@ -1,14 +1,24 @@
 <link title="timeline-styles" rel="stylesheet" href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
 
 <script type="text/javascript">
+	/**
+	 * Licensed to The Apereo Foundation under one or more contributor license
+	 * agreements. See the NOTICE file distributed with this work for
+	 * additional information regarding copyright ownership.
 
-	// NEW PAGE MODELS SHOULD BE BASED ON THIS TEMPLATE
-	// ------------------------------------------------
-	// change lines 10 and 28 below so that "pageName" matches the unique name of the page in the xwd
-	// save this file to models_html5 as pageName.html
+	 * The Apereo Foundation licenses this file to you under the Apache License,
+	 * Version 2.0 (the "License"); you may not use this file except in
+	 * compliance with the License. You may obtain a copy of the License at:
+	 *
+	 * http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS,
+	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-	// pageChanged & sizeChanged functions are needed in every model file
-	// other functions for model should also be in here to avoid conflicts
+	 * See the License for the specific language governing permissions and
+	 * limitations under the License.
+	 */
 	var SictTimeline = new function() {
 
 		var counter = 0;
@@ -152,7 +162,8 @@
 			// var languages = ["af","ar","hy","eu","be","bg","ca","zh-cn","hr","cz","da","nl","en","en-24hr","eo","et","fo","fa","fi","fr","fy","gl","ka","de","el"
 			// 	,"he","hi","hu","is","id","ga","it","ja","ko","lv","lt","lb","ms","ne","no","pl","pt","pt-br","ro","rm","ru","sr-cy","sr","si","sk","sl","es","sv"
 			// 	,"tl","ta","zh-tw","te","th","tr","uk"]
-			var language =  x_currentPageXML.getAttribute("language")
+			//var language =  x_currentPageXML.getAttribute("language");
+			var language = x_params.language;
 			// var listitem = ""
 			// for(var i= 0; i < languages; i++){
 			// 	if(i === language){
@@ -160,13 +171,16 @@
 			// 	}
 			// }
 			if(language === null || language === ""){
-				language = "English"
+				language = "en-GB"
 			}
-			var lan = getCountrycode(language)
+			var lan = language.substr(0,2);
 			var additionalOptions = {
 				font:null,
 				language:lan
 			}
+
+			var pageHeight = $('#x_pageHolder').height();
+			$('#timeline-embed').css('height', pageHeight-70);
 
 			window.timeline = new TL.Timeline('timeline-embed', timeline_json, additionalOptions);
 
@@ -264,7 +278,6 @@
 		}
 
 		this.leavePage = function() {
-			debugger;
 			$('.spinnerHolder').remove();
 		}
 
@@ -294,11 +307,28 @@
 				$('.tl-message-content').html(str)
 
 			}, 100);
+			debugger
+			$('.tl-slidenav-next').attr("title","next")
 
+			$(document).on('keydown', e => {
+
+				var keyCode;
+				var amountOfItems = items.length-1
+				keyCode = e.originalEvent.keyCode;
+
+				if(keyCode == 9 && e.ctrlKey == false && counter<amountOfItems){
+					$('.tl-slidenav-next').click()
+					e.preventDefault();
+				}else if(e.ctrlKey && keyCode == 9 && counter>0) {
+					$('.tl-slidenav-previous').click()
+					e.preventDefault();
+				};
+			});
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 
 		}
+
 
 		this.resizeImg = function() {
 
@@ -306,15 +336,30 @@
 			if(x_browserInfo.mobile === true){
 
 			}else{
+
+				debugger;
+
+				var pageHeight = $('#x_pageHolder').height();
+				$('#timeline-embed').css('height', pageHeight-70);
+
+				var storyslider = pageHeight*0.60
+				$(".tl-storyslider").css({
+					"max-height":storyslider+"px"
+				})
+
+				var $pageContents = $('#timeline-embed');
+				var $slideContent = $('.tl-slide-content');
+
 				var imgMaxW, imgMaxH;
-				var pageHeight = $x_pageHolder.height()
-				var pageWidth = $x_pageHolder.width()
-				var pageMarginRight = $x_mainHolder.css("marginRight")
+				var pageHeight = $pageContents.height();
+				var pageWidth = $pageContents.width();
+				var pageMarginRight = $x_mainHolder.css("margin-right");
 				pageMarginRight = parseInt( pageMarginRight.slice(0,  pageMarginRight.length - 2));
-				var pageMarginLeft = $x_mainHolder.css("marginLeft")
+				var pageMarginLeft = $x_mainHolder.css("marginLeft");
 				pageMarginLeft = parseInt( pageMarginLeft.slice(0,  pageMarginLeft.length - 2));
-				var header = $x_headerBlock.height()
-				var footer = $x_footerBlock.height()
+				var header = $x_headerBlock.height();
+				var footer = $x_footerBlock.height();
+
 
 				var totalPageWidth = pageWidth + pageMarginLeft + pageMarginRight
 
@@ -329,14 +374,14 @@
 					}
 
 					var top = pageHeight -  footerHeight
-					$(".tl-timenav").css("top", top)
+					//$(".tl-timenav").css("top", top)
 
 
 				}else{
-					$(".tl-timenav").css("top", "auto")
+					//$(".tl-timenav").css("top", "auto")
 				}
-				imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxW = Math.round($slideContent.width() * 0.50 - 20);
+				imgMaxH = Math.round($pageContents.height() - 50);
 
 				var big;
 				var normal;
@@ -345,8 +390,8 @@
 				var imgH;
 
 				//img = document.getElementsByClassName("tl-media-item")
-				img = $('.tl-media-item')
-				items = $('.tl-slide')
+				img = $('.tl-media-item');
+				items = $('.tl-slide');
 
 				big = imgMaxH*0.7
 				normal = imgMaxH*0.6
@@ -368,25 +413,27 @@
 					imgPath = imgPath.src
 				}
 
+
 				if(imgPath !== "" && imgPath !== undefined){
-					$("#timeline-embed").css("height", big+"px")
-					$(".tl-storyslider").css("height", big+"px")
-					$(".tl-media-content-container").css("height", small+"px")
-					$(".tl-media").css("height", small+"px")
-					$(".tl-media-content").css("height", normal+"px")
+					//$("#timeline-embed").css("height", "unset")
+					$(".tl-storyslider").css("height", big+"px");
+					$(".tl-media-content-container").css("height", small+"px");
+					$(".tl-media").css("height", small+"px");
+					$(".tl-media-content").css("height", normal+"px");
+					$(".tl-media-item").css("max-width", imgMaxW + "px");
 
 					items.eq(counter).find('img').css({
 						"max-height": normal +"px",
-						"max-width": imgH +"px"
+						"max-width": imgMaxW +"px"
 					});
-					debugger
+
 					var margT = items.eq(counter).find('img').css('margin-left')
 					var margB = items.eq(counter).find('img').css('marginBottom')
 					margB = parseInt( margB.slice(0,  margB.length - 2));
 					margB *= 0.66
 					margB.toString()
 					$('.tl-caption').css("marginLeft", margT)
-					$('.tl-caption').css("width", "100px")
+					//$('.tl-caption').css("width", "100px")
 					$('.tl-caption').css("margin-top", "-" + margB+"px")
 
 				}
@@ -408,6 +455,7 @@
 						"align-items": "center",
 						"padding-left": "4%"
 					})
+
 				}else{
 					$('.tl-slide-content').css({
 						"display": "",
@@ -424,27 +472,25 @@
 						"padding-left": "4%"
 					})
 				}
-
-				var heightTimeLine = $('.tl-timenav').height()
-				heightTimeLine= heightTimeLine/3
-				var top = imgMaxH-heightTimeLine
-				$('.tl-menubar').css("top", top+"px")
+				debugger
+				var pos = $('.tl-timenav').position();
+				$('.tl-menubar').css("top", pos.top+40+"px");
 
 				$('.tl-headline-date').css({
 					"padding-left" : 0+"px",
 					"padding-top" : 20+"px",
 					"padding-bottom" : 10+"px",
-					"display" : "flex"
+					// "display" : "flex"
 				})
 
 				$(".tl-slidenav-title").html("")
 				$(".tl-slidenav-description").html("")
 
 
-				var panel = $('#timeline-embed').css('height')
+				var panel = $('.tl-storyslider').css('height');
 				panel = parseInt( panel.slice(0,  panel.length - 2))/2;
-				$('.tl-slidenav-next').css('top', panel+"px")
-				$('.tl-slidenav-previous').css('top', panel+"px")
+				$('.tl-slidenav-next').css('top', panel+"px");
+				$('.tl-slidenav-previous').css('top', panel+"px");
 
 			};
 
@@ -537,5 +583,5 @@
 
 
 <div id="pageContents">
-	<div id='timeline-embed' style="width: 100%; height: 500px"></div>
+	<div id='timeline-embed' style="width: 100%;"></div>
 </div>

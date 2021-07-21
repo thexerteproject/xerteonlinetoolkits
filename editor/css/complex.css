@@ -971,7 +971,10 @@ div.hotspotEditor {
 
 .featherlight .featherlight-content
 {
-	padding:5px 5px 0 !important;
+	padding:5px !important;
+	min-width: 0 !important;
+	max-width: 95%;
+	border-bottom: none !important;
 }
 
 .hotspotEditor
@@ -1024,8 +1027,42 @@ button .flash-icon {padding-left: 4px;}
 
 button:hover {background: #f86718; color: #000000;}
 
-.insert_button {background: transparent; border: 0; font-size:0.8em; }
-.insert_button:hover {background: transparent; border: 0; color: #0099a0;}
+#menu.ui-menu .ui-state-focus {
+	background: none;
+	background-color:#f0f0f2;
+}
+
+.ui-menu-item a .ui-menu-icon {
+	margin-top: 2px;
+}
+
+#insert_menu .ui-menu.details a.pageExample {
+	cursor: pointer;
+	display: inline;
+}
+
+#insert_menu .ui-menu.details a.exampleButton .fa {
+	margin-right: .3em;
+	margin-top: .3em;
+}
+
+.insert_button, #insert_menu .ui-menu.details a.exampleButton {
+	background: #f0f0f2;
+	border: 2px solid #f0f0f2;
+	border-radius: 0px;
+	font-size:0.8em;
+	margin: 0 2px !important;
+	padding: .3em !important;
+}
+.insert_button:hover, #insert_menu .ui-menu.details a.exampleButton:hover {
+	background: #ff8c00;
+	border-color: #ff8c00;
+	color: #000000;
+}
+
+#insert_menu .ui-menu.details a.exampleButton {
+	font-size: 1em;
+}
 
 .xerte_button {background: transparent; border: 0;}
 .xerte_button:hover {background: transparent; border: 0; color: #0030a0;}
@@ -1155,13 +1192,14 @@ div#IconPickerModal.show-all .ip-icons-content .ip-icons-area {
 	white-space: normal;
 }
 
-.featherlight-content {
-	min-width: 0 !important;
+.previewFile {
+	max-height: 90vh;
+	max-width: 90vw;
 }
 
-.previewFile {
-	max-width: 100%;
-	max-height: 100%;
+.previewVideo {
+	max-width: 90vw;
+	height: auto;
 }
 
 .unmarkCompletionIcon
@@ -1197,6 +1235,10 @@ i.tooltipIcon {
 .standaloneIcon {
 	margin-right: 5px;
 	color: #333366;
+}
+.passwordIcon {
+	margin-right: 5px;
+	color: #444;
 }
 .iconEnabled
 {

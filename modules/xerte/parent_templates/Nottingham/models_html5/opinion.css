@@ -20,6 +20,14 @@
     {
         width: 100%;
     }
+	
+	.sliderHolder {
+		margin-top: 1em;
+	}
+	
+	.questionAudio {
+		margin-top: 0.5em;
+	}
 
     .qSeparator {
         height:15px;
@@ -120,10 +128,6 @@
         vertical-align: bottom;
     }
 
-.opinionImg {
-	max-width: 100%;
-}
-
-.qImg {
-	max-width: 97%;
+.qImg, .opinionImg {
+	max-width: 90%;
 }

@@ -98,32 +98,35 @@ function logout(slo){
     else {
         if (edit_window_open.length != 0) {
 
-            var answer = confirm(OPEN_WINDOWS_START + ' ' + edit_window_open.length + ' ' + OPEN_WINDOWS_END);
+			var answer = confirm(OPEN_WINDOWS_START + ' ' + edit_window_open.length + ' ' + OPEN_WINDOWS_END);
 
-            if (answer) {
+			if (answer) {
 
-                if (setup_ajax() != false) {
+				$.ajax({
+					type: "POST",
+					url: "website_code/php/logout.php",
+				})
+				.done(function (response) {
+					if (window.location) {
+						window.location = site_url;
+					} else {
+						window.location(site_url);
+					}
+				});
+			}
+		} else {
 
-                    logout_ajax_send_prepare(url);
-
-                    xmlHttp.send(null);
-
-                }
-
-            }
-
-        } else {
-
-            if (setup_ajax() != false) {
-
-                var url = "logout.php";
-
-                logout_ajax_send_prepare(url);
-
-                xmlHttp.send(null);
-
-            }
-
+			$.ajax({
+				type: "POST",
+				url: "logout.php",
+			})
+			.done(function (response) {
+				if (window.location) {
+					window.location = site_url;
+				} else {
+					window.location(site_url);
+				}
+			});
         }
     }
 }

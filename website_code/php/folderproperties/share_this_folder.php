@@ -29,16 +29,21 @@
 require_once("../../../config.php");
 _load_language_file("/website_code/php/folderproperties/share_this_folder.inc");
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
-$parameters = explode("_", $_POST['folder_id']);
-
-if(is_numeric($_POST['id']) && is_numeric($parameters[0]) && is_string($parameters[1])){
+$folder_id = explode('_', $_POST['folder_id']);
+$folder_id = $folder_id[0];
+if(is_numeric($_POST['id'])&&is_numeric($folder_id)){
 
     $id = $_POST['id'];
 
-    $folder_id = $parameters[0];
+    //$folder_id = $_POST['folder_id'];
 
     $new_role = $_POST['role'];
 

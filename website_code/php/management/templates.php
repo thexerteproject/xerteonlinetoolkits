@@ -57,20 +57,6 @@ if (is_user_admin()) {
         <button type='submit' id='upload-button' class='xerte_button'><i class=\"fa fa-upload\"></i> " . TEMPLATE_UPLOAD_BUTTON . "</button>" .
     "</form></p>";
 
-    echo "<p style=\"margin:20px 0 0 5px\">"  . TEMPLATE_RESTRICT_NOTTINGHAM . "</p>";
-
-    echo "<p style=\"...\">" . TEMPLATE_RESTRICT_NOTTINGHAM_DESCRIPTION . "</p>";
-
-    echo "</br><button type='button' class='xerte_button' id='nottingham_btn'>manage</button>";
-    $kaas = 'kaas';
-    echo "<div id='nottingham_modal' class='modal'>" .
-            "<div class='modal-content'>" .
-                "<span class='close'>&times;</span>" .
-                "<div>". NOTTINGHAM_TEMPLATES ."</div>" .
-                "<div class='template-content'>" .
-                "</div></div></div>";
-
-
     echo "<p style=\"margin:20px 0 0 5px\">" . TEMPLATE_MANAGE . "</p>";
     $last_template_type = "";
 
@@ -103,7 +89,7 @@ if (is_user_admin()) {
 
             $version = explode('"', substr($template_check, $start_point, strpos($template_check, " ", $start_point) - $start_point));
 
-            echo "<p>" . TEMPLATE_VERSION . " " . $version[1] . "</p>";
+            //echo "<p>" . TEMPLATE_VERSION . " " . $version[1] . "</p>";
 
         }
 
@@ -126,55 +112,54 @@ if (is_user_admin()) {
             echo " SelectedItem=\"true\" name=\"type\" id=\"" . $row['template_type_id'] . "active\" ><option value=\"true\" selected=\"selected\">" . TEMPLATE_ACTIVE . "</option><option value=\"false\">" . TEMPLATE_INACTIVE . "</option></select></p>";
 
         }
+        if ($row['template_name'] == $row['parent_template']) {
+            // Not a subtemplate
 
-        echo "<p>" . TEMPLATE_REPLACE . "<br><form method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/import_template.php\" onsubmit=\"javascript:iframe_check_initialise();\"><input name=\"filenameuploaded\" type=\"file\" /><br /><input type=\"hidden\" name=\"replace\" value=\"" . $row['template_type_id'] . "\" /><input type=\"hidden\" name=\"folder\" value=\"" . $row['template_name'] . "\" /><input type=\"hidden\" name=\"version\" value=\"" . $version[1] . "\" /><br /><button type=\"submit\" class=\"xerte_button\" name=\"submitBtn\" onsubmit=\"javascript:iframe_check_initialise()\" >" . TEMPLATE_UPLOAD_BUTTON . "</button></form></p>";
-
-        if ($row['template_framework'] == "xerte")
-        {
-            $subpages = array();
-            if ($row['template_sub_pages'] != "")
-            {
-                $template_sub_pages = $row['template_sub_pages'];
-                $simple_lo_page = false;
-                $pos = strpos($template_sub_pages, "simple_lo_page");
-                if ($pos !== false)
-                {
-                    $template_sub_pages = substr($template_sub_pages, 15); // Get rid of 'simple_lo_page,'
-                    $simple_lo_page = true;
-                }
-                $subpages = explode(",", $template_sub_pages);
-            }
-            if (count($subpages) > 0)
-            {
-                $allselected = false;
-            }
-            else{
-                $allselected = true;
-            }
-            echo "<p>" . TEMPLATE_SUB_PAGES_TITLEONLY . "<br><div class='sub_page_selection sub_page_title'>";
-            echo "<input class='sub_page_selection_titleonly' type='checkbox' " . ($simple_lo_page ? "checked" : "") . " id='sub_page_select_titleonly_" . $row['template_type_id'] . "' name='select_titleonly' >" . TEMPLATE_SUB_PAGES_SELECT_TITLEONLY . "</div></p>";
-
-            echo "<p>" . TEMPLATE_SUB_PAGES . "<br><div class='sub_page_selection'>";
-            echo "<input class='sub_page_selection_all' type='checkbox' " . ($allselected ? "checked" : "") . " id='sub_page_select_all_" . $row['template_type_id'] . "' name='select_all' onchange=\"sub_select_change_all(" . $row['template_type_id'] . ")\">" . TEMPLATE_SUB_PAGES_SELECT_ALL . "<br>";
-            $menus = $xwdData->getMenus();
-            foreach($menus as $menu) {
-                echo "<span class='sub_page_selection_menuitem'>" . $menu->name . ":</span><br>";
-                $models = $menu->models;
-                foreach ($models as $model) {
-                    if ($model->deprecated)
-                        continue;
-                    $selected = $allselected;
-                    if (!$allselected) {
-                        $selected = in_array($model->name, $subpages);
-                    }
-                    echo "<input class='sub_page_selection_model sub_page_selection_model_" . $row['template_type_id'] . "' type='checkbox' " . ($selected ? "checked" : "") . " id='sub_page_" . $row['template_type_id'] . "_" . $model->name . "' name='" . $model->name . "'>" . $model->displayname . "<br>";
-                }
-            }
-            echo "</div>";
+            echo "<p>" . TEMPLATE_REPLACE . "<br><form method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/import_template.php\" onsubmit=\"javascript:iframe_check_initialise();\"><input name=\"filenameuploaded\" type=\"file\" /><br /><input type=\"hidden\" name=\"replace\" value=\"" . $row['template_type_id'] . "\" /><input type=\"hidden\" name=\"folder\" value=\"" . $row['template_name'] . "\" /><input type=\"hidden\" name=\"version\" value=\"" . $version[1] . "\" /><br /><button type=\"submit\" class=\"xerte_button\" name=\"submitBtn\" onsubmit=\"javascript:iframe_check_initialise()\" >" . TEMPLATE_UPLOAD_BUTTON . "</button></form></p>";
         }
+        else {
+            // This is a sub-template
 
+            if ($row['template_framework'] == "xerte") {
+                $subpages = array();
+                if ($row['template_sub_pages'] != "") {
+                    $template_sub_pages = $row['template_sub_pages'];
+                    $simple_lo_page = false;
+                    $pos = strpos($template_sub_pages, "simple_lo_page");
+                    if ($pos !== false) {
+                        $template_sub_pages = substr($template_sub_pages, 15); // Get rid of 'simple_lo_page,'
+                        $simple_lo_page = true;
+                    }
+                    $subpages = explode(",", $template_sub_pages);
+                }
+                if (count($subpages) > 0) {
+                    $allselected = false;
+                } else {
+                    $allselected = true;
+                }
+                echo "<p>" . TEMPLATE_SUB_PAGES_TITLEONLY . "<br><div class='sub_page_selection sub_page_title'>";
+                echo "<input class='sub_page_selection_titleonly' type='checkbox' " . ($simple_lo_page ? "checked" : "") . " id='sub_page_select_titleonly_" . $row['template_type_id'] . "' name='select_titleonly' >" . TEMPLATE_SUB_PAGES_SELECT_TITLEONLY . "</div></p>";
+
+                echo "<p>" . TEMPLATE_SUB_PAGES . "<br><div class='sub_page_selection'>";
+                echo "<input class='sub_page_selection_all' type='checkbox' " . ($allselected ? "checked" : "") . " id='sub_page_select_all_" . $row['template_type_id'] . "' name='select_all' onchange=\"sub_select_change_all(" . $row['template_type_id'] . ")\">" . TEMPLATE_SUB_PAGES_SELECT_ALL . "<br>";
+                $menus = $xwdData->getMenus();
+                foreach ($menus as $menu) {
+                    echo "<span class='sub_page_selection_menuitem'>" . $menu->name . ":</span><br>";
+                    $models = $menu->models;
+                    foreach ($models as $model) {
+                        if ($model->deprecated)
+                            continue;
+                        $selected = $allselected;
+                        if (!$allselected) {
+                            $selected = in_array($model->name, $subpages);
+                        }
+                        echo "<input class='sub_page_selection_model sub_page_selection_model_" . $row['template_type_id'] . "' type='checkbox' " . ($selected ? "checked" : "") . " id='sub_page_" . $row['template_type_id'] . "_" . $model->name . "' name='" . $model->name . "'>" . $model->displayname . "<br>";
+                    }
+                }
+                echo "</div>";
+            }
+        }
         echo "</div>";
-
     }
 
 } else {

@@ -179,6 +179,15 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   padding-left: 10px;
   background: #ffff80 !important; }
 
+.x_textHighlight_page .ui-widget-content .ui-state-default {
+  border-radius: 3px;
+  background: #000000;
+  border: none;
+  color: #FFFF99; }
+
+.x_textHighlight_page .ui-widget-content .ui-state-default:focus {
+  color: yellow; }
+
 #listholder a.listitem, a:visited {
   color: #4078C0; }
 
@@ -255,6 +264,22 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   color: green;
   font-weight: bold;
   background-color: rgba(255, 255, 255, 0.2); }
+
+.x_gapFill_page #targetHolder select {
+  background: #ffff66; }
+
+/*gap fill: change styling of correct and disable answers*/
+.x_gapFill_page #targetHolder input[readonly].correct, .x_gapFill_page #targetHolder .target.correct, .x_gapFill_page #targetHolder input[correct], .x_gapFill_page #targetHolder select[disabled].correct {
+  background: #FFFF99 !important; }
+
+/*gap fill: drop down shows answers styling*/
+.x_gapFill_page #targetHolder .target.answerShown, .x_gapFill_page #targetHolder select[disabled].answerShown, .x_gapFill_page #targetHolder input.answerShown {
+  color: #c36b00;
+  background: #FFFF99 !important; }
+
+/*styling of disabled/incorect responses when in tracking mode*/
+.x_gapFill_page #targetHolder select[disabled], .x_gapFill_page #targetHolder .target.incorrect, .x_gapFill_page #targetHolder input[readonly] {
+  background: #FFFF99; }
 
 a.hotspot, a.hotspot.selected {
   background: none; }
@@ -1127,6 +1152,10 @@ a:visited {
 /*****all images*****/
 img {
   border-radius: none; }
+
+/******lightboxes******/
+.featherlight .featherlight-content {
+  background-color: #FFFF99; }
 
 /******@media changes******/
 @media (min-width: 1366px) {

@@ -29,9 +29,6 @@
 			$pageContents,
             checked = false;
 		var numOfQuestions = 0, correct = 0;
-    var fixMath = function () {
-      try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
-    };
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -172,7 +169,6 @@
                             .on("focusin focusout keypress"); //
                         grid.randomiseLabels();
                     }
-                    fixMath();
                 })
 				.data("state", "check");
 
@@ -503,13 +499,11 @@
 								.addClass("panel");
 
 							$grid.find(".tick").hide();
-              fixMath();
 						},
 						stop:	function() {
 							$(this)
 								.removeClass("panel")
 								.addClass("shadow");
-              fixMath();
 						}
 						})
 
@@ -531,7 +525,6 @@
 						} else {
 							$this.addClass("focus");
 						}
-            fixMath();
 						})
 					.on("focusout", function() {
 						var $this = $(this);
@@ -542,7 +535,7 @@
 								$this.html(labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.data("correct")]);
 							}
 						}
-            fixMath();
+						x_pageContentsUpdated();
 						})
 					.on("keypress", function(e) {
 						var charCode = e.charCode || e.keyCode;
@@ -578,7 +571,6 @@
 								$pageContents.data("selectedLabel", $this);
 							}
 						}
-            fixMath();
 					})
 					.disableSelection()
 					.each(function(i) {
@@ -777,10 +769,6 @@
 
 			$("#grid ul.preview li").css("visibility","hidden");
 			$("#grid ul:not(.preview) li")
-				.each(function() {
-					var $this = $(this)
-					$this.html(labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.data("correct")]);
-				})
 				.css("visibility","visible")
 				.blur()
 				.removeClass("focus selected");

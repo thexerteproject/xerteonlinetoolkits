@@ -68,33 +68,19 @@ xAPIDashboard.prototype.escapeId = function(id) {
     return id.replace(/[^A-Za-z0-9]/g, "_");
 };
 
-xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element) {
+xAPIDashboard.prototype.displayFrequencyGraph = function(statementidxs, element) {
     if (element == null) {
         element = "#heatmapData";
     }
     $(element).append(
         '<div id="table_overview_graph">' +
         '<svg></svg></div>');
-    var dashstatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
-    begin = new Date(dashstatements[0].timestamp);
-    begin.setDate(begin.getDate() - 1);
-    end = new Date(dashstatements[dashstatements.length - 1].timestamp);
-    end.setDate(end.getDate() + 1);
+    var dashstatements = this.data.getStatementsList(statementidxs, "http://adlnet.gov/expapi/verbs/launched");
 
-    var vals = [];
-    var timeFrame = end.getTime() - begin.getTime();
-    var tickmarkDuration = timeFrame / 8;
-    //round to nearset day
-    var tickMarkNrDays = Math.round(tickmarkDuration / (1000 * 3600 * 24));
-    if (tickMarkNrDays < 1)
-    {
-        tickMarkNrDays = 1;
-    }
-    var tick = begin.getTime();
-    while(tick < end.getTime()) {
-        vals.push(tick);
-        tick += (tickMarkNrDays * 1000 * 3600 * 24);
-    }
+    let begin = moment(moment(dashstatements[dashstatements.length - 1].timestamp).format("YYYY-MM-DD"));
+    begin = begin.subtract(1, "day");
+    let end = moment(moment(dashstatements[0].timestamp).format("YYYY-MM-DD"));
+    end = end.add(1, "day");
 
     var dash = new ADL.XAPIDashboard();
     dash.addStatements(dashstatements);
@@ -125,9 +111,9 @@ xAPIDashboard.prototype.displayFrequencyGraph = function(statements, element) {
     chart.draw();
 };
 
-xAPIDashboard.prototype.getGroupFromStatements = function(statements){
+xAPIDashboard.prototype.getGroupFromStatements = function(statementidxs){
     var cur_group="";
-    var first_statement = statements[0];
+    var first_statement = this.data.rawData[statementidxs[0]];
     if(     first_statement != undefined
         &&  first_statement.context != undefined
         &&  first_statement.context.team != undefined
@@ -139,47 +125,84 @@ xAPIDashboard.prototype.getGroupFromStatements = function(statements){
 };
 
 xAPIDashboard.prototype.setStatisticsValues = function(base, learningObjectIndex){
+    var $this = this;
     var data = this.data.groupStatements();
-    var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
+    var interactions = this.data.getInteractions(this.data.learningObjects[learningObjectIndex].url);
     var first_launch = new Date(moment($('#dp-start').val(), "DD/MM/YYYY").add(-1, 'days').format("YYYY-MM-DD"));
     var last_launch = new Date(moment($('#dp-end').val(), "DD/MM/YYYY").add(1, 'days').format("YYYY-MM-DD"));
-    if($('.journeyOverviewActivity').html() == "") {
-        this.drawActivityChart(base, $(base + '.journeyOverviewActivity'), first_launch, last_launch, false);
-    }
 
     // Add the number of Users.
     var numberOfUsers = 0;
     var dashboard=this;
+    var totalUserScore = 0;
+    var totalSessionScore = 0;
+    var completedUserCount = 0;
+    var completedSessionCount = 0;
+    var completionUserPercentage = 0;
+    var completionSessionPercentage = 0;
+    var passedUserCount = 0;
+    var passedSessionCount = 0;
+    var sessionCount = 0;
+    var eventCount =0;
     for (var user in data) {
-        if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements(data[user].statements)) {
+        if(this.data.currentGroup.group_id == "all-groups" || this.data.currentGroup.group_id == dashboard.getGroupFromStatements(data[user].statementidxs)) {
             numberOfUsers++;
+            var curUser = this.data.groupedData[user];
+
+            if (curUser['completedstatus'] == 'completed')
+            {
+                completedUserCount++;
+            }
+            totalUserScore += (curUser['score'] != undefined ? curUser['score'] : 0);
+            completionUserPercentage += curUser['completedpercentage']
+            if (curUser['successstatus'] == 'passed')
+            {
+                passedUserCount++;
+            }
+            if (curUser['attemptkeys'].length > 0)
+            {
+                for (var attempt in curUser['attempts'])
+                {
+                    if (curUser['attempts'][attempt]['completedstatus'] == 'completed')
+                    {
+                        completedSessionCount++;
+                    }
+                    totalSessionScore += curUser['attempts'][attempt]['score'];
+                    completionSessionPercentage += curUser['attempts'][attempt]['completedpercentage']
+                    if (curUser['attempts'][attempt]['successstatus'] == 'passed')
+                    {
+                        passedSessionCount++;
+                    }
+                }
+            }
+            sessionCount += curUser['attemptkeys'].length;
+            eventCount += curUser['statementidxs'].length;
         }
     }
-    var totalScore = 0;
-    var scoreCount = 0;
+    /*
     for(var i in this.data.groupedData){
         var curUser = this.data.groupedData[i];
-        var completedStatements = this.data.getStatementsList(curUser.statements.filter(function(rd){
-            return $this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([rd]);
+        var completedStatements = this.data.getStatementidxsList(curUser.statementidxs.filter(function(rd){
+            return $this.data.currentGroup.group_id == "all-groups" || $this.data.currentGroup.group_id == dashboard.getGroupFromStatements([rd]);
         }), "http://adlnet.gov/expapi/verbs/completed");
         if(completedStatements.length > 0)
         {
-            totalScore += completedStatements[0].result.score.scaled;
+            totalScore += this.data.rawData[completedStatements[0]].result.score.scaled;
             scoreCount++;
         }
     }
     this.drawNumberOfUsers($(base + '.journeyOverviewStats'), numberOfUsers);
     var sessions = [];
     var totalCompletedPages = 0;
-    this.data.rawData.forEach(function(s){
-        if($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([s])){
-            sessionId = s.context.extensions["http://xerte.org.uk/sessionId"];
+    this.data.rawDatamap.forEach(function(s){
+        if($this.data.currentGroup.group_id == "all-groups" || $this.data.currentGroup.group_id == dashboard.getGroupFromStatements([s])){
+            sessionId = $this.data.rawData[s].context.extensions["http://xerte.org.uk/sessionId"];
             if(sessions.indexOf(sessionId) === -1){
                 sessions.push(sessionId);
             }
-            if(s.verb.id == "http://adlnet.gov/expapi/verbs/exited"){
+            if($this.data.rawData[s].verb.id == "http://adlnet.gov/expapi/verbs/exited"){
                 var pages = interactions.filter(function(i){ return i.type == "page" }).map(function(p) {return  p.url});
-                if(pages.indexOf(s.object.id) >= 0)
+                if(pages.indexOf($this.data.rawData[s].object.id) >= 0)
                 {
                     totalCompletedPages++;
                 }
@@ -188,23 +211,53 @@ xAPIDashboard.prototype.setStatisticsValues = function(base, learningObjectIndex
     });
     // Add the number of launches.
 
-    var launchedStatements = this.data.getStatementsList(this.data.rawData, "http://adlnet.gov/expapi/verbs/launched");
-    this.drawNumberOfInteractions($(base + '.journeyOverviewStats'), this.data.rawData.filter(function(rd){
-        return $this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == dashboard.getGroupFromStatements([rd]);
-    }).length);
-    this.drawNumberOfSessions($(base + '.journeyOverviewStats'), sessions.length);
-    this.drawNumberOfCompletedSessions($(base + '.journeyOverviewStats'), scoreCount);
-    this.drawAverageCompletedPages($(base + '.journeyOverviewStats'), Math.round(100 * totalCompletedPages / numberOfUsers) / 100);
+    var launchedStatementidxs = this.data.getStatementidxsList(this.data.rawDatamap, "http://adlnet.gov/expapi/verbs/launched");
+    */
+    var numberOfUsersDeler = numberOfUsers;
+    var completedSessionCountDeler = completedSessionCount;
+    var completedUserCountDeler = completedUserCount;
+    var sessionCountDeler = sessionCount;
+    if (numberOfUsersDeler == 0)
+        numberOfUsersDeler = 1;
+    if (completedSessionCountDeler == 0)
+        completedSessionCountDeler = 1;
+    if (completedUserCountDeler == 0)
+        completedUserCountDeler = 1;
+    if (sessionCountDeler ==0)
+        sessionCountDeler = 1;
 
+    $(base + '.journeyOverviewStats').append('<div class="col statscontainer"></div>')
+    this.addStatisticsRow($(base + '.journeyOverviewStats .statscontainer'), 'users', XAPI_DASHBOARD_USERSTATS);
+    this.drawNumberOfUsers($(base + '.journeyOverviewStats .users'), numberOfUsers);
+    this.drawNumberOfCompletedUsers($(base + '.journeyOverviewStats .users'), completedUserCount);
+    this.drawAverageUserCompletion($(base + '.journeyOverviewStats .users'), Math.round(10 * completionUserPercentage / numberOfUsersDeler) / 10);
+    this.drawUsersPassed($(base + '.journeyOverviewStats .users'), passedUserCount);
     // Add the average grade.
-    this.drawAverageScore($(base + '.journeyOverviewStats'), (Math.round((totalScore / scoreCount) * 10 * 10) / 10), first_launch, last_launch);
+    this.drawAverageUserScore($(base + '.journeyOverviewStats .row'), (Math.round((totalUserScore / numberOfUsersDeler)) / 10), first_launch, last_launch);
+
+    this.addStatisticsRow($(base + '.journeyOverviewStats .statscontainer'), 'sessions', XAPI_DASHBOARD_SESSIONSTATS);
+    //this.drawNumberOfInteractions($(base + '.journeyOverviewStats .sessions'), eventCount);
+    this.drawNumberOfSessions($(base + '.journeyOverviewStats .sessions'), sessionCount);
+    this.drawNumberOfCompletedSessions($(base + '.journeyOverviewStats .sessions'), completedSessionCount);
+    //this.drawAverageCompletedPages($(base + '.journeyOverviewStats'), Math.round(100 * totalCompletedPages / numberOfUsers) / 100);
+    this.drawAverageSessionCompletion($(base + '.journeyOverviewStats .sessions'), Math.round(10 * completionSessionPercentage / sessionCountDeler) / 10);
+    this.drawSessionsPassed($(base + '.journeyOverviewStats .sessions'), passedSessionCount);
+    // Add the average grade.
+    this.drawAverageSessionScore($(base + '.journeyOverviewStats .sessions'), (Math.round((totalSessionScore / sessionCountDeler)) / 10), first_launch, last_launch);
 };
 
 xAPIDashboard.prototype.createJourneyTableSession = function(div) {
+    var $this = this;
     this.data.rawData = this.data.combineUrls();
+    if (this.data.rawData.length == 0)
+    {
+        // No statements found
+        $("#journeyData").html('<div id="loader"><p id="loader_text"></p></div>');
+        $("#loader_text").html(XAPI_DASHBOARD_NO_STATEMENTS_FOUND);
+    }
     var learningObjects = this.data.getLearningObjects();
-    this.data.getAllInteractions(this.rawData);
     var data = this.data.groupStatements();
+    this.data.getAllInteractions(this.data.rawDatamap);
     this.data.groups.forEach(function(group){
         $("#group-select").append('<option value="' + group + '">'+group+'</option>')
     });
@@ -249,9 +302,13 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             $("#pageButtonRight").prop("disabled", true).addClass("disabled");
         }
         */
-        div.find("#" + learningObjectIndex + " thead").append("<tr><th>" + XAPI_DASHBOARD_STARTED + "</th><th>" +  XAPI_DASHBOARD_COMPLETED + "</th></tr>");
+        div.find("#" + learningObjectIndex + " thead").append("<tr><th>" + XAPI_DASHBOARD_COMPLETED + "</th><th>" +  XAPI_DASHBOARD_COMPLETION + "</th><th>" +  XAPI_DASHBOARD_SCORE + "</th><th>" +  XAPI_DASHBOARD_PASSED + "</th><th>" +  XAPI_DASHBOARD_STARTCOL + "</th><th>" +  XAPI_DASHBOARD_DURATIONCOL + "</th></tr>");
         if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
-            div.find("#" + learningObjectIndex + " thead tr").prepend('<th>Users</th>');
+            div.find("#" + learningObjectIndex + " thead tr").prepend('<th></th><th>' + XAPI_DASHBOARD_USERS + '</th>');
+        }
+        else
+        {
+            div.find("#" + learningObjectIndex + " thead tr").prepend('<th></th>');
         }
         for (var interactionIndex in interactions) {
             interactionHeader = this.insertInteractionModal(div, learningObjectIndex, interactionIndex, interactions[interactionIndex]);
@@ -271,65 +328,246 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
         });
         var userCount = 0;
         for (var user in data) {
-            var lastStatements = this.getLastUserAttempt(data[user]);
-            group = "";
-            if(lastStatements.statements[0].context.team != undefined)
-            {
-                group = lastStatements.statements[0].context.team.account.name;
-            }
-            var rowid = "session-" + learningObjectIndex + "-" + this.escapeId(user);
-            var row = "<tr data-index='" + userCount + "' class='session-row' id='" + rowid + "' data-group='" + group + "'>";
-            userCount++;
-            if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
-                if (data[user]['mode'] == 'username') {
-                    row += "<td class='name-column'>" + data[user]['username'] + "</td>";
-                } else {
-                    actor = lastStatements.statements[0].actor;
-                    var group = "";
-                    if(actor.account != undefined)
-                    {
-                        group = " - " + lastStatements.statements[0].actor.account.name;
+            if (data[user]['attemptkeys'].length > 0) {
+                var usedattempt = data[user]['attemptkeys'][0].key;
+                if (typeof data[user]['usedattempt'] != 'undefined')
+                {
+                    usedattempt = data[user]['usedattempt']
+                }
+                var summaryUserData = data[user]['attempts'][usedattempt];
+                var summaryStatementidxs = summaryUserData['statementidxs'];
+
+                group = "";
+                if (this.data.rawData[summaryStatementidxs[0]].context.team != undefined) {
+                    group = this.data.rawData[summaryStatementidxs[0]].context.team.account.name;
+                }
+                var rowid = "user-" + learningObjectIndex + "-" + this.escapeId(user) + '-summary';
+                var singleattempt = data[user]['attemptkeys'].length == 1;
+                var singleattemptclass = (singleattempt ? 'disabled' : '');
+                var row = "<tr data-index='" + userCount + "' class='session-row summary ' id='" + rowid + "' data-group='" + group + "'>";
+                row += "<td class='align-left' id='" + rowid + "-caret'><i class=\"openclose closed summary fa fa-2x fa-caret-right " + singleattemptclass + "\"></i></td>";
+                if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
+                    if (data[user]['mode'] == 'username') {
+                        row += "<td class='name-column align-left'>" + data[user]['username'] + "</td>";
+                    } else {
+                        var actor = this.data.rawData[summaryStatementidxs[0]].actor;
+                        var group = "";
+                        if (actor.account != undefined) {
+                            group = " - " + this.data.rawData[summaryStatementidxs[0]].actor.account.name;
+                        }
+                        row += "<td class='name-column align-left'>" + user + group + "</td>";
                     }
-                    row += "<td class='name-column'>" + user + group +"</td>";
                 }
-            }
-            if (this.data.hasStartedLearningObject(lastStatements, learningObjects[learningObjectIndex].url)) {
-                started = "<i class=\"status fa fa-x-tick\">";
-            } else {
-                continue;
-            }
-            row += "<td>" + started + "</td>";
-            if (this.data.hasCompletedLearningObject(lastStatements, learningObjects[learningObjectIndex].url)) {
-                completed = "<i class=\"status fa fa-x-tick\">";
-            } else {
-                completed = "<i class=\"status fa fa-x-cross\">";
-            }
-            row += "<td>" + completed + "</td>";
-            div.find("#journeyTableBody").append(row);
-            for (var interactionIndex in interactions) {
-
-                //insertInteractionData(div, colorDiv, user, learningObjectIndex, interactionObjectIndex)
-                interaction = interactions[interactionIndex];
-                learningObject = learningObjects[learningObjectIndex];
-                var tr = div.find('#' + rowid);
-                if (this.data.hasPassedInteraction(lastStatements, interaction.url)) {
-                    this.insertInteractionData(tr, greenDiv, data[user], learningObjectIndex, interactionIndex);
-                } else if (this.data.hasCompletedInteraction(lastStatements, interaction.url)) {
-                    this.insertInteractionData(tr, redDiv, data[user], learningObjectIndex, interactionIndex);
-                } else if (this.data.hasStartedInteraction(lastStatements, interaction.url)) {
-                    this.insertInteractionData(tr, orangeDiv, data[user], learningObjectIndex, interactionIndex);
+                /*
+                if (this.data.hasStartedLearningObject(lastStatementidxs, learningObjects[learningObjectIndex].url)) {
+                    started = "<i class=\"status fa fa-x-tick\">";
                 } else {
-                    this.insertInteractionData(tr, greyDiv, data[user], learningObjectIndex, interactionIndex);
+                    continue;
                 }
+                row += "<td>" + started + "</td>";
+                if (this.data.hasCompletedLearningObject(lastStatementidxs, learningObjects[learningObjectIndex].url)) {
+                    var completed = "<i class=\"status fa fa-x-tick\">";
+                } else {
+                    var completed = "<i class=\"status fa fa-x-cross\">";
+                }
+                */
+                var completed;
+                var skippercentages = false;
+                if (data[user]['completedstatus'] == 'completed')
+                {
+                    completed = "<i class=\"status fa fa-x-tick\">";
+                }
+                else if (data[user]['completedstatus'] == 'incomplete')
+                {
+                    completed = "<i class=\"status fa fa-x-inprogress\">";
+                }
+                else {
+                    completed = "<i class=\"status fa fa-minus\">";
+                    skippercentages = true
+                }
+                row += "<td class='showresult'>" + completed + "</td>";
+                if (skippercentages)
+                {
+                    row += "<td class='align-center'><i class=\"status fa fa-minus\"></td><td class='align-center'><i class=\"status fa fa-minus\"></td>";
+                }
+                else {
+                    row += "<td class='completion align-right'>" + data[user]['completedpercentage'] + "%</td><td class='score align-right'>" + data[user]['score'] + "%</td>";
+                }
+                if (data[user]['successstatus'] == 'passed')
+                {
+                    var passed = "<i class=\"status fa fa-x-tick\">";
+                }
+                else if (data[user]['successstatus'] == 'failed')
+                {
+                    var passed = "<i class=\"status fa fa-x-cross\">";
+                }
+                else {
+                    var passed = "<i class=\"status fa fa-minus\">";
+                }
+                row += "<td>" + passed + "</td>";
+                var start = this.formatStart(data[user]['start']);
+                row += "<td class='start align-right'>" + start + "</td>";
+                var duration = this.formatDuration(data[user]['duration']);
+                row += "<td class='duration align-right'>" + duration + "</td>";
+                div.find("#journeyTableBody").append(row);
+                for (var interactionIndex in interactions) {
 
+                    //insertInteractionData(div, colorDiv, user, learningObjectIndex, interactionObjectIndex)
+                    var interaction = interactions[interactionIndex];
+                    var learningObject = learningObjects[learningObjectIndex];
+                    var tr = div.find('#' + rowid);
+                    if (this.data.hasPassedInteraction(summaryStatementidxs, interaction.url)) {
+                        this.insertInteractionData(tr, greenDiv, summaryUserData, learningObjectIndex, interactionIndex);
+                    } else if (this.data.hasCompletedInteraction(summaryStatementidxs, interaction.url)) {
+                        this.insertInteractionData(tr, redDiv, summaryUserData, learningObjectIndex, interactionIndex);
+                    } else if (this.data.hasStartedInteraction(summaryStatementidxs, interaction.url)) {
+                        this.insertInteractionData(tr, orangeDiv, summaryUserData, learningObjectIndex, interactionIndex);
+                    } else {
+                        this.insertInteractionData(tr, greyDiv, summaryUserData, learningObjectIndex, interactionIndex);
+                    }
+
+                }
+                row = "</tr>";
+                var rows = this.insertCollapse(rowid, div, row);
+
+                div.find("#" + learningObjectIndex + " tbody").append(rows);
+                this.handleCollapse(rowid, div, summaryUserData, learningObjectIndex);
+
+                // Output the sessions
+                if (data[user]['attemptkeys'].length > 1)
+                {
+                    for (var attempt in data[user]['attempts'])
+                    {
+                        var attemptUserData = data[user]['attempts'][attempt];
+                        var attemptStatementidxs = attemptUserData['statementidxs'];
+                        group = "";
+                        if (this.data.rawData[attemptStatementidxs[0]].context.team != undefined) {
+                            group = this.data.rawData[attemptStatementidxs[0]].context.team.account.name;
+                        }
+                        var attemptrowid = "user-" + learningObjectIndex + "-" + this.escapeId(user) + '-attempt-' + this.escapeId(attempt);
+                        var collapseClass = "attempt collapse";
+                        var dataSubIndex = "";
+                        if (attemptUserData['subattempts'].length > 0)
+                        {
+                            dataSubIndex = " data-subindex='" + attempt + "' ";
+                        }
+                        if (attemptUserData['parentattempt'] != null)
+                        {
+                            collapseClass = "subattempt collapse";
+                            dataSubIndex = " data-subindex='" + attemptUserData['parentattempt'] + "' ";
+                        }
+                        var row = "<tr data-index='" + userCount + "'" + dataSubIndex + "class='session-row " + collapseClass + "' id='" + attemptrowid + "' data-group='" + group + "'>";
+                        if (attempt == usedattempt)
+                        {
+                            if (attemptUserData['parentattempt'] == null) {
+                                var singlesubattempt = attemptUserData['subattempts'].length == 0;
+                                var singlesubattemptclass = (singlesubattempt ? 'disabled' : '');
+                                row += "<td class='usedattempt attempt' id='" + attemptrowid + "-subcaret'><i class='openclose closed parent fa fa-2x fa-caret-right usedattempt " + singlesubattemptclass + "'></i></td>";
+                            }
+                        }
+                        else
+                        {
+                            if (attemptUserData['parentattempt'] == null) {
+                                var singlesubattempt = attemptUserData['subattempts'].length == 0;
+                                var singlesubattemptclass = (singlesubattempt ? 'disabled' : '');
+                                row += "<td id='" + attemptrowid + "-subcaret'><i class='openclose closed parent fa fa-2x fa-caret-right " + singlesubattemptclass + "'></i></td>";
+                            }
+                            else
+                            {
+                                row += "<td></td>";
+                            }
+                        }
+                        if (this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked')) {
+                            row += "<td></td>";
+                        }
+                        /*
+                        if (this.data.hasStartedLearningObject(lastStatementidxs, learningObjects[learningObjectIndex].url)) {
+                            started = "<i class=\"status fa fa-x-tick\">";
+                        } else {
+                            continue;
+                        }
+                        row += "<td>" + started + "</td>";
+                        if (this.data.hasCompletedLearningObject(lastStatementidxs, learningObjects[learningObjectIndex].url)) {
+                            var completed = "<i class=\"status fa fa-x-tick\">";
+                        } else {
+                            var completed = "<i class=\"status fa fa-x-cross\">";
+                        }
+                        */
+                        var completed;
+                        var skippercentages = false;
+                        if (attemptUserData['completedstatus'] == 'completed')
+                        {
+                            completed = "<i class=\"status fa fa-x-tick\">";
+                        }
+                        else if (attemptUserData['completedstatus'] == 'incomplete')
+                        {
+                            completed = "<i class=\"status fa fa-x-inprogress\">";
+                        }
+                        else {
+                            completed = "<i class=\"status fa fa-minus\">";
+                            skippercentages = true
+                        }
+                        row += "<td class='showresult'>" + completed + "</td>";
+                        if (skippercentages)
+                        {
+                            row += "<td class='align-center'><i class=\"status fa fa-minus\"></td><td class='align-center'><i class=\"status fa fa-minus\"></td>";
+                        }
+                        else {
+                            row += "<td class='completion align-right'>" + attemptUserData['completedpercentage'] + "%</td><td class='score align-right'>" + attemptUserData['score'] + "%</td>";
+                        }
+                        if (attemptUserData['successstatus'] == 'passed')
+                        {
+                            var passed = "<i class=\"status fa fa-x-tick\">";
+                        }
+                        else if (attemptUserData['successstatus'] == 'failed')
+                        {
+                            var passed = "<i class=\"status fa fa-x-cross\">";
+                        }
+                        else {
+                            var passed = "<i class=\"status fa fa-minus\">";
+                        }
+                        row += "<td>" + passed + "</td>";
+                        var start = this.formatStart(attemptUserData['start']);
+                        row += "<td class='start align-right'>" + start + "</td>";
+                        var duration = this.formatDuration(attemptUserData['duration']);
+                        row += "<td class='duration align-right'>" + duration + "</td>";
+                        div.find("#journeyTableBody").append(row);
+                        for (var interactionIndex in interactions) {
+
+                            //insertInteractionData(div, colorDiv, user, learningObjectIndex, interactionObjectIndex)
+                            var interaction = interactions[interactionIndex];
+                            var learningObject = learningObjects[learningObjectIndex];
+                            var tr = div.find('#' + attemptrowid);
+                            if (this.data.hasPassedInteraction(attemptStatementidxs, interaction.url)) {
+                                this.insertInteractionData(tr, greenDiv, attemptUserData, learningObjectIndex, interactionIndex);
+                            } else if (this.data.hasCompletedInteraction(attemptStatementidxs, interaction.url)) {
+                                this.insertInteractionData(tr, redDiv, attemptUserData, learningObjectIndex, interactionIndex);
+                            } else if (this.data.hasStartedInteraction(attemptStatementidxs, interaction.url)) {
+                                this.insertInteractionData(tr, orangeDiv, attemptUserData, learningObjectIndex, interactionIndex);
+                            } else {
+                                this.insertInteractionData(tr, greyDiv, attemptUserData, learningObjectIndex, interactionIndex);
+                            }
+
+                        }
+                        row = "</tr>";
+                        var rows = this.insertCollapse(attemptrowid, div, row);
+
+                        div.find("#" + learningObjectIndex + " tbody").append(rows);
+                        this.handleCollapse(attemptrowid, div, attemptUserData, learningObjectIndex);
+                        if (attemptUserData['subattempts'].length > 0) {
+                            this.handleSubAttemptCollapse(attemptrowid, div);
+                        }
+                    }
+                }
+                if (!singleattempt) {
+                    this.handleAttemptCollapse(rowid, div);
+                }
+                userCount++;
             }
-            row = "</tr>";
-            rows = this.insertCollapse(div, data[user], learningObjectIndex, row);
-
-            div.find("#" + learningObjectIndex + " tbody").append(rows);
-            this.handleCollapse(div, data[user], learningObjectIndex);
-
         }
+
+        this.applyDisplayOptions(interactions);
+        debugger;
         $(".close-results").click(function(){
             $(this).closest(".collapse").collapse('toggle');
         });
@@ -345,7 +583,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             interactionIndex = $(this)[0].attributes.getNamedItem("data-interaction").value;
             interaction = interactions[interactionIndex];
 
-            column = $(this).closest("table").find("[data-parent=" + interaction.interactionObjectIndex + "]");
+            var column = $(this).closest("table").find("[data-parent=" + interaction.interactionObjectIndex + "]");
             column.each(function(ci) {
                 c = $(column[ci]);
                 if (c.hasClass("column-show")) {
@@ -363,48 +601,48 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
 
             if(init){
-                $this.groupedDataComplete = $this.groupedData;
+                $this.data.groupedDataComplete = $this.data.groupedData;
             }else{
-                $this.groupedData = $this.groupedDataComplete;
+                $this.data.groupedData = $this.data.groupedDataComplete;
             }
             var groupedData = {};
-            for($key in $this.groupedData) {
-                $val = $this.groupedData[$key];
-                if ($this.currentGroup.group_id == "all-groups" || $this.currentGroup.group_id == pageState.getGroupFromStatements($val.statements)) {
+            for($key in $this.data.groupedData) {
+                $val = $this.data.groupedData[$key];
+                if ($this.data.currentGroup.group_id == "all-groups" || $this.data.currentGroup.group_id == pageState.getGroupFromStatements($val.statements)) {
                     groupedData[$key] = $val;
                 }
             }
-            var pageSize = $this.pageSize;
+            var pageSize = $this.data.pageSize;
             if(pageSize == -1){
                 pageSize = Object.keys(groupedData).length;
             }
 
             if(e.target.id == "pageButtonLeft" && !init)
             {
-                $this.pageIndex = Math.max($this.pageIndex -= pageSize, 0);
+                $this.data.pageIndex = Math.max($this.data.pageIndex -= pageSize, 0);
             }else if(e.target.id == "pageButtonRight" && !init)
             {
-                $this.pageIndex = Math.min($this.pageIndex +=pageSize, Object.keys(groupedData).length - 1);
+                $this.data.pageIndex = Math.min($this.data.pageIndex +=pageSize, Object.keys(groupedData).length - 1);
             }else if(Object.keys(groupedData).length < pageSize){
-                $this.pageIndex = 0;
+                $this.data.pageIndex = 0;
             }
 
-            if($this.pageIndex > 0)
+            if($this.data.pageIndex > 0)
             {
                 $("#pageButtonLeft").prop("disabled", false).removeClass("disabled");
             }else{
                 $("#pageButtonLeft").prop("disabled", true).addClass("disabled");
 
             }
-            if($this.pageIndex + pageSize < Object.keys(groupedData).length - 1)
+            if($this.data.pageIndex + pageSize < Object.keys(groupedData).length - 1)
             {
                 $("#pageButtonRight").prop("disabled", false).removeClass("disabled");
             }else{
                 $("#pageButtonRight").prop("disabled", true).addClass("disabled");
             }
-            pageState.drawPages($this.pageIndex, pageSize, groupedData);
+            pageState.drawPages($this.data.pageIndex, pageSize, groupedData);
 
-            var curPage = Math.ceil($this.pageIndex / pageSize) + 1;
+            var curPage = Math.ceil($this.data.pageIndex / pageSize) + 1;
             var maxPage = Math.ceil(Object.keys(groupedData).length / pageSize);
 
             var pageinfo = XAPI_DASHBOARD_PAGE_OF_PAGE;
@@ -617,7 +855,7 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
             if (typeof $(this).data('bs.popover') == "undefined" || $(this).data('bs.popover') == undefined) {
 
                 // Init the popover and show immediately
-                menu = $("<div><h5>" + XAPI_DASHBOARD_DISPLAY_COLUMNS + "</h5><ul></ul></div>");
+                var menu = $("<div><h5>" + XAPI_DASHBOARD_DISPLAY_COLUMNS + "</h5><ul></ul></div>");
                 interactions.forEach(function(i){
                     if(i.type == "page"){
                         header = $("th[data-interaction-index=" + i.interactionObjectIndex + "]");
@@ -636,8 +874,8 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                 menu.append("<div><label>" + XAPI_DASHBOARD_DISPLAY_OVERVIEW + "</label><input class='hide-show-overview' type='checkbox' checked></div>");
                 menu.append("<div><label>" + XAPI_DASHBOARD_DISPLAY_INTERACTION_OVERVIEW + "</label><input class='hide-show-overview-interaction-overview' type='checkbox' checked></div>");
                 menu.append("<div><label>" + XAPI_DASHBOARD_PAGE_SIZE + "</label><select id='pageSize'></select></div>");
-                pagesizes = [5, 10, 20, 50, 100, "All"];
-                defaultSize = $this.pageSize;
+                var pagesizes = [5, 10, 20, 50, 100, XAPI_DASHBOARD_PAGE_SIZE_ALL];
+                var defaultSize = $this.data.pageSize;
                 pagesizes.forEach(function(size){
                     var selected = "";
                     if(defaultSize == size || (size == "All" && defaultSize == -1))
@@ -671,13 +909,13 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
 
                 //$(".hide-show-column-checkbox").unbind("click");
                 $(".hide-show-column-checkbox").change(function(){
-                    checkbox = $(this);
-                    target = checkbox.data("target");
-                    checked = checkbox.is(":checked");
-                    targetHeader = $("th[data-interaction-index=" + target + "]");
-                    targetIndex = targetHeader.index() + 1;
-                    column = $('.journeyData td:nth-child(' + targetIndex + '),.journeyData th:nth-child(' + targetIndex + ')');
-                    subQuestionToggle = targetHeader.find("div");
+                    var checkbox = $(this);
+                    var target = checkbox.data("target");
+                    var checked = checkbox.is(":checked");
+                    var targetHeader = $("th[data-interaction-index=" + target + "]");
+                    var targetIndex = targetHeader.index() + 1;
+                    var column = $('.journeyData td:nth-child(' + targetIndex + '),.journeyData th:nth-child(' + targetIndex + ')');
+                    var subQuestionToggle = targetHeader.find("div");
                     if(checked){
                         column.show();
                     }else{
@@ -686,25 +924,41 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
                     if(subQuestionToggle.hasClass("icon-show")){
                         subQuestionToggle.click();
                     }
+                    var display_options = JSON.parse($this.data.info.dashboard.display_options);
+                    if (typeof display_options.columns == "undefined")
+                    {
+                        display_options.columns = [];
+                    }
+                    display_options.columns[targetIndex-1] = checked;
+                    $this.data.info.dashboard.display_options = JSON.stringify(display_options);
+                    $.post("website_code/php/xAPI/update_dashboard_display_properties.php",
+                        {
+                            "id": $this.data.info.template_id,
+                            "properties" : $this.data.info.dashboard.display_options
+                        },
+                        function(data) {
+                        }
+
+                    );
                 });
 
                 $(".hide-show-overview").change(function(){
                     $(".journeyOverview").toggle();
                 });
                 $("#pageSize").change(function(){
-                    $this.pageSize = Number($("#pageSize").val());
-                    if(isNaN($this.pageSize))
+                    $this.data.pageSize = Number($("#pageSize").val());
+                    if(isNaN($this.data.pageSize))
                     {
-                        $this.pageSize = -1;
+                        $this.data.pageSize = -1;
                     }
                     $(".page-button").trigger("click", [true]);
-                    var display_options = JSON.parse($this.info.dashboard.display_options);
-                    display_options.pageSize = $this.pageSize;
-                    $this.info.dashboard.display_options = JSON.stringify(display_options);
+                    var display_options = JSON.parse($this.data.info.dashboard.display_options);
+                    display_options.pageSize = $this.data.pageSize;
+                    $this.data.info.dashboard.display_options = JSON.stringify(display_options);
                     $.post("website_code/php/xAPI/update_dashboard_display_properties.php",
                         {
-                            "id": $this.info.template_id,
-                            "properties" : $this.info.dashboard.display_options
+                            "id": $this.data.info.template_id,
+                            "properties" : $this.data.info.dashboard.display_options
                         },
                         function(data) {
                             }
@@ -729,6 +983,59 @@ xAPIDashboard.prototype.createJourneyTableSession = function(div) {
     }
 };
 
+xAPIDashboard.prototype.applyDisplayOptions = function(interactions){
+
+    var display_options = JSON.parse(this.data.info.dashboard.display_options);
+    for (var interactionIndex in interactions) {
+        var targetHeader = $("th[data-interaction-index=" + interactionIndex + "]");
+        var targetIndex = targetHeader.index() + 1;
+        var column = $('.journeyData td:nth-child(' + targetIndex + '),.journeyData th:nth-child(' + targetIndex + ')');
+        if (typeof display_options.columns != "undefined" && typeof display_options.columns[targetIndex-1] != "undefined")
+        {
+            if (display_options.columns[targetIndex-1] === true)
+            {
+                column.show();
+            }
+            else
+            {
+                column.hide();
+            }
+        }
+    }
+}
+
+xAPIDashboard.prototype.formatDuration = function(duration)
+{
+    var dm = moment.duration(duration, 'seconds');
+    var days = dm.days();
+    if (days > 0)
+    {
+        return "> 1" + XAPI_DASHBOARD_DAYCODE;
+    }
+    else
+    {
+        var hours = dm.hours() + "";
+        var minutes = dm.minutes() + "";
+        if (minutes.length < 2)
+            minutes = "0" + minutes;
+        var seconds = dm.seconds() + "";
+        if (seconds.length < 2)
+            seconds = "0" + seconds;
+
+        if (dm.hours() > 0)
+            return hours + ":" + minutes + ":" + seconds;
+        else
+            return minutes + ":" + seconds;
+    }
+}
+
+xAPIDashboard.prototype.formatStart = function(start)
+{
+    var sd = moment(start);
+    return sd.format('YYYY-MM-DD HH:mm:ss');
+}
+
+
 xAPIDashboard.prototype.drawPages = function(startingIndex, pageSize, groupedData) {
     var from = startingIndex;
     var pageSize = pageSize;
@@ -737,39 +1044,18 @@ xAPIDashboard.prototype.drawPages = function(startingIndex, pageSize, groupedDat
     $(".session-row").each(function(row){
         var rowIndex = $(this).data("index");
         if(rowIndex < from || rowIndex >= to){
-            $(this).hide();
+            $(this).addClass('hide');
         }else{
-            $(this).show();
+            $(this).removeClass('hide');
         }
     });
 }
 
-xAPIDashboard.prototype.getLastUserAttempt = function(data) {
-    data.statements.sort(function(a, b) {
-        return (new Date(a.timestamp) < new Date(b.timestamp)) ? 1 : ((new Date(b.timestamp) < new Date(a.timestamp)) ? -1 : 0);
-    });
-    var lastStatements = {
-        'key': data.key,
-        'mbox_sha1sum': data.mbox_sha1sum,
-        'mode': data.mode,
-        'statements': []
-    };
-    for (var userStatement in data.statements) {
-        lastStatements.statements.push(data.statements[userStatement]);
-        if (data.statements[userStatement].verb.id == "http://adlnet.gov/expapi/verbs/launched") {
-            lastStatements.statements.reverse();
-            return lastStatements;
-        }
-    }
-    lastStatements.statements.reverse();
-    return lastStatements;
-};
-
-xAPIDashboard.prototype.insertCollapse = function(div, userdata, learningObject, rows) {
-    numberOfColumns = div.find("th").length;
-    rows += "<tr class='collapse' id='collapse-session-" + learningObject + "-" + this.escapeId(userdata['key']) + "'><td colspan='" + numberOfColumns +
+xAPIDashboard.prototype.insertCollapse = function(rowid, div, rows) {
+    var numberOfColumns = div.find("th").length;
+    rows += "<tr class='collapse' id='collapse-" + rowid + "'><td colspan='" + numberOfColumns +
         "'><div>";
-    rows += '<div><span><button type="button" class="close-results xerte_button_c_no_width">Close Results</button></span></i></div>';
+    rows += '<div><span><button type="button" class="close-results xerte_button_c_no_width">' + XAPI_DASHBOARD_CLOSERESULTS + '</button></span></i></div>';
     rows += "<div class='card card-inverse' data-empty='true'>";
     rows += "</div>";
     rows += "</div></td></tr>";
@@ -777,32 +1063,90 @@ xAPIDashboard.prototype.insertCollapse = function(div, userdata, learningObject,
     return rows;
 };
 
-xAPIDashboard.prototype.handleCollapse = function(div, userdata, learningObjectIndex) {
+xAPIDashboard.prototype.handleAttemptCollapse = function(rowid, div) {
     var $this = this;
-    div.find("#session-" + learningObjectIndex + "-" + this.escapeId(userdata['key'])).click(function(e) {
-        var id = e.currentTarget.attributes.id.value;
-        var target = $(e.currentTarget).parent().find("#collapse-" + id);
+    $("#" + rowid + "-caret").click(function (e) {
+        var summarycaret = $("#" + rowid + "-caret  .openclose");
+
+        if (summarycaret.hasClass("closed")) {
+            summarycaret.removeClass("closed");
+            summarycaret.removeClass("fa-caret-right");
+            summarycaret.addClass("open");
+            summarycaret.addClass("fa-caret-down");
+        } else {
+            summarycaret.removeClass("open");
+            summarycaret.removeClass("fa-caret-down");
+            summarycaret.addClass("closed");
+            summarycaret.addClass("fa-caret-right");
+
+        }
+        var summaryrow = $("#" + rowid);
+        var index = summaryrow.data("index");
+        var targets = div.find("tr[data-index=" + index + "].attempt");
+        targets.collapse('toggle');
+        // close subtargets and reset subcarets
+        var subtargets= div.find("tr[data-index=" + index + "].subattempt");
+        subtargets.collapse('hide');
+        var subcarets= div.find("tr[data-index=" + index + "].attempt td i.openclose");
+        subcarets.removeClass("open")
+            .removeClass("fa-caret-down")
+            .addClass("closed")
+            .addClass("fa-caret-right");
+    });
+}
+xAPIDashboard.prototype.handleSubAttemptCollapse = function(rowid, div) {
+    $("#" + rowid + "-subcaret").click(function(e) {
+        var subcaret = $("#" + rowid + "-subcaret  .openclose");
+
+        if (subcaret.hasClass("closed"))
+        {
+            subcaret.removeClass("closed");
+            subcaret.removeClass("fa-caret-right");
+            subcaret.addClass("open");
+            subcaret.addClass("fa-caret-down");
+        }
+        else {
+            subcaret.removeClass("open");
+            subcaret.removeClass("fa-caret-down");
+            subcaret.addClass("closed");
+            subcaret.addClass("fa-caret-right");
+
+        }
+        var subparentrow = $("#" + rowid);
+        var index = subparentrow.data("subindex");
+        var targets = div.find("tr[data-subindex=" + index + "].subattempt");
+        targets.collapse('toggle');
+    });
+};
+
+
+xAPIDashboard.prototype.handleCollapse = function(rowid, div, userdata, learningObjectIndex)
+{
+    var $this = this;
+    div.find("#" + rowid + " .showresult").click(function(e) {
+        var target = $("#collapse-" + rowid);
         if (target.find(".card")[0].attributes["data-empty"].value == "true") {
-            $this.getExtraUserData(target.find(".card"), userdata, learningObjectIndex);
+            $this.getExtraUserData(rowid, target.find(".card"), userdata, learningObjectIndex);
             target.find(".card")[0].attributes["data-empty"].value = "false";
         }
         target.collapse('toggle');
 
     });
-};
+}
 
-xAPIDashboard.prototype.getExtraUserData = function(div, userdata, objIdx) {
-    var statements = this.data.getStatementsList(userdata['statements'], "http://adlnet.gov/expapi/verbs/completed");
+
+xAPIDashboard.prototype.getExtraUserData = function(rowid, div, userdata, objIdx) {
+    var statementidxs = this.data.getStatementidxsList(userdata['statementidxs'], "http://adlnet.gov/expapi/verbs/completed");
     var statement = undefined;
-    if (statements[0] != undefined) {
-        statement = statements[0];
+    if (statementidxs[0] != undefined) {
+        statement = this.data.rawData[statementidxs[0]];
     } else {
         var learningObjects = this.data.getLearningObjects();
         var url = learningObjects[objIdx].url;
         // Try to find exited
-        statements = this.data.getExitedStatements(userdata, url);
-        if (statements[0] != undefined) {
-            statement = statements[0];
+        statementidxs = this.data.getExitedStatements(userdata.statementidxs, url);
+        if (statementidxs[0] != undefined) {
+            statement = this.data.rawData[statementidxs[0]];
         }
     }
     if (statement == undefined ||
@@ -815,7 +1159,7 @@ xAPIDashboard.prototype.getExtraUserData = function(div, userdata, objIdx) {
         div.append(rows);
         return;
     }
-    this.getResultPage(div, userdata, objIdx, statement);
+    this.getResultPage(rowid, div, userdata, objIdx, statement);
 };
 
 xAPIDashboard.prototype.userStartTime = function(userdata, learningObject) {
@@ -852,7 +1196,7 @@ xAPIDashboard.prototype.userDuration = function(userdata, learningObject) {
 xAPIDashboard.prototype.insertInteractionData = function(tr, colorDiv, userdata, learningObjectIndex, interactionObjectIndex) {
     var learningObject = this.data.getLearningObjects()[learningObjectIndex];
     var interactionObject = this.data.getInteractions(learningObject.url)[interactionObjectIndex];
-    var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
+    var interactions = this.data.getInteractions(this.data.learningObjects[learningObjectIndex].url);
     var showHide = "column-hide";
     var parentId = -1;
     var $this = this;
@@ -899,15 +1243,16 @@ xAPIDashboard.prototype.insertInteractionData = function(tr, colorDiv, userdata,
 
 xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, interactionObjectIndex) {
     var learningObject = this.data.getLearningObjects()[learningObjectIndex];
-    var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
+    var interactions = this.data.getInteractions(this.data.learningObjects[learningObjectIndex].url);
     var interactionObject = interactions[interactionObjectIndex];
     var html = XAPI_JOURNEY_POPOVER_STATUS + " " + this.interactionStatus(userdata, interactionObject.url) + "<br>";
 
-    var started = this.data.getFilteredStatements(userdata, "http://adlnet.gov/expapi/verbs/initialized", interactionObject.url);
-    var scores = this.data.getAllInteractionScores(userdata, interactionObject.url);
-    var durations = this.data.getAllDurations(userdata, interactionObject.url);
-    var lastAnswer = this.data.getAnswers(userdata, interactionObject.url);
-    var lastStatements = this.getLastUserAttempt(userdata);
+    var started = this.data.getFilteredStatements(userdata.statementidxs, "http://adlnet.gov/expapi/verbs/initialized", interactionObject.url);
+    var scores = this.data.getAllInteractionScores(userdata.statementidxs, interactionObject.url);
+    var durations = this.data.getAllDurations(userdata.statementidxs, interactionObject.url);
+    var lastAnswer = this.data.getAnswers(userdata.statementidxs, interactionObject.url);
+    var lastStatementidxs = [];
+    lastStatementidxs = userdata.statementidxs;
 
     html += XAPI_JOURNEY_POPOVER_NRTRIES + " " + started.length + "<br>";
     if (scores.length == 1) {
@@ -918,14 +1263,14 @@ xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, in
             return a + b;
         }) / scores.length), 2) + "%<br>";
 
-        var last_score = this.data.getAllInteractionScores(lastStatements, interactionObject.url)[0];
+        var last_score = this.data.getAllInteractionScores(lastStatementidxs, interactionObject.url)[0];
 
         html += XAPI_JOURNEY_POPOVER_LAST_GRADE + " " + Math.round(last_score * 10000) / 100 + "%<br>"
     }
     var durationBlocks = [];;
     if(interactionObject.url.endsWith("/video"))
     {
-        durationBlocks = this.data.getDurationBlocks(userdata, interactionObject.url.substring(0, interactionObject.url.length - ("/video").length));
+        durationBlocks = this.data.getDurationBlocks(userdata.statementidxs, interactionObject.url.substring(0, interactionObject.url.length - ("/video").length));
     }
     if (durations.length == 1) {
         html += XAPI_JOURNEY_POPOVER_DURATION + " " + Math.round(durations[0] * 100) / 100 + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
@@ -933,7 +1278,7 @@ xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, in
         html += XAPI_JOURNEY_POPOVER_AVGDURATION + " " + Math.round((durations.reduce(function(a, b) {
             return a + b;
         }) / durations.length), 2) + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
-        var last_duration = this.data.getAllDurations(lastStatements, interactionObject.url)[0];
+        var last_duration = this.data.getAllDurations(lastStatementidxs, interactionObject.url)[0];
         html += XAPI_JOURNEY_POPOVER_LAST_DURATION + " " + Math.round(last_duration * 100) / 100 + XAPI_JOURNEY_POPOVER_DURATION_UNIT + "<br>";
     }
     if(durationBlocks.length > 0)
@@ -970,11 +1315,11 @@ xAPIDashboard.prototype.popoverData = function(userdata, learningObjectIndex, in
 };
 
 xAPIDashboard.prototype.interactionStatus = function(user, interactionObjectUrl) {
-    if (this.data.hasPassedInteraction(user, interactionObjectUrl)) {
+    if (this.data.hasPassedInteraction(user.statementidxs, interactionObjectUrl)) {
         return XAPI_DASHBOARD_STATUS_COMPLETED_PASSED;
-    } else if (this.data.hasCompletedInteraction(user, interactionObjectUrl)) {
+    } else if (this.data.hasCompletedInteraction(user.statementidxs, interactionObjectUrl)) {
         return XAPI_DASHBOARD_STATUS_COMPLETED_NOTPASSED;
-    } else if (this.data.hasStartedInteraction(user, interactionObjectUrl)) {
+    } else if (this.data.hasStartedInteraction(user.statementidxs, interactionObjectUrl)) {
         return XAPI_DASHBOARD_STATUS_STARTED_NOTCOMPLETED;
     } else {
         return XAPI_DASHBOARD_STATUS_NOTSTARTED;
@@ -1009,6 +1354,7 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
         thclass += "x-dashboard-interaction";
         max_colinteraction_title_length = 15;
     }
+
     if(colinteractionTitle.length > max_colinteraction_title_length)
     {
         colinteractionTitle = colinteractionTitle.substr(0, max_colinteraction_title_length - 3) + "...";
@@ -1030,6 +1376,25 @@ xAPIDashboard.prototype.insertInteractionModal = function(div, learningObjectInd
         '</div>' +
         '</div>');
     div.find("#" + learningObjectIndex + " thead tr").append(interactionHeader);
+    var display_options = JSON.parse($this.data.info.dashboard.display_options);
+    var index = div.find("#" + learningObjectIndex + " thead th").length; // nr of prevous th elements is current index
+    var targetHeader = $("th[data-interaction-index=" + interaction.interactionObjectIndex + "]");
+    var column = $('.journeyData td:nth-child(' + index + '),.journeyData th:nth-child(' + index + ')');
+    var subQuestionToggle = targetHeader.find("div");
+    //if(subQuestionToggle.hasClass("icon-show")){
+    //    subQuestionToggle.click();
+    //}
+    if (typeof display_options.columns != "undefined" && typeof display_options.columns[index-1] != "undefined")
+    {
+        if (display_options.columns[index-1] === true)
+        {
+            column.show();
+        }
+        else
+        {
+            column.hide();
+        }
+    }
     $('#model-' + learningObjectIndex + '-' + interactionIndex)
         .on('show.bs.modal', function() {
             var contentDiv =
@@ -1253,13 +1618,13 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
             return cg == undefined || cg == "all-groups" || cg == g;
         }
     );
-    var started = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/initialized");
-    var completed = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/exited").concat(
-         this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/scored")
+    var started = this.data.getStatementidxsList(statements, "http://adlnet.gov/expapi/verbs/initialized");
+    var completed = this.data.getStatementidxsList(statements, "http://adlnet.gov/expapi/verbs/exited").concat(
+         this.data.getStatementidxsList(statements, "http://adlnet.gov/expapi/verbs/scored")
     );
-    var uniqIds = completed.map(function(s) {return s.actor.mbox_sha1sum} ).filter(function(v, i, a) { return a.indexOf(v) === i});
+    var uniqIds = completed.map(function(s) {return $this.data.rawData[s].actor.mbox_sha1sum} ).filter(function(v, i, a) { return a.indexOf(v) === i});
     started = started.filter(function(v, i, a){
-        return a.map(function(s) {return s.actor}).indexOf(v.actor) === i;
+        return a.map(function(s) {return $this.data.rawData[s].actor}).indexOf($this.data.rawData[v].actor) === i;
     });
     var groupedData = {};
     for($key in $this.data.groupedData) {
@@ -1268,15 +1633,13 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
             groupedData[$key] = $val;
         }
     }
-
-
-    users = Object.keys(groupedData);
+    var users = Object.keys(groupedData);
     contentDiv.find(jqLocation).append("Number of users" + " " + users.length + "<br>");
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRATTEMPTS + " " + started.length + " = " + Math.round(started.length / sessions.length * 100) + "%<br>");
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_NRCOMPLETIONS + " " + uniqIds.length + " = " + Math.round(uniqIds.length / users.length * 100) + "%<br>");
 
     var grouped = this.data.groupStatementsOnSession([started, completed]);
-    avgTime = this.data.calculateDuration(grouped);
+    var avgTime = this.data.calculateDuration(grouped);
 
     if (avgTime < 120) {
         avgTime = Math.round(avgTime) + " " + XAPI_DASHBOARD_COMPLETED_UNIT_SECONDS;
@@ -1286,15 +1649,16 @@ xAPIDashboard.prototype.displayPageInfo = function(contentDiv, jqLocation, inter
     contentDiv.find(jqLocation).append(XAPI_DASHBOARD_AVGDURATION + " " + avgTime + "<br>");
 };
 
-xAPIDashboard.prototype.createPieChartInteraction = function(statements, div_location) {
+xAPIDashboard.prototype.createPieChartInteraction = function(statementidxs, div_location) {
     var dash = new ADL.XAPIDashboard();
     var $this = this;
-    statements = this.data.getAllScoreStatements(statements).filter(function(s){
+    var statementidxsList = this.data.getAllScoreStatements(statementidxs).filter(function(s){
             g = $this.getGroupFromStatements([s]);
             cg = $this.data.currentGroup.group_id;
             return cg == undefined || cg == "all-groups" || cg == g;
         }
     );
+    var statements = this.data.getStatementsFromIdxs(statementidxsList);
     var newStatements = jQuery.extend(true, [], statements);
     newStatements.forEach(function(x) {
         if (x.result.score.isScaled == undefined || x.result.score.isScaled == false) {
@@ -1356,6 +1720,7 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
     var interaction = interactions[interactionIndex];
     var learningObjectUrl = learningObjects[learningObjectIndex].url;
     var interactionObjectUrl = interaction.url;
+    var $this = this;
     //contentDiv.append(question.name["en-US"]);
     var options = "<div>" + XAPI_DASHBOARD_SOURCES + "<ol>";
     question.source.forEach(function(s) {
@@ -1379,8 +1744,8 @@ xAPIDashboard.prototype.displayMatchingQuestionInformation = function(contentDiv
     var dash = new ADL.XAPIDashboard();
     var statements = this.data.getQuestionResponses(interactionObjectUrl);
     var pairStatements = [];
-    statements.forEach(function(s) {
-
+    statements.forEach(function(si) {
+        var s = $this.data.rawData[si];
         var tup = s.result.response.split("[,]");
         tup.forEach(function(t) {
             statement = JSON.parse(JSON.stringify(s));
@@ -1522,6 +1887,25 @@ xAPIDashboard.prototype.displayFillInQuestionInformation = function(contentDiv, 
     chart.draw();
 };
 
+xAPIDashboard.prototype.getUserNameOrEmail = function(statement) {
+    var participant = "";
+    if (statement.actor.mbox != undefined) {
+        // Key is email
+        // Cutoff mailto:
+        var key = statement.actor.mbox.substr(7).trim();
+        participant = key;
+        if (statement.actor.name != undefined) {
+            participant = statement.actor.name;
+        }
+    } else if (statement.actor.mbox_sha1sum != undefined) {
+        // Key is sha1(email)
+        participant = statement.actor.mbox_sha1sum;
+    }
+    if (participant != "")
+        return participant;
+    return "-";
+}
+
 xAPIDashboard.prototype.displayTextQuestionInformation = function(contentDiv, question, learningObjectIndex, interactionIndex) {
     var learningObjects = this.data.getLearningObjects();
     var interactions = this.data.getInteractions(learningObjects[learningObjectIndex].url);
@@ -1529,20 +1913,29 @@ xAPIDashboard.prototype.displayTextQuestionInformation = function(contentDiv, qu
     var learningObjectUrl = learningObjects[learningObjectIndex].url;
     var interactionObjectUrl = interaction.url;
     //contentDiv.append(question.name["en-US"]);
-    var statements = this.data.getQuestionResponses(interactionObjectUrl);
-    var answers = "<div class='openanwers'><ul>";
-    statements.forEach(function(statement){
+    var statementidxs = this.data.getQuestionResponses(interactionObjectUrl);
+    var answers = "<div class='openanwers container-fluid'>";
+    var $this = this;
+    var showUsers = this.data.info.dashboard.enable_nonanonymous && $("#dp-unanonymous-view").prop('checked');
+    statementidxs.forEach(function(statementidx){
+        var statement = $this.data.rawData[statementidx];
+        var actor = "";
+        if (showUsers)
+        {
+            actor = "<div class='col'>" + $this.getUserNameOrEmail(statement) + "</div>";
+        }
+        var timestamp = moment(statement.timestamp).format("YYYY-MM-DD HH:mm");
         if (statement.result.response != undefined && statement.result.response != "") {
-            answers += "<li>" + statement.result.response + "</li>";
+            answers += "<div class='row'><div class='col'>" + statement.result.response + "</div>" + actor +  "<div class='col'>" + timestamp + "</div></div>";
         }
     });
-    answers += "</ul></div>";
+    answers += "</div></div>";
     contentDiv.append(answers);
 };
 
 
-xAPIDashboard.prototype.getResultPage = function(div, userdata, learningObject, statement) {
-    var classIdentifier = "row-pagecontents-" + learningObject + "-" + this.escapeId(userdata['key']);
+xAPIDashboard.prototype.getResultPage = function(rowid, div, userdata, learningObject, statement) {
+    var classIdentifier = "row-pagecontents-" + rowid;
     if (statement.result != undefined && statement.result.extensions["http://xerte.org.uk/xapi/trackingstate"] != undefined) {
         var trackingState = JSON.parse(statement.result.extensions["http://xerte.org.uk/xapi/trackingstate"]);
         html = '<div id='  + classIdentifier +
@@ -1559,6 +1952,10 @@ xAPIDashboard.prototype.getResultPage = function(div, userdata, learningObject, 
     '        <tr>\n' +
     '            <td class="completionTxt"></td>\n' +
     '            <td><span class="completion"></span></td>\n' +
+    '        </tr>\n' +
+    '        <tr>\n' +
+    '            <td class="weightedscoreTxt"></td>\n' +
+    '            <td><span class="weightedscore"></span></td>\n' +
     '        </tr>\n' +
     '        <tr>\n' +
     '            <td class="startTimeTxt"></td>\n' +
@@ -1627,34 +2024,70 @@ xAPIDashboard.prototype.drawSelectRow = function(table, obj, begin, end) {
     chart.draw();
 };
 
+xAPIDashboard.prototype.addStatisticsRow = function(elmnt, id, label)
+{
+    var row = '<div class="row ' + id + '"><div class="col-widget col"><h5>&nbsp;</h5><h2>' + label + '</h2></div></div>';
+    elmnt.append(row);
+}
+
+xAPIDashboard.prototype.drawNumberOfUsers = function(elmnt, numberOfUsers) {
+    var row = '<div class="col-widget col"><h5>' + XAPI_DASHBOARD_NUMBER_OF_STUDENTS + '</h5><h2>' + numberOfUsers + '</h2></div>';
+    elmnt.append(row);
+};
 
 xAPIDashboard.prototype.drawNumberOfSessions = function(elmnt, numberOfSessions) {
-    var row = '<div class="col-2-widget col-2"><h5>' + XAPI_DASHBOARD_NUMBER_OF_SESSIONS + '</h5><h2>' + numberOfSessions + '</h2></div>';
+    var row = '<div class="col-widget col"><h5>' + XAPI_DASHBOARD_NUMBER_OF_SESSIONS + '</h5><h2>' + numberOfSessions + '</h2></div>';
+    elmnt.append(row);
+};
+
+xAPIDashboard.prototype.drawNumberOfCompletedUsers = function(elmnt, completedSessions) {
+    var row = '<div class="col-widget col"><h5>' + XAPI_DASHBOARD_COMPLETED_SESSIONS + '</h5><h2>' + completedSessions + '</h2></div>';
     elmnt.append(row);
 };
 
 xAPIDashboard.prototype.drawNumberOfCompletedSessions = function(elmnt, completedSessions) {
-    var row = '<div class="col-2-widget col-2"><h5>' + XAPI_DASHBOARD_COMPLETED_SESSIONS + '</h5><h2>' + completedSessions + '</h2></div>';
+    var row = '<div class="col-widget col"><h5>' + XAPI_DASHBOARD_COMPLETED_SESSIONS + '</h5><h2>' + completedSessions + '</h2></div>';
+    elmnt.append(row);
+};
+
+xAPIDashboard.prototype.drawAverageUserCompletion = function(elmnt, averageCompletion) {
+    var row = '<div class="col-widget col"><h5>' + XAPI_DASHBOARD_AVERAGE_USER_COMPLETION + '</h5><h2>' + averageCompletion + '%</h2></div>';
+    elmnt.append(row);
+};
+
+xAPIDashboard.prototype.drawAverageSessionCompletion = function(elmnt, averageCompletion) {
+    var row = '<div class="col-widget col"><h5>' + XAPI_DASHBOARD_AVERAGE_SESSION_COMPLETION + '</h5><h2>' + averageCompletion + '%</h2></div>';
+    elmnt.append(row);
+};
+
+xAPIDashboard.prototype.drawUsersPassed = function(elmnt, passed) {
+    var row = '<div class="col-widget col"><h5>' + XAPI_DASHBOARD_NUMBER_USERS_PASSED + '</h5><h2>' + passed + '</h2></div>';
+    elmnt.append(row);
+};
+
+xAPIDashboard.prototype.drawSessionsPassed = function(elmnt, passed) {
+    var row = '<div class="col-widget col"><h5>' + XAPI_DASHBOARD_NUMBER_SESSIONS_PASSED + '</h5><h2>' + passed + '</h2></div>';
     elmnt.append(row);
 };
 
 xAPIDashboard.prototype.drawAverageCompletedPages = function(elmnt, averageCompletedPages) {
-    var row = '<div class="col-2-widget col-2"><h5>' + XAPI_DASHBOARD_AVERAGE_COMPLETED_PAGES + '</h5><h2>' + averageCompletedPages + '</h2></div>';
+    var row = '<div class="col-widget col"><h5>' + XAPI_DASHBOARD_AVERAGE_COMPLETED_PAGES + '</h5><h2>' + averageCompletedPages + '</h2></div>';
     elmnt.append(row);
 };
+
 
 xAPIDashboard.prototype.drawNumberOfInteractions = function(elmnt, numberOfInteractions) {
-    var row = '<div class="col-2-widget col-2"><h5>' + XAPI_DASHBOARD_NUMBER_OF_INTERACTIONS + '</h5><h2>' + numberOfInteractions + '</h2></div>';
+    var row = '<div class="col-widget col"><h5>' + XAPI_DASHBOARD_NUMBER_OF_INTERACTIONS + '</h5><h2>' + numberOfInteractions + '</h2></div>';
     elmnt.append(row);
 };
 
-xAPIDashboard.prototype.drawNumberOfUsers = function(elmnt, numberOfUsers) {
-    var row = '<div class="col-2-widget col-2"><h5>' + XAPI_DASHBOARD_NUMBER_OF_STUDENTS + '</h5><h2>' + numberOfUsers + '</h2></div>';
+xAPIDashboard.prototype.drawAverageUserScore = function(elmnt, averageGrade) {
+    var row = '<div class="col-widget col"><h5>' + XAPI_DASHBOARD_AVERAGE_USER_SCORE + '</h5><h2>' + averageGrade + '</h2></div>';
     elmnt.append(row);
 };
 
-xAPIDashboard.prototype.drawAverageScore = function(elmnt, averageGrade) {
-    var row = '<div class="col-2-widget col-2"><h5>' + XAPI_DASHBOARD_AVERAGE_SCORE + '</h5><h2>' + averageGrade + '</h2></div>';
+xAPIDashboard.prototype.drawAverageSessionScore = function(elmnt, averageGrade) {
+    var row = '<div class="col-widget col"><h5>' + XAPI_DASHBOARD_AVERAGE_SESSION_SCORE + '</h5><h2>' + averageGrade + '</h2></div>';
     elmnt.append(row);
 };
 
@@ -1663,8 +2096,15 @@ xAPIDashboard.prototype.drawActivityChart = function(base, elmnt, begin, end, li
     {
         link = true;
     }
-    var row = "<a id='graph_link_" + this.data.info.template_id + "' href='#'><div id='graph-svg-wrapper-" + this.data.info.template_id +
-        "' class='graph-svg-wrapper'><svg></svg></div></a>";
+    var row;
+    if (link) {
+        row = "<a id='graph_link_" + this.data.info.template_id + "' href='#'><div id='graph-svg-wrapper-" + this.data.info.template_id +
+            "' class='graph-svg-wrapper'><svg></svg></div></a>";
+    }
+    else {
+        row = "<a id='graph_link_" + this.data.info.template_id + "' href='#'><div id='graph-svg-wrapper-" + this.data.info.template_id +
+            "' class='graph-svg-wrapper'><svg></svg></div></a>";
+    }
     elmnt.append(row);
     var $this = this;
     if (link) {
@@ -1673,13 +2113,13 @@ xAPIDashboard.prototype.drawActivityChart = function(base, elmnt, begin, end, li
         });
     }
     var dash = new ADL.XAPIDashboard();
-    var statements = this.data.rawData.filter(function(s){
+    var statementidxs = this.data.rawDatamap.filter(function(s){
             g = $this.getGroupFromStatements([s]);
             cg = $this.data.currentGroup.group_id;
             return cg == undefined || cg == "all-groups" || cg == g;
         }
     );
-    var launchedStatements = this.data.getStatementsList(statements, "http://adlnet.gov/expapi/verbs/launched");
+    var launchedStatements = this.data.getStatementsList(statementidxs, "http://adlnet.gov/expapi/verbs/launched");
     dash.addStatements(launchedStatements);
     template_id = this.data.info.template_id;
     var vals = [];
@@ -1743,7 +2183,7 @@ xAPIDashboard.prototype.drawActivityChart = function(base, elmnt, begin, end, li
 };
 
 function close_dashboard() {
-    $this.clear();
+    x_Dashboard.data.clear();
     $("#dp-start").unbind("change");
     $("#dp-end").unbind("change");
     $("#dp-unanonymous-view").unbind("change");
@@ -1869,7 +2309,7 @@ xAPIDashboard.prototype.helperGetDate = function(datetimepicker) {
 };
 
 xAPIDashboard.prototype.regenerate_dashboard = function() {
-    $("#journeyData").html("<div id=\"loader\"><img id=\"loader_image\" class=\"loading_gif\" src=\"editor/img/loading16.gif\" /><p id=\"loader_text\"></p>");
+    $("#journeyData").html("<div id=\"loader\"><img id=\"loader_image\" class=\"loading_gif\" src=\"" + site_url + "/editor/img/loading16.gif\" /><p id=\"loader_text\"></p>");
     $("#group-select option:not(:first-child)").remove();
     this.data.currentGroup.group_id = "all-groups";
     var url = site_url + this.data.info.template_id;
@@ -1878,6 +2318,10 @@ xAPIDashboard.prototype.regenerate_dashboard = function() {
     end = new Date(moment(end).add(1, 'days').toISOString());
     var q = {};
     q['activities'] = [url];
+    if (this.data.info.role != undefined && this.data.info.role=='Student' && this.data.info.actor != undefined)
+    {
+        q['actor'] = this.data.info.actor;
+    }
     if (this.data.info.lrs.lrsurls != null && this.data.info.lrs.lrsurls != "undefined" && this.data.info.lrs.lrsurls != "")
     {
         var $this = this;

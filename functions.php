@@ -205,7 +205,6 @@ function _include_javascript_file($file_path) {
             //die("Where was $real_file_path?");
             if ($development) {
                 error_log("Failed to load language file for Xerte - $language/$file_path");
-                return false;
             }
         }
     }

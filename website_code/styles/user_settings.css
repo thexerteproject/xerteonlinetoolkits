@@ -32,8 +32,8 @@ body{
 	border-radius:5px;
 	border:#ccc 1px solid;
 	/*RM responsive changes*/
-	width: 96%;
-	height: 95vh;
+	/* width: 96%; */
+	/* height: 95vh; */
 	font-size:calc(10px + .4vw) !important;
 }
 
@@ -44,9 +44,9 @@ body{
 	margin:0px;
 	padding:10px;
 	/*RM responsive changes*/
-	width:98%;
-	height:93vh;
-	overflow:scroll;
+	/* width:98%; */
+	height:82vh;
+	/* overflow:scroll; */
 }
 
 span#title{
@@ -61,16 +61,16 @@ div#data_area{
 	background-color:#ededed;
 	/*RM responsive changes*/
 	width: 98%;
-	height: 87vh;
+	/* height: 87vh; */
 	margin-top:30px;
-	min-width:521px !important;
+	/* min-width:521px !important; */
 }
 
 div#dynamic_area{
 	background-color:#fff;
 	border-radius:7px;
 	/*RM responsive changes*/
-	height: 80vh;
+	height: 69vh;
 }
 
 div#dynamic_area p{

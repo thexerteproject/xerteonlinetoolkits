@@ -184,7 +184,7 @@ textarea {
   a:visited {
     text-decoration: underline;
   }
-  a[href]:after {
+  a[href]:not(.lightboxWrapper):after {
     content: " (" attr(href) ")";
   }
   abbr[title]:after {

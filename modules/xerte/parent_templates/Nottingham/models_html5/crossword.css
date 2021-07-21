@@ -60,8 +60,8 @@
 }
 
 .table-hint{
-    list-style-type:none ;
-
+    list-style-type:none;
+	margin-top: 0.5em;
 }
 
 #across{
@@ -79,11 +79,6 @@
 
 #show_button{
     margin-left: 0;
-    display:block;
-    width: 80%;
-    height: 65%;
-    font-size: 2.5vmin
-
 }
 
 #crossword-table #input__container__across{
@@ -126,25 +121,62 @@
  }
 
  #clues-container{
-     width: 100%;
+    width: 100%;
+	margin-top: 1em;
+ }
+ 
+ #clues-container th {
+	 text-decoration: underline;
+ }
+ 
+ #pageContents-innerContainer.crosswordLeft #clues-container {
+	 margin-left: 2em;
+ }
+ 
+ #pageContents-innerContainer.crosswordRight #clues-container {
+	 margin-right: 2em;
+ }
+ 
+ #clues {
+	 margin-top: 1em;
+ }
 
+ #pageContents.txtTop #crosswordHolder {
+	 margin-top: 1em;
+ }
+ 
+ #crosswordHolder.crosswordTop {
+	 overflow: auto;
  }
 
  #crossword{
      flex: 1;
-     margin-right: 20px;
      text-align: center;
      display: flex;
-     /* align-items: center; */
      justify-content: center;
-     margin-top: 10px;
+ }
 
+ #clues-container{
+     width: 40%;
+ }
+
+
+
+ /*#pageContents-innerContainer.crosswordLeft #crossword {
+	 margin-right: 1em;
+ }
+ 
+ #pageContents-innerContainer.crosswordRight #crossword {
+	 margin-left: 1em;
+ }*/
+
+ #pageContents-innerContainer #showButton {
+	 justify-content: flex-start;
  }
 
  #showButton{
-     padding-top: 20px;
-     justify-content: flex-start;
-     height: 10%;
+     margin-top: 1em;
+	 float: right;
  }
 
  .li-clue{
@@ -165,13 +197,17 @@
  .hint-number{
      margin-right: 5%;
  }
-
- #clues-across{
-     margin-top: 20px;
- }
+ 
  #attempt h3{
      border-top: 1px solid #ccc;
      padding-top: 1.5em;
-     text-align: center;
-
  }
+
+#feedback h3{
+    border-top: 1px solid #ccc;
+    padding-top: 1.5em;
+
+}
+#pageContents input{
+    padding: 0!important;
+}

@@ -33,7 +33,7 @@
 		
 		this.init = function() {
 			var $closeText = $("#closingText");
-            $closeText.html(x_getLangInfo(x_languageData.find("saveSession").find("trackingCloseTxt")[0], "label", "<p>Do you want to stop with this session and continue? If so, please press the button below to save this session.</p>"));
+            $closeText.html(x_getLangInfo(x_languageData.find("saveSession").find("trackingCloseTxt")[0], "label", "<p>Do you want to stop with this session and continue later? If so, please press the button below to save this session.</p>"));
             // ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
 
             if (XTGetMode().indexOf("normal") >= 0 || XTTrackingSystem() === "xAPI")
@@ -46,7 +46,15 @@
                     XTTerminate();
                     $('#x_footerRight button').button("disable");
                     $('#closeBtn').hide();
-                    $closeText.html(x_getLangInfo(x_languageData.find("saveSession").find("closeTxt")[0], "label", "<p>Your session has been saved. You can now close the browser window or browser tab of this LO.</p>"));
+                    debugger;
+                    if (typeof x_params["embed"] != "undefined")
+                    {
+                        $closeText.addClass('closeTextEmbed');
+                        $closeText.html(x_getLangInfo(x_languageData.find("saveSession").find("closeTxtEmbedded")[0], "label", "<p>Your session has been saved. You need to refresh or revisit this page to access the session again.</p>"))
+                    }
+                    else {
+                        $closeText.html(x_getLangInfo(x_languageData.find("saveSession").find("closeTxt")[0], "label", "<p>Your session has been saved. You can now close the browser window or browser tab of this LO.</p>"));
+                    }
                 });
             }
 

@@ -64,13 +64,14 @@ var EDITOR = (function ($, parent) {
 			// it's a page type
             } else if (itemData.item != undefined) {
 				var hint = itemData.hint != undefined ? '<p>' + itemData.hint + '</p>' : "";
-				hint = itemData.thumb != undefined ? '<div>' + language.insertDialog.$preview + ':</div><img class="preview_thumb" alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + hint : hint;
+				hint = itemData.thumb != undefined ? hint + (itemData.example != undefined ? '<a href="' + itemData.example + '" data-featherlight="iframe" class="pageExample">' : '') + '<img class="preview_thumb" alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + (itemData.example != undefined ? '</a>' : '') : hint;
+				hint = itemData.example != undefined ? hint + '<p><a href="' + itemData.example + '" data-featherlight="iframe" class="pageExample exampleButton"><i class="fa fa-play-circle"></i>' + language.insertDialog.$example + '</a></p>' : hint;
 				hint = hint != "" ? '<hr/>' + hint : hint;
 
 				var $insertInfo = $('<ul class="details"><li><a href="#"><div class="insert_buttons"/>' + hint + '</a></li></ul>'),
 					label = language.insertDialog.$label + ":",
 					pos = label.indexOf('{i}');
-
+				
 				label = pos >= 0 ? label.substr(0, pos) + itemData.name + label.substr(pos + 3) : label;
 
 				$insertInfo.find(".insert_buttons").append('<div>' + label + '</div>');
@@ -132,32 +133,7 @@ var EDITOR = (function ($, parent) {
 
                     $menu.find(".insert_buttons").append(button);
             });
-            if (templateframework == "xerte") {
-                $([
-
-                    {
-                        name: language.insertDialog.insertMerge.$label,
-                        icon: 'editor/img/insert-end.png',
-                        tooltip: language.insertDialog.insertMerge.$tooltip,
-                        id: 'insert_button_merge',
-                        btnvalue: "merge"
-                    }
-
-                ]).each(function (index, value) {
-                    var button = $('<button>')
-                        .attr('id', value.id)
-                        .attr('title', value.tooltip)
-                        .attr('value', value.btnvalue)
-                        .attr('tabindex', index + 3)
-                        .addClass("insert_button")
-                        .click(insert_import)
-                        .append($('<img>').attr('src', value.icon).height(14))
-                        .append(value.name);
-
-                        $menu.find(".insert_buttons").last().append(button);
-                });
-            }
-
+            
 		if (typeof insert_menu_object !== 'undefined')
         {
             // menu is aleready set once
@@ -271,6 +247,13 @@ var EDITOR = (function ($, parent) {
                 else {
                     return '<i class="standaloneIcon iconDisabled fa fa-external-link-alt " id="' + key + '_standalone" title ="' + language.standalonePage.$tooltip + '"></i>';
                 }
+			case "password":
+                if (enabled) {
+                    return '<i class="passwordIcon iconEnabled fa fa-lock " id="' + key + '_password" title ="' + language.passwordPage.$tooltip + '"></i>';
+                }
+                else {
+                    return '<i class="passwordIcon iconDisabled fa fa-lock " id="' + key + '_password" title ="' + language.passwordPage.$tooltip + '"></i>';
+                }
         }
     },
 
@@ -279,6 +262,7 @@ var EDITOR = (function ($, parent) {
         // Get icon states
         var deprecatedState = ($("#"+key+"_deprecated.iconEnabled").length > 0);
         var hiddenState = ($("#"+key+"_hidden.iconEnabled").length > 0);
+		var passwordState = ($("#"+key+"_password.iconEnabled").length > 0);
 		var standaloneState = ($("#"+key+"_standalone.iconEnabled").length > 0);
         var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
         var change = false;
@@ -292,6 +276,10 @@ var EDITOR = (function ($, parent) {
                 break;
             case "hidden":
                 if (hiddenState != enabled)
+                    change = true;
+                break;
+			case "password":
+                if (passwordState != enabled)
                     change = true;
                 break;
 			case "standalone":
@@ -317,6 +305,7 @@ var EDITOR = (function ($, parent) {
             }
             var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [item == "deprecated" ? enabled : deprecatedState, level], tooltip);
             var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" ? enabled : hiddenState));
+			var passwordIcon = getExtraTreeIcon(key, "password", (item == "password" ? enabled : passwordState));
 			var standaloneIcon = getExtraTreeIcon(key, "standalone", (item == "standalone" ? enabled : standaloneState));
             var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
             var nodetext;
@@ -327,7 +316,7 @@ var EDITOR = (function ($, parent) {
             else {
                 nodetext = $("#" + key + '_text').text();
             }
-            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
+            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
             tree.rename_node(node, nodetext);
             //tree.set_text(node, nodetext);
             //tree.refresh();
@@ -413,11 +402,12 @@ var EDITOR = (function ($, parent) {
 
         var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecatedLevel], wizard_data[xmlData[0].nodeName].menu_options.deprecated);
         var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
+        var passwordIcon = getExtraTreeIcon(key, "password", xmlData[0].getAttribute("password") != undefined && xmlData[0].getAttribute("password") != '');
         var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
 		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
 
-        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
+        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
 
         var this_json = {
             id : key,
@@ -478,6 +468,10 @@ var EDITOR = (function ($, parent) {
             attribute_value = attributes[name];
             attr_found = true;
         }
+        if (name == "HotSpot")
+        {
+            return {found : true, value: "ERROR"};
+        }
         if (!attr_found)
         {
             if (options.cdata && options.cdata_name == name)
@@ -508,6 +502,14 @@ var EDITOR = (function ($, parent) {
                         return evaluateConditionExpression(ctree.left, key) == evaluateConditionExpression(ctree.right, key);
                     case "!=":
                         return evaluateConditionExpression(ctree.left, key) != evaluateConditionExpression(ctree.right, key);
+                    case "<":
+                        return evaluateConditionExpression(ctree.left, key) < evaluateConditionExpression(ctree.right, key);
+                    case "<=":
+                        return evaluateConditionExpression(ctree.left, key) <= evaluateConditionExpression(ctree.right, key);
+                    case ">":
+                        return evaluateConditionExpression(ctree.left, key) > evaluateConditionExpression(ctree.right, key);
+                    case ">=":
+                        return evaluateConditionExpression(ctree.left, key) >= evaluateConditionExpression(ctree.right, key);
                     default:
                         return null;
                 }
@@ -823,6 +825,9 @@ var EDITOR = (function ($, parent) {
                 //if (hiddenIcon) {
                 //    hiddenIcon.switchClass('iconEnabled', 'iconDisabled');
                 //}
+			}
+			if (toDelete[i] == "password") {
+			    changeNodeStatus(key, "password", false);
 			}
 			if (toDelete[i] == "linkPage") {
 			    changeNodeStatus(key, "standalone", false);
@@ -1913,6 +1918,10 @@ var EDITOR = (function ($, parent) {
             */
         }
 
+		if (names[0] == "password") {
+            changeNodeStatus(key, "password", values[0] != "");
+        }
+		
 		if (names[0] == "linkPage") {
             changeNodeStatus(key, "standalone", values[0] == "true");
         }
@@ -2169,10 +2178,32 @@ var EDITOR = (function ($, parent) {
 
 	previewFile = function(alt, src, title)
 	{
-		// ** currently only previews images - need to allow other file types too
+		var origSrc = src;
 		src = src.indexOf("FileLocation + '") == 0 ? rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1) : src;
-
-		var $previewImg = $('<img class="previewFile"/>')
+		
+		var previewType,
+			$preview,
+			fileFormats = [
+				{ type: 'image', fileExt: ['jpg', 'jpeg', 'gif', 'png'] },
+				{ type: 'video', fileExt: ['mp4'] },
+				{ type: 'audio', fileExt: ['mp3'] },
+				{ type: 'pdf', fileExt: ['pdf'] }
+			];
+		
+		$(fileFormats).each(function() {
+			for (var i=0; i<this.fileExt.length; i++) {
+				var ext = this.fileExt[i],
+					srcLowerC = src.toLowerCase();
+				if (srcLowerC.lastIndexOf('.' + ext) == srcLowerC.length - (ext.length + 1)) {
+					previewType = this.type;
+					return false;
+				}
+			}
+		});
+		
+		if (previewType == 'image') {
+			$preview = $('<div/>');
+			$('<img class="previewFile"/>')
 				.on("error", function() {
 						$('.featherlight .previewFile')
 							.after('<p>' + language.compPreview.$error + '</p>')
@@ -2182,9 +2213,27 @@ var EDITOR = (function ($, parent) {
 					"src": src,
 					"alt": alt
 				})
-
-		var $preview = $('<div/>')
-				.append($previewImg);
+				.appendTo($preview);
+			
+		} else if (previewType == 'video') {
+			$preview = $('<div/>');
+			$('<video class="previewVideo" controls><source src="' + src + '"></video>').appendTo($preview);
+			
+		} else if (previewType == 'audio') {
+			$preview = $('<div/>');
+			$('<audio controls><source src="' + src + '"></video>').appendTo($preview);
+			
+		} else if (previewType == 'pdf') {
+			$preview = {iframe: src };
+			
+		} else {
+			var srcLowerC = origSrc.toLowerCase();
+			if (srcLowerC.indexOf('<iframe') === 0) {
+				$preview = $('<div>' + src + '</div>');
+			} else {
+				$preview = $('<div><p>' + language.compPreview.$error + '</p></div>');
+			}
+		}
 
 		if (title != undefined && title != '') {
 			$preview.prepend('<div class="preview_title">' + title + '</div>');
@@ -2466,7 +2515,7 @@ var EDITOR = (function ($, parent) {
         return urlPath;
     },
 
-    drawHotspot = function(html, url, hsattrs, hspattrs, id, forceRectangle){
+    drawHotspot = function(html, url, hsattrs, hspattrs, id, forceRectangle, lp){
         // Draw Hotspot on the wizard page as preview on the thumbnail image
         // Always treat hotspot as a polygon
         // Step 0. Find image, set scale and wrap with overlayWrapper
@@ -2496,7 +2545,7 @@ var EDITOR = (function ($, parent) {
                 });
         });
 
-        canvas.on('mouse:down', function(){editHotspot(url, hsattrs, hspattrs, id, forceRectangle)});
+        canvas.on('mouse:down', function(){editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp)});
         // Step 2. Create polygon in appropriate scale
         var scaledpoints = [];
         // Old way of specifying hotspot: x,y,w,h
@@ -2529,7 +2578,7 @@ var EDITOR = (function ($, parent) {
         }
     };
 
-    editHotspot = function (url, hsattrs, hspattrs, id, forceRectangle){
+    editHotspot = function (url, hsattrs, hspattrs, id, forceRectangle, lp){
 	    var shape = "rectangle";
 	    var scale;
 	    var isDown = false;
@@ -2552,7 +2601,7 @@ var EDITOR = (function ($, parent) {
             '<button id="' + id + '_ok" name="ok" class="hseditModeButton" title="' + language.Alert.oklabel + '" style="float:right"><i class="fas fa-2x fa-check-square"></i></button>' +
             '</div>');
 
-            edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');
+        edit_img.append('<div class="overlayWrapper" id="overlayWrapper_' + id + '"><canvas id="hscanvas_' + id + '" class="overlayCanvas"></canvas></div>');
         edit_img.append('<div class="hsinstructions" id="instructions_' + id + '"></div>');
         
         if (!forceRectangle && hsattrs.mode != undefined)
@@ -2676,25 +2725,28 @@ var EDITOR = (function ($, parent) {
                                 borderColor: 'yellow'
                             });
                         }
+                        // Old definition of hotspot
                         else if (forceRectangle || (hsattrs.x != undefined && hsattrs.y != undefined && hsattrs.w != undefined && hsattrs.h != undefined)) {
-                            // Old definition of hotspot
-                            hs = new fabric.Rect({
-                                top: parseFloat(hsattrs.y) / scale,
-                                left: parseFloat(hsattrs.x) / scale,
-                                width : parseFloat(hsattrs.w) /scale,
-                                height : parseFloat(hsattrs.h) /scale,
-                                angle: 0,
-                                fill: 'rgba(255,0,0,0.5)',
-                                selectable: true,
-                                objectCaching: false,
-                                transparentCorners: true,
-                                cornerColor: 'yellow',
-                                borderColor: 'yellow',
-                                hasRotatingPoint: !forceRectangle
-                            });
+                            // Don't draw the optional empty value
+                            if (hsattrs.x > 0 || hsattrs.y > 0 || hsattrs.w > 0 || hsattrs.h > 0) {
+                                hs = new fabric.Rect({
+                                    top: parseFloat(hsattrs.y) / scale,
+                                    left: parseFloat(hsattrs.x) / scale,
+                                    width : parseFloat(hsattrs.w) /scale,
+                                    height : parseFloat(hsattrs.h) /scale,
+                                    angle: 0,
+                                    fill: 'rgba(255,0,0,0.5)',
+                                    selectable: true,
+                                    objectCaching: false,
+                                    transparentCorners: true,
+                                    cornerColor: 'yellow',
+                                    borderColor: 'yellow',
+                                    hasRotatingPoint: !forceRectangle
+                                });
+                            }
                         }
                         setDrawingModeButtonState(shape);
-                        if (hs == null) {
+                        if (hs == null || (hsattrs.x == 0 && hsattrs.y == 0 && hsattrs.w == 0 && hsattrs.h == 0)) {
                             setRectangleHandlers();
                             disableReset();
                         }
@@ -2768,7 +2820,6 @@ var EDITOR = (function ($, parent) {
             // Ok handler
             var okbutton = $('.hotspotEditor  button[name="ok"]');
             okbutton.click(function(event){
-
                 var key = $("#inner_img_" + id).data("key");
                 var current = $.featherlight.current();
                 var npoints = [];
@@ -2779,23 +2830,34 @@ var EDITOR = (function ($, parent) {
                             //Get tl, tr, br, bl
                             var cornerpoints = ['tl', 'tr', 'br', 'bl'];
                             for (var pi in cornerpoints) {
-                                var point = hspoints[cornerpoints[pi]];
+                            var point = hspoints[cornerpoints[pi]];
                                 npoints.push({
                                     "x": point.x * scale,
                                     "y": point.y * scale
                                 });
                             }
-                            var rect = {};
+                            var rect = {}, _rect = {};
+                            canvasWidth = $('.overlayCanvas').width()
+                            canvasHeight = $('.overlayCanvas').height()
+                            _rect.top = (hs.top / canvasHeight) * 100;
+                            _rect.left = (hs.left / canvasWidth) * 100;
+                            _rect.width = (hs.getScaledWidth() / canvasWidth) * 100;
+                            _rect.height = (hs.getScaledHeight() / canvasHeight) * 100;
+                            _rect.angle = hs.angle;
+
                             rect.top = hs.top * scale;
                             rect.left = hs.left * scale;
                             rect.width = hs.getScaledWidth() * scale;
                             rect.height = hs.getScaledHeight() * scale;
-                            rect.angle = hs.angle;
+                            rect.angle = hs.angle; 
                             var stringPoints = JSON.stringify(npoints);
                             var stringShape = JSON.stringify(rect);
 
                             if (forceRectangle) {
                                 setAttributeValue(key, ["x", "y", "w", "h"], [rect.left, rect.top, rect.width, rect.height]);
+                                if (lp) {
+                                    setAttributeValue(key, ["_x", "_y", "_w", "_h"], [_rect.left, _rect.top, _rect.width, _rect.height]);
+                                }
                             }
                             else {
                                 setAttributeValue(key, ["points", "mode", "shape"], [stringPoints, shape, stringShape]);
@@ -4160,15 +4222,16 @@ var EDITOR = (function ($, parent) {
 					}
 
 				}
-				break;
+                break;
+            case 'locpicker':
 			case 'hotspot':
             case 'flexhotspot':
 				var id = 'hotspot_' + form_id_offset;
 				form_id_offset++;
-
                 // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
                 // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
-                var forceRectangle = (options.type.toLowerCase() === "hotspot");
+                var forceRectangle = !(options.type.toLowerCase() === "flexhotspot");
+                var lp = (options.type.toLowerCase() === "locpicker");
 				var hsattrs = lo_data[key].attributes;
                 var hsparent = parent.tree.getParent(key);
                 var hspattrs = lo_data[hsparent].attributes;
@@ -4179,35 +4242,49 @@ var EDITOR = (function ($, parent) {
                     hspattrs = lo_data[hsparent].attributes;
                 }
 
-                    // Create the container
-                    html = $('<div>').attr('id', id);
+                // Create the container
+                html = $('<div>').attr('id', id);
 
-                    var url = hspattrs.url;
-                    // Replace FileLocation + ' with full url
+                var url = hspattrs.url;
+                // Replace FileLocation + ' with full url
+                if (url != undefined) {
                     url = makeAbsolute(url);
-                    // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
-                    if (url.substring(0,4) == "http")
-                    {
-                        var shape = "square";
-                        html.addClass('clickableHotspot');
-                        html.append("<img>");
-                        var cur_key = key;
-                        html.find('img')
-                            .attr('id', 'inner_img_' + id)
-                            .attr("data-key", cur_key)
-                            .attr("src", url)
-                            .load(function(){
+                }
 
-                                $(this).css({width: '100%'});
-                                drawHotspot(html, url, hsattrs, hspattrs, id, forceRectangle);
-                            }).click(function(){
-                                editHotspot(url, hsattrs, hspattrs, id, forceRectangle);
-                            });
+                // Create a white canvas to use in lieu of an image for location selector.
+                else if (lp === true) {
+                    var whiteImage = document.createElement("CANVAS");
+                    var ctx = whiteImage.getContext("2d");
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.fillRect(0, 0, whiteImage.width, whiteImage.height);
+                    url = whiteImage.toDataURL();
+                    // Set a default value if using locpicker, so plugins can be rendered.
+                    if (hsattrs.x == undefined || hsattrs.y == undefined){
+                        setAttributeValue(key, ["x", "y", "w", "h"], [0, 0, 0, 0]);
                     }
-                    else
-                    {
-                        html.append("<span class=\"error\">" + language.editHotspot.Error.selectFile + "</span>");
-                    }
+                }
+                // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
+                if (url.substring(0,4) == "http" || lp === true)
+                {                    
+                    var shape = "square";
+                    html.addClass('clickableHotspot');
+                    html.append("<img>");
+                    var cur_key = key;
+                    html.find('img')
+                        .attr('id', 'inner_img_' + id)
+                        .attr("data-key", cur_key)
+                        .attr("src", url)
+                        .load(function(){
+                            $(this).css({width: '100%'});
+                            drawHotspot(html, url, hsattrs, hspattrs, id, forceRectangle, lp);
+                        }).click(function(){
+                            editHotspot(url, hsattrs, hspattrs, id, forceRectangle, lp);
+                        });
+                }
+                else
+                {
+                    html.append("<span class=\"error\">" + language.editHotspot.Error.selectFile + "</span>");
+                }
 
 				break;
 				

@@ -15,7 +15,8 @@ table {
     /* set to 276px in bootstrap.css so override here */
     max-width: none;
     max-height: 600px;
-    overflow-y:auto;
+    /* overflow-y:auto; */
+    overfow: none;
 }
 
 .journeyOverview, .journeyOverviewModal{
@@ -99,7 +100,7 @@ td a{
   text-decoration: none;
 }
 
-.col-2-widget{
+.col-widget{
     margin-top: 1rem;
     /* border-style: solid; */
     /* border-width: 1px; */
@@ -111,7 +112,7 @@ td a{
     background: white;
 }
 
-.col-2-widget:last-of-type {
+.col-widget:last-of-type {
     margin-right: 0;
 }
 
@@ -122,14 +123,14 @@ td a{
 }
 
 
-.col-2-widget h2{
+.col-widget h2{
     font-weight: initial;
     color: #f86718;
     margin-top: .5rem;
     font-size: 2.0rem;
 }
 
-.col-2-widget h5{
+.col-widget h5{
     margin-top: .5rem;
     font-size: 0.8rem;
 }
@@ -352,6 +353,27 @@ th.x-dashboard-interaction {
 .dashboard .table td {
     padding:2px;
 }
+
+.dashboard .table tr.session-row.hide {
+    display: none;
+}
+
+.dashboard .table .session-row td.align-right, .td-right {
+    text-align: right;
+}
+
+.dashboard .table .session-row td.showresult {
+    cursor: pointer;
+}
+
+.dashboard .table .session-row td.align-left, .td-left {
+    text-align: left;
+}
+
+tr.attempt td:first-child {
+    padding-left: 15px;
+}
+
 .dashboard .table .session-row td {
     text-align: center;
     vertical-align: middle;
@@ -457,13 +479,16 @@ td.x-dashboard-interaction
 .fa-x-tick:before { font-family: FontAwesome; content: "\f00c"; color: #62c562; }
 .fa-x-cross:before { content: "\f00d"; color: #ff0000; }
 
+.fa-x-inprogress:before { content: "\f017"; color: orange; }
 /* Just the colour */
 .fa-x-tick {
     font-family: FontAwesome; content: "\f00c"; color: #62c562;
 }
-.fa-x--cross {
+.fa-x-cross {
     content: "\f00d"; color: #ff0000;
 }
+
+.fa-x-inprogress { content: "\f017"; color: orange; }
 
 .jorneyData-container1{
     overflow-x: scroll;
@@ -506,4 +531,32 @@ td.x-dashboard-interaction
 
 .print_block {
     page-break-inside: avoid;
+}
+
+td i.openclose {
+    cursor: pointer;
+}
+
+td i.openclose.disabled {
+    color: lightgray;
+    cursor: initial;
+}
+
+td  i.openclose.usedattempt {
+    color: #ff4500;
+}
+
+td i.openclose.usedattempt.disabled {
+    color: rgba(255,69,0,0.5);
+    cursor: initial;
+}
+
+
+td.td-center {
+    text-align: center;
+}
+
+.dashboard .table td.duration, .dashboard .table td.start, .dashboard .table td.score, .dashboard .table td.completion {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
 }

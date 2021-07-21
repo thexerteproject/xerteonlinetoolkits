@@ -52,7 +52,7 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 
-			this.checkHeight();
+			//this.checkHeight();
 			
 			var $canvas = $("#canvas");
 			if ($canvas.length > 0 && $canvas[0].getContext) {
@@ -84,40 +84,49 @@
 			firstLoad=false;
 		}
 
-
-			this.resizeImg = function(firstLoad) {
-			if(firstLoad === false){
-				var imgMaxW, imgMaxH, ratio;
-
+		this.resizeImg = function(firstLoad) {
+			;
+			var imgMaxW, imgMaxH;
+			var footerMargin = parseInt($x_footerBlock.css('margin-bottom'));
+			imgMaxH = $x_pageHolder.height() - $x_footerBlock.height() - footerMargin - 50;
+			if (x_currentPageXML.getAttribute("panelWidth") == "Large") {
+				imgMaxW = Math.round($x_pageHolder.width() * 0.8 - 20);
+			} else if (x_currentPageXML.getAttribute("panelWidth") == "Small") {
+				imgMaxW = Math.round($x_pageHolder.width() * 0.3 - 20);
+			} else {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
-				debugger
-				ratio = x_currentPageXML.getAttribute("imageRatio")
-				if(ratio === undefined || ratio === null){
-					ratio = "100%"
-				}
-				if(ratio.slice(-1)==="%"){
-					ratio = ratio.substring(0, ratio.length - 1);
-				}
-				ratio = parseInt(ratio)
-				ratio/=100
-				imgMaxW *= ratio
-				$img.mapster('unbind');
+			}
+			$img.mapster('unbind');
 
-				x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
+			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, true);
 
-				$img.css({
-					"opacity"	:1,
-					"filter"	:'alpha(opacity=100)',
-					"width"		: imgMaxW + "px"
-				});
+			$img.css({
+				"opacity": 1,
+				"filter": 'alpha(opacity=100)',
+			});
 
-				$("#hsHolder").children().remove()
-				this.imgLoaded()
+
+
+			debugger
+			if(x_currentPageXML.getAttribute("align")==="Left"){
+				var totalWidth=$("#canvas").width();
+				var imageWidth=$("#imageHolder").width();
+				var textWidth = totalWidth - imageWidth;
+				$("#textContents").css({
+					"width":textWidth+"px"
+				})
+
+			}else{
+				var imageHeight=$("#imageHolder").height();
+				imageHeight*=1.2;
+				$("#textContents").css({
+					"top":imageHeight+"px"
+				})
 			}
 
-
-			};
+			$("#hsHolder").children().remove();
+			this.imgLoaded();
+		};
 		
 		this.init = function() {
 			$pageContents = $("#pageContents");
@@ -129,13 +138,16 @@
 			
 			if (x_currentPageXML.getAttribute("align") != "Top") {
 				$imageHolder.css("right", $x_pageDiv.css("padding-right"));
+				var margin = parseFloat($('#x_mainHolder').css('margin-right'));
+				var padding = parseFloat($x_pageDiv.css("padding-right"));
+				var right = padding - margin;
 				$hsHolder.css("right", $x_pageDiv.css("padding-right"));
 			}
 			$textContents.find("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			
-			padding = parseInt($imageHolder.css("padding-left"));
-			$hsHolder.css("margin", padding);
-			
+			//padding = parseInt($imageHolder.css("padding-left"));
+			$hsHolder.css("margin", $imageHolder.css("padding-left"));
+
 			if (x_currentPageXML.getAttribute("url").split(".")[1].slice(0, -1) != "swf") {
 				var imgMaxW = 400,	imgMaxH = 450;
 				if (x_browserInfo.mobile == true) {
@@ -155,12 +167,12 @@
 						"filter"	:'alpha(opacity=0)'
 					})
 					.one("load", function() {
-						x_scaleImg(this, imgMaxW, imgMaxH, true, true);
+						//x_scaleImg(this, imgMaxW, imgMaxH, true, true);
 						$(this).css({
 							"opacity"	:1,
 							"filter"	:'alpha(opacity=100)'
 						})
-						annotatedDiagram.imgLoaded();
+						annotatedDiagram.sizeChanged();
 					})
 					.attr({
 						"src"	:x_evalURL(x_currentPageXML.getAttribute("url")),
@@ -192,8 +204,7 @@
 				swfobject.embedSWF(x_evalURL(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
 				$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
 			}
-			
-			this.sizeChanged();
+			//this.sizeChanged();
 		}
 		
 		this.imgLoaded = function() {
@@ -220,9 +231,12 @@
 			}
 			
 			// create hotspots - taking scale of image into account
+			var width = $imageHolder.outerWidth() - parseInt($imageHolder.css('padding-left')) - parseInt($imageHolder.css('padding-right'));
+			var height = $imageHolder.outerHeight() - parseInt($imageHolder.css('padding-top')) - parseInt($imageHolder.css('padding-bottom'));
+
 			$hsHolder
-				.width($imageHolder.width())
-				.height($imageHolder.height());
+				.width(width)
+				.height(height);
 				scale = imgW / $img.data("origSize")[0];
 
 
@@ -410,19 +424,17 @@
 
 
 <div id="pageContents">
-	
+
 	<div id="imageHolder" class="panel inline"></div>
-	
+
 	<canvas id="canvas"></canvas>
-	
 	<div id="hsHolder"></div>
-	
-	<div id="textContents">
-		<div id="mainText" tabindex="1"></div>
-		<div id="listHolder">
-			<a class="listItem"></a>
+
+		<div id="textContents">
+			<div id="mainText" tabindex="1"></div>
+			<div id="listHolder">
+				<a class="listItem"></a>
+			</div>
+			<div id="infoHolder" aria-live="polite"></div>
 		</div>
-		<div id="infoHolder" aria-live="polite"></div>
-	</div>
-	
 </div>

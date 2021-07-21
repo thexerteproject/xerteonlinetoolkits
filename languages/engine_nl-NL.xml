@@ -173,6 +173,7 @@
 		<closeButton label="" description="Sluit Sessie opslaan"/>
 		<trackingCloseTxt label="&lt;p&gt;Wil je stoppen met deze sessie en de volgende keer weer verder gaan? Dat kan. Klik op de onderstaande button om de sessie op te slaan.&lt;/p&gt;"/>
 		<closeTxt label="&lt;p&gt;Je sessie is opgeslagen. Je kunt nu het venster of het tabblad in je browser sluiten. Tot de volgende keer.&lt;/p&gt;"/>
+		<closeTxtEmbedded label="&lt;p&gt;Je sessie is opgeslagen. Je kunt de pagina verversen of opnieuw bezoeken om de sessie opnieuw te bekijken. Tot de volgende keer.&lt;/p&gt;"/>
 		<btnLabelTxt label="Deze sessie opslaan"/>
 
 

@@ -402,7 +402,9 @@
 						if (feedbackOrder[i] == 'G') {
 							thisFeedback = thisQ.getAttribute('feedback');
 						} else if (feedbackOrder[i] == 'A') {
-							thisFeedback = selectedOption.feedback;
+							if(selectedOption !== undefined && selectedOption !== null){
+								thisFeedback = selectedOption.feedback;
+							}
 						} else {
 							thisFeedback = rightWrongTxt;
 						}
@@ -465,6 +467,7 @@
                 success: correct,
                 score: correct ? 100.0 : 0.0
             };
+            debugger
             XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], result, l_options, l_answer, l_feedback, x_currentPageXML.getAttribute("trackinglabel"));
             quiz.myProgress.splice(quiz.currentQ, 1, correct);
 
@@ -546,7 +549,7 @@
 				}
             }
 
-            $("#feedback").html(fbTxt);
+            $("#feedbackHeader").html(fbTxt);
 			$("#questionAudio").empty();
 			
 			//if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
@@ -561,7 +564,7 @@
             }
             $("#qTxt").html("");
 
-            var scormScore = Math.ceil(myScore / quiz.questions.length * 100, x_currentPageXML.getAttribute("trackinglabel"));
+            var scormScore = Math.round((myScore * 100 / quiz.questions.length) * 100)/100;
             XTSetPageScore(x_currentPage, scormScore);
             this.resultsShown = true;
         };

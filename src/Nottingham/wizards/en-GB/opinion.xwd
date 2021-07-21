@@ -1,47 +1,47 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="Provide instructions here" showfeedback="true" feedback="Provide feedback here"
+      <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="Enter Instruction" showfeedback="true" feedback="Provide feedback here"
 	  quesCount="Question {i} of {n}"
 	  onCompletion="You have completed the questionnaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit" 
+	  resetBtnText="Reset"
 	  />]]></opinion>
     </newNodes>
   </pageWizard>
 
   <!-- OPINION=============================== -->
-    <opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
+    <opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#opinion" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
+	<instructions label="Instructions" type="textArea"  height="120"/>
     <align label="Align Text" options="Left,Right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
-    <instructions label="Instructions" type="textArea"  height="120"/>
-    <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" />
-    <feedback label="Feedback" type="textArea"  height="120"/>
-	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
+    <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" conditionTrigger="true" />
+    <feedback label="Feedback" type="textArea" height="120" condition="showfeedback!='false'"/>
 
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
     <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
-    <submitBtnTip label="Submit Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
-    <submitBtnWidth label="Submit Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
+    <resetBtnText label="Reset Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Reset" language="true" />
 
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+	
 	<imgGroup type="group" label="Image" optional="true">
 		<img label="File" type="media" defaultValue="Select an Image" optional="true"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
 	</imgGroup>
 
 	<graph label="Graph" type="group" optional="true">
-		<colour label="Colour" type="colourPicker" defaultValue="0x000000" optional="true" tooltip="The colour used for this page on the graph"/>
-		<key label="Show Key" type="CheckBox" defaultValue="true" optional="true" tooltip="Show a key listing page names and colours"/>
-		<diagram label="Hide Graph" type="CheckBox" defaultValue="false" optional="true" tooltip="Do not show the graph at the end of the questionnaire"/>
+		<diagram label="Hide Graph" type="CheckBox" defaultValue="false" optional="true" conditionTrigger="true" tooltip="Do not show the graph at the end of the questionnaire"/>
+		<colour label="Colour" type="colourPicker" defaultValue="0x000000" optional="true" condition="diagram!='true'" tooltip="The colour used for this page on the graph"/>
+		<key label="Show Key" type="CheckBox" defaultValue="true" optional="true" condition="diagram!='true'" tooltip="Show a key listing page names and colours"/>
 	</graph>
 	
     <layout label="Layout" type="group" optional="true">
-      <list label="Question Layout" type="ComboBox" options="One Per Page,List in Pages,List All" data="false,true,all" optional="true" defaultValue="false"/>
+      <list label="Question Layout" type="ComboBox" options="One Per Page,List in Pages,List All" data="false,true,all" optional="true" defaultValue="false" conditionTrigger="true"/>
       <paging label="Use Paging" type="checkbox" optional="true" tooltip="Group question list in pages if using list mode" defaultValue="true" deprecated="This property is deprecated - use the List in Pages question layout to create pages of questions"/>
-      <!--<pagesize label="Questions Per Page" type="textinput" wysiwyg="false" optional="true" tooltip="Maximum number of questions shown per page if page mode is used." defaultValue="10" />-->
-	  <pagesize label="Questions Per Page" type="NumericStepper" min="1" max="100" step="1" optional="true" defaultValue="10" tooltip="Maximum number of questions per page (when list in pages layout)"/>
+	  <pagesize label="Questions Per Page" type="NumericStepper" min="1" max="100" step="1" optional="true" defaultValue="10" condition="list=='true'" tooltip="Maximum number of questions per page (when list in pages layout)"/>
     </layout>
 
       <newNodes>
@@ -55,7 +55,7 @@
 	  <name label="Label" type="TextInput" mandatory="true" defaultValue="Class" wysiwyg="false"/>
 
     <newNodes>
-      <opinionQuestion><![CDATA[<opinionQuestion  name="Question" title="Title used on graph" prompt="Here is a prompt" scale="false" type="Single Answer" classWeight="1" interactivity="slider" />]]></opinionQuestion>
+      <opinionQuestion><![CDATA[<opinionQuestion  name="Question" prompt="Enter a Prompt" scale="false" classWeight="1" interactivity="slider" />]]></opinionQuestion>
     </newNodes>
   </opinionClass>
 
@@ -63,6 +63,7 @@
     <prompt label="Question" type="TextArea"  height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
     <classWeight label="Weighting" type="TextInput" wysiwyg="false" />
+	<interactivity label="Interactivity" options="Radio Buttons, Slider" mandatory="true" type="ComboBox" data="radio-buttons,slider" defaultValue="slider" width="120"/>
 	
 	<imgGroup type="group" label="Image" optional="true">
 		<image label="File" type="media" defaultValue="Select an Image" optional="true"/>
@@ -71,7 +72,6 @@
 	
     <scale label="Reverse scale" type="CheckBox" />  
     <sound label="Sound" type="Media" optional="true"/>
-    <interactivity label="Interactivity" options="Radio Buttons, Slider" mandatory="true" type="ComboBox" data="radio-buttons,slider" defaultValue="slider" width="120"/>
 		
     <newNodes>
       <opinionOption><![CDATA[<opinionOption name="Answer" text="Here is an option" />]]></opinionOption>

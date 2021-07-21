@@ -250,6 +250,44 @@ class XerteXWDBuilder
 		}
 		return 0;
 	}
+
+	public function cleanupMenu()
+	{
+		// Remove all empty menus
+		_debug("Cleanup main menu (count=" . count($this->menuattrs) .")");
+		for ($i=count($this->menuattrs)-1; $i>=0; $i--)
+		{
+			$menu = $this->menuattrs[$i];
+			_debug("Check menu " . $menu);
+			// find all nodes with menu attribute $menu
+			$menuitems = $this->xml->xpath("//*[@menu='" . $menu . "' and not(@deprecated)]");
+			$menuitemnames = array();
+			foreach($menuitems as $menuitem)
+			{
+				$menuitemnames[] = $menuitem->getName();
+			}
+			_debug("Menu $menu: "  . print_r($menuitemnames, true));
+			if (count($menuitems) == 0)
+			{
+				// Remove menu
+				_debug("Remove menu " . $menu);
+				array_splice($this->menuattrs, $i, 1);
+			}
+		}
+
+		$str = "";
+		$count = count($this->menuattrs);
+		for($i=0; $i<$count; $i++)
+		{
+			if ($i>0)
+			{
+				$str .= ',';
+			}
+			$str .= $this->menuattrs[$i];
+		}
+		// Atttribute menus has to be present
+		$this->xml['menus'] = $str;
+	}
 }
 
 ?>

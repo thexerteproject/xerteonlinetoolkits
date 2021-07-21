@@ -203,7 +203,7 @@ function indexOf($nodes, $node)
 
 function addNode($index, $node, $root)
 {
-		$count = count($root);
+		$count = count($root->childNodes);
 		if($count == 0)
 		{
 			echo "First";

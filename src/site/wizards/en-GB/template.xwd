@@ -9,8 +9,6 @@
 		<language type="LanguageList" label="Language" width="170" mandatory="true" defaultValue=""/>
 		
 		<searchGroup type="group" label="Search" optional="true" tooltip="Add the ability to search for relevant sections within a project" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/81-xerteproject-site/media/Bootstrap%20Search%20Documentation.pdf' target='_blank'&gt;Bootstrap Search Guide&lt;/a&gt;&lt;/u&gt; for help setting up and using the search functionality">
-			<!--<search label="Free Text Search" type="CheckBox" defaultValue="false" tooltip="Find relevant sections by searching using a free text box" optional="true"/>-->
-			<!--<searchType label="Search Target" type="ComboBox" data="meta,title,text" options="Metadata,Titles,All Text" defaultValue="meta" tooltip="The data that the free text search is checked against. Metadata can be added to individual sections" optional="true"/>-->
 			<category label="Category Search" type="CheckBox" defaultValue="false" tooltip="Find relevant sections by selecting from a number a categories" optional="true"/>
 			<categoryInfo label="Categories" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" headers="Category name,Options" newRow="," defaultValue="|" optional="true" editable="1,1" wysiwyg="false,true" tooltip="Set up the categories used to filter in searches. Categories must have a name and contain one or more options (each option on a separate line)"/>
 			<categoryTxt label="Text" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Search introduction text"/>
@@ -66,11 +64,11 @@
 		</footerGroup>
 
 		<wcagGroup type="group" label="Accessilibity logo and link" optional="true" tooltip="Hide the accessilibity logo and link or change the link.">
-                    <wcagHide label="Hide the Accessibility logo and link" type="Checkbox" conditionTrigger="true" defaultValue="false" optional="true"/>
-        			<wcagAlt label="Accessilibity logo alt text" type="TextInput" defaultValue="WCAG WAI-AA logo" condition="wcagHide=='false'" optional="true"/>
-        			<wcagLinkTitle label="Link tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="wcagHide=='false'" optional="true"/>
-                    <wcagLink type="Media" label="Accessibility statement link" tooltip="Add a url or browse to a file to link to your own accessibility statement. Leave empty to link to the accessibility statement on xerte.org.uk." condition="wcagHide=='false'" optional="true"/>
-        		</wcagGroup>
+			<wcagHide label="Hide the Accessibility logo and link" type="Checkbox" conditionTrigger="true" defaultValue="false" optional="true"/>
+			<wcagAlt label="Accessilibity logo alt text" type="TextInput" defaultValue="WCAG WAI-AA logo" condition="wcagHide=='false'" optional="true"/>
+			<wcagLinkTitle label="Link tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="wcagHide=='false'" optional="true"/>
+			<wcagLink type="Media" label="Accessibility statement link" tooltip="Add a url or browse to a file to link to your own accessibility statement. Leave empty to link to the accessibility statement on xerte.org.uk." condition="wcagHide=='false'" optional="true"/>
+		</wcagGroup>
 		
 		<print type="CheckBox" label="Print Button" defaultValue="true" optional="true" tooltip="Add a print button to the navigation bar. Pages can still be printed via browser controls if button is not added"/>
 		<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the project. These are not shown in the live project."/>
@@ -128,7 +126,13 @@
         <expandMain label="Expand main contents" type="CheckBox" defaultValue="false" optional="true" condition="sectionMenu=='true'" tooltip="If the table of contents is set to hidden then also expand the main contents to the width of the page"/>
     </sectionGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<customLinkID label="Page ID" type="TextInput" optional="true"/>
-	</customLinkGroup><filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches" common="true"/><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
+	</customLinkGroup><passwordGroup type="group" label="Password Protection" optional="true" tooltip="Access to this page will be restricted until a valid password is entered" common="true">
+		<password label="Password(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of passwords which give access to this page"/>
+		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Passwords are case sensitive when this option is checked"/>
+		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="This page is password protected. Enter the password below to access the page:" tooltip="The instructions which appear in the password block"/>
+		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="Invalid password" tooltip="The error message which appears when an incorrect password is entered"/>
+		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the password submit button"/>
+	</passwordGroup><filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches" common="true"/><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 	</lightboxGroup><variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
@@ -146,6 +150,14 @@
 			<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 		</hideShow>
 		
+		<passwordGroup type="group" label="Password Protection" optional="true" tooltip="Access to this section will be restricted until a valid password is entered">
+			<password label="Password(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of passwords which give access to this section"/>
+			<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Passwords are case sensitive when this option is checked"/>
+			<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="This section is password protected. Enter the password below to access:" tooltip="The instructions which appear in the password block"/>
+			<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="Invalid password" tooltip="The error message which appears when an incorrect password is entered"/>
+			<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the password submit button"/>
+		</passwordGroup>
+		
 		<links label="Subsection Links" type="ComboBox" width="80" options="None,Horizontal List,Vertical List" data="none,hlist,vlist" defaultValue="hlist" optional="true" tooltip="Add a list of subsection links below the section title. Only subsections where title isn't hidden will be included."/>
 		
 		<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this section only">
@@ -153,7 +165,6 @@
 			<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this section. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 		</lightboxGroup>
 		
-		<!--<metadata label="Metadata" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of metadata terms used when search is turned on"/>-->
 		<filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches"/>
 
 		<newNodes>

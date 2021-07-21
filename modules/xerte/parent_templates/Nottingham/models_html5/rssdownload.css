@@ -14,7 +14,7 @@
 		padding-top:	1em;
 		padding-bottom:	1em;
 	}
-.rssDownloadDeployment, .rssDownloadScorm2004, .rssDownloadScorm12{
+.rssDownloadDeployment, .rssDownloadScorm2004, .rssDownloadScorm12, .rssDownloadOffline {
 	line-height:1.8em;
 	margin-right:1.4em;
 	}

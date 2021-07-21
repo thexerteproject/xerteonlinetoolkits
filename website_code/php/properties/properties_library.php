@@ -112,12 +112,6 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 
 	include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
 
-	if(function_exists("display_property_engines")){
-
-		display_property_engines($change,$msgtype);
-
-	}
-
     if(template_access_settings($_POST['template_id'])!='Private'){
 
         echo "<p>" . PROPERTIES_LIBRARY_PROJECT_LINK . "</p>";
@@ -172,6 +166,14 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
         echo "<br><br><p>" . PROPERTIES_LIBRARY_PROJECT_IFRAME . "</p><form><textarea rows='3' cols='40' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form>";
 
     }
+	
+	if(function_exists("display_property_engines")){
+		
+		echo "<br><br>";
+		
+		display_property_engines($change,$msgtype);
+
+	}
 
 }
 
@@ -833,7 +835,6 @@ function sharing_info($template_id)
     return $info;
 }
 
-
 function folder_sharing_info($folder_id)
 {
     global $xerte_toolkits_site;
@@ -905,6 +906,17 @@ function folder_sharing_info($folder_id)
     $info .=  "</ul>";
 
     return $info;
+}
+
+function nr_user_groups()
+{
+    $count = 0;
+    $sql = "select count(*) as count from user_groups";
+    $res = db_query($sql);
+
+    if ($res !== false && $res != null)
+        $count = $res[0]['count'];
+    return $count;
 }
 
 function rss_syndication($template_id)

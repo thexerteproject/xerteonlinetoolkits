@@ -1,7 +1,7 @@
 <language name="English" code="en-GB">
     <layout closetooltip="Close this pane" opentooltip="Open this pane" resizetooltip="Resize this pane" pin="Pin" unpin="Un-Pin" />
     <edit label="Edit ..." tooltip="Edit this option" description="Edit button" />
-    <insertDialog label="Insert New {i}" preview="Preview">
+    <insertDialog label="Insert New {i}" preview="Preview" example="View example">
         <insertBefore label="Before" tooltip="Insert before selected page"/>
         <insertAfter label="After" tooltip="Insert after selected page"/>
         <insertAtEnd label="At end" tooltip="Insert as last page"/>
@@ -49,6 +49,7 @@
 	<calendar tooltip="Select Date"/>
 	<hidePage title="HIDDEN" tooltip="This page is hidden"/>
 	<standalonePage tooltip="This is a stand-alone page"/>
+	<passwordPage tooltip="This page/section is password protected"/>
 	<unmarkForCompletion tooltip="This page is not required for completion"/>
 	<advancedPage title="Advanced" tooltip="This page is not part of this (sub-)template and can only be added in advanced mode."/>
 	<filemenu title="File">

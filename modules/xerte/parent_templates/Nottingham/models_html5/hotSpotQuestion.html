@@ -36,6 +36,9 @@
 		var AmountOfWrongScore = 0;
 		var highlightsArray= [];
 		var allHighlightsArray= [];
+		var amountOfCorrect = 0
+		var amountOfWrong = 0
+		var resize = false
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 
@@ -52,11 +55,15 @@
 			this.attempts = 0;
 			hotSpotScore = 0;
 			AmountOfWrongScore = 0;
+			amountOfCorrect = 0;
+			amountOfWrong = 0;
+			highlightsArray= [];
 			this.highlightsArray= [];
 			this.allHighlightsArray= [];
 			this.amountOfCorrect = 0;
 			this.amountOfWrong = 0;
 			this.resizeImg(false);
+
 		};
 
 		// function called every time the size of the LO is changed
@@ -79,7 +86,20 @@
 						$x_window.resize();
 					}
 				}
+				var resizehighlightArray = []
+				allHighlightsArray.forEach((highlight, index)=>{
+					if($('area[data-key="'+index+'"]').hasClass('selected')){
+						resizehighlightArray.push(index)
+					}
+				})
+				allHighlightsArray = []
 				this.resizeImg(false);
+				debugger
+				resizehighlightArray.forEach((h)=>{
+					$('area[data-key="'+h+'"]').mapster('select')
+					$('area[data-key="'+h+'"]').addClass("selected")
+				})
+				resize = true;
 			};
 
 		this.init = function() {
@@ -87,9 +107,8 @@
 			if(x_currentPageXML.getAttribute("trackingWeight") != null){
 				this.weighting = x_currentPageXML.getAttribute("trackingWeight");
 			}
-			XTSetPageType(x_currentPage, 'fill-in', 1, this.weighting);
+			XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
 
-			debugger;
 			var $textHolder = $('#textHolder');
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				$textHolder.remove();
@@ -182,7 +201,59 @@
 			$("#checkButton").button({
 				label: "Check"
 			}).click(function (){
+				var stroke = true;
+				var highlightColour = "#ffff00";
+				var strokeWidth = 2;
+				var strokeOpacity = 1;
+				var fill = true;
+				var fillColor = "#000000";
+				var fillOpacity = 0.3;
+				if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
+					highlightColour = x_getColour(x_currentPageXML.getAttribute("hicol"));
+				}
+				if (x_currentPageXML.getAttribute("hs_strokeWidth") != undefined && x_currentPageXML.getAttribute("hs_strokeWidth") != "") {
+					strokeWidth = parseInt(x_currentPageXML.getAttribute("hs_strokeWidth"));
+					if (strokeWidth == 0)
+					{
+						stroke = false;
+					}
+				}
+				if (x_currentPageXML.getAttribute("hs_strokeOpacity") != undefined && x_currentPageXML.getAttribute("hs_strokeOpacity") != "") {
+					strokeOpacity = parseFloat(x_currentPageXML.getAttribute("hs_strokeOpacity"));
+				}
+				if (x_currentPageXML.getAttribute("hs_fill") != undefined && x_currentPageXML.getAttribute("hs_fill") != "") {
+					fill = x_currentPageXML.getAttribute("hs_fill") === "true";
+				}
+				if (x_currentPageXML.getAttribute("hs_fillColor") != undefined && x_currentPageXML.getAttribute("hs_fillColor") != "") {
+					fillColor = x_getColour(x_currentPageXML.getAttribute("hs_fillColor"));
+				}
+				if (x_currentPageXML.getAttribute("hs_fillOpacity") != undefined && x_currentPageXML.getAttribute("hs_fillOpacity") != "") {
+					fillOpacity = parseFloat(x_currentPageXML.getAttribute("hs_fillOpacity"));
+				}
+				optionsCorrect = {
+					render_select:
+							{
+								fill: fill,
+								fillColor: fillColor.substr(1),
+								fillOpacity: fillOpacity,
+								stroke: stroke,
+								strokeColor: "7FFF00",
+								strokeOpacity: strokeOpacity,
+								strokeWidth: strokeWidth
+							},
+					scaleMap: true,
+					clickNavigate: true
+				};
+				if (x_currentPageXML.getAttribute("answers") == "true") {
+					// $("area").mapster('deselect');
+					$('img').mapster('set_options', optionsCorrect);
+				}
+				else {
 
+					$("#pageContents .hotspot.selected").mapster("select");
+				}
+				hotSpotScore = 0;
+				AmountOfWrongScore = 0;
 				amountOfCorrectOptions = 0
 				allHighlightsArray.forEach((highlight)=>{
 					if(highlight.getAttribute("truth") === "true"){
@@ -190,8 +261,8 @@
 					}
 				})
 
-				var amountOfCorrect = 0;
-				var amountOfWrong = 0;
+				amountOfCorrect = 0;
+				amountOfWrong = 0;
 				highlightsArray.forEach((highlight)=>{
 					if(highlight.getAttribute("truth") === "true"){
 						amountOfCorrect++;
@@ -214,23 +285,32 @@
 
 					})
 
+					var amountOfCorrectAnswers = 0;
 					allHighlightsArray.forEach((highlight, index)=>{
 						if(highlight.getAttribute('truth') === "true"){
+							amountOfCorrectAnswers++
 							truthNames = truthNames + "Hotspot" + " " + highlight.getAttribute("name");
 							if (index !== highlightsArray.length){
 								truthNames = truthNames + ", "
 							}
+
+							if (x_currentPageXML.getAttribute("answers") == "true"){
+								debugger
+								$('area[data-key="'+index+'"]').mapster('deselect')
+								$('img').mapster('set_options', optionsCorrect);
+								$('area[data-key="'+index+'"]').mapster('select')
+							}
+
 						}
 					})
 
 					var name;
 					highlightsArray.forEach((highlight, index) =>{
 						name = "Hotspot" + " " + highlight.getAttribute("name");
-
 						var points = JSON.parse(highlight.getAttribute("points"))
 						var x = (points[0]["x"]+points[1]["x"])/2
 						var y = (points[0]["y"]+points[2]["y"])/2
-						XTEnterInteraction(x_currentPage, index, "fill-in", name, [], truthNames, x_currentPageXML.getAttribute("generalFeedback"), x_currentPageXML.getAttribute("grouping"));
+						// XTEnterInteraction(x_currentPage, index, "fill-in", name, [], truthNames, x_currentPageXML.getAttribute("generalFeedback"), x_currentPageXML.getAttribute("grouping"));
 
 						if(highlight.getAttribute("truth") === "true"){
 							hotSpotScore++;
@@ -238,15 +318,33 @@
 							AmountOfWrongScore++;
 						}
 					})
+
 					debugger
-					var scoreTxt = x_currentPageXML.getAttribute("scoreTxt")
-					if(scoreTxt==""){
-						scoreTxt = "You have /r answers right and /w wrong"
+					var scoreLabel;
+					if(AmountOfWrongScore==0){
+						var allgood = x_currentPageXML.getAttribute("allGood")
+						if(allgood=="" || allgood == undefined){
+							allgood = "You have selected all correct answers"
+						}
+						scoreLabel = allgood;
+					}else if (hotSpotScore >= 1){
+						var scoreTxt = x_currentPageXML.getAttribute("scoreTxt")
+						if(scoreTxt==""){
+							scoreTxt = "You have /r answers right and /w wrong"
+						}
+
+						var scoreTemp = scoreTxt.replace("/r", hotSpotScore)
+
+						var score = scoreTemp.replace("/w", AmountOfWrongScore)
+						scoreLabel = score;
+					}else{
+						var allwrong = x_currentPageXML.getAttribute("allWrong")
+						if(allwrong=="" || allwrong == undefined){
+							allwrong = "You have not selected any of the correct answers"
+						}
+						scoreLabel = allwrong;
 					}
 
-					var scoreTemp = scoreTxt.replace("/r", hotSpotScore)
-
-					var scoreLabel = scoreTemp.replace("/w", AmountOfWrongScore)
 
 
 					if(highlightsArray.length > 0){
@@ -274,25 +372,41 @@
 
 
 
-					var setScore = (hotSpotScore/highlightsArray.length)*100
+					//var setScore = (hotSpotScore/highlightsArray.length)*100;
+					var setScore = 0;
+					if (hotSpotScore == highlightsArray.length)
+					{
+						setScore = 100.0;
+					}
+					var correct = true,
+							l_options = [],
+							l_answers = [],
+							l_feedbacks = [];
 					highlightsArray.forEach((highlight, index)=> {
-						var result;
-						if(highlight.getAttribute("truth")==="true"){
-							result = {
-								success: true,
-								score: 100.0
-							}
-						}else{
-							result = {
-								correct: false,
-								score: 0
-							}
+						var currCorrect = highlight.getAttribute("truth")==="true";
+						correct = correct && currCorrect;
+						if (highlight.getAttribute("name") != undefined)
+						{
+							var answerTxt = highlight.getAttribute("name");
 						}
-
-						XTExitInteraction(x_currentPage, index, result, "", highlight.getAttribute("name"), "", x_currentPageXML.getAttribute("trackinglabel"));
-					})
-
-					XTSetPageScore(x_currentPage, setScore);
+						else
+						{
+							var answerTxt = 'Hotspot ' + highlight.getAttribute("id") + 1;
+						}
+						l_options.push({
+							id :highlight.getAttribute("id")+1+"",
+							answer: answerTxt,
+							result: currCorrect
+						});
+						l_answers.push(answerTxt);
+						l_feedbacks.push(x_GetTrackingTextFromHTML(highlight.text, ""));
+					});
+					var result = {
+						success: correct,
+						score: setScore
+					}
+					XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+					XTSetPageScore(x_currentPage, setScore, x_currentPageXML.getAttribute("trackinglabel"));
 
 				}else{
 
@@ -321,15 +435,21 @@
 		};
 
 		this.resizeImg = function(firstLoad) {
-			debugger
+
 			var imgMaxW, imgMaxH;
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
-				imgMaxW = Math.round($x_pageHolder.width() - 30);
-				imgMaxH = Math.round($x_pageHolder.height() - 30);
-				$('#panel').css('margin', '0px');
+				imgMaxW = Math.round($x_pageHolder.width() * 0.85 -20);
+				imgMaxH = Math.round($x_pageHolder.height() * 0.85 -20);
+				$('#panel').css({
+					'margin' : '0px',
+				});
 			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
-				imgMaxW = Math.round($x_pageHolder.width() * 0.8 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxW = Math.round($x_pageHolder.width() * 0.6 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 0.6 - 20);
+				$('#panel').css({
+					'margin' : '0px',
+				});
+
 			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.3 - 20);
 				imgMaxH = Math.round($x_pageHolder.height() - 50);
@@ -344,15 +464,20 @@
 			// 	var percentage = imgMaxW/imgMaxH
 			// 	imgMaxW = imgMaxW/percentage
 			// }
-			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
 
-			debugger
+			if(imgMaxH+70 > $x_pageHolder.height()){
+				imgMaxH*=0.75
+			}
+			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
 
 			$img.css({
 				"opacity"	:1,
 				"filter"	:'alpha(opacity=100)',
-				"max-height" : imgMaxH-50,
-				"max-width"	:imgMaxW-50
+				"max-height" : imgMaxH,
+				"max-width"	:imgMaxW
+			});
+			$('#panel').css({
+				'max-width' : $img.width() + 'px',
 			});
 			//
 			// if($img.width() > $img.height()){
@@ -368,14 +493,36 @@
 			// create hotspots - taking scale of image into account
 			var scale = $img.width() / $img.data("origSize")[0],
 				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;
+			var correctOptions = [],
+					correctAnswer = [],
+					correctFeedback = [];
 			$("#hsHolder").html("<map id=\"hsHolder_map\" name=\"hsHolder_map\"></map>");
 
 			$(x_currentPageXML).children()
 				.each(function(i) {
+
 					var _this = this;
-					allHighlightsArray.push(_this)
+					_this.setAttribute("id", i);
+					allHighlightsArray.push(_this);
+					if (this.getAttribute("name") != undefined)
+					{
+						var answerTxt = this.getAttribute("name");
+					}
+					else
+					{
+						var answerTxt = 'Hotspot ' + i + 1;
+					}
+					correctOptions.push({
+						id: (i+1)+"",
+						answer: answerTxt,
+						result: this.getAttribute('truth') == 'true'
+					});
+					if (this.getAttribute('truth') == 'true') {
+						correctAnswer.push(answerTxt);
+					}
+					correctFeedback.push(x_GetTrackingTextFromHTML(this.getAttribute('text'), ""));
 					// var $hotspot = $('<a class="hotspot transparent" href="#" tabindex="' + (i+2) + '" />');
-					var $hotspot = $('<area class="hotspot" shape="poly" href="#" tabindex="' + (i+2) + '" />');
+					var $hotspot = $('<area class="hotspot" data-key="'+i+'"  shape="poly" href="#" tabindex="' + (i+2) + '" />');
 
 					var coords = [];
 					var coords_string = "";
@@ -411,7 +558,8 @@
 						.click(function() {
 
 							var $this = $(this);
-							if($this[0].className === "hotspot highlight"){
+							if($this.hasClass('hotspot') && !$this.hasClass("selected")){
+
 								$this.addClass("selected");
 								highlightsArray.push(_this)
 
@@ -425,33 +573,37 @@
 
 							}
 
-
-
-							if (x_currentPageXML.getAttribute("highlight") == "true") {
-
-								setTimeout(function(){
-									$("area").mapster('select');
-								}, 100);
-							}
+							// if (x_currentPageXML.getAttribute("highlight") == "true") {
+							//
+							// 	setTimeout(function(){
+							// 		$('img').mapster('set_options', highlightoptions);
+							// 		$("area").mapster('highlight');
+							// 	}, 100);
+							// }
 
 							x_pageContentsUpdated();
 						})
 						.focusin(function() {
+							$('img').mapster('set_options', tabfocusoptions);
 							$(this)
 								.removeClass("transparent")
 								.addClass("highlight");
-							})
+							$(this).mapster('highlight');
+
+						})
 						.focusout(function() {
+							$('img').mapster('set_options', options);
 							$(this)
 								.removeClass("highlight")
 								.addClass("transparent");
+							$("img").mapster('highlight', false);
 							})
 						.keypress(function(e) {
 							var charCode = e.charCode || e.keyCode;
 							if (charCode == 32) {
 								$(this).trigger("click");
 							}
-						});
+						})
 					if (x_currentPageXML.getAttribute("hs_showTooltip") != undefined && x_currentPageXML.getAttribute("hs_showTooltip") !== "false") {
 						if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
 							$hotspot.attr("title", this.getAttribute("alttext"));
@@ -466,6 +618,13 @@
 
 					$("#hsHolder_map").append($hotspot);
                 });
+
+			var label = x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute('name'), "Hotspot question " + (x_currentPage+1));
+			if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
+			{
+				label = x_currentPageXML.getAttribute("trackinglabel");
+			}
+			XTEnterInteraction(x_currentPage, 0, 'multiplechoice', label, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 
 			if (selected != undefined) {
 
@@ -530,16 +689,35 @@
 				scaleMap: true,
 				clickNavigate: true
 			};
+			var tabfocusoptions = JSON.parse(JSON.stringify(options));
+			// Make sure focus is ALWAYS visible, even if strokewidth is set to 0
+			tabfocusoptions.render_highlight.stroke = true;
+			tabfocusoptions.render_highlight.strokeWidth = (strokeWidth == 0? 1 : strokeWidth * 2);
+
+	/*		var highlightoptions = JSON.parse(JSON.stringify(options));
+
+			highlightoptions.render_select.stroke = fill/3;
+			highlightoptions.render_select.fillOpacity = fillOpacity/3;
+			highlightoptions.render_select.stroke = stroke/3;
+			highlightoptions.render_select.strokeOpacity = strokeOpacity/3;
+			highlightoptions.render_select.strokeWidth = strokeWidth/3;*/
 
 
 			$('img').mapster(options);
+
 			if (x_currentPageXML.getAttribute("highlight") == "true") {
+				if(!resize) {
 
-				setTimeout(function(){
+					allHighlightsArray.forEach((highlight, index) => {
+						$('area[data-key="' + index + '"]').addClass('selected')
+						highlightsArray.push(highlight)
+					})
+					setTimeout(function () {
+						/*					$('img').mapster('set_options', highlightoptions);*/
+						$("area").mapster('select');
 
-					$("area").mapster('select');
-
-				}, 100);
+					}, 100);
+				}
 			}
 			else {
 

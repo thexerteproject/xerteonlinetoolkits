@@ -34,6 +34,12 @@ _load_language_file("/folderproperties.inc");
 include "../url_library.php";
 include "../user_library.php";
 
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
+
 $parameters = explode("_", $_POST['folder_id']);
 
 $folder_id = $parameters[0];

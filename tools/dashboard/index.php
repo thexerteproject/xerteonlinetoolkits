@@ -153,10 +153,15 @@ if(is_numeric($id) || $id == null) {
     $info->lrs = $statistics_available->lrs;
     $info->dashboard = $statistics_available->dashboard;
     $info->role = $role;
+    $info->actor = $USER->email;
+    $info->displayname = $USER->displayname;
+    $info->firstname = $USER->firstname;
+    $info->lastname = $USER->lastname;
 
     // Fix lrsproxy and add php session if needed
     $info->lrs->lrsendpoint = $xerte_toolkits_site->site_url . (function_exists('addSession') ? addSession("xapi_proxy.php") . "&tsugisession=1" : "xapi_proxy.php");
     _debug("Dashboard setup: " . print_r($info, true));
+    _debug("Dashboard setup, json " . json_encode($info));
 }
 
 /*
@@ -322,3 +327,6 @@ body_scroll handles the calculation of the documents actual height in IE.
         x_Dashboard.show_dashboard(startstartofday, todayendofday);
     });
 </script>
+
+</body>
+</html>

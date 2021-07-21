@@ -21,6 +21,8 @@
 require_once(dirname(__FILE__) . "/../config.php");
 _load_language_file("/editor/uploadImage.inc");
 
+require (dirname(__FILE__) . "/../" . $xerte_toolkits_site->php_library_path . "user_library.php");
+
 function sanitizeName($file, &$response)
 {
     $filename = str_replace(' ', '_', $file);
@@ -72,7 +74,7 @@ if (!isset($_FILES['upload']))
 }
 
 // Check upload path, should contain USER-FILES
-if (strpos($_REQUEST['uploadURL'], 'USER-FILES') === false)
+if (strpos($_REQUEST['uploadPath'], 'USER-FILES') === false || strpos($_REQUEST['uploadPath'], '../') !== false || strpos($_REQUEST['uploadURL'], 'USER-FILES') === false)
 {
     // Invalid folder, reject!
     $response->uploaded = 0;

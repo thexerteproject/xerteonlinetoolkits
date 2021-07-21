@@ -514,6 +514,7 @@ var EDITOR = (function ($, parent) {
         // Create node text based on xml, do not use text of original node, as this is not correct
         var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", [wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecatedLevel], wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
         var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true");
+        var passwordIcon = toolbox.getExtraTreeIcon(key, "password", lo_data[key].attributes.password != undefined && lo_data[key].attributes.password != '');
         var standaloneIcon = toolbox.getExtraTreeIcon(key, "standalone", lo_data[key].attributes.linkPage == "true");
         var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');
 		var advancedIcon = toolbox.getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
@@ -521,7 +522,7 @@ var EDITOR = (function ($, parent) {
         // var nodeText = $("#" + current_node.id + "_text").html();
         var nodeText = $("<div>").html(current_node.text).find("#" + current_node.id + "_text").html();
 
-        var treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + nodeText + '</span>';
+        var treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + nodeText + '</span>';
         // Create the tree node
         var this_json = {
             id : key,
@@ -898,7 +899,7 @@ var EDITOR = (function ($, parent) {
 
             //node_options['optional'] = node_options['optional'].concat(optGroups);
 
-            // Determine whether optionsal properties are used and if theay are visble according to their condition
+            // Determine whether optional properties are used and if they are visble according to their condition
             // is optional property (or any children of group) already in project?
             for (var i = 0; i < node_options['optional'].length; i++) {
                 var found = [];
@@ -1283,6 +1284,13 @@ var EDITOR = (function ($, parent) {
 
         // Make sure subpanels are visible
         $("#subPanels").show();
+		
+		// remove any property groups that are empty because of conditions
+		$('.wizardgroup .wizardgroup_table').each(function() {
+			if ($(this).find('tr').length == 0) {
+				$(this).parents('.wizardattribute').remove();
+			}
+		});
     },
 
     addNodeToTree = function(key, pos, nodeName, xmlData, tree, select)
@@ -1322,11 +1330,12 @@ var EDITOR = (function ($, parent) {
         // Add icons to the node, all should be switched off
         // Create node text based on xml, do not use text of original node, as this is not correct
         var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
+        var passwordIcon = toolbox.getExtraTreeIcon(lkey, "password", false);
         var standaloneIcon = toolbox.getExtraTreeIcon(lkey, "standalone", false);
         var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
 		var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && template_sub_pages.indexOf(nodeName) == -1);
 
-        var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
+        var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
         var this_json = {
             id : lkey,
             text : treeLabel,
@@ -1508,6 +1517,8 @@ var EDITOR = (function ($, parent) {
                 valid_children: lchildren
             };
         };
+
+        loLanguage = lo_data['treeroot'].attributes.language;
 
         // build Types structure for the types plugin
         var node_types = {};

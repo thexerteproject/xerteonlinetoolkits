@@ -2,7 +2,7 @@
 
 	#panel.right {
 		float:	right;
-		margin:	0 0 0 20px;
+		margin:	0 0 20px 20px;
 	}
 
 	#panel.left {
@@ -91,6 +91,7 @@
 
 	#checkButton{
 		float: right;
+		margin-top: 30px;
 	}
 
 	#score h3{

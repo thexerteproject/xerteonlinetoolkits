@@ -51,16 +51,9 @@ function properties_ajax_send_prepare(url){
 	 * @author Patrick Lockley
 	 */
 
-function properties_stateChanged(){
-
-	if (xmlHttp.readyState==4){
-
-		if(xmlHttp.responseText!=""){
-
-			document.getElementById('dynamic_area').innerHTML = xmlHttp.responseText;
-			if (typeof "makeeditor" == "function")
-				makeeditor();
-		}
+function properties_stateChanged(response){
+	if(response!=""){
+		document.getElementById('dynamic_area').innerHTML = response;
 	}
 }
 
@@ -73,18 +66,14 @@ function properties_stateChanged(){
 	 */
 
 function publish_template(){
-
-	if(setup_ajax()!=false){
-
-			var url="publish.php";
-
-			xmlHttp.open("post",properties_ajax_php_path + url,true);
-			xmlHttp.onreadystatechange=properties_stateChanged;
-			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xmlHttp.send('template_id=' + window.name);
-
-	}
-
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/properties/publish.php",
+		data: {template_id: window.name},
+	})
+	.done(function(response){
+		properties_stateChanged(response);
+	});
 }
 
  /**
@@ -95,38 +84,10 @@ function publish_template(){
 	 * @author Patrick Lockley
 	 */
 
-function screen_size_stateChanged(){
-
-	if (xmlHttp.readyState==4){
-
-		if(xmlHttp.responseText!=""){
-
-			temp = xmlHttp.responseText.toString().split("~");
-
-			document.getElementById('dynamic_area').innerHTML += "<p>" + EMBED_CODE + "</p><form><textarea rows='10' cols='40'><iframe src='http://" + site_url + "play_" + window.name +"' width='" + temp[0] + "' height='" + temp[1] + "' frameborder=\"0\"></iframe></textarea></form>";
-
-
-		}
-	}
-}
-
- /**
-	 *
-	 * Function name share state changed
- 	 * This function handles the display for the drop down name list for the sharing tab
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
-
-function name_share_stateChanged(){
-
-	if (xmlHttp.readyState==4){
-
-		if(xmlHttp.responseText!=""){
-
-			document.getElementById('area2').innerHTML = xmlHttp.responseText;
-
-		}
+function screen_size_stateChanged(response){
+	if(response!=""){
+		temp = response.toString().split("~");
+		document.getElementById('dynamic_area').innerHTML += "<p>" + EMBED_CODE + "</p><form><textarea rows='10' cols='40'><iframe src='http://" + site_url + "play_" + window.name +"' width='" + temp[0] + "' height='" + temp[1] + "' frameborder=\"0\"></iframe></textarea></form>";
 	}
 }
 
@@ -138,16 +99,47 @@ function name_share_stateChanged(){
 	 * @author Patrick Lockley
 	 */
 
-function share_this_stateChanged(){
+function share_this_stateChanged(response){
+	if(response!=""){
+		document.getElementById('area2').innerHTML = "";
+		document.getElementById('area3').innerHTML = response;
+		sharing_status_template();
+	}
+}
 
-	if (xmlHttp.readyState==4){
+/**
+ *
+ * Function share this state changed
+ * This function handles the response from making a share request for groups
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
-		if(xmlHttp.responseText!=""){
+function group_share_this_stateChanged(response){
+	if(response!=""){
+		document.getElementById('area2').innerHTML = response;
+		group_sharing_status_template();
+	}
+}
 
-			document.getElementById('area2').innerHTML = "";
-			document.getElementById('area3').innerHTML = xmlHttp.responseText;
-			sharing_status_template();
 
+ /**
+	 *
+	 * Function delete share state changed
+ 	 * This function handles the deletion of a share
+	 * @version 1.0
+	 * @author Patrick Lockley
+	 */
+
+function delete_share_stateChanged(response, after_sharing_deleted){
+	sharing_status_template();
+
+	if(after_sharing_deleted){
+		if(typeof window_reference==="undefined"){
+			window.opener.refresh_workspace();
+		}
+		else {
+			window_reference.refresh_workspace();
 		}
 	}
 }
@@ -160,13 +152,8 @@ function share_this_stateChanged(){
 	 * @author Patrick Lockley
 	 */
 
-function share_rights_stateChanged(){
-
-	if (xmlHttp.readyState==4){
-
-		sharing_status_template();
-
-	}
+function share_rights_stateChanged(response){
+	sharing_status_template();
 }
 
  /**
@@ -177,25 +164,22 @@ function share_rights_stateChanged(){
 	 * @author Patrick Lockley
 	 */
 
-function rename_stateChanged(){
+function rename_stateChanged(response){
+	if(response!=""){
+		/*
+		* split the two returning bits of info (the html and the new file name)
+		*/
 
-	if (xmlHttp.readyState==4){
-		if(xmlHttp.responseText!=""){
-			/*
-			* split the two returning bits of info (the html and the new file name)
-			*/
-
-			array_response = xmlHttp.responseText.split("~~**~~");
-			document.getElementById('dynamic_area').innerHTML = array_response[2];
-			/*
-			* set the file name in the file_area
-			*/
-			if(typeof window_reference==="undefined"){
-				window.opener.refresh_workspace();
-			}
-			else {
-				window_reference.refresh_workspace();
-			}
+		array_response = response.split("~~**~~");
+		document.getElementById('dynamic_area').innerHTML = array_response[2];
+		/*
+		* set the file name in the file_area
+		*/
+		if(typeof window_reference==="undefined"){
+			window.opener.refresh_workspace();
+		}
+		else {
+			window_reference.refresh_workspace();
 		}
 	}
 }
@@ -219,36 +203,53 @@ function delete_sharing_template(template_id,id,who_deleted_flag, group=false){
 	var answer = confirm(SHARING_CONFIRM);
 	if(answer){
 		if(who_deleted_flag){
-			after_sharing_deleted = true;
+			var after_sharing_deleted = true;
+		}else{
+			var after_sharing_deleted = true;
 		}
 
-		if(setup_ajax()!=false){
-			$.ajax({
-				type: "POST",
-				url: "website_code/php/properties/remove_sharing_template.php",
-				data: {
-					template_id: template_id,
-					id: id,
-					group: group,
-					user_deleting_self: after_sharing_deleted
-				},
-			})
-				.done(function(response){
-					$('#area3').html(response);
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/properties/remove_sharing_template.php",
+			data: {
+				template_id: template_id,
+				user_id: user_id,
+				user_deleting_self: who_deleted_flag
+			}
+		})
+		.done(function(response){
+			delete_share_stateChanged(response, after_sharing_deleted);
+		});
+	}
+}
 
-					if(after_sharing_deleted){
-						if(typeof window_reference==="undefined"){
-							window.opener.refresh_workspace();
-						}
-						else {
-							window_reference.refresh_workspace();
-						}
 
-					}
+/**
+ *
+ * Function delete sharing template
+ * This function handles the deletion of a share by a user
+ * @param string template_id = window type to open
+ * @param string group_id = group we are removing
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
-					sharing_status_template()
-				});
-		}
+function group_delete_sharing_template(template_id,group_id){
+
+	var answer = confirm(SHARING_CONFIRM);
+
+	if(answer){
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/properties/group_remove_sharing_template.php",
+			data: {
+				template_id: template_id,
+				group_id: group_id
+			}
+		})
+		.done(function(response){
+			group_sharing_status_template(response);
+		});
 	}
 }
 
@@ -260,177 +261,156 @@ function delete_sharing_template(template_id,id,who_deleted_flag, group=false){
 	 * @author Patrick Lockley
 	 */
 
-function syndication_template(){
+function syndication_template() {
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/syndication_template.php",
+		 data: {
+			 tutorial_id: window.name
+		 }
+	 })
+	 .done(function (response) {
+		 rss_stateChanged(response);
+	 });
+ }
 
-	if(setup_ajax()!=false){
-
-		var url="syndication_template.php";
-
-		xmlHttp.open("post",properties_ajax_php_path + url,true);
-		xmlHttp.onreadystatechange=rss_stateChanged;
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-		xmlHttp.send('tutorial_id=' + window.name);
-
-	}
-
-}
-
-     /**
-	 *
-	 * Function syndication change template
- 	 * This function handles the setting of syndication settings being changed
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+ /**
+ *
+ * Function syndication change template
+ * This function handles the setting of syndication settings being changed
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 function syndication_change_template(){
 
-	synd = "false";
+	var synd = "false";
 
 	if(document.getElementById("syndon").src==(site_url + "website_code/images/TickBoxOn.gif")){
-
 		synd="true";
-
 	}
 
-	category_value = document.getElementById("category_list").value;
+	var category_value = document.getElementById("category_list").value;
+	var license_value = document.getElementById("license_list").value;
+	var description = document.getElementById("description").value;
+	var keywords = document.getElementById("keywords").value;
 
-	license_value = document.getElementById("license_list").value;
-
-	description = document.getElementById("description").value;
-
-	keywords = document.getElementById("keywords").value;
-
-	if(setup_ajax()!=false){
-
-		var url="syndication_change_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('tutorial_id=' + window.name + '&synd=' + synd + '&description=' + description + '&keywords=' + keywords + '&category_value=' + category_value + '&license_value=' + license_value);
-
-	}
-
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/properties/syndication_change_template.php",
+		data: {
+			tutorial_id: window.name,
+			synd: synd,
+			description: description,
+			keywords: keywords,
+			category_value: category_value,
+			license_value:license_value
+			}
+	})
+	.done(function (response) {
+		properties_stateChanged(response);
+	});
 }
 
-     /**
-	 *
-	 * Function rss template
- 	 * This function handles the setting of RSS templates
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+ /**
+ *
+ * Function rss template
+ * This function handles the setting of RSS templates
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 function rss_template(){
-
-	if(setup_ajax()!=false){
-
-		var url="rss_template.php";
-
-		xmlHttp.open("post",properties_ajax_php_path + url,true);
-		xmlHttp.onreadystatechange=rss_stateChanged;
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-		xmlHttp.send('tutorial_id=' + window.name);
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/rss_template.php",
+		 data: {
+			 tutorial_id: window.name
+		 }
+	 })
+	 .done(function (response) {
+		 rss_stateChanged(response);
+	 });
 }
 
-     /**
-	 *
-	 * Function rss state changed
- 	 * This function handles the response from the ajax query
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+ /**
+ *
+ * Function rss state changed
+ * This function handles the response from the ajax query
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
-function rss_stateChanged(){
-
-	if (xmlHttp.readyState==4){
-
-		if(xmlHttp.responseText!=""){
-
-			document.getElementById('dynamic_area').innerHTML=xmlHttp.responseText;
-
-
-		}
-
+function rss_stateChanged(response){
+	if(response!=""){
+		document.getElementById('dynamic_area').innerHTML=response;
 	}
-
 }
 
-     /**
-	 *
-	 * Function screen size template
- 	 * This function gets a templates screen sizes
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+ /**
+ *
+ * Function screen size template
+ * This function gets a templates screen sizes
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 function screen_size_template(){
-
-	if(setup_ajax()!=false){
-
-		var url="screen_size_template.php";
-
-		xmlHttp.open("post",properties_ajax_php_path + url,true);
-		xmlHttp.onreadystatechange=screen_size_stateChanged;
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-		xmlHttp.send('tutorial_id=' + window.name);
-
-	}
-
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/properties/screen_size_template.php",
+		data: {
+			tutorial_id: window.name
+		}
+	})
+	.done(function (response) {
+		screen_size_stateChanged(response);
+	});
 }
 
-     /** *********OBSOLETE***************
-	 *
-	 * Function delete sharing template
- 	 * This function handles the deletion of a share by a user
-	 * @param string template_id = window type to open
- 	 * @param string user_id = user we are removing
-  	 * @param string who_deleted_flag = obsolete ***** CHECK ******
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+ /** *********OBSOLETE***************
+ *
+ * Function delete sharing template
+ * This function handles the deletion of a share by a user
+ * @param string template_id = window type to open
+ * @param string user_id = user we are removing
+ * @param string who_deleted_flag = obsolete ***** CHECK ******
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
-function links_template(){
-
-	if(setup_ajax()!=false){
-
-		var url="links_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name);
-
-	}
-
+function links_template() {
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/links_template.php",
+		 data: {
+			 template_id: window.name
+		 }
+	 })
+	 .done(function (response) {
+		 properties_stateChanged(response);
+	 });
 }
 
-     /**
-	 *
-	 * Function peer template
- 	 * This function handles the display of the templates peer review properties
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+ /**
+ *
+ * Function peer template
+ * This function handles the display of the templates peer review properties
+ * @version 1.0
+ * @author Patrick Lockley
+*/
 
 function peer_template(){
-
-
-	if(setup_ajax()!=false){
-
-		var url="peer_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name);
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/peer_template.php",
+		 data: {
+			 template_id: window.name
+		 }
+	 })
+	 .done(function (response) {
+		 properties_stateChanged(response);
+	 });
 }
 
      /**
@@ -471,44 +451,41 @@ function peer_change_template(){
 	if(document.getElementById("peeron").src==site_url + "website_code/images/TickBoxOn.gif"){
 
 		if(document.peer.password.value!=""){
-
-			if(setup_ajax()!=false){
-
-                var extra = document.peer.password.value;
-                if (document.peer.retouremail.value!="")
-                {
-                    extra += ",";
-                    extra += document.peer.retouremail.value;
-                }
-				var url="peer_change_template.php";
-
-				properties_ajax_send_prepare(url);
-
-				xmlHttp.send('template_id=' + window.name + '&peer_status=on' + '&extra=' + extra);
-
+			var extra = document.peer.password.value;
+			if (document.peer.retouremail.value!="")
+			{
+				extra += ",";
+				extra += document.peer.retouremail.value;
 			}
+			$.ajax({
+				type: "POST",
+				url: "website_code/php/properties/peer_change_template.php",
+				data: {
+					template_id: window.name,
+					peer_status: 'on',
+					extra: extra
+				}
+			})
+			.done(function (response) {
+				properties_stateChanged(response);
+			});
 
 		}else{
-
 			alert(PASSWORD_REMINDER);
-
 		}
-
-
 	}else{
-
-		if(setup_ajax()!=false){
-
-			var url="peer_change_template.php";
-
-			properties_ajax_send_prepare(url);
-
-			xmlHttp.send('template_id=' + window.name + '&peer_status=off');
-
-		}
-
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/properties/peer_change_template.php",
+			data: {
+				template_id: window.name,
+				peer_status: 'off'
+			}
+		})
+		.done(function (response) {
+			properties_stateChanged(response);
+		});
 	}
-
 }
 
      /**
@@ -557,8 +534,8 @@ function rss_tick_toggle(tag){
 
 function rss_change_template(){
 
-	rssing = "false";
-	exporting = "false";
+	var rssing = "false";
+	var exporting = "false";
 
 	if(document.getElementById("rsson").src==(site_url + "website_code/images/TickBoxOn.gif")){
 
@@ -572,19 +549,21 @@ function rss_change_template(){
 
 	}
 
-	desc = document.getElementById("desc").value;
+	var desc = document.getElementById("desc").value;
 
-	if(setup_ajax()!=false){
-
-		var url="rss_change_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name + '&rss=' + rssing + '&export=' + exporting + '&desc=' + desc);
-
-	}
-
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/rss_change_template.php",
+		 data: {
+			 template_id: window.name,
+			 rss: rssing,
+			 export: exporting,
+			 desc: desc
+		 }
+	 })
+	 .done(function (response) {
+		 properties_stateChanged(response);
+	 });
 }
 
      /**
@@ -596,17 +575,16 @@ function rss_change_template(){
 	 */
 
 function xml_template(){
-
-	if(setup_ajax()!=false){
-
-		var url="xml_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name);
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/xml_template.php",
+		 data: {
+			 template_id: window.name
+		 }
+	 })
+	 .done(function (response) {
+		 properties_stateChanged(response);
+	 });
 }
 
      /**
@@ -646,35 +624,32 @@ function xml_tick_toggle(tag){
 function xml_change_template(){
 
 	if(document.getElementById("xmlon").src==site_url + "website_code/images/TickBoxOn.gif"){
-
-		if(setup_ajax()!=false){
-
-			var url="xml_change_template.php";
-
-			properties_ajax_send_prepare(url);
-
-			if(document.xmlshare.sitename.value!=""){
-
-				xmlHttp.send('template_id=' + window.name + '&xml_status=on' + '&address=' + document.xmlshare.sitename.value);
-
-			}else{
-
-				xmlHttp.send('template_id=' + window.name + '&xml_status=on' + '&address=null');
-
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/properties/xml_change_template.php",
+			data: {
+				template_id: window.name,
+				xml_status: 'on',
+				address: (document.xmlshare.sitename.value!="" ? document.xmlshare.sitename.value : 'null')
 			}
-
-		}
-
-	}else{
-
-		var url="xml_change_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name + '&xml_status=off' + '&address=null');
-
+		})
+		.done(function (response) {
+			properties_stateChanged(response);
+		});
+	}else {
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/properties/xml_change_template.php",
+			data: {
+				template_id: window.name,
+				xml_status: 'off',
+				address: 'null'
+			}
+		})
+		.done(function (response) {
+			properties_stateChanged(response);
+		});
 	}
-
 }
 
      /**
@@ -687,72 +662,82 @@ function xml_change_template(){
 
 
 function properties_template(){
-
-	if(setup_ajax()!=false){
-
-		var url="properties_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name);
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/properties_template.php",
+		 data: {
+			 template_id: window.name
+		 }
+	 })
+	 .done(function (response) {
+		 properties_stateChanged(response);
+	 });
 }
 
 function default_engine_toggle(tag, engine1, engine2)
 {
-    var url="properties_default_engine.php";
-    properties_ajax_send_prepare(url);
-
+    var engine = engine1;
     if(document.getElementById(tag).src.indexOf("TickBoxOn.gif") >0 )
-    {
-        xmlHttp.send('template_id=' + window.name + '&engine=' + engine2 + '&page=properties');
-    }
-    else
-    {
-        xmlHttp.send('template_id=' + window.name + '&engine=' + engine1 + '&page=properties');
-    }
+	{
+		engine = engine2;
+	}
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/properties/properties_default_engine.php",
+		data: {
+			template_id: window.name,
+			engine: engine,
+			page:'properties'
+		}
+	})
+	.done(function (response) {
+		properties_stateChanged(response);
+	});
 }
 
 function publish_engine_toggle(tag, engine1, engine2)
 {
-    var url="properties_default_engine.php";
-    properties_ajax_send_prepare(url);
-
-    if(document.getElementById(tag).src.indexOf("TickBoxOn.gif") >0 )
-    {
-        xmlHttp.send('template_id=' + window.name + '&engine=' + engine2 + '&page=publish');
-    }
-    else
-    {
-        xmlHttp.send('template_id=' + window.name + '&engine=' + engine1  + '&page=publish');
-    }
+	var engine = engine1;
+	if(document.getElementById(tag).src.indexOf("TickBoxOn.gif") >0 )
+	{
+		engine = engine2;
+	}
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/properties/properties_default_engine.php",
+		data: {
+			template_id: window.name,
+			engine: engine,
+			page:'publish'
+		}
+	})
+	.done(function (response) {
+		properties_stateChanged(response);
+	});
 }
 
-     /**
-	 *
-	 * Function name template ********** OBSOLETE ***************
- 	 * This function handles the deletion of a share by a user
-	 * @param string template_id = window type to open
- 	 * @param string user_id = user we are removing
-  	 * @param string who_deleted_flag = obsolete ***** CHECK ******
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+ /**
+ *
+ * Function name template ********** OBSOLETE ***************
+ * This function handles the deletion of a share by a user
+ * @param string template_id = window type to open
+ * @param string user_id = user we are removing
+ * @param string who_deleted_flag = obsolete ***** CHECK ******
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 function name_template(){
-
-	if(setup_ajax()!=false){
-
-		var url="name_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name);
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/name_template.php",
+		 data: {
+			 template_id: window.name
+		 }
+	 })
+	 .done(function (response) {
+		 properties_stateChanged(response);
+	 });
 }
 
      /**
@@ -764,17 +749,16 @@ function name_template(){
 	 */
 
 function notes_template(){
-
-	if(setup_ajax()!=false){
-
-		var url="notes_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name);
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/notes_template.php",
+		 data: {
+			 template_id: window.name
+		 }
+	 })
+	 .done(function (response) {
+		 properties_stateChanged(response);
+	 });
 }
 
      /**
@@ -792,23 +776,20 @@ function change_notes(template_id, form_tag){
 	new_notes = document.getElementById(form_tag).childNodes[i].value;
 
 	if(is_ok_notes(new_notes)){
-
-		if(setup_ajax()!=false){
-
-			var url="notes_change_template.php";
-
-			properties_ajax_send_prepare(url);
-
-			xmlHttp.send('template_id=' + template_id +'&notes=' + new_notes);
-
-		}
-
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/properties/notes_change_template.php",
+			data: {
+				template_id: template_id,
+				notes: new_notes
+			}
+		})
+		.done(function (response) {
+			properties_stateChanged(response);
+		});
 	}else{
-
 		alert(NOTES_FAIL);
-
 	}
-
 }
 
      /**
@@ -825,20 +806,17 @@ function delete_file(file){
 	var answer = confirm(DELETE_FILE_CONFIRM);
 
 	if(answer){
-
-		if(setup_ajax()!=false){
-
-			var url="delete_file_template.php";
-
-			xmlHttp.open("post",properties_ajax_php_path + url,true);
-			xmlHttp.onreadystatechange=delete_file_stateChanged;
-			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xmlHttp.send('file=' + encodeURIComponent(file));
-
-		}
-
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/properties/delete_file_template.php",
+			data: {
+				file: encodeURIComponent(file)
+			}
+		})
+		.done(function (response) {
+			delete_file_stateChanged(response);
+		});
 	}
-
 }
 
      /**
@@ -849,14 +827,8 @@ function delete_file(file){
 	 * @author Patrick Lockley
 	 */
 
-function delete_file_stateChanged(){
-
-	if (xmlHttp.readyState==4){
-
-		media_and_quota_template();
-
-	}
-
+function delete_file_stateChanged(response){
+	media_and_quota_template();
 }
 
      /**
@@ -868,17 +840,16 @@ function delete_file_stateChanged(){
 	 */
 
 function media_and_quota_template(){
-
-	if(setup_ajax()!=false){
-
-		var url="media_and_quota_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name);
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/media_and_quota_template.php",
+		 data: {
+			 template_id: window.name
+		 }
+	 })
+	 .done(function (response) {
+		 properties_stateChanged(response);
+	 });
 }
 
      /**
@@ -896,25 +867,20 @@ function rename_template(template_id,form_tag){
 	new_name = document.getElementById(form_tag).childNodes[0].value;
 
 	if(is_ok_name(new_name)){
-
-		if(setup_ajax()!=false){
-
-			var url="rename_template.php";
-
-			xmlHttp.open("post",properties_ajax_php_path + url,true);
-			xmlHttp.onreadystatechange=rename_stateChanged;
-			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-			xmlHttp.send('template_id=' + template_id +'&template_name=' + new_name);
-
-		}
-
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/properties/rename_template.php",
+			data: {
+				template_id: template_id,
+				template_name: new_name
+			}
+		})
+		.done(function (response) {
+			rename_stateChanged(response);
+		});
 	}else{
-
 		alert(PROPERTIES_NAME_FAIL);
-
 	}
-
 }
 
      /**
@@ -926,17 +892,16 @@ function rename_template(template_id,form_tag){
 	 */
 
 function access_template(){
-
-	if(setup_ajax()!=false){
-
-		var url="access_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name);
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/access_template.php",
+		 data: {
+			 template_id: window.name
+		 }
+	 })
+	 .done(function (response) {
+		 properties_stateChanged(response);
+	 });
 }
 
      /**
@@ -979,23 +944,28 @@ function access_change_template(template_id){
 		alert(ACCESS_RESTRICT);
 
 	}else{
-
-		if(setup_ajax()!=false){
-
-			var url="access_change_template.php";
-
-			properties_ajax_send_prepare(url);
-
-			if(access_value=="Other"){
-					xmlHttp.send('template_id=' + template_id + '&access=' + access_value +'&server_string=' + document.getElementById('url').value);
-			}else{
-					xmlHttp.send('template_id=' + template_id + '&access=' + access_value);
-			}
-
+		if(access_value=="Other") {
+			var data = {
+				template_id: template_id,
+				access: access_value,
+				server_string: document.getElementById('url').value
+			};
 		}
-
+		else {
+			var data = {
+				template_id: template_id,
+				access: access_value
+			}
+		}
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/properties/access_change_template.php",
+			data: data
+		})
+		.done(function (response) {
+			properties_stateChanged(response);
+		});
 	}
-
 }
 
      /**
@@ -1043,21 +1013,15 @@ function access_tick_toggle(imagepath){
 	 * @author Patrick Lockley
 	 */
 
-function gift_stateChanged(){
+function gift_stateChanged(response){
+	document.getElementById('dynamic_area').innerHTML = response;
 
-	if (xmlHttp.readyState==4){
-
-		document.getElementById('dynamic_area').innerHTML = xmlHttp.responseText;
-
-        if(typeof window_reference==="undefined"){
-            window.opener.refresh_workspace();
-        }
-        else {
-            window_reference.refresh_workspace();
-        }
-
+	if(typeof window_reference==="undefined"){
+		window.opener.refresh_workspace();
 	}
-
+	else {
+		window_reference.refresh_workspace();
+	}
 }
 
      /**
@@ -1072,19 +1036,18 @@ function gift_stateChanged(){
 	 */
 
 function gift_this_template(tutorial_id, user_id, action){
-
-	if(setup_ajax()!=false){
-
-		var url="gift_this_template.php";
-
-		xmlHttp.open("post",properties_ajax_php_path + url,true);
-		xmlHttp.onreadystatechange=gift_stateChanged;
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-		xmlHttp.send('tutorial_id=' + tutorial_id + '&user_id=' + user_id + '&action=' + action);
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/gift_this_template.php",
+		 data: {
+		 	tutorial_id: tutorial_id,
+			 user_id: user_id,
+			 action: action
+		 }
+	 })
+	 .done(function (response) {
+		 gift_stateChanged(response);
+	 });
 }
 
 
@@ -1107,23 +1070,22 @@ function name_select_gift_template(){
 		}
 
 		if(is_ok_user(search_string)){
-
-			var url="name_select_gift_template.php";
-
-			xmlHttp.open("post",properties_ajax_php_path + url,true);
-			xmlHttp.onreadystatechange=name_share_stateChanged;
-			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-			xmlHttp.send('search_string=' + search_string + '&template_id=' + window.name);
-
+			$.ajax({
+				type: "POST",
+				url: "website_code/php/properties/name_select_gift_template.php",
+				data: {
+					search_string: search_string,
+					template_id: window.name
+				}
+			})
+			.done(function (response) {
+				$('#area2').html(response);
+			});
 		}else{
 
-			document.getElementById('area2').innerHTML="<p>" + SEARCH_FAIL + "</p>";
-
+			$('#area2').html("<p>" + SEARCH_FAIL + "</p>");
 		}
-
 	}
-
 }
 
      /**
@@ -1159,11 +1121,7 @@ function name_select_template(){
 		}else{
 			$('#area2').html("<p>" + SEARCH_FAIL + "</p>");
 		}
-
-
 	}
-
-
 }
 
      /**
@@ -1175,17 +1133,16 @@ function name_select_template(){
 	 */
 
 function gift_template(){
-
-	if(setup_ajax()!=false){
-
-		var url="gift_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name);
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/gift_template.php",
+		 data: {
+			 template_id: window.name
+		 }
+	 })
+	 .done(function (response) {
+		 properties_stateChanged(response);
+	 });
 }
 
      /**
@@ -1213,13 +1170,12 @@ function share_this_template(template, id, group=false){
 				 group: group,
 			 },
 		 })
-			 .done(function(response){
-				 $('#area2').html("");
-				 $('#area3').html(response);
-				 sharing_status_template()
-			 });
+		 .done(function(response){
+			 $('#area2').html("");
+			 $('#area3').html(response);
+			 sharing_status_template()
+		 });
 	 }
-
 }
 
      /**
@@ -1231,57 +1187,96 @@ function share_this_template(template, id, group=false){
 	 */
 
 function sharing_status_template(){
-
-
-	if(setup_ajax()!=false){
-
-		var url="sharing_status_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name);
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/sharing_status_template.php",
+		 data: {
+			 template_id: window.name,
+		 }
+	 })
+	 .done(function (response) {
+		 properties_stateChanged(response);
+	 });
 }
 
-     /**
+	/**
 	 *
-	 * Function export template
- 	 * This function handles the display of the export page for a template
+	 * Function group sharing status template
+	 * This function handles the display of the current sharing status for groups
 	 * @version 1.0
-	 * @author Patrick Lockley
+	 * @author Noud Liefrink
 	 */
 
+function group_sharing_status_template(){
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/properties/group_sharing_status_template.php",
+		data: {
+			template_id: window.name,
+		}
+	})
+	.done(function (response) {
+		properties_stateChanged(response);
+	});
+}
+
+	/**
+	 *
+	 * Function share this template with a group
+	 * This function handles the sharing of a template of a group
+	 * @param string template = id of the template
+	 * @version 1.0
+	 * @author Noud Liefrink
+	 */
+
+function group_share_this_template(template){
+	var group_id = $('#group').val();
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/properties/group_share_this_template.php",
+		data: {
+			template_id: template,
+			group_id: group_id
+		}
+	})
+	.done(function (response) {
+		group_share_this_stateChanged(response);
+	});
+}
+
+ /**
+ *
+ * Function export template
+ * This function handles the display of the export page for a template
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
 function export_template(){
-
-	if(setup_ajax()!=false){
-
-		var url="export_template.php";
-
-		properties_ajax_send_prepare(url);
-
-		xmlHttp.send('template_id=' + window.name);
-
-	}
-
+	 $.ajax({
+		 type: "POST",
+		 url: "website_code/php/properties/export_template.php",
+		 data: {
+			 template_id: window.name
+		 }
+	 })
+	 .done(function (response) {
+		 properties_stateChanged(response);
+	 });
 }
 
 function tsugi_template(){
-
-	if(setup_ajax()!=false){
-
-		var url="tsugi_template.php";
-
-		properties_ajax_send_prepare(url);
-        xmlHttp.onreadystatechange = function () {
-        	if (xmlHttp.readyState == 4) {
-        		document.getElementById('dynamic_area').innerHTML=xmlHttp.responseText;
-                showOptions();
-            }
-        }
-		xmlHttp.send('template_id=' + window.name);
-	}
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/properties/tsugi_template.php",
+		data: {
+			template_id: window.name
+		}
+	})
+	.done(function (response) {
+		document.getElementById('dynamic_area').innerHTML=response;
+		showOptions();
+	});
 }
 
 function showOptions() {
@@ -1334,7 +1329,6 @@ function set_sharing_rights_template(role, template, id, group=false){
 				 sharing_status_template()
 			 });
 	 }
-
 }
 
 var last_selected=null;
@@ -1413,36 +1407,31 @@ function setup_download_link(path, buttonlbl, file)
 }
 
 
-function lti_update(id)
-{
-    if(setup_ajax()!=false){
-
-        var url="lti_update.php";
-
-        xmlHttp.open("post",properties_ajax_php_path + url,true);
-        xmlHttp.onreadystatechange=function () {
-            if (xmlHttp.readyState == 4) {
-                document.getElementById('dynamic_area').innerHTML = xmlHttp.responseText;
-                showOptions();
-            }
-        };
-        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-        xmlHttp.send('template_id=' + id
-			+ '&tsugi_published=' + $("#pubChk").prop('checked')
-			+ '&tsugi_useglobal=' + $("[name=tsugi_useglobal]").prop('checked')
-			+ '&tsugi_privateonly=' + $("#tsugi_useprivateonly").prop('checked')
-			+ '&tsugi_title=' + $("[name=tsugi_title]").val()
-			+ '&tsugi_key=' + $("[name=tsugi_key]").val()
-            + '&tsugi_secret=' + $("[name=tsugi_secret]").val()
-			+ '&tsugi_xapi=' + $("#xChk").prop('checked')
-            + '&tsugi_xapi_useglobal=' + $("#tsugi_xapi_useglobal").prop('checked')
-			+ '&tsugi_xapi_endpoint=' + $("[name=tsugi_xapi_endpoint]").val()
-            + '&tsugi_xapi_username=' + $("[name=tsugi_xapi_username]").val()
-            + '&tsugi_xapi_password=' + $("[name=tsugi_xapi_password]").val()
-            + '&dashboard_urls=' + $("[name=dashboard_urls]").val()
-            + '&tsugi_xapi_student_id_mode=' + $("[name=tsugi_xapi_student_id_mode]").val());
-    }
+function lti_update(id) {
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/properties/lti_update.php",
+		data: {
+			template_id: id,
+			tsugi_published: $("#pubChk").prop('checked'),
+			tsugi_useglobal: $("[name=tsugi_useglobal]").prop('checked'),
+			tsugi_privateonly: $("#tsugi_useprivateonly").prop('checked'),
+			tsugi_title: $("[name=tsugi_title]").val(),
+			tsugi_key: $("[name=tsugi_key]").val(),
+			tsugi_secret: $("[name=tsugi_secret]").val(),
+			tsugi_xapi: $("#xChk").prop('checked'),
+			tsugi_xapi_useglobal: $("#tsugi_xapi_useglobal").prop('checked'),
+			tsugi_xapi_endpoint: $("[name=tsugi_xapi_endpoint]").val(),
+			tsugi_xapi_username: $("[name=tsugi_xapi_username]").val(),
+			tsugi_xapi_password: $("[name=tsugi_xapi_password]").val(),
+			dashboard_urls: $("[name=dashboard_urls]").val(),
+			tsugi_xapi_student_id_mode: $("[name=tsugi_xapi_student_id_mode]").val()
+		}
+	})
+	.done(function (response) {
+		document.getElementById('dynamic_area').innerHTML = response;
+		showOptions();
+	});
 }
 
 function xapi_toggle_useglobal(lti_def_str)

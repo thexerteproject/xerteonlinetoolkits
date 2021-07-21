@@ -33,7 +33,7 @@ body{
 	border:#ccc 1px solid;
 	/*RM responsive changes*/
 	width: 96%;
-	height: 95vh;
+	/* height: 95vh; */
 	font-size:calc(10px + .4vw) !important;
 }
 
@@ -45,8 +45,8 @@ body{
 	padding:10px;
 	/*RM responsive changes*/
 	width:98%;
-	height:93vh;
-	overflow:scroll;
+	/* height:93vh; */
+	/* overflow:scroll; */
 }
 
 span#title{
@@ -61,7 +61,7 @@ div#data_area{
 	background-color:#ededed;
 	/*RM responsive changes*/
 	width: 98%;
-	height: 87vh;
+	/* height: 87vh; */
 	margin-top:30px;
 	min-width:521px !important;
 }
@@ -71,11 +71,11 @@ div#dynamic_area{
 	background-color:#fff;
 	/*width:410px; */
 	/*height:520px;	*/
-	overflow:scroll;
+	overflow:auto;
 	border-top-left-radius:7px;
 	/*RM responsive changes*/
 	width: 70%;/*80vw;*/
-	height: 86vh;
+	height: 85vh;
 	overflow-x: hidden;
 }
 
@@ -228,7 +228,7 @@ div#menu_tabs{
 	float:right;
 	position:relative;
 	/*RM responsive changes*/
-	width: 20%;
+	width: 27%;
 	min-width: 149px !important;
 	margin-top: 5px;
 }
