@@ -2119,7 +2119,7 @@
     <moveOnTxt label="Move On Text" type="TextInput" wysiwyg="true" language="true"/>
 	<submitBtnTxt label="Submit Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	<nextBtnTxt label="Next Button Text" type="TextInput" wysiwyg="true" language="true"/>
-    <answerDelimeter label="Answer Delimiter" type="textInput" defaultValue="," optional="true"/>
+    <answerDelimeter label="Answer Delimiter" type="textInput" defaultValue="," optional="true" tooltip="The character separating the possible correct answers for each question"/>
     <casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat answers as case sensitive"/>
 
     <newNodes>
@@ -2181,7 +2181,7 @@
 
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - tree label"/>
     <question label="Question" type="TextArea" height="100"/> 
-    <answer label="Answer" type="TextInput" wysiwyg="true"/>
+    <answer label="Answer" type="TextInput" wysiwyg="true" tooltip="Where there is more than possible correct answer, list each one separated by a comma"/>
     <commentary label="Commentary" type="TextArea" height="100" deprecated="This property is deprecated."/> 
     <hint label="Hint" type="TextInput" wysiwyg="true"/>
 
