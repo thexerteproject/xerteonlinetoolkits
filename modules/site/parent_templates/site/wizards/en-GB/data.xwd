@@ -126,12 +126,12 @@
         <expandMain label="Expand main contents" type="CheckBox" defaultValue="false" optional="true" condition="sectionMenu=='true'" tooltip="If the table of contents is set to hidden then also expand the main contents to the width of the page"/>
     </sectionGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<customLinkID label="Page ID" type="TextInput" optional="true"/>
-	</customLinkGroup><passwordGroup type="group" label="Password Protection" optional="true" tooltip="Access to this page will be restricted until a valid password is entered" common="true">
-		<password label="Password(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of passwords which give access to this page"/>
-		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Passwords are case sensitive when this option is checked"/>
-		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="This page is password protected. Enter the password below to access the page:" tooltip="The instructions which appear in the password block"/>
-		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="Invalid password" tooltip="The error message which appears when an incorrect password is entered"/>
-		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the password submit button"/>
+	</customLinkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
+		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
+		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="Enter an access code below to view the page:" tooltip="The instructions which appear in the access code block"/>
+		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="Invalid access code" tooltip="The error message which appears when an incorrect access code is entered"/>
+		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit button"/>
 	</passwordGroup><filter type="CategoryList" label="Filter Categories" target="categoryInfo" defaultValue="" optional="true" tooltip="Use in conjunction with the project-level 'Search' optional property. Tick the relevant filter terms used in category searches" common="true"/><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
 		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
 		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
@@ -150,12 +150,12 @@
 			<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 		</hideShow>
 		
-		<passwordGroup type="group" label="Password Protection" optional="true" tooltip="Access to this section will be restricted until a valid password is entered">
-			<password label="Password(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of passwords which give access to this section"/>
-			<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Passwords are case sensitive when this option is checked"/>
-			<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="This section is password protected. Enter the password below to access:" tooltip="The instructions which appear in the password block"/>
-			<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="Invalid password" tooltip="The error message which appears when an incorrect password is entered"/>
-			<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the password submit button"/>
+		<passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this section will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property">
+			<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this section"/>
+			<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+			<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="Enter an access code below to view this section:" tooltip="The instructions which appear in the access code block"/>
+			<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="Invalid access code" tooltip="The error message which appears when an incorrect access code is entered"/>
+			<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit button"/>
 		</passwordGroup>
 		
 		<links label="Subsection Links" type="ComboBox" width="80" options="None,Horizontal List,Vertical List" data="none,hlist,vlist" defaultValue="hlist" optional="true" tooltip="Add a list of subsection links below the section title. Only subsections where title isn't hidden will be included."/>

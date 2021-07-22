@@ -30,12 +30,12 @@
 			<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 		</hideShow>
 		
-		<passwordGroup type="group" label="Password Protection" optional="true" tooltip="Access to this section will be restricted until a valid password is entered">
-			<password label="Password(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of passwords which give access to this section"/>
-			<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Passwords are case sensitive when this option is checked"/>
-			<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="This section is password protected. Enter the password below to access:" tooltip="The instructions which appear in the password block"/>
-			<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="Invalid password" tooltip="The error message which appears when an incorrect password is entered"/>
-			<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the password submit button"/>
+		<passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this section will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property">
+			<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this section"/>
+			<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+			<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="Enter an access code below to view this section:" tooltip="The instructions which appear in the access code block"/>
+			<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="Invalid access code" tooltip="The error message which appears when an incorrect access code is entered"/>
+			<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit button"/>
 		</passwordGroup>
 		
 		<links label="Subsection Links" type="ComboBox" width="80" options="None,Horizontal List,Vertical List" data="none,hlist,vlist" defaultValue="hlist" optional="true" tooltip="Add a list of subsection links below the section title. Only subsections where title isn't hidden will be included."/>
