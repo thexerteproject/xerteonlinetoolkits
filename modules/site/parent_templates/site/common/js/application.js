@@ -1733,6 +1733,7 @@ function loadSection(thisSection, section, sectionIndex, index, page, pageHash, 
 
 		if (this.nodeName == 'pdf'){
 			section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
+			section.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
 		}
 
 		if (this.nodeName == 'xot'){

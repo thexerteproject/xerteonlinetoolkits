@@ -49,7 +49,7 @@
 
 		<newNodes>
 			<xot><![CDATA[<xot name="Title" showTitle="true" link="Xerte XOT Project URL" header="false" footer="false"/>]]></xot>
-			<pdf><![CDATA[<pdf name="Title" showTitle="true" url="Select a PDF File" width="500" height="350"/>]]></pdf>
+			<pdf><![CDATA[<pdf name="Title" showTitle="true" url="Select a PDF File" width="500" height="350" openPDF="Open PDF in new tab"/>]]></pdf>
 			<markup><![CDATA[<markup name="Title" showTitle="true">&lt;!--Enter HTML Code--&gt;</markup>]]></markup>
 			<canvas><![CDATA[<canvas name="Title" showTitle="true" id="EnterID" width="500" height="350"/>]]></canvas>
 			<script><![CDATA[<script name="Title">//javascript</script>]]></script>
@@ -104,6 +104,7 @@
 		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<url type="Media" label="PDF File"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
+		<openPDF type="TextInput" label="Open PDF Label" defaultValue="Open PDF in new tab" wysiwyg="true" mandatory="true" language="true"/>
 
 	</pdf>
 
