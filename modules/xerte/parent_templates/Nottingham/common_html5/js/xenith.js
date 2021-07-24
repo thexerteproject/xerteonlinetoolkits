@@ -3615,7 +3615,8 @@ function x_saveSessionBtnIsStyled() {
 	if (x_params.theme != undefined && x_params.theme == "default")
 		return true;
 	var files = $.map(document.styleSheets, function(s) {
-		return s.href && s.href.indexOf('/themes/Nottingham/')>0 ? s : null;
+		// All css files in the themes folders except responsivetext.css
+		return s.href && s.href.indexOf('/themes/Nottingham/')>0 && s.href.indexOf('responsivetext')<0 ? s : null;
 	});
 
 	var isStyled = files.reduce(function(a,r){
