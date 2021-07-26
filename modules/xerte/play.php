@@ -277,7 +277,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                         _debug("xAPI User detected: " . print_r($xerte_toolkits_site->xapi_user, true));
                         $tracking .= "   var username = '" . $xerte_toolkits_site->xapi_user->email . "';\n";
                         $tracking .= "   var fullusername = '" . $xerte_toolkits_site->xapi_user->displayname . "';\n";
-                        $tracking .= "   var studentidmode = " . $xerte_toolkits_site->xapi_user->studentidmode . ";\n";
+                        $tracking .= "   var studentidmode = " . $row['tsugi_xapi_student_id_mode'] . ";\n";
                     }
                     else {
                         $tracking .= "   var studentidmode = 3;\n";

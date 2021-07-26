@@ -135,8 +135,7 @@ if (is_numeric($id))
         $user = simplexml_load_string($userxml);
         $members = $user->xpath('//member');
 
-        $attrs = $members[0]->attributes();
-
+        $xerte_toolkits_site->xapi_user = new stdClass();
         $xerte_toolkits_site->xapi_user->first_name = (string) $members[0]['firstName'];
         if (strlen($members[0]['middleName']) > 0)
         {
