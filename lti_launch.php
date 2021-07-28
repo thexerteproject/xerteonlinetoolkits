@@ -77,7 +77,7 @@ if(is_numeric($id) || $id == null)
     }
     if ($group===false && isset($_REQUEST['group']))
     {
-        $group = $_REQUEST{'group'};
+        $group = $_REQUEST['group'];
     }
     if ($group !== false)
     {
@@ -90,7 +90,7 @@ if(is_numeric($id) || $id == null)
     }
     if ($course===false && isset($_REQUEST['course']))
     {
-        $course = $_REQUEST{'course'};
+        $course = $_REQUEST['course'];
     }
     if ($course !== false)
     {
