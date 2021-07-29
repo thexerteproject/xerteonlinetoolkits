@@ -1445,22 +1445,27 @@ function x_continueSetUp1() {
 				);
 			});
 
-		if (x_params["hideSaveSession"] !== "true" && (XTGetMode().indexOf("normal") >= 0 || XTTrackingSystem() === "xAPI")) {
+		if (x_params["hideSaveSession"] !== "true" && (XTGetMode().indexOf("normal") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))) {
 			x_dialogInfo.push({type:'saveSession', built:false});
+			var tooltip = x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session");
+			if (typeof lti_inabled != "undefined" && lti_enabled)
+			{
+				tooltip = x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
+			}
 			$x_saveSessionBtn
 				.button({
 					icons: {
 						primary: "x_saveSession"
 					},
-					label: x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session"),
+					label: tooltip,
 					text: false
 				})
 				.attr("aria-label", $("#x_saveSessionBtn").attr("title") + " " + x_params.dialogTxt)
 				.click(function () {
 					x_openDialog(
 						"saveSession",
-						x_getLangInfo(x_languageData.find("saveSession")[0], "label", "Save Session"),
-						x_getLangInfo(x_languageData.find("saveSession").find("closeButton")[0], "description", "Close Save Session"),
+						tooltip,
+						x_getLangInfo(x_languageData.find("saveSession").find("closeButton")[0], "description", "Close"),
 						null,
 						null,
 						function () {

@@ -59,7 +59,7 @@
                 $("#textHolder").html(x_currentPageXML.getAttribute("textIntro"));
 
             }
-            if (XTGetMode().indexOf("normal") >= 0 || XTTrackingSystem() === "xAPI")
+            if (XTGetMode().indexOf("normal") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))
             {
                 var lbl = (x_currentPageXML.getAttribute("buttonLbl") != null ? x_currentPageXML.getAttribute("buttonLbl") : "Close and finish tracking of this session");
                 $("#closeBtn").button({
