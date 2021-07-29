@@ -1445,7 +1445,7 @@ function x_continueSetUp1() {
 				);
 			});
 
-		if (x_params["hideSaveSession"] !== "true" && (XTGetMode().indexOf("normal") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))) {
+		if (x_params["hideSaveSession"] !== "true" && (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))) {
 			x_dialogInfo.push({type:'saveSession', built:false});
 			var tooltip = x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session");
 			if (typeof lti_inabled != "undefined" && lti_enabled)
