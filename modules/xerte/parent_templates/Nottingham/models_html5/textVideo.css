@@ -11,6 +11,7 @@
 	
 	#transcript {
 		text-align:		left;
+		min-width:100%;
 	}
 	
 	#pageVideo.iframe {
