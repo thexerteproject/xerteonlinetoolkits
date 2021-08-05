@@ -4286,6 +4286,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	self.handleSubmitButton = handleSubmitButton;
 	self.replaceVariables = replaceVariables;
 	self.showVariables = showVariables;
+	self.getVariable = getVariable;
 	self.updateVariable = updateVariable;
 	self.setVariable = setVariable;
 
