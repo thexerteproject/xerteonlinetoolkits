@@ -60,7 +60,9 @@
             $lti_def->tsugi_useglobal = $row['tsugi_usetsugikey'];
             $lti_def->tsugi_privateonly = $row['tsugi_privatekeyonly'];
             $lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $row['template_id'];
+            $lti_def->tsugi13_url = $xerte_toolkits_site->site_url . "lti13_launch.php?template_id=" . $row['template_id'];
             $lti_def->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $row['template_id'];
+            $lti_def->url13 = $xerte_toolkits_site->site_url . "lti13_launch.php?template_id=" . $row['template_id'];
             $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $row['template_id'] . "&group=groupname";
             $lti_def->xapi_useglobal = $row['tsugi_xapi_useglobal'];
             $lti_def->xapi_endpoint = "";

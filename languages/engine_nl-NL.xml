@@ -209,4 +209,16 @@
 	  <error unable="Niet mogelijk om te berekenen" invalid="Ongeldige waarde" none="Geen variabele data"/>
 	  <info undef="Refereerd aan een ongedefinieerde variabele" minMax="min > max" alueMin="waarde &lt; min" valueMax="waarde > max" exclude="{n} is uitgesloten" circular="Cirkelvormige variabele referentie" none="Alle mogelijke waarden zijn uitgesloten of vallen buiten de min &amp; max reeks" none2="{n} pogingen hebben geen acceptabele waarde opgeleverd." attempts="{n} pogingen om een gelduge waarde te berekenen" default="Terugvallen op standaard waarde"/>
   </authorVarsInfo>
+
+  <submitBtnLabel label="Verzenden"/>
+  <submitConfirmMsg label="De antwoorden zijn verzonden"/>
+  <closeBtnLabel label="Sluiten"/>
+
+  <top label="Boven"/>
+  <password label="Toegangs code" pageSupport="Om deze pagina te kunnen bekijken moet een toegangscode worden gegeven." sectionSupport="Om deze sectie te kunnen bekijken moet een toegangscode worden gegeven"/>
+  <search title="Zoek" searchBtn="Zoek" goBtn="Zoek" newBtn="Nieuwe Zoekopdracht" resultTitle="Resultaten" matchTitle1="Gevonden" matchTitle2="Beste resultaten" matchTitle3="Gedeeltelijk gevoden" showMatch="Laat gedeeltelijke resultaten zien" noMatch1="Geen enkele pagina of sectie voldoet aan de zoekopdracht" noMatch2="Geen enkele pagina of sectie voldoet volledig aan uw zoekopdracht. Gedeeltelijke resultaten staan hieronder." />
+  <print printBtn="Print pagina"/>
+
+  <scormTrackingAlert warning="Let op: de SCORM mode is '{0}'. Dat betekent dat je voortgang, interacties en resulaten van deze sessie niet getracked of opgeslagen worden. Start een nieuwe poging om tracking mogelijk te maken."/>
+
 </language>
