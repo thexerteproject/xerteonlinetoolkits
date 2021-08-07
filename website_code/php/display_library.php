@@ -646,7 +646,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
 
     global $xerte_toolkits_site;
 
-    $items = [];
+    $items = array();
     $folders = get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only, $type);
     $templates = get_workspace_templates($folder_id, $tree_id, $sort_type, $copy_only, $type);
     foreach($folders as $folder)
@@ -773,7 +773,7 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
     // Loop until all the tree_id's have a value
     // Nr of loops equals the depths of the tree
     // First loop (with parent = 0);
-    $nextlevel = [];
+    $nextlevel = array();
     $unassigned_found = false;
     foreach($query_response as $index=>$row)
     {
@@ -791,7 +791,7 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
     while ($unassigned_found)
     {
         $currlevel = $nextlevel;
-        $nextlevel = [];
+        $nextlevel = array();
         $unassigned_found = false;
         foreach($query_response as $index=>$row)
         {
