@@ -245,7 +245,7 @@
 	</video><navigator icon="icPages" menuItem="Navigator" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
-		<type type="ComboBox" label="Type" options="Accordion,Carousel,Pills,Tabs" width="120"/>
+		<type type="ComboBox" label="Type" options="Accordion,Carousel,Pills,Tabs" data="Accordion,Carousel,Pills,Tabs" width="120"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 		<collapse label="Collapse Accordion" type="CheckBox" defaultValue="false" optional="true" tooltip="Collapse all accordion panes initially"/>
 		
@@ -286,5 +286,9 @@
 		<pageNum label="Page" type="TextInput" defaultValue="1" optional="true"/>
 		<width label="Width" type="TextInput" defaultValue="100%" optional="true"/>
 		<height label="Height" type="TextInput" defaultValue="600" optional="true"/>
+		<showLink label="Show link" conditionTrigger="true" type="CheckBox" defaultValue="false" optional="true" tooltip="Show a link to open the Xerte object. You can use Embed and Show link at the same time, but this is not recommended."/>
+		<showEmbed label="Embed" type="CheckBox" defaultValue="true" optional="true" tooltip="Embed the Xerte object. You can use Embed and Show link at the same time, but this is not recommended."/>
+		<displayOptions label="Display options" condition="showLink=='true'" type="ComboBox" data="newwindow,lightbox" options="Open in new window,Open in lightbox" defaultValue="newwindow" optional="true" tooltip="How and where to show the Xerte object if clicking on the link (and if Show link is used)."/>
+		<linkText label="Link text" type="TextArea" wysiwyg="true" condition="showLink=='true'" defaultValue="" optional="true" tooltip="The text or image that is converted to the link to the Xerte object"/>
 
 	</xot></wizard>
