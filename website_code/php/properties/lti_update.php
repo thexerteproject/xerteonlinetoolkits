@@ -47,7 +47,9 @@ if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
     $lti_def->tsugi_useglobal = isset($_POST["tsugi_useglobal"]) && $_POST["tsugi_useglobal"] == "true";
     $lti_def->tsugi_privateonly = isset($_POST["tsugi_useprivateonly"]) && $_POST["tsugi_useprivateonly"] == "true";
     $lti_def->tsugi_url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
+    $lti_def->tsugi13_url = $xerte_toolkits_site->site_url . "lti13_launch.php?template_id=" . $template_id;
     $lti_def->url = $xerte_toolkits_site->site_url . "lti_launch.php?template_id=" . $template_id;
+    $lti_def->url13 = $xerte_toolkits_site->site_url . "lti13_launch.php?template_id=" . $template_id;
     $lti_def->xapionly_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
     $lti_def->xapi_useglobal = isset($_POST["tsugi_xapi_useglobal"]) && $_POST["tsugi_xapi_useglobal"] == "true";
     $lti_def->xapi_endpoint = (isset($_POST["tsugi_xapi_endpoint"]) ? htmlspecialchars($_POST["tsugi_xapi_endpoint"]) : "");

@@ -239,4 +239,6 @@
   <search title="Search" searchBtn="Search" goBtn="Go" newBtn="New Search" resultTitle="Results" matchTitle1="Matches" matchTitle2="Best matches" matchTitle3="Partial matches" showMatch="Show partial matches" noMatch1="No pages or sections match your selection." noMatch2="No pages or sections completely match your criteria. Partial matches are listed below." />
   <print printBtn="Print page"/>
 
+  <scormTrackingAlert warning="Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt."/>
+
 </language>

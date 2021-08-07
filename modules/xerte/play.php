@@ -306,6 +306,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 // Set lti_enabled variable so that we can send back gradebook results through LTI
                 $tracking .= "<script>\n";
                 $tracking .= "  var lti_enabled=true;\n";
+                $tracking .= "  var xapi_enabled=true;\n";
                 $tracking .= "</script>\n";
                 _debug("Tracking script: " . $tracking);
             }

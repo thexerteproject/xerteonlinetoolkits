@@ -1204,8 +1204,8 @@ function XTTerminate()
             var url = window.location.href;
             if (url.indexOf("lti_launch.php") >= 0) {
                 url = url.replace("lti_launch.php", "website_code/php/lti/sendgrade.php");
-            } else if (url.indexOf("lti2_launch.php") >= 0) {
-                url = url.replace("lti2_launch.php", "website_code/php/lti/sendgrade.php");
+            } else if (url.indexOf("lti13_launch.php") >= 0) {
+                url = url.replace("lti13_launch.php", "website_code/php/lti/sendgrade.php");
             } else {
                 url = "";
             }

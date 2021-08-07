@@ -273,8 +273,9 @@
 
 	define("PROPERTIES_LIBRARY_TSUGI_UPDATE_BUTTON_LABEL", "Update");
 
-	define("PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL", "Your launch url is:");
+	define("PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL", "Your LTI 1.1 launch url is:");
 
+    define("PROPERTIES_LIBRARY_TSUGI_LTI13_LAUNCH_URL", "Your LTI 1.3 launch url is:");
 
 
 

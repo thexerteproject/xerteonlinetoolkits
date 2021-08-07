@@ -26,13 +26,14 @@ ini_set('display_errors', 0);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
 
 _debug("Sending grade: " . print_r($_POST, true));
+$gradetosend = $_POST['grade'];
 use \Tsugi\Core\LTIX;
 
 $LAUNCH = LTIX::requireData();
 
-if (isset($_POST['grade']))
+if (isset($gradetosend))
 {
-    $gradetosend = $_POST['grade'];
+    _debug("Sending grade: " . $gradetosend);
     if ($development)
     {
         $debugmsgs = array();
@@ -41,5 +42,7 @@ if (isset($_POST['grade']))
     }
     else {
         $res = $LAUNCH->result->gradeSend($gradetosend);
+        _debug("Sending grade: " . $gradetosend . ": " . $res);
     }
 }
+_debug("Ready with sending grade");
