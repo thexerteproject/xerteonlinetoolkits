@@ -2568,7 +2568,7 @@ function loadXotContent($this) {
 		xotLink = xotLink.replace('play.php?', xapiEndpoint);
 	}
 	// the embed url parameter makes it responsive, full screen & hides minimise/maximise button (these can be overridden by manually adding other params to the url entered in editor)
-	xotLink += separator + 'embed=true' + separator + "embedded_from=" + encodeURIComponent(x_SiteUrl + x_TemplateId) + separator + "embedded_fromTitle=" + encodeURIComponent($(data).find('learningObject').attr('name'));
+	xotLink += separator + "embedded_from=" + encodeURIComponent(x_SiteUrl + x_TemplateId) + separator + "embedded_fromTitle=" + encodeURIComponent($(data).find('learningObject').attr('name'));
 
 	// add back any url params that haven't been overridden
 	for (var i=0; i<params.length; i++) {
@@ -2586,7 +2586,26 @@ function loadXotContent($this) {
 		xotWidth = $this.attr('width') != undefined && ($.isNumeric($this.attr('width')) || $.isNumeric($this.attr('width').split('%')[0])) ? $this.attr('width') : '100%',
 		xotHeight = $this.attr('height') != undefined && ($.isNumeric($this.attr('height')) || $.isNumeric($this.attr('height').split('%')[0])) ? $this.attr('height') : 600;
 
-	return warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
+	var html = "";
+	if ($this.attr('showEmbed') != undefined && $this.attr('showEmbed') != 'false')
+	{
+		html += warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + separator + 'embed=true' + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
+	}
+	if ($this.attr('showLink') != undefined && $this.attr('showLink') == 'true')
+	{
+		var target="target='_blank'";
+		if ($this.attr('displayOptions') != undefined && $this.attr('displayOptions') == 'lightbox')
+		{
+			target="data-featherlight='iframe'";
+		}
+		var linktext = $this.attr('link');
+		if ($this.attr('linkText') != undefined) {
+			linktext = $this.attr('linkText');
+		}
+		html += "<a href='" + xotLink + "' " + target + ">" + linktext + "</a>";
+
+	}
+	return html;
 
 }
 
