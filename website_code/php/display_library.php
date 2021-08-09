@@ -860,7 +860,7 @@ function get_workspace_templates($folder_id, $tree_id, $sort_type, $copy_only=fa
     }
 
     if ($type == "") {
-        $query .= " group by td.template_id, tr.role ";
+        $query .= " group by td.template_id, tr.role, tr.folder,fd3.folder_name ";
     }
 
     if ($sort_type == "alpha_down") {
