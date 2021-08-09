@@ -769,19 +769,28 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
     * recurse through the folders
     */
 
+
     // Build tree
     // Loop until all the tree_id's have a value
     // Nr of loops equals the depths of the tree
     // First loop (with parent = 0);
     $nextlevel = array();
     $unassigned_found = false;
+    $recyclebin = get_recycle_bin();
+    $recyclebin_tree_id = "ID_" . $_SESSION['toolkits_logon_id'] . "_F" . $recyclebin;
     foreach($query_response as $index=>$row)
     {
         if ($row['folder_parent'] == $folder_id)
         {
             $query_response[$index]['tree_id'] = $tree_id . '_F' . $row['folder_id'];
             $query_response[$index]['tree_parent_id'] = $tree_id;
-            $nextlevel[$row['folder_id']] = $query_response[$index]['tree_id'];
+            $nextlevel[$row['folder_id']] = $query_response[$index]['tree_id']; // Watch out. do not use $row, it's not filled 2 lines up
+        }
+        else if ($row['folder_parent'] == $recyclebin)
+        {
+            $query_response[$index]['tree_id'] = $recyclebin_tree_id . '_F' . $row['folder_id'];
+            $query_response[$index]['tree_parent_id'] = $recyclebin_tree_id;
+            $nextlevel[$row['folder_id']] = $query_response[$index]['tree_id']; // Watch out. do not use $row, it's not filled 2 lines up
         }
         else
         {
@@ -928,7 +937,7 @@ function get_users_projects($sort_type, $copy_only=false)
      * Groups are toplevel now too
      */
 
-    $workspace->workspace_id = "ID_" . $_SESSION['toolkits_logon_id'] . "_F" . get_user_root_folder();
+    $workspace->workspace_id = "ID_" . $_SESSION['toolkits_logon_id'] . "_F" . $root_folder;
     $item = new stdClass();
     $item->id = $workspace->workspace_id;
     $item->xot_id = get_user_root_folder();
