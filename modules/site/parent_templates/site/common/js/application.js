@@ -2587,7 +2587,8 @@ function loadXotContent($this) {
 		xotHeight = $this.attr('height') != undefined && ($.isNumeric($this.attr('height')) || $.isNumeric($this.attr('height').split('%')[0])) ? $this.attr('height') : 600;
 
 	var html = "";
-	if ($this.attr('showEmbed') != undefined && $this.attr('showEmbed') != 'false')
+	// If $this.attr('showEmbed') is undefined, it still is != 'false', so only need to check on != false
+	if ($this.attr('showEmbed') != 'false')
 	{
 		html += warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + separator + 'embed=true' + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
 	}
