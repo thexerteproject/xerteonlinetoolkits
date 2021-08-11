@@ -1240,7 +1240,7 @@ function x_insertGlossaryText(node) {
 		}
 		for (var k=0, len=glossary.length; k<len; k++) {
 			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
-			tempText = tempText.replace(regExp, '$1<a class="glossary" href="#" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+			tempText = tempText.replace(regExp, '$1<a class="glossary" href="javascript:return false;" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
 		}
 	}
 
