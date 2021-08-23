@@ -712,7 +712,6 @@
 		this.addEvents = function() {
             this.popcornInstance.on( "timeupdate", function() {
 				$("#overlayGray").hide();
-				mediaLesson.enableControls(this.media, false, true);
 				var popTime = mediaLesson.popcornInstance.currentTime();
                 //console.log("Timeupdate: " + popTime + " prevTime=" + prevTime + ", seeking=" + mediaLesson.popcornInstance.seeking());
 				var block = mediaLesson.getBlock(lastTime);
