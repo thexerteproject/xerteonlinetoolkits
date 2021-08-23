@@ -482,7 +482,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
     }
 
     if ($group_id == -1) {
-        $query .= " group by td.template_name, otd.template_name, td.access_to_whom, td.tsugi_published, otd.parent_template, otd.template_framework, td.template_id, tr.role, fd3.folder_name ";
+        $query .= " group by td.template_name, otd.template_name, td.access_to_whom, td.tsugi_published, otd.parent_template, otd.template_framework, td.template_id, tr.role, fd3.folder_name, td.date_created ";
     }
 
     if ($sort_type == "alpha_down") {
