@@ -747,13 +747,13 @@ function sharing_info($template_id)
     }
 
     $sql = "SELECT template_id, user_id, firstname, surname, username, role FROM " .
-        " {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
-        " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}templaterights.user_id and template_id= ?";
+        " {$xerte_toolkits_site->database_table_prefix}templaterights tr, {$xerte_toolkits_site->database_table_prefix}logindetails ld WHERE " .
+        " ld.login_id = tr.user_id and template_id= ?";
 
     $query_sharing_rows = db_query($sql, array($template_id));
 
-    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}template_group_rights, " .
-        "{$xerte_toolkits_site->database_table_prefix}user_groups WHERE template_id = ? AND template_group_rights.group_id = user_groups.group_id";
+    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}template_group_rights tgr, " .
+        "{$xerte_toolkits_site->database_table_prefix}user_groups ug WHERE template_id = ? AND tgr.group_id = ug.group_id";
 
     $query_group_sharing_rows = db_query($sql, array($template_id));
 
