@@ -49,7 +49,7 @@
 	<calendar tooltip="Select Date"/>
 	<hidePage title="HIDDEN" tooltip="This page is hidden"/>
 	<standalonePage tooltip="This is a stand-alone page"/>
-	<passwordPage tooltip="This page/section is password protected"/>
+	<passwordPage tooltip="An access code must be entered to view this page/section"/>
 	<unmarkForCompletion tooltip="This page is not required for completion"/>
 	<advancedPage title="Advanced" tooltip="This page is not part of this (sub-)template and can only be added in advanced mode."/>
 	<filemenu title="File">

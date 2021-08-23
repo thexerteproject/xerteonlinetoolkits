@@ -19,6 +19,7 @@
  */
 
 require_once("../../../config.php");
+require_once("../user_library.php");
 /**
  * 
  * gift this template, allows the site to give a template copy, or an actual template to some one else

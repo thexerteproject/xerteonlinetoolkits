@@ -50,7 +50,13 @@ if(is_numeric($id) || $id == null)
 	$lti_enabled = true;
     $LAUNCH = LTIX::requireData();
 
-    $islti13 = $LAUNCH->isLTIAdvantage();
+    if (method_exists($LAUNCH, 'isLTIAdvantage'))
+    {
+        $islti13 = $LAUNCH->isLTIAdvantage();
+    }
+    else{
+        $islti13 = false;
+    }
     if ($islti13) {
         $msg = array();
         $nrps = $LAUNCH->context->loadNamesAndRoles(false, $msg);
@@ -77,7 +83,7 @@ if(is_numeric($id) || $id == null)
     }
     if ($group===false && isset($_REQUEST['group']))
     {
-        $group = $_REQUEST{'group'};
+        $group = $_REQUEST['group'];
     }
     if ($group !== false)
     {
@@ -90,7 +96,7 @@ if(is_numeric($id) || $id == null)
     }
     if ($course===false && isset($_REQUEST['course']))
     {
-        $course = $_REQUEST{'course'};
+        $course = $_REQUEST['course'];
     }
     if ($course !== false)
     {

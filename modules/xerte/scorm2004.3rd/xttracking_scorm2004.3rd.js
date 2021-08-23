@@ -217,6 +217,7 @@ function ScormTrackingState()
             this.scoremode = jsonObj.scoremode;
             this.nrpages = jsonObj.nrpages;
             this.pages_visited=jsonObj.pages_visited;
+            this.completedPages=jsonObj.completedPages;
 //            this.start = new Date(jsonObj.start);
             this.duration_previous_attempts = jsonObj.duration_previous_attempts;
             this.lo_type = jsonObj.lo_type;
@@ -225,6 +226,9 @@ function ScormTrackingState()
             this.lo_completed = jsonObj.lo_completed;
             if (typeof jsonObj.pageHistory != "undefined") {
                 x_pageHistory = jsonObj.pageHistory;
+            }
+            if (typeof jsonObj.pagesViewed != "undefined") {
+                x_restorePagesViewed(jsonObj.pagesViewed);
             }
 
 //            this.finished = jsonObj.finished;
@@ -769,6 +773,8 @@ function ScormTrackingState()
             state.currentpageid = currentid;
             x_pageHistory.splice(x_pageHistory.length - 1, 1);
             state.pageHistory = x_pageHistory;
+            state.pagesViewed = x_pagesViewed();
+
             var suspend_str = JSON.stringify(this);
             if (completionStatus != "completed") {
                 setValue('cmi.exit', 'suspend');
@@ -1344,11 +1350,11 @@ function XTGetMode(extended)
                 }
                 else
                 {
-                    return "tracking";
+                    return "normal";
                 }
             }
         }
-        return "tracking";
+        return "normal";
     }
     return state.scormmode;
 }

@@ -277,7 +277,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                         _debug("xAPI User detected: " . print_r($xerte_toolkits_site->xapi_user, true));
                         $tracking .= "   var username = '" . $xerte_toolkits_site->xapi_user->email . "';\n";
                         $tracking .= "   var fullusername = '" . $xerte_toolkits_site->xapi_user->displayname . "';\n";
-                        $tracking .= "   var studentidmode = " . $xerte_toolkits_site->xapi_user->studentidmode . ";\n";
+                        $tracking .= "   var studentidmode = " . $row['tsugi_xapi_student_id_mode'] . ";\n";
                     }
                     else {
                         $tracking .= "   var studentidmode = 3;\n";
@@ -298,6 +298,18 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
             }
             $tracking .= "</script>\n";
             _debug("Tracking script: " . $tracking);
+        }
+        else
+        {
+            if (isset($lti_enabled) && $lti_enabled)
+            {
+                // Set lti_enabled variable so that we can send back gradebook results through LTI
+                $tracking .= "<script>\n";
+                $tracking .= "  var lti_enabled=true;\n";
+                $tracking .= "  var xapi_enabled=true;\n";
+                $tracking .= "</script>\n";
+                _debug("Tracking script: " . $tracking);
+            }
         }
 
 		$page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);

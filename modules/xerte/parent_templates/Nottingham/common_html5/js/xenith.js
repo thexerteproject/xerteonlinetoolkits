@@ -1445,22 +1445,27 @@ function x_continueSetUp1() {
 				);
 			});
 
-		if (x_params["hideSaveSession"] !== "true" && (XTGetMode().indexOf("normal") >= 0 || XTTrackingSystem() === "xAPI")) {
+		if (x_params["hideSaveSession"] !== "true" && (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))) {
 			x_dialogInfo.push({type:'saveSession', built:false});
+			var tooltip = x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session");
+			if (typeof lti_enabled != "undefined" && lti_enabled)
+			{
+				tooltip = x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
+			}
 			$x_saveSessionBtn
 				.button({
 					icons: {
 						primary: "x_saveSession"
 					},
-					label: x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session"),
+					label: tooltip,
 					text: false
 				})
 				.attr("aria-label", $("#x_saveSessionBtn").attr("title") + " " + x_params.dialogTxt)
 				.click(function () {
 					x_openDialog(
 						"saveSession",
-						x_getLangInfo(x_languageData.find("saveSession")[0], "label", "Save Session"),
-						x_getLangInfo(x_languageData.find("saveSession").find("closeButton")[0], "description", "Close Save Session"),
+						tooltip,
+						x_getLangInfo(x_languageData.find("saveSession").find("closeButton")[0], "description", "Close"),
 						null,
 						null,
 						function () {
@@ -1635,6 +1640,14 @@ function x_continueSetUp2() {
 
 	XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
 	// Set course, module and resume options AFTER XTInitialise
+	// Display warning if this is a SCORM object and the tracking mode is NOT 'normal'
+	if (XTTrackingSystem().indexOf('SCORM') >= 0 && XTGetMode() != 'normal')
+	{
+		var scorm_alert_default = "Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt.";
+		var scorm_alert_lang = x_getLangInfo(x_languageData.find("scormTrackingAlert")[0], "warning", scorm_alert_default);
+		scorm_alert_lang = scorm_alert_lang.replace("{0}", XTGetMode());
+		alert(scorm_alert_lang);
+	}
 	if (x_params.course != undefined && x_params.course != "") {
 		XTSetOption('course', x_params.course);
 	}
@@ -2218,57 +2231,69 @@ function x_changePageStep5a(x_gotoPage) {
 function x_passwordPage(pswds) {
 	if (x_pageInfo[x_currentPage].passwordPass != true) {
 		
-		// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
-		if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-			x_findText(x_currentPageXML, true, ["glossary"]); // exclude glossary
+		if (x_params.authorSupport == "true") {
+			
+			x_pageInfo[x_currentPage].passwordPass = true;
+			
+			pageTitle += ' <span class="alert">' + x_getLangInfo(x_languageData.find("password")[0], "pageSupport", "In live projects, an access code must be entered to view this page") + ': ' + pswds + '</span>';
+			
+			x_addCountdownTimer();
+			x_addNarration('x_changePageStep6', '');
+			
 		} else {
-			x_findText(x_currentPageXML);
-		}
 		
-		x_pageInfo[x_currentPage].passwordPass = false;
-		
-		$("#x_headerBlock h2").html(pageTitle);
-		$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
-		
-		x_updateCss(false);
-		
-		$("#x_pageDiv").show();
-		$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
-		
-		var $pswdBlock = $('#x_page' + x_currentPage);
-		$pswdBlock.html('<div class="x_pswdBlock"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError"></div></div>');
-		$pswdBlock.find('.x_pswdInfo').append(x_currentPageXML.getAttribute('passwordInfo'));
-		$pswdBlock.find('.x_pswdError').append(x_currentPageXML.getAttribute('passwordError')).hide();
-		$pswdBlock.find('.x_pswdInput').append('<input type="text" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '"><button id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
-		
-		$pswdBlock.find('#x_pagePswdBtn')
-			.button()
-			.on('click', function() {
-				var pswdEntered = x_currentPageXML.getAttribute('passwordCase') != 'true' ? $pswdBlock.find('#x_pagePswd').val().toLowerCase() : $pswdBlock.find('#x_pagePswd').val();
-				
-				if ($.inArray(pswdEntered, pswds) >= 0) {
-					// correct password - remember this so it doesn't need to be re-entered on return to page
-					x_pageInfo[x_currentPage].passwordPass = true;
-					$pswdBlock.remove();
-					x_addCountdownTimer();
-					x_addNarration('x_changePageStep6', '');
+			// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
+			if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+				x_findText(x_currentPageXML, true, ["glossary"]); // exclude glossary
+			} else {
+				x_findText(x_currentPageXML);
+			}
+			
+			x_pageInfo[x_currentPage].passwordPass = false;
+			
+			$("#x_headerBlock h2").html(pageTitle);
+			$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
+			
+			x_updateCss(false);
+			
+			$("#x_pageDiv").show();
+			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
+			
+			var $pswdBlock = $('#x_page' + x_currentPage);
+			$pswdBlock.html('<div class="x_pswdBlock"><div class="x_pswdInfo"></div><div class="x_pswdInput"></div><div class="x_pswdError"></div></div>');
+			$pswdBlock.find('.x_pswdInfo').append(x_currentPageXML.getAttribute('passwordInfo'));
+			$pswdBlock.find('.x_pswdError').append(x_currentPageXML.getAttribute('passwordError')).hide();
+			$pswdBlock.find('.x_pswdInput').append('<input type="text" id="x_pagePswd" name="x_pagePswd" aria-label="' + x_getLangInfo(x_languageData.find("password")[0], "label", "Password") + '"><button id="x_pagePswdBtn">' + (x_currentPageXML.getAttribute('passwordSubmit') != undefined && x_currentPageXML.getAttribute('passwordSubmit') != '' ? x_currentPageXML.getAttribute('passwordSubmit') : 'Submit') + '</button>');
+			
+			$pswdBlock.find('#x_pagePswdBtn')
+				.button()
+				.on('click', function() {
+					var pswdEntered = x_currentPageXML.getAttribute('passwordCase') != 'true' ? $pswdBlock.find('#x_pagePswd').val().toLowerCase() : $pswdBlock.find('#x_pagePswd').val();
+					
+					if ($.inArray(pswdEntered, pswds) >= 0) {
+						// correct password - remember this so it doesn't need to be re-entered on return to page
+						x_pageInfo[x_currentPage].passwordPass = true;
+						$pswdBlock.remove();
+						x_addCountdownTimer();
+						x_addNarration('x_changePageStep6', '');
+					} else {
+						$pswdBlock.find('.x_pswdError').show();
+					}
+				});
+			
+			$pswdBlock.find('#x_pagePswd').keypress(function (e) {
+				if (e.which == 13) {
+					$pswdBlock.find('#x_pagePswdBtn').click();
 				} else {
-					$pswdBlock.find('.x_pswdError').show();
+					$pswdBlock.find('.x_pswdError').hide();
 				}
 			});
-		
-		$pswdBlock.find('#x_pagePswd').keypress(function (e) {
-			if (e.which == 13) {
-				$pswdBlock.find('#x_pagePswdBtn').click();
-			} else {
-				$pswdBlock.find('.x_pswdError').hide();
-			}
-		});
-		
-		// Queue reparsing of MathJax - fails if no network connection
-		try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
-		
-		x_setUpPage();
+			
+			// Queue reparsing of MathJax - fails if no network connection
+			try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+			
+			x_setUpPage();
+		}
 
 	} else {
 		x_addCountdownTimer();
@@ -3603,7 +3628,8 @@ function x_saveSessionBtnIsStyled() {
 	if (x_params.theme != undefined && x_params.theme == "default")
 		return true;
 	var files = $.map(document.styleSheets, function(s) {
-		return s.href && s.href.indexOf('/themes/Nottingham/')>0 ? s : null;
+		// All css files in the themes folders except responsivetext.css
+		return s.href && s.href.indexOf('/themes/Nottingham/')>0 && s.href.indexOf('responsivetext')<0 ? s : null;
 	});
 
 	var isStyled = files.reduce(function(a,r){
@@ -4268,6 +4294,7 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 	self.handleSubmitButton = handleSubmitButton;
 	self.replaceVariables = replaceVariables;
 	self.showVariables = showVariables;
+	self.getVariable = getVariable;
 	self.updateVariable = updateVariable;
 	self.setVariable = setVariable;
 

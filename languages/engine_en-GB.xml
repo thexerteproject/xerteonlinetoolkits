@@ -186,14 +186,17 @@
 	  <quiz description="This page contains a series of multiple choice questions. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
   </screenReaderInfo>
 
-  <saveSession label="Save Session" description="Save session and stop tracking" tooltip="Save Session">
-  	  <closeButton label="" description="Close Save Session"/>
+  <saveSession label="Save Session" description="Save session and stop tracking" tooltip="Save Session" tooltip_ltionly="Stop Session">
+  	  <closeButton label="" description="Close"/>
 	  <trackingCloseTxt label="&lt;p&gt;Do you want to stop with this session and continue later? If so, please press the button below to save this session.&lt;/p&gt;"/>
 	  <closeTxt label="&lt;p&gt;Your session has been saved. You can now close the browser window or browser tab of this LO.&lt;/p&gt;"/>
-	  <closeTxtEmbedded label="&lt;p&gt;Your session has been saved. You need to refresh or revisit this page to access the session again.&lt;/p&gt;"/>
+	  <closeTxtEmbedded label="&lt;p&gt;Your session has been saved. You need to revisit this resource to access the session again.&lt;/p&gt;"/>
 	  <btnLabelTxt label="Save this session"/>
 
-
+	  <trackingCloseTxtLtiOnly label="&lt;p&gt;Do you want to stop with this session? If so, please press the button below to stop this session and send the grade to the LMS.&lt;/p&gt;"/>
+	  <closeTxtLtiOnly label="&lt;p&gt;Your session has been stopped. You can now close the browser window or browser tab of this LO.&lt;/p&gt;"/>
+	  <closeTxtEmbeddedLtiOnly label="&lt;p&gt;Your session has been stopped. You need to revisit this resource to restart the content again.&lt;/p&gt;"/>
+	  <btnLabelTxtLTiOnly label="Close this session"/>
   </saveSession>
 
   <resumeSession label="Resume Session" description="Resume stored session" tooltip="Resume last stored session">
@@ -232,8 +235,10 @@
   <closeBtnLabel label="Close"/>
   
   <top label="Top"/>
-  <password label="Password"/>
+  <password label="Access code" pageSupport="In live projects, an access code must be entered to view this page" sectionSupport="In live projects, an access code must be entered to view this section"/>
   <search title="Search" searchBtn="Search" goBtn="Go" newBtn="New Search" resultTitle="Results" matchTitle1="Matches" matchTitle2="Best matches" matchTitle3="Partial matches" showMatch="Show partial matches" noMatch1="No pages or sections match your selection." noMatch2="No pages or sections completely match your criteria. Partial matches are listed below." />
   <print printBtn="Print page"/>
+
+  <scormTrackingAlert warning="Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt."/>
 
 </language>

@@ -1226,7 +1226,7 @@ function x_insertGlossaryText(node) {
 		}
 		for (var k=0, len=glossary.length; k<len; k++) {
 			var regExp = new RegExp('(^|[\\s\(>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;\)<]|$|&nbsp;)', 'i');
-			tempText = tempText.replace(regExp, '$1<a class="glossary" href="#" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+			tempText = tempText.replace(regExp, '$1<a class="glossary" href="javascript:return false;" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
 		}
 	}
 
@@ -1509,7 +1509,11 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 	}
 }
 
-function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage) {
+function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds) {
+	
+	if (authorSupport == true && page.attr('passwordPass') == 'true') {
+		$('#pageSubTitle').append(' <span class="alertMsg">' + (languageData.find("password")[0] != undefined && languageData.find("password")[0].getAttribute('pageSupport') != null ? languageData.find("password")[0].getAttribute('pageSupport') : 'In live projects, an access code must be entered to view this page') + ': ' + pswds + '</span>');
+	}
 	
 	//create the sections
 	page.find('section').each( function(index, value){
@@ -1606,7 +1610,15 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 	afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 }
 
-function loadSection(thisSection, section, sectionIndex, index, page, pageHash, pageIndex) {
+function loadSection(thisSection, section, sectionIndex, index, page, pageHash, pageIndex, pswds) {
+	
+	if (authorSupport == true && $(thisSection).attr('passwordPass') == 'true') {
+		if (section.find('.sectionSubLinks').length > 0) {
+			section.find('.sectionSubLinks').prepend(' <div class="alertMsg">' + (languageData.find("password")[0] != undefined && languageData.find("password")[0].getAttribute('sectionSupport') != null ? languageData.find("password")[0].getAttribute('sectionSupport') : 'In live projects, an access code must be entered to view this section') + ': ' + pswds + '</div>');
+		} else {
+			section.append(' <div class="alertMsg">' + (languageData.find("password")[0] != undefined && languageData.find("password")[0].getAttribute('sectionSupport') != null ? languageData.find("password")[0].getAttribute('sectionSupport') : 'In live projects, an access code must be entered to view this section') + ': ' + pswds + '</div>');
+		}
+	}
 
 	//add the section contents
 	$(thisSection).children().each( function(itemIndex, value){
@@ -1721,6 +1733,7 @@ function loadSection(thisSection, section, sectionIndex, index, page, pageHash, 
 
 		if (this.nodeName == 'pdf'){
 			section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
+			section.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
 		}
 
 		if (this.nodeName == 'xot'){
@@ -1816,39 +1829,48 @@ function passwordPage(page, pageHash, sectionNum, contentNum, pageIndex, standAl
 	
 	if (page.attr('passwordPass') != 'true') {
 		
-		var $section = $('<section><div class="pswdBlock"><div class="pswdInfo"></div><div class="pswdInput"></div><div class="pswdError"></div></div></section>');
-		$section.find('.pswdInfo').append(page.attr('passwordInfo'));
-		$section.find('.pswdError').append(page.attr('passwordError')).hide();
-		$section.find('.pswdInput').append('<input type="text" id="pagePswd" name="pagePswd" aria-label="' + (languageData.find("password")[0] != undefined && languageData.find("password")[0].getAttribute('label') != null ? languageData.find("password")[0].getAttribute('label') : 'Password') + '"><button id="pagePswdBtn" class="btn btn-primary">' + (page.attr('passwordSubmit') != undefined && page.attr('passwordSubmit') != '' ? page.attr('passwordSubmit') : 'Submit') + '</button>');
-		
-		$section.find('#pagePswdBtn')
-			.button()
-			.on('click', function() {
-				var pswdEntered = page.attr('passwordCase') != 'true' ? $section.find('#pagePswd').val().toLowerCase() : $section.find('#pagePswd').val();
-				
-				if ($.inArray(pswdEntered, pswds) >= 0) {
-					// correct password - remember this so it doesn't need to be re-entered on return to page
-					page.attr('passwordPass', true);
-					$('#mainContent').empty();
-					loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage);
+		if (authorSupport == true) {
+			
+			page.attr('passwordPass', true);
+			
+			loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage, pswds);
+			
+		} else {
+			
+			var $section = $('<section><div class="pswdBlock"><div class="pswdInfo"></div><div class="pswdInput"></div><div class="pswdError"></div></div></section>');
+			$section.find('.pswdInfo').append(page.attr('passwordInfo'));
+			$section.find('.pswdError').append(page.attr('passwordError')).hide();
+			$section.find('.pswdInput').append('<input type="text" id="pagePswd" name="pagePswd" aria-label="' + (languageData.find("password")[0] != undefined && languageData.find("password")[0].getAttribute('label') != null ? languageData.find("password")[0].getAttribute('label') : 'Password') + '"><button id="pagePswdBtn" class="btn btn-primary">' + (page.attr('passwordSubmit') != undefined && page.attr('passwordSubmit') != '' ? page.attr('passwordSubmit') : 'Submit') + '</button>');
+			
+			$section.find('#pagePswdBtn')
+				.button()
+				.on('click', function() {
+					var pswdEntered = page.attr('passwordCase') != 'true' ? $section.find('#pagePswd').val().toLowerCase() : $section.find('#pagePswd').val();
+					
+					if ($.inArray(pswdEntered, pswds) >= 0) {
+						// correct password - remember this so it doesn't need to be re-entered on return to page
+						page.attr('passwordPass', true);
+						$('#mainContent').empty();
+						loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage);
+					} else {
+						$section.find('.pswdError').show();
+					}
+				});
+			
+			$section.find('#pagePswd').keypress(function (e) {
+				if (e.which == 13) {
+					$section.find('#pagePswdBtn').click();
 				} else {
-					$section.find('.pswdError').show();
+					$section.find('.pswdError').hide();
 				}
 			});
-		
-		$section.find('#pagePswd').keypress(function (e) {
-			if (e.which == 13) {
-				$section.find('#pagePswdBtn').click();
-			} else {
-				$section.find('.pswdError').hide();
-			}
-		});
-		
-		//add the section to the document
-		$('#mainContent').append($section);
-		
-		// Queue reparsing of MathJax - fails if no network connection
-		try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+			
+			//add the section to the document
+			$('#mainContent').append($section);
+			
+			// Queue reparsing of MathJax - fails if no network connection
+			try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
+		}
 
 	} else {
 		loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAlonePage);
@@ -1859,37 +1881,46 @@ function passwordSection(thisSection, $section, sectionIndex, index, page, pageH
 	
 	if ($(thisSection).attr('passwordPass') != 'true') {
 		
-		$section.find('.sectionSubLinks').hide();
-		$section.append('<div class="pswdBlock"><div class="pswdInfo"></div><div class="pswdInput"></div><div class="pswdError"></div></div>');
-		$section.find('.pswdInfo').append($(thisSection).attr('passwordInfo'));
-		$section.find('.pswdError').append($(thisSection).attr('passwordError')).hide();
-		$section.find('.pswdInput').append('<input type="text" class="sectionPswd" aria-label="' + (languageData.find("password")[0] != undefined && languageData.find("password")[0].getAttribute('label') != null ? languageData.find("password")[0].getAttribute('label') : 'Password') + '"><button class="sectionPswdBtn btn btn-primary">' + ($(thisSection).attr('passwordSubmit') != undefined && $(thisSection).attr('passwordSubmit') != '' ? $(thisSection).attr('passwordSubmit') : 'Submit') + '</button>');
+		if (authorSupport == true) {
+			
+			$(thisSection).attr('passwordPass', true);
+			
+			loadSection(thisSection, $section, sectionIndex, index, page, pageHash, pageIndex, pswds);
+			
+		} else {
 		
-		$section.find('.sectionPswdBtn')
-			.button()
-			.on('click', function() {
-				var pswdEntered = $(thisSection).attr('passwordCase') != 'true' ? $section.find('.sectionPswd').val().toLowerCase() : $section.find('.sectionPswd').val();
-				
-				if ($.inArray(pswdEntered, pswds) >= 0) {
-					// correct password - remember this so it doesn't need to be re-entered on return to page
-					$(thisSection).attr('passwordPass', true);
-					$section.find('.pswdBlock').remove();
-					$section.find('.sectionSubLinks').show();
-					loadSection(thisSection, $section, sectionIndex, index, page, pageHash, pageIndex);
-					updateContent($section);
+			$section.find('.sectionSubLinks').hide();
+			$section.append('<div class="pswdBlock"><div class="pswdInfo"></div><div class="pswdInput"></div><div class="pswdError"></div></div>');
+			$section.find('.pswdInfo').append($(thisSection).attr('passwordInfo'));
+			$section.find('.pswdError').append($(thisSection).attr('passwordError')).hide();
+			$section.find('.pswdInput').append('<input type="text" class="sectionPswd" aria-label="' + (languageData.find("password")[0] != undefined && languageData.find("password")[0].getAttribute('label') != null ? languageData.find("password")[0].getAttribute('label') : 'Password') + '"><button class="sectionPswdBtn btn btn-primary">' + ($(thisSection).attr('passwordSubmit') != undefined && $(thisSection).attr('passwordSubmit') != '' ? $(thisSection).attr('passwordSubmit') : 'Submit') + '</button>');
+			
+			$section.find('.sectionPswdBtn')
+				.button()
+				.on('click', function() {
+					var pswdEntered = $(thisSection).attr('passwordCase') != 'true' ? $section.find('.sectionPswd').val().toLowerCase() : $section.find('.sectionPswd').val();
 					
+					if ($.inArray(pswdEntered, pswds) >= 0) {
+						// correct password - remember this so it doesn't need to be re-entered on return to page
+						$(thisSection).attr('passwordPass', true);
+						$section.find('.pswdBlock').remove();
+						$section.find('.sectionSubLinks').show();
+						loadSection(thisSection, $section, sectionIndex, index, page, pageHash, pageIndex);
+						updateContent($section);
+						
+					} else {
+						$section.find('.pswdError').show();
+					}
+				});
+			
+			$section.find('.sectionPswd').keypress(function (e) {
+				if (e.which == 13) {
+					$section.find('.sectionPswdBtn').click();
 				} else {
-					$section.find('.pswdError').show();
+					$section.find('.pswdError').hide();
 				}
 			});
-		
-		$section.find('.sectionPswd').keypress(function (e) {
-			if (e.which == 13) {
-				$section.find('.sectionPswdBtn').click();
-			} else {
-				$section.find('.pswdError').hide();
-			}
-		});
+		}
 		
 	} else {
 		loadSection(thisSection, $section, sectionIndex, index, page, pageHash, pageIndex);
@@ -2537,7 +2568,7 @@ function loadXotContent($this) {
 		xotLink = xotLink.replace('play.php?', xapiEndpoint);
 	}
 	// the embed url parameter makes it responsive, full screen & hides minimise/maximise button (these can be overridden by manually adding other params to the url entered in editor)
-	xotLink += separator + 'embed=true' + separator + "embedded_from=" + encodeURIComponent(x_SiteUrl + x_TemplateId) + separator + "embedded_fromTitle=" + encodeURIComponent($(data).find('learningObject').attr('name'));
+	xotLink += separator + "embedded_from=" + encodeURIComponent(x_SiteUrl + x_TemplateId) + separator + "embedded_fromTitle=" + encodeURIComponent($(data).find('learningObject').attr('name'));
 
 	// add back any url params that haven't been overridden
 	for (var i=0; i<params.length; i++) {
@@ -2555,7 +2586,27 @@ function loadXotContent($this) {
 		xotWidth = $this.attr('width') != undefined && ($.isNumeric($this.attr('width')) || $.isNumeric($this.attr('width').split('%')[0])) ? $this.attr('width') : '100%',
 		xotHeight = $this.attr('height') != undefined && ($.isNumeric($this.attr('height')) || $.isNumeric($this.attr('height').split('%')[0])) ? $this.attr('height') : 600;
 
-	return warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
+	var html = "";
+	// If $this.attr('showEmbed') is undefined, it still is != 'false', so only need to check on != false
+	if ($this.attr('showEmbed') != 'false')
+	{
+		html += warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + separator + 'embed=true' + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
+	}
+	if ($this.attr('showLink') != undefined && $this.attr('showLink') == 'true')
+	{
+		var target="target='_blank'";
+		if ($this.attr('displayOptions') != undefined && $this.attr('displayOptions') == 'lightbox')
+		{
+			target="data-featherlight='iframe'";
+		}
+		var linktext = $this.attr('link');
+		if ($this.attr('linkText') != undefined) {
+			linktext = $this.attr('linkText');
+		}
+		html += "<a href='" + xotLink + "' " + target + ">" + linktext + "</a>";
+
+	}
+	return html;
 
 }
 

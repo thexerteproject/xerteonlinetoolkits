@@ -34,9 +34,15 @@ _load_language_file("/play.inc");
 require_once $xerte_toolkits_site->php_library_path . "display_library.php";
 require_once $xerte_toolkits_site->php_library_path . "template_library.php";
 
+// This file is included by lti_launch ans xapi_launch and set tsugi_enabled and/or xapi_enbled
+// If not set, make sure those variables are initialised to false
 if(!isset($tsugi_enabled))
 {
     $tsugi_enabled = false;
+}
+if(!isset($xapi_enabled))
+{
+    $xapi_enabled = false;
 }
 
 //error_reporting(E_ALL);

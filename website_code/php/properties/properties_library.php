@@ -1279,6 +1279,7 @@ function tsugi_display($id, $lti_def, $mesg = "")
     if($lti_def->published)
     {
         echo PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br><span class='lti_launch_url'>" . $lti_def->url . "</span>";
+        echo "</p><p>" . PROPERTIES_LIBRARY_TSUGI_LTI13_LAUNCH_URL . "<br><span class='lti_launch_url'>" . $lti_def->url13 . "</span>";
     }
     else
     {

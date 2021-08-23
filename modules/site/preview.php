@@ -56,6 +56,9 @@ function show_preview_code($row)
     $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);
     // $engine is assumed to be javascript if flash is NOT set
     $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
+
+    $tracking = "<script type=\"text/javascript\" src=\"" . $template_path_string . "common/js/xttracking_noop.js?version=" . $version . "\"></script>";
+
     $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
     $page_content = str_replace("%VERSION_PARAM%", "?version" . $version , $page_content);
     $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
