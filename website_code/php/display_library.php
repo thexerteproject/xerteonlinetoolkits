@@ -482,7 +482,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
     }
 
     if ($group_id == -1) {
-        $query .= " group by td.template_id, tr.role ";
+        $query .= " group by td.template_name, otd.template_name, td.access_to_whom, td.tsugi_published, otd.parent_template, otd.template_framework, td.template_id, tr.role, fd3.folder_name ";
     }
 
     if ($sort_type == "alpha_down") {
@@ -869,7 +869,7 @@ function get_workspace_templates($folder_id, $tree_id, $sort_type, $copy_only=fa
     }
 
     if ($type == "") {
-        $query .= " group by td.template_id, tr.role, tr.folder,fd3.folder_name ";
+        $query .= " group by td.template_id, td.template_name, td.date_created, otd.template_name,td.access_to_whom, td.tsugi_published, otd.parent_template, otd.template_framework, tr.role, tr.folder,fd3.folder_name ";
     }
 
     if ($sort_type == "alpha_down") {
@@ -969,8 +969,8 @@ function get_users_projects($sort_type, $copy_only=false)
     //group shared content
     //check to which groups the user belongs
     $prefix = $xerte_toolkits_site->database_table_prefix;
-    $query = "SELECT * FROM {$prefix}user_group_members, {$prefix}user_groups WHERE user_group_members.login_id = ?".
-        " AND user_group_members.group_id = user_groups.group_id ORDER BY user_groups.group_name";
+    $query = "SELECT * FROM {$prefix}user_group_members ugm, {$prefix}user_groups ug WHERE ugm.login_id = ?".
+        " AND ugm.group_id = ug.group_id ORDER BY ug.group_name";
     $groups = db_query($query, array($_SESSION['toolkits_logon_id']));
     $workspace->groups = array();
     $counter = 0;
