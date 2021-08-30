@@ -488,19 +488,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
         if ($copy_only)
             $query .= " and (tgr.role = 'creator' or tgr.role ='co-author') ";
         $params = array($folder_id);
-    } else {
-        $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
-            . " otd.parent_template, otd.template_framework, td.template_id, tr.role from {$prefix}templatedetails td, "
-            . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd where td.template_id = tr.template_id "//and tr.user_id = ? "
-            . " and tr.folder= ? and  otd.template_type_id = td.template_type_id ";
-        $params = array($_SESSION['toolkits_logon_id'], $folder_id);
-
-        if ($copy_only)
-            $query .= " and (tr.role = 'creator' or tr.role ='co-author') ";
-
-        $params = array($folder_id);//$_SESSION['toolkits_logon_id'], $folder_id);
     }
-
     if ($copy_only) {
         $query .= " and (tr.role = 'creator' or tr.role ='co-author') ";
     }
@@ -862,6 +850,7 @@ function get_users_projects($sort_type, $copy_only=false)
 {
 
     global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
 
     $root_folder = get_user_root_folder();
 
@@ -907,8 +896,8 @@ function get_users_projects($sort_type, $copy_only=false)
 
     //group shared content
     //check to which groups the user belongs
-    $query = "SELECT * FROM {$prefix}user_group_members, {$prefix}user_groups WHERE user_group_members.login_id = ?".
-        " AND user_group_members.group_id = user_groups.group_id ";
+    $query = "SELECT * FROM {$prefix}user_group_members ugm, {$prefix}user_groups ug WHERE user_group_members.login_id = ?".
+        " AND ugm.group_id = ug.group_id ";
     if ($sort_type == "alpha_down") {
         $query .= "order by user_groups.group_name DESC";
     } elseif ($sort_type == "alpha_up") {
