@@ -2411,7 +2411,7 @@ function x_pageContentsUpdated() {
 
 // by default images can be clicked to open larger version in lightbox viewer - this can be overridden with optional properties at LO & page level
 function x_setUpLightBox() {
-	if ((x_params.lightbox != "false" || x_currentPageXML.getAttribute("lightbox") == "true") && x_currentPageXML.getAttribute("lightbox") != "false") {
+	if (x_currentPageXML != undefined && (x_params.lightbox != "false" || x_currentPageXML.getAttribute("lightbox") == "true") && x_currentPageXML.getAttribute("lightbox") != "false") {
 		
 		// use the x_noLightBox class in page models to force images to not open in lightboxes
 		$("#pageContents img:not('.x_noLightBox'), .x_popupDialog img:not('.x_noLightBox')").each(function( index ) {
