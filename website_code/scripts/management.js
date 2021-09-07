@@ -743,7 +743,7 @@ function errors_list(template){
 	function_to_use="errors";
 	$.ajax({
 		type: "POST",
-		url: "website_code/php/management/errors_list.php",
+		url: "website_code/php/management/error_list.php",
 		data: {
 			logon_id: 1
 		},
