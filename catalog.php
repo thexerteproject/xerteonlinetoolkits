@@ -108,7 +108,9 @@ if ($full_access && isset($_REQUEST['list']))
           td.date_accessed, 
           td.number_of_uses, 
           td.access_to_whom, 
-          td.extra_flags 
+          td.extra_flags,
+          td.tsugi_published as lti_enabled,
+          td.tsugi_xapi_enabled as xapi_enabled
           from {$prefix}templatedetails as td, 
           {$prefix}originaltemplatesdetails otd,
           {$prefix}logindetails ld 
@@ -190,7 +192,9 @@ else if (isset($_GET['template_id']) && is_numeric($_GET['template_id']) && ($fu
           td.date_accessed, 
           td.number_of_uses, 
           td.access_to_whom, 
-          td.extra_flags 
+          td.extra_flags,
+          td.tsugi_published as lti_enabled,
+          td.tsugi_xapi_enabled as xapi_enabled 
           from {$prefix}templatedetails as td, 
           {$prefix}originaltemplatesdetails otd,
           {$prefix}logindetails ld 
