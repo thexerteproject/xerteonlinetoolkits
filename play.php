@@ -265,6 +265,7 @@ if ($tsugi_enabled) {
                 require_once $xerte_toolkits_site->php_library_path . "login_library.php";
                 _load_language_file("/website_code/php/display_library.inc");
 
+                /*
                 if (!isset($mysqli)) {
                     $mysqli = new mysqli($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password, $xerte_toolkits_site->database_name);
                     if ($mysqli->error) {
@@ -277,7 +278,7 @@ if ($tsugi_enabled) {
                     }
                 }
                 if (!isset($lti)) {
-                    require_once('LTI/ims-lti/UoN_LTI.php');
+                    require_once(dirname(__FILE__) . '/LTI/ims-lti/UoN_LTI.php');
                     if (strlen($xerte_toolkits_site->database_table_prefix) > 0) {
                         $lti = new UoN_LTI($mysqli, array('table_prefix' => $xerte_toolkits_site->database_table_prefix));
                     } else {
@@ -289,18 +290,34 @@ if ($tsugi_enabled) {
                     $lti->init_lti();
 
                 }
+                */
 
-
-                if ($lti->valid) {
+                if (false) {
                     $success = true;
                     unset($errors);
-                } else {
-                    $returnedproc = login_processing(false);
-                    list($success, $errors) = $returnedproc;
-                    // Make sure that normal session variables are set to allow other password protected projects to now be opened without login prompt every time
-                    if ($success)
+                } else
+                {
+                    if ($xerte_toolkits_site->authentication_method === 'Saml2')
                     {
-                        login_processing2();
+                        if (isset($_SESSION['toolkits_logon_username']))
+                        {
+                            _debug("Password protected file, already logged in: Show template");
+                            $success = true;
+                        }
+                        else {
+                            _debug("Password protected file using SSO, setting up redirection to " . $_SERVER['REQUEST_URI']);
+                            $_SESSION['pwprotected_url'] = $_SERVER['REQUEST_URI'];
+                            login_processing(false);
+                        }
+                    }
+                    else
+                    {
+                        $returnedproc = login_processing(false);
+                        list($success, $errors) = $returnedproc;
+                        // Make sure that normal session variables are set to allow other password protected projects to now be opened without login prompt every time
+                        if ($success) {
+                            login_processing2();
+                        }
                     }
                 }
 
