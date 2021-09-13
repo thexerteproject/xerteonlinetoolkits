@@ -38,7 +38,7 @@ class XerteXWDInspector
         $orig_error_setting = libxml_use_internal_errors(true);
         // See security note elsewhere in this file and http://php.net/manual/en/function.libxml-disable-entity-loader.php
         // Supported from 5.2.11, so allow for older versions to work as well.
-        if (function_exists('libxml_disable_entity_loader'))
+        if (function_exists('libxml_disable_entity_loader') && \PHP_VERSION_ID < 80000)
         {
             $original_el_setting = libxml_disable_entity_loader(false);
         }
@@ -57,7 +57,7 @@ class XerteXWDInspector
         } else {
             $ok = true;
         }
-        if (function_exists('libxml_disable_entity_loader'))
+        if (function_exists('libxml_disable_entity_loader') && \PHP_VERSION_ID < 80000)
         {
             libxml_disable_entity_loader($original_el_setting);
         }
@@ -73,7 +73,7 @@ class XerteXWDInspector
         $this->models = array();
 
         $orig_error_setting = libxml_use_internal_errors(true);
-        if (function_exists('libxml_disable_entity_loader'))
+        if (function_exists('libxml_disable_entity_loader') && \PHP_VERSION_ID < 80000)
         {
             $original_el_setting = libxml_disable_entity_loader(false);
         }
@@ -147,7 +147,7 @@ class XerteXWDInspector
             }
             $this->menus[] = $menu;
         }
-        if (function_exists('libxml_disable_entity_loader'))
+        if (function_exists('libxml_disable_entity_loader') && \PHP_VERSION_ID < 8000)
         {
             libxml_disable_entity_loader($original_el_setting);
         }
