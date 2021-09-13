@@ -911,6 +911,14 @@ function access_info($template_id){
     return $info;
 }
 
+function str_replace_1st($pattern, $replacement, $subject)
+{
+    $pos = strpos($subject, $pattern);
+    if ($pos !== false) {
+        return substr_replace($subject, $replacement, $pos, strlen($pattern));
+    }
+}
+
 function access_display($xerte_toolkits_site, $change){
 
     global $row_access;
@@ -921,8 +929,8 @@ function access_display($xerte_toolkits_site, $change){
 
     $row_access = db_query_one($query_for_template_access, $params);
 
-    echo "<p class=\"header\"><span>" . PROPERTIES_TAB_ACCESS . " " . str_replace("-", " - ", $row_access['access_to_whom']) . "</span></p>";
-    echo "<p><span>" . PROPERTIES_LIBRARY_ACCESS . " " . str_replace("-", " - ", $row_access['access_to_whom']) . "</span></p>";
+    echo "<p class=\"header\"><span>" . PROPERTIES_TAB_ACCESS . " " . str_replace_1st("-", " - ", $row_access['access_to_whom'], 1) . "</span></p>";
+    echo "<p><span>" . PROPERTIES_LIBRARY_ACCESS . " " . str_replace_1st("-", " - ", $row_access['access_to_whom']) . "</span></p>";
 
     echo "<div id=\"security_list\">";
 
@@ -968,11 +976,11 @@ function access_display($xerte_toolkits_site, $change){
 
     }else{
 
-        $temp = explode("-", $row_access['access_to_whom']);
+        $pos = strpos($row_access['access_to_whom'], "-");
 
-        if(isset($temp[1])){
+        if($pos !== false){
 
-            echo $temp[1];
+            echo substr($row_access['access_to_whom'], $pos+1);
 
         }
 
