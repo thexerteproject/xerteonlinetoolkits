@@ -2471,14 +2471,16 @@ function x_changePageStep6() {
 }
 
 function x_focusPageContents(){
-	//focus pageContents after page load and page change
+	if ( self == top ) {
+		//focus pageContents after page load and page change
 		$('#pageContents').attr('tabIndex', 0).focus();
 		//#pageContents:focus is set to none in default theme
 		//uncomment the line below to see the focus outline
 		//or use a theme where this isn't hidden
 		//$('#pageContents:focus').css('outline','solid');
-	if(x_pageInfo[x_currentPage].type=="adaptiveContent"){
-		$('#adaptiveContentMain').attr('tabIndex', 0).focus();
+		if(x_pageInfo[x_currentPage].type=="adaptiveContent"){
+			$('#adaptiveContentMain').attr('tabIndex', 0).focus();
+		}
 	}
 }
 
