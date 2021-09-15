@@ -35,7 +35,7 @@
 	//PROJECT INFO PANEL IN THE WORKSPACE - MORE TERSE TEXT
 	define ("PROJECT_INFO_NAME", "Name");
 
-	define ("PROJECT_INFO_ID", "Id");
+	define ("PROJECT_INFO_ID", "ID");
 
 	define ("PROJECT_INFO_CREATED", "Created on");
 
@@ -68,6 +68,8 @@
 	define ("PROJECT_INFO_ACCESS_SET_AS", "is currently set as");
 
 	define ("PROJECT_INFO_NRVIEWS", ", number of views is %n");
+	
+	define ("PROJECT_INFO_NRVIEWSTITLE", "Views");
 
 	define ("PROJECT_INFO_RSS_SYNDICATION" , "RSS: Project is published through rss");
 
