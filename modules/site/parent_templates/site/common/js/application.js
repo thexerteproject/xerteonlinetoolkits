@@ -2399,6 +2399,7 @@ function loadXotContent($this) {
 	{
 		xotLink += separator + 'site=' + x_TemplateId;
 		xotLink = xotLink.replace('play.php?', xapiEndpoint);
+		xotLink += separator + 'group=' + urlParams.group;
 	}
 	// the embed url parameter makes it responsive, full screen & hides minimise/maximise button (these can be overridden by manually adding other params to the url entered in editor)
 	xotLink += separator + "embedded_from=" + encodeURIComponent(x_SiteUrl + x_TemplateId) + separator + "embedded_fromTitle=" + encodeURIComponent($(data).find('learningObject').attr('name'));
