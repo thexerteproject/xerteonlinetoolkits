@@ -507,7 +507,8 @@ function project_info($template_id){
 
     if (get_default_engine($template_id) == 'flash')
     {
-        $info .=  PROPERTIES_LIBRARY_DEFAULT_FLASH . "<br/";
+        $info .=  "<span class='warning'><i class='fa fa-exclamation-triangle' title='" . PROPERTIES_LIBRARY_FLASH_WARNING . "' style='height: 14px;'></i> ";
+        $info .=  PROPERTIES_LIBRARY_DEFAULT_FLASH . "</span><br/>";
     }
     else
     {

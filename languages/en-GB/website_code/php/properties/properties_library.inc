@@ -104,6 +104,8 @@
     define("PROPERTIES_LIBRARY_DEFAULT_HTML5", "HTML5");
 
     define("PROPERTIES_LIBRARY_DEFAULT_FLASH", "Flash");
+	
+    define("PROPERTIES_LIBRARY_FLASH_WARNING", "The Flash player is no longer supported. You can change the default player to HTML5 in the project properties");
 
     define("PROPERTIES_LIBRARY_DEFAULT_ENGINE_CHANGED", "Default engine has been changed.");
 
