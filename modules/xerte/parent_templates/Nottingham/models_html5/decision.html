@@ -257,7 +257,8 @@
 										$("#textHolder #displayInfo").append('<div class="info' + ($pageContents.data("currentStep") + 1) + clear + '">' + $this.attr("displayTxt") + '</div>');
 									}
 									
-									decision.setUpStep($this.attr("target"), true);
+									var thisTarget = $this.attr("targetNew") != undefined && $this.attr("targetNew") != "" ? $this.attr("targetNew") : $this.attr("target");
+									decision.setUpStep(thisTarget, true);
 									exists = true;
 									return false;
 								}
@@ -271,7 +272,8 @@
 							$pageContents.data("storedResultTxt").push("");
 							
 							// load new step
-							decision.setUpStep(currentStepInfo.target, true);
+							var thisTarget = currentStepInfo.targetNew != undefined && currentStepInfo.targetNew != "" ? currentStepInfo.targetNew : currentStepInfo.target;
+							decision.setUpStep(thisTarget, true);
 						}
 						
 						$(".x_popupDialog").parent().detach();
@@ -521,10 +523,9 @@
 						$text.prepend('<span class="num">' + ($pageContents.data("currentStep") + 1) + ': </span>');
 					}
 				}
-				$text.prepend(authorSupport);
 				
 				$stepHolder.prepend('<div class="step"><div class="instruction"></div></div>');
-				$stepHolder.find('.instruction').append($text);
+				$stepHolder.find('.instruction').append(authorSupport).append($text);
 				var $thisStep = $stepHolder.children(".step");
 				
 				if (currentStepInfo.options.length == 0) {
@@ -544,8 +545,11 @@
 							var authorSupport = "";
 							if (x_params.authorSupport == "true") {
 								var	bracket1 = currentStepInfo.format == "menu" ? "(" : "" ,
-									bracket2 = currentStepInfo.format == "menu" ? ")" : "" ;
-								authorSupport =  '<span class="alert"> ' + bracket1 + $this.attr("target") + bracket2 + '</span>';
+									bracket2 = currentStepInfo.format == "menu" ? ")" : "" ,
+									thisTarget = $this.attr("targetNew") != undefined && $this.attr("targetNew") != "" ?
+													(decision.findStep($this.attr("targetNew")) != null ? decision.findStep($this.attr("targetNew")).name : $this.attr("target")) :
+													$this.attr("target");
+								authorSupport =  '<span class="alert"> ' + bracket1 + thisTarget + bracket2 + '</span>';
 							}
 							
 							// is answer given via drop down menu or radio buttons
@@ -582,7 +586,7 @@
 							
 							// store destination in option data
 							$thisStep.find("#opt" + i).data({
-								"target":		$this.attr("target"),
+								"target":		$this.attr("targetNew") != undefined && $this.attr("targetNew") != "" ? $this.attr("targetNew") : $this.attr("target"),
 								"resultTxt":	$this.attr("resultTxt"),
 								"displayTxt":	$this.attr("displayTxt"),
 								"clear":		$this.attr("clear")
@@ -640,8 +644,11 @@
 						if (x_params.authorSupport == "true") {
 							authorSupport += '<span class="alert">';
 							currentStepInfo.options.each(function(i) {
-								var $this = $(this);
-								authorSupport += "<p>" + $this.attr("min") + " - " + $this.attr("max") + " : " + $this.attr("target") + "</p>";
+								var $this = $(this),
+									thisTarget = $this.attr("targetNew") != undefined && $this.attr("targetNew") != "" ?
+												(decision.findStep($this.attr("targetNew")) != null ? decision.findStep($this.attr("targetNew")).name : $this.attr("target")) :
+												$this.attr("target");
+								authorSupport += "<p>" + $this.attr("min") + " - " + $this.attr("max") + " : " + thisTarget + "</p>";
 							});
 							authorSupport += '</span>';
 						}
@@ -774,6 +781,7 @@
 				if (x_params.authorSupport == "true") {
 					authorSupport =  '<span class="alert">' + currentStepInfo.name + ' </span>';
 				}
+				
 				var goBtn = "";
 				if (currentStepInfo.destination != undefined && currentStepInfo != "") {
 					goBtn = '<button id="goBtn"/>';
@@ -961,8 +969,17 @@
 		
 		// _____ RETURN STEP WITH REQUESTED ID _____
 		this.findStep = function(stepID) {
+			// original version of this page required you to type a target ID in as destination step.
+			// this has changed so that there's a drop down box where you can select the destination step.
+			// although original attribute (target) is deprecated & the new attribute (targetNew) is now used where it exists (it saves linkID to xml)
+			// the old version still needs to work for older projects.
+			
 			for (var i=0; i<$pageContents.data("allSteps").length; i++) {
 				if ($pageContents.data("allSteps")[i].name == stepID) {
+					var thisStep = $pageContents.data("allSteps")[i];
+					thisStep.index = i;
+					return thisStep;
+				} else if ($pageContents.data("allSteps")[i].linkID == stepID) {
 					var thisStep = $pageContents.data("allSteps")[i];
 					thisStep.index = i;
 					return thisStep;
