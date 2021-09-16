@@ -50,6 +50,16 @@ if ($xerte_toolkits_site->altauthentication != "" && isset($_GET['altauth']))
 login_processing();
 login_processing2();
 
+// Check if any redirection needs to take place for Password protected files...
+if (isset($_SESSION['pwprotected_url']))
+{
+    _debug(" Redirection found: " . $_SESSION['pwprotected_url']);
+    $redirect=$_SESSION['pwprotected_url'];
+    unset($_SESSION['pwprotected_url']);
+    header("Location: " . $redirect);
+}
+
+
 /*If the authentication method isn't set to Moodle
 * the code in the required file below is simply skipped
 */
