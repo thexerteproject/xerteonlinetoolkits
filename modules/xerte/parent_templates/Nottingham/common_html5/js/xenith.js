@@ -2395,6 +2395,8 @@ function x_changePageStep6() {
                 }
             }
         }
+		
+		x_focusPageContents(false);
 
     // x_currentPage hasn't been viewed previously - load model file
     } else {
@@ -2467,12 +2469,12 @@ function x_changePageStep6() {
 
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();
-	}x_focusPageContents();
+	}
 }
 
-function x_focusPageContents(){
-	if ( self == top ) {
-		//focus pageContents after page load and page change
+function x_focusPageContents(firstLoad) {
+	if (self == top || !firstLoad) {
+		//focus pageContents after page load (if not shown in iframe) and after page change (always - even if in iframe)
 		$('#pageContents').attr('tabIndex', 0).focus();
 		//#pageContents:focus is set to none in default theme
 		//uncomment the line below to see the focus outline
@@ -2735,7 +2737,9 @@ function x_pageLoaded() {
     $(config.selector, config.context).featherlight();
 
 	doPercentage();
-	x_focusPageContents();
+	
+	var pagesLoaded = $(x_pageInfo).filter(function(i){ return this.built != false; }).length;
+	x_focusPageContents(pagesLoaded <= 1 ? true : false);
 }
 
 // detect page loaded change and update progress bar
