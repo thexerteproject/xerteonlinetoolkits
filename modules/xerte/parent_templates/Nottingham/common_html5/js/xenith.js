@@ -2974,8 +2974,8 @@ function x_updateCss(updatePage) {
 
 // function isn't called until the narration bar has loaded
 function x_updateCss2(updatePage) {
-	$x_pageHolder.css("margin-bottom", $x_footerBlock.height());
-    $x_background.css("margin-bottom", $x_footerBlock.height());
+	$x_pageHolder.css("margin-bottom", $x_footerBlock.outerHeight());
+    $x_background.css("margin-bottom", $x_footerBlock.outerHeight());
 	
     if (x_browserInfo.mobile == false) {
 		$x_pageHolder.css("margin-top", $x_headerBlock.height());
