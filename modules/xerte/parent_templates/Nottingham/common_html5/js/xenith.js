@@ -950,7 +950,7 @@ function x_setUp() {
 }
 
 function x_desktopSetUp() {
-	if (x_params.embed != true || x_params.displayMode != 'full screen') {
+	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {		
 		$x_footerL.prepend('<button id="x_cssBtn"></button>');
 		$("#x_cssBtn")
 			.button({
