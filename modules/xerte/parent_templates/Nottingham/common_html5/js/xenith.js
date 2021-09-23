@@ -1483,7 +1483,7 @@ function x_continueSetUp1() {
 		}
 		else
 		{
-			$x_saveSessionBtn.hide();
+			$x_saveSessionBtn.remove();
 		}
 		if (x_params.kblanguage != undefined) {
 			if (typeof charpadstr != 'undefined')
@@ -2662,7 +2662,9 @@ function x_setUpPage() {
 			$x_nextBtn.button("disable");
 		}
 		if (x_currentPageXML.getAttribute("save") == "false") {
-			$x_saveSessionBtn.button("disable");
+			if ($("#x_saveSessionBtn").length > 0) {
+				$x_saveSessionBtn.button("disable");
+			}
 		}
 	} else if (!x_isMenu() && x_currentPageXML.getAttribute("navSetting") != undefined) {
 		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
