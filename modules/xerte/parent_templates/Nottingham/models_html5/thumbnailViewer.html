@@ -118,15 +118,17 @@
 			});
 			
 			
-			var	$panelLink =		$("#panelLink"),
-				$panelImg =			$("#panelImg"),
-				$panelTxt =			$("#panelTxt");
+			var	$panelImg = $("#panelImg"),
+				$panelTxt =	$("#panelTxt"),
+				$panelLink = $("#panelLink");
 			
 			$mainTxt.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			
 			// set up thumbnail click events - fadeOut old mainInfo and fadeIn new contents
 			$("#thumbHolder .thumbBox")
-				.click(function() {
+				.click(function(e) {
+					e.preventDefault();
+					
 					if ($mainTxt.css("display") != "none") {
 						$mainTxt.fadeOut();
 					}
@@ -148,7 +150,7 @@
 							
 							
 							// is there a link from the image?
-							var	link = "#",
+							var	link = "",
 								target = "";
 							if (thisData.getAttribute("linktarget") == "Original image") {
 								link = x_evalURL(thisData.getAttribute("url"));
@@ -159,11 +161,16 @@
 									target = "_blank";
 								}
 							}
-							$panelLink.attr({
-								"href"		:link,
-								"target"	:target
-							});
 							
+							if (link != "") {
+								$panelLink.attr({
+									"href": link,
+									"target": target
+								});
+								
+							} else {
+								$panelLink.removeAttr('href target');
+							}
 							
 							// load main image
 							$panelImg.html('<img class="centre" />');
@@ -299,7 +306,7 @@
 	
 	<div id="mainInfoHolder">
 		<div id="mainPanel" class="panel inline">
-			<a id="panelLink" href="#" target="_blank">
+			<a id="panelLink" tabindex="0">
 				<div id="panelImg"></div>
 				<div id="panelTxt" class="overlay"></div>
 				<button id="imgCloseBtn" class="overlay"></button>

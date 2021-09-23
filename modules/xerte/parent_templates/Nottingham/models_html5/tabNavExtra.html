@@ -118,10 +118,12 @@
 					}
 					
 					$thisTopic
-						.attr("href", "#topic" + i)
 						.data("index", i)
 						.html(this.getAttribute("name"))
-						.click(function() {
+						.click(function(e) {
+							
+							e.preventDefault();
+							
 							$this = $(this);
 							
 							if ($this != $("#pageContents .topic.highlight")) {
@@ -222,7 +224,9 @@
 										}
 										$thisLink
 											.html(this.getAttribute("name"))
-											.click(function() {
+											.click(function(e) {
+												e.preventDefault();
+												
 												var $this = $(this);
 												if ($this != $("#pageContents .paneList a.selected")) {
 													$(".customHTMLHolder").detach();
@@ -439,7 +443,7 @@
 	<div class="splitScreen">
 		
 		<div id="topicHolder" class="left">
-			<a class="topic" role="button"></a>
+			<a class="topic" href="#" role="button"></a>
 		</div>
 		
 		<div class="right">

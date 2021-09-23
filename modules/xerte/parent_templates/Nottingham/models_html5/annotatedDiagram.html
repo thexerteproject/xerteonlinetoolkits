@@ -85,7 +85,6 @@
 		}
 
 		this.resizeImg = function(firstLoad) {
-			;
 			var imgMaxW, imgMaxH;
 			var footerMargin = parseInt($x_footerBlock.css('margin-bottom'));
 			imgMaxH = $x_pageHolder.height() - $x_footerBlock.height() - footerMargin - 50;
@@ -105,9 +104,6 @@
 				"filter": 'alpha(opacity=100)',
 			});
 
-
-
-			debugger
 			if(x_currentPageXML.getAttribute("align")==="Left"){
 				var totalWidth=$("#canvas").width();
 				var imageWidth=$("#imageHolder").width();
@@ -279,13 +275,15 @@
 					}
 
 					$thisItem
-						.attr("href", "#item" + i)
 						.html(this.getAttribute("name"))
 						.data({
 							"name"	:this.getAttribute("name"),
 							"text"	:this.getAttribute("text")
 							})
-						.click(function() {
+						.click(function(e) {
+							
+							e.preventDefault();
+							
 							var $this = $(this);
 							if ($this != $(".listItem.highlight")) {
 								$(".listItem.highlight").removeClass("highlight");
@@ -433,7 +431,7 @@
 		<div id="textContents">
 			<div id="mainText" tabindex="1"></div>
 			<div id="listHolder">
-				<a class="listItem"></a>
+				<a class="listItem" href="#"></a>
 			</div>
 			<div id="infoHolder" aria-live="polite"></div>
 		</div>
