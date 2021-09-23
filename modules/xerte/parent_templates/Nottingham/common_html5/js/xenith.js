@@ -878,6 +878,10 @@ function x_GetTrackingTextFromHTML(html, fallback)
 
 // setup functions load interface buttons and events
 function x_setUp() {
+	
+	// prevent flashes of css body tag colours before the main interface has loaded
+	$('head').append('<style id="preventFlash" type="text/css">body, #x_mainHolder { background: white !important; }; </style>');
+	
 	x_params.dialogTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") : "";
 	x_params.newWindowTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") : "";
 
@@ -950,7 +954,7 @@ function x_setUp() {
 }
 
 function x_desktopSetUp() {
-	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {		
+	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
 		$x_footerL.prepend('<button id="x_cssBtn"></button>');
 		$("#x_cssBtn")
 			.button({
@@ -2103,6 +2107,7 @@ function x_changePageStep5(x_gotoPage) {
 }
 
 function x_changePageStep5a(x_gotoPage) {
+	
     var prevPage = x_currentPage;
 
     // disable onload of #special_theme_css
@@ -2684,6 +2689,7 @@ function x_setUpPage() {
 				$("#x_mainBg").hide();
 			}
 		}
+		$('#preventFlash').remove();
         x_firstLoad = false;
     }
 }
