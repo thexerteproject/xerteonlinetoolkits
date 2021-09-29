@@ -1323,6 +1323,8 @@ function template_submit()
     var formData = new FormData(form);
     $.ajax({
         type: "POST",
+        processData: false,
+        contentType: false,
         url: "website_code/php/management/upload.php",
         data: formData
     })
