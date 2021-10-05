@@ -142,7 +142,7 @@
             XTSetPageType(x_currentPage, 'numeric', numQs, this.weighting);
 
 			this.loadQ();
-			
+
 			x_pageContentsUpdated();
 		};
 
@@ -178,7 +178,7 @@
 					infoString = newString + infoString;
 				}
 				$("#qTxt").html(x_addLineBreaks(infoString));
-				
+
 				//if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
 				//	$("#qTxt").find("a.x_glossary").contents().unwrap();
 				//}
@@ -301,6 +301,7 @@
 
 					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 					quiz.checked = false;
+					$('#qNo').attr('tabIndex', 0).focus();
 				}
 			}
 		}
@@ -525,7 +526,7 @@
                     quiz.loadQ();
                 }
             }
-			
+
 			x_pageContentsUpdated();
         }
 
@@ -551,7 +552,7 @@
 
             $("#feedbackHeader").html(fbTxt);
 			$("#questionAudio").empty();
-			
+
 			//if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
 			//	$("#feedback").find("a.x_glossary").contents().unwrap();
 			//}
