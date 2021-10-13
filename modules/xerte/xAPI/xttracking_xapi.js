@@ -378,11 +378,11 @@ function XApiTrackingState() {
     }
     
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions,
-        correctanswer, feedback, grouping) {
+        correctanswer, feedback, grouping, context) {
         this.verifyEnterInteractionParameters(ia_type, ia_name, correctoptions,
             correctanswer, feedback);
         var sit = this.findCreate(page_nr, ia_nr, ia_type, ia_name);
-        sit.enterInteraction(correctanswer, correctoptions, grouping);
+        sit.enterInteraction(correctanswer, correctoptions, grouping, context);
         this.currentid = sit.id;
     }
 
@@ -1011,6 +1011,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
     this.weighting = 0.0;
     this.score = 0.0;
     this.grouping = "";
+    this.context = "";
     this.correctAnswers = [];
     this.learnerAnswers = [];
     this.learnerOptions = [];
@@ -1042,6 +1043,8 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
         this.nrinteractions = jsonObj.nrinteractions;
         this.weighting = jsonObj.weighting;
         this.score = jsonObj.score;
+        this.grouping = jsonObj.grouping;
+        this.context = jsonObj.context;
         this.correctOptions = jsonObj.correctOptions;
         this.correctAnswers = jsonObj.correctAnswers;
         this.learnerOptions = jsonObj.learnerOptions;
@@ -1123,7 +1126,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
 
     }
 
-    function enterInteraction(correctAnswers, correctOptions, grouping) {
+    function enterInteraction(correctAnswers, correctOptions, grouping, context) {
         this.correctAnswers = correctAnswers;
         this.correctOptions = correctOptions;
 
@@ -1132,6 +1135,13 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
             this.grouping = grouping;
         } else {
             this.grouping = "";
+        }
+
+        if (typeof context != "undefined" && context != "" && context !=
+            null) {
+            this.context = context;
+        } else {
+            this.context = "";
         }
 
         var id = this.getxApiId();
@@ -1178,6 +1188,18 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                     objectType: "Activity"
                 }]
             };
+        }
+        if (this.context != "")
+        {
+            let contextitems = this.context.split(',');
+            contextitems.forEach(function (contextitem){
+                let item = contextitem.split('=');
+                if (item.length == 2) {
+                    let key = "http://xerte.org.uk/" + item[0];
+                    let value = item[1].replace(" ", "_");
+                    statement.context.extensions[key] = value;
+                }
+            });
         }
         SaveStatement(statement);
 
@@ -1552,6 +1574,18 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 }]
                             };
                     }
+                    if (this.context != "")
+                    {
+                        let contextitems = this.context.split(',');
+                        contextitems.forEach(function (contextitem){
+                           let item = contextitem.split('=');
+                           if (item.length == 2) {
+                               let key = "http://xerte.org.uk/" + item[0];
+                               let value = item[1];
+                               statement.context.extensions[key] = value;
+                           }
+                        });
+                    }
                     SaveStatement(statement);
                     if (typeof statement.result.score != 'undefined') {
                         var scoredstatement = {
@@ -1581,6 +1615,18 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         };
                         if (this.grouping != "") {
                             scoredstatement.context.contextActivities = statement.context.contextActivities;
+                        }
+                        if (this.context != "")
+                        {
+                            let contextitems = this.context.split(',');
+                            contextitems.forEach(function (contextitem){
+                                let item = contextitem.split('=');
+                                if (item.length == 2) {
+                                    let key = "http://xerte.org.uk/" + item[0];
+                                    let value = item[1];
+                                    statement.context.extensions[key] = value;
+                                }
+                            });
                         }
                         SaveStatement(scoredstatement);
                     }
@@ -1623,6 +1669,18 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                 objectType: "Activity"
                             }]
                         };
+                    }
+                    if (this.context != "")
+                    {
+                        let contextitems = this.context.split(',');
+                        contextitems.forEach(function (contextitem){
+                            let item = contextitem.split('=');
+                            if (item.length == 2) {
+                                let key = "http://xerte.org.uk/" + item[0];
+                                let value = item[1];
+                                statement.context.extensions[key] = value;
+                            }
+                        });
                     }
                     SaveStatement(statement);
                     // If not a page
@@ -1674,6 +1732,18 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                                     objectType: "Activity"
                                 }]
                             };
+                        }
+                        if (this.context != "")
+                        {
+                            let contextitems = this.context.split(',');
+                            contextitems.forEach(function (contextitem){
+                                let item = contextitem.split('=');
+                                if (item.length == 2) {
+                                    let key = "http://xerte.org.uk/" + item[0];
+                                    let value = item[1];
+                                    statement.context.extensions[key] = value;
+                                }
+                            });
                         }
                         SaveStatement(statement);
                     }
@@ -1751,10 +1821,23 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         }]
                     };
             }
+            if (this.context != "")
+            {
+                let contextitems = this.context.split(',');
+                contextitems.forEach(function (contextitem){
+                    let item = contextitem.split('=');
+                    if (item.length == 2) {
+                        let key = "http://xerte.org.uk/" + item[0];
+                        let value = item[1];
+                        statement.context.extensions[key] = value;
+                    }
+                });
+            }
             SaveStatement(statement);
         }
     }
     this.grouping = "";
+    this.context = "";
 }
 
 function getStatements(q, one, callback)
@@ -2964,9 +3047,9 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
 }
 
 function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions,
-    correctanswer, feedback, grouping) {
+    correctanswer, feedback, grouping, context) {
     state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions,
-        correctanswer, feedback, grouping);
+        correctanswer, feedback, grouping, context);
 }
 
 function XTExitInteraction(page_nr, ia_nr, result, learneroptions,

@@ -181,6 +181,7 @@
 
 		this.loadQuestions = function()
 		{
+			debugger;
             $("#checkBtn").button("disable");
 			
             $pageContents.data('radioButtonQuestions', []);
@@ -253,6 +254,7 @@
 			else
 			{
 				var $thisQ = $(x_currentPageXML).children().children()[questions[currentQuestion]];
+				let classQ = $($thisQ).parent();
 				var infoString = $thisQ.getAttribute("prompt");
 
 				if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
@@ -408,7 +410,7 @@
                         }
                     }
 					
-					XTEnterInteraction(x_currentPage, questions[currentQuestion], 'numeric', name, correctOptions, correctAnswer, null, x_currentPageXML.getAttribute("grouping"));
+					XTEnterInteraction(x_currentPage, questions[currentQuestion], 'numeric', name, correctOptions, correctAnswer, null, x_currentPageXML.getAttribute("grouping"), "opinionClass=" + classQ.attr("name"));
 					$pageContents.data('checked', false);
 				}
 			}
