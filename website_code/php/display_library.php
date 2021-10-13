@@ -431,10 +431,11 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
         $item->xot_id = $row['folder_id'];
         $item->parent = $tree_id;
         $item->text = $row['folder_name'];
+        $shared = "";
         if ($row['role'] != 'creator' && $newtype != 'group'){
-            $newtype = 'shared';
+            $shared = 'shared';
         }
-        $item->type = ($newtype == "") ?  "folder" : "folder" . _ .$newtype;
+        $item->type = ($shared == "") ?  "folder" : "folder" . _ .$shared;
         $item->xot_type = "folder";
         $item->published = false;
         $item->shared = false;
@@ -445,7 +446,6 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
         if ($files) {
             $items = array_merge($items, $files);
         }
-
     }
 
     return $items;
@@ -459,7 +459,7 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only
  * @param int $group_id if we are looking for files in a group not folder.
  */
 
-function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, $group_id = -1)
+function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, $type = "")
 {
 
     global $xerte_toolkits_site;
@@ -469,16 +469,20 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
     $prefix = $xerte_toolkits_site->database_table_prefix;
     $query = NULL;
     $params = NULL;
-    if ($group_id == -1) {
+
+    if ($type != "group_top") {
         $query  = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
             . " otd.parent_template, otd.template_framework, td.template_id, tr.role, fd3.folder_name as creator_folder_name, count(tr2.template_id) as nrshared "
             . " from {$prefix}templatedetails td "
-            . " join {$prefix}templaterights tr on td.template_id=tr.template_id and tr.user_id=? and tr.folder=? "
+            . " join {$prefix}templaterights tr on td.template_id=tr.template_id and tr.folder=? " //and tr.user_id=?
             . " join {$prefix}originaltemplatesdetails otd on otd.template_type_id = td.template_type_id "
             . " join {$prefix}templaterights tr3 on td.template_id=tr3.template_id and tr3.role='creator' "
             . " join {$prefix}folderdetails fd3 on tr3.folder=fd3.folder_id "
             . " left join {$prefix}templaterights tr2 on td.template_id=tr2.template_id ";
-        $params = array($_SESSION['toolkits_logon_id'], $folder_id);
+        $params = array($folder_id);  //,$_SESSION['toolkits_logon_id']
+        if ($copy_only) {
+            $query .= " and (tr.role = 'creator' or tr.role ='co-author') ";
+        }
     } else {
         //select templates the same way as regularly, however, now check for group_id in template_group_rights
         $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
@@ -489,13 +493,18 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
             $query .= " and (tgr.role = 'creator' or tgr.role ='co-author') ";
         $params = array($folder_id);
     }
-    if ($copy_only) {
-        $query .= " and (tr.role = 'creator' or tr.role ='co-author') ";
+
+    if ($type != "group_top") {
+        $query .= " group by td.template_id, td.template_name, td.date_created, otd.template_name,td.access_to_whom, td.tsugi_published, otd.parent_template, otd.template_framework, tr.role, tr.folder,fd3.folder_name ";
     }
 
-    if ($group_id == -1) {
-        $query .= " group by td.template_id, tr.role ";
+    $top = false;
+    $newtype = $type;
+    if (str_contains($type, "_top")) {
+        $top = true;
+        $newtype = str_replace("_top", "", $type);
     }
+
 
     if ($sort_type == "alpha_down") {
         $query .= "order by td.template_name DESC";
@@ -527,11 +536,14 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
         $item->xot_id = $row['template_id'];
         $item->parent = $tree_id;
         $item->text = $row['project_name'];
-        if ($group_id == -1)
-            $item->type = strtolower($row['parent_template']);
-        else
-            $item->type = strtolower($row['parent_template'] . "_group");
+        $shared = "";
+        if ($row['role'] != 'creator' && $newtype != 'group') {
+            $shared = 'shared';
+        }
+
+        $item->type = ($newtype == "") ? strtolower($row['parent_template']) : strtolower($row['parent_template']) . "_" . $shared;
         $item->xot_type = "file";
+
         $item->published = $row['access_to_whom'] != 'Private' || $row['tsugi_published'] == 1;
         $item->shared = $row['nrshared'] > 1;
         $item->editor_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size;
@@ -541,6 +553,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only, 
     }
     return $items;
 }
+
 
 /**
  * Builds an array with the whole structure of the folder suitable for jsTree
@@ -577,6 +590,14 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
     $items = array();
     $folders = get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only, $type);
     $templates = get_workspace_templates($folder_id, $tree_id, $sort_type, $copy_only, $type);
+
+    $top = false;
+    $newtype = $type;
+    if (str_contains($type, "_top")){
+        $top = true;
+        $newtype = str_replace("_top", "", $type);
+    }
+
     foreach($folders as $folder)
     {
         $item = new stdClass();
@@ -584,43 +605,52 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         $item->xot_id = $folder['folder_id'];
         $item->parent = $folder['tree_parent_id'];
         $item->text = $folder['folder_name'];
-        $item->type = "folder";
+        $item->type = $folder['type'];
         $item->xot_type = "folder";
         $item->published = false;
         $item->shared = false;
 
         $items[] = $item;
 
-        $foldertemplates = array_filter($templates, function($template) use ($item) {
-            return $template['folder'] == $item->xot_id;
-        });
-        foreach($foldertemplates as $template)
+        if ($folder['type'] == 'folder_shared')
         {
-            // Check whether shared LO is in recyclebin
-            if ($template['role'] != 'creator' && $template['creator_folder_name'] == "recyclebin") {
-                continue;
+            $files = get_folder_contents($folder['folder_id'], $folder['tree_id'],$sort_type, $copy_only);
+            if ($files)
+            {
+                $items = array_merge($items, $files);
             }
+        }
+        else {
+            $foldertemplates = array_filter($templates, function ($template) use ($item) {
+                return $template['folder'] == $item->xot_id;
+            });
+            foreach ($foldertemplates as $template) {
+                // Check whether shared LO is in recyclebin
+                if ($template['role'] != 'creator' && $template['creator_folder_name'] == "recyclebin") {
+                    continue;
+                }
 
-            $titem = new stdClass();
-            $titem->id = $folder['tree_id'] . "_" . $template['template_id'];
-            $titem->xot_id = $template['template_id'];
-            $titem->parent = $folder['tree_id'];
-            $titem->text = $template['project_name'];
-            if ($type == "")
-                $titem->type = strtolower($template['parent_template']);
-            else
-                $titem->type = strtolower($template['parent_template'] . "_group");
-            $titem->xot_type = "file";
-            $titem->published = $template['access_to_whom'] != 'Private' || $template['tsugi_published'] == 1;
-            $titem->shared = $template['nrshared'] > 1;
-            $titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size;
-            $titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size;
+                $titem = new stdClass();
+                $titem->id = $folder['tree_id'] . "_" . $template['template_id'];
+                $titem->xot_id = $template['template_id'];
+                $titem->parent = $folder['tree_id'];
+                $titem->text = $template['project_name'];
+                if ($newtype == "")
+                    $titem->type = strtolower($template['parent_template']);
+                else
+                    $titem->type = strtolower($template['parent_template'] . "_group");
+                $titem->xot_type = "file";
+                $titem->published = $template['access_to_whom'] != 'Private' || $template['tsugi_published'] == 1;
+                $titem->shared = $template['nrshared'] > 1;
+                $titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size;
+                $titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size;
 
-            $items[] = $titem;
+                $items[] = $titem;
+            }
         }
     }
 
-    // And now the times of the workspace itself
+    // And now the items of the workspace itself
     $foldertemplates = array_filter($templates, function($template) use ($folder_id){
         return $template['folder'] == $folder_id;
     });
@@ -636,7 +666,7 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         $titem->xot_id = $template['template_id'];
         $titem->parent = $tree_id;
         $titem->text = $template['project_name'];
-        if ($type == "")
+        if ($newtype == "")
             $titem->type = strtolower($template['parent_template']);
         else
             $titem->type = strtolower($template['parent_template'] . "_group");
@@ -673,22 +703,38 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    if ($type == "") {
-        $query = "select folder_id, folder_name, folder_parent from {$prefix}folderdetails where login_id = ? and folder_parent != 0";
+    //if ($type == "") {
+    //    $query = "select folder_id, folder_name, folder_parent from {$prefix}folderdetails where login_id = ? and folder_parent != 0";
+    //    $params = array($_SESSION['toolkits_logon_id']);
+    //}
+    if ($type == "group_top") {
+        $query = "select fd.folder_id, fd.folder_name, fd.folder_parent, fgr.role, from {$prefix}folderdetails fd, {$prefix}folder_group_rights fgr "
+            . " where fd.folder_id = fgr.folder_id AND fgr.group_id = ?";
+        $params = array($folder_id);
+    }else{
+        $query = "select fd.folder_id, fd.folder_name, fr.folder_parent, fr.role from {$prefix}folderdetails fd, {$prefix}folderrights fr where fr.folder_id = fd.folder_id AND fr.login_id=? and fd.folder_parent != 0";
         $params = array($_SESSION['toolkits_logon_id']);
     }
+
+    $top = false;
+    $newtype = $type;
+    if (str_contains($type, "_top")){
+        $top = true;
+        $newtype = str_replace("_top", "", $type);
+    }
+
     /*
     * Add some more to the query to sort the files
     */
 
     if ($sort_type == "alpha_down") {
-        $query .= " order by folder_name DESC";
+        $query .= " order by fd.folder_name DESC";
     } elseif ($sort_type == "alpha_up") {
-        $query .= " order by folder_name ASC";
+        $query .= " order by fd.folder_name ASC";
     } elseif ($sort_type == "date_down") {
-        $query .= " order by date_created DESC";
+        $query .= " order by fd.date_created DESC";
     } elseif ($sort_type == "date_up") {
-        $query .= " order by date_created ASC";
+        $query .= " order by fd.date_created ASC";
     }
 
     $query_response = db_query($query, $params);
@@ -712,17 +758,28 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
         {
             $query_response[$index]['tree_id'] = $tree_id . '_F' . $row['folder_id'];
             $query_response[$index]['tree_parent_id'] = $tree_id;
+            $shared = "";
+            if ($query_response[$index]['role'] != 'creator' && $newtype != 'group'){
+                $shared = 'shared';
+            }
+            $query_response[$index]['type'] = ($shared == "") ?  "folder" : "folder" . _ .$shared;
             $nextlevel[$row['folder_id']] = $query_response[$index]['tree_id']; // Watch out. do not use $row, it's not filled 2 lines up
         }
         else if ($row['folder_parent'] == $recyclebin)
         {
             $query_response[$index]['tree_id'] = $recyclebin_tree_id . '_F' . $row['folder_id'];
             $query_response[$index]['tree_parent_id'] = $recyclebin_tree_id;
+            $shared = "";
+            if ($query_response[$index]['role'] != 'creator' && $newtype != 'group'){
+                $shared = 'shared';
+            }
+            $query_response[$index]['type'] = ($shared == "") ?  "folder" : "folder" . _ .$shared;
             $nextlevel[$row['folder_id']] = $query_response[$index]['tree_id']; // Watch out. do not use $row, it's not filled 2 lines up
         }
         else
         {
-            $unassigned_found = true;
+            if ($query_response[$index]['role'] == 'creator')
+                $unassigned_found = true;
         }
     }
     while ($unassigned_found)
@@ -736,10 +793,15 @@ function get_workspace_folders($folder_id, $tree_id, $sort_type, $copy_only=fals
             {
                 $query_response[$index]['tree_id']  = $currlevel[$row['folder_parent']] . '_F' . $row['folder_id'];
                 $query_response[$index]['tree_parent_id'] = $currlevel[$row['folder_parent']];
+                $shared = "";
+                if ($query_response[$index]['role'] != 'creator' && $newtype != 'group'){
+                    $shared = 'shared';
+                }
+                $query_response[$index]['type'] = ($shared == "") ?  "folder" : "folder" . _ .$shared;
                 $nextlevel[$row['folder_id']] = $query_response[$index]['tree_id'];
             }
             else{
-                if (!isset($row['tree_id']))
+                if (!isset($row['tree_id']) && $query_response[$index]['role'] == 'creator')
                 {
                     $unassigned_found = true;
                 }
@@ -768,7 +830,7 @@ function get_workspace_templates($folder_id, $tree_id, $sort_type, $copy_only=fa
     $prefix = $xerte_toolkits_site->database_table_prefix;
     $query = NULL;
     $params = NULL;
-    if ($type == "") {
+    if ($type != "group_top") {
         $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
             . " otd.parent_template, otd.template_framework, td.template_id, tr.role, count(tr2.template_id) as nrshared from {$prefix}templatedetails td, "
             . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd left join {$prefix}templaterights tr2 on tr.template_id=tr2.template_id "
@@ -796,8 +858,8 @@ function get_workspace_templates($folder_id, $tree_id, $sort_type, $copy_only=fa
         $query .= " and (tr.role = 'creator' or tr.role ='co-author') ";
     }
 
-    if ($type == "") {
-        $query .= " group by td.template_id, tr.role, tr.folder,fd3.folder_name ";
+    if ($type != "group_top") {
+        $query .= " group by td.template_id, td.template_name, td.date_created, otd.template_name,td.access_to_whom, td.tsugi_published, otd.parent_template, otd.template_framework, tr.role, tr.folder,fd3.folder_name ";
     }
 
     if ($sort_type == "alpha_down") {
@@ -809,7 +871,6 @@ function get_workspace_templates($folder_id, $tree_id, $sort_type, $copy_only=fa
     } elseif ($sort_type == "date_up") {
         $query .= "order by tr.folder ASC, td.date_created ASC";
     }
-
 
     $query_response = db_query($query, $params);
     return $query_response;
@@ -885,12 +946,12 @@ function get_users_projects($sort_type, $copy_only=false)
     $workspace->items[] = $item;
     $workspace->nodes[$item->id] = $item;
     //$items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only, "_top");
-    $items = get_workspace_contents($item->xot_id, $item->id, $sort_type);
+    $items = get_workspace_contents($item->xot_id, $item->id, $sort_type, $copy_only,"_top");
     if ($items) {
         $workspace->items = array_merge($workspace->items, $items);
-        foreach($items as $curitem)
+        foreach($items as $item)
         {
-            $workspace->nodes[$curitem->id] = $curitem;
+            $workspace->nodes[$item->id] = $item;
         }
     }
 
@@ -899,9 +960,9 @@ function get_users_projects($sort_type, $copy_only=false)
     $query = "SELECT * FROM {$prefix}user_group_members ugm, {$prefix}user_groups ug WHERE user_group_members.login_id = ?".
         " AND ugm.group_id = ug.group_id ";
     if ($sort_type == "alpha_down") {
-        $query .= "order by user_groups.group_name DESC";
+        $query .= "order by ug.group_name DESC";
     } elseif ($sort_type == "alpha_up") {
-        $query .= "order by user_groups.group_name ASC";
+        $query .= "order by ug.group_name ASC";
     }
 
     $groups = db_query($query, array($_SESSION['toolkits_logon_id']));
