@@ -491,23 +491,24 @@ function project_info($template_id){
 
     $row_template_name = db_query_one($query_for_template_name, $params);
 
-    $info = PROJECT_INFO_NAME . ": " . str_replace('_', ' ', $row_template_name['template_name']) . "<br/>";
+    $info = "<b>" . PROJECT_INFO_NAME . ":</b> " . str_replace('_', ' ', $row_template_name['template_name']) . "<br/>";
 
-    $info .= PROJECT_INFO_ID . ": " . $row['template_id'] . "<br/>";
+    $info .= "<b>" . PROJECT_INFO_ID . ":</b> " . $row['template_id'] . "<br/>";
 
-    $info .= PROJECT_INFO_CREATED . ": " . $row['date_created'] . "<br/>";
+    $info .= "<b>" . PROJECT_INFO_CREATED . ":</b> " . $row['date_created'] . "<br/>";
 
-    $info .=  PROJECT_INFO_MODIFIED . ": " . $row['date_modified'] . "<br/>";
+    $info .=  "<b>" . PROJECT_INFO_MODIFIED . ":</b> " . $row['date_modified'] . "<br/>";
 
 
 
     include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
 
-    $info .=  PROJECT_INFO_RUNTIME  . ": ";
+    $info .=  "<b>" . PROJECT_INFO_RUNTIME  . ":</b> ";
 
     if (get_default_engine($template_id) == 'flash')
     {
-        $info .=  PROPERTIES_LIBRARY_DEFAULT_FLASH . "<br/";
+        $info .=  "<span class='warning'><i class='fa fa-exclamation-triangle' title='" . PROPERTIES_LIBRARY_FLASH_WARNING . "' style='height: 14px;'></i> ";
+        $info .=  PROPERTIES_LIBRARY_DEFAULT_FLASH . "</span><br/>";
     }
     else
     {
@@ -516,7 +517,7 @@ function project_info($template_id){
 
     if(template_access_settings($template_id)!='Private'){
 
-        $info .= '<br/>' . PROJECT_INFO_URL . ": ";
+        $info .= '<br/><b>' . PROJECT_INFO_URL . ":</b> ";
 
         $info .=  "<a target=\"new\" href='" . $xerte_toolkits_site->site_url .
             url_return("play", $_POST['template_id']) . "'>" .
@@ -565,7 +566,7 @@ function project_info($template_id){
 
         $temp_array = explode(",",$temp_string);
 
-        $info .=  '<br/>' . PROJECT_INFO_EMBEDCODE . "<br/><form><textarea rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
+        $info .=  '<br/><b>' . PROJECT_INFO_EMBEDCODE . ":</b><br/><form><textarea rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
 
     }
     return $info;
@@ -751,7 +752,7 @@ function media_quota_info($template_id)
                     $quota += filesize($full);
                 }
             }
-            $info =  PROJECT_INFO_MEDIA . ": ";
+            $info =  "<b>" . PROJECT_INFO_MEDIA . ":</b> ";
             $info .=  (round($quota/10000, 0)/100) . " MB<br/>";
             return $info;
         }
@@ -771,17 +772,17 @@ function sharing_info($template_id)
     }
 
     $sql = "SELECT template_id, user_id, firstname, surname, username, role FROM " .
-        " {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
-        " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}templaterights.user_id and template_id= ?";
+        " {$xerte_toolkits_site->database_table_prefix}templaterights tr, {$xerte_toolkits_site->database_table_prefix}logindetails ld WHERE " .
+        " ld.login_id = tr.user_id and template_id= ?";
 
     $query_sharing_rows = db_query($sql, array($template_id));
 
-    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}template_group_rights, " .
-        "{$xerte_toolkits_site->database_table_prefix}user_groups WHERE template_id = ? AND template_group_rights.group_id = user_groups.group_id";
+    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}template_group_rights tgr, " .
+        "{$xerte_toolkits_site->database_table_prefix}user_groups ug WHERE template_id = ? AND tgr.group_id = ug.group_id";
 
     $query_group_sharing_rows = db_query($sql, array($template_id));
 
-    $info =  PROJECT_INFO_SHARED . ": ";
+    $info =  "<b>" . PROJECT_INFO_SHARED . ":</b> ";
 
     if(sizeof($query_sharing_rows)==1 && empty($query_group_sharing_rows)){
         $info .= PROJECT_INFO_NOTSHARED . "<br/>";
@@ -968,7 +969,7 @@ function access_info($template_id){
 
     $row_access = db_query_one($query_for_template_access, $params);
 
-    $info = PROJECT_INFO_ACCESS . ": ";
+    $info = "<b>" . PROJECT_INFO_ACCESS . ":</b> ";
 
     $accessStr = template_access_settings($_POST['template_id']);
     switch ($accessStr)
@@ -979,8 +980,8 @@ function access_info($template_id){
             break;
         case "Private":
             $accessTranslation = PROJECT_INFO_PRIVATE;
+			$nrViews = $row_access["number_of_uses"];
             break;
-            $nrViews = "";
         case "Password":
             $accessTranslation = PROJECT_INFO_PASSWORD;
             $nrViews = $row_access["number_of_uses"];
@@ -998,13 +999,22 @@ function access_info($template_id){
                 $nrViews = $row_access["number_of_uses"];
             }
     }
-    $info .=  PROJECT_INFO_ACCESS_SET_AS . " " . $accessTranslation;
+    $info .=  /*PROJECT_INFO_ACCESS_SET_AS . " " .*/ $accessTranslation;
     if (isset($nrViews) && $nrViews!= "")
     {
-        $info .= str_replace("%n", $nrViews, PROJECT_INFO_NRVIEWS);
+       /* $info .= str_replace("%n", $nrViews, PROJECT_INFO_NRVIEWS);*/
+		$info .= "<br/><b>" . PROJECT_INFO_NRVIEWSTITLE . "</b>: " . $nrViews;
     }
     $info .= "<br/>";
     return $info;
+}
+
+function str_replace_1st($pattern, $replacement, $subject)
+{
+    $pos = strpos($subject, $pattern);
+    if ($pos !== false) {
+        return substr_replace($subject, $replacement, $pos, strlen($pattern));
+    }
 }
 
 function access_display($xerte_toolkits_site, $change){
@@ -1017,8 +1027,8 @@ function access_display($xerte_toolkits_site, $change){
 
     $row_access = db_query_one($query_for_template_access, $params);
 
-    echo "<p class=\"header\"><span>" . PROPERTIES_TAB_ACCESS . " " . str_replace("-", " - ", $row_access['access_to_whom']) . "</span></p>";
-    echo "<p><span>" . PROPERTIES_LIBRARY_ACCESS . " " . str_replace("-", " - ", $row_access['access_to_whom']) . "</span></p>";
+    echo "<p class=\"header\"><span>" . PROPERTIES_TAB_ACCESS . " " . str_replace_1st("-", " - ", $row_access['access_to_whom'], 1) . "</span></p>";
+    echo "<p><span>" . PROPERTIES_LIBRARY_ACCESS . " " . str_replace_1st("-", " - ", $row_access['access_to_whom']) . "</span></p>";
 
     echo "<div id=\"security_list\">";
 
@@ -1064,11 +1074,11 @@ function access_display($xerte_toolkits_site, $change){
 
     }else{
 
-        $temp = explode("-", $row_access['access_to_whom']);
+        $pos = strpos($row_access['access_to_whom'], "-");
 
-        if(isset($temp[1])){
+        if($pos !== false){
 
-            echo $temp[1];
+            echo substr($row_access['access_to_whom'], $pos+1);
 
         }
 

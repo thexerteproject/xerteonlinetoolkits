@@ -1382,7 +1382,7 @@ DashboardState.prototype.getInteractionStatements = function(interaction) {
         for (var i in userData) {
             var statement = this.rawData[userData[i]];
             if (statement.object.id == interaction) {
-                statementidxs.push(i);
+                statementidxs.push(userData[i]);
             }
         }
     }

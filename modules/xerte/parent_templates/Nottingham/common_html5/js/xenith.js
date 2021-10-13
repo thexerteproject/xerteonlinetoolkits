@@ -878,6 +878,10 @@ function x_GetTrackingTextFromHTML(html, fallback)
 
 // setup functions load interface buttons and events
 function x_setUp() {
+	
+	// prevent flashes of css body tag colours before the main interface has loaded
+	$('head').append('<style id="preventFlash" type="text/css">body, #x_mainHolder { background: white !important; }; </style>');
+	
 	x_params.dialogTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") : "";
 	x_params.newWindowTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") : "";
 
@@ -950,7 +954,7 @@ function x_setUp() {
 }
 
 function x_desktopSetUp() {
-	if (x_params.embed != true || x_params.displayMode != 'full screen') {
+	if (x_params.embed != true && x_params.displayMode != 'full screen' && x_params.displayMode != 'fill window') {
 		$x_footerL.prepend('<button id="x_cssBtn"></button>');
 		$("#x_cssBtn")
 			.button({
@@ -1479,7 +1483,7 @@ function x_continueSetUp1() {
 		}
 		else
 		{
-			$x_saveSessionBtn.hide();
+			$x_saveSessionBtn.remove();
 		}
 		if (x_params.kblanguage != undefined) {
 			if (typeof charpadstr != 'undefined')
@@ -2103,6 +2107,7 @@ function x_changePageStep5(x_gotoPage) {
 }
 
 function x_changePageStep5a(x_gotoPage) {
+	
     var prevPage = x_currentPage;
 
     // disable onload of #special_theme_css
@@ -2395,6 +2400,8 @@ function x_changePageStep6() {
                 }
             }
         }
+		
+		x_focusPageContents(false);
 
     // x_currentPage hasn't been viewed previously - load model file
     } else {
@@ -2467,18 +2474,20 @@ function x_changePageStep6() {
 
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();
-	}x_focusPageContents();
+	}
 }
 
-function x_focusPageContents(){
-	//focus pageContents after page load and page change
+function x_focusPageContents(firstLoad) {
+	if (self == top || !firstLoad) {
+		//focus pageContents after page load (if not shown in iframe) and after page change (always - even if in iframe)
 		$('#pageContents').attr('tabIndex', 0).focus();
 		//#pageContents:focus is set to none in default theme
 		//uncomment the line below to see the focus outline
 		//or use a theme where this isn't hidden
 		//$('#pageContents:focus').css('outline','solid');
-	if(x_pageInfo[x_currentPage].type=="adaptiveContent"){
-		$('#adaptiveContentMain').attr('tabIndex', 0).focus();
+		if(x_pageInfo[x_currentPage].type=="adaptiveContent"){
+			$('#adaptiveContentMain').attr('tabIndex', 0).focus();
+		}
 	}
 }
 
@@ -2499,7 +2508,7 @@ function x_pageContentsUpdated() {
 
 // by default images can be clicked to open larger version in lightbox viewer - this can be overridden with optional properties at LO & page level
 function x_setUpLightBox() {
-	if ((x_params.lightbox != "false" || x_currentPageXML.getAttribute("lightbox") == "true") && x_currentPageXML.getAttribute("lightbox") != "false") {
+	if (x_currentPageXML != undefined && (x_params.lightbox != "false" || x_currentPageXML.getAttribute("lightbox") == "true") && x_currentPageXML.getAttribute("lightbox") != "false") {
 		
 		// use the x_noLightBox class in page models to force images to not open in lightboxes
 		$("#pageContents img:not('.x_noLightBox'), .x_popupDialog img:not('.x_noLightBox')").each(function( index ) {
@@ -2653,7 +2662,9 @@ function x_setUpPage() {
 			$x_nextBtn.button("disable");
 		}
 		if (x_currentPageXML.getAttribute("save") == "false") {
-			$x_saveSessionBtn.button("disable");
+			if ($("#x_saveSessionBtn").length > 0) {
+				$x_saveSessionBtn.button("disable");
+			}
 		}
 	} else if (!x_isMenu() && x_currentPageXML.getAttribute("navSetting") != undefined) {
 		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
@@ -2680,6 +2691,7 @@ function x_setUpPage() {
 				$("#x_mainBg").hide();
 			}
 		}
+		$('#preventFlash').remove();
         x_firstLoad = false;
     }
 }
@@ -2733,7 +2745,9 @@ function x_pageLoaded() {
     $(config.selector, config.context).featherlight();
 
 	doPercentage();
-	x_focusPageContents();
+	
+	var pagesLoaded = $(x_pageInfo).filter(function(i){ return this.built != false; }).length;
+	x_focusPageContents(pagesLoaded <= 1 ? true : false);
 }
 
 // detect page loaded change and update progress bar
@@ -2974,8 +2988,8 @@ function x_updateCss(updatePage) {
 
 // function isn't called until the narration bar has loaded
 function x_updateCss2(updatePage) {
-	$x_pageHolder.css("margin-bottom", $x_footerBlock.height());
-    $x_background.css("margin-bottom", $x_footerBlock.height());
+	$x_pageHolder.css("margin-bottom", $x_footerBlock.outerHeight());
+    $x_background.css("margin-bottom", $x_footerBlock.outerHeight());
 	
     if (x_browserInfo.mobile == false) {
 		$x_pageHolder.css("margin-top", $x_headerBlock.height());

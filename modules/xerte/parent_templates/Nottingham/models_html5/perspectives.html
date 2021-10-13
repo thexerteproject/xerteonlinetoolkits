@@ -266,6 +266,9 @@
 			// set up thumbnail click events - fadeOut old mainInfo and fadeIn new contents
 			$("#thumbHolder .thumbBox:not(.playAll)")
 				.click(function(e, playAll) {
+					
+					e.preventDefault();
+					
 					var $this = $(this);
 					
 					playAll = playAll && $this.data("index") + 2 <= $("#thumbHolder .thumbBox").length ? true : false;
@@ -615,7 +618,7 @@
 			var $mainInfoHolder = $("#mainInfoHolder");
 			var maxH;
 			if (x_browserInfo.mobile != true) {
-				maxH = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (x_currentPageXML.getAttribute("thumbPos") == "grid" ? 0 : $("#thumbBar").height()) - parseInt($mainInfoHolder.css("margin-top")) - parseInt($mainInfoHolder.css("margin-bottom")) - 2;
+				maxH = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (x_currentPageXML.getAttribute("thumbPos") == "grid" ? 0 : $("#thumbBar").height()) - parseInt($mainInfoHolder.css("margin-top")) - parseInt($mainInfoHolder.css("margin-bottom")) - 5;
 			} else {
 				maxH = $(window).height();
 			}

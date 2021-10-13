@@ -26,8 +26,8 @@ _load_language_file("/publishproperties.inc");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?PHP echo PUBLISH_PROPERTIES_TITLE; ?></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title><?PHP echo PUBLISH_PROPERTIES_TITLE; ?></title>
 
 <!-- 
 
@@ -35,28 +35,30 @@ Properties HTML page
 Version 1.0
 
 -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
 
-<link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
-<link href="website_code/styles/properties_tab.css" media="screen" type="text/css" rel="stylesheet" />
+    <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+    <link href="website_code/styles/properties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 
-<script type="text/javascript" language="javascript" src="website_code/scripts/ajax_management.js"></script>
+    <script type="text/javascript" language="javascript" src="website_code/scripts/ajax_management.js"></script>
 
-<script type="text/javascript" language="javascript">
+    <script type="text/javascript" language="javascript">
 
-var site_url = "<?php echo $xerte_toolkits_site->site_url;  ?>";
-var properties_ajax_php_path = "website_code/php/properties/";
-var management_ajax_php_path = "website_code/php/management/";
-var ajax_php_path = "website_code/php/";
+    var site_url = "<?php echo $xerte_toolkits_site->site_url;  ?>";
+    var properties_ajax_php_path = "website_code/php/properties/";
+    var management_ajax_php_path = "website_code/php/management/";
+    var ajax_php_path = "website_code/php/";
 
-</script>
+    </script>
 
-<script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
-<?php
-_include_javascript_file("website_code/scripts/import.js");
-_include_javascript_file("website_code/scripts/template_management.js");
-_include_javascript_file("website_code/scripts/properties_tab.js");
-_include_javascript_file("website_code/scripts/screen_display.js");
-_include_javascript_file("website_code/scripts/file_system.js");
+    <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
+    <?php
+    _include_javascript_file("website_code/scripts/import.js");
+    _include_javascript_file("website_code/scripts/template_management.js");
+    _include_javascript_file("website_code/scripts/properties_tab.js");
+    _include_javascript_file("website_code/scripts/screen_display.js");
+    _include_javascript_file("website_code/scripts/file_system.js");
 ?>
 
 </head>

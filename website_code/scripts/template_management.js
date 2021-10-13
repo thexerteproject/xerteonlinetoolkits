@@ -225,20 +225,38 @@ function edit_window(admin, edit, location) {
                     console.log("Window open parent: " + window_open.parent);
                     if (!window_open || window_open.parent == null) {
 
-                        size = node.editor_size.split(",");
+                        let size = node.editor_size.split(",");
+                        let swidth = window.screen.width;
+                        let sheight = window.screen.height;
+                        if (size[0].indexOf('%') >= 0)
+                        {
+                            let sizew = parseInt(size[0]);
+                            let sizeh = parseInt(size[1]);
+                            if (sizew <= 100 && sizeh <= 100)
+                            {
+                                size[0] = (sizew * swidth) / 100;
+                                size[1] = (sizeh * sheight) / 100;
+                            }
+                            if (size[0] < 1280 && swidth > 1280)
+                                size[0] = 1280;
+                            if (size[1] < 768 && sheight > 768)
+                                size[1] = 768;
+                        }
+                        if (size[0] > swidth)
+                            size[0] = swidth;
+                        if (size[1] > sheight)
+                            size[1] = sheight;
+
 
                         if (location != null) {
-                            if (size.length == 1) {
-                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), location);
-                            } else {
-                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), '_blank');
-                            }
+                            var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), location);
                         }
                         else {
                             if (size.length == 1) {
                                 var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "toolbar=yes,location=yes");
                             } else {
-                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "toolbar=yes,location=yes,resizable=yes");
+                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "height=" + size[1] + ", width=" +
+                                    size[0] + ",toolbar=yes,location=yes,resizable=yes");
                             }
                         }
 
@@ -1351,6 +1369,8 @@ function template_submit()
     var formData = new FormData(form);
     $.ajax({
         type: "POST",
+        processData: false,
+        contentType: false,
         url: "website_code/php/management/upload.php",
         data: formData
     })

@@ -957,7 +957,7 @@ function get_users_projects($sort_type, $copy_only=false)
 
     //group shared content
     //check to which groups the user belongs
-    $query = "SELECT * FROM {$prefix}user_group_members ugm, {$prefix}user_groups ug WHERE user_group_members.login_id = ?".
+    $query = "SELECT * FROM {$prefix}user_group_members ugm, {$prefix}user_groups ug WHERE ugm.login_id = ?".
         " AND ugm.group_id = ug.group_id ";
     if ($sort_type == "alpha_down") {
         $query .= "order by ug.group_name DESC";

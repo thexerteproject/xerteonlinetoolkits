@@ -231,7 +231,8 @@ CREATE TABLE `$templaterights` (
   `user_id` bigint(20) DEFAULT NULL,
   `role` char(255) DEFAULT NULL,
   `folder` bigint(20) DEFAULT NULL,
-  `notes` char(255) DEFAULT NULL
+  `notes` char(255) DEFAULT NULL,
+   KEY `index1` (`template_id`,`user_id`,`role`(10))
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$templatesyndication` (

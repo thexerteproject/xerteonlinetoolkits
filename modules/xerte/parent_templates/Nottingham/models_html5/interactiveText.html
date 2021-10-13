@@ -539,8 +539,8 @@
 						.addClass("listItem")
 						.html(groupInfo[i].name)
 						.attr({
-							"tabindex"	: $("#passage .group:eq(0)").attr("tabindex") - groupInfo.length + i,
-							"href"		: "#group" + i
+							"tabindex": $("#passage .group:eq(0)").attr("tabindex") - groupInfo.length + i,
+							"href": "#"
 							})
 						.data("index", i);
 
@@ -548,7 +548,9 @@
 				}
 
 				$btnHolder.find(".listItem")
-					.click(function() {
+					.click(function(e) {
+						e.preventDefault();
+						
 						var index = $(this).data("index");
 
 						if ($pageContents.data("currentGroup") != index) {
@@ -730,7 +732,9 @@
 					$instructions.html('<p>' + (x_currentPageXML.getAttribute("findTxt") != undefined ? x_currentPageXML.getAttribute("findTxt") : "Click a group to begin, then click the text to find all examples.") + '</p>');
 				}
 
-				$("#btnHolder .listItem").click(function() {
+				$("#btnHolder .listItem").click(function(e) {
+					e.preventDefault();
+					
 					var index = $(this).data("index"),
 						currentGroup = $pageContents.data("currentGroup");
 
@@ -852,7 +856,9 @@
 					.html('<div id="marking"><a id="more" class="fa fa-x-info-circle fa-lg" title="' + phrases.mcqMore + '" href="#"/></div>')
 					.appendTo($("#questionHolder"))
 					.attr("tabindex", tabIndex+3)
-					.on("click", "#more", function() {
+					.on("click", "#more", function(e) {
+						e.preventDefault();
+						
 						var mcqAnswers = $pageContents.data("mcqAnswers"),
 							mcqCurrentQ = $pageContents.data("mcqCurrentQ"),
 							correctGroup = x_currentPageXML.getAttribute("mcqType") == "all" ? mcqAnswers[mcqCurrentQ] : subGroups[mcqAnswers[mcqCurrentQ]].ref;
@@ -1015,8 +1021,8 @@
 							.addClass("listItem")
 							.html(groupInfo[i].name)
 							.attr({
-								"tabindex"	: $("#passage .group:eq(0)").attr("tabindex") - groupInfo.length + i,
-								"href"		: "#group" + i
+								"tabindex": $("#passage .group:eq(0)").attr("tabindex") - groupInfo.length + i,
+								"href": "#"
 								})
 							.data("index", i);
 
@@ -1536,7 +1542,6 @@
 	<div id="questionHolder"/>
 
 	<div id="feedback" aria-live="polite"/>
-
 
 </div>
 

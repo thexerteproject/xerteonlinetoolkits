@@ -96,7 +96,7 @@
                     }
                     break;
                 case 3:
-                    if (obj.actor.account.name == groupname) {
+                    if (obj.actor.account != undefined && obj.actor.account.name == groupname) {
                         matchactor = true;
                     }
                     break;
@@ -884,24 +884,36 @@
             {
                 summaryText = `<h1><p>${summaryText}</p></h1>`;
             }
-            div.html(
-                `<h2><p>${name}</p></h2>` +
-                `<div class='introduction'>${introductionText}</div>` +
-                '<div class="summary-container">' +
+            if (summaryText != "" || adviceHeader != "" || interactionType == 'grouping') {
+                div.html(
+                    `<h2><p>${name}</p></h2>` +
+                    `<div class='introduction'>${introductionText}</div>` +
+                    '<div class="summary-container">' +
                     '<div class="summary">' +
-                        summaryText +
-                        '<div class="score">' +
-                          '<div class="stats-div"><ul class="stats"></ul></div>' +
-                        '</div>' +
-                        specificationDiv +
-                        '<div class="advice">' +
-                            adviceHeader +
-                            '<div class="message"></div>' +
-                        '</div>' +
+                    summaryText +
+                    '<div class="score">' +
+                    '<div class="stats-div"><ul class="stats"></ul></div>' +
+                    '</div>' +
+                    specificationDiv +
+                    '<div class="advice">' +
+                    adviceHeader +
+                    '<div class="message"></div>' +
+                    '</div>' +
                     '</div>' +
                     '<div class="graph-container"></div>' +
-                '</div>'
-            );
+                    '</div>'
+                );
+            }
+            else
+            {
+                div.html(
+                    `<h2><p>${name}</p></h2>` +
+                    `<div class='introduction'>${introductionText}</div>` +
+                    '<div class="summary-container">' +
+                    '<div class="graph-container"></div>' +
+                    '</div>'
+                );
+            }
 
             $(location).append(div);
 

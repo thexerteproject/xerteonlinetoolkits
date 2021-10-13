@@ -1106,4 +1106,24 @@ function upgrade_27()
 
 }
 
-?>
+function upgrade_28()
+{
+    global $xerte_toolkits_site;
+
+    // Create an index for templaterights
+    $table = table_by_key('templaterights');
+
+    // First check if index already exists
+    $sql = "SELECT COUNT(1) as count FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '$xerte_toolkits_site->database_name' AND TABLE_NAME='$table' AND INDEX_NAME='index1'";
+    $result = db_query_one($sql);
+    if ($result !== false && $result['count'] == '0') {
+        $ok = _upgrade_db_query("ALTER TABLE `$table` ADD INDEX `index1` (`template_id` ASC, `user_id` ASC, `role`(10) ASC);");
+        $message = "Creating index on table templaterights - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        return $message;
+    }
+    $message = 'Index on templaterights table is already present';
+    return $message;
+}
+
+

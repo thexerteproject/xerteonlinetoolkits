@@ -11,5 +11,5 @@
 	 */
 	 
 
-	define("XERTE_DISPLAY_FAIL", "Sorry, the author of this piece has yet to make it available");
+	define("XERTE_DISPLAY_FAIL", "Sorry, this resource is not available via this method.");
 

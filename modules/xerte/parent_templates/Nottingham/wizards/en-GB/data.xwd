@@ -13,13 +13,13 @@
     <theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default"/>
 	<hideHeader optional="true" type="CheckBox" label="Hide Header" defaultValue="false"/>
 	<hideFooter optional="true" type="CheckBox" label="Hide Footer" defaultValue="false"/>
-	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600"/>
+	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" condition="displayMode=='default'||fixDisplay"/>
 	<maxWidth optional="true" type="NumericStepper" min="800" max="2000" step="10" label="Max Width" defaultValue="1400" tooltip="Use this option to set the maximum width (e.g. 1400px) that the page contents will be displayed on larger displays. Note: some pages like media lesson and hotspot connector will currently still fill the full width of the page."/>
 	<homePage optional="true" type="pagelist" label="Home Page" defaultValue="" tooltip="Home page used when navigation is set to 'Historic'. By default this is the first page in the project."/>
 
     <kblanguage type="ComboBox" options="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
     <decimalseparator label="Decimal Separator" type="ComboBox" options="Period,Comma" data="period,comma" width="100" defaultValue="period" optional="true"/>
-    <displayMode type="ComboBox" options="Fixed Size,Fill Window" data="default,fill window" label="Display Mode" width="100"/>
+    <displayMode type="ComboBox" options="Fixed Size,Fill Window" data="default,fill window" label="Display Mode" width="100" conditionTrigger="true"/>
 	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true"/>
     <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page Title Size" defaultValue="24" deprecated="This property is deprecated"/>
 	
@@ -333,7 +333,7 @@
         <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
         <newNodes>
         <!--  <timelinedate><![CDATA[<timelinedate name="" text="" date="Choose Date"/>]]></timelinedate> -->
-          <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="Enter text for the item here" align="Left" date="Choose Date"/>]]></timeLineText>
+          <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="Enter text for the item here" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
           <timelineimage><![CDATA[<timelineimage name="Enter Item Title" text="Enter text for the item here" align="Left" url="Select an Image" tip="Enter a Description for Accessibility" date="Choose Date"/>]]></timelineimage>
           <timelinevideo><![CDATA[<timelinevideo name="Enter Item Title" url="Select a Video" text="" pause="True" erase="True" date="Choose Date"/>]]></timelinevideo>
           <timeLineAudio><![CDATA[<timeLineAudio name="Enter Item Title" url="Select an Audio File" text="" pause="True" erase="True" date="Choose Date"/>]]></timeLineAudio>
@@ -2026,7 +2026,7 @@
 	
 	<newNodes>
 		<resultStep><![CDATA[<resultStep name="e.g. R1" text="Enter result text here" destinationBtn="Continue"/>]]></resultStep>
-		<infoStep><![CDATA[<infoStep name="e.g. I1" target="e.g. Q2" text="Enter text here"/>]]></infoStep>
+		<infoStep><![CDATA[<infoStep name="e.g. I1" targetNew="" text="Enter text here"/>]]></infoStep>
 		<sliderStep><![CDATA[<sliderStep name="e.g. Q1" text="Enter question here" unit="e.g. £" min="0" max="100" step="1" value="0"/>]]></sliderStep>
 		<mcqStep><![CDATA[<mcqStep name="e.g. Q1" text="Enter question here" format="radio"/>]]></mcqStep>
 	</newNodes>
@@ -2092,12 +2092,13 @@
 	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
 
 	<newNodes>
-		<mcqStepOption><![CDATA[<mcqStepOption name="Enter answer here" target="e.g. Q2"/>]]></mcqStepOption>
+		<mcqStepOption><![CDATA[<mcqStepOption name="Enter answer here" targetNew=""/>]]></mcqStepOption>
 	</newNodes>
 	
   </mcqStep><mcqStepOption icon="icBullet" remove="true" duplicate="true" menuItem="Option">
 	<name label="Answer Option" type="TextInput" wysiwyg="true"/>
-	<target label="Target ID" type="TextInput"/>
+	<target label="Target ID" type="TextInput" optional="true" deprecated="This property has been deprecated - use the Target ID drop down menu to select the target step instead. The ID entered in this field will continue to work until the drop down menu is used"/>
+	<targetNew label="Target ID" type="pageList" listTarget="1" defaultValue="" mandatory="true"/>
 	<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true" tooltip="Stores text associated with this answer for use in the results. This text will only display on result steps where Compile Stored Results (optional property) is added."/>
 	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
 	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
@@ -2117,13 +2118,14 @@
 	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
 	
 	<newNodes>
-		<sliderStepOption><![CDATA[<sliderStepOption min="0" max="1" target="e.g. Q2"/>]]></sliderStepOption>
+		<sliderStepOption><![CDATA[<sliderStepOption min="0" max="1" targetNew=""/>]]></sliderStepOption>
 	</newNodes>
 	
   </sliderStep><sliderStepOption icon="icBullet" remove="true" duplicate="true" menuItem="Option">
 	<min label="Range minimum" type="TextInput"/>
 	<max label="Range maximum" type="TextInput"/>
-	<target label="Target ID" type="TextInput"/>
+	<target label="Target ID" type="TextInput" optional="true" deprecated="This property has been deprecated. Use the Target ID drop down menu to select the target step instead. The ID entered in this field will continue to work until the drop down menu is used"/>
+	<targetNew label="Target ID" type="pageList" listTarget="1" defaultValue="" mandatory="true"/>
 	<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true" tooltip="Stores text associated with this answer for use in the results. This text will only display on result steps where Compile Stored Results (optional property) is added."/>
 	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
 	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
@@ -2132,7 +2134,8 @@
   </sliderStepOption><infoStep icon="icPageWhiteInfo" remove="true" duplicate="true" menuItem="Information Step">
 	<name label="Unique ID" type="TextInput"/>
 	<text label="Text" type="TextArea" height="100"/>
-	<target label="Target ID" type="TextInput"/>
+	<target label="Target ID" type="TextInput" optional="true" deprecated="This property has been deprecated. Use the Target ID drop down menu to select the target step instead. The ID entered in this field will continue to work until the drop down menu is used"/>
+	<targetNew label="Target ID" type="pageList" listTarget="0" defaultValue="" mandatory="true"/>
 	<helpTxt label="More Information" type="TextArea" height="100" optional="true" tooltip="Allows access to extra information via a button and popup dialog."/>
 	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
 	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>

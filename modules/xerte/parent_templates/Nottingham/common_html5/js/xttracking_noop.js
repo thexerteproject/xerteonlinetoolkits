@@ -1129,7 +1129,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate, grouping) {
     return;
 }
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping, context)
 {
 	state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback);
 }

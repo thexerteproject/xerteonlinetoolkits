@@ -828,3 +828,7 @@ div.ui-layout-center {
 .settingsDropdown {
 	display: inline-block;
 }
+
+.warning {
+	color: red;
+}
