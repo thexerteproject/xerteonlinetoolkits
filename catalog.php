@@ -124,8 +124,8 @@ if ($full_access && isset($_REQUEST['list']))
     }
     else if ($_REQUEST['list'] == 'Private')
     {
-        // List all templates that are public
-        $q .= " and access_to_whom='Public'";
+        // List all templates that are Private
+        $q .= " and access_to_whom='Private'";
         $params = array();
     }
     else if ($_REQUEST['list'] == 'xAPI')
