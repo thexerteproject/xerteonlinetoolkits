@@ -1129,7 +1129,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate, grouping) {
     return;
 }
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping, context)
 {
 	state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback);
 }
@@ -1204,8 +1204,8 @@ function XTTerminate()
             var url = window.location.href;
             if (url.indexOf("lti_launch.php") >= 0) {
                 url = url.replace("lti_launch.php", "website_code/php/lti/sendgrade.php");
-            } else if (url.indexOf("lti2_launch.php") >= 0) {
-                url = url.replace("lti2_launch.php", "website_code/php/lti/sendgrade.php");
+            } else if (url.indexOf("lti13_launch.php") >= 0) {
+                url = url.replace("lti13_launch.php", "website_code/php/lti/sendgrade.php");
             } else {
                 url = "";
             }

@@ -1557,7 +1557,7 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
 }
 
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping)
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback, grouping, context)
 {
     if (state.scormmode == 'normal')
     {
