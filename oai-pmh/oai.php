@@ -94,11 +94,12 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
             },
 
         'GetRecord' =>
-            function($identifier, $metadataPrefix) use ($example_record) {
-                if ($identifier != 'a.b.c') {
-                    throw new OAIException('idDoesNotExist');
-                }
-                return $example_record;
+            function($identifier, $metadataPrefix){
+
+                //TODO: Test whether identifier is in the right format and parse identifier to template_id
+
+                $response_record = call_user_func(getSingleTemplate, $identifier);
+                return $response_record;
             },
     )
 );
@@ -116,6 +117,35 @@ if (isset($return)) {
     echo $response->saveXML();
 }
 
+
+function getSingleTemplate($template_id) {
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    $q = "select td.template_id, 
+          otd.template_framework, 
+          otd.template_name as template_type, 
+          otd.display_name as type_display_name, 
+          td.template_name,  
+          td.creator_id as owner_userid, 
+          ld.username as owner_username, 
+          td.date_created, 
+          td.date_modified, 
+          td.date_accessed, 
+          td.number_of_uses, 
+          td.access_to_whom, 
+          td.extra_flags,
+          td.tsugi_published as lti_enabled,
+          td.tsugi_xapi_enabled as xapi_enabled
+          from {$prefix}templatedetails as td, 
+          {$prefix}originaltemplatesdetails as otd,
+          {$prefix}logindetails as ld 
+          where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id and td.access_to_whom = 'Public' and td.template_id = {$template_id}";
+
+    $response_template = db_query($q);
+    $response_record = call_user_func(makeRecordFromTemplate,$response_template[0]);
+    return $response_record;
+}
 
 function getTemplates() {
     $prefix = $xerte_toolkits_site->database_table_prefix;
@@ -136,9 +166,9 @@ function getTemplates() {
           td.tsugi_published as lti_enabled,
           td.tsugi_xapi_enabled as xapi_enabled
           from {$prefix}templatedetails as td, 
-          {$prefix}originaltemplatesdetails otd,
-          {$prefix}logindetails ld 
-          where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id";
+          {$prefix}originaltemplatesdetails as otd,
+          {$prefix}logindetails as ld 
+          where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id and td.access_to_whom = 'Public'";
 
     $templates = db_query($q);
     $response = new stdClass();
@@ -159,8 +189,9 @@ function getTemplates() {
 };
 
 function makeRecordFromTemplate($template){
-    $record = array('identifier' => 'a.b.c',
-        'datestamp' => date('Y-m-d-H:s'),
+    global $xerte_toolkits_site;
+    $record = array('identifier' => ($xerte_toolkits_site->site_url . $template['template_id']),
+        'datestamp' => date($template['date_modified']),
         'set' => 'class:activity',
         'metadata' => array(
             'container_name' => 'oai_dc:dc',
