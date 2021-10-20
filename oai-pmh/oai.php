@@ -3,6 +3,9 @@
 require_once('oaiserver.php');
 require_once('../config.php');
 
+require_once('oai_config.php');
+require_once('xerteobjects.php');
+
 //require $xerte_toolkits_site->php_library_path  . "template_library.php";
 
 /**
@@ -21,7 +24,7 @@ $identifyResponse = array();
 $identifyResponse["repositoryName"] = $xerte_toolkits_site->name ;
 $identifyResponse["baseURL"] =  $xerte_toolkits_site->site_url . 'oai-pmh/oai.php'; //'http://198.199.108.242/~neis/oai_pmh/oai.php';
 $identifyResponse["protocolVersion"] = '2.0';
-$identifyResponse['adminEmail'] = "REPLACEBYADMINEMAIL"; //'danielneis@gmail.com';
+$identifyResponse['adminEmail'] = $config['adminEmail']; //'danielneis@gmail.com';
 $identifyResponse["earliestDatestamp"] = call_user_func(getEarliestDatestamp) . "T00:00:00Z";//'2013-01-01T12:00:00Z';
 $identifyResponse["deletedRecord"] = 'no'; // How your repository handles deletions
 // no:             The repository does not maintain status about deletions.
