@@ -22,7 +22,7 @@ $identifyResponse["repositoryName"] = $xerte_toolkits_site->name ;
 $identifyResponse["baseURL"] =  $xerte_toolkits_site->site_url . 'oai-pmh/oai.php'; //'http://198.199.108.242/~neis/oai_pmh/oai.php';
 $identifyResponse["protocolVersion"] = '2.0';
 $identifyResponse['adminEmail'] = "REPLACEBYADMINEMAIL"; //'danielneis@gmail.com';
-$identifyResponse["earliestDatestamp"] = '2013-01-01T12:00:00Z';
+$identifyResponse["earliestDatestamp"] = call_user_func(getEarliestDatestamp) . "T00:00:00Z";//'2013-01-01T12:00:00Z';
 $identifyResponse["deletedRecord"] = 'no'; // How your repository handles deletions
 // no:             The repository does not maintain status about deletions.
 //                It MUST NOT reveal a deleted status.
@@ -117,6 +117,12 @@ if (isset($return)) {
     echo $response->saveXML();
 }
 
+function getEarliestDatestamp() {
+    global $xerte_toolkits_site;
+    $q = "select template_id,date_created from templatedetails ORDER BY date_created limit 1";
+    $result = db_query($q);
+    return $result[0]["date_created"];
+}
 
 function getSingleTemplate($template_id) {
     global $xerte_toolkits_site;
