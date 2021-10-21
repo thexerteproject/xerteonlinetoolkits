@@ -21,10 +21,35 @@
 function get_meta_data($template_id, $creator_user_name="", $template_type_name="")
 {
     global $config;
+    global $xerte_toolkits_site;
 
     $xml = get_template_data_as_xml($template_id, $creator_user_name, $template_type_name);
     $xerteMetaObj = new stdClass();
     $xerteMetaObj->name = (string)$xml['name'];
+    if (isset($xml['educode']))
+    {
+        $xerteMetaObj->educode = (string)$xml['educode'];
+    }
+    if (isset($xml['education']))
+    {
+        $xerteMetaObj->education = (string)$xml['education'];
+    }
+    if (isset($xml['level']))
+    {
+        $xerteMetaObj->level = (string)$xml['level'];
+    }
+    else
+    {
+        $xerteMetaObj->level = 12;
+    }
+    if (isset($xml['thumbnail']))
+    {
+        $xerteMetaObj->thumbnail = (string)$xml['thumbnail'];
+    }
+    else
+    {
+        $xerteMetaObj->thumbnail = $config['thumbnail'];
+    }
     if (isset($xml['course']))
         $xerteMetaObj->course = (string)$xml['course'];
     else
@@ -47,10 +72,11 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
     else
         $xerteMetaObj->author = $config['institute'];
     if (isset($xml['category']))
-        $xerteMetaObj->category = (string)$xml['category'];
+        $xerteMetaObj->domain = (string)$xml['category'];
     else
-        $xerteMetaObj->category = 'unknown';
+        $xerteMetaObj->domain = 'unknown';
     $xerteMetaObj->language = (string)$xml['language'];
+    $xerteMetaObj->publisher = $config['institute'];
 
     return $xerteMetaObj;
 }
