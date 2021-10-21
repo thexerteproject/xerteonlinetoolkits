@@ -8,10 +8,10 @@ class OAIXMLResponse {
 
         $this->verb = $verb;
         $this->doc = new DOMDocument("1.0","UTF-8");
-        $oai_node = $this->doc->createElement("OAI-PMH");
-        $oai_node->setAttribute("xmlns","http://www.openarchives.org/OAI/2.0/");
+        $oai_node = $this->doc->createElement("lom"); //"OAI-PMH");
+        $oai_node->setAttribute("xmlns","http://ltsc.ieee.org/xsd/LOM");
         $oai_node->setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-        $oai_node->setAttribute("xsi:schemaLocation","http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd");
+        $oai_node->setAttribute("xsi:schemaLocation","http://ltsc.ieee.org/xsd/LOM http://standards.ieee.org/reading/ieee/downloads/LOM/lomv1.0/xsd/lomLoose.xsd");
         $this->addChild($oai_node,"responseDate",gmdate("Y-m-d\TH:i:s\Z"));
         $this->doc->appendChild($oai_node);
 

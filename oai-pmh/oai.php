@@ -20,6 +20,8 @@ require_once('xerteobjects.php');
  * - $identifyResponse['granularity'] : the finest harvesting granularity supported by the repository. The legitimate values are YYYY-MM-DD and YYYY-MM-DDThh:mm:ssZ with meanings as defined in ISO8601.
  *
  */
+
+
 $identifyResponse = array();
 $identifyResponse["repositoryName"] = $xerte_toolkits_site->name ;
 $identifyResponse["baseURL"] =  $xerte_toolkits_site->site_url . 'oai-pmh/oai.php'; //'http://198.199.108.242/~neis/oai_pmh/oai.php';
@@ -82,7 +84,7 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
             },
 
         'ListRecords' =>
-            function($metadataPrefix, $from = '', $until = '', $set = '', $count = false, $deliveredRecords = 0, $maxItems = 0) use ($example_record) {
+            function($metadataPrefix, $from = '', $until = '', $set = '', $count = false, $deliveredRecords = 0, $maxItems = 0){
                 if ($count) {
                     return 1;
                 }
@@ -190,14 +192,16 @@ function getTemplates() {
     $tmpRecords = array();
     for($i=0;$i<count($templates);$i++)
     {
-        $currentRecord = call_user_func(makeRecordFromTemplate,$templates[$i]);
+        $currentTemplate = $templates[$i];
+        $tempMetaData = call_user_func(get_meta_data,$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"]);
+        $currentRecord = call_user_func(makeRecordFromTemplate,$currentTemplate, $tempMetaData);
         $tmpRecords[] = $currentRecord;
     }
 
     return $tmpRecords;
 };
 
-function makeRecordFromTemplate($template){
+function makeRecordFromTemplate($template, $metadata){
     global $xerte_toolkits_site;
     $record = array('identifier' => ($xerte_toolkits_site->site_url . $template['template_id']),
         'datestamp' => date($template['date_modified']),
