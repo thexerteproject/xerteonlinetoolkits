@@ -1928,7 +1928,8 @@ function x_changePage(x_gotoPage, addHistory) {
 	}
 	
 	// if this page is already shown in a lightbox then don't try to open another lightbox - load in the existing one
-	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' && parent.window.$.featherlight.current()) {
+	if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' &&
+		parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()) {
 		standAlonePage = false;
 		addHistory = false;
 	}
