@@ -164,7 +164,9 @@ if (isset($_GET['tsugisession']))
     $contents = "";
 
     _debug("TSUGI session");
-    require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
+    if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+        require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
+    }
     session_start();
 }
 else
