@@ -30,21 +30,21 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
     {
         $xerteMetaObj->educode = (string)$xml['educode'];
     }
-    if (isset($xml['education']))
+    if (isset($xml['metaEducation']))
     {
-        $xerteMetaObj->education = (string)$xml['education'];
+        $xerteMetaObj->education = (string)$xml['metaEducation'];
     }
-    if (isset($xml['level']))
+    if (isset($xml['metaLevel']))
     {
-        $xerteMetaObj->level = (string)$xml['level'];
+        $xerteMetaObj->level = (string)$xml['metaLevel'];
     }
     else
     {
         $xerteMetaObj->level = 12;
     }
-    if (isset($xml['thumbnail']))
+    if (isset($xml['metaThumbnail']))
     {
-        $xerteMetaObj->thumbnail = (string)$xml['thumbnail'];
+        $xerteMetaObj->thumbnail = (string)$xml['metaThumbnail'];
     }
     else
     {
@@ -55,8 +55,8 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
     else
         $xerteMetaObj->course = 'unknown';
 
-    if (isset($xml['xerteMetaObj']))
-        $xerteMetaObj->module = (string)$xml['xerteMetaObj'];
+    if (isset($xml['module']))
+        $xerteMetaObj->module = (string)$xml['module'];
     else
         $xerteMetaObj->module = '';
     if (isset($xml['metaDescription']))
@@ -67,7 +67,7 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
         $xerteMetaObj->keywords = (string)$xml['metaKeywords'];
     else
         $xerteMetaObj->keywords = '';
-    if (isset($xml['metaAuthor']))
+    if (isset($xml['metaAuthor']) && ((isset($xml['metaAuthorInclude']) && $xml['metaAuthorInclude'] == 'true') || !isset($xml['metaAuthorInclude'])))
         $xerteMetaObj->author = (string)$xml['metaAuthor'];
     else
         $xerteMetaObj->author = $config['institute'];
@@ -75,6 +75,10 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
         $xerteMetaObj->domain = (string)$xml['category'];
     else
         $xerteMetaObj->domain = 'unknown';
+    if (isset($xml['subcategory']))
+        $xerteMetaObj->subdomain = (string)$xml['subcategory'];
+    else
+        $xerteMetaObj->subdomain = 'unknown';
     $xerteMetaObj->language = (string)$xml['language'];
     $xerteMetaObj->publisher = $config['institute'];
 

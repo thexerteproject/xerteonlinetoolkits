@@ -103,8 +103,10 @@
 		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage when tracking"/>
         <trackingPageTimeout label="Page timeout for completion" type="NumericStepper" min="0" max="1000" step="1" optional="true" defaultValue="0" tooltip="The number of seconds a page has to be viewed to count as completed"/>
         <forceTrackingMode label="Force tracking mode behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracking LO's. This changes the behaviour of some pagetypes, i.e. in Quiz the restart button will be disabled and in drag/drop exercises, the labels will stick, even if the answer is wrong"/>
-       	<category label="Tracking Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object, stored in xAPI events, to be used for categorising in xAPI reports"/>
-		<hideSaveSession label="Hide Save Session button" type="CheckBox" defaultValue="false" optional="true" tooltip="Hide the save session button"/>
+       	<category label="Tracking Category" type="Category" optional="true" tooltip="Label indicating the category of this learning object (i.e. Maths), stored in xAPI events, to be used for categorising in xAPI reports"/>
+		<subcategory label="Sub category" type="TextInput" wysiwyg="false" optional="true" tooltip="Label indicating the sub-category (i.e. Algebra)"/>
+		<educode label="Category code" type="TextInput" wysiwyg="false" optional="true" tooltip="Code if the category of the learning object"/>
+ 		<hideSaveSession label="Hide Save Session button" type="CheckBox" defaultValue="false" optional="true" tooltip="Hide the save session button"/>
 		<restartOptions label="Restart session" type="ComboBox" options="Restart session if possible,Ask to restart session,Do not restart session" data="restart,ask,do_not_restart" defaultValue="ask" tooltip="If restart xAPI information is available, should that be used to restart tehe session?"/>
 	</tracking>
 
@@ -113,7 +115,11 @@
 	   	<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create meta data in SCORM objects. This is also stored in xAPI events."/>
 		<metaDescription type="script" wysiwyg="false" label="Description" height="50" optional="true" defaultValue=""/>
         <metaKeywords type="script" wysiwyg="false" label="Keywords" height="50" optional="true" defaultValue=""/>
-        <metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true"/>
+        <metaAuthor type="TextInput" wysiwyg="false" label="Author" defaultValue="" optional="true" tooltip="Author name(s) the will be published when publishing the metadata. If not specified, the cretor and co-author names are used."/>
+		<metaAuthorInclude type="CheckBox" label="Include author when harvesting" defaultValue="true" optonal="true" tooltip="Whether the author name is included in the metadata record when publishing the meta data as oai-pmh (optional functionality)"/>
+		<metaLevel type="NumericStepper" label="Level" min="1" max="12" defaultValue="12" optional="true" tooltip="The level of this lerning object. level 1 is lowest, level 12 is highest."/>
+		<metaEducation type="TextInput" wysiwyg="false" label="Education" defaultValue="" optional="true" tooltip="The name of the eduction. Do not use a category or discipline here. You can specify that in the tracking optional properties (Category)"/>
+		<metaThumbnail type="media" label="Thumbnail" defaultValue="Choose Image" optionl="true" tooltip="The thumbnail to publish with the metadata"/>
     </meta>
 
     <newNodes>
@@ -1500,12 +1506,12 @@
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
 		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
-	</linkGroup><passwordGroup type="group" label="Password Protection" optional="true" tooltip="Access to this page will be restricted until a valid password is entered" common="true">
-		<password label="Password(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of passwords which give access to this page"/>
-		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Passwords are case sensitive when this option is checked"/>
-		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;This page is password protected. Enter the password below to access the page:&lt;/p&gt;" tooltip="The instructions which appear in the password block"/>
-		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid password" tooltip="The error message which appears when an incorrect password is entered&lt;/p&gt;"/>
-		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the password submit button"/>
+	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
+		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
+		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
+		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
+		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit button"/>
 	</passwordGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
 	</customLinkGroup><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page" common="true"/><styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page" common="true"/><tracking type="group" label="Tracking" optional="true" common="true">
@@ -3444,12 +3450,12 @@
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
 		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
 		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
-	</linkGroup><passwordGroup type="group" label="Password Protection" optional="true" tooltip="Access to this page will be restricted until a valid password is entered" common="true">
-		<password label="Password(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of passwords which give access to this page"/>
-		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Passwords are case sensitive when this option is checked"/>
-		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;This page is password protected. Enter the password below to access the page:&lt;/p&gt;" tooltip="The instructions which appear in the password block"/>
-		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid password" tooltip="The error message which appears when an incorrect password is entered&lt;/p&gt;"/>
-		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the password submit button"/>
+	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
+		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
+		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
+		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
+		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit button"/>
 	</passwordGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in page IDs" common="true">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
 	</customLinkGroup><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page" common="true"/><styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page" common="true"/><tracking type="group" label="Tracking" optional="true" common="true">
