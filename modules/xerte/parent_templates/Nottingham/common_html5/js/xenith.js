@@ -3544,6 +3544,10 @@ function x_getAriaText(text) {
 
 // Script to check whther saveSession button is styled in theme
 function x_saveSessionBtnIsStyled() {
+	// In offline the line below with r.rules causes a CORS error.
+	// Offline doesn't use save session anyway, so return true
+	if (xot_offline)
+		return true;
 	if (x_params.theme != undefined && x_params.theme == "default")
 		return true;
 	var files = $.map(document.styleSheets, function(s) {
