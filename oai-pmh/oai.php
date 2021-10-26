@@ -61,7 +61,12 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
                             'schema'=>'http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
                             'metadataNamespace'=>'http://www.openarchives.org/OAI/2.0/oai_dc/',
                             'record_prefix'=>'dc',
-                            'record_namespace' => 'http://purl.org/dc/elements/1.1/'));
+                            'record_namespace' => 'http://purl.org/dc/elements/1.1/'
+                        ),
+                        'lom_ims' => array('metaDataPrefix'=>'lom_ims',
+                            'schema'=>'http://www.imsglobal.org/xsd/imsmd_v1p2p4.xsd',
+                            'metadataNamespace'=> 'http://www.imsglobal.org/xsd/imsmd_v1p2',
+                        ));
             },
 
         'ListSets' =>
@@ -90,9 +95,6 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
                 }
                 if ($set != '') {
                     throw new OAIException('noSetHierarchy');
-                }
-                if ($metadataPrefix != 'oai_dc') {
-                    throw new OAIException('noRecordsMatch');
                 }
                 $records = call_user_func(getTemplates);
                 return $records;
@@ -159,6 +161,7 @@ function getSingleTemplate($template_id) {
 }
 
 function getTemplates() {
+    global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
     $q = "select td.template_id, 
@@ -205,21 +208,23 @@ function makeRecordFromTemplate($template, $metadata){
     global $xerte_toolkits_site;
     $record = array('identifier' => ($xerte_toolkits_site->site_url . $template['template_id']),
         'datestamp' => date($template['date_modified']),
-        'set' => 'class:activity',
+        //'set' => 'class:activity',
         'metadata' => array(
-            'container_name' => 'oai_dc:dc',
+            'container_name' => 'lom',
             'container_attributes' => array(
-                'xmlns:oai_dc' => "http://www.openarchives.org/OAI/2.0/oai_dc/",
-                'xmlns:dc' => "http://purl.org/dc/elements/1.1/",
+                'xmlns' => "http://www.imsglobal.org/xsd/imsmd_v1p2",
                 'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
                 'xsi:schemaLocation' =>
-                    'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd'
+                    'http://www.imsglobal.org/xsd/imsmd_v1p2 http://www.imsglobal.org/xsd/imsmd_v1p2p4.xsd'
             ),
-            'fields' => array(
-                'dc:title' => $template['template_name'],//'Testing records',
-                'dc:author' => $template['owner_username']
-            )
+            'general' => array(
+                'title' => $template['template_name'],//'Testing records',
+                'language'=> explode("-",$metadata->language)[0],
+                'description'=> $metadata->description
+            ),
+            'keywords' => explode("\n",$metadata->keywords),
         ));
     return $record;
 };
+
 

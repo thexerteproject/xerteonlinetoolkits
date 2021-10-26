@@ -314,8 +314,13 @@ class OAIServer
         foreach ($record['metadata']['container_attributes'] as $name => $value) {
             $schema_node->setAttribute($name, $value);
         }
-        foreach ($record['metadata']['fields'] as $name => $value) {
-            $this->response->addChild($schema_node, $name, $value);
+        $general_node = $this->response->addChild($schema_node, 'general');
+        foreach ($record['metadata']['general'] as $name => $value) {
+            $this->response->addChild($general_node, $name, $value);
+        }
+        $keyword_node = $this->response->addChild($general_node, 'keywords');
+        foreach ($record['metadata']['keywords'] as $value) {
+            $this->response->addChild($keyword_node, 'keyword', $value);
         }
     }
 
