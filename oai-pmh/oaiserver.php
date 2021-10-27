@@ -261,7 +261,6 @@ class OAIServer
 
                     $identifier = $record['identifier'];
                     $datestamp = $this->formatDatestamp($record['datestamp']);
-                    $setspec = $record['set'];
 
                     $status_deleted = (isset($record['deleted']) && ($record['deleted'] === true) &&
                         (($this->identifyResponse['deletedRecord'] == 'transient') ||
@@ -269,12 +268,12 @@ class OAIServer
 
                     if ($this->verb == 'ListRecords') {
                         $cur_record = $this->response->addToVerbNode('record');
-                        $cur_header = $this->response->createHeader($identifier, $datestamp, $setspec, $cur_record);
+                        $cur_header = $this->response->createHeader($identifier, $datestamp, $cur_record);
                         if (!$status_deleted) {
                             $this->add_metadata($cur_record, $record);
                         }
                     } else { // for ListIdentifiers, only identifiers will be returned.
-                        $cur_header = $this->response->createHeader($identifier, $datestamp, $setspec);
+                        $cur_header = $this->response->createHeader($identifier, $datestamp);
                     }
                     if ($status_deleted) {
                         $cur_header->setAttribute("status", "deleted");
@@ -314,13 +313,24 @@ class OAIServer
         foreach ($record['metadata']['container_attributes'] as $name => $value) {
             $schema_node->setAttribute($name, $value);
         }
+
         $general_node = $this->response->addChild($schema_node, 'general');
+        $language = $record['metadata']['general']['language'];
         foreach ($record['metadata']['general'] as $name => $value) {
-            $this->response->addChild($general_node, $name, $value);
+            if ($name != 'language'){
+                $subnode = $this->response->addChild($general_node,$name);
+                $langstring_node = $this->response->addChild($subnode, 'langstring', $value);
+                $langstring_node->setAttribute("xml:lang",$language);
+            }
+            else {
+                $this->response->addChild($general_node, $name, $value);
+            }
+
         }
-        $keyword_node = $this->response->addChild($general_node, 'keywords');
         foreach ($record['metadata']['keywords'] as $value) {
-            $this->response->addChild($keyword_node, 'keyword', $value);
+            $keyword_node = $this->response->addChild($general_node,'keyword');
+            $langstring_node = $this->response->addChild($keyword_node, 'langstring', $value);
+            $langstring_node->setAttribute("xml:lang",$language);
         }
     }
 

@@ -65,7 +65,7 @@ class OAIXMLResponse {
      * When it is null, the newly created header node is attatched to $this->verbNode.
      * Otherwise it will be attatched to the desired node defined in $add_to_node.
      */
-    function createHeader($identifier, $timestamp, $setSpec, $add_to_node=null) {
+    function createHeader($identifier, $timestamp, $add_to_node=null) {
 
         if(is_null($add_to_node)) {
             $header_node = $this->addToVerbNode("header");
@@ -75,7 +75,7 @@ class OAIXMLResponse {
 
         $this->addChild($header_node, "identifier", $identifier);
         $this->addChild($header_node, "datestamp", $timestamp);
-
+        /**
         if (is_array($setSpec)) {
             foreach ($setSpec as $set) {
                 $this->addChild($header_node,"setSpec",$set);
@@ -83,6 +83,7 @@ class OAIXMLResponse {
         } else {
             $this->addChild($header_node,"setSpec",$setSpec);
         }
+         **/
         return $header_node;
     }
 
