@@ -1745,8 +1745,6 @@
 
                 }
                 else if (interaction.getAttribute("graphType") == 'hor_bar_comb_marks') {
-                  //<div id="chart" style="height: 600px; width: 600px;">
-                  //</div>
                   let passingGrade = x_params.trackingPassed;
                   if (passingGrade == null) {
                       passingGrade = '55';
@@ -1796,6 +1794,9 @@
                       },
                     ],
                     chart: {
+                      toolbar: {
+                        show: false,
+                      },
                       height: 350,
                       type: 'bar'
                     },
