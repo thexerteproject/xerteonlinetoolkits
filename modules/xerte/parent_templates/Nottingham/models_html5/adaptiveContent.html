@@ -493,7 +493,7 @@
         q['statement.verb.id'] = 'http://adlnet.gov/expapi/verbs/scored';
          */
         q['activity'] = url;
-        if (type == "grouping" || type == "groupings") {
+        if (type == "grouping" || type == "groupings" || type == "opinionclasses") {
             q['related_activities'] = true;
         }
         q['verb'] = verb;
@@ -536,6 +536,7 @@
             }
         );
         */
+        console.log(q);
         XTGetStatements(q, false, function(data, search){
             if (data.length > 0) {
                 if (search != undefined && typeof search['activity'] != 'undefined') {
@@ -646,6 +647,53 @@
                         }
                         adaptiveContent.drawScore(uniqueStatements.reverse(), interaction, url, type, interactionIndex, fullWidth);
                     }
+                    else if (type == 'opinionclasses')
+                    {
+                        var statements=[];
+                        let groupingStatements=[];
+
+                        for (var i=0; i<data.length; i++)
+                        {
+                            if (data[i].context != undefined
+                                && data[i].context.extensions != undefined
+                                && data[i].context.extensions['http://xerte.org.uk/learningObjectLevel'] != undefined
+                                && data[i].context.extensions['http://xerte.org.uk/learningObjectLevel'] == 'interactivity'
+                                && data[i].context.extensions['http://xerte.org.uk/opinionClass'] != undefined
+                                && data[i].context.contextActivities != undefined)
+                            {
+                                statements.push(data[i]);
+                            }
+                        }
+                        let groups = []
+                        statements.forEach(x => groups.push(x.context.extensions['http://xerte.org.uk/opinionClass']));
+                        let uniqueGroups = groups.filter((v, i, a) => a.indexOf(v) === i);
+
+                        for (let uniqueGroup in uniqueGroups) {
+                            var statementsGroup=[];
+                            xertelabel = uniqueGroups[uniqueGroup].replace(/ /g, "_");
+                            for (var i=0; i<statements.length; i++)
+                            {
+                                if (statements[i].context.extensions['http://xerte.org.uk/opinionClass'] == xertelabel) {
+                                    statementsGroup.push(statements[i]);
+                                }
+                            }
+                            groupingStatements = groupingStatements.concat(handler(statementsGroup));
+                        }
+                        let uniqueStatements = [];
+                        let visitedGroups = [];
+                        if (adaptiveContent.dashboardMode == 'true') {
+                            uniqueStatements = groupingStatements;
+                        } else {
+                            for (let groupingStatement in groupingStatements) {
+                                let group = groupingStatements[groupingStatement].context.extensions['http://xerte.org.uk/opinionClass'];
+                                if (!visitedGroups.includes(group)) {
+                                    uniqueStatements.push(groupingStatements[groupingStatement]);
+                                    visitedGroups.push(group);
+                                }
+                            }
+                        }
+                        adaptiveContent.drawScore(uniqueStatements.reverse(), interaction, url, type, interactionIndex, fullWidth);
+                    }
                     else {
                         handler(data, interaction, url, type, interactionIndex, fullWidth);
                     }
@@ -739,7 +787,6 @@
         this.pageChanged = function() {
             $("#adaptiveContentMain").html("");
             var displayMode = x_currentPageXML.getAttribute('displayMode');
-        debugger;
             if(displayMode == "Listed"){
                 this.setUpListed();
             }else {
@@ -779,7 +826,6 @@
         };
 
         this.init = function() {
-            debugger;
             var loadFiles = true;
             for (var i = 0; i < x_pageInfo.length; i++) {
                 if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
@@ -865,7 +911,6 @@
                 adviceHeader = `<h4>${interaction.getAttribute('AdviceText')}</h4>`;
             }
 
-            debugger;
             let introductionText = interaction.getAttribute('introduction');
             if (introductionText == undefined) {
                 introductionText = "";
@@ -1063,6 +1108,29 @@
                         this.drawGroupedScores);
                 }
             }
+            else if (interactionType == "opinionclasses")
+            {
+                // check open question special options
+                var verb = 'http://adlnet.gov/expapi/verbs/answered';
+                if (interaction.data != null) {
+                    var url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
+                    this.drawGroupedScores(interaction.data, interaction, url, interactionType, interactionIndex, fullWidth);
+                }
+                else {
+                    statements = getStatements(
+                        xerteurl,
+                        xertelo,
+                        xertelabel,
+                        verb,
+                        opinionClass,
+                        interactionType,
+                        hasToRetrieveAll(interaction),
+                        interactionIndex,
+                        group,
+                        fullWidth,
+                        this.drawGroupedScores);
+                }
+            }
 
         };
 
@@ -1162,7 +1230,8 @@
                     }
                 }
 
-                if (interaction.getAttribute('interactionType') === 'groupings') {
+                debugger;
+                if (interaction.getAttribute('interactionType') === 'groupings' || interaction.getAttribute('interactionType') === 'opinionclasses' ) {
                     let visitedGroups = {};
                     for (let statement in statements) {
                         let group = statements[statement].context.contextActivities.grouping[0].definition.name["en-US"];
@@ -1600,6 +1669,7 @@
                     chart.draw();
                 }
                 else if (interaction.getAttribute("graphType") == "polar_area_per_category") {
+                    debugger;
                   let backgroundColors = [
                     '#FF6384',
                     '#4BC0C0',
@@ -1609,6 +1679,7 @@
                     '#B284BE',
                   ];
                   let visitedGroups = {};
+                    debugger;
                   for (let statement in statements) {
                       let group = statements[statement].context.contextActivities.grouping[0].definition.name["en-US"];
                       if (!(group in visitedGroups)) {
@@ -1617,6 +1688,7 @@
                           visitedGroups[group].push(statements[statement].result.score.raw);
                       }
                   }
+                    debugger;
                   let labelCounter = 0;
                   let legendLabels = [];
                   for (key in visitedGroups) {
@@ -1717,7 +1789,6 @@
                     });
                     labelCounter += 1;
                   }
-                  debugger;
                   var options = {
                     series: [
                       {
@@ -2376,6 +2447,9 @@
                     var statement = JSON.parse(JSON.stringify(data[s[0]]));
                     var sum = statement.result.score.raw;
                     var duration = moment.duration(statement.result.duration);
+                    if (statement.result.extensions === undefined) {
+                        statement.result.extensions = {};
+                    }
                     statement.result.extensions['http://xerte.org.uk/result/grouping/scores'] = [];
                     statement.result.extensions['http://xerte.org.uk/result/grouping/scores'].push([[data[0].object.definition.name["en-US"]], data[s[0]].result.score.raw]);
                     for (var k=1; k<s.length; k++)
@@ -2388,7 +2462,15 @@
                     statement.result.score.raw = sum / s.length;
                     statement.result.score.scaled = statement.result.score.raw / 100.0;
                     statement.result.duration = duration.toISOString();
+                    if (statement.extensions === undefined) {
+                        statement.extensions = {};
+                    }
                     statement.extensions = {'http://xerte.org.uk/grouping/num-grouped-statements': s.length};
+                    if (statement.context.contextActivities.grouping === undefined) {
+                      statement.context.contextActivities.grouping = [];
+                      let groupingName = { "definition": { "name": { "en-US": statement.context.extensions['http://xerte.org.uk/opinionClass'] } } }
+                      statement.context.contextActivities.grouping.push(groupingName); //[0].definition.name["en-US"] = statement.context.extensions['http://xerte.org.uk/opinionClass'];
+                    }
                     groupingStatements.push(statement);
                 }
             }
