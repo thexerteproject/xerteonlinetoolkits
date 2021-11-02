@@ -313,6 +313,7 @@ class OAIServer
         foreach ($record['metadata']['container_attributes'] as $name => $value) {
             $schema_node->setAttribute($name, $value);
         }
+        // GENERAL
 
         $general_node = $this->response->addChild($schema_node, 'general');
         $language = $record['metadata']['general']['language'];
@@ -327,11 +328,82 @@ class OAIServer
             }
 
         }
+        // GENERAL - Keywords
+
         foreach ($record['metadata']['keywords'] as $value) {
             $keyword_node = $this->response->addChild($general_node,'keyword');
             $langstring_node = $this->response->addChild($keyword_node, 'langstring', $value);
             $langstring_node->setAttribute("xml:lang",$language);
         }
+        // GENERAL - Keywords - Course
+
+        $course_name = $record['metadata']['general']['course'];
+        $keyword_node = $this->response->addChild($general_node,'keyword');
+        $langstring_node = $this->response->addChild($keyword_node, 'langstring', ('Course: ' . $course_name));
+        $langstring_node->setAttribute("xml:lang",$language);
+
+        // LIFECYCLE - Author
+        $lifecycle_node = $this->response->addChild($schema_node, 'lifecycle');
+        $contribute_node = $this->response->addChild($lifecycle_node, 'contribute');
+        $role_node = $this->response->addChild($contribute_node, 'role');
+        $source_node = $this->response->addChild($role_node, 'source');
+        $langstring_node = $this->response->addChild($source_node, 'langstring', "http://purl.edustandaard.nl/vdex_lifecycle_contribute_role_lomv1p0_20060628.xml");
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        $value_node = $this->response->addChild($role_node, 'value');
+        $langstring_node = $this->response->addChild($value_node, 'langstring', "author");
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        $centity_node = $this->response->addChild($contribute_node, 'centity');
+
+        $author_name = $record['metadata']['lifecycle']['author'];
+        $vcard = "BEGIN:VCARD\nFN:{$author_name}\nVERSION:3.0\nEND:VCARD";
+        $this->response->addChild($centity_node, 'vcard', $vcard);
+
+        // LIFECYCLE - Publisher
+        $contribute_node = $this->response->addChild($lifecycle_node, 'contribute');
+        $role_node = $this->response->addChild($contribute_node, 'role');
+        $source_node = $this->response->addChild($role_node, 'source');
+        $langstring_node = $this->response->addChild($source_node, 'langstring', "LOMv1.0");
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        $value_node = $this->response->addChild($role_node, 'value');
+        $langstring_node = $this->response->addChild($value_node, 'langstring', "publisher");
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        $centity_node = $this->response->addChild($contribute_node, 'centity');
+
+        $publisher_name = $record['metadata']['lifecycle']['publisher'];
+        $vcard = "BEGIN:VCARD\nFN:{$publisher_name}\nN:;{$publisher_name}\nORG:{$publisher_name}\nVERSION:3.0 END:VCARD";
+        $this->response->addChild($centity_node, 'vcard', $vcard);
+
+        $publish_date = $record['metadata']['lifecycle']['publishdate'];
+        $date_node = $this->response->addChild($contribute_node, 'date');
+        $this->response->addChild($date_node, 'datetime', ($publish_date . "T00:00:00+00:00"));
+        $description_node = $this->response->addChild($date_node, 'description');
+        $langstring_node = $this->response->addChild($description_node, 'langstring', "The date the object was last modified.");
+        $langstring_node->setAttribute("xml:lang",$language);
+
+        //RELATION - Thumbnail
+
+        $relation_node = $this->response->addChild($schema_node, 'relation');
+        $kind_node = $this->response->addChild($relation_node, 'kind');
+        $source_node = $this->response->addChild($kind_node, 'source');
+        $langstring_node = $this->response->addChild($source_node, 'langstring', "http://purl.edustandaard.nl/relation_kind_nllom_20131211");
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        $value_node = $this->response->addChild($kind_node, 'value');
+        $langstring_node = $this->response->addChild($value_node, 'langstring', "thumbnail");
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        $resource_node = $this->response->addChild($relation_node, 'resource');
+        $catalogentry_node = $this->response->addChild($resource_node, 'catalogentry');
+        $this->response->addChild($catalogentry_node, 'catalog', 'URI');
+        $entry_node = $this->response->addChild($catalogentry_node, 'entry');
+        $thumbnail_url = $record['metadata']['relation']['thumbnail'];
+        $langstring_node = $this->response->addChild($entry_node, 'langstring', $thumbnail_url);
+        $langstring_node->setAttribute("xml:lang","x-none");
+
     }
 
     private function createResumptionToken($delivered_records)

@@ -220,9 +220,18 @@ function makeRecordFromTemplate($template, $metadata){
             'general' => array(
                 'title' => $template['template_name'],//'Testing records',
                 'language'=> explode("-",$metadata->language)[0],
-                'description'=> $metadata->description
+                'description'=> $metadata->description,
+                'course' => $metadata->course,
             ),
             'keywords' => explode("\n",$metadata->keywords),
+            'relation' => array(
+                'thumbnail' => $metadata->thumbnail
+            ),
+            'lifecycle' => array(
+                'author' => $metadata->author,
+                'publisher' => $metadata->publisher,
+                'publishdate' => $template['date_modified'],
+            ),
         ));
     return $record;
 };
