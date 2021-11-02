@@ -53,16 +53,7 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
                     throw new OAIException('idDoesNotExist');
                 }
                 return
-                    array('rif' => array('metadataPrefix'=>'rif',
-                        'schema'=>'http://services.ands.org.au/sandbox/orca/schemata/registryObjects.xsd',
-                        'metadataNamespace'=>'http://ands.org.au/standards/rif-cs/registryObjects/',
-                    ),
-                        'oai_dc' => array('metadataPrefix'=>'oai_dc',
-                            'schema'=>'http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
-                            'metadataNamespace'=>'http://www.openarchives.org/OAI/2.0/oai_dc/',
-                            'record_prefix'=>'dc',
-                            'record_namespace' => 'http://purl.org/dc/elements/1.1/'
-                        ),
+                    array(
                         'lom_ims' => array('metaDataPrefix'=>'lom_ims',
                             'schema'=>'http://www.imsglobal.org/xsd/imsmd_v1p2p4.xsd',
                             'metadataNamespace'=> 'http://www.imsglobal.org/xsd/imsmd_v1p2',
@@ -156,7 +147,9 @@ function getSingleTemplate($template_id) {
           where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id and td.access_to_whom = 'Public' and td.template_id = {$template_id}";
 
     $response_template = db_query($q);
-    $response_record = call_user_func(makeRecordFromTemplate,$response_template[0]);
+    $tempMetaData = call_user_func(get_meta_data,$response_template[0]['template_id'],$response_template[0]["owner_username"],$response_template[0]["template_type"]);
+    $response_record = call_user_func(makeRecordFromTemplate,$response_template[0], $tempMetaData);
+
     return $response_record;
 }
 
@@ -222,6 +215,7 @@ function makeRecordFromTemplate($template, $metadata){
                 'language'=> explode("-",$metadata->language)[0],
                 'description'=> $metadata->description,
                 'course' => $metadata->course,
+                'educational_code'=> $metadata->education,
             ),
             'keywords' => explode("\n",$metadata->keywords),
             'relation' => array(

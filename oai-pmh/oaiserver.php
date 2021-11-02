@@ -342,6 +342,12 @@ class OAIServer
         $langstring_node = $this->response->addChild($keyword_node, 'langstring', ('Course: ' . $course_name));
         $langstring_node->setAttribute("xml:lang",$language);
 
+        // GENERAL - Keywords - Educational code
+        $educational_code = $record['metadata']['general']['educational_code'];
+        $keyword_node = $this->response->addChild($general_node,'keyword');
+        $langstring_node = $this->response->addChild($keyword_node, 'langstring', ('Educational code: ' . $educational_code));
+        $langstring_node->setAttribute("xml:lang",$language);
+
         // LIFECYCLE - Author
         $lifecycle_node = $this->response->addChild($schema_node, 'lifecycle');
         $contribute_node = $this->response->addChild($lifecycle_node, 'contribute');
