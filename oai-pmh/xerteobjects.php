@@ -36,7 +36,8 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
     }
     if (isset($xml['metaLevel']))
     {
-        $xerteMetaObj->level = (string)$xml['metaLevel'];
+        $xerteMetaObj->level = "HBO";// (string)$xml['metaLevel'];
+        $xerteMetaObj->levelId = "be140797-803f-4b9e-81cc-5572c711e09c"; // (string)$xml['metaLevelId'];
     }
     else
     {
@@ -71,8 +72,11 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
         $xerteMetaObj->author = (string)$xml['metaAuthor'];
     else
         $xerteMetaObj->author = $config['institute'];
-    if (isset($xml['category']))
-        $xerteMetaObj->domain = (string)$xml['category'];
+    if (isset($xml['category'])) {
+        $xerteMetaObj->domain = "Afbouw, hout en onderhoud";// (string)$xml['category'];
+        $xerteMetaObj->domainId = "3ed67cca-37f6-4d7b-b1eb-872f6671caf7";
+        $xerteMetaObj->domainSource = "https://vdex.kennisnet.nl/kennisnetset/2015.01/mbo_opleidingsdomeinen_studierichtingen-knset.xml";
+    }
     else
         $xerteMetaObj->domain = 'unknown';
     if (isset($xml['subcategory']))
