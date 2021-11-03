@@ -929,7 +929,7 @@
             {
                 summaryText = `<h1><p>${summaryText}</p></h1>`;
             }
-            if (summaryText != "" || adviceHeader != "" || interactionType == 'grouping') {
+            //if (summaryText != "" || adviceHeader != "" || interactionType == 'grouping') {
                 div.html(
                     `<h2><p>${name}</p></h2>` +
                     `<div class='introduction'>${introductionText}</div>` +
@@ -948,17 +948,17 @@
                     '<div class="graph-container"></div>' +
                     '</div>'
                 );
-            }
-            else
-            {
-                div.html(
-                    `<h2><p>${name}</p></h2>` +
-                    `<div class='introduction'>${introductionText}</div>` +
-                    '<div class="summary-container">' +
-                    '<div class="graph-container"></div>' +
-                    '</div>'
-                );
-            }
+            //}
+            //else
+            //{
+            //    div.html(
+            //        `<h2><p>${name}</p></h2>` +
+            //        `<div class='introduction'>${introductionText}</div>` +
+            //        '<div class="summary-container">' +
+            //        '<div class="graph-container"></div>' +
+            //        '</div>'
+            //    );
+            //}
 
             $(location).append(div);
 
