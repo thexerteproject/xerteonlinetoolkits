@@ -62,6 +62,8 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
 
         'ListSets' =>
             function($resumptionToken = '') {
+            
+
                 return
                     array (
                         array('setSpec'=>'class:collection', 'setName'=>'Collections'),
@@ -77,6 +79,7 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
                                 ' <dc:description>This set contains metadata describing '.
                                 ' electronic music recordings made during the 1950ies</dc:description> '.
                                 ' </oai_dc:dc>'));
+
             },
 
         'ListRecords' =>

@@ -128,7 +128,8 @@ class OAIServer
             $resumptionToken = null;
         }
         if (empty($this->errors)) {
-            if ($sets = call_user_func($this->listSetsCallback, $resumptionToken)) {
+            // Remove (and false) for normal function
+            if ($sets = call_user_func($this->listSetsCallback, $resumptionToken) and false) {
 
                 foreach ($sets as $set) {
 
