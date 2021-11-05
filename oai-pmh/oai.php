@@ -214,6 +214,8 @@ function makeRecordFromTemplate($template, $metadata){
                 'title' => $template['template_name'],//'Testing records',
                 'language'=> explode("-",$metadata->language)[0],
                 'description'=> $metadata->description,
+            ),
+            'misc' => array(
                 'course' => $metadata->course,
                 'educational_code'=> $metadata->education,
             ),
@@ -225,6 +227,11 @@ function makeRecordFromTemplate($template, $metadata){
                 'author' => $metadata->author,
                 'publisher' => $metadata->publisher,
                 'publishdate' => $template['date_modified'],
+            ),
+            'classification' => array(
+                'domain_id' => $metadata->domainId,
+                'domain' => $metadata->domain,
+                'domain_source' => $metadata->domainSource,
             ),
         ));
     return $record;

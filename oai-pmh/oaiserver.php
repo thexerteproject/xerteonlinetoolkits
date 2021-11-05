@@ -337,13 +337,13 @@ class OAIServer
         }
         // GENERAL - Keywords - Course
 
-        $course_name = $record['metadata']['general']['course'];
+        $course_name = $record['metadata']['misc']['course'];
         $keyword_node = $this->response->addChild($general_node,'keyword');
         $langstring_node = $this->response->addChild($keyword_node, 'langstring', ('Course: ' . $course_name));
         $langstring_node->setAttribute("xml:lang",$language);
 
         // GENERAL - Keywords - Educational code
-        $educational_code = $record['metadata']['general']['educational_code'];
+        $educational_code = $record['metadata']['misc']['educational_code'];
         $keyword_node = $this->response->addChild($general_node,'keyword');
         $langstring_node = $this->response->addChild($keyword_node, 'langstring', ('Educational code: ' . $educational_code));
         $langstring_node->setAttribute("xml:lang",$language);
@@ -409,6 +409,95 @@ class OAIServer
         $thumbnail_url = $record['metadata']['relation']['thumbnail'];
         $langstring_node = $this->response->addChild($entry_node, 'langstring', $thumbnail_url);
         $langstring_node->setAttribute("xml:lang","x-none");
+
+        // CLASSIFICATION
+        $classification_node = $this->response->addChild($schema_node, 'classification');
+        $purpose_node = $this->response->addChild($classification_node, 'purpose');
+        $source_node = $this->response->addChild($purpose_node, 'source');
+        $langstring_node = $this->response->addChild($source_node, 'langstring', "LOMv1.0");
+        $langstring_node->setAttribute("xml:lang","x-none");
+        $value_node = $this->response->addChild($purpose_node, 'value');
+        $langstring_node = $this->response->addChild($value_node, 'langstring', "discipline");
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        $taxonpath_node = $this->response->addChild($classification_node, 'taxonpath');
+        $source_node = $this->response->addChild($taxonpath_node, 'source');
+        $domain_source = $record['metadata']['classification']['domain_source'];
+        $langstring_node = $this->response->addChild($source_node, 'langstring', $domain_source);
+        $langstring_node->setAttribute("xml:lang","x-none");
+        $domain_id = $record['metadata']['classification']['domain_id'];
+        $taxon_node = $this->response->addChild($taxonpath_node, 'taxon');
+        $this->response->addChild($taxon_node, 'id',$domain_id);
+        $entry_node = $this->response->addChild($taxon_node, 'entry');
+        $domain = $record['metadata']['classification']['domain'];
+        $langstring_node = $this->response->addChild($entry_node, 'langstring', $domain);
+        $langstring_node->setAttribute("xml:lang",$language);
+
+
+        ////
+        /// <czp:classification>
+        //
+        //<czp:purpose>
+        //
+        //<czp:source>
+        //
+        //<czp:langstring xml:lang="x-none">LOMv1.0</czp:langstring>
+        //
+        //</czp:source>
+        //
+        //<czp:value>
+        //
+        //<czp:langstring xml:lang="x-none">discipline</czp:langstring>
+        //
+        //</czp:value>
+        //
+        //</czp:purpose>
+        //
+        //<czp:taxonpath>
+        //
+        //<czp:source>
+        //
+        //<czp:langstring xml:lang="x-none">http://purl.edustandaard.nl/begrippenkader</czp:langstring>
+        //
+        //</czp:source>
+        //
+        //<czp:taxon>
+        //
+        //<czp:id>fd8df586-d10e-4cd2-8ef7-c0c93f0bc5cd</czp:id>
+        //
+        //<czp:entry>
+        //
+        //<czp:langstring xml:lang="nl">Informatie en communicatietechnologie</czp:langstring>
+        //
+        //</czp:entry>
+        //
+        //</czp:taxon>
+        //
+        //</czp:taxonpath>
+        //
+        //<czp:taxonpath>
+        //
+        //<czp:source>
+        //
+        //<czp:langstring xml:lang="x-none">http://purl.edustandaard.nl/begrippenkader</czp:langstring>
+        //
+        //</czp:source>
+        //
+        //<czp:taxon>
+        //
+        //<czp:id>d6d6003d-1420-4fc4-9172-775aa7b3601f</czp:id>
+        //
+        //<czp:entry>
+        //
+        //<czp:langstring xml:lang="nl">ICT en media</czp:langstring>
+        //
+        //</czp:entry>
+        //
+        //</czp:taxon>
+        //
+        //</czp:taxonpath>
+        //
+        //</czp:classification>
 
     }
 
