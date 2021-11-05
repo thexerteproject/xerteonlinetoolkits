@@ -181,7 +181,7 @@ class OAIServer
                             ($this->identifyResponse['deletedRecord'] == 'persistent')));
 
                     $cur_record = $this->response->addToVerbNode('record');
-                    $cur_header = $this->response->createHeader($identifier, $datestamp, $set, $cur_record);
+                    $cur_header = $this->response->createHeader($identifier, $datestamp, $cur_record);
                     if ($status_deleted) {
                         $cur_header->setAttribute("status", "deleted");
                     } else {
