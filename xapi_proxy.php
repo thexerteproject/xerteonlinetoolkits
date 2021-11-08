@@ -233,6 +233,11 @@ if (!isset($_SESSION['XAPI_PROXY']))
     if (is_array($_SESSION['XAPI_PROXY']))
     {
         $lrs = $_SESSION['XAPI_PROXY'];
+        if (!isset($lrs['aggregate']))
+        {
+            $lrs = CheckLearningLocker($lrs);
+            $_SESSION['XAPI_PROXY'] = $lrs;
+        }
     }
     else {
         $template_id = $_SESSION['XAPI_PROXY'];
