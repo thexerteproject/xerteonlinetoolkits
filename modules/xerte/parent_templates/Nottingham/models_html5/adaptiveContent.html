@@ -676,6 +676,7 @@
                                     statementsGroup.push(statements[i]);
                                 }
                             }
+                            debugger;
                             groupingStatements = groupingStatements.concat(handler(statementsGroup));
                         }
                         let uniqueStatements = [];
@@ -2495,7 +2496,7 @@
                 interactionType = interaction.getAttribute('interactionType');
                 opinionClass = interaction.getAttribute('opinionClass');
                 if (opinionClass == undefined) {
-                    opinionClass = '';
+                    opinionClass = null;
                 }
                 group = interaction.getAttribute('groupFromUrl');
                 if (group == undefined) {
@@ -2525,7 +2526,7 @@
                 }
                 promises.push(new Promise(function(resolve, reject){
                     var verb = 'http://adlnet.gov/expapi/verbs/scored';
-                    if (interactionType == "answer")
+                    if (interactionType == "answer" || interactionType == "opinionclasses")
                     {
                         verb = 'http://adlnet.gov/expapi/verbs/answered';
                     }
@@ -2536,17 +2537,20 @@
                         verb,
                         opinionClass,
                         interactionType,
-                        false,
+                        hasToRetrieveAll(interaction),
                         interactionIndex,
                         group,
                         false,
                         function(data, interaction, url, type, interactionIndex, fullWidth) {
-                            interactions[interactionIndex].data = data;
-                            interactions[interactionIndex].score = Number.MAX_VALUE;
-                            interactions[interactionIndex].index = interactionIndex;
-                            if(data.length > 0 && data[0].result != null && data[0].result.score != null && data[0].result.score.raw != null)
-                            {
-                                interactions[interactionIndex].score = data[0].result.score.raw;
+                            debugger;
+                            if (interaction !== undefined) {
+                              interactions[interactionIndex].data = data;
+                              interactions[interactionIndex].score = Number.MAX_VALUE;
+                              interactions[interactionIndex].index = interactionIndex;
+                              if(data.length > 0 && data[0].result != null && data[0].result.score != null && data[0].result.score.raw != null)
+                              {
+                                  interactions[interactionIndex].score = data[0].result.score.raw;
+                              }
                             }
                             adaptiveContent.resolved++;
                             $("#loader_text").html(adaptiveContent.resolved + '/' + adaptiveContent.totalresolved);
@@ -2627,7 +2631,6 @@
         };
 
         this.setUpListed = function() {
-
 
             $("#adaptiveContentMain").append('<div class="splitScreen"><div class="left"></div><div class="right"></div></div>');
             $("#adaptiveContentMain").addClass("listed");
