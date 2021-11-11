@@ -20,6 +20,12 @@ require_once('xerteobjects.php');
  * - $identifyResponse['granularity'] : the finest harvesting granularity supported by the repository. The legitimate values are YYYY-MM-DD and YYYY-MM-DDThh:mm:ssZ with meanings as defined in ISO8601.
  *
  */
+// based on original work from the PHP Laravel framework
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle) {
+        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+    }
+}
 
 
 $identifyResponse = array();
@@ -96,9 +102,16 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
             function($identifier, $metadataPrefix){
 
                 //TODO: Test whether identifier is in the right format and parse identifier to template_id
-                
+                global $xerte_toolkits_site;
 
-                $response_record = call_user_func(getSingleTemplate, $identifier);
+                if(str_contains($identifier, $xerte_toolkits_site->site_url)) {
+                    $parsed_identifier = explode($xerte_toolkits_site->site_url, $identifier)[1];
+                }
+                else{
+                    throw new OAIException('idDoesNotExist');
+                }
+
+                $response_record = call_user_func(getSingleTemplate, $parsed_identifier);
                 return $response_record;
             },
     )
