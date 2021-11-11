@@ -43,7 +43,7 @@ if (!isset($args)) {
     $args = $_GET;
 }
 if (!isset($uri)) {
-    $uri = 'test.oai_pmh';
+    $uri = $xerte_toolkits_site->site_url . 'oai-pmh/oai.php';
 }
 $oai2 = new OAIServer($uri, $args, $identifyResponse,
     array(
@@ -62,8 +62,6 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
 
         'ListSets' =>
             function($resumptionToken = '') {
-            
-
                 return
                     array (
                         array('setSpec'=>'class:collection', 'setName'=>'Collections'),
@@ -98,6 +96,7 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
             function($identifier, $metadataPrefix){
 
                 //TODO: Test whether identifier is in the right format and parse identifier to template_id
+                
 
                 $response_record = call_user_func(getSingleTemplate, $identifier);
                 return $response_record;
@@ -150,6 +149,9 @@ function getSingleTemplate($template_id) {
           where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id and td.access_to_whom = 'Public' and td.template_id = {$template_id}";
 
     $response_template = db_query($q);
+    if (!$response_template) {
+        throw new OAIException('idDoesNotExist');
+    }
     $tempMetaData = call_user_func(get_meta_data,$response_template[0]['template_id'],$response_template[0]["owner_username"],$response_template[0]["template_type"]);
     $response_record = call_user_func(makeRecordFromTemplate,$response_template[0], $tempMetaData);
 
@@ -235,6 +237,8 @@ function makeRecordFromTemplate($template, $metadata){
                 'domain_id' => $metadata->domainId,
                 'domain' => $metadata->domain,
                 'domain_source' => $metadata->domainSource,
+                'level' => $metadata->level,
+                'levelId' => $metadata->levelId,
             ),
         ));
     return $record;

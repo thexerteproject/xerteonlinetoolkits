@@ -167,6 +167,10 @@ class OAIServer
             $this->errors[] = new OAIException('badArgument');
         }
 
+        // if (!isnumeric($this->args['identifier'])) {
+        //     //$this->errors[] = new OAIException('badArgument');
+        // }
+
         if (empty($this->errors)) {
             try {
                 if ($record = call_user_func($this->getRecordCallback, $this->args['identifier'], $this->args['metadataPrefix'])) {
@@ -411,7 +415,7 @@ class OAIServer
         $langstring_node = $this->response->addChild($entry_node, 'langstring', $thumbnail_url);
         $langstring_node->setAttribute("xml:lang","x-none");
 
-        // CLASSIFICATION
+        // CLASSIFICATION - domain
         $classification_node = $this->response->addChild($schema_node, 'classification');
         $purpose_node = $this->response->addChild($classification_node, 'purpose');
         $source_node = $this->response->addChild($purpose_node, 'source');
@@ -433,72 +437,56 @@ class OAIServer
         $domain = $record['metadata']['classification']['domain'];
         $langstring_node = $this->response->addChild($entry_node, 'langstring', $domain);
         $langstring_node->setAttribute("xml:lang",$language);
+        
+        // CLASSIFICATION education - level
+    
+        $classification_node = $this->response->addChild($schema_node, 'classification');
+        $purpose_node = $this->response->addChild($classification_node, 'purpose');
+        $source_node = $this->response->addChild($purpose_node, 'source');
+        $langstring_node = $this->response->addChild($source_node, 'langstring', "LOMv1.0");
+        $langstring_node->setAttribute("xml:lang","x-none");
+        $value_node = $this->response->addChild($purpose_node, 'value');
+        $langstring_node = $this->response->addChild($value_node, 'langstring', "educational level");
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        $taxonpath_node = $this->response->addChild($classification_node, 'taxonpath');
+        $source_node = $this->response->addChild($taxonpath_node, 'source');
+        $education_source = "http://purl.edustandaard.nl/begrippenkader";
+        $langstring_node = $this->response->addChild($source_node, 'langstring', $education_source);
+        $langstring_node->setAttribute("xml:lang","x-none");
+        $level_id = $record['metadata']['classification']['levelId'];
+        $taxon_node = $this->response->addChild($taxonpath_node, 'taxon');
+        $this->response->addChild($taxon_node, 'id',$level_id);
+        $entry_node = $this->response->addChild($taxon_node, 'entry');
+        $level = $record['metadata']['classification']['level'];
+        $langstring_node = $this->response->addChild($entry_node, 'langstring', $level);
+        $langstring_node->setAttribute("xml:lang",$language);
 
 
-        ////
-        /// <czp:classification>
-        //
-        //<czp:purpose>
-        //
-        //<czp:source>
-        //
-        //<czp:langstring xml:lang="x-none">LOMv1.0</czp:langstring>
-        //
-        //</czp:source>
-        //
-        //<czp:value>
-        //
-        //<czp:langstring xml:lang="x-none">discipline</czp:langstring>
-        //
-        //</czp:value>
-        //
-        //</czp:purpose>
-        //
-        //<czp:taxonpath>
-        //
-        //<czp:source>
-        //
-        //<czp:langstring xml:lang="x-none">http://purl.edustandaard.nl/begrippenkader</czp:langstring>
-        //
-        //</czp:source>
-        //
-        //<czp:taxon>
-        //
-        //<czp:id>fd8df586-d10e-4cd2-8ef7-c0c93f0bc5cd</czp:id>
-        //
-        //<czp:entry>
-        //
-        //<czp:langstring xml:lang="nl">Informatie en communicatietechnologie</czp:langstring>
-        //
-        //</czp:entry>
-        //
-        //</czp:taxon>
-        //
-        //</czp:taxonpath>
-        //
-        //<czp:taxonpath>
-        //
-        //<czp:source>
-        //
-        //<czp:langstring xml:lang="x-none">http://purl.edustandaard.nl/begrippenkader</czp:langstring>
-        //
-        //</czp:source>
-        //
-        //<czp:taxon>
-        //
-        //<czp:id>d6d6003d-1420-4fc4-9172-775aa7b3601f</czp:id>
-        //
-        //<czp:entry>
-        //
-        //<czp:langstring xml:lang="nl">ICT en media</czp:langstring>
-        //
-        //</czp:entry>
-        //
-        //</czp:taxon>
-        //
-        //</czp:taxonpath>
-        //
-        //</czp:classification>
+
+
+// <czp:classification>
+// <czp:purpose>
+// <czp:source>
+// <czp:langstring xml:lang="x-none">LOMv1.0</czp:langstring>
+// </czp:source>
+// <czp:value>
+// <czp:langstring xml:lang="x-none">educational level</czp:langstring>
+// </czp:value>
+// </czp:purpose>
+// <czp:taxonpath>
+// <czp:source>
+// <czp:langstring xml:lang="x-none">http://purl.edustandaard.nl/begrippenkader</czp:langstring>
+// </czp:source>
+// <czp:taxon>
+// <czp:id>a598e56e-d1a6-4907-9e2c-3da64e59f9ae</czp:id>
+// <czp:entry>
+// <czp:langstring xml:lang="nl">MBO, Niveau 1: Assistentenopleiding</czp:langstring>
+// </czp:entry>
+// </czp:taxon>
+// </czp:taxonpath>
+// </czp:classification>
+        
 
     }
 
