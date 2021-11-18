@@ -43,24 +43,22 @@ if ($realpath !== false && $realpath === $full_unsafe_file_path) {
 
     if ($has_perms) {
         if (is_user_an_editor($template_id, $_SESSION['toolkits_logon_id'])) {
-            if ($username == $_SESSION['toolkits_logon_username']) {
-                // they're logged in, and hopefully have access to the media contents.
-                $file = dirname(__FILE__) . '/USER-FILES/' . $unsafe_file_path;
-                if (!is_file($file)) {
-                    die("Fail: file not found on disk");
-                }
-                $filename = addslashes(basename($file));
-
-                header("Cache-Control: public");
-                header("Content-Length: " . filesize($file));
-                header("Content-Description: File Transfer");
-                header("Content-Type: application/force-download");
-                header("Content-Disposition: attachment; filename=\"$filename\"");
-                header("Content-Transfer-Encoding: binary");
-                flush();
-                readfile($file);
-                exit(0);
+            // they're logged in, and hopefully have access to the media contents.
+            $file = dirname(__FILE__) . '/USER-FILES/' . $unsafe_file_path;
+            if (!is_file($file)) {
+                die("Fail: file not found on disk");
             }
+            $filename = addslashes(basename($file));
+
+            header("Cache-Control: public");
+            header("Content-Length: " . filesize($file));
+            header("Content-Description: File Transfer");
+            header("Content-Type: application/force-download");
+            header("Content-Disposition: attachment; filename=\"$filename\"");
+            header("Content-Transfer-Encoding: binary");
+            flush();
+            readfile($file);
+            exit(0);
         }
     }
 }
