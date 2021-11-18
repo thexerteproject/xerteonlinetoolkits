@@ -23,38 +23,45 @@ require $xerte_toolkits_site->php_library_path . "user_library.php";
 require $xerte_toolkits_site->php_library_path . "template_library.php";
 require $xerte_toolkits_site->php_library_path . "template_status.php";
 
-// be slightly paranoid over the path the user is requesting to download.
+// be VERY paranoid over the path the user is requesting to download.
+// Even if the file starts with a correct pattern (old implementation) the user could travers path
+// like 542-tom-Notingham/../database.php or like 542-tom-Notingham/../../../../etc/passwd
 $unsafe_file_path = $_GET['file'];
-if(!preg_match('/^([0-9]+)-([a-z0-9]+)-/', $unsafe_file_path, $matches)) {
-    die("path must start with a number, and then a username - e.g. 20-foobar-");
-}
+$full_unsafe_file_path = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $unsafe_file_path;
+// This gets the canonical file name, so in case of 542-tom-Notingham/../../../../etc/passwd -> /etc/passwd
+$realpath = realpath($full_unsafe_file_path);
+// Check that is start with root_path/USER-FILES
+if ($realpath !== false && $realpath === $full_unsafe_file_path) {
+    if (!preg_match('/^([0-9]+)-([a-z0-9]+)-/', $unsafe_file_path, $matches)) {
+        die("path must start with a number, and then a username - e.g. 20-foobar-");
+    }
 
-$template_id = $matches[1];
-$username = $matches[2];
+    $template_id = $matches[1];
+    $username = $matches[2];
 
-$has_perms = is_user_admin() || has_rights_to_this_template($template_id,$_SESSION['toolkits_logon_id']);
+    $has_perms = is_user_admin() || has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']);
 
-if($has_perms) { 
-    if(is_user_an_editor($template_id,$_SESSION['toolkits_logon_id'])){
-        if($username == $_SESSION['toolkits_logon_username']) { 
-            // they're logged in, and hopefully have access to the media contents.
-            $file = dirname(__FILE__) . '/USER-FILES/' . $unsafe_file_path;
-            if(!is_file($file)) { 
-                die("Fail: file not found on disk"); 
+    if ($has_perms) {
+        if (is_user_an_editor($template_id, $_SESSION['toolkits_logon_id'])) {
+            if ($username == $_SESSION['toolkits_logon_username']) {
+                // they're logged in, and hopefully have access to the media contents.
+                $file = dirname(__FILE__) . '/USER-FILES/' . $unsafe_file_path;
+                if (!is_file($file)) {
+                    die("Fail: file not found on disk");
+                }
+                $filename = addslashes(basename($file));
+
+                header("Cache-Control: public");
+                header("Content-Length: " . filesize($file));
+                header("Content-Description: File Transfer");
+                header("Content-Type: application/force-download");
+                header("Content-Disposition: attachment; filename=\"$filename\"");
+                header("Content-Transfer-Encoding: binary");
+                flush();
+                readfile($file);
+                exit(0);
             }
-            $filename = addslashes(basename($file));
-
-            header("Cache-Control: public");
-            header("Content-Length: " . filesize($file));
-            header("Content-Description: File Transfer");
-            header("Content-Type: application/force-download"); 
-            header("Content-Disposition: attachment; filename=\"$filename\"");
-            header("Content-Transfer-Encoding: binary");
-            flush();
-            readfile($file);
-            exit(0);
         }
     }
 }
-
 echo "You do not appear to have permission to view this resource.";
