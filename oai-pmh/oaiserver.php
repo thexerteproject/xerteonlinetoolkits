@@ -322,17 +322,19 @@ class OAIServer
 
         $general_node = $this->response->addChild($schema_node, 'general');
         $language = $record['metadata']['general']['language'];
-        foreach ($record['metadata']['general'] as $name => $value) {
-            if ($name != 'language'){
-                $subnode = $this->response->addChild($general_node,$name);
-                $langstring_node = $this->response->addChild($subnode, 'langstring', $value);
-                $langstring_node->setAttribute("xml:lang",$language);
-            }
-            else {
-                $this->response->addChild($general_node, $name, $value);
-            }
+        $title = $record['metadata']['general']['title'];
+        $description = $record['metadata']['general']['description'];
+        $identifier = $record['identifier'];
+        $title_node = $this->response->addChild($general_node,'title');
+        $langstring_node = $this->response->addChild($title_node, 'langstring', $title);
+        $langstring_node->setAttribute("xml:lang",$language);
+        $catalogentry_node = $this->response->addChild($general_node,'catalogentry');
+        $this->response->addChild($catalogentry_node, 'catalog', "URI");
+        $entry_node = $this->response->addChild($catalogentry_node, 'entry');
+        $langstring_node = $this->response->addChild($entry_node, 'langstring', $identifier);
+        $langstring_node->setAttribute("xml:lang","x-none");
+        $this->response->addChild($general_node, 'language', $language);
 
-        }
         // GENERAL - Keywords
 
         foreach ($record['metadata']['keywords'] as $value) {
@@ -352,6 +354,62 @@ class OAIServer
         $keyword_node = $this->response->addChild($general_node,'keyword');
         $langstring_node = $this->response->addChild($keyword_node, 'langstring', ('Educational code: ' . $educational_code));
         $langstring_node->setAttribute("xml:lang",$language);
+
+        // GENERAL - Aggregation level
+
+        $aggregation_level_node = $this->response->addChild($general_node,'aggregationlevel');
+        $source_node = $this->response->addChild($aggregation_level_node, 'source');
+        $langstring_node = $this->response->addChild($source_node, 'langstring', "http://purl.edustandaard.nl/vdex_aggregationlevel_czp_20060628.xml");
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        $value_node = $this->response->addChild($aggregation_level_node, 'value');
+        $langstring_node = $this->response->addChild($value_node, 'langstring', "3");
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        // METAMETADATA - metadataschema
+        $metametadata_node = $this->response->addChild($schema_node,'metametadata');
+        $this->response->addChild($metametadata_node, 'metadatascheme', "LOMv1.0");
+        $this->response->addChild($metametadata_node, 'metadatascheme', "nl_lom_v1p0");
+
+        // TECHNICAL - location
+
+        $technical_node = $this->response->addChild($schema_node,'technical');
+        $location = $record['metadata']['misc']['location'];
+        $this->response->addChild($technical_node, 'location', $location);
+
+        // EDUCATIONAL
+
+        //RIGHTS - Cost
+        $rights_node = $this->response->addChild($schema_node,'rights');
+        $cost_node = $this->response->addChild($rights_node,'cost');
+        $source_node = $this->response->addChild($cost_node, 'source');
+        $langstring_node = $this->response->addChild($source_node, 'langstring', "http://purl.edustandaard.nl/vdex_cost_lomv1p0_20060628.xml");
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        $value_node = $this->response->addChild($cost_node, 'value');
+        $langstring_node = $this->response->addChild($value_node, 'langstring', "no");
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        //RIGHTS - Copy right and other restrictions
+        $copyright_node = $this->response->addChild($rights_node,'copyrightandotherrestrictions');
+        $source_node = $this->response->addChild($copyright_node, 'source');
+        $langstring_node = $this->response->addChild($source_node, 'langstring', "http://purl.edustandaard.nl/copyrightsandotherrestrictions_nllom_20131202");
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        $value_node = $this->response->addChild($cost_node, 'value');
+        //TODO: Change to actualy yes/no query
+        $copy_right_value = "no";
+        $langstring_node = $this->response->addChild($value_node, 'langstring', $copy_right_value);
+        $langstring_node->setAttribute("xml:lang","x-none");
+
+        //RIGHTS - Description
+        if($copy_right_value == "yes"){
+            $copyright_description = "x";
+            $description_node = $this->response->addChild($rights_node, 'description');
+            $langstring_node = $this->response->addChild($description_node, 'langstring', $copyright_description);
+            $langstring_node->setAttribute("xml:lang",$language);
+        }
+
 
         // LIFECYCLE - Author
         $lifecycle_node = $this->response->addChild($schema_node, 'lifecycle');

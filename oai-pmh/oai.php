@@ -232,10 +232,12 @@ function makeRecordFromTemplate($template, $metadata){
                 'title' => $template['template_name'],//'Testing records',
                 'language'=> explode("-",$metadata->language)[0],
                 'description'=> $metadata->description,
+
             ),
             'misc' => array(
                 'course' => $metadata->course,
                 'educational_code'=> $metadata->education,
+                'location' => ($xerte_toolkits_site->site_url . 'play.php?template_id=' . $template['template_id']),
             ),
             'keywords' => explode("\n",$metadata->keywords),
             'relation' => array(
