@@ -263,6 +263,10 @@ function makeRecordFromTemplate($template, $metadata){
                 'publisher' => $metadata->publisher,
                 'publishdate' => $template['date_modified'],
             ),
+            'rights' => array(
+                'rights' => $metadata->rights,
+                'download' => $metadata->download
+            ),
             'classification' => array(
                 'domain_id' => $metadata->domainId,
                 'domain' => $metadata->domain,
