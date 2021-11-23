@@ -8,7 +8,7 @@
 		<insertMerge label="Import pagina's" tooltip="Import pagina na laatste pagina"/>
     </insertDialog>
 	<btnSaveXerte label="Opslaan" tooltip="Project opslaan" description="Opslaan knop"/>
-	<btnPublishXot label="Publiceer" tooltip="Publiceer project" description="Publiceer knop"/>
+	<btnPublishXot label="Publiceer/opslaan" tooltip="Publiceer/opslaan project" description="Publiceer/opslaan knop"/>
 	<popupFileUpload title="Bestand kiezen" cancelLabel="Annuleren"/>
 	<browseImportFile title="Selecteer bestand om te importeren...">
 		<dialogFilter>Alle Bestanden|*.*|JPG|*.jpg|PNG|*.png|SWF Bestanden|*.swf|Geluidsbestanden|*.mp3|Video|*.flv</dialogFilter>
@@ -61,8 +61,8 @@
 	<viewmenu title="Beeld">
 		<menuPreview>Voorvertoning</menuPreview>
 	</viewmenu>
-	<publishmenu title="Publiceer">
-		<menuPublish>Publiceer</menuPublish>
+	<publishmenu title="Publiceer/opslaan">
+		<menuPublish>Publiceer/opslaan</menuPublish>
 		<menuPackage>Maak pakket</menuPackage>
 	</publishmenu>
 	<menuPackage title="Opslaan als SCORM 1.2 Pakket">
