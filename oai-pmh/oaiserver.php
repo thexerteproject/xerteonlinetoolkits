@@ -466,11 +466,12 @@ class OAIServer
         $value_node = $this->response->addChild($copyright_node, 'value');
         //TODO: Change to actualy yes/no query
         $download = $record['metadata']['rights']['download'];
-        if($download){
-            $copy_right_value = "yes";
+        $copyright_description = $record['metadata']['rights']['rights'];
+        if($copyright_description == ""){
+            $copy_right_value = "no";
         }
         else{
-            $copy_right_value = "no";
+            $copy_right_value = "yes";
         }
 
         $langstring_node = $this->response->addChild($value_node, 'langstring', $copy_right_value);
@@ -478,7 +479,6 @@ class OAIServer
 
         //RIGHTS - Description
         if($copy_right_value == "yes"){
-            $copyright_description = $record['metadata']['rights']['rights'];
             $description_node = $this->response->addChild($rights_node, 'description');
             $langstring_node = $this->response->addChild($description_node, 'langstring', $copyright_description);
             $langstring_node->setAttribute("xml:lang",$language);
