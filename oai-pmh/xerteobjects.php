@@ -93,6 +93,20 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
     $xerteMetaObj->language = (string)$xml['language'];
     $xerteMetaObj->publisher = $config['institute'];
 
+    // Check syndication
+    $q = "select * from {$xerte_toolkits_site->datatabase_table_prefix}templatesyndication where template_id=?";
+    $params = array($template_id);
+    $syndication = db_query_one($q, $params);
+    if ($syndication !== false && $syndication!= null)
+    {
+        $xerteMetaObj->rights = $syndication['license'];
+        $xerteMetaObj->download = ($syndication['export'] == 'true' ? true : false);
+    }
+    else
+    {
+        $xerteMetaObj->rights = "";
+        $xerteMetaObj->download = false;
+    }
     return $xerteMetaObj;
 }
 
