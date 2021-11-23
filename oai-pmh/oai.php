@@ -87,14 +87,14 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
             },
 
         'ListRecords' =>
-            function($metadataPrefix, $from = '', $until = '', $set = '', $count = false, $deliveredRecords = 0, $maxItems = 0){
+            function($metadataPrefix, $from, $until, $set = '', $count = false, $deliveredRecords = 0, $maxItems = 0){
                 if ($count) {
                     return 1;
                 }
                 if ($set != '') {
                     throw new OAIException('noSetHierarchy');
                 }
-                $records = call_user_func(getTemplates);
+                $records = call_user_func(getTemplates, $from, $until);
                 return $records;
             },
 
@@ -171,7 +171,7 @@ function getSingleTemplate($template_id) {
     return $response_record;
 }
 
-function getTemplates() {
+function getTemplates($from,$until) {
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
@@ -195,7 +195,22 @@ function getTemplates() {
           {$prefix}logindetails as ld 
           where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id and td.access_to_whom = 'Public'";
 
-    $templates = db_query($q);
+    if($from && $until){
+        $q = $q . "and td.date_modified between ? and ?";
+        $templates = db_query($q, array($from,$until));
+    }
+    else if($until){
+        $q = $q . "and td.date_modified <= ?";
+        $templates = db_query($q, array($until));
+    }
+    else if($from){
+        $q = $q . "and td.date_modified >= ?";
+        $templates = db_query($q, array($from));
+    }
+    else{
+        $templates = db_query($q);
+    }
+
     $response = new stdClass();
     $response->site_url = $xerte_toolkits_site->site_url;
     $response->site_name = $xerte_toolkits_site->site_name;
