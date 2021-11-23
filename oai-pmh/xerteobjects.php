@@ -72,17 +72,24 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
         $xerteMetaObj->author = (string)$xml['metaAuthor'];
     else
         $xerteMetaObj->author = $config['institute'];
-    //if (isset($xml['category'])) {
-        $xerteMetaObj->domain = "Afbouw, hout en onderhoud";// (string)$xml['category'];
-        $xerteMetaObj->domainId = "3ed67cca-37f6-4d7b-b1eb-872f6671caf7";
-        $xerteMetaObj->domainSource = "https://vdex.kennisnet.nl/kennisnetset/2015.01/mbo_opleidingsdomeinen_studierichtingen-knset.xml";
-    //}
-    //else
-    //    $xerteMetaObj->domain = 'unknown';
-    if (isset($xml['subcategory']))
-        $xerteMetaObj->subdomain = (string)$xml['subcategory'];
+    if (isset($xml['category'])) {
+        // query oai_categories
+        $q = "select * from {$xerte_toolkits_site->datatabase_table_prefix}oai_categories where label=?";
+        $params = array((string)$xml["category"]);
+        $cat = db_query_one($q, $params);
+        if ($cat !== false) {
+            $xerteMetaObj->domain = $cat["label"];
+            $xerteMetaObj->domainId = $cat["taxon"];
+            $xerteMetaObj->domainSource = $cat["source_url"];
+        }
+        else
+        {
+            $xerteMetaObj->domain = 'unknown';
+        }
+    }
     else
-        $xerteMetaObj->subdomain = 'unknown';
+        $xerteMetaObj->domain = 'unknown';
+
     $xerteMetaObj->language = (string)$xml['language'];
     $xerteMetaObj->publisher = $config['institute'];
 
