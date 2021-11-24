@@ -117,7 +117,7 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
                     throw new OAIException('idDoesNotExist');
                 }
 
-                $response_record = call_user_func(getSingleTemplate, $parsed_identifier);
+                $response_record = call_user_func(getSingleTemplate,$metadataPrefix, $parsed_identifier);
                 return $response_record;
             },
     )
