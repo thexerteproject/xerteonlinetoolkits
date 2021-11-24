@@ -63,7 +63,13 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
                         'lom_ims' => array('metaDataPrefix'=>'lom_ims',
                             'schema'=>'http://www.imsglobal.org/xsd/imsmd_v1p2p4.xsd',
                             'metadataNamespace'=> 'http://www.imsglobal.org/xsd/imsmd_v1p2',
-                        ));
+                        ),
+                        'oai_dc' => array('metadataPrefix'=>'oai_dc',
+                            'schema'=>'http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
+                            'metadataNamespace'=>'http://www.openarchives.org/OAI/2.0/oai_dc/',
+                            'record_prefix'=>'dc',
+                            'record_namespace' => 'http://purl.org/dc/elements/1.1/'));
+
             },
 
         'ListSets' =>
@@ -94,7 +100,7 @@ $oai2 = new OAIServer($uri, $args, $identifyResponse,
                 if ($set != '') {
                     throw new OAIException('noSetHierarchy');
                 }
-                $records = call_user_func(getTemplates, $from, $until);
+                $records = call_user_func(getTemplates, $metadataPrefix,$from, $until);
                 return $records;
             },
 
@@ -137,7 +143,7 @@ function getEarliestDatestamp() {
     return $result[0]["date_created"];
 }
 
-function getSingleTemplate($template_id) {
+function getSingleTemplate($metadataPrefix,$template_id) {
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
@@ -166,12 +172,12 @@ function getSingleTemplate($template_id) {
         throw new OAIException('idDoesNotExist');
     }
     $tempMetaData = call_user_func(get_meta_data,$response_template[0]['template_id'],$response_template[0]["owner_username"],$response_template[0]["template_type"]);
-    $response_record = call_user_func(makeRecordFromTemplate,$response_template[0], $tempMetaData);
+    $response_record = call_user_func(makeRecordFromTemplate,$metadataPrefix,$response_template[0], $tempMetaData);
 
     return $response_record;
 }
 
-function getTemplates($from,$until) {
+function getTemplates($metadataPrefix,$from,$until) {
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
@@ -223,58 +229,96 @@ function getTemplates($from,$until) {
     {
         $currentTemplate = $templates[$i];
         $tempMetaData = call_user_func(get_meta_data,$currentTemplate['template_id'],$currentTemplate["owner_username"],$currentTemplate["template_type"]);
-        $currentRecord = call_user_func(makeRecordFromTemplate,$currentTemplate, $tempMetaData);
+        $currentRecord = call_user_func(makeRecordFromTemplate,$metadataPrefix,$currentTemplate, $tempMetaData);
         $tmpRecords[] = $currentRecord;
     }
 
     return $tmpRecords;
 };
 
-function makeRecordFromTemplate($template, $metadata){
+function makeRecordFromTemplate($metadataPrefix,$template, $metadata){
     global $xerte_toolkits_site;
-    $record = array('identifier' => ($xerte_toolkits_site->site_url . $template['template_id']),
-        'datestamp' => date($template['date_modified']),
-        //'set' => 'class:activity',
-        'metadata' => array(
-            'container_name' => 'lom',
-            'container_attributes' => array(
-                'xmlns' => "http://www.imsglobal.org/xsd/imsmd_v1p2",
-                'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
-                'xsi:schemaLocation' =>
-                    'http://www.imsglobal.org/xsd/imsmd_v1p2 http://www.imsglobal.org/xsd/imsmd_v1p2p4.xsd'
-            ),
-            'general' => array(
-                'title' => $template['template_name'],//'Testing records',
-                'language'=> explode("-",$metadata->language)[0],
-                'description'=> $metadata->description,
 
-            ),
-            'misc' => array(
-                'course' => $metadata->course,
-                'educational_code'=> $metadata->education,
-                'location' => ($xerte_toolkits_site->site_url . 'play.php?template_id=' . $template['template_id']),
-            ),
-            'keywords' => explode("\n",$metadata->keywords),
-            'relation' => array(
-                'thumbnail' => $metadata->thumbnail
-            ),
-            'lifecycle' => array(
-                'author' => $metadata->author,
-                'publisher' => $metadata->publisher,
-                'publishdate' => $template['date_modified'],
-            ),
-            'rights' => array(
-                'rights' => $metadata->rights,
-                'download' => $metadata->download
-            ),
-            'classification' => array(
-                'domain_id' => $metadata->domainId,
-                'domain' => $metadata->domain,
-                'domain_source' => $metadata->domainSource,
-                'level' => $metadata->level,
-                'levelId' => $metadata->levelId,
-            ),
-        ));
+    if($metadataPrefix == "lom_ims") {
+
+
+        $record = array('identifier' => ($xerte_toolkits_site->site_url . $template['template_id']),
+            'datestamp' => date($template['date_modified']),
+            //'set' => 'class:activity',
+            'metadata' => array(
+                'container_name' => 'lom',
+                'container_attributes' => array(
+                    'xmlns' => "http://www.imsglobal.org/xsd/imsmd_v1p2",
+                    'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
+                    'xsi:schemaLocation' =>
+                        'http://www.imsglobal.org/xsd/imsmd_v1p2 http://www.imsglobal.org/xsd/imsmd_v1p2p4.xsd'
+                ),
+                'general' => array(
+                    'title' => $template['template_name'],//'Testing records',
+                    'language' => explode("-", $metadata->language)[0],
+                    'description' => $metadata->description,
+
+                ),
+                'misc' => array(
+                    'course' => $metadata->course,
+                    'educational_code' => $metadata->education,
+                    'location' => ($xerte_toolkits_site->site_url . 'play.php?template_id=' . $template['template_id']),
+                ),
+                'keywords' => explode("\n", $metadata->keywords),
+                'relation' => array(
+                    'thumbnail' => $metadata->thumbnail
+                ),
+                'lifecycle' => array(
+                    'author' => $metadata->author,
+                    'publisher' => $metadata->publisher,
+                    'publishdate' => $template['date_modified'],
+                ),
+                'rights' => array(
+                    'rights' => $metadata->rights,
+                    'download' => $metadata->download
+                ),
+                'classification' => array(
+                    'domain_id' => $metadata->domainId,
+                    'domain' => $metadata->domain,
+                    'domain_source' => $metadata->domainSource,
+                    'level' => $metadata->level,
+                    'levelId' => $metadata->levelId,
+                ),
+            ));
+    }
+    else if($metadataPrefix == "oai_dc"){
+        $record = array('identifier' => ($xerte_toolkits_site->site_url . $template['template_id']),
+            'datestamp' => date($template['date_modified']),
+            //'set' => 'class:activity',
+            'metadata' => array(
+                'container_name' => 'oai_dc:dc',
+                'container_attributes' => array(
+                    'xmlns:oai_dc' => "http://www.openarchives.org/OAI/2.0/oai_dc/",
+                    'xmlns:dc' => "http://purl.org/dc/elements/1.1/",
+                    'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
+                    'xsi:schemaLocation' =>
+                        'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd'
+                ),
+                'fields' => array(
+                    'dc:title' => $metadata->name,
+                    'dc:creator' => $metadata->author,
+                    'dc:subject' => $metadata->course,
+                    'dc:description' =>$metadata->description,
+                    'dc:publisher' => $metadata->publisher,
+                    //'dc:contributor' => '',
+                    'dc:date' => $template['date_modified'],
+                    //'dc:type' => '',
+                    //'dc:format' => '',
+                    'dc:identifier' => ($xerte_toolkits_site->site_url . $template['template_id']),
+                    'dc:source' => ($xerte_toolkits_site->site_url . 'play.php?template_id=' . $template['template_id']),
+                    'dc:language' => explode("-", $metadata->language)[0],
+                    //'dc:relation' => '',
+                    //'dc:coverage' => '',
+                    'dc:rights' => $metadata->rights,
+                )
+
+            ));
+    }
     return $record;
 };
 
