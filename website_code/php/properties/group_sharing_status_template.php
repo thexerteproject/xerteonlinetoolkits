@@ -57,9 +57,9 @@ $sql = "SELECT * FROM " .
 
 $user_groups = db_query($sql, array($template_id));
 
-$sql = "SELECT user_groups.group_id, group_name, role FROM " .
-    "{$prefix}user_groups, {$prefix}template_group_rights WHERE " .
-    "{$prefix}user_groups.group_id = {$prefix}template_group_rights.group_id and template_id= ? ORDER BY group_name";
+$sql = "SELECT ug.group_id, ug.group_name, tgr.role FROM " .
+    "{$prefix}user_groups ug, {$prefix}template_group_rights tgr WHERE " .
+    "ug.group_id = tgr.group_id and tgr.template_id= ? ORDER BY ug.group_name";
 
 $query_sharing_rows = db_query($sql, array($template_id));
 
