@@ -17,7 +17,12 @@
 		<tip label="Description" type="TextInput" />
 	</image>
 	
-	<magnifier label="Magnifier"  type="checkBox" defaultValue="false" optional="true" tooltip="A magnifier which appears as the mouse is moved across the image"/>
+	<magnifierGroup type="group" label="Image Magnification" optional="true">
+		<magnifier label="Magnifier"  type="checkBox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="A magnifier which appears as the mouse is moved across the image"/>
+		<magnifierSize label="Size" type="NumericStepper" min="50" max="500" step="20" defaultValue="100" condition="magnifier!='false'" optional="true" tooltip="The size of the magnifier in pixels"/>
+		<magnifierForce label="Force Magnification" type="checkbox" defaultValue="false" condition="magnifier!='false'" optional="true" tooltip="By default (when image size is auto), magnification will only work when the image is shown at &lt;80% of the original image size. Forcing magnification will make the magnifier always work, even when the magnified image is larger than the original and may appear fuzzy"/>
+	</magnifierGroup>
+	
     <sound label="Sound" type="media" optional="true" tooltip="Add an audio player below the image"/>
 	
 	<linkInfo type="group" label="Link" optional="true">

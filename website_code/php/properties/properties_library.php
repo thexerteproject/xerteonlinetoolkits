@@ -815,8 +815,10 @@ function sharing_info($template_id)
 
 function nr_user_groups()
 {
+    global $xerte_toolkits_site;
+
     $count = 0;
-    $sql = "select count(*) as count from user_groups";
+    $sql = "select count(*) as count from {$xerte_toolkits_site->database_table_prefix}user_groups";
     $res = db_query($sql);
 
     if ($res !== false && $res != null)

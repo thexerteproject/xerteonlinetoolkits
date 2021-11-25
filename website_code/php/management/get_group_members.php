@@ -32,18 +32,21 @@ require("../url_library.php");
 require_once("management_library.php");
 
 function get_group_members($group_id){
+    global $xerte_toolkits_site;
+
+    $prefix = $xerte_toolkits_site->database_table_prefix;
 
     if (is_null($group_id) or $group_id=="") {
         return false;
     }
     $database_id = database_connect("member list connected","member list failed");
 
-    $query="select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails, user_group_members WHERE logindetails.login_id=user_group_members.login_id AND user_group_members.group_id=? ORDER BY logindetails.surname";
+    $query="select * from {$prefix}logindetails ld, {$prefix}user_group_members ugm WHERE ld.login_id=ugm.login_id AND ugm.group_id=? ORDER BY ld.surname";
 
     $query_response = db_query($query, array($group_id));
 
     //get selected group name:
-    $group = db_query_one("SELECT * FROM " . $xerte_toolkits_site->database_table_prefix . "user_groups WHERE group_id=?", array($group_id));
+    $group = db_query_one("SELECT * FROM {$prefix}user_groups WHERE group_id=?", array($group_id));
     echo "<h2>" . USER_GROUPS_MANAGEMENT_GROUP_MEMBERS . $group['group_name'] . ".</h2>";
 
     $membercount = count($query_response);
