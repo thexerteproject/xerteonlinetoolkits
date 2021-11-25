@@ -3234,7 +3234,7 @@ var EDITOR = (function ($, parent) {
 
     };
 	
-	draw360Hotspot = function(html, url, hsattrs, id, hspgattrs) {
+	draw360Hotspot = function(html, url, hsattrs, id, hspgattrs, hspattrs) {
         // Add Hotspot on the wizard page as preview on the thumbnail image
 		
         // find image, set scale and wrap with overlayWrapper
@@ -3262,7 +3262,7 @@ var EDITOR = (function ($, parent) {
         });
 
         // open editor when thumbnail is clicked
-		canvas.on('mouse:down', function() { edit360Hotspot(url, hsattrs, id, hspgattrs) });
+		canvas.on('mouse:down', function() { edit360Hotspot(url, hsattrs, id, hspgattrs, hspattrs) });
 		
         // draw target
 		var xy = {};
@@ -3298,7 +3298,7 @@ var EDITOR = (function ($, parent) {
         }
     };
 
-    edit360Hotspot = function (url, hsattrs, id, hspgattrs) {
+    edit360Hotspot = function (url, hsattrs, id, hspgattrs, hspattrs) {
 		// set up contents of lightbox (buttons, panorama & instructions)
 	    var $editImg = $("<div></div>")
 			.attr('id', 'outer_img_' + id)
@@ -3388,8 +3388,20 @@ var EDITOR = (function ($, parent) {
 					.height(dimensions[1]);
 				
 				$('#outer_img_' + id).width(dimensions[0]);
-				
-				// set up panorama
+                //check if cubemap
+                if (hspattrs.cubemapcb=="true") {
+                    // set up cubemap panorama
+                    panorama = pannellum.viewer('panorama_' + id, {
+                        'type': 'cubemap',
+                        'cubeMap': [makeAbsolute(hspattrs.front),makeAbsolute(hspattrs.right),makeAbsolute(hspattrs.back),makeAbsolute(hspattrs.left),makeAbsolute(hspattrs.top),makeAbsolute(hspattrs.bottom)],
+                        'autoLoad': true,
+                        'showFullscreenCtrl': false,
+                        'compass': false,
+                        'pitch': Number(hsattrs.p), // turn to look at existing hotspot (if there is one)
+                        'yaw': Number(hsattrs.y)
+                    })
+                } else{
+				// set up single image panorama
 				panorama = pannellum.viewer('panorama_' + id, {
 					'type': 'equirectangular',
 					'panorama': url,
@@ -3398,12 +3410,12 @@ var EDITOR = (function ($, parent) {
 					'compass': false,
 					'pitch': Number(hsattrs.p), // turn to look at existing hotspot (if there is one)
 					'yaw': Number(hsattrs.y)
-				});
+				})};
 				
 				// add hotspot (if there is one!)
 				if (hsattrs.p != '' && hsattrs.y != '') {
 					panorama.on('load', function(event) {
-						create360Hotspot(Number(hsattrs.p), Number(hsattrs.y));
+						create360Hotspot(Number(hsattrs.p), Number(hsattrs.y),hspattrs);
 					});
 				}
 				
@@ -3491,7 +3503,7 @@ var EDITOR = (function ($, parent) {
 		});
     };
 	
-	edit360View = function (url, hsattrs, id, name) {
+	edit360View = function (url, hsattrs, id, name, hspattrs) {
 		// set up contents of lightbox (buttons, panorama & instructions)
 	    var $editImg = $("<div></div>")
 			.attr('id', 'outer_img_' + id)
@@ -3548,8 +3560,20 @@ var EDITOR = (function ($, parent) {
 					initPitch = $.isNumeric(info[0]) ? Number(info[0]) : initPitch;
 					initYaw = $.isNumeric(info[1]) ? Number(info[1]) : initYaw;
 				}
-				
-				// set up panorama
+
+                if (hspattrs.cubemapcb=="true") {
+                    // set up cubemap panorama
+                    panorama = pannellum.viewer('panorama_' + id, {
+                        'type': 'cubemap',
+                        'cubeMap': [makeAbsolute(hspattrs.front),makeAbsolute(hspattrs.right),makeAbsolute(hspattrs.back),makeAbsolute(hspattrs.left),makeAbsolute(hspattrs.top),makeAbsolute(hspattrs.bottom)],
+                        'autoLoad': true,
+                        'showFullscreenCtrl': false,
+                        'compass': false,
+                        'pitch': Number(hsattrs.p), // turn to look at existing hotspot (if there is one)
+                        'yaw': Number(hsattrs.y)
+                    })
+                } else{
+				// set up single image panorama
 				panorama = pannellum.viewer('panorama_' + id, {
 					'type': 'equirectangular',
 					'panorama': url,
@@ -3558,7 +3582,7 @@ var EDITOR = (function ($, parent) {
 					'showFullscreenCtrl': false,
 					'pitch': initPitch,
 					'yaw': initYaw
-				});
+				})};
 				
 				// focus point on mouse up (attempt to disregard dragging by looking at position of mouse down & making sure it was quite close)
 				var downPos = [];
@@ -4299,13 +4323,18 @@ var EDITOR = (function ($, parent) {
                 var hspattrs = lo_data[hsparent].attributes;
 				var hspage = parent.tree.getParent(hsparent);
 				var hspgattrs = lo_data[hspage].attributes;
-				
+
 				// Create the container
 				html = $('<div>').attr('id', id);
 
 				var url = hspattrs.file;
-				// Replace FileLocation + ' with full url
+				// check if cubemap and if so use front for thumbnail
+                if (hspattrs.cubemapcb=="true") {
+                    url = hspattrs.front;
+                }
+                // Replace FileLocation + ' with full url
 				url = makeAbsolute(url);
+
 				// Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
 				if (url.substring(0,4) == "http")
 				{
@@ -4318,9 +4347,9 @@ var EDITOR = (function ($, parent) {
 						.attr("src", url)
 						.load(function(){
 							$(this).css({width: '100%'});
-							draw360Hotspot(html, url, hsattrs, id, hspgattrs);
+							draw360Hotspot(html, url, hsattrs, id, hspgattrs, hspattrs);
 						}).click(function(){
-							edit360Hotspot(url, hsattrs, id, hspgattrs);
+							edit360Hotspot(url, hsattrs, id, hspgattrs, hspattrs);
 						});
 				}
 				else
@@ -4375,7 +4404,7 @@ var EDITOR = (function ($, parent) {
 						.attr("data-key", key)
 						.appendTo(html)
 						.click(function(){
-							edit360View(url, hsattrs, id, name);
+							edit360View(url, hsattrs, id, name, hspattrs);
 						});
 				}
 				else
