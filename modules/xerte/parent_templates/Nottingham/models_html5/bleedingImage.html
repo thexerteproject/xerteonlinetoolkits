@@ -213,11 +213,29 @@
 		}
 		
 		this.setUpMagnifier = function() {
-			if (x_currentPageXML.getAttribute("magnifier") == "true") {
+			if (x_currentPageXML.getAttribute("magnifier") == "true" && x_browserInfo.touchScreen != true) {
 				$(".magnifier").remove();
 				$(".magnifiedImg").remove();
-				$("#pageImg").imageLens();
+				
+				var $pageImg = $("#pageImg"),
+					imageLensInfo = {};
+				
+				if (x_currentPageXML.getAttribute('magnifierSize') != undefined) {
+					imageLensInfo.lensSize = x_currentPageXML.getAttribute('magnifierSize');
+				}
+				
+				// force magnification to always work even if goes larger than original
+				if (x_currentPageXML.getAttribute('magnifierForce') == 'true') {
+					imageLensInfo.force = 1.3;
+				}
+					
+				// if force magnification isn't on, don't magnify if not scaled to less that 80% of original image
+				if (x_currentPageXML.getAttribute('magnifierForce') == 'true' || ($pageImg.data("origSize") != undefined && $pageImg.width() / $pageImg.data("origSize")[0] < 0.8)) {
+					$pageImg.imageLens(imageLensInfo);
+					
+				}
 			}
+			
 		}
 	}
 
