@@ -557,6 +557,39 @@ class OAIServer
             $langstring_node = $this->response->addChild($entry_node, 'langstring', $level);
             $langstring_node->setAttribute("xml:lang", $language);
 
+            // CLASSIFICATION accesrights
+            $classification_node = $this->response->addChild($schema_node, 'classification');
+            $purpose_node = $this->response->addChild($classification_node, 'purpose');
+            $source_node = $this->response->addChild($purpose_node, 'source');
+            $langstring_node = $this->response->addChild($source_node, 'langstring', "http://purl.edustandaard.nl/classification_purpose_nllom_20180530");
+            $langstring_node->setAttribute("xml:lang", "x-none");
+            $value_node = $this->response->addChild($purpose_node, 'value');
+            $langstring_node = $this->response->addChild($value_node, 'langstring', "access rights");
+            $langstring_node->setAttribute("xml:lang", "x-none");
+
+            $taxonpath_node = $this->response->addChild($classification_node, 'taxonpath');
+            $source_node = $this->response->addChild($taxonpath_node, 'source');
+            $rights_source = "http://purl.edustandaard.nl/classification_accessrights_nllom_20180530";
+            $langstring_node = $this->response->addChild($source_node, 'langstring', $rights_source);
+            $langstring_node->setAttribute("xml:lang", "x-none");
+            $acces_id = "OpenAccess";
+
+            $taxon_node = $this->response->addChild($taxonpath_node, 'taxon');
+            $this->response->addChild($taxon_node, 'id', $acces_id);
+            $entry_node = $this->response->addChild($taxon_node, 'entry');
+            if($language == 'nl')
+                {
+                    $entry_value = "Vrij beschikbaar op het publieke Internet.";
+                }
+            else
+            {
+                $entry_value = "Freely available on the public Internet.";
+            }
+
+
+            $langstring_node = $this->response->addChild($entry_node, 'langstring', $entry_value);
+            $langstring_node->setAttribute("xml:lang", $language);
+
         }
 
 
