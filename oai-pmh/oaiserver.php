@@ -523,7 +523,7 @@ class OAIServer
             $taxonpath_node = $this->response->addChild($classification_node, 'taxonpath');
             $source_node = $this->response->addChild($taxonpath_node, 'source');
             $domain_source = $record['metadata']['classification']['domain_source'];
-            $langstring_node = $this->response->addChild($source_node, 'langstring', $domain_source);
+            $langstring_node = $this->response->addChild($source_node, 'langstring', "http://purl.edustandaard.nl/begrippenkader");
             $langstring_node->setAttribute("xml:lang", "x-none");
             $domain_id = $record['metadata']['classification']['domain_id'];
             $taxon_node = $this->response->addChild($taxonpath_node, 'taxon');
