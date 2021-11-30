@@ -1,7 +1,7 @@
-svg{
+/*svg{
   height: 300px;
   width: 700px;
-}
+}*/
 canvas {
   height: 400px;
   width : 100%;
@@ -10,10 +10,6 @@ canvas {
   margin-top: 5px;
   margin-bottom: 5px;
   padding-bottom: 20px;
-}
-
-.graph-container {
-  display:flex;
 }
 
 .legend {
@@ -105,8 +101,18 @@ li.select-interaction.selected {
 .graph-container {
   width: 45%;
   float: right;
+  display: block;
 }
 
 .graph-container fieldset.noStyle {
   width: 100%;
+}
+
+.graph {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  /*padding-bottom: 100%; /* aspect ratio */
+  vertical-align: top;
+  overflow: hidden;
 }

@@ -470,7 +470,8 @@
     interactionIndex,
     group,
     fullWidth,
-    handler
+    handler,
+    secondHandler
   ) {
     var url;
     var q = {};
@@ -558,7 +559,6 @@
         );
         */
     XTGetStatements(q, false, function (data, search) {
-      debugger;
       if (data.length > 0) {
         if (search != undefined && typeof search["activity"] != "undefined") {
           url = search["activity"];
@@ -749,16 +749,24 @@
                   statementsGroup.push(statements[i]);
                 }
               }
-              groupingStatements = groupingStatements.concat(
-                handler(statementsGroup)
-              );
+              if (x_currentPageXML.getAttribute("displayMode") !== 'Listed') {
+                groupingStatements = groupingStatements.concat(
+                  handler(statementsGroup)
+                );
+              } else {
+                groupingStatements = groupingStatements.concat(
+                  adaptiveContent.drawGroupedScores(statementsGroup)
+                );
+              }
+            }
+            if (x_currentPageXML.getAttribute("displayMode") === 'Listed') {
+              handler(groupingStatements, interaction, url, type, interactionIndex, fullWidth)
             }
             let uniqueStatements = [];
             let visitedGroups = [];
             if (adaptiveContent.dashboardMode == "true") {
               uniqueStatements = groupingStatements;
             } else {
-              debugger;
               for (let groupingStatement in groupingStatements) {
                 let group =
                   groupingStatements[groupingStatement].context.extensions[
@@ -807,7 +815,14 @@
     var dashboardMode = "false";
 
     this.loadJS = function () {
-      if (numLoaded < 4) {
+      function addScript(url) {
+       var script = document.createElement('script');
+       script.type = 'application/javascript';
+       script.src = url;
+       document.head.appendChild(script);
+     }
+     addScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
+      if (numLoaded < 5) {
         var fileToLoad;
         if (numLoaded == 0) {
           fileToLoad = x_templateLocation + "common_html5/js/chart.min.js";
@@ -823,6 +838,8 @@
             x_templateLocation + "common_html5/js/moment-with-locales.min.js";
         } else if (numLoaded == 3) {
           fileToLoad = x_templateLocation + "common_html5/js/apexcharts.min.js";
+        } else if (numLoaded == 4) {
+          fileToLoad = x_templateLocation + "common_html5/js/jsPDF/jspdf.min.js";
         }
 
         $.getScript(fileToLoad)
@@ -1003,22 +1020,25 @@
       } else {
         summaryText = `<h1><p>${summaryText}</p></h1>`;
       }
-      //if (summaryText != "" || adviceHeader != "" || interactionType == 'grouping') {
-      div.html(
-        `<h2><p>${name}</p></h2>` +
-          `<div class='introduction'>${introductionText}</div>` +
-          '<div class="summary-container">' +
-          '<div class="summary">' +
+      let summaryDiv = ''
+      if (summaryText !== '' || specificationDiv !== '' || adviceHeader !== '') {
+        let summaryDiv = '<div class="summary">' +
           summaryText +
           '<div class="score">' +
           '<div class="stats-div"><ul class="stats"></ul></div>' +
-          "</div>" +
           specificationDiv +
           '<div class="advice">' +
           adviceHeader +
           '<div class="message"></div>' +
           "</div>" +
-          "</div>" +
+          "</div>";
+      }
+      //if (summaryText != "" || adviceHeader != "" || interactionType == 'grouping') {
+      div.html(
+        `<h2><p>${name}</p></h2>` +
+          `<div class='introduction'>${introductionText}</div>` +
+          '<div class="summary-container">' +
+          summaryDiv +
           '<div class="graph-container"></div>' +
           "</div>"
       );
@@ -1077,7 +1097,6 @@
           );
         }
       } else if (interactionType == "answer") {
-          debugger;
         var verb = "http://adlnet.gov/expapi/verbs/answered";
         if (interaction.data != null) {
           var url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
@@ -1220,7 +1239,7 @@
         var verb = "http://adlnet.gov/expapi/verbs/answered";
         if (interaction.data != null) {
           var url = getUrl(xerteurl, xertelo, xertelabel, opinionClass);
-          this.drawGroupedScores(
+          this.drawScore(
             interaction.data,
             interaction,
             url,
@@ -1281,7 +1300,9 @@
         IncorrectText = "Incorrect";
       }
       var xertelo = interaction.getAttribute("xertelo");
-      var statements = filterOwnStatements(data);
+        debugger;
+      //var statements = filterOwnStatements(data, xertelo);
+      var statements = data;
       xerteurl = interaction.getAttribute("xerteurl");
       xertelabel = interaction.getAttribute("label");
       name = interaction.getAttribute("name");
@@ -1514,6 +1535,12 @@
               escapeUrl(url, type, interactionIndex) +
               "-graph'></svg></div>"
           );
+          document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("width", '700');
+          document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("height", '300');
+          //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("preserveAspectRatio", "xMinYMin meet");
+          document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("viewBox", "0 0 700 300");
+          //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute('viewBox','0 0 '+Math.min(width,height) +' '+Math.min(width,height) )
+        //.attr('preserveAspectRatio','xMinYMin')
         }
         if (showExplanation == "true" && Explanation != "") {
           div.append(
@@ -1874,6 +1901,7 @@
         } else if (
           interaction.getAttribute("graphType") == "polar_area_per_category"
         ) {
+            debugger;
           let backgroundColors = [
             "#FF6384",
             "#4BC0C0",
@@ -2835,7 +2863,6 @@
                 interactionIndex,
                 fullWidth
               ) {
-                debugger;
                 if (interaction !== undefined) {
                   interactions[interactionIndex].data = data;
                   interactions[interactionIndex].score = Number.MAX_VALUE;
@@ -2981,7 +3008,6 @@
           name = interaction.getAttribute("name");
           div = $("<div></div>");
           var scoretext = "";
-            debugger;
           if (interaction.score != Number.MAX_VALUE) {
             scoretext =
               "<div class='score'><p>" +
