@@ -222,6 +222,9 @@
                         });
                     }
                 }
+                else if (toResize) { // no media loaded
+                    $("#panelHolder").html("No media was loaded.");
+                }
                 
                 $panelHolder.find(".panel .fullH").each(function() {
                     interactiveVideo.resizeContent($(this));
