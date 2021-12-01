@@ -188,7 +188,7 @@
                 });
     
                 // 1) Resize trackbar holder. 2) Move slider. 3) Move all markers
-                if (toResize == true){
+                if (toResize == true && this.popcornInstance != null){
                     if ($(".mainMedia") != undefined){
                         $('#trackBarHolder').css("width", $(".mainMedia").width());
                         UIWidth = 2 * parseFloat(($('.trackBarButton').outerWidth(true) + $('.trackBarTime').width() + 2 * parseFloat($('#trackBarRail').css("margin-left"))));
@@ -333,8 +333,10 @@
                 $(".youTube, .vimeo").each(function() {
                     $(this).data("popcornInstance").pause();
                 });
-                this.removeEvents();
-                this.popcornInstance.destroy();
+                if (this.popcornInstance != null) {
+                    this.removeEvents();
+                    this.popcornInstance.destroy();
+                }
                 if (vidFullWatched == undefined)
                 {
                     vidFullWatched = {
@@ -1019,11 +1021,13 @@
             };
     
             this.removeEvents = function() {
-                this.popcornInstance.off("timeupdate");
-                this.popcornInstance.off("play");
-                this.popcornInstance.off("pause");
-                this.popcornInstance.off("seeked");
-                this.popcornInstance.off("ended");
+                if (this.popcornInstance != null) {
+                    this.popcornInstance.off("timeupdate");
+                    this.popcornInstance.off("play");
+                    this.popcornInstance.off("pause");
+                    this.popcornInstance.off("seeked");
+                    this.popcornInstance.off("ended");
+                }
             };
     
             this.getBlock = function(time) {
