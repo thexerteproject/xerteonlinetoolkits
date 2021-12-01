@@ -6,7 +6,15 @@ $xmlfile = $argv[1];
 
 $source_url = $xmlfile;
 $xml = simplexml_load_file($xmlfile);
-$nodes = $xml->xpath('//term');
+
+$ns = $xml->getNamespaces();
+if (isset($ns['']))
+{
+    // Register default name space and call it vdex
+    $xml->registerXPathNamespace('vdex', $ns['']);
+}
+
+$nodes = $xml->xpath('//vdex:term');
 // Pls help haha
 
 
