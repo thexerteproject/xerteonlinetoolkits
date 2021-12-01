@@ -1,0 +1,315 @@
+<vdex xmlns="http://www.imsglobal.org/xsd/imsvdex_v1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:zthes="http://zthes.z3950.org/" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsvdex_v1p0 http://www.imsglobal.org/xsd/imsvdex_v1p0.xsd http://purl.org/dc/elements/1.1/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dc.xsd http://zthes.z3950.org/ http://xsd.kennisnet.nl/zthes/zthes-1.2.xsd" language="en" profileType="flatTokenTerms">
+    <vocabName>
+        <langstring language="nl">Auteursrechten en andere beperkingen - NL-LOM</langstring>
+        <langstring language="en">Copyrights and other restrictions - NL-LOM</langstring>
+        <langstring language="x-none">copyrightsandotherrestrictions_nllom_20131202</langstring>
+    </vocabName>
+    <vocabIdentifier>copyrightsandotherrestrictions_nllom_20131202</vocabIdentifier>
+    <!--  Creative Commons 4.0  -->
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>cc-by-40</termIdentifier>
+        <caption>
+            <langstring language="nl">CC Naamsvermelding 4.0 Internationale licentie</langstring>
+            <langstring language="en">CC Attribution 4.0 International license</langstring>
+        </caption>
+        <description>
+            <langstring language="nl">De Internationale Creative Commons 4.0 licentie waarbij de gebruiker het werk mag kopiëren, verspreiden en doorgeven en afgeleide werken mag maken onder de voorwaarde: Naamsvermelding, zie http://creativecommons.org/licenses/by/4.0/.</langstring>
+            <langstring language="en">The International Creative Commons 4.0 copyright license where the use is free to copy, distribute and transmit the work and to adapt the work under the condition: Attribution, see http://creativecommons.org/licenses/by/4.0/.</langstring>
+        </description>
+        <metadata>
+            <dc:identifier>http://creativecommons.org/licenses/by/4.0/</dc:identifier>
+        </metadata>
+    </term>
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>cc-by-nd-40</termIdentifier>
+        <caption>
+            <langstring language="nl">CC Naamsvermelding-GeenAfgeleideWerken 4.0 Internationale licentie</langstring>
+            <langstring language="en">CC Attribution-NoDerivativeWorks 4.0 International license</langstring>
+        </caption>
+        <description>
+            <langstring language="nl">De Internationale Creative Commons 4.0 licentie waarbij de gebruiker het werk mag kopiëren, verspreiden en doorgeven onder de voorwaarden: Naamsvermelding en Geen Afgeleide Werken, zie http://creativecommons.org/licenses/by-nd/4.0/.</langstring>
+            <langstring language="en">The International Creative Commons 4.0 copyright license where the use is free to copy, distribute and transmit the work under the conditions: Attribution and No Derivative Works, see http://creativecommons.org/licenses/by-nd/4.0/.</langstring>
+        </description>
+        <metadata>
+            <dc:identifier>http://creativecommons.org/licenses/by-nd/4.0/</dc:identifier>
+        </metadata>
+    </term>
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>cc-by-nc-40</termIdentifier>
+        <caption>
+            <langstring language="nl">CC Naamsvermelding-NietCommercieel 4.0 Internationale licentie</langstring>
+            <langstring language="en">CC Attribution-NonCommercial 4.0 International license</langstring>
+        </caption>
+        <description>
+            <langstring language="nl">De Internationale Creative Commons 4.0 licentie waarbij de gebruiker het werk mag kopiëren, verspreiden en doorgeven en afgeleide werken mag maken onder de voorwaarden: Naamsvermelding en Niet-commercieel, zie http://creativecommons.org/licenses/by-nc/4.0/.</langstring>
+            <langstring language="en">The International Creative Commons 4.0 copyright license where the use is free to copy, distribute and transmit the work and to adapt the work under the conditions: Attribution and Noncommercial, see http://creativecommons.org/licenses/by-nc/4.0/.</langstring>
+        </description>
+        <metadata>
+            <dc:identifier>http://creativecommons.org/licenses/by-nc/4.0/</dc:identifier>
+        </metadata>
+    </term>
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>cc-by-nc-nd-40</termIdentifier>
+        <caption>
+            <langstring language="nl">CC Naamsvermelding-NietCommercieel-GeenAfgeleideWerken 4.0 Internationale licentie</langstring>
+            <langstring language="en">CC Attribution-NonCommercial-NoDerivativeWorks 4.0 International license</langstring>
+        </caption>
+        <description>
+            <langstring language="nl">De Internationale Creative Commons 4.0 licentie waarbij de gebruiker het werk mag kopiëren, verspreiden en doorgeven onder de voorwaarden: Naamsvermelding, Niet-commercieel en Geen Afgeleide Werken, zie http://creativecommons.org/licenses/by-nc-nd/4.0/.</langstring>
+            <langstring language="en">The International Creative Commons 4.0 copyright license where the use is free to copy, distribute and transmit the work under the conditions: Attribution, Noncommercial and No Derivative Works, see http://creativecommons.org/licenses/by-nc-nd/4.0/.</langstring>
+        </description>
+        <metadata>
+            <dc:identifier>http://creativecommons.org/licenses/by-nc-nd/4.0/</dc:identifier>
+        </metadata>
+    </term>
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>cc-by-nc-sa-40</termIdentifier>
+        <caption>
+            <langstring language="nl">CC Naamsvermelding-NietCommercieel-GelijkDelen 4.0 Internationale licentie</langstring>
+            <langstring language="en">CC Attribution-NonCommercial-ShareAlike 4.0 International license</langstring>
+        </caption>
+        <description>
+            <langstring language="nl">De Internationale Creative Commons 4.0 licentie waarbij de gebruiker het werk mag kopiëren, verspreiden en doorgeven en afgeleide werken mag maken onder de voorwaarden: Naamsvermelding, Niet-commercieel en Gelijk Delen, zie http://creativecommons.org/licenses/by-nc-sa/4.0/.</langstring>
+            <langstring language="en">The International Creative Commons 4.0 copyright license where the use is free to copy, distribute and transmit the work and to adapt the work under the conditions: Attribution, Noncommercial and Share Alike, see http://creativecommons.org/licenses/by-nc-sa/4.0/.</langstring>
+        </description>
+        <metadata>
+            <dc:identifier>http://creativecommons.org/licenses/by-nc-sa/4.0/</dc:identifier>
+        </metadata>
+    </term>
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>cc-by-sa-40</termIdentifier>
+        <caption>
+            <langstring language="nl">CC Naamsvermelding-GelijkDelen 4.0 Internationale licentie</langstring>
+            <langstring language="en">CC Attribution-ShareAlike 4.0 International license</langstring>
+        </caption>
+        <description>
+            <langstring language="nl">De Internationale Creative Commons 4.0 licentie waarbij de gebruiker het werk mag kopiëren, verspreiden en doorgeven en afgeleide werken mag maken onder de voorwaarden: Naamsvermelding en Gelijk Delen, zie http://creativecommons.org/licenses/by-sa/4.0/.</langstring>
+            <langstring language="en">The International Creative Commons 4.0 copyright license where the use is free to copy, distribute and transmit the work and to adapt the work under the conditions: Attribution and Share Alike, see http://creativecommons.org/licenses/by-sa/4.0/.</langstring>
+        </description>
+        <metadata>
+            <dc:identifier>http://creativecommons.org/licenses/by-sa/4.0/</dc:identifier>
+        </metadata>
+    </term>
+    <!--  Creative Commons (nl) 3.0  -->
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>cc-by-30</termIdentifier>
+        <caption>
+            <langstring language="nl">CC Naamsvermelding 3.0 Nederland licentie</langstring>
+            <langstring language="en">CC Attribution 3.0 Netherlands license</langstring>
+        </caption>
+        <description>
+            <langstring language="nl">De Nederlandse Creative Commons 3.0 licentie waarbij de gebruiker het werk mag kopiëren, verspreiden en doorgeven en afgeleide werken mag maken onder de voorwaarde: Naamsvermelding, zie http://creativecommons.org/licenses/by/3.0/nl/.</langstring>
+            <langstring language="en">The Netherlands Creative Commons 3.0 copyright license where the use is free to copy, distribute and transmit the work and to adapt the work under the condition: Attribution, see http://creativecommons.org/licenses/by/3.0/nl/.</langstring>
+        </description>
+        <metadata>
+            <dc:identifier>http://creativecommons.org/licenses/by/3.0/nl/</dc:identifier>
+        </metadata>
+    </term>
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>cc-by-nd-30</termIdentifier>
+        <caption>
+            <langstring language="nl">CC Naamsvermelding-GeenAfgeleideWerken 3.0 Nederland licentie</langstring>
+            <langstring language="en">CC Attribution-NoDerivativeWorks 3.0 Netherlands license</langstring>
+        </caption>
+        <description>
+            <langstring language="nl">De Nederlandse Creative Commons 3.0 licentie waarbij de gebruiker het werk mag kopiëren, verspreiden en doorgeven onder de voorwaarden: Naamsvermelding en Geen Afgeleide Werken, zie http://creativecommons.org/licenses/by-nd/3.0/nl/.</langstring>
+            <langstring language="en">The Netherlands Creative Commons 3.0 copyright license where the use is free to copy, distribute and transmit the work under the conditions: Attribution and No Derivative Works, see http://creativecommons.org/licenses/by-nd/3.0/nl/.</langstring>
+        </description>
+        <metadata>
+            <dc:identifier>http://creativecommons.org/licenses/by-nd/3.0/nl/</dc:identifier>
+        </metadata>
+    </term>
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>cc-by-nc-30</termIdentifier>
+        <caption>
+            <langstring language="nl">CC Naamsvermelding-NietCommercieel 3.0 Nederland licentie</langstring>
+            <langstring language="en">CC Attribution-NonCommercial 3.0 Netherlands license</langstring>
+        </caption>
+        <description>
+            <langstring language="nl">De Nederlandse Creative Commons 3.0 licentie waarbij de gebruiker het werk mag kopiëren, verspreiden en doorgeven en afgeleide werken mag maken onder de voorwaarden: Naamsvermelding en Niet-commercieel, zie http://creativecommons.org/licenses/by-nc/3.0/nl/.</langstring>
+            <langstring language="en">The Netherlands Creative Commons 3.0 copyright license where the use is free to copy, distribute and transmit the work and to adapt the work under the conditions: Attribution and Noncommercial, see http://creativecommons.org/licenses/by-nc/3.0/nl/.</langstring>
+        </description>
+        <metadata>
+            <dc:identifier>http://creativecommons.org/licenses/by-nc/3.0/nl/</dc:identifier>
+        </metadata>
+    </term>
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>cc-by-nc-nd-30</termIdentifier>
+        <caption>
+            <langstring language="nl">CC Naamsvermelding-NietCommercieel-GeenAfgeleideWerken 3.0 Nederland licentie</langstring>
+            <langstring language="en">CC Attribution-NonCommercial-NoDerivativeWorks 3.0 Netherlands license</langstring>
+        </caption>
+        <description>
+            <langstring language="nl">De Nederlandse Creative Commons 3.0 licentie waarbij de gebruiker het werk mag kopiëren, verspreiden en doorgeven onder de voorwaarden: Naamsvermelding, Niet-commercieel en Geen Afgeleide Werken, zie http://creativecommons.org/licenses/by-nc-nd/3.0/nl/.</langstring>
+            <langstring language="en">The Netherlands Creative Commons 3.0 copyright license where the use is free to copy, distribute and transmit the work under the conditions: Attribution, Noncommercial and No Derivative Works, see http://creativecommons.org/licenses/by-nc-nd/3.0/nl/.</langstring>
+        </description>
+        <metadata>
+            <dc:identifier>http://creativecommons.org/licenses/by-nc-nd/3.0/nl/</dc:identifier>
+        </metadata>
+    </term>
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>cc-by-nc-sa-30</termIdentifier>
+        <caption>
+            <langstring language="nl">CC Naamsvermelding-NietCommercieel-GelijkDelen 3.0 Nederland licentie</langstring>
+            <langstring language="en">CC Attribution-NonCommercial-ShareAlike 3.0 Netherlands license</langstring>
+        </caption>
+        <description>
+            <langstring language="nl">De Nederlandse Creative Commons 3.0 licentie waarbij de gebruiker het werk mag kopiëren, verspreiden en doorgeven en afgeleide werken mag maken onder de voorwaarden: Naamsvermelding, Niet-commercieel en Gelijk Delen, zie http://creativecommons.org/licenses/by-nc-sa/3.0/nl/.</langstring>
+            <langstring language="en">The Netherlands Creative Commons 3.0 copyright license where the use is free to copy, distribute and transmit the work and to adapt the work under the conditions: Attribution, Noncommercial and Share Alike, see http://creativecommons.org/licenses/by-nc-sa/3.0/nl/.</langstring>
+        </description>
+        <metadata>
+            <dc:identifier>http://creativecommons.org/licenses/by-nc-sa/3.0/nl/</dc:identifier>
+        </metadata>
+    </term>
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>cc-by-sa-30</termIdentifier>
+        <caption>
+            <langstring language="nl">CC Naamsvermelding-GelijkDelen 3.0 Nederland licentie</langstring>
+            <langstring language="en">CC Attribution-ShareAlike 3.0 Netherlands license</langstring>
+        </caption>
+        <description>
+            <langstring language="nl">De Nederlandse Creative Commons 3.0 licentie waarbij de gebruiker het werk mag kopiëren, verspreiden en doorgeven en afgeleide werken mag maken onder de voorwaarden: Naamsvermelding en Gelijk Delen, zie http://creativecommons.org/licenses/by-sa/3.0/nl/.</langstring>
+            <langstring language="en">The Netherlands Creative Commons 3.0 copyright license where the use is free to copy, distribute and transmit the work and to adapt the work under the conditions: Attribution and Share Alike, see http://creativecommons.org/licenses/by-sa/3.0/nl/.</langstring>
+        </description>
+        <metadata>
+            <dc:identifier>http://creativecommons.org/licenses/by-sa/3.0/nl/</dc:identifier>
+        </metadata>
+    </term>
+    <!--  ja/nee  -->
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>no</termIdentifier>
+        <caption>
+            <langstring language="nl">nee</langstring>
+            <langstring language="en">no</langstring>
+        </caption>
+    </term>
+    <term orderSignificant="false" validIndex="true">
+        <termIdentifier>yes</termIdentifier>
+        <caption>
+            <langstring language="nl">ja</langstring>
+            <langstring language="en">yes</langstring>
+        </caption>
+    </term>
+    <!--  Creative Commons 4.0  -->
+    <relationship>
+        <sourceTerm>cc-by-40</sourceTerm>
+        <targetTerm>yes</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">BT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>cc-by-nd-40</sourceTerm>
+        <targetTerm>yes</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">BT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>cc-by-nc-40</sourceTerm>
+        <targetTerm>yes</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">BT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>cc-by-nc-nd-40</sourceTerm>
+        <targetTerm>yes</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">BT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>cc-by-nc-sa-40</sourceTerm>
+        <targetTerm>yes</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">BT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>cc-by-sa-40</sourceTerm>
+        <targetTerm>yes</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">BT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>yes</sourceTerm>
+        <targetTerm>cc-by-40</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">NT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>yes</sourceTerm>
+        <targetTerm>cc-by-nc-40</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">NT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>yes</sourceTerm>
+        <targetTerm>cc-by-nc-nd-40</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">NT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>yes</sourceTerm>
+        <targetTerm>cc-by-nc-sa-40</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">NT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>yes</sourceTerm>
+        <targetTerm>cc-by-nd-40</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">NT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>yes</sourceTerm>
+        <targetTerm>cc-by-sa-40</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">NT</relationshipType>
+    </relationship>
+    <!--  Creative Commons (nl) 3.0  -->
+    <relationship>
+        <sourceTerm>cc-by-30</sourceTerm>
+        <targetTerm>yes</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">BT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>cc-by-nd-30</sourceTerm>
+        <targetTerm>yes</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">BT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>cc-by-nc-30</sourceTerm>
+        <targetTerm>yes</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">BT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>cc-by-nc-nd-30</sourceTerm>
+        <targetTerm>yes</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">BT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>cc-by-nc-sa-30</sourceTerm>
+        <targetTerm>yes</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">BT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>cc-by-sa-30</sourceTerm>
+        <targetTerm>yes</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">BT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>yes</sourceTerm>
+        <targetTerm>cc-by-30</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">NT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>yes</sourceTerm>
+        <targetTerm>cc-by-nc-30</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">NT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>yes</sourceTerm>
+        <targetTerm>cc-by-nc-nd-30</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">NT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>yes</sourceTerm>
+        <targetTerm>cc-by-nc-sa-30</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">NT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>yes</sourceTerm>
+        <targetTerm>cc-by-nd-30</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">NT</relationshipType>
+    </relationship>
+    <relationship>
+        <sourceTerm>yes</sourceTerm>
+        <targetTerm>cc-by-sa-30</targetTerm>
+        <relationshipType source="http://www.imsglobal.org/vocabularies/iso2788_relations.xml">NT</relationshipType>
+    </relationship>
+</vdex>
