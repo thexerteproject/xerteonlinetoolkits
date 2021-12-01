@@ -308,8 +308,11 @@
             $(".youTube, .vimeo").each(function() {
                 $(this).data("popcornInstance").pause();
             });
-            this.removeEvents();
-            this.popcornInstance.destroy();
+			if (this.popcornInstance != null)
+			{
+				this.removeEvents();
+				this.popcornInstance.destroy();
+			}
             if (vidFullWatched == undefined)
 			{
                 vidFullWatched = {
@@ -805,11 +808,13 @@
         };
 
         this.removeEvents = function() {
-            this.popcornInstance.off("timeupdate");
-            this.popcornInstance.off("play");
-            this.popcornInstance.off("pause");
-            this.popcornInstance.off("seeked");
-            this.popcornInstance.off("ended");
+			if (this.popcornInstance != null) {
+				this.popcornInstance.off("timeupdate");
+				this.popcornInstance.off("play");
+				this.popcornInstance.off("pause");
+				this.popcornInstance.off("seeked");
+				this.popcornInstance.off("ended");
+			}
         };
 
         this.getBlock = function(time) {
