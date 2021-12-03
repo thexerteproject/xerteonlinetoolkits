@@ -177,10 +177,7 @@
 				});
 				maxW = (maxW / parseInt($("#puzzle").css("font-size"))) + 1;
 
-				$("#words ul li").css({
-					width: maxW + "em",
-					float: "left"
-				});
+				$("#words ul li").css(width, maxW + "em");
 
 				$("#words ul").width(maxW * numCols + "em");
 			}

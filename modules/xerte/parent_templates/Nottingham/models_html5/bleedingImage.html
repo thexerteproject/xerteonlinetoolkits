@@ -213,7 +213,7 @@
 		}
 		
 		this.setUpMagnifier = function() {
-			if (x_currentPageXML.getAttribute("magnifier") == "true" && x_browserInfo.touchScreen != true) {
+			if (x_currentPageXML.getAttribute("magnifier") == "true") {
 				$(".magnifier").remove();
 				$(".magnifiedImg").remove();
 				
@@ -232,7 +232,6 @@
 				// if force magnification isn't on, don't magnify if not scaled to less that 80% of original image
 				if (x_currentPageXML.getAttribute('magnifierForce') == 'true' || ($pageImg.data("origSize") != undefined && $pageImg.width() / $pageImg.data("origSize")[0] < 0.8)) {
 					$pageImg.imageLens(imageLensInfo);
-					
 				}
 			}
 			

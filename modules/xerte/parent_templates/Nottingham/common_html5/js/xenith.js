@@ -146,8 +146,29 @@ $(document).ready(function() {
     {
         x_browserInfo.Android = true;
     }
-
-    x_browserInfo.touchScreen = !!("ontouchstart" in window);
+	
+	// detect touchscreen function (https://patrickhlauke.github.io/touch/touchscreen-detection/)
+	function detectTouchscreen() {
+		var result = false;
+		if (window.PointerEvent && ('maxTouchPoints' in navigator)) {
+			// if Pointer Events are supported, just check maxTouchPoints
+			if (navigator.maxTouchPoints > 0) {
+			result = true;
+			}
+		} else {
+			// no Pointer Events...
+			if (window.matchMedia && window.matchMedia("(any-pointer:coarse)").matches) {
+				// check for any-pointer:coarse which mostly means touchscreen
+				result = true;
+			} else if (window.TouchEvent || ('ontouchstart' in window)) {
+				// last resort - check for exposed touch events API / event handler
+				result = true;
+			}
+		}
+		return result;
+	}
+	
+	x_browserInfo.touchScreen = detectTouchscreen();
 	if (x_browserInfo.touchScreen == true) {
 		$x_mainHolder.addClass("x_touchScreen");
 	}
@@ -612,7 +633,7 @@ x_projectDataLoaded = function(xmlData) {
             x_fillWindow = false; // overrides fill window for touchscreen devices
 
         } else if (x_urlParams.display == "fixed" || x_urlParams.display == "default" || x_urlParams.display == "full" || x_urlParams.display == "fill") {
-            if (x_browserInfo.touchScreen == true) {
+            if (x_browserInfo.mobile == true) {
                 x_fillWindow = true;
             }
             if (x_urlParams.display == "fixed" || x_urlParams.display == "default") { // default fixed size using values in css (800,600)
