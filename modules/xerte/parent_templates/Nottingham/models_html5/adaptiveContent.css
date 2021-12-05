@@ -114,5 +114,8 @@ li.select-interaction.selected {
   width: 100%;
   /*padding-bottom: 100%; /* aspect ratio */
   vertical-align: top;
-  overflow: hidden;
+}
+
+#button-placeholder {
+  text-align: right;
 }

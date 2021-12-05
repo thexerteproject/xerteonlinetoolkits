@@ -988,7 +988,8 @@
       var div = $("<div>")
         .attr("id", divUrl)
         .attr("data-index", interactionIndex)
-        .addClass("panel");
+        .addClass("panel")
+        .addClass("html2pdf__page-break");
 
       let specificationDiv = "";
       if (interaction.getAttribute("showSpecification") == "true") {
@@ -3069,8 +3070,20 @@
 
     this.setUpUnlisted = function () {
       $("#adaptiveContentMain").append(
-        '<div id="introductionText"></div><div id="adaptiveContent"></div>'
+          '<div id="button-placeholder"><button id="printBtn" hidden></button></div><div id="introductionText"></div><div id="adaptiveContent"></div>'
       );
+
+      $("#printBtn")
+      .button({
+        label: 'print'
+      })
+      .click(function() {
+          let opt = {
+              filename: 'xerte-adaptive-content.pdf',
+              jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+          html2pdf().set(opt).from($("#adaptiveContent")[0]).save();
+      });
       $("#adaptiveContentMain").addClass("unlisted");
       $("#introductionText").html(
         x_currentPageXML.getAttribute("introduction")
