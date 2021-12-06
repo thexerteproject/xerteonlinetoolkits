@@ -2,32 +2,54 @@
 
 require_once('../../config.php');
 
-$xmlfile = $argv[1];
+// php rights.php ./vocabularies/copyrightsandotherrestrictions.xml
 
-$source_url = $xmlfile;
-$xml = simplexml_load_file($xmlfile);
+if ($argc > 1) {
+    createRightsTable();
 
-$ns = $xml->getNamespaces();
-if (isset($ns['']))
-{
-    // Register default name space and call it vdex
-    $xml->registerXPathNamespace('vdex', $ns['']);
+    $xmlfile = $argv[1];
+
+    $source_url = $xmlfile;
+    $xml = simplexml_load_file($xmlfile);
+
+    $ns = $xml->getNamespaces();
+    if (isset($ns[''])) {
+        // Register default name space and call it vdex
+        $xml->registerXPathNamespace('vdex', $ns['']);
+    }
+
+    $nodes = $xml->xpath('//vdex:term');
+
+
+    for ($i = 0; $i < count($nodes); $i++) {
+        $node = $nodes[$i];
+
+        $c = $node->children();
+
+        $tempLabel = (string)$c->caption->langstring;
+        $tempID = (string)$c->termIdentifier;
+        insertRights($tempID,$tempLabel);
+    }
+}
+function createRightsTable() {
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    $q = "CREATE TABLE IF NOT EXISTS {$prefix}oai_rights(
+    rights_id INT(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    term_id VARCHAR(63) NOT NULL,
+    label VARCHAR(255) NOT NULL)";
+
+    db_query($q);
 }
 
-$nodes = $xml->xpath('//vdex:term');
-// Pls help haha
+function insertRights($termID, $label){
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
 
-
-echo count($nodes);
-for ($i = 0; $i < count($nodes); $i++) {
-    $node = $nodes[$i];
-
-    //$ns = $node->getNamespaces();
-    $c = $node->children();
-
-    //$tempTaxon = (string)$c->termIdentifier;
-    $tempLabel = (string)$c->caption->langstring;
-    echo $tempLabel;
+    $q = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}oai_rights(term_id,label) VALUES (?,?)";
+    $params = array($termID,$label);
+    db_query($q,$params);
 
 }
 
