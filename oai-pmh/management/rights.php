@@ -5,6 +5,7 @@ require_once('../../config.php');
 // php rights.php ./vocabularies/copyrightsandotherrestrictions.xml
 
 if ($argc > 1) {
+    clearRightsTable();
 
     $xmlfile = $argv[1];
 
@@ -43,6 +44,15 @@ function createRightsTable() {
     db_query($q);
 }
 */
+
+function clearRightsTable() {
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    $q = "delete from {$xerte_toolkits_site->database_table_prefix}syndicationlicenses";
+
+    db_query($q);
+}
 
 function insertRights($label){
     global $xerte_toolkits_site;
