@@ -5,7 +5,6 @@ require_once('../../config.php');
 // php rights.php ./vocabularies/copyrightsandotherrestrictions.xml
 
 if ($argc > 1) {
-    createRightsTable();
 
     $xmlfile = $argv[1];
 
@@ -27,10 +26,11 @@ if ($argc > 1) {
         $c = $node->children();
 
         $tempLabel = (string)$c->caption->langstring;
-        $tempID = (string)$c->termIdentifier;
-        insertRights($tempID,$tempLabel);
+        insertRights($tempLabel);
     }
 }
+/*
+
 function createRightsTable() {
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
@@ -42,13 +42,14 @@ function createRightsTable() {
 
     db_query($q);
 }
+*/
 
-function insertRights($termID, $label){
+function insertRights($label){
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $q = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}oai_rights(term_id,label) VALUES (?,?)";
-    $params = array($termID,$label);
+    $q = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}syndicationlicenses(license_name) VALUES (?)";
+    $params = array($label);
     db_query($q,$params);
 
 }
