@@ -280,6 +280,18 @@ class XerteXMLInspector
     {
         return $this->pages;
     }
+
+    public function getLOAttribute($attr)
+    {
+        if (isset($this->xml[$attr]))
+        {
+            return (string)$this->xml[$attr];
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 
 //$template = new XerteXMLInspector();
