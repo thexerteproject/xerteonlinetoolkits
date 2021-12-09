@@ -438,20 +438,7 @@ class OAIServer
             $value_node = $this->response->addChild($intendeduserrole_node, 'value');
             $langstring_node = $this->response->addChild($value_node, 'langstring', "learner");
             $langstring_node->setAttribute("xml:lang", "x-none");
-
-            $context_node = $this->response->addChild($education_node, 'context');
-            $source_node = $this->response->addChild($context_node, 'source');
-            $langstring_node = $this->response->addChild($source_node, 'langstring', "http://purl.edustandaard.nl/vdex_context_czp_20060628.xml");
-            $langstring_node->setAttribute("xml:lang", "x-none");
-
-            $value_node = $this->response->addChild($context_node, 'value');
-            $langstring_node = $this->response->addChild($value_node, 'langstring', "VO");
-            $langstring_node->setAttribute("xml:lang", "x-none");
-
-            $typicalrange_node = $this->response->addChild($education_node, 'typicalagerange');
-            $langstring_node = $this->response->addChild($typicalrange_node, 'langstring', "8-13");
-            $langstring_node->setAttribute("xml:lang", "x-none");
-
+         
 
             //RIGHTS - Cost
             $rights_node = $this->response->addChild($schema_node, 'rights');

@@ -2,35 +2,29 @@
 
 require_once('../../config.php');
 
-// php educational.php ./vocabularies/vdex_context_czp_20060628.xml
+// php educational.php ./vocabularies/leerniveaus-knset.xml
 
 if ($argc > 1) {
     createEducationalTable();
-
+    clearEducationalTable();
     $xmlfile = $argv[1];
 
     $source_url = $xmlfile;
     $xml = simplexml_load_file($xmlfile);
 
     $ns = $xml->getNamespaces();
-    if (isset($ns[''])) {
-        // Register default name space and call it vdex
-        $xml->registerXPathNamespace('vdex', $ns['']);
-    }
 
     $nodes = $xml->xpath('//vdex:term');
-
 
     for ($i = 0; $i < count($nodes); $i++) {
         $node = $nodes[$i];
 
-        $c = $node->children();
+        $c = $node->children($ns['vdex']);
 
         $tempLabel = (string)$c->caption->langstring;
         $tempID = (string)$c->termIdentifier;
-        $tempDescription = (string)$c->description->langstring;
 
-        insertEducational($tempID,$tempLabel,$tempDescription);
+        insertEducational($tempID,$tempLabel);
     }
 }
 function createEducationalTable() {
@@ -40,18 +34,26 @@ function createEducationalTable() {
     $q = "CREATE TABLE IF NOT EXISTS {$prefix}oai_educational(
     educational_id INT(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
     term_id VARCHAR(63) NOT NULL,
-    label VARCHAR(255) NOT NULL,
-    description VARCHAR(255) NOT NULL)";
+    label VARCHAR(255) NOT NULL)";
 
     db_query($q);
 }
 
-function insertEducational($termID, $label, $description){
+function clearEducationalTable() {
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $q = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}oai_educational(term_id,label,description) VALUES (?,?,?)";
-    $params = array($termID,$label,$description);
+    $q = "delete from {$xerte_toolkits_site->database_table_prefix}oai_educational";
+
+    db_query($q);
+}
+
+function insertEducational($termID, $label){
+    global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    $q = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}oai_educational(term_id,label) VALUES (?,?)";
+    $params = array($termID,$label);
     db_query($q,$params);
 
 }
