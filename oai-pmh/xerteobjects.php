@@ -88,7 +88,7 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
 
     if (isset($xml['metaEducation'])) {
         // query oai-education
-        $q = "select * from {$xerte_toolkits_site->datatabase_table_prefix}oai_educational where label=?";
+        $q = "select * from {$xerte_toolkits_site->datatabase_table_prefix}oai_education where label=?";
         $params = array((string)$xml["metaEducation"]);
         $cat = db_query_one($q, $params);
         if ($cat !== false) {
@@ -101,7 +101,7 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
         }
     }
     else
-        $xerteMetaObj->domain = 'unknown';
+        $xerteMetaObj->level = 'unknown';
 
     $xerteMetaObj->language = (string)$xml['language'];
     $xerteMetaObj->publisher = $config['institute'];
