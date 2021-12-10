@@ -4,7 +4,7 @@ if ($argc > 1) {
     $xmlfile = $argv[1];
     $xml = simplexml_load_file($xmlfile);
 
-    $nodes = $xml->xpath("//vdex:term");
+    $nodes = $xml->xpath("//term");
 
     for ($i=0; $i<count($nodes); $i++)
     {

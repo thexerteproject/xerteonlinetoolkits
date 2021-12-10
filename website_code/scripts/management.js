@@ -182,6 +182,22 @@ function categories_list(){
 	});
 }
 
+// Function educationlevel list
+//
+// remove a share, and check who did it
+
+function educationlevel_list(){
+	function_to_use="educationlevel";
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/educationlevel.php",
+		data: {no_id: 1},
+	})
+		.done(function(response){
+			management_stateChanged(response);
+		});
+}
+
 // Function grouping list
 //
 // remove a share, and check who did it
@@ -233,6 +249,23 @@ function remove_category(id){
     }
 }
 
+// Function remove educatonlevel
+//
+// remove a share, and check who did it
+
+function remove_educationlevel(id){
+
+	if (confirm(REMOVE_PROMPT)) {
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/remove_educationlevel.php",
+			data: {remove: id},
+		})
+			.done(function(response){
+				management_stateChanged(response);
+			});
+	}
+}
 
 // Function remove grouping
 //
@@ -682,6 +715,23 @@ function new_category(){
 	.done(function (response) {
 		management_stateChanged(response);
 	});
+}
+
+// Function new educationlevel
+//
+// remove a share, and check who did it
+
+function new_educationlevel(){
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/new_educationlevel.php",
+		data: {
+			educationlevel: document.getElementById("neweducationlevel").value
+		},
+	})
+		.done(function (response) {
+			management_stateChanged(response);
+		});
 }
 
 // Function new grouping

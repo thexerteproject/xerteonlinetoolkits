@@ -4095,6 +4095,51 @@ var EDITOR = (function ($, parent) {
 				}
 				html.append(select);
 				break;
+            case 'educationlevellist':
+                var id = 'select_' + form_id_offset;
+                var html = $('<div>')
+                    .attr('id', 'educationlevel_div_' + form_id_offset);
+                var currselected = false;
+                var select = $('<select>')
+                    .attr('id', id)
+                    .change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
+                    {
+                        inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        if (event.data.trigger)
+                        {
+                            triggerRedrawPage(event.data.key);
+                        }
+                    });
+                // Add empty option
+                var option = $('<option>')
+                    .attr('value', "");
+                if (value=="") {
+                    option.prop('selected', true);
+                    currselected = true;
+                }
+                option.append("");
+                select.append(option);
+                for (var i=0; i<educationlevel_list.length; i++) {
+                    var option = $('<option>')
+                        .attr('value', educationlevel_list[i].educationlevel_name);
+                    if (educationlevel_list[i].educationlevel_name==value) {
+                        option.prop('selected', true);
+                        currselected = true;
+                    }
+                    option.append(educationlevel_list[i].educationlevel_name);
+                    select.append(option);
+                }
+                if (value != "" && !currselected)
+                {
+                    //  Add current value as option, even though it is not in the list
+                    var option = $('<option>')
+                        .attr('value', value);
+                    option.prop('selected', true);
+                    option.append('<i class="fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;' + value);
+                    select.append(option);
+                }
+                html.append(select);
+                break;
 			case 'course':
 				if (course_list.length == 0)
 				{

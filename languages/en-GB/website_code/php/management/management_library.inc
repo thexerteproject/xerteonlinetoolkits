@@ -19,6 +19,11 @@
 	define("MANAGEMENT_LIBRARY_NEW_LABEL", "Add");
 	define("MANAGEMENT_LIBRARY_EXISTING_CATEGORIES", "Manage existing categories");
 
+    define("MANAGEMENT_LIBRARY_ADD_EDUCATION", "Add a new education level");
+    define("MANAGEMENT_LIBRARY_NEW_EDUCATION", "The new education level is");
+    define("MANAGEMENT_LIBRARY_NEW_EDUCATION_NAME", "Enter name here");
+    define("MANAGEMENT_LIBRARY_EXISTING_EDUCATION", "Manage existing education levels");
+
     define("MANAGEMENT_LIBRARY_ADD_GROUPING", "Add a new grouping");
     define("MANAGEMENT_LIBRARY_NEW_GROUPING", "The new grouping is");
     define("MANAGEMENT_LIBRARY_NEW_GROUPING_NAME", "Enter name here");

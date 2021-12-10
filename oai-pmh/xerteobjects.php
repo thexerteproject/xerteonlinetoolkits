@@ -30,14 +30,10 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
     {
         $xerteMetaObj->educode = (string)$xml['educode'];
     }
-    if (isset($xml['metaEducation']))
-    {
-        $xerteMetaObj->education = (string)$xml['metaEducation'];
-    }
     //if (isset($xml['metaLevel']))
     //{
-        $xerteMetaObj->level = "HBO";// (string)$xml['metaLevel'];
-        $xerteMetaObj->levelId = "be140797-803f-4b9e-81cc-5572c711e09c"; // (string)$xml['metaLevelId'];
+    //    $xerteMetaObj->level = "HBO";// (string)$xml['metaLevel'];
+    //    $xerteMetaObj->levelId = "be140797-803f-4b9e-81cc-5572c711e09c"; // (string)$xml['metaLevelId'];
     //}
     //else
     //{
@@ -85,6 +81,23 @@ function get_meta_data($template_id, $creator_user_name="", $template_type_name=
         else
         {
             $xerteMetaObj->domain = 'unknown';
+        }
+    }
+    else
+        $xerteMetaObj->domain = 'unknown';
+
+    if (isset($xml['metaEducation'])) {
+        // query oai-education
+        $q = "select * from {$xerte_toolkits_site->datatabase_table_prefix}oai_educational where label=?";
+        $params = array((string)$xml["metaEducation"]);
+        $cat = db_query_one($q, $params);
+        if ($cat !== false) {
+            $xerteMetaObj->level = $cat["label"];
+            $xerteMetaObj->levelId = $cat["term_id"];
+        }
+        else
+        {
+            $xerteMetaObj->level = 'unknown';
         }
     }
     else

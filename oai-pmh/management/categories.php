@@ -71,6 +71,10 @@ function clearCategoryTable() {
     $q = "delete from {$xerte_toolkits_site->database_table_prefix}syndicationcategories";
 
     db_query($q);
+
+    $q = "delete from {$xerte_toolkits_site->database_table_prefix}oai_categories";
+
+    db_query($q);
 }
 
 function insertCategory($source_url, $taxon, $label){
