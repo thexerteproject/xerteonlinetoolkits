@@ -24,7 +24,6 @@
 		var	$panelHolder,
 			plugins = ["textplus", "subtitleplus", "xot", "mediaplus", "mcq", "overlaygeneric" ,"slides", "sortholder"], // list of popcorn plugins to load
 			css = ["subtitleplus", "mcq", "overlaygeneric", "slides"], // list of popcorn plugin css to load
-			numLoaded = 0,
 			duration = 0,
             blocks = new Array (),
 		    vidFullWatched,
@@ -320,10 +319,8 @@
                     watched: [],
                     segments:[]
                 };
-                this.sendXAPI(vidFullWatched, 0);
 			}
 			var progress = XThelperDetermineProgress(vidFullWatched) * 100.0;
-			this.sendXAPI(vidFullWatched, progress);
 			XTVideo(x_currentPage, trackinglabel, "", "exit", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
 		};
 		
@@ -716,12 +713,9 @@
 				$("#overlayGray").hide();
 				var popTime = mediaLesson.popcornInstance.currentTime();
                 //console.log("Timeupdate: " + popTime + " prevTime=" + prevTime + ", seeking=" + mediaLesson.popcornInstance.seeking());
-				var block = mediaLesson.getBlock(lastTime);
                 if (lastTime != popTime && popTime > 0) {
                     prevTime = lastTime;
                     lastTime = popTime;
-                    mediaLesson.updateTable(vidFullWatched, lastTime);
-                    mediaLesson.updateTable(block, lastTime);
 				}
             });
             this.popcornInstance.on( "play", function() {
@@ -733,28 +727,18 @@
                     start: popTime,
                     end: -1
                 };
-                var block = mediaLesson.getBlock(popTime);
-                var name = "";
-                if (block != null) {
-                    name = block.synchName;
-                }
                 vidFullWatched.duration = mediaLesson.popcornInstance.duration();
                 vidFullWatched.time = popTime;
                 duration = mediaLesson.popcornInstance.duration();
-                XTVideo(x_currentPage, trackinglabel, name, "played", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
+                XTVideo(x_currentPage, trackinglabel, "", "played", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
             });
 			this.popcornInstance.on( "pause", function() {
                 var popTime = mediaLesson.popcornInstance.currentTime();
 				vidFullWatched.time = popTime;
 				$('#playButton').removeClass('fa-x-pause').addClass('fa-x-play');
                 console.log("Pause   : " + popTime);
-                var block = mediaLesson.getBlock(popTime);
-				var name = "";
 				isPlaying = false;
 				
-                if (block != null) {
-                    name = block.synchName;
-                }
                 currSegment.end = popTime;
                 mediaLesson.addSegment(currSegment);
                 currSegment = {
@@ -763,10 +747,8 @@
                 };
                 vidFullWatched.duration = mediaLesson.popcornInstance.duration();
                 duration = mediaLesson.popcornInstance.duration();
-                var progress = XThelperDetermineProgress(vidFullWatched) * 100.0;
-                mediaLesson.sendXAPI(vidFullWatched, progress);
-                mediaLesson.sendXAPI(block,lookupTable(block));
-                XTVideo(x_currentPage, trackinglabel, name, "paused", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
+                //var progress = XThelperDetermineProgress(vidFullWatched) * 100.0;
+                XTVideo(x_currentPage, trackinglabel, "", "paused", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
             });
             this.popcornInstance.on( "seeked", function() {
                 var popTime = mediaLesson.popcornInstance.currentTime();
@@ -781,7 +763,7 @@
                 };
                 vidFullWatched.duration = mediaLesson.popcornInstance.duration();
                 duration = mediaLesson.popcornInstance.duration();
-                XTVideo(x_currentPage, trackinglabel, name, "seeked", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
+                XTVideo(x_currentPage, trackinglabel, "", "seeked", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
                 //mediaLesson.popcornInstance.pause();
             });
             this.popcornInstance.on("ended", function() {
@@ -790,18 +772,13 @@
                 duration = mediaLesson.popcornInstance.duration();
                 vidFullWatched.time = popTime;
                 console.log("End     : " + popTime);
-                var block = mediaLesson.getBlock(popTime);
-                var name = "";
-                if (block != null) {
-                    name = block.synchName;
-                }
                 currSegment.end = popTime;
                 mediaLesson.addSegment(currSegment);
                 currSegment = {
                     start: popTime,
                     end: -1
                 };
-                XTVideo(x_currentPage, trackinglabel, name, "paused", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
+                XTVideo(x_currentPage, trackinglabel, "", "paused", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
             });
         };
 
@@ -815,63 +792,6 @@
 			}
         };
 
-        this.getBlock = function(time) {
-            if (blocks.length == 0) {
-			    return null;
-			}
-            for(var i = 0; i < blocks.length; i++) {
-                if (parseFloat(blocks[i].synchStart) + parseFloat(blocks[i].duration) > time) {
-                    return blocks[i];
-                }
-            }
-            return blocks[i];
-        };
-
-		// helper function for lookupTable, called on time updates, checks what part of a video block is being watched (in %).
-		this.updateTable = function (block, current) {
-		     if (block != null) {
-                 if (block.duration < 30) {
-                     var i = Math.round((current - block.synchStart) / block.duration * 20) * 5;
-                 }
-                 else {
-                     var i = Math.round((current - block.synchStart) / block.duration * 100);
-                 }
-                 block.watched[i] = 1;
-                 if (i == 100) {
-                     this.sendXAPI(block, 100);
-                 }
-             }
-		};
-
-		this.sendXAPI = function(block, percentageWatched)
-        {
-            //if (block != null)
-            //TSetViewed(x_currentPage, block.synchName, percentageWatched)
-        };
-
-		// function calculates the time watched within a video block based on an array (in %).
-		lookupTable = function (block) {
-			var playedTime = 0;
-			if (block == null || block.watched == undefined || block.duration == undefined) {
-			    return 0;
-			}
-			if (block.duration >= 30) {
-				for (var i = 1; i < 100; i++) {
-					if (block.watched[i] == 1) {
-						playedTime++;
-					}
-				}
-			}
-			else {
-				for (var i = 1; i < 100; i++) {
-					if (block.watched[i] == 1) {
-						playedTime += 5;
-					}
-				}
-			}
-			return playedTime;
-		}
-
 		// function loads media - can be either main media in media panel or additional media to appear in another panel (called from media plugin)
 		this.loadMedia = function($holder, mediaType, mediaData, mainMedia) {
 			var $mediaHolder,
@@ -883,7 +803,7 @@
 			}
 			
 			if (mediaType == "video") {
-				// load video - max dimensions set in mediaMetaData function below when dimensions received
+				//load video - max dimensions set in mediaMetaData function below when dimensions received
 				$mediaHolder = $holder;
 				var $myVideo = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
 
@@ -1296,66 +1216,10 @@
                             }
 						});
 					}
-
-					if (data[0].type == "synchMCQ")
-                    {
-                        $(data).each(function (e){
-                            var testSynch = this.allInfo.getAttribute("synchStart");
-                            if (this.allInfo.children.length !== 0) {
-                                var isJump = this.allInfo.children[0].getAttribute("synch");
-                            }
-                            if (testSynch !== null && isJump !== null)
-                            {
-                                $(this.childNodes).each(function(jmp)
-                                {
-                                    var syn = this.getAttribute("synch");
-                                    var nam = this.getAttribute("text");
-                                    if (!isDuplicate(blocks,syn))
-                                    {
-                                        blocks.splice(calcIndex(syn), 0, {
-                                            synchStart: syn,
-                                            synchName:  nam,
-                                            watched:[]
-                                        });
-                                    }
-                                });
-                            }
-                        });
-
-                        for (var i = 0; i < blocks.length; i++)
-                        {
-                            var start1 = blocks[i].synchStart;
-                            if (i < blocks.length - 1) {
-                                var end1 = blocks[i + 1].synchStart;
-                            }
-                            else {
-                                end1 = popcornInstance.duration();
-                            }
-                            var durat1 = end1 - start1;
-                            blocks[i]["duration"] = durat1;
-                        }
-                    }
 				}
 			}
 			x_pageContentsUpdated();
 		}
-
-		function isDuplicate(testArr, time){
-		    return testArr.some(function (el) {
-		        return el.synchStart == time;
-            });
-        }
-
-        function calcIndex(time) {
-            for (var i = 0; i < blocks.length; i++)
-            {
-                if (parseInt(time) < parseInt(blocks[i].synchStart))
-                {
-                    return i;
-                }
-            }
-            return i+1;
-        }
 
 		// function sets up the popcorn sync events for pausing and skipping the media
 		// Also shows or hide streams for the mediasite API.
@@ -1381,7 +1245,6 @@
 				if (this.video._util !== undefined && this.video._util.type === "Mediasite")
 					if (synchData.getAttribute("visibleStreamTypes") != undefined)
 						this.setVST(synchData.getAttribute("visibleStreamTypes"));
-
 
 				// disable media controls
 				if (synchData.getAttribute("disable") == "true") {
