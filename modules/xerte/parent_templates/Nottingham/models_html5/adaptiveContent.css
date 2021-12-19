@@ -101,7 +101,20 @@ li.select-interaction.selected {
 .graph-container {
   width: 45%;
   float: right;
-  display: block;
+  display: inline-flex;
+}
+
+@media (max-width: 900px) {
+  .graph-container {
+    width: 100%;
+  }
+  .summary-container {
+    display: inline-block;
+  }
+}
+
+.graph-container-wide {
+  width: 100%;
 }
 
 .graph-container fieldset.noStyle {
