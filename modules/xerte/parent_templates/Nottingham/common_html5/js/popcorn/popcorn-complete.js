@@ -6879,8 +6879,10 @@
     function onSeeking() {
       // a seek in youtube fires a paused event.
       // we don't want to listen for this, so this state catches the event.
-      addYouTubeEvent( "pause", catchRoguePauseEvent );
-      removeYouTubeEvent( "pause", onPause );
+      // 20/12 This was disabled because the next play and pause event were also caught after a seek.
+      // It does send one pause event too many to Xapi, but that seems to be no issue.
+      // addYouTubeEvent( "pause", catchRoguePauseEvent );
+      // removeYouTubeEvent( "pause", onPause );
       impl.seeking = true;
       self.dispatchEvent( "seeking" );
     }
@@ -6888,6 +6890,7 @@
     function onSeeked() {
       impl.ended = false;
       impl.seeking = false;
+      impl.currentTime = player.getCurrentTime();
       self.dispatchEvent( "timeupdate" );
       self.dispatchEvent( "seeked" );
       self.dispatchEvent( "canplay" );
