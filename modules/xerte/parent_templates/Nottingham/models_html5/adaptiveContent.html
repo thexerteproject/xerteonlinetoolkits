@@ -3091,12 +3091,21 @@
       .button({
         label: 'print'
       })
-      .click(function() {
+      .click(async function() {
+          let printableItems = $("#adaptiveContent").clone();
+          //$(printableItems).find(".panel").removeClass("panel");
+          //$(printableItems).find(".panel").css("box-shadow", "none !important");
+          $("#adaptiveContent .panel").addClass("panel-print");
+          $("#adaptiveContent .panel").removeClass("panel");
           let opt = {
               filename: 'xerte-adaptive-content.pdf',
               jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
           html2pdf().set(opt).from($("#adaptiveContent")[0]).save();
+          // Wait 10 seconds before placing the class back. This should be refactored at some point.
+          await new Promise(resolve => setTimeout(resolve, 10000));
+          $("#adaptiveContent .panel-print").addClass("panel");
+          $("#adaptiveContent .panel").removeClass("panel-print");
       });
       $("#adaptiveContentMain").addClass("unlisted");
       $("#introductionText").html(

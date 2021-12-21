@@ -109,7 +109,11 @@ li.select-interaction.selected {
     width: 100%;
   }
   .summary-container {
+    width: 100%;
     display: inline-block;
+  }
+  .graph-container fieldset.noStyle {
+    width: 100%;
   }
 }
 
@@ -118,7 +122,8 @@ li.select-interaction.selected {
 }
 
 .graph-container fieldset.noStyle {
-  width: 100%;
+  width: 50%;
+  float: left;
 }
 
 .graph {
