@@ -1,0 +1,148 @@
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+console.log("pcmc loaded!");
+this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
+    debugger;
+    var $mediaHolder,
+        popcornInstance,
+        classes = "popcornMedia";
+    
+    if (mainMedia == true) {
+        classes += " mainMedia";
+    }
+    
+    if (mediaType == "video") {
+        //load video - max dimensions set in mediaMetaData function below when dimensions received
+        $mediaHolder = $holder;
+        var $myVideo = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
+
+        // Add playervars to youtube.
+        // Controls should appear and inline for iPhone (havent checked)
+        if (mediaData.media.indexOf('youtu') > 0) {
+            urlsep = (mediaData.media.indexOf("?") < 0 ? "?" : "&");
+            mediaData.media += urlsep + "controls=2&playsinline=1"
+        }
+        // is it from youtube or vimeo or mediasite?
+        if (mediaData.media.indexOf('youtu') > 0 
+         || mediaData.media.indexOf('vimeo') > 0 
+         || mediaData.media.indexOf('mediamission') > 0) {
+            popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .popcornMedia", mediaData.media);
+            var $videoHolder = $holder.find(".popcornMedia").addClass(popcornInstance.media._util.type);
+            $videoHolder.attr("aspect", mediaData.aspect);
+            $videoHolder.data("popcornInstance", popcornInstance);
+            if (mediaData.autoplay == "true") {
+                popcornInstance.play();
+            }
+        } 
+        else {
+            $myVideo
+                .attr("title", mediaData.tip)
+                .css("margin", "0 auto")
+                .mediaPlayer({
+                    type		:"video",
+                    source		:mediaData.media,
+                    width		:"100%",
+                    height		:"100%",
+                    autoPlay	:mediaData.autoplay,
+                    pageName	:"mediaLesson"
+                });
+
+            popcornInstance = Popcorn("#" +$holder.attr("id") + " video");
+            if (mainMedia == true) {
+                $("#" + $holder.attr("id") + " video").attr('id', 'mainVideo');
+            } else {
+                $("#" + $holder.attr("id") + " video").attr('id', 'video_' 
+                    + $("#" + $holder.attr("id") + " video").parents('.mejs-video').attr('id'));
+            }
+        }
+        
+    } else if (mediaType == "audio") {
+        // load audio in panel - width is either with of audioImage (if exists) or full width of panel
+        $mediaHolder = $('<div class="mediaHolder"></div>').appendTo($holder);
+        var $myAudio = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
+        
+        $myAudio
+            .attr("title", mediaData.tip)
+            .mediaPlayer({
+                type		:"audio",
+                source		:mediaData.media,
+                width       :"100%",
+                autoPlay    :mediaData.autoplay
+            });
+        
+        popcornInstance = Popcorn("#" + $holder.attr("id") + " audio");
+        if (mainMedia == true) {
+            $("#" + $holder.attr("id") + " audio").attr('id', 'mainAudio');
+        } else {
+            $("#" + $holder.attr("id") + " audio").attr('id', 'audio_' + 
+                $("#" + $holder.attr("id") + " audio").parents('.mejs-audio').attr('id'));
+        }
+        
+        if (mediaData.audioImage != "" && mediaData.audioImage != undefined) {
+            var $imgHolder = $('<div class="audioImgHolder"></div>').insertBefore($myAudio),
+                $img = $('<img class="audioImg" style="visibility: hidden" />').appendTo($imgHolder);
+            
+            $img
+                .one("load", function() {
+                    x_scaleImg(this, $holder.width(), $holder.height() - x_audioBarH, true, true);
+                    $mediaHolder.width($(this).width());
+                    mediaLesson.resizeMedia();
+                })
+                .attr("src", x_evalURL(mediaData.audioImage))
+                .each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+                    if (this.complete) {
+                        $(this).trigger("load");
+                    }
+                });
+            if (mediaData.audioImageTip != "" && mediaData.audioImageTip != undefined) {
+                $img.attr("alt", mediaData.audioImageTip);
+            }
+        }
+    }
+    
+    // add transcript to media panel if required
+    if (mediaData.transcript != "" && mediaData.transcript != undefined) {
+        $mediaHolder.append('<div class="transcriptHolder"><div class="transcript">' 
+            + x_addLineBreaks(mediaData.transcript) + '</div><button class="transcriptBtn"></button></div>');
+        $mediaHolder.find(".transcript").hide();
+        $mediaHolder.find(".transcriptBtn")
+            .button({
+                icons:	{secondary:"fa fa-x-btn-hide"},
+                label:	mediaData.transcriptBtnTxt != undefined && mediaData.transcriptBtnTxt != "" ? mediaData.transcriptBtnTxt : "Transcript"
+            })
+            .click(function() {
+                // transcript slides in and out of view on click
+                var $transcript = $(this).prev(".transcript");
+                if ($transcript.is(":hidden") == true) {
+                    $(this).button({icons: {secondary:"fa fa-x-btn-show"}});
+                    $transcript.slideDown();
+                } else {
+                    $transcript.slideUp();
+                    $(this).button({icons: {secondary:"fa fa-x-btn-hide"}});
+                }
+            });
+        
+        if (mediaType == "video") {
+            $mediaHolder.find(".transcriptHolder")
+                .width($mediaHolder.find(".popcornMedia").width())
+                .css("margin", "0 auto");
+        }
+    }
+    return popcornInstance;
+}
