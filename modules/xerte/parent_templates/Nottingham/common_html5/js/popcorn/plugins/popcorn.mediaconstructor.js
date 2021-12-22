@@ -16,9 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-console.log("pcmc loaded!");
 this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
-    debugger;
     var $mediaHolder,
         popcornInstance,
         classes = "popcornMedia";
@@ -102,7 +100,6 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
                 .one("load", function() {
                     x_scaleImg(this, $holder.width(), $holder.height() - x_audioBarH, true, true);
                     $mediaHolder.width($(this).width());
-                    mediaLesson.resizeMedia();
                 })
                 .attr("src", x_evalURL(mediaData.audioImage))
                 .each(function() { // called if loaded from cache as in some browsers load won't automatically trigger

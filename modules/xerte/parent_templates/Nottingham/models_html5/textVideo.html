@@ -57,12 +57,38 @@
 					.height(height);
 			}
 		}
+		this.initTracking = function(){
+			trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
+			if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
+            {
+                trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
+            }
+			XTVideo(x_currentPage, trackinglabel, "", "initialized", 35, x_currentPageXML.getAttribute("grouping"));
+			debugger;
+		}
 		
-		this.init = function() {
+		this.init = function() 
+		{
+			var popLocation = "common_html5/js/popcorn/"
+			var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
+			var i = 0;
+			scriptsToLoad.forEach(function(file){
+				$.getScript(x_templateLocation + popLocation + file + ".js")
+					.done(function(){
+							if (++i >= scriptsToLoad.length)
+								textVideo.setUp();
+						})
+					.fail(function( jqxhr, settings, exception ) {
+							console.log("Failed to load plugin:" + exception);
+						});
+			});
+		}
+
+		this.setUp = function() {
 			// text align
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			var $panel = $("#pageContents .panel");
-			
+
 			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
 			if (textAlign == "Top" || textAlign == "Bottom") {
 				if (textAlign == "Top") {
@@ -142,9 +168,25 @@
 					"dimensions"	:videoDimensions,
 					"startEndFrame"	:[Number(x_currentPageXML.getAttribute("startFrame")), Number(x_currentPageXML.getAttribute("endFrame"))]
 				});
-				
-				this.loadVideo();
-				
+
+				this.popcornInstance = loadMedia(
+				$("#pageVideo"),
+				"video",
+				{	tip: x_currentPageXML.getAttribute("tip"),
+					width: Number(videoDimensions[0]),
+					height: Number(videoDimensions[1]),
+					media: x_currentPageXML.getAttribute("url")//,
+					//autoplay: mediaPanelData.attr("autoplay"),
+					//aspect: mediaPanelData.attr("aspect"),
+					//transcript: mediaPanelData.attr("transcript"),
+					//transcriptBtnTxt: mediaPanelData.attr("transcriptBtnTxt"),
+					//audioImage: mediaPanelData.attr("audioImage"),
+					//audioImageTip: mediaPanelData.attr("audioImageTip")
+				},
+				true
+				);
+				//mediaLesson.resizeMedia()
+				debugger;
 				//controls toggle
 				$(".panel.inline.x_floatRight")
 					.mouseover(function(){
@@ -161,6 +203,17 @@
 			
 			textVideo.sizeChanged();
 			x_pageLoaded();
+		}
+
+		this.leavePage = function() {
+			debugger;
+			XTVideo(x_currentPage, "trackinglabel", "", "exit", 35, x_currentPageXML.getAttribute("grouping"));
+			trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
+			XTSetPageType(x_currentPage, 'numeric', 0 , 1);
+			if (x_currentPageXML.getAttribute("trackinglabel") != undefined && x_currentPageXML.getAttribute("trackinglabel") != "")
+            {
+                trackinglabel = x_currentPageXML.getAttribute("trackinglabel");
+            }
 		}
 		
 		this.loadVideo = function() {
