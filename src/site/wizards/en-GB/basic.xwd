@@ -89,6 +89,17 @@
 		</varGroup>
 		
 		<globalVars type="CheckBox" label="Surface Global Variables" defaultValue="true" optional="true" tooltip="Allow the surfacing of global variables using the format {variableName}"/>
+
+		<twittercard type="group" label="Twitter card" optional="true">
+        		<tcoption label="Enable Twitter card" type="CheckBox" defaultValue="true" optional="true" tooltip="Enable a Twitter card for when a public link to this LO is shared via Twitter." />
+        		<tcmode optional="true" label="Twitter card mode" width="250" type="ComboBox" options="Summary Large Image,Summary Thumbnail Image" data="summary_large_image,summary" defaultValue="summary_large_image" tooltip="The Summary Large Image option display a small displays a larger image that spans the width of the tweet and the Summary Thumbnail Image option displays a smaller thumbnail."/>
+        		<tcsite optional="true" label="Twitter site" width="250" type="TextInput" defaultValue="" tooltip="Optional: The sitewide Twitter @username the card should be attributed to e.g. @yourorganisation"/>
+        		<tccreator optional="true" label="Twitter Creator" width="250" type="TextInput" defaultValue="" tooltip="Optional: Twitter account for the creator e.g. @yourtwitterusername"/>
+        		<tctitle optional="true" label="Title" width="250" type="TextInput" defaultValue="" tooltip="Required: Title of this content to display in the Twitter card."/>
+        		<tcdescription optional="true" label="Description" width="250" type="TextInput" defaultValue="" tooltip="Optional: Description of this content to display in the Twitter card."/>
+        		<tcimage optional="true" type="media" label="Image" defaultValue="Select an Image" tooltip="Required: strictly speaking this is optional but is the whole point of adding this Twitter card functionality e.g. to automatically display a clickable image link when a link to this LO is tweeted."/>
+        		<tcimagealt optional="true" type="TextInput" label="Alt Text" defaultValue="" tooltip="Enter a description of the image for accessibility"/>
+        	</twittercard>
 		
 		<newNodes>
 		</newNodes>
