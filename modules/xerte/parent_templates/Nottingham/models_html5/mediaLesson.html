@@ -665,6 +665,7 @@
 					true
 					);
 			}
+			this.resizeMedia()
 			
 			//Append the OVERLAY PANEL to the main media.
 			for(i = 0; i < panelData.length; i++) {
@@ -811,7 +812,6 @@
 				// Add playervars to youtube.
 				// Controls should appear and inline for iPhone (havent checked)
 				if (mediaData.media.indexOf('youtu') > 0) {
-					//
 					urlsep = (mediaData.media.indexOf("?") < 0 ? "?" : "&");
 					mediaData.media += urlsep + "controls=2&playsinline=1"
 				}
@@ -819,12 +819,9 @@
 				if (mediaData.media.indexOf('youtu') > 0 
 				 || mediaData.media.indexOf('vimeo') > 0 
 				 || mediaData.media.indexOf('mediamission') > 0) {
-					var $videoHolder = $holder.find(".popcornMedia");
-					$videoHolder.attr("aspect", mediaData.aspect);
-					mediaLesson.resizeYouTube($videoHolder);
 					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .popcornMedia", mediaData.media);
-					$holder.addClass(popcornInstance.media._util.type);
-					
+					var $videoHolder = $holder.find(".popcornMedia").addClass(popcornInstance.media._util.type);
+					$videoHolder.attr("aspect", mediaData.aspect);
 					$videoHolder.data("popcornInstance", popcornInstance);
 					if (mediaData.autoplay == "true") {
 						popcornInstance.play();
