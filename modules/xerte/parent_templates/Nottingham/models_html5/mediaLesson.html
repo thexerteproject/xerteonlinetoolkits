@@ -808,30 +808,18 @@
 				var $myVideo = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
 
 				
+				// Add playervars to youtube.
+				// Controls should appear and inline for iPhone (havent checked)
+				if (mediaData.media.indexOf('youtu') > 0) {
+					//
+					urlsep = (mediaData.media.indexOf("?") < 0 ? "?" : "&");
+					mediaData.media += urlsep + "controls=2&playsinline=1"
+				}
 				// is it from youtube or vimeo or mediasite?
-				const findTerm = (term) => {
-					if (mediaData.media.indexOf(term) > -1){
-						return mediaData.media;
-					}
-				};
-
-				var $videoHolder = null;
-				// self._util.type geeft ook YT Vimeo etc (popcorn)
-				switch (mediaData.media) {
-					case findTerm('youtu'):
-						//$videoHolder = $holder.find(".popcornMedia").addClass("YouTube");
-						$videoHolder = $holder.find(".popcornMedia")
-					    urlsep = (mediaData.media.indexOf("?") < 0 ? "?" : "&");
-						mediaData.media += urlsep + "controls=2&playsinline=1"
-						break;
-					case findTerm('vimeo'):
-						$videoHolder = $holder.find(".popcornMedia")
-						break;
-					case findTerm('mediamission'):
-						$videoHolder = $holder.find(".popcornMedia")
-						break;
-				};  
-				if ($videoHolder) {
+				if (mediaData.media.indexOf('youtu') > 0 
+				 || mediaData.media.indexOf('vimeo') > 0 
+				 || mediaData.media.indexOf('mediamission') > 0) {
+					var $videoHolder = $holder.find(".popcornMedia");
 					$videoHolder.attr("aspect", mediaData.aspect);
 					mediaLesson.resizeYouTube($videoHolder);
 					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .popcornMedia", mediaData.media);
