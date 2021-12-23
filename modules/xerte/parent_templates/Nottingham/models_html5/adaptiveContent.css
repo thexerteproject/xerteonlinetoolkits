@@ -107,6 +107,7 @@ li.select-interaction.selected {
 @media (max-width: 900px) {
   .graph-container {
     width: 100%;
+    margin-top: 1rem;
   }
   .summary-container {
     width: 100%;
