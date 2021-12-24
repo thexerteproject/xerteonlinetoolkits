@@ -41,7 +41,7 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
          || mediaData.media.indexOf('vimeo') > 0 
          || mediaData.media.indexOf('mediamission') > 0) {
             popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .popcornMedia", mediaData.media);
-            var $videoHolder = $holder.find(".popcornMedia").addClass(popcornInstance.media._util.type);
+            var $videoHolder = $holder.find(".popcornMedia").addClass(popcornInstance.media._util.type).addClass("embed");
             $videoHolder.attr("aspect", mediaData.aspect);
             $videoHolder.data("popcornInstance", popcornInstance);
             if (mediaData.autoplay == "true") {

@@ -44,7 +44,7 @@
 				$("#pageContents").data("mediaElement").setCurrentTime(0);
 			}
 			
-			$(".YouTube, .Vimeo").each(function() {
+			$(".embed").each(function() {
 				$(this).data("popcornInstance").pause();
 			});
 			
@@ -168,16 +168,8 @@
 					$popcornMedia.next().width($popcornMedia.width());
 				}
 			});
-		    $(".popcornMedia.YouTube").each(function(i) {
-		    	mediaLesson.resizeYouTube($(this));
-			});
-			
-			$(".popcornMedia.Vimeo").each(function(i) {
-                mediaLesson.resizeVimeo($(this));
-            });
-
-            $(".popcornMedia.Mediasite").each(function(i) {
-                mediaLesson.resizeMediasite($(this));
+		    $(".popcornMedia.embed").each(function(i) {
+		    	mediaLesson.resizeEmbededMedia($(this));
 			});
 			
 			$(".audioImg").each(function() {
@@ -248,8 +240,8 @@
             }
         };
 
-		this.resizeYouTube = function($youTube) {
-		    var $holder = $youTube.parent(),
+		this.resizeEmbededMedia = function($video) {
+		    var $holder = $video.parent(),
 				ratio = 16 / 9; // assume videos are 16:9 ratio
 
 			if ($(x_currentPageXML).children("mediaPanel").attr("aspectRatio") != undefined)
@@ -272,37 +264,27 @@
 			    h = hh;
 			}
 
-			if(!$youTube[0].getAttribute("aspect") && !$youTube.hasClass("mainMedia"))
+			if(!$video[0].getAttribute("aspect") && !$video.hasClass("mainMedia"))
 			{
 			    w = "100%";
 			    h = "100%";
-			    $youTube.parent().css({
+			    $video.parent().css({
 					"height": "100%"
 			    });
 			}
 
-			$youTube.css({
+			$video.css({
 				"width":	w,
 				"height":	h,
 				"min-width" : 150,
 				"min-height": 120
 			});
 		};
-		
-		this.resizeVimeo = function($vimeo) {
-			this.resizeYouTube($vimeo);
-			var h = $vimeo.width() / 16 * 9;
-			$vimeo.css({"height": h});
-		};
-
-		this.resizeMediasite = function($mediasite) {
-		  this.resizeYouTube($mediasite)
-		};
 
 		this.leavePage = function () {
 		    currSegment.end = lastTime;
 		    this.addSegment(currSegment);
-            $(".YouTube, .Vimeo").each(function() {
+            $(".embed").each(function() {
                 $(this).data("popcornInstance").pause();
             });
 			if (this.popcornInstance != null)
