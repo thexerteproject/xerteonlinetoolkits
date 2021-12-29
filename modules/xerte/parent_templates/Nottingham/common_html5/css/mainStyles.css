@@ -398,6 +398,10 @@ audio {
 	margin-top:	10px;
 }
 
+.ckeditor-html5-audio audio {
+	display: inline;
+}
+
 .highlight {
 	background-image:	url("../highlight.png");
 }
