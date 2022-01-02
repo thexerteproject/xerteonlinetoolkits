@@ -162,8 +162,6 @@ this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
     var w = ww < hw ? ww : hw; 
     var h = ww < hw ? wh : hh;
 
-    debugger;
-
     if(!$video[0].getAttribute("aspect") && !$video.hasClass("mainMedia"))
     {
         w = "100%";
@@ -180,3 +178,23 @@ this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
         "min-height": 120
     });
 };
+
+this.addEvents = function(popcornInstance) {
+    popcornInstance.on( "pause", function() {
+        var popTime = popcornInstance.currentTime(); 
+        //vidFullWatched.time = popTime;
+        console.log("Pause   : " + popTime);
+        //isPlaying = false;
+        
+        //currSegment.end = popTime;
+        //mediaLesson.addSegment(currSegment);
+        //currSegment = {
+        //    start: popTime,
+        //    end: -1
+        //};
+        //vidFullWatched.duration = mediaLesson.popcornInstance.duration();
+        duration = popcornInstance.duration();
+        XTVideo(x_currentPage, trackinglabel, "", "paused", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
+        debugger;
+    });
+}

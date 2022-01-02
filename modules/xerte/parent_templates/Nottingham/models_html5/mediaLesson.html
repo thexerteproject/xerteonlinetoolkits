@@ -168,8 +168,11 @@
 					$popcornMedia.next().width($popcornMedia.width());
 				}
 			});
+			var ratio = 16 / 9;
+			if ($(x_currentPageXML).children("mediaPanel").attr("aspectRatio") != undefined)
+			    ratio = parseFloat($(x_currentPageXML).children("mediaPanel").attr("aspectRatio"));
 		    $(".popcornMedia.embed").each(function(i) {
-		    	mediaLesson.resizeEmbededMedia($(this));
+		    	resizeEmbededMedia($(this), {ratio: ratio});
 			});
 			
 			$(".audioImg").each(function() {
@@ -240,47 +243,6 @@
             }
         };
 
-		this.resizeEmbededMedia = function($video) {
-		    var $holder = $video.parent(),
-				ratio = 16 / 9; // assume videos are 16:9 ratio
-
-			if ($(x_currentPageXML).children("mediaPanel").attr("aspectRatio") != undefined)
-			{
-			    ratio = parseFloat($(x_currentPageXML).children("mediaPanel").attr("aspectRatio"));
-			}
-			var ww = $holder.width(),
-				wh = Math.floor(ww / ratio),
-				hh = $holder.height() - $holder.find(".panelTitle").outerHeight(true),
-				hw = Math.floor(hh * ratio);
-
-			if (ww < hw)
-			{
-			    w = ww;
-			    h = wh;
-			}
-			else
-			{
-			    w = hw;
-			    h = hh;
-			}
-
-			if(!$video[0].getAttribute("aspect") && !$video.hasClass("mainMedia"))
-			{
-			    w = "100%";
-			    h = "100%";
-			    $video.parent().css({
-					"height": "100%"
-			    });
-			}
-
-			$video.css({
-				"width":	w,
-				"height":	h,
-				"min-width" : 150,
-				"min-height": 120
-			});
-		};
-
 		this.leavePage = function () {
 		    currSegment.end = lastTime;
 		    this.addSegment(currSegment);
@@ -305,6 +267,10 @@
 			var progress = XThelperDetermineProgress(vidFullWatched) * 100.0;
 			XTVideo(x_currentPage, trackinglabel, "", "exit", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
 		};
+
+		this.loadMedia = function($holder, type, data) {
+			loadMedia($holder, type, data);
+		}
 		
 		this.init = function() {
             this.panelbaseid = "panel_" + x_currentPage + '_';
