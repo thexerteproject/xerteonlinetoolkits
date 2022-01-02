@@ -30,8 +30,10 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			var $pageVideo = $("#pageVideo");
-			if ($pageVideo.hasClass('iframe')) {
+			var $pageVideo = $("#pageVideo"),
+				ratio = $pageVideo.data('iframeRatio'),
+				videoDimensions = $pageVideo.data('dimensions');
+			if (true) {
 				// scale the iframe so it stays the right aspect ratio & doesn't exceed the max size (60% of width by default but can be changed with opt property
 				var iframeMax = x_currentPageXML.getAttribute("iframeMax");
 				if ($.isNumeric(x_currentPageXML.getAttribute("iframeMax"))) {
@@ -46,15 +48,22 @@
 					maxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height()) - ($('.x_floatRight').outerHeight() - $('.x_floatRight').height());
 				
 				var width = $x_pageDiv.width() * maxW;
-				var height = (width / Number($("#pageVideo").data('iframeRatio')[0])) * Number($("#pageVideo").data('iframeRatio')[1]) + 35;
+				var height = (width / ratio) + 35;
 				
 				if (x_browserInfo.mobile != true && height > maxH) {
 					height = maxH;
-					width = ((height - 35) / Number($("#pageVideo").data('iframeRatio')[1])) * Number($("#pageVideo").data('iframeRatio')[0]);
+					width = ((height - 35) * ratio);
 				}
 				$pageVideo
 					.width(width)
 					.height(height);
+
+				if (videoDimensions) {
+					resizeEmbededMedia($(".popcornMedia.embed"), {width: videoDimensions[0], height: videoDimensions[1]}) //popcorn mediaconstructor
+				}
+				else {
+					resizeEmbededMedia($(".popcornMedia.embed"), {ratio: ratio}) //popcorn mediaconstructor
+				}	
 			}
 		}
 		this.initTracking = function(){
@@ -133,8 +142,10 @@
 			}
 			
 			var $pageVideo = $("#pageVideo"),
-				videoSrc = x_currentPageXML.getAttribute("url");
-			
+				videoSrc = x_currentPageXML.getAttribute("url"),
+				ratio = x_currentPageXML.getAttribute("iframeRatio"),
+				iframeRatio = ratio ? ratio : '16:9';
+				
 			if (videoSrc.substr(0,7) == "<iframe") {
 				$("#pageContents .panel").removeClass("panel inline");
 				
@@ -146,7 +157,6 @@
 					$("#transcript").width($pageVideo.width());
 				}
 				
-				var iframeRatio = x_currentPageXML.getAttribute("iframeRatio") != "" && x_currentPageXML.getAttribute("iframeRatio") != undefined ? x_currentPageXML.getAttribute("iframeRatio") : '16:9';
 				iframeRatio = iframeRatio.split(':');
 				if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
 					iframeRatio = [16,9];
@@ -154,9 +164,9 @@
 				$pageVideo.data('iframeRatio', iframeRatio);
 				
 			} else {
-				var videoDimensions = [320,240];
+				var videoDimensions;// = [320,240];
 				
-				if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+				if (x_currentPageXML.getAttribute("movieSize")) {
 					var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
 					if (dimensions[0] != 0 && dimensions[1] != 0) {
 						videoDimensions = dimensions;
@@ -169,24 +179,28 @@
 					"startEndFrame"	:[Number(x_currentPageXML.getAttribute("startFrame")), Number(x_currentPageXML.getAttribute("endFrame"))]
 				});
 
-				this.popcornInstance = loadMedia(
-				$("#pageVideo"),
-				"video",
+				iframeRatio = iframeRatio.split(':');
+				if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
+					iframeRatio = 16/9; 
+				}
+				else {
+					iframeRatio = iframeRatio[0] / iframeRatio[1];
+				}
+				$pageVideo.data('iframeRatio', iframeRatio);
+				
+				this.popcornInstance = loadMedia($("#pageVideo"), "video",
 				{	tip: x_currentPageXML.getAttribute("tip"),
-					width: Number(videoDimensions[0]),
-					height: Number(videoDimensions[1]),
-					media: x_currentPageXML.getAttribute("url")//,
-					//autoplay: mediaPanelData.attr("autoplay"),
-					//aspect: mediaPanelData.attr("aspect"),
-					//transcript: mediaPanelData.attr("transcript"),
-					//transcriptBtnTxt: mediaPanelData.attr("transcriptBtnTxt"),
-					//audioImage: mediaPanelData.attr("audioImage"),
-					//audioImageTip: mediaPanelData.attr("audioImageTip")
-				},
-				true
-				);
-				//mediaLesson.resizeMedia()
-				debugger;
+					width: videoDimensions ? Number(videoDimensions[0]) : 0,
+					height: videoDimensions ? Number(videoDimensions[1]) : 0,
+					media: x_currentPageXML.getAttribute("url"),
+					autoplay: "false",
+					aspect: iframeRatio,
+					transcript: x_currentPageXML.getAttribute("transcript"),
+					transcriptBtnTxt: x_currentPageXML.getAttribute("transcriptTabTxt"),
+					audioImage: undefined,
+					audioImageTip: ""
+				}, true);
+				
 				//controls toggle
 				$(".panel.inline.x_floatRight")
 					.mouseover(function(){
@@ -206,7 +220,6 @@
 		}
 
 		this.leavePage = function() {
-			debugger;
 			XTVideo(x_currentPage, "trackinglabel", "", "exit", 35, x_currentPageXML.getAttribute("grouping"));
 			trackinglabel = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
 			XTSetPageType(x_currentPage, 'numeric', 0 , 1);
@@ -239,10 +252,6 @@
 	<div class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
 		<div class="panel inline">
 			<div id="pageVideo"></div>
-			<div id="transcriptHolder">
-				<button id="transcriptBtn"></button>
-				<div id="transcript"></div>
-			</div>
 		</div>
 	</div>
 	

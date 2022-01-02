@@ -114,14 +114,14 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
     }
     
     // add transcript to media panel if required
-    if (mediaData.transcript != "" && mediaData.transcript != undefined) {
+    if (mediaData.transcript) {
         $mediaHolder.append('<div class="transcriptHolder"><div class="transcript">' 
             + x_addLineBreaks(mediaData.transcript) + '</div><button class="transcriptBtn"></button></div>');
         $mediaHolder.find(".transcript").hide();
         $mediaHolder.find(".transcriptBtn")
             .button({
                 icons:	{secondary:"fa fa-x-btn-hide"},
-                label:	mediaData.transcriptBtnTxt != undefined && mediaData.transcriptBtnTxt != "" ? mediaData.transcriptBtnTxt : "Transcript"
+                label:	mediaData.transcriptBtnTxt ? mediaData.transcriptBtnTxt : "Transcript"
             })
             .click(function() {
                 // transcript slides in and out of view on click
@@ -143,3 +143,40 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
     }
     return popcornInstance;
 }
+
+// sets the size of videos. width and height take precedence over ratio
+// Called using: resizeEmbededMedia($video, {ratio: 16 / 9})
+this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
+    var $holder = $video.parent()
+
+    var heightClaimed = 0;
+    $holder.children().not($video).each(function() {
+        heightClaimed += $(this).outerHeight(true);
+    });
+
+    var ww = $holder.width(),                   // max width
+        wh = Math.floor(ww / ratio);            // height from widths perspective
+        hh = $holder.height() - heightClaimed,  // max height
+        hw = Math.floor(hh * ratio);            // width from heights perspective
+
+    var w = ww < hw ? ww : hw; 
+    var h = ww < hw ? wh : hh;
+
+    debugger;
+
+    if(!$video[0].getAttribute("aspect") && !$video.hasClass("mainMedia"))
+    {
+        w = "100%";
+        h = "100%";
+        $video.parent().css({
+            "height": "100%"
+        });
+    }
+
+    $video.css({
+        "width":	width ? width : w,
+        "height":	height ? height : h,
+        "min-width" : 150,
+        "min-height": 120
+    });
+};
