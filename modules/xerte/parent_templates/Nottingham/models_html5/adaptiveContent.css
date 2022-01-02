@@ -101,11 +101,30 @@ li.select-interaction.selected {
 .graph-container {
   width: 45%;
   float: right;
-  display: block;
+  display: inline-flex;
+}
+
+@media (max-width: 900px) {
+  .graph-container {
+    width: 100%;
+    margin-top: 1rem;
+  }
+  .summary-container {
+    width: 100%;
+    display: inline-block;
+  }
+  .graph-container fieldset.noStyle {
+    width: 100%;
+  }
+}
+
+.graph-container-wide {
+  width: 100%;
 }
 
 .graph-container fieldset.noStyle {
-  width: 100%;
+  width: 50%;
+  float: left;
 }
 
 .graph {
@@ -114,5 +133,8 @@ li.select-interaction.selected {
   width: 100%;
   /*padding-bottom: 100%; /* aspect ratio */
   vertical-align: top;
-  overflow: hidden;
+}
+
+#button-placeholder {
+  text-align: right;
 }

@@ -579,8 +579,10 @@
 
 			if (x_currentPageXML.getAttribute("diagram") !== "true"){
 				$("#diagram").show();
+        $("#printBtn").show()
 			} else {
 				$('#diagram').hide();
+        $("#printBtn").hide();
 			}
             $("#qHolder").hide();
             $("#checkBtn").hide();
@@ -805,7 +807,7 @@
 				});
 			
 			// reset button
-            $("#resetBtn")
+        $("#resetBtn")
 				.button({
 					label: resetBtnText
 				})
@@ -817,9 +819,19 @@
 							'diagramAnswers': []
 						});
 						
+            $('#printBtn').hide();
 						opinion.startQuestions();
 					}
 				});
+
+        $("#printBtn")
+				.button({
+					label: 'print'
+				})
+				.click(function() {
+            html2pdf($("#mainPanel")[0]);
+				});
+        $("#printBtn").hide();
 
 			this.startQuestions();
 			this.sizeChanged();
@@ -828,7 +840,7 @@
 	};
 
 	opinion.init();
-	
+
 </script>
 
 <div id="pageContents">
@@ -851,6 +863,7 @@
 					<div id="wrapper">
 						<div id="qHolder"></div>
 						<div id="buttonHolder">
+							<button id="printBtn" hidden></button>
 							<button id="resetBtn"></button>
 							<button id="checkBtn"></button>
 						</div>
