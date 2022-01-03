@@ -179,22 +179,62 @@ this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
     });
 };
 
-this.addEvents = function(popcornInstance) {
-    popcornInstance.on( "pause", function() {
-        var popTime = popcornInstance.currentTime(); 
-        //vidFullWatched.time = popTime;
-        console.log("Pause   : " + popTime);
-        //isPlaying = false;
+// Test if a segment is valid and significant enough to be added to the state.
+// if not, do nothing.
+this.addSegment = function(videoState) {
+    var segment = videoState.segment;
+    if (segment.start != -1 && segment.end != -1 && segment.start < segment.end && segment.end - segment.start > 0.5)
+    {
+        // Pushing copy of segment
+        var csegment = $.extend(true, {}, segment);
+        vidFullWatched.segments.push(csegment);
+    }
+}
+
+// Timeupdates are only tracked for seeks and leavepage()
+this.addTrackingOnTimeUpdate = function(popcornInstance, videoState){
+    var time = popcornInstance.currentTime();
+    if (videoState.lastTime != time && time > 0) {
+        videoState.prevTime = videoState.lastTime;
+        videoState.lastTime = videoState.time;
+    }
+}
+
+this.addTrackingOnPlay = function(popcornInstance, videoState){
+    var time = popcornInstance.currentTime();
+    videoState.segment = {
+        start: time,
+        end: -1
+    };
+    videoState.duration = popcornInstance.duration();
+    videoState.time = time;
+    XTVideo(x_currentPage, "", "", "played", videoState, x_currentPageXML.getAttribute("grouping"));
+    return videoState;
+}
+
+this.addTrackingOnPause = function(popcornInstance, videoState){
+    if (!popcornInstance || !videoState){
+        console.error("video not loaded properly");
+        return;
+    }
         
-        //currSegment.end = popTime;
-        //mediaLesson.addSegment(currSegment);
-        //currSegment = {
-        //    start: popTime,
-        //    end: -1
-        //};
-        //vidFullWatched.duration = mediaLesson.popcornInstance.duration();
-        duration = popcornInstance.duration();
-        XTVideo(x_currentPage, trackinglabel, "", "paused", vidFullWatched, x_currentPageXML.getAttribute("grouping"));
-        debugger;
-    });
+    var time = popcornInstance.currentTime();
+    videoState.time = time;
+    videoState.segment.end = time;
+    this.addSegment(videoState);
+    videoState.segment = {start: time, end: -1};
+    videoState.duration = popcornInstance.duration();
+    XTVideo(x_currentPage, "", "", "paused", videoState, x_currentPageXML.getAttribute("grouping"))
+    return videoState;
+}
+
+this.addTrackingOnSeek = function(popcornInstance, videoState){
+    var time = popcornInstance.currentTime();
+    videoState.time = time;
+    videoState.segment.end = videoState.prevTime;
+    addSegment(videoState);
+    videoState.segment = {start: popTime, end: -1};
+    videoState.duration = popcornInstance.duration();
+    XTVideo(x_currentPage, "", "", "seeked", videoState, x_currentPageXML.getAttribute("grouping"));
+    return videoState;
 }
