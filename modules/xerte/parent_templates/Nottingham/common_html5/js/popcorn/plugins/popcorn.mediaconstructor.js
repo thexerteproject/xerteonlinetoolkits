@@ -203,10 +203,7 @@ this.addTrackingOnTimeUpdate = function(popcornInstance, videoState){
 
 this.addTrackingOnPlay = function(popcornInstance, videoState){
     var time = popcornInstance.currentTime();
-    videoState.segment = {
-        start: time,
-        end: -1
-    };
+    videoState.segment = {start: time, end: -1};
     videoState.duration = popcornInstance.duration();
     videoState.time = time;
     XTVideo(x_currentPage, "", "", "played", videoState, x_currentPageXML.getAttribute("grouping"));
@@ -214,11 +211,6 @@ this.addTrackingOnPlay = function(popcornInstance, videoState){
 }
 
 this.addTrackingOnPause = function(popcornInstance, videoState){
-    if (!popcornInstance || !videoState){
-        console.error("video not loaded properly");
-        return;
-    }
-        
     var time = popcornInstance.currentTime();
     videoState.time = time;
     videoState.segment.end = time;
@@ -229,13 +221,24 @@ this.addTrackingOnPause = function(popcornInstance, videoState){
     return videoState;
 }
 
-this.addTrackingOnSeek = function(popcornInstance, videoState){
+this.addTrackingOnSeeked = function(popcornInstance, videoState){
     var time = popcornInstance.currentTime();
     videoState.time = time;
     videoState.segment.end = videoState.prevTime;
-    addSegment(videoState);
-    videoState.segment = {start: popTime, end: -1};
+    this.addSegment(videoState);
+    videoState.segment = {start: time, end: -1};
     videoState.duration = popcornInstance.duration();
     XTVideo(x_currentPage, "", "", "seeked", videoState, x_currentPageXML.getAttribute("grouping"));
+    return videoState;
+}
+
+this.addTrackingOnEnded = function(popcornInstance, videoState){
+    var time = popcornInstance.duration();
+    videoState.duration = popcornInstance.duration();
+    videoState.time = time;
+    videoState.segment.end = time;
+    this.addSegment(videoState);
+    videoState.segment = {start: time, end: -1};
+    XTVideo(x_currentPage, "", "", "paused", videoState, x_currentPageXML.getAttribute("grouping"));
     return videoState;
 }
